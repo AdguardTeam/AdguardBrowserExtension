@@ -1,10 +1,11 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.3.13
+ * Version 1.3.15
  */
 
 (function () {
+
     /**
      * Generate random six symbols id
      */
@@ -510,6 +511,125 @@
     };
 
     /**
+     * Finds shadow-dom host (elements with shadowRoot property) in DOM of rootElement.
+     * @param {HTMLElement} rootElement
+     * @returns {HTMLElement[]} shadow-dom hosts
+     */
+
+    var findHostElements = function findHostElements(rootElement) {
+      var hosts = []; // Element.querySelectorAll() returns list of elements
+      // which are defined in DOM of Element.
+      // Meanwhile, inner DOM of the element with shadowRoot property
+      // is absolutely another DOM and which can not be reached by querySelectorAll('*')
+
+      var domElems = rootElement.querySelectorAll('*');
+      domElems.forEach(function (el) {
+        if (el.shadowRoot) {
+          hosts.push(el);
+        }
+      });
+      return hosts;
+    };
+    /**
+     * A collection of nodes.
+     *
+     * @external NodeList
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/NodeList NodeList}
+     */
+
+    /**
+     * @typedef {Object} PierceData
+     * @property {HTMLElement[]} targets found elements that match the specified selector
+     * @property {HTMLElement[]} innerHosts inner shadow-dom hosts
+     */
+
+    /**
+     * Pierces open shadow-dom in order to find:
+     * - elements by 'selector' matching
+     * - inner shadow-dom hosts
+     * @param {string} selector
+     * @param {HTMLElement[]|external:NodeList} hostElements
+     * @returns {PierceData}
+     */
+
+    var pierceShadowDom = function pierceShadowDom(selector, hostElements) {
+      var targets = [];
+      var innerHostsAcc = []; // it's possible to get a few hostElements found by baseSelector on the page
+
+      hostElements.forEach(function (host) {
+        // check presence of selector element inside base element if it's not in shadow-dom
+        var simpleElems = host.querySelectorAll(selector);
+        targets = targets.concat([].slice.call(simpleElems));
+        var shadowRootElem = host.shadowRoot;
+        var shadowChildren = shadowRootElem.querySelectorAll(selector);
+        targets = targets.concat([].slice.call(shadowChildren)); // find inner shadow-dom hosts inside processing shadow-dom
+
+        innerHostsAcc.push(findHostElements(shadowRootElem));
+      }); // if there were more than one host element,
+      // innerHostsAcc is an array of arrays and should be flatten
+
+      var innerHosts = flatten(innerHostsAcc);
+      return {
+        targets: targets,
+        innerHosts: innerHosts
+      };
+    };
+
+    /**
+     * Prepares cookie string if given parameters are ok
+     * @param {string} name cookie name to set
+     * @param {string} value cookie value to set
+     * @returns {string|null} cookie string if ok OR null if not
+     */
+    var prepareCookie = function prepareCookie(name, value) {
+      if (!name || !value) {
+        return null;
+      }
+
+      var nativeIsNaN = Number.isNaN || window.isNaN; // eslint-disable-line compat/compat
+
+      var valueToSet;
+
+      if (value === 'true') {
+        valueToSet = 'true';
+      } else if (value === 'True') {
+        valueToSet = 'True';
+      } else if (value === 'false') {
+        valueToSet = 'false';
+      } else if (value === 'False') {
+        valueToSet = 'False';
+      } else if (value === 'yes') {
+        valueToSet = 'yes';
+      } else if (value === 'Yes') {
+        valueToSet = 'Yes';
+      } else if (value === 'Y') {
+        valueToSet = 'Y';
+      } else if (value === 'no') {
+        valueToSet = 'no';
+      } else if (value === 'ok') {
+        valueToSet = 'ok';
+      } else if (value === 'OK') {
+        valueToSet = 'OK';
+      } else if (/^\d+$/.test(value)) {
+        valueToSet = parseFloat(value);
+
+        if (nativeIsNaN(valueToSet)) {
+          return null;
+        }
+
+        if (Math.abs(valueToSet) < 0 || Math.abs(valueToSet) > 15) {
+          return null;
+        }
+      } else {
+        return null;
+      }
+
+      var pathToSet = 'path=/;';
+      var cookieData = "".concat(encodeURIComponent(name), "=").concat(encodeURIComponent(valueToSet), "; ").concat(pathToSet);
+      return cookieData;
+    };
+
+    /**
      * This file must export all used dependencies
      */
 
@@ -540,7 +660,10 @@
         hit: hit,
         observeDOMChanges: observeDOMChanges,
         matchStackTrace: matchStackTrace,
-        flatten: flatten
+        findHostElements: findHostElements,
+        pierceShadowDom: pierceShadowDom,
+        flatten: flatten,
+        prepareCookie: prepareCookie
     });
 
     /**
@@ -1209,10 +1332,11 @@
     }
     preventSetTimeout.names = ['prevent-setTimeout', // aliases are needed for matching the related scriptlet converted into our syntax
     'no-setTimeout-if.js', // new implementation of setTimeout-defuser.js
-    'ubo-no-setTimeout-if.js', 'setTimeout-defuser.js', // old name should be supported as well
-    'ubo-setTimeout-defuser.js', 'nostif.js', // new short name of no-setTimeout-if
-    'ubo-nostif.js', 'std.js', // old short scriptlet name
-    'ubo-std.js', 'ubo-no-setTimeout-if', 'ubo-setTimeout-defuser', 'ubo-nostif', 'ubo-std'];
+    'ubo-no-setTimeout-if.js', 'nostif.js', // new short name of no-setTimeout-if
+    'ubo-nostif.js', 'ubo-no-setTimeout-if', 'ubo-nostif', // old scriptlet names which should be supported as well.
+    // should be removed eventually.
+    // do not remove until other filter lists maintainers use them
+    'setTimeout-defuser.js', 'ubo-setTimeout-defuser.js', 'ubo-setTimeout-defuser', 'std.js', 'ubo-std.js', 'ubo-std'];
     preventSetTimeout.injections = [toRegExp, startsWith, hit, noopFunc];
 
     /* eslint-disable max-len */
@@ -3624,64 +3748,81 @@
      *
      * **Examples**
      * ```
-     * example.org#%#//scriptlet('set-cookie', 'checking', 'ok')
+     * example.org#%#//scriptlet('set-cookie', 'ReadlyCookieConsent', '1'
      *
-     * example.org#%#//scriptlet('set-cookie', 'gdpr-settings-cookie', '1')
+     * example.org#%#//scriptlet('set-cookie', 'gdpr-settings-cookie', 'true')
      * ```
      */
 
     /* eslint-enable max-len */
 
     function setCookie(source, name, value) {
-      if (!name || !value) {
-        return;
+      var cookieData = prepareCookie(name, value);
+
+      if (cookieData) {
+        hit(source);
+        document.cookie = cookieData;
       }
-
-      var nativeIsNaN = Number.isNaN || window.isNaN; // eslint-disable-line compat/compat
-
-      var valueToSet;
-
-      if (value === 'true') {
-        valueToSet = 'true';
-      } else if (value === 'True') {
-        valueToSet = 'True';
-      } else if (value === 'false') {
-        valueToSet = 'false';
-      } else if (value === 'False') {
-        valueToSet = 'False';
-      } else if (value === 'yes') {
-        valueToSet = 'yes';
-      } else if (value === 'Yes') {
-        valueToSet = 'Yes';
-      } else if (value === 'Y') {
-        valueToSet = 'Y';
-      } else if (value === 'no') {
-        valueToSet = 'no';
-      } else if (value === 'ok') {
-        valueToSet = 'ok';
-      } else if (value === 'OK') {
-        valueToSet = 'OK';
-      } else if (/^\d+$/.test(value)) {
-        valueToSet = parseFloat(value);
-
-        if (nativeIsNaN(valueToSet)) {
-          return;
-        }
-
-        if (Math.abs(valueToSet) < 0 || Math.abs(valueToSet) > 15) {
-          return;
-        }
-      } else {
-        return;
-      }
-
-      var pathToSet = 'path=/;';
-      var cookieData = "".concat(encodeURIComponent(name), "=").concat(encodeURIComponent(valueToSet), "; ").concat(pathToSet);
-      hit(source);
-      document.cookie = cookieData;
     }
     setCookie.names = ['set-cookie'];
-    setCookie.injections = [hit];
+    setCookie.injections = [hit, prepareCookie];
+
+    /**
+     * @scriptlet set-cookie-reload
+     *
+     * @description
+     * Sets a cookie with the specified name and value, and then reloads the current page.
+     * If reloading option is not needed, use [set-cookie](#set-cookie) scriptlet.
+     *
+     * **Syntax**
+     * ```
+     * example.org#%#//scriptlet('set-cookie-reload', name, value)
+     * ```
+     *
+     * - `name` - required, cookie name to be set
+     * - `value` - required, cookie value; possible values:
+     *     - number `>= 0 && <= 15`
+     *     - one of the predefined constants:
+     *         - `true` / `True`
+     *         - `false` / `False`
+     *         - `yes` / `Yes` / `Y`
+     *         - `no`
+     *         - `ok` / `OK`
+     *
+     * **Examples**
+     * ```
+     * example.org#%#//scriptlet('set-cookie-reload', 'checking', 'ok')
+     *
+     * example.org#%#//scriptlet('set-cookie-reload', 'gdpr-settings-cookie', '1')
+     * ```
+     */
+
+    function setCookieReload(source, name, value) {
+      var isCookieAlreadySet = document.cookie.split(';').some(function (cookieStr) {
+        var pos = cookieStr.indexOf('=');
+
+        if (pos === -1) {
+          return false;
+        }
+
+        var cookieName = cookieStr.slice(0, pos).trim();
+        var cookieValue = cookieStr.slice(pos + 1).trim();
+        return name === cookieName && value === cookieValue;
+      });
+      var shouldReload = !isCookieAlreadySet;
+      var cookieData = prepareCookie(name, value);
+
+      if (cookieData) {
+        hit(source);
+        document.cookie = cookieData;
+
+        if (shouldReload) {
+          window.location.reload();
+        }
+      }
+    }
+    setCookieReload.names = ['set-cookie-reload'];
+    setCookieReload.injections = [hit, prepareCookie];
 
     /**
      * @scriptlet hide-in-shadow-dom
@@ -3717,73 +3858,10 @@
       if (!Element.prototype.attachShadow) {
         return;
       }
-      /**
-       * Finds shadow-dom host (elements with shadowRoot property) in DOM of rootElement.
-       * @param {HTMLElement} rootElement
-       * @returns {nodeList[]} shadow-dom hosts
-       */
 
-
-      var findHostElements = function findHostElements(rootElement) {
-        var hosts = []; // Element.querySelectorAll() returns list of elements
-        // which are defined in DOM of Element.
-        // Meanwhile, inner DOM of the element with shadowRoot property
-        // is absolutely another DOM and which can not be reached by querySelectorAll('*')
-
-        var domElems = rootElement.querySelectorAll('*');
-        domElems.forEach(function (el) {
-          if (el.shadowRoot) {
-            hosts.push(el);
-          }
-        });
-        return hosts;
-      };
-      /**
-       * @typedef {Object} PierceData
-       * @property {Array} targets found elements
-       * @property {Array} innerHosts inner shadow-dom hosts
-       */
-
-      /**
-       * Pierces open shadow-dom in order to find:
-       * - elements by 'selector' matching
-       * - inner shadow-dom hosts
-       * @param {string} selector
-       * @param {nodeList[]} hostElements
-       * @returns {PierceData}
-       */
-
-
-      var pierceShadowDom = function pierceShadowDom(selector, hostElements) {
-        var targets = [];
-        var innerHostsAcc = [];
-
-        var collectTargets = function collectTargets(arr) {
-          if (arr.length !== 0) {
-            arr.forEach(function (el) {
-              return targets.push(el);
-            });
-          }
-        }; // it's possible to get a few hostElements found by baseSelector on the page
-
-
-        hostElements.forEach(function (host) {
-          // check presence of selector element inside base element if it's not in shadow-dom
-          var simpleElems = host.querySelectorAll(selector);
-          collectTargets(simpleElems);
-          var shadowRootElem = host.shadowRoot;
-          var shadowChildren = shadowRootElem.querySelectorAll(selector);
-          collectTargets(shadowChildren); // find inner shadow-dom hosts inside processing shadow-dom
-
-          innerHostsAcc.push(findHostElements(shadowRootElem));
-        }); // if there were more than one host element,
-        // innerHostsAcc is an array of arrays and should be flatten
-
-        var innerHosts = flatten(innerHostsAcc);
-        return {
-          targets: targets,
-          innerHosts: innerHosts
-        };
+      var hideElement = function hideElement(targetElement) {
+        var DISPLAY_NONE_CSS = 'display:none!important;';
+        targetElement.style.cssText = DISPLAY_NONE_CSS;
       };
       /**
        * Handles shadow-dom piercing and hiding of found elements
@@ -3794,30 +3872,25 @@
         // start value of shadow-dom hosts for the page dom
         var hostElements = !baseSelector ? findHostElements(document.documentElement) : document.querySelectorAll(baseSelector); // if there is shadow-dom host, they should be explored
 
-        var _loop = function _loop() {
-          var hidden = false;
-          var DISPLAY_NONE_CSS = 'display:none!important;';
+        while (hostElements.length !== 0) {
+          var isHidden = false;
 
           var _pierceShadowDom = pierceShadowDom(selector, hostElements),
               targets = _pierceShadowDom.targets,
               innerHosts = _pierceShadowDom.innerHosts;
 
           targets.forEach(function (targetEl) {
-            targetEl.style.cssText = DISPLAY_NONE_CSS;
-            hidden = true;
+            hideElement(targetEl);
+            isHidden = true;
           });
 
-          if (hidden) {
+          if (isHidden) {
             hit(source);
           } // continue to pierce for inner shadow-dom hosts
           // and search inside them while the next iteration
 
 
           hostElements = innerHosts;
-        };
-
-        while (hostElements.length !== 0) {
-          _loop();
         }
       };
 
@@ -3825,7 +3898,82 @@
       observeDOMChanges(hideHandler, true);
     }
     hideInShadowDom.names = ['hide-in-shadow-dom'];
-    hideInShadowDom.injections = [hit, observeDOMChanges, flatten];
+    hideInShadowDom.injections = [hit, observeDOMChanges, flatten, findHostElements, pierceShadowDom];
+
+    /**
+     * @scriptlet remove-in-shadow-dom
+     *
+     * @description
+     * Removes elements inside open shadow DOM elements.
+     *
+     * **Syntax**
+     * ```
+     * example.org#%#//scriptlet('remove-in-shadow-dom', selector[, baseSelector])
+     * ```
+     *
+     * - `selector` — required, CSS selector of element in shadow-dom to remove
+     * - `baseSelector` — optional, selector of specific page DOM element,
+     * narrows down the part of the page DOM where shadow-dom host supposed to be,
+     * defaults to document.documentElement
+     *
+     * > `baseSelector` should match element of the page DOM, but not of shadow DOM
+     *
+     * **Examples**
+     * ```
+     * ! removes menu bar
+     * virustotal.com#%#//scriptlet('remove-in-shadow-dom', 'iron-pages', 'vt-virustotal-app')
+     *
+     * ! removes floating element
+     * virustotal.com#%#//scriptlet('remove-in-shadow-dom', 'vt-ui-contact-fab')
+     * ```
+     */
+
+    function removeInShadowDom(source, selector, baseSelector) {
+      // do nothing if browser does not support ShadowRoot
+      // https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot
+      if (!Element.prototype.attachShadow) {
+        return;
+      }
+
+      var removeElement = function removeElement(targetElement) {
+        targetElement.remove();
+      };
+      /**
+       * Handles shadow-dom piercing and removing of found elements
+       */
+
+
+      var removeHandler = function removeHandler() {
+        // start value of shadow-dom hosts for the page dom
+        var hostElements = !baseSelector ? findHostElements(document.documentElement) : document.querySelectorAll(baseSelector); // if there is shadow-dom host, they should be explored
+
+        while (hostElements.length !== 0) {
+          var isRemoved = false;
+
+          var _pierceShadowDom = pierceShadowDom(selector, hostElements),
+              targets = _pierceShadowDom.targets,
+              innerHosts = _pierceShadowDom.innerHosts;
+
+          targets.forEach(function (targetEl) {
+            removeElement(targetEl);
+            isRemoved = true;
+          });
+
+          if (isRemoved) {
+            hit(source);
+          } // continue to pierce for inner shadow-dom hosts
+          // and search inside them while the next iteration
+
+
+          hostElements = innerHosts;
+        }
+      };
+
+      removeHandler();
+      observeDOMChanges(removeHandler, true);
+    }
+    removeInShadowDom.names = ['remove-in-shadow-dom'];
+    removeInShadowDom.injections = [hit, observeDOMChanges, flatten, findHostElements, pierceShadowDom];
 
     /**
      * This file must export all scriptlets which should be accessible
@@ -3865,10 +4013,12 @@
         jsonPrune: jsonPrune,
         preventRequestAnimationFrame: preventRequestAnimationFrame,
         setCookie: setCookie,
-        hideInShadowDom: hideInShadowDom
+        setCookieReload: setCookieReload,
+        hideInShadowDom: hideInShadowDom,
+        removeInShadowDom: removeInShadowDom
     });
 
-    const redirects=[{adg:"1x1-transparent.gif",ubo:"1x1.gif",abp:"1x1-transparent-gif"},{adg:"2x2-transparent.png",ubo:"2x2.png",abp:"2x2-transparent-png"},{adg:"3x2-transparent.png",ubo:"3x2.png",abp:"3x2-transparent-png"},{adg:"32x32-transparent.png",ubo:"32x32.png",abp:"32x32-transparent-png"},{adg:"amazon-apstag",ubo:"amazon_apstag.js"},{adg:"google-analytics",ubo:"google-analytics_analytics.js"},{adg:"google-analytics-ga",ubo:"google-analytics_ga.js"},{adg:"googlesyndication-adsbygoogle",ubo:"googlesyndication_adsbygoogle.js"},{adg:"googletagmanager-gtm",ubo:"googletagmanager_gtm.js"},{adg:"googletagservices-gpt",ubo:"googletagservices_gpt.js"},{adg:"metrika-yandex-watch"},{adg:"metrika-yandex-tag"},{adg:"noeval",ubo:"noeval-silent.js"},{adg:"noopcss",abp:"blank-css"},{adg:"noopframe",ubo:"noop.html",abp:"blank-html"},{adg:"noopjs",ubo:"noop.js",abp:"blank-js"},{adg:"nooptext",ubo:"noop.txt",abp:"blank-text"},{adg:"noopmp3-0.1s",ubo:"noop-0.1s.mp3",abp:"blank-mp3"},{adg:"noopmp4-1s",ubo:"noop-1s.mp4",abp:"blank-mp4"},{adg:"noopvmap-1.0"},{adg:"noopvast-2.0"},{adg:"noopvast-3.0"},{adg:"prevent-fab-3.2.0",ubo:"nofab.js"},{adg:"prevent-popads-net",ubo:"popads.js"},{adg:"scorecardresearch-beacon",ubo:"scorecardresearch_beacon.js"},{adg:"set-popads-dummy",ubo:"popads-dummy.js"},{ubo:"addthis_widget.js"},{ubo:"amazon_ads.js"},{ubo:"ampproject_v0.js"},{ubo:"chartbeat.js"},{ubo:"doubleclick_instream_ad_status.js"},{adg:"empty",ubo:"empty"},{ubo:"google-analytics_cx_api.js"},{ubo:"google-analytics_inpage_linkid.js"},{ubo:"hd-main.js"},{ubo:"ligatus_angular-tag.js"},{ubo:"monkeybroker.js"},{ubo:"outbrain-widget.js"},{ubo:"window.open-defuser.js"},{ubo:"nobab.js"},{ubo:"noeval.js"},{ubo:"click2load.html"}];
+    const redirects=[{adg:"1x1-transparent.gif",ubo:"1x1.gif",abp:"1x1-transparent-gif"},{adg:"2x2-transparent.png",ubo:"2x2.png",abp:"2x2-transparent-png"},{adg:"3x2-transparent.png",ubo:"3x2.png",abp:"3x2-transparent-png"},{adg:"32x32-transparent.png",ubo:"32x32.png",abp:"32x32-transparent-png"},{adg:"amazon-apstag",ubo:"amazon_apstag.js"},{adg:"google-analytics",ubo:"google-analytics_analytics.js"},{adg:"google-analytics-ga",ubo:"google-analytics_ga.js"},{adg:"googlesyndication-adsbygoogle",ubo:"googlesyndication_adsbygoogle.js"},{adg:"googletagmanager-gtm",ubo:"googletagmanager_gtm.js"},{adg:"googletagservices-gpt",ubo:"googletagservices_gpt.js"},{adg:"metrika-yandex-watch"},{adg:"metrika-yandex-tag"},{adg:"noeval",ubo:"noeval-silent.js"},{adg:"noopcss",abp:"blank-css"},{adg:"noopframe",ubo:"noop.html",abp:"blank-html"},{adg:"noopjs",ubo:"noop.js",abp:"blank-js"},{adg:"nooptext",ubo:"noop.txt",abp:"blank-text"},{adg:"noopmp3-0.1s",ubo:"noop-0.1s.mp3",abp:"blank-mp3"},{adg:"noopmp4-1s",ubo:"noop-1s.mp4",abp:"blank-mp4"},{adg:"noopvmap-1.0",ubo:"noop-vmap1.0.xml"},{adg:"noopvast-2.0"},{adg:"noopvast-3.0"},{adg:"prevent-fab-3.2.0",ubo:"nofab.js"},{adg:"prevent-popads-net",ubo:"popads.js"},{adg:"scorecardresearch-beacon",ubo:"scorecardresearch_beacon.js"},{adg:"set-popads-dummy",ubo:"popads-dummy.js"},{ubo:"addthis_widget.js"},{ubo:"amazon_ads.js"},{ubo:"ampproject_v0.js"},{ubo:"chartbeat.js"},{ubo:"doubleclick_instream_ad_status.js"},{adg:"empty",ubo:"empty"},{ubo:"google-analytics_cx_api.js"},{ubo:"google-analytics_inpage_linkid.js"},{ubo:"hd-main.js"},{ubo:"ligatus_angular-tag.js"},{ubo:"monkeybroker.js"},{ubo:"outbrain-widget.js"},{ubo:"window.open-defuser.js"},{ubo:"nobab.js"},{ubo:"noeval.js"},{ubo:"click2load.html"}];
 
     var JS_RULE_MARKER = '#%#';
     var COMMENT_MARKER = '!';
@@ -4314,6 +4464,9 @@
 
     var UBO_XHR_TYPE = 'xhr';
     var ADG_XHR_TYPE = 'xmlhttprequest';
+    var ADG_SET_CONSTANT_NAME = 'set-constant';
+    var ADG_SET_CONSTANT_EMPTY_STRING = '';
+    var UBO_SET_CONSTANT_EMPTY_STRING = '\'\'';
     /**
      * Returns array of strings separated by space which not in quotes
      * @param {string} str
@@ -4446,7 +4599,15 @@
       if (validator.isAdgScriptletRule(rule)) {
         var _parseRule = parseRule(rule),
             parsedName = _parseRule.name,
-            parsedParams = _parseRule.args; // object of name and aliases for the Adg-scriptlet
+            parsedParams = _parseRule.args;
+
+        var preparedParams; // https://github.com/AdguardTeam/FiltersCompiler/issues/102
+
+        if (parsedName === ADG_SET_CONSTANT_NAME && parsedParams[1] === ADG_SET_CONSTANT_EMPTY_STRING) {
+          preparedParams = [parsedParams[0], UBO_SET_CONSTANT_EMPTY_STRING];
+        } else {
+          preparedParams = parsedParams;
+        } // object of name and aliases for the Adg-scriptlet
 
 
         var adgScriptletObject = Object.keys(scriptletList).map(function (el) {
@@ -4485,7 +4646,7 @@
             var uboName = uboAlias.replace(UBO_ALIAS_NAME_MARKER, '') // '.js' in the Ubo scriptlet name can be omitted
             // https://github.com/gorhill/uBlock/wiki/Resources-Library#general-purpose-scriptlets
             .replace('.js', '');
-            var args = parsedParams.length > 0 ? "".concat(uboName, ", ").concat(parsedParams.join(', ')) : uboName;
+            var args = preparedParams.length > 0 ? "".concat(uboName, ", ").concat(preparedParams.join(', ')) : uboName;
             var uboRule = replacePlaceholders(template, {
               domains: domains,
               args: args
@@ -4822,10 +4983,14 @@
 
     function GoogleSyndicationAdsByGoogle(source) {
       window.adsbygoogle = {
-        length: 0,
+        // https://github.com/AdguardTeam/Scriptlets/issues/113
+        // length: 0,
         loaded: true,
         push: function push() {
-          this.length += 1;
+          if (typeof this.length === 'undefined') {
+            this.length = 0;
+            this.length += 1;
+          }
         }
       };
       var adElems = document.querySelectorAll('.adsbygoogle');
@@ -4854,13 +5019,13 @@
           // here we do the job if scriptlet has not been executed earlier
           adElems[i].setAttribute(statusAttrName, 'done');
           var aswiftIframe = document.createElement('iframe');
-          aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i + 1);
+          aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
           aswiftIframe.style = css;
           adElems[i].appendChild(aswiftIframe);
           var innerAswiftIframe = document.createElement('iframe');
           aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
           var googleadsIframe = document.createElement('iframe');
-          googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i + 1);
+          googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
           googleadsIframe.style = css;
           adElems[i].appendChild(googleadsIframe);
           var innerGoogleadsIframe = document.createElement('iframe');
@@ -7981,7 +8146,7 @@
 
       alias = state.input.slice(_position, state.position);
 
-      if (!state.anchorMap.hasOwnProperty(alias)) {
+      if (!_hasOwnProperty$2.call(state.anchorMap, alias)) {
         throwError(state, 'unidentified alias "' + alias + '"');
       }
 

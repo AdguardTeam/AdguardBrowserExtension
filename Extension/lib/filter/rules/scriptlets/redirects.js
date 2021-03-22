@@ -1,10 +1,11 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.3.13
+ * Version 1.3.15
  */
 
 var Redirects = (function () {
+
   function _defineProperty(obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
@@ -2632,7 +2633,7 @@ var Redirects = (function () {
 
     alias = state.input.slice(_position, state.position);
 
-    if (!state.anchorMap.hasOwnProperty(alias)) {
+    if (!_hasOwnProperty$2.call(state.anchorMap, alias)) {
       throwError(state, 'unidentified alias "' + alias + '"');
     }
 
