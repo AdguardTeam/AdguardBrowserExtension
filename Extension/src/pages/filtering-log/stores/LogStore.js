@@ -9,12 +9,11 @@ import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 import identity from 'lodash/identity';
 
+import { reactTranslator } from '../../../common/translators/reactTranslator';
+import { RequestTypes } from '../../../background/utils/request-types';
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
-// TODO we should separate RequestTypes from tsurlfilter because such imports pull whole tsurlfilter
-import { RequestTypes } from '../../../background/utils/request-types';
 import { getFilterName } from '../components/RequestWizard/utils';
-import { reactTranslator } from '../../../common/translators/reactTranslator';
 
 export const MISCELLANEOUS_FILTERS = {
     REGULAR: 'regular',
@@ -97,7 +96,15 @@ class LogStore {
         {
             name: 'Other',
             title: reactTranslator.getMessage('filtering_type_other'),
-            types: [RequestTypes.OTHER, RequestTypes.FONT, RequestTypes.WEBSOCKET, RequestTypes.CSP, RequestTypes.COOKIE, RequestTypes.PING, RequestTypes.WEBRTC],
+            types: [
+                RequestTypes.OTHER,
+                RequestTypes.FONT,
+                RequestTypes.WEBSOCKET,
+                RequestTypes.CSP,
+                RequestTypes.COOKIE,
+                RequestTypes.PING,
+                RequestTypes.WEBRTC,
+            ],
             enabled: true,
         },
     ];
@@ -195,6 +202,7 @@ class LogStore {
 
         // clear events
         if (filteringEvent.requestType === 'DOCUMENT'
+            && !filteringEvent?.requestRule?.isModifyingCookieRule
             && !filteringEvent.element
             && !filteringEvent.script
             && !this.preserveLogEnabled) {
@@ -267,15 +275,16 @@ class LogStore {
             // Filter by requestType
             const { requestType } = filteringEvent;
             // check if request type is in eventTypesFilters
-            const filterForRequestType = this.eventTypesFilters.find(
-                (filter) => filter.types.includes(requestType)
-            );
-
-            if (filterForRequestType) {
-                if (!filterForRequestType.enabled) {
-                    return false;
+            const filterForRequestType = this.eventTypesFilters.find((filter) => {
+                // Cookie rules have document request type,
+                // but they refer to "other" filtering log events
+                if (filteringEvent?.requestRule?.isModifyingCookieRule) {
+                    return filter.types.includes(RequestTypes.COOKIE);
                 }
-            } else {
+                return filter.types.includes(requestType);
+            });
+
+            if (!filterForRequestType?.enabled) {
                 return false;
             }
 

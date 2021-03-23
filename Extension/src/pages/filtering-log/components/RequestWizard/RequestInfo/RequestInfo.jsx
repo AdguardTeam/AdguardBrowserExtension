@@ -11,6 +11,7 @@ import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { RequestTypes } from '../../../../../background/utils/request-types';
 
 import './request-info.pcss';
 
@@ -43,6 +44,29 @@ const getStealthActionsNames = (actions) => {
     return result.length > 0 ? result.join(', ') : null;
 };
 
+/**
+ * Returns type of the event
+ * @param selectedEvent
+ * @return {String}
+ */
+const getType = (selectedEvent) => {
+    if (selectedEvent.requestRule?.cookieRule) {
+        return getRequestType(RequestTypes.COOKIE);
+    }
+    return getRequestType(selectedEvent.requestType);
+};
+
+const PARTS = {
+    URL: 'URL',
+    ELEMENT: 'ELEMENT',
+    COOKIE: 'COOKIE',
+    TYPE: 'TYPE',
+    SOURCE: 'SOURCE',
+    RULE: 'RULE',
+    FILTER: 'FILTER',
+    STEALTH: 'STEALTH',
+};
+
 const RequestInfo = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
 
@@ -50,41 +74,61 @@ const RequestInfo = observer(() => {
 
     const { selectedEvent, filtersMetadata } = logStore;
 
-    const infoElements = [
-        {
+    const eventPartsMap = {
+        [PARTS.URL]: {
             title: reactTranslator.getMessage('options_popup_filter_url'),
             data: selectedEvent.requestUrl,
         },
-        {
+        [PARTS.ELEMENT]: {
             title: reactTranslator.getMessage('filtering_modal_element'),
             data: selectedEvent.element,
         },
-        {
+        [PARTS.COOKIE]: {
             title: reactTranslator.getMessage('filtering_modal_cookie'),
             data: selectedEvent.cookieName,
         },
-        {
+        [PARTS.TYPE]: {
             title: reactTranslator.getMessage('filtering_modal_type'),
-            data: getRequestType(selectedEvent.requestType),
+            data: getType(selectedEvent),
         },
-        {
+        [PARTS.SOURCE]: {
             title: reactTranslator.getMessage('filtering_modal_source'),
             data: selectedEvent.frameDomain,
         },
-        {
+        [PARTS.RULE]: {
             title: reactTranslator.getMessage('filtering_modal_rule'),
             data: selectedEvent?.requestRule?.ruleText,
         },
         // TODO add converted rule text
-        {
+        [PARTS.FILTER]: {
             title: reactTranslator.getMessage('filtering_modal_filter'),
             data: getFilterName(selectedEvent.requestRule?.filterId, filtersMetadata),
         },
-        {
+        [PARTS.STEALTH]: {
             title: reactTranslator.getMessage('filtering_modal_privacy'),
             data: getStealthActionsNames(selectedEvent.stealthActions),
         },
+    };
+
+    let infoElements = [
+        PARTS.URL,
+        PARTS.ELEMENT,
+        PARTS.COOKIE,
+        PARTS.TYPE,
+        PARTS.SOURCE,
+        PARTS.RULE,
+        PARTS.FILTER,
+        PARTS.STEALTH,
     ];
+
+    if (selectedEvent.requestRule?.cookieRule) {
+        infoElements = [
+            PARTS.COOKIE,
+            PARTS.TYPE,
+            PARTS.SOURCE,
+            PARTS.STEALTH, // FIXME determine first/third-party
+        ];
+    }
 
     const renderImageIfNecessary = (event) => {
         if (event.requestType !== 'IMAGE') {
@@ -127,20 +171,22 @@ const RequestInfo = observer(() => {
         );
     };
 
-    const renderedInfo = infoElements.map(({ data, title }) => {
-        if (!data) {
-            return null;
-        }
-        return (
-            <div key={title} className="request-info">
-                <div className="request-info__key">{title}</div>
-                <div className="request-info__value">
-                    {data}
-                    {data === selectedEvent.requestUrl && renderOpenInNewTab(selectedEvent)}
+    const renderedInfo = infoElements
+        .map((elementId) => eventPartsMap[elementId])
+        .map(({ data, title }) => {
+            if (!data) {
+                return null;
+            }
+            return (
+                <div key={title} className="request-info">
+                    <div className="request-info__key">{title}</div>
+                    <div className="request-info__value">
+                        {data}
+                        {data === selectedEvent.requestUrl && renderOpenInNewTab(selectedEvent)}
+                    </div>
                 </div>
-            </div>
-        );
-    });
+            );
+        });
 
     const blockHandler = () => {
         wizardStore.setBlockState();
@@ -204,6 +250,9 @@ const RequestInfo = observer(() => {
             props = BUTTON_MAP.BLOCK;
         } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
             props = BUTTON_MAP.USER_FILTER;
+            if (requestRule.isStealthModeRule) {
+                props = BUTTON_MAP.UNBLOCK;
+            }
             if (requestRule.whitelistRule) {
                 return (
                     <>

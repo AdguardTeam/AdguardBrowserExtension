@@ -16,6 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { RequestType } from '@adguard/tsurlfilter/dist/es/request-type';
 
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './extension-api/background-page';
@@ -328,7 +329,7 @@ const init = () => {
                     message.cookieName,
                     null,
                     message.cookieDomain,
-                    RequestTypes.DOCUMENT,
+                    RequestType.Document,
                     new TSUrlFilter.NetworkRule(message.ruleText, message.filterId),
                     false,
                     message.thirdParty,

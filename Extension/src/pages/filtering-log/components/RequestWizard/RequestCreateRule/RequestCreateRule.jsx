@@ -73,6 +73,12 @@ const RequestCreateRule = observer(() => {
                 return null;
             }
 
+            // for cookie rules only third-party modifier is active
+            if (logStore.selectedEvent?.requestRule?.cookieRule
+                && !(id === RULE_OPTIONS.RULE_THIRD_PARTY)) {
+                return null;
+            }
+
             return (
                 // eslint-disable-next-line jsx-a11y/label-has-associated-control
                 <label className="checkbox-label" key={id}>

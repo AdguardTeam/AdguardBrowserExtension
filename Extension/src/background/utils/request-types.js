@@ -62,6 +62,41 @@ export const RequestTypes = {
                 return RequestType.Other;
         }
     },
+
+    /**
+     * Transforms from TSUrlFilter.RequestType
+     *
+     * @param requestType
+     * @return {string}
+     */
+    transformRequestTypeFromTs(requestType) {
+        const contentTypes = RequestTypes;
+
+        switch (requestType) {
+            case RequestType.Document:
+                return contentTypes.DOCUMENT;
+            case RequestType.Subdocument:
+                return contentTypes.SUBDOCUMENT;
+            case RequestType.Stylesheet:
+                return contentTypes.STYLESHEET;
+            case RequestType.Font:
+                return contentTypes.FONT;
+            case RequestType.Image:
+                return contentTypes.IMAGE;
+            case RequestType.Media:
+                return contentTypes.MEDIA;
+            case RequestType.Script:
+                return contentTypes.SCRIPT;
+            case RequestType.XmlHttpRequest:
+                return contentTypes.XMLHTTPREQUEST;
+            case RequestType.Websocket:
+                return contentTypes.WEBSOCKET;
+            case RequestType.Ping:
+                return contentTypes.PING;
+            default:
+                return contentTypes.OTHER;
+        }
+    },
 };
 
 /**

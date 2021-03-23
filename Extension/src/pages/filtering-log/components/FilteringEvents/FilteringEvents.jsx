@@ -8,6 +8,7 @@ import { getRequestType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
+import { RequestTypes } from '../../../../background/utils/request-types';
 
 import './filtering-events.pcss';
 
@@ -59,9 +60,14 @@ const FilteringEvents = observer(() => {
         {
             Header: `${reactTranslator.getMessage('filtering_table_type')}`,
             accessor: (props) => {
-                const { requestType, requestThirdParty } = props;
+                const { requestType, requestThirdParty, requestRule } = props;
 
-                const formattedRequestType = getRequestType(requestType);
+                let formattedRequestType;
+                if (requestRule?.isModifyingCookieRule) {
+                    formattedRequestType = getRequestType(RequestTypes.COOKIE);
+                } else {
+                    formattedRequestType = getRequestType(requestType);
+                }
 
                 if (requestThirdParty) {
                     return (

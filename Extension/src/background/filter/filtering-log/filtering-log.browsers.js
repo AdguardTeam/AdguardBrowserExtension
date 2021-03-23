@@ -23,6 +23,7 @@ import { backgroundPage } from '../../extension-api/background-page';
 import { prefs } from '../../prefs';
 import { listeners } from '../../notifier';
 import { translator } from '../../../common/translators/translator';
+import { RequestTypes } from '../../utils/request-types';
 
 /**
  * Object for log http requests
@@ -395,7 +396,7 @@ const browsersFilteringLog = (function () {
 
         const filteringEvent = {
             frameDomain: cookieDomain,
-            requestType,
+            requestType: RequestTypes.transformRequestTypeFromTs(requestType),
             requestThirdParty: thirdParty,
             cookieName,
             cookieValue,
