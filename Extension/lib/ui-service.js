@@ -414,8 +414,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         let offerButtonText = adguard.i18n.getMessage('options_popup_version_update_offer_button_text');
 
         if (notification) {
-            offer = notification.text.title;
-            offerButtonText = notification.text.btn;
+            offer = notification.text.updateTitle;
+            offerButtonText = notification.text.updateBtn;
             offerButtonHref = `${notification.url}&from=version_popup`;
         }
 

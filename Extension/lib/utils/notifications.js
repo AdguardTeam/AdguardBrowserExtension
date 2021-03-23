@@ -25,52 +25,64 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const newYear2021Notification = {
-        id: 'newYear2021',
+    const easter2021Notification = {
+        id: 'easter2021',
         locales: {
             en: {
-                title: 'Holiday Sale and Giveaway',
-                btn: 'Unwrap your gift',
+                btn: 'Eggcellent deal',
+                updateTitle: 'Happy Easter sale',
+                updateBtn: 'Hop on in',
             },
             ru: {
-                title: 'Новогодние скидки и призы',
-                btn: 'Открыть подарок',
+                btn: 'Что в яйце?',
+                updateTitle: 'Весенняя распродажа',
+                updateBtn: 'Cкидка 40%',
             },
             ja: {
-                title: 'AdGuardでクリスマス',
-                btn: 'プレゼントをもらう',
+                btn: 'タマゴの中身を見る',
+                updateTitle: 'イースターキャンペーン',
+                updateBtn: '40%割引を手に入れる',
             },
             ko: {
-                title: '크리스마스 및 새해 맞이 할인 행사',
-                btn: '선물 받기',
+                btn: '유료 버전의 장점 보기',
+                updateTitle: '부활절 맞이 40% 할인',
+                updateBtn: '할인 받기',
             },
             zh_cn: {
-                title: 'AdGuard 送礼送好运',
-                btn: '抓个礼物',
+                btn: '惊喜优惠高级保护',
+                updateTitle: '复活节狂欢',
+                updateBtn: '一键加入',
             },
             zh_tw: {
-                title: 'AdGuard $ 暖心年終送禮',
-                btn: '享好禮',
+                btn: '驚喜優惠進階保護',
+                updateTitle: '復活節狂歡優惠',
+                updateBtn: '一鍵加入',
             },
             fr: {
-                title: 'Promo : AdGuard fête Noël !',
-                btn: 'Ouvrir mon cadeau',
+                btn: 'Oeuf de Pâques',
+                updateTitle: 'Marché de Pâques',
+                updateBtn: 'Venez voir',
+            },
+            es: {
+                btn: '–40% en licencias!',
+                updateTitle: 'Promoción de Pascua',
+                updateBtn: 'Descúbrela',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=ny2021_notify&app=browser_extension',
-        from: '24 December 2020 12:00:00',
-        to: '31 December 2020 12:00:00',
+        url: 'https://adguard.com/forward.html?action=easter2021&app=browser_extension',
+        from: '02 April 2021 00:01:00',
+        to: '07 April 2021 00:01:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(newYear2021Notification, 'icons', () => ({
+            return adguard.lazyGet(easter2021Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/gold-19-new-year.png'),
-                    '38': adguard.getURL('icons/gold-38-new-year.png'),
+                    '19': adguard.getURL('icons/blue-19-easter.png'),
+                    '38': adguard.getURL('icons/blue-38-easter.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-new-year.png'),
-                    '38': adguard.getURL('icons/gray-38-new-year.png'),
+                    '19': adguard.getURL('icons/gray-19-easter.png'),
+                    '38': adguard.getURL('icons/gray-38-easter.png'),
                 },
             }));
         },
@@ -92,7 +104,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        newYear2021: newYear2021Notification,
+        easter2021: easter2021Notification,
     };
 
     /**
