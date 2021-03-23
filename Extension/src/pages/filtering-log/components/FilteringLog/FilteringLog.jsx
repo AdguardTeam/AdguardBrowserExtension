@@ -27,8 +27,7 @@ const FilteringLog = () => {
     useEffect(() => {
         const handleHashChange = async () => {
             // Set current tab id as selected, background page provides it with hash value
-            // eslint-disable-next-line no-restricted-globals
-            const currentTabId = location.hash.slice(1);
+            const currentTabId = document.location.hash.slice(1);
             await logStore.setSelectedTabId(currentTabId);
         };
 
@@ -39,7 +38,7 @@ const FilteringLog = () => {
         return function onUnmount() {
             window.removeEventListener('hashchange', handleHashChange);
         };
-    }, []);
+    });
 
     // append message listeners
     useEffect(() => {
