@@ -20,19 +20,16 @@ import { SEARCH_FILTERS } from './Search/constants';
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',
     TITLE: 'title',
-    SUBSCRIBE: 'subscribe'
-}
+    SUBSCRIBE: 'subscribe',
+};
 
 const Filters = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const history = useHistory();
 
-    const useQuery = () => {
-        return new URLSearchParams(useLocation().search);
-    };
-
-    const query = useQuery();
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get(QUERY_PARAM_NAMES.SUBSCRIBE) || ''));
@@ -52,7 +49,7 @@ const Filters = observer(() => {
         setGroupDetermined(true);
         settingsStore.setSearchInput('');
         settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
-    }, []);
+    }, [location.search]);
 
     const handleGroupSwitch = async ({ id, data }) => {
         await settingsStore.updateGroupSetting(id, data);
