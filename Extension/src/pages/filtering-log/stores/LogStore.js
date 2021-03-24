@@ -109,6 +109,9 @@ class LogStore {
         },
     ];
 
+    @observable
+    selectIsOpen = false;
+
     constructor(rootStore) {
         this.rootStore = rootStore;
         makeObservable(this);
@@ -212,10 +215,31 @@ class LogStore {
         this.filteringEvents.push(filteringEvent);
     }
 
-    @computed
-    get tabs() {
+    getTabs = () => {
         return Object.values(this.tabsMap)
             .filter((tab) => !tab.isExtensionTab);
+    }
+
+    @action
+    setSelectIsOpenState = (value) => {
+        this.selectIsOpen = value;
+    };
+
+    @computed
+    get tabs() {
+        // while tab select is open we return prev tabs
+        // to stop select from re-rendering during selection
+        if (this.selectIsOpen) {
+            if (!this.prevTabs) {
+                this.prevTabs = this.getTabs();
+            }
+            return this.prevTabs;
+        }
+
+        const tabs = this.getTabs();
+
+        this.prevTabs = tabs;
+        return tabs;
     }
 
     @action
