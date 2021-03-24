@@ -39,3 +39,39 @@
         }
     }
 }
+
+.light-mode {
+    .request-info {
+        @media (max-width: 640px) {
+            .request-modal__block.&:not(:last-child) {
+                border-bottom: 1px solid var(--gray100);
+            }
+        }
+
+        &__key {
+            color: var(--gray700);
+        }
+
+        &__value {
+            color: var(--gray900);
+        }
+    }
+}
+
+.dark-mode {
+    .request-info {
+        @media (max-width: 640px) {
+            .request-modal__block.&:not(:last-child) {
+                border-bottom: 1px solid var(--grayDark);
+            }
+        }
+
+        &__key {
+            color: var(--gray400);
+        }
+
+        &__value {
+            color: var(--gray300);
+        }
+    }
+}

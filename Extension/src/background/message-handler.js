@@ -288,6 +288,12 @@ const init = () => {
             case MESSAGE_TYPES.OPEN_FILTERING_LOG:
                 uiService.openFilteringLog(message.tabId);
                 break;
+            case MESSAGE_TYPES.GET_FILTERING_LOG_DATA: {
+                return {
+                    filtersMetadata: subscriptions.getFilters(),
+                    settings: settings.getAllSettings(),
+                };
+            }
             case MESSAGE_TYPES.OPEN_SAFEBROWSING_TRUSTED: {
                 safebrowsing.addToSafebrowsingTrusted(message.url);
                 const tab = await tabsApi.getActive();
@@ -454,10 +460,15 @@ const init = () => {
                 break;
             case MESSAGE_TYPES.GET_TAB_INFO_FOR_POPUP: {
                 const tab = await tabsApi.getActive(data.tabId);
+
+                // There can't be data till localstorage is initialized
+                const stats = localStorage.isInitialized() ? pageStats.getStatisticsData() : {};
+
                 if (tab) {
                     const frameInfo = frames.getFrameInfo(tab);
                     return {
                         frameInfo,
+                        stats,
                         options: {
                             showStatsSupported: true,
                             isFirefoxBrowser: browserUtils.isFirefoxBrowser(),
@@ -469,6 +480,7 @@ const init = () => {
                             isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
                             hasCustomRulesToReset: await userrules.hasRulesForUrl(frameInfo.url),
                         },
+                        settings: settings.getAllSettings(),
                     };
                 }
                 break;

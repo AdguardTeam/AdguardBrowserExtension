@@ -7,6 +7,7 @@ export const adgSettings = JSON.stringify({
         'autodetect-filters': true,
         'safebrowsing-enabled': true,
         'filters-update-period': -1,
+        'appearance-theme': 'system',
     },
     'extension-specific-settings': {
         'use-optimized-filters': false,

@@ -61,3 +61,45 @@
         }
     }
 }
+
+.light-mode {
+    .editor {
+        box-shadow: inset -10px 0 0 0 var(--gray100);
+
+        & .ace_editor {
+            border-top: 1px solid var(--gray05);
+            border-bottom: 1px solid var(--gray05);
+        }
+
+
+        & .ace_gutter {
+            background: #f0f0f0;
+        }
+
+        & .ace_gutter-active-line {
+            color: var(--gray-base);
+            background: #dcdcdc;
+        }
+    }
+}
+
+.dark-mode {
+    .editor {
+        box-shadow: inset -10px 0 0 0 var(--grayDark);
+
+        & .ace_editor {
+            border-top: 1px solid var(--gray900);
+            border-bottom: 1px solid var(--gray900);
+        }
+
+
+        & .ace_gutter {
+            background: var(--gray900);
+        }
+
+        & .ace_gutter-active-line {
+            color: var(--gray300);
+            background: var(--grayDark);
+        }
+    }
+}

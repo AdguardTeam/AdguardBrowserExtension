@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { observer } from 'mobx-react';
 
 import { Tabs } from '../Tabs';
 import { Header } from '../Header';
@@ -8,12 +9,15 @@ import { MainContainer } from '../MainContainer';
 import { PromoNotification } from '../PromoNotification';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
+import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
 
-export const Popup = () => {
+export const Popup = observer(() => {
     const store = useContext(popupStore);
+
+    useAppearanceTheme(store.appearanceTheme);
 
     // retrieve init data
     useEffect(() => {
@@ -53,4 +57,4 @@ export const Popup = () => {
             <PromoNotification />
         </div>
     );
-};
+});

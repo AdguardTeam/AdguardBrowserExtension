@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { observer } from 'mobx-react';
 
 import { Filters } from '../Filters';
 import { FilteringEvents } from '../FilteringEvents';
@@ -8,18 +9,23 @@ import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
 import { Icons } from '../../../common/components/ui/Icons';
 import { NOTIFIER_TYPES } from '../../../../common/constants';
+import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 
 import '../../styles/styles.pcss';
 
-const FilteringLog = () => {
+const FilteringLog = observer(() => {
     const { logStore } = useContext(rootStore);
+
+    useAppearanceTheme(logStore.appearanceTheme);
 
     // init
     useEffect(() => {
         (async () => {
-            await logStore.synchronizeOpenTabs();
-            await logStore.getLogInitData();
-            await messenger.onOpenFilteringLogPage();
+            await Promise.all([
+                logStore.synchronizeOpenTabs(),
+                logStore.getFilteringLogData(),
+                messenger.onOpenFilteringLogPage(),
+            ]);
         })();
     }, []);
 
@@ -52,6 +58,7 @@ const FilteringLog = () => {
                 NOTIFIER_TYPES.TAB_RESET,
                 NOTIFIER_TYPES.LOG_EVENT_ADDED,
                 NOTIFIER_TYPES.LOG_EVENT_UPDATED,
+                NOTIFIER_TYPES.SETTING_UPDATED,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -86,6 +93,11 @@ const FilteringLog = () => {
                             logStore.onEventUpdated(tabInfo, event);
                             break;
                         }
+                        case NOTIFIER_TYPES.SETTING_UPDATED: {
+                            const [{ propertyName, propertyValue }] = data;
+                            logStore.onSettingUpdated(propertyName, propertyValue);
+                            break;
+                        }
                         default: {
                             log.debug('There is no listener for type:', type);
                             break;
@@ -111,6 +123,6 @@ const FilteringLog = () => {
             <FilteringEvents />
         </>
     );
-};
+});
 
 export { FilteringLog };

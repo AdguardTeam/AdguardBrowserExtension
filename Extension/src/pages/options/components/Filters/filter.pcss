@@ -140,3 +140,32 @@
         cursor: pointer;
     }
 }
+
+.light-mode {
+    .filter {
+        &__tag {
+            &:before {
+                color: var(--gray-base);
+            }
+
+            &:after {
+                color: var(--white);
+            }
+        }
+    }
+}
+
+
+.dark-mode {
+    .filter {
+        &__tag {
+            &:before {
+                color: var(--gray300);
+            }
+
+            &:after {
+                color: var(--black);
+            }
+        }
+    }
+}

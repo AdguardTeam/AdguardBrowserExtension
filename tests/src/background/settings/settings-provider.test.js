@@ -1,5 +1,9 @@
+import _ from 'lodash';
+
 import { settingsProvider } from '../../../../Extension/src/background/settings/settings-provider';
 import { adgSettings } from './adg-settings';
+import { APPEARANCE_THEMES } from '../../../../Extension/src/pages/constants';
+import { settings } from '../../../../Extension/src/background/settings/user-settings';
 
 jest.mock('../../../../Extension/src/common/log');
 
@@ -82,5 +86,36 @@ describe('settingsProvider', () => {
     it('updates settings from json', async () => {
         const success = await settingsProvider.applySettingsBackup(adgSettings);
         expect(success).toBeTruthy();
+    });
+
+    it('handles settings without defined appearance theme', async () => {
+        const obj = JSON.parse(adgSettings);
+        delete obj['general-settings']['appearance-theme'];
+        const success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(success).toBeTruthy();
+        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.SYSTEM);
+    });
+
+    it('handles settings with defined appearance theme', async () => {
+        const obj = JSON.parse(adgSettings);
+        const MODE_PATH = 'general-settings.appearance-theme';
+
+        // Set light theme
+        _.set(obj, MODE_PATH, APPEARANCE_THEMES.LIGHT);
+        let success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(success).toBeTruthy();
+        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.LIGHT);
+
+        // Set dark theme
+        _.set(obj, MODE_PATH, APPEARANCE_THEMES.DARK);
+        success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(success).toBeTruthy();
+        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.DARK);
+
+        // Set wrong theme
+        _.set(obj, MODE_PATH, 'black');
+        success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(success).toBeTruthy();
+        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.SYSTEM);
     });
 });

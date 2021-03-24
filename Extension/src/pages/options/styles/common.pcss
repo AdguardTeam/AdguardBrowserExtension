@@ -230,3 +230,72 @@ select:focus {
         color: var(--gray300)!important;
     }
 }
+
+
+.light-mode {
+    body {
+        background-color: var(--transparent);
+        color: var(--gray-base);
+    }
+
+    label.checkbox-label {
+        color: var(--gray900);
+
+        & input[type="checkbox"] {
+            background-color: var(--green400);
+            border-color: var(--green400);
+        }
+
+        & .custom-checkbox {
+            border: 2px solid var(--gray700);
+        }
+    }
+
+    .title {
+        color: var(--gray-base);
+    }
+
+    .ReactModal__Content--after-open {
+        background-color: transparent!important;
+        border: 1px solid transparent!important;
+    }
+
+    .ace_content {
+        background-color: var(--transparent)!important;
+        color: var(--gray-base)!important;
+    }
+}
+
+.dark-mode {
+    body {
+        background-color: var(--black);
+        color: var(--gray300)
+    }
+
+    label.checkbox-label {
+        color: var(--gray300);
+
+        & input[type="checkbox"] {
+            background-color: var(--green700);
+            border-color: var(--green700);
+        }
+
+        & .custom-checkbox {
+            border: 2px solid var(--gray400);
+        }
+    }
+
+    .title {
+        color: var(--gray300)
+    }
+
+    .ReactModal__Content--after-open {
+        background-color: var(--black)!important;
+        border: 1px solid var(--gray900)!important;
+    }
+
+    .ace_content {
+        background-color: var(--black)!important;
+        color: var(--gray300)!important;
+    }
+}

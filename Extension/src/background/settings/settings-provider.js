@@ -136,6 +136,7 @@ export const settingsProvider = (function () {
                 'autodetect-filters': settings.isAutodetectFilters(),
                 'safebrowsing-enabled': settings.safebrowsingInfoEnabled(),
                 'filters-update-period': settings.getFiltersUpdatePeriod(),
+                'appearance-theme': settings.getAppearanceTheme(),
             },
         };
 
@@ -170,6 +171,7 @@ export const settingsProvider = (function () {
         settings.changeAutodetectFilters(!!set['autodetect-filters']);
         settings.changeEnableSafebrowsing(!!set['safebrowsing-enabled']);
         settings.setFiltersUpdatePeriod(set['filters-update-period']);
+        settings.setAppearanceTheme(set['appearance-theme']);
 
         if (set['allow-acceptable-ads']) {
             await application.addAndEnableFilters([utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID]);

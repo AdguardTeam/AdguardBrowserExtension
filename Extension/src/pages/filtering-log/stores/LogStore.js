@@ -43,6 +43,8 @@ class LogStore {
 
     @observable filtersMetadata = null;
 
+    @observable settings = null;
+
     @observable miscellaneousFilters = {
         [MISCELLANEOUS_FILTERS.REGULAR]: false,
         [MISCELLANEOUS_FILTERS.ALLOWLISTED]: false,
@@ -198,6 +200,14 @@ class LogStore {
     }
 
     @action
+    onSettingUpdated(name, value) {
+        if (!this.settings) {
+            return;
+        }
+        this.settings.values[name] = value;
+    }
+
+    @action
     onEventAdded(tabInfo, filteringEvent) {
         if (tabInfo.tabId !== this.selectedTabId) {
             return;
@@ -268,12 +278,12 @@ class LogStore {
     };
 
     @action
-    getLogInitData = async () => {
-        const initData = await messenger.getLogInitData();
-        const { filtersMetadata } = initData;
+    getFilteringLogData = async () => {
+        const { filtersMetadata, settings } = await messenger.getFilteringLogData();
 
         runInAction(() => {
             this.filtersMetadata = filtersMetadata;
+            this.settings = settings;
         });
     };
 
@@ -393,6 +403,15 @@ class LogStore {
         this.selectedEvent = find(this.filteringEvents, { eventId });
         this.rootStore.wizardStore.openModal();
     };
+
+    @computed
+    get appearanceTheme() {
+        if (!this.settings) {
+            return null;
+        }
+
+        return this.settings.values[this.settings.names.APPEARANCE_THEME];
+    }
 }
 
 export { LogStore };

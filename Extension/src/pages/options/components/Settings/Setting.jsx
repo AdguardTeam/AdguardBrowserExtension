@@ -36,7 +36,13 @@ export const Setting = (props) => {
             } = props;
             const changeHandler = (e) => {
                 const { target: { value: data } } = e;
-                handler({ id, data: parseInt(data, 10) });
+
+                let dataValue = parseInt(data, 10);
+                if (Number.isNaN(dataValue)) {
+                    dataValue = data;
+                }
+
+                handler({ id, data: dataValue });
             };
             return (
                 <Select

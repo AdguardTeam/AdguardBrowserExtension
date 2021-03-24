@@ -193,8 +193,8 @@ class Messenger {
         await this.sendMessage(MESSAGE_TYPES.ON_OPEN_FILTERING_LOG_PAGE);
     }
 
-    async getLogInitData() {
-        return this.sendMessage(MESSAGE_TYPES.INITIALIZE_FRAME_SCRIPT);
+    async getFilteringLogData() {
+        return this.sendMessage(MESSAGE_TYPES.GET_FILTERING_LOG_DATA);
     }
 
     async onCloseFilteringLogPage() {

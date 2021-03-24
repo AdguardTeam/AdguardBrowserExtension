@@ -62,6 +62,7 @@ export const MESSAGE_TYPES = {
     ADD_ALLOWLIST_DOMAIN_POPUP: 'addAllowlistDomainPopup',
     GET_STATISTICS_DATA: 'getStatisticsData',
     ON_OPEN_FILTERING_LOG_PAGE: 'onOpenFilteringLogPage',
+    GET_FILTERING_LOG_DATA: 'getFilteringLogData',
     INITIALIZE_FRAME_SCRIPT: 'initializeFrameScript',
     ON_CLOSE_FILTERING_LOG_PAGE: 'onCloseFilteringLogPage',
     GET_FILTERING_INFO_BY_TAB_ID: 'getFilteringInfoByTabId',

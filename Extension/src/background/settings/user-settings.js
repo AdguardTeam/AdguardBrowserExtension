@@ -25,6 +25,7 @@ import { localStorage } from '../storage';
 import { browserUtils } from '../utils/browser-utils';
 import { lazyGet } from '../utils/lazy';
 import {
+    APPEARANCE_THEMES,
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_TRACKING_PARAMETERS,
@@ -49,6 +50,7 @@ export const settings = (() => {
         DEFAULT_ALLOWLIST_MODE: 'default-whitelist-mode',
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
+        APPEARANCE_THEME: 'appearance-theme',
 
         /* STEALTH MODE */
         DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
@@ -101,6 +103,7 @@ export const settings = (() => {
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 defaults[settings.STRIP_TRACKING_PARAMETERS] = true;
                 defaults[settings.TRACKING_PARAMETERS] = DEFAULT_TRACKING_PARAMETERS;
+                defaults[settings.APPEARANCE_THEME] = APPEARANCE_THEMES.SYSTEM;
                 return defaults;
             });
         },
@@ -290,6 +293,7 @@ export const settings = (() => {
     const isWebRTCDisabled = () => getProperty(settings.BLOCK_WEBRTC);
     const getStripTrackingParameters = () => getProperty(settings.STRIP_TRACKING_PARAMETERS);
     const getTrackingParameters = () => getProperty(settings.TRACKING_PARAMETERS);
+    const getAppearanceTheme = () => getProperty(settings.APPEARANCE_THEME);
 
     const setDisableStealthMode = (value) => {
         setProperty(settings.DISABLE_STEALTH_MODE, value);
@@ -323,6 +327,15 @@ export const settings = (() => {
     };
     const setTrackingParameters = (value) => {
         setProperty(settings.TRACKING_PARAMETERS, value);
+    };
+    const setAppearanceTheme = (theme) => {
+        const isExistingTheme = Object.values(APPEARANCE_THEMES).some(t => t === theme);
+
+        if (!isExistingTheme) {
+            setProperty(settings.APPEARANCE_THEME, defaultProperties.defaults[settings.APPEARANCE_THEME]);
+        } else {
+            setProperty(settings.APPEARANCE_THEME, theme);
+        }
     };
 
     const api = {};
@@ -389,6 +402,10 @@ export const settings = (() => {
     api.setWebRTCDisabled = setWebRTCDisabled;
     api.setStripTrackingParameters = setStripTrackingParameters;
     api.setTrackingParameters = setTrackingParameters;
+
+    // Appearance mode methods
+    api.setAppearanceTheme = setAppearanceTheme;
+    api.getAppearanceTheme = getAppearanceTheme;
 
     return api;
 })();

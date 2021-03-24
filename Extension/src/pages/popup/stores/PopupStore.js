@@ -68,6 +68,9 @@ class PopupStore {
     @observable
     hasCustomRulesToReset = false;
 
+    @observable
+    settings = null;
+
     constructor() {
         makeObservable(this);
     }
@@ -82,10 +85,14 @@ class PopupStore {
         const currentTab = tabs?.[0];
 
         const response = await messenger.getTabInfoForPopup(currentTab?.id);
-        const { stats } = await messenger.getStatisticsData();
 
         runInAction(() => {
-            const { frameInfo, options } = response;
+            const {
+                frameInfo,
+                options,
+                stats,
+                settings,
+            } = response;
 
             // frame info
             this.applicationFilteringDisabled = frameInfo.applicationFilteringDisabled;
@@ -106,6 +113,9 @@ class PopupStore {
 
             // stats
             this.stats = stats;
+
+            // settings
+            this.settings = settings;
         });
     };
 
@@ -240,7 +250,7 @@ class PopupStore {
             default:
                 throw new Error('There is no such time range type');
         }
-    }
+    };
 
     @computed
     get statsDataByType() {
@@ -283,7 +293,7 @@ class PopupStore {
     closePromoNotification = async () => {
         this.promoNotification = null;
         await messenger.sendMessage(MESSAGE_TYPES.SET_NOTIFICATION_VIEWED, { withDelay: false });
-    }
+    };
 
     @action
     openPromoNotificationUrl = async () => {
@@ -293,12 +303,29 @@ class PopupStore {
         });
         await messenger.sendMessage(MESSAGE_TYPES.SET_NOTIFICATION_VIEWED, { withDelay: false });
         await messenger.sendMessage('openTab', { url });
-    }
+    };
 
     @action
     updateBlockedStats = (tabInfo) => {
         this.totalBlocked = tabInfo.totalBlocked;
         this.totalBlockedTab = tabInfo.totalBlockedTab;
+    }
+
+    @action
+    onSettingUpdated = (name, value) => {
+        if (!this.settings) {
+            return;
+        }
+        this.settings.values[name] = value;
+    };
+
+    @computed
+    get appearanceTheme() {
+        if (!this.settings) {
+            return null;
+        }
+
+        return this.settings.values[this.settings.names.APPEARANCE_THEME];
     }
 }
 

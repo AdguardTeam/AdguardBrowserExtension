@@ -17,6 +17,7 @@
         position: absolute;
         right: 4px;
         top: 11px;
+        pointer-events: none;
     }
 
     &__select-in {
@@ -43,5 +44,21 @@
             margin-left: 0;
             max-width: 100%;
         }
+    }
+}
+
+.light-mode {
+    & .tab-selector__select-in {
+        background-color: transparent;
+        color: var(--textColor);
+        border-bottom: 1px solid var(--gray300);
+    }
+}
+
+.dark-mode {
+    & .tab-selector__select-in {
+        background-color: var(--bgColor);
+        color: var(--gray300);
+        border-bottom: 1px solid var(--gray400);
     }
 }

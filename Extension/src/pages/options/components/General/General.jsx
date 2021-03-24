@@ -8,6 +8,7 @@ import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { hoursToMs, uploadFile } from '../../../helpers';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { APPEARANCE_THEMES } from '../../../constants';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -37,6 +38,21 @@ const filtersUpdatePeriodOptions = [
     {
         value: 0,
         title: reactTranslator.getMessage('options_select_update_period_disabled'),
+    },
+];
+
+const APPEARANCE_THEMES_OPTIONS = [
+    {
+        value: APPEARANCE_THEMES.SYSTEM,
+        title: reactTranslator.getMessage('options_theme_selector_system'),
+    },
+    {
+        value: APPEARANCE_THEMES.LIGHT,
+        title: reactTranslator.getMessage('options_theme_selector_light'),
+    },
+    {
+        value: APPEARANCE_THEMES.DARK,
+        title: reactTranslator.getMessage('options_theme_selector_dark'),
     },
 ];
 
@@ -98,6 +114,7 @@ const General = observer(() => {
         DISABLE_DETECT_FILTERS,
         FILTERS_UPDATE_PERIOD,
         DISABLE_SAFEBROWSING,
+        APPEARANCE_THEME,
     } = settings.names;
 
     // eslint-disable-next-line max-len
@@ -109,6 +126,19 @@ const General = observer(() => {
     return (
         <>
             <SettingsSection title={reactTranslator.getMessage('context_general_settings')}>
+                <SettingsSet
+                    title={reactTranslator.getMessage('options_select_theme')}
+                    inlineControl={(
+                        <Setting
+                            id={APPEARANCE_THEME}
+                            type={SETTINGS_TYPES.SELECT}
+                            label={reactTranslator.getMessage('options_select_theme')}
+                            options={APPEARANCE_THEMES_OPTIONS}
+                            value={settings.values[APPEARANCE_THEME]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                />
                 <SettingsSet
                     title={reactTranslator.getMessage('options_allow_acceptable_ads')}
                     description={(

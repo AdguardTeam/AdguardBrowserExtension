@@ -451,6 +451,15 @@ class SettingsStore {
                 return filter.name.match(searchQuery);
             });
     }
+
+    @computed
+    get appearanceTheme() {
+        if (!this.settings) {
+            return null;
+        }
+
+        return this.settings.values[this.settings.names.APPEARANCE_THEME];
+    }
 }
 
 export default SettingsStore;

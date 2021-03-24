@@ -20,11 +20,14 @@ import { messenger } from '../../../services/messenger';
 import { log } from '../../../../common/log';
 import { Icons } from '../../../common/components/ui/Icons';
 import { NOTIFIER_TYPES } from '../../../../common/constants';
+import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 
 import '../../styles/styles.pcss';
 
 const Options = observer(() => {
     const { settingsStore } = useContext(rootStore);
+
+    useAppearanceTheme(settingsStore.appearanceTheme);
 
     useEffect(() => {
         let removeListenerCallback = () => {};
