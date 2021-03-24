@@ -3,23 +3,37 @@
  * @param filters
  */
 export const sortFilters = (filters) => {
-    return [...filters]
+    const sorted = [...filters]
         .sort((a, b) => {
+            // sort by enabled
             const enabledA = !!a.enabled;
             const enabledB = !!b.enabled;
-            if (enabledA === enabledB) {
-                if (a.displayNumber && b.displayNumber) {
-                    return a.displayNumber - b.displayNumber;
-                }
-                if (a.displayNumber) {
-                    return 1;
-                }
-                if (b.displayNumber) {
-                    return -1;
-                }
+            if (enabledA !== enabledB) {
+                return enabledB - enabledA;
             }
-            return enabledB - enabledA;
+
+            // sort by groupId
+            if (a.groupId !== b.groupId) {
+                return a.groupId - b.groupId;
+            }
+
+            // sort by display number
+            if (a.displayNumber && b.displayNumber) {
+                return a.displayNumber - b.displayNumber;
+            }
+
+            if (a.displayNumber) {
+                return 1;
+            }
+
+            if (b.displayNumber) {
+                return -1;
+            }
+
+            return 0;
         });
+
+    return sorted;
 };
 
 /**
