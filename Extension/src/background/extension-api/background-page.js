@@ -48,6 +48,7 @@ export const backgroundPage = (() => {
         return {
             setUninstallURL: browser.runtime.setUninstallURL,
             onMessage,
+            onConnect: browser.runtime.onConnect,
             get lastError() {
                 return browser.runtime.lastError;
             },

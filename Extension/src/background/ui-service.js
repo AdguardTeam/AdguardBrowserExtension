@@ -198,9 +198,12 @@ export const uiService = (function () {
         if (!tabInfo) {
             return;
         }
+
         runtimeImpl.sendMessage({
             type: 'updateTotalBlocked',
             tabInfo,
+        }).catch(() => {
+            // throws errors if popup is closed, ignore them
         });
     }
 

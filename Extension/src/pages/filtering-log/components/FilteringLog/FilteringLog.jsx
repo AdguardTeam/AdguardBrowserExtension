@@ -24,7 +24,6 @@ const FilteringLog = observer(() => {
             await Promise.all([
                 logStore.synchronizeOpenTabs(),
                 logStore.getFilteringLogData(),
-                messenger.onOpenFilteringLogPage(),
             ]);
         })();
     }, []);
@@ -61,7 +60,8 @@ const FilteringLog = observer(() => {
                 NOTIFIER_TYPES.SETTING_UPDATED,
             ];
 
-            removeListenerCallback = await messenger.createEventListener(
+            removeListenerCallback = messenger.createLongLivedConnection(
+                'filtering-log',
                 events,
                 async (message) => {
                     const { type, data } = message;
