@@ -9,7 +9,6 @@ import { MiscellaneousFilters } from './MiscellaneousFilters';
 import './filters.pcss';
 
 const Filters = () => {
-    console.log('render filters');
     return (
         <div className="filters">
             <Actions />

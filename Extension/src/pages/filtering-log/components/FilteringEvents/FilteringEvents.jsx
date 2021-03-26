@@ -118,11 +118,7 @@ const ruleAccessor = (props) => {
     return ruleText;
 };
 
-const Row = observer(({ eventId, columns, onClick }) => {
-    const { logStore } = useContext(rootStore);
-
-    const event = logStore.events.find((e) => e.eventId === eventId);
-
+const Row = observer(({ event, columns, onClick }) => {
     return (
         <tr
             id={event.eventId}
@@ -157,7 +153,7 @@ const FilteringEventsRows = observer(({ logStore, columns, handleRowClick }) => 
         return (
             <Row
                 key={event.eventId}
-                eventId={event.eventId}
+                event={event}
                 columns={columns}
                 onClick={handleRowClick}
             />
@@ -228,7 +224,4 @@ const FilteringEvents = observer(() => {
     );
 });
 
-export
-{
-    FilteringEvents,
-};
+export { FilteringEvents };

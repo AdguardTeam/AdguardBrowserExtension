@@ -202,7 +202,7 @@ class LogStore {
             return;
         }
 
-        this.addToBuffer('updated', filteringEvent);
+        this.addToBuffer(BUFFER_TYPES.UPDATED, filteringEvent);
     }
 
     @action
@@ -262,7 +262,7 @@ class LogStore {
         }
 
         // clear events
-        if (filteringEvent.requestType === 'DOCUMENT' // FIXME compare with constants
+        if (filteringEvent.requestType === RequestTypes.DOCUMENT
             && !filteringEvent?.requestRule?.isModifyingCookieRule
             && !filteringEvent.element
             && !filteringEvent.script
@@ -270,7 +270,7 @@ class LogStore {
             this.filteringEvents = [];
         }
 
-        this.addToBuffer('added', filteringEvent);
+        this.addToBuffer(BUFFER_TYPES.ADDED, filteringEvent);
     }
 
     getTabs = () => {
