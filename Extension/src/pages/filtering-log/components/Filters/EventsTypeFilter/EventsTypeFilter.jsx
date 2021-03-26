@@ -6,9 +6,10 @@ import Modal from 'react-modal';
 import { rootStore } from '../../../stores/RootStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { browserUtils } from '../../../../../background/utils/browser-utils';
 
 import './events-type-filter.pcss';
+
+const isMacOs = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
 const EventsTypeFilter = observer(() => {
     const [isOpened, setModalOpened] = useState(false);
@@ -20,7 +21,7 @@ const EventsTypeFilter = observer(() => {
     const everyFilterTypeEnabled = eventTypesFilters.every((filter) => filter.enabled);
 
     const handleTypeClick = (e) => {
-        if (browserUtils.isMacOs() ? e.metaKey : e.ctrlKey) {
+        if (isMacOs ? e.metaKey : e.ctrlKey) {
             logStore.toggleEventTypesFilter(e.target.value);
         } else {
             logStore.selectOneEventTypesFilter(e.target.value);

@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import { Filters } from '../Filters';
-import { FilteringEvents } from '../FilteringEvents';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../common/log';
 import { rootStore } from '../../stores/RootStore';
@@ -10,6 +9,7 @@ import { RequestModal } from '../RequestWizard/RequestModal';
 import { Icons } from '../../../common/components/ui/Icons';
 import { NOTIFIER_TYPES } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
+import { FilteringEvents } from '../FilteringEvents';
 
 import '../../styles/styles.pcss';
 
@@ -44,7 +44,7 @@ const FilteringLog = observer(() => {
         return function onUnmount() {
             window.removeEventListener('hashchange', handleHashChange);
         };
-    });
+    }, []);
 
     // append message listeners
     useEffect(() => {
@@ -103,9 +103,6 @@ const FilteringLog = observer(() => {
                             break;
                         }
                     }
-                },
-                () => {
-                    messenger.onCloseFilteringLogPage();
                 },
             );
         })();

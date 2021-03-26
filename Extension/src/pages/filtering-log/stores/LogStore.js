@@ -8,6 +8,7 @@ import {
 import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 import identity from 'lodash/identity';
+import throttle from 'lodash/throttle';
 
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { RequestTypes } from '../../../background/utils/request-types';
@@ -27,6 +28,13 @@ export const REQUEST_SOURCE_FILTERS = {
     FIRST_PARTY: 'first_party',
     THIRD_PARTY: 'third_party',
 };
+
+const BUFFER_TYPES = {
+    ADDED: 'added',
+    UPDATED: 'updated',
+};
+
+const TABLE_RENDER_THROTTLE_TIMEOUT = 500;
 
 class LogStore {
     @observable filteringEvents = [];
@@ -193,10 +201,8 @@ class LogStore {
         if (tabInfo.tabId !== this.selectedTabId) {
             return;
         }
-        const { eventId } = filteringEvent;
-        let eventIdx = findIndex(this.filteringEvents, { eventId });
-        eventIdx = eventIdx === -1 ? this.filteringEvents.length : eventIdx;
-        this.filteringEvents.splice(eventIdx, 1, filteringEvent);
+
+        this.addToBuffer('updated', filteringEvent);
     }
 
     @action
@@ -207,6 +213,48 @@ class LogStore {
         this.settings.values[name] = value;
     }
 
+    bufferOfAddedEvents = [];
+
+    bufferOfUpdatedEvents = [];
+
+    throttledAppendEvents = throttle(() => {
+        runInAction(() => {
+            const updatedFilteringEvents = [...this.filteringEvents, ...this.bufferOfAddedEvents];
+
+            this.bufferOfUpdatedEvents.forEach((filteringEvent) => {
+                const { eventId } = filteringEvent;
+                const eventIdx = findIndex(updatedFilteringEvents, { eventId });
+
+                if (eventIdx === -1) {
+                    updatedFilteringEvents.push(filteringEvent);
+                } else {
+                    updatedFilteringEvents[eventIdx] = filteringEvent;
+                }
+            });
+
+            // empty buffers
+            this.bufferOfAddedEvents = [];
+            this.bufferOfUpdatedEvents = [];
+
+            this.filteringEvents = updatedFilteringEvents;
+        });
+    }, TABLE_RENDER_THROTTLE_TIMEOUT);
+
+    /**
+     * Used to throttle renders of filtering events table
+     * @param eventType
+     * @param filteringEvent
+     */
+    addToBuffer = (eventType, filteringEvent) => {
+        if (eventType === BUFFER_TYPES.ADDED) {
+            this.bufferOfAddedEvents.push(filteringEvent);
+        } else if (eventType === BUFFER_TYPES.UPDATED) {
+            this.bufferOfUpdatedEvents.push(filteringEvent);
+        }
+
+        this.throttledAppendEvents();
+    };
+
     @action
     onEventAdded(tabInfo, filteringEvent) {
         if (tabInfo.tabId !== this.selectedTabId) {
@@ -214,7 +262,7 @@ class LogStore {
         }
 
         // clear events
-        if (filteringEvent.requestType === 'DOCUMENT'
+        if (filteringEvent.requestType === 'DOCUMENT' // FIXME compare with constants
             && !filteringEvent?.requestRule?.isModifyingCookieRule
             && !filteringEvent.element
             && !filteringEvent.script
@@ -222,7 +270,7 @@ class LogStore {
             this.filteringEvents = [];
         }
 
-        this.filteringEvents.push(filteringEvent);
+        this.addToBuffer('added', filteringEvent);
     }
 
     getTabs = () => {
@@ -271,8 +319,7 @@ class LogStore {
         const tabsInfo = await messenger.synchronizeOpenTabs();
         runInAction(() => {
             tabsInfo.forEach((tabInfo) => {
-                const { tabId } = tabInfo;
-                this.tabsMap[tabId] = tabInfo;
+                this.tabsMap[tabInfo.tabId] = tabInfo;
             });
         });
     };
@@ -398,8 +445,17 @@ class LogStore {
         this.preserveLogEnabled = value;
     };
 
+    toNumberOrString = (dirtyString) => {
+        const num = Number.parseInt(dirtyString, 10);
+        if (Number.isNaN(num)) {
+            return dirtyString;
+        }
+        return String(num) === dirtyString ? num : dirtyString;
+    }
+
     @action
-    setSelectedEventById = (eventId) => {
+    setSelectedEventById = (eventIdString) => {
+        const eventId = this.toNumberOrString(eventIdString);
         this.selectedEvent = find(this.filteringEvents, { eventId });
         this.rootStore.wizardStore.openModal();
     };

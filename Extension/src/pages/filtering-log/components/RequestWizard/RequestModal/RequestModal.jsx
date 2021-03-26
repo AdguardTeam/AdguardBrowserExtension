@@ -14,6 +14,7 @@ import './RequestModal.pcss';
 Modal.setAppElement('#root');
 
 const RequestModal = observer(() => {
+    console.log('render request modal');
     const { wizardStore } = useContext(rootStore);
     const DEFAULT_MODAL_WIDTH_PX = 460;
     const MAX_MODAL_WIDTH_RATIO = 0.75;
