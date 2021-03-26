@@ -76,6 +76,7 @@ export const MESSAGE_TYPES = {
     GET_TAB_FRAME_INFO_BY_ID: 'getTabFrameInfoById',
     ENABLE_FILTERS_GROUP: 'enableFiltersGroup',
     NOTIFY_LISTENERS: 'notifyListeners',
+    ADD_LONG_LIVED_CONNECTION: 'addLongLivedConnection',
     GET_OPTIONS_DATA: 'getOptionsData',
     CHANGE_USER_SETTING: 'changeUserSetting',
     CHECK_REQUEST_FILTER_READY: 'checkRequestFilterReady',
