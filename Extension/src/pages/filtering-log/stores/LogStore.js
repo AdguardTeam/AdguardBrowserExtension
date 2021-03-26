@@ -14,6 +14,7 @@ import { RequestTypes } from '../../../background/utils/request-types';
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
 import { getFilterName } from '../components/RequestWizard/utils';
+import { matchesSearch } from './helpers';
 
 export const MISCELLANEOUS_FILTERS = {
     REGULAR: 'regular',
@@ -188,6 +189,26 @@ class LogStore {
         }
     }
 
+    formatEvent = (filteringEvent) => {
+        const { requestRule } = filteringEvent;
+
+        const ruleText = requestRule?.ruleText;
+
+        if (ruleText) {
+            // eslint-disable-next-line no-param-reassign
+            filteringEvent.ruleText = ruleText;
+        }
+
+        const filterId = requestRule?.filterId;
+
+        if (filterId) {
+            // eslint-disable-next-line no-param-reassign
+            filteringEvent.filterName = getFilterName(filterId, this.filtersMetadata);
+        }
+
+        return filteringEvent;
+    };
+
     @action
     onEventUpdated(tabInfo, filteringEvent) {
         if (tabInfo.tabId !== this.selectedTabId) {
@@ -196,7 +217,7 @@ class LogStore {
         const { eventId } = filteringEvent;
         let eventIdx = findIndex(this.filteringEvents, { eventId });
         eventIdx = eventIdx === -1 ? this.filteringEvents.length : eventIdx;
-        this.filteringEvents.splice(eventIdx, 1, filteringEvent);
+        this.filteringEvents.splice(eventIdx, 1, this.formatEvent(filteringEvent));
     }
 
     @action
@@ -222,7 +243,7 @@ class LogStore {
             this.filteringEvents = [];
         }
 
-        this.filteringEvents.push(filteringEvent);
+        this.filteringEvents.push(this.formatEvent(filteringEvent));
     }
 
     getTabs = () => {
@@ -290,21 +311,7 @@ class LogStore {
     @computed
     get events() {
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
-            let show = !this.eventsSearchValue
-                || containsIgnoreCase(filteringEvent.requestUrl, this.eventsSearchValue)
-                || containsIgnoreCase(filteringEvent.element, this.eventsSearchValue)
-                || containsIgnoreCase(filteringEvent.cookieName, this.eventsSearchValue)
-                || containsIgnoreCase(filteringEvent.cookieValue, this.eventsSearchValue);
-
-            const ruleText = filteringEvent?.requestRule?.ruleText;
-            if (ruleText) {
-                show = show || containsIgnoreCase(ruleText, this.eventsSearchValue);
-            }
-
-            if (filteringEvent.filterName) {
-                show = show
-                    || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
-            }
+            const show = matchesSearch(filteringEvent, this.eventsSearchValue);
 
             // Filter by requestType
             const { requestType } = filteringEvent;
@@ -355,17 +362,7 @@ class LogStore {
             return show;
         });
 
-        const events = filteredEvents.map((event) => {
-            const { requestRule } = event;
-
-            return {
-                ...event,
-                ruleText: requestRule?.ruleText,
-                filterName: getFilterName(requestRule?.filterId, this.filtersMetadata),
-            };
-        });
-
-        return events;
+        return filteredEvents;
     }
 
     @action
