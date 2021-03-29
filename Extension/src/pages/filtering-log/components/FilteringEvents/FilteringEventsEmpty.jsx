@@ -12,22 +12,42 @@ export const FilteringEventsEmpty = observer(() => {
         return null;
     }
 
+    const resetFilters = async () => {
+        await logStore.resetAllFilters();
+    };
+
+    const refreshPage = async () => {
+        await logStore.refreshPage();
+    };
+
     return (
         <div className="filtering-log__empty">
             <div className="filtering-log__empty-in">
                 <Icon id="#magnifying" classname="filtering-log__empty-img" />
                 <div className="filtering-log__desc">
-                    {reactTranslator.getMessage('filtering_table_empty_reload_page_desc', {
-                        a: (chunks) => (
-                            <button
-                                className="filtering-log__refresh"
-                                type="button"
-                                onClick={logStore.refreshPage}
-                            >
-                                {chunks}
-                            </button>
-                        ),
-                    })}
+                    {reactTranslator.getMessage(
+                        'filtering_table_empty_reload_page_desc',
+                        {
+                            reset: (chunks) => (
+                                <button
+                                    className="filtering-log__refresh"
+                                    type="button"
+                                    onClick={resetFilters}
+                                >
+                                    {chunks}
+                                </button>
+                            ),
+                            refresh: (chunks) => (
+                                <button
+                                    className="filtering-log__refresh"
+                                    type="button"
+                                    onClick={refreshPage}
+                                >
+                                    {chunks}
+                                </button>
+                            ),
+                        },
+                    )}
                 </div>
             </div>
         </div>
