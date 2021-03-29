@@ -64,7 +64,7 @@ class LogStore {
 
     @observable requestSourceFilters = {
         [REQUEST_SOURCE_FILTERS.FIRST_PARTY]: false,
-        [REQUEST_SOURCE_FILTERS.FIRST_PARTY]: false,
+        [REQUEST_SOURCE_FILTERS.THIRD_PARTY]: false,
     };
 
     @observable eventTypesFilters = [
@@ -172,6 +172,23 @@ class LogStore {
         this.eventTypesFilters.forEach((filter) => {
             // eslint-disable-next-line no-param-reassign
             filter.enabled = enabled;
+        });
+    };
+
+    @action
+    resetAllFilters = () => {
+        // enable all eventTypesFilters
+        this.eventTypesFilters.forEach((filter) => {
+            // eslint-disable-next-line no-param-reassign
+            filter.enabled = true;
+        });
+        // disable all miscellaneousFilters
+        Object.keys(this.miscellaneousFilters).forEach((filter) => {
+            this.setMiscellaneousFilterValue(filter, false);
+        });
+        // disable all requestSourceFilters
+        Object.keys(this.requestSourceFilters).forEach((filter) => {
+            this.setRequestSourceFilterValue(filter, false);
         });
     };
 

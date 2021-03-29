@@ -26,8 +26,8 @@ const MiscellaneousFilters = observer(() => {
         logStore.setMiscellaneousFilterValue(filter, e.target.checked);
     };
 
-    const requestSourceFilterClickHandler = (e) => {
-        logStore.setRequestSourceFilterValue(e.target.value, e.target.checked);
+    const requestSourceFilterClickHandler = (filter) => (e) => {
+        logStore.setRequestSourceFilterValue(filter, e.target.checked);
     };
 
     useOutsideClick(ref, () => {
@@ -78,9 +78,9 @@ const MiscellaneousFilters = observer(() => {
                         type="checkbox"
                         id={id}
                         name={id}
-                        onClick={filtersCheckboxHandler(id)}
+                        onChange={filtersCheckboxHandler(id)}
                         value={miscellaneousFilters[id]}
-                        defaultChecked={miscellaneousFilters[id]}
+                        checked={miscellaneousFilters[id]}
                     />
                     <div className="custom-checkbox">
                         <Icon id="#checked" classname="icon--checked" />
@@ -109,10 +109,10 @@ const MiscellaneousFilters = observer(() => {
                     <input
                         type="checkbox"
                         id={id}
-                        name="request-source-filter"
-                        onClick={requestSourceFilterClickHandler}
-                        value={id}
-                        defaultChecked={requestSourceFilters[id]}
+                        name={id}
+                        onChange={requestSourceFilterClickHandler(id)}
+                        value={requestSourceFilters[id]}
+                        checked={requestSourceFilters[id]}
                     />
                     <div className="custom-checkbox">
                         <Icon id="#checked" classname="icon--checked" />
