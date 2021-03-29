@@ -4,7 +4,6 @@ import classNames from 'classnames';
 const SettingsSection = (props) => {
     const {
         title,
-        subtitle,
         description,
         renderBackButton,
         renderInlineControl,
@@ -35,7 +34,6 @@ const SettingsSection = (props) => {
             </div>
             {description && <div className="desc">{description}</div>}
             <div className={settingGroupClassName}>
-                {subtitle && <h3 className="subtitle">{subtitle}</h3>}
                 {children}
             </div>
         </div>

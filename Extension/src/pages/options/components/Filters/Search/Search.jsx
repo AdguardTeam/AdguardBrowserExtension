@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import cn from 'classnames';
 import { observer } from 'mobx-react';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
@@ -8,7 +9,6 @@ import { rootStore } from '../../../stores/RootStore';
 import { SEARCH_FILTERS } from './constants';
 
 import './search.pcss';
-import cn from 'classnames';
 
 const options = [
     {
