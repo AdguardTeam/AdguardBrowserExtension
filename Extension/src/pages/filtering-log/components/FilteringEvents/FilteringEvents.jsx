@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { observer } from 'mobx-react';
-import { useTable } from 'react-table';
 
 import { rootStore } from '../../stores/RootStore';
 import { getRequestType } from '../RequestWizard/utils';
@@ -9,6 +8,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
 import { RequestTypes } from '../../../../background/utils/request-types';
+import { FilteringEventsEmpty } from './FilteringEventsEmpty';
 
 import './filtering-events.pcss';
 
@@ -26,209 +26,200 @@ const filterNameAccessor = (props) => {
     return props.filterName;
 };
 
+const getRowClassName = (event) => {
+    let className = null;
+
+    if (event.replaceRules) {
+        className = 'yellow';
+    }
+
+    if (event.requestRule && !event.replaceRules) {
+        if (event.requestRule.whitelistRule) {
+            className = 'green';
+            // eslint-disable-next-line max-len
+        } else if (event.requestRule.cssRule || event.requestRule.scriptRule || event.removeParam) {
+            className = 'yellow';
+        } else if (event.requestRule.cookieRule) {
+            if (event.requestRule.isModifyingCookieRule) {
+                className = 'yellow';
+            } else {
+                className = 'red';
+            }
+        } else {
+            className = 'red';
+        }
+    }
+
+    return className;
+};
+
+const urlAccessor = (props) => {
+    const {
+        requestUrl,
+        cookieName,
+        cookieValue,
+        element,
+    } = props;
+
+    if (cookieName) {
+        return `${cookieName} = ${cookieValue}`;
+    }
+
+    if (element) {
+        return element;
+    }
+
+    return requestUrl;
+};
+
+const typeAccessor = (props) => {
+    const { requestType, requestThirdParty, requestRule } = props;
+
+    let formattedRequestType;
+    if (requestRule?.isModifyingCookieRule) {
+        formattedRequestType = getRequestType(RequestTypes.COOKIE);
+    } else {
+        formattedRequestType = getRequestType(requestType);
+    }
+
+    if (requestThirdParty) {
+        return (
+            <>
+                {formattedRequestType}
+                <Icon
+                    id="#chain"
+                    title="Third party"
+                    classname="icon--24 third-party__icon icon--green"
+                />
+            </>
+        );
+    }
+
+    return formattedRequestType;
+};
+
+const ruleAccessor = (props) => {
+    const { requestRule, replaceRules } = props;
+
+    let ruleText = '';
+    if (requestRule) {
+        if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
+            ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
+        } else {
+            ruleText = requestRule.ruleText;
+        }
+    }
+
+    if (replaceRules) {
+        const rulesCount = replaceRules.length;
+        ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
+    }
+
+    return ruleText;
+};
+
+const Row = observer(({ event, columns, onClick }) => {
+    return (
+        <tr
+            id={event.eventId}
+            onClick={onClick}
+            className={getRowClassName(event)}
+        >
+            {
+                columns.map((column) => {
+                    const { accessor } = column;
+                    let cellContent;
+                    if (typeof accessor === 'string') {
+                        cellContent = event[accessor];
+                    } else {
+                        cellContent = accessor(event);
+                    }
+
+                    return (
+                        <td
+                            key={column.id}
+                        >
+                            {cellContent}
+                        </td>
+                    );
+                })
+            }
+        </tr>
+    );
+});
+
+const FilteringEventsRows = observer(({ logStore, columns, handleRowClick }) => {
+    return logStore.events.map((event) => {
+        return (
+            <Row
+                key={event.eventId}
+                event={event}
+                columns={columns}
+                onClick={handleRowClick}
+            />
+        );
+    });
+});
+
 const FilteringEvents = observer(() => {
     const { logStore } = useContext(rootStore);
 
-    const refreshPage = async (e) => {
-        e.preventDefault();
-        await logStore.refreshPage();
-    };
+    const handleRowClick = useCallback((e) => {
+        const { id } = e.currentTarget;
+        logStore.setSelectedEventById(id);
+    }, []);
 
-    // TODO display element escaped, waits when css hits counter would be fixed
-    const columns = useMemo(() => [
+    const columns = [
         {
+            id: 'url',
             Header: 'URL',
-            accessor: (props) => {
-                const {
-                    requestUrl,
-                    cookieName,
-                    cookieValue,
-                    element,
-                } = props;
-
-                if (cookieName) {
-                    return `${cookieName} = ${cookieValue}`;
-                }
-
-                if (element) {
-                    return element;
-                }
-
-                return requestUrl;
-            },
+            accessor: urlAccessor,
         },
         {
+            id: 'type',
             Header: `${reactTranslator.getMessage('filtering_table_type')}`,
-            accessor: (props) => {
-                const { requestType, requestThirdParty, requestRule } = props;
-
-                let formattedRequestType;
-                if (requestRule?.isModifyingCookieRule) {
-                    formattedRequestType = getRequestType(RequestTypes.COOKIE);
-                } else {
-                    formattedRequestType = getRequestType(requestType);
-                }
-
-                if (requestThirdParty) {
-                    return (
-                        <>
-                            {formattedRequestType}
-                            <Icon
-                                id="#chain"
-                                title="Third party"
-                                classname="icon--24 third-party__icon icon--green"
-                            />
-                        </>
-                    );
-                }
-
-                return formattedRequestType;
-            },
+            accessor: typeAccessor,
         },
         {
+            id: 'rule',
             Header: `${reactTranslator.getMessage('filtering_table_rule')}`,
-            accessor: (props) => {
-                const { requestRule, replaceRules } = props;
-
-                let ruleText = '';
-                if (requestRule) {
-                    if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
-                        ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
-                    } else {
-                        ruleText = requestRule.ruleText;
-                    }
-                }
-
-                if (replaceRules) {
-                    const rulesCount = replaceRules.length;
-                    ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
-                }
-                return ruleText;
-            },
+            accessor: ruleAccessor,
         },
         {
+            id: 'filter',
             Header: `${reactTranslator.getMessage('filtering_table_filter')}`,
             accessor: filterNameAccessor,
         },
         {
+            id: 'source',
             Header: `${reactTranslator.getMessage('filtering_table_source')}`,
             accessor: 'frameDomain',
         },
-    ], []);
-
-    const data = useMemo(() => logStore.events, [logStore.events]);
-
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({
-        columns,
-        data,
-        getRowId: (row) => row.eventId,
-    });
-
-    const getRowProps = (row) => {
-        const event = row.original;
-
-        let className = null;
-
-        if (event.replaceRules) {
-            className = 'yellow';
-        }
-
-        if (event.requestRule && !event.replaceRules) {
-            if (event.requestRule.whitelistRule) {
-                className = 'green';
-            // eslint-disable-next-line max-len
-            } else if (event.requestRule.cssRule || event.requestRule.scriptRule || event.removeParam) {
-                className = 'yellow';
-            } else if (event.requestRule.cookieRule) {
-                if (event.requestRule.isModifyingCookieRule) {
-                    className = 'yellow';
-                } else {
-                    className = 'red';
-                }
-            } else {
-                className = 'red';
-            }
-        }
-
-        return ({
-            className,
-            onClick: () => {
-                logStore.setSelectedEventById(event.eventId);
-            },
-        });
-    };
+    ];
 
     return (
         <div className="filtering-log">
-            <table {...getTableProps()} className="filtering-log__inner">
+            <table className="filtering-log__inner">
                 <thead>
-                    {
-                        headerGroups.map((headerGroup) => (
-                            <tr {...headerGroup.getHeaderGroupProps()}>
-                                {
-                                    headerGroup.headers.map((column) => (
-                                        <th {...column.getHeaderProps()}>
-                                            {
-                                                column.render('Header')
-                                            }
-                                        </th>
-                                    ))
-                                }
-                            </tr>
-                        ))
-                    }
+                    <tr>
+                        {
+                            columns.map((column) => (
+                                <th key={column.id}>
+                                    {column.Header}
+                                </th>
+                            ))
+                        }
+                    </tr>
                 </thead>
-                <tbody {...getTableBodyProps()}>
-                    {
-                        rows.map((row) => {
-                            prepareRow(row);
-                            return (
-                                <tr
-                                    {...row.getRowProps(getRowProps(row))}
-                                >
-                                    {
-                                        row.cells.map((cell) => {
-                                            return (
-                                                <td {...cell.getCellProps()}>
-                                                    {
-                                                        cell.render('Cell')
-                                                    }
-                                                </td>
-                                            );
-                                        })
-                                    }
-                                </tr>
-                            );
-                        })
-                    }
+                <tbody>
+                    <FilteringEventsRows
+                        logStore={logStore}
+                        handleRowClick={handleRowClick}
+                        columns={columns}
+                    />
                 </tbody>
             </table>
-            {rows.length <= 0 && (
-                <div className="filtering-log__empty">
-                    <div className="filtering-log__empty-in">
-                        <Icon id="#magnifying" classname="filtering-log__empty-img" />
-                        <div className="filtering-log__desc">
-                            {reactTranslator.getMessage('filtering_table_empty_reload_page_desc', {
-                                a: (chunks) => (
-                                    <button
-                                        className="filtering-log__refresh"
-                                        type="button"
-                                        onClick={refreshPage}
-                                    >
-                                        {chunks}
-                                    </button>
-                                ),
-                            })}
-                        </div>
-                    </div>
-                </div>
-            )}
+            <FilteringEventsEmpty />
         </div>
     );
 });
