@@ -18,7 +18,6 @@ const Select = (props) => {
         <div className="select">
             <Icon id="#select" classname="icon--select select__ico" />
             <select
-                dir="rtl"
                 className="select__in"
                 onChange={handler}
                 id={id}
