@@ -218,14 +218,27 @@ export const tabsImpl = (function () {
         }
     };
 
-    const sendMessage = function (tabId, message, responseCallback, options) {
+    /**
+     * Sends message to tabs
+     * @param tabId
+     * @param message
+     * @param options
+     * @returns {Promise<*>}
+     */
+    const sendMessage = async (tabId, message, options) => {
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/sendMessage
-        if (typeof options === 'object' && browser.tabs.sendMessage) {
-            browser.tabs.sendMessage(tabIdToInt(tabId), message, options, responseCallback);
-            return;
+        const args = [tabIdToInt(tabId), message];
+        if (typeof options === 'object') {
+            args.push(options);
         }
-        browser.tabs.sendMessage(tabIdToInt(tabId), message, responseCallback);
+
+        try {
+            const response = await browser.tabs.sendMessage(...args);
+            return response;
+        } catch (e) {
+            log.debug(e.message);
+        }
     };
 
     const reload = async (tabId, url) => {

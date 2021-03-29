@@ -8,12 +8,14 @@ import {
 import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 import identity from 'lodash/identity';
+import throttle from 'lodash/throttle';
 
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { RequestTypes } from '../../../background/utils/request-types';
 import { messenger } from '../../services/messenger';
 import { containsIgnoreCase } from '../../helpers';
 import { getFilterName } from '../components/RequestWizard/utils';
+import { matchesSearch } from './helpers';
 
 export const MISCELLANEOUS_FILTERS = {
     REGULAR: 'regular',
@@ -27,6 +29,13 @@ export const REQUEST_SOURCE_FILTERS = {
     FIRST_PARTY: 'first_party',
     THIRD_PARTY: 'third_party',
 };
+
+const BUFFER_TYPES = {
+    ADDED: 'added',
+    UPDATED: 'updated',
+};
+
+const TABLE_RENDER_THROTTLE_TIMEOUT = 500;
 
 class LogStore {
     @observable filteringEvents = [];
@@ -188,15 +197,33 @@ class LogStore {
         }
     }
 
+    formatEvent = (filteringEvent) => {
+        const { requestRule } = filteringEvent;
+
+        const ruleText = requestRule?.ruleText;
+
+        if (ruleText) {
+            // eslint-disable-next-line no-param-reassign
+            filteringEvent.ruleText = ruleText;
+        }
+
+        const filterId = requestRule?.filterId;
+
+        if (filterId) {
+            // eslint-disable-next-line no-param-reassign
+            filteringEvent.filterName = getFilterName(filterId, this.filtersMetadata);
+        }
+
+        return filteringEvent;
+    };
+
     @action
     onEventUpdated(tabInfo, filteringEvent) {
         if (tabInfo.tabId !== this.selectedTabId) {
             return;
         }
-        const { eventId } = filteringEvent;
-        let eventIdx = findIndex(this.filteringEvents, { eventId });
-        eventIdx = eventIdx === -1 ? this.filteringEvents.length : eventIdx;
-        this.filteringEvents.splice(eventIdx, 1, filteringEvent);
+
+        this.addToBuffer(BUFFER_TYPES.UPDATED, this.formatEvent(filteringEvent));
     }
 
     @action
@@ -207,6 +234,48 @@ class LogStore {
         this.settings.values[name] = value;
     }
 
+    bufferOfAddedEvents = [];
+
+    bufferOfUpdatedEvents = [];
+
+    throttledAppendEvents = throttle(() => {
+        runInAction(() => {
+            const updatedFilteringEvents = [...this.filteringEvents, ...this.bufferOfAddedEvents];
+
+            this.bufferOfUpdatedEvents.forEach((filteringEvent) => {
+                const { eventId } = filteringEvent;
+                const eventIdx = findIndex(updatedFilteringEvents, { eventId });
+
+                if (eventIdx === -1) {
+                    updatedFilteringEvents.push(filteringEvent);
+                } else {
+                    updatedFilteringEvents[eventIdx] = filteringEvent;
+                }
+            });
+
+            // empty buffers
+            this.bufferOfAddedEvents = [];
+            this.bufferOfUpdatedEvents = [];
+
+            this.filteringEvents = updatedFilteringEvents;
+        });
+    }, TABLE_RENDER_THROTTLE_TIMEOUT);
+
+    /**
+     * Used to throttle renders of filtering events table
+     * @param eventType
+     * @param filteringEvent
+     */
+    addToBuffer = (eventType, filteringEvent) => {
+        if (eventType === BUFFER_TYPES.ADDED) {
+            this.bufferOfAddedEvents.push(filteringEvent);
+        } else if (eventType === BUFFER_TYPES.UPDATED) {
+            this.bufferOfUpdatedEvents.push(filteringEvent);
+        }
+
+        this.throttledAppendEvents();
+    };
+
     @action
     onEventAdded(tabInfo, filteringEvent) {
         if (tabInfo.tabId !== this.selectedTabId) {
@@ -214,7 +283,7 @@ class LogStore {
         }
 
         // clear events
-        if (filteringEvent.requestType === 'DOCUMENT'
+        if (filteringEvent.requestType === RequestTypes.DOCUMENT
             && !filteringEvent?.requestRule?.isModifyingCookieRule
             && !filteringEvent.element
             && !filteringEvent.script
@@ -222,7 +291,7 @@ class LogStore {
             this.filteringEvents = [];
         }
 
-        this.filteringEvents.push(filteringEvent);
+        this.addToBuffer(BUFFER_TYPES.ADDED, this.formatEvent(filteringEvent));
     }
 
     getTabs = () => {
@@ -271,8 +340,7 @@ class LogStore {
         const tabsInfo = await messenger.synchronizeOpenTabs();
         runInAction(() => {
             tabsInfo.forEach((tabInfo) => {
-                const { tabId } = tabInfo;
-                this.tabsMap[tabId] = tabInfo;
+                this.tabsMap[tabInfo.tabId] = tabInfo;
             });
         });
     };
@@ -290,21 +358,7 @@ class LogStore {
     @computed
     get events() {
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
-            let show = !this.eventsSearchValue
-                || containsIgnoreCase(filteringEvent.requestUrl, this.eventsSearchValue)
-                || containsIgnoreCase(filteringEvent.element, this.eventsSearchValue)
-                || containsIgnoreCase(filteringEvent.cookieName, this.eventsSearchValue)
-                || containsIgnoreCase(filteringEvent.cookieValue, this.eventsSearchValue);
-
-            const ruleText = filteringEvent?.requestRule?.ruleText;
-            if (ruleText) {
-                show = show || containsIgnoreCase(ruleText, this.eventsSearchValue);
-            }
-
-            if (filteringEvent.filterName) {
-                show = show
-                    || containsIgnoreCase(filteringEvent.filterName, this.eventsSearchValue);
-            }
+            const show = matchesSearch(filteringEvent, this.eventsSearchValue);
 
             // Filter by requestType
             const { requestType } = filteringEvent;
@@ -355,17 +409,7 @@ class LogStore {
             return show;
         });
 
-        const events = filteredEvents.map((event) => {
-            const { requestRule } = event;
-
-            return {
-                ...event,
-                ruleText: requestRule?.ruleText,
-                filterName: getFilterName(requestRule?.filterId, this.filtersMetadata),
-            };
-        });
-
-        return events;
+        return filteredEvents;
     }
 
     @action
@@ -398,8 +442,17 @@ class LogStore {
         this.preserveLogEnabled = value;
     };
 
+    toNumberOrString = (dirtyString) => {
+        const num = Number.parseInt(dirtyString, 10);
+        if (Number.isNaN(num)) {
+            return dirtyString;
+        }
+        return String(num) === dirtyString ? num : dirtyString;
+    }
+
     @action
-    setSelectedEventById = (eventId) => {
+    setSelectedEventById = (eventIdString) => {
+        const eventId = this.toNumberOrString(eventIdString);
         this.selectedEvent = find(this.filteringEvents, { eventId });
         this.rootStore.wizardStore.openModal();
     };

@@ -46,11 +46,47 @@ import { documentFilterService } from './filter/services/document-filter';
 import { antiBannerService } from './filter/antibanner';
 import { MESSAGE_TYPES } from '../common/constants';
 import { getCookieRulesDataForContentScript } from './filter/services/cookie-service';
+import { log } from '../common/log';
 
 /**
- *  Initialize Content => BackgroundPage messaging
+ * This handler used to subscribe for notifications from popup page
+ * https://developer.chrome.com/extensions/messaging#connect
+ * We can't use simple one-time connections, because they can intercept each other
+ * Causing issues like AG-2074
  */
-const init = () => {
+const longLivedMessageHandler = (port) => {
+    let listenerId;
+
+    if (port.name.startsWith('filtering-log')) {
+        filteringLog.onOpenFilteringLogPage();
+    }
+
+    log.info(`Port: "${port.name}" connected`);
+    port.onMessage.addListener((message) => {
+        const { type, data } = message;
+        if (type === MESSAGE_TYPES.ADD_LONG_LIVED_CONNECTION) {
+            const { events } = data;
+            listenerId = listeners.addSpecifiedListener(events, async (...data) => {
+                const type = MESSAGE_TYPES.NOTIFY_LISTENERS;
+                try {
+                    port.postMessage({ type, data });
+                } catch (e) {
+                    log.error(e.message);
+                }
+            });
+        }
+    });
+
+    port.onDisconnect.addListener(() => {
+        if (port.name.startsWith('filtering-log')) {
+            filteringLog.onCloseFilteringLogPage();
+        }
+        listeners.removeListener(listenerId);
+        log.info(`Port: "${port.name}" disconnected`);
+    });
+};
+
+const createMessageHandler = () => {
     /**
      * Contains event listeners from content pages
      */
@@ -475,7 +511,7 @@ const init = () => {
                             showInfoAboutFullVersion: settings.isShowInfoAboutAdguardFullVersion(),
                             isMacOs: browserUtils.isMacOs(),
                             isEdgeBrowser: browserUtils.isEdgeBrowser()
-                                || browserUtils.isEdgeChromiumBrowser(),
+                                    || browserUtils.isEdgeChromiumBrowser(),
                             notification: notifications.getCurrentNotification(),
                             isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
                             hasCustomRulesToReset: await userrules.hasRulesForUrl(frameInfo.url),
@@ -534,12 +570,20 @@ const init = () => {
                 // Unhandled message
                 throw new Error(`There is no such message type ${message.type}`);
         }
-
         return Promise.resolve();
     };
 
-    // Add event listener from content-script messages
-    backgroundPage.runtime.onMessage.addListener(handleMessage);
+    return handleMessage;
+};
+
+/**
+ *  Initialize Content => BackgroundPage messaging
+ */
+const init = () => {
+    // Add event listener for messages from popup page, options page and content scripts
+    backgroundPage.runtime.onMessage.addListener(createMessageHandler());
+
+    backgroundPage.runtime.onConnect.addListener(longLivedMessageHandler);
 };
 
 export const messageHandler = {

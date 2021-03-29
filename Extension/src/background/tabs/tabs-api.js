@@ -115,8 +115,8 @@ const tabsApi = ((tabsImpl) => {
     };
 
     // Sends message to tab
-    const sendMessage = function (tabId, message, responseCallback, options) {
-        tabsImpl.sendMessage(tabId, message, responseCallback, options);
+    const sendMessage = function (tabId, message, options) {
+        return tabsImpl.sendMessage(tabId, message, options);
     };
 
     // Gets all opened tabs

@@ -58,7 +58,7 @@ export const getFilterName = (filterId, filtersMetadata) => {
         return reactTranslator.getMessage('options_allowlist');
     }
 
-    const filterMetadata = filtersMetadata.filter((el) => el.filterId === filterId)[0];
+    const filterMetadata = filtersMetadata?.filter((el) => el.filterId === filterId)[0];
 
     return filterMetadata ? filterMetadata.name : null;
 };
