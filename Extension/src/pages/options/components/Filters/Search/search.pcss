@@ -5,6 +5,18 @@
     border-bottom: 1px solid var(--greye7);
     padding: 16px 15px 10px 15px;
 
+    @media (prefers-color-scheme: dark) {
+        border-bottom: 1px solid var(--gray900);
+    }
+
+    &--focus {
+        border-bottom: 1px solid var(--grayd8);
+
+        @media (prefers-color-scheme: dark) {
+            border-bottom: 1px solid var(--gray400);
+        }
+    }
+
     &__input {
         flex-grow: 1;
         border: 0;
@@ -39,6 +51,12 @@
 
 .light-mode {
     .search {
+        border-bottom: 1px solid var(--greye7);
+
+        &--focus {
+            border-bottom: 1px solid var(--grayd8);
+        }
+
         &__input {
             color: var(--gray-base);
         }
@@ -51,6 +69,12 @@
 
 .dark-mode {
     .search {
+        border-bottom: 1px solid var(--gray900);
+
+        &--focus {
+            border-bottom: 1px solid var(--gray400);
+        }
+
         &__input {
             color: var(--gray300);
         }

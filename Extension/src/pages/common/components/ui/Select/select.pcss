@@ -3,13 +3,17 @@
     position: relative;
 
     &__in {
-        font-size: 14px;
-        color: var(--gray88);
+        font-size: 16px;
+        color: var(--gray-base);
         padding-right: 25px;
         cursor: pointer;
         border: 0;
         background-color: transparent;
         -webkit-appearance: none;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
     }
 
     &__ico {
@@ -17,5 +21,21 @@
         z-index: -1;
         right: 5px;
         top: 8px;
+    }
+}
+
+.light-mode {
+    .select {
+        &__in {
+            color: var(--gray-base);
+        }
+    }
+}
+
+.dark-mode {
+    .select {
+        &__in {
+            color: var(--gray300);
+        }
     }
 }

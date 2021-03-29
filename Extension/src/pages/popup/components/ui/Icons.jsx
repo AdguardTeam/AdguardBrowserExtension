@@ -13,7 +13,7 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="start" viewBox="0 0 24 24">
-                <g fill="none" fillRule="evenodd" stroke="#1E1E1E" opacity=".5" transform="translate(1 1)">
+                <g fill="none" fillRule="evenodd" stroke="currentColor" opacity=".5" transform="translate(1 1)">
                     <path strokeLinecap="square" strokeWidth="1.2" d="M8 7v8l7.435-4z" />
                     <circle cx="11" cy="11" r="11" />
                 </g>

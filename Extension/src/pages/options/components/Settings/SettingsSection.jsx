@@ -3,7 +3,14 @@ import classNames from 'classnames';
 
 const SettingsSection = (props) => {
     const {
-        title, subtitle, description, renderBackButton, renderInlineControl, children, disabled,
+        title,
+        subtitle,
+        description,
+        renderBackButton,
+        renderInlineControl,
+        children,
+        disabled,
+        subTitle,
     } = props;
 
     const settingGroupClassName = classNames('settings__group', {
@@ -16,6 +23,7 @@ const SettingsSection = (props) => {
 
     const titleClass = classNames('title', {
         'title--back-btn': renderBackButton,
+        'title--sub': subTitle,
     });
 
     return (
