@@ -65,6 +65,7 @@ const Search = observer(() => {
         <div className={searchClassName}>
             <Icon id="#magnifying" classname="icon--magnifying" />
             <input
+                autoFocus
                 className="search__input"
                 type="text"
                 onChange={searchInputHandler}
