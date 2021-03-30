@@ -5,7 +5,7 @@ import './input.pcss';
 
 const TextInput = (props) => {
     const {
-        id, value, handler, placeholder,
+        id, value, handler, placeholder, disabled,
     } = props;
 
     const changeHandler = (e) => {
@@ -17,6 +17,7 @@ const TextInput = (props) => {
     return (
         <div className="input">
             <input
+                disabled={disabled}
                 type="number"
                 name={id}
                 value={value}

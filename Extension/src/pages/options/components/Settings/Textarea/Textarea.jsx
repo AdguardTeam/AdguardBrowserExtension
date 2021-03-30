@@ -5,7 +5,7 @@ import './textarea.pcss';
 
 const Textarea = (props) => {
     const {
-        id, value, handler, placeholder,
+        id, value, handler, placeholder, disabled,
     } = props;
 
     const changeHandler = (e) => {
@@ -16,6 +16,7 @@ const Textarea = (props) => {
 
     return (
         <textarea
+            disabled={disabled}
             name={id}
             onChange={changeHandler}
             aria-label={id}
