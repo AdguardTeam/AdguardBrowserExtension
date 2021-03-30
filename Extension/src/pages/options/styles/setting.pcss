@@ -5,6 +5,19 @@
     padding: 16px 16px 20px;
     min-height: 70px;
     cursor: default;
+    box-shadow: 0 1px 0 0 var(--greye7);
+
+    @media (prefers-color-scheme: dark) {
+        box-shadow: 0 1px 0 0 var(--gray900);
+    }
+
+    &:last-child {
+        box-shadow: none;
+    }
+
+    &--hide-border {
+        box-shadow: none;
+    }
 
     &__area {
         display: flex;
@@ -16,10 +29,6 @@
         cursor: pointer;
         outline: none;
         text-align: left;
-    }
-
-    &:not(:last-child) {
-        box-shadow: 0 1px 0 0 var(--greye7);
     }
 
     &__inline-control {
@@ -46,12 +55,6 @@
         }
     }
 
-    &--disabled {
-        & .setting__title {
-            color: var(--grayd8);
-        }
-    }
-
     &:last-child {
         box-shadow: none;
     }
@@ -74,7 +77,7 @@
     &__desc {
         line-height: 18px;
         padding: 4px 0 0;
-        color: var(--grayd8);
+        color: var(--gray700);
         font-size: 14px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -162,10 +165,14 @@
 
 .light-mode {
     .setting {
-        &--disabled {
-            & .setting__title {
-                color: var(--grayd8);
-            }
+        box-shadow: 0 1px 0 0 var(--greye7);
+
+        &:last-child {
+            box-shadow: none;
+        }
+
+        &--hide-border {
+            box-shadow: none;
         }
 
         &__title {
@@ -182,6 +189,16 @@
 
 .dark-mode {
     .setting {
+        box-shadow: 0 1px 0 0 var(--gray900);
+
+        &:last-child {
+            box-shadow: none;
+        }
+
+        &--hide-border {
+            box-shadow: none;
+        }
+
         &--disabled {
             & .setting__title {
                 color: var(--grayd8);

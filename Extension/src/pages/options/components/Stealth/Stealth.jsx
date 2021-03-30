@@ -65,12 +65,14 @@ const Stealth = observer(() => {
 
             <SettingsSection
                 title={reactTranslator.getMessage('options_cookies_title')}
+                subTitle
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSet
                     title={reactTranslator.getMessage('options_third_party_title')}
                     description={reactTranslator.getMessage('options_third_party_desc')}
                     disabled={!settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES]}
+                    hideBorder
                     inlineControl={(
                         <Setting
                             id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
@@ -94,6 +96,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_first_party_title')}
                     description={reactTranslator.getMessage('options_first_party_desc')}
                     disabled={!settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES]}
+                    hideBorder
                     inlineControl={(
                         <Setting
                             id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}

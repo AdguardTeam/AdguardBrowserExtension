@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import cn from 'classnames';
 import { observer } from 'mobx-react';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
@@ -26,6 +27,7 @@ const options = [
 
 const Search = observer(() => {
     const { settingsStore } = useContext(rootStore);
+    const [searchFocus, setSearchFocus] = useState(false);
 
     const {
         setSearchInput,
@@ -54,14 +56,22 @@ const Search = observer(() => {
         settingsStore.sortFilters();
     };
 
+    const searchClassName = cn(
+        'search',
+        { 'search--focus': searchFocus },
+    );
+
     return (
-        <div className="search">
+        <div className={searchClassName}>
             <Icon id="#magnifying" classname="icon--magnifying" />
             <input
+                autoFocus
                 className="search__input"
                 type="text"
                 onChange={searchInputHandler}
                 value={searchInput}
+                onFocus={() => setSearchFocus(true)}
+                onBlur={() => setSearchFocus(false)}
             />
             {searchInput && (
                 <button

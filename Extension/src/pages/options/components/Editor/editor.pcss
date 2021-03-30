@@ -31,7 +31,7 @@
     }
 
     @media (min-width: 1024px) {
-        min-width: 680px;
+        min-width: 640px;
         max-width: 100vw;
         resize: both;
     }
@@ -60,6 +60,12 @@
             background: var(--grayDark);
         }
     }
+
+    & .ace_gutter-cell {
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
 }
 
 .light-mode {
@@ -79,6 +85,10 @@
         & .ace_gutter-active-line {
             color: var(--gray-base);
             background: #dcdcdc;
+        }
+
+        & .ace_gutter-cell {
+            color: var(--gray-base);
         }
     }
 }
@@ -100,6 +110,10 @@
         & .ace_gutter-active-line {
             color: var(--gray300);
             background: var(--grayDark);
+        }
+
+        & .ace_gutter-cell {
+            color: var(--gray300);
         }
     }
 }

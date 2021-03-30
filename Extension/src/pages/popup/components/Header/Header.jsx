@@ -60,7 +60,7 @@ export const Header = observer(() => {
                     >
                         <Icon
                             id="#start"
-                            classname="icon--button"
+                            classname="icon--button icon--start"
                         />
                     </button>
                 )}

@@ -193,7 +193,7 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="magnifying" viewBox="0 0 17 16">
-                <g fill="none" fillRule="evenodd" stroke="#67b279" transform="translate(1 1)">
+                <g fill="none" fillRule="evenodd" stroke="currentColor" transform="translate(1 1)">
                     <circle cx="5.5" cy="5.5" r="5.5" />
                     <path d="m10 10 5 5" strokeLinecap="round" />
                 </g>
