@@ -13,7 +13,6 @@ import throttle from 'lodash/throttle';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { RequestTypes } from '../../../background/utils/request-types';
 import { messenger } from '../../services/messenger';
-import { containsIgnoreCase } from '../../helpers';
 import { getFilterName } from '../components/RequestWizard/utils';
 import { matchesSearch } from './helpers';
 
@@ -226,7 +225,7 @@ class LogStore {
 
         const filterId = requestRule?.filterId;
 
-        if (filterId) {
+        if (filterId !== undefined) {
             // eslint-disable-next-line no-param-reassign
             filteringEvent.filterName = getFilterName(filterId, this.filtersMetadata);
         }
