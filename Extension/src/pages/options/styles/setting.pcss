@@ -19,6 +19,20 @@
         box-shadow: none;
     }
 
+    &--disabled {
+        & .setting__title {
+            @media (prefers-color-scheme: dark) {
+                color: var(--grayd8);
+            }
+        }
+
+        & .input__in {
+            pointer-events: none;
+            cursor: default;
+            opacity: 0.5;
+        }
+    }
+
     &__area {
         display: flex;
         align-items: center;

@@ -107,6 +107,11 @@
         width: 48px;
         height: 48px;
         margin: 0 auto 18px;
+        color: var(--grayDark);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--white);
+        }
     }
 
     &__desc {
@@ -162,6 +167,10 @@
         &__inner thead th {
             background-color: var(--white);
         }
+
+        &__empty-img {
+            color: var(--grayDark);
+        }
     }
 
     & .third-party {
@@ -183,6 +192,10 @@
 
         &__inner thead th {
             background-color: var(--bgColor);
+        }
+
+        &__empty-img {
+            color: var(--white);
         }
     }
 
