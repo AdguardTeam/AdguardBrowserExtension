@@ -55,11 +55,12 @@ export const Setting = (props) => {
         }
         case SETTINGS_TYPES.INPUT: {
             const {
-                id, value, handler, placeholder,
+                id, value, handler, placeholder, disabled,
             } = props;
             return (
                 <TextInput
                     id={id}
+                    disabled={disabled}
                     value={value}
                     handler={handler}
                     placeholder={placeholder}
@@ -68,11 +69,12 @@ export const Setting = (props) => {
         }
         case SETTINGS_TYPES.TEXTAREA: {
             const {
-                id, value, handler, placeholder,
+                id, value, handler, placeholder, disabled,
             } = props;
             return (
                 <Textarea
                     id={id}
+                    disabled={disabled}
                     value={value}
                     handler={handler}
                     placeholder={placeholder}

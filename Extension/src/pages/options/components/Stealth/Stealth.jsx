@@ -85,6 +85,7 @@ const Stealth = observer(() => {
                 >
                     <Setting
                         id={SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME}
+                        disabled={!settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES]}
                         type={SETTINGS_TYPES.INPUT}
                         value={settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME]}
                         handler={settingChangeHandler}
@@ -109,6 +110,7 @@ const Stealth = observer(() => {
                 >
                     <Setting
                         id={SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME}
+                        disabled={!settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES]}
                         type={SETTINGS_TYPES.INPUT}
                         value={settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME]}
                         handler={settingChangeHandler}
@@ -214,6 +216,7 @@ const Stealth = observer(() => {
                 >
                     <Setting
                         id={TRACKING_PARAMETERS}
+                        disabled={!settings.values[STRIP_TRACKING_PARAMETERS]}
                         type={SETTINGS_TYPES.TEXTAREA}
                         value={settings.values[TRACKING_PARAMETERS]}
                         handler={settingChangeHandler}
