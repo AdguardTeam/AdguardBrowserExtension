@@ -22,7 +22,7 @@ const Nav = ({ closeSidebar }) => (
             to="/filters"
             onClick={closeSidebar}
         >
-            {reactTranslator.getMessage('options_antibanner')}
+            {reactTranslator.getMessage('options_filters')}
         </NavLink>
         <NavLink
             className="nav__item"

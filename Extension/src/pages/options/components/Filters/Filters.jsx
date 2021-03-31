@@ -185,7 +185,7 @@ const Filters = observer(() => {
 
     return (
         <SettingsSection
-            title={reactTranslator.getMessage('options_antibanner')}
+            title={reactTranslator.getMessage('options_filters')}
             renderInlineControl={() => <FiltersUpdate />}
         >
             <Search />
