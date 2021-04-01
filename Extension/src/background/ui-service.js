@@ -846,8 +846,6 @@ export const uiService = (function () {
      */
     const openAssistant = async (selectElement) => {
         if (tabsApi.executeScriptFile) {
-            // Load Assistant code to the activate tab immediately
-            await tabsApi.executeScriptFile(null, { file: '/src/content-script/assistant/assistant.js' });
             initAssistant(selectElement);
         } else {
             // Manually start assistant

@@ -5,7 +5,7 @@
 import { devtools } from '../../src/content-script/devtools/devtools';
 /* @endif */
 
-import { startAssistant } from '../../src/content-script/assistant/start-assistant';
+import { startAssistant } from '../../src/content-script/assistant';
 
 startAssistant();
 
