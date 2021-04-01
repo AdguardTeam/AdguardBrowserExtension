@@ -1,10 +1,14 @@
 (function(source, args){
 function GoogleSyndicationAdsByGoogle(source) {
     window.adsbygoogle = {
-      length: 0,
+      // https://github.com/AdguardTeam/Scriptlets/issues/113
+      // length: 0,
       loaded: true,
       push: function push() {
-        this.length += 1;
+        if (typeof this.length === 'undefined') {
+          this.length = 0;
+          this.length += 1;
+        }
       }
     };
     var adElems = document.querySelectorAll('.adsbygoogle');
@@ -33,13 +37,13 @@ function GoogleSyndicationAdsByGoogle(source) {
         // here we do the job if scriptlet has not been executed earlier
         adElems[i].setAttribute(statusAttrName, 'done');
         var aswiftIframe = document.createElement('iframe');
-        aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i + 1);
+        aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
         aswiftIframe.style = css;
         adElems[i].appendChild(aswiftIframe);
         var innerAswiftIframe = document.createElement('iframe');
         aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
         var googleadsIframe = document.createElement('iframe');
-        googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i + 1);
+        googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
         googleadsIframe.style = css;
         adElems[i].appendChild(googleadsIframe);
         var innerGoogleadsIframe = document.createElement('iframe');

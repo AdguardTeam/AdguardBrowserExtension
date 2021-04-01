@@ -24,6 +24,10 @@ function preventFab(source) {
     };
 
     Fab.prototype.setOption = noopFunc;
+    Fab.prototype.options = {
+      set: noopFunc,
+      get: noopFunc
+    };
     var fab = new Fab();
     var getSetFab = {
       get: function get() {
