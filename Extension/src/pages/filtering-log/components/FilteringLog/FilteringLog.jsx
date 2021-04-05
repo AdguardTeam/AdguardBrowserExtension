@@ -14,7 +14,7 @@ import { FilteringEvents } from '../FilteringEvents';
 import '../../styles/styles.pcss';
 
 const FilteringLog = observer(() => {
-    const { logStore } = useContext(rootStore);
+    const { wizardStore, logStore } = useContext(rootStore);
 
     useAppearanceTheme(logStore.appearanceTheme);
 
@@ -37,6 +37,13 @@ const FilteringLog = observer(() => {
         };
 
         handleHashChange();
+
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                wizardStore.closeModal();
+            }
+        };
+        window.addEventListener('keydown', onKeyDown);
 
         window.addEventListener('hashchange', handleHashChange);
 
