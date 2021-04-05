@@ -15,8 +15,7 @@ const EventsSearch = observer(() => {
     };
 
     const changeHandler = (e) => {
-        const trimmed = e.currentTarget.value.trim();
-        logStore.setEventsSearchValue(trimmed);
+        logStore.setEventsSearchValue(e.currentTarget.value);
     };
 
     const handleClear = () => {
@@ -34,7 +33,7 @@ const EventsSearch = observer(() => {
                 name="events-search"
                 placeholder={reactTranslator.getMessage('filtering_log_search_string')}
                 onChange={changeHandler}
-                defaultValue={logStore.eventsSearchValue}
+                value={logStore.eventsSearchValue}
             />
             {logStore.eventsSearchValue
             && (
