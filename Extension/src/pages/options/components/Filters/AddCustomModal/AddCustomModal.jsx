@@ -155,7 +155,7 @@ const AddCustomModal = ({
             >
                 <form className="modal__content" onSubmit={handleApprove}>
                     <div className="modal__row">
-                        <div className="modal__cell">{reactTranslator.getMessage('options_popup_filter_title')}</div>
+                        <div className="modal__cell modal__cell--title">{reactTranslator.getMessage('options_popup_filter_title')}</div>
                         <input
                             className="modal__input"
                             type="text"

@@ -84,13 +84,17 @@
         line-height: 22px;
 
         &:first-child {
-            width: 130px;
+            width: 160px;
             padding-right: 10px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             flex-grow: 0;
             flex-shrink: 0;
+        }
+
+        &--title {
+            padding-top: 7px;
         }
 
         &--url {
@@ -102,5 +106,17 @@
         font-size: 17px;
         margin-bottom: 15px;
         font-weight: 600;
+    }
+}
+
+.light-mode {
+    .modal__desc {
+        color: rgba(27, 27, 27, 0.9);
+    }
+}
+
+.dark-mode {
+    .modal__desc {
+        color: var(--gray300);
     }
 }
