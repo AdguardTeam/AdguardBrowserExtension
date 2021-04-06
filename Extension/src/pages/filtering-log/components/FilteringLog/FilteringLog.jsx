@@ -14,7 +14,7 @@ import { FilteringEvents } from '../FilteringEvents';
 import '../../styles/styles.pcss';
 
 const FilteringLog = observer(() => {
-    const { logStore } = useContext(rootStore);
+    const { wizardStore, logStore } = useContext(rootStore);
 
     useAppearanceTheme(logStore.appearanceTheme);
 
@@ -115,7 +115,8 @@ const FilteringLog = observer(() => {
     return (
         <>
             <Icons />
-            <RequestModal />
+            {wizardStore.isModalOpen
+            && <RequestModal />}
             <Filters />
             <FilteringEvents />
         </>
