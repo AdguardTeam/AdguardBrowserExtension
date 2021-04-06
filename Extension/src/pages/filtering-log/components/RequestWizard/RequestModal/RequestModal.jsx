@@ -20,12 +20,14 @@ const RequestModal = observer(() => {
     const onKeyUp = (e) => {
         if (e.key === 'Escape') {
             wizardStore.closeModal();
-            window.removeEventListener('keyup', onKeyUp);
         }
     };
 
     useEffect(() => {
         window.addEventListener('keyup', onKeyUp);
+        return () => {
+            window.removeEventListener('keyup', onKeyUp);
+        };
     }, []);
 
     const DEFAULT_MODAL_WIDTH_PX = 460;
