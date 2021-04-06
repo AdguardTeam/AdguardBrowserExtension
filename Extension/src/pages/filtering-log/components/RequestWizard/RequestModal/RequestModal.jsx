@@ -1,5 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useContext, useState, useRef } from 'react';
+import React, {
+    useContext, useState, useRef, useEffect,
+} from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
@@ -15,6 +17,17 @@ Modal.setAppElement('#root');
 
 const RequestModal = observer(() => {
     const { wizardStore } = useContext(rootStore);
+    const onKeyUp = (e) => {
+        if (e.key === 'Escape') {
+            wizardStore.closeModal();
+            window.removeEventListener('keyup', onKeyUp);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('keyup', onKeyUp);
+    }, []);
+
     const DEFAULT_MODAL_WIDTH_PX = 460;
     const MAX_MODAL_WIDTH_RATIO = 0.75;
 

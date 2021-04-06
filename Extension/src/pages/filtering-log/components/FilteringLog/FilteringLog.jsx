@@ -38,13 +38,6 @@ const FilteringLog = observer(() => {
 
         handleHashChange();
 
-        const onKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                wizardStore.closeModal();
-            }
-        };
-        window.addEventListener('keydown', onKeyDown);
-
         window.addEventListener('hashchange', handleHashChange);
 
         return function onUnmount() {
@@ -122,7 +115,8 @@ const FilteringLog = observer(() => {
     return (
         <>
             <Icons />
-            <RequestModal />
+            {wizardStore.isModalOpen
+            && <RequestModal />}
             <Filters />
             <FilteringEvents />
         </>
