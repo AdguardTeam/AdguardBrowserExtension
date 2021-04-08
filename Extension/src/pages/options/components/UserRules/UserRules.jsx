@@ -126,6 +126,7 @@ const UserRules = observer(() => {
                         </a>
                     ),
                 })}
+                descDark
             />
             <Editor
                 name="user-rules"

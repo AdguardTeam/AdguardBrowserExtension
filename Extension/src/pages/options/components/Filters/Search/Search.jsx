@@ -82,12 +82,14 @@ const Search = observer(() => {
                     <Icon id="#cross" classname="search__cross" />
                 </button>
             )}
-            <Select
-                id="search-select"
-                handler={searchSelectHandler}
-                options={options}
-                value={searchSelect}
-            />
+            <div className="search__select">
+                <Select
+                    id="search-select"
+                    handler={searchSelectHandler}
+                    options={options}
+                    value={searchSelect}
+                />
+            </div>
         </div>
     );
 });

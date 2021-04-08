@@ -32,6 +32,10 @@
         background-size: 10px, 9px;
         cursor: pointer;
 
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray700);
+        }
+
         &:before {
             content: "";
             position: absolute;
@@ -62,6 +66,8 @@
 .light-mode {
     .checkbox {
         &__label {
+            background-color: var(--gray300);
+
             &:before {
                 background-color: var(--white);
             }
@@ -73,6 +79,8 @@
 .dark-mode {
     .checkbox {
         &__label {
+            background-color: var(--gray700);
+
             &:before {
                 background-color: var(--black);
             }

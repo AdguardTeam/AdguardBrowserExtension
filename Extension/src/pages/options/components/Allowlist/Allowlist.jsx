@@ -90,6 +90,7 @@ const Allowlist = observer(() => {
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
                 description={reactTranslator.getMessage('options_allowlist_desc')}
+                descDark
             >
                 <SettingsSet
                     title={reactTranslator.getMessage('options_allowlist_invert')}

@@ -123,6 +123,7 @@ const Stealth = observer(() => {
 
             <SettingsSection
                 title={reactTranslator.getMessage('context_miscellaneous_settings')}
+                subTitle
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSet
