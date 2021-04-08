@@ -201,6 +201,11 @@ export const settingsProvider = (function () {
     const applyStealthModeSection = (section) => {
         const set = section['stealth'];
 
+        if (!set) {
+            // use default settings
+            return;
+        }
+
         settings.setDisableStealthMode(!!set['stealth_disable_stealth_mode']);
         settings.setHideReferrer(!!set['stealth-hide-referrer']);
         settings.setHideSearchQueries(!!set['stealth-hide-search-queries']);
@@ -468,6 +473,7 @@ export const settingsProvider = (function () {
             onFinished(true);
             return true;
         } catch (e) {
+            log.error(e);
             onFinished(false);
             return false;
         }

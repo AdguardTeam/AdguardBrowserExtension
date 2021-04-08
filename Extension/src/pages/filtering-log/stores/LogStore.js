@@ -341,7 +341,13 @@ class LogStore {
     getEventsByTabId = async (tabId) => {
         const filteringInfo = await messenger.getFilteringInfoByTabId(tabId);
         runInAction(() => {
-            this.filteringEvents = filteringInfo?.filteringEvents || [];
+            const filteringEvents = filteringInfo?.filteringEvents;
+            if (filteringEvents) {
+                this.filteringEvents = filteringEvents
+                    .map((filteringEvent) => this.formatEvent(filteringEvent));
+            } else {
+                this.filteringEvents = [];
+            }
         });
     };
 

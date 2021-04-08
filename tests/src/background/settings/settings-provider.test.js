@@ -118,4 +118,14 @@ describe('settingsProvider', () => {
         expect(success).toBeTruthy();
         expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.SYSTEM);
     });
+
+    it('handles settings without stealth section', async () => {
+        const obj = JSON.parse(adgSettings);
+        delete obj['stealth'];
+
+        const success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(success).toBeTruthy();
+        // default value is true
+        expect(settings.getDisableStealthMode()).toBeTruthy();
+    });
 });

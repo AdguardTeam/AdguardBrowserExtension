@@ -28,7 +28,6 @@ import { userrules } from '../../src/background/filter/userrules';
 import { webrequest } from '../../src/background/webrequest';
 import { requestSanitizer } from '../../src/background/filter/request-sanitizer';
 import { localeDetect } from '../../src/background/filter/services/locale-detect';
-import { messageHandler } from '../../src/background/message-handler';
 import { backgroundPage } from '../../src/background/extension-api/background-page';
 
 /**
@@ -269,7 +268,6 @@ export const adguardApi = (function () {
     webrequest.init();
     requestSanitizer.init();
     localeDetect.init();
-    messageHandler.init();
 
     const handleMessage = async (message) => {
         if (message.type === 'openAssistantInTab') {
