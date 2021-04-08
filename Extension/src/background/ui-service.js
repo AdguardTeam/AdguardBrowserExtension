@@ -836,21 +836,12 @@ export const uiService = (function () {
      * We do it dynamically and not include assistant file into the default content scripts
      * in order to reduce the overall memory usage.
      *
-     * Browsers that do not support `tabs.executeScript` function use Assistant from the manifest
-     * file manually (Safari for instance).
-     * After executing the Assistant code in callback the `initAssistant` function is called.
-     * It sends messages to current tab and runs Assistant. Other browsers call `initAssistant`
-     * function manually.
-     *
      * @param {boolean} selectElement - if true select the element on which the Mousedown event was
      */
     const openAssistant = async (selectElement) => {
-        if (tabsApi.executeScriptFile) {
-            initAssistant(selectElement);
-        } else {
-            // Manually start assistant
-            initAssistant(selectElement);
-        }
+        // Load Assistant code to the activate tab immediately
+        await tabsApi.executeScriptFile(null, { file: '/pages/assistant.js' });
+        initAssistant(selectElement);
     };
 
     const init = () => {
