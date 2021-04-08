@@ -368,13 +368,13 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT: {
                 filteringLog.addCookieEvent(
                     sender.tab,
-                    message.cookieName,
+                    data.cookieName,
                     null,
-                    message.cookieDomain,
+                    data.cookieDomain,
                     RequestType.Document,
-                    new TSUrlFilter.NetworkRule(message.ruleText, message.filterId),
+                    new TSUrlFilter.NetworkRule(data.ruleText, data.filterId),
                     false,
-                    message.thirdParty,
+                    data.thirdParty,
                 );
                 break;
             }
