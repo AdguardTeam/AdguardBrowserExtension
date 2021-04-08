@@ -15,12 +15,15 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguardAssistant */
+import { adguardAssistant } from '@adguard/assistant';
 
-import 'adguard-assistant';
-import { contentPage } from '../content-script';
+import { contentPage } from './content-script';
 
 export const startAssistant = () => {
+    if (global.assistantStarted) {
+        return;
+    }
+
     if (window.top !== window || !(document.documentElement instanceof HTMLElement)) {
         return;
     }
@@ -73,4 +76,7 @@ export const startAssistant = () => {
                 break;
         }
     });
+
+    // do not start assistant twice
+    global.assistantStarted = true;
 };
