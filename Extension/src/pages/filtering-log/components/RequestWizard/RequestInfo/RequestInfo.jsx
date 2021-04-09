@@ -56,6 +56,32 @@ const getType = (selectedEvent) => {
     return getRequestType(selectedEvent.requestType);
 };
 
+/**
+ * Returns rule text
+ * @param selectedEvent
+ * @return {string|undefined}
+ */
+const getRule = (selectedEvent) => {
+    const replaceRules = selectedEvent?.replaceRules;
+    if (replaceRules && replaceRules.length > 0) {
+        return replaceRules.map((rule) => rule.ruleText).join('\n');
+    }
+    return selectedEvent?.requestRule?.ruleText;
+};
+
+/**
+ * Returns field title for one rule or many rules
+ * @param selectedEvent
+ * @return {string}
+ */
+const getRuleFieldTitle = (selectedEvent) => {
+    const replaceRules = selectedEvent?.replaceRules;
+    if (replaceRules && replaceRules.length > 0) {
+        reactTranslator.getMessage('filtering_modal_rules');
+    }
+    return reactTranslator.getMessage('filtering_modal_rule');
+};
+
 const PARTS = {
     URL: 'URL',
     ELEMENT: 'ELEMENT',
@@ -96,8 +122,8 @@ const RequestInfo = observer(() => {
             data: selectedEvent.frameDomain,
         },
         [PARTS.RULE]: {
-            title: reactTranslator.getMessage('filtering_modal_rule'),
-            data: selectedEvent?.requestRule?.ruleText,
+            title: getRuleFieldTitle(selectedEvent),
+            data: getRule(selectedEvent),
         },
         // TODO add converted rule text
         [PARTS.FILTER]: {
