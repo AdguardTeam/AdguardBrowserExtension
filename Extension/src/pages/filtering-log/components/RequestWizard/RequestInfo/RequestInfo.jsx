@@ -77,7 +77,7 @@ const getRule = (selectedEvent) => {
 const getRuleFieldTitle = (selectedEvent) => {
     const replaceRules = selectedEvent?.replaceRules;
     if (replaceRules && replaceRules.length > 0) {
-        reactTranslator.getMessage('filtering_modal_rules');
+        return reactTranslator.getMessage('filtering_modal_rules');
     }
     return reactTranslator.getMessage('filtering_modal_rule');
 };
