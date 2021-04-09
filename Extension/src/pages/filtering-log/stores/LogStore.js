@@ -9,6 +9,7 @@ import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 import identity from 'lodash/identity';
 import throttle from 'lodash/throttle';
+import truncate from 'lodash/truncate';
 
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { RequestTypes } from '../../../background/utils/request-types';
@@ -311,9 +312,14 @@ class LogStore {
     }
 
     getTabs = () => {
+        const MAX_TITLE_LENGTH = 60;
         return Object.values(this.tabsMap)
-            .filter((tab) => !tab.isExtensionTab);
-    }
+            .filter((tab) => !tab.isExtensionTab)
+            .map(({ title, tabId }) => {
+                const updatedTitle = truncate(title, { length: MAX_TITLE_LENGTH });
+                return { title: updatedTitle, tabId };
+            });
+    };
 
     @action
     setSelectIsOpenState = (value) => {
@@ -470,7 +476,7 @@ class LogStore {
             return dirtyString;
         }
         return String(num) === dirtyString ? num : dirtyString;
-    }
+    };
 
     @action
     setSelectedEventById = (eventIdString) => {

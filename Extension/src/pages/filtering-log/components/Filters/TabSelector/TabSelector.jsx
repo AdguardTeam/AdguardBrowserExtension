@@ -67,7 +67,7 @@ const TabSelector = observer(() => {
                         onChange={selectionHandler}
                         value={selectedTabId || ''}
                     >
-                        {renderOptions(tabs)}
+                        {renderOptions()}
                     </select>
                 </label>
             </div>
