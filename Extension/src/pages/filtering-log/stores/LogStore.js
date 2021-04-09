@@ -301,10 +301,12 @@ class LogStore {
 
         // clear events
         if (filteringEvent.requestType === RequestTypes.DOCUMENT
-            && !filteringEvent?.requestRule?.isModifyingCookieRule
+            && !filteringEvent?.requestRule?.cookieRule
             && !filteringEvent.element
             && !filteringEvent.script
             && !this.preserveLogEnabled) {
+            this.bufferOfAddedEvents = [];
+            this.bufferOfUpdatedEvents = [];
             this.filteringEvents = [];
         }
 
