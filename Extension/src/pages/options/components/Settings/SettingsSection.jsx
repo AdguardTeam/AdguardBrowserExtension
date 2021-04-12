@@ -10,7 +10,6 @@ const SettingsSection = (props) => {
         children,
         disabled,
         subTitle,
-        descDark,
     } = props;
 
     const settingGroupClassName = classNames('settings__group', {
@@ -26,10 +25,6 @@ const SettingsSection = (props) => {
         'title--sub': subTitle,
     });
 
-    const descClass = classNames('desc', {
-        'desc--dark': descDark,
-    });
-
     return (
         <div className={settingGroupClassName} key={title}>
             <div className={titleContainerClass}>
@@ -37,7 +32,7 @@ const SettingsSection = (props) => {
                 {title && <h2 className={titleClass}>{title}</h2>}
                 {renderInlineControl?.()}
             </div>
-            {description && <div className={descClass}>{description}</div>}
+            {description && <div className="desc">{description}</div>}
             <div>
                 {children}
             </div>
