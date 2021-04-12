@@ -31,14 +31,14 @@ const SettingsSection = (props) => {
     });
 
     return (
-        <div key={title}>
+        <div className={settingGroupClassName} key={title}>
             <div className={titleContainerClass}>
                 {renderBackButton?.()}
                 {title && <h2 className={titleClass}>{title}</h2>}
                 {renderInlineControl?.()}
             </div>
             {description && <div className={descClass}>{description}</div>}
-            <div className={settingGroupClassName}>
+            <div>
                 {children}
             </div>
         </div>
