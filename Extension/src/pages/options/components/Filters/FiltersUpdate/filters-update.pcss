@@ -7,7 +7,6 @@
     &__info {
         text-align: right;
         font-size: 16px;
-        font-weight: 600;
         display: flex;
         flex-direction: column;
         margin-right: 8px;
@@ -15,10 +14,11 @@
 
     &__desc {
         font-size: 14px;
-        opacity: 0.5;
+        color: var(--gray700);
         margin-top: 5px;
 
         @media (prefers-color-scheme: dark) {
+            opacity: 0.5;
             color: var(--white);
         }
     }
@@ -38,13 +38,15 @@
 
 .light-mode {
     .filters-update__desc {
-        color: var(--gray300);
+        opacity: 1;
+        color: var(--gray700);
     }
 }
 
 .dark-mode {
     .filters-update__desc {
         color: var(--white);
+        opacity: 0.5;
     }
 }
 

@@ -37,6 +37,10 @@
             box-shadow: none;
             width: auto;
         };
+
+        @media (prefers-color-scheme: dark) {
+            border: 1px solid var(--gray900);
+        }
     }
 
     & label {
@@ -88,5 +92,17 @@
         @media (min-width: 1675px) {
             display: none;
         }
+    }
+}
+
+.light-mode {
+    .miscellaneous-filters__filters {
+        border: 0;
+    }
+}
+
+.dark-mode {
+    .miscellaneous-filters__filters {
+        border: 1px solid var(--gray900);
     }
 }
