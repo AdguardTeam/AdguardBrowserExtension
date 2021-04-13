@@ -11,13 +11,15 @@ import './filters.pcss';
 const Filters = () => {
     return (
         <div className="filters">
-            <Actions />
-            <div className="filters__tab-selector">
-                <TabSelector />
-            </div>
+            <div className="filters__nav">
+                <Actions />
+                <div className="filters__tab-selector">
+                    <TabSelector />
+                </div>
 
-            <div className="filters__events-search">
-                <EventsSearch />
+                <div className="filters__events-search">
+                    <EventsSearch />
+                </div>
             </div>
 
             <div className="hr" />
