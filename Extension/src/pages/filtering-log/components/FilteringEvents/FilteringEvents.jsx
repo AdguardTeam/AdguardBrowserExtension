@@ -73,7 +73,11 @@ const urlAccessor = (props) => {
 };
 
 const typeAccessor = (props) => {
-    const { requestType, requestThirdParty, requestRule } = props;
+    const {
+        requestType,
+        requestThirdParty,
+        requestRule,
+    } = props;
 
     let formattedRequestType;
     if (requestRule?.isModifyingCookieRule) {

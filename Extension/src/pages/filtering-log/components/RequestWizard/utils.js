@@ -95,6 +95,8 @@ export const getRequestType = (requestType) => {
             return 'CSP';
         case 'COOKIE':
             return 'Cookie';
+        case 'PING':
+            return 'Ping';
         case 'OTHER':
             return 'Other';
         default:

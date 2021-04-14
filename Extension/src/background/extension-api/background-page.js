@@ -198,6 +198,14 @@ export const backgroundPage = (() => {
         }
 
         /**
+         * ping type is 'ping' in Chrome
+         * but Firefox considers it as 'beacon'
+         */
+        if (requestType === 'BEACON') {
+            requestType = RequestTypes.PING;
+        }
+
+        /**
          * Use `OTHER` type as a fallback
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/777
          */
