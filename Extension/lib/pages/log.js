@@ -752,7 +752,11 @@ const RequestWizard = (function () {
         });
 
         // there is nothing to open if log event reveals blocked element or cookie
-        if (filteringEvent.element || filteringEvent.cookieName || filteringEvent.script) {
+        if (filteringEvent.element
+            || filteringEvent.cookieName
+            || filteringEvent.script
+            || filteringEvent.cspReportBlocked
+        ) {
             openRequestButton.style.display = 'none';
         }
 
@@ -1213,7 +1217,11 @@ PageController.prototype = {
             metadata.class += ' yellow';
         }
 
-        if (event.requestRule && !event.replaceRules) {
+        if (event.cspReportBlocked) {
+            metadata.class += ' red';
+        }
+
+        if (event.requestRule && !event.replaceRules && !event.cspReportBlocked) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule || event.requestRule.scriptRule) {

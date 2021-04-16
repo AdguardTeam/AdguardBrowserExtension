@@ -54,6 +54,7 @@
      * @property {number} contentModifyingState - Is content modification started
      * @property {Map<object, string[]>} elements - Content rules attached elements
      * @property {number} stealthActions - Applied stealth actions
+     * @property {boolean} cspReportBlocked - Blocked because is csp report request
      */
 
     /**
@@ -168,7 +169,6 @@
      * @param {RequestContext} update
      */
     const update = (requestId, update) => {
-
         const context = contexts.get(requestId);
         if (!context) {
             return;
@@ -212,6 +212,10 @@
         }
         if ('modifiedResponseHeaders' in update) {
             context.modifiedResponseHeaders = copyHeaders(update.modifiedResponseHeaders);
+        }
+
+        if ('cspReportBlocked' in update) {
+            context.cspReportBlocked = update.cspReportBlocked;
         }
     };
 
@@ -271,9 +275,12 @@
 
             context.requestState = States.NONE;
 
-            const requestRule = context.requestRule;
-            const cspRules = context.cspRules;
-            const stealthActions = context.stealthActions;
+            const {
+                requestRule,
+                cspRules,
+                stealthActions,
+                cspReportBlocked,
+            } = context;
 
             if (requestRule) {
                 adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, context.eventId);
@@ -289,6 +296,10 @@
 
             if (stealthActions) {
                 adguard.filteringLog.bindStealthActionsToHttpRequestEvent(tab, stealthActions, context.eventId);
+            }
+
+            if (cspReportBlocked) {
+                adguard.filteringLog.bindCspReportBlockedToHttpRequestEvent(tab, cspReportBlocked, context.eventId);
             }
         }
 
