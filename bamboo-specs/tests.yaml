@@ -1,0 +1,52 @@
+---
+version: 2
+plan:
+  project-key: ADGEXT
+  key: BETESTSPECS
+  name: browser extension - test
+variables:
+  dockerNode: node:15.14.0-buster-slim
+
+stages:
+  - Test:
+      manual: 'false'
+      final: 'false'
+      jobs:
+        - Test
+
+Test:
+  key: TEST
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+  tasks:
+    - checkout:
+        force-clean-build: 'true'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -alt
+            yarn install ${system.YARN_ARGS}
+            yarn dev
+  final-tasks:
+    - clean
+  requirements:
+    - adg-docker: 'true'
+
+branches:
+  create: for-pull-request
+  delete:
+    after-deleted-days: '1'
+    after-inactive-days: '5'
+  link-to-jira: 'true'
+
+notifications: []
+labels: []
+other:
+  concurrent-build-plugin: system-default
