@@ -32,10 +32,9 @@ Test:
             set -x
             set -e
             ls -alt
+
             yarn install ${system.YARN_ARGS}
             yarn dev
-  final-tasks:
-    - clean
   requirements:
     - adg-docker: 'true'
 
