@@ -422,7 +422,9 @@
     /**
      * Intercepts csp_report requests.
      * Check the URL of the report.
+     * For chromium and firefox:
      * If it's sent to a third party, block it right away.
+     * For firefox only:
      * If it contains moz://extension with our extension ID, block it as well.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1792
      * @param {RequestDetails} details
@@ -453,15 +455,17 @@
         }
 
         // block if requestBody contains moz://extension with our extension ID
-        try {
-            const extensionUrl = adguard.app.getExtensionUrl();
-            const report = String.fromCharCode.apply(null, new Uint8Array(requestBody.raw[0].bytes));
-            if (report.indexOf(extensionUrl) !== -1) {
-                adguard.requestContextStorage.update(requestId, { cspReportBlocked: true });
-                return { cancel: true };
+        if (adguard.utils.browser.isFirefoxBrowser()) {
+            try {
+                const extensionUrl = adguard.app.getExtensionUrl();
+                const report = String.fromCharCode.apply(null, new Uint8Array(requestBody.raw[0].bytes));
+                if (report.indexOf(extensionUrl) !== -1) {
+                    adguard.requestContextStorage.update(requestId, { cspReportBlocked: true });
+                    return { cancel: true };
+                }
+            } catch (e) {
+                adguard.console.debug('Unable to parse CSP report request body content', details.url);
             }
-        } catch (e) {
-            adguard.console.debug('Unable to parse CSP report request body content', details.url);
         }
     }
 
@@ -469,17 +473,16 @@
      * Add listeners described above.
      */
     adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ['<all_urls>']);
+
     /**
      * Handler for csp reports urls
      */
-    if (adguard.utils.browser.isFirefoxBrowser()) {
-        adguard.webRequest.onBeforeRequest.addListener(
-            handleCspReportRequests,
-            ['<all_urls>'],
-            ['csp_report'],
-            ['requestBody']
-        );
-    }
+    adguard.webRequest.onBeforeRequest.addListener(
+        handleCspReportRequests,
+        ['<all_urls>'],
+        ['csp_report'],
+        ['requestBody']
+    );
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ['<all_urls>']);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ['<all_urls>']);
 
