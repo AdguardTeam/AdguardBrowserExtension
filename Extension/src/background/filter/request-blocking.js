@@ -206,7 +206,8 @@ export const webRequestService = (function () {
         return requestRule
             && !requestRule.isWhitelist()
             && !requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Replace)
-            && !requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect);
+            && !requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect)
+            && !requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.RedirectRule);
     };
 
     /**
@@ -264,8 +265,8 @@ export const webRequestService = (function () {
             }
         // check if request rule is blocked by rule and is redirect rule
         } else if (requestRule && !requestRule.isWhitelist()) {
-            if (requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect)) {
-                // eslint-disable-next-line max-len
+            if (requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect)
+                || requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.RedirectRule)) {
                 const redirectUrl = redirectService.createRedirectUrl(requestRule.getAdvancedModifierValue());
                 if (redirectUrl) {
                     return { redirectUrl };
