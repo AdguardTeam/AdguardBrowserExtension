@@ -216,6 +216,10 @@ const browser = window.browser || chrome;
         }
         requestDetails.originUrl = details.originUrl || details.initiator;
 
+        if (details.requestBody) {
+            requestDetails.requestBody = details.requestBody;
+        }
+
         return requestDetails;
     }
 
@@ -225,8 +229,25 @@ const browser = window.browser || chrome;
          * It prepares requestDetails and passes them to the callback
          * @param callback callback function receives {RequestDetails} and handles event
          * @param {String} urls url match pattern https://developer.chrome.com/extensions/match_patterns
+         * @param {string[]} types
+         * @param {string[]} extraInfoSpecsDirty
          */
-        addListener(callback, urls) {
+        addListener(callback, urls, types, extraInfoSpecsDirty) {
+            const filters = {};
+            if (urls) {
+                filters.urls = urls;
+            }
+            if (types) {
+                filters.types = types;
+            }
+
+            const extraInfoSpec = ['blocking'];
+            if (extraInfoSpecsDirty && extraInfoSpecsDirty.length > 0) {
+                extraInfoSpecsDirty.forEach((spec) => {
+                    extraInfoSpec.push(spec);
+                });
+            }
+
             // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
             browser.webRequest.onBeforeRequest.addListener((details) => {
                 if (shouldSkipRequest(details)) {
@@ -235,7 +256,7 @@ const browser = window.browser || chrome;
 
                 const requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
-            }, urls ? { urls } : {}, ['blocking']);
+            }, filters, extraInfoSpec);
         },
     };
 

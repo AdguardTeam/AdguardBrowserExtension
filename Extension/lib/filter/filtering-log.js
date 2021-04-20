@@ -428,6 +428,36 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     * Binds cspReportBlocked to HTTP request
+     *
+     * @param {object} tab Request tab
+     * @param {boolean} cspReportBlocked - boolean flag indicating if request was blocked, because it was csp report
+     * @param {number} eventId Event identifier
+     */
+    const bindCspReportBlockedToHttpRequestEvent = (tab, cspReportBlocked, eventId) => {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    event.cspReportBlocked = cspReportBlocked;
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
+            }
+        }
+    };
+
+    /**
      * Remove log requests for tab
      * @param tabId
      */
@@ -531,6 +561,7 @@ adguard.filteringLog = (function (adguard) {
         addCookieEvent,
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
+        bindCspReportBlockedToHttpRequestEvent,
         clearEventsByTabId,
 
         isOpen,
