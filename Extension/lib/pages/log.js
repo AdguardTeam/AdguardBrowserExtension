@@ -563,7 +563,14 @@ const RequestWizard = (function () {
      * @param {String} requestType
      * @returns {String}
      */
-    const getRequestType = function (requestType) {
+    const getRequestType = function (event) {
+        // By default csp requests in firefox have other request type, but if event cspReportBlocked is true
+        // we consider such request to have "CSP report" type
+        if (event.cspReportBlocked) {
+            return 'CSP report';
+        }
+
+        const { requestType } = event;
         switch (requestType) {
             case 'DOCUMENT':
             case 'SUBDOCUMENT':
@@ -670,7 +677,7 @@ const RequestWizard = (function () {
             cookieNode.parentNode.style.display = 'none';
         }
 
-        template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent.requestType);
+        template.querySelector('[attr-text="requestType"]').textContent = getRequestType(filteringEvent);
         template.querySelector('[attr-text="frameDomain"]').textContent = getSource(filteringEvent.frameDomain);
         if (!filteringEvent.frameDomain) {
             template.querySelector('[attr-text="frameDomain"]').closest('li').style.display = 'none';
@@ -752,7 +759,10 @@ const RequestWizard = (function () {
         });
 
         // there is nothing to open if log event reveals blocked element or cookie
-        if (filteringEvent.element || filteringEvent.cookieName || filteringEvent.script) {
+        if (filteringEvent.element
+            || filteringEvent.cookieName
+            || filteringEvent.script
+        ) {
             openRequestButton.style.display = 'none';
         }
 
@@ -785,7 +795,9 @@ const RequestWizard = (function () {
         });
 
         if (!requestRule) {
-            blockRequestButton.classList.remove('hidden');
+            if (!filteringEvent.cspReportBlocked) {
+                blockRequestButton.classList.remove('hidden');
+            }
         } else if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
             removeUserFilterRuleButton.classList.remove('hidden');
             if (requestRule.whiteListRule) {
@@ -1213,7 +1225,11 @@ PageController.prototype = {
             metadata.class += ' yellow';
         }
 
-        if (event.requestRule && !event.replaceRules) {
+        if (event.cspReportBlocked) {
+            metadata.class += ' red';
+        }
+
+        if (event.requestRule && !event.replaceRules && !event.cspReportBlocked) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule || event.requestRule.scriptRule) {
@@ -1267,7 +1283,7 @@ PageController.prototype = {
                 ${metadata.class ? `class="${metadata.class}"` : ''}>
                 <td>${requestInfo}</td>
                 <td>
-                    ${RequestWizard.getRequestType(event.requestType)}
+                    ${RequestWizard.getRequestType(event)}
                     ${thirdPartyDetails}
                 </td>
                 <td>${ruleText || ''}</td>
