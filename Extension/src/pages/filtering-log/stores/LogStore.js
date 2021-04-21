@@ -166,17 +166,10 @@ class LogStore {
 
     @action
     selectOneEventTypesFilter = (name) => {
-        const isMultipleFiltersSelected = this.eventTypesFilters
-            .filter((filter) => filter.enabled).length > 1;
-
+        // disable all except current
         this.eventTypesFilters.forEach((filter) => {
-            if (filter.name === name) {
-                // eslint-disable-next-line no-param-reassign
-                filter.enabled = isMultipleFiltersSelected ? true : !filter.enabled;
-            } else {
-                // eslint-disable-next-line no-param-reassign
-                filter.enabled = false;
-            }
+            // eslint-disable-next-line no-param-reassign
+            filter.enabled = filter.name === name;
         });
     };
 
