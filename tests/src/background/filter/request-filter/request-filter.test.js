@@ -586,42 +586,42 @@ describe('RequestFilter', () => {
             css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('#generic, .non-generic { display: none!important; }');
-            css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
+            css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionSpecificCSS).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.non-generic { display: none!important; }');
 
             css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.generic-one, #generic { display: none!important; }');
-            css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
+            css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionSpecificCSS).css;
             expect(css).toHaveLength(0);
 
             filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule]);
             css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.generic-one, #generic, .non-generic { display: none!important; }');
-            css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
+            css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionSpecificCSS).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.non-generic { display: none!important; }');
 
             css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.generic-one, #generic { display: none!important; }');
-            css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
+            css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionSpecificCSS).css;
             expect(css).toHaveLength(0);
 
             filter = await createRequestFilterWithRules([genericOne, genericTwo, nonGeneric, genericHideRule, elemHideRule]);
             css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.generic-one, #generic, .non-generic { display: none!important; }');
-            css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
+            css = filter.getSelectorsForUrl(testUrl, TSUrlFilter.CosmeticOption.CosmeticOptionSpecificCSS).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.non-generic { display: none!important; }');
 
             css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionAll).css;
             expect(css).toHaveLength(1);
             expect(css[0].trim()).toBe('.generic-one, #generic { display: none!important; }');
-            css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionCSS).css;
+            css = filter.getSelectorsForUrl(anOtherUrl, TSUrlFilter.CosmeticOption.CosmeticOptionSpecificCSS).css;
             expect(css).toHaveLength(0);
         });
     });
