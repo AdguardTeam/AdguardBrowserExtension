@@ -157,14 +157,16 @@ const webrequestInit = function () {
             return { redirectUrl: cleansedUrl };
         }
 
-        cookieService.onBeforeRequest(requestDetails, getCookieRules(requestUrl, referrerUrl));
-
         let requestRule = webRequestService.getRuleForRequest(
             tab,
             requestUrl,
             referrerUrl,
             requestType,
         );
+
+        if (!requestRule.isDocumentWhitelistRule()) {
+            cookieService.onBeforeRequest(requestDetails, getCookieRules(requestUrl, referrerUrl));
+        }
 
         requestRule = webRequestService.postProcessRequest(
             tab,
