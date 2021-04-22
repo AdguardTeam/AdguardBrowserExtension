@@ -59,14 +59,19 @@ const getType = (selectedEvent) => {
 /**
  * Returns rule text
  * @param selectedEvent
- * @return {string|undefined}
+ * @return {string|null}
  */
 const getRule = (selectedEvent) => {
     const replaceRules = selectedEvent?.replaceRules;
     if (replaceRules && replaceRules.length > 0) {
         return replaceRules.map((rule) => rule.ruleText).join('\n');
     }
-    return selectedEvent?.requestRule?.ruleText;
+
+    const requestRule = selectedEvent?.requestRule;
+    if (requestRule?.whitelistRule && requestRule?.documentLevelRule) {
+        return null;
+    }
+    return requestRule?.ruleText || null;
 };
 
 /**
