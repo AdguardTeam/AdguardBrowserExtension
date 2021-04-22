@@ -140,27 +140,36 @@ class LogStore {
 
     @action
     toggleEventTypesFilter = (name) => {
+        // if all filter are enabled, we should disabled them all
+        if (this.eventTypesFilters.every((f) => f.enabled)) {
+            this.eventTypesFilters.forEach((f) => {
+                // eslint-disable-next-line no-param-reassign
+                f.enabled = false;
+            });
+        }
+
         this.eventTypesFilters.forEach((filter) => {
             if (filter.name === name) {
                 // eslint-disable-next-line no-param-reassign
                 filter.enabled = !filter.enabled;
             }
         });
+
+        // if all are disabled, we should turn on "All" button by enabling all filters
+        if (this.eventTypesFilters.every((f) => !f.enabled)) {
+            this.eventTypesFilters.forEach((f) => {
+                // eslint-disable-next-line no-param-reassign
+                f.enabled = true;
+            });
+        }
     };
 
     @action
     selectOneEventTypesFilter = (name) => {
-        const isMultipleFiltersSelected = this.eventTypesFilters
-            .filter((filter) => filter.enabled).length > 1;
-
+        // disable all except current
         this.eventTypesFilters.forEach((filter) => {
-            if (filter.name === name) {
-                // eslint-disable-next-line no-param-reassign
-                filter.enabled = isMultipleFiltersSelected ? true : !filter.enabled;
-            } else {
-                // eslint-disable-next-line no-param-reassign
-                filter.enabled = false;
-            }
+            // eslint-disable-next-line no-param-reassign
+            filter.enabled = filter.name === name;
         });
     };
 

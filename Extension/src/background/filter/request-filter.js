@@ -133,9 +133,9 @@ export const RequestFilter = (() => {
          * @returns {*} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl(url, options, ignoreTraditionalCss, ignoreExtCss) {
-            const domain = utils.url.getDomainName(url);
+            const hostname = utils.url.getHost(url);
 
-            const cosmeticResult = engine.getCosmeticResult(domain, options);
+            const cosmeticResult = engine.getCosmeticResult(hostname, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];

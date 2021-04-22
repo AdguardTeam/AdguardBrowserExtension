@@ -67,17 +67,22 @@ const UserRules = observer(() => {
                 const selection = editor.getSelection();
                 const ranges = selection.getAllRanges();
 
-                const rowsToToggle = ranges
+                const rowsSelected = ranges
                     .map((range) => {
                         const [start, end] = [range.start.row, range.end.row];
                         return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
                     })
                     .flat();
 
-                rowsToToggle.forEach((row) => {
+                const allRowsCommented = rowsSelected.every((row) => {
+                    const rowLine = editor.session.getLine(row);
+                    return rowLine.trim().startsWith(SimpleRegex.MASK_COMMENT);
+                });
+
+                rowsSelected.forEach((row) => {
                     const rawLine = editor.session.getLine(row);
-                    // if line starts with comment mark we remove it
-                    if (rawLine.trim().startsWith(SimpleRegex.MASK_COMMENT)) {
+                    // if all lines start with comment mark we remove it
+                    if (allRowsCommented) {
                         const lineWithRemovedComment = rawLine.replace(SimpleRegex.MASK_COMMENT, '');
                         editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
                     // otherwise we add it
