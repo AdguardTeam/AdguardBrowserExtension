@@ -117,16 +117,11 @@ const Filters = observer(() => {
     }, [urlToSubscribe]);
 
     const renderAddFilterBtn = (isEmpty) => {
-        const buttonClass = classNames('button button--m button--green', {
-            'button--empty-custom-filter': isEmpty,
-            'button--add-custom-filter': !isEmpty,
-        });
-
         return (
             <button
                 type="button"
                 onClick={openModalHandler}
-                className={buttonClass}
+                className="button button--m button--green button--add-custom-filter"
             >
                 {reactTranslator.getMessage('options_add_custom_filter')}
             </button>
@@ -160,7 +155,7 @@ const Filters = observer(() => {
                 title={selectedGroup.groupName}
                 renderBackButton={renderBackButton}
             >
-                {isEmpty && isCustom
+                {isEmpty && isCustom && !settingsStore.isSearching
                     ? <EmptyCustom />
                     : (
                         <>
