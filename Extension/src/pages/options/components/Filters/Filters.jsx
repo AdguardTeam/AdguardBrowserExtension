@@ -116,12 +116,17 @@ const Filters = observer(() => {
         }
     }, [urlToSubscribe]);
 
-    const renderAddFilterBtn = () => {
+    const renderAddFilterBtn = (isEmpty) => {
+        const buttonClass = classNames('button button--m button--green', {
+            'button--empty-custom-filter': isEmpty,
+            'button--add-custom-filter': !isEmpty,
+        });
+
         return (
             <button
                 type="button"
                 onClick={openModalHandler}
-                className="button button--m button--green button--add-custom-filter"
+                className={buttonClass}
             >
                 {reactTranslator.getMessage('options_add_custom_filter')}
             </button>
@@ -165,7 +170,7 @@ const Filters = observer(() => {
                     )}
                 {isCustom && (
                     <>
-                        {renderAddFilterBtn(isEmpty)}
+                        {renderAddFilterBtn(isEmpty && !settingsStore.isSearching)}
                         <AddCustomModal
                             closeModalHandler={closeModalHandler}
                             modalIsOpen={modalIsOpen}
