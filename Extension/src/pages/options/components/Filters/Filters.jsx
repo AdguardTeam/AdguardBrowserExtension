@@ -116,7 +116,7 @@ const Filters = observer(() => {
         }
     }, [urlToSubscribe]);
 
-    const renderAddFilterBtn = (isEmpty) => {
+    const renderAddFilterBtn = () => {
         return (
             <button
                 type="button"
