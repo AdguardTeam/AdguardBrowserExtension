@@ -26,13 +26,13 @@ import { RequestTypes } from '../../utils/request-types';
  *
  * @param url
  * @param referrer
- * @return {{filtering: NetworkRule[], stealth: NetworkRule[]}}
+ * @return {NetworkRule[]}
  */
 export const getCookieRules = (url, referrer) => {
     const cookieRules = filteringApi.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
     const stealthCookieRules = stealthService.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
 
-    return { filtering: cookieRules, stealth: stealthCookieRules };
+    return [...cookieRules, ...stealthCookieRules];
 };
 
 /**
