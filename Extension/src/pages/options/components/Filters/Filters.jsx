@@ -160,7 +160,7 @@ const Filters = observer(() => {
                 title={selectedGroup.groupName}
                 renderBackButton={renderBackButton}
             >
-                {isEmpty && isCustom
+                {isEmpty && isCustom && !settingsStore.isSearching
                     ? <EmptyCustom />
                     : (
                         <>
@@ -170,7 +170,7 @@ const Filters = observer(() => {
                     )}
                 {isCustom && (
                     <>
-                        {renderAddFilterBtn(isEmpty)}
+                        {renderAddFilterBtn(isEmpty && !settingsStore.isSearching)}
                         <AddCustomModal
                             closeModalHandler={closeModalHandler}
                             modalIsOpen={modalIsOpen}
