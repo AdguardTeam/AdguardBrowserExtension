@@ -72,7 +72,7 @@ export const stealthService = (() => {
      * @param requestUrl
      * @param referrerUrl
      * @param requestType
-     * @returns CookieRules[]
+     * @returns NetworkRule[]
      */
     const getCookieRules = function (requestUrl, referrerUrl, requestType) {
         if (!canApplyStealthActions(requestUrl, referrerUrl, requestType)) {
