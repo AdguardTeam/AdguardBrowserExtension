@@ -12,6 +12,10 @@
         box-sizing: border-box;
         width: 360px;
 
+        @media (max-width: 640px) {
+            padding-bottom: 12px;
+        }
+
         @media (max-width: 1200px) {
             width: 55%;
         }
@@ -27,6 +31,10 @@
         box-sizing: border-box;
         width: 400px;
 
+        @media (max-width: 640px) {
+            padding-top: 12px;
+        }
+
         @media (max-width: 1579px) {
             width: 45%;
         }
@@ -39,11 +47,19 @@
     &__events-filters {
         padding: 0 0 0 25px;
         display: flex;
+
+        @media (max-width: 640px) {
+            padding: 0 0 0 8px;
+        }
     }
 
     &__miscellaneous-filters {
         margin: 4px 20px 0 auto;
         font-size: 13px;
+
+        @media (max-width: 640px) {
+            margin: 4px 8px 0 auto;
+        }
     }
 
     & .hr {
@@ -73,7 +89,7 @@
         margin: 0 0 16px 0;
 
         @media (max-width: 640px) {
-            margin: 16px 0;
+            margin: 0;
         }
     }
 }
