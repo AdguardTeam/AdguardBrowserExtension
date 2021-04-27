@@ -35,6 +35,52 @@ Test:
 
             yarn install ${system.YARN_ARGS}
             yarn dev
+  artifacts:
+    - name: build.txt
+      location: build
+      pattern: build.txt
+      shared: true
+      required: true
+    - name: chrome.zip
+      location: build
+      pattern: chrome.zip
+      shared: true
+      required: true
+    - name: firefox.zip
+      location: build
+      pattern: firefox.zip
+      shared: true
+      required: true
+    - name: edge.zip
+      location: build
+      pattern: edge.zip
+      shared: true
+      required: true
+    - name: chrome.crx
+      location: build
+      pattern: chrome.crx
+      shared: true
+      required: true
+    - name: firefox.xpi
+      location: build
+      pattern: firefox.xpi
+      shared: true
+      required: true
+    - name: update.json
+      location: build
+      pattern: update.json
+      shared: true
+      required: true
+    - name: update.xml
+      location: build
+      pattern: update.xml
+      shared: true
+      required: true
+    - name: adguard-api.zip
+      location: build
+      pattern: adguard-api.zip
+      shared: true
+      required: true
   requirements:
     - adg-docker: 'true'
 
