@@ -1,0 +1,53 @@
+---
+version: 2
+plan:
+  project-key: ADGEXT
+  key: BEINCRSPECS
+  name: browser extension - increment version
+variables:
+  dockerNode: node:15.14.0-buster-slim
+
+stages:
+  - Increment:
+      manual: 'false'
+      final: 'false'
+      jobs:
+        - Increment
+
+Increment:
+  key: INCR
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+  tasks:
+    - checkout:
+        force-clean-build: 'true'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -alt
+
+            yarn increment
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          commitMessage: 'skipci: Automatic increment build number'
+          selectedRepository: defaultRepository
+  requirements:
+    - adg-docker: 'true'
+
+branches:
+  create: manually
+  delete: never
+  link-to-jira: 'true'
+
+notifications: []
+labels: []
+other:
+  concurrent-build-plugin: system-default

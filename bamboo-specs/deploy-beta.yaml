@@ -1,0 +1,72 @@
+---
+version: 2
+deployment:
+  name: browser extension - deploy beta
+  source-plan: ADGEXT-BEBETASPECS
+release-naming: ${bamboo.inject.version}-beta
+environments:
+  - static.adguard.com
+  - Chrome WebStore
+static.adguard.com:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: 'true'
+    - artifact-download:
+        artifacts:
+          - {}
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-beta
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa
+
+Chrome WebStore:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: 'true'
+    - artifact-download:
+        artifacts:
+          - {}
+    - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+            set -x
+            set -e
+            ls -la
+
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa
