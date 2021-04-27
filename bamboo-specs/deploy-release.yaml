@@ -75,6 +75,10 @@ Chrome WebStore:
             url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa
 
 Addons Mozilla:
+  docker:
+    image: node:15.14.0-buster-slim
+    volumes:
+      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
   triggers: []
   tasks:
     - clean
@@ -98,7 +102,6 @@ Addons Mozilla:
         interpreter: SHELL
         scripts:
           - |-
-            #!/bin/bash
             set -x
             set -e
             ls -la
