@@ -27,7 +27,7 @@ import { listeners } from '../../notifier';
 import { frames } from '../../tabs/frames';
 import { browserUtils } from '../../utils/browser-utils';
 import { browser } from '../../extension-api/browser';
-import { STEALTH_ACTIONS } from '../../../common/constants';
+import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../common/constants';
 
 /**
  * Class to apply stealth settings
@@ -81,7 +81,10 @@ export const stealthService = (() => {
 
         log.debug('Stealth service lookup cookie rules for {0}', requestUrl);
 
-        const result = engine.getCookieRules(new TSUrlFilter.Request(requestUrl, referrerUrl, requestType));
+        const result = engine.getCookieRules(
+            new TSUrlFilter.Request(requestUrl, referrerUrl, requestType),
+            ANTIBANNER_FILTERS_ID.STEALTH_MODE_FILTER_ID,
+        );
 
         log.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
 

@@ -24,6 +24,7 @@ import { prefs } from '../../prefs';
 import { listeners } from '../../notifier';
 import { translator } from '../../../common/translators/translator';
 import { RequestTypes } from '../../utils/request-types';
+import { ANTIBANNER_FILTERS_ID } from '../../../common/constants';
 
 /**
  * Object for log http requests
@@ -166,7 +167,7 @@ const browsersFilteringLog = (function () {
             if (sourceRule.isDocumentWhitelistRule()) {
                 destinationRuleDTO.documentLevelRule = true;
             }
-            if (sourceRule.isStealthModeRule) {
+            if (sourceRule.getFilterListId() === ANTIBANNER_FILTERS_ID.STEALTH_MODE_FILTER_ID) {
                 destinationRuleDTO.isStealthModeRule = true;
             }
 

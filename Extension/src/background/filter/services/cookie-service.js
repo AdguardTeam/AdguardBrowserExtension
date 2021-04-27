@@ -30,12 +30,8 @@ import { RequestTypes } from '../../utils/request-types';
  */
 export const getCookieRules = (url, referrer) => {
     const cookieRules = filteringApi.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
-    if (cookieRules.length > 0) {
-        return cookieRules;
-    }
-
-    // If cookie rules not found - apply cookie rules built in stealth service
-    return stealthService.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
+    const stealthRules = stealthService.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
+    return [...cookieRules, ...stealthRules];
 };
 
 /**
