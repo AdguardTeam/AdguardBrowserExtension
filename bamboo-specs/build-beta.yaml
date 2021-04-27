@@ -1,0 +1,116 @@
+---
+version: 2
+plan:
+  project-key: ADGEXT
+  key: BEBETASPECS
+  name: browser extension - build beta
+variables:
+  dockerNode: node:15.14.0-buster-slim
+
+stages:
+  - Build:
+      manual: 'false'
+      final: 'false'
+      jobs:
+        - Build
+
+Build:
+  key: BUILD
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+  tasks:
+    - checkout:
+        force-clean-build: 'true'
+    - checkout:
+        repository: extensions-private
+        path: private
+        force-clean-build: 'true'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -alt
+
+            yarn install ${system.YARN_ARGS}
+            CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn beta
+    - inject-variables:
+        file: build/build.txt
+        scope: RESULT
+        namespace: inject
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+        configuration:
+          selectedRepository: defaultRepository
+          tagName: v${bamboo.inject.version}-beta
+  artifacts:
+    - name: build.txt
+      location: build
+      pattern: build.txt
+      shared: true
+      required: true
+    - name: chrome.zip
+      location: build
+      pattern: chrome.zip
+      shared: true
+      required: true
+    - name: firefox.zip
+      location: build
+      pattern: firefox.zip
+      shared: true
+      required: true
+    - name: edge.zip
+      location: build
+      pattern: edge.zip
+      shared: true
+      required: true
+    - name: chrome.crx
+      location: build
+      pattern: chrome.crx
+      shared: true
+      required: true
+    - name: firefox.xpi
+      location: build
+      pattern: firefox.xpi
+      shared: true
+      required: true
+    - name: update.json
+      location: build
+      pattern: update.json
+      shared: true
+      required: true
+    - name: update.xml
+      location: build
+      pattern: update.xml
+      shared: true
+      required: true
+    - name: adguard-api.zip
+      location: build
+      pattern: adguard-api.zip
+      shared: true
+      required: true
+  requirements:
+    - adg-docker: 'true'
+
+triggers: []
+
+branches:
+  create: manually
+  delete: never
+  link-to-jira: 'true'
+
+notifications:
+  - events:
+      - plan-status-changed
+    recipients:
+      - webhook:
+          name: Build webhook
+          url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo
+labels: []
+other:
+  concurrent-build-plugin: system-default

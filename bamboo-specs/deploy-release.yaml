@@ -1,0 +1,117 @@
+---
+version: 2
+deployment:
+  name: browser extension - deploy release
+  source-plan: ADGEXT-BERELEASESPECS
+release-naming: ${bamboo.inject.version}
+environments:
+  - static.adguard.com
+  - Chrome WebStore
+  - Addons Mozilla
+static.adguard.com:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: 'true'
+    - artifact-download:
+        artifacts:
+          - {}
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-release
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa
+
+Chrome WebStore:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: 'true'
+    - artifact-download:
+        artifacts:
+          - name: build.txt
+          - name: chrome.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            #!/bin/bash
+            set -x
+            set -e
+            ls -la
+
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa
+
+Addons Mozilla:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: 'true'
+    - checkout:
+        repository: extensions-private
+        path: private
+        force-clean-build: 'true'
+    - artifact-download:
+        artifacts:
+          - name: build.txt
+          - name: firefox.zip
+    - inject-variables:
+        file: build.txt
+        scope: LOCAL
+        namespace: inject
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            #!/bin/bash
+            set -x
+            set -e
+            ls -la
+
+            EXTENSIONS_PASSPHRASE="${bamboo.extensionsPassphrase}" ./bamboo-deploy-publisher/deploy.sh browser-extension-amo
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa

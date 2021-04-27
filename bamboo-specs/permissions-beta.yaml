@@ -1,0 +1,22 @@
+---
+version: 2
+deployment:
+  name: browser extension - deploy beta
+deployment-permissions:
+  - groups:
+      - extensions-developers
+    permissions:
+      - view
+environment-permissions:
+  - static.adguard.com:
+  - groups:
+      - extensions-developers
+    permissions:
+      - view
+      - deploy
+  - Chrome WebStore:
+  - groups:
+      - extensions-developers
+    permissions:
+      - view
+      - deploy
