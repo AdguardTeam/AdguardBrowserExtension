@@ -27,6 +27,7 @@ export const RequestTypes = {
     CSP: 'CSP',
     COOKIE: 'COOKIE',
     PING: 'PING',
+    CSP_REPORT: 'CSP_REPORT',
 
     /**
      * Transforms to TSUrlFilter.RequestType
