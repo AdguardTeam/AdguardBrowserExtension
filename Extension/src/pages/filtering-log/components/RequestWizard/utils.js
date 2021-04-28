@@ -1,6 +1,7 @@
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 import { strings } from '../../../../common/strings';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { RequestTypes } from '../../../../background/utils/request-types';
 
 /**
  * Url utils
@@ -66,10 +67,24 @@ export const getFilterName = (filterId, filtersMetadata) => {
 /**
  * Request type map
  *
- * @param {String} requestType
+ * @param event
  * @returns {String}
  */
-export const getRequestType = (requestType) => {
+export const getRequestType = (event) => {
+    let { requestType } = event;
+
+    const { requestRule, cspReportBlocked } = event;
+
+    if (requestRule?.cookieRule
+        || requestRule?.isModifyingCookieRule) {
+        requestType = RequestTypes.COOKIE;
+    } else if (cspReportBlocked) {
+        // By default csp requests in firefox have other request type,
+        // but if event cspReportBlocked is true
+        // we consider such request to have "CSP report" type
+        requestType = RequestTypes.CSP_REPORT;
+    }
+
     switch (requestType) {
         case 'DOCUMENT':
         case 'SUBDOCUMENT':
@@ -93,6 +108,8 @@ export const getRequestType = (requestType) => {
             return 'WebRTC';
         case 'CSP':
             return 'CSP';
+        case 'CSP_REPORT':
+            return 'Csp report';
         case 'COOKIE':
             return 'Cookie';
         case 'PING':

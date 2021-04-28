@@ -37,6 +37,7 @@ const abstractFilteringLog = {
     addRemoveParamEvent: errorFunction,
     addScriptInjectionEvent: errorFunction,
     bindStealthActionsToHttpRequestEvent: errorFunction,
+    bindCspReportBlockedToHttpRequestEvent: errorFunction,
     clearEventsByTabId: errorFunction,
     isOpen: errorFunction,
     onOpenFilteringLogPage: errorFunction,
