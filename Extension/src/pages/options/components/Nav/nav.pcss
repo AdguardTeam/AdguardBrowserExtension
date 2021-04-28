@@ -5,7 +5,8 @@
     padding: 24px 0;
 
     &__item {
-        padding: 16px 16px 16px 40px;
+        padding: 9px 0 9px 38px;
+        margin-bottom: 16px;
         line-height: 22px;
         color: var(--gray-base);
         text-decoration: none;
@@ -26,17 +27,19 @@
         }
 
         &--active {
+            background-color: var(--gray300);
+            position: relative;
             font-weight: 600;
-            margin-left: -4px;
-            padding-right: 20px;
             overflow: visible;
 
             &:before {
                 content: "";
-                position: relative;
-                left: -13.5px;
-                border-left: 4px solid var(--green86);
-                border-radius: 10px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 4px;
+                height: 100%;
+                background-color: var(--gray900);
             }
         }
 
@@ -47,10 +50,24 @@
 
     @media (min-width: 640px) {
         padding: 0;
+    }
 
-        &__item {
-            padding: 16px 0;
-        }
+    &__desc {
+        padding: 28px 33px 0 38px;
+    }
+
+    &__message {
+        margin-bottom: 30px;
+    }
+
+    &__link {
+        color: var(--green400);
+    }
+
+    &__hide {
+        margin-top: 24px;
+        font-size: 14px;
+        color: var(--gray700);
     }
 }
 

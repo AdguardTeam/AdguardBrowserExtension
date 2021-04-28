@@ -141,15 +141,7 @@ const General = observer(() => {
                 />
                 <SettingsSet
                     title={reactTranslator.getMessage('options_allow_acceptable_ads')}
-                    description={(
-                        <a
-                            href={ALLOW_ACCEPTABLE_ADS_LEARN_MORE_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            {reactTranslator.getMessage('options_learn_more')}
-                        </a>
-                    )}
+                    description={reactTranslator.getMessage('options_allow_acceptable_ads_desc')}
                     disabled={!allowAcceptableAds}
                     inlineControl={(
                         <Setting
@@ -163,15 +155,7 @@ const General = observer(() => {
                 />
                 <SettingsSet
                     title={reactTranslator.getMessage('options_safebrowsing_enabled')}
-                    description={(
-                        <a
-                            href={SAFEBROWSING_LEARN_MORE_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            {reactTranslator.getMessage('options_learn_more')}
-                        </a>
-                    )}
+                    description={reactTranslator.getMessage('options_safebrowsing_enabled_desc')}
                     disabled={settings.values[DISABLE_SAFEBROWSING]}
                     inlineControl={(
                         <Setting
@@ -186,6 +170,7 @@ const General = observer(() => {
                 />
                 <SettingsSet
                     title={reactTranslator.getMessage('options_enable_autodetect_filter')}
+                    description={reactTranslator.getMessage('options_enable_autodetect_filter_desc')}
                     disabled={settings.values[DISABLE_DETECT_FILTERS]}
                     inlineControl={(
                         <Setting
@@ -200,6 +185,7 @@ const General = observer(() => {
                 />
                 <SettingsSet
                     title={reactTranslator.getMessage('options_set_update_interval')}
+                    description={reactTranslator.getMessage('options_set_update_interval_desc')}
                     inlineControl={(
                         <Setting
                             id={FILTERS_UPDATE_PERIOD}
@@ -215,7 +201,7 @@ const General = observer(() => {
             <div className="actions">
                 <button
                     type="button"
-                    className="button button--m button--green actions__btn"
+                    className="button button--m button--transparent actions__btn"
                     onClick={handleExportSettings}
                 >
                     {reactTranslator.getMessage('options_export_settings')}
@@ -230,7 +216,7 @@ const General = observer(() => {
                 />
                 <button
                     type="button"
-                    className="button button--m button--green-bd actions__btn"
+                    className="button button--m button--transparent actions__btn"
                     onClick={handleImportSettings}
                 >
                     {reactTranslator.getMessage('options_import_settings')}

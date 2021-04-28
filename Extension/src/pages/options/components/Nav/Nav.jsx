@@ -64,6 +64,22 @@ const Nav = ({ closeSidebar }) => (
         >
             {reactTranslator.getMessage('options_about')}
         </NavLink>
+        <div className="nav__desc">
+            <div className="nav__message">
+                {reactTranslator.getMessage('nav_better_than_extension')}
+            </div>
+            <a
+                className="nav__link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {reactTranslator.getMessage('nav_compare')}
+            </a>
+            <div className="nav__hide">
+                {reactTranslator.getMessage('hide')}
+            </div>
+        </div>
     </div>
 );
 

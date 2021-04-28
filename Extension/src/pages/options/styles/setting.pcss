@@ -5,19 +5,6 @@
     padding: 16px 16px 20px;
     min-height: 70px;
     cursor: default;
-    box-shadow: 0 1px 0 0 var(--greye7);
-
-    @media (prefers-color-scheme: dark) {
-        box-shadow: 0 1px 0 0 var(--gray900);
-    }
-
-    &:last-child {
-        box-shadow: none;
-    }
-
-    &--hide-border {
-        box-shadow: none;
-    }
 
     &--disabled {
         & .textarea,
@@ -64,15 +51,12 @@
         }
     }
 
-    &:last-child {
-        box-shadow: none;
-    }
-
     &__info {
         max-width: 600px;
     }
 
     &__title {
+        font-weight: 500;
         font-size: 16px;
         color: var(--gray-base);
         line-height: 20px;
@@ -174,16 +158,6 @@
 
 .light-mode {
     .setting {
-        box-shadow: 0 1px 0 0 var(--greye7);
-
-        &:last-child {
-            box-shadow: none;
-        }
-
-        &--hide-border {
-            box-shadow: none;
-        }
-
         &__title {
             color: var(--gray-base);
         }
@@ -198,16 +172,6 @@
 
 .dark-mode {
     .setting {
-        box-shadow: 0 1px 0 0 var(--gray900);
-
-        &:last-child {
-            box-shadow: none;
-        }
-
-        &--hide-border {
-            box-shadow: none;
-        }
-
         &__title {
             color: var(--gray300)
         }

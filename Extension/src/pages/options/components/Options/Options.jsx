@@ -89,21 +89,23 @@ const Options = observer(() => {
             <Icons />
             <div className="page">
                 <Sidebar />
-                <div className="content">
-                    <Switch>
-                        <Route path="/" exact component={General} />
-                        <Route path="/filters" component={Filters} />
-                        <Route path="/stealth" component={Stealth} />
-                        <Route path="/allowlist" component={Allowlist} />
-                        <Route path="/user-filter" component={UserRules} />
-                        <Route path="/miscellaneous" component={Miscellaneous} />
-                        <Route path="/about" component={About} />
-                        <Route component={General} />
-                    </Switch>
+                <div className="inner">
+                    <div className="content">
+                        <Switch>
+                            <Route path="/" exact component={General} />
+                            <Route path="/filters" component={Filters} />
+                            <Route path="/stealth" component={Stealth} />
+                            <Route path="/allowlist" component={Allowlist} />
+                            <Route path="/user-filter" component={UserRules} />
+                            <Route path="/miscellaneous" component={Miscellaneous} />
+                            <Route path="/about" component={About} />
+                            <Route component={General} />
+                        </Switch>
+                    </div>
+                    <Footer />
+                    <Notifications />
                 </div>
             </div>
-            <Footer />
-            <Notifications />
         </HashRouter>
     );
 });
