@@ -23,6 +23,7 @@ import { tabsApi } from './tabs/tabs-api';
 import { BACKGROUND_TAB_ID, MAIN_FRAME_ID, utils } from './utils/common';
 import { RequestTypes } from './utils/request-types';
 import { cookieService, getCookieRules } from './filter/services/cookie-service';
+import { headersService, getRemoveHeaderRules } from './filter/services/headers-service';
 import { backgroundPage } from './extension-api/background-page';
 import { prefs } from './prefs';
 import { frames } from './tabs/frames';
@@ -272,6 +273,7 @@ const webrequestInit = function () {
         const {
             tab,
             requestId,
+            requestUrl,
             requestType,
             requestHeaders,
         } = requestDetails;
@@ -291,6 +293,10 @@ const webrequestInit = function () {
         cookieService.onBeforeSendHeaders(requestDetails);
 
         if (stealthService.processRequestHeaders(requestId, requestHeaders)) {
+            requestHeadersModified = true;
+        }
+
+        if (headersService.onBeforeSendHeaders(requestDetails, getRemoveHeaderRules(requestUrl, getReferrerUrl(requestDetails)))) {
             requestHeadersModified = true;
         }
 
@@ -404,6 +410,10 @@ const webrequestInit = function () {
         }
 
         cookieService.onHeadersReceived(requestDetails);
+
+        if (headersService.onHeadersReceived(requestDetails, getRemoveHeaderRules(requestUrl, referrerUrl))) {
+            responseHeadersModified = true;
+        }
 
         if (responseHeadersModified) {
             requestContextStorage.update(requestId, { modifiedResponseHeaders: responseHeaders });

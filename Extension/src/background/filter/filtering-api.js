@@ -92,6 +92,10 @@ export const filteringApi = (function () {
         return getRequestFilter().getMatchingResult(requestUrl, referrer, requestType).getRemoveParamRules();
     };
 
+    const getRemoveHeaderRules = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().getMatchingResult(requestUrl, referrer, requestType).getRemoveHeaderRules();
+    };
+
     const getRequestFilterInfo = function () {
         return antiBannerService.getRequestFilterInfo();
     };
@@ -111,6 +115,7 @@ export const filteringApi = (function () {
         getCookieRules,
         getReplaceRules,
         getRemoveParamRules,
+        getRemoveHeaderRules,
         findStealthWhitelistRule,
         getCosmeticOption,
 
