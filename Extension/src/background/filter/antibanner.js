@@ -487,8 +487,6 @@ export const antiBannerService = (() => {
             // get user filter rules from storage
             promises.push(loadFilterRulesFromStorage(utils.filters.USER_FILTER_ID, rulesFilterMap));
 
-            // FIXME update rules generation in the filtering log for cookie rules added from stealth mode
-
             // Load all filters and then recreate request filter
             await Promise.all(promises);
             await loadAllFilterRulesDone();
