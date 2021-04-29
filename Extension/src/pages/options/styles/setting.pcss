@@ -1,8 +1,9 @@
 .setting {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     position: relative;
-    padding: 16px 16px 20px;
+    padding: 16px 16px 20px 0;
     min-height: 70px;
     cursor: default;
 
@@ -18,13 +19,19 @@
     &__area {
         display: flex;
         align-items: center;
-        width: 90%;
-        padding: 15px 0;
+        width: 80%;
+        padding: 15px 0 15px 16px;
         border: 0;
-        background-color: transparent;
+        border-radius: 8px;
         cursor: pointer;
         outline: none;
         text-align: left;
+        background-color: transparent;
+        transition: 0.3s ease background-color;
+
+        &:hover {
+            background-color: var(--gray100);
+        }
     }
 
     &__inline-control {
@@ -152,6 +159,7 @@
     }
 
     &__icon {
+        color: var(--green400);
         margin-right: 20px;
     }
 }

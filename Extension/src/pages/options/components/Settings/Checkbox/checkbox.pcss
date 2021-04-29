@@ -9,38 +9,40 @@
         clip: rect(1px, 1px, 1px, 1px);
 
         &:checked + .checkbox__label {
-            background-color: var(--green74);
-            background-position: 5px, 23px;
-            background-size: 13px, 9px;
+            &:after {
+                background-color: var(--green74);
+                background-position: 5px, 23px;
+                background-size: 13px, 9px;
+            }
 
             &:before {
-                left: 22px;
+                left: 36px;
             }
         }
     }
 
     &__label {
-        font-size: 0;
-        position: relative;
-        display: block;
-        width: 40px;
-        height: 20px;
-        border-radius: 10px;
-        background-color: var(--gray300);
-        background-repeat: no-repeat;
-        background-position: 23px, 22px;
-        background-size: 10px, 9px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        width: 70px;
+        height: 75px;
+        font-size: 0;
+        border-radius: 8px;
+        transition: 0.3s ease background-color;
 
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--gray700);
+        &:hover {
+            background-color: var(--gray100);
         }
 
         &:before {
             content: "";
             position: absolute;
             top: calc(50% - 7px);
-            left: 3px;
+            z-index: 1;
+            left: 19px;
             width: 15px;
             height: 14px;
             border-radius: 50%;
@@ -51,14 +53,24 @@
                 background-color: var(--black);
             }
         }
+
         &:after {
             content: "";
+            font-size: 0;
             position: absolute;
-            top: -26px;
-            left: -15px;
-            width: 70px;
-            height: 75px;
-            opacity: 0;
+            display: block;
+            width: 40px;
+            height: 20px;
+            border-radius: 10px;
+            background-color: var(--gray300);
+            background-repeat: no-repeat;
+            background-position: 23px, 22px;
+            background-size: 10px, 9px;
+            cursor: pointer;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray700);
+            }
         }
     }
 }

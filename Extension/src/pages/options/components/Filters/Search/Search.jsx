@@ -1,14 +1,13 @@
-import React, { useContext, useState } from 'react';
-import cn from 'classnames';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { Select } from '../../../../common/components/ui/Select';
 import { rootStore } from '../../../stores/RootStore';
 import { SEARCH_FILTERS } from './constants';
 
 import './search.pcss';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 
 const options = [
     {
@@ -27,7 +26,6 @@ const options = [
 
 const Search = observer(() => {
     const { settingsStore } = useContext(rootStore);
-    const [searchFocus, setSearchFocus] = useState(false);
 
     const {
         setSearchInput,
@@ -56,24 +54,17 @@ const Search = observer(() => {
         settingsStore.sortFilters();
     };
 
-    const searchClassName = cn(
-        'search',
-        { 'search--focus': searchFocus },
-    );
-
     return (
-        <div className={searchClassName}>
-            <Icon id="#magnifying" classname="icon--magnifying" />
+        <div className="search">
             <input
                 autoFocus
                 className="search__input"
                 type="text"
+                placeholder={reactTranslator.getMessage('search')}
                 onChange={searchInputHandler}
                 value={searchInput}
-                onFocus={() => setSearchFocus(true)}
-                onBlur={() => setSearchFocus(false)}
             />
-            {searchInput && (
+            {searchInput ? (
                 <button
                     type="button"
                     className="button"
@@ -81,7 +72,7 @@ const Search = observer(() => {
                 >
                     <Icon id="#cross" classname="search__cross" />
                 </button>
-            )}
+            ) : <Icon id="#magnifying" classname="icon--magnifying" />}
             <div className="search__select">
                 <Select
                     id="search-select"

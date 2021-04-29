@@ -186,8 +186,8 @@ const Filters = observer(() => {
     return (
         <SettingsSection
             title={reactTranslator.getMessage('options_filters')}
-            renderInlineControl={() => <FiltersUpdate />}
         >
+            <FiltersUpdate />
             <Search />
             {settingsStore.isSearching
                 ? renderFilters(filtersToRender)
