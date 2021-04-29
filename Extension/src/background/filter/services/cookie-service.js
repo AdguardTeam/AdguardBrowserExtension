@@ -16,7 +16,6 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { stealthService } from './stealth-service';
 import { filteringLog } from '../filtering-log';
 import { filteringApi } from '../filtering-api';
 import { RequestTypes } from '../../utils/request-types';
@@ -30,8 +29,7 @@ import { RequestTypes } from '../../utils/request-types';
  */
 export const getCookieRules = (url, referrer) => {
     const cookieRules = filteringApi.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
-    const stealthRules = stealthService.getCookieRules(url, referrer, RequestTypes.DOCUMENT);
-    return [...cookieRules, ...stealthRules];
+    return cookieRules;
 };
 
 /**

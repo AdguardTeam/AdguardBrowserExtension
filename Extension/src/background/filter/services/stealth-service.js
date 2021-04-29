@@ -28,6 +28,7 @@ import { frames } from '../../tabs/frames';
 import { browserUtils } from '../../utils/browser-utils';
 import { browser } from '../../extension-api/browser';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../common/constants';
+import { utils } from '../../utils/common';
 
 /**
  * Class to apply stealth settings
@@ -36,6 +37,12 @@ import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../common/constant
  * - WebRTC
  */
 export const stealthService = (() => {
+    /**
+     * Synthetic user filter
+     * @type {{filterId: number}}
+     */
+    const stealthFilter = { filterId: utils.filters.STEALTH_MODE_FILTER_ID };
+
     /**
      * Processes request headers
      *
@@ -89,6 +96,14 @@ export const stealthService = (() => {
         log.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
 
         return result;
+    };
+
+    /**
+     * Gets cookie rules from the tsurlfilter
+     * @return {string[]}
+     */
+    const getCookieRulesTexts = () => {
+        return engine.getCookieRulesTexts();
     };
 
     /**
@@ -407,6 +422,7 @@ export const stealthService = (() => {
         if (STEALTH_SETTINGS.includes(setting)) {
             // Rebuild engine on settings update
             engine = new TSUrlFilter.StealthService(getConfig());
+            listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, stealthFilter, engine.getCookieRulesTexts());
         }
     });
 
@@ -441,6 +457,7 @@ export const stealthService = (() => {
     return {
         init,
         processRequestHeaders,
+        getCookieRulesTexts,
         getCookieRules,
         removeTrackersFromUrl,
         canBlockWebRTC,

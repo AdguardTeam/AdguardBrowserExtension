@@ -334,6 +334,24 @@ export const antiBannerService = (() => {
         }
 
         /**
+         * Checks by filter id if filter is enabled and has rules
+         * @param rulesFilterMap
+         * @param filterId
+         * @return {boolean}
+         */
+        const hasFilterRules = (rulesFilterMap, filterId) => {
+            const enabledFilterIds = Object.keys(rulesFilterMap);
+            const foundFilterId = enabledFilterIds.find(enabledFilterId => enabledFilterId === filterId);
+            if (foundFilterId) {
+                const rules = enabledFilterIds[foundFilterId];
+                if (rules && rules.length > 0) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        /**
          * Checks rulesFilterMap is empty (no one of filters are enabled)
          * @param rulesFilterMap
          * @returns {boolean}
@@ -345,15 +363,9 @@ export const antiBannerService = (() => {
             }
 
             // User filter is enabled by default, but it may not contain any rules
-            const userFilterId = utils.filters.USER_FILTER_ID;
-            if (enabledFilterIds.length === 1 && enabledFilterIds[0] === userFilterId) {
-                const userRules = rulesFilterMap[userFilterId];
-                if (!userRules || userRules.length === 0) {
-                    return true;
-                }
-            }
-
-            return false;
+            return !hasFilterRules(utils.filters.USER_FILTER_ID)
+                // Stealth filter is disabled by default, but it may not contain any rules when it is enabled
+                && !hasFilterRules(utils.filters.STEALTH_MODE_FILTER_ID);
         }
 
         /**
@@ -398,7 +410,7 @@ export const antiBannerService = (() => {
             // eslint-disable-next-line guard-for-in,no-restricted-syntax
             for (let filterId in rulesFilterMap) {
                 // To number
-                filterId -= 0;
+                filterId = Number(filterId);
 
                 const isTrustedFilter = subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
@@ -470,6 +482,11 @@ export const antiBannerService = (() => {
             }
             // get user filter rules from storage
             promises.push(loadFilterRulesFromStorage(utils.filters.USER_FILTER_ID, rulesFilterMap));
+
+            // FIXME update rules generation in the filtering log for cookie rules added from stealth mode
+            // FIXME on update load stealth mode rules into storage
+            // get stealth mode rules from storage
+            promises.push(loadFilterRulesFromStorage(utils.filters.STEALTH_MODE_FILTER_ID, rulesFilterMap));
 
             // Load all filters and then recreate request filter
             await Promise.all(promises);
