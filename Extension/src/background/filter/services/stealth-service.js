@@ -27,7 +27,7 @@ import { listeners } from '../../notifier';
 import { frames } from '../../tabs/frames';
 import { browserUtils } from '../../utils/browser-utils';
 import { browser } from '../../extension-api/browser';
-import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../common/constants';
+import { STEALTH_ACTIONS } from '../../../common/constants';
 import { utils } from '../../utils/common';
 
 /**
@@ -37,12 +37,6 @@ import { utils } from '../../utils/common';
  * - WebRTC
  */
 export const stealthService = (() => {
-    /**
-     * Synthetic user filter
-     * @type {{filterId: number}}
-     */
-    const stealthFilter = { filterId: utils.filters.STEALTH_MODE_FILTER_ID };
-
     /**
      * Processes request headers
      *
@@ -74,36 +68,20 @@ export const stealthService = (() => {
     };
 
     /**
-     * Returns synthetic set of rules matching the specified request
-     *
-     * @param requestUrl
-     * @param referrerUrl
-     * @param requestType
-     * @returns CookieRules[]
+     * Returns rule list with stealth mode rules
+     * @return {StringRuleList}
      */
-    const getCookieRules = function (requestUrl, referrerUrl, requestType) {
-        if (!canApplyStealthActions(requestUrl, referrerUrl, requestType)) {
-            return [];
-        }
-
-        log.debug('Stealth service lookup cookie rules for {0}', requestUrl);
-
-        const result = engine.getCookieRules(
-            new TSUrlFilter.Request(requestUrl, referrerUrl, requestType),
-            ANTIBANNER_FILTERS_ID.STEALTH_MODE_FILTER_ID,
-        );
-
-        log.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
-
-        return result;
+    const getStealthModeRuleList = () => {
+        const rulesTexts = engine.getCookieRulesTexts().join('\n');
+        return new TSUrlFilter.StringRuleList(utils.filters.STEALTH_MODE_FILTER_ID, rulesTexts, false, false);
     };
 
     /**
-     * Gets cookie rules from the tsurlfilter
-     * @return {string[]}
+     * Checks is engine has stealth mode rules
+     * @return {boolean}
      */
-    const getCookieRulesTexts = () => {
-        return engine.getCookieRulesTexts();
+    const hasFilterRules = () => {
+        return engine.getCookieRulesTexts().length > 0;
     };
 
     /**
@@ -422,7 +400,7 @@ export const stealthService = (() => {
         if (STEALTH_SETTINGS.includes(setting)) {
             // Rebuild engine on settings update
             engine = new TSUrlFilter.StealthService(getConfig());
-            listeners.notifyListeners(listeners.UPDATE_FILTER_RULES, stealthFilter, engine.getCookieRulesTexts());
+            listeners.notifyListeners(listeners.UPDATE_FILTER_RULES);
         }
     });
 
@@ -457,8 +435,8 @@ export const stealthService = (() => {
     return {
         init,
         processRequestHeaders,
-        getCookieRulesTexts,
-        getCookieRules,
+        getStealthModeRuleList,
+        hasFilterRules,
         removeTrackersFromUrl,
         canBlockWebRTC,
         STEALTH_ACTIONS,

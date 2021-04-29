@@ -27,6 +27,7 @@ import { log } from '../../common/log';
 import { rulesStorage } from '../storage';
 import { filtersUpdate } from './filters/filters-update';
 import { engine } from './engine';
+import { stealthService } from './services/stealth-service';
 
 /**
  * Creating service that manages our filter rules.
@@ -363,9 +364,7 @@ export const antiBannerService = (() => {
             }
 
             // User filter is enabled by default, but it may not contain any rules
-            return !hasFilterRules(utils.filters.USER_FILTER_ID)
-                // Stealth filter is disabled by default, but it may not contain any rules when it is enabled
-                && !hasFilterRules(utils.filters.STEALTH_MODE_FILTER_ID);
+            return !hasFilterRules(utils.filters.USER_FILTER_ID);
         }
 
         /**
@@ -384,9 +383,10 @@ export const antiBannerService = (() => {
             );
 
             /**
-             * If no one of filters is enabled, don't reload rules
+             * If no one of filters is enabled, don't reload rules,
+             * except when there are enabled stealth mode rules
              */
-            if (isEmptyRulesFilterMap(rulesFilterMap)) {
+            if (isEmptyRulesFilterMap(rulesFilterMap) && !stealthService.hasFilterRules()) {
                 return;
             }
 
@@ -404,7 +404,7 @@ export const antiBannerService = (() => {
         /**
          * Fills engine with rules
          */
-        const startTSUrlfilterEngine = async () => {
+        const startTSUrlFilterEngine = async () => {
             const lists = [];
 
             // eslint-disable-next-line guard-for-in,no-restricted-syntax
@@ -418,12 +418,16 @@ export const antiBannerService = (() => {
                 lists.push(new TSUrlFilter.StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
+            // append stealth mode rules
+            const stealthModeList = stealthService.getStealthModeRuleList();
+            lists.push(stealthModeList);
+
             await engine.startEngine(lists);
 
             requestFilterInitialized();
         };
 
-        await startTSUrlfilterEngine();
+        await startTSUrlFilterEngine();
     }
 
     /**
@@ -484,9 +488,6 @@ export const antiBannerService = (() => {
             promises.push(loadFilterRulesFromStorage(utils.filters.USER_FILTER_ID, rulesFilterMap));
 
             // FIXME update rules generation in the filtering log for cookie rules added from stealth mode
-            // FIXME on update load stealth mode rules into storage
-            // get stealth mode rules from storage
-            promises.push(loadFilterRulesFromStorage(utils.filters.STEALTH_MODE_FILTER_ID, rulesFilterMap));
 
             // Load all filters and then recreate request filter
             await Promise.all(promises);
