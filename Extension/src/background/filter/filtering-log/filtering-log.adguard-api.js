@@ -29,6 +29,7 @@ const apiFilteringLog = {
     addCosmeticEvent: notImplemented,
     addCookieEvent: notImplemented,
     addRemoveParamEvent: notImplemented,
+    addRemoveHeaderEvent: notImplemented,
     addScriptInjectionEvent: notImplemented,
     bindStealthActionsToHttpRequestEvent: notImplemented,
     clearEventsByTabId: notImplemented,

@@ -35,6 +35,7 @@ const abstractFilteringLog = {
     addCosmeticEvent: errorFunction,
     addCookieEvent: errorFunction,
     addRemoveParamEvent: errorFunction,
+    addRemoveHeaderEvent: errorFunction,
     addScriptInjectionEvent: errorFunction,
     bindStealthActionsToHttpRequestEvent: errorFunction,
     clearEventsByTabId: errorFunction,
