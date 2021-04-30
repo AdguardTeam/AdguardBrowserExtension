@@ -68,7 +68,7 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="arrow-back" viewBox="0 0 10 18">
-                <path d="m442 124 8-8 8 8" fill="none" stroke="#66b574" strokeWidth="1.32" transform="matrix(0 -1 1 0 -115 459)" />
+                <path d="m442 124 8-8 8 8" fill="none" stroke="currentColor" strokeWidth="1.32" transform="matrix(0 -1 1 0 -115 459)" />
             </symbol>
 
             <symbol id="checked" viewBox="0 0 12 9">

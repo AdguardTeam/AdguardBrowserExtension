@@ -136,7 +136,7 @@ const Filters = observer(() => {
     const renderBackButton = () => (
         <button
             type="button"
-            className="button"
+            className="button setting__back"
             onClick={handleReturnToGroups}
         >
             <Icon id="#arrow-back" classname="icon--back" />
