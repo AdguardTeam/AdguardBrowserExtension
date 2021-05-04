@@ -64,5 +64,5 @@ export const findChunks = (str, searchString, chunks = []) => {
             chunks.push(restStr);
         }
     }
-    return chunks;
+    return chunks.filter((i) => !!i);
 };
