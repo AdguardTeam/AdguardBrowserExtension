@@ -26,6 +26,7 @@
         }
 
         &--rate {
+            position: relative;
             justify-content: center;
         }
     }
@@ -87,7 +88,6 @@
     &__nav-item {
         margin-right: 12px;
         color: inherit;
-        opacity: 0.7;
         text-decoration: none;
         transition: var(--t3) opacity;
         @mixin weight-regular;
@@ -97,7 +97,6 @@
         }
 
         &:hover {
-            opacity: 1;
             text-decoration: underline;
         }
 
@@ -120,6 +119,22 @@
 
         @media (prefers-color-scheme: dark) {
             color: var(--black);
+        }
+    }
+
+    &__rate-close {
+        position: absolute;
+        right: 0;
+        top: 22px;
+        cursor: pointer;
+        padding: 0;
+        background-color: transparent;
+        border: 0;
+
+        .icon {
+            width: 12px;
+            height: 12px;
+            color: var(--gray400);
         }
     }
 }

@@ -23,8 +23,6 @@ const Miscellaneous = observer(() => {
 
     // eslint-disable-next-line max-len
     const COLLECT_HITS_LEARN_MORE_URL = 'https://adguard.com/forward.html?action=filter_rules&from=options_screen&app=browser_extension';
-    // eslint-disable-next-line max-len
-    const OPEN_CHANGELOG_URL = 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension';
 
     const settingChangeHandler = async ({ id, data }) => {
         log.info(`Setting ${id} set to ${data}`);
@@ -38,10 +36,6 @@ const Miscellaneous = observer(() => {
     const handleResetStatisticsClick = async () => {
         await messenger.resetStatistics();
         uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_stats_done') });
-    };
-
-    const handleOpenChangelog = () => {
-        window.open(OPEN_CHANGELOG_URL);
     };
 
     const {
@@ -170,13 +164,6 @@ const Miscellaneous = observer(() => {
                     onClick={handleResetStatisticsClick}
                 >
                     {reactTranslator.getMessage('options_reset_stats')}
-                </button>
-                <button
-                    type="button"
-                    className="button button--m button--green-bd actions__btn"
-                    onClick={handleOpenChangelog}
-                >
-                    {reactTranslator.getMessage('options_open_changelog')}
                 </button>
             </div>
         </>

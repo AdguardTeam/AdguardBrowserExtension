@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 const SettingsSet = (props) => {
     const {
-        title, description, children, disabled, inlineControl, hideBorder
+        title, description, children, disabled, inlineControl, hideBorder,
     } = props;
     const settingClassName = classNames({
         setting: true,

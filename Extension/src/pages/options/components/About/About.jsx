@@ -3,13 +3,13 @@ import { observer } from 'mobx-react';
 
 import { rootStore } from '../../stores/RootStore';
 import {
+    CHANGELOG_URL,
     ACKNOWLEDGMENTS_URL,
     EULA_URL,
     GITHUB_URL,
     PRIVACY_URL,
 } from '../../../constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { Icon } from '../../../common/components/ui/Icon';
 
 import './about-page.pcss';
 
@@ -33,7 +33,10 @@ const About = observer(() => {
                 </h2>
             </div>
             <div className="about">
-                <Icon id="#logo" classname="icon--logo about__logo" />
+                <div className="about__title">
+                    {/* TODO fix me */}
+                    AdGuard for Chrome
+                </div>
                 <div className="about__version">
                     {reactTranslator.getMessage('options_about_version')}
                     {' '}
@@ -48,6 +51,14 @@ const About = observer(() => {
                     </div>
                 </div>
                 <div className="about__menu">
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={CHANGELOG_URL}
+                        className="about__menu-item"
+                    >
+                        {reactTranslator.getMessage('options_open_changelog')}
+                    </a>
                     <a
                         target="_blank"
                         rel="noopener noreferrer"

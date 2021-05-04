@@ -47,79 +47,20 @@ const Stealth = observer(() => {
 
     return (
         <>
-            <SettingsSection title={reactTranslator.getMessage('options_privacy_title')}>
-                <SettingsSet
-                    title={reactTranslator.getMessage('options_privacy_title')}
-                    description={reactTranslator.getMessage('options_privacy_desc')}
-                    disabled={settings.values[DISABLE_STEALTH_MODE]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_STEALTH_MODE}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_privacy_title')}
-                            inverted
-                            value={settings.values[DISABLE_STEALTH_MODE]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
-                />
-            </SettingsSection>
-
             <SettingsSection
-                title={reactTranslator.getMessage('options_cookies_title')}
-                subTitle
-                disabled={isStealthModeDisabled}
-            >
-                <SettingsSet
-                    title={reactTranslator.getMessage('options_third_party_title')}
-                    description={reactTranslator.getMessage('options_third_party_desc')}
-                    disabled={!isThirdPartyCookiesEnabled}
-                    hideBorder
-                    inlineControl={(
-                        <Setting
-                            id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_third_party_title')}
-                            value={isThirdPartyCookiesEnabled}
-                            handler={settingChangeHandler}
-                        />
-                    )}
-                >
+                title={reactTranslator.getMessage('options_privacy_title')}
+                description={reactTranslator.getMessage('options_privacy_desc')}
+                inlineControl={(
                     <Setting
-                        id={SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME}
-                        disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
-                        type={SETTINGS_TYPES.INPUT}
-                        value={settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME]}
+                        id={DISABLE_STEALTH_MODE}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_privacy_title')}
+                        inverted
+                        value={settings.values[DISABLE_STEALTH_MODE]}
                         handler={settingChangeHandler}
-                        placeholder={DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN}
                     />
-                </SettingsSet>
-
-                <SettingsSet
-                    title={reactTranslator.getMessage('options_first_party_title')}
-                    description={reactTranslator.getMessage('options_first_party_desc')}
-                    disabled={!isFirstPartyCookiesEnabled}
-                    hideBorder
-                    inlineControl={(
-                        <Setting
-                            id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_first_party_title')}
-                            value={isFirstPartyCookiesEnabled}
-                            handler={settingChangeHandler}
-                        />
-                    )}
-                >
-                    <Setting
-                        id={SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME}
-                        disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
-                        type={SETTINGS_TYPES.INPUT}
-                        value={settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME]}
-                        handler={settingChangeHandler}
-                        placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
-                    />
-                </SettingsSet>
-            </SettingsSection>
+                )}
+            />
 
             <SettingsSection
                 title={reactTranslator.getMessage('context_miscellaneous_settings')}
@@ -224,6 +165,62 @@ const Stealth = observer(() => {
                         value={settings.values[TRACKING_PARAMETERS]}
                         handler={settingChangeHandler}
                         placeholder={DEFAULT_TRACKING_PARAMETERS}
+                    />
+                </SettingsSet>
+            </SettingsSection>
+
+            <SettingsSection
+                title={reactTranslator.getMessage('options_cookies_title')}
+                subTitle
+                disabled={isStealthModeDisabled}
+            >
+                <SettingsSet
+                    title={reactTranslator.getMessage('options_third_party_title')}
+                    description={reactTranslator.getMessage('options_third_party_desc')}
+                    disabled={!isThirdPartyCookiesEnabled}
+                    hideBorder
+                    inlineControl={(
+                        <Setting
+                            id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.getMessage('options_third_party_title')}
+                            value={isThirdPartyCookiesEnabled}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                >
+                    <Setting
+                        id={SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME}
+                        disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
+                        type={SETTINGS_TYPES.INPUT}
+                        value={settings.values[SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME]}
+                        handler={settingChangeHandler}
+                        placeholder={DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN}
+                    />
+                </SettingsSet>
+
+                <SettingsSet
+                    title={reactTranslator.getMessage('options_first_party_title')}
+                    description={reactTranslator.getMessage('options_first_party_desc')}
+                    disabled={!isFirstPartyCookiesEnabled}
+                    hideBorder
+                    inlineControl={(
+                        <Setting
+                            id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            label={reactTranslator.getMessage('options_first_party_title')}
+                            value={isFirstPartyCookiesEnabled}
+                            handler={settingChangeHandler}
+                        />
+                    )}
+                >
+                    <Setting
+                        id={SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME}
+                        disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
+                        type={SETTINGS_TYPES.INPUT}
+                        value={settings.values[SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME]}
+                        handler={settingChangeHandler}
+                        placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
                     />
                 </SettingsSet>
             </SettingsSection>
