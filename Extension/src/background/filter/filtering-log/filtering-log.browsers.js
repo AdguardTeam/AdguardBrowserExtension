@@ -493,6 +493,32 @@ const browsersFilteringLog = (function () {
     };
 
     /**
+     * Binds applied cspReportBlocked to HTTP request
+     *
+     * @param {object} tab Request tab
+     * @param {boolean} cspReportBlocked is csp report blocked flag
+     * @param {number} eventId Event identifier
+     */
+    const bindCspReportBlockedToHttpRequestEvent = (tab, cspReportBlocked, eventId) => {
+        if (!canAddEvent(tab.tabId)) {
+            return;
+        }
+
+        const tabInfo = getFilteringInfoByTabId(tab.tabId);
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    event.cspReportBlocked = cspReportBlocked;
+                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
+            }
+        }
+    };
+
+    /**
      * Remove log requests for tab
      * @param tabId
      */
@@ -571,6 +597,7 @@ const browsersFilteringLog = (function () {
         addRemoveParamEvent,
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
+        bindCspReportBlockedToHttpRequestEvent,
         clearEventsByTabId,
 
         isOpen,

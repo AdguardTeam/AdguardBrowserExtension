@@ -115,6 +115,7 @@ class LogStore {
                 RequestTypes.COOKIE,
                 RequestTypes.PING,
                 RequestTypes.WEBRTC,
+                RequestTypes.CSP_REPORT,
             ],
             enabled: true,
         },
@@ -407,6 +408,9 @@ class LogStore {
                 // but they refer to "other" filtering log events
                 if (filteringEvent?.requestRule?.isModifyingCookieRule) {
                     return filter.types.includes(RequestTypes.COOKIE);
+                }
+                if (filteringEvent?.cspReportBlocked) {
+                    return filter.types.includes(RequestTypes.CSP_REPORT);
                 }
                 return filter.types.includes(requestType);
             });

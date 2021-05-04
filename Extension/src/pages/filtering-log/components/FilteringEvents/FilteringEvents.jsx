@@ -7,7 +7,6 @@ import { getRequestType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
-import { RequestTypes } from '../../../../background/utils/request-types';
 import { FilteringEventsEmpty } from './FilteringEventsEmpty';
 
 import './filtering-events.pcss';
@@ -31,6 +30,11 @@ const getRowClassName = (event) => {
 
     if (event.replaceRules) {
         className = 'yellow';
+    }
+
+    if (event.cspReportBlocked) {
+        className = 'red';
+        return className;
     }
 
     if (event.requestRule && !event.replaceRules) {
@@ -73,20 +77,9 @@ const urlAccessor = (props) => {
 };
 
 const typeAccessor = (props) => {
-    const {
-        requestType,
-        requestThirdParty,
-        requestRule,
-    } = props;
+    const formattedRequestType = getRequestType(props);
 
-    let formattedRequestType;
-    if (requestRule?.isModifyingCookieRule) {
-        formattedRequestType = getRequestType(RequestTypes.COOKIE);
-    } else {
-        formattedRequestType = getRequestType(requestType);
-    }
-
-    if (requestThirdParty) {
+    if (props.requestThirdParty) {
         return (
             <>
                 {formattedRequestType}
