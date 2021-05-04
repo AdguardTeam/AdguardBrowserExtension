@@ -5,7 +5,8 @@ import cn from 'classnames';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { FilterTitle } from './FilterTitle';
+import { Icon } from '../../../common/components/ui/Icon';
+import { HighlightSearch } from './Search/HighlightSearch';
 
 import './filter.pcss';
 
@@ -57,7 +58,7 @@ const renderTags = (tags, trusted) => {
     );
 };
 
-const Filter = observer(({ filter, search = '' }) => {
+const Filter = observer(({ filter }) => {
     const { settingsStore } = useContext(rootStore);
 
     const {
@@ -67,13 +68,36 @@ const Filter = observer(({ filter, search = '' }) => {
         version,
         lastUpdateTime,
         timeUpdated,
+        homepage,
         trusted,
+        customUrl,
         enabled,
         tagsDetails,
     } = filter;
 
     const handleFilterSwitch = async ({ id, data }) => {
         await settingsStore.updateFilterSetting(id, data);
+    };
+
+    const removeCustomFilter = async () => {
+        const result = window.confirm(reactTranslator.getMessage('options_delete_filter_confirm'));
+        if (result) {
+            await settingsStore.removeCustomFilter(filterId);
+        }
+    };
+
+    const renderRemoveButton = () => {
+        if (customUrl) {
+            return (
+                <a
+                    className="filter__remove"
+                    onClick={removeCustomFilter}
+                >
+                    <Icon id="#trash" classname="icon--trash" />
+                </a>
+            );
+        }
+        return null;
     };
 
     const filterClassName = cn('filter', {
@@ -84,10 +108,22 @@ const Filter = observer(({ filter, search = '' }) => {
         <div className={filterClassName} role="presentation">
             <div className="filter__info">
                 <div className="setting__container setting__container--horizontal">
-                    <FilterTitle
-                        filter={filter}
-                        search={search}
-                    />
+                    <div className="filter__title">
+                        <span className="filter__title-in">
+                            <HighlightSearch name={name} />
+                        </span>
+                        <span className="filter__controls">
+                            <a
+                                className="filter__link"
+                                href={homepage || customUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Icon id="#link" classname="icon--link" />
+                            </a>
+                            {renderRemoveButton()}
+                        </span>
+                    </div>
                     <div className="setting__inline-control">
                         <Setting
                             id={filterId}

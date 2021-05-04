@@ -44,6 +44,25 @@ export const sleep = (timeoutMs) => {
     });
 };
 
+export const indexOfIgnoreCase = (str, searchString) => {
+    return str.toLowerCase().indexOf(searchString.toLowerCase());
+};
+
 export const containsIgnoreCase = (str, searchString) => {
-    return !!(str && searchString && str.toLowerCase().indexOf(searchString.toLowerCase()) >= 0);
+    return !!(str && searchString && indexOfIgnoreCase(str, searchString) >= 0);
+};
+
+export const findChunks = (str, searchString, chunks = []) => {
+    const ind = indexOfIgnoreCase(str, searchString);
+    if (ind > -1) {
+        chunks.push(str.slice(0, ind));
+        chunks.push(str.slice(ind, ind + searchString.length));
+        const restStr = str.slice(ind + searchString.length);
+        if (containsIgnoreCase(restStr, searchString)) {
+            findChunks(restStr, searchString, chunks);
+        } else {
+            chunks.push(restStr);
+        }
+    }
+    return chunks;
 };
