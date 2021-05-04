@@ -92,7 +92,13 @@ const Filters = observer(() => {
 
     const renderFilters = (filtersList) => {
         return filtersList
-            .map((filter) => <Filter key={filter.filterId} filter={filter} />);
+            .map((filter) => (
+                <Filter
+                    key={filter.filterId}
+                    filter={filter}
+                    search={settingsStore.searchInput}
+                />
+            ));
     };
 
     const openModalHandler = () => {
