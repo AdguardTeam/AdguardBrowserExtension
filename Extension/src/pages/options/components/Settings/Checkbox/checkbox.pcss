@@ -16,7 +16,11 @@
             }
 
             &:before {
-                left: 85px;
+                left: 5px;
+
+                @media (min-width: 640px) {
+                    left: 85px;
+                }
             }
         }
     }
@@ -27,12 +31,17 @@
         align-items: flex-start;
         justify-content: flex-end;
         position: relative;
-        width: 120px;
-        height: 75px;
-        padding: 16px;
+        width: 40px;
+        height: 20px;
         font-size: 0;
         border-radius: 8px;
         transition: 0.3s ease background-color;
+
+        @media (min-width: 640px) {
+            width: 120px;
+            height: 75px;
+            padding: 16px;
+        }
 
         &:hover {
             background-color: var(--gray100);
@@ -41,14 +50,19 @@
         &:before {
             content: "";
             position: absolute;
-            top: 19px;
+            top: 3px;
+            left: 20px;
             z-index: 1;
-            left: 69px;
             width: 15px;
             height: 14px;
             border-radius: 50%;
             background-color: var(--white);
             transition: var(--t3) left;
+
+            @media (min-width: 640px) {
+                top: 19px;
+                left: 69px;
+            }
 
             @media (prefers-color-scheme: dark) {
                 background-color: var(--black);

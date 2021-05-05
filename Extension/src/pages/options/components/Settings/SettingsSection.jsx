@@ -30,11 +30,13 @@ const SettingsSection = (props) => {
         <div className={settingGroupClassName} key={title}>
             <div className={titleContainerClass}>
                 {renderBackButton?.()}
-                {title && <h2 className={titleClass}>{title}</h2>}
+                <div className="title__inner">
+                    {title && <h2 className={titleClass}>{title}</h2>}
+                    {description && <div className="title__desc">{description}</div>}
+                </div>
                 {inlineControl && <div className="setting__container setting__container--inline setting__inline-control">{inlineControl}</div>}
                 {renderInlineControl?.()}
             </div>
-            {description && <div className="desc">{description}</div>}
             <div>
                 {children}
             </div>

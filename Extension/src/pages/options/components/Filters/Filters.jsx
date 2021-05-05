@@ -16,6 +16,8 @@ import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
 import { SEARCH_FILTERS } from './Search/constants';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
+import { log } from '../../../../common/log';
 
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',
@@ -38,10 +40,22 @@ const Filters = observer(() => {
     // This state used to remove blinking while filters to render were not selected
     const [groupDetermined, setGroupDetermined] = useState(false);
 
+    const groupDescription = [
+        reactTranslator.getMessage('group_description_custom'),
+        reactTranslator.getMessage('group_description_adblocking'),
+        reactTranslator.getMessage('group_description_stealth'),
+        reactTranslator.getMessage('group_description_social'),
+        reactTranslator.getMessage('group_description_annoyances'),
+        reactTranslator.getMessage('group_description_security'),
+        reactTranslator.getMessage('group_description_miscellaneous'),
+        reactTranslator.getMessage('group_description_lang'),
+    ];
+
     const {
         categories,
         filters,
         filtersToRender,
+        settings,
     } = settingsStore;
 
     useEffect(() => {
@@ -155,9 +169,25 @@ const Filters = observer(() => {
         const isCustom = settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID;
         const isEmpty = filtersToRender.length === 0;
 
+        const settingChangeHandler = async ({ id, data }) => {
+            log.info(`Setting ${id} set to ${data}`);
+            await settingsStore.updateSetting(id, data);
+        };
+
         return (
             <SettingsSection
                 title={selectedGroup.groupName}
+                description={groupDescription[selectedGroup.groupId]}
+                inlineControl={(
+                    <Setting
+                        id={selectedGroup.groupId}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_privacy_title')}
+                        inverted
+                        value={settings.values[selectedGroup.groupId]}
+                        handler={settingChangeHandler}
+                    />
+                )}
                 renderBackButton={renderBackButton}
             >
                 {isEmpty && isCustom && !settingsStore.isSearching

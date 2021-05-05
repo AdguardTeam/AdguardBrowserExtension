@@ -6,23 +6,31 @@
     background-color: var(--gray100);
     border-radius: 8px;
     padding: 10px 16px;
-    margin: 0 16px;
+    margin: 0 16px 24px;
 
     @media (prefers-color-scheme: dark) {
         border-bottom: 1px solid var(--gray900);
     }
 
     &__input {
-        flex-grow: 1;
         border: 0;
         background: none;
         padding: 0;
-        font-size: 14px;
         outline: none;
+        font-size: 14px;
+
+        @media (min-width: 640px) {
+            font-size: 16px;
+            flex-grow: 1;
+        }
 
         &::placeholder {
             color: var(--gray700);
-            font-size: 16px;
+            font-size: 14px;
+
+            @media (min-width: 640px) {
+                font-size: 16px;
+            }
         }
 
         @media (prefers-color-scheme: dark) {
@@ -31,14 +39,21 @@
     }
 
     &__select {
-        padding-left: 16px;
-        margin-left: 20px;
-        border-left: 1px solid var(--gray700);
+        @media (min-width: 640px) {
+            padding-left: 16px;
+            margin-left: 20px;
+            border-left: 1px solid var(--gray700);
+        }
 
         & .select__ico,
         select,
         option {
             color: var(--gray700);
+            font-size: 14px;
+
+            @media (min-width: 640px) {
+                font-size: 16px;
+            }
         }
     }
 

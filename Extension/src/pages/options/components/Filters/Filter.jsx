@@ -107,21 +107,41 @@ const Filter = observer(({ filter }) => {
         <div className={filterClassName} role="presentation">
             <div className="filter__info">
                 <div className="setting__container setting__container--horizontal">
-                    <div className="filter__title">
-                        <span className="filter__title-in">
-                            {name}
-                        </span>
-                        <span className="filter__controls">
-                            <a
-                                className="filter__link"
-                                href={homepage || customUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <Icon id="#link" classname="icon--link" />
-                            </a>
-                            {renderRemoveButton()}
-                        </span>
+                    <div className="setting__inner">
+                        <div className="filter__title">
+                            <span className="filter__title-in">
+                                {name}
+                            </span>
+                            <span className="filter__controls">
+                                <a
+                                    className="filter__link"
+                                    href={homepage || customUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <Icon id="#link" classname="icon--link" />
+                                </a>
+                                {renderRemoveButton()}
+                            </span>
+                        </div>
+                        <div className="filter__desc">
+                            <div className="filter__desc-item">
+                                {description}
+                            </div>
+                            <div className="filter__desc-item">
+                                {
+                                    version
+                                        ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
+                                        : ''
+                                }
+                                {reactTranslator.getMessage('options_filters_filter_updated')}
+                                {' '}
+                                {lastUpdateTime
+                                    ? formatDate(lastUpdateTime)
+                                    : formatDate(timeUpdated)}
+                            </div>
+                        </div>
+                        {renderTags(tagsDetails, trusted)}
                     </div>
                     <div className="setting__inline-control">
                         <Setting
@@ -133,24 +153,6 @@ const Filter = observer(({ filter }) => {
                         />
                     </div>
                 </div>
-                <div className="filter__desc">
-                    <div className="filter__desc-item">
-                        {description}
-                    </div>
-                    <div className="filter__desc-item">
-                        {
-                            version
-                                ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
-                                : ''
-                        }
-                        {reactTranslator.getMessage('options_filters_filter_updated')}
-                        {' '}
-                        {lastUpdateTime
-                            ? formatDate(lastUpdateTime)
-                            : formatDate(timeUpdated)}
-                    </div>
-                </div>
-                {renderTags(tagsDetails, trusted)}
             </div>
         </div>
     );
