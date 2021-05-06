@@ -27,6 +27,7 @@ import { log } from '../../common/log';
 import { rulesStorage } from '../storage';
 import { filtersUpdate } from './filters/filters-update';
 import { engine } from './engine';
+import { stealthService } from './services/stealth-service';
 
 /**
  * Creating service that manages our filter rules.
@@ -334,6 +335,24 @@ export const antiBannerService = (() => {
         }
 
         /**
+         * Checks by filter id if filter is enabled and has rules
+         * @param rulesFilterMap
+         * @param filterId
+         * @return {boolean}
+         */
+        const hasFilterRules = (rulesFilterMap, filterId) => {
+            const enabledFilterIds = Object.keys(rulesFilterMap);
+            const foundFilterId = enabledFilterIds.find(enabledFilterId => enabledFilterId === filterId);
+            if (foundFilterId) {
+                const rules = enabledFilterIds[foundFilterId];
+                if (rules && rules.length > 0) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        /**
          * Checks rulesFilterMap is empty (no one of filters are enabled)
          * @param rulesFilterMap
          * @returns {boolean}
@@ -345,15 +364,7 @@ export const antiBannerService = (() => {
             }
 
             // User filter is enabled by default, but it may not contain any rules
-            const userFilterId = utils.filters.USER_FILTER_ID;
-            if (enabledFilterIds.length === 1 && enabledFilterIds[0] === userFilterId) {
-                const userRules = rulesFilterMap[userFilterId];
-                if (!userRules || userRules.length === 0) {
-                    return true;
-                }
-            }
-
-            return false;
+            return !hasFilterRules(utils.filters.USER_FILTER_ID);
         }
 
         /**
@@ -372,9 +383,10 @@ export const antiBannerService = (() => {
             );
 
             /**
-             * If no one of filters is enabled, don't reload rules
+             * If no one of filters is enabled, don't reload rules,
+             * except when there are enabled stealth mode rules
              */
-            if (isEmptyRulesFilterMap(rulesFilterMap)) {
+            if (isEmptyRulesFilterMap(rulesFilterMap) && !stealthService.hasFilterRules()) {
                 return;
             }
 
@@ -392,13 +404,13 @@ export const antiBannerService = (() => {
         /**
          * Fills engine with rules
          */
-        const startTSUrlfilterEngine = async () => {
+        const startTSUrlFilterEngine = async () => {
             const lists = [];
 
             // eslint-disable-next-line guard-for-in,no-restricted-syntax
             for (let filterId in rulesFilterMap) {
                 // To number
-                filterId -= 0;
+                filterId = Number(filterId);
 
                 const isTrustedFilter = subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
@@ -406,12 +418,16 @@ export const antiBannerService = (() => {
                 lists.push(new TSUrlFilter.StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
             }
 
+            // append stealth mode rules
+            const stealthModeList = stealthService.getStealthModeRuleList();
+            lists.push(stealthModeList);
+
             await engine.startEngine(lists);
 
             requestFilterInitialized();
         };
 
-        await startTSUrlfilterEngine();
+        await startTSUrlFilterEngine();
     }
 
     /**

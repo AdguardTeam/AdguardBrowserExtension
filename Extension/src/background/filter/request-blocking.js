@@ -535,7 +535,6 @@ export const webRequestService = (function () {
         return canCollectHitStatsForTab(tab) || filteringLog.isOpen();
     };
 
-
     // EXPOSE
     return {
         processGetSelectorsAndScripts,
