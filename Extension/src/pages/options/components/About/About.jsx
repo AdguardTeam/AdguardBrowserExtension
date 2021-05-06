@@ -34,8 +34,7 @@ const About = observer(() => {
             </div>
             <div className="about">
                 <div className="about__title">
-                    {/* TODO fix me */}
-                    AdGuard for Chrome
+                    {reactTranslator.getMessage('options_about_title')}
                 </div>
                 <div className="about__version">
                     {reactTranslator.getMessage('options_about_version')}

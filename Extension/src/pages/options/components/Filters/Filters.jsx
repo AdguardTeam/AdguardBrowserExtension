@@ -40,16 +40,16 @@ const Filters = observer(() => {
     // This state used to remove blinking while filters to render were not selected
     const [groupDetermined, setGroupDetermined] = useState(false);
 
-    const groupDescription = [
-        reactTranslator.getMessage('group_description_custom'),
-        reactTranslator.getMessage('group_description_adblocking'),
-        reactTranslator.getMessage('group_description_stealth'),
-        reactTranslator.getMessage('group_description_social'),
-        reactTranslator.getMessage('group_description_annoyances'),
-        reactTranslator.getMessage('group_description_security'),
-        reactTranslator.getMessage('group_description_miscellaneous'),
-        reactTranslator.getMessage('group_description_lang'),
-    ];
+    const GROUP_DESCRIPTION = {
+        0: reactTranslator.getMessage('group_description_custom'),
+        1: reactTranslator.getMessage('group_description_adblocking'),
+        2: reactTranslator.getMessage('group_description_stealth'),
+        3: reactTranslator.getMessage('group_description_social'),
+        4: reactTranslator.getMessage('group_description_annoyances'),
+        5: reactTranslator.getMessage('group_description_security'),
+        6: reactTranslator.getMessage('group_description_miscellaneous'),
+        7: reactTranslator.getMessage('group_description_lang'),
+    };
 
     const {
         categories,
@@ -177,7 +177,7 @@ const Filters = observer(() => {
         return (
             <SettingsSection
                 title={selectedGroup.groupName}
-                description={groupDescription[selectedGroup.groupId]}
+                description={GROUP_DESCRIPTION[selectedGroup.groupId]}
                 inlineControl={(
                     <Setting
                         id={selectedGroup.groupId}

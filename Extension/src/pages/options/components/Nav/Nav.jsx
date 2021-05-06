@@ -77,7 +77,7 @@ const Nav = ({ closeSidebar }) => {
             {!sidebarCompareHide && (
                 <div className="nav__desc">
                     <div className="nav__message">
-                        {reactTranslator.getMessage('nav_better_than_extension')}
+                        {reactTranslator.getMessage('options_nav_better_than_extension')}
                     </div>
                     <a
                         className="nav__link"
@@ -85,14 +85,14 @@ const Nav = ({ closeSidebar }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        {reactTranslator.getMessage('nav_compare')}
+                        {reactTranslator.getMessage('options_nav_compare')}
                     </a>
                     <button
                         type="button"
                         className="nav__hide"
                         onClick={hideCompare}
                     >
-                        {reactTranslator.getMessage('hide')}
+                        {reactTranslator.getMessage('options_nav_hide')}
                     </button>
                 </div>
             )}

@@ -60,7 +60,7 @@ const Search = observer(() => {
                 autoFocus
                 className="search__input"
                 type="text"
-                placeholder={reactTranslator.getMessage('search')}
+                placeholder={reactTranslator.getMessage('options_filters_search')}
                 onChange={searchInputHandler}
                 value={searchInput}
             />
