@@ -45,6 +45,10 @@
 
         &:hover {
             background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
         }
 
         &:before {
@@ -93,7 +97,9 @@
 .light-mode {
     .checkbox {
         &__label {
-            background-color: var(--gray700);
+            &:hover {
+                background-color: var(--gray100);
+            }
 
             &:before {
                 background-color: var(--white);
@@ -106,7 +112,9 @@
 .dark-mode {
     .checkbox {
         &__label {
-            background-color: var(--gray700);
+            &:hover {
+                background-color: var(--gray900);
+            }
 
             &:before {
                 background-color: var(--black);
