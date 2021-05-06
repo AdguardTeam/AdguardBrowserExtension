@@ -59,6 +59,7 @@ export const requestContextStorage = (function () {
      * @property {number} contentModifyingState - Is content modification started
      * @property {Map<object, string[]>} elements - Content rules attached elements
      * @property {number} stealthActions - Applied stealth actions
+     * @property {boolean} cspReportBlocked - Blocked because is csp report request
      */
 
     /**
@@ -221,6 +222,9 @@ export const requestContextStorage = (function () {
         if ('modifiedResponseHeaders' in update) {
             context.modifiedResponseHeaders = copyHeaders(update.modifiedResponseHeaders);
         }
+        if ('cspReportBlocked' in update) {
+            context.cspReportBlocked = update.cspReportBlocked;
+        }
     };
 
     /**
@@ -267,18 +271,23 @@ export const requestContextStorage = (function () {
             return;
         }
 
-        const { tab } = context;
-        const { requestUrl } = context;
-        const { referrerUrl } = context;
+        const {
+            tab,
+            requestUrl,
+            referrerUrl,
+        } = context;
 
         let ruleHitsRecords = [];
 
         if (context.requestState === States.DONE) {
             context.requestState = States.NONE;
 
-            const { requestRule } = context;
-            const { cspRules } = context;
-            const { stealthActions } = context;
+            const {
+                requestRule,
+                cspRules,
+                stealthActions,
+                cspReportBlocked,
+            } = context;
 
             if (requestRule) {
                 filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, context.eventId);
@@ -294,6 +303,10 @@ export const requestContextStorage = (function () {
 
             if (stealthActions) {
                 filteringLog.bindStealthActionsToHttpRequestEvent(tab, stealthActions, context.eventId);
+            }
+
+            if (cspReportBlocked) {
+                filteringLog.bindCspReportBlockedToHttpRequestEvent(tab, cspReportBlocked, context.eventId);
             }
         }
 

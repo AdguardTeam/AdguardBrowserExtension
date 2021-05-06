@@ -50,10 +50,7 @@ const getStealthActionsNames = (actions) => {
  * @return {String}
  */
 const getType = (selectedEvent) => {
-    if (selectedEvent.requestRule?.cookieRule) {
-        return getRequestType(RequestTypes.COOKIE);
-    }
-    return getRequestType(selectedEvent.requestType);
+    return getRequestType(selectedEvent);
 };
 
 /**

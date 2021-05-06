@@ -6,6 +6,7 @@ import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
+import { HighlightSearch } from './Search/HighlightSearch';
 
 import './filter.pcss';
 
@@ -110,7 +111,7 @@ const Filter = observer(({ filter }) => {
                     <div className="setting__inner">
                         <div className="filter__title">
                             <span className="filter__title-in">
-                                {name}
+                                <HighlightSearch name={name} />
                             </span>
                             <span className="filter__controls">
                                 <a
