@@ -12,7 +12,7 @@ import { reactTranslator } from '../../../../../common/translators/reactTranslat
 const options = [
     {
         value: SEARCH_FILTERS.ALL,
-        title: reactTranslator.getMessage('options_filters_list_search_display_option_allFilters'),
+        title: reactTranslator.getMessage('options_filters_list_search_display_option_all_filters'),
     },
     {
         value: SEARCH_FILTERS.ENABLED,
