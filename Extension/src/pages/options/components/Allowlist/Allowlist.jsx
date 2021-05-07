@@ -143,7 +143,6 @@ const Allowlist = observer(() => {
                 </div>
                 <div className="actions__group">
                     {/* TODO add onClick */}
-                    {/* TODO fix icon */}
                     <button
                         type="button"
                         className="actions__btn actions__btn--icon"
