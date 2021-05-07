@@ -176,8 +176,8 @@ export const RequestFilter = (() => {
          * @returns {{scriptSource: string, rule: string}[]} Javascript for the specified URL
          */
         getScriptsForUrl(url, cosmeticOptions) {
-            const domain = utils.url.getDomainName(url);
-            const cosmeticResult = engine.getCosmeticResult(domain, cosmeticOptions);
+            const hostname = utils.url.getHost(url);
+            const cosmeticResult = engine.getCosmeticResult(hostname, cosmeticOptions);
 
             return cosmeticResult.getScriptRules();
         },
