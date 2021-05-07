@@ -11,6 +11,7 @@ import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
+import { Icon } from '../../../common/components/ui/Icon';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -115,6 +116,7 @@ const Allowlist = observer(() => {
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
+                    <AllowlistSavingButton onClick={saveClickHandler} />
                     <input
                         type="file"
                         id="inputEl"
@@ -125,14 +127,14 @@ const Allowlist = observer(() => {
                     />
                     <button
                         type="button"
-                        className="button button--m button--green actions__btn"
+                        className="button button--m button--transparent actions__btn"
                         onClick={importClickHandler}
                     >
                         {reactTranslator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
-                        className="button button--m button--green-bd actions__btn"
+                        className="button button--m button--transparent actions__btn"
                         onClick={exportClickHandler}
                         disabled={!settingsStore.allowlist}
                     >
@@ -140,7 +142,21 @@ const Allowlist = observer(() => {
                     </button>
                 </div>
                 <div className="actions__group">
-                    <AllowlistSavingButton onClick={saveClickHandler} />
+                    {/* TODO add onClick */}
+                    {/* TODO fix icon */}
+                    <button
+                        type="button"
+                        className="actions__btn actions__btn--icon"
+                    >
+                        <Icon classname="icon--extend" id="#line-break" />
+                    </button>
+                    {/* TODO add onClick */}
+                    <button
+                        type="button"
+                        className="actions__btn actions__btn--icon"
+                    >
+                        <Icon classname="icon--extend" id="#extend" />
+                    </button>
                 </div>
             </div>
         </>

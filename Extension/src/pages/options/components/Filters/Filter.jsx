@@ -114,6 +114,7 @@ const Filter = observer(({ filter }) => {
                                 <HighlightSearch name={name} />
                             </span>
                             <span className="filter__controls">
+                                &nbsp;
                                 <a
                                     className="filter__link"
                                     href={homepage || customUrl}

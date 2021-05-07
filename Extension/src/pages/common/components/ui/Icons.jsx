@@ -182,6 +182,24 @@ export const Icons = () => {
                     </g>
                 </g>
             </symbol>
+
+            <symbol id="extend" viewBox="0 0 24 24">
+                <rect width="24" height="24" fill="none" />
+                <path d="M6 10V6H10M6 14V18H10M18 10V6H14M18 14V18H14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
+            <symbol id="line-break" viewBox="0 0 24 24">
+                <rect width="24" height="24" fill="#F3F3F3" />
+                <path d="M4.08374 5.48564H19.6173" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M4 9.70654H12" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M4.08374 13.7417H10.8796" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <mask id="path-4-inside-1" fill="white">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M14 18.4448H15.5396C18.1608 18.4448 20.2857 16.3199 20.2857 13.6987C20.2857 11.0775 18.1608 8.95264 15.5396 8.95264H10V10.4526H15.5396C17.3324 10.4526 18.7857 11.906 18.7857 13.6987C18.7857 15.4915 17.3324 16.9448 15.5396 16.9448H14V18.4448Z" />
+                </mask>
+                <path d="M14 18.4448H12.5V19.9448H14V18.4448ZM10 8.95264V7.45264H8.5V8.95264H10ZM10 10.4526H8.5V11.9526H10V10.4526ZM14 16.9448V15.4448H12.5V16.9448H14ZM14 19.9448H15.5396V16.9448H14V19.9448ZM15.5396 19.9448C18.9892 19.9448 21.7857 17.1484 21.7857 13.6987H18.7857C18.7857 15.4915 17.3324 16.9448 15.5396 16.9448V19.9448ZM21.7857 13.6987C21.7857 10.2491 18.9892 7.45264 15.5396 7.45264V10.4526C17.3324 10.4526 18.7857 11.906 18.7857 13.6987H21.7857ZM15.5396 7.45264H10V10.4526H15.5396V7.45264ZM8.5 8.95264V10.4526H11.5V8.95264H8.5ZM10 11.9526H15.5396V8.95264H10V11.9526ZM15.5396 11.9526C16.504 11.9526 17.2857 12.7344 17.2857 13.6987H20.2857C20.2857 11.0775 18.1608 8.95264 15.5396 8.95264V11.9526ZM17.2857 13.6987C17.2857 14.6631 16.504 15.4448 15.5396 15.4448V18.4448C18.1608 18.4448 20.2857 16.3199 20.2857 13.6987H17.2857ZM15.5396 15.4448H14V18.4448H15.5396V15.4448ZM12.5 16.9448V18.4448H15.5V16.9448H12.5Z" fill="#888888" mask="url(#path-4-inside-1)" />
+                <path d="M4.08374 17.6265H10.8796" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M15.7629 19.5693L13.8212 17.6268L15.7629 15.6842" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
         </svg>
     );
 };
