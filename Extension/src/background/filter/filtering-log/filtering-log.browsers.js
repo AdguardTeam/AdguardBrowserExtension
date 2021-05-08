@@ -353,6 +353,33 @@ const browsersFilteringLog = (function () {
     };
 
     /**
+     * Adds removed header event
+     *
+     * @param tabId
+     * @param frameUrl
+     * @param headerName
+     * @param rule
+     */
+    const addRemoveHeaderEvent = (tabId, frameUrl, headerName, rule) => {
+        if (!rule || !canAddEvent(tabId)) {
+            return;
+        }
+
+        const frameDomain = utils.url.getDomainName(frameUrl);
+        const filteringEvent = {
+            removeHeader: true,
+            headerName,
+            requestUrl: frameUrl,
+            frameUrl,
+            frameDomain,
+            requestType: RequestTypes.DOCUMENT,
+        };
+
+        addRuleToFilteringEvent(filteringEvent, rule);
+        pushFilteringEvent(tabId, filteringEvent);
+    };
+
+    /**
      * Writes to filtering event some useful properties from the replace rules
      * @param filteringEvent
      * @param replaceRules
@@ -595,6 +622,7 @@ const browsersFilteringLog = (function () {
         addCosmeticEvent,
         addCookieEvent,
         addRemoveParamEvent,
+        addRemoveHeaderEvent,
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         bindCspReportBlockedToHttpRequestEvent,

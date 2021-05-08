@@ -415,7 +415,9 @@ export const antiBannerService = (() => {
                 const isTrustedFilter = subscriptions.isTrustedFilter(filterId);
                 const rulesTexts = rulesFilterMap[filterId].join('\n');
 
-                lists.push(new TSUrlFilter.StringRuleList(filterId, rulesTexts, false, !isTrustedFilter));
+                lists.push(
+                    new TSUrlFilter.StringRuleList(filterId, rulesTexts, false, !isTrustedFilter, !isTrustedFilter),
+                );
             }
 
             // append stealth mode rules
