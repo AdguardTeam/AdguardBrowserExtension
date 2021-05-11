@@ -1,5 +1,8 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, {
+    useState, useContext, useEffect, useRef,
+} from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSet } from '../Settings/SettingsSet';
@@ -14,6 +17,7 @@ import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Icon } from '../../../common/components/ui/Icon';
 
 const Allowlist = observer(() => {
+    const [wrapEnabled, setWrapEnabled] = useState(false);
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
@@ -86,6 +90,14 @@ const Allowlist = observer(() => {
         },
     }];
 
+    const toggleWrap = () => {
+        setWrapEnabled(!wrapEnabled);
+    };
+
+    const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
+        'actions__btn--active': wrapEnabled,
+    });
+
     return (
         <>
             <SettingsSection
@@ -145,16 +157,10 @@ const Allowlist = observer(() => {
                     {/* TODO add onClick */}
                     <button
                         type="button"
-                        className="actions__btn actions__btn--icon"
+                        className={lineBreakClassNames}
+                        onClick={toggleWrap}
                     >
                         <Icon classname="icon--extend" id="#line-break" />
-                    </button>
-                    {/* TODO add onClick */}
-                    <button
-                        type="button"
-                        className="actions__btn actions__btn--icon"
-                    >
-                        <Icon classname="icon--extend" id="#extend" />
                     </button>
                 </div>
             </div>

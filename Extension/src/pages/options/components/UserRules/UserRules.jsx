@@ -7,6 +7,7 @@ import React, {
 import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
+import classnames from 'classnames';
 
 import { Editor } from '../Editor';
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -121,6 +122,10 @@ const UserRules = observer(() => {
         settingsStore.toggleUserRulesEditorWrap();
     };
 
+    const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
+        'actions__btn--active': wrapEnabled,
+    });
+
     return (
         <>
             <SettingsSection
@@ -177,7 +182,7 @@ const UserRules = observer(() => {
                     {/* TODO add onClick */}
                     <button
                         type="button"
-                        className="actions__btn actions__btn--icon"
+                        className={lineBreakClassNames}
                         onClick={toggleWrap}
                     >
                         <Icon classname="icon--extend" id="#line-break" />
