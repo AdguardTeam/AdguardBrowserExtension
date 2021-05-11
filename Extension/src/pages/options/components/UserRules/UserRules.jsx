@@ -2,6 +2,7 @@ import React, {
     useContext,
     useEffect,
     useRef,
+    useState,
 } from 'react';
 import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
@@ -15,9 +16,9 @@ import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './styles.pcss';
-import { Icon } from '../../../common/components/ui/Icon';
 
 const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -25,6 +26,7 @@ const UserRules = observer(() => {
     const editorRef = useRef(null);
     const inputRef = useRef(null);
     const prevUserRules = usePrevious(settingsStore.userRules);
+    const [wrapEnabled, setWrapEnabled] = useState(false);
 
     const inputChangeHandler = async (event) => {
         event.persist();
@@ -116,6 +118,10 @@ const UserRules = observer(() => {
         settingsStore.setUserRulesEditorContentChangedState(true);
     };
 
+    const toggleWrap = () => {
+        setWrapEnabled(!wrapEnabled);
+    };
+
     return (
         <>
             <SettingsSection
@@ -139,6 +145,7 @@ const UserRules = observer(() => {
                 shortcuts={shortcuts}
                 onChange={onChange}
                 value={settingsStore.userRules}
+                wrapEnabled={wrapEnabled}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
@@ -172,6 +179,7 @@ const UserRules = observer(() => {
                     <button
                         type="button"
                         className="actions__btn actions__btn--icon"
+                        onClick={toggleWrap}
                     >
                         <Icon classname="icon--extend" id="#line-break" />
                     </button>
