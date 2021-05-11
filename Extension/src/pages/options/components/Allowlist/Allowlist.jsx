@@ -1,6 +1,4 @@
-import React, {
-    useState, useContext, useEffect, useRef,
-} from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 
@@ -17,7 +15,6 @@ import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Icon } from '../../../common/components/ui/Icon';
 
 const Allowlist = observer(() => {
-    const [wrapEnabled, setWrapEnabled] = useState(false);
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const editorRef = useRef(null);

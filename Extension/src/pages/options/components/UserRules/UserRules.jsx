@@ -2,7 +2,6 @@ import React, {
     useContext,
     useEffect,
     useRef,
-    useState,
 } from 'react';
 import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
@@ -179,7 +178,6 @@ const UserRules = observer(() => {
                     </button>
                 </div>
                 <div className="actions__group">
-                    {/* TODO add onClick */}
                     <button
                         type="button"
                         className={lineBreakClassNames}
