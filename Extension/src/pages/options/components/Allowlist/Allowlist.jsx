@@ -1,5 +1,8 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, {
+    useState, useContext, useEffect, useRef,
+} from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSet } from '../Settings/SettingsSet';
@@ -14,6 +17,7 @@ import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Icon } from '../../../common/components/ui/Icon';
 
 const Allowlist = observer(() => {
+    const [lineBreak, setLineBreak] = useState(false);
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
@@ -86,6 +90,10 @@ const Allowlist = observer(() => {
         },
     }];
 
+    const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
+        'actions__btn--active': lineBreak,
+    });
+
     return (
         <>
             <SettingsSection
@@ -145,16 +153,10 @@ const Allowlist = observer(() => {
                     {/* TODO add onClick */}
                     <button
                         type="button"
-                        className="actions__btn actions__btn--icon"
+                        className={lineBreakClassNames}
+                        onClick={() => { setLineBreak(!lineBreak); }}
                     >
                         <Icon classname="icon--extend" id="#line-break" />
-                    </button>
-                    {/* TODO add onClick */}
-                    <button
-                        type="button"
-                        className="actions__btn actions__btn--icon"
-                    >
-                        <Icon classname="icon--extend" id="#extend" />
                     </button>
                 </div>
             </div>
