@@ -348,7 +348,7 @@ class SettingsStore {
         } catch (e) {
             log.debug(e);
         }
-    }
+    };
 
     @action
     appendAllowlist = async (allowlist) => {
@@ -459,6 +459,19 @@ class SettingsStore {
         }
 
         return this.settings.values[this.settings.names.APPEARANCE_THEME];
+    }
+
+    @computed
+    get showAdguardPromoInfo() {
+        if (!this.settings) {
+            return null;
+        }
+        return !this.settings.values[this.settings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO];
+    }
+
+    @action
+    async hideAdguardPromoInfo() {
+        await this.updateSetting(this.settings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, true);
     }
 }
 

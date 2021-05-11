@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { COMPARE_URL } from '../../../constants';
+import { observer } from 'mobx-react';
 
+import { COMPARE_URL } from '../../../constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { rootStore } from '../../stores/RootStore';
 
 import './nav.pcss';
 
-const SIDEBAR_COMPARE_HIDE = 'sidebar_compare_hide';
-
-const Nav = ({ closeSidebar }) => {
-    const [isSidebarCompareHide, setSidebarCompareHide] = useState(false);
-    const sidebarCompareHide = isSidebarCompareHide || localStorage.getItem(SIDEBAR_COMPARE_HIDE);
-    const hideCompare = () => {
-        setSidebarCompareHide(true);
-        localStorage.setItem(SIDEBAR_COMPARE_HIDE, 'true');
+const Nav = observer(({ closeSidebar }) => {
+    const { settingsStore } = useContext(rootStore);
+    const hideCompare = async () => {
+        await settingsStore.hideAdguardPromoInfo();
     };
+
     return (
         <div className="nav">
             <NavLink
@@ -74,7 +73,7 @@ const Nav = ({ closeSidebar }) => {
             >
                 {reactTranslator.getMessage('options_about')}
             </NavLink>
-            {!sidebarCompareHide && (
+            {settingsStore.showAdguardPromoInfo && (
                 <div className="nav__desc">
                     <div className="nav__message">
                         {reactTranslator.getMessage('options_nav_better_than_extension')}
@@ -100,6 +99,6 @@ const Nav = ({ closeSidebar }) => {
             )}
         </div>
     );
-};
+});
 
 export { Nav };
