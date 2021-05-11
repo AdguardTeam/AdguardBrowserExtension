@@ -17,7 +17,7 @@ import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Icon } from '../../../common/components/ui/Icon';
 
 const Allowlist = observer(() => {
-    const [lineBreak, setLineBreak] = useState(false);
+    const [wrapEnabled, setWrapEnabled] = useState(false);
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
@@ -90,8 +90,12 @@ const Allowlist = observer(() => {
         },
     }];
 
+    const toggleWrap = () => {
+        setWrapEnabled(!wrapEnabled);
+    };
+
     const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
-        'actions__btn--active': lineBreak,
+        'actions__btn--active': wrapEnabled,
     });
 
     return (
@@ -154,7 +158,7 @@ const Allowlist = observer(() => {
                     <button
                         type="button"
                         className={lineBreakClassNames}
-                        onClick={() => { setLineBreak(!lineBreak); }}
+                        onClick={toggleWrap}
                     >
                         <Icon classname="icon--extend" id="#line-break" />
                     </button>
