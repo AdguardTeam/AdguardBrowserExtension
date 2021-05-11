@@ -91,11 +91,11 @@ const Allowlist = observer(() => {
     }];
 
     const toggleWrap = () => {
-        setWrapEnabled(!wrapEnabled);
+        settingsStore.toggleAllowlistEditorWrap();
     };
 
     const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
-        'actions__btn--active': wrapEnabled,
+        'actions__btn--active': settingsStore.allowlistEditorWrap,
     });
 
     return (
@@ -125,6 +125,7 @@ const Allowlist = observer(() => {
                 shortcuts={shortcuts}
                 onChange={editorChangeHandler}
                 value={settingsStore.allowlist}
+                wrapEnabled={settingsStore.allowlistEditorWrap}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
@@ -154,7 +155,6 @@ const Allowlist = observer(() => {
                     </button>
                 </div>
                 <div className="actions__group">
-                    {/* TODO add onClick */}
                     <button
                         type="button"
                         className={lineBreakClassNames}

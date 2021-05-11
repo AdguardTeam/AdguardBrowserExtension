@@ -123,7 +123,7 @@ const UserRules = observer(() => {
     };
 
     const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
-        'actions__btn--active': wrapEnabled,
+        'actions__btn--active': settingsStore.userRulesEditorWrapState,
     });
 
     return (

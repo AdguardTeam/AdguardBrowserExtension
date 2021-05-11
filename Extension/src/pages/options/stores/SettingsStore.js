@@ -83,6 +83,8 @@ class SettingsStore {
 
     @observable userRulesEditorWrap = null;
 
+    @observable allowlistEditorWrap = null;
+
     @observable footerRateShow = null;
 
     constructor(rootStore) {
@@ -495,6 +497,25 @@ class SettingsStore {
         optionsStorage.setItem(
             optionsStorage.KEYS.USER_RULES_EDITOR_WRAP,
             this.userRulesEditorWrap,
+        );
+    }
+
+    @computed
+    get allowlistEditorWrapState() {
+        if (this.allowlistEditorWrap === null) {
+            this.allowlistEditorWrap = optionsStorage.getItem(
+                optionsStorage.KEYS.ALLOWLIST_EDITOR_WRAP,
+            );
+        }
+        return this.allowlistEditorWrap;
+    }
+
+    @action
+    toggleAllowlistEditorWrap() {
+        this.allowlistEditorWrap = !this.allowlistEditorWrap;
+        optionsStorage.setItem(
+            optionsStorage.KEYS.ALLOWLIST_EDITOR_WRAP,
+            this.allowlistEditorWrap,
         );
     }
 
