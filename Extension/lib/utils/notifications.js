@@ -25,64 +25,76 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const easter2021Notification = {
-        id: 'easter2021',
+    const birthday2021Notification = {
+        id: 'birthday2021',
         locales: {
             en: {
-                btn: 'Eggcellent deal',
-                updateTitle: 'Happy Easter sale',
-                updateBtn: 'Hop on in',
+                title: 'Web Survival Test',
+                btn: 'I\'m ready!',
+                updateTitle: 'Web Survival Test',
+                updateBtn: 'I\'m ready!',
             },
             ru: {
-                btn: 'Что в яйце?',
-                updateTitle: 'Весенняя распродажа',
-                updateBtn: 'Cкидка 40%',
+                title: 'Игра на выживание',
+                btn: 'Пройти',
+                updateTitle: 'Игра на выживание',
+                updateBtn: 'Пройти',
             },
             ja: {
-                btn: 'タマゴの中身を見る',
-                updateTitle: 'イースターキャンペーン',
-                updateBtn: '40%割引を手に入れる',
+                title: 'ウェブでのサバイバル能力テスト',
+                btn: '受けてみる',
+                updateTitle: 'ウェブサバイバル能力テスト',
+                updateBtn: '受けてみる',
             },
             ko: {
-                btn: '유료 버전의 장점 보기',
-                updateTitle: '부활절 맞이 40% 할인',
-                updateBtn: '할인 받기',
+                title: '웹 서바이벌 게임',
+                btn: '시작',
+                updateTitle: '웹 서바이벌 게임',
+                updateBtn: '시작',
             },
             zh_cn: {
-                btn: '惊喜优惠高级保护',
-                updateTitle: '复活节狂欢',
-                updateBtn: '一键加入',
+                title: 'AdGuard 网络生存答题竞赛',
+                btn: '我准备好啦！',
+                updateTitle: 'AdGuard 网络生存答题竞赛',
+                updateBtn: '我准备好啦！',
             },
             zh_tw: {
-                btn: '驚喜優惠進階保護',
-                updateTitle: '復活節狂歡優惠',
-                updateBtn: '一鍵加入',
+                title: 'AdGuard 網路生存問答遊戲',
+                btn: '我準備好啦！',
+                updateTitle: 'AdGuard 網路生存問答遊戲',
+                updateBtn: '我準備好啦！',
             },
             fr: {
-                btn: 'Oeuf de Pâques',
-                updateTitle: 'Marché de Pâques',
-                updateBtn: 'Venez voir',
+                title: 'AdGuard : Jeu de Survie sur le Web',
+                btn: 'En avant !',
+                updateTitle: 'Jeu de Survie sur le Web',
+                updateBtn: 'En avant !',
             },
             es: {
-                btn: '–40% en licencias!',
-                updateTitle: 'Promoción de Pascua',
-                updateBtn: 'Descúbrela',
+                title: 'Prueba de Supervivencia Web',
+                btn: '¡Estoy listo!',
+                updateTitle: 'Prueba de Supervivencia Web',
+                updateBtn: '¡Estoy listo!',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=easter2021&app=browser_extension',
-        from: '02 April 2021 00:01:00',
-        to: '07 April 2021 00:01:00',
+        // FIXME add to the tds
+        url: 'https://agrd.io/12birthday-game',
+        // FIXME remove line bellow
+        from: '11 May 2021 15:00:00',
+        // FIXME uncomment line bellow
+        // from: '01 June 2021 15:00:00',
+        to: '07 June 2021 15:00:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(easter2021Notification, 'icons', () => ({
+            return adguard.lazyGet(birthday2021Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/blue-19-easter.png'),
-                    '38': adguard.getURL('icons/blue-38-easter.png'),
+                    '19': adguard.getURL('icons/birthday-enabled-19.png'),
+                    '38': adguard.getURL('icons/birthday-enabled-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-easter.png'),
-                    '38': adguard.getURL('icons/gray-38-easter.png'),
+                    '19': adguard.getURL('icons/birthday-disabled-19.png'),
+                    '38': adguard.getURL('icons/birthday-disabled-38.png'),
                 },
             }));
         },
@@ -104,7 +116,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        easter2021: easter2021Notification,
+        birthday2021: birthday2021Notification,
     };
 
     /**
@@ -186,24 +198,25 @@ adguard.notifications = (function (adguard) {
      * @param {boolean} withDelay if true, do this after a 30 sec delay
      */
     const setNotificationViewed = function (withDelay) {
-        if (withDelay) {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                setNotificationViewed(false);
-            }, DELAY);
-            return;
-        }
-
-        if (currentNotification) {
-            const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-            const { id } = currentNotification;
-            if (!viewedNotifications.includes(id)) {
-                viewedNotifications.push(id);
-                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
-                currentNotification = null;
-            }
-        }
+        // FIXME uncomment
+        // if (withDelay) {
+        //     clearTimeout(timeoutId);
+        //     timeoutId = setTimeout(() => {
+        //         setNotificationViewed(false);
+        //     }, DELAY);
+        //     return;
+        // }
+        //
+        // if (currentNotification) {
+        //     const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+        //     const { id } = currentNotification;
+        //     if (!viewedNotifications.includes(id)) {
+        //         viewedNotifications.push(id);
+        //         adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+        //         adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
+        //         currentNotification = null;
+        //     }
+        // }
     };
 
     /**
@@ -218,19 +231,20 @@ adguard.notifications = (function (adguard) {
         }
 
         const currentTime = new Date().getTime();
-        const timeSinceLastNotification = currentTime - getLastNotificationTime();
-        if (timeSinceLastNotification < minPeriod) {
-            // Just a check to not show the notification too often
-            return null;
-        }
-
-        // Check not often than once in 10 minutes
-        const timeSinceLastCheck = currentTime - notificationCheckTime;
-        if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
-            return currentNotification;
-        }
-        // Update the last notification check time
-        notificationCheckTime = currentTime;
+        // FIXME uncomment lines bellow
+        // const timeSinceLastNotification = currentTime - getLastNotificationTime();
+        // if (timeSinceLastNotification < minPeriod) {
+        //     // Just a check to not show the notification too often
+        //     return null;
+        // }
+        //
+        // // Check not often than once in 10 minutes
+        // const timeSinceLastCheck = currentTime - notificationCheckTime;
+        // if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
+        //     return currentNotification;
+        // }
+        // // Update the last notification check time
+        // notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
         const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
