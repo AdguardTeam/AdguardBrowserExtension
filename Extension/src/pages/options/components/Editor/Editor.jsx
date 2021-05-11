@@ -62,7 +62,7 @@ const Editor = ({
                 value={value}
                 commands={shortcuts}
                 onChange={onChange}
-                indentedSoftWrap={wrapEnabled}
+                wrapEnabled={wrapEnabled}
             />
             <ReactResizeDetector
                 skipOnMount

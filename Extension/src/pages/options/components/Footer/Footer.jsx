@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
 import { FORUM_URL, WEBSITE_URL } from '../../../constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
+import { rootStore } from '../../stores/RootStore';
 
 import './footer.pcss';
 
-const FOOTER_RATE_HIDE = 'footer_rate_hide';
+export const Footer = observer(() => {
+    const { settingsStore } = useContext(rootStore);
 
-const Footer = () => {
-    const [isRateHide, setRateHide] = useState(false);
-    const rateHide = isRateHide || localStorage.getItem(FOOTER_RATE_HIDE);
     const hideRate = () => {
-        setRateHide(true);
-        localStorage.setItem(FOOTER_RATE_HIDE, 'true');
+        settingsStore.hideFooterRateShow();
+    };
+
+    const handleRateClick = async () => {
+        await messenger.openExtensionStore();
+        settingsStore.hideFooterRateShow();
     };
 
     const currentYear = new Date().getFullYear();
     const copyright = `© Adguard, 2009-${currentYear}`;
     return (
         <div className="footer">
-            {!rateHide && (
+            {settingsStore.footerRateShowState && (
                 <div className="footer__rate">
                     <div className="footer__in footer__in--rate container">
                         <div className="footer__rate-desc">
@@ -30,7 +34,7 @@ const Footer = () => {
                         <button
                             type="button"
                             className="button button--green button--s"
-                            onClick={messenger.openExtensionStore}
+                            onClick={handleRateClick}
                         >
                             {reactTranslator.getMessage('options_footer_like_us_cta')}
                         </button>
@@ -59,6 +63,4 @@ const Footer = () => {
             </div>
         </div>
     );
-};
-
-export { Footer };
+});

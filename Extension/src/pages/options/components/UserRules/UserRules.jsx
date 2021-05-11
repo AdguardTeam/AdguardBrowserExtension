@@ -26,7 +26,6 @@ const UserRules = observer(() => {
     const editorRef = useRef(null);
     const inputRef = useRef(null);
     const prevUserRules = usePrevious(settingsStore.userRules);
-    const [wrapEnabled, setWrapEnabled] = useState(false);
 
     const inputChangeHandler = async (event) => {
         event.persist();
@@ -119,7 +118,7 @@ const UserRules = observer(() => {
     };
 
     const toggleWrap = () => {
-        setWrapEnabled(!wrapEnabled);
+        settingsStore.toggleUserRulesEditorWrap();
     };
 
     return (
@@ -145,7 +144,7 @@ const UserRules = observer(() => {
                 shortcuts={shortcuts}
                 onChange={onChange}
                 value={settingsStore.userRules}
-                wrapEnabled={wrapEnabled}
+                wrapEnabled={settingsStore.userRulesEditorWrapState}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
