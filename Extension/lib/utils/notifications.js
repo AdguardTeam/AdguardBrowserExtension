@@ -79,10 +79,7 @@ adguard.notifications = (function (adguard) {
         },
         text: '',
         url: 'https://adguard.com/forward.html?action=12birthday_game&from=popup&app=browser_extension',
-        // FIXME remove line bellow
-        from: '11 May 2021 15:00:00',
-        // FIXME uncomment line bellow
-        // from: '01 June 2021 15:00:00',
+        from: '01 June 2021 15:00:00',
         to: '07 June 2021 15:00:00',
         type: 'animated',
         get icons() {
@@ -197,25 +194,24 @@ adguard.notifications = (function (adguard) {
      * @param {boolean} withDelay if true, do this after a 30 sec delay
      */
     const setNotificationViewed = function (withDelay) {
-        // FIXME uncomment
-        // if (withDelay) {
-        //     clearTimeout(timeoutId);
-        //     timeoutId = setTimeout(() => {
-        //         setNotificationViewed(false);
-        //     }, DELAY);
-        //     return;
-        // }
-        //
-        // if (currentNotification) {
-        //     const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-        //     const { id } = currentNotification;
-        //     if (!viewedNotifications.includes(id)) {
-        //         viewedNotifications.push(id);
-        //         adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-        //         adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
-        //         currentNotification = null;
-        //     }
-        // }
+        if (withDelay) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                setNotificationViewed(false);
+            }, DELAY);
+            return;
+        }
+
+        if (currentNotification) {
+            const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+            const { id } = currentNotification;
+            if (!viewedNotifications.includes(id)) {
+                viewedNotifications.push(id);
+                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
+                currentNotification = null;
+            }
+        }
     };
 
     /**
@@ -230,20 +226,19 @@ adguard.notifications = (function (adguard) {
         }
 
         const currentTime = new Date().getTime();
-        // FIXME uncomment lines bellow
-        // const timeSinceLastNotification = currentTime - getLastNotificationTime();
-        // if (timeSinceLastNotification < minPeriod) {
-        //     // Just a check to not show the notification too often
-        //     return null;
-        // }
-        //
-        // // Check not often than once in 10 minutes
-        // const timeSinceLastCheck = currentTime - notificationCheckTime;
-        // if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
-        //     return currentNotification;
-        // }
-        // // Update the last notification check time
-        // notificationCheckTime = currentTime;
+        const timeSinceLastNotification = currentTime - getLastNotificationTime();
+        if (timeSinceLastNotification < minPeriod) {
+            // Just a check to not show the notification too often
+            return null;
+        }
+
+        // Check not often than once in 10 minutes
+        const timeSinceLastCheck = currentTime - notificationCheckTime;
+        if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
+            return currentNotification;
+        }
+        // Update the last notification check time
+        notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
         const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
