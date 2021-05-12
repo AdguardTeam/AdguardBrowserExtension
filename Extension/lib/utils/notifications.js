@@ -78,8 +78,7 @@ adguard.notifications = (function (adguard) {
             },
         },
         text: '',
-        // FIXME add to the tds
-        url: 'https://agrd.io/12birthday-game',
+        url: 'https://adguard.com/forward.html?action=12birthday_game&from=popup&app=browser_extension',
         // FIXME remove line bellow
         from: '11 May 2021 15:00:00',
         // FIXME uncomment line bellow

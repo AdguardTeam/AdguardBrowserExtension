@@ -217,9 +217,11 @@
                                     <div class="adguard-update-popup__offer-desc">
                                         ${offer}
                                     </div>
-                                    <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
-                                        ${offerButtonText}
-                                    </a>
+                                    <div class="adguard-update-popup__offer-bottom">
+                                        <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
+                                            ${offerButtonText}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             </body>`;
