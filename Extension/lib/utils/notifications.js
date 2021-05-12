@@ -65,7 +65,7 @@ adguard.notifications = (function (adguard) {
                 updateBtn: '我準備好啦！',
             },
             fr: {
-                title: 'AdGuard : Jeu de Survie sur le Web',
+                title: 'Jeu de Survie sur le Web',
                 btn: 'En avant !',
                 updateTitle: 'Jeu de Survie sur le Web',
                 updateBtn: 'En avant !',
@@ -78,7 +78,7 @@ adguard.notifications = (function (adguard) {
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=12birthday_game&from=popup&app=browser_extension',
+        url: 'https://adguard.com/forward.html?action=12birthday_game&app=browser_extension',
         from: '01 June 2021 15:00:00',
         to: '07 June 2021 15:00:00',
         type: 'animated',
