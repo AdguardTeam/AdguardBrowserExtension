@@ -230,6 +230,10 @@ label.checkbox-label {
 
         &--active {
             background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
         }
     }
 }
@@ -303,6 +307,11 @@ select:focus {
     .ace_cursor {
         color: var(--black)!important;
     }
+
+
+    .actions__btn--active {
+        background-color: var(--gray100);
+    }
 }
 
 .dark-mode {
@@ -344,5 +353,9 @@ select:focus {
 
     .ace_cursor {
         color: var(--gray300)!important;
+    }
+
+    .actions__btn--active {
+        background-color: var(--gray900);
     }
 }

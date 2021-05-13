@@ -11,7 +11,7 @@
     }
 
     &__search {
-        background-color: red;
+        background-color: var(--orange400);
     }
 
     &__title-in {
@@ -94,7 +94,9 @@
             box-shadow: 0 0 10px 1px rgba(162, 161, 161, 0.3);
 
             @media (prefers-color-scheme: dark) {
+                box-shadow: none;
                 color: var(--gray300);
+                background-color: var(--gray700);
             }
         }
 
@@ -135,6 +137,8 @@
         &__tag {
             &:before {
                 color: var(--gray-base);
+                box-shadow: 0 0 10px 1px rgba(162, 161, 161, 0.3);
+                background-color: #ffffff;
             }
 
             &:after {
@@ -150,6 +154,8 @@
         &__tag {
             &:before {
                 color: var(--gray300);
+                box-shadow: none;
+                background-color: var(--gray700);
             }
 
             &:after {
