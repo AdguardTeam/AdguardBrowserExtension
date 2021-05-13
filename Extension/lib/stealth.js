@@ -18,7 +18,6 @@
 /* global adguard */
 
 adguard.stealthService = (function (adguard) {
-
     'use strict';
 
     /**
@@ -53,7 +52,11 @@ adguard.stealthService = (function (adguard) {
     const HEADER_VALUES = {
         DO_NOT_TRACK: {
             name: 'DNT',
-            value: '1'
+            value: '1',
+        },
+        GLOBAL_PRIVACY_CONTROL: {
+            name: 'Sec-GPC',
+            value: '1',
         },
     };
 
@@ -224,6 +227,7 @@ adguard.stealthService = (function (adguard) {
         if (sendDoNotTrack) {
             adguard.console.debug('Adding Do-Not-Track (DNT) header');
             requestHeaders.push(HEADER_VALUES.DO_NOT_TRACK);
+            requestHeaders.push(HEADER_VALUES.GLOBAL_PRIVACY_CONTROL);
             stealthActions |= STEALTH_ACTIONS.SEND_DO_NOT_TRACK;
         }
 
@@ -269,7 +273,10 @@ adguard.stealthService = (function (adguard) {
         // Remove cookie header for first-party requests
         const blockCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES);
         if (blockCookies) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME), STEALTH_ACTIONS.FIRST_PARTY_COOKIES));
+            result.push(generateRemoveRule(
+                adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME),
+                STEALTH_ACTIONS.FIRST_PARTY_COOKIES
+            ));
         }
 
         const blockThirdPartyCookies = getStealthSettingValue(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES);
@@ -285,7 +292,10 @@ adguard.stealthService = (function (adguard) {
 
         // Remove cookie header for third-party requests
         if (thirdParty && !isMainFrame) {
-            result.push(generateRemoveRule(adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME), STEALTH_ACTIONS.THIRD_PARTY_COOKIES));
+            result.push(generateRemoveRule(
+                adguard.settings.getProperty(adguard.settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME),
+                STEALTH_ACTIONS.THIRD_PARTY_COOKIES
+            ));
         }
 
         adguard.console.debug('Stealth service processed lookup cookie rules for {0}', requestUrl);
@@ -384,7 +394,6 @@ adguard.stealthService = (function (adguard) {
      * @param requestId
      */
     const removeTrackersFromUrl = (requestId) => {
-
         if (!getStealthSettingValue(adguard.settings.STRIP_TRACKING_PARAMETERS)) {
             return null;
         }
@@ -549,13 +558,42 @@ adguard.stealthService = (function (adguard) {
         });
     }
 
+    /**
+     * Checks if setting is enabled and returns dom signal string
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1804
+     * @return {string|null}
+     */
+    const getDomSignalScript = () => {
+        const sendDoNotTrack = getStealthSettingValue(adguard.settings.SEND_DO_NOT_TRACK);
 
-    return {
-        processRequestHeaders: processRequestHeaders,
-        getCookieRules: getCookieRules,
-        removeTrackersFromUrl: removeTrackersFromUrl,
-        canBlockWebRTC: canBlockWebRTC,
-        STEALTH_ACTIONS,
+        if (!sendDoNotTrack) {
+            return null;
+        }
+
+        const script = `(function() {
+    try {
+        if ('globalPrivacyControl' in Navigator.prototype) {
+            return
+        };
+        Object.defineProperty(Navigator.prototype, "globalPrivacyControl", {
+            get: () => true,
+            configurable: true,
+            enumerable: true
+        });
+    } catch (ex) {
+        console.error('AG: Error executing send dom signal: ' + ex);
+    }
+})();`;
+
+        return script;
     };
 
+    return {
+        processRequestHeaders,
+        getCookieRules,
+        removeTrackersFromUrl,
+        canBlockWebRTC,
+        getDomSignalScript,
+        STEALTH_ACTIONS,
+    };
 })(adguard);

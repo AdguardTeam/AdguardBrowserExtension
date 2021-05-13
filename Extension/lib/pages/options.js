@@ -1839,9 +1839,14 @@ const Settings = function () {
     }
 
     function handleActiveStealthOptions(stealthModeDisabled) {
-        const miscellaneousOptionsContainer = document.querySelector('#miscellaneous-stealth-options');
-        const cookiesOptionsContainer = document.querySelector('#cookies-stealth-options');
-        const optionsContainers = [miscellaneousOptionsContainer, cookiesOptionsContainer];
+        const stealthSectionsIds = {
+            general: '#general-stealth-options',
+            cookies: '#cookies-stealth-options',
+            miscellaneous: '#miscellaneous-stealth-options',
+        };
+        const optionsContainers = Object.values(stealthSectionsIds)
+            .map(id => document.querySelector(id));
+
         optionsContainers.forEach((container) => {
             if (stealthModeDisabled) {
                 container.classList.add('opts-list--disabled');
