@@ -1986,6 +1986,16 @@ PageController.prototype = {
         if (versionPlaceholder) {
             versionPlaceholder.textContent = `${i18n.getMessage('options_about_version')} ${environmentOptions.appVersion}`;
         }
+
+        // translate complex messages
+        const doNotTrackDescEl = document.querySelector('[i18n="options_send_signals_not_track_desc"]');
+        if (doNotTrackDescEl) {
+            const GPC_LINK = '<a href="https://adguard.com/forward.html?action=global_privacy_control&from=options_screen&app=browser_extension" target="_blank" class="opt-state__link">"Global Privacy Control"</a>';
+            const DNT_LINK = '<a href="https://adguard.com/forward.html?action=do_not_track&from=options_screen&app=browser_extension" target="_blank" class="opt-state__link">"Do Not Track"</a>';
+            const messageKey = doNotTrackDescEl.getAttribute('i18n');
+            const message = i18n.getMessage(messageKey, [GPC_LINK, DNT_LINK]);
+            doNotTrackDescEl.innerHTML = message;
+        }
     },
 
     onResetStatsClicked(e) {
