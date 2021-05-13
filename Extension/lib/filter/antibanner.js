@@ -1260,6 +1260,10 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().findReplaceRules(requestUrl, referrer, requestType);
     };
 
+    const getRemoveparamRules = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().findRemoveparamRules(requestUrl, referrer, requestType);
+    };
+
     const getRequestFilterInfo = function () {
         return antiBannerService.getRequestFilterInfo();
     };
@@ -1284,6 +1288,7 @@ adguard.requestFilter = (function (adguard) {
         getReplaceRules,
         findStealthWhiteListRule,
         getRequestFilterInfo,
+        getRemoveparamRules,
     };
 })(adguard);
 

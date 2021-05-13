@@ -884,3 +884,110 @@ QUnit.test('Invalid scriptlets are not added to the scripts string', (assert) =>
     assert.equal(scripts.length, 1, 'length of results should be one');
     assert.equal(scripts[0].rule.ruleText, validScriptletRuleText, 'valid rule should be in results');
 });
+
+QUnit.module('$removeparam modifier', () => {
+    const { DOCUMENT } = adguard.RequestTypes;
+
+    const getRequestFilter = (rules) => {
+        const requestFilter = new adguard.RequestFilter();
+        const urlFilterRules = rules.map(rule => new adguard.rules.UrlFilterRule(rule));
+        requestFilter.addRules(urlFilterRules);
+        return requestFilter;
+    };
+
+    QUnit.test('$removeparam filter important modifier has higher priority', (assert) => {
+        const important = '||example.org^$removeparam=test,important';
+        const whitelist = '@@||example.org^$removeparam';
+
+        const requestFilter = getRequestFilter([important, whitelist]);
+
+        const removeparamRules = requestFilter.findRemoveparamRules(
+            'https://example.org',
+            '',
+            adguard.RequestTypes.DOCUMENT
+        );
+
+        assert.equal(removeparamRules.length, 1);
+        assert.equal(removeparamRules[0].ruleText, important);
+    });
+
+    QUnit.test('$removeparam rules could be found', (assert) => {
+        const rules = [
+            '||example.org^$removeparam=/p1|p2/',
+        ];
+
+        const requestFilter = getRequestFilter(rules);
+
+        const removeparamRules = requestFilter.findRemoveparamRules(
+            'https://example.org',
+            '',
+            DOCUMENT
+        );
+        assert.equal(removeparamRules.length, rules.length);
+    });
+
+    QUnit.test('allowlist removeparam rule removes block rule with same option', (assert) => {
+        const rulesTexts = [
+            '||example.org^$removeparam=p0',
+            '||example.org^$removeparam=p1',
+            '@@||example.org^$removeparam=p1',
+        ];
+        const requestFilter = getRequestFilter(rulesTexts);
+        const removeparamRules = requestFilter.findRemoveparamRules(
+            'http://example.org',
+            '',
+            DOCUMENT
+        );
+        assert.equal(removeparamRules.length, 2);
+    });
+
+    QUnit.test('@@||example.org^$removeparam disables all $removeparam rules matching ||example.org^.', (assert) => {
+        const whitelistRule = '@@||example.org^$removeparam';
+        const ruleTexts = [
+            '||example.org^$removeparam=/p1|p2/',
+            '||example.org^$removeparam=p1',
+            '||example.org^$removeparam',
+            whitelistRule,
+        ];
+
+        const requestFilter = getRequestFilter(ruleTexts);
+
+        const removeparamRules = requestFilter.findRemoveparamRules(
+            'http://example.org',
+            '',
+            DOCUMENT
+        );
+        assert.equal(removeparamRules.length, 1);
+        assert.equal(removeparamRules[0].ruleText, whitelistRule);
+    });
+
+    QUnit.test('removeparam rules with inverted values are working', (assert) => {
+        const rules = [
+            '||example.org^$removeparam=~p0',
+        ];
+
+        const requestFilter = getRequestFilter(rules);
+        const removeparamRules = requestFilter.findRemoveparamRules(
+            'https://example.org',
+            '',
+            DOCUMENT
+        );
+        assert.equal(removeparamRules.length, 1);
+    });
+
+    QUnit.test('works if inverted whitelisted removeparam filter with same option is omitted', (assert) => {
+        const rulesTexts = [
+            '||example.org^$removeparam=~p0',
+            '||example.org^$removeparam=~p1',
+            '@@||example.org^$removeparam=~p1',
+        ];
+
+        const requestFilter = getRequestFilter(rulesTexts);
+        const found = requestFilter.findRemoveparamRules(
+            'http://example.org',
+            '',
+            DOCUMENT
+        );
+        assert.equal(found.length, 2);
+    });
+});

@@ -72,6 +72,7 @@ const API_SCRIPTS = [
     'Extension/lib/filter/rules/cookie-filter.js',
     'Extension/lib/filter/rules/redirect-filter.js',
     'Extension/lib/filter/rules/replace-filter.js',
+    'Extension/lib/filter/rules/removeparam-filter.js',
     'Extension/lib/filter/rules/filter-rule-builder.js',
     'Extension/lib/filter/rules/scriptlet-rule.js',
     'Extension/lib/filter/rules/redirect-filter.js',

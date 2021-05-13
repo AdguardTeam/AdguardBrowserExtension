@@ -124,6 +124,10 @@
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#replace-modifier
         this.replaceFilter = new adguard.rules.ReplaceFilter([], this.badFilterRules);
 
+        // Filter that applies $removeparam rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#removeparam-modifier
+        this.removeparamFilter = new adguard.rules.RemoveparamFilter([], this.badFilterRules);
+
         // Filter that applies HTML filtering rules
         // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
         this.contentFilter = new adguard.rules.ContentFilter();
@@ -183,6 +187,8 @@
                     this.stealthFilter.addRule(rule);
                 } else if (rule.isReplaceRule() && !rule.isBadFilter()) {
                     this.replaceFilter.addRule(rule);
+                } else if (rule.isRemoveparamRule() && !rule.isBadFilter()) {
+                    this.removeparamFilter.addRule(rule);
                 } else if (rule.isBadFilter()) {
                     this.badFilterRules[rule.badFilter] = rule;
                 } else if (rule.whiteListRule) {
@@ -507,6 +513,13 @@
             const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             return this.replaceFilter.findReplaceRules(requestUrl, documentHost, thirdParty, requestType);
+        },
+
+        findRemoveparamRules(requestUrl, documentUrl, requestType) {
+            const documentHost = adguard.utils.url.getHost(documentUrl);
+            const thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.removeparamFilter.findRemoveparamRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
         /**

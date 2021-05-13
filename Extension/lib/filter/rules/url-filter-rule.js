@@ -244,7 +244,8 @@
     function validateCspRule(rule) {
         /**
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685
-         * CSP directive may be empty in case of whitelist rule, it means to disable all $csp rules matching the whitelist rule
+         * CSP directive may be empty in case of whitelist rule, it means to disable all $csp rules matching
+         * the whitelist rule
          */
         if (!rule.whiteListRule && !rule.cspDirective) {
             throw new Error('Invalid $CSP rule: CSP directive must not be empty');
@@ -263,8 +264,22 @@
     }
 
     /**
+     * Validates $removeparam rule
+     * $removeparam rules are not compatible with any other modifiers except $domain,
+     * $third-party, $app, $important and $match-case.
+     * @param rule Rule with $removeparam modifier
+     */
+    function validateRemoveparamRule(rule) {
+        const { REMOVEPARAM_COMPATIBLE } = UrlFilterRule.options;
+
+        if ((rule.permittedContentType !== UrlFilterRule.contentTypes.ALL || rule.restrictedContentType > 0)
+            || ((rule.enabledOptions | REMOVEPARAM_COMPATIBLE) !== REMOVEPARAM_COMPATIBLE)) {
+            throw new Error('$removeparam rules are not compatible with some other modifiers');
+        }
+    }
+
+    /**
      * Represents a $replace modifier value.
-     * <p/>
      * Learn more about this modifier syntax here:
      * https://github.com/AdguardTeam/AdguardForWindows/issues/591
      */
@@ -294,6 +309,53 @@
         return {
             apply,
             optionText: option,
+        };
+    }
+
+    /**
+     * Represents a $removeparam modifier value.
+     * Learn more about this modifier syntax here:
+     * https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#removeparam-modifier
+     */
+    function RemoveparamOption(dirtyValue) {
+        const optionText = dirtyValue;
+
+        const applyRemoveparam = (url, removeparam, inverted = false) => {
+            if (removeparam.startsWith('/')) {
+                return adguard.utils.url.cleanUrlParamByRegExp(
+                    url,
+                    adguard.utils.strings.patternFromString(removeparam),
+                    inverted
+                );
+            }
+
+            return adguard.utils.url.cleanUrlParam(url, [removeparam], inverted);
+        };
+
+        const apply = (url) => {
+            const sepIndex = url.indexOf('?');
+            if (sepIndex < 0) {
+                return url;
+            }
+
+            // if no value remove all parameters
+            if (!dirtyValue) {
+                return url.substring(0, sepIndex);
+            }
+
+            let inverted = false;
+            let value = dirtyValue;
+            if (dirtyValue.startsWith('~')) {
+                inverted = true;
+                value = value.substring(1);
+            }
+
+            return applyRemoveparam(url, value, inverted);
+        };
+
+        return {
+            apply,
+            optionText,
         };
     }
 
@@ -448,6 +510,7 @@
 
             // Except cookie rules, they have their own atmosphere
             if (!this.isCookieRule()
+                && !this.isRemoveparamRule()
                 && UrlFilterRule.ANY_URL_REGEX === regexp && !this.hasPermittedDomains()) {
                 // Rule matches everything and does not have any domain restriction
                 throw Error(`Too wide basic rule: ${urlRuleText}`);
@@ -462,6 +525,10 @@
 
         if (this.isCspRule()) {
             validateCspRule(this);
+        }
+
+        if (this.isRemoveparamRule()) {
+            validateRemoveparamRule(this);
         }
     };
 
@@ -491,6 +558,17 @@
      */
     UrlFilterRule.prototype.getReplace = function () {
         return this.replaceOption;
+    };
+
+    /**
+     * $removeparam modifier.
+     * Learn more about this modifier syntax here:
+     * https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#removeparam-modifier
+     *
+     * @return parsed $removeparam modifier
+     */
+    UrlFilterRule.prototype.getRemoveparam = function () {
+        return this.removeparamOption;
     };
 
     /**
@@ -839,6 +917,14 @@
     };
 
     /**
+     * Checks if rule is removeparam rule
+     * @returns {boolean}
+     */
+    UrlFilterRule.prototype.isRemoveparamRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.REMOVEPARAM);
+    };
+
+    /**
      * we recognize rules with $extension modifier, but
      * ignore them when create RequestFilter
      */
@@ -973,7 +1059,7 @@
                     this.redirectOption = new RedirectOption(optionValue);
                     break;
                 }
-                case UrlFilterRule.REPLACE_OPTION:
+                case UrlFilterRule.REPLACE_OPTION: {
                     // In case of .features or .features.responseContentFilteringSupported are not defined
                     const responseContentFilteringSupported = adguard.prefs.features
                         && adguard.prefs.features.responseContentFilteringSupported;
@@ -983,6 +1069,13 @@
                     this._setUrlFilterRuleOption(UrlFilterRule.options.REPLACE, true);
                     this.replaceOption = new ReplaceOption(optionValue);
                     break;
+                }
+                case UrlFilterRule.REMOVEPARAM_OPTION:
+                case UrlFilterRule.QUERYPRUNE_OPTION: {
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.REMOVEPARAM, true);
+                    this.removeparamOption = new RemoveparamOption(optionValue);
+                    break;
+                }
                 case UrlFilterRule.BADFILTER_OPTION:
                     this.badFilter = this.ruleText
                         .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)
@@ -1094,8 +1187,9 @@
     UrlFilterRule.MASK_ANY_SYMBOL = '*';
     UrlFilterRule.ANY_URL_REGEX = /.*/;
     UrlFilterRule.EMPTY_OPTION = 'empty';
-    // Extension doesn't support replace rules, $replace option is here only for correct parsing
     UrlFilterRule.REPLACE_OPTION = 'replace';
+    UrlFilterRule.REMOVEPARAM_OPTION = 'removeparam';
+    UrlFilterRule.QUERYPRUNE_OPTION = 'queryprune'; // alias to $removeparam modifier
     // Extension doesn't support extension rules, $extension option is here only for correct parsing
     UrlFilterRule.EXTENSION_OPTION = 'extension';
     UrlFilterRule.CSP_OPTION = 'csp';
@@ -1130,6 +1224,7 @@
             UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes[key];
         }
     }
+
 
     /**
      * $cookie options that can be used in the cookie rule.
@@ -1236,22 +1331,28 @@
         REPLACE: 1 << 12,
 
         /**
+         * defines rules with $removeparam and $queryprune modifiers
+         * e.g: "||example.org^$removeparam=param"
+         */
+        REMOVEPARAM: 1 << 13,
+
+        /**
          * defines rules with $stealth modifier
          * for example, "@@||example.com^$stealth"
          */
-        STEALTH: 1 << 13,
+        STEALTH: 1 << 14,
 
         /**
          * defines rules with $redirect modifier
          * for example, "||example.com/someadd.js^$redirect=noopjs"
          */
-        REDIRECT: 1 << 14,
+        REDIRECT: 1 << 15,
 
         /**
          * defines rules with $document modifier
          * for example, "||example.org$document"
          */
-        DOCUMENT: 1 << 15,
+        DOCUMENT: 1 << 16,
     };
 
     /**
@@ -1271,6 +1372,10 @@
         | UrlFilterRule.options.URLBLOCK
         | UrlFilterRule.options.JSINJECT
         | UrlFilterRule.options.CONTENT;
+
+    UrlFilterRule.options.REMOVEPARAM_COMPATIBLE = UrlFilterRule.options.REMOVEPARAM
+        | UrlFilterRule.options.THIRD_PARTY
+        | UrlFilterRule.options.MATCH_CASE;
 
     UrlFilterRule.ignoreOptions = {
         // Deprecated modifiers

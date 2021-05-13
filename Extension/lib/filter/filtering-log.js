@@ -166,6 +166,21 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     * Writes to filtering event some useful properties from the removeparam rules
+     * @param filteringEvent
+     * @param {rule[]} removeparamRules
+     */
+    const addRemoveparamRulesToFilteringEvent = (filteringEvent, removeparamRules) => {
+        filteringEvent.requestRule = {};
+        filteringEvent.removeparamRules = [];
+        removeparamRules.forEach((rule) => {
+            const tempRule = {};
+            appendProperties(tempRule, rule);
+            filteringEvent.removeparamRules.push(tempRule);
+        });
+    };
+
+    /**
      * Adds filtering event to log
      * @param tabInfo Tab
      * @param filteringEvent Event to add
@@ -428,6 +443,36 @@ adguard.filteringLog = (function (adguard) {
     };
 
     /**
+     * Binds applied removeparam rules to HTTP request
+     *
+     * @param {object} tab - Request tab
+     * @param {rule[]} removeparamRules - Applied rules
+     * @param {number} eventId - Event identifier
+     */
+    const bindRemoveparamRulesToHttpRequestEvent = (tab, removeparamRules, eventId) => {
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        const tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    addRemoveparamRulesToFilteringEvent(event, removeparamRules);
+                    adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
+            }
+        }
+    };
+
+    /**
      * Binds cspReportBlocked to HTTP request
      *
      * @param {object} tab Request tab
@@ -562,6 +607,7 @@ adguard.filteringLog = (function (adguard) {
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         bindCspReportBlockedToHttpRequestEvent,
+        bindRemoveparamRulesToHttpRequestEvent,
         clearEventsByTabId,
 
         isOpen,

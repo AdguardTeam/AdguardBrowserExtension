@@ -228,6 +228,22 @@ adguard.utils = (function () {
         },
 
         /**
+         * Creates RegExp object from string in '/reg_exp/gi' format
+         *
+         * @param {string} str - string
+         * @return {RegExp}
+         */
+        patternFromString(str) {
+            const parts = this.splitByDelimiterWithEscapeCharacter(str, '/', '\\', true);
+            let modifiers = (parts[1] || '');
+            if (modifiers.indexOf('g') < 0) {
+                modifiers += 'g';
+            }
+
+            return new RegExp(parts[0], modifiers);
+        },
+
+        /**
          * Serialize HTML element
          * @param element
          */

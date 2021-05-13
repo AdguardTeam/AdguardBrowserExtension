@@ -406,6 +406,70 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Finds removeparam rules and applies them to the url
+     * @param {number} requestId
+     * @returns {string|null}
+     */
+    const removeParamsFromUrl = (requestId) => {
+        const context = adguard.requestContextStorage.get(requestId);
+        if (!context) {
+            return null;
+        }
+
+        const {
+            tab,
+            requestUrl,
+            referrerUrl,
+            requestType,
+        } = context;
+
+        if (adguard.frames.shouldStopRequestProcess(tab)) {
+            // don't process request
+            return null;
+        }
+
+        const whitelistRule = adguard.requestFilter.findWhiteListRule(
+            requestUrl,
+            referrerUrl,
+            adguard.RequestTypes.DOCUMENT
+        );
+        if (whitelistRule && whitelistRule.isRemoveparamRule()) {
+            return null;
+        }
+
+        const removeparamRules = adguard.requestFilter.getRemoveparamRules(requestUrl, referrerUrl, requestType);
+        if (!(removeparamRules && removeparamRules.length > 0)) {
+            return null;
+        }
+
+        let currentRequestUrl = requestUrl;
+        let resultUrl = requestUrl;
+        const appliedRules = [];
+
+        removeparamRules.forEach((rule) => {
+            if (rule.whiteListRule) {
+                return;
+            }
+
+            resultUrl = rule.getRemoveparam().apply(currentRequestUrl);
+
+            if (resultUrl !== currentRequestUrl) {
+                appliedRules.push(rule);
+            }
+
+            currentRequestUrl = resultUrl;
+        });
+
+        if (resultUrl === requestUrl) {
+            return null;
+        }
+
+        adguard.filteringLog.bindRemoveparamRulesToHttpRequestEvent(tab, appliedRules, context.eventId);
+
+        return resultUrl;
+    };
+
+    /**
      * Processes HTTP response.
      * It could do the following:
      * 1. Add event to the filtering log (for DOCUMENT requests)
@@ -453,6 +517,10 @@ adguard.webRequestService = (function (adguard) {
 
             // Replace rules are processed in content-filtering.js
             if (isReplaceRule) {
+                requestRule = null;
+            }
+
+            if (requestRule && requestRule.isRemoveparamRule()) {
                 requestRule = null;
             }
 
@@ -506,5 +574,6 @@ adguard.webRequestService = (function (adguard) {
         recordRuleHit,
         onRequestBlocked: onRequestBlockedChannel,
         isCollectingCosmeticRulesHits,
+        removeParamsFromUrl,
     };
 })(adguard);
