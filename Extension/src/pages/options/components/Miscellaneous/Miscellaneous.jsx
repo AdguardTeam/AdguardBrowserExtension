@@ -148,24 +148,21 @@ const Miscellaneous = observer(() => {
                         />
                     )}
                 />
-            </SettingsSection>
-
-            <div className="actions">
                 <button
                     type="button"
-                    className="button button--m button--green actions__btn"
+                    className="button button--list"
                     onClick={handleFilteringLogClick}
                 >
                     {reactTranslator.getMessage('options_open_log')}
                 </button>
                 <button
                     type="button"
-                    className="button button--m button--green-bd actions__btn"
+                    className="button button--list button--red"
                     onClick={handleResetStatisticsClick}
                 >
                     {reactTranslator.getMessage('options_reset_stats')}
                 </button>
-            </div>
+            </SettingsSection>
         </>
     );
 });

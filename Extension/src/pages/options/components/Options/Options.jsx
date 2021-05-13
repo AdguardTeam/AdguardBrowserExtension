@@ -91,6 +91,7 @@ const Options = observer(() => {
                 <Sidebar />
                 <div className="inner">
                     <div className="content">
+                        <Notifications />
                         <Switch>
                             <Route path="/" exact component={General} />
                             <Route path="/filters" component={Filters} />
@@ -103,7 +104,6 @@ const Options = observer(() => {
                         </Switch>
                     </div>
                     <Footer />
-                    <Notifications />
                 </div>
             </div>
         </HashRouter>

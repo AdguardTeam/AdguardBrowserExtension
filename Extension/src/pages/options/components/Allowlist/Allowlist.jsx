@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSet } from '../Settings/SettingsSet';
@@ -12,7 +11,6 @@ import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
-import { Icon } from '../../../common/components/ui/Icon';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -87,14 +85,6 @@ const Allowlist = observer(() => {
         },
     }];
 
-    const toggleWrap = () => {
-        settingsStore.toggleAllowlistEditorWrap();
-    };
-
-    const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
-        'actions__btn--active': settingsStore.allowlistEditorWrap,
-    });
-
     return (
         <>
             <SettingsSection
@@ -149,15 +139,6 @@ const Allowlist = observer(() => {
                         disabled={!settingsStore.allowlist}
                     >
                         {reactTranslator.getMessage('options_userfilter_export')}
-                    </button>
-                </div>
-                <div className="actions__group">
-                    <button
-                        type="button"
-                        className={lineBreakClassNames}
-                        onClick={toggleWrap}
-                    >
-                        <Icon classname="icon--extend" id="#line-break" />
                     </button>
                 </div>
             </div>
