@@ -635,6 +635,109 @@ QUnit.test('testReplaceWithMoreThanOneReplaceGroups', (assert) => {
     assert.equal(actual, expected);
 });
 
+QUnit.module('$removeparam', () => {
+    QUnit.test('$removeparam query parameters are correctly filtered', (assert) => {
+        const rule = new adguard.rules.UrlFilterRule('$removeparam=p1');
+
+        const url = 'http://example.com/page';
+        assert.equal(rule.getRemoveparam().apply(`${url}`), `${url}`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1&p2=2`), `${url}?p0=0&p2=2`);
+    });
+
+    QUnit.test('$removeparam does not remove redundant url parts', (assert) => {
+        const rule = new adguard.rules.UrlFilterRule('$removeparam=p1');
+
+        let url = 'https://l-stat.livejournal.net/js/??.comments.js?v=1619510974';
+        assert.equal(rule.getRemoveparam().apply(`${url}`), `${url}`);
+
+        url = 'http://example.com?stay=&stay2=2';
+        assert.equal(rule.getRemoveparam().apply(`${url}`), `${url}`);
+    });
+
+    QUnit.test('$removeparam query parameters are correctly filtered with regexp', (assert) => {
+        const rule = new adguard.rules.UrlFilterRule('$removeparam=/p1|p2|p3|p4_.*/i', 0);
+
+        const url = 'http://example.com/page';
+        assert.equal(rule.getRemoveparam().apply(`${url}`), `${url}`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1&p2=2&p3=3`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1&P2=2&P3=3`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p4_=4`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p4=4`), `${url}?p0=0&p4=4`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p4_1=4`), `${url}?p0=0`);
+    });
+
+    QUnit.test('$removeparam query parameters are removed by naked rule', (assert) => {
+        const rule = new adguard.rules.UrlFilterRule('||example.org^$removeparam', 0);
+
+        const url = 'http://example.com/page';
+        assert.equal(rule.getRemoveparam().apply(`${url}`), `${url}`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0`), `${url}`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1`), `${url}`);
+    });
+
+    QUnit.test('$removeparam inverted removeparam is applied correctly', (assert) => {
+        const rule = new adguard.rules.UrlFilterRule('$removeparam=~p0', 0);
+
+        const url = 'http://example.com/page';
+        assert.equal(rule.getRemoveparam().apply(`${url}`), `${url}`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1&p2=2&p3=3`), `${url}?p0=0`);
+    });
+
+    QUnit.test('$removeparam inverted regex removeparam is applied correctly', (assert) => {
+        const rule = new adguard.rules.UrlFilterRule('$removeparam=~/p0.*/', 0);
+
+        const url = 'http://example.com/page';
+        assert.equal(rule.getRemoveparam().apply(`${url}`), `${url}`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1`), `${url}?p0=0`);
+        assert.equal(rule.getRemoveparam().apply(`${url}?p01=0&p1=1&p2=2&p3=3`), `${url}?p01=0`);
+    });
+
+    QUnit.test('checks $removeparam modifier compatibility', (assert) => {
+        let correct = new adguard.rules.UrlFilterRule(
+            '||example.org^$removeparam=p,domain=test.com,third-party,match-case',
+            0
+        );
+        assert.ok(correct);
+
+        correct = new adguard.rules.UrlFilterRule(
+            '||example.org^$removeparam=p,domain=test.com,third-party,important,match-case',
+            0
+        );
+        assert.ok(correct);
+
+        correct = new adguard.rules.UrlFilterRule('||example.org^$removeparam', 0);
+        assert.ok(correct);
+
+        assert.throws(() => {
+            // eslint-disable-next-line no-new
+            new adguard.rules.UrlFilterRule('||example.org^$removeparam=p,domain=test.com,popup', 0);
+        }, new Error('$removeparam rules are not compatible with some other modifiers'));
+
+        assert.throws(() => {
+            // eslint-disable-next-line no-new
+            new adguard.rules.UrlFilterRule('||example.org^$removeparam=p,domain=test.com,image', 0);
+        }, new Error('$removeparam rules are not compatible with some other modifiers'));
+
+        assert.throws(() => {
+            // eslint-disable-next-line no-new
+            new adguard.rules.UrlFilterRule('||example.org^$removeparam=p,object', 0);
+        }, new Error('$removeparam rules are not compatible with some other modifiers'));
+
+        assert.throws(() => {
+            // eslint-disable-next-line no-new
+            new adguard.rules.UrlFilterRule('||example.org^$removeparam=p,~object', 0);
+        }, new Error('$removeparam rules are not compatible with some other modifiers'));
+    });
+});
+
 QUnit.test('BadFilter option', (assert) => {
     let badFilterRule = new adguard.rules.UrlFilterRule('https:*_ad_$badfilter');
 
@@ -759,6 +862,13 @@ QUnit.test('Test replace option', (assert) => {
     assert.ok(replaceRule.isReplaceRule());
 });
 
+QUnit.test('Test $removeparam and $queryprune option', (assert) => {
+    const removeparamRule = new adguard.rules.UrlFilterRule('||example.org^$removeparam=param');
+    assert.ok(removeparamRule.isRemoveparamRule());
+
+    const querypruneRule = new adguard.rules.UrlFilterRule('||example.org^$queryprune=param');
+    assert.ok(querypruneRule.isRemoveparamRule());
+});
 
 QUnit.test('Invalid $domain options throw exception', (assert) => {
     try {

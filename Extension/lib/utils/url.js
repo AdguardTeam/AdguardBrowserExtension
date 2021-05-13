@@ -16,6 +16,17 @@
  */
 
 (function (api, global) {
+    const RE_V4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})$/i;
+    const RE_V4_HEX = /^0x([0-9a-f]{8})$/i;
+    const RE_V4_NUMERIC = /^[0-9]+$/;
+    const RE_V4inV6 = /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+    const RE_BAD_CHARACTERS = /([^0-9a-f:])/i;
+    const RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]$)/i;
+
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1010
+    const RESERVED_DOMAINS = api.publicSuffixes;
+
     /**
      * Helper methods to work with URLs
      */
@@ -284,18 +295,68 @@
 
             return isContainsTwoLvlPostfix ? threePartDomain : twoPartDomain;
         },
+
+        /**
+         * Removes query params from url by regexp
+         *
+         * @param {string} url
+         * @param {RegExp} regExp
+         * @param invert remove every parameter in url except the ones matched regexp
+         */
+        cleanUrlParamByRegExp(url, regExp, invert = false) {
+            const searchIndex = url.indexOf('?');
+
+            // If no params, nothing to modify
+            if (searchIndex === -1) {
+                return url;
+            }
+
+            const urlPieces = [url.slice(0, searchIndex), url.slice(searchIndex + 1)];
+
+            if (invert) {
+                urlPieces[1] = urlPieces[1]
+                    .split('&')
+                    .filter(x => x)
+                    .filter(x => x && x.match(regExp))
+                    .join('&');
+            } else {
+                urlPieces[1] = urlPieces[1]
+                    .split('&')
+                    .filter(x => x)
+                    .filter((x) => {
+                        const test = x.includes('=') ? x : `${x}=`;
+                        return !test.match(regExp);
+                    })
+                    .join('&');
+            }
+
+            // Cleanup empty params (p0=0&=2&=3)
+            urlPieces[1] = urlPieces[1]
+                .split('&')
+                .filter(x => x && !x.startsWith('='))
+                .join('&');
+
+            // If we've collapsed the URL to the point where there's an '&' against the '?'
+            // then we need to get rid of that.
+            while (urlPieces[1].charAt(0) === '&') {
+                urlPieces[1] = urlPieces[1].substr(1);
+            }
+
+            return urlPieces[1] ? urlPieces.join('?') : urlPieces[0];
+        },
+
+        /**
+         * Removes query params from url by array of params
+         *
+         * @param {string} url
+         * @param {string[]} params
+         * @param invert if true removes all query parameters with the name different from param
+         */
+        cleanUrlParam(url, params, invert = false) {
+            const trackingParametersRegExp = new RegExp(`((^|&)(${params.join('|')})=[^&#]*)`, 'ig');
+            return this.cleanUrlParamByRegExp(url, trackingParametersRegExp, invert);
+        },
     };
-
-    var RE_V4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})$/i;
-    var RE_V4_HEX = /^0x([0-9a-f]{8})$/i;
-    var RE_V4_NUMERIC = /^[0-9]+$/;
-    var RE_V4inV6 = /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-
-    var RE_BAD_CHARACTERS = /([^0-9a-f:])/i;
-    var RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]$)/i;
-
-    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1010
-    var RESERVED_DOMAINS = api.publicSuffixes;
 
     api.url = UrlUtils;
 })(adguard.utils, window);

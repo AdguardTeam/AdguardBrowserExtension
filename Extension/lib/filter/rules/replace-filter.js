@@ -57,7 +57,7 @@
             if (rule.whiteListRule) {
                 replaceWhiteFilter.removeRule(rule);
             } else {
-                replaceWhiteFilter.removeRule(rule);
+                replaceBlockFilter.removeRule(rule);
             }
         }
 

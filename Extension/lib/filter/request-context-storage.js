@@ -19,7 +19,8 @@
  * Module for managing requests context.
  *
  * Each request has a context with unique key: requestId
- * Context contains information about this request: id, url, referrer, type, applied rules, original and modified headers
+ * Context contains information about this request: id, url, referrer, type,
+ * applied rules, original and modified headers
  *
  * This API is exposed via adguard.requestContextStorage:
  *
@@ -28,12 +29,12 @@
  * - update - Updates context properties (rules)
  * - bindContentRule - Binds content rule and removed element to the context
  * - onContentModificationStarted - Must be called to point that content modification is started
- *   Following 2 methods have same logic (push rules to log, record rule hits and perform cleanup), but called in different cases:
+ *   Following 2 methods have same logic (push rules to log, record rule hits and perform cleanup),
+ *   but called in different cases:
  * - onRequestCompleted - Finishes request processing on request complete/error event.
  * - onContentModificationFinished - After content modification and applying all rules (replace and content)
  */
 (function (adguard) {
-
     /**
      * @typedef {object} RequestContext
      * @property {string} requestId - Request identifier
@@ -66,7 +67,7 @@
     const States = {
         NONE: 1,
         PROCESSING: 2,
-        DONE: 3
+        DONE: 3,
     };
 
     /**
@@ -100,7 +101,7 @@
      * @param headers Headers to copy
      * @return {{name: *, value: *}[]}
      */
-    const copyHeaders = (headers) => (headers || []).map(h => ({ name: h.name, value: h.value }));
+    const copyHeaders = headers => (headers || []).map(h => ({ name: h.name, value: h.value }));
 
     /**
      * Generates next event identifier
@@ -130,7 +131,6 @@
      * @param {object} tab Request tab
      */
     const record = (requestId, requestUrl, referrerUrl, originUrl, requestType, tab) => {
-
         const eventId = getNextEventId();
 
         // Clears filtering log. If contexts map already contains this requests that means that we caught redirect
@@ -139,7 +139,12 @@
         }
 
         const context = {
-            requestId, requestUrl, referrerUrl, originUrl, requestType, tab,
+            requestId,
+            requestUrl,
+            referrerUrl,
+            originUrl,
+            requestType,
+            tab,
             eventId,
             requestState: States.PROCESSING,
             contentModifyingState: States.NONE,
@@ -187,12 +192,17 @@
             context.requestRule = update.requestRule;
             // Some requests may execute for a long time, that's why we update filtering log when
             // we get a request rule
-            adguard.filteringLog.bindRuleToHttpRequestEvent(context.tab,
+            adguard.filteringLog.bindRuleToHttpRequestEvent(
+                context.tab,
                 context.requestRule,
-                context.eventId);
+                context.eventId
+            );
         }
         if ('replaceRules' in update) {
             context.replaceRules = update.replaceRules;
+        }
+        if ('removeparamRules' in update) {
+            context.removeparamRules = update.removeparamRules;
         }
         if ('cspRules' in update) {
             context.cspRules = appendRules(context.cspRules, update.cspRules);
@@ -227,7 +237,6 @@
      * @param {object} elementHtml Serialized HTML element
      */
     const bindContentRule = (requestId, rule, elementHtml) => {
-
         const context = contexts.get(requestId);
         if (!context) {
             return;
@@ -259,20 +268,20 @@
      * @param {string} requestId Request identifier
      */
     const remove = (requestId) => {
-
         const context = contexts.get(requestId);
         if (!context) {
             return;
         }
 
-        const tab = context.tab;
-        const requestUrl = context.requestUrl;
-        const referrerUrl = context.referrerUrl;
+        const {
+            tab,
+            requestUrl,
+            referrerUrl,
+        } = context;
 
         let ruleHitsRecords = [];
 
         if (context.requestState === States.DONE) {
-
             context.requestState = States.NONE;
 
             const {
@@ -288,7 +297,7 @@
             }
 
             if (cspRules) {
-                for (let cspRule of cspRules) {
+                for (const cspRule of cspRules) {
                     adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.CSP, cspRule);
                 }
                 ruleHitsRecords = ruleHitsRecords.concat(cspRules);
@@ -304,11 +313,9 @@
         }
 
         if (context.contentModifyingState === States.DONE) {
-
             context.contentModifyingState = States.NONE;
 
-            const replaceRules = context.replaceRules;
-            const contentRules = context.contentRules;
+            const { contentRules, replaceRules } = context;
 
             if (replaceRules) {
                 adguard.filteringLog.bindReplaceRulesToHttpRequestEvent(tab, replaceRules, context.eventId);
@@ -316,10 +323,16 @@
             }
 
             if (contentRules) {
-                for (let contentRule of contentRules) {
+                for (const contentRule of contentRules) {
                     const elements = context.elements.get(contentRule) || [];
-                    for (let element of elements) {
-                        adguard.filteringLog.addCosmeticEvent(tab, element, requestUrl, context.requestType, contentRule);
+                    for (const element of elements) {
+                        adguard.filteringLog.addCosmeticEvent(
+                            tab,
+                            element,
+                            requestUrl,
+                            context.requestType,
+                            contentRule
+                        );
                     }
                     context.elements.delete(contentRule);
                 }
@@ -332,9 +345,8 @@
         }
 
         // All processes finished
-        if (context.requestState === States.NONE &&
-            context.contentModifyingState === States.NONE) {
-
+        if (context.requestState === States.NONE
+            && context.contentModifyingState === States.NONE) {
             contexts.delete(requestId);
         }
     };
@@ -378,6 +390,5 @@
         onRequestCompleted,
         onContentModificationStarted,
         onContentModificationFinished,
-    }
-
+    };
 })(adguard);

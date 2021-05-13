@@ -55,6 +55,7 @@ const UrlFilterRule = {
     REPLACE_OPTION: 'replace',
     REDIRECT_OPTION: 'redirect',
     BADFILTER_OPTION: 'badfilter',
+    REMOVEPARAM_OPTION: 'removeparam',
 };
 
 const STEALTH_ACTIONS = {
@@ -417,9 +418,12 @@ const RequestWizard = (function () {
                 mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
             }
 
-            const { replaceRules } = filteringEvent;
+            const { replaceRules, removeparamRules } = filteringEvent;
             if (replaceRules) {
                 mandatoryOptions = [UrlFilterRule.REPLACE_OPTION];
+            }
+            if (removeparamRules) {
+                mandatoryOptions = [UrlFilterRule.REMOVEPARAM_OPTION];
             }
 
             let ruleText;
@@ -652,9 +656,12 @@ const RequestWizard = (function () {
     const showRequestInfoModal = function (frameInfo, filteringEvent) {
         const template = requestInfoTemplate.cloneNode(true);
 
-        const { requestRule } = filteringEvent;
-        const { replaceRules } = filteringEvent;
-        const { stealthActions } = filteringEvent;
+        const {
+            requestRule,
+            replaceRules,
+            stealthActions,
+            removeparamRules,
+        } = filteringEvent;
 
         const requestUrlNode = template.querySelector('[attr-text="requestUrl"]');
         if (filteringEvent.requestUrl) {
@@ -696,25 +703,28 @@ const RequestWizard = (function () {
             } else {
                 template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             }
-            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="multipleRules"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').textContent = getFilterName(requestRule.filterId);
         } else {
             template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
         }
 
-        if (replaceRules) {
+        // we can use replaceRules and removeparamRules together in the condition
+        // because we know that they won't be applied together
+        if (replaceRules || removeparamRules) {
+            const rules = replaceRules || removeparamRules;
             template.querySelector('[attr-text="requestRule"]').closest('li').style.display = 'none';
             template.querySelector('[attr-text="requestRuleFilter"]').closest('li').style.display = 'none';
-            if (replaceRules.length > 0) {
-                template.querySelector('[attr-text="replaceRules"]').textContent = replaceRules
-                    .map(replaceRule => replaceRule.ruleText)
+            if (rules.length > 0) {
+                template.querySelector('[attr-text="multipleRules"]').textContent = rules
+                    .map(rule => rule.ruleText)
                     .join('\r\n');
             } else {
-                template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+                template.querySelector('[attr-text="multipleRules"]').closest('li').style.display = 'none';
             }
         } else {
-            template.querySelector('[attr-text="replaceRules"]').closest('li').style.display = 'none';
+            template.querySelector('[attr-text="multipleRules"]').closest('li').style.display = 'none';
         }
 
         if (stealthActions) {
@@ -1225,11 +1235,15 @@ PageController.prototype = {
             metadata.class += ' yellow';
         }
 
+        if (event.removeparamRules) {
+            metadata.class += ' yellow';
+        }
+
         if (event.cspReportBlocked) {
             metadata.class += ' red';
         }
 
-        if (event.requestRule && !event.replaceRules && !event.cspReportBlocked) {
+        if (event.requestRule && !event.replaceRules && !event.cspReportBlocked && !event.removeparamRules) {
             if (event.requestRule.whiteListRule) {
                 metadata.class += ' green';
             } else if (event.requestRule.cssRule || event.requestRule.scriptRule) {
@@ -1270,6 +1284,11 @@ PageController.prototype = {
 
         if (event.replaceRules) {
             const rulesCount = event.replaceRules.length;
+            ruleText = `${i18n.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
+        }
+
+        if (event.removeparamRules) {
+            const rulesCount = event.removeparamRules.length;
             ruleText = `${i18n.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
         }
 
