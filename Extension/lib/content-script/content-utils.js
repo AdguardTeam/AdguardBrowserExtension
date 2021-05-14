@@ -214,8 +214,10 @@
                                     </a>
                                 </div>
                                 <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
-                                    <div class="adguard-update-popup__offer-desc">
-                                        ${offer}
+                                    <div class="adguard-update-popup__offer-desc-wr">
+                                        <div class="adguard-update-popup__offer-desc">
+                                            ${offer}
+                                        </div>
                                     </div>
                                     <div class="adguard-update-popup__offer-bottom">
                                         <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
