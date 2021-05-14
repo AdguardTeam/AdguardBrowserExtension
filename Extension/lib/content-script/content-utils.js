@@ -315,19 +315,4 @@
             window.location = message.url;
         }
     });
-
-    // FIXME remove the lines bellow
-    showVersionUpdatedPopup({
-        changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
-        changelogText: "What's new in this version?",
-        description: 'This version contains mostly bugfixes and minor improvements.',
-        disableNotificationText: 'Disable notifications',
-        isAdguardTab: false,
-        offer: 'Web Survival Test',
-        offerButtonHref: 'https://agrd.io/12birthday-game&from=version_popup',
-        offerButtonText: "I'm ready!",
-        showPromoNotification: true,
-        title: 'AdGuard extension has been updated to version 2.4.5',
-        type: 'show-version-updated-popup',
-    });
 })();

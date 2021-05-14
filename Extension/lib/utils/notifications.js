@@ -41,9 +41,9 @@ adguard.notifications = (function (adguard) {
                 updateBtn: 'Пройти',
             },
             ja: {
-                title: 'ウェブでのサバイバル能力テスト',
+                title: 'ウェブサバイバルテスト',
                 btn: '受けてみる',
-                updateTitle: 'ウェブサバイバル能力テスト',
+                updateTitle: 'ウェブサバイバルテスト',
                 updateBtn: '受けてみる',
             },
             ko: {
@@ -53,36 +53,33 @@ adguard.notifications = (function (adguard) {
                 updateBtn: '게임 시작',
             },
             zh_cn: {
-                title: 'AdGuard 网络生存答题竞赛',
+                title: '网络生存问答竞赛',
                 btn: '我准备好啦！',
-                updateTitle: 'AdGuard 网络生存答题竞赛',
+                updateTitle: '网络生存问答竞赛',
                 updateBtn: '我准备好啦！',
             },
             zh_tw: {
-                title: 'AdGuard 網路生存問答遊戲',
+                title: '網路生存問答遊戲',
                 btn: '我準備好啦！',
-                updateTitle: 'AdGuard 網路生存問答遊戲',
+                updateTitle: '網路生存問答遊戲',
                 updateBtn: '我準備好啦！',
             },
             fr: {
-                title: 'AdGuard : Jeu de Survie sur le Web',
+                title: 'Jeu de Survie sur le Web',
                 btn: 'En avant !',
                 updateTitle: 'Jeu de Survie sur le Web',
                 updateBtn: 'En avant !',
             },
             es: {
-                title: 'Prueba de Supervivencia Web',
+                title: 'Test de Supervivencia Web',
                 btn: '¡Estoy listo!',
-                updateTitle: 'Prueba de Supervivencia Web',
+                updateTitle: 'Test de Supervivencia Web',
                 updateBtn: '¡Estoy listo!',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=12birthday_game&from=popup&app=browser_extension',
-        // FIXME remove line bellow
-        from: '11 May 2021 15:00:00',
-        // FIXME uncomment line bellow
-        // from: '01 June 2021 15:00:00',
+        url: 'https://adguard.com/forward.html?action=12birthday_game&app=browser_extension',
+        from: '01 June 2021 15:00:00',
         to: '07 June 2021 15:00:00',
         type: 'animated',
         get icons() {
@@ -197,25 +194,24 @@ adguard.notifications = (function (adguard) {
      * @param {boolean} withDelay if true, do this after a 30 sec delay
      */
     const setNotificationViewed = function (withDelay) {
-        // FIXME uncomment
-        // if (withDelay) {
-        //     clearTimeout(timeoutId);
-        //     timeoutId = setTimeout(() => {
-        //         setNotificationViewed(false);
-        //     }, DELAY);
-        //     return;
-        // }
-        //
-        // if (currentNotification) {
-        //     const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
-        //     const { id } = currentNotification;
-        //     if (!viewedNotifications.includes(id)) {
-        //         viewedNotifications.push(id);
-        //         adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-        //         adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
-        //         currentNotification = null;
-        //     }
-        // }
+        if (withDelay) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                setNotificationViewed(false);
+            }, DELAY);
+            return;
+        }
+
+        if (currentNotification) {
+            const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+            const { id } = currentNotification;
+            if (!viewedNotifications.includes(id)) {
+                viewedNotifications.push(id);
+                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
+                currentNotification = null;
+            }
+        }
     };
 
     /**
@@ -230,20 +226,19 @@ adguard.notifications = (function (adguard) {
         }
 
         const currentTime = new Date().getTime();
-        // FIXME uncomment lines bellow
-        // const timeSinceLastNotification = currentTime - getLastNotificationTime();
-        // if (timeSinceLastNotification < minPeriod) {
-        //     // Just a check to not show the notification too often
-        //     return null;
-        // }
-        //
-        // // Check not often than once in 10 minutes
-        // const timeSinceLastCheck = currentTime - notificationCheckTime;
-        // if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
-        //     return currentNotification;
-        // }
-        // // Update the last notification check time
-        // notificationCheckTime = currentTime;
+        const timeSinceLastNotification = currentTime - getLastNotificationTime();
+        if (timeSinceLastNotification < minPeriod) {
+            // Just a check to not show the notification too often
+            return null;
+        }
+
+        // Check not often than once in 10 minutes
+        const timeSinceLastCheck = currentTime - notificationCheckTime;
+        if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
+            return currentNotification;
+        }
+        // Update the last notification check time
+        notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
         const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
