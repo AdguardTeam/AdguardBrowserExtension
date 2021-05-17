@@ -147,6 +147,10 @@ adguard.webRequestService = (function (adguard) {
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1337
         result.collectRulesHits = elemHideFlag ? false : adguard.webRequestService.isCollectingCosmeticRulesHits(tab);
 
+        const domSignalScript = adguard.stealthService.getDomSignalScript();
+        if (domSignalScript) {
+            result.scripts = result.scripts ? `${result.scripts}\n${domSignalScript}` : domSignalScript;
+        }
         return result;
     };
 

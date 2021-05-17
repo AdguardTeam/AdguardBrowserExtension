@@ -1839,9 +1839,14 @@ const Settings = function () {
     }
 
     function handleActiveStealthOptions(stealthModeDisabled) {
-        const miscellaneousOptionsContainer = document.querySelector('#miscellaneous-stealth-options');
-        const cookiesOptionsContainer = document.querySelector('#cookies-stealth-options');
-        const optionsContainers = [miscellaneousOptionsContainer, cookiesOptionsContainer];
+        const stealthSectionsIds = {
+            general: '#general-stealth-options',
+            cookies: '#cookies-stealth-options',
+            miscellaneous: '#miscellaneous-stealth-options',
+        };
+        const optionsContainers = Object.values(stealthSectionsIds)
+            .map(id => document.querySelector(id));
+
         optionsContainers.forEach((container) => {
             if (stealthModeDisabled) {
                 container.classList.add('opts-list--disabled');
@@ -1980,6 +1985,16 @@ PageController.prototype = {
         const versionPlaceholder = document.querySelector('#about-version-placeholder');
         if (versionPlaceholder) {
             versionPlaceholder.textContent = `${i18n.getMessage('options_about_version')} ${environmentOptions.appVersion}`;
+        }
+
+        // translate complex messages
+        const doNotTrackDescEl = document.querySelector('[i18n="options_send_signals_not_track_desc"]');
+        if (doNotTrackDescEl) {
+            const GPC_LINK = '<a href="https://adguard.com/forward.html?action=global_privacy_control&from=options_screen&app=browser_extension" target="_blank" class="opt-state__link">"Global Privacy Control"</a>';
+            const DNT_LINK = '<a href="https://adguard.com/forward.html?action=do_not_track&from=options_screen&app=browser_extension" target="_blank" class="opt-state__link">"Do Not Track"</a>';
+            const messageKey = doNotTrackDescEl.getAttribute('i18n');
+            const message = i18n.getMessage(messageKey, [GPC_LINK, DNT_LINK]);
+            doNotTrackDescEl.innerHTML = message;
         }
     },
 
