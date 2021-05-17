@@ -847,10 +847,8 @@
              * @param {RequestDetails} details Details about the webrequest event
              */
             function tryInjectOnResponseStarted(details) {
-                const { tab } = details;
+                const { tab, requestType, frameId } = details;
                 const { tabId } = tab;
-                const { requestType } = details;
-                const { frameId } = details;
                 if (shouldSkipInjection(requestType, tabId)) {
                     return;
                 }
