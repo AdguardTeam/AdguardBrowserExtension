@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
 import classnames from 'classnames';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 import { Editor } from '../Editor';
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -141,6 +142,17 @@ const UserRules = observer(() => {
                         </a>
                     ),
                 })}
+                // TODO fix checkbox
+                inlineControl={(
+                    <Setting
+                        id="FIXME"
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_userfilter')}
+                        inverted
+                        value={false}
+                        handler={() => { console.log('FIXME'); }}
+                    />
+                )}
             />
             <Editor
                 name="user-rules"
