@@ -25,64 +25,72 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const easter2021Notification = {
-        id: 'easter2021',
+    const birthday2021Notification = {
+        id: 'birthday2021',
         locales: {
             en: {
-                btn: 'Eggcellent deal',
-                updateTitle: 'Happy Easter sale',
-                updateBtn: 'Hop on in',
+                title: 'Web Survival Test',
+                btn: 'I\'m ready!',
+                updateTitle: 'Web Survival Test',
+                updateBtn: 'I\'m ready!',
             },
             ru: {
-                btn: 'Что в яйце?',
-                updateTitle: 'Весенняя распродажа',
-                updateBtn: 'Cкидка 40%',
+                title: 'Игра на выживание',
+                btn: 'Пройти',
+                updateTitle: 'Игра на выживание',
+                updateBtn: 'Пройти',
             },
             ja: {
-                btn: 'タマゴの中身を見る',
-                updateTitle: 'イースターキャンペーン',
-                updateBtn: '40%割引を手に入れる',
+                title: 'ウェブサバイバルテスト',
+                btn: '受けてみる',
+                updateTitle: 'ウェブサバイバルテスト',
+                updateBtn: '受けてみる',
             },
             ko: {
-                btn: '유료 버전의 장점 보기',
-                updateTitle: '부활절 맞이 40% 할인',
-                updateBtn: '할인 받기',
+                title: '웹 서바이벌 게임을 해 볼까요?',
+                btn: '게임 시작',
+                updateTitle: '웹 서바이벌 게임을 해 볼까요?',
+                updateBtn: '게임 시작',
             },
             zh_cn: {
-                btn: '惊喜优惠高级保护',
-                updateTitle: '复活节狂欢',
-                updateBtn: '一键加入',
+                title: '网络生存问答竞赛',
+                btn: '我准备好啦！',
+                updateTitle: '网络生存问答竞赛',
+                updateBtn: '我准备好啦！',
             },
             zh_tw: {
-                btn: '驚喜優惠進階保護',
-                updateTitle: '復活節狂歡優惠',
-                updateBtn: '一鍵加入',
+                title: '網路生存問答遊戲',
+                btn: '我準備好啦！',
+                updateTitle: '網路生存問答遊戲',
+                updateBtn: '我準備好啦！',
             },
             fr: {
-                btn: 'Oeuf de Pâques',
-                updateTitle: 'Marché de Pâques',
-                updateBtn: 'Venez voir',
+                title: 'Jeu de Survie sur le Web',
+                btn: 'En avant !',
+                updateTitle: 'Jeu de Survie sur le Web',
+                updateBtn: 'En avant !',
             },
             es: {
-                btn: '–40% en licencias!',
-                updateTitle: 'Promoción de Pascua',
-                updateBtn: 'Descúbrela',
+                title: 'Test de Supervivencia Web',
+                btn: '¡Estoy listo!',
+                updateTitle: 'Test de Supervivencia Web',
+                updateBtn: '¡Estoy listo!',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=easter2021&app=browser_extension',
-        from: '02 April 2021 00:01:00',
-        to: '07 April 2021 00:01:00',
+        url: 'https://adguard.com/forward.html?action=12birthday_game&app=browser_extension',
+        from: '01 June 2021 15:00:00',
+        to: '07 June 2021 15:00:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(easter2021Notification, 'icons', () => ({
+            return adguard.lazyGet(birthday2021Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/blue-19-easter.png'),
-                    '38': adguard.getURL('icons/blue-38-easter.png'),
+                    '19': adguard.getURL('icons/birthday-enabled-19.png'),
+                    '38': adguard.getURL('icons/birthday-enabled-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/gray-19-easter.png'),
-                    '38': adguard.getURL('icons/gray-38-easter.png'),
+                    '19': adguard.getURL('icons/birthday-disabled-19.png'),
+                    '38': adguard.getURL('icons/birthday-disabled-38.png'),
                 },
             }));
         },
@@ -104,7 +112,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        easter2021: easter2021Notification,
+        birthday2021: birthday2021Notification,
     };
 
     /**
