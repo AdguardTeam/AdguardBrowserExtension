@@ -45,6 +45,7 @@ const Miscellaneous = observer(() => {
         DISABLE_SHOW_ADGUARD_PROMO_INFO,
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION,
         DISABLE_SHOW_PAGE_STATS,
+        DEFAULT_ALLOWLIST_MODE,
     } = settings.names;
 
     return (
@@ -64,7 +65,20 @@ const Miscellaneous = observer(() => {
                         />
                     )}
                 />
-
+                <SettingsSet
+                    title={reactTranslator.getMessage('options_allowlist_invert')}
+                    description={reactTranslator.getMessage('options_allowlist_invert_desc')}
+                    inlineControl={(
+                        <Setting
+                            id={DEFAULT_ALLOWLIST_MODE}
+                            label={reactTranslator.getMessage('options_allowlist_invert')}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[DEFAULT_ALLOWLIST_MODE]}
+                            handler={settingChangeHandler}
+                            inverted
+                        />
+                    )}
+                />
                 <SettingsSet
                     title={reactTranslator.getMessage('options_collect_hit_stats_title')}
                     description={(

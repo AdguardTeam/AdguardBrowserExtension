@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
-
+import { Link } from 'react-router-dom';
 import { SettingsSection } from '../Settings/SettingsSection';
-import { SettingsSet } from '../Settings/SettingsSet';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { Editor } from '../Editor';
 import { rootStore } from '../../stores/RootStore';
@@ -35,11 +34,6 @@ const Allowlist = observer(() => {
     const { settings } = settingsStore;
 
     const { DEFAULT_ALLOWLIST_MODE } = settings.names;
-
-    const settingChangeHandler = async ({ id, data }) => {
-        await settingsStore.updateSetting(id, data);
-        await settingsStore.getAllowlist();
-    };
 
     const importClickHandler = (e) => {
         e.preventDefault();
@@ -89,22 +83,29 @@ const Allowlist = observer(() => {
         <>
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
-                description={reactTranslator.getMessage('options_allowlist_desc')}
+                // TODO fix checkbox
+                inlineControl={(
+                    <Setting
+                        id="FIXME"
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_allowlist')}
+                        inverted
+                        value={false}
+                        handler={() => { console.log('FIXME'); }}
+                    />
+                )}
             >
-                <SettingsSet
-                    title={reactTranslator.getMessage('options_allowlist_invert')}
-                    description={reactTranslator.getMessage('options_allowlist_invert_desc')}
-                    inlineControl={(
-                        <Setting
-                            id={DEFAULT_ALLOWLIST_MODE}
-                            label={reactTranslator.getMessage('options_allowlist_invert')}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            value={settings.values[DEFAULT_ALLOWLIST_MODE]}
-                            handler={settingChangeHandler}
-                            inverted
-                        />
-                    )}
-                />
+                {!settings.values[DEFAULT_ALLOWLIST_MODE] && (
+                    <div className="setting__alert">
+                        <span className="setting__alert-desc">
+                            {reactTranslator.getMessage('options_allowlist_alert_invert')}
+                        </span>
+                        &nbsp;
+                        <Link className="setting__alert-link" to="/miscellaneous">
+                            {reactTranslator.getMessage('options_allowlist_disable')}
+                        </Link>
+                    </div>
+                )}
             </SettingsSection>
             <Editor
                 name="allowlist"

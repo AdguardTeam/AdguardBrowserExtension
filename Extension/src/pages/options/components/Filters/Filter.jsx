@@ -114,15 +114,6 @@ const Filter = observer(({ filter }) => {
                                 <HighlightSearch name={name} />
                             </span>
                             <span className="filter__controls">
-                                &nbsp;
-                                <a
-                                    className="filter__link"
-                                    href={homepage || customUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <Icon id="#link" classname="icon--link" />
-                                </a>
                                 {renderRemoveButton()}
                             </span>
                         </div>
@@ -142,6 +133,16 @@ const Filter = observer(({ filter }) => {
                                     ? formatDate(lastUpdateTime)
                                     : formatDate(timeUpdated)}
                             </div>
+                        </div>
+                        <div>
+                            <a
+                                className="filter__link"
+                                href={homepage || customUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {reactTranslator.getMessage('options_filters_filter_link')}
+                            </a>
                         </div>
                         {renderTags(tagsDetails, trusted)}
                     </div>
