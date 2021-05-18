@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
 
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
@@ -75,8 +74,9 @@ const Filter = observer(({ filter }) => {
         tagsDetails,
     } = filter;
 
-    const handleFilterSwitch = async ({ id, data }) => {
-        await settingsStore.updateFilterSetting(id, data);
+    const handleFilterSwitch = async (e) => {
+        const { target: { name: targetId, checked: data } } = e;
+        await settingsStore.updateFilterSetting(targetId, data);
     };
 
     const removeCustomFilter = async () => {
@@ -107,55 +107,68 @@ const Filter = observer(({ filter }) => {
     return (
         <div className={filterClassName} role="presentation">
             <div className="filter__info">
-                <div className="setting__container setting__container--horizontal">
-                    <div className="setting__inner">
-                        <div className="filter__title">
-                            <span className="filter__title-in">
-                                <HighlightSearch name={name} />
-                            </span>
-                            <span className="filter__controls">
-                                {renderRemoveButton()}
-                            </span>
-                        </div>
-                        <div className="filter__desc">
-                            <div className="filter__desc-item">
-                                {description}
+                <label htmlFor={filterId} className="setting setting--checkbox">
+                    <div className="setting__container setting__container--horizontal">
+                        <div className="setting__inner">
+                            <div className="filter__title">
+                                <span className="filter__title-in">
+                                    <HighlightSearch name={name} />
+                                </span>
+                                <span className="filter__controls">
+                                    {renderRemoveButton()}
+                                </span>
                             </div>
-                            <div className="filter__desc-item">
-                                {
-                                    version
-                                        ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
-                                        : ''
-                                }
-                                {reactTranslator.getMessage('options_filters_filter_updated')}
-                                {' '}
-                                {lastUpdateTime
-                                    ? formatDate(lastUpdateTime)
-                                    : formatDate(timeUpdated)}
+                            <div className="filter__desc">
+                                <div className="filter__desc-item">
+                                    {description}
+                                </div>
+                                <div className="filter__desc-item">
+                                    {
+                                        version
+                                            ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
+                                            : ''
+                                    }
+                                    {reactTranslator.getMessage('options_filters_filter_updated')}
+                                    {' '}
+                                    {lastUpdateTime
+                                        ? formatDate(lastUpdateTime)
+                                        : formatDate(timeUpdated)}
+                                </div>
                             </div>
+                            <div>
+                                <a
+                                    className="filter__link"
+                                    href={homepage || customUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {reactTranslator.getMessage('options_filters_filter_link')}
+                                </a>
+                            </div>
+                            {renderTags(tagsDetails, trusted)}
                         </div>
-                        <div>
-                            <a
-                                className="filter__link"
-                                href={homepage || customUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                        <div className="setting__inline-control">
+                            <div
+                                className="checkbox"
                             >
-                                {reactTranslator.getMessage('options_filters_filter_link')}
-                            </a>
+                                <input
+                                    type="checkbox"
+                                    name={filterId}
+                                    checked={!!enabled}
+                                    onChange={handleFilterSwitch}
+                                    id={filterId}
+                                    className="setting__checkbox"
+                                    tabIndex="0"
+                                />
+                                <span
+                                    className="checkbox__label"
+                                >
+                                    {name}
+                                </span>
+                            </div>
                         </div>
-                        {renderTags(tagsDetails, trusted)}
                     </div>
-                    <div className="setting__inline-control">
-                        <Setting
-                            id={filterId}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={name}
-                            value={!!enabled}
-                            handler={handleFilterSwitch}
-                        />
-                    </div>
-                </div>
+                </label>
             </div>
         </div>
     );

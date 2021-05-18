@@ -7,6 +7,10 @@
     min-height: 52px;
     cursor: default;
 
+    &.group {
+        padding: 0;
+    }
+
     &--checkbox {
         border-radius: 8px;
         cursor: pointer;
@@ -14,6 +18,10 @@
 
         &:hover {
             background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
         }
 
         .checkbox {
@@ -127,10 +135,10 @@
 
         & a {
             color: var(--green74);
-            text-decoration: none;
+            text-decoration: underline;
 
             &:hover {
-                text-decoration: underline;
+                text-decoration: none;
             }
         }
     }
@@ -229,6 +237,12 @@
 
 .light-mode {
     .setting {
+        &--checkbox {
+            &:hover {
+                background-color: var(--gray100);
+            }
+        }
+
         &__title {
             color: var(--gray-base);
         }
@@ -249,6 +263,12 @@
 
 .dark-mode {
     .setting {
+        &--checkbox {
+            &:hover {
+                background-color: var(--gray900);
+            }
+        }
+
         &__title {
             color: var(--gray300)
         }
