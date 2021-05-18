@@ -16,7 +16,6 @@
  */
 
 (function (adguard, api) {
-
     'use strict';
 
     /**
@@ -24,8 +23,7 @@
      * ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
      * CSS injection rules: http://adguard.com/en/filterrules.html#cssInjection
      */
-    var CssFilter = function (rules) {
-
+    const CssFilter = function (rules) {
         this.commonCss = null;
         this.commonCssHits = null;
         this.commonRules = [];
@@ -35,17 +33,17 @@
         this.dirty = false;
 
         if (rules) {
-            for (var i = 0; i < rules.length; i++) {
+            for (let i = 0; i < rules.length; i += 1) {
                 this.addRule(rules[i]);
             }
         }
     };
 
     // Bitmask to be used in CssFilter#_filterRules and Cssfilter#buildCss calls.
-    var RETRIEVE_TRADITIONAL_CSS = CssFilter.RETRIEVE_TRADITIONAL_CSS = 1 << 0;
-    var RETRIEVE_EXTCSS = CssFilter.RETRIEVE_EXTCSS = 1 << 1;
-    var GENERIC_HIDE_APPLIED = CssFilter.GENERIC_HIDE_APPLIED = 1 << 2;
-    var CSS_INJECTION_ONLY = CssFilter.CSS_INJECTION_ONLY = 1 << 3;
+    const RETRIEVE_TRADITIONAL_CSS = CssFilter.RETRIEVE_TRADITIONAL_CSS = 1 << 0;
+    const RETRIEVE_EXTCSS = CssFilter.RETRIEVE_EXTCSS = 1 << 1;
+    const GENERIC_HIDE_APPLIED = CssFilter.GENERIC_HIDE_APPLIED = 1 << 2;
+    const CSS_INJECTION_ONLY = CssFilter.CSS_INJECTION_ONLY = 1 << 3;
 
     CssFilter.prototype = {
 
@@ -54,9 +52,7 @@
          *
          * @param rule Rule to add
          */
-        addRule: function (rule) {
-            // TODO: Check that extended css rules can be also whitelist (#@#)
-
+        addRule(rule) {
             if (rule.whiteListRule) {
                 this.exceptionRules.push(rule);
             } else if (rule.extendedCss) {
@@ -75,21 +71,20 @@
          *
          * @param rule Rule to remove
          */
-        removeRule: function (rule) {
+        removeRule(rule) {
+            const { ruleText } = rule;
 
-            var ruleText = rule.ruleText;
-
-            this.exceptionRules = this.exceptionRules.filter(function (r) {
-                return r.ruleText != ruleText;
+            this.exceptionRules = this.exceptionRules.filter((r) => {
+                return r.ruleText !== ruleText;
             });
-            this.extendedCssRules = this.extendedCssRules.filter(function (r) {
-                return r.ruleText != ruleText;
+            this.extendedCssRules = this.extendedCssRules.filter((r) => {
+                return r.ruleText !== ruleText;
             });
-            this.domainSensitiveRules = this.domainSensitiveRules.filter(function (r) {
-                return r.ruleText != ruleText;
+            this.domainSensitiveRules = this.domainSensitiveRules.filter((r) => {
+                return r.ruleText !== ruleText;
             });
-            this.commonRules = this.commonRules.filter(function (r) {
-                return r.ruleText != ruleText;
+            this.commonRules = this.commonRules.filter((r) => {
+                return r.ruleText !== ruleText;
             });
 
             this._rollbackExceptionRule(rule);
@@ -100,9 +95,12 @@
         /**
          * Returns the array of loaded rules
          */
-        getRules: function () {
-            var result = [];
-            return result.concat(this.commonRules).concat(this.domainSensitiveRules).concat(this.exceptionRules).concat(this.extendedCssRules);
+        getRules() {
+            return []
+                .concat(this.commonRules)
+                .concat(this.domainSensitiveRules)
+                .concat(this.exceptionRules)
+                .concat(this.extendedCssRules);
         },
 
         /**
@@ -123,14 +121,14 @@
          * @param options       CssFilter Bitmask
          * @returns {CssFilterBuildResult} CSS and ExtCss stylesheets
          */
-        buildCss: function (domainName, options) {
+        buildCss(domainName, options) {
             if (typeof options === 'undefined') {
                 options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
             }
 
-            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
-            var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
-            var retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
+            const cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+            const genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
+            const retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
 
             if (cssInjectionOnly) {
                 this._rebuildBinding();
@@ -138,16 +136,12 @@
                 this._rebuild();
             }
 
-            var rules = this._filterRules(domainName, options);
+            const filteredRules = this._filterRules(domainName, options);
+            const stylesheets = this._createCssStylesheets(filteredRules);
 
-            var stylesheets = this._createCssStylesheets(rules);
-            if (!genericHide && retrieveTraditionalCss) { // ExtCss rules are not contained in commonRules
-                var commonCss = this._getCommonCss();
-                if (cssInjectionOnly) {
-                    commonCss = this._buildCssByRules(this.commonRules.filter(function (rule) {
-                        return rule.isInjectRule;
-                    }));
-                }
+            // ExtCss rules are not contained in commonRules
+            if (!genericHide && retrieveTraditionalCss) {
+                const commonCss = this._getCommonCss(cssInjectionOnly);
                 Array.prototype.unshift.apply(stylesheets.css, commonCss);
             }
 
@@ -164,19 +158,19 @@
          * @param options CssFilter bitmask
          * @returns {CssFilterBuildResult} CSS and ExtCss stylesheets
          */
-        buildCssHits: function (domainName, options) {
+        buildCssHits(domainName, options) {
             this._rebuildHits();
 
             if (typeof options === 'undefined') {
                 options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
             }
 
-            var rules = this._filterRules(domainName, options);
+            const rules = this._filterRules(domainName, options);
 
-            var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
-            var retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
+            const genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
+            const retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
 
-            var stylesheets = this._createCssStylesheetsHits(rules);
+            const stylesheets = this._createCssStylesheetsHits(rules);
             if (!genericHide && retrieveTraditionalCss) {
                 stylesheets.css = this._getCommonCssHits().concat(stylesheets.css);
             }
@@ -192,40 +186,45 @@
          * @returns {*}
          * @private
          */
-        _filterRules: function (domainName, options) {
-            var rules = [];
-            var rule;
+        _filterRules(domainName, options) {
+            let rules = [];
 
-            var retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
-            var retrieveExtCss = (options & RETRIEVE_EXTCSS) === RETRIEVE_EXTCSS;
-            var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
-            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+            const retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
+            const retrieveExtCss = (options & RETRIEVE_EXTCSS) === RETRIEVE_EXTCSS;
+            const genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
+            const cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
 
-            if (!domainName) { return rules; }
+            if (!domainName) {
+                return rules;
+            }
 
             if (retrieveTraditionalCss && this.domainSensitiveRules !== null) {
-                var iDomainSensitive = this.domainSensitiveRules.length;
-                while (iDomainSensitive--) {
-                    rule = this.domainSensitiveRules[iDomainSensitive];
+                const filteredDomainSensitiveRules = this.domainSensitiveRules.filter((rule) => {
                     if (rule.isPermitted(domainName)) {
-                        if (genericHide && rule.isGeneric()) { continue; }
-                        if (cssInjectionOnly && !rule.isInjectRule) { continue; }
-                        rules.push(rule);
+                        if (genericHide && rule.isGeneric()) {
+                            return false;
+                        }
+                        if (cssInjectionOnly && !rule.isInjectRule) {
+                            return false;
+                        }
+                        return true;
                     }
-                }
+                    return false;
+                });
+                rules = rules.concat(filteredDomainSensitiveRules);
             }
 
             if (retrieveExtCss && this.extendedCssRules !== null) {
-                var iExtendedCss = this.extendedCssRules.length;
-                while (iExtendedCss--) {
-                    rule = this.extendedCssRules[iExtendedCss];
+                const filteredExtendedCssRules = this.extendedCssRules.filter((rule) => {
                     if (rule.isPermitted(domainName)) {
                         if (genericHide && rule.isGeneric()) {
-                            continue;
+                            return false;
                         }
-                        rules.push(rule);
+                        return true;
                     }
-                }
+                    return false;
+                });
+                rules = rules.concat(filteredExtendedCssRules);
             }
 
             return rules;
@@ -238,18 +237,18 @@
          * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
          * @private
          */
-        _createCssStylesheets: function (rules) {
-            var extendedCssRules = rules.filter(function (rule) {
+        _createCssStylesheets(rules) {
+            const extendedCssRules = rules.filter((rule) => {
                 return rule.extendedCss;
             });
 
-            var cssRules = rules.filter(function (rule) {
+            const cssRules = rules.filter((rule) => {
                 return !rule.extendedCss;
             });
 
             return {
                 css: this._buildCssByRules(cssRules),
-                extendedCss: this._buildCssByRules(extendedCssRules)
+                extendedCss: this._buildCssByRules(extendedCssRules),
             };
         },
 
@@ -260,18 +259,18 @@
          * @returns {{css: (*|List), extendedCss: (*|List)}}
          * @private
          */
-        _createCssStylesheetsHits: function (rules) {
-            var extendedCssRules = rules.filter(function (rule) {
+        _createCssStylesheetsHits(rules) {
+            const extendedCssRules = rules.filter((rule) => {
                 return rule.extendedCss;
             });
 
-            var cssRules = rules.filter(function (rule) {
+            const cssRules = rules.filter((rule) => {
                 return !rule.extendedCss;
             });
 
             return {
                 css: this._buildCssByRulesHits(cssRules),
-                extendedCss: this._buildCssByRulesHits(extendedCssRules)
+                extendedCss: this._buildCssByRulesHits(extendedCssRules),
             };
         },
 
@@ -280,7 +279,7 @@
          *
          * @private
          */
-        _rebuild: function () {
+        _rebuild() {
             if (!this.dirty) {
                 return;
             }
@@ -297,7 +296,7 @@
          *
          * @private
          */
-        _rebuildHits: function () {
+        _rebuildHits() {
             if (!this.dirty) {
                 return;
             }
@@ -316,7 +315,7 @@
          *
          * @private
          */
-        _rebuildBinding: function () {
+        _rebuildBinding() {
             if (!this.dirty) {
                 return;
             }
@@ -324,6 +323,32 @@
             this.commonCss = null;
             this.commonCssHits = null;
             this.dirty = false;
+        },
+
+        /**
+         * Applies rules from exceptions map to rule lists
+         * @private
+         * @param rulesList
+         * @param exceptionRulesMap
+         */
+        applyExceptionsToRules(rulesList, exceptionRulesMap) {
+            const resultRulesList = [];
+            for (let i = 0; i < rulesList.length; i += 1) {
+                const rule = rulesList[i];
+                const exceptionRules = exceptionRulesMap[rule.cssSelector];
+                if (exceptionRules) {
+                    for (let j = 0; j < exceptionRules.length; j += 1) {
+                        const updatedRule = this._applyExceptionRule(rule, exceptionRules[j]);
+                        if (updatedRule) {
+                            resultRulesList.push(updatedRule);
+                        }
+                    }
+                } else {
+                    resultRulesList.push(rule);
+                }
+            }
+
+            return resultRulesList;
         },
         /**
          * Applies exception rules
@@ -333,55 +358,46 @@
          * http://adguard.com/en/filterrules.html#cssInjectionExceptions
          * @private
          */
-        _applyExceptionRules: function () {
+        _applyExceptionRules() {
+            const exceptionRulesMap = this._arrayToMap(this.exceptionRules, 'cssSelector');
 
-            var i, j, rule, exceptionRules;
+            this.domainSensitiveRules = this.applyExceptionsToRules(
+                this.domainSensitiveRules,
+                exceptionRulesMap
+            );
 
-            var exceptionRulesMap = this._arrayToMap(this.exceptionRules, 'cssSelector');
+            this.extendedCssRules = this.applyExceptionsToRules(
+                this.extendedCssRules,
+                exceptionRulesMap
+            );
 
-            for (i = 0; i < this.domainSensitiveRules.length; i++) {
-                rule = this.domainSensitiveRules[i];
-                exceptionRules = exceptionRulesMap[rule.cssSelector];
+            const newDomainSensitiveRules = [];
+
+            for (let i = 0; i < this.commonRules.length; i += 1) {
+                const rule = this.commonRules[i];
+                const exceptionRules = exceptionRulesMap[rule.cssSelector];
                 if (exceptionRules) {
-                    for (j = 0; j < exceptionRules.length; j++) {
-
-                        this._applyExceptionRule(rule, exceptionRules[j]);
+                    for (let j = 0; j < exceptionRules.length; j += 1) {
+                        const updatedRule = this._applyExceptionRule(rule, exceptionRules[j]);
+                        if (updatedRule) {
+                            this.commonRules.splice(i, 1, updatedRule);
+                            if (updatedRule.isDomainSensitive()) {
+                                // Rule has become domain sensitive.
+                                // We should remove it from common rules and add to domain sensitive.
+                                newDomainSensitiveRules.push(rule);
+                            }
+                        } else {
+                            this.commonRules.splice(i, 1);
+                        }
                     }
                 }
             }
 
-            for (i = 0; i < this.extendedCssRules.length; i++) {
-                rule = this.extendedCssRules[i];
-                exceptionRules = exceptionRulesMap[rule.cssSelector];
-                if (exceptionRules) {
-                    for (j = 0; j < exceptionRules.length; j++) {
-                        this._applyExceptionRule(rule, exceptionRules[j]);
-                    }
-                }
-            }
-
-            var newDomainSensitiveRules = [];
-
-            for (i = 0; i < this.commonRules.length; i++) {
-                rule = this.commonRules[i];
-                exceptionRules = exceptionRulesMap[rule.cssSelector];
-                if (exceptionRules) {
-                    for (j = 0; j < exceptionRules.length; j++) {
-                        this._applyExceptionRule(rule, exceptionRules[j]);
-                    }
-                    if (rule.isDomainSensitive()) {
-                        // Rule has become domain sensitive.
-                        // We should remove it from common rules and add to domain sensitive.
-                        newDomainSensitiveRules.push(rule);
-                    }
-                }
-            }
-
-            var newDomainSensitiveRulesMap = this._arrayToMap(newDomainSensitiveRules, 'ruleText');
+            const newDomainSensitiveRulesMap = this._arrayToMap(newDomainSensitiveRules, 'ruleText');
 
             this.domainSensitiveRules = this.domainSensitiveRules.concat(newDomainSensitiveRules);
             // Remove new domain sensitive rules from common rules
-            this.commonRules = this.commonRules.filter(function (el) {
+            this.commonRules = this.commonRules.filter((el) => {
                 return !(el.ruleText in newDomainSensitiveRulesMap);
             });
         },
@@ -390,27 +406,43 @@
          * Applies exception rule to the specified common rule.
          * Common means that this rule does not have $domain option.
          *
-         * @param commonRule        Rule object
-         * @param exceptionRule     Exception rule object
+         * @param commonRule - Rule object
+         * @param exceptionRule - Exception rule object
+         * @returns {object | null} - updated rule or null if rule was excluded by generic allowlist rule e.g. "#@#h1"
          * @private
          */
-        _applyExceptionRule: function (commonRule, exceptionRule) {
-
+        _applyExceptionRule(commonRule, exceptionRule) {
             if (commonRule.cssSelector !== exceptionRule.cssSelector) {
-                return;
+                return null;
             }
 
-            commonRule.addRestrictedDomains(exceptionRule.getPermittedDomains());
+            if (exceptionRule.isGeneric()) {
+                return null;
+            }
+
+            const permittedDomains = exceptionRule.getPermittedDomains();
+            if (permittedDomains && permittedDomains.length > 0) {
+                commonRule.addRestrictedDomains(permittedDomains);
+                return commonRule;
+            }
+
+            return null;
         },
 
         /**
          * Getter for commonCss field.
          * Lazy-initializes commonCss field if needed.
          *
+         * @param {boolean} cssInjectOnly
          * @returns Common CSS stylesheet content
          * @private
          */
-        _getCommonCss: function () {
+        _getCommonCss(cssInjectOnly = false) {
+            if (cssInjectOnly) {
+                const injectRules = this.commonRules.filter(rule => rule.isInjectRule);
+                return this._buildCssByRules(injectRules);
+            }
+
             if (this.commonCss === null || this.commonCss.length === 0) {
                 this.commonCss = this._buildCssByRules(this.commonRules);
             }
@@ -423,7 +455,7 @@
          *
          * @private
          */
-        _getCommonCssHits: function () {
+        _getCommonCssHits() {
             if (this.commonCssHits === null || this.commonCssHits.length === 0) {
                 this.commonCssHits = this._buildCssByRulesHits(this.commonRules);
             }
@@ -431,23 +463,24 @@
         },
 
         /**
+         * @deprecated (we rebuild request filter every time rule is added)
          * Rolls back exception rule (used if this exception rule is removed from the user filter)
          *
          * @param exceptionRule Exception rule to roll back
          * @private
          */
-        _rollbackExceptionRule: function (exceptionRule) {
-
+        _rollbackExceptionRule(exceptionRule) {
             if (!exceptionRule.whiteListRule) {
                 return;
             }
 
-            var newCommonRules = [];
-            var i, rule;
+            const newCommonRules = [];
+            let i; let
+                rule;
 
-            for (i = 0; i < this.domainSensitiveRules.length; i++) {
+            for (i = 0; i < this.domainSensitiveRules.length; i += 1) {
                 rule = this.domainSensitiveRules[i];
-                if (rule.cssSelector == exceptionRule.cssSelector) {
+                if (rule.cssSelector === exceptionRule.cssSelector) {
                     rule.removeRestrictedDomains(exceptionRule.getPermittedDomains());
                     if (!rule.isDomainSensitive()) {
                         // Rule has become common.
@@ -457,9 +490,9 @@
                 }
             }
 
-            for (i = 0; i < this.extendedCssRules.length; i++) {
+            for (i = 0; i < this.extendedCssRules.length; i += 1) {
                 rule = this.extendedCssRules[i];
-                if (rule.cssSelector == exceptionRule.cssSelector) {
+                if (rule.cssSelector === exceptionRule.cssSelector) {
                     rule.removeRestrictedDomains(exceptionRule.getPermittedDomains());
                 }
             }
@@ -467,8 +500,8 @@
             this.commonRules = this.commonRules.concat(newCommonRules);
 
             // Remove new common rules from  domain sensitive rules
-            var newCommonRulesMap = this._arrayToMap(newCommonRules, 'ruleText');
-            this.domainSensitiveRules = this.domainSensitiveRules.filter(function (el) {
+            const newCommonRulesMap = this._arrayToMap(newCommonRules, 'ruleText');
+            this.domainSensitiveRules = this.domainSensitiveRules.filter((el) => {
                 return !(el.ruleText in newCommonRulesMap);
             });
         },
@@ -480,17 +513,16 @@
          * @returns {Array<string>} of CSS stylesheets
          * @private
          */
-        _buildCssByRules: function (rules) {
+        _buildCssByRules(rules) {
+            const CSS_SELECTORS_PER_LINE = 50;
+            const ELEMHIDE_CSS_STYLE = ' { display: none!important; }\r\n';
 
-            var CSS_SELECTORS_PER_LINE = 50;
-            var ELEMHIDE_CSS_STYLE = " { display: none!important; }\r\n";
+            let selectorsCount = 0;
+            const elemHideSb = [];
+            const cssSb = [];
 
-            var elemHideSb = [];
-            var selectorsCount = 0;
-            var cssSb = [];
-
-            for (var i = 0; i < rules.length; i++) {
-                var rule = rules[i];
+            for (let i = 0; i < rules.length; i += 1) {
+                const rule = rules[i];
 
                 if (rule.isInjectRule) {
                     cssSb.push(this._getRuleCssSelector(rule));
@@ -500,7 +532,7 @@
                     if (selectorsCount % CSS_SELECTORS_PER_LINE === 0 || rule.extendedCss) {
                         elemHideSb.push(ELEMHIDE_CSS_STYLE);
                     } else {
-                        elemHideSb.push(", ");
+                        elemHideSb.push(', ');
                     }
                 }
             }
@@ -510,9 +542,9 @@
                 elemHideSb[elemHideSb.length - 1] = ELEMHIDE_CSS_STYLE;
             }
 
-            var styles = [];
-            var elemHideStyle = elemHideSb.join("");
-            var cssStyle = cssSb.join("\r\n");
+            const styles = [];
+            const elemHideStyle = elemHideSb.join('');
+            const cssStyle = cssSb.join('\r\n');
 
             if (elemHideStyle) {
                 styles.push(elemHideStyle);
@@ -532,24 +564,24 @@
          * @param rule
          * @returns {String}
          */
-        _addMarkerToInjectRule: function (rule) {
-            var INJECT_HIT_START = " content: 'adguard";
-            var HIT_SEP = encodeURIComponent(';');
-            var HIT_END = "' !important;}\r\n";
+        _addMarkerToInjectRule(rule) {
+            const INJECT_HIT_START = " content: 'adguard";
+            const HIT_SEP = encodeURIComponent(';');
+            const HIT_END = "' !important;}\r\n";
 
-            var result = [];
-            var ruleText = this._getRuleCssSelector(rule);
+            const result = [];
+            const ruleText = this._getRuleCssSelector(rule);
             // if rule text has content attribute we don't add rule marker
-            var contentAttributeRegex = /[{;"(]\s*content\s*:/gi;
+            const contentAttributeRegex = /[{;"(]\s*content\s*:/gi;
             if (contentAttributeRegex.test(ruleText)) {
                 return ruleText;
             }
             // remove closing brace
-            var ruleTextWithoutCloseBrace = ruleText.slice(0, -1).trim();
+            const ruleTextWithoutCloseBrace = ruleText.slice(0, -1).trim();
             // check semicolon
-            var ruleTextWithSemicolon = adguard.utils.strings.endsWith(ruleTextWithoutCloseBrace, ';') ?
-                ruleTextWithoutCloseBrace :
-                ruleTextWithoutCloseBrace + ';';
+            const ruleTextWithSemicolon = adguard.utils.strings.endsWith(ruleTextWithoutCloseBrace, ';')
+                ? ruleTextWithoutCloseBrace
+                : `${ruleTextWithoutCloseBrace};`;
             result.push(ruleTextWithSemicolon);
             result.push(INJECT_HIT_START);
             result.push(rule.filterId);
@@ -566,12 +598,12 @@
          * @param rule
          * @returns {String}
          */
-        _addMarkerToElemhideRule: function (rule) {
-            var ELEMHIDE_HIT_START = " { display: none!important; content: 'adguard";
-            var HIT_SEP = encodeURIComponent(';');
-            var HIT_END = "' !important;}\r\n";
+        _addMarkerToElemhideRule(rule) {
+            const ELEMHIDE_HIT_START = " { display: none!important; content: 'adguard";
+            const HIT_SEP = encodeURIComponent(';');
+            const HIT_END = "' !important;}\r\n";
 
-            var result = [];
+            const result = [];
             result.push(this._getRuleCssSelector(rule));
             result.push(ELEMHIDE_HIT_START);
             result.push(rule.filterId);
@@ -591,10 +623,10 @@
          * @returns List of CSS stylesheets
          * @private
          */
-        _buildCssByRulesHits: function (rules) {
-            var styles = [];
-            for (var i = 0; i < rules.length; i += 1) {
-                var rule = rules[i];
+        _buildCssByRulesHits(rules) {
+            const styles = [];
+            for (let i = 0; i < rules.length; i += 1) {
+                const rule = rules[i];
                 if (rule.isInjectRule) {
                     styles.push(this._addMarkerToInjectRule(rule));
                 } else {
@@ -604,25 +636,23 @@
             return styles;
         },
 
-        _getRuleCssSelector: function (rule) {
+        _getRuleCssSelector(rule) {
             return rule.cssSelector;
         },
 
-        _arrayToMap: function (array, prop) {
-            var map = Object.create(null);
-            for (var i = 0; i < array.length; i++) {
-                var el = array[i];
-                var property = el[prop];
+        _arrayToMap(array, prop) {
+            const map = Object.create(null);
+            for (let i = 0; i < array.length; i += 1) {
+                const el = array[i];
+                const property = el[prop];
                 if (!(property in map)) {
                     map[property] = [];
                 }
                 map[property].push(el);
             }
             return map;
-        }
+        },
     };
 
     api.CssFilter = CssFilter;
-
 })(adguard, adguard.rules);
-

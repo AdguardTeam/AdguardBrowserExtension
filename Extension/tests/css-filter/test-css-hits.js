@@ -24,10 +24,10 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     assert.equal(commonCss[0].trim(), ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
     assert.equal(css.length, 4);
     assert.equal(css[0].trim(), ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
-    assert.equal(css[1].trim(), ".bgcontent {display: none; content: 'adguard1%3Badguard.com%23%24%23.bgcontent%20%7Bdisplay%3A%20none%7D' !important;}");
+    assert.equal(css[1].trim(), ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
     // adguard mark is not inserted in the rules with content attribute
     assert.equal(css[2].trim(), ".background {content: 'test'}");
-    assert.equal(css[3].trim(), ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
+    assert.equal(css[3].trim(), ".bgcontent {display: none; content: 'adguard1%3Badguard.com%23%24%23.bgcontent%20%7Bdisplay%3A%20none%7D' !important;}");
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 
@@ -38,10 +38,10 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     assert.equal(commonCss.length, 1);
     assert.equal(commonCss[0].trim(), ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
     assert.equal(css.length, 3);
-    assert.equal(css[0].trim(), ".bgcontent {display: none; content: 'adguard1%3Badguard.com%23%24%23.bgcontent%20%7Bdisplay%3A%20none%7D' !important;}");
+    assert.equal(css[0].trim(), ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
     // adguard mark is not inserted in the rules with content attribute
     assert.equal(css[1].trim(), ".background {content: 'test'}");
-    assert.equal(css[2].trim(), ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
+    assert.equal(css[2].trim(), ".bgcontent {display: none; content: 'adguard1%3Badguard.com%23%24%23.bgcontent%20%7Bdisplay%3A%20none%7D' !important;}");
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 });

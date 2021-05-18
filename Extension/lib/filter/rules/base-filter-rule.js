@@ -132,7 +132,10 @@
          * @returns boolean true if rule is generic, otherwise false
          */
         isGeneric() {
-            return (!this.hasPermittedDomains());
+            if (!this.hasPermittedDomains()) {
+                return true;
+            }
+            return this.getPermittedDomains().some(domain => domain === FilterRule.WILDCARD_MARK);
         },
 
         /**
@@ -294,6 +297,7 @@
     FilterRule.COMA_DELIMITER = ',';
     FilterRule.LINE_DELIMITER = '|';
     FilterRule.NOT_MARK = '~';
+    FilterRule.WILDCARD_MARK = '*';
 
     api.FilterRule = FilterRule;
 })(adguard, adguard.rules);
