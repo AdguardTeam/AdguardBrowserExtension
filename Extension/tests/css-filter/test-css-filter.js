@@ -172,6 +172,53 @@ QUnit.test('Css Exception Rules', (assert) => {
     assert.equal(css[0], commonCss[0]);
 });
 
+QUnit.module('CSS generic exception rules', () => {
+    QUnit.test('Css plain generic and wildcard generic exception rules should work', (assert) => {
+        const genericAllowlistingRule = new adguard.rules.CssFilterRule('#@#.adsbygoogle');
+        const genericWildcardAllowlistingRule = new adguard.rules.CssFilterRule('*#@#.adsbygoogle');
+
+        const specificBlockingRule = new adguard.rules.CssFilterRule('example.org##.adsbygoogle');
+        const genericBlockingRule = new adguard.rules.CssFilterRule('##.adsbygoogle');
+
+        const cssFilter = new adguard.rules.CssFilter([genericBlockingRule, specificBlockingRule]);
+        const cssWildcardFilter = new adguard.rules.CssFilter([genericBlockingRule, specificBlockingRule]);
+
+        const css = cssFilter.buildCss('example.org');
+        const cssWildcard = cssWildcardFilter.buildCss('example.org');
+
+        assert.ok(css.css.length > 0);
+        assert.deepEqual(css, cssWildcard);
+
+        cssFilter.addRule(genericAllowlistingRule);
+        cssWildcardFilter.addRule(genericWildcardAllowlistingRule);
+
+        const css2 = cssFilter.buildCss('example.org');
+        const cssWildcard2 = cssWildcardFilter.buildCss('example.org');
+
+        assert.ok(css2.css.length === 0);
+        assert.deepEqual(css2, cssWildcard2);
+    });
+
+    QUnit.test('Work correctly for multiple rules', (assert) => {
+        const otherSpecificBlockingRule = new adguard.rules.CssFilterRule('example.org##.ads1');
+        const otherGenericAllowlistingRule = new adguard.rules.CssFilterRule('#@#.ads1');
+
+        const genericAllowlistingRule = new adguard.rules.CssFilterRule('#@#.ads2');
+        const specificBlockingRule = new adguard.rules.CssFilterRule('example.org##.ads2');
+
+        const cssFilter = new adguard.rules.CssFilter([
+            otherSpecificBlockingRule,
+            otherGenericAllowlistingRule,
+            specificBlockingRule,
+            genericAllowlistingRule,
+        ]);
+
+        const css = cssFilter.buildCss('example.org');
+        assert.ok(css.css.length === 0);
+    });
+});
+
+
 QUnit.test('Css GenericHide Exception Rules', (assert) => {
     const genericOne = new adguard.rules.CssFilterRule('##.generic-one');
     const genericTwo = new adguard.rules.CssFilterRule('~google.com,~yahoo.com###generic');
@@ -469,7 +516,7 @@ QUnit.test('Invalid Pseudo Class', (assert) => {
     let selector;
     let ruleText;
 
-    selector = 'test:matches(.whatisthis)'
+    selector = 'test:matches(.whatisthis)';
     try {
         ruleText = `yandex.ru##${selector}`;
         new adguard.rules.CssFilterRule(ruleText);
