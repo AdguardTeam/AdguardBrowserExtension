@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Setting, SETTINGS_TYPES } from './Setting';
 
 const SettingsSetCheckbox = (props) => {
     const {
-        title, description, children, disabled, hideBorder,
+        title, description, children, disabled,
         id, handler, label, inverted,
     } = props;
     const settingClassName = classNames('setting setting--checkbox', {
         'setting--disabled': disabled,
-        'setting--hide-border': hideBorder,
     });
 
     let { value } = props;
@@ -28,29 +26,30 @@ const SettingsSetCheckbox = (props) => {
             htmlFor={id}
             className={settingClassName}
         >
-            <input
-                type="checkbox"
-                name={id}
-                checked={value}
-                onChange={changeHandler}
-                id={id}
-                className="setting__checkbox"
-                tabIndex="0"
-            />
             <div className="setting__container setting__container--vertical">
                 <div className="setting__container setting__container--horizontal">
                     <div className="setting__info">
                         <div className="setting__title">{title}</div>
                         {description && <div className="setting__desc">{description}</div>}
                     </div>
-                    <Setting
-                        id={id}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={value}
-                        label={label}
-                        handler={handler}
-                        inverted
-                    />
+                    <div
+                        className="checkbox"
+                    >
+                        <input
+                            type="checkbox"
+                            name={id}
+                            checked={value}
+                            onChange={changeHandler}
+                            id={id}
+                            className="setting__checkbox"
+                            tabIndex="0"
+                        />
+                        <span
+                            className="checkbox__label"
+                        >
+                            {label}
+                        </span>
+                    </div>
                 </div>
                 {children}
             </div>

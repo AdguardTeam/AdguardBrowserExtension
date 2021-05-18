@@ -83,17 +83,7 @@ const Allowlist = observer(() => {
         <>
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
-                // TODO fix checkbox
-                inlineControl={(
-                    <Setting
-                        id="FIXME"
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_allowlist')}
-                        inverted
-                        value={false}
-                        handler={() => { console.log('FIXME'); }}
-                    />
-                )}
+                // TODO add switch
             >
                 {!settings.values[DEFAULT_ALLOWLIST_MODE] && (
                     <div className="setting__alert">

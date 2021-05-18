@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
-import { SettingsSet } from '../Settings/SettingsSet';
+import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../common/log';
@@ -67,96 +67,72 @@ const Stealth = observer(() => {
                 subTitle
                 disabled={isStealthModeDisabled}
             >
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_hide_referrer_title')}
                     description={reactTranslator.getMessage('options_hide_referrer_desc')}
                     disabled={!settings.values[HIDE_REFERRER]}
-                    inlineControl={(
-                        <Setting
-                            id={HIDE_REFERRER}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_hide_referrer_title')}
-                            value={settings.values[HIDE_REFERRER]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={HIDE_REFERRER}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_hide_referrer_title')}
+                    value={settings.values[HIDE_REFERRER]}
+                    handler={settingChangeHandler}
                 />
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_hide_search_queries_title')}
                     description={reactTranslator.getMessage('options_hide_search_queries_desc')}
                     disabled={!settings.values[HIDE_SEARCH_QUERIES]}
-                    inlineControl={(
-                        <Setting
-                            id={HIDE_SEARCH_QUERIES}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_hide_search_queries_title')}
-                            value={settings.values[HIDE_SEARCH_QUERIES]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={HIDE_SEARCH_QUERIES}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_hide_search_queries_title')}
+                    value={settings.values[HIDE_SEARCH_QUERIES]}
+                    handler={settingChangeHandler}
                 />
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_send_not_track_title')}
                     description={reactTranslator.getMessage('options_send_not_track_desc')}
                     disabled={!settings.values[SEND_DO_NOT_TRACK]}
-                    inlineControl={(
-                        <Setting
-                            id={SEND_DO_NOT_TRACK}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_send_not_track_title')}
-                            value={settings.values[SEND_DO_NOT_TRACK]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={SEND_DO_NOT_TRACK}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_send_not_track_title')}
+                    value={settings.values[SEND_DO_NOT_TRACK]}
+                    handler={settingChangeHandler}
                 />
 
                 {settingsStore.isChrome && (
-                    <SettingsSet
+                    <SettingsSetCheckbox
                         title={reactTranslator.getMessage('options_remove_client_data_title')}
                         description={reactTranslator.getMessage('options_remove_client_data_desc')}
                         disabled={!settings.values[BLOCK_CHROME_CLIENT_DATA]}
-                        inlineControl={(
-                            <Setting
-                                id={BLOCK_CHROME_CLIENT_DATA}
-                                type={SETTINGS_TYPES.CHECKBOX}
-                                label={reactTranslator.getMessage('options_remove_client_data_title')}
-                                value={settings.values[BLOCK_CHROME_CLIENT_DATA]}
-                                handler={settingChangeHandler}
-                            />
-                        )}
+                        id={BLOCK_CHROME_CLIENT_DATA}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_remove_client_data_title')}
+                        value={settings.values[BLOCK_CHROME_CLIENT_DATA]}
+                        handler={settingChangeHandler}
                     />
                 )}
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_disable_webrtc_title')}
                     description={reactTranslator.getMessage('options_disable_webrtc_desc')}
                     disabled={!settings.values[BLOCK_WEBRTC]}
-                    inlineControl={(
-                        <Setting
-                            id={BLOCK_WEBRTC}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_disable_webrtc_title')}
-                            value={settings.values[BLOCK_WEBRTC]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={BLOCK_WEBRTC}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_disable_webrtc_title')}
+                    value={settings.values[BLOCK_WEBRTC]}
+                    handler={settingChangeHandler}
                 />
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_strip_tracking_params_title')}
                     description={reactTranslator.getMessage('options_strip_tracking_params_desc')}
                     disabled={!settings.values[STRIP_TRACKING_PARAMETERS]}
-                    inlineControl={(
-                        <Setting
-                            id={STRIP_TRACKING_PARAMETERS}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_strip_tracking_params_title')}
-                            value={settings.values[STRIP_TRACKING_PARAMETERS]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={STRIP_TRACKING_PARAMETERS}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_strip_tracking_params_title')}
+                    value={settings.values[STRIP_TRACKING_PARAMETERS]}
+                    handler={settingChangeHandler}
                 >
                     <Setting
                         id={TRACKING_PARAMETERS}
@@ -166,7 +142,7 @@ const Stealth = observer(() => {
                         handler={settingChangeHandler}
                         placeholder={DEFAULT_TRACKING_PARAMETERS}
                     />
-                </SettingsSet>
+                </SettingsSetCheckbox>
             </SettingsSection>
 
             <SettingsSection
@@ -174,20 +150,15 @@ const Stealth = observer(() => {
                 subTitle
                 disabled={isStealthModeDisabled}
             >
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_third_party_title')}
                     description={reactTranslator.getMessage('options_third_party_desc')}
                     disabled={!isThirdPartyCookiesEnabled}
-                    hideBorder
-                    inlineControl={(
-                        <Setting
-                            id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_third_party_title')}
-                            value={isThirdPartyCookiesEnabled}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_third_party_title')}
+                    value={isThirdPartyCookiesEnabled}
+                    handler={settingChangeHandler}
                 >
                     <Setting
                         id={SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME}
@@ -197,22 +168,17 @@ const Stealth = observer(() => {
                         handler={settingChangeHandler}
                         placeholder={DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN}
                     />
-                </SettingsSet>
+                </SettingsSetCheckbox>
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_first_party_title')}
                     description={reactTranslator.getMessage('options_first_party_desc')}
                     disabled={!isFirstPartyCookiesEnabled}
-                    hideBorder
-                    inlineControl={(
-                        <Setting
-                            id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_first_party_title')}
-                            value={isFirstPartyCookiesEnabled}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_first_party_title')}
+                    value={isFirstPartyCookiesEnabled}
+                    handler={settingChangeHandler}
                 >
                     <Setting
                         id={SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME}
@@ -222,7 +188,7 @@ const Stealth = observer(() => {
                         handler={settingChangeHandler}
                         placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
                     />
-                </SettingsSet>
+                </SettingsSetCheckbox>
             </SettingsSection>
         </>
     );

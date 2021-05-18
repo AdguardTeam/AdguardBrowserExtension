@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSet } from '../Settings/SettingsSet';
+import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
@@ -139,49 +140,37 @@ const General = observer(() => {
                         />
                     )}
                 />
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_allow_acceptable_ads')}
                     description={reactTranslator.getMessage('options_allow_acceptable_ads_desc')}
                     disabled={!allowAcceptableAds}
-                    inlineControl={(
-                        <Setting
-                            id={ALLOW_ACCEPTABLE_ADS}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            value={allowAcceptableAds}
-                            label={reactTranslator.getMessage('options_allow_acceptable_ads')}
-                            handler={allowAcceptableAdsChangeHandler}
-                        />
-                    )}
+                    id={ALLOW_ACCEPTABLE_ADS}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    value={allowAcceptableAds}
+                    label={reactTranslator.getMessage('options_allow_acceptable_ads')}
+                    handler={allowAcceptableAdsChangeHandler}
                 />
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_safebrowsing_enabled')}
                     description={reactTranslator.getMessage('options_safebrowsing_enabled_desc')}
                     disabled={settings.values[DISABLE_SAFEBROWSING]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_SAFEBROWSING}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            inverted
-                            label={reactTranslator.getMessage('options_safebrowsing_enabled')}
-                            value={settings.values[DISABLE_SAFEBROWSING]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={DISABLE_SAFEBROWSING}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    inverted
+                    label={reactTranslator.getMessage('options_safebrowsing_enabled')}
+                    value={settings.values[DISABLE_SAFEBROWSING]}
+                    handler={settingChangeHandler}
                 />
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_enable_autodetect_filter')}
                     description={reactTranslator.getMessage('options_enable_autodetect_filter_desc')}
                     disabled={settings.values[DISABLE_DETECT_FILTERS]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_DETECT_FILTERS}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            inverted
-                            label={reactTranslator.getMessage('options_enable_autodetect_filter')}
-                            handler={settingChangeHandler}
-                            value={settings.values[DISABLE_DETECT_FILTERS]}
-                        />
-                    )}
+                    id={DISABLE_DETECT_FILTERS}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    inverted
+                    label={reactTranslator.getMessage('options_enable_autodetect_filter')}
+                    handler={settingChangeHandler}
+                    value={settings.values[DISABLE_DETECT_FILTERS]}
                 />
                 <SettingsSet
                     title={reactTranslator.getMessage('options_set_update_interval')}

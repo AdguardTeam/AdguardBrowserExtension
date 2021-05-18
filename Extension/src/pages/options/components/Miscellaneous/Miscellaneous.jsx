@@ -2,9 +2,8 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
-import { SettingsSet } from '../Settings/SettingsSet';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
+import { SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../common/log';

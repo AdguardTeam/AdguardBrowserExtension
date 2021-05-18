@@ -142,17 +142,7 @@ const UserRules = observer(() => {
                         </a>
                     ),
                 })}
-                // TODO fix checkbox
-                inlineControl={(
-                    <Setting
-                        id="FIXME"
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_userfilter')}
-                        inverted
-                        value={false}
-                        handler={() => { console.log('FIXME'); }}
-                    />
-                )}
+                // TODO add switch
             />
             <Editor
                 name="user-rules"
