@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSet } from '../Settings/SettingsSet';
+import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
@@ -51,35 +52,27 @@ const Miscellaneous = observer(() => {
     return (
         <>
             <SettingsSection title={reactTranslator.getMessage('context_miscellaneous_settings')}>
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_use_optimized_filters')}
                     description={reactTranslator.getMessage('options_use_optimized_filters_desc')}
                     disabled={!settings.values[USE_OPTIMIZED_FILTERS]}
-                    inlineControl={(
-                        <Setting
-                            id={USE_OPTIMIZED_FILTERS}
-                            label={reactTranslator.getMessage('options_use_optimized_filters')}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            value={settings.values[USE_OPTIMIZED_FILTERS]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={USE_OPTIMIZED_FILTERS}
+                    label={reactTranslator.getMessage('options_use_optimized_filters')}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    value={settings.values[USE_OPTIMIZED_FILTERS]}
+                    handler={settingChangeHandler}
                 />
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_allowlist_invert')}
                     description={reactTranslator.getMessage('options_allowlist_invert_desc')}
-                    inlineControl={(
-                        <Setting
-                            id={DEFAULT_ALLOWLIST_MODE}
-                            label={reactTranslator.getMessage('options_allowlist_invert')}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            value={settings.values[DEFAULT_ALLOWLIST_MODE]}
-                            handler={settingChangeHandler}
-                            inverted
-                        />
-                    )}
+                    id={DEFAULT_ALLOWLIST_MODE}
+                    label={reactTranslator.getMessage('options_allowlist_invert')}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    value={settings.values[DEFAULT_ALLOWLIST_MODE]}
+                    handler={settingChangeHandler}
+                    inverted
                 />
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_collect_hit_stats_title')}
                     description={(
                         <a
@@ -91,76 +84,56 @@ const Miscellaneous = observer(() => {
                         </a>
                     )}
                     disabled={settings.values[DISABLE_COLLECT_HITS]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_COLLECT_HITS}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_collect_hit_stats_title')}
-                            inverted
-                            value={settings.values[DISABLE_COLLECT_HITS]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={DISABLE_COLLECT_HITS}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_collect_hit_stats_title')}
+                    inverted
+                    value={settings.values[DISABLE_COLLECT_HITS]}
+                    handler={settingChangeHandler}
                 />
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_show_blocked_ads_count_title')}
                     disabled={settings.values[DISABLE_SHOW_PAGE_STATS]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_SHOW_PAGE_STATS}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_show_blocked_ads_count_title')}
-                            inverted
-                            value={settings.values[DISABLE_SHOW_PAGE_STATS]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={DISABLE_SHOW_PAGE_STATS}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_show_blocked_ads_count_title')}
+                    inverted
+                    value={settings.values[DISABLE_SHOW_PAGE_STATS]}
+                    handler={settingChangeHandler}
                 />
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_show_context_menu_title')}
                     disabled={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_SHOW_CONTEXT_MENU}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_show_context_menu_title')}
-                            inverted
-                            value={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={DISABLE_SHOW_CONTEXT_MENU}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_show_context_menu_title')}
+                    inverted
+                    value={settings.values[DISABLE_SHOW_CONTEXT_MENU]}
+                    handler={settingChangeHandler}
                 />
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_show_adguard_full_version_title')}
                     disabled={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_SHOW_ADGUARD_PROMO_INFO}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_show_adguard_full_version_title')}
-                            inverted
-                            value={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={DISABLE_SHOW_ADGUARD_PROMO_INFO}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_show_adguard_full_version_title')}
+                    inverted
+                    value={settings.values[DISABLE_SHOW_ADGUARD_PROMO_INFO]}
+                    handler={settingChangeHandler}
                 />
 
-                <SettingsSet
+                <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_show_app_updated_notification')}
                     disabled={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
-                    inlineControl={(
-                        <Setting
-                            id={DISABLE_SHOW_APP_UPDATED_NOTIFICATION}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={reactTranslator.getMessage('options_show_app_updated_notification')}
-                            inverted
-                            value={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    id={DISABLE_SHOW_APP_UPDATED_NOTIFICATION}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_show_app_updated_notification')}
+                    inverted
+                    value={settings.values[DISABLE_SHOW_APP_UPDATED_NOTIFICATION]}
+                    handler={settingChangeHandler}
                 />
                 <button
                     type="button"

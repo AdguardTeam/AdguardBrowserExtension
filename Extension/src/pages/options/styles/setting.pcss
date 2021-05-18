@@ -7,6 +7,41 @@
     min-height: 52px;
     cursor: default;
 
+    &--checkbox {
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--t3) background-color;
+
+        &:hover {
+            background-color: var(--gray100);
+        }
+
+        .checkbox {
+            @media (min-width: 640px) {
+                left: -16px;
+            }
+        }
+
+        .checkbox__in {
+            &:checked + .checkbox__label {
+                &:before {
+                    left: 22px;
+                }
+            }
+        }
+
+        .checkbox__label {
+            width: 40px;
+            height: 20px;
+            padding: 0;
+
+            &:before {
+                top: 2px;
+                left: 2px;
+            }
+        }
+    }
+
     &--disabled {
         & .textarea,
         & .input__in {
@@ -182,6 +217,10 @@
     &__alert-link {
         color: var(--red400);
         font-size: 14px;
+    }
+
+    &__checkbox {
+        display: none;
     }
 }
 
