@@ -142,7 +142,17 @@ const General = observer(() => {
                 />
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_allow_acceptable_ads')}
-                    description={reactTranslator.getMessage('options_allow_acceptable_ads_desc')}
+                    description={reactTranslator.getMessage('options_allow_acceptable_ads_desc', {
+                        a: () => (
+                            <a
+                                href={ALLOW_ACCEPTABLE_ADS_LEARN_MORE_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {reactTranslator.getMessage('options_learn_more')}
+                            </a>
+                        ),
+                    })}
                     disabled={!allowAcceptableAds}
                     id={ALLOW_ACCEPTABLE_ADS}
                     type={SETTINGS_TYPES.CHECKBOX}
@@ -152,7 +162,17 @@ const General = observer(() => {
                 />
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_safebrowsing_enabled')}
-                    description={reactTranslator.getMessage('options_safebrowsing_enabled_desc')}
+                    description={reactTranslator.getMessage('options_safebrowsing_enabled_desc', {
+                        a: () => (
+                            <a
+                                href={SAFEBROWSING_LEARN_MORE_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {reactTranslator.getMessage('options_learn_more')}
+                            </a>
+                        ),
+                    })}
                     disabled={settings.values[DISABLE_SAFEBROWSING]}
                     id={DISABLE_SAFEBROWSING}
                     type={SETTINGS_TYPES.CHECKBOX}
