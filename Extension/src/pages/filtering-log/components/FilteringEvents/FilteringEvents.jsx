@@ -1,6 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useContext } from 'react';
 import { observer } from 'mobx-react';
+import cn from 'classnames';
+import { FixedSizeList } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { rootStore } from '../../stores/RootStore';
 import { getRequestType } from '../RequestWizard/utils';
@@ -115,12 +118,15 @@ const ruleAccessor = (props) => {
     return ruleText;
 };
 
-const Row = observer(({ event, columns, onClick }) => {
+const Row = observer(({
+    event, columns, onClick, style,
+}) => {
     return (
-        <tr
+        <div
+            style={style}
             id={event.eventId}
             onClick={onClick}
-            className={getRowClassName(event)}
+            className={cn('tr', getRowClassName(event))}
         >
             {
                 columns.map((column) => {
@@ -133,29 +139,47 @@ const Row = observer(({ event, columns, onClick }) => {
                     }
 
                     return (
-                        <td
+                        <div
+                            className="td"
                             key={column.id}
                         >
                             {cellContent}
-                        </td>
+                        </div>
                     );
                 })
             }
-        </tr>
+        </div>
     );
 });
 
+const ITEM_SIZE = 30;
 const FilteringEventsRows = observer(({ logStore, columns, handleRowClick }) => {
-    return logStore.events.map((event) => {
-        return (
-            <Row
-                key={event.eventId}
-                event={event}
-                columns={columns}
-                onClick={handleRowClick}
-            />
-        );
-    });
+    const { events } = logStore;
+    return (
+        <AutoSizer>
+            {({ height, width }) => {
+                return (
+                    <FixedSizeList
+                        className="list"
+                        height={height}
+                        itemCount={events.length}
+                        itemData={events}
+                        itemSize={ITEM_SIZE}
+                        width={width}
+                    >
+                        {({ index, style, data }) => (
+                            <Row
+                                event={data[index]}
+                                columns={columns}
+                                onClick={handleRowClick}
+                                style={style}
+                            />
+                        )}
+                    </FixedSizeList>
+                );
+            }}
+        </AutoSizer>
+    );
 });
 
 const FilteringEvents = observer(() => {
@@ -196,26 +220,26 @@ const FilteringEvents = observer(() => {
 
     return (
         <div className="filtering-log">
-            <table className="filtering-log__inner">
-                <thead>
-                    <tr>
+            <div className="table filtering-log__inner">
+                <div className="thead">
+                    <div className="tr">
                         {
                             columns.map((column) => (
-                                <th key={column.id}>
+                                <div className="th" key={column.id}>
                                     {column.Header}
-                                </th>
+                                </div>
                             ))
                         }
-                    </tr>
-                </thead>
-                <tbody>
+                    </div>
+                </div>
+                <div className="tbody" style={{ height: '100%' }}>
                     <FilteringEventsRows
                         logStore={logStore}
                         handleRowClick={handleRowClick}
                         columns={columns}
                     />
-                </tbody>
-            </table>
+                </div>
+            </div>
             <FilteringEventsEmpty />
         </div>
     );
