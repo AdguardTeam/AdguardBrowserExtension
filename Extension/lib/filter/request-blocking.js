@@ -416,6 +416,7 @@ adguard.webRequestService = (function (adguard) {
      */
     const removeParamsFromUrl = (requestId) => {
         const context = adguard.requestContextStorage.get(requestId);
+
         if (!context) {
             return null;
         }

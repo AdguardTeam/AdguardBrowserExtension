@@ -25,7 +25,6 @@ adguard.settings = (function (adguard) {
     const DEFAULT_FILTERS_UPDATE_PERIOD = -1;
     const DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN = 4320;
     const DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN = 2880;
-    const DEFAULT_TRACKING_PARAMETERS = 'utm_source,utm_medium,utm_term,utm_campaign,utm_content,utm_name,utm_cid,utm_reader,utm_viz_id,utm_pubreferrer,utm_swu,utm_referrer,utm_social,utm_social-type,utm_place,utm_userid,utm_channel,fb_action_ids,fb_action_types,fb_ref,fb_source';
 
     const settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
@@ -49,8 +48,10 @@ adguard.settings = (function (adguard) {
         SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME: 'stealth-block-first-party-cookies-time',
+
+        // TODO remove after few versions from 3.6.0, currently used only for migration
+        // @deprecated
         STRIP_TRACKING_PARAMETERS: 'strip-tracking-parameters',
-        TRACKING_PARAMETERS: 'tracking-parameters',
     };
 
     const properties = Object.create(null);
@@ -87,8 +88,9 @@ adguard.settings = (function (adguard) {
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = false;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
+                // TODO remove after few versions from 3.5.39, currently used only for migration
+                // @deprecated
                 defaults[settings.STRIP_TRACKING_PARAMETERS] = true;
-                defaults[settings.TRACKING_PARAMETERS] = DEFAULT_TRACKING_PARAMETERS;
                 return defaults;
             });
         },

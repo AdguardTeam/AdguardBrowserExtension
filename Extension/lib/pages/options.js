@@ -1585,6 +1585,10 @@ const AntiBannerFilters = function (options) {
             const allowAcceptableAdsCheckbox = document.querySelector('#allowAcceptableAds');
             CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], filter.enabled);
         }
+        if (filterId === AntiBannerFiltersId.URL_TRACKING_FILTER_ID) {
+            const stripTrackingParamsCheckbox = document.querySelector('#strip_tracking_params');
+            CheckboxUtils.updateCheckbox([stripTrackingParamsCheckbox], filter.enabled);
+        }
     }
 
     function onCategoryStateChanged(category) {
@@ -1709,22 +1713,27 @@ const Settings = function () {
     }
     checkboxes.push(new Checkbox('#third_party_cookies', userSettings.names.SELF_DESTRUCT_THIRD_PARTY_COOKIES));
     checkboxes.push(new Checkbox('#first_party_cookies', userSettings.names.SELF_DESTRUCT_FIRST_PARTY_COOKIES));
-    checkboxes.push(new Checkbox('#strip_tracking_params', userSettings.names.STRIP_TRACKING_PARAMETERS));
+
+    const createFilterCheckboxEventHandler = filterId => (e) => {
+        const el = e.currentTarget;
+        const messageType = el.checked ? 'addAndEnableFilter' : 'disableAntiBannerFilter';
+        contentPage.sendMessage({
+            type: messageType,
+            filterId,
+        });
+    };
 
     const allowAcceptableAdsCheckbox = document.querySelector('#allowAcceptableAds');
-    allowAcceptableAdsCheckbox.addEventListener('change', function () {
-        if (this.checked) {
-            contentPage.sendMessage({
-                type: 'addAndEnableFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
-            });
-        } else {
-            contentPage.sendMessage({
-                type: 'disableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
-            });
-        }
-    });
+    allowAcceptableAdsCheckbox.addEventListener(
+        'change',
+        createFilterCheckboxEventHandler(AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID)
+    );
+
+    const stripTrackingParamsCheckbox = document.querySelector('#strip_tracking_params');
+    stripTrackingParamsCheckbox.addEventListener(
+        'change',
+        createFilterCheckboxEventHandler(AntiBannerFiltersId.URL_TRACKING_FILTER_ID)
+    );
 
     const disableStealthMode = document.querySelector('#disable_stealth_mode');
     disableStealthMode.addEventListener('change', (e) => {
@@ -1789,18 +1798,6 @@ const Settings = function () {
         }
     });
 
-    const trackingParametersInput = document.querySelector('#strip_tracking_params_input');
-    trackingParametersInput.value = userSettings.values[userSettings.names.TRACKING_PARAMETERS];
-    if (trackingParametersInput) {
-        trackingParametersInput.addEventListener('keyup', Utils.debounce((e) => {
-            contentPage.sendMessage({
-                type: 'changeUserSetting',
-                key: userSettings.names.TRACKING_PARAMETERS,
-                value: trackingParametersInput.value,
-            });
-        }, 1000));
-    }
-
     const selectOptions = [
         { name: i18n.getMessage('options_select_update_period_default'), value: -1 },
         { name: i18n.getMessage('options_select_update_period_48h'), value: Utils.hoursToMs(48) },
@@ -1854,9 +1851,6 @@ const Settings = function () {
                 container.classList.remove('opts-list--disabled');
             }
         });
-
-        const stripTrackingTextarea = document.querySelector('#strip_tracking_params_input');
-        stripTrackingTextarea.disabled = stealthModeDisabled;
     }
 
     const render = function () {
@@ -1864,7 +1858,15 @@ const Settings = function () {
             checkboxes[i].render();
         }
 
-        CheckboxUtils.updateCheckbox([allowAcceptableAdsCheckbox], AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
+        CheckboxUtils.updateCheckbox(
+            [allowAcceptableAdsCheckbox],
+            AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters
+        );
+
+        CheckboxUtils.updateCheckbox(
+            [stripTrackingParamsCheckbox],
+            AntiBannerFiltersId.URL_TRACKING_FILTER_ID in enabledFilters
+        );
 
         const updatePeriod = userSettings.values[userSettings.names.FILTERS_UPDATE_PERIOD];
         renderSelectOptions(updatePeriod);

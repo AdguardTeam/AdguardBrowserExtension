@@ -353,7 +353,7 @@
          * @param invert if true removes all query parameters with the name different from param
          */
         cleanUrlParam(url, params, invert = false) {
-            const trackingParametersRegExp = new RegExp(`((^|&)(${params.join('|')})=[^&#]*)`, 'ig');
+            const trackingParametersRegExp = new RegExp(`((^|&)(${params.join('|')})=[^&#]*)`, 'g');
             return this.cleanUrlParamByRegExp(url, trackingParametersRegExp, invert);
         },
     };

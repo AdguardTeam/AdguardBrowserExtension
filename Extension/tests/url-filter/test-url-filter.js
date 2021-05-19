@@ -646,6 +646,15 @@ QUnit.module('$removeparam', () => {
         assert.equal(rule.getRemoveparam().apply(`${url}?p0=0&p1=1&p2=2`), `${url}?p0=0&p2=2`);
     });
 
+    QUnit.test('$removeparam query parameters are case-sensitive', (assert) => {
+        const rule = new adguard.rules.UrlFilterRule('$removeparam=P1');
+        const rule2 = new adguard.rules.UrlFilterRule('$removeparam=p2');
+
+        const url = 'http://example.com';
+        assert.equal(rule.getRemoveparam().apply(`${url}?P1=uppercase&p1=lowercase`), `${url}?p1=lowercase`);
+        assert.equal(rule2.getRemoveparam().apply(`${url}?P2=uppercase&p2=lowercase`), `${url}?P2=uppercase`);
+    });
+
     QUnit.test('$removeparam does not remove redundant url parts', (assert) => {
         const rule = new adguard.rules.UrlFilterRule('$removeparam=p1');
 

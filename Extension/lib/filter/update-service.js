@@ -276,6 +276,20 @@ adguard.applicationUpdateService = (function (adguard) {
         return dfd;
     }
 
+    function handleStripTrackingSetting() {
+        const dfd = new adguard.utils.Promise();
+
+        const stealthModeDisabled = adguard.settings.getProperty(adguard.settings.DISABLE_STEALTH_MODE);
+        const stripTrackingDisabled = adguard.settings.getProperty(adguard.settings.STRIP_TRACKING_PARAMETERS);
+
+        if (!stealthModeDisabled && stripTrackingDisabled) {
+            adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.URL_TRACKING_FILTER_ID]);
+        }
+
+        dfd.resolve();
+        return dfd;
+    }
+
     /**
      * Function removes obsolete filters from the storage
      * @returns {Promise<any>}
@@ -358,6 +372,10 @@ adguard.applicationUpdateService = (function (adguard) {
         }
         if (adguard.utils.browser.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
             methods.push(handleDefaultUpdatePeriodSetting);
+        }
+
+        if (adguard.utils.browser.isGreaterVersion('3.6.0', runInfo.prevVersion)) {
+            methods.push(handleStripTrackingSetting);
         }
 
         // On every update remove if necessary obsolete filters
