@@ -11,7 +11,12 @@ import gulp from 'gulp';
 import Logs from './log';
 import 'babel-polyfill';
 import {
-    METADATA_DOWNLOAD_URL_FORMAT, FILTERS_DEST, METADATA_I18N_DOWNLOAD_URL_FORMAT, LAST_ADGUARD_FILTER_ID, FILTER_DOWNLOAD_URL_FORMAT, OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT,
+    METADATA_DOWNLOAD_URL_FORMAT,
+    FILTERS_DEST,
+    METADATA_I18N_DOWNLOAD_URL_FORMAT,
+    FILTER_DOWNLOAD_URL_FORMAT,
+    OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT,
+    ADGUARD_FILTERS_IDS,
 } from './consts';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
@@ -38,16 +43,17 @@ const filtersList = (browser) => {
         file: 'filters_i18n.json',
     });
 
-    for (let i = 1; i <= LAST_ADGUARD_FILTER_ID; i++) {
+    for (let i = 0; i < ADGUARD_FILTERS_IDS.length; i += 1) {
+        const filterId = ADGUARD_FILTERS_IDS[i];
         filters.push({
-            url: FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%filter', i),
-            file: `filter_${i}.txt`,
+            url: FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%filter', filterId),
+            file: `filter_${filterId}.txt`,
             validate: true,
         });
 
         filtersMobile.push({
-            url: OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%s', i),
-            file: `filter_mobile_${i}.txt`,
+            url: OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%s', filterId),
+            file: `filter_mobile_${filterId}.txt`,
             validate: true,
         });
     }

@@ -86,8 +86,8 @@
             // Record request context for the main frame
             adguard.requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
 
-            // Strip tracking parameters
-            const cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
+            // Strip search parameters
+            const cleansedUrl = adguard.webRequestService.removeParamsFromUrl(requestId);
             if (cleansedUrl) {
                 return { redirectUrl: cleansedUrl };
             }
@@ -127,12 +127,7 @@
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
         // Strip tracking parameters
-        let cleansedUrl = adguard.stealthService.removeTrackersFromUrl(requestId);
-        if (cleansedUrl) {
-            return { redirectUrl: cleansedUrl };
-        }
-
-        cleansedUrl = adguard.webRequestService.removeParamsFromUrl(requestId);
+        const cleansedUrl = adguard.webRequestService.removeParamsFromUrl(requestId);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }

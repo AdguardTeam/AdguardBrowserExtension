@@ -8,7 +8,11 @@
 
 import fs from 'fs';
 import gulp from 'gulp';
-import { FILTERS_DEST, LAST_ADGUARD_FILTER_ID, LOCAL_SCRIPT_RULES_COMMENT } from './consts';
+import {
+    ADGUARD_FILTERS_IDS,
+    FILTERS_DEST,
+    LOCAL_SCRIPT_RULES_COMMENT,
+} from './consts';
 
 /**
  * @param arr - array with elements [{domains: '', script: ''}, ...]
@@ -34,8 +38,9 @@ const updateLocalScriptRules = (browser, done) => {
         rules: [],
     };
 
-    for (let i = 1; i <= LAST_ADGUARD_FILTER_ID; i += 1) {
-        const filters = fs.readFileSync(`${folder}/filter_${i}.txt`).toString();
+    for (let i = 0; i < ADGUARD_FILTERS_IDS.length; i += 1) {
+        const filterId = ADGUARD_FILTERS_IDS[i];
+        const filters = fs.readFileSync(`${folder}/filter_${filterId}.txt`).toString();
         const lines = filters.split('\n');
 
         for (let rule of lines) {

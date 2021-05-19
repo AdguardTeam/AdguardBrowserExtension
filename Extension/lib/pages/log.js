@@ -63,9 +63,8 @@ const STEALTH_ACTIONS = {
     HIDE_SEARCH_QUERIES: 1 << 1,
     BLOCK_CHROME_CLIENT_DATA: 1 << 2,
     SEND_DO_NOT_TRACK: 1 << 3,
-    STRIPPED_TRACKING_URL: 1 << 4,
-    FIRST_PARTY_COOKIES: 1 << 5,
-    THIRD_PARTY_COOKIES: 1 << 6,
+    FIRST_PARTY_COOKIES: 1 << 4,
+    THIRD_PARTY_COOKIES: 1 << 5,
 };
 
 const STEALTH_ACTIONS_NAMES = {
@@ -73,7 +72,6 @@ const STEALTH_ACTIONS_NAMES = {
     HIDE_SEARCH_QUERIES: i18n.getMessage('filtering_log_hide_search_queries'),
     BLOCK_CHROME_CLIENT_DATA: i18n.getMessage('filtering_log_remove_client_data'),
     SEND_DO_NOT_TRACK: i18n.getMessage('filtering_log_send_not_track'),
-    STRIPPED_TRACKING_URL: i18n.getMessage('options_stripped_tracking_parameters'),
     FIRST_PARTY_COOKIES: i18n.getMessage('options_modified_first_party_cookie'),
     THIRD_PARTY_COOKIES: i18n.getMessage('options_modified_third_party_cookie'),
 };

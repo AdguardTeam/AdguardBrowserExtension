@@ -2,7 +2,7 @@ const LOCALES_BASE_URL = 'https://twosky.adtidy.org/api/v1';
 export const LOCALES_DOWNLOAD_URL = `${LOCALES_BASE_URL}/download`;
 export const LOCALES_UPLOAD_URL = `${LOCALES_BASE_URL}/upload`;
 
-export const LAST_ADGUARD_FILTER_ID = 14;
+export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 224];
 
 export const BUILD_DIR = 'build';
 

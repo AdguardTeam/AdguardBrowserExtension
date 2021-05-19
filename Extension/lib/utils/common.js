@@ -565,6 +565,7 @@ adguard.utils = (function () {
         TRACKING_FILTER_ID: 3,
         SOCIAL_FILTER_ID: 4,
         SEARCH_AND_SELF_PROMO_FILTER_ID: 10,
+        URL_TRACKING_FILTER_ID: 17,
         WHITE_LIST_FILTER_ID: 100,
         EASY_PRIVACY: 118,
         FANBOY_ANNOYANCES: 122,
