@@ -76,15 +76,27 @@
         if (!isHtml()) {
             return;
         }
+        getContentPage().sendMessage(
+          {
+            type: "processShouldCollapse",
+            elementUrl: document.URL,
+            documentUrl: document.URL,
+            requestType: requestTypeMap.frame,
+            requestId: -1,
+          },
+          function (response = {}) {
+            if (response.collapse !== false) {
+              initRequestWrappers();
 
-        initRequestWrappers();
+              var userAgent = navigator.userAgent.toLowerCase();
+              isFirefox = userAgent.indexOf('firefox') > -1;
+              isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
 
-        var userAgent = navigator.userAgent.toLowerCase();
-        isFirefox = userAgent.indexOf('firefox') > -1;
-        isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
-
-        initCollapseEventListeners();
-        tryLoadCssAndScripts();
+              initCollapseEventListeners();
+              tryLoadCssAndScripts();
+            }
+          }
+        );
     };
 
     /**
