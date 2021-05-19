@@ -1,84 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import { Setting, SETTINGS_TYPES } from './Setting';
+import { SettingsSet } from './SettingsSet';
 
+// clickable setting with a label wrap
 const SettingsSetCheckbox = (props) => {
     const {
         title, description, children, disabled,
-        id, handler, label, inverted,
+        id, handler, label, inverted, value,
     } = props;
-    const settingClassName = classNames('setting setting--checkbox', {
-        'setting--disabled': disabled,
-    });
-
-    let { value } = props;
-
-    value = inverted ? !value : value;
-
-    const changeHandler = (e) => {
-        const { target: { name: targetId, checked: data } } = e;
-        handler({ id: targetId, data: inverted ? !data : data });
-    };
 
     return (
         <label
             htmlFor={id}
-            className={settingClassName}
+            className="setting-checkbox"
         >
-            <div className="setting__container setting__container--vertical">
-                <div className="setting__container setting__container--horizontal">
-                    <div className="setting__info">
-                        <div className="setting__title">{title}</div>
-                        {description && <div className="setting__desc">{description}</div>}
-                    </div>
-                    <div
-                        className="checkbox"
-                    >
-                        <input
-                            type="checkbox"
-                            name={id}
-                            checked={value}
-                            onChange={changeHandler}
-                            id={id}
-                            className="setting__checkbox"
-                            tabIndex="0"
-                        />
-                        <span
-                            className="checkbox__label"
-                        >
-                            {label}
-                        </span>
-                    </div>
-                </div>
+            <SettingsSet
+                title={title}
+                description={description}
+                disabled={disabled}
+                inlineControl={(
+                    <Setting
+                        id={id}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        inverted={inverted}
+                        label={label}
+                        handler={handler}
+                        value={value}
+                    />
+                )}
+            >
                 {children}
-            </div>
+            </SettingsSet>
         </label>
     );
 };
 
-SettingsSetCheckbox.defaultProps = {
-    title: '',
-    description: '',
-    children: null,
-    disabled: false,
-    value: false,
-    inverted: false,
-    label: '',
-};
-
 SettingsSetCheckbox.propTypes = {
-    title: PropTypes.string,
-    description: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-    children: PropTypes.oneOfType([
-        PropTypes.element,
-        PropTypes.arrayOf(PropTypes.element),
-    ]),
-    disabled: PropTypes.bool,
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    value: PropTypes.bool,
-    inverted: PropTypes.bool,
-    handler: PropTypes.func.isRequired,
-    label: PropTypes.string,
 };
 
 export { SettingsSetCheckbox };
