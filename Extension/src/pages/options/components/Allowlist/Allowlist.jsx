@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
-
+import { Link } from 'react-router-dom';
 import { SettingsSection } from '../Settings/SettingsSection';
-import { SettingsSet } from '../Settings/SettingsSet';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { Editor } from '../Editor';
 import { rootStore } from '../../stores/RootStore';
@@ -35,11 +34,6 @@ const Allowlist = observer(() => {
     const { settings } = settingsStore;
 
     const { DEFAULT_ALLOWLIST_MODE } = settings.names;
-
-    const settingChangeHandler = async ({ id, data }) => {
-        await settingsStore.updateSetting(id, data);
-        await settingsStore.getAllowlist();
-    };
 
     const importClickHandler = (e) => {
         e.preventDefault();
@@ -89,22 +83,19 @@ const Allowlist = observer(() => {
         <>
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
-                description={reactTranslator.getMessage('options_allowlist_desc')}
+                // TODO add switch
             >
-                <SettingsSet
-                    title={reactTranslator.getMessage('options_allowlist_invert')}
-                    description={reactTranslator.getMessage('options_allowlist_invert_desc')}
-                    inlineControl={(
-                        <Setting
-                            id={DEFAULT_ALLOWLIST_MODE}
-                            label={reactTranslator.getMessage('options_allowlist_invert')}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            value={settings.values[DEFAULT_ALLOWLIST_MODE]}
-                            handler={settingChangeHandler}
-                            inverted
-                        />
-                    )}
-                />
+                {!settings.values[DEFAULT_ALLOWLIST_MODE] && (
+                    <div className="setting__alert">
+                        <span className="setting__alert-desc">
+                            {reactTranslator.getMessage('options_allowlist_alert_invert')}
+                        </span>
+                        &nbsp;
+                        <Link className="setting__alert-link" to="/miscellaneous">
+                            {reactTranslator.getMessage('options_allowlist_disable')}
+                        </Link>
+                    </div>
+                )}
             </SettingsSection>
             <Editor
                 name="allowlist"
@@ -112,9 +103,11 @@ const Allowlist = observer(() => {
                 shortcuts={shortcuts}
                 onChange={editorChangeHandler}
                 value={settingsStore.allowlist}
+                wrapEnabled={settingsStore.allowlistEditorWrap}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
+                    <AllowlistSavingButton onClick={saveClickHandler} />
                     <input
                         type="file"
                         id="inputEl"
@@ -125,22 +118,19 @@ const Allowlist = observer(() => {
                     />
                     <button
                         type="button"
-                        className="button button--m button--green actions__btn"
+                        className="button button--m button--transparent actions__btn"
                         onClick={importClickHandler}
                     >
                         {reactTranslator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
-                        className="button button--m button--green-bd actions__btn"
+                        className="button button--m button--transparent actions__btn"
                         onClick={exportClickHandler}
                         disabled={!settingsStore.allowlist}
                     >
                         {reactTranslator.getMessage('options_userfilter_export')}
                     </button>
-                </div>
-                <div className="actions__group">
-                    <AllowlistSavingButton onClick={saveClickHandler} />
                 </div>
             </div>
         </>

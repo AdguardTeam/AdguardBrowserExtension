@@ -2,8 +2,7 @@
     display: flex;
     align-items: center;
     position: relative;
-    padding: 25px 15px;
-    box-shadow: 0 1px 0 0 var(--greye7);
+    padding: 16px;
     min-height: 70px;
 
     &__title {
@@ -12,7 +11,7 @@
     }
 
     &__search {
-        background-color: red;
+        background-color: var(--orange400);
     }
 
     &__title-in {
@@ -24,10 +23,9 @@
     }
 
     &__link {
+        color: var(--gray700);
         display: inline-block;
-        margin-right: 12px;
-        position: relative;
-        top: -2px;
+        font-size: 14px;
     }
 
     &__controls {
@@ -35,7 +33,6 @@
     }
 
     &__info {
-        max-width: 600px;
         width: 100%;
     }
 
@@ -53,19 +50,7 @@
 
         & a {
             color: var(--green74);
-            text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-    }
-
-    &__desc-item {
-        margin-bottom: 13px;
-
-        &:last-child {
-            margin-bottom: 0;
+            text-decoration: underline;
         }
     }
 
@@ -79,7 +64,7 @@
         position: relative;
         cursor: pointer;
         margin-right: 20px;
-        margin-top: 10px;
+        margin-bottom: 10px;
         color: var(--green74);
         word-break: break-word;
 
@@ -103,7 +88,9 @@
             box-shadow: 0 0 10px 1px rgba(162, 161, 161, 0.3);
 
             @media (prefers-color-scheme: dark) {
+                box-shadow: none;
                 color: var(--gray300);
+                background-color: var(--gray700);
             }
         }
 
@@ -137,11 +124,6 @@
         top: -2px;
         cursor: pointer;
     }
-
-    & .checkbox__label:after {
-        top: -26px;
-        height: 150px;
-    }
 }
 
 .light-mode {
@@ -149,6 +131,8 @@
         &__tag {
             &:before {
                 color: var(--gray-base);
+                box-shadow: 0 0 10px 1px rgba(162, 161, 161, 0.3);
+                background-color: #ffffff;
             }
 
             &:after {
@@ -164,6 +148,8 @@
         &__tag {
             &:before {
                 color: var(--gray300);
+                box-shadow: none;
+                background-color: var(--gray700);
             }
 
             &:after {

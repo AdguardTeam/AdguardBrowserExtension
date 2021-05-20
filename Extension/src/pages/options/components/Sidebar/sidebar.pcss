@@ -1,18 +1,21 @@
 .sidebar {
-    min-width: 170px;
+    padding: 48px 0 48px 0;
+    min-width: 200px;
     height: 100%;
     position: fixed;
     left: 0;
     top: 0;
-    background: var(--white);
+    background: var(--gray100);
     z-index: var(--z-idx6);
     margin: 0;
     width: 248px;
     transform: translateX(-100%);
     transition: transform var(--sidebar-transition);
+    overflow-y: auto;
 
     @media (prefers-color-scheme: dark) {
         background: var(--black);
+        border-right: 1px solid var(--gray900);
     }
 
     &__menu {
@@ -61,7 +64,6 @@
     }
 
     @media (min-width: 640px) {
-        margin-right: 32px;
         transform: translateX(0);
         position: relative;
 
@@ -70,22 +72,19 @@
         }
 
         &__logo {
-            margin: 0 0 24px 0;
+            margin: 0 0 24px 37px;
         }
 
         &__overlay {
             display: none;
         }
     };
-
-    @media (min-width: 1024px) {
-        margin-right: 64px;
-    };
 }
 
 .light-mode {
     .sidebar {
-        background: var(--white);
+        background: var(--gray100);
+        border-right: none;
 
         &__menu {
             color: var(--gray-base);
@@ -97,6 +96,7 @@
 .dark-mode {
     .sidebar {
         background: var(--black);
+        border-right: 1px solid var(--gray900);
 
         &__menu {
             color: var(--gray300);

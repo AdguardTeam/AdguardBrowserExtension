@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 const SettingsSet = (props) => {
     const {
-        title, description, children, disabled, inlineControl, hideBorder
+        title, description, children, disabled, inlineControl, hideBorder,
     } = props;
     const settingClassName = classNames({
         setting: true,
@@ -38,7 +38,7 @@ SettingsSet.defaultProps = {
 
 SettingsSet.propTypes = {
     title: PropTypes.string,
-    description: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    description: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.node]),
     children: PropTypes.oneOfType([
         PropTypes.element,
         PropTypes.arrayOf(PropTypes.element),

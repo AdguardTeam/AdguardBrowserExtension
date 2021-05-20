@@ -6,6 +6,8 @@ import React, {
 import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
+import classnames from 'classnames';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 import { Editor } from '../Editor';
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -15,6 +17,7 @@ import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import './styles.pcss';
 
@@ -115,6 +118,14 @@ const UserRules = observer(() => {
         settingsStore.setUserRulesEditorContentChangedState(true);
     };
 
+    const toggleWrap = () => {
+        settingsStore.toggleUserRulesEditorWrap();
+    };
+
+    const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
+        'actions__btn--active': settingsStore.userRulesEditorWrapState,
+    });
+
     return (
         <>
             <SettingsSection
@@ -131,6 +142,7 @@ const UserRules = observer(() => {
                         </a>
                     ),
                 })}
+                // TODO add switch
             />
             <Editor
                 name="user-rules"
@@ -138,9 +150,11 @@ const UserRules = observer(() => {
                 shortcuts={shortcuts}
                 onChange={onChange}
                 value={settingsStore.userRules}
+                wrapEnabled={settingsStore.userRulesEditorWrapState}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
+                    <UserRulesSavingButton onClick={saveClickHandler} />
                     <input
                         type="file"
                         id="inputEl"
@@ -151,14 +165,14 @@ const UserRules = observer(() => {
                     />
                     <button
                         type="button"
-                        className="button button--m button--green actions__btn"
+                        className="button button--m button--transparent actions__btn"
                         onClick={importClickHandler}
                     >
                         {reactTranslator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
-                        className="button button--m button--green-bd actions__btn"
+                        className="button button--m button--transparent actions__btn"
                         onClick={exportClickHandler}
                         disabled={!settingsStore.userRules}
                     >
@@ -166,7 +180,20 @@ const UserRules = observer(() => {
                     </button>
                 </div>
                 <div className="actions__group">
-                    <UserRulesSavingButton onClick={saveClickHandler} />
+                    <button
+                        type="button"
+                        className={lineBreakClassNames}
+                        onClick={toggleWrap}
+                    >
+                        <Icon classname="icon--extend" id="#line-break" />
+                    </button>
+                    {/* TODO add onClick */}
+                    <button
+                        type="button"
+                        className="actions__btn actions__btn--icon"
+                    >
+                        <Icon classname="icon--extend" id="#extend" />
+                    </button>
                 </div>
             </div>
         </>

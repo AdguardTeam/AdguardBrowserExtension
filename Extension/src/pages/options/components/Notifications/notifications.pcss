@@ -1,21 +1,32 @@
+.notifications {
+    position: sticky;
+    z-index: 10;
+    top: 66px;
+    left: 0;
+    height: 0;
+    width: 100%;
+    transform: translateY(-50px);
+    padding: 0 10px;
+}
+
 .notification {
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background-color: var(--green400);
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    justify-content: flex-start;
+    padding: 16px 23px;
+    border-radius: 8px;
+    background-color: var(--gray900);
     color: var(--white);
     min-height: 50px;
     z-index: var(--z-idx8);
     animation: notify-show 0.3s ease-in;
+    margin-bottom: 15px;
 
     @media (prefers-color-scheme: dark) {
-        background-color: var(--green700);
-        color: var(--black);
+        background-color: var(--gray700);
     }
 
     &--close {
@@ -23,13 +34,32 @@
         animation-fill-mode: forwards;
     }
 
+    &__close {
+        margin-left: auto;
+    }
+
+    &__icon {
+        color: var(--white);
+
+        &--info {
+            width: 24px;
+            height: 24px;
+            margin-right: 16px;
+        }
+
+        &--close {
+            width: 12px;
+            height: 12px;
+        }
+    }
+
     &__title {
         font-size: 16px;
     }
 
     &__description {
-        font-size: 12px;
-        max-width: 960px;
+        font-size: 14px;
+        padding-right: 15px;
     }
 }
 
@@ -55,14 +85,12 @@
 
 .light-mode {
     .notification {
-        background-color: var(--green400);
-        color: var(--white);
+        background-color: var(--gray900);
     }
 }
 
 .dark-mode {
     .notification {
-        background-color: var(--green700);
-        color: var(--black);
+        background-color: var(--gray700);
     }
 }

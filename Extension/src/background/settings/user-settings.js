@@ -41,7 +41,10 @@ export const settings = (() => {
     const settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
         DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
+
+        /* flag used to show link to comparison of desktop and browser adblocker versions */
         DISABLE_SHOW_ADGUARD_PROMO_INFO: 'show-info-about-adguard-disabled',
+
         DISABLE_SAFEBROWSING: 'safebrowsing-disabled',
         DISABLE_FILTERING: 'adguard-disabled',
         DISABLE_COLLECT_HITS: 'hits-count-disabled',

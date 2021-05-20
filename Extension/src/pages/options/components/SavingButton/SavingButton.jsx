@@ -31,7 +31,7 @@ const renderSavingState = (savingRulesState) => {
 
 export const SavingButton = ({ onClick, savingState, contentChanged }) => {
     return (
-        <>
+        <div className="actions__saving">
             {renderSavingState(savingState)}
             <button
                 type="button"
@@ -41,6 +41,6 @@ export const SavingButton = ({ onClick, savingState, contentChanged }) => {
             >
                 {reactTranslator.getMessage('options_editor_save')}
             </button>
-        </>
+        </div>
     );
 };

@@ -105,55 +105,61 @@ const Filter = observer(({ filter }) => {
     });
 
     return (
-        <div className={filterClassName} role="presentation">
-            <div className="filter__info">
-                <div className="setting__container setting__container--horizontal">
-                    <div className="filter__title">
-                        <span className="filter__title-in">
-                            <HighlightSearch name={name} />
-                        </span>
-                        <span className="filter__controls">
-                            <a
-                                className="filter__link"
-                                href={homepage || customUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <Icon id="#link" classname="icon--link" />
-                            </a>
-                            {renderRemoveButton()}
-                        </span>
-                    </div>
-                    <div className="setting__inline-control">
-                        <Setting
-                            id={filterId}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={name}
-                            value={!!enabled}
-                            handler={handleFilterSwitch}
-                        />
+        <label htmlFor={filterId} className="setting-checkbox">
+            <div className={filterClassName} role="presentation">
+                <div className="filter__info">
+                    <div className="setting__container setting__container--horizontal">
+                        <div className="setting__inner">
+                            <div className="filter__title">
+                                <span className="filter__title-in">
+                                    <HighlightSearch name={name} />
+                                </span>
+                                <span className="filter__controls">
+                                    {renderRemoveButton()}
+                                </span>
+                            </div>
+                            <div className="filter__desc">
+                                <div className="filter__desc-item">
+                                    {description}
+                                </div>
+                                <div className="filter__desc-item">
+                                    {
+                                        version
+                                            ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
+                                            : ''
+                                    }
+                                    {reactTranslator.getMessage('options_filters_filter_updated')}
+                                    {' '}
+                                    {lastUpdateTime
+                                        ? formatDate(lastUpdateTime)
+                                        : formatDate(timeUpdated)}
+                                </div>
+                            </div>
+                            <div>
+                                <a
+                                    className="filter__link"
+                                    href={homepage || customUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {reactTranslator.getMessage('options_filters_filter_link')}
+                                </a>
+                            </div>
+                            {renderTags(tagsDetails, trusted)}
+                        </div>
+                        <div className="setting__inline-control">
+                            <Setting
+                                id={filterId}
+                                type={SETTINGS_TYPES.CHECKBOX}
+                                label={name}
+                                value={!!enabled}
+                                handler={handleFilterSwitch}
+                            />
+                        </div>
                     </div>
                 </div>
-                <div className="filter__desc">
-                    <div className="filter__desc-item">
-                        {description}
-                    </div>
-                    <div className="filter__desc-item">
-                        {
-                            version
-                                ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
-                                : ''
-                        }
-                        {reactTranslator.getMessage('options_filters_filter_updated')}
-                        {' '}
-                        {lastUpdateTime
-                            ? formatDate(lastUpdateTime)
-                            : formatDate(timeUpdated)}
-                    </div>
-                </div>
-                {renderTags(tagsDetails, trusted)}
             </div>
-        </div>
+        </label>
     );
 });
 

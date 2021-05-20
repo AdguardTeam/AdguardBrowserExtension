@@ -16,6 +16,7 @@ const Editor = ({
     editorRef,
     shortcuts,
     onChange,
+    wrapEnabled,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
@@ -61,6 +62,7 @@ const Editor = ({
                 value={value}
                 commands={shortcuts}
                 onChange={onChange}
+                wrapEnabled={wrapEnabled}
             />
             <ReactResizeDetector
                 skipOnMount

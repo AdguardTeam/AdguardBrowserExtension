@@ -1,19 +1,16 @@
 .about {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 100px;
+    padding: 40px 16px 40px 16px;
+    font-weight: 400;
 
-    &__logo {
-        margin-bottom: 25px;
-        transform: translateX(-4px);
+    &__title {
+        font-weight: 700;
+        font-size: 20px;
+        margin-bottom: 8px;
     }
 
     &__version {
-        margin-bottom: 10px;
-        color: #252525;
-        font-size: 12px;
+        color: var(--gray4a);
+        font-size: 16px;
 
         @media (prefers-color-scheme: dark) {
             color: var(--gray300);
@@ -21,34 +18,28 @@
     }
 
     &__copyright {
-        font-size: 12px;
-        color: var(--gray700);
-        margin-bottom: 55px;
-        text-align: center;
+        font-size: 16px;
+        color: var(--gray4a);
+        margin-bottom: 32px;
 
         @media (prefers-color-scheme: dark) {
             color: var(--gray400);
         }
     }
 
-    &__copyright-item {
-        margin-bottom: 5px;
-    }
-
     &__menu {
-        text-align: center;
-        display: flex;
         flex-direction: column;
+        display: flex;
     }
 
     &__menu-item {
-        color: var(--green86);
+        color: var(--gray4a);
         margin-bottom: 15px;
-        font-size: 14px;
-        text-decoration: none;
+        font-size: 16px;
+        text-decoration: underline;
 
-        &:hover {
-            text-decoration: underline;
+        @media (prefers-color-scheme: dark) {
+            color: var(--white);
         }
     }
 }
@@ -56,11 +47,15 @@
 .light-mode {
     .about {
         &__version {
-            color: #252525;
+            color: var(--gray4a);
         }
 
         &__copyright {
-            color: var(--gray700);
+            color: var(--gray4a);
+        }
+
+        &__menu-item {
+            color: var(--gray4a);
         }
     }
 }
@@ -73,6 +68,10 @@
 
         &__copyright {
             color: var(--gray400);
+        }
+
+        &__menu-item {
+            color: var(--white);
         }
     }
 }

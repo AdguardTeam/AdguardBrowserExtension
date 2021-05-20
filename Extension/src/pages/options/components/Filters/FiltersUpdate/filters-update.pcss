@@ -3,19 +3,25 @@
     outline: none;
     height: 100%;
     display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
 
-    &__info {
-        text-align: right;
-        font-size: 16px;
-        display: flex;
-        flex-direction: column;
-        margin-right: 8px;
+    @media (min-width: 640px) {
+        flex-wrap: nowrap;
     }
 
-    &__desc {
+    &__info {
         font-size: 14px;
         color: var(--gray700);
-        margin-top: 5px;
+        display: flex;
+        flex-direction: column;
+        margin: 0 0 8px 0;
+
+        @media (min-width: 640px) {
+            margin: 0 8px 0 0;
+        }
 
         @media (prefers-color-scheme: dark) {
             opacity: 0.5;
@@ -37,14 +43,14 @@
 }
 
 .light-mode {
-    .filters-update__desc {
+    .filters-update__info {
         opacity: 1;
         color: var(--gray700);
     }
 }
 
 .dark-mode {
-    .filters-update__desc {
+    .filters-update__info {
         color: var(--white);
         opacity: 0.5;
     }

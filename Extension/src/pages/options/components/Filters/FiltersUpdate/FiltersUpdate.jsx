@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 
 import './filters-update.pcss';
@@ -48,12 +47,6 @@ const FiltersUpdate = observer(() => {
 
     const dateObj = new Date(lastUpdateTime);
 
-    const buttonClass = cn(
-        'button filters-update__btn',
-        { 'filters-update__btn--loading': filtersUpdating },
-        { 'filters-update__btn--loaded': !filtersUpdating },
-    );
-
     return (
         <div className="filters-update">
             <div className="filters-update__info">
@@ -67,10 +60,12 @@ const FiltersUpdate = observer(() => {
             <button
                 type="button"
                 onClick={updateClickHandler}
-                className={buttonClass}
+                className="button button--m button--transparent"
                 title={reactTranslator.getMessage('options_update_antibanner_filters')}
             >
-                <Icon id="#reload" classname="icon--reload" />
+                {filtersUpdating
+                    ? reactTranslator.getMessage('options_check_update_progress')
+                    : reactTranslator.getMessage('options_check_update')}
             </button>
         </div>
     );

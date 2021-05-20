@@ -1,22 +1,18 @@
 .setting {
     display: flex;
-    align-items: center;
+    justify-content: space-between;
+    align-items: initial;
     position: relative;
     padding: 16px 16px 20px;
-    min-height: 70px;
+    min-height: 52px;
     cursor: default;
-    box-shadow: 0 1px 0 0 var(--greye7);
 
-    @media (prefers-color-scheme: dark) {
-        box-shadow: 0 1px 0 0 var(--gray900);
-    }
+    &.group {
+        padding: 16px;
 
-    &:last-child {
-        box-shadow: none;
-    }
-
-    &--hide-border {
-        box-shadow: none;
+        @media (min-width: 640px) {
+            padding: 0;
+        }
     }
 
     &--disabled {
@@ -31,17 +27,31 @@
     &__area {
         display: flex;
         align-items: center;
-        width: 90%;
-        padding: 15px 0;
+        width: 80%;
         border: 0;
-        background-color: transparent;
+        border-radius: 8px;
         cursor: pointer;
         outline: none;
         text-align: left;
+        background-color: transparent;
+        transition: 0.3s ease background-color;
+
+        @media (min-width: 640px) {
+            padding: 15px 0 15px 16px;
+        }
+
+        &:hover {
+            background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
+        }
     }
 
     &__inline-control {
         margin-left: 22px;
+        height: auto;
     }
 
     &__container {
@@ -54,7 +64,6 @@
 
         &--horizontal {
             flex-direction: row;
-            align-items: center;
             justify-content: space-between;
             width: 100%;
         }
@@ -64,15 +73,12 @@
         }
     }
 
-    &:last-child {
-        box-shadow: none;
-    }
-
     &__info {
-        max-width: 600px;
+        max-width: 530px;
     }
 
     &__title {
+        font-weight: 500;
         font-size: 16px;
         color: var(--gray-base);
         line-height: 20px;
@@ -94,11 +100,8 @@
 
         & a {
             color: var(--green74);
-            text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
+            text-decoration: underline;
+            white-space: nowrap;
         }
     }
 
@@ -168,20 +171,79 @@
     }
 
     &__icon {
+        color: var(--green400);
         margin-right: 20px;
+    }
+
+    &__back {
+        color: var(--gray700);
+        position: absolute;
+        left: -8px;
+        top: 33px;
+
+        @media (min-width: 640px) {
+            top: 3px;
+        }
+    }
+
+    &__alert {
+        padding-left: 16px;
+    }
+
+    &__alert-desc,
+    &__alert-link {
+        color: var(--red400);
+        font-size: 14px;
+    }
+
+    &__checkbox {
+        display: none;
+    }
+}
+
+.setting-checkbox {
+    display: block;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--t3) background-color;
+
+    &:hover {
+        background-color: var(--gray100);
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray900);
+        }
+    }
+
+    .checkbox__in {
+        &:checked + .checkbox__label {
+            &:after {
+                background-color: var(--green74);
+            }
+            &:before {
+                left: 22px;
+            }
+        }
+    }
+
+    .checkbox__label {
+        width: 40px;
+        height: 20px;
+        padding: 0;
+
+        &:before {
+            top: 2px;
+            left: 2px;
+        }
     }
 }
 
 .light-mode {
     .setting {
-        box-shadow: 0 1px 0 0 var(--greye7);
-
-        &:last-child {
-            box-shadow: none;
-        }
-
-        &--hide-border {
-            box-shadow: none;
+        &--checkbox {
+            &:hover {
+                background-color: var(--gray100);
+            }
         }
 
         &__title {
@@ -193,19 +255,27 @@
                 color: var(--gray-base);
             }
         }
+
+        &__area {
+            &:hover {
+                background-color: var(--gray100);
+            }
+        }
+    }
+
+    .setting-checkbox {
+        &:hover {
+            background-color: var(--gray100);
+        }
     }
 }
 
 .dark-mode {
     .setting {
-        box-shadow: 0 1px 0 0 var(--gray900);
-
-        &:last-child {
-            box-shadow: none;
-        }
-
-        &--hide-border {
-            box-shadow: none;
+        &--checkbox {
+            &:hover {
+                background-color: var(--gray900);
+            }
         }
 
         &__title {
@@ -216,6 +286,18 @@
             &:before {
                 color: var(--gray300)
             }
+        }
+
+        &__area {
+            &:hover {
+                background-color: var(--gray900);
+            }
+        }
+    }
+
+    .setting-checkbox {
+        &:hover {
+            background-color: var(--gray900);
         }
     }
 }

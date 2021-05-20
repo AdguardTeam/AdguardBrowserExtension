@@ -13,9 +13,8 @@ const Checkbox = (props) => {
     value = inverted ? !value : value;
 
     const changeHandler = (e) => {
-        // eslint-disable-next-line no-shadow
-        const { target: { name: id, checked: data } } = e;
-        handler({ id, data: inverted ? !data : data });
+        const { target: { name: targetId, checked: data } } = e;
+        handler({ id: targetId, data: inverted ? !data : data });
     };
 
     return (

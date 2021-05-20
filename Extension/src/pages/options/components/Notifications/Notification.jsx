@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
+import { Icon } from '../../../common/components/ui/Icon';
 
 export const Notification = (props) => {
     const [notificationOnClose, setNotificationOnClose] = useState(false);
@@ -33,11 +34,26 @@ export const Notification = (props) => {
         'notification--close': notificationOnClose,
     });
 
+    const close = () => {
+        setNotificationOnClose(true);
+        setTimeout(() => {
+            uiStore.removeNotification(id);
+        }, 300);
+    };
+
     return (
         <div className={notificationClassnames}>
+            <Icon id="#info" classname="notification__icon notification__icon--info" />
             {title.length > 0
-                && <div className="notification__title">{title}</div>}
+            && <div className="notification__title">{title}</div>}
             <div className="notification__description">{description}</div>
+            <button
+                type="button"
+                className="button notification__close"
+                onClick={close}
+            >
+                <Icon id="#cross" classname="notification__icon notification__icon--close" />
+            </button>
         </div>
     );
 };

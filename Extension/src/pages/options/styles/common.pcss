@@ -26,6 +26,13 @@ h2 {
     font-size: inherit;
 }
 
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
 /* custom checkbox */
 label.checkbox-label {
     cursor: pointer;
@@ -78,12 +85,22 @@ label.checkbox-label {
     }
 }
 
+.inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .content {
+    position: relative;
+    padding: 50px 16px;
     width: 100%;
     max-width: 100%;
 
     @media (min-width: 640px) {
-        max-width: 640px;
+        max-width: 672px;
     };
 
     &__btn {
@@ -98,54 +115,47 @@ label.checkbox-label {
 }
 
 .page {
-    padding: 54px 0 48px 0;
     flex: 1 0 auto;
     display: flex;
-    justify-content: center;
-
-    @media (min-width: 640px) {
-        padding: 54px 32px 48px 32px;
-    }
 }
 
 .footer {
+    width: 100%;
     flex: 0 0 auto;
 }
 
 .title {
     color: var(--gray-base);
-    font-size: 28px;
+    font-size: 24px;
+    font-weight: 700;
     padding-right: 8px;
     margin-top: -5px;
     line-height: 30px;
-    font-weight: 300;
 
     @media (prefers-color-scheme: dark) {
         color: var(--gray300)
     }
 
     &__container {
+        position: relative;
         display: flex;
         justify-content: space-between;
         padding: 32px 16px 24px;
-
-        &--navigation-back {
-            justify-content: flex-start;
-        }
     }
 
     @media (min-width: 640px) {
         padding-right: 16px;
 
         &__container {
-            padding: 0 16px 16px;
+            padding: 0 16px 24px;
         }
     }
 
-    &--back-btn {
-        padding-left: 15px;
-        display: flex;
-        align-items: center;
+    &__desc {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--gray700);
+        margin-top: 8px;
     }
 
     &--sub {
@@ -201,17 +211,37 @@ label.checkbox-label {
         @media (min-width: 500px) {
             display: flex;
             justify-content: space-between;
-            padding: 22px 15px 0;
+            padding: 23px 5px 0;
         }
     }
 
     &__group {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
+    }
+
+    &__saving {
+        position: relative;
     }
 
     &__btn {
-        margin: 8px;
+        margin: 12px;
+
+        &--icon {
+            background-color: transparent;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        &--active {
+            background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
+        }
     }
 }
 
@@ -284,6 +314,11 @@ select:focus {
     .ace_cursor {
         color: var(--black)!important;
     }
+
+
+    .actions__btn--active {
+        background-color: var(--gray100);
+    }
 }
 
 .dark-mode {
@@ -325,5 +360,9 @@ select:focus {
 
     .ace_cursor {
         color: var(--gray300)!important;
+    }
+
+    .actions__btn--active {
+        background-color: var(--gray900);
     }
 }

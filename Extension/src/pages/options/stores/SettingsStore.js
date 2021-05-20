@@ -13,6 +13,7 @@ import { messenger } from '../../services/messenger';
 import { OTHER_FILTERS_GROUP_ID } from '../../../../../tools/constants';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import { sortFilters, updateFilters } from '../components/Filters/helpers';
+import { optionsStorage } from '../options-storage';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -79,6 +80,12 @@ class SettingsStore {
     @observable userRulesEditorContentChanged = false;
 
     @observable allowlistEditorContentChanged = false;
+
+    @observable userRulesEditorWrap = null;
+
+    @observable allowlistEditorWrap = null;
+
+    @observable footerRateShow = null;
 
     constructor(rootStore) {
         makeObservable(this);
@@ -348,7 +355,7 @@ class SettingsStore {
         } catch (e) {
             log.debug(e);
         }
-    }
+    };
 
     @action
     appendAllowlist = async (allowlist) => {
@@ -459,6 +466,71 @@ class SettingsStore {
         }
 
         return this.settings.values[this.settings.names.APPEARANCE_THEME];
+    }
+
+    @computed
+    get showAdguardPromoInfo() {
+        if (!this.settings) {
+            return null;
+        }
+        return !this.settings.values[this.settings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO];
+    }
+
+    @action
+    async hideAdguardPromoInfo() {
+        await this.updateSetting(this.settings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, true);
+    }
+
+    @computed
+    get userRulesEditorWrapState() {
+        if (this.userRulesEditorWrap === null) {
+            this.userRulesEditorWrap = optionsStorage.getItem(
+                optionsStorage.KEYS.USER_RULES_EDITOR_WRAP,
+            );
+        }
+        return this.userRulesEditorWrap;
+    }
+
+    @action
+    toggleUserRulesEditorWrap() {
+        this.userRulesEditorWrap = !this.userRulesEditorWrap;
+        optionsStorage.setItem(
+            optionsStorage.KEYS.USER_RULES_EDITOR_WRAP,
+            this.userRulesEditorWrap,
+        );
+    }
+
+    @computed
+    get allowlistEditorWrapState() {
+        if (this.allowlistEditorWrap === null) {
+            this.allowlistEditorWrap = optionsStorage.getItem(
+                optionsStorage.KEYS.ALLOWLIST_EDITOR_WRAP,
+            );
+        }
+        return this.allowlistEditorWrap;
+    }
+
+    @action
+    toggleAllowlistEditorWrap() {
+        this.allowlistEditorWrap = !this.allowlistEditorWrap;
+        optionsStorage.setItem(
+            optionsStorage.KEYS.ALLOWLIST_EDITOR_WRAP,
+            this.allowlistEditorWrap,
+        );
+    }
+
+    @computed
+    get footerRateShowState() {
+        if (this.footerRateShow === null) {
+            this.footerRateShow = optionsStorage.getItem(optionsStorage.KEYS.FOOTER_RATE_SHOW);
+        }
+        return this.footerRateShow;
+    }
+
+    @action
+    hideFooterRateShow() {
+        this.footerRateShow = false;
+        optionsStorage.setItem(optionsStorage.KEYS.FOOTER_RATE_SHOW, this.footerRateShow);
     }
 }
 

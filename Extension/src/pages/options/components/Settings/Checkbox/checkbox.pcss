@@ -1,5 +1,6 @@
 .checkbox {
     position: relative;
+    height: 100%;
 
     &__in {
         position: absolute;
@@ -9,56 +10,86 @@
         clip: rect(1px, 1px, 1px, 1px);
 
         &:checked + .checkbox__label {
-            background-color: var(--green74);
-            background-position: 5px, 23px;
-            background-size: 13px, 9px;
+            &:after {
+                background-color: var(--green74);
+                background-position: 5px, 23px;
+                background-size: 13px, 9px;
+            }
 
             &:before {
                 left: 22px;
+
+                @media (min-width: 640px) {
+                    left: 86px;
+                }
             }
         }
     }
 
     &__label {
-        font-size: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
         position: relative;
-        display: block;
         width: 40px;
         height: 20px;
-        border-radius: 10px;
-        background-color: var(--gray300);
-        background-repeat: no-repeat;
-        background-position: 23px, 22px;
-        background-size: 10px, 9px;
-        cursor: pointer;
+        font-size: 0;
+        border-radius: 8px;
+        transition: 0.3s ease background-color;
 
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--gray700);
+        @media (min-width: 640px) {
+            width: 120px;
+            height: 100%;
+            padding: 16px;
+        }
+
+        &:hover {
+            background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
         }
 
         &:before {
             content: "";
             position: absolute;
-            top: calc(50% - 7px);
-            left: 3px;
-            width: 15px;
-            height: 14px;
+            top: 2px;
+            left: 2px;
+            z-index: 1;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background-color: var(--white);
             transition: var(--t3) left;
+
+            @media (min-width: 640px) {
+                top: 18px;
+                left: 66px;
+            }
 
             @media (prefers-color-scheme: dark) {
                 background-color: var(--black);
             }
         }
+
         &:after {
             content: "";
-            position: absolute;
-            top: -26px;
-            left: -15px;
-            width: 70px;
-            height: 75px;
-            opacity: 0;
+            font-size: 0;
+            display: block;
+            width: 40px;
+            height: 20px;
+            border-radius: 10px;
+            background-color: var(--gray700);
+            background-repeat: no-repeat;
+            background-position: 23px, 22px;
+            background-size: 10px, 9px;
+            cursor: pointer;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray700);
+            }
         }
     }
 }
@@ -66,7 +97,9 @@
 .light-mode {
     .checkbox {
         &__label {
-            background-color: var(--gray300);
+            &:hover {
+                background-color: var(--gray100);
+            }
 
             &:before {
                 background-color: var(--white);
@@ -79,7 +112,9 @@
 .dark-mode {
     .checkbox {
         &__label {
-            background-color: var(--gray700);
+            &:hover {
+                background-color: var(--gray900);
+            }
 
             &:before {
                 background-color: var(--black);

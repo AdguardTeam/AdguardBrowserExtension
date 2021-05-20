@@ -16,6 +16,8 @@ import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
 import { SEARCH_FILTERS } from './Search/constants';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
+import { log } from '../../../../common/log';
 
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',
@@ -37,6 +39,17 @@ const Filters = observer(() => {
 
     // This state used to remove blinking while filters to render were not selected
     const [groupDetermined, setGroupDetermined] = useState(false);
+
+    const GROUP_DESCRIPTION = {
+        0: reactTranslator.getMessage('group_description_custom'),
+        1: reactTranslator.getMessage('group_description_adblocking'),
+        2: reactTranslator.getMessage('group_description_stealth'),
+        3: reactTranslator.getMessage('group_description_social'),
+        4: reactTranslator.getMessage('group_description_annoyances'),
+        5: reactTranslator.getMessage('group_description_security'),
+        6: reactTranslator.getMessage('group_description_miscellaneous'),
+        7: reactTranslator.getMessage('group_description_lang'),
+    };
 
     const {
         categories,
@@ -136,7 +149,7 @@ const Filters = observer(() => {
     const renderBackButton = () => (
         <button
             type="button"
-            className="button"
+            className="button setting__back"
             onClick={handleReturnToGroups}
         >
             <Icon id="#arrow-back" classname="icon--back" />
@@ -155,9 +168,24 @@ const Filters = observer(() => {
         const isCustom = settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID;
         const isEmpty = filtersToRender.length === 0;
 
+        const groupChangeHandler = async ({ id, data }) => {
+            await settingsStore.updateGroupSetting(id, !data);
+        };
+
         return (
             <SettingsSection
                 title={selectedGroup.groupName}
+                description={GROUP_DESCRIPTION[selectedGroup.groupId]}
+                inlineControl={(
+                    <Setting
+                        id={selectedGroup.groupId}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_privacy_title')}
+                        inverted
+                        value={!selectedGroup.enabled}
+                        handler={groupChangeHandler}
+                    />
+                )}
                 renderBackButton={renderBackButton}
             >
                 {isEmpty && isCustom && !settingsStore.isSearching
@@ -186,8 +214,8 @@ const Filters = observer(() => {
     return (
         <SettingsSection
             title={reactTranslator.getMessage('options_filters')}
-            renderInlineControl={() => <FiltersUpdate />}
         >
+            <FiltersUpdate />
             <Search />
             {settingsStore.isSearching
                 ? renderFilters(filtersToRender)
