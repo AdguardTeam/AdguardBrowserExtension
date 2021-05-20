@@ -8,7 +8,11 @@
     cursor: default;
 
     &.group {
-        padding: 0;
+        padding: 16px;
+
+        @media (min-width: 640px) {
+            padding: 0;
+        }
     }
 
     &--disabled {
@@ -24,7 +28,6 @@
         display: flex;
         align-items: center;
         width: 80%;
-        padding: 15px 0 15px 16px;
         border: 0;
         border-radius: 8px;
         cursor: pointer;
@@ -32,6 +35,10 @@
         text-align: left;
         background-color: transparent;
         transition: 0.3s ease background-color;
+
+        @media (min-width: 640px) {
+            padding: 15px 0 15px 16px;
+        }
 
         &:hover {
             background-color: var(--gray100);
@@ -171,8 +178,12 @@
     &__back {
         color: var(--gray700);
         position: absolute;
-        left: -13px;
-        top: 3px;
+        left: -8px;
+        top: 33px;
+
+        @media (min-width: 640px) {
+            top: 3px;
+        }
     }
 
     &__alert {
