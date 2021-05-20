@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.3.15
+ * Version 1.3.18
  */
 
 var Redirects = (function () {
@@ -613,7 +613,7 @@ var Redirects = (function () {
     return Object.prototype.toString.call(object) === '[object Number]' && object % 1 === 0 && !common.isNegativeZero(object);
   }
 
-  var int_1 = new type('tag:yaml.org,2002:int', {
+  var int = new type('tag:yaml.org,2002:int', {
     kind: 'scalar',
     resolve: resolveYamlInteger,
     construct: constructYamlInteger,
@@ -745,7 +745,7 @@ var Redirects = (function () {
     return Object.prototype.toString.call(object) === '[object Number]' && (object % 1 !== 0 || common.isNegativeZero(object));
   }
 
-  var float_1 = new type('tag:yaml.org,2002:float', {
+  var float = new type('tag:yaml.org,2002:float', {
     kind: 'scalar',
     resolve: resolveYamlFloat,
     construct: constructYamlFloat,
@@ -756,7 +756,7 @@ var Redirects = (function () {
 
   var json = new schema({
     include: [failsafe],
-    implicit: [_null, bool, int_1, float_1]
+    implicit: [_null, bool, int, float]
   });
 
   var core = new schema({
@@ -865,8 +865,8 @@ var Redirects = (function () {
     resolve: resolveYamlMerge
   });
 
-  function commonjsRequire () {
-  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+  function commonjsRequire (target) {
+  	throw new Error('Could not dynamically require "' + target + '". Please configure the dynamicRequireTargets option of @rollup/plugin-commonjs appropriately for this require call to behave properly.');
   }
 
   /*eslint-disable no-bitwise*/
