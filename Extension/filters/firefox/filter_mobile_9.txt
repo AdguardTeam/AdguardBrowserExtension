@@ -1,8 +1,8 @@
-! Checksum: 4KmTsOuzyWJOTI6HCOT8Ng
+! Checksum: Pet7sW6XIcUTTNhvH6R7bA
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.9.56
-! TimeUpdated: 2021-05-14T09:31:52+00:00
+! Version: 2.0.9.59
+! TimeUpdated: 2021-05-19T11:31:54+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1060,6 +1060,7 @@ comicspornohentai.com#%#//scriptlet("prevent-eval-if", "_impspcabe")
 pornolandia.xxx#%#//scriptlet("set-constant", "xxxStore", "undefined")
 irmaosdotados.net#%#//scriptlet("prevent-addEventListener", "load", "/_0x[\s\S]*?parentNode[\s\S]*?appendChild/")
 hentaiporno.xxx#%#//scriptlet("set-constant", "vidorev_jav_plugin_video_ads_object.vid_ads_m_video_ads", "")
+drivelinks.me,onelinks.site#%#(function(){if(-1<window.location.href.indexOf("/#")){var a=location.href.split("/#");if(a&&a[1]){a=a[1];for(var c=0;10>c;c++)try{a=atob(a)}catch(f){var d=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});try{new URL(d);var e=!0}catch(b){e=!1}if(e){window.location=d;break}}}}})();
 drivelinks.me,pclinks.site,pelislinks.me#%#(function(){if(-1<window.location.href.indexOf("s.php?i=")){var a=location.href.split("s.php?i=");if(a&&a[1]){a=a[1];for(var c=0;10>c;c++)try{a=atob(a)}catch(f){var d=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});try{new URL(d);var e=!0}catch(b){e=!1}if(e){window.location=d;break}}}}})();
 mv12.site#%#AG_onLoad(function(){setTimeout(function(){if("undefined"!==typeof e&&"string"===typeof e&&e.startsWith("http")){a:{try{new URL(e)}catch(b){var a=!1;break a}a=!0}a&&(window.location=e)}},500)});
 temparchive.com#%#//scriptlet("prevent-window-open")
@@ -1293,6 +1294,8 @@ http://adw.
 ||v.fwmrm.net/ad/g/1?$replace=/(tv\.freewheel\.SDK\._instanceQueue\['Context_[\s\S]*?'\][\s\S]*?\.requestComplete\(\{)[\s\S]*\}\);/\$1\}\);/,domain=dplay.es
 ||videoplaza.tv/proxy/distributor/*Atresplayer$replace=/({"insertionPoint":\[)[\s\S]*\}/\$1\]\}/,domain=atresplayer.com,important
 /^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispop.com|superflix.net
+||blog.facialix.com/wp-content/uploads/*/hostinger*.jpg
+facialix.com##.ai_widget
 legendas.co##[id^="publicidade_"]
 correiobraziliense.com.br##.pub-hor
 ||webglobal.com.br/banner/$third-party
@@ -3391,6 +3394,7 @@ urlcloud.us##.banner
 @@||adhandler.kissfmradio.cires21.com/get_link?url=$domain=hitfm.es
 @@||sunmedia.tv/integrations/*.js$domain=vandal.elespanol.com
 @@||static.sunmedia.tv/AdBlockDetection/adblockDetector.min.js^$domain=vandal.elespanol.com
+@@.m3u8$xmlhttprequest,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
 @@||imasdk.googleapis.com/js/sdkloader/ima3_debug.js$script,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
 @@||gvt1.com/videoplayback/$media,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
 @@||tpc.googlesyndication.com^$script,stylesheet,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com

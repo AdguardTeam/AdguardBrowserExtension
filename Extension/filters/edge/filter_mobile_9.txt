@@ -1,8 +1,8 @@
-! Checksum: knuBxTKIsoMi75u1wVnFWg
+! Checksum: qXGjKWHBKEZy0iKqp7pWlQ
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.9.56
-! TimeUpdated: 2021-05-14T09:31:52+00:00
+! Version: 2.0.9.59
+! TimeUpdated: 2021-05-19T11:31:54+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -741,6 +741,7 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 enrt.eu#%#AG_onLoad(function() {if ("/" !== location.pathname) {var a = new MutationObserver(function() {document.querySelector('meta[http-equiv="refresh"]') && (a.disconnect(), setTimeout(function() {window.stop()}, 20E3))});a.observe(document, {childList: !0,subtree: !0,attributeFilter: ['http-equiv']});setTimeout(function() {a.disconnect()}, 20E3)}});
 manualdamulher.net#%#AG_onLoad(function() { var el=document.body; var ce=document.createElement('iframe'); if(el) { el.appendChild(ce); ce.focus();} setTimeout(() => ce.remove(), 100); });
 pepeliculas.org#%#AG_onLoad(function(){setTimeout(function(){var a=document.querySelector("a#clickfakeplayer");a&&a.click()},500)});
+drivelinks.me,onelinks.site#%#(function(){if(-1<window.location.href.indexOf("/#")){var a=location.href.split("/#");if(a&&a[1]){a=a[1];for(var c=0;10>c;c++)try{a=atob(a)}catch(f){var d=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});try{new URL(d);var e=!0}catch(b){e=!1}if(e){window.location=d;break}}}}})();
 drivelinks.me,pclinks.site,pelislinks.me#%#(function(){if(-1<window.location.href.indexOf("s.php?i=")){var a=location.href.split("s.php?i=");if(a&&a[1]){a=a[1];for(var c=0;10>c;c++)try{a=atob(a)}catch(f){var d=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});try{new URL(d);var e=!0}catch(b){e=!1}if(e){window.location=d;break}}}}})();
 mv12.site#%#AG_onLoad(function(){setTimeout(function(){if("undefined"!==typeof e&&"string"===typeof e&&e.startsWith("http")){a:{try{new URL(e)}catch(b){var a=!1;break a}a=!0}a&&(window.location=e)}},500)});
 megadescarga.net#%#AG_onLoad(function(){var a=document.querySelector("#link"),b=Math.floor((new Date).getTime()/1E3);a&&a.value&&(link=a.value,a=document.createElement("form"),a.setAttribute("method","post"),a.setAttribute("id","hash"),a.setAttribute("target","_blank"),a.setAttribute("action","https://acortar.info/redir?"+window.btoa(window.btoa(b))),b=document.createElement("input"),b.setAttribute("type","hidden"),b.setAttribute("name","hash"),b.setAttribute("value",link),a.appendChild(b),document.getElementsByTagName("body")[0].appendChild(a), document.getElementById("hash").submit(),setTimeout(function(){window.close()},10))});
@@ -937,6 +938,8 @@ _publicidade_
 _publicitario.
 http://adw.
 /^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispop.com|superflix.net
+||blog.facialix.com/wp-content/uploads/*/hostinger*.jpg
+facialix.com##.ai_widget
 legendas.co##[id^="publicidade_"]
 correiobraziliense.com.br##.pub-hor
 ||webglobal.com.br/banner/$third-party
@@ -3006,6 +3009,7 @@ goldenmangas.online##.adsbygoogle
 @@||adhandler.kissfmradio.cires21.com/get_link?url=$domain=hitfm.es
 @@||sunmedia.tv/integrations/*.js$domain=vandal.elespanol.com
 @@||static.sunmedia.tv/AdBlockDetection/adblockDetector.min.js^$domain=vandal.elespanol.com
+@@.m3u8$xmlhttprequest,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
 @@||imasdk.googleapis.com/js/sdkloader/ima3_debug.js$script,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
 @@||gvt1.com/videoplayback/$media,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
 @@||tpc.googlesyndication.com^$script,stylesheet,domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
