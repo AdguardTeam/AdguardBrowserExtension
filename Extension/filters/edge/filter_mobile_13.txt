@@ -1,8 +1,8 @@
-! Checksum: o4NofdXoXifaGwJDDBgcSQ
+! Checksum: vgzIz7zfALG/2m8ysgc2kA
 ! Title: AdGuard Turkish filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.26.37
-! TimeUpdated: 2021-05-17T08:30:33+00:00
+! Version: 2.0.26.50
+! TimeUpdated: 2021-05-20T09:30:40+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -15,6 +15,7 @@
 #%#var AG_abortOnPropertyRead=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeGet:function(){b&&console.warn("AdGuard aborted property read: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
 #%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
 #%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
+||inegolreklam.net^$third-party
 ||reklam8.net^$third-party
 ||virgul.com^$third-party
 ||api.adnsafe.org^$third-party
@@ -342,6 +343,7 @@
 ||ad.sacitaslan.com^
 ||cdn.hiperadverts.com^
 ||savoy.cubecdn.net^
+coinotag.com###kanews-modal-adblock
 @@||cnnturk.com//assets/dist/js/300x250_dfp.js
 teknop.net,kirtkirtla.com,buneymis.net,ozgunbilgi.com#@##adcontent
 torrentarsivi.*#@#.adsBanner
@@ -545,6 +547,10 @@ filmwatch.net#?##mysite > div[class]:not(:has(> div))
 vizyonfilmizle.tv#$?#.fancybox-overlay-fixed[-ext-has="> div"] { display: none!important; }
 vizyonfilmizle.tv#$?#.fancybox-lock body[-ext-has="> div"] { overflow: visible!important; }
 vizyonfilmizle.tv#$?#html[-ext-has="> body"] { overflow: visible!important; }
+koinmedya.com#?#.sidebar-content-fixed-scroll > aside.widget > div.widget_text > div.textwidget > ins[class] ~ script:upward(aside.widget)
+ajansspor.com#?#.container .none-margin-tablet > .margin-top--30 > .center__row > div[id^="category-"] > script:contains(defineSlot):upward(3)
+patilim.com#?#.row > .col-lg-4 > .user-widget > .widget-body > .adsbygoogle:upward(2)
+sonperiyot.com#?#aside:has(> h4 > span:contains(SPONSOR))
 koinfinans.com#?#.td-ss-main-sidebar > aside.widget:has(> h4.block-title > span:contains(Reklam))
 aksam.com.tr#?#div[style^="width:"] > [id^="div-gpt-ad"]:upward(1)
 aksam.com.tr#?#div[style^="height:"] > [id^="div-gpt-ad"]:upward(1)
@@ -1139,6 +1145,7 @@ t24.com.tr#%#AG_onLoad(function() { $('a[href^="http://t24.com.tr/haber/advertor
 finikeakdeniz.com.tr#%#AG_onLoad(function() { if (window.location.href.indexOf("/reklam.asp") != -1) { window.location.href = "/" }; });
 mackolik.com,sahadan.com#%#setTimeout ("HideFloatAdBanner()", 1000);
 r10.net#%#document.cookie = 'r10LeftHide=1';
+dizidimi.com#$##header { margin-top: 0 !important; }
 onlinedizi.tv#$#.sitewrapper { margin-top: 0 !important; }
 61saat.com#$##modal-ads { display: none !important; }
 61saat.com#$#.modal-backdrop { display: none !important; }
@@ -1344,6 +1351,8 @@ cumhuriyet.com.tr#$##popup { display: none!important; }
 cumhuriyet.com.tr#$#.with-popup { overflow: visible!important; }
 cumhuriyet.com.tr#$#body.with-bg { padding-top: 0!important; }
 sabah.com.tr#$#header.advertControlArea { top: 0!important; }
+fullfilmizle.pw#$##cn-content { display: block !important; }
+fullfilmizle.pw#$##rk-content { display: none !important; }
 fullhdfilmizlesene3.org#$#.filmicerik { display: block !important; }
 filmegel.org#$##reki { display: none !important; }
 filmegel.org#$##video { display: block !important; }
@@ -1737,6 +1746,7 @@ fullhdfilmizlesene.org#$##plx { display: block!important; }
 onlinefilm.co#$#.tab-reklam { display: none!important; }
 sinemapol.org#$##video-oncesi { display: none!important; }
 sinemapol.org#$##video { display: block!important; }
+fullfilmizle.pw#$#body { background: linear-gradient(to bottom,rgba(11,4,53,1) 0%,rgba(96,2,57,1) 49%,rgba(163,10,15,1) 75%,rgba(238,69,2,1) 100%) fixed !important; }
 dizi5.plus#$#body { background-image: none !important; }
 sezonlukdizi.vip#$#body { background-image: none !important; }
 dizidimi.com#$#body { background-image: none!important; }
@@ -1871,7 +1881,7 @@ mackeyfi9.live,mackeyfi10.live,mackeyfi11.live,mackeyfi12.live,mackeyfi13.live,m
 /wp-content/uploads/*_reklam.
 ||media.*.com/renderimage.aspx?pid=$third-party
 !+ NOT_OPTIMIZED
-://i.hizliresim.com^$domain=onlineanimeizle.com|sonfullhdfilm.com|fiilmizleyeni.com|filmizle.movie|dizilla.com|iddaanet.com|dizipas.net|bifilmizlesene.net|dizison.com|radardizi.com|sinefilm.net|fulldiziizleyin.org|fanfilmizle.com|hdizletekpart.net|gameinsano.com|hddiziizlez.com|fullhdfilmtekpart.com|diziizleyin.org|sozlerisozu.com|bedavamacizle.tv|filmkeyif.com|ispor.net|macizlesene.tv|tekparthd.net|seyirlikfilm.org|hdfilmizlemelisin.com|hdfilmekani.com|fulldizi7.com|fullhdfilm.gen.tr|ajans32.com|sezonlukdizi.net|higshoes.com|sendeizlesene.net|limitsizfilmizle.net|hintfilmi.net|fullfilmihdizlesene.com|haber32.com.tr|sinemapol.org|pembefilm.com|buyuktorbali.com|dizison.pw|technopat.net|ertehaber.com|filmmom.org|fullhdizle720p.com|duzcetv.com|unyenethaber.com|filmwatch.net|medyayenigun.net|haberant.com|dizilost.com
+://i.hizliresim.com^$domain=bestdizi.com|onlineanimeizle.com|sonfullhdfilm.com|fiilmizleyeni.com|filmizle.movie|dizilla.com|iddaanet.com|dizipas.net|bifilmizlesene.net|dizison.com|radardizi.com|sinefilm.net|fulldiziizleyin.org|fanfilmizle.com|hdizletekpart.net|gameinsano.com|hddiziizlez.com|fullhdfilmtekpart.com|diziizleyin.org|sozlerisozu.com|bedavamacizle.tv|filmkeyif.com|ispor.net|macizlesene.tv|tekparthd.net|seyirlikfilm.org|hdfilmizlemelisin.com|hdfilmekani.com|fulldizi7.com|fullhdfilm.gen.tr|ajans32.com|sezonlukdizi.net|higshoes.com|sendeizlesene.net|limitsizfilmizle.net|hintfilmi.net|fullfilmihdizlesene.com|haber32.com.tr|sinemapol.org|pembefilm.com|buyuktorbali.com|dizison.pw|technopat.net|ertehaber.com|filmmom.org|fullhdizle720p.com|duzcetv.com|unyenethaber.com|filmwatch.net|medyayenigun.net|haberant.com|dizilost.com
 !+ NOT_OPTIMIZED
 ://i.resimyukle.xyz^$domain=rexfilmizle.com|unyenethaber.com
 /images/banner/*$domain=haberabd.com|haberinadresi.com|yalovagazetesi.com|superyenihaber.net|diyarinsesi.org|46haber.com|adanahaber.net|haber46.com.tr|cukurovaexpres.com|ciddigazete.com|karamangundem.com|tercihiniyap.net
@@ -1889,12 +1899,28 @@ aktifbulten.com.tr,antalyasonhaber.com,haberetanik.com,tevhidgundemi.com,hakimiy
 cevapla.tv,yurtgazetesi.com.tr,malatyaguncel.com,tozlumagazin.net,konyaninsesi.com.tr,bbnhaber.com.tr,bolgegundem.com,otuzbeslik.com,favorifilm.com,nefisyemektarifleri.com,bnhaber.com.tr,sektorankara.com,mansethaber.com,kibrispostasi.com,akcaabatinsesi.com,gununyalanlari.com,sosyalhalisaha.com,labmedya.com,lojiport.com,ertehaber.com,vandahaber.com,beyazgazete.com,sacintarzin.com,yesiligdir.com,perakende.org,hdfilmizle3.com,hakkariobjektifhaber.com,hakkarihabertv.com,karamanhabercisi.com,yarimadagazetesi.com,marasgundem.com.tr,sinematuru.com,enerjigunlugu.net,ulastirmadunyasi.com,fotospor.com,wanhaber.com,virahaber.com,61trabzonhaber.com,buyukkocaeli.com.tr,fullhdfilmdeposu.com,filmifullizle.tv,dizilab.pw,gecce.com.tr,fanatik.com.tr,erasmusu.com,bolugundem.com,coin-turk.com,expsex.com,ozgurkocaeli.com.tr,polatbuyukarslan.com,aofsoru.com,kocaeligazetesi.com.tr,antalyaburada.com,bafra55.net,airporthaber.com,magazinkolik.com,netgazete.com,oyungemisi.com,pudra.com,sabah.com.tr,sadecehaber.com,televole.com,tgrthaber.com.tr,yeniakit.com.tr,neoldu.com##.banner
 havaturkiye.com,mersinhaber.com,siirtpress.com,merhabahaber.com##div[class^="banner_"]
 sakinca.com,gazetebanka.com,habereko.com,aktifhabergazetesi.com,gazetegolbasi.com,elazighaberkent.com,haberetanik.com,kemergozcu.com,omedyam.com,kayseritempo.org,bartinpostasi.net,agazete.com.tr,olayrize.com,sirineregli.org,elazigharputgazetesi.com,samsunhaberhatti.com,yurtspor.com,hayat.ro##div[class^="advert_"]
-kediportal.com,slideplayer.biz.tr,sakarya360.com,yeniakit.com.tr,bigunhaber.com,trendoa.com,son32.com,emlaknews.com.tr,cagingazetesi.com.tr,sabahhaberi.com,sonsaat.com.tr,medyaankara.com,erotikfilmtube.com,anadolugunluk.com,kentgazetesi.com,kesinkarar.com,davetmedya.com,fatsaduruhaber.com,bursverenkurumlar.com,mengen.gen.tr,bodrummuhabiri.com,belekomahaber.com,capital.com.tr,canlimobeseizle.com,kadinhalleri.com,nallihanhaber.com,muhabir26.com,gundembursa.com,pgnhaber.com,genmedya.com,uyan32.com,selcukhaber.com,webhakim.com,ibrala.com,hatayzafer.com.tr,ulakci.com,haberyum.com,yozgatses.com,turkulus.com,forumotomobil.com,bodrumolay.com,akvaryum.com,zobakit.com,uyumhaber.com,kmarashaber.com,yenimeram.com.tr,vivaldimagazin.com,tafdi.org,gzt.com,topraklagelen.com.tr,thebrandage.com,gamer.com.tr,direkizleyin.com,medyafaresi.com,indir.com,memuruz.net,1cubukadam.com,bjk.com.tr,bursadabugun.com,emlakeki.com,gercekgundem.com,haber7.com,internethaber.com,memurhaber.com,webtekno.com##.ads
+yenidonem.com.tr,kediportal.com,slideplayer.biz.tr,sakarya360.com,yeniakit.com.tr,bigunhaber.com,trendoa.com,son32.com,emlaknews.com.tr,cagingazetesi.com.tr,sabahhaberi.com,sonsaat.com.tr,medyaankara.com,erotikfilmtube.com,anadolugunluk.com,kentgazetesi.com,kesinkarar.com,davetmedya.com,fatsaduruhaber.com,bursverenkurumlar.com,mengen.gen.tr,bodrummuhabiri.com,belekomahaber.com,capital.com.tr,canlimobeseizle.com,kadinhalleri.com,nallihanhaber.com,muhabir26.com,gundembursa.com,pgnhaber.com,genmedya.com,uyan32.com,selcukhaber.com,webhakim.com,ibrala.com,hatayzafer.com.tr,ulakci.com,haberyum.com,yozgatses.com,turkulus.com,forumotomobil.com,bodrumolay.com,akvaryum.com,zobakit.com,uyumhaber.com,kmarashaber.com,yenimeram.com.tr,vivaldimagazin.com,tafdi.org,gzt.com,topraklagelen.com.tr,thebrandage.com,gamer.com.tr,direkizleyin.com,medyafaresi.com,indir.com,memuruz.net,1cubukadam.com,bjk.com.tr,bursadabugun.com,emlakeki.com,gercekgundem.com,haber7.com,internethaber.com,memurhaber.com,webtekno.com##.ads
 fullfilmizle.pw,sportsregg.com,altyazilifilm.live,filmzal.com,film-dizi.com,720pizleme.com,filmmodu.co,dizifilmix.org,sineturk.pw,altyazilifilmizle.tv,1080pfilmizle.net,dolufilmizle.com,filmizleve.com,indirmedenfilmizle.pw,filmizle.us,filmihdizlet.com,moodfilmizle.com,fullhdiziizle.com,rexfilmizle.com,filmizlevip.org,filmizlefilmsitesi.com,sineturk1.com,hdfilmizle.fun,fullizlefilmizle.com,fanfilmizle.com,indirmedenfilmizle1.com,fullhizlifilmizlesen.com,hdhergundizi.com,sinemapol.org,hdciyiz.com,sinefilm.net,hdfilmizle.life,hdcehennem.com,sendeizlesene.net,cilekfilm.com,diziizlevv.com##.footer-sticky
 davahaber.com,sabahhaberi.com,canlihaber.com,milligazete.com.tr,hotstream.club,bidunyahaber.net,kocaeliseffaf.com,720pizleme.com,kadikoygazetesi.com,kartalgazetesi.com,turkayhaber.com,kirkbir.com,wfilmizle.net,cagdaskocaeli.com.tr,kocaelihaberdunyasi.com##.rek
-kocaelibarisgazetesi.com,nevsehirkenthaber.com,gazianteptime.com.tr,canlihaber.com,rhaajans.com,nazillipost.com,spor264.com.tr,geyvelim.com,hbrcaldiran.com,nnchaber.com,turkiyehaberi.com,habertakvimi.com,yesilgiresun.com.tr,ozgurkocaeli.com.tr,buyukkocaeli.com.tr,vanhavadis.com,kpsscafe.com.tr,forapost.com,okuhaber.com,akyazi.net,cagdaskocaeli.com.tr,haberlerankara.com,seskocaeli.com,kocaelizirve.com,yenialanya.com,t54.com.tr,haber266.com,safihaber.com,nazilliadalet.com,bizimyaka.com,akdeniztelgraf.com,ispartamhaber.com,haberhurriyeti.com,mercekhabergazetesi.com,gaziantepinhabercisi.com,gurbettekierzurum.com.tr,haberaydin.com,turkiyemtv.com.tr,lidergazetesi.com,haberso.com,aydingazetesi.com,aydinyenihaber.com,ajanscaldiran.com,haber28.com,netgaste.com,sakaryadanhaber.com,erzurumhaber.com.tr,yenidevir.com.tr,golcukgundem.com,elbistanolay.com,cthaber.com,mihraphaber.com,pamukovahalk.com,medyabar.com,bgazete.com.tr,kartepegazetesi.com.tr,istekocaeli.com,mansetaydin.com,sesgazetesi.com.tr,bugunkocaeli.com.tr,kocaeligazetesi.com.tr,milligazete.com.tr,hbrma.com,tanisgazetesi.com.tr,elbistankaynarca.com,guncelkocaeli.com,enkocaeli.com##.rkm
+kocaelidenge.com,kocaelibarisgazetesi.com,nevsehirkenthaber.com,gazianteptime.com.tr,canlihaber.com,rhaajans.com,nazillipost.com,spor264.com.tr,geyvelim.com,hbrcaldiran.com,nnchaber.com,turkiyehaberi.com,habertakvimi.com,yesilgiresun.com.tr,ozgurkocaeli.com.tr,buyukkocaeli.com.tr,vanhavadis.com,kpsscafe.com.tr,forapost.com,okuhaber.com,akyazi.net,cagdaskocaeli.com.tr,haberlerankara.com,seskocaeli.com,kocaelizirve.com,yenialanya.com,t54.com.tr,haber266.com,safihaber.com,nazilliadalet.com,bizimyaka.com,akdeniztelgraf.com,ispartamhaber.com,haberhurriyeti.com,mercekhabergazetesi.com,gaziantepinhabercisi.com,gurbettekierzurum.com.tr,haberaydin.com,turkiyemtv.com.tr,lidergazetesi.com,haberso.com,aydingazetesi.com,aydinyenihaber.com,ajanscaldiran.com,haber28.com,netgaste.com,sakaryadanhaber.com,erzurumhaber.com.tr,yenidevir.com.tr,golcukgundem.com,elbistanolay.com,cthaber.com,mihraphaber.com,pamukovahalk.com,medyabar.com,bgazete.com.tr,kartepegazetesi.com.tr,istekocaeli.com,mansetaydin.com,sesgazetesi.com.tr,bugunkocaeli.com.tr,kocaeligazetesi.com.tr,milligazete.com.tr,hbrma.com,tanisgazetesi.com.tr,elbistankaynarca.com,guncelkocaeli.com,enkocaeli.com##.rkm
 yemektarifleri.org,lifebursa.com,mshowto.org,macizlee1.com,macizlee.ne,dunyaatlasi.com,ensonhaber.com,gayrimenkulhaber.com,internethaber.com,gercekgundem.com,cevapla.tv,cinemadran.com,ranini.tv,oggito.com,kocaeligazetesi.com.tr,rumma.org,kitaptansanattan.com,macizlee3.com,aydindenge.com.tr,gecmisgazete.com##.ad
 fullhdfilmcibaba.com,720pizlemek.com,1080pfilmizle.net,fullhdfilmcidayi.com,hdfilmizledayi.com,720-pizleme.com,fullhdfilmizlebaba.com,evrenselfilmlerim.net###adStarter
+||fullfilmizle.pw/wp-content/uploads/*/Pageskin-min.jpg
+||filmizletv.net/rekz/
+dizimia.org##a[href="https://www.inadsglobal.com"]
+||dizimia.org/roketbeybi.js
+||flmplayerfull.online/betdoksan.mp4
+||dizidimi.com/ucamam/lazyload-ucurbeni.js
+ajansspor.com###header + .center__row--top
+coinotag.com##.kanews-banner
+eminellere.com##tr[class^="satir_link"][class*="_reklam"]
+||static.haber8.pro/reklam8.js
+diziyo10.net##center > a[target="_blank"]
+||bestdizi.com/wp-content/uploads/*/kamuevlilik.com-22.png
+solidshare.net###babaslik
+diziboxx.com##.dbx-head-full
+||diziboxx.com/upload/r/
+||diziboxx.com/assets/jsr/vr2.js
 ||hdfilmmodu.com/*.php|$script
 ||fullhd720pizle3.com/*.php|$script
 aksam.com.tr##div[style="height:262px;"]
@@ -1912,6 +1938,8 @@ aksam.com.tr##div[style="width:300px;height:250px;margin-bottom:10px;"]
 aksam.com.tr##div[align="center"][style^="margin: 0 auto;height:"]
 satoshiturk.com##.p-body-sidebar > a[traget="_blank"] > img
 ||kartalyuvasi.revotas.com/trc/smartwidget/smartwidget.js
+||muhabbit.com/wp-content/uploads/narkasa_tron.gif
+||muhabbit.com/wp-content/uploads/*/partisia.jpeg.webp
 finanswebde.com##div[style="margin-top:10px;height:250px"]
 finanswebde.com##div[style="margin-top:10px;height:310px"]
 sahibim.net##div[id^="ozel_banner-"]
@@ -1935,6 +1963,10 @@ yenicaggazetesi.com.tr##.sidebar > div[class="space-3 flex center margin-bottom-
 yenicaggazetesi.com.tr##.container > div[class="space-2 flex center margin-bottom-md"]
 ||yenicaggazetesi.com.tr/d/other/cnt.jpg
 tebernuskirecci.com.tr###wrap > div[style="margin:0px 10% 25px 10%;min-height: 290px;"]
+||koinmedya.com/wp-content/uploads/*-300x600px-
+koinmedya.com##a[href^="https://beincrypto.com/"]
+koinmedya.com##a[href^="https://www.binance.com/"]
+koinmedya.com###custom_html-52
 ||dizibox.vip/r/
 ||i.ibb.co/2Pt8tqJ/turna.png
 r10.net##a[href="https://www.paywant.com/"][target="_blank"]
@@ -1942,6 +1974,8 @@ r10.net##a[href="https://www.paywant.com/"][target="_blank"]
 ||cdn.cimri.io/pageSkin/
 cimri.com##a[data-type="page_skins"]
 filmmakinesi.pw##.malker
+kocaelidenge.com##.ad-channel
+kocaelidenge.com###rkm-ac
 ||flmplayerfull.online/bahsine100050.gif
 ||filmmakinesi.pw/ucurbeni/lazyload-ucurbeni.js
 ||hdmixfilm.com/rik.js
@@ -1950,6 +1984,10 @@ otonomhaber.com##.mh-content-ad
 tosunkaya.com##.gridlove-sticky-sidebar > div:not([id^="gridlove_posts_widget"])
 kuponla.com##div[class^="kule"]
 kuponla.com##.theiaStickySidebar > #text-18
+liderhaber.com##div[class$="Reklam"]
+liderhaber.com##body > div[style^="text-align: center; width: 980px;"]
+liderhaber.com###siteSag > div[style$="background: #ffffff; padding: 20px 0px;"]
+liderhaber.com###siteSol > div > div[style^="text-align: center;width: 728px;"]
 ||oggusto.com/UserFiles/Image/images/Nisan2021/730x730.png
 hdfilmcehennemi.net##.money--video
 ||hdfilmcehennemi.net/assets/front/img/money/
@@ -4191,7 +4229,7 @@ dolufilmizle.com,fullhdiziizle.com##.wrapper.rkads
 /wp-content/uploads/*/*/*reklam*.*$image,domain=buyuksivas.com
 aktuelpsikoloji.com##.banner > a[target^="_blan"] > img
 turizmajansi.com##a[href^="/rdads.aspx?r="]
-dizimag.cc,onlinedizi.net###pre_video
+diziboxx.com,dizimag.cc,onlinedizi.net###pre_video
 eskisehirgundem.com##.galleryWidget.petrol
 eskisehirgundem.com##div[class="galleryWidget homeWidget colorbox gray photo"]
 eskisehirgundem.com##.hreklam
@@ -6665,6 +6703,8 @@ evrensel.net##.haber-sidebar-banner
 saglamindir.net##.text-center.visible-lg > a[class="download"][rel="nofollow"]
 !+ NOT_PLATFORM(windows, mac, android)
 driverdestek.com##.adsbygoogle
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=haberglobal.com.tr
+patilim.com#@#.single-ads
 @@||hepfinans.com/wp-content/uploads/*/Google-Adsense-$image,~third-party
 @@||sondakika.com/static/reklam/advertisement.gif
 technopat.net#@#a[href*="whatsapp-sohbet"] > img

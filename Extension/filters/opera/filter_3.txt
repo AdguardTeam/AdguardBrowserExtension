@@ -1,8 +1,8 @@
-! Checksum: o5YVPFHaZwcrPxdQ5Yt8Ag
+! Checksum: y22lVrn51zDK3Lu7JFspUw
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.24.56
-! TimeUpdated: 2021-05-17T09:31:28+00:00
+! Version: 2.0.24.78
+! TimeUpdated: 2021-05-20T11:31:25+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -132,6 +132,7 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback&&a.hitCallback();}
 !-------------------
 !-------CSS---------
+biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !-------------------
 !
 !-------------------
@@ -233,6 +234,16 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||visilabs.com^$third-party
 ||visilabs.net^$third-party
 !
+||campaigns-collector.albacross.com^$third-party
+||new-collect.albacross.com^$third-party
+||pv.kuaizhan.com^$third-party
+||eventsapi.grocerkey.com^$third-party
+||dc-tag.jp^$third-party
+||kitchen.juicer.cc^
+||t.beop.io^$third-party
+||contents-tracking.beop.io^$third-party
+||bc.ad.daum.net^
+||docomo-analytics.com^
 ||stats.fomo.com^$third-party
 ||aghtag.tech^$third-party
 ||monitor.azure.com^
@@ -2606,6 +2617,7 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ||predictivedna.com^$third-party
 ||predictiveresponse.net^$third-party
 ||prfct.co^$third-party
+||privacycounter.com^$third-party
 ||prnetwork.de^$third-party
 ||prnx.net^$third-party
 ||proclivitysystems.com^$third-party
@@ -3426,6 +3438,7 @@ journal-plaza.net#?#.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч
 ! Admiral domains
 ! These domains are used for tracking purposes according to the data that is being sent there.
 ! More info: https://getadmiral.com/products/measure
+||hystericalcloth.com^$third-party
 ||caringcast.com^$third-party
 ||selfishsnake.com^$third-party
 ||soretrain.com^$third-party
@@ -4581,6 +4594,8 @@ nethunt.com/api/v1/track/email/$image
 ! Disabled in DNS filter
 ||telemetry.mozilla.org^
 !
+||analytics.atlassian.com^
+||trackdb.go3.tv^
 ||collector.rn.de^
 ||l.da-te.jp^
 ||log.shufoo.net^
@@ -4648,6 +4663,7 @@ nethunt.com/api/v1/track/email/$image
 ||counter.nv.ua^
 ||metrika.myseldon.com^
 ||t.lidyana.com^
+||analytics.faceitanalytics.com^
 ||stats.muasamcong.gov.vn^
 ||beacon.watch.impress.co.jp^
 ||media.fc2.com^$image
@@ -15586,6 +15602,7 @@ charlestownwyllie.oaklawnnonantum.com^
 ! Umami
 /umami.js
 !
+/plugins/aurora-heatmap$stylesheet,script
 /logExecutionStats?
 /busting/*/gtm-
 /wordpress/wp-json/pum/*/analytics/*
@@ -15677,6 +15694,7 @@ _analytics.js?
 /_CPiX/art
 /counter?id=
 /autotrack.js
+/trackad.$third-party
 /playertracking/*
 /pixel.*/track/*
 /mendelstats.
@@ -15934,6 +15952,13 @@ _tracking.php?b=
 !
 /analytics.js$domain=bataryapil.com|journey.com.tr|tozlu.com|elleshoes.com|freexcafe.com|rusvideos.tv|nakubani.ru|lun.com|songsara.net|partifabrik.com
 !
+||mt-wzb.clarin.com/weizenbock/pixel.fingerprint.gif
+mag.osdn.jp##div[id^="logly-lift-"]
+||mangapedia.com/js/abb.
+||sf-syn.com/conversion_outbound_tracker$subdocument,domain=sourceforge.net
+||play.tv3.lt/static/scripts/trackdb/events.gif$image,redirect=1x1-transparent.gif
+||analytics.google.com/g/collect?*&tid=
+||ssl.kaptcha.com/collect/
 ||cornelsen.de/*/tracking.min.js
 ||r.popin.cc/log.gif
 ||adsystem.dailyissue.co.kr/show/logs.php
@@ -15970,6 +15995,7 @@ viva.ua##.footer-counters
 ||browser.events.data.microsoft.com/OneCollector/
 ||log.nordot.jp^$~script
 ||google.*/imgevent?
+||arstechnica.com/keys/arstechnica.com/p.js
 ||informazione.it/detroitchicago/cmb.js
 ||tweakers.net^*&p=$image
 ||forum.zuvio.com.tw/api/article/finish
@@ -16135,7 +16161,7 @@ the-ans.jp##.side-reccomend
 ||daumcdn.net/*/ba.min.js
 ||laurenhi.com/app/Eclog/
 /lcslog*.js$domain=playentry.org|modoo.at|~pulmuri.modoo.at
-/clickcr*.js$domain=naver.com|modoo.at|~help.naver.com
+/clickcr*.js$domain=naver.com|modoo.at|~help.naver.com|~nid.naver.com
 /google-analyticator/*$script
 ||ssl.pstatic.net/static.gn/js/clickcrD.js
 ||paypal.com/xoplatform/logger/$domain=tapas.io
@@ -18522,6 +18548,8 @@ $cookie=bf_visit
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/908
 !
 ! For apps
+||track.*.roku.com^
+||traces.sr.roku.com^
 ||analytics.kidoz.net^
 ||track.tenjin.com^
 ||tracker.mtrtb.com^
@@ -18581,6 +18609,9 @@ $cookie=bf_visit
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||adj.st^
 !
+||log-collector.shopee.
+||seller-log-collector.shopee.
+||telemetry.voxeet.com^
 ||usertrack.appcpi.net^
 ||api*.amplitude.com^
 ||conversions.appsflyer.com^
@@ -19049,6 +19080,19 @@ $cookie=bf_visit
 ! https://github.com/AdguardTeam/CoreLibs/issues/1306
 ||rover.ebay.$image,object,script,badfilter
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/82199
+@@||s.go-mpulse.net/boomerang/$domain=royalmail.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/83450
+@@||personaclick.com^$domain=skechers.com.tr
+||googletagmanager.com/gtm.js$script,redirect=googletagmanager-gtm,domain=skechers.com.tr
+! https://github.com/AdguardTeam/AdguardFilters/issues/82461
+! www.kanaloco.jp あなたにおすすめの記事 (recommended articles)
+@@||googletagmanager.com/gtm.js$script,domain=kanaloco.jp
+@@||rtoaster.jp^$script,domain=kanaloco.jp
+! https://github.com/AdguardTeam/AdguardFilters/issues/83103
+@@||ssl.geoplugin.net/javascript.gp$domain=imalentstore.com
+! https://github.com/hirorpt/filters/commit/7944b88a85ae9674deba8a4b375f457be6ed552a
+@@||linksynergy.com/minified_logic.js$xmlhttprequest
 ! https://jbbs.shitaraba.net/bbs/read.cgi/internet/25463/1598352715/183
 @@||googletagmanager.com/gtm.js$script,domain=dpoint.jp
 ! https://github.com/hirorpt/filters/commit/7368d27f494e7fd3e9c3f460d72fab7b370892fd
@@ -19376,7 +19420,7 @@ nnmclub.ro,nnm-club.t0r.xyz,nnm-club-me.appspot.com,nnm-club.lib,nnm-club.me,nnm
 @@||googletagmanager.com/gtm.js$domain=thecompanion.app
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79410
 ! https://github.com/AdguardTeam/AdguardFilters/issues/63801
-@@||rtoaster.jp^$script,domain=animate-onlineshop.jp|brainpad.co.jp|lexus.jp|peachjohn.co.jp|rurubu.jp|shop.hikaritv.net|melonbooks.co.jp
+@@||rtoaster.jp^$script,domain=animate-onlineshop.jp|brainpad.co.jp|hikaritv.net|lexus.jp|peachjohn.co.jp|rurubu.jp|melonbooks.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/63828#issuecomment-693360254
 @@||googletagmanager.com/gtm.js$domain=sport1.de
 ! https://github.com/uBlockOrigin/uAssets/issues/7899
