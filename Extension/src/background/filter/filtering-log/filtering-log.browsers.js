@@ -24,6 +24,7 @@ import { prefs } from '../../prefs';
 import { listeners } from '../../notifier';
 import { translator } from '../../../common/translators/translator';
 import { RequestTypes } from '../../utils/request-types';
+import { ANTIBANNER_FILTERS_ID } from '../../../common/constants';
 
 /**
  * Object for log http requests
@@ -166,7 +167,7 @@ const browsersFilteringLog = (function () {
             if (sourceRule.isDocumentWhitelistRule()) {
                 destinationRuleDTO.documentLevelRule = true;
             }
-            if (sourceRule.isStealthModeRule) {
+            if (sourceRule.getFilterListId() === ANTIBANNER_FILTERS_ID.STEALTH_MODE_FILTER_ID) {
                 destinationRuleDTO.isStealthModeRule = true;
             }
 
@@ -349,6 +350,33 @@ const browsersFilteringLog = (function () {
 
         addRuleToFilteringEvent(filteringEvent, rule);
         pushFilteringEvent(tab.tabId, filteringEvent);
+    };
+
+    /**
+     * Adds removed header event
+     *
+     * @param tabId
+     * @param frameUrl
+     * @param headerName
+     * @param rule
+     */
+    const addRemoveHeaderEvent = (tabId, frameUrl, headerName, rule) => {
+        if (!rule || !canAddEvent(tabId)) {
+            return;
+        }
+
+        const frameDomain = utils.url.getDomainName(frameUrl);
+        const filteringEvent = {
+            removeHeader: true,
+            headerName,
+            requestUrl: frameUrl,
+            frameUrl,
+            frameDomain,
+            requestType: RequestTypes.DOCUMENT,
+        };
+
+        addRuleToFilteringEvent(filteringEvent, rule);
+        pushFilteringEvent(tabId, filteringEvent);
     };
 
     /**
@@ -594,6 +622,7 @@ const browsersFilteringLog = (function () {
         addCosmeticEvent,
         addCookieEvent,
         addRemoveParamEvent,
+        addRemoveHeaderEvent,
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         bindCspReportBlockedToHttpRequestEvent,

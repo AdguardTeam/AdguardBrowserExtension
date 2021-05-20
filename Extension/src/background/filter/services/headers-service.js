@@ -15,27 +15,23 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const notImplemented = () => {
-    return false;
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { filteringLog } from '../filtering-log';
+import { filteringApi } from '../filtering-api';
+import { RequestTypes } from '../../utils/request-types';
+
+/**
+ * Returns $removeheader rules matching request details
+ *
+ * @param url
+ * @param referrer
+ * @return {NetworkRule[]}
+ */
+export const getRemoveHeaderRules = (url, referrer) => {
+    return filteringApi.getRemoveHeaderRules(url, referrer, RequestTypes.DOCUMENT);
 };
 
-const apiFilteringLog = {
-    synchronizeOpenTabs: notImplemented,
-    init: notImplemented,
-    getFilteringInfoByTabId: notImplemented,
-    addHttpRequestEvent: notImplemented,
-    bindRuleToHttpRequestEvent: notImplemented,
-    bindReplaceRulesToHttpRequestEvent: notImplemented,
-    addCosmeticEvent: notImplemented,
-    addCookieEvent: notImplemented,
-    addRemoveParamEvent: notImplemented,
-    addRemoveHeaderEvent: notImplemented,
-    addScriptInjectionEvent: notImplemented,
-    bindStealthActionsToHttpRequestEvent: notImplemented,
-    clearEventsByTabId: notImplemented,
-    isOpen: notImplemented,
-    onOpenFilteringLogPage: notImplemented,
-    onCloseFilteringLogPage: notImplemented,
-};
-
-export default apiFilteringLog;
+/**
+ * Headers filtering service
+ */
+export const headersService = new TSUrlFilter.HeadersService(filteringLog);

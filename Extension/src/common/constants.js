@@ -2,6 +2,7 @@
  * Filter ids used in the code on the background page and filtering log page
  */
 export const ANTIBANNER_FILTERS_ID = {
+    STEALTH_MODE_FILTER_ID: -1,
     USER_FILTER_ID: 0,
     RUSSIAN_FILTER_ID: 1,
     ENGLISH_FILTER_ID: 2,

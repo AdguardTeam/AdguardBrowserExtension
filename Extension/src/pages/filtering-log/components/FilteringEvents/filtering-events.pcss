@@ -1,7 +1,11 @@
 .filtering-log {
     max-width: 100%;
     height: calc(100% - 218px);
-    overflow: auto;
+    overflow: hidden;
+
+    * {
+        box-sizing: border-box;
+    }
 
     @media (max-width: 640px) {
         height: calc(100% - 275px);
@@ -12,8 +16,9 @@
         border-collapse: collapse;
         width: 100%;
         min-width: 810px;
+        height: calc(100% - 30px);
 
-        & thead th {
+        & .thead .th {
             position: sticky;
             top: 0;
             background-color: var(--white);
@@ -24,7 +29,7 @@
             }
         }
 
-        & tbody > tr {
+        & .tbody .tr {
             &:hover {
                 cursor: pointer;
                 background: var(--trHover);
@@ -55,7 +60,7 @@
             }
         }
 
-        & th {
+        & .th {
             text-align: left;
             padding: 7px 10px;
             font-weight: normal;
@@ -81,7 +86,7 @@
             }
         }
 
-        & td {
+        & .td {
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -148,6 +153,31 @@
         @media (prefers-color-scheme: dark) {
             color: var(--green700);
         }
+    }
+
+    & .table {
+        & .tr {
+            height: 30px;
+        }
+        & .th, & .td {
+            padding: 0 25px;
+            height: 30px;
+            display: inline-block;
+            width: 20%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        & .td {
+            line-height: 30px;
+        }
+    }
+}
+
+.list {
+    div div {
+        left: -1px!important;
     }
 }
 
