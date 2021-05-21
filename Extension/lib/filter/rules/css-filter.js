@@ -337,11 +337,12 @@
                 const rule = rulesList[i];
                 const exceptionRules = exceptionRulesMap[rule.cssSelector];
                 if (exceptionRules) {
+                    let updatedRule;
                     for (let j = 0; j < exceptionRules.length; j += 1) {
-                        const updatedRule = this._applyExceptionRule(rule, exceptionRules[j]);
-                        if (updatedRule) {
-                            resultRulesList.push(updatedRule);
-                        }
+                        updatedRule = this._applyExceptionRule(rule, exceptionRules[j]);
+                    }
+                    if (updatedRule) {
+                        resultRulesList.push(updatedRule);
                     }
                 } else {
                     resultRulesList.push(rule);
