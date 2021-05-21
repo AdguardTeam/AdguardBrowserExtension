@@ -337,11 +337,15 @@
                 const rule = rulesList[i];
                 const exceptionRules = exceptionRulesMap[rule.cssSelector];
                 if (exceptionRules) {
+                    let updatedRule = rule;
                     for (let j = 0; j < exceptionRules.length; j += 1) {
-                        const updatedRule = this._applyExceptionRule(rule, exceptionRules[j]);
-                        if (updatedRule) {
-                            resultRulesList.push(updatedRule);
+                        updatedRule = this._applyExceptionRule(updatedRule, exceptionRules[j]);
+                        if (!updatedRule) {
+                            break;
                         }
+                    }
+                    if (updatedRule) {
+                        resultRulesList.push(updatedRule);
                     }
                 } else {
                     resultRulesList.push(rule);
@@ -377,18 +381,22 @@
                 const rule = this.commonRules[i];
                 const exceptionRules = exceptionRulesMap[rule.cssSelector];
                 if (exceptionRules) {
+                    let updatedRule = rule;
                     for (let j = 0; j < exceptionRules.length; j += 1) {
-                        const updatedRule = this._applyExceptionRule(rule, exceptionRules[j]);
-                        if (updatedRule) {
-                            this.commonRules.splice(i, 1, updatedRule);
-                            if (updatedRule.isDomainSensitive()) {
-                                // Rule has become domain sensitive.
-                                // We should remove it from common rules and add to domain sensitive.
-                                newDomainSensitiveRules.push(rule);
-                            }
-                        } else {
-                            this.commonRules.splice(i, 1);
+                        updatedRule = this._applyExceptionRule(updatedRule, exceptionRules[j]);
+                        if (!updatedRule) {
+                            break;
                         }
+                    }
+                    if (updatedRule) {
+                        this.commonRules.splice(i, 1, updatedRule);
+                        if (updatedRule.isDomainSensitive()) {
+                            // Rule has become domain sensitive.
+                            // We should remove it from common rules and add to domain sensitive.
+                            newDomainSensitiveRules.push(updatedRule);
+                        }
+                    } else {
+                        this.commonRules.splice(i, 1);
                     }
                 }
             }
@@ -413,7 +421,7 @@
          */
         _applyExceptionRule(commonRule, exceptionRule) {
             if (commonRule.cssSelector !== exceptionRule.cssSelector) {
-                return null;
+                return commonRule;
             }
 
             if (exceptionRule.isGeneric()) {
@@ -426,7 +434,7 @@
                 return commonRule;
             }
 
-            return null;
+            return commonRule;
         },
 
         /**
