@@ -71,10 +71,11 @@ export const settingsProvider = (function () {
         const enabledGroupIds = collectEnabledGroupIds();
         const customFiltersData = collectCustomFiltersData();
 
-        // Collect whitelist/blacklist domains and whitelist mode
-        const whitelistDomains = allowlist.getAllowlistedDomains() || [];
+        // Collect allowlist/blacklist domains, allowlist inverted mode and allowlist enabled state
+        const allowlistDomains = allowlist.getAllowlistedDomains() || [];
         const blockListDomains = allowlist.getBlocklistedDomains() || [];
         const defaultWhitelistMode = !!allowlist.isDefaultMode();
+        const allowlistEnabled = settings.getAllowlistEnabledState();
 
         // Collect user rules
         const content = await userrules.getUserRulesText();
@@ -89,8 +90,9 @@ export const settingsProvider = (function () {
                 },
                 'whitelist': {
                     'inverted': !defaultWhitelistMode,
-                    'domains': whitelistDomains,
+                    'domains': allowlistDomains,
                     'inverted-domains': blockListDomains,
+                    'enabled': allowlistEnabled,
                 },
             },
         };
@@ -368,12 +370,17 @@ export const settingsProvider = (function () {
      * @param section Section
      */
     const applyFiltersSection = async function (section) {
-        const whitelistSection = section.filters['whitelist'] || {};
-        const whitelistDomains = whitelistSection.domains || [];
-        const blacklistDomains = whitelistSection['inverted-domains'] || [];
+        const allowlistSection = section.filters['whitelist'] || {};
+        const allowlistDomains = allowlistSection.domains || [];
+        const blacklistDomains = allowlistSection['inverted-domains'] || [];
 
-        // Apply whitelist/blacklist domains and whitelist mode
-        allowlist.configure(whitelistDomains, blacklistDomains, !whitelistSection.inverted);
+        // Apply allowlist/blacklist domains, allowlist mode and allowlist enabled state
+        allowlist.configure({
+            allowlist: allowlistDomains,
+            blocklist: blacklistDomains,
+            mode: !allowlistSection.inverted,
+            enabled: typeof allowlistSection.enabled === 'undefined' ? true : !!allowlistSection.enabled,
+        });
 
         const userFilterSection = section.filters['user-filter'] || {};
         const userRules = userFilterSection.rules || '';

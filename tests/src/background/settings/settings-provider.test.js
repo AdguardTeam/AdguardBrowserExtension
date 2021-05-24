@@ -128,4 +128,22 @@ describe('settingsProvider', () => {
         // default value is true
         expect(settings.getDisableStealthMode()).toBeTruthy();
     });
+
+    it('handles settings with whitelist section', async () => {
+        const obj = JSON.parse(adgSettings);
+        const ALLOWLIST_ENABLED_PATH = 'filters.whitelist.enabled';
+
+        _.set(obj, ALLOWLIST_ENABLED_PATH, true);
+        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(settings.getAllowlistEnabledState()).toBeTruthy();
+
+        _.set(obj, ALLOWLIST_ENABLED_PATH, false);
+        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(settings.getAllowlistEnabledState()).toBeFalsy();
+
+        // by default should be true
+        _.unset(obj, ALLOWLIST_ENABLED_PATH);
+        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(settings.getAllowlistEnabledState()).toBeTruthy();
+    });
 });

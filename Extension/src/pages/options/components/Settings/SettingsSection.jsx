@@ -6,7 +6,6 @@ const SettingsSection = (props) => {
         title,
         description,
         renderBackButton,
-        renderInlineControl,
         inlineControl,
         children,
         disabled,
@@ -34,8 +33,14 @@ const SettingsSection = (props) => {
                     {title && <h2 className={titleClass}>{title}</h2>}
                     {description && <div className="title__desc">{description}</div>}
                 </div>
-                {inlineControl && <div className="setting__container setting__container--inline setting__inline-control">{inlineControl}</div>}
-                {renderInlineControl?.()}
+                {inlineControl
+                && (
+                    <div
+                        className="setting__container setting__container--inline setting__inline-control"
+                    >
+                        {inlineControl}
+                    </div>
+                )}
             </div>
             <div>
                 {children}

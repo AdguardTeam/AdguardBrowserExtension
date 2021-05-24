@@ -194,16 +194,16 @@ export const frames = (function () {
         const frame = tabsApi.getTabFrame(tab.tabId, 0);
         if (frame) {
             const applicationFilteringDisabled = settings.isFilteringDisabled();
-            let frameWhitelistRule = null;
+            let frameAllowlistRule = null;
             if (!applicationFilteringDisabled) {
                 const { url } = frame;
-                frameWhitelistRule = allowlist.findAllowlistRule(url);
-                if (!frameWhitelistRule) {
-                    frameWhitelistRule = filteringApi.findWhitelistRule(url, url, RequestTypes.DOCUMENT);
+                frameAllowlistRule = allowlist.findAllowlistRule(url);
+                if (!frameAllowlistRule) {
+                    frameAllowlistRule = filteringApi.findWhitelistRule(url, url, RequestTypes.DOCUMENT);
                 }
             }
             tabsApi.updateTabMetadata(tab.tabId, {
-                frameWhitelistRule,
+                frameWhitelistRule: frameAllowlistRule,
                 applicationFilteringDisabled,
             });
         }

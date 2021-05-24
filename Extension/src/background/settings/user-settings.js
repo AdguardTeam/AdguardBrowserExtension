@@ -51,6 +51,7 @@ export const settings = (() => {
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
         DEFAULT_ALLOWLIST_MODE: 'default-whitelist-mode',
+        ALLOWLIST_ENABLED: 'allowlist-enabled',
         DISABLE_SHOW_APP_UPDATED_NOTIFICATION: 'show-app-updated-disabled',
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
         APPEARANCE_THEME: 'appearance-theme',
@@ -90,6 +91,7 @@ export const settings = (() => {
                 defaults[settings.DISABLE_SAFEBROWSING] = true;
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
                 defaults[settings.DEFAULT_ALLOWLIST_MODE] = true;
+                defaults[settings.ALLOWLIST_ENABLED] = true;
                 defaults[settings.USE_OPTIMIZED_FILTERS] = prefs.mobile;
                 defaults[settings.DISABLE_DETECT_FILTERS] = false;
                 defaults[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION] = false;
@@ -252,6 +254,14 @@ export const settings = (() => {
         setProperty(settings.DEFAULT_ALLOWLIST_MODE, enabled);
     };
 
+    const setAllowlistEnabledState = (enabled) => {
+        setProperty(settings.ALLOWLIST_ENABLED, enabled);
+    };
+
+    const getAllowlistEnabledState = () => {
+        return getProperty(settings.ALLOWLIST_ENABLED);
+    };
+
     /**
      * Sets filters update period after conversion in number
      * @param period
@@ -376,6 +386,8 @@ export const settings = (() => {
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
     api.changeDefaultAllowlistMode = changeDefaultAllowlistMode;
+    api.setAllowlistEnabledState = setAllowlistEnabledState;
+    api.getAllowlistEnabledState = getAllowlistEnabledState;
     api.getFiltersUpdatePeriod = getFiltersUpdatePeriod;
     api.setFiltersUpdatePeriod = setFiltersUpdatePeriod;
     api.disableShowAdguardPromoInfo = disableShowAdguardPromoInfo;

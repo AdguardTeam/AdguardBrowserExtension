@@ -290,30 +290,30 @@ export const webRequestService = (function () {
             return null;
         }
 
-        let whitelistRule;
+        let allowlistRule;
         /**
          * Background requests will be whitelisted if their referrer
          * url will match with user whitelist rule
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1032
          */
         if (tab.tabId === BACKGROUND_TAB_ID) {
-            whitelistRule = allowlist.findAllowlistRule(referrerUrl);
+            allowlistRule = allowlist.findAllowlistRule(referrerUrl);
         } else {
-            whitelistRule = frames.getFrameWhitelistRule(tab);
+            allowlistRule = frames.getFrameWhitelistRule(tab);
         }
 
-        if (whitelistRule && whitelistRule.isDocumentWhitelistRule()) {
+        if (allowlistRule && allowlistRule.isDocumentWhitelistRule()) {
             // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
-            return whitelistRule;
+            return allowlistRule;
         }
 
-        if (!whitelistRule) {
+        if (!allowlistRule) {
             // If whitelist rule is not found for the main frame, we check it for referrer
-            whitelistRule = filteringApi.findWhitelistRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
+            allowlistRule = filteringApi.findWhitelistRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         }
 
-        return filteringApi.findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
+        return filteringApi.findRuleForRequest(requestUrl, referrerUrl, requestType, allowlistRule);
     };
 
     /**

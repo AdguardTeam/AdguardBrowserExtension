@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
+
 import { SettingsSection } from '../Settings/SettingsSection';
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { Editor } from '../Editor';
 import { rootStore } from '../../stores/RootStore';
 import { uploadFile } from '../../../helpers';
@@ -10,6 +10,7 @@ import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -79,11 +80,25 @@ const Allowlist = observer(() => {
         },
     }];
 
+    const allowlistChangeHandler = async (e) => {
+        const { id, data } = e;
+        await settingsStore.updateSetting(id, data);
+    };
+
+    const { ALLOWLIST_ENABLED } = settings.names;
+
     return (
         <>
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
-                // TODO add switch
+                inlineControl={(
+                    <Setting
+                        id={ALLOWLIST_ENABLED}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        value={settings.values[ALLOWLIST_ENABLED]}
+                        handler={allowlistChangeHandler}
+                    />
+                )}
             >
                 {!settings.values[DEFAULT_ALLOWLIST_MODE] && (
                     <div className="setting__alert">
