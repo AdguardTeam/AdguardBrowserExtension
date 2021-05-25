@@ -7,7 +7,6 @@ import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
 import classnames from 'classnames';
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 import { Editor } from '../Editor';
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -18,8 +17,10 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Icon } from '../../../common/components/ui/Icon';
+import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 
 import './styles.pcss';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -126,6 +127,12 @@ const UserRules = observer(() => {
         'actions__btn--active': settingsStore.userRulesEditorWrapState,
     });
 
+    const handleUserGroupToggle = async (e) => {
+        await settingsStore.updateSetting(e.id, e.data);
+    };
+
+    const { USER_FILTER_ENABLED } = settingsStore.settings.names;
+
     return (
         <>
             <SettingsSection
@@ -142,7 +149,14 @@ const UserRules = observer(() => {
                         </a>
                     ),
                 })}
-                // TODO add switch
+                inlineControl={(
+                    <Setting
+                        id={USER_FILTER_ENABLED}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        value={settingsStore.settings.values[USER_FILTER_ENABLED]}
+                        handler={handleUserGroupToggle}
+                    />
+                )}
             />
             <Editor
                 name="user-rules"

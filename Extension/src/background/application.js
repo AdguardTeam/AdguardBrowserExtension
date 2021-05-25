@@ -22,7 +22,7 @@ import { utils } from './utils/common';
 import { subscriptions } from './filter/filters/subscription';
 import { filtersUpdate } from './filter/filters/filters-update';
 import { listeners } from './notifier';
-import { CUSTOM_FILTERS_GROUP_ID } from '../../../tools/constants';
+import { ANTIBANNER_GROUPS_ID } from '../common/constants';
 
 /**
  * AdGuard application class
@@ -116,7 +116,7 @@ export const application = (() => {
                 ? Date.now() - f.lastCheckTime > ENABLED_FILTERS_SKIP_TIMEOUT
                 : true)
                 // but always check for updates for custom filters
-                || f.groupId === CUSTOM_FILTERS_GROUP_ID);
+                || f.groupId === ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID);
 
             if (outdatedFilters.length > 0) {
                 try {

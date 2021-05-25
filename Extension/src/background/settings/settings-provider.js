@@ -79,6 +79,7 @@ export const settingsProvider = (function () {
 
         // Collect user rules
         const content = await userrules.getUserRulesText();
+        const userFilterEnabled = settings.getUserFilterEnabled();
         const section = {
             'filters': {
                 'enabled-groups': enabledGroupIds,
@@ -87,6 +88,7 @@ export const settingsProvider = (function () {
                 'user-filter': {
                     'rules': content,
                     'disabled-rules': '',
+                    enabled: userFilterEnabled,
                 },
                 'whitelist': {
                     'inverted': !defaultWhitelistMode,
@@ -384,8 +386,12 @@ export const settingsProvider = (function () {
 
         const userFilterSection = section.filters['user-filter'] || {};
         const userRules = userFilterSection.rules || '';
+        const userFilterEnabled = typeof userFilterSection.enabled === 'undefined'
+            ? true
+            : userFilterSection.enabled;
 
         // Apply user rules
+        settings.setUserFilterEnabled(userFilterEnabled);
         userrules.updateUserRulesText(userRules);
 
         // Apply custom filters

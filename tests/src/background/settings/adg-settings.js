@@ -23,6 +23,7 @@ export const adgSettings = JSON.stringify({
         'user-filter': {
             'rules': '',
             'disabled-rules': '',
+            'enabled': true,
         },
         'whitelist': {
             'inverted': false,

@@ -18,6 +18,16 @@ export const ANTIBANNER_FILTERS_ID = {
 };
 
 /**
+ * Group ids used in the code on the multiple entry points
+ */
+export const ANTIBANNER_GROUPS_ID = {
+    // custom filters group identifier
+    CUSTOM_FILTERS_GROUP_ID: 0,
+    // other filters group identifier
+    OTHER_FILTERS_GROUP_ID: 6,
+};
+
+/**
  * Stealth action bitwise masks used o the background page and on the filtering log page
  */
 export const STEALTH_ACTIONS = {

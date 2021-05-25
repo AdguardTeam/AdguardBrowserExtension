@@ -10,10 +10,10 @@ import { log } from '../../../common/log';
 import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../components/Editor/savingFSM';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
-import { OTHER_FILTERS_GROUP_ID } from '../../../../../tools/constants';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import { sortFilters, updateFilters } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
+import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
 
 const savingUserRulesService = createSavingService({
     id: 'userRules',
@@ -212,7 +212,8 @@ class SettingsStore {
         await messenger.updateGroupStatus(id, enabled);
         runInAction(() => {
             const groupId = parseInt(id, 10);
-            if (groupId === OTHER_FILTERS_GROUP_ID && this.isAllowAcceptableAdsFilterEnabled()) {
+            if (groupId === ANTIBANNER_GROUPS_ID.OTHER_FILTERS_GROUP_ID
+                && this.isAllowAcceptableAdsFilterEnabled()) {
                 this.allowAcceptableAds = enabled;
             }
             this.categories.forEach((group) => {

@@ -146,4 +146,22 @@ describe('settingsProvider', () => {
         await settingsProvider.applySettingsBackup(JSON.stringify(obj));
         expect(settings.getAllowlistEnabledState()).toBeTruthy();
     });
+
+    it('handles enabled state of user filters', async () => {
+        const obj = JSON.parse(adgSettings);
+        const USER_FILTER_ENABLED_PATH = 'filters.user-filter.enabled';
+
+        _.set(obj, USER_FILTER_ENABLED_PATH, true);
+        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(settings.getUserFilterEnabled()).toBeTruthy();
+
+        _.set(obj, USER_FILTER_ENABLED_PATH, false);
+        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(settings.getUserFilterEnabled()).toBeFalsy();
+
+        // by default should be true
+        _.unset(obj, USER_FILTER_ENABLED_PATH);
+        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
+        expect(settings.getUserFilterEnabled()).toBeTruthy();
+    });
 });

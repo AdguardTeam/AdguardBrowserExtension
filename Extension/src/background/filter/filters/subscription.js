@@ -25,8 +25,8 @@ import { utils } from '../../utils/common';
 import { localScriptRulesService } from '../rules/local-script-rules';
 import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
-import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../tools/constants';
 import { translator } from '../../../common/translators/translator';
+import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -301,7 +301,6 @@ export const subscriptions = (() => {
         return max >= CUSTOM_FILTERS_START_ID ? max + 1 : CUSTOM_FILTERS_START_ID;
     };
 
-
     const CUSTOM_FILTERS_JSON_KEY = 'custom_filters';
 
     /**
@@ -445,7 +444,7 @@ export const subscriptions = (() => {
         const name = title;
 
         timeUpdated = timeUpdated || new Date().toISOString();
-        const groupId = CUSTOM_FILTERS_GROUP_ID;
+        const groupId = ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID;
         const subscriptionUrl = url;
         const languages = [];
         const displayNumber = 0;
@@ -539,7 +538,7 @@ export const subscriptions = (() => {
         name = name || title;
         timeUpdated = timeUpdated || new Date().toISOString();
 
-        const groupId = CUSTOM_FILTERS_GROUP_ID;
+        const groupId = ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID;
         const subscriptionUrl = url;
         const languages = [];
         const displayNumber = 0;
@@ -604,7 +603,7 @@ export const subscriptions = (() => {
         }
 
         const customFiltersGroup = new SubscriptionGroup(
-            CUSTOM_FILTERS_GROUP_ID,
+            ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID,
             translator.getMessage('options_antibanner_custom_group'),
             CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
         );

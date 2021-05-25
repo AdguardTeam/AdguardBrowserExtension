@@ -12,12 +12,11 @@ import { FiltersUpdate } from './FiltersUpdate';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
-import { CUSTOM_FILTERS_GROUP_ID } from '../../../../../../tools/constants';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
 import { SEARCH_FILTERS } from './Search/constants';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { log } from '../../../../common/log';
+import { ANTIBANNER_GROUPS_ID } from '../../../../common/constants';
 
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',
@@ -165,7 +164,7 @@ const Filters = observer(() => {
             return group.groupId === settingsStore.selectedGroupId;
         });
 
-        const isCustom = settingsStore.selectedGroupId === CUSTOM_FILTERS_GROUP_ID;
+        const isCustom = settingsStore.selectedGroupId === ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID;
         const isEmpty = filtersToRender.length === 0;
 
         const groupChangeHandler = async ({ id, data }) => {

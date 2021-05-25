@@ -56,6 +56,9 @@ export const settings = (() => {
         FILTERS_UPDATE_PERIOD: 'filters-update-period',
         APPEARANCE_THEME: 'appearance-theme',
 
+        /* User filter */
+        USER_FILTER_ENABLED: 'user-filter-enabled',
+
         /* STEALTH MODE */
         DISABLE_STEALTH_MODE: 'stealth_disable_stealth_mode',
         HIDE_REFERRER: 'stealth-hide-referrer',
@@ -109,6 +112,7 @@ export const settings = (() => {
                 defaults[settings.STRIP_TRACKING_PARAMETERS] = true;
                 defaults[settings.TRACKING_PARAMETERS] = DEFAULT_TRACKING_PARAMETERS;
                 defaults[settings.APPEARANCE_THEME] = APPEARANCE_THEMES.SYSTEM;
+                defaults[settings.USER_FILTER_ENABLED] = true;
                 return defaults;
             });
         },
@@ -351,6 +355,14 @@ export const settings = (() => {
         }
     };
 
+    const getUserFilterEnabled = () => {
+        return getProperty(settings.USER_FILTER_ENABLED);
+    };
+
+    const setUserFilterEnabled = (state) => {
+        setProperty(settings.USER_FILTER_ENABLED, state);
+    };
+
     const api = {};
 
     // Expose settings to api
@@ -421,6 +433,10 @@ export const settings = (() => {
     // Appearance mode methods
     api.setAppearanceTheme = setAppearanceTheme;
     api.getAppearanceTheme = getAppearanceTheme;
+
+    // User filter settings
+    api.getUserFilterEnabled = getUserFilterEnabled;
+    api.setUserFilterEnabled = setUserFilterEnabled;
 
     return api;
 })();

@@ -486,8 +486,11 @@ export const antiBannerService = (() => {
                     promises.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
                 }
             }
-            // get user filter rules from storage
-            promises.push(loadFilterRulesFromStorage(utils.filters.USER_FILTER_ID, rulesFilterMap));
+
+            if (settings.getUserFilterEnabled()) {
+                // get user filter rules from storage
+                promises.push(loadFilterRulesFromStorage(utils.filters.USER_FILTER_ID, rulesFilterMap));
+            }
 
             // Load all filters and then recreate request filter
             await Promise.all(promises);
@@ -652,11 +655,19 @@ export const antiBannerService = (() => {
             RELOAD_FILTERS_DEBOUNCE_PERIOD,
         );
 
-        settings.onUpdated.addListener((setting) => {
-            if (setting === settings.USE_OPTIMIZED_FILTERS) {
-                onUsedOptimizedFiltersChange();
-            } else if (setting === settings.FILTERS_UPDATE_PERIOD) {
-                filtersUpdate.scheduleFiltersUpdate();
+        settings.onUpdated.addListener(async (setting) => {
+            switch (setting) {
+                case settings.USE_OPTIMIZED_FILTERS:
+                    onUsedOptimizedFiltersChange();
+                    break;
+                case settings.FILTERS_UPDATE_PERIOD:
+                    filtersUpdate.scheduleFiltersUpdate();
+                    break;
+                case settings.USER_FILTER_ENABLED:
+                    await createRequestFilter();
+                    break;
+                default:
+                    break;
             }
         });
     }
