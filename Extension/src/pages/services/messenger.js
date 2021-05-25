@@ -248,8 +248,8 @@ class Messenger {
         return this.sendMessage(MESSAGE_TYPES.SYNCHRONIZE_OPEN_TABS);
     }
 
-    async clearEventsByTabId(tabId) {
-        return this.sendMessage(MESSAGE_TYPES.CLEAR_EVENTS_BY_TAB_ID, { tabId });
+    async clearEventsByTabId(tabId, ignorePreserveLog) {
+        return this.sendMessage(MESSAGE_TYPES.CLEAR_EVENTS_BY_TAB_ID, { tabId, ignorePreserveLog });
     }
 
     async refreshPage(tabId, preserveLogEnabled) {
@@ -274,6 +274,10 @@ class Messenger {
 
     async getTabFrameInfoById(tabId) {
         return this.sendMessage(MESSAGE_TYPES.GET_TAB_FRAME_INFO_BY_ID, { tabId });
+    }
+
+    async setPreserveLogState(state) {
+        return this.sendMessage(MESSAGE_TYPES.SET_PRESERVE_LOG_STATE, { state });
     }
 }
 

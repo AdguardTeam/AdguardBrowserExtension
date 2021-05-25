@@ -210,7 +210,7 @@ class LogStore {
 
     @action
     onTabReset(tabInfo) {
-        if (this.selectedTabId === tabInfo.tabId && !this.preserveLogEnabled) {
+        if (this.selectedTabId === tabInfo.tabId) {
             this.filteringEvents = [];
         }
     }
@@ -307,11 +307,16 @@ class LogStore {
 
     @action
     getFilteringLogData = async () => {
-        const { filtersMetadata, settings } = await messenger.getFilteringLogData();
+        const {
+            filtersMetadata,
+            settings,
+            preserveLogEnabled,
+        } = await messenger.getFilteringLogData();
 
         runInAction(() => {
             this.filtersMetadata = filtersMetadata;
             this.settings = settings;
+            this.preserveLogEnabled = preserveLogEnabled;
         });
     };
 
@@ -380,9 +385,14 @@ class LogStore {
         return filteredEvents;
     }
 
+    /**
+     * Clears filtering events ignoring preserve log
+     * @return {Promise<void>}
+     */
     @action
     clearFilteringEvents = async () => {
-        await messenger.clearEventsByTabId(this.selectedTabId);
+        const ignorePreserveLog = true;
+        await messenger.clearEventsByTabId(this.selectedTabId, ignorePreserveLog);
         runInAction(() => {
             this.filteringEvents = [];
         });
@@ -396,9 +406,6 @@ class LogStore {
     @action
     refreshPage = async () => {
         if (this.selectedTabId === -1) {
-            if (this.preserveLogEnabled) {
-                return;
-            }
             await messenger.clearEventsByTabId(this.selectedTabId);
             return;
         }
@@ -406,8 +413,11 @@ class LogStore {
     };
 
     @action
-    setPreserveLog = (value) => {
-        this.preserveLogEnabled = value;
+    setPreserveLog = async (state) => {
+        await messenger.setPreserveLogState(state);
+        runInAction(() => {
+            this.preserveLogEnabled = state;
+        });
     };
 
     toNumberOrString = (dirtyString) => {

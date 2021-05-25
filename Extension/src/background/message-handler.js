@@ -328,6 +328,7 @@ const createMessageHandler = () => {
                 return {
                     filtersMetadata: subscriptions.getFilters(),
                     settings: settings.getAllSettings(),
+                    preserveLogEnabled: filteringLog.isPreserveLogEnabled(),
                 };
             }
             case MESSAGE_TYPES.OPEN_SAFEBROWSING_TRUSTED: {
@@ -417,12 +418,10 @@ const createMessageHandler = () => {
                 filteringLog.onCloseFilteringLogPage();
                 break;
             case MESSAGE_TYPES.CLEAR_EVENTS_BY_TAB_ID:
-                filteringLog.clearEventsByTabId(data.tabId);
+                filteringLog.clearEventsByTabId(data.tabId, data.ignorePreserveLog);
                 break;
             case MESSAGE_TYPES.REFRESH_PAGE:
-                if (!data.preserveLogEnabled) {
-                    filteringLog.clearEventsByTabId(data.tabId);
-                }
+                filteringLog.clearEventsByTabId(data.tabId);
                 await tabsApi.reload(data.tabId);
                 break;
             case MESSAGE_TYPES.GET_TAB_FRAME_INFO_BY_ID: {
@@ -564,6 +563,11 @@ const createMessageHandler = () => {
                 });
                 // reload tab
                 await tabsApi.reload(tabId, url);
+                break;
+            }
+            case MESSAGE_TYPES.SET_PRESERVE_LOG_STATE: {
+                const { state } = data;
+                filteringLog.setPreserveLogState(state);
                 break;
             }
             default:

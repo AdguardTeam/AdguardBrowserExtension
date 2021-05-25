@@ -42,6 +42,12 @@ const browsersFilteringLog = (function () {
     const tabsInfoMap = Object.create(null);
     let openedFilteringLogsPage = 0;
 
+    /**
+     * Keep preserve log state on background page
+     * @type {boolean}
+     */
+    let preserveLogEnabled = false;
+
     // Force to add background tab if it's defined
     if (prefs.features.hasBackgroundTab) {
         tabsInfoMap[backgroundTabId] = backgroundTab;
@@ -548,10 +554,14 @@ const browsersFilteringLog = (function () {
     /**
      * Remove log requests for tab
      * @param tabId
+     * @param {boolean} ignorePreserveLog
      */
-    const clearEventsByTabId = function (tabId) {
+    const clearEventsByTabId = function (tabId, ignorePreserveLog) {
         const tabInfo = tabsInfoMap[tabId];
-        if (tabInfo) {
+
+        const preserveLog = ignorePreserveLog ? false : preserveLogEnabled;
+
+        if (tabInfo && !preserveLog) {
             delete tabInfo.filteringEvents;
             listeners.notifyListeners(listeners.TAB_RESET, tabInfo);
         }
@@ -594,6 +604,22 @@ const browsersFilteringLog = (function () {
     };
 
     /**
+     * Returns info if preserve log is enabled
+     * @return {boolean}
+     */
+    const isPreserveLogEnabled = () => {
+        return preserveLogEnabled;
+    };
+
+    /**
+     * Allows to toggle preserve log state
+     * @param enabled
+     */
+    const setPreserveLogState = (enabled) => {
+        preserveLogEnabled = enabled;
+    };
+
+    /**
      * We should synchronize open tabs and add listeners to the tabs after application
      * is initialized. Otherwise updating tabs can return wrong stats values and
      * overwrite them with wrong data
@@ -631,6 +657,9 @@ const browsersFilteringLog = (function () {
         isOpen,
         onOpenFilteringLogPage,
         onCloseFilteringLogPage,
+
+        isPreserveLogEnabled,
+        setPreserveLogState,
     };
 })();
 

@@ -104,6 +104,7 @@ export const MESSAGE_TYPES = {
     SAVE_COOKIE_LOG_EVENT: 'saveCookieRuleEvent',
     LOAD_SETTINGS_JSON: 'loadSettingsJson',
     ADD_URL_TO_TRUSTED: 'addUrlToTrusted',
+    SET_PRESERVE_LOG_STATE: 'setPreserveLogState',
 };
 
 export const NOTIFIER_TYPES = {
