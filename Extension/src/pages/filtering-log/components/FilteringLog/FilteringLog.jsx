@@ -28,6 +28,18 @@ const FilteringLog = observer(() => {
         })();
     }, []);
 
+    // FIXME preserve log should work
+    useEffect(() => {
+        const FETCH_EVENTS_TIMEOUT_MS = 1500;
+        const intervalId = setInterval(async () => {
+            await logStore.getFilteringLogEvents();
+        }, FETCH_EVENTS_TIMEOUT_MS);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
+
     // listen for hash change
     useEffect(() => {
         const handleHashChange = async () => {
@@ -55,8 +67,6 @@ const FilteringLog = observer(() => {
                 NOTIFIER_TYPES.TAB_UPDATE,
                 NOTIFIER_TYPES.TAB_CLOSE,
                 NOTIFIER_TYPES.TAB_RESET,
-                NOTIFIER_TYPES.LOG_EVENT_ADDED,
-                NOTIFIER_TYPES.LOG_EVENT_UPDATED,
                 NOTIFIER_TYPES.SETTING_UPDATED,
             ];
 
@@ -81,16 +91,6 @@ const FilteringLog = observer(() => {
                         case NOTIFIER_TYPES.TAB_RESET: {
                             const [tabInfo] = data;
                             logStore.onTabReset(tabInfo);
-                            break;
-                        }
-                        case NOTIFIER_TYPES.LOG_EVENT_ADDED: {
-                            const [tabInfo, event] = data;
-                            logStore.onEventAdded(tabInfo, event);
-                            break;
-                        }
-                        case NOTIFIER_TYPES.LOG_EVENT_UPDATED: {
-                            const [tabInfo, event] = data;
-                            logStore.onEventUpdated(tabInfo, event);
                             break;
                         }
                         case NOTIFIER_TYPES.SETTING_UPDATED: {

@@ -5,10 +5,8 @@ import {
     computed,
     runInAction,
 } from 'mobx';
-import findIndex from 'lodash/findIndex';
 import find from 'lodash/find';
 import identity from 'lodash/identity';
-import throttle from 'lodash/throttle';
 import truncate from 'lodash/truncate';
 
 import { reactTranslator } from '../../../common/translators/reactTranslator';
@@ -29,13 +27,6 @@ export const REQUEST_SOURCE_FILTERS = {
     FIRST_PARTY: 'first_party',
     THIRD_PARTY: 'third_party',
 };
-
-const BUFFER_TYPES = {
-    ADDED: 'added',
-    UPDATED: 'updated',
-};
-
-const TABLE_RENDER_THROTTLE_TIMEOUT = 500;
 
 class LogStore {
     @observable filteringEvents = [];
@@ -245,82 +236,11 @@ class LogStore {
     };
 
     @action
-    onEventUpdated(tabInfo, filteringEvent) {
-        if (tabInfo.tabId !== this.selectedTabId) {
-            return;
-        }
-
-        this.addToBuffer(BUFFER_TYPES.UPDATED, this.formatEvent(filteringEvent));
-    }
-
-    @action
     onSettingUpdated(name, value) {
         if (!this.settings) {
             return;
         }
         this.settings.values[name] = value;
-    }
-
-    bufferOfAddedEvents = [];
-
-    bufferOfUpdatedEvents = [];
-
-    throttledAppendEvents = throttle(() => {
-        runInAction(() => {
-            const updatedFilteringEvents = [...this.filteringEvents, ...this.bufferOfAddedEvents];
-
-            this.bufferOfUpdatedEvents.forEach((filteringEvent) => {
-                const { eventId } = filteringEvent;
-                const eventIdx = findIndex(updatedFilteringEvents, { eventId });
-
-                if (eventIdx === -1) {
-                    updatedFilteringEvents.push(filteringEvent);
-                } else {
-                    updatedFilteringEvents[eventIdx] = filteringEvent;
-                }
-            });
-
-            // empty buffers
-            this.bufferOfAddedEvents = [];
-            this.bufferOfUpdatedEvents = [];
-
-            this.filteringEvents = updatedFilteringEvents;
-        });
-    }, TABLE_RENDER_THROTTLE_TIMEOUT);
-
-    /**
-     * Used to throttle renders of filtering events table
-     * @param eventType
-     * @param filteringEvent
-     */
-    addToBuffer = (eventType, filteringEvent) => {
-        if (eventType === BUFFER_TYPES.ADDED) {
-            this.bufferOfAddedEvents.push(filteringEvent);
-        } else if (eventType === BUFFER_TYPES.UPDATED) {
-            this.bufferOfUpdatedEvents.push(filteringEvent);
-        }
-
-        this.throttledAppendEvents();
-    };
-
-    @action
-    onEventAdded(tabInfo, filteringEvent) {
-        if (tabInfo.tabId !== this.selectedTabId) {
-            return;
-        }
-
-        // clear events
-        if (filteringEvent.requestType === RequestTypes.DOCUMENT
-            && !filteringEvent?.requestRule?.cookieRule
-            && !filteringEvent.element
-            && !filteringEvent.script
-            && !this.preserveLogEnabled) {
-            this.bufferOfAddedEvents = [];
-            this.bufferOfUpdatedEvents = [];
-            this.filteringEvents = [];
-        }
-
-        this.addToBuffer(BUFFER_TYPES.ADDED, this.formatEvent(filteringEvent));
     }
 
     getTabs = () => {
@@ -393,6 +313,11 @@ class LogStore {
             this.filtersMetadata = filtersMetadata;
             this.settings = settings;
         });
+    };
+
+    @action
+    getFilteringLogEvents = async () => {
+        await this.getEventsByTabId(this.selectedTabId);
     };
 
     @computed
