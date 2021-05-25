@@ -28,7 +28,6 @@ const FilteringLog = observer(() => {
         })();
     }, []);
 
-    // FIXME preserve log should work
     useEffect(() => {
         const FETCH_EVENTS_TIMEOUT_MS = 1500;
         const intervalId = setInterval(async () => {
