@@ -70,6 +70,7 @@
             requestType,
             frameId,
             requestFrameId = 0,
+            method,
         } = requestDetails;
 
         const { tabId } = tab;
@@ -127,7 +128,7 @@
         adguard.requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
         // Strip tracking parameters
-        const cleansedUrl = adguard.webRequestService.removeParamsFromUrl(requestId);
+        const cleansedUrl = adguard.webRequestService.removeParamsFromUrl(requestId, method);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }
