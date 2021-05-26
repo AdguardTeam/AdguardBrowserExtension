@@ -412,9 +412,16 @@ adguard.webRequestService = (function (adguard) {
     /**
      * Finds removeparam rules and applies them to the url
      * @param {number} requestId
+     * @param {string} method
      * @returns {string|null}
      */
-    const removeParamsFromUrl = (requestId) => {
+    const removeParamsFromUrl = (requestId, method) => {
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#removeparam-modifier
+        const canByAppliedToMethod = method && ['GET', 'OPTIONS', 'HEAD'].includes(method.toUpperCase());
+        if (!canByAppliedToMethod) {
+            return null;
+        }
+
         const context = adguard.requestContextStorage.get(requestId);
 
         if (!context) {
