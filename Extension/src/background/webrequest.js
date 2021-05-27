@@ -106,12 +106,6 @@ const webrequestInit = function () {
             // Record request context for the main frame
             requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
 
-            // Strip tracking parameters
-            const cleansedUrl = stealthService.removeTrackersFromUrl(requestId);
-            if (cleansedUrl) {
-                return { redirectUrl: cleansedUrl };
-            }
-
             /**
              * Just to remember!
              * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame
@@ -146,14 +140,8 @@ const webrequestInit = function () {
         // Record request for other types
         requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
-        // Strip tracking parameters
-        let cleansedUrl = stealthService.removeTrackersFromUrl(requestId);
-        if (cleansedUrl) {
-            return { redirectUrl: cleansedUrl };
-        }
-
         // Strip by removeparam rules
-        cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType);
+        let cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }
