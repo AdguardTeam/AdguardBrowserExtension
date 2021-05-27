@@ -90,6 +90,7 @@ const webrequestInit = function () {
             requestType,
             frameId,
             requestFrameId = 0,
+            method,
         } = requestDetails;
 
         const { tabId } = tab;
@@ -141,7 +142,7 @@ const webrequestInit = function () {
         requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
         // Strip by removeparam rules
-        let cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType);
+        const cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType, method);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }

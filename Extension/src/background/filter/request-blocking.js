@@ -413,11 +413,18 @@ export const webRequestService = (function () {
      * @param requestUrl
      * @param referrerUrl
      * @param requestType
+     * @param method
      * @returns {*} Collection of rules or null
      */
-    const removeParamFromUrl = (tab, requestUrl, referrerUrl, requestType) => {
+    const removeParamFromUrl = (tab, requestUrl, referrerUrl, requestType, method) => {
         if (frames.shouldStopRequestProcess(tab)) {
             // don't process request
+            return null;
+        }
+
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#removeparam-modifier
+        const canByAppliedToMethod = method && ['GET', 'OPTIONS', 'HEAD'].includes(method.toUpperCase());
+        if (!canByAppliedToMethod) {
             return null;
         }
 
