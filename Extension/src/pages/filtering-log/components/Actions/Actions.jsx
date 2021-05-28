@@ -61,7 +61,7 @@ const Actions = observer(() => {
                         name="preserveLog"
                         id="preserveLog"
                         onChange={preserveLogHandler}
-                        defaultChecked={false}
+                        checked={preserveLogEnabled}
                     />
                     <div className={preserveLogClassName}>
                         <Icon id="#checked" classname="icon--checked" />
