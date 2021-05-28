@@ -8,6 +8,7 @@ import {
     runInAction,
     makeObservable,
 } from 'mobx';
+import punycode from 'punycode/';
 
 import { messenger } from '../../services/messenger';
 import { POPUP_STATES, TIME_RANGES, VIEW_STATES } from '../constants';
@@ -136,7 +137,7 @@ class PopupStore {
     @computed
     get currentSite() {
         if (this.applicationAvailable) {
-            return this.domainName ? this.domainName : this.url;
+            return this.domainName ? punycode.toUnicode(this.domainName) : this.url;
         }
         return this.url;
     }

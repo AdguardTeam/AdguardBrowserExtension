@@ -90,6 +90,7 @@ const webrequestInit = function () {
             requestType,
             frameId,
             requestFrameId = 0,
+            method,
         } = requestDetails;
 
         const { tabId } = tab;
@@ -105,12 +106,6 @@ const webrequestInit = function () {
 
             // Record request context for the main frame
             requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
-
-            // Strip tracking parameters
-            const cleansedUrl = stealthService.removeTrackersFromUrl(requestId);
-            if (cleansedUrl) {
-                return { redirectUrl: cleansedUrl };
-            }
 
             /**
              * Just to remember!
@@ -146,14 +141,8 @@ const webrequestInit = function () {
         // Record request for other types
         requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
-        // Strip tracking parameters
-        let cleansedUrl = stealthService.removeTrackersFromUrl(requestId);
-        if (cleansedUrl) {
-            return { redirectUrl: cleansedUrl };
-        }
-
         // Strip by removeparam rules
-        cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType);
+        const cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType, method);
         if (cleansedUrl) {
             return { redirectUrl: cleansedUrl };
         }

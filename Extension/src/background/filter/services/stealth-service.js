@@ -85,38 +85,6 @@ export const stealthService = (() => {
     };
 
     /**
-     * Strips out the tracking codes/parameters from a URL and return the cleansed URL
-     *
-     * @param requestId
-     */
-    const removeTrackersFromUrl = (requestId) => {
-        const context = requestContextStorage.get(requestId);
-        if (!context || context.requestType !== RequestTypes.DOCUMENT) {
-            return null;
-        }
-
-        log.debug('Stealth service processing request url for {0}', context.requestUrl);
-
-        if (!canApplyStealthActionsToContext(context)) {
-            return null;
-        }
-
-        const result = engine.removeTrackersFromUrl(context.requestUrl);
-        if (result) {
-            log.debug(`Stealth stripped tracking parameters for url: ${context.requestUrl}`);
-            filteringLog.bindStealthActionsToHttpRequestEvent(
-                context.tab,
-                STEALTH_ACTIONS.STRIPPED_TRACKING_URL,
-                context.eventId,
-            );
-
-            return result;
-        }
-
-        return null;
-    };
-
-    /**
      * Checks if stealth actions are available for provided request context
      *
      * @param context
@@ -437,7 +405,6 @@ export const stealthService = (() => {
         processRequestHeaders,
         getStealthModeRuleList,
         hasFilterRules,
-        removeTrackersFromUrl,
         canBlockWebRTC,
         STEALTH_ACTIONS,
     };
