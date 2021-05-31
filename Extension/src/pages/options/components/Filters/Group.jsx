@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { Filter } from './Filter';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
@@ -54,50 +55,74 @@ const renderEnabledFilters = (enabledFilters) => {
     return reactTranslator.getMessage('options_filters_no_enabled');
 };
 
+const renderSearchFilters = (matchedFilters) => {
+    return matchedFilters
+        .map((filter) => <Filter key={filter.filterId} filter={filter} />);
+};
+
 const Group = ({
     groupName,
     groupId,
-    enabledFilters,
+    filtersToShow,
     groupClickHandler,
     checkboxHandler,
     checkboxValue,
+    isSearching,
 }) => {
     const groupClassName = classNames({
         setting: true,
         group: true,
         'group--disabled': !checkboxValue,
     });
+    const filtersClassName = classNames('settings__group', {
+        'settings__group--disabled': !checkboxValue,
+    });
     return (
-        <div className={groupClassName}>
-            <button type="button" className="setting__area" onClick={groupClickHandler}>
-                <Icon
-                    id={`#setting-${groupId}`}
-                    classname="icon--setting setting__icon"
-                />
-                <div className="setting__info">
-                    <div className="setting__title group__title">
-                        {groupName}
+        <>
+            <div className={groupClassName}>
+                <button type="button" className="setting__area" onClick={groupClickHandler}>
+                    <Icon
+                        id={`#setting-${groupId}`}
+                        classname="icon--setting setting__icon"
+                    />
+                    <div className="setting__info">
+                        <div className="setting__title group__title">
+                            {groupName}
+                        </div>
+                        {
+                            !isSearching
+                            && (
+                                <div className="setting__desc">
+                                    {renderEnabledFilters(filtersToShow)}
+                                </div>
+                            )
+                        }
                     </div>
-                    <div className="setting__desc">
-                        {renderEnabledFilters(enabledFilters)}
-                    </div>
+                </button>
+                <div className="setting__inline-control">
+                    <Setting
+                        id={groupId}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={groupName}
+                        value={checkboxValue}
+                        handler={checkboxHandler}
+                    />
                 </div>
-            </button>
-            <div className="setting__inline-control">
-                <Setting
-                    id={groupId}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={groupName}
-                    value={checkboxValue}
-                    handler={checkboxHandler}
-                />
             </div>
-        </div>
+            {
+                isSearching
+                && (
+                    <div className={filtersClassName}>
+                        {renderSearchFilters(filtersToShow)}
+                    </div>
+                )
+            }
+        </>
     );
 };
 
 Group.defaultProps = {
-    enabledFilters: [],
+    filtersToShow: [],
 };
 
 Group.propTypes = {
@@ -105,7 +130,7 @@ Group.propTypes = {
     groupId: PropTypes.number.isRequired,
     checkboxHandler: PropTypes.func.isRequired,
     checkboxValue: PropTypes.bool.isRequired,
-    enabledFilters: PropTypes.arrayOf(PropTypes.object),
+    filtersToShow: PropTypes.arrayOf(PropTypes.object),
     groupClickHandler: PropTypes.func.isRequired,
 };
 

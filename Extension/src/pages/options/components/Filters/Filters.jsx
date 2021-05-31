@@ -85,7 +85,7 @@ const Filters = observer(() => {
                     key={group.groupId}
                     groupName={group.groupName}
                     groupId={group.groupId}
-                    enabledFilters={enabledFilters}
+                    filtersToShow={enabledFilters}
                     groupClickHandler={groupClickHandler(group.groupId)}
                     checkboxHandler={handleGroupSwitch}
                     checkboxValue={!!group.enabled}
@@ -105,6 +105,43 @@ const Filters = observer(() => {
     const renderFilters = (filtersList) => {
         return filtersList
             .map((filter) => <Filter key={filter.filterId} filter={filter} />);
+    };
+
+    const renderGroupsOnSearch = (matchedFilters) => {
+        // collect search data as object where
+        // key is group id and value is searched filters
+        const searchData = matchedFilters
+            .reduce((acc, filter) => {
+                const { groupId } = filter;
+                if (typeof acc[groupId] === 'undefined') {
+                    acc[groupId] = [filter];
+                } else {
+                    acc[groupId].push(filter);
+                }
+                return acc;
+            }, {});
+
+        const affectedGroupsIds = Object.keys(searchData).map((id) => Number(id));
+        const groupsToRender = categories
+            .filter((group) => affectedGroupsIds.includes(group.groupId));
+        const sortedGroups = sortBy(groupsToRender, 'displayNumber')
+            .sort((a, b) => (b.enabled - a.enabled));
+
+        return sortedGroups.map((group) => {
+            const filtersToShow = searchData[group.groupId];
+            return (
+                <Group
+                    key={group.groupId}
+                    groupName={group.groupName}
+                    groupId={group.groupId}
+                    filtersToShow={filtersToShow}
+                    groupClickHandler={groupClickHandler(group.groupId)}
+                    checkboxHandler={handleGroupSwitch}
+                    checkboxValue={!!group.enabled}
+                    isSearching={settingsStore.isSearching}
+                />
+            );
+        });
     };
 
     const openModalHandler = () => {
@@ -164,6 +201,7 @@ const Filters = observer(() => {
             return group.groupId === settingsStore.selectedGroupId;
         });
 
+        // eslint-disable-next-line max-len
         const isCustom = settingsStore.selectedGroupId === ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID;
         const isEmpty = filtersToRender.length === 0;
 
@@ -217,7 +255,7 @@ const Filters = observer(() => {
             <FiltersUpdate />
             <Search />
             {settingsStore.isSearching
-                ? renderFilters(filtersToRender)
+                ? renderGroupsOnSearch(filtersToRender)
                 : renderGroups(categories)}
         </SettingsSection>
     );
