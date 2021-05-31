@@ -58,6 +58,25 @@ const renderTags = (tags, trusted) => {
     );
 };
 
+const FILTER_PREFIX = 'filter-';
+/**
+ * Appends prefix to filter id
+ * @param filterId
+ * @return {string}
+ */
+const addPrefix = (filterId) => {
+    return `${FILTER_PREFIX}${filterId}`;
+};
+
+/**
+ * Removes prefix from filter id
+ * @param {string} extendedFilterId
+ * @return {string}
+ */
+const removePrefix = (extendedFilterId) => {
+    return extendedFilterId.replace(FILTER_PREFIX, '');
+};
+
 const Filter = observer(({ filter }) => {
     const { settingsStore } = useContext(rootStore);
 
@@ -76,7 +95,9 @@ const Filter = observer(({ filter }) => {
     } = filter;
 
     const handleFilterSwitch = async ({ id, data }) => {
-        await settingsStore.updateFilterSetting(id, data);
+        // remove prefix from filter id
+        const filterIdWithoutPrefix = removePrefix(id);
+        await settingsStore.updateFilterSetting(filterIdWithoutPrefix, data);
     };
 
     const removeCustomFilter = async () => {
@@ -104,8 +125,11 @@ const Filter = observer(({ filter }) => {
         'filter--disabled': !enabled,
     });
 
+    // We add prefix to avoid id collisions with group ids
+    const prefixedFilterId = addPrefix(filterId);
+
     return (
-        <label htmlFor={filterId} className="setting-checkbox">
+        <label htmlFor={prefixedFilterId} className="setting-checkbox">
             <div className={filterClassName} role="presentation">
                 <div className="filter__info">
                     <div className="setting__container setting__container--horizontal">
@@ -149,7 +173,7 @@ const Filter = observer(({ filter }) => {
                         </div>
                         <div className="setting__inline-control">
                             <Setting
-                                id={filterId}
+                                id={prefixedFilterId}
                                 type={SETTINGS_TYPES.CHECKBOX}
                                 label={name}
                                 value={!!enabled}
