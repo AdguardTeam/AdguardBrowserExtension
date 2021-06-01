@@ -46,7 +46,7 @@ export const localeDetect = (function () {
         'au': 'en',
         'uk': 'en',
         'nz': 'en',
-        // Deutch
+        // German
         'de': 'de',
         'at': 'de',
         // Japanese
@@ -96,6 +96,8 @@ export const localeDetect = (function () {
         'cn': 'zh',
         // Indonesian
         'id': 'id',
+        // Turkish
+        'tr': 'tr',
     };
 
     /**
