@@ -1,3 +1,5 @@
+import sortBy from 'lodash/sortBy';
+
 /**
  * Sorts filters by enabled status and displayNumber
  * @param filters
@@ -57,4 +59,10 @@ export const updateFilters = (currentFilters, newFilters) => {
     });
 
     return updatedFilters;
+};
+
+export const sortGroupsOnSearch = (groups) => {
+    const sortedGroups = sortBy(groups, 'displayNumber')
+        .sort((a, b) => (Number(b.enabled) - Number(a.enabled)));
+    return sortedGroups;
 };

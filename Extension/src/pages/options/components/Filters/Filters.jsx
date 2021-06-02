@@ -5,6 +5,7 @@ import sortBy from 'lodash/sortBy';
 import classNames from 'classnames';
 
 import { Group } from './Group';
+import { SearchGroup } from './Search/SearchGroup';
 import { Filter } from './Filter';
 import { EmptyCustom } from './EmptyCustom';
 import { Search } from './Search';
@@ -85,7 +86,7 @@ const Filters = observer(() => {
                     key={group.groupId}
                     groupName={group.groupName}
                     groupId={group.groupId}
-                    filtersToShow={enabledFilters}
+                    enabledFilters={enabledFilters}
                     groupClickHandler={groupClickHandler(group.groupId)}
                     checkboxHandler={handleGroupSwitch}
                     checkboxValue={!!group.enabled}
@@ -120,17 +121,13 @@ const Filters = observer(() => {
                 }
                 return acc;
             }, {});
-
         const affectedGroupsIds = Object.keys(searchData).map((id) => Number(id));
         const groupsToRender = categories
             .filter((group) => affectedGroupsIds.includes(group.groupId));
-        const sortedGroups = sortBy(groupsToRender, 'displayNumber')
-            .sort((a, b) => (b.enabled - a.enabled));
-
-        return sortedGroups.map((group) => {
+        return groupsToRender.map((group) => {
             const filtersToShow = searchData[group.groupId];
             return (
-                <Group
+                <SearchGroup
                     key={group.groupId}
                     groupName={group.groupName}
                     groupId={group.groupId}
@@ -138,7 +135,6 @@ const Filters = observer(() => {
                     groupClickHandler={groupClickHandler(group.groupId)}
                     checkboxHandler={handleGroupSwitch}
                     checkboxValue={!!group.enabled}
-                    isSearching={settingsStore.isSearching}
                 />
             );
         });

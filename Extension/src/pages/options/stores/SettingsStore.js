@@ -11,7 +11,7 @@ import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../com
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
-import { sortFilters, updateFilters } from '../components/Filters/helpers';
+import { sortFilters, updateFilters, sortGroupsOnSearch } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
 import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
 
@@ -382,6 +382,7 @@ class SettingsStore {
     setSearchInput = (value) => {
         this.searchInput = value;
         this.sortFilters();
+        this.sortSearchGroups();
         this.selectVisibleFilters();
     };
 
@@ -389,6 +390,7 @@ class SettingsStore {
     setSearchSelect = (value) => {
         this.searchSelect = value;
         this.sortFilters();
+        this.sortSearchGroups();
         this.selectVisibleFilters();
     };
 
@@ -409,6 +411,20 @@ class SettingsStore {
     @action
     setFilters = (filters) => {
         this.filters = filters;
+    };
+
+    /**
+     * We do not sort groups while search on every groups data update for better UI experience
+     * Groups sort happens only when user changes search filters
+     */
+    @action
+    sortSearchGroups = () => {
+        this.setGroups(sortGroupsOnSearch(this.categories));
+    };
+
+    @action
+    setGroups = (categories) => {
+        this.categories = categories;
     };
 
     /**
