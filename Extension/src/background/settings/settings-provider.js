@@ -117,8 +117,6 @@ export const settingsProvider = (function () {
                 'stealth-block-third-party-cookies-time': settings.getSelfDestructThirdPartyCookiesTime(),
                 'stealth-block-first-party-cookies': settings.getSelfDestructFirstPartyCookies(),
                 'stealth-block-first-party-cookies-time': settings.getSelfDestructFirstPartyCookiesTime(),
-                'strip-tracking-parameters': settings.getStripTrackingParameters(),
-                'tracking-parameters': settings.getTrackingParameters(),
             },
         };
         return section;
@@ -219,8 +217,6 @@ export const settingsProvider = (function () {
         settings.setSelfDestructThirdPartyCookiesTime(set['stealth-block-third-party-cookies-time']);
         settings.setSelfDestructFirstPartyCookies(!!set['stealth-block-first-party-cookies']);
         settings.setSelfDestructFirstPartyCookiesTime(set['stealth-block-first-party-cookies-time']);
-        settings.setStripTrackingParameters(!!set['strip-tracking-parameters']);
-        settings.setTrackingParameters(set['tracking-parameters']);
     };
 
     /**

@@ -70,8 +70,6 @@ export const settings = (() => {
         SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME: 'stealth-block-first-party-cookies-time',
-        STRIP_TRACKING_PARAMETERS: 'strip-tracking-parameters',
-        TRACKING_PARAMETERS: 'tracking-parameters',
     };
 
     const properties = Object.create(null);
@@ -109,8 +107,6 @@ export const settings = (() => {
                 defaults[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME] = DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES] = false;
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
-                defaults[settings.STRIP_TRACKING_PARAMETERS] = true;
-                defaults[settings.TRACKING_PARAMETERS] = DEFAULT_TRACKING_PARAMETERS;
                 defaults[settings.APPEARANCE_THEME] = APPEARANCE_THEMES.SYSTEM;
                 defaults[settings.USER_FILTER_ENABLED] = true;
                 return defaults;
@@ -308,8 +304,6 @@ export const settings = (() => {
     const getHideSearchQueries = () => getProperty(settings.HIDE_SEARCH_QUERIES);
     const getSendDoNotTrack = () => getProperty(settings.SEND_DO_NOT_TRACK);
     const isWebRTCDisabled = () => getProperty(settings.BLOCK_WEBRTC);
-    const getStripTrackingParameters = () => getProperty(settings.STRIP_TRACKING_PARAMETERS);
-    const getTrackingParameters = () => getProperty(settings.TRACKING_PARAMETERS);
     const getAppearanceTheme = () => getProperty(settings.APPEARANCE_THEME);
 
     const setDisableStealthMode = (value) => {
@@ -338,12 +332,6 @@ export const settings = (() => {
     };
     const setWebRTCDisabled = (value) => {
         setProperty(settings.BLOCK_WEBRTC, value);
-    };
-    const setStripTrackingParameters = (value) => {
-        setProperty(settings.STRIP_TRACKING_PARAMETERS, value);
-    };
-    const setTrackingParameters = (value) => {
-        setProperty(settings.TRACKING_PARAMETERS, value);
     };
     const setAppearanceTheme = (theme) => {
         const isExistingTheme = Object.values(APPEARANCE_THEMES).some(t => t === theme);
@@ -415,8 +403,6 @@ export const settings = (() => {
     api.getHideSearchQueries = getHideSearchQueries;
     api.getSendDoNotTrack = getSendDoNotTrack;
     api.isWebRTCDisabled = isWebRTCDisabled;
-    api.getStripTrackingParameters = getStripTrackingParameters;
-    api.getTrackingParameters = getTrackingParameters;
 
     api.setDisableStealthMode = setDisableStealthMode;
     api.setSelfDestructThirdPartyCookies = setSelfDestructThirdPartyCookies;
@@ -427,8 +413,6 @@ export const settings = (() => {
     api.setHideSearchQueries = setHideSearchQueries;
     api.setSendDoNotTrack = setSendDoNotTrack;
     api.setWebRTCDisabled = setWebRTCDisabled;
-    api.setStripTrackingParameters = setStripTrackingParameters;
-    api.setTrackingParameters = setTrackingParameters;
 
     // Appearance mode methods
     api.setAppearanceTheme = setAppearanceTheme;
