@@ -63,6 +63,15 @@ export const updateFilters = (currentFilters, newFilters) => {
 
 export const sortGroupsOnSearch = (groups) => {
     const sortedGroups = sortBy(groups, 'displayNumber')
-        .sort((a, b) => (Number(b.enabled) - Number(a.enabled)));
+        .sort((a, b) => {
+            // enabled first
+            if (a.enabled && !b.enabled) {
+                return -1;
+            }
+            if (!a.enabled && b.enabled) {
+                return 1;
+            }
+            return 0;
+        });
     return sortedGroups;
 };
