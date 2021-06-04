@@ -53,7 +53,12 @@ export const tabsImpl = (function () {
          * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
          * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
          */
-        const tabs = await browser.tabs.query({ currentWindow: true, active: true });
+        let tabs;
+        try {
+            tabs = await browser.tabs.query({ currentWindow: true, active: true });
+        } catch (e) {
+            log.debug(new Error(e.message));
+        }
 
         if (tabs && tabs.length > 0) {
             return tabs[0].id;
