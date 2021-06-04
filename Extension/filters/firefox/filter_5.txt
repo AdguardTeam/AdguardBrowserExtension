@@ -1,8 +1,8 @@
-! Checksum: rFVgX9ykW6ceP5E5LaYNEg
+! Checksum: PPvepRpv5nCy44ynA6TV5A
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.80
-! TimeUpdated: 2021-03-16T16:04:13+03:00
+! Version: 2.0.0.87
+! TimeUpdated: 2021-05-18T07:31:35+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -268,8 +268,10 @@ reddit.com##.CommentsPage > article[id][class][style*="z-index: 1;"]
 !
 !################## For advertisement ##################
 !
-! VAST video ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64754
 ||video-weaver.*.hls.ttvnw.net/v*/playlist/*.m3u8$replace=/#EXT-X-DATERANGE:ID="stitched-ad[\s\S]*(#EXT-X-PROGRAM-DATE-TIME)(?![\s\S]*?#EXTINF:\d\.\d+\,live)[\s\S]*|(#EXT-X-DATERANGE:ID="stitched-ad[\s\S]*?(#EXT-X-PROGRAM-DATE-TIME)([\s\S]*?(#EXTINF:\d\.\d+\,live)))/\$5/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/63128
 tumblr.com###base-container div[style="height:0;display:flex;flex-direction:column;overflow:hidden"] + div:not([class]):not([id]) > div[class]:not([data-id]):not([class*=" "])
+!
+!################## For tracking ##################
+||uim.tifbs.net/js/2048.js

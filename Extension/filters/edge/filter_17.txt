@@ -1,0 +1,108 @@
+! Checksum: BJ5h+ikZ4aTPN7zl3oMGiQ
+! Title: AdGuard URL Tracking filter
+! Description: Filter that enhances privacy by removing tracking parameters from URLs.
+! Version: 2.0.0.13
+! TimeUpdated: 2021-06-02T22:30:45+00:00
+! Expires: 4 days (update frequency)
+! Homepage: https://github.com/AdguardTeam/AdGuardFilters
+! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
+!
+!---------------------------------------------------------------------------!
+!-------------- General tracking parameters list  ----------------------------------!
+!---------------------------------------------------------------------------!
+!
+! General rules
+!
+$removeparam=asgtbndr
+$removeparam=guccounter
+$removeparam=guce_referrer
+$removeparam=guce_referrer_sig
+$removeparam=_openstat
+$removeparam=action_object_map
+$removeparam=action_ref_map
+$removeparam=action_type_map
+$removeparam=fb_action_ids
+$removeparam=fb_action_types
+$removeparam=fb_comment_id
+$removeparam=fb_ref
+$removeparam=fb_source
+$removeparam=fbclid
+$removeparam=gclid
+$removeparam=utm_campaign
+$removeparam=utm_channel
+$removeparam=utm_cid
+$removeparam=utm_content
+$removeparam=utm_medium
+$removeparam=utm_name
+$removeparam=utm_place
+$removeparam=utm_pubreferrer
+$removeparam=utm_reader
+$removeparam=utm_referrer
+$removeparam=utm_social
+$removeparam=utm_social-type
+$removeparam=utm_source
+$removeparam=utm_swu
+$removeparam=utm_term
+$removeparam=utm_userid
+$removeparam=utm_viz_id
+$removeparam=yclid
+!---------------------------------------------------------------------------!
+!-------------- Specific web sites ---------------------------------------------!
+!---------------------------------------------------------------------------!
+!
+! The rules for specific sites
+!
+||visit.digidip.net^$removeparam=/^(ppref|ref|pid)=/
+||ad.admitad.com/g/$removeparam=subid
+||mvideo.ru^$removeparam=/^(_requestid|reff)=/
+||nytimes.com^$removeparam=impression_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/83138
+||app.mi.com/download/*?id=$removeparam=ref
+||app.mi.com/download/*?id=$removeparam=nonce
+||app.mi.com/download/*?id=$removeparam=appClientId
+||app.mi.com/download/*?id=$removeparam=appSignature
+! https://github.com/AdguardTeam/AdguardFilters/issues/69722
+||digikey.com^$removeparam=/^mkt_tok/
+||digikey.com^$removeparam=/^utm_cid/
+! https://github.com/AdguardTeam/AdguardFilters/issues/83136
+||mp.weixin.qq.com^$removeparam=chksm
+||mp.weixin.qq.com^$removeparam=key
+||mp.weixin.qq.com^$removeparam=uin
+||mp.weixin.qq.com^$removeparam=devicetype
+||mp.weixin.qq.com^$removeparam=exportkey
+! Prevent tracking when request is unblocked
+||pixel.adsafeprotected.com/services/pub?$removeparam=slot
+||pixel.adsafeprotected.com/services/pub?$removeparam=sessionId
+||pixel.adsafeprotected.com/services/pub?$removeparam=anId
+||pixel.adsafeprotected.com/services/pub?$removeparam=wr
+||pixel.adsafeprotected.com/services/pub?$removeparam=sr
+||pixel.adsafeprotected.com/services/pub?$removeparam=url
+! Ads tracking
+||cam4.com^$removeparam=act
+||cam4.com^$removeparam=suid
+||cam4.com^$removeparam=showSignupPopup
+!---------------------------------------------------------------------------!
+!-------------- Whitelist ------------------------------------------------------!
+!---------------------------------------------------------------------------!
+!
+! Fixing filtering errors
+!
+! kotaku.com - "See all replies" button broken
+@@||kotaku.com/embed/comments$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/78392
+@@||lanacion.com.ar/*module$removeparam=utm_source
+! https://github.com/AdguardTeam/AdguardFilters/issues/69031 [Stealth Mode - Strip URLs from tracking parameters]
+@@||t.send.vt.edu/r/?id=$removeparam=utm_source
+@@||t.send.vt.edu/r/?id=$removeparam=utm_medium
+@@||t.send.vt.edu/r/?id=$removeparam=utm_campaign
+! https://github.com/AdguardTeam/AdguardFilters/issues/52925
+@@||fakt.pl/*&srcc=ucs$removeparam
+@@||przegladsportowy.pl/*&srcc=ucs$removeparam
+@@||auto-swiat.pl/*&srcc=ucs$removeparam
+@@||komputerswiat.pl/*&srcc=ucs$removeparam
+@@||noizz.pl/*&srcc=ucs$removeparam
+@@||plejada.pl/*&srcc=ucs$removeparam
+@@||medonet.pl/*&srcc=ucs$removeparam
+@@||businessinsider.com.pl/*&srcc=ucs$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/63522
+@@||onet.pl/?utm_source=$removeparam

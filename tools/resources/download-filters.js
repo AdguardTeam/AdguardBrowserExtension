@@ -124,7 +124,7 @@ const downloadFilter = async (url, browser) => {
  */
 const startDownload = async (browser) => {
     const urls = getUrlsOfFiltersResources(browser);
-    for (let i = 1; i < urls.length; i += 1) {
+    for (let i = 0; i < urls.length; i += 1) {
         const url = urls[i];
         // eslint-disable-next-line no-await-in-loop
         await downloadFilter(url, browser);
