@@ -1,146 +1,39 @@
 import React, {
     useContext,
-    useState,
     useRef,
 } from 'react';
 import { observer } from 'mobx-react';
-import cn from 'classnames';
 
-import { Icon } from '../../../../common/components/ui/Icon';
+import { NAVIGATION_TAGS } from '../../../../../common/constants';
 import { rootStore } from '../../../stores/RootStore';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { MISCELLANEOUS_FILTERS, REQUEST_SOURCE_FILTERS } from '../../../stores/LogStore';
-import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
+import { Tags } from '../Tags';
 
 import './miscellaneous-filters.pcss';
 
 const MiscellaneousFilters = observer(() => {
-    const [showPopup, setShowPopup] = useState(false);
-
     const ref = useRef(null);
 
     const { logStore } = useContext(rootStore);
-    const { miscellaneousFilters, requestSourceFilters } = logStore;
-
-    const filtersCheckboxHandler = (filter) => (e) => {
-        logStore.setMiscellaneousFilterValue(filter, e.target.checked);
-    };
-
-    const requestSourceFilterClickHandler = (filter) => (e) => {
-        logStore.setRequestSourceFilterValue(filter, e.target.checked);
-    };
-
-    useOutsideClick(ref, () => {
-        if (showPopup) {
-            setShowPopup(false);
-        }
-    });
-
-    const miscellaneousFiltersButtonHandler = () => {
-        if (!showPopup) {
-            setShowPopup(true);
-        }
-    };
-
-    const filtersClassNames = (name, value) => cn(
-        name,
-        { active: value },
-    );
-
-    const checkboxFilters = [
-        {
-            id: MISCELLANEOUS_FILTERS.REGULAR,
-            text: reactTranslator.getMessage('filtering_log_filter_regular'),
-        },
-        {
-            id: MISCELLANEOUS_FILTERS.ALLOWLISTED,
-            text: reactTranslator.getMessage('filtering_log_filter_allowlisted'),
-        },
-        {
-            id: MISCELLANEOUS_FILTERS.BLOCKED,
-            text: reactTranslator.getMessage('filtering_log_filter_blocked'),
-        },
-        {
-            id: MISCELLANEOUS_FILTERS.MODIFIED,
-            text: reactTranslator.getMessage('filtering_log_filter_modified'),
-        },
-        {
-            id: MISCELLANEOUS_FILTERS.USER_FILTER,
-            text: reactTranslator.getMessage('filtering_log_filter_user_rule'),
-        },
-    ];
-
-    const renderCheckboxFilters = () => {
-        return checkboxFilters.map(({ id, text }) => {
-            return (
-                <label key={id} className="checkbox-label" htmlFor={id}>
-                    <input
-                        type="checkbox"
-                        id={id}
-                        name={id}
-                        onChange={filtersCheckboxHandler(id)}
-                        value={miscellaneousFilters[id]}
-                        checked={miscellaneousFilters[id]}
-                    />
-                    <div className="custom-checkbox">
-                        <Icon id="#checked" classname="icon--checked" />
-                    </div>
-                    {text}
-                </label>
-            );
-        });
-    };
-
-    const requestSourceCheckboxes = [
-        {
-            id: REQUEST_SOURCE_FILTERS.FIRST_PARTY,
-            text: reactTranslator.getMessage('filtering_log_filter_first_party'),
-        },
-        {
-            id: REQUEST_SOURCE_FILTERS.THIRD_PARTY,
-            text: reactTranslator.getMessage('filtering_log_filter_third_party'),
-        },
-    ];
-
-    const renderRequestSourceFilters = () => {
-        return requestSourceCheckboxes.map(({ id, text }) => {
-            return (
-                <label key={id} className="checkbox-label" htmlFor={id}>
-                    <input
-                        type="checkbox"
-                        id={id}
-                        name={id}
-                        onChange={requestSourceFilterClickHandler(id)}
-                        value={requestSourceFilters[id]}
-                        checked={requestSourceFilters[id]}
-                    />
-                    <div className="custom-checkbox">
-                        <Icon id="#checked" classname="icon--checked" />
-                    </div>
-                    {text}
-                </label>
-            );
-        });
-    };
 
     return (
         <div className="miscellaneous-filters">
-            <button
-                className="miscellaneous-filters__button"
-                type="button"
-                onClick={miscellaneousFiltersButtonHandler}
+            <div
+                className="miscellaneous-filters__filters"
+                ref={ref}
             >
-                <Icon id="#filters" classname="icon--filters miscellaneous-filters__filters-ico" />
-                {reactTranslator.getMessage('filtering_log_filter_title')}
-                <Icon id="#select" classname="icon--select miscellaneous-filters__select-ico" />
-            </button>
-            <div className={filtersClassNames('miscellaneous-filters__filters', showPopup)} ref={ref}>
                 <div className="miscellaneous-filters__section">
-                    {renderCheckboxFilters()}
+                    <Tags
+                        type={NAVIGATION_TAGS.PARTY}
+                        tags={logStore.requestSourceFilters}
+                        setTags={logStore.setRequestSourceFilters}
+                    />
                 </div>
-                <div className="hrow" />
                 <div className="miscellaneous-filters__section">
-                    {renderRequestSourceFilters()}
+                    <Tags
+                        type={NAVIGATION_TAGS.REGULAR}
+                        tags={logStore.miscellaneousFilters}
+                        setTags={logStore.setMiscellaneousFilters}
+                    />
                 </div>
             </div>
         </div>

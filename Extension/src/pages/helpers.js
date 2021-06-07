@@ -66,3 +66,31 @@ export const findChunks = (str, searchString, chunks = []) => {
     }
     return chunks.filter((i) => !!i);
 };
+
+export const passiveEventSupported = (() => {
+    let passiveSupported = null;
+
+    return () => {
+        // memoize support to avoid adding multiple test events
+        if (typeof passiveSupported === 'boolean') {
+            return passiveSupported;
+        }
+
+        let supported = false;
+        try {
+            const options = {
+                get passive() {
+                    supported = true;
+                    return false;
+                },
+            };
+
+            window.addEventListener('test', null, options);
+            window.removeEventListener('test', null, options);
+        } catch (err) {
+            supported = false;
+        }
+        passiveSupported = supported;
+        return passiveSupported;
+    };
+})();

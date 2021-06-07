@@ -1,22 +1,21 @@
 .filtering-log {
     max-width: 100%;
-    height: calc(100% - 218px);
-    overflow: hidden;
+    height: 100%;
+    overflow-x: auto;
 
     * {
         box-sizing: border-box;
     }
 
-    @media (max-width: 640px) {
-        height: calc(100% - 275px);
-    }
-
     &__inner {
         table-layout: fixed;
-        border-collapse: collapse;
         width: 100%;
         min-width: 810px;
         height: calc(100% - 30px);
+
+        @media (min-width: 640px) {
+            height: calc(100% - 125px);
+        }
 
         & .thead .th {
             position: sticky;
@@ -32,22 +31,66 @@
         & .tbody .tr {
             &:hover {
                 cursor: pointer;
-                background: var(--trHover);
+                background: var(--gray100);
+
+                @media (prefers-color-scheme: dark) {
+                    background: var(--gray900);
+                }
+            }
+
+            &:active {
+                background: var(--gray300);
+
+                @media (prefers-color-scheme: dark) {
+                    background: var(--grayDark);
+                }
             }
 
             &.red {
                 background-color: var(--red-row);
 
+                @media (prefers-color-scheme: dark) {
+                    background-color: rgba(255, 211, 199, 0.5);
+                }
+
                 &:hover {
+                    background-color: var(--red-row-hover);
+
+                    @media (prefers-color-scheme: dark) {
+                        background-color: rgba(255, 181, 161, 0.5);
+                    }
+                }
+
+                &:active {
                     background-color: var(--red-row-active);
+
+                    @media (prefers-color-scheme: dark) {
+                        background-color: rgba(255, 150, 123, 0.5);
+                    }
                 }
             }
 
             &.green {
                 background-color: var(--green-row);
 
+                @media (prefers-color-scheme: dark) {
+                    background-color: rgba(220, 255, 229, 0.5);
+                }
+
                 &:hover {
+                    background-color: var(--green-row-hove);
+
+                    @media (prefers-color-scheme: dark) {
+                        background-color: rgba(195, 255, 209, 0.5);
+                    }
+                }
+
+                &:active {
                     background-color: var(--green-row-active);
+
+                    @media (prefers-color-scheme: dark) {
+                        background-color: rgba(169, 255, 190, 0.5);
+                    }
                 }
             }
 
@@ -66,8 +109,7 @@
             font-weight: normal;
             font-size: 14px;
             color: var(--darkText);
-            border-right: 1px solid var(--thColor);
-            border-bottom: 1px solid var(--thColor);
+            position: relative;
 
             &:first-child {
                 width: 40%;
@@ -82,7 +124,9 @@
             }
 
             &:last-child {
-                border-right: 0;
+                &:after {
+                    display: none;
+                }
             }
         }
 
@@ -92,13 +136,11 @@
             overflow: hidden;
             padding: 8px 10px;
             border-top: 1px solid var(--borderColor);
-            border-left: 1px solid var(--borderColor);
             color: var(--textColor);
-            font-size: 12px;
+            font-size: 14px;
 
             &:first-child {
                 color: var(--darkText);
-                border-left: none;
 
                 @media (max-width: 640px) {
                     padding-left: 16px;
@@ -108,10 +150,13 @@
     }
 
     &__empty {
-        height: calc(100% - 53px);
+        width: 100vw;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        z-index: 10;
     }
 
     &__empty-in {
@@ -159,6 +204,31 @@
         & .tr {
             height: 30px;
         }
+
+        & .resizer {
+            display: inline-block;
+            background: transparent;
+            width: 20px;
+            height: 100%;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 1;
+            /* prevents from scrolling while dragging on touch devices */
+            touch-action: none;
+
+            &:after {
+                content: "";
+                display: block;
+                position: absolute;
+                right: 50%;
+                top: calc(50% - 8px);
+                width: 1px;
+                height: 16px;
+                background-color: var(--gray400);
+            }
+        }
+
         & .th, & .td {
             padding: 0 25px;
             height: 30px;
@@ -193,7 +263,9 @@
     }
 
     &__icon {
-        margin: -3px 4px -5px 8px;
+        margin: -11px 4px -5px 8px;
+        width: 18px;
+        height: 18px;
     }
 }
 
@@ -207,8 +279,42 @@
             color: var(--green400);
         }
 
-        &__inner thead th {
+        &__inner .thead .th {
             background-color: var(--white);
+        }
+
+        &__inner .tr {
+            &:hover {
+                background: var(--gray100);
+            }
+
+            &:active {
+                background: var(--gray300);
+            }
+
+            &.red {
+                background-color: var(--red-row);
+
+                &:hover {
+                    background-color: var(--red-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--red-row-active);
+                }
+            }
+
+            &.green {
+                background-color: var(--green-row);
+
+                &:hover {
+                    background-color: var(--green-row-hove);
+                }
+
+                &:active {
+                    background-color: var(--green-row-active);
+                }
+            }
         }
 
         &__empty-img {
@@ -233,8 +339,42 @@
             color: var(--green700);
         }
 
-        &__inner thead th {
+        &__inner .thead .th {
             background-color: var(--bgColor);
+        }
+
+        &__inner .tr {
+            &:hover {
+                background: var(--gray900);
+            }
+
+            &:active {
+                background: var(--grayDark);
+            }
+
+            &.red {
+                background-color: rgba(255, 211, 199, 0.5);
+
+                &:hover {
+                    background-color: rgba(255, 181, 161, 0.5);
+                }
+
+                &:active {
+                    background-color: rgba(255, 150, 123, 0.5);
+                }
+            }
+
+            &.green {
+                background-color: rgba(220, 255, 229, 0.5);
+
+                &:hover {
+                    background-color: rgba(195, 255, 209, 0.5);
+                }
+
+                &:active {
+                    background-color: rgba(169, 255, 190, 0.51);
+                }
+            }
         }
 
         &__empty-img {

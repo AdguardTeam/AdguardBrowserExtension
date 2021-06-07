@@ -48,17 +48,19 @@ label.checkbox-label {
     & input[type="checkbox"] {
         display: none;
 
-        &:checked + .custom-checkbox {
-            background-color: var(--green400);
-            border-color: var(--green400);
+        &:checked {
+            & + .custom-checkbox {
+                background-color: var(--green400);
+                border-color: var(--green400);
 
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--green700);
-                border-color: var(--green700);
-            }
+                @media (prefers-color-scheme: dark) {
+                    background-color: var(--green700);
+                    border-color: var(--green700);
+                }
 
-            & .icon {
-                display: block;
+                & .icon {
+                    display: block;
+                }
             }
         }
     }

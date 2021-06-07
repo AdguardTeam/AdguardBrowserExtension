@@ -149,3 +149,8 @@ export const NOTIFIER_TYPES = {
 
 export const FULLSCREEN_USER_RULES_EDITOR = 'fullscreen_user_rules_editor';
 export const FILTERING_LOG = 'filtering-log';
+
+export const NAVIGATION_TAGS = {
+    REGULAR: 'regular',
+    PARTY: 'party',
+};
