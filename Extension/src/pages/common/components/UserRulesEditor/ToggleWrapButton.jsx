@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { userRulesEditorStore } from './UserRulesEditorStore';
 import { Icon } from '../ui/Icon';
 import { translator } from '../../../../common/translators/translator';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 /**
  * This button is extracted in the separate file
@@ -25,6 +26,12 @@ export const ToggleWrapButton = observer(({ onClick }) => {
             onClick={onClick}
         >
             <Icon classname="icon--extend" id="#line-break" />
+            <div className="tooltip tooltip--off">
+                {reactTranslator.getMessage('options_userfilter_line_brake_off')}
+            </div>
+            <div className="tooltip tooltip--on">
+                {reactTranslator.getMessage('options_userfilter_line_brake_on')}
+            </div>
         </button>
     );
 });
