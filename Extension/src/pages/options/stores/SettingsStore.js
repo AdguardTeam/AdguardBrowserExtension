@@ -7,20 +7,13 @@ import {
 } from 'mobx';
 
 import { log } from '../../../common/log';
-import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../components/Editor/savingFSM';
+import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../../common/components/Editor/savingFSM';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import { sortFilters, updateFilters } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
 import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
-
-const savingUserRulesService = createSavingService({
-    id: 'userRules',
-    services: {
-        saveData: (_, e) => messenger.saveUserRules(e.value),
-    },
-});
 
 const savingAllowlistService = createSavingService({
     id: 'allowlist',
@@ -59,11 +52,7 @@ class SettingsStore {
 
     @observable allowAcceptableAds = null;
 
-    @observable userRules = '';
-
     @observable allowlist = '';
-
-    @observable savingRulesState = savingUserRulesService.initialState.value;
 
     @observable savingAllowlistState = savingAllowlistService.initialState.value;
 
@@ -77,28 +66,17 @@ class SettingsStore {
 
     @observable searchSelect = SEARCH_FILTERS.ALL;
 
-    @observable userRulesEditorContentChanged = false;
-
     @observable allowlistEditorContentChanged = false;
-
-    @observable userRulesEditorWrap = null;
 
     @observable allowlistEditorWrap = null;
 
     @observable footerRateShow = null;
 
+    @observable fullscreenUserRulesEditorIsOpen = false;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
-
-        savingUserRulesService.onTransition((state) => {
-            runInAction(() => {
-                this.savingRulesState = state.value;
-                if (state.value === STATES.SAVING) {
-                    this.userRulesEditorContentChanged = false;
-                }
-            });
-        });
 
         savingAllowlistService.onTransition((state) => {
             runInAction(() => {
@@ -130,6 +108,7 @@ class SettingsStore {
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
             this.optionsReadyToRender = true;
+            this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });
     }
 
@@ -155,11 +134,9 @@ class SettingsStore {
     }
 
     @action
-    async updateSetting(settingId, value) {
-        await messenger.changeUserSetting(settingId, value);
-        runInAction(() => {
-            this.settings.values[settingId] = value;
-        });
+    updateSetting(settingId, value) {
+        this.settings.values[settingId] = value;
+        messenger.changeUserSetting(settingId, value);
     }
 
     @action
@@ -323,27 +300,6 @@ class SettingsStore {
     }
 
     @action
-    setUserRules = (userRules) => {
-        this.userRules = userRules;
-    };
-
-    @action
-    async getUserRules() {
-        try {
-            const { content } = await messenger.getUserRules();
-            this.setUserRules(content);
-        } catch (e) {
-            log.debug(e);
-        }
-    }
-
-    @action
-    async saveUserRules(value) {
-        this.userRules = value;
-        savingUserRulesService.send(SAVING_FSM_EVENTS.SAVE, { value });
-    }
-
-    @action
     setAllowlist = (allowlist) => {
         this.allowlist = allowlist;
     };
@@ -366,11 +322,6 @@ class SettingsStore {
     @action
     saveAllowlist = async (allowlist) => {
         await savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
-    };
-
-    @action
-    setUserRulesEditorContentChangedState = (state) => {
-        this.userRulesEditorContentChanged = state;
     };
 
     @action
@@ -483,25 +434,6 @@ class SettingsStore {
     }
 
     @computed
-    get userRulesEditorWrapState() {
-        if (this.userRulesEditorWrap === null) {
-            this.userRulesEditorWrap = optionsStorage.getItem(
-                optionsStorage.KEYS.USER_RULES_EDITOR_WRAP,
-            );
-        }
-        return this.userRulesEditorWrap;
-    }
-
-    @action
-    toggleUserRulesEditorWrap() {
-        this.userRulesEditorWrap = !this.userRulesEditorWrap;
-        optionsStorage.setItem(
-            optionsStorage.KEYS.USER_RULES_EDITOR_WRAP,
-            this.userRulesEditorWrap,
-        );
-    }
-
-    @computed
     get allowlistEditorWrapState() {
         if (this.allowlistEditorWrap === null) {
             this.allowlistEditorWrap = optionsStorage.getItem(
@@ -532,6 +464,26 @@ class SettingsStore {
     hideFooterRateShow() {
         this.footerRateShow = false;
         optionsStorage.setItem(optionsStorage.KEYS.FOOTER_RATE_SHOW, this.footerRateShow);
+    }
+
+    @action
+    setFullscreenUserRulesEditorState(isOpen) {
+        this.fullscreenUserRulesEditorIsOpen = isOpen;
+    }
+
+    @computed
+    get isFullscreenUserRulesEditorOpen() {
+        return this.fullscreenUserRulesEditorIsOpen;
+    }
+
+    @computed
+    get userFilterEnabledSettingId() {
+        return this.settings.names.USER_FILTER_ENABLED;
+    }
+
+    @computed
+    get userFilterEnabled() {
+        return this.settings.values[this.userFilterEnabledSettingId];
     }
 }
 

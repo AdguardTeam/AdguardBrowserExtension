@@ -642,6 +642,10 @@ export const antiBannerService = (() => {
         log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
 
         await rulesStorage.write(filterId, converted);
+        // notify that user rules were saved, to update saving button on options page
+        if (Number(filterId) === utils.filters.USER_FILTER_ID) {
+            listeners.notifyListeners(listeners.USER_FILTER_UPDATED);
+        }
     }
 
     /**

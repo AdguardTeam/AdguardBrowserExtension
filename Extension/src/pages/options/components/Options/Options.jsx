@@ -40,6 +40,7 @@ const Options = observer(() => {
                 NOTIFIER_TYPES.UPDATE_ALLOWLIST_FILTER_RULES,
                 NOTIFIER_TYPES.FILTERS_UPDATE_CHECK_READY,
                 NOTIFIER_TYPES.SETTING_UPDATED,
+                NOTIFIER_TYPES.FULLSCREEN_USER_RULES_EDITOR_UPDATED,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -49,7 +50,6 @@ const Options = observer(() => {
 
                     switch (type) {
                         case NOTIFIER_TYPES.REQUEST_FILTER_UPDATED: {
-                            await settingsStore.getUserRules();
                             await settingsStore.requestOptionsData();
                             break;
                         }
@@ -64,6 +64,11 @@ const Options = observer(() => {
                         }
                         case NOTIFIER_TYPES.SETTING_UPDATED: {
                             await settingsStore.requestOptionsData();
+                            break;
+                        }
+                        case NOTIFIER_TYPES.FULLSCREEN_USER_RULES_EDITOR_UPDATED: {
+                            const [isOpen] = message.data;
+                            await settingsStore.setFullscreenUserRulesEditorState(isOpen);
                             break;
                         }
                         default: {

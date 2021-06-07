@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import { STATES as SAVING_STATES } from '../Editor/savingFSM';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { Icon } from '../../../common/components/ui/Icon';
+import { Icon } from '../ui/Icon';
 
 const renderSavingState = (savingRulesState) => {
     const indicatorTextMap = {

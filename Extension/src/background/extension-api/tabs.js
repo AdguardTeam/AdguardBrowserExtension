@@ -128,7 +128,7 @@ export const tabsImpl = (function () {
      * @param createData
      */
     const create = async function (createData) {
-        const { url } = createData;
+        const { url, inNewWindow } = createData;
         const active = createData.active === true;
 
         if (createData.type === 'popup'
@@ -169,36 +169,51 @@ export const tabsImpl = (function () {
             return toTabFromChromeTab(chromeTab);
         }
 
+        const onWindowCreatedWithTab = async (win) => {
+            const [tab] = win.tabs;
+            if (active) {
+                await focusWindow(tab.id, tab.windowId);
+            }
+            return toTabFromChromeTab(tab);
+        };
+
         function isAppropriateWindow(win) {
             // We can't open not-http (e.g. 'chrome-extension://') urls in incognito mode
             return win.type === 'normal' && (isHttp || !win.incognito);
         }
 
-        // https://developer.chrome.com/extensions/windows#method-create
-        // https://developer.chrome.com/extensions/windows#method-getLastFocused
-        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
-        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
-        const win = await browser.windows.getLastFocused();
+        if (!inNewWindow) {
+            // https://developer.chrome.com/extensions/windows#method-create
+            // https://developer.chrome.com/extensions/windows#method-getLastFocused
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
+            const win = await browser.windows.getLastFocused();
 
-        if (isAppropriateWindow(win)) {
-            return onWindowFound(win);
-        }
+            if (isAppropriateWindow(win)) {
+                return onWindowFound(win);
+            }
 
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
-        const wins = await browser.windows.getAll({});
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+            const wins = await browser.windows.getAll({});
 
-        if (wins) {
-            for (let i = 0; i < wins.length; i += 1) {
-                const win = wins[i];
-                if (isAppropriateWindow(win)) {
-                    return onWindowFound(win);
+            if (wins) {
+                for (let i = 0; i < wins.length; i += 1) {
+                    const win = wins[i];
+                    if (isAppropriateWindow(win)) {
+                        return onWindowFound(win);
+                    }
                 }
             }
+
+            // Create new window
+            const newWin = await browser.windows.create();
+            return onWindowFound(newWin);
         }
 
-        // Create new window
-        const newWin = await browser.windows.create({});
-        return onWindowFound(newWin);
+        // if inNewWindow
+        // we open window with "url" to avoid empty new tab creation
+        const newWin = await browser.windows.create({ url });
+        return onWindowCreatedWithTab(newWin);
     };
 
     const remove = async (tabId) => {
