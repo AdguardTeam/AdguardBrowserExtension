@@ -17,6 +17,11 @@ export class OptionsStorage {
          * Filtering log columns widths
          */
         COLUMNS_WIDTHS: 'columns-widths',
+
+        /**
+         * Request modal width
+         */
+        REQUEST_INFO_MODAL_WIDTH: 'request-info-modal-width',
     };
 
     DEFAULTS = {
@@ -24,6 +29,7 @@ export class OptionsStorage {
         [this.KEYS.ALLOWLIST_EDITOR_WRAP]: false,
         [this.KEYS.FOOTER_RATE_SHOW]: true,
         [this.KEYS.COLUMNS_WIDTHS]: [],
+        [this.KEYS.REQUEST_INFO_MODAL_WIDTH]: null,
     };
 
     constructor() {
