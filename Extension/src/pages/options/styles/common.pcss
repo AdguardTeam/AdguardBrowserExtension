@@ -247,14 +247,9 @@ label.checkbox-label {
         position: relative;
 
         &:hover {
-            .tooltip--off {
+            .tooltip {
                 visibility: visible;
                 opacity: 1;
-            }
-
-            .tooltip--on {
-                visibility: hidden;
-                opacity: 0;
             }
         }
 
@@ -267,18 +262,6 @@ label.checkbox-label {
 
         &--active {
             background-color: var(--gray100);
-
-            &:hover {
-                .tooltip--on {
-                    visibility: visible;
-                    opacity: 1;
-                }
-
-                .tooltip--off {
-                    visibility: hidden;
-                    opacity: 0;
-                }
-            }
 
             @media (prefers-color-scheme: dark) {
                 background-color: var(--gray900);

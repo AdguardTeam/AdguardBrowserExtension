@@ -21,16 +21,14 @@ export const ToggleWrapButton = observer(({ onClick }) => {
     return (
         <button
             type="button"
-            title={translator.getMessage('options_editor_toggle_wrap_button_tooltip')}
             className={lineBreakClassNames}
             onClick={onClick}
         >
             <Icon classname="icon--extend" id="#line-break" />
-            <div className="tooltip tooltip--off">
-                {reactTranslator.getMessage('options_userfilter_line_brake_off')}
-            </div>
-            <div className="tooltip tooltip--on">
-                {reactTranslator.getMessage('options_userfilter_line_brake_on')}
+            <div className="tooltip">
+                {store.userRulesEditorWrapState
+                    ? reactTranslator.getMessage('options_userfilter_line_break_on')
+                    : reactTranslator.getMessage('options_userfilter_line_break_off')}
             </div>
         </button>
     );
