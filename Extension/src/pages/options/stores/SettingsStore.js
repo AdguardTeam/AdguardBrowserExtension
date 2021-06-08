@@ -301,7 +301,7 @@ class SettingsStore {
             // update allow acceptable ads setting
             if (filterId === this.constants.AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
                 this.allowAcceptableAds = enabled;
-            } else if (filterId === this.constants.AntiBannerFiltersId.TRACKING_FILTER_ID) {
+            } else if (filterId === this.constants.AntiBannerFiltersId.URL_TRACKING_FILTER_ID) {
                 this.stripTrackingParameters = enabled;
             }
         } catch (e) {

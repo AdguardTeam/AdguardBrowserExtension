@@ -106,6 +106,9 @@ export const settingsProvider = (function () {
      * Loads stealth mode settings section
      */
     const loadStealthModeSection = () => {
+        const enabledFilterIds = collectEnabledFilterIds();
+        const stripTrackingParameters = enabledFilterIds.indexOf(utils.filters.ids.URL_TRACKING_FILTER_ID) >= 0;
+
         const section = {
             stealth: {
                 'stealth_disable_stealth_mode': settings.getDisableStealthMode(),
@@ -117,6 +120,7 @@ export const settingsProvider = (function () {
                 'stealth-block-third-party-cookies-time': settings.getSelfDestructThirdPartyCookiesTime(),
                 'stealth-block-first-party-cookies': settings.getSelfDestructFirstPartyCookies(),
                 'stealth-block-first-party-cookies-time': settings.getSelfDestructFirstPartyCookiesTime(),
+                'strip-tracking-parameters': stripTrackingParameters,
             },
         };
         return section;
@@ -200,7 +204,7 @@ export const settingsProvider = (function () {
      * Applies stealth mode section settings to application
      * @param section
      */
-    const applyStealthModeSection = (section) => {
+    const applyStealthModeSection = async (section) => {
         const set = section['stealth'];
 
         if (!set) {
@@ -217,6 +221,12 @@ export const settingsProvider = (function () {
         settings.setSelfDestructThirdPartyCookiesTime(set['stealth-block-third-party-cookies-time']);
         settings.setSelfDestructFirstPartyCookies(!!set['stealth-block-first-party-cookies']);
         settings.setSelfDestructFirstPartyCookiesTime(set['stealth-block-first-party-cookies-time']);
+
+        if (set['strip-tracking-parameters']) {
+            await application.addAndEnableFilters([utils.filters.ids.URL_TRACKING_FILTER_ID]);
+        } else {
+            application.disableFilters([utils.filters.ids.URL_TRACKING_FILTER_ID]);
+        }
     };
 
     /**
@@ -478,7 +488,7 @@ export const settingsProvider = (function () {
             await applyGeneralSettingsSection(input);
             applyExtensionSpecificSettingsSection(input);
             await applyFiltersSection(input);
-            applyStealthModeSection(input);
+            await applyStealthModeSection(input);
             onFinished(true);
             return true;
         } catch (e) {
