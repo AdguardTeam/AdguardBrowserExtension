@@ -27,6 +27,7 @@ const EventsSearch = observer(() => {
             className="events-search"
             onSubmit={onSubmit}
         >
+            <Icon id="#magnifying" classname="events-search__ico" />
             <input
                 type="text"
                 id="events-search"

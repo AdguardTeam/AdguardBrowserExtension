@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
     observable,
     makeObservable,
@@ -15,7 +16,7 @@ import { messenger } from '../../services/messenger';
 import { getFilterName } from '../components/RequestWizard/utils';
 import { matchesSearch } from './helpers';
 
-export const MISCELLANEOUS_FILTERS = {
+const MISCELLANEOUS_FILTERS = {
     REGULAR: 'regular',
     ALLOWLISTED: 'allowlisted',
     BLOCKED: 'blocked',
@@ -23,9 +24,23 @@ export const MISCELLANEOUS_FILTERS = {
     USER_FILTER: 'user_filter',
 };
 
-export const REQUEST_SOURCE_FILTERS = {
+const REQUEST_SOURCE_FILTERS = {
     FIRST_PARTY: 'first_party',
     THIRD_PARTY: 'third_party',
+};
+
+const EVENT_TYPE_FILTERS = {
+    HTML: 'html',
+    CSS: 'css',
+    JAVA_SCRIPT: 'java_script',
+    AJAX: 'ajax',
+    IMAGE: 'image',
+    MEDIA: 'media',
+    OTHER: 'other',
+};
+
+const matchesFilter = (filters, filterId, check) => {
+    return filters.find((f) => f.id === filterId).enabled && check;
 };
 
 class LogStore {
@@ -45,58 +60,86 @@ class LogStore {
 
     @observable settings = null;
 
-    @observable miscellaneousFilters = {
-        [MISCELLANEOUS_FILTERS.REGULAR]: false,
-        [MISCELLANEOUS_FILTERS.ALLOWLISTED]: false,
-        [MISCELLANEOUS_FILTERS.BLOCKED]: false,
-        [MISCELLANEOUS_FILTERS.MODIFIED]: false,
-        [MISCELLANEOUS_FILTERS.USER_FILTER]: false,
-    };
+    @observable miscellaneousFilters = [
+        {
+            id: MISCELLANEOUS_FILTERS.REGULAR,
+            enabled: true,
+            title: reactTranslator.getMessage('filtering_log_filter_regular'),
+        },
+        {
+            id: MISCELLANEOUS_FILTERS.ALLOWLISTED,
+            enabled: true,
+            title: reactTranslator.getMessage('filtering_log_filter_allowlisted'),
+        },
+        {
+            id: MISCELLANEOUS_FILTERS.BLOCKED,
+            enabled: true,
+            title: reactTranslator.getMessage('filtering_log_filter_blocked'),
+        },
+        {
+            id: MISCELLANEOUS_FILTERS.MODIFIED,
+            enabled: true,
+            title: reactTranslator.getMessage('filtering_log_filter_modified'),
+        },
+        {
+            id: MISCELLANEOUS_FILTERS.USER_FILTER,
+            enabled: true,
+            title: reactTranslator.getMessage('filtering_log_filter_user_rule'),
+        },
+    ];
 
-    @observable requestSourceFilters = {
-        [REQUEST_SOURCE_FILTERS.FIRST_PARTY]: false,
-        [REQUEST_SOURCE_FILTERS.THIRD_PARTY]: false,
-    };
+    @observable requestSourceFilters = [
+        {
+            id: REQUEST_SOURCE_FILTERS.FIRST_PARTY,
+            title: '1P',
+            enabled: true,
+        },
+        {
+            id: REQUEST_SOURCE_FILTERS.THIRD_PARTY,
+            title: '3P',
+            enabled: true,
+        },
+    ];
 
     @observable eventTypesFilters = [
         {
-            name: 'HTML',
+            id: EVENT_TYPE_FILTERS.HTML,
             title: 'HTML',
             types: [RequestTypes.DOCUMENT, RequestTypes.SUBDOCUMENT],
             enabled: true,
         },
         {
-            name: 'CSS',
+            id: EVENT_TYPE_FILTERS.CSS,
             title: 'CSS',
             types: [RequestTypes.STYLESHEET],
             enabled: true,
         },
         {
-            name: 'JavaScript',
+            id: EVENT_TYPE_FILTERS.JAVA_SCRIPT,
             title: 'JavaScript',
             types: [RequestTypes.SCRIPT],
             enabled: true,
         },
         {
-            name: 'Ajax',
+            id: EVENT_TYPE_FILTERS.AJAX,
             title: 'Ajax',
             types: [RequestTypes.XMLHTTPREQUEST],
             enabled: true,
         },
         {
-            name: 'Image',
+            id: EVENT_TYPE_FILTERS.IMAGE,
             title: reactTranslator.getMessage('filtering_type_image'),
             types: [RequestTypes.IMAGE],
             enabled: true,
         },
         {
-            name: 'Media',
+            id: EVENT_TYPE_FILTERS.MEDIA,
             title: reactTranslator.getMessage('filtering_type_media'),
             types: [RequestTypes.OBJECT, RequestTypes.MEDIA],
             enabled: true,
         },
         {
-            name: 'Other',
+            id: EVENT_TYPE_FILTERS.OTHER,
             title: reactTranslator.getMessage('filtering_type_other'),
             types: [
                 RequestTypes.OTHER,
@@ -121,75 +164,33 @@ class LogStore {
     }
 
     @action
-    setMiscellaneousFilterValue = (filter, value) => {
-        this.miscellaneousFilters[filter] = value;
+    setMiscellaneousFilters = (filters) => {
+        this.miscellaneousFilters = filters;
     };
 
     @action
-    setRequestSourceFilterValue = (filter, value) => {
-        this.requestSourceFilters[filter] = value;
+    setRequestSourceFilters = (filters) => {
+        this.requestSourceFilters = filters;
     };
 
     @action
-    toggleEventTypesFilter = (name) => {
-        // if all filter are enabled, we should disabled them all
-        if (this.eventTypesFilters.every((f) => f.enabled)) {
-            this.eventTypesFilters.forEach((f) => {
-                // eslint-disable-next-line no-param-reassign
-                f.enabled = false;
-            });
-        }
-
-        this.eventTypesFilters.forEach((filter) => {
-            if (filter.name === name) {
-                // eslint-disable-next-line no-param-reassign
-                filter.enabled = !filter.enabled;
-            }
-        });
-
-        // if all are disabled, we should turn on "All" button by enabling all filters
-        if (this.eventTypesFilters.every((f) => !f.enabled)) {
-            this.eventTypesFilters.forEach((f) => {
-                // eslint-disable-next-line no-param-reassign
-                f.enabled = true;
-            });
-        }
-    };
-
-    @action
-    selectOneEventTypesFilter = (name) => {
-        // disable all except current
-        this.eventTypesFilters.forEach((filter) => {
-            // eslint-disable-next-line no-param-reassign
-            filter.enabled = filter.name === name;
-        });
-    };
-
-    @action
-    toggleAllEventTypesFilters = () => {
-        // enable all filters if any filter disabled
-        // or disable all filters if all filters enabled
-        const enabled = this.eventTypesFilters.some((filter) => !filter.enabled);
-        this.eventTypesFilters.forEach((filter) => {
-            // eslint-disable-next-line no-param-reassign
-            filter.enabled = enabled;
-        });
+    setEventTypesFilters = (filters) => {
+        this.eventTypesFilters = filters;
     };
 
     @action
     resetAllFilters = () => {
         // enable all eventTypesFilters
         this.eventTypesFilters.forEach((filter) => {
-            // eslint-disable-next-line no-param-reassign
             filter.enabled = true;
         });
         // disable all miscellaneousFilters
-        Object.keys(this.miscellaneousFilters).forEach((filter) => {
-            this.setMiscellaneousFilterValue(filter, false);
+        this.miscellaneousFilters.forEach((filter) => {
+            filter.enabled = true;
         });
         // disable all requestSourceFilters
-        Object.keys(this.requestSourceFilters).forEach((filter) => {
-            this.setRequestSourceFilterValue(filter, false);
+        this.requestSourceFilters.forEach((filter) => {
+            filter.enabled = true;
         });
     };
 
@@ -221,14 +222,12 @@ class LogStore {
         const ruleText = requestRule?.ruleText;
 
         if (ruleText) {
-            // eslint-disable-next-line no-param-reassign
             filteringEvent.ruleText = ruleText;
         }
 
         const filterId = requestRule?.filterId;
 
         if (filterId !== undefined) {
-            // eslint-disable-next-line no-param-reassign
             filteringEvent.filterName = getFilterName(filterId, this.filtersMetadata);
         }
 
@@ -327,6 +326,7 @@ class LogStore {
 
     @computed
     get events() {
+        /* eslint-disable max-len */
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
             const show = matchesSearch(filteringEvent, this.eventsSearchValue);
 
@@ -350,8 +350,7 @@ class LogStore {
             }
 
             const isAllowlisted = filteringEvent.requestRule?.whitelistRule;
-            const isBlocked = filteringEvent.requestRule
-                && !filteringEvent.requestRule.whitelistRule;
+            const isBlocked = filteringEvent.requestRule && !filteringEvent.requestRule.whitelistRule;
             const isModified = filteringEvent.requestRule?.isModifyingCookieRule;
             const isUserFilter = filteringEvent.requestRule?.filterId === 0;
             const isFirstParty = !filteringEvent.requestThirdParty;
@@ -359,21 +358,21 @@ class LogStore {
             const isRegular = !isAllowlisted && !isBlocked && !isModified;
 
             // filter by miscellaneous filters
-            const showByMiscellaneous = !Object.values(this.miscellaneousFilters).some(identity)
-                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.REGULAR] && isRegular)
-                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.ALLOWLISTED] && isAllowlisted)
-                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.BLOCKED] && isBlocked)
-                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.MODIFIED] && isModified)
-                || (this.miscellaneousFilters[MISCELLANEOUS_FILTERS.USER_FILTER] && isUserFilter);
+            const showByMiscellaneous = this.miscellaneousFilters.every((f) => f.enabled)
+                || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.REGULAR, isRegular)
+                || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.ALLOWLISTED, isAllowlisted)
+                || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.BLOCKED, isBlocked)
+                || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.MODIFIED, isModified)
+                || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.USER_FILTER, isUserFilter);
 
             if (!showByMiscellaneous) {
                 return false;
             }
 
             // filter by request source filter
-            const showByRequestSource = !Object.values(this.requestSourceFilters).some(identity)
-            || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.FIRST_PARTY] && isFirstParty)
-            || (this.requestSourceFilters[REQUEST_SOURCE_FILTERS.THIRD_PARTY] && isThirdParty);
+            const showByRequestSource = this.requestSourceFilters.every((f) => f.enabled)
+                || matchesFilter(this.requestSourceFilters, REQUEST_SOURCE_FILTERS.FIRST_PARTY, isFirstParty)
+                || matchesFilter(this.requestSourceFilters, REQUEST_SOURCE_FILTERS.THIRD_PARTY, isThirdParty);
 
             if (!showByRequestSource) {
                 return false;
@@ -383,6 +382,7 @@ class LogStore {
         });
 
         return filteredEvents;
+        /* eslint-enable max-len */
     }
 
     /**

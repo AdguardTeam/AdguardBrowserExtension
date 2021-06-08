@@ -52,6 +52,7 @@ export const MESSAGE_TYPES = {
     ADD_AND_ENABLE_FILTER: 'addAndEnableFilter',
     APPLY_SETTINGS_JSON: 'applySettingsJson',
     OPEN_FILTERING_LOG: 'openFilteringLog',
+    OPEN_FULLSCREEN_USER_RULES: 'openFullscreenUserRules',
     RESET_BLOCKED_ADS_COUNT: 'resetBlockedAdsCount',
     GET_USER_RULES: 'getUserRules',
     SAVE_USER_RULES: 'saveUserRules',
@@ -106,6 +107,9 @@ export const MESSAGE_TYPES = {
     LOAD_SETTINGS_JSON: 'loadSettingsJson',
     ADD_URL_TO_TRUSTED: 'addUrlToTrusted',
     SET_PRESERVE_LOG_STATE: 'setPreserveLogState',
+    GET_USER_RULES_EDITOR_DATA: 'getUserRulesEditorData',
+    GET_EDITOR_STORAGE_CONTENT: 'getEditorStorageContent',
+    SET_EDITOR_STORAGE_CONTENT: 'setEditorStorageContent',
 };
 
 export const NOTIFIER_TYPES = {
@@ -127,7 +131,7 @@ export const NOTIFIER_TYPES = {
     APPLICATION_UPDATED: 'event.application.updated',
     CHANGE_PREFS: 'event.change.prefs',
     UPDATE_FILTERS_SHOW_POPUP: 'event.update.filters.show.popup',
-    UPDATE_USER_FILTER_RULES: 'event.update.user.filter.rules',
+    USER_FILTER_UPDATED: 'event.user.filter.updated',
     UPDATE_ALLOWLIST_FILTER_RULES: 'event.update.allowlist.filter.rules',
     SETTING_UPDATED: 'event.update.setting.value',
     FILTERS_UPDATE_CHECK_READY: 'event.update.filters.check',
@@ -140,4 +144,14 @@ export const NOTIFIER_TYPES = {
     LOG_EVENT_UPDATED: 'log.event.updated',
     // Sync events
     SETTINGS_UPDATED: 'event.sync.finished',
+    // Fullscreen user rules events
+    FULLSCREEN_USER_RULES_EDITOR_UPDATED: 'event.user.rules.editor.updated',
+};
+
+export const FULLSCREEN_USER_RULES_EDITOR = 'fullscreen_user_rules_editor';
+export const FILTERING_LOG = 'filtering-log';
+
+export const NAVIGATION_TAGS = {
+    REGULAR: 'regular',
+    PARTY: 'party',
 };

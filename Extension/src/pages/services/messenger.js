@@ -279,6 +279,14 @@ class Messenger {
     async setPreserveLogState(state) {
         return this.sendMessage(MESSAGE_TYPES.SET_PRESERVE_LOG_STATE, { state });
     }
+
+    async getEditorStorageContent() {
+        return this.sendMessage(MESSAGE_TYPES.GET_EDITOR_STORAGE_CONTENT);
+    }
+
+    async setEditorStorageContent(content) {
+        return this.sendMessage(MESSAGE_TYPES.SET_EDITOR_STORAGE_CONTENT, { content });
+    }
 }
 
 const messenger = new Messenger();

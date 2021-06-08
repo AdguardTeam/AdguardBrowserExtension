@@ -14,6 +14,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { RequestTypes } from '../../../../../background/utils/request-types';
 
 import './request-info.pcss';
+import { Status } from '../../Status';
 
 const STEALTH_ACTIONS_NAMES = {
     HIDE_REFERRER: reactTranslator.getMessage('filtering_log_hide_referrer'),
@@ -313,6 +314,18 @@ const RequestInfo = observer(() => {
                 <span className="request-modal__header">{reactTranslator.getMessage('filtering_modal_info_title')}</span>
             </div>
             <div className="request-modal__content">
+                <div className="request-info">
+                    <div className="request-info__key">
+                        {reactTranslator.getMessage('filtering_modal_status_text_desc')}
+                    </div>
+                    <Status />
+                </div>
+                <div className="request-info">
+                    <div className="request-info__key">
+                        {reactTranslator.getMessage('filtering_modal_filtering_status_text_desc')}
+                    </div>
+                    <Status />
+                </div>
                 {renderedInfo}
                 {renderImageIfNecessary(selectedEvent)}
                 <div className="request-modal__controls">

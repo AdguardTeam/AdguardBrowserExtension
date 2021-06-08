@@ -1,11 +1,6 @@
 .filters {
     display: flex;
     flex-wrap: wrap;
-    min-height: 218px;
-
-    @media (max-width: 640px) {
-        min-height: 275px;
-    }
 
     &__tab-selector {
         padding: 16px;
@@ -25,7 +20,6 @@
         }
     }
 
-
     &__events-search {
         padding: 16px;
         box-sizing: border-box;
@@ -44,12 +38,50 @@
         }
     }
 
-    &__events-filters {
-        padding: 0 0 0 25px;
-        display: flex;
+    &__events-tags {
+        overflow-x: hidden;
+        position: relative;
+        padding: 0 25px 0 25px;
 
         @media (max-width: 640px) {
-            padding: 0 0 0 8px;
+            padding: 0 21px 0 21px;
+        }
+    }
+
+    &__arrow {
+        width: 32px;
+        height: 32px;
+        position: absolute;
+        top: -6px;
+        color: var(--gray700);
+
+        &--left {
+            left: -5px;
+            transform: rotate(180deg);
+
+            @media (min-width: 640px) {
+                left: 0;
+            }
+        }
+
+        &--right {
+            right: -5px;
+
+            @media (min-width: 640px) {
+                right: 0;
+            }
+        }
+    }
+
+    &__events-filters {
+        display: flex;
+        overflow-x: auto;
+        padding: 0 0 16px 0;
+
+        & .filters__arrow {
+            @media (min-width: 1350px) {
+                display: none;
+            }
         }
     }
 
@@ -62,50 +94,10 @@
         }
     }
 
-    & .hr {
-        width: 100%;
-        height: 1px;
-        background: var(--gray100);
-        margin: 15px 0 21px;
-
-        @media (prefers-color-scheme: dark) {
-            background: var(--grayDark);
-        }
-
-        @media (max-width: 640px) {
-            background: var(--transparent);
-            margin: 16px 0 0;
-        }
-
-    }
-
     &__nav {
         display: flex;
         flex-wrap: wrap;
+        width: 100%;
         align-items: center;
-    }
-
-    &__nav + .hr {
-        margin: 0 0 16px 0;
-
-        @media (max-width: 640px) {
-            margin: 0;
-        }
-    }
-}
-
-.light-mode {
-    & .filters {
-        & .hr {
-            background: var(--gray100);
-        }
-    }
-}
-
-.dark-mode {
-    & .filters {
-        & .hr {
-            background: var(--grayDark);
-        }
     }
 }

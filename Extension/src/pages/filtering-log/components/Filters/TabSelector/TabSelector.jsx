@@ -53,7 +53,7 @@ const TabSelector = observer(() => {
     return (
         <div className="tab-selector">
             <div className="tab-selector__select">
-                <Icon id="#select" classname="icon--select tab-selector__select-ico" />
+                <Icon id="#arrow-bottom" classname="tab-selector__select-ico" />
                 <label
                     htmlFor="tab-selector"
                     onFocus={onFocus}

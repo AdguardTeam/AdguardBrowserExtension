@@ -6,13 +6,18 @@
     & input {
         border: none;
         width: 100%;
-        background: var(--searchBg);
-        border-radius: 5px;
-        height: 40px;
-        padding: 0 15px;
+        padding: 0 25px 0 30px;
+        background-color: transparent;
+
+        @media (min-width: 640px) {
+            min-width: 220px;
+        }
+
+        @media (min-width: 820px) {
+            min-width: 420px;
+        }
 
         @media (prefers-color-scheme: dark) {
-            background: var(--grayDark);
             color: var(--gray300);
         }
 
@@ -34,7 +39,7 @@
         background-color: transparent;
         cursor: pointer;
         position: absolute;
-        right: 15px;
+        right: 0;
 
         &:focus {
             outline: none;
@@ -50,12 +55,20 @@
             color: var(--gray400);
         }
     }
+
+    &__ico {
+        width: 18px;
+        height: 18px;
+        color: var(--gray700);
+        position: absolute;
+        left: 0;
+        top: calc(50% - 9px);
+    }
 }
 
 .light-mode {
     .events-search {
         & input {
-            background: var(--searchBg);
             color: var(--gray-base);
 
             &::placeholder {
@@ -72,7 +85,6 @@
 .dark-mode {
     .events-search {
         & input {
-            background: var(--grayDark);
             color: var(--gray300);
 
             &::placeholder {

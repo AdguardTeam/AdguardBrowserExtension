@@ -44,9 +44,43 @@ import { prefs } from './prefs';
 import { allowlist } from './filter/allowlist';
 import { documentFilterService } from './filter/services/document-filter';
 import { antiBannerService } from './filter/antibanner';
-import { MESSAGE_TYPES } from '../common/constants';
+import { FILTERING_LOG, FULLSCREEN_USER_RULES_EDITOR, MESSAGE_TYPES } from '../common/constants';
 import { getCookieRulesDataForContentScript } from './filter/services/cookie-service';
 import { log } from '../common/log';
+import { fullscreenUserRulesEditor } from './fullscreen-user-rules-editor';
+import { editorStorage } from './utils/editor-storage';
+
+const onPortConnection = (port) => {
+    switch (true) {
+        case port.name.startsWith(FILTERING_LOG): {
+            filteringLog.onOpenFilteringLogPage();
+            break;
+        }
+        case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
+            fullscreenUserRulesEditor.onOpenPage();
+            break;
+        }
+        default: {
+            throw new Error(`There is no such pages ${port.name}`);
+        }
+    }
+};
+
+const onPortDisconnection = (port) => {
+    switch (true) {
+        case port.name.startsWith(FILTERING_LOG): {
+            filteringLog.onCloseFilteringLogPage();
+            break;
+        }
+        case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
+            fullscreenUserRulesEditor.onClosePage();
+            break;
+        }
+        default: {
+            throw new Error(`There is no such pages ${port.name}`);
+        }
+    }
+};
 
 /**
  * This handler used to subscribe for notifications from popup page
@@ -57,11 +91,10 @@ import { log } from '../common/log';
 const longLivedMessageHandler = (port) => {
     let listenerId;
 
-    if (port.name.startsWith('filtering-log')) {
-        filteringLog.onOpenFilteringLogPage();
-    }
-
     log.info(`Port: "${port.name}" connected`);
+
+    onPortConnection(port);
+
     port.onMessage.addListener((message) => {
         const { type, data } = message;
         if (type === MESSAGE_TYPES.ADD_LONG_LIVED_CONNECTION) {
@@ -78,9 +111,7 @@ const longLivedMessageHandler = (port) => {
     });
 
     port.onDisconnect.addListener(() => {
-        if (port.name.startsWith('filtering-log')) {
-            filteringLog.onCloseFilteringLogPage();
-        }
+        onPortDisconnection(port);
         listeners.removeListener(listenerId);
         log.info(`Port: "${port.name}" disconnected`);
     });
@@ -182,6 +213,7 @@ const createMessageHandler = () => {
             constants: {
                 AntiBannerFiltersId: utils.filters.ids,
             },
+            fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
         };
     };
 
@@ -276,7 +308,7 @@ const createMessageHandler = () => {
                 // We are waiting until request filter is updated
                 return new Promise((resolve) => {
                     const listenerId = listeners.addListener((event) => {
-                        if (event === listeners.REQUEST_FILTER_UPDATED) {
+                        if (event === listeners.USER_FILTER_UPDATED) {
                             listeners.removeListener(listenerId);
                             resolve();
                         }
@@ -291,8 +323,8 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.REMOVE_USER_RULE: {
                 const { ruleText } = data;
                 userrules.removeRule(ruleText);
-            }
                 break;
+            }
             case MESSAGE_TYPES.CHECK_ANTIBANNER_FILTERS_UPDATE: {
                 const filters = await uiService.checkFiltersUpdates();
                 return filters;
@@ -323,6 +355,9 @@ const createMessageHandler = () => {
                 break;
             case MESSAGE_TYPES.OPEN_FILTERING_LOG:
                 uiService.openFilteringLog(message.tabId);
+                break;
+            case MESSAGE_TYPES.OPEN_FULLSCREEN_USER_RULES:
+                uiService.openFullscreenUserRules();
                 break;
             case MESSAGE_TYPES.GET_FILTERING_LOG_DATA: {
                 return {
@@ -568,6 +603,20 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.SET_PRESERVE_LOG_STATE: {
                 const { state } = data;
                 filteringLog.setPreserveLogState(state);
+                break;
+            }
+            case MESSAGE_TYPES.GET_USER_RULES_EDITOR_DATA: {
+                return {
+                    userRules: await userrules.getUserRulesText(),
+                    settings: settings.getAllSettings(),
+                };
+            }
+            case MESSAGE_TYPES.GET_EDITOR_STORAGE_CONTENT: {
+                return editorStorage.getContent();
+            }
+            case MESSAGE_TYPES.SET_EDITOR_STORAGE_CONTENT: {
+                const { content } = data;
+                editorStorage.setContent(content);
                 break;
             }
             default:

@@ -7,6 +7,8 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './actions.pcss';
+import { EventsSearch } from '../Filters/EventsSearch';
+import { TabSelector } from '../Filters/TabSelector';
 
 const Actions = observer(() => {
     const { logStore } = useContext(rootStore);
@@ -28,46 +30,55 @@ const Actions = observer(() => {
     };
 
     const preserveLogClassName = cn(
-        'custom-checkbox',
+        'record',
         { active: preserveLogEnabled },
     );
 
     return (
         <div className="actions">
-            <div className="actions__action">
-                <button
-                    className="actions__refresh"
-                    type="button"
-                    onClick={refreshPage}
-                >
-                    <Icon id="#reload" classname="icon--reload actions__refresh-ico" />
-                    {reactTranslator.getMessage('filtering_refresh_tab')}
-                </button>
+            <div className="actions__col">
+                <TabSelector />
+                <EventsSearch />
             </div>
-            <div className="actions__action">
-                <button
-                    className="actions__clear"
-                    type="button"
-                    onClick={clearLogHandler}
-                >
-                    <Icon id="#cross" classname="actions__cross" />
-                    {reactTranslator.getMessage('filtering_clear_log_events')}
-                </button>
-            </div>
-            <div className="actions__action actions__preserve">
-                <label className="checkbox-label" htmlFor="preserveLog">
-                    <input
-                        type="checkbox"
-                        name="preserveLog"
-                        id="preserveLog"
-                        onChange={preserveLogHandler}
-                        checked={preserveLogEnabled}
-                    />
-                    <div className={preserveLogClassName}>
-                        <Icon id="#checked" classname="icon--checked" />
-                    </div>
-                    {reactTranslator.getMessage('filtering_log_preserve_log')}
-                </label>
+            <div className="actions__col">
+                <div className="actions__action">
+                    <button
+                        className="actions__clear"
+                        type="button"
+                        onClick={clearLogHandler}
+                    >
+                        <Icon id="#trash" classname="icon--trash actions__del" />
+                    </button>
+                </div>
+                <div className="actions__action actions__preserve">
+                    <label className="checkbox-label" htmlFor="preserveLog">
+                        <input
+                            type="checkbox"
+                            name="preserveLog"
+                            id="preserveLog"
+                            onChange={preserveLogHandler}
+                            defaultChecked={false}
+                        />
+                        <div className={preserveLogClassName}>
+                            <div className="record__tooltip record__tooltip--off">
+                                {reactTranslator.getMessage('filtering_log_preserve_log_off')}
+                            </div>
+                            <div className="record__tooltip record__tooltip--on">
+                                {reactTranslator.getMessage('filtering_log_preserve_log_on')}
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <div className="actions__action">
+                    <button
+                        className="actions__refresh"
+                        type="button"
+                        onClick={refreshPage}
+                    >
+                        <Icon id="#reload" classname="icon--reload actions__refresh-ico" />
+                        {reactTranslator.getMessage('filtering_refresh_tab_short')}
+                    </button>
+                </div>
             </div>
         </div>
     );

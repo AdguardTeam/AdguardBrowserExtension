@@ -5,7 +5,10 @@ import './checkbox.pcss';
 
 const Checkbox = (props) => {
     const {
-        id, handler, inverted, label,
+        id,
+        handler,
+        inverted,
+        label,
     } = props;
 
     let { value } = props;

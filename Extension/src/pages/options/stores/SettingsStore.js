@@ -61,8 +61,6 @@ class SettingsStore {
 
     @observable stripTrackingParameters = null;
 
-    @observable userRules = '';
-
     @observable allowlist = '';
 
     @observable savingRulesState = savingUserRulesService.initialState.value;
@@ -202,31 +200,6 @@ class SettingsStore {
         const allowAcceptableAdsFilter = this.filters
             .find((f) => f.filterId === SEARCH_AND_SELF_PROMO_FILTER_ID);
         return allowAcceptableAdsFilter.enabled;
-    }
-
-    @action
-    async setStripTrackingParametersState(enabled) {
-        const { URL_TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
-        const prevValue = this.stripTrackingParameters;
-        this.stripTrackingParameters = enabled;
-        try {
-            const stripTrackingParametersFilter = this.filters
-                .find((f) => f.filterId === URL_TRACKING_FILTER_ID);
-
-            if (enabled) {
-                await messenger.enableFilter(URL_TRACKING_FILTER_ID);
-                await this.updateGroupSetting(stripTrackingParametersFilter.groupId, enabled);
-            } else {
-                await messenger.disableFilter(URL_TRACKING_FILTER_ID);
-            }
-
-            stripTrackingParametersFilter.enabled = enabled;
-            this.refreshFilter(stripTrackingParametersFilter);
-        } catch (e) {
-            runInAction(() => {
-                this.stripTrackingParameters = prevValue;
-            });
-        }
     }
 
     @computed

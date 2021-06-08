@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import { SettingsSection } from '../Settings/SettingsSection';
-import { Editor } from '../Editor';
+import { Editor } from '../../../common/components/Editor';
 import { rootStore } from '../../stores/RootStore';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
