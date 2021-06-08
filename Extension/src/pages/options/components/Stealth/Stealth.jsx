@@ -12,13 +12,19 @@ import {
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
 } from '../../../constants';
 
+const STRIP_TRACKING_PARAMETERS = 'stripTrackingParameters';
+
 const Stealth = observer(() => {
     const { settingsStore } = useContext(rootStore);
-    const { settings } = settingsStore;
+    const { settings, stripTrackingParameters } = settingsStore;
 
     if (!settings) {
         return null;
     }
+
+    const stripTrackingParametersChangeHandler = async ({ data }) => {
+        await settingsStore.setStripTrackingParametersState(data);
+    };
 
     const settingChangeHandler = async ({ id, data }) => {
         log.info(`Setting ${id} set to ${data}`);
@@ -119,6 +125,17 @@ const Stealth = observer(() => {
                     label={reactTranslator.getMessage('options_disable_webrtc_title')}
                     value={settings.values[BLOCK_WEBRTC]}
                     handler={settingChangeHandler}
+                />
+
+                <SettingsSetCheckbox
+                    title={reactTranslator.getMessage('options_strip_tracking_params_title')}
+                    description={reactTranslator.getMessage('options_strip_tracking_params_description')}
+                    disabled={!stripTrackingParameters}
+                    id={STRIP_TRACKING_PARAMETERS}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_strip_tracking_params_title')}
+                    value={stripTrackingParameters}
+                    handler={stripTrackingParametersChangeHandler}
                 />
             </SettingsSection>
 
