@@ -108,6 +108,7 @@ class SettingsStore {
             this.version = data.appVersion;
             this.constants = data.constants;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
+            this.setStripTrackingParameters(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
@@ -182,6 +183,14 @@ class SettingsStore {
     }
 
     @action
+    setStripTrackingParameters(filters) {
+        const { URL_TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
+        const filterObject = filters
+            .find((f) => f.filterId === URL_TRACKING_FILTER_ID);
+        this.stripTrackingParameters = !!(filterObject.enabled);
+    }
+
+    @action
     async setStripTrackingParametersState(enabled) {
         const { URL_TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
         const prevValue = this.stripTrackingParameters;
@@ -206,6 +215,13 @@ class SettingsStore {
         }
     }
 
+    isStripTrackingParametersFilterEnabled() {
+        const { URL_TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
+        const filterObject = this.filters
+            .find((f) => f.filterId === URL_TRACKING_FILTER_ID);
+        return filterObject.enabled;
+    }
+
     @computed
     get lastUpdateTime() {
         return Math.max(...this.filters.map((filter) => filter.lastCheckTime || 0));
@@ -219,6 +235,9 @@ class SettingsStore {
             if (groupId === ANTIBANNER_GROUPS_ID.OTHER_FILTERS_GROUP_ID
                 && this.isAllowAcceptableAdsFilterEnabled()) {
                 this.allowAcceptableAds = enabled;
+            } else if (groupId === ANTIBANNER_GROUPS_ID.PRIVACY_FILTERS_GROUP_ID
+                && this.isStripTrackingParametersFilterEnabled()) {
+                this.stripTrackingParameters = enabled;
             }
             this.categories.forEach((group) => {
                 if (group.groupId === groupId) {
@@ -282,6 +301,8 @@ class SettingsStore {
             // update allow acceptable ads setting
             if (filterId === this.constants.AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
                 this.allowAcceptableAds = enabled;
+            } else if (filterId === this.constants.AntiBannerFiltersId.TRACKING_FILTER_ID) {
+                this.stripTrackingParameters = enabled;
             }
         } catch (e) {
             log.error(e);
