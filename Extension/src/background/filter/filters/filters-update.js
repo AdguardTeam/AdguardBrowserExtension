@@ -234,6 +234,19 @@ export const filtersUpdate = (() => {
      */
 
     /**
+     * Downloads and saves metadata from backend
+     * @return {Promise<void>}
+     */
+    const updateMetadata = async () => {
+        log.info('Downloading metadata from backend..');
+
+        await subscriptions.reloadMetadataFromBackend();
+        // TODO: reload i18n metadata?
+
+        log.info('Metadata updated from backend');
+    };
+
+    /**
      * Checks filters updates.
      *
      * @param [UpdateProps]
@@ -242,6 +255,11 @@ export const filtersUpdate = (() => {
         // Don't update in background if request filter isn't running
         if (!forceUpdate && !antiBannerService.isRunning()) {
             return [];
+        }
+
+        // On force initiated on first run on by user's direct call
+        if (forceUpdate && !filters) {
+            await updateMetadata();
         }
 
         log.info('Start checking filters updates');
@@ -303,7 +321,6 @@ export const filtersUpdate = (() => {
 
         // Retrieve current filters metadata for update
         const filterMetadataList = await loadFiltersMetadataFromBackend(filterIdsToUpdate);
-
         const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList, ignoreVersion);
 
         const loadedFilters = await loadFiltersFromBackendCallback(filterMetadataListToUpdate);

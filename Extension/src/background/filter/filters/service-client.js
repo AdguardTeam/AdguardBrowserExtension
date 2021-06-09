@@ -202,6 +202,24 @@ export const backend = (function () {
     }
 
     /**
+     * Downloads metadata from backend
+     * @return {Promise<void>}
+     */
+    const downloadMetadataFromBackend = async () => {
+        const response = await executeRequestAsync(settings.filtersMetadataUrl, 'application/json');
+        if (!response?.responseText) {
+            throw new Error(`Empty response: ${response}`);
+        }
+
+        const metadata = parseJson(response.responseText);
+        if (!metadata) {
+            throw new Error(`Invalid response: ${response}`);
+        }
+
+        return metadata;
+    };
+
+    /**
      * Load metadata of the specified filters
      *
      * @param filterIds         Filters identifiers
@@ -211,20 +229,9 @@ export const backend = (function () {
             return [];
         }
 
-        const response = await executeRequestAsync(settings.filtersMetadataUrl, 'application/json');
-
-        if (!response?.responseText) {
-            throw new Error(`Empty response: ${response}`);
-        }
-
-        const metadata = parseJson(response.responseText);
-
-        if (!metadata) {
-            throw new Error(`Invalid response: ${response}`);
-        }
+        const metadata = await downloadMetadataFromBackend();
 
         const filterMetadataList = [];
-
         for (let i = 0; i < filterIds.length; i += 1) {
             const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
             if (filter) {
@@ -533,6 +540,8 @@ export const backend = (function () {
         loadRedirectSources,
 
         lookupSafebrowsing,
+
+        downloadMetadataFromBackend,
 
         sendUrlReport,
         sendHitStats,

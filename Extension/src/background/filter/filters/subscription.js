@@ -35,6 +35,12 @@ import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
  */
 export const subscriptions = (() => {
     /**
+     * Storage key for metadata object
+     * @type {string}
+     */
+    const METADATA_STORAGE_KEY = 'filters-metadata';
+
+    /**
      * Custom filters group display number
      *
      * @type {number}
@@ -575,11 +581,10 @@ export const subscriptions = (() => {
     };
 
     /**
-     * Load groups and filters metadata
-     * @returns {Promise} returns promise
+     * Refreshes subscription's objects with metadata
+     * @param metadata
      */
-    async function loadMetadata() {
-        const metadata = await backend.loadLocalFiltersMetadata();
+    const saveMetadata = (metadata) => {
         tags = [];
         groups = [];
         groupsMap = {};
@@ -621,8 +626,39 @@ export const subscriptions = (() => {
         filters.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
 
         groups.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
+    };
+
+    /**
+     * Load groups and filters metadata
+     * @returns {Promise} returns promise
+     */
+    async function loadMetadata() {
+        let metadata;
+
+        // Load from storage first
+        const data = localStorage.getItem(METADATA_STORAGE_KEY);
+        if (data) {
+            metadata = JSON.parse(data);
+        } else {
+            metadata = await backend.loadLocalFiltersMetadata();
+        }
+
+        saveMetadata(metadata);
 
         log.info('Filters metadata loaded');
+    }
+
+    /**
+     * Reloads groups and filters metadata from backend
+     * @returns {Promise} returns promise
+     */
+    async function reloadMetadataFromBackend() {
+        const metadata = await backend.downloadMetadataFromBackend();
+        localStorage.setItem(METADATA_STORAGE_KEY, JSON.stringify(metadata));
+
+        saveMetadata(metadata);
+
+        log.info('Filters metadata reloaded from backend');
     }
 
     /**
@@ -860,6 +896,7 @@ export const subscriptions = (() => {
 
     return {
         init,
+        reloadMetadataFromBackend,
         getFilterIdsForLanguage,
         getTags,
         getGroups,
