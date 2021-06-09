@@ -199,6 +199,24 @@ label.checkbox-label {
     }
 }
 
+.tooltip {
+    position: absolute;
+    right: 7px;
+    top: -41px;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    padding: 8px 16px;
+    background-color: var(--white);
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--gray700);
+    }
+}
+
 .actions {
     padding: 22px 0;
     display: inline-block;
@@ -226,6 +244,14 @@ label.checkbox-label {
     &__btn {
         outline: none;
         margin: 12px;
+        position: relative;
+
+        &:hover {
+            .tooltip {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
 
         &--icon {
             background-color: transparent;
@@ -318,6 +344,10 @@ select:focus {
     .actions__btn--active {
         background-color: var(--gray100);
     }
+
+    .tooltip {
+        background-color: var(--white);
+    }
 }
 
 .dark-mode {
@@ -363,5 +393,9 @@ select:focus {
 
     .actions__btn--active {
         background-color: var(--gray900);
+    }
+
+    .tooltip {
+        background-color: var(--gray700);
     }
 }
