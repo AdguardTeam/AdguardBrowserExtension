@@ -10,16 +10,21 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import {
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
-    DEFAULT_TRACKING_PARAMETERS,
 } from '../../../constants';
+
+const STRIP_TRACKING_PARAMETERS = 'stripTrackingParameters';
 
 const Stealth = observer(() => {
     const { settingsStore } = useContext(rootStore);
-    const { settings } = settingsStore;
+    const { settings, stripTrackingParameters } = settingsStore;
 
     if (!settings) {
         return null;
     }
+
+    const stripTrackingParametersChangeHandler = async ({ data }) => {
+        await settingsStore.setStripTrackingParametersState(data);
+    };
 
     const settingChangeHandler = async ({ id, data }) => {
         log.info(`Setting ${id} set to ${data}`);
@@ -36,8 +41,6 @@ const Stealth = observer(() => {
         HIDE_SEARCH_QUERIES,
         SEND_DO_NOT_TRACK,
         BLOCK_WEBRTC,
-        STRIP_TRACKING_PARAMETERS,
-        TRACKING_PARAMETERS,
         BLOCK_CHROME_CLIENT_DATA,
     } = settings.names;
 
@@ -126,23 +129,14 @@ const Stealth = observer(() => {
 
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_strip_tracking_params_title')}
-                    description={reactTranslator.getMessage('options_strip_tracking_params_desc')}
-                    disabled={!settings.values[STRIP_TRACKING_PARAMETERS]}
+                    description={reactTranslator.getMessage('options_strip_tracking_params_description')}
+                    disabled={!stripTrackingParameters}
                     id={STRIP_TRACKING_PARAMETERS}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_strip_tracking_params_title')}
-                    value={settings.values[STRIP_TRACKING_PARAMETERS]}
-                    handler={settingChangeHandler}
-                >
-                    <Setting
-                        id={TRACKING_PARAMETERS}
-                        disabled={!settings.values[STRIP_TRACKING_PARAMETERS]}
-                        type={SETTINGS_TYPES.TEXTAREA}
-                        value={settings.values[TRACKING_PARAMETERS]}
-                        handler={settingChangeHandler}
-                        placeholder={DEFAULT_TRACKING_PARAMETERS}
-                    />
-                </SettingsSetCheckbox>
+                    value={stripTrackingParameters}
+                    handler={stripTrackingParametersChangeHandler}
+                />
             </SettingsSection>
 
             <SettingsSection

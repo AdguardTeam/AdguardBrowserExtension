@@ -9,6 +9,7 @@ export const ANTIBANNER_FILTERS_ID = {
     TRACKING_FILTER_ID: 3,
     SOCIAL_FILTER_ID: 4,
     SEARCH_AND_SELF_PROMO_FILTER_ID: 10,
+    URL_TRACKING_FILTER_ID: 17,
     ALLOWLIST_FILTER_ID: 100,
     EASY_PRIVACY: 118,
     FANBOY_ANNOYANCES: 122,
@@ -23,6 +24,7 @@ export const ANTIBANNER_FILTERS_ID = {
 export const ANTIBANNER_GROUPS_ID = {
     // custom filters group identifier
     CUSTOM_FILTERS_GROUP_ID: 0,
+    PRIVACY_FILTERS_GROUP_ID: 2,
     // other filters group identifier
     OTHER_FILTERS_GROUP_ID: 6,
 };
