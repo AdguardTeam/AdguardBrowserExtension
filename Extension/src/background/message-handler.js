@@ -197,7 +197,14 @@ const createMessageHandler = () => {
             const stat = stats[i];
             const rule = new TSUrlFilter.CosmeticRule(stat.ruleText, stat.filterId);
             webRequestService.recordRuleHit(tab, rule, frameUrl);
-            filteringLog.addCosmeticEvent(tab, stat.element, tab.url, RequestTypes.DOCUMENT, rule);
+            filteringLog.addCosmeticEvent({
+                tab,
+                element: stat.element,
+                frameUrl: tab.url,
+                requestType: RequestTypes.DOCUMENT,
+                requestRule: rule,
+                timestamp: Date.now(),
+            });
         }
     }
 
@@ -402,16 +409,16 @@ const createMessageHandler = () => {
                 };
             }
             case MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT: {
-                filteringLog.addCookieEvent(
-                    sender.tab,
-                    data.cookieName,
-                    null,
-                    data.cookieDomain,
-                    RequestType.Document,
-                    new TSUrlFilter.NetworkRule(data.ruleText, data.filterId),
-                    false,
-                    data.thirdParty,
-                );
+                filteringLog.addCookieEvent({
+                    tabId: sender.tab,
+                    cookieName: data.cookieName,
+                    cookieDomain: data.cookieDomain,
+                    requestType: RequestType.Document,
+                    cookieRule: new TSUrlFilter.NetworkRule(data.ruleText, data.filterId),
+                    isModifyingCookieRule: false,
+                    thirdParty: data.thirdParty,
+                    timestamp: Date.now(),
+                });
                 break;
             }
             case MESSAGE_TYPES.CHECK_PAGE_SCRIPT_WRAPPER_REQUEST: {

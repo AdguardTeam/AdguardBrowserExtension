@@ -23,6 +23,7 @@ import { passiveEventSupported } from '../../../helpers';
 
 import './filtering-events.pcss';
 import { Status } from '../Status';
+import { StatusMode, getStatusMode } from '../../filteringLogStatus';
 
 const filterNameAccessor = (props) => {
     const {
@@ -42,36 +43,28 @@ const filterNameAccessor = (props) => {
     return props.filterName;
 };
 
+/**
+ * @typedef {Object} RowClassName
+ * @property {string} YELLOW
+ * @property {string} RED
+ * @property {string} GREEN
+ */
+const RowClassName = {
+    YELLOW: 'yellow',
+    RED: 'red',
+    GREEN: 'green',
+};
+
+const rowClassNameMap = {
+    [StatusMode.REGULAR]: null,
+    [StatusMode.MODIFIED]: RowClassName.YELLOW,
+    [StatusMode.BLOCKED]: RowClassName.RED,
+    [StatusMode.ALLOWED]: RowClassName.GREEN,
+};
+
 const getRowClassName = (event) => {
-    let className = null;
-
-    if (event.replaceRules) {
-        className = 'yellow';
-    }
-
-    if (event.cspReportBlocked) {
-        className = 'red';
-        return className;
-    }
-
-    if (event.requestRule && !event.replaceRules) {
-        if (event.requestRule.whitelistRule) {
-            className = 'green';
-            // eslint-disable-next-line max-len
-        } else if (event.requestRule.cssRule || event.requestRule.scriptRule || event.removeParam) {
-            className = 'yellow';
-        } else if (event.requestRule.cookieRule) {
-            if (event.requestRule.isModifyingCookieRule) {
-                className = 'yellow';
-            } else {
-                className = 'red';
-            }
-        } else {
-            className = 'red';
-        }
-    }
-
-    return className;
+    const mode = getStatusMode(event);
+    return rowClassNameMap[mode];
 };
 
 const urlAccessor = (props) => {
@@ -135,6 +128,12 @@ const ruleAccessor = (props) => {
     return ruleText;
 };
 
+const statusAccessor = (props) => {
+    return (
+        <Status {...props} />
+    );
+};
+
 const Row = observer(({
     event,
     columns,
@@ -165,10 +164,6 @@ const Row = observer(({
                             style={{ width: column.getWidth() }}
                         >
                             {cellContent}
-                            {/* TODO fixme */}
-                            {column.id === 'url' && (
-                                <Status />
-                            )}
                         </div>
                     );
                 })
@@ -229,6 +224,11 @@ const FilteringEvents = observer(() => {
     }, []);
 
     const columnsData = [
+        {
+            id: 'status',
+            Header: `${reactTranslator.getMessage('filtering_table_status')}`,
+            accessor: statusAccessor,
+        },
         {
             id: 'url',
             Header: 'URL',

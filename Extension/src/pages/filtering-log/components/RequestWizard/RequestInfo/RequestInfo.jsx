@@ -11,10 +11,9 @@ import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { RequestTypes } from '../../../../../background/utils/request-types';
 
 import './request-info.pcss';
-import { Status } from '../../Status';
+import { NetworkStatus, FilterStatus } from '../../Status';
 
 const STEALTH_ACTIONS_NAMES = {
     HIDE_REFERRER: reactTranslator.getMessage('filtering_log_hide_referrer'),
@@ -314,17 +313,22 @@ const RequestInfo = observer(() => {
                 <span className="request-modal__header">{reactTranslator.getMessage('filtering_modal_info_title')}</span>
             </div>
             <div className="request-modal__content">
-                <div className="request-info">
-                    <div className="request-info__key">
-                        {reactTranslator.getMessage('filtering_modal_status_text_desc')}
+                {selectedEvent.method && (
+                    <div className="request-info">
+                        <div className="request-info__key">
+                            {reactTranslator.getMessage('filtering_modal_status_text_desc')}
+                        </div>
+                        <NetworkStatus
+                            method={selectedEvent.method}
+                            statusCode={selectedEvent.statusCode}
+                        />
                     </div>
-                    <Status />
-                </div>
+                )}
                 <div className="request-info">
                     <div className="request-info__key">
                         {reactTranslator.getMessage('filtering_modal_filtering_status_text_desc')}
                     </div>
-                    <Status />
+                    <FilterStatus {...selectedEvent} />
                 </div>
                 {renderedInfo}
                 {renderImageIfNecessary(selectedEvent)}

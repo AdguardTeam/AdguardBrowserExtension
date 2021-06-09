@@ -105,7 +105,15 @@ const webrequestInit = function () {
             listeners.notifyListeners(listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
             // Record request context for the main frame
-            requestContextStorage.record(requestId, requestUrl, requestUrl, originUrl, requestType, tab);
+            requestContextStorage.record({
+                requestId,
+                requestUrl,
+                referrerUrl: requestUrl,
+                originUrl,
+                requestType, 
+                tab,
+                method,
+            });
 
             /**
              * Just to remember!
@@ -139,7 +147,15 @@ const webrequestInit = function () {
         }
 
         // Record request for other types
-        requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
+        requestContextStorage.record({
+            requestId,
+            requestUrl,
+            referrerUrl,
+            originUrl,
+            requestType,
+            tab,
+            method,
+        });
 
         // Strip by removeparam rules
         const cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType, method);
@@ -495,7 +511,15 @@ const webrequestInit = function () {
         const requestContext = requestContextStorage.get(requestId);
         if (!requestContext) {
             // Record request for other types
-            requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
+                    //const { requestId, requestUrl, referrerUrl, originUrl, requestType, tab } = params;
+            requestContextStorage.record({
+                requestId,
+                requestUrl,
+                referrerUrl,
+                originUrl,
+                requestType,
+                tab,
+            });
         }
 
         // block if request is third party
@@ -1077,11 +1101,16 @@ const webrequestInit = function () {
     backgroundPage.webRequest.onCompleted.addListener((requestDetails) => {
         const {
             requestId,
+            statusCode,
         } = requestDetails;
 
         cookieService.onCompleted(requestDetails);
 
-        requestContextStorage.onRequestCompleted(requestId);
+        if (statusCode) {
+            requestContextStorage.onRequestCompleted(requestId, statusCode);
+        } else {
+            requestContextStorage.onRequestCompleted(requestId);
+        }
     }, ['<all_urls>']);
 
     backgroundPage.webRequest.onErrorOccurred.addListener((requestDetails) => {

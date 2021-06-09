@@ -1,9 +1,14 @@
+.status-wrapper {
+    overflow: hidden;
+}
+
 .status {
     display: inline-flex;
-    margin-left: 8px;
     white-space: nowrap;
 
     &__item {
+        display: flex;
+        align-items: center;
         margin-right: 8px;
 
         &--red {
@@ -22,6 +27,15 @@
             color: var(--orange400);
         }
 
+        &_width60 {
+            width: 60px;
+        }
+
+        &_centered {
+            min-width: 30px;
+            justify-content: center;
+        }
+
         &:last-child {
             margin-right: 0;
         }
@@ -36,10 +50,13 @@
         height: 16px;
     }
 
-    &__info {
+    &__badge {
         padding: 2px 4px;
-        text-align: center;
-        min-width: 29px;
+        min-width: 28px;
+        height: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         font-size: 12px;
         border-radius: 4px;
 
@@ -51,6 +68,11 @@
         &--gray {
             color: var(--white);
             background-color: var(--gray400);
+        }
+
+        &--orange {
+            color: var(--white);
+            background-color: var(--orange400);
         }
 
         &--transparent {

@@ -150,7 +150,13 @@ export const webRequestService = (function () {
         let requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         requestRule = postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        requestContextStorage.recordEmulated(requestUrl, referrerUrl, requestType, tab, requestRule);
+        requestContextStorage.recordEmulated({
+            requestUrl,
+            referrerUrl,
+            requestType,
+            tab,
+            requestRule
+        });
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -442,7 +448,13 @@ export const webRequestService = (function () {
             if (!r.isWhitelist()) {
                 const ruleResult = r.getAdvancedModifier().removeParameters(result);
                 if (ruleResult !== result) {
-                    filteringLog.addRemoveParamEvent(tab, requestUrl, requestType, r);
+                    filteringLog.addRemoveParamEvent({
+                        tab, 
+                        frameUrl: requestUrl, 
+                        requestType, 
+                        rule: r,
+                        timestamp: Date.now(),
+                    });
                 }
 
                 result = ruleResult;

@@ -1,46 +1,58 @@
 import React from 'react';
+import cn from 'classnames';
 import { Icon } from '../../../common/components/ui/Icon';
 import './status.pcss';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { StatusMode, getStatusMode } from '../../filteringLogStatus';
+import { colorMap, getItemClassName, getbadgeClassNames } from './statusStyles';
 
-const Status = () => {
+export const Status = (props) => {
+    const {
+        statusCode,
+        timestamp,
+        method,
+        requestUrl,
+    } = props;
+
+    const timeString = new Date(timestamp).toLocaleTimeString();
+    const mode = getStatusMode(props);
+    const color = colorMap[mode];
+    const itemClassNames = getItemClassName(color);
+    const badgeClassNames = getbadgeClassNames(color);
+    const isBlocked = mode === StatusMode.BLOCKED;
+
     return (
-        <div className="status">
-            <div className="status__item status__item--red">
-                <Icon id="#ban" classname="status__icon" />
-            </div>
-            <div className="status__item status__item--gray">
-                <Icon id="#arrow-status" classname="status__icon" />
-            </div>
-            <div className="status__item status__item--green">
-                <Icon id="#profile-status" classname="status__icon" />
-            </div>
-            <div className="status__item status__item--orange">
-                <Icon id="#transfer-status" classname="status__icon" />
-            </div>
-            <div className="status__item">
-                <div className="status__info status__info--gray">
-                    200
+        <div className="status-wrapper">
+            <div className="status">
+                {/* Time string may have different width
+                    Preventing layout shift with fixed value
+                */}
+                <div className="status__item status__item_width60">
+                    {timeString}
                 </div>
-            </div>
-            <div className="status__item">
-                <div className="status__info status__info--transparent">
-                    OPTIONS
-                </div>
-            </div>
-            <div className="status__item">
-                <div className="status__info status__info--green">
-                    302
-                </div>
-            </div>
-            <div className="status__item status__item--red">
-                <span className="status__label">
-                    {reactTranslator.getMessage('filtering_log_filter_blocked')}
-                </span>
-                <Icon id="#ban" classname="status__icon" />
+                {requestUrl && (
+                    <>
+                        <div className={itemClassNames}>
+                            <Icon id={statusCode ? '#transfer-status' : '#arrow-status'} classname="status__icon" />
+                        </div>
+                        <div className={cn(itemClassNames, 'status__item_centered')}>
+                            {isBlocked ? (
+                                <Icon id="#ban" classname="status__icon" />
+                            ) : (
+                                <div className={badgeClassNames}>
+                                    {statusCode || '---'}
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+                {method && (
+                    <div className="status__item">
+                        <div className="status__badge status__badge--transparent">
+                            {method}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
-
-export { Status };

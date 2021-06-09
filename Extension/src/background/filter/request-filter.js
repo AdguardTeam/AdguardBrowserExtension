@@ -233,12 +233,13 @@ export const RequestFilter = (() => {
             if (debug) {
                 scriptRules.forEach((scriptRule) => {
                     if (!scriptRule.isGeneric()) {
-                        filteringLog.addScriptInjectionEvent(
+                        filteringLog.addScriptInjectionEvent({
                             tab,
-                            url,
-                            RequestTypes.DOCUMENT,
-                            scriptRule,
-                        );
+                            frameUrl: url,
+                            requestType: RequestTypes.DOCUMENT,
+                            rule: scriptRule,
+                            timestamp: Date.now(),
+                        });
                     }
                 });
             }
