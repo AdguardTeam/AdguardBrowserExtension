@@ -141,12 +141,6 @@ const webrequestInit = function () {
         // Record request for other types
         requestContextStorage.record(requestId, requestUrl, referrerUrl, originUrl, requestType, tab);
 
-        // Strip by removeparam rules
-        const cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType, method);
-        if (cleansedUrl) {
-            return { redirectUrl: cleansedUrl };
-        }
-
         let requestRule = webRequestService.getRuleForRequest(
             tab,
             requestUrl,
@@ -170,12 +164,6 @@ const webrequestInit = function () {
             requestContextStorage.update(requestId, { requestRule });
         }
 
-        const response = webRequestService.getBlockedResponseByRule(
-            requestRule,
-            requestType,
-            requestUrl,
-        );
-
         if (requestRule
             && !requestRule.isWhitelist()
             && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Popup)
@@ -184,6 +172,24 @@ const webrequestInit = function () {
             if (isNewTab) {
                 tabsApi.remove(tabId);
                 return { cancel: true };
+            }
+        }
+
+        const response = webRequestService.getBlockedResponseByRule(
+            requestRule,
+            requestType,
+            requestUrl,
+        );
+
+        if (!response) {
+            /*
+             Strip url by $removeparam rules
+             $removeparam rules are applied after URL blocking rules
+             https://github.com/AdguardTeam/CoreLibs/issues/1462
+            */
+            const cleansedUrl = webRequestService.removeParamFromUrl(tab, requestUrl, referrerUrl, requestType, method);
+            if (cleansedUrl) {
+                return { redirectUrl: cleansedUrl };
             }
         }
 
