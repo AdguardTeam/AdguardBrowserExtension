@@ -8,12 +8,21 @@ describe('requestContextStorage', () => {
         const requestId = '1';
         const requestUrl = 'http://example.org/image.png';
         const referrerUrl = 'https://example.org';
+        const method = 'GET';
         const requestType = RequestTypes.DOCUMENT;
         const tab = { tabId: 1 };
 
         expect(requestContextStorage.get(requestId)).toBeFalsy();
 
-        requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
+        requestContextStorage.record({
+            requestId,
+            requestUrl,
+            referrerUrl,
+            originUrl: referrerUrl,
+            requestType,
+            method,
+            tab,
+        });
 
         let context = requestContextStorage.get(requestId);
         expect(context).toBeTruthy();
@@ -21,12 +30,14 @@ describe('requestContextStorage', () => {
         expect(requestUrl).toBe(context.requestUrl);
         expect(referrerUrl).toBe(context.referrerUrl);
         expect(requestType).toBe(context.requestType);
+        expect(method).toBe(context.method);
         expect(tab).toBe(context.tab);
         expect(context.eventId).toBeGreaterThan(0);
         expect(context.requestState).toBe(2);
         expect(context.contentModifyingState).toBe(1);
+        expect(typeof context.timestamp).toBe('number');
 
-        requestContextStorage.onRequestCompleted(requestId);
+        requestContextStorage.onRequestCompleted(requestId, 200);
         context = requestContextStorage.get(requestId);
         expect(context).toBeFalsy();
     });
@@ -35,21 +46,43 @@ describe('requestContextStorage', () => {
         const requestId = '1';
         const requestUrl = 'http://example.org/image.png';
         const referrerUrl = 'https://example.org';
+        const method = 'GET';
         const requestType = RequestTypes.DOCUMENT;
         const tab = { tabId: 1 };
 
-        requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
-        requestContextStorage.onRequestCompleted(requestId);
+        requestContextStorage.record({
+            requestId,
+            requestUrl,
+            referrerUrl,
+            originUrl: referrerUrl,
+            method,
+            requestType,
+            tab,
+        });
+
+        requestContextStorage.onRequestCompleted(requestId, 200);
 
         let context = requestContextStorage.get(requestId);
         expect(context).toBeFalsy();
 
-        requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
+        requestContextStorage.record({
+            requestId,
+            requestUrl,
+            referrerUrl,
+            originUrl: referrerUrl,
+            method,
+            requestType,
+            tab,
+        });
+
         requestContextStorage.onContentModificationStarted(requestId);
-        requestContextStorage.onRequestCompleted(requestId);
+
+        const status = 200;
+        requestContextStorage.onRequestCompleted(requestId, status);
 
         context = requestContextStorage.get(requestId);
         expect(context).toBeTruthy();
+        expect(status).toBe(context.statusCode);
 
         requestContextStorage.onContentModificationFinished(requestId);
 
@@ -61,10 +94,19 @@ describe('requestContextStorage', () => {
         const requestId = '1';
         const requestUrl = 'http://example.org/image.png';
         const referrerUrl = 'https://example.org';
+        const method = 'GET';
         const requestType = RequestTypes.DOCUMENT;
         const tab = { tabId: 1 };
 
-        requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
+        requestContextStorage.record({
+            requestId,
+            requestUrl,
+            referrerUrl,
+            originUrl: referrerUrl,
+            method,
+            requestType,
+            tab,
+        });
 
         // allow null values
         requestContextStorage.update(requestId, { requestHeaders: null });
@@ -129,6 +171,7 @@ describe('requestContextStorage', () => {
         const requestId = '1';
         const requestUrl = 'http://example.org/image.png';
         const referrerUrl = 'https://example.org';
+        const method = 'GET';
         const requestType = RequestTypes.DOCUMENT;
         const tab = { tabId: 1 };
 
@@ -140,7 +183,15 @@ describe('requestContextStorage', () => {
         const contentRule2 = { filterId: 1, ruleText: 'text' };
         const elementHtml2 = '<script></script>';
 
-        requestContextStorage.record(requestId, requestUrl, referrerUrl, referrerUrl, requestType, tab);
+        requestContextStorage.record({
+            requestId,
+            requestUrl,
+            referrerUrl,
+            method,
+            originUrl: referrerUrl,
+            requestType,
+            tab,
+        });
 
         requestContextStorage.update(requestId, { requestRule });
         requestContextStorage.update(requestId, { replaceRules: [replaceRule1] });

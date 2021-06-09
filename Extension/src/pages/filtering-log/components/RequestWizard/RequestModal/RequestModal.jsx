@@ -1,6 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, {
-    useContext, useState, useRef, useEffect,
+    useContext,
+    useEffect,
+    useState,
+    useRef,
 } from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
@@ -10,6 +13,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
 import { WIZARD_STATES } from '../../../stores/WizardStore';
 import { RequestCreateRule } from '../RequestCreateRule';
+import { optionsStorage } from '../../../../options/options-storage';
 
 import './RequestModal.pcss';
 
@@ -33,12 +37,18 @@ const RequestModal = observer(() => {
     const DEFAULT_MODAL_WIDTH_PX = 460;
     const MAX_MODAL_WIDTH_RATIO = 0.75;
 
-    const [modalWidth, setModalWidth] = useState(DEFAULT_MODAL_WIDTH_PX);
+    const startModalWidth = optionsStorage.getItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
+        || DEFAULT_MODAL_WIDTH_PX;
+
+    const [modalWidth, setModalWidth] = useState(startModalWidth);
 
     const dragBar = useRef(null);
 
     const {
-        isModalOpen, closeModal, requestModalState, requestModalStateEnum,
+        isModalOpen,
+        closeModal,
+        requestModalState,
+        requestModalStateEnum,
     } = wizardStore;
 
     let modalContent;
@@ -65,13 +75,19 @@ const RequestModal = observer(() => {
         'request-modal__unblock': requestModalStateEnum.isUnblock,
     });
 
+    const persistModalWidth = (width) => {
+        setModalWidth(width);
+        optionsStorage.setItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH, width);
+    };
+
     const drag = (e) => {
         const newWidth = window.innerWidth - e.pageX;
         if (newWidth < DEFAULT_MODAL_WIDTH_PX
             || newWidth > window.innerWidth * MAX_MODAL_WIDTH_RATIO) {
             return;
         }
-        setModalWidth(newWidth);
+
+        persistModalWidth(newWidth);
     };
 
     const mouseDownHandler = () => {

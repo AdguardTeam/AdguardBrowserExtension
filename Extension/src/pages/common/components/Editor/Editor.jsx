@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import AceEditor from 'react-ace';
+import cn from 'classnames';
 
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/theme-textmate';
@@ -16,7 +17,7 @@ const Editor = ({
     editorRef,
     shortcuts,
     onChange,
-    wrapEnabled,
+    fullscreen,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
@@ -43,13 +44,21 @@ const Editor = ({
         height: editorSize.height,
     };
 
-    const onResize = (width, height) => {
-        localStorage.setItem(SIZE_STORAGE_KEY, JSON.stringify({ width, height }));
-        editorRef.current.editor.resize();
-    };
+    // On fullscreen ignore size change
+    const onResize = fullscreen
+        ? () => {}
+        : (width, height) => {
+            localStorage.setItem(SIZE_STORAGE_KEY, JSON.stringify({ width, height }));
+            editorRef.current.editor.resize();
+        };
+
+    const editorClassName = cn(
+        'editor',
+        { 'editor--full-screen': fullscreen },
+    );
 
     return (
-        <div style={editorStyles} className="editor">
+        <div style={editorStyles} className={editorClassName}>
             <AceEditor
                 ref={editorRef}
                 width="100%"
@@ -62,7 +71,6 @@ const Editor = ({
                 value={value}
                 commands={shortcuts}
                 onChange={onChange}
-                wrapEnabled={wrapEnabled}
             />
             <ReactResizeDetector
                 skipOnMount

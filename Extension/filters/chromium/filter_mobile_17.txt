@@ -1,0 +1,77 @@
+! Checksum: 2Iwd0YgNyTRJZmdD3G+yfQ
+! Title: AdGuard URL Tracking filter (Optimized)
+! Description: Filter that enhances privacy by removing tracking parameters from URLs.
+! Version: 2.0.0.13
+! TimeUpdated: 2021-06-02T22:30:45+00:00
+! Expires: 4 days (update frequency)
+$removeparam=asgtbndr
+$removeparam=guccounter
+$removeparam=guce_referrer
+$removeparam=guce_referrer_sig
+$removeparam=_openstat
+$removeparam=action_object_map
+$removeparam=action_ref_map
+$removeparam=action_type_map
+$removeparam=fb_action_ids
+$removeparam=fb_action_types
+$removeparam=fb_comment_id
+$removeparam=fb_ref
+$removeparam=fb_source
+$removeparam=fbclid
+$removeparam=gclid
+$removeparam=utm_campaign
+$removeparam=utm_channel
+$removeparam=utm_cid
+$removeparam=utm_content
+$removeparam=utm_medium
+$removeparam=utm_name
+$removeparam=utm_place
+$removeparam=utm_pubreferrer
+$removeparam=utm_reader
+$removeparam=utm_referrer
+$removeparam=utm_social
+$removeparam=utm_social-type
+$removeparam=utm_source
+$removeparam=utm_swu
+$removeparam=utm_term
+$removeparam=utm_userid
+$removeparam=utm_viz_id
+$removeparam=yclid
+||visit.digidip.net^$removeparam=/^(ppref|ref|pid)=/
+||ad.admitad.com/g/$removeparam=subid
+||mvideo.ru^$removeparam=/^(_requestid|reff)=/
+||nytimes.com^$removeparam=impression_id
+||app.mi.com/download/*?id=$removeparam=ref
+||app.mi.com/download/*?id=$removeparam=nonce
+||app.mi.com/download/*?id=$removeparam=appClientId
+||app.mi.com/download/*?id=$removeparam=appSignature
+||digikey.com^$removeparam=/^mkt_tok/
+||digikey.com^$removeparam=/^utm_cid/
+||mp.weixin.qq.com^$removeparam=chksm
+||mp.weixin.qq.com^$removeparam=key
+||mp.weixin.qq.com^$removeparam=uin
+||mp.weixin.qq.com^$removeparam=devicetype
+||mp.weixin.qq.com^$removeparam=exportkey
+||pixel.adsafeprotected.com/services/pub?$removeparam=slot
+||pixel.adsafeprotected.com/services/pub?$removeparam=sessionId
+||pixel.adsafeprotected.com/services/pub?$removeparam=anId
+||pixel.adsafeprotected.com/services/pub?$removeparam=wr
+||pixel.adsafeprotected.com/services/pub?$removeparam=sr
+||pixel.adsafeprotected.com/services/pub?$removeparam=url
+||cam4.com^$removeparam=act
+||cam4.com^$removeparam=suid
+||cam4.com^$removeparam=showSignupPopup
+@@||kotaku.com/embed/comments$removeparam
+@@||lanacion.com.ar/*module$removeparam=utm_source
+@@||t.send.vt.edu/r/?id=$removeparam=utm_source
+@@||t.send.vt.edu/r/?id=$removeparam=utm_medium
+@@||t.send.vt.edu/r/?id=$removeparam=utm_campaign
+@@||fakt.pl/*&srcc=ucs$removeparam
+@@||przegladsportowy.pl/*&srcc=ucs$removeparam
+@@||auto-swiat.pl/*&srcc=ucs$removeparam
+@@||komputerswiat.pl/*&srcc=ucs$removeparam
+@@||noizz.pl/*&srcc=ucs$removeparam
+@@||plejada.pl/*&srcc=ucs$removeparam
+@@||medonet.pl/*&srcc=ucs$removeparam
+@@||businessinsider.com.pl/*&srcc=ucs$removeparam
+@@||onet.pl/?utm_source=$removeparam

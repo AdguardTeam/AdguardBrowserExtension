@@ -253,14 +253,25 @@ const browsersFilteringLog = (function () {
 
     /**
      * Add request to log
-     * @param tab
-     * @param requestUrl
-     * @param frameUrl
-     * @param requestType
-     * @param requestRule
-     * @param eventId
+     * @param {Object} params - params object
+     * @param params.tab
+     * @param params.requestUrl
+     * @param params.frameUrl
+     * @param params.requestType
+     * @param params.requestRule
+     * @param {number} params.timestamp - Request UTC timestamp
+     * @param params.eventId
      */
-    const addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, eventId) {
+    const addHttpRequestEvent = function ({
+        tab,
+        requestUrl,
+        frameUrl,
+        requestType,
+        requestRule,
+        timestamp,
+        eventId,
+        method,
+    }) {
         if (!canAddEvent(tab.tabId)) {
             return;
         }
@@ -275,7 +286,9 @@ const browsersFilteringLog = (function () {
             frameUrl,
             frameDomain,
             requestType,
+            timestamp,
             requestThirdParty: TSUrlFilter.isThirdPartyRequest(requestUrl, frameUrl),
+            method,
         };
 
         addRuleToFilteringEvent(filteringEvent, requestRule);
@@ -284,13 +297,22 @@ const browsersFilteringLog = (function () {
 
     /**
      * Add event to log with the corresponding rule
-     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
-     * @param {(string|Element)} element - String presentation of element or NodeElement
-     * @param {String} frameUrl - Frame url
-     * @param {String} requestType - Request type
-     * @param {{ruleText: String, filterId: Number, isInjectRule: Boolean}} requestRule - Request rule
+     * @param {Object} params - params object
+     * @param {{tabId: Number}} params.tab - Tab object with one of properties tabId
+     * @param {(string|Element)} params.element - String presentation of element or NodeElement
+     * @param {String} papams.frameUrl - Frame url
+     * @param {String} params.requestType - Request type
+     * @param {number} params.timestamp - Request UTC timestamp
+     * @param {{ruleText: String, filterId: Number, isInjectRule: Boolean}} params.requestRule - Request rule
      */
-    const addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
+    const addCosmeticEvent = function ({
+        tab,
+        element,
+        frameUrl,
+        requestType,
+        timestamp,
+        requestRule,
+    }) {
         if (!requestRule || !canAddEvent(tab.tabId)) {
             return;
         }
@@ -301,6 +323,7 @@ const browsersFilteringLog = (function () {
             frameUrl,
             frameDomain,
             requestType,
+            timestamp,
         };
 
         addRuleToFilteringEvent(filteringEvent, requestRule);
@@ -309,12 +332,20 @@ const browsersFilteringLog = (function () {
 
     /**
      * Add script event to log with the corresponding rule
-     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
-     * @param {String} frameUrl - Frame url
-     * @param {String} requestType - Request type
-     * @param {Object} rule - script rule
+     * @param {Object} params - params object
+     * @param {{tabId: Number}} params.tab - Tab object with one of properties tabId
+     * @param {String} params.frameUrl - Frame url
+     * @param {String} params.requestType - Request type
+     * @param {Object} params.rule - script rule
+     * @param {number} params.timestamp - Request UTC timestamp
      */
-    const addScriptInjectionEvent = (tab, frameUrl, requestType, rule) => {
+    const addScriptInjectionEvent = ({
+        tab,
+        frameUrl,
+        requestType,
+        rule,
+        timestamp,
+    }) => {
         if (!rule || !canAddEvent(tab.tabId)) {
             return;
         }
@@ -326,6 +357,7 @@ const browsersFilteringLog = (function () {
             frameUrl,
             frameDomain,
             requestType,
+            timestamp,
         };
 
         addRuleToFilteringEvent(filteringEvent, rule);
@@ -335,12 +367,20 @@ const browsersFilteringLog = (function () {
     /**
      * Adds remove query parameters event to log with the corresponding rule
      *
-     * @param {{tabId: Number}} tab - Tab object with one of properties tabId
-     * @param {String} frameUrl - Frame url
-     * @param {String} requestType - Request type
-     * @param {Object} rule - removeparam rule
+     * @param {Object} params - params object
+     * @param {{tabId: Number}} params.tab - Tab object with one of properties tabId
+     * @param {String} params.frameUrl - Frame url
+     * @param {String} params.requestType - Request type
+     * @param {Object} params.rule - removeparam rule
+     * @param {number} params.timestamp - Request UTC timestamp
      */
-    const addRemoveParamEvent = (tab, frameUrl, requestType, rule) => {
+    const addRemoveParamEvent = ({
+        tab,
+        frameUrl,
+        requestType,
+        rule,
+        timestamp,
+    }) => {
         if (!rule || !canAddEvent(tab.tabId)) {
             return;
         }
@@ -352,6 +392,7 @@ const browsersFilteringLog = (function () {
             frameUrl,
             frameDomain,
             requestType,
+            timestamp,
         };
 
         addRuleToFilteringEvent(filteringEvent, rule);
@@ -405,16 +446,18 @@ const browsersFilteringLog = (function () {
     /**
      * Adds cookie rule event
      *
-     * @param {object} tabId
-     * @param {string} cookieName
-     * @param {string} cookieValue
-     * @param {string} cookieDomain
-     * @param {string} requestType
-     * @param {object} cookieRule
-     * @param {boolean} isModifyingCookieRule
-     * @param {boolean} thirdParty
+     * @param {Object} params - params object
+     * @param {Object} params.tabId
+     * @param {string} params.cookieName
+     * @param {string} params.cookieValue
+     * @param {string} params.cookieDomain
+     * @param {string} params.requestType
+     * @param {object} params.cookieRule
+     * @param {boolean} params.isModifyingCookieRule
+     * @param {boolean} params.thirdParty
+     * @param {number} params.timestamp - Request UTC timestamp
      */
-    const addCookieEvent = (
+    const addCookieEvent = ({
         tabId,
         cookieName,
         cookieValue,
@@ -423,7 +466,8 @@ const browsersFilteringLog = (function () {
         cookieRule,
         isModifyingCookieRule,
         thirdParty,
-    ) => {
+        timestamp,
+    }) => {
         if (!canAddEvent(tabId)) {
             return;
         }
@@ -434,6 +478,7 @@ const browsersFilteringLog = (function () {
             requestThirdParty: thirdParty,
             cookieName,
             cookieValue,
+            timestamp,
         };
 
         if (cookieRule) {
@@ -466,7 +511,6 @@ const browsersFilteringLog = (function () {
                 const event = events[i];
                 if (event.eventId === eventId) {
                     addRuleToFilteringEvent(event, requestRule);
-                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
                     break;
                 }
             }
@@ -492,7 +536,6 @@ const browsersFilteringLog = (function () {
                 const event = events[i];
                 if (event.eventId === eventId) {
                     addReplaceRulesToFilteringEvent(event, replaceRules);
-                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
                     break;
                 }
             }
@@ -518,7 +561,6 @@ const browsersFilteringLog = (function () {
                 const event = events[i];
                 if (event.eventId === eventId) {
                     event.stealthActions = actions;
-                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
                     break;
                 }
             }
@@ -544,7 +586,31 @@ const browsersFilteringLog = (function () {
                 const event = events[i];
                 if (event.eventId === eventId) {
                     event.cspReportBlocked = cspReportBlocked;
-                    listeners.notifyListeners(listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                    break;
+                }
+            }
+        }
+    };
+
+    /**
+     * Binds response status code to HTTP request
+     *
+     * @param {object} tab Request tab
+     * @param {number} statusCode Response status code
+     * @param {number} eventId Event identifier
+     */
+    const bindResponseDataToHttpRequestEvent = (tab, statusCode, eventId) => {
+        if (!canAddEvent(tab.tabId)) {
+            return;
+        }
+
+        const tabInfo = getFilteringInfoByTabId(tab.tabId);
+        const events = tabInfo.filteringEvents;
+        if (events) {
+            for (let i = events.length - 1; i >= 0; i -= 1) {
+                const event = events[i];
+                if (event.eventId === eventId) {
+                    event.statusCode = statusCode;
                     break;
                 }
             }
@@ -652,6 +718,7 @@ const browsersFilteringLog = (function () {
         addScriptInjectionEvent,
         bindStealthActionsToHttpRequestEvent,
         bindCspReportBlockedToHttpRequestEvent,
+        bindResponseDataToHttpRequestEvent,
         clearEventsByTabId,
 
         isOpen,

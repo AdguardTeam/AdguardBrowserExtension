@@ -7,7 +7,7 @@ import { log } from '../../../../common/log';
 import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
 import { Icons } from '../../../common/components/ui/Icons';
-import { NOTIFIER_TYPES } from '../../../../common/constants';
+import { FILTERING_LOG, NOTIFIER_TYPES } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 
@@ -70,7 +70,7 @@ const FilteringLog = observer(() => {
             ];
 
             removeListenerCallback = messenger.createLongLivedConnection(
-                'filtering-log',
+                FILTERING_LOG,
                 events,
                 async (message) => {
                     const { type, data } = message;

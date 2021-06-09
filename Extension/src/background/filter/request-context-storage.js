@@ -60,6 +60,8 @@ export const requestContextStorage = (function () {
      * @property {Map<object, string[]>} elements - Content rules attached elements
      * @property {number} stealthActions - Applied stealth actions
      * @property {boolean} cspReportBlocked - Blocked because is csp report request
+     * @property {number} statusCode Response status code
+     * @property {number} timestamp Request UTC timestamp
      */
 
     /**
@@ -126,21 +128,32 @@ export const requestContextStorage = (function () {
 
     /**
      * Records request context
-     *
-     * @param {string} requestId Request identifier
-     * @param {string} requestUrl Request url
-     * @param {string} referrerUrl Request referrer url
-     * @param {string} originUrl Request origin url (initiator)
-     * @param {string} requestType Request type
-     * @param {object} tab Request tab
+     * @param {Object} params params object
+     * @param {string} params.requestId Request identifier
+     * @param {string} params.requestUrl Request url
+     * @param {string} params.referrerUrl Request referrer url
+     * @param {string} params.originUrl Request origin url (initiator)
+     * @param {string} params.requestType Request type
+     * @param {Object} params.tab Request tab
+     * @param {string} params.method Request HTTP method
      */
-    const record = (requestId, requestUrl, referrerUrl, originUrl, requestType, tab) => {
+    const record = ({
+        requestId,
+        requestUrl,
+        referrerUrl,
+        originUrl,
+        requestType,
+        tab,
+        method,
+    }) => {
         const eventId = getNextEventId();
 
         // Clears filtering log. If contexts map already contains this requests that means that we caught redirect
         if (requestType === RequestTypes.DOCUMENT && !contexts.has(requestId)) {
             filteringLog.clearEventsByTabId(tab.tabId);
         }
+
+        const timestamp = Date.now();
 
         const context = {
             requestId,
@@ -152,23 +165,47 @@ export const requestContextStorage = (function () {
             eventId,
             requestState: States.PROCESSING,
             contentModifyingState: States.NONE,
+            timestamp,
+            method,
         };
         contexts.set(requestId, context);
 
-        filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, null, eventId);
+        filteringLog.addHttpRequestEvent({
+            tab,
+            requestUrl,
+            frameUrl: referrerUrl,
+            requestType,
+            timestamp,
+            eventId,
+            method,
+        });
     };
 
     /**
      * Some "requests" can't be intercepted by webRequest API: WS and WebRTC, popups.
      * So them don't have usual request identifier and must be processing in the other way.
-     * @param requestUrl {string} Request URL
-     * @param referrerUrl {string} Referrer
-     * @param requestType {string} Request type
-     * @param tab {object} Tab
-     * @param requestRule {object} Request rule
+     * @param {Object} params params object
+     * @param {string} params.requestUrl  Request URL
+     * @param {string} params.referrerUrl  Referrer
+     * @param {string} params.requestType  Request type
+     * @param {Object} params.tab  Tab
+     * @param {Object} params.requestRule  Request rule
      */
-    const recordEmulated = (requestUrl, referrerUrl, requestType, tab, requestRule) => {
-        filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+    const recordEmulated = ({
+        requestUrl,
+        referrerUrl,
+        requestType,
+        tab,
+        requestRule,
+    }) => {
+        filteringLog.addHttpRequestEvent({
+            tab,
+            requestUrl,
+            frameUrl: referrerUrl,
+            requestType,
+            requestRule,
+            timestamp: Date.now(),
+        });
         webRequestService.recordRuleHit(tab, requestRule, requestUrl);
     };
 
@@ -224,6 +261,10 @@ export const requestContextStorage = (function () {
         }
         if ('cspReportBlocked' in update) {
             context.cspReportBlocked = update.cspReportBlocked;
+        }
+        if ('statusCode' in update) {
+            context.statusCode = update.statusCode;
+            filteringLog.bindResponseDataToHttpRequestEvent(context.tab, context.statusCode, context.eventId);
         }
     };
 
@@ -296,8 +337,16 @@ export const requestContextStorage = (function () {
 
             if (cspRules) {
                 for (const cspRule of cspRules) {
-                    filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, RequestTypes.CSP, cspRule);
+                    filteringLog.addHttpRequestEvent({
+                        tab,
+                        requestUrl,
+                        frameUrl: referrerUrl,
+                        requestType: RequestTypes.CSP,
+                        requestRule: cspRule,
+                        timestamp: Date.now(),
+                    });
                 }
+
                 ruleHitsRecords = ruleHitsRecords.concat(cspRules);
             }
 
@@ -325,7 +374,14 @@ export const requestContextStorage = (function () {
                 for (const contentRule of contentRules) {
                     const elements = context.elements.get(contentRule) || [];
                     for (const element of elements) {
-                        filteringLog.addCosmeticEvent(tab, element, requestUrl, context.requestType, contentRule);
+                        filteringLog.addCosmeticEvent({
+                            tab,
+                            element,
+                            frameUrl: requestUrl,
+                            requestType: context.requestType,
+                            requestRule: contentRule,
+                            timestamp: Date.now(),
+                        });
                     }
                     context.elements.delete(contentRule);
                 }
@@ -348,9 +404,10 @@ export const requestContextStorage = (function () {
      * Called on request complete/error event
      *
      * @param {string} requestId Request identifier
+     * @param {number} statusCode Response status code
      */
-    const onRequestCompleted = (requestId) => {
-        update(requestId, { requestState: States.DONE });
+    const onRequestCompleted = (requestId, statusCode) => {
+        update(requestId, { requestState: States.DONE, statusCode });
         remove(requestId);
     };
 

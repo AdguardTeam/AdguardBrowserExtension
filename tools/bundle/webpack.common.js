@@ -20,6 +20,7 @@ const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
 const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
 const ASSISTANT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant');
+const FULLSCREEN_USER_RULES_PATH = path.resolve(__dirname, '../../Extension/pages/fullscreen-user-rules');
 
 const OUTPUT_PATH = config.outputPath;
 
@@ -38,6 +39,7 @@ export const genCommonConfig = (browserConfig) => {
             'pages/content-script-end': CONTENT_SCRIPT_END_PATH,
             'pages/thankyou': THANKYOU_PATH,
             'pages/assistant': ASSISTANT_PATH,
+            'pages/fullscreen-user-rules': FULLSCREEN_USER_RULES_PATH,
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
@@ -136,6 +138,12 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(EXPORT_PATH, 'index.html'),
                 filename: 'pages/export.html',
                 chunks: ['pages/export'],
+                cache: false,
+            }),
+            new HtmlWebpackPlugin({
+                template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
+                filename: 'pages/fullscreen-user-rules.html',
+                chunks: ['pages/fullscreen-user-rules'],
                 cache: false,
             }),
             new CopyWebpackPlugin({

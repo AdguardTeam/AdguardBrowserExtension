@@ -12,12 +12,24 @@ export class OptionsStorage {
 
         /* flag indicating visibility of footer rate in the store bar */
         FOOTER_RATE_SHOW: 'footer-rate-show',
+
+        /**
+         * Filtering log columns widths
+         */
+        COLUMNS_WIDTHS: 'columns-widths',
+
+        /**
+         * Request modal width
+         */
+        REQUEST_INFO_MODAL_WIDTH: 'request-info-modal-width',
     };
 
     DEFAULTS = {
         [this.KEYS.USER_RULES_EDITOR_WRAP]: false,
         [this.KEYS.ALLOWLIST_EDITOR_WRAP]: false,
         [this.KEYS.FOOTER_RATE_SHOW]: true,
+        [this.KEYS.COLUMNS_WIDTHS]: [],
+        [this.KEYS.REQUEST_INFO_MODAL_WIDTH]: null,
     };
 
     constructor() {
@@ -26,7 +38,7 @@ export class OptionsStorage {
 
     setItem(key, value) {
         try {
-            this.storage.setItem(key, value);
+            this.storage.setItem(key, JSON.stringify(value));
         } catch (e) {
             log.debug(e);
         }

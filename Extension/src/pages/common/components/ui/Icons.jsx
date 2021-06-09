@@ -106,7 +106,7 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="link" viewBox="0 0 14 14">
-                <g transform="translate(1 1)" stroke="#67B279" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <g transform="translate(1 1)" stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round">
                     <g transform="rotate(-180 6 3.5)">
                         <path d="M0 1.16666667L0 7 5.71428571 7" />
                         <path d="M.079 6.96L6.869.03" />
@@ -144,7 +144,7 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="trash" viewBox="0 0 14 17">
-                <g fill="none" fillRule="evenodd" stroke="#df3812" transform="translate(1 1)">
+                <g fill="none" fillRule="evenodd" stroke="currentColor" transform="translate(1 1)">
                     <path d="m.54 3.5.888 11.538a.5.5 0 0 0 .498.462h8.148a.5.5 0 0 0 .498-.462l.888-11.538z" />
                     <g strokeLinecap="round">
                         <path d="m0 1.5h12" />
@@ -172,6 +172,10 @@ export const Icons = () => {
                 <path d="m6 10 6 6 6-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" transform="translate(-5 -9)" />
             </symbol>
 
+            <symbol id="arrow-bottom" viewBox="0 0 24 24">
+                <path d="M8.0354 10.9305L11.965 14.9997L16.0342 11.0702" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
             <symbol id="filters" viewBox="0 0 14 13">
                 <g fill="none" fillRule="evenodd" transform="translate(-5 -6)">
                     <path d="m0 0h24v24h-24z" />
@@ -196,6 +200,43 @@ export const Icons = () => {
                 <circle cx="12" cy="12" r="9" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M12 16V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M11.997 7.59552C12.009 7.59745 11.997 7.40446 11.997 7.40446" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
+            <symbol id="reduce" viewBox="0 0 24 24">
+                <rect width="24" height="24" fill="none" />
+                <path d="M10 6V10H6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10 18V14H6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M14 6V10H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M14 18V14H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
+            <symbol id="ban" viewBox="0 0 16 16">
+                <path fillRule="evenodd" clipRule="evenodd" d="M8 14C11.3137 14 14 11.3137 14 8C14 6.34315 13.3284 4.84315 12.2426 3.75736C11.69 3.20469 11.03 2.75934 10.2966 2.45524C9.58921 2.1619 8.81351 2 8 2C4.68629 2 2 4.68629 2 8C2 8.81351 2.1619 9.58921 2.45524 10.2966C2.75934 11.03 3.20469 11.69 3.75736 12.2426C4.84315 13.3284 6.34315 14 8 14Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M2.21513 13.8442L13.5485 2.51087" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
+            <symbol id="arrow-status" viewBox="0 0 16 16">
+                <path d="M11.7038 4.66663L14.6667 7.99996L1.33341 7.99996" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M11.7038 11.3334L14.6667 8.00004" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
+            <symbol id="profile-status" viewBox="0 0 16 16">
+                <ellipse cx="7.99992" cy="5.33329" rx="2.66667" ry="2.66667" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M2.66675 13.3334V13.3334C2.66675 11.1242 4.45761 9.33337 6.66675 9.33337H9.33341C11.5426 9.33337 13.3334 11.1242 13.3334 13.3334V13.3334H2.66675Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
+            <symbol id="transfer-status" viewBox="0 0 16 16">
+                <path d="M10.3333 2.66663L12.3333 4.66663" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10.3333 6.66663L12.3333 4.66663" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12.3334 4.66671H3.66675" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M5.66675 9.33337L3.66675 11.3334" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M5.66675 13.3334L3.66675 11.3334" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3.66659 11.3333H12.3333" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
+            <symbol id="arrow-scrollbar" viewBox="0 0 32 32">
+                <rect width="32" height="32" fill="none" />
+                <path d="M13.8958 21.9468L19.9996 16.0524L14.1052 9.9486" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
         </svg>
     );

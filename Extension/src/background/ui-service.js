@@ -703,19 +703,30 @@ export const uiService = (function () {
         }${getStealthString()}`);
     };
 
-    var openFilteringLog = async function (tabId) {
+    const openFilteringLog = async function (tabId) {
+        const FILTERING_LOG_PAGE = 'filtering-log.html';
         const options = { activateSameTab: true, type: 'popup' };
+
         if (!tabId) {
             const tab = await tabsApi.getActive();
             if (tab) {
                 const { tabId } = tab;
-                // TODO extract into constants
-                await openTab(getPageUrl('filtering-log.html') + (tabId ? `#${tabId}` : ''), options);
+                await openTab(getPageUrl(FILTERING_LOG_PAGE) + (tabId ? `#${tabId}` : ''), options);
             }
             return;
         }
-        // TODO extract into constants
-        await openTab(getPageUrl('filtering-log.html') + (tabId ? `#${tabId}` : ''), options);
+
+        await openTab(getPageUrl(FILTERING_LOG_PAGE) + (tabId ? `#${tabId}` : ''), options);
+    };
+
+    /**
+     * Opens user rules editor in the separate window in fullscreen
+     * @return {Promise<void>}
+     */
+    const openFullscreenUserRules = async () => {
+        const FULLSCREEN_USER_RULES_PAGE = 'fullscreen-user-rules.html';
+        const options = { activateSameTab: true, inNewWindow: true };
+        await openTab(getPageUrl(FULLSCREEN_USER_RULES_PAGE), options);
     };
 
     const openThankYouPage = async () => {
@@ -974,6 +985,7 @@ export const uiService = (function () {
         openSettingsTab,
         openSiteReportTab,
         openFilteringLog,
+        openFullscreenUserRules,
         openThankYouPage,
         openExtensionStore,
         openFiltersDownloadPage,

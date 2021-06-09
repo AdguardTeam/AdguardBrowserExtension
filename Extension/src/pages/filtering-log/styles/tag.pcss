@@ -1,0 +1,64 @@
+.tag {
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    outline: none;
+    padding: 2px 8px;
+    line-height: 14px;
+    font-size: 12px;
+    border-radius: 16px;
+    background-color: transparent;
+    margin-right: 8px;
+
+    &--regular {
+        border: 1px solid var(--gray700);
+        color: var(--gray700);
+
+        &.active {
+            background-color: var(--gray700);
+            color: var(--white);
+        }
+    }
+
+    &--party,
+    &--user_filter {
+        border: 1px solid var(--slateblue400);
+        color: var(--slateblue400);
+
+        &.active {
+            background-color: var(--slateblue400);
+            color: var(--white);
+        }
+    }
+
+    &--allowlisted {
+        border: 1px solid var(--green400);
+        color: var(--green400);
+
+        &.active {
+            background-color: var(--green400);
+            color: var(--white);
+        }
+    }
+
+    &--blocked {
+        border: 1px solid var(--red400);
+        color: var(--red400);
+
+        &.active {
+            background-color: var(--red400);
+            color: var(--white);
+        }
+    }
+
+    &--modified {
+        border: 1px solid var(--orange400);
+        color: var(--orange400);
+
+        &.active {
+            background-color: var(--orange400);
+            color: var(--white);
+        }
+    }
+}

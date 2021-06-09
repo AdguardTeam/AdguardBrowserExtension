@@ -1,6 +1,7 @@
 .tab-selector {
     display: flex;
     flex-direction: column;
+    margin-right: 16px;
 
     & label {
         color: var(--tabLabel);
@@ -10,35 +11,36 @@
 
     &__select {
         position: relative;
-        max-width: 400px;
     }
 
     &__select-ico {
+        width: 24px;
+        height: 24px;
         position: absolute;
-        right: 4px;
-        top: calc(50% - 4px);
+        left: 4px;
+        top: calc(50% - 12px);
+        color: var(--gray700);
         pointer-events: none;
     }
 
     &__select-in {
         width: 100%;
         color: var(--textColor);
-        height: 30px;
-        line-height: 30px;
-        padding: 0 30px 0 5px;
+        height: 16px;
+        line-height: 16px;
+        padding: 0 16px 0 30px;
         box-sizing: border-box;
         outline: 0;
         border: none;
-        border-bottom: 1px solid var(--gray300);
+        border-right: 1px solid var(--gray300);
         cursor: pointer;
         appearance: none;
-        margin-left: 8px;
         font-size: 13px;
 
         @media (prefers-color-scheme: dark) {
             background-color: var(--bgColor);
             color: var(--gray300);
-            border-bottom: 1px solid var(--gray400);
+            border-right: 1px solid var(--gray400);
         }
 
         @media (max-width: 640px) {
@@ -52,7 +54,7 @@
     & .tab-selector__select-in {
         background-color: transparent;
         color: var(--textColor);
-        border-bottom: 1px solid var(--gray300);
+        border-right: 1px solid var(--gray300);
     }
 }
 
@@ -60,6 +62,6 @@
     & .tab-selector__select-in {
         background-color: var(--bgColor);
         color: var(--gray300);
-        border-bottom: 1px solid var(--gray400);
+        border-right: 1px solid var(--gray400);
     }
 }
