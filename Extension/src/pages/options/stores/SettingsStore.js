@@ -123,7 +123,10 @@ class SettingsStore {
                 // on the next filters updates, we update filters keeping order
                 this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
             }
-            this.categories = data.filtersMetadata.categories;
+            // do not rerender groups on its turning on/off while searching
+            if (!this.isSearching) {
+                this.setGroups(data.filtersMetadata.categories);
+            }
             this.rulesCount = data.filtersInfo.rulesCount;
             this.version = data.appVersion;
             this.constants = data.constants;
