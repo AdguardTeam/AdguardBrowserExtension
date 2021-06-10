@@ -565,7 +565,6 @@ export const uiService = (function () {
                 settingKey: settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES,
                 settingValueKey: settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME,
             },
-            { queryKey: 'strip_url', settingKey: settings.STRIP_TRACKING_PARAMETERS },
         ];
 
         const stealthEnabled = !settings.getProperty(settings.DISABLE_STEALTH_MODE);

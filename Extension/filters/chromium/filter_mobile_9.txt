@@ -1,8 +1,8 @@
-! Checksum: 4SB5nDL1AoXttwd85OG50A
+! Checksum: LlZbrHO4PE0e1+hF7T3Ptg
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.9.78
-! TimeUpdated: 2021-06-02T13:04:28+00:00
+! Version: 2.0.9.81
+! TimeUpdated: 2021-06-08T09:03:37+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -198,6 +198,8 @@
 ||zebestof.com^$third-party
 tunovelaligera.com#%#AG_abortOnPropertyWrite(`adregain_wall`);
 tunovelaligera.com#%#AG_abortOnPropertyRead(`ad_nodes`);
+receitasdamama.net,financaspratudo.com#@#.ad-placement
+@@||g.facebruek.online/ad_status.js$domain=receitasdamama.net|financaspratudo.com
 unsurcoenlasombra.com#%#//scriptlet('prevent-setTimeout', 'blocker')
 @@||mrpiracy.top/js/ads-prebid.js
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=netcine.biz
@@ -1060,7 +1062,8 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
-/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispop.com|superflix.net
+/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispop.com|superflix.net
+brasilescola.uol.com.br##.br-grid-1-publicidade
 hardware.com.br##.hd-ad--background
 natelinha.uol.com.br##[id^="banner"]
 natelinha.uol.com.br##.arroba-texto
@@ -3169,6 +3172,7 @@ uol.com.br##ul.produtos
 !#safari_cb_affinity(general,privacy)
 @@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=videos.memedeportes.com|videos.cuantarazon.com|videos.vistoenlasredes.com|videos.vrutal.com|videos.humorenserie.com
 !#safari_cb_affinity
+brasilescola.uol.com.br#@#.banner
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=esradio.libertaddigital.com
 @@||fadadosexo.com/wp-content/uploads/useful_banner_manager_banners/*.jpg
 ordescargas.xyz#@#[href^="http://raboninco.com/"]

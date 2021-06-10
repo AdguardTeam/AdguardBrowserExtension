@@ -243,11 +243,11 @@
         },
         {
             "domains": "auto.ru,avito.ru,baby.ru,businessman.ru,dni.ru,e1.ru,echo.msk.ru,fb.ru,forexpf.ru,gismeteo.by,gismeteo.kz,gismeteo.md,gismeteo.ru,gorodrabot.ru,infoniac.ru,it-tehnik.ru,kakprosto.ru,kinopoisk.ru,liveinternet.ru,mathb-ege.sdamgia.ru,mk.ru,nkj.ru,ohotniki.ru,oko-planet.su,otzovik.com,razlozhi.ru,sdamgia.ru,syl.ru,vz.ru",
-            "script": "AG_removeCookie('/blcrm|bltsr|ancQTZw|computer/');"
+            "script": "AG_removeCookie('/blcrm|bltsr|Silicon|computer/');"
         },
         {
             "domains": "~passport.yandex.ru,~zen.yandex.ru,yandex.md,yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua",
-            "script": "AG_removeCookie('/blcrm|bltsr|ancQTZw|computer/');"
+            "script": "AG_removeCookie('/blcrm|bltsr|Silicon|computer/');"
         },
         {
             "domains": "avtovzglyad.ru",
@@ -944,6 +944,10 @@
         {
             "domains": "sporx.com,kizi.com,loveroms.com,minijuegos.com,footyroom.com,computerhoy.com,tworeddots.com,netzwelt.de,datpiff.com,jpost.com,fullmatchesandshows.com,quotidiano.net,broadwayworld.com,bold.dk,ilrestodelcarlino.it,spaziogames.it,ilgiorno.it,almasdarnews.com,diariodocentrodomundo.com.br,acidcow.com,yepi.com,talkwithstranger.com,allthetests.com,mathwarehouse.com,lanazione.it,vidmax.com,popmatters.com,toptenz.net,autobild.es,activistpost.com,spiele-umsonst.de,tamilo.com,nowtheendbegins.com,obaoba.com.br,autopista.es,izzygames.com,blacklistednews.com,theamericanmirror.com,textsfromlastnight.com,meta-chart.com,motociclismo.es,mobga.me,ginjfo.com,sportlife.es,dailygalaxy.com,miniplay.com,meta-calculator.com,minijogos.com.br,ciclismoafondo.es,hiphopearly.com,iltelegrafolivorno.it,healthyfocus.org,parolesdefoot.com,asheepnomore.net,virtualjerusalem.com,dailyspikes.com,triatlonweb.es,status-quote.com,vreme-on.net,transportemundial.es,iwhatsappstatus.com,mathworksheetsgo.com,lamoto.es,sportenkort.dk,motomercado.es,allthetests.com,diariodocentrodomundo.com.br,almasdarnews.com,datpiff.com,asheepnomore.net,tworeddots.com,datpiff.com,footyroom.com,kizi.com",
             "script": "AG_abortInlineScript(/window.TextEncoder/, 'addEventListener');"
+        },
+        {
+            "domains": "scrolller.com",
+            "script": "(function() { try { if (\"undefined\" != typeof localStorage) { localStorage.setItem(\"SCROLLLER_BETA_1:IS_AD_BLOCK\", \"false\") } } catch (ex) {} })();"
         },
         {
             "domains": "aiarticlespinner.co",
@@ -2736,22 +2740,6 @@
         {
             "domains": "zoomit.ir",
             "script": "document.cookie = \"BnShowNum=4; path=/;\";"
-        },
-        {
-            "domains": "soft98.ir",
-            "script": "document.querySelectorAll1 = document.querySelectorAll;"
-        },
-        {
-            "domains": "soft98.ir",
-            "script": "var AG_each = function(selector, fn) { if (!document.querySelectorAll1) return; var elements = document.querySelectorAll1(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };"
-        },
-        {
-            "domains": "soft98.ir",
-            "script": "AG_onLoad(function(){AG_each('a[target=\"_blank\"][rel=\"nofollow\"]:not([href*=\".soft98.ir\"]):not([class*=\"linkdoni\"]):not([class*=\"download\"])',function(el){el.removeAttribute('href');})});"
-        },
-        {
-            "domains": "soft98.ir",
-            "script": "AG_onLoad(function(){AG_each('a[target=\"_blank\"][rel=\"nofollow\"]:not([href*=\".soft98.ir\"]):not([class*=\"linkdoni\"]):not([class*=\"download\"]) img',function(el){el.removeAttribute('src');})});"
         },
         {
             "domains": "skmedix.pl",
@@ -8254,6 +8242,26 @@
             "script": "AG_onLoad(function(){if(!document.cookie.includes(\"euconsent-v2\")){var g=new MutationObserver(function(){setTimeout(function(){var b=document.querySelector('button.no-children[path=\"\\[0,2,1\\]\"]');b&&b.click();},300);setTimeout(function(){var c=document.querySelector('div[title=\"Berechtigte Interessen\"]'); c&&c.click();},300);setTimeout(function(){var d=document.querySelectorAll('label[aria-checked=\"true\"] > .off'); d.forEach(function(d){d.click();});},800); var f=document.querySelector('button.no-children[path=\"\\[0,3,0\\]\"]'); setTimeout(function(){f&&f.click();},1000);});g.observe(document,{childList:!0,subtree:!0});setTimeout(function(){g.disconnect()},3E4)}});"
         },
         {
+            "domains": "cdn.opencmp.net",
+            "script": "AG_onLoad(function(){if(window.self!==window.top&&document.referrer.startsWith(\"https://www-kreiszeitung-de.cdn.ampproject.org/\")){var a=new MutationObserver(function(){var b=document.querySelector(\".cmp_state-stacks .cmp_saveLink > a.cmp_ext_main_color_text\"),c=document.querySelector(\".cmp_state-settings .cmp_saveLink > a.cmp_ext_main_color_text\");b&&b.click();c&&(a.disconnect(),c.click())});a.observe(document,{childList:!0,subtree:!0});setTimeout(function(){a.disconnect()},1E4)}});"
+        },
+        {
+            "domains": "tviplayer.iol.pt",
+            "script": "AG_onLoad(function(){if(-1==document.cookie.indexOf(\"euconsent-v2\")){var a=new MutationObserver(function(){var b=document.querySelector('.qc-cmp2-container button[aria-label=\"CONCORDO\"]');b&&(a.disconnect(),b.click())});a.observe(document,{childList:!0,subtree:!0});setTimeout(function(){a.disconnect()},1E4)}});"
+        },
+        {
+            "domains": "ign.com",
+            "script": "AG_onLoad(function(){if(-1==document.cookie.indexOf(\"euconsent-v2\")){var a=new MutationObserver(function(){var b=document.querySelector(\"button#_evidon-banner-acceptbutton\");b&&(a.disconnect(),b.click())});a.observe(document,{childList:!0,subtree:!0});setTimeout(function(){a.disconnect()},1E4)}});"
+        },
+        {
+            "domains": "architekturvideo.de",
+            "script": "AG_onLoad(function(){if(-1==document.cookie.indexOf(\"borlabs-cookie\")){var a=new MutationObserver(function(){var b=document.querySelector('._brlbs-btn-accept-all');b&&(a.disconnect(),b.click())});a.observe(document,{childList:!0,subtree:!0});setTimeout(function(){a.disconnect()},1E4)}});"
+        },
+        {
+            "domains": "express.co.uk",
+            "script": "AG_onLoad(function(){if(-1==document.cookie.indexOf(\"euconsent-v2\")){var a=new MutationObserver(function(){var b=document.querySelector('button[aria-label=\"I accept\"]');b&&(a.disconnect(),b.click())});a.observe(document,{childList:!0,subtree:!0});setTimeout(function(){a.disconnect()},1E4)}});"
+        },
+        {
             "domains": "sixt-neuwagen.de",
             "script": "document.cookie=\"user_cookie_consent=essential; path=/\";"
         },
@@ -8450,7 +8458,7 @@
             "script": "AG_onLoad(function() {if (!document.cookie.includes(\"euconsent-v2\")) {var g = new MutationObserver(function() {var b = document.querySelector('button[title=\"AKZEPTIEREN\"]');var c = document.querySelector('html');b && b.click();c && c.style.setProperty('overflow', 'visible', 'important');c && c.style.setProperty('position', 'static', 'important');});g.observe(document, {childList: !0,subtree: !0});setTimeout(function() {g.disconnect()}, 1E4)}});"
         },
         {
-            "domains": "toteraz.pl,roastmarket.de,heute.at",
+            "domains": "bethesda.net,toteraz.pl,roastmarket.de,heute.at",
             "script": "AG_onLoad(function(){if(!document.cookie.includes(\"eupubconsent-v2\")){var a=new MutationObserver(function(){var b=document.querySelector(\"#onetrust-accept-btn-handler\");b&&(a.disconnect(),b.click())});a.observe(document,{childList:!0,subtree:!0});setTimeout(function(){a.disconnect()},1E4)}});"
         },
         {
@@ -8766,7 +8774,7 @@
             "script": "AG_onLoad(function(){if(window.location.href.includes(\"consentUUID\")){var g=new MutationObserver(function(){var b=document.querySelector('.message-component > button[aria-label^=\"AGREE\"]');b&&(g.disconnect(),b.click())});g.observe(document,{childList:!0,subtree:!0});setTimeout(function(){g.disconnect()},1E4)}});"
         },
         {
-            "domains": "cmp-sp.goettinger-tageblatt.de,cmp-sp.waz-online.de,cmp-sp.maz-online.de,cmp-sp.ostsee-zeitung.de,cmp-sp.dnn.de,cmp-sp.sportbuzzer.de,cmp-sp.rnd.de,cmp-sp.haz.de,cmp-cdn.golem.de",
+            "domains": "sourcepoint.rtl2.de,cmp-sp.sn-online.de,cmp-sp.goettinger-tageblatt.de,cmp-sp.waz-online.de,cmp-sp.maz-online.de,cmp-sp.ostsee-zeitung.de,cmp-sp.dnn.de,cmp-sp.sportbuzzer.de,cmp-sp.rnd.de,cmp-sp.haz.de,cmp-cdn.golem.de",
             "script": "AG_onLoad(function(){if(window.location.href.includes(\"consentUUID\")){var g=new MutationObserver(function(){var b=document.querySelector('button[aria-label^=\"Zustimmen\"]');b&&(g.disconnect(),b.click())});g.observe(document,{childList:!0,subtree:!0});setTimeout(function(){g.disconnect()},1E4)}});"
         },
         {
@@ -9982,6 +9990,10 @@
             "script": "document.cookie=\"sb-closed=true; path=/;\";"
         },
         {
+            "domains": "flipkart.com",
+            "script": "(function() { try { if (\"undefined\" != typeof sessionStorage) { sessionStorage.setItem(\"HPLWClosedPerSessionCount\", \"1\") } } catch (ex) {} })();"
+        },
+        {
             "domains": "wuxiaworld.com",
             "script": "(function() { try { if (\"undefined\" != typeof localStorage) { localStorage.setItem(\"visitedChapterSet\", \"[]\") } } catch (ex) {} })();"
         },
@@ -10518,7 +10530,7 @@
             "script": "AG_onLoad(function(){ var el = document.querySelector('.page-content1 button#makingdifferenttimer[onclick*=\"PathSet()\"]'); if(el) el.click(); });"
         },
         {
-            "domains": "federleqa.icu,nemenlake.icu,opalekr.icu,pixsera.net,rtkenale.icu,pikupalate.com,kekolangti.com,imgflyer.xyz,imgez.xyz,imgbigo.xyz,imgopp.xyz,imgex.xyz,imgkoi.xyz,imageking.xyz,imgweng.xyz,cloudgallery.net,imgair.net,imgkaida.xyz,imgfrost.net,imghb.xyz,imgkor.xyz,imgsup.xyz,imgfish.xyz,imgbrd.xyz,imgvivo.xyz,imgtiger.xyz,imgfsh.xyz,imgbird.xyz,imgviv.xyz,imgsupa.xyz,imglion.xyz,imgkr.xyz,imgair.net,imgtigr.xyz,imglin.xyz",
+            "domains": "imgyear.icu,federleqa.icu,nemenlake.icu,opalekr.icu,pixsera.net,rtkenale.icu,pikupalate.com,kekolangti.com,imgflyer.xyz,imgez.xyz,imgbigo.xyz,imgopp.xyz,imgex.xyz,imgkoi.xyz,imageking.xyz,imgweng.xyz,cloudgallery.net,imgair.net,imgkaida.xyz,imgfrost.net,imghb.xyz,imgkor.xyz,imgsup.xyz,imgfish.xyz,imgbrd.xyz,imgvivo.xyz,imgtiger.xyz,imgfsh.xyz,imgbird.xyz,imgviv.xyz,imgsupa.xyz,imglion.xyz,imgkr.xyz,imgair.net,imgtigr.xyz,imglin.xyz",
             "script": "AG_onLoad(function(){setTimeout(function(){var a=document.querySelector(\"a[href].url-link\");a&&(a.click(),setTimeout(function(){a.click()},50))},500)});"
         },
         {
