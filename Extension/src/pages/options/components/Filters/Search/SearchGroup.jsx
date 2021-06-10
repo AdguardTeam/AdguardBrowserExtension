@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import cn from 'classnames';
 
 import { Filter } from '../Filter';
 import { Setting, SETTINGS_TYPES } from '../../Settings/Setting';
@@ -21,12 +21,8 @@ const SearchGroup = ({
     checkboxHandler,
     checkboxValue,
 }) => {
-    const groupClassName = classNames({
-        setting: true,
-        group: true,
-        'group--disabled': !checkboxValue,
-    });
-    const filtersClassName = classNames('filters', {
+    const groupClassName = cn('setting group', { 'group--disabled': !checkboxValue });
+    const filtersClassName = cn('filters', {
         'filters--disabled': !checkboxValue,
     });
     return (
