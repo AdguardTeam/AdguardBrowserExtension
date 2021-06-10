@@ -61,6 +61,29 @@ export const updateFilters = (currentFilters, newFilters) => {
     return updatedFilters;
 };
 
+/**
+ * Updates groups state without changing order
+ * @param currentGroups
+ * @param newGroups
+ */
+export const updateGroups = (currentGroups, newGroups) => {
+    const updatedGroups = [...currentGroups];
+
+    newGroups.forEach((newGroup) => {
+        const currentGroupIdx = currentGroups.findIndex((currentGroup) => {
+            return currentGroup.groupId === newGroup.groupId;
+        });
+
+        if (currentGroupIdx < 0) {
+            updatedGroups.push(newGroup);
+        } else {
+            updatedGroups[currentGroupIdx] = newGroup;
+        }
+    });
+
+    return updatedGroups;
+};
+
 export const sortGroupsOnSearch = (groups) => {
     const sortedGroups = sortBy(groups, 'displayNumber')
         .sort((a, b) => {

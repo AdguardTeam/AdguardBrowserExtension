@@ -11,7 +11,12 @@ import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../../
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
-import { sortFilters, updateFilters, sortGroupsOnSearch } from '../components/Filters/helpers';
+import {
+    sortFilters,
+    updateFilters,
+    updateGroups,
+    sortGroupsOnSearch,
+} from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
 import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
 
@@ -104,7 +109,9 @@ class SettingsStore {
                 this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
             }
             // do not rerender groups on its turning on/off while searching
-            if (!this.isSearching) {
+            if (this.isSearching) {
+                this.setGroups(updateGroups(this.categories, data.filtersMetadata.categories));
+            } else {
                 this.setGroups(data.filtersMetadata.categories);
             }
             this.rulesCount = data.filtersInfo.rulesCount;
