@@ -8,7 +8,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 
 import '../group.pcss';
 
-const renderSearchFilters = (matchedFilters) => {
+const renderFilters = (matchedFilters) => {
     return matchedFilters
         .map((filter) => <Filter key={filter.filterId} filter={filter} />);
 };
@@ -50,7 +50,7 @@ const SearchGroup = ({
                 </div>
             </div>
             <div className={filtersClassName}>
-                {renderSearchFilters(filtersToShow)}
+                {renderFilters(filtersToShow)}
             </div>
         </>
     );
