@@ -357,7 +357,9 @@ class LogStore {
             }
 
             const isAllowlisted = filteringEvent.requestRule?.whitelistRule;
-            const isBlocked = filteringEvent.requestRule && !filteringEvent.requestRule.whitelistRule;
+            const isBlocked = filteringEvent.requestRule
+                && !filteringEvent.requestRule.whitelistRule
+                && !filteringEvent.removeParam;
             const isModified = filteringEvent.requestRule?.isModifyingCookieRule
                 || filteringEvent.requestRule?.cssRule
                 || filteringEvent.requestRule?.scriptRule
