@@ -30,6 +30,7 @@ import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
 import { filtersState } from './filters-state';
 import { SubscriptionFilter, SubscriptionGroup } from './metadata';
 import { metadataFactory } from './metadata-factory';
+import { metadataCache } from './metadata-cache';
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -49,12 +50,6 @@ export const subscriptions = (() => {
      * @type {number}
      */
     const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99;
-
-    let tags = [];
-    let groups = [];
-    let groupsMap = {};
-    let filters = [];
-    let filtersMap = {};
 
     const parseExpiresStr = (str) => {
         const regexp = /(\d+)\s+(day|hour)/;
@@ -128,6 +123,7 @@ export const subscriptions = (() => {
 
     const addFilterId = () => {
         let max = 0;
+        const filters = metadataCache.getFilters();
         filters.forEach((f) => {
             if (f.filterId > max) {
                 max = f.filterId;
@@ -234,19 +230,8 @@ export const subscriptions = (() => {
         filter.lastCheckTime = lastCheckTime || filter.lastCheckTime;
         filter.expires = expires || filter.expires;
 
-        filters = filters.map((f) => {
-            if (f.filterId === filter.filterId) {
-                f.version = version || f.version;
-                f.checksum = checksum || f.checksum;
-                f.timeUpdated = timeUpdated || f.timeUpdated;
-                f.lastCheckTime = lastCheckTime || filter.lastCheckTime;
-                f.expires = expires || filter.expires;
-                return f;
-            }
-            return f;
-        });
+        metadataCache.updateFilters(filter);
 
-        filtersMap[filter.filterId] = filter;
         saveCustomFilterInStorage(filter);
     };
 
@@ -292,7 +277,7 @@ export const subscriptions = (() => {
         }
 
         // Check if filter from this url was added before
-        let filter = filters.find(f => f.customUrl === url);
+        let filter = metadataCache.getFilters().find(f => f.customUrl === url);
 
         let updateFilter = true;
         if (filter) {
@@ -320,8 +305,7 @@ export const subscriptions = (() => {
             });
 
             filter.loaded = true;
-            filters.push(filter);
-            filtersMap[filter.filterId] = filter;
+            metadataCache.updateFilters(filter);
 
             // Save filter in separate storage
             saveCustomFilterInStorage(filter);
@@ -382,7 +366,7 @@ export const subscriptions = (() => {
         const rulesCount = rules.filter(rule => rule.trim().indexOf('!') !== 0).length;
 
         // Check if filter from this url was added before
-        let filter = filters.find(f => f.customUrl === url);
+        let filter = metadataCache.getFilters().find(f => f.customUrl === url);
 
         if (filter) {
             return ({ error: translator.getMessage('options_antibanner_custom_filter_already_exists') });
@@ -411,15 +395,73 @@ export const subscriptions = (() => {
     };
 
     /**
+     * Updates filters version and state info.
+     * Loads this data from the storage and then updates adguard.subscription.filters property
+     *
+     * @private
+     */
+    const loadFiltersVersionAndStateInfo = () => {
+        // Load filters metadata from the storage
+        const filtersVersionInfo = filtersState.getFiltersVersion();
+        // Load filters state from the storage
+        const filtersStateInfo = filtersState.getFiltersState();
+
+        const filters = metadataCache.getFilters();
+        for (let i = 0; i < filters.length; i += 1) {
+            const filter = filters[i];
+            const { filterId } = filter;
+            const versionInfo = filtersVersionInfo[filterId];
+            const stateInfo = filtersStateInfo[filterId];
+            if (versionInfo) {
+                filter.version = versionInfo.version;
+                filter.lastCheckTime = versionInfo.lastCheckTime;
+                filter.lastUpdateTime = versionInfo.lastUpdateTime;
+                if (versionInfo.expires) {
+                    filter.expires = versionInfo.expires;
+                }
+            }
+            if (stateInfo) {
+                filter.enabled = stateInfo.enabled;
+                filter.installed = stateInfo.installed;
+                filter.loaded = stateInfo.loaded;
+            }
+
+            metadataCache.updateFilters(filter);
+        }
+    };
+
+    /**
+     * Updates groups state info
+     * Loads state info from the storage and then updates adguard.subscription.groups properly
+     * @private
+     */
+    const loadGroupsStateInfo = () => {
+        // Load filters state from the storage
+        const groupsStateInfo = filtersState.getGroupsState();
+        const groups = metadataCache.getGroups();
+
+        for (let i = 0; i < groups.length; i += 1) {
+            const group = groups[i];
+            const { groupId } = group;
+            const stateInfo = groupsStateInfo[groupId];
+            if (stateInfo) {
+                group.enabled = stateInfo.enabled;
+
+                metadataCache.getGroup(group);
+            }
+        }
+    };
+
+    /**
      * Refreshes subscription's objects with metadata
      * @param metadata
      */
     const saveMetadata = (metadata) => {
-        tags = [];
-        groups = [];
-        groupsMap = {};
-        filters = [];
-        filtersMap = {};
+        const tags = [];
+        const groups = [];
+        const groupsMap = {};
+        const filters = [];
+        const filtersMap = {};
 
         for (let i = 0; i < metadata.tags.length; i += 1) {
             tags.push(metadataFactory.createFilterTagFromJSON(metadata.tags[i]));
@@ -456,6 +498,10 @@ export const subscriptions = (() => {
         filters.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
 
         groups.sort((f1, f2) => f1.displayNumber - f2.displayNumber);
+
+        metadataCache.setData({
+            tags, groups, groupsMap, filters, filtersMap,
+        });
     };
 
     /**
@@ -523,7 +569,7 @@ export const subscriptions = (() => {
      * @param i18nMetadata
      * @private
      */
-    function applyFilterTagLocalization(tag, i18nMetadata) {
+    const applyFilterTagLocalization = (tag, i18nMetadata) => {
         const { tagId } = tag;
         const localizations = i18nMetadata[tagId];
         if (localizations) {
@@ -534,7 +580,7 @@ export const subscriptions = (() => {
                 tag.description = localization.description;
             }
         }
-    }
+    };
 
     /**
      * Localize filter
@@ -542,7 +588,7 @@ export const subscriptions = (() => {
      * @param i18nMetadata
      * @private
      */
-    function applyFilterLocalization(filter, i18nMetadata) {
+    const applyFilterLocalization = (filter, i18nMetadata) => {
         const { filterId } = filter;
         const localizations = i18nMetadata[filterId];
         if (localizations) {
@@ -553,7 +599,7 @@ export const subscriptions = (() => {
                 filter.description = localization.description;
             }
         }
-    }
+    };
 
     /**
      * Localize group
@@ -561,7 +607,7 @@ export const subscriptions = (() => {
      * @param i18nMetadata
      * @private
      */
-    function applyGroupLocalization(group, i18nMetadata) {
+    const applyGroupLocalization = (group, i18nMetadata) => {
         const { groupId } = group;
         const localizations = i18nMetadata[groupId];
         if (localizations) {
@@ -571,13 +617,16 @@ export const subscriptions = (() => {
                 group.groupName = localization.name;
             }
         }
-    }
+    };
 
     /**
      * Loads groups and filters localizations
      * @return {Promise} returns promise
      */
-    async function loadMetadataI18n() {
+    const loadMetadataI18n = async () => {
+        log.info('Loading filters i18n metadata..');
+        const { tags, groups, filters } = metadataCache.getData();
+
         const i18nMetadata = await backend.loadLocalFiltersI18Metadata();
         const tagsI18n = i18nMetadata.tags;
         const filtersI18n = i18nMetadata.filters;
@@ -595,30 +644,31 @@ export const subscriptions = (() => {
             applyGroupLocalization(groups[k], groupsI18n);
         }
 
+        metadataCache.setData({ tags, groups, filters });
         log.info('Filters i18n metadata loaded');
-    }
+    };
 
     /**
      * Loads script rules from local file
      * @returns {Promise}
      * @private
      */
-    async function loadLocalScriptRules() {
+    const loadLocalScriptRules = async () => {
         const json = await backend.loadLocalScriptRules();
         localScriptRulesService.setLocalScriptRules(json);
         log.info('Filters local script rules loaded');
-    }
+    };
 
     /**
      * Loads redirect sources from local file
      * @returns {Promise}
      * @private
      */
-    async function loadRedirectSources() {
+    const loadRedirectSources = async () => {
         const txt = await backend.loadRedirectSources();
         redirectService.init(txt);
         log.info('Filters redirect sources loaded');
-    }
+    };
 
     /**
      * Initialize subscription service, loading local filters metadata
@@ -639,25 +689,25 @@ export const subscriptions = (() => {
      * @returns Array of Filters metadata
      */
     const getFilters = function () {
-        return filters;
+        return metadataCache.getFilters();
     };
 
     const getCustomFilters = function () {
-        return filters.filter(f => f.customUrl);
+        return metadataCache.getFilters().filter(f => f.customUrl);
     };
 
     /**
      * Gets filter metadata by filter identifier
      */
     const getFilter = function (filterId) {
-        return filtersMap[filterId];
+        return metadataCache.getFilter(filterId);
     };
 
     const isTrustedFilter = (filterId) => {
         if (filterId < CUSTOM_FILTERS_START_ID) {
             return true;
         }
-        const filter = filtersMap[filterId];
+        const filter = metadataCache.getFilter(filterId);
         return !!(filter && filter.trusted && filter.trusted === true);
     };
 
@@ -665,18 +715,18 @@ export const subscriptions = (() => {
      * @returns Array of Tags metadata
      */
     const getTags = function () {
-        return tags;
+        return metadataCache.getTags();
     };
 
     /**
      * @returns Array of Groups metadata
      */
-    const getGroups = () => groups;
+    const getGroups = () => metadataCache.getGroups();
 
     /**
      * @returns Group metadata
      */
-    const getGroup = groupId => groupsMap[groupId];
+    const getGroup = groupId => metadataCache.getGroup(groupId);
 
     /**
      * Checks if group has enabled status true or false
@@ -684,7 +734,7 @@ export const subscriptions = (() => {
      * @returns {boolean}
      */
     const groupHasEnabledStatus = (groupId) => {
-        const group = groupsMap[groupId];
+        const group = metadataCache.getGroup(groupId);
         return typeof group.enabled !== 'undefined';
     };
 
@@ -698,6 +748,8 @@ export const subscriptions = (() => {
         if (!locale) {
             return [];
         }
+
+        const filters = metadataCache.getFilters();
         const filterIds = [];
         for (let i = 0; i < filters.length; i += 1) {
             const filter = filters[i];
@@ -731,60 +783,7 @@ export const subscriptions = (() => {
 
     const removeCustomFilter = (filter) => {
         if (filter && filter.filterId) {
-            delete filtersMap[filter.filterId];
-            filters = filters.filter(f => f.filterId !== filter.filterId);
-        }
-    };
-
-    /**
-     * Updates filters version and state info.
-     * Loads this data from the storage and then updates adguard.subscription.filters property
-     *
-     * @private
-     */
-    const loadFiltersVersionAndStateInfo = () => {
-        // Load filters metadata from the storage
-        const filtersVersionInfo = filtersState.getFiltersVersion();
-        // Load filters state from the storage
-        const filtersStateInfo = filtersState.getFiltersState();
-
-        for (let i = 0; i < filters.length; i += 1) {
-            const filter = filters[i];
-            const { filterId } = filter;
-            const versionInfo = filtersVersionInfo[filterId];
-            const stateInfo = filtersStateInfo[filterId];
-            if (versionInfo) {
-                filter.version = versionInfo.version;
-                filter.lastCheckTime = versionInfo.lastCheckTime;
-                filter.lastUpdateTime = versionInfo.lastUpdateTime;
-                if (versionInfo.expires) {
-                    filter.expires = versionInfo.expires;
-                }
-            }
-            if (stateInfo) {
-                filter.enabled = stateInfo.enabled;
-                filter.installed = stateInfo.installed;
-                filter.loaded = stateInfo.loaded;
-            }
-        }
-    };
-
-    /**
-     * Updates groups state info
-     * Loads state info from the storage and then updates adguard.subscription.groups properly
-     * @private
-     */
-    const loadGroupsStateInfo = () => {
-        // Load filters state from the storage
-        const groupsStateInfo = filtersState.getGroupsState();
-
-        for (let i = 0; i < groups.length; i += 1) {
-            const group = groups[i];
-            const { groupId } = group;
-            const stateInfo = groupsStateInfo[groupId];
-            if (stateInfo) {
-                group.enabled = stateInfo.enabled;
-            }
+            metadataCache.removeFilter(filter.filterId);
         }
     };
 
