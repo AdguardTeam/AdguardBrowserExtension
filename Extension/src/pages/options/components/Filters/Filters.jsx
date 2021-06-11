@@ -5,6 +5,7 @@ import sortBy from 'lodash/sortBy';
 import classNames from 'classnames';
 
 import { Group } from './Group';
+import { SearchGroup } from './Search/SearchGroup';
 import { Filter } from './Filter';
 import { EmptyCustom } from './EmptyCustom';
 import { Search } from './Search';
@@ -107,6 +108,38 @@ const Filters = observer(() => {
             .map((filter) => <Filter key={filter.filterId} filter={filter} />);
     };
 
+    const renderGroupsOnSearch = (matchedFilters) => {
+        // collect search data as object where
+        // key is group id and value is searched filters
+        const searchData = matchedFilters
+            .reduce((acc, filter) => {
+                const { groupId } = filter;
+                if (typeof acc[groupId] === 'undefined') {
+                    acc[groupId] = [filter];
+                } else {
+                    acc[groupId].push(filter);
+                }
+                return acc;
+            }, {});
+        const affectedGroupsIds = Object.keys(searchData).map((id) => Number(id));
+        const groupsToRender = categories
+            .filter((group) => affectedGroupsIds.includes(group.groupId));
+        return groupsToRender.map((group) => {
+            const filtersToShow = searchData[group.groupId];
+            return (
+                <SearchGroup
+                    key={group.groupId}
+                    groupName={group.groupName}
+                    groupId={group.groupId}
+                    filtersToShow={filtersToShow}
+                    groupClickHandler={groupClickHandler(group.groupId)}
+                    checkboxHandler={handleGroupSwitch}
+                    checkboxValue={!!group.enabled}
+                />
+            );
+        });
+    };
+
     const openModalHandler = () => {
         setModalIsOpen(true);
         if (query.has(QUERY_PARAM_NAMES.TITLE) || query.has(QUERY_PARAM_NAMES.SUBSCRIBE)) {
@@ -164,6 +197,7 @@ const Filters = observer(() => {
             return group.groupId === settingsStore.selectedGroupId;
         });
 
+        // eslint-disable-next-line max-len
         const isCustom = settingsStore.selectedGroupId === ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID;
         const isEmpty = filtersToRender.length === 0;
 
@@ -217,7 +251,7 @@ const Filters = observer(() => {
             <FiltersUpdate />
             <Search />
             {settingsStore.isSearching
-                ? renderFilters(filtersToRender)
+                ? renderGroupsOnSearch(filtersToRender)
                 : renderGroups(categories)}
         </SettingsSection>
     );

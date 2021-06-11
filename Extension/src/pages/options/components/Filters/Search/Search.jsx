@@ -39,6 +39,7 @@ const Search = observer(() => {
         setSearchInput(value);
         if (value.length === 0) {
             settingsStore.sortFilters();
+            settingsStore.sortSearchGroups();
         }
     };
 
@@ -46,12 +47,14 @@ const Search = observer(() => {
         setSearchInput('');
         setSearchSelect(SEARCH_FILTERS.ALL);
         settingsStore.sortFilters();
+        settingsStore.sortSearchGroups();
     };
 
     const searchSelectHandler = (e) => {
         const { value } = e.target;
         setSearchSelect(value);
         settingsStore.sortFilters();
+        settingsStore.sortSearchGroups();
     };
 
     return (
