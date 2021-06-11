@@ -1,3 +1,5 @@
+import sortBy from 'lodash/sortBy';
+
 /**
  * Sorts filters by enabled status and displayNumber
  * @param filters
@@ -57,4 +59,42 @@ export const updateFilters = (currentFilters, newFilters) => {
     });
 
     return updatedFilters;
+};
+
+/**
+ * Updates groups state without changing order
+ * @param currentGroups
+ * @param newGroups
+ */
+export const updateGroups = (currentGroups, newGroups) => {
+    const updatedGroups = [...currentGroups];
+
+    newGroups.forEach((newGroup) => {
+        const currentGroupIdx = currentGroups.findIndex((currentGroup) => {
+            return currentGroup.groupId === newGroup.groupId;
+        });
+
+        if (currentGroupIdx < 0) {
+            updatedGroups.push(newGroup);
+        } else {
+            updatedGroups[currentGroupIdx] = newGroup;
+        }
+    });
+
+    return updatedGroups;
+};
+
+export const sortGroupsOnSearch = (groups) => {
+    const sortedGroups = sortBy(groups, 'displayNumber')
+        .sort((a, b) => {
+            // enabled first
+            if (a.enabled && !b.enabled) {
+                return -1;
+            }
+            if (!a.enabled && b.enabled) {
+                return 1;
+            }
+            return 0;
+        });
+    return sortedGroups;
 };
