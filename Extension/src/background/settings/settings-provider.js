@@ -24,6 +24,7 @@ import { listeners } from '../notifier';
 import { utils } from '../utils/common';
 import { settings } from './user-settings';
 import { backgroundPage } from '../extension-api/background-page';
+import { customFilters } from '../filter/filters/custom-filters';
 
 /**
  * Application settings provider.
@@ -47,8 +48,8 @@ export const settingsProvider = (function () {
      * @returns {CustomFilterInitial} - returns data enough to import custom filter
      */
     const collectCustomFiltersData = () => {
-        const customFilters = subscriptions.getCustomFilters();
-        return customFilters.map(filter => ({
+        const customFiltersList = customFilters.getCustomFilters();
+        return customFiltersList.map(filter => ({
             customUrl: filter.customUrl,
             enabled: filter.enabled,
             title: filter.name || '',
@@ -301,7 +302,7 @@ export const settingsProvider = (function () {
      * @returns {Promise<any>} Promise object which represents array with filters
      */
     const syncCustomFilters = async (customFiltersInitials) => {
-        const presentCustomFilters = subscriptions.getCustomFilters();
+        const presentCustomFilters = customFilters.getCustomFilters();
 
         const enrichedFiltersInitials = customFiltersInitials.map((filterToAdd) => {
             presentCustomFilters.forEach((existingFilter) => {

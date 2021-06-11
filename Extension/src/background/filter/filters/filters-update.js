@@ -22,6 +22,7 @@ import { antiBannerService } from '../antibanner';
 import { log } from '../../../common/log';
 import { settings } from '../../settings/user-settings';
 import { browserUtils } from '../../utils/browser-utils';
+import { customFilters } from './custom-filters';
 
 /**
  * Filters update service
@@ -208,7 +209,7 @@ export const filtersUpdate = (() => {
 
         const promises = customFilterIds.map(async (filterId) => {
             const filter = subscriptions.getFilter(filterId);
-            const updatedFilterId = await subscriptions.updateCustomFilter(filter.customUrl, {});
+            const updatedFilterId = await customFilters.updateCustomFilter(filter.customUrl, {});
             if (updatedFilterId) {
                 return filter;
             }
