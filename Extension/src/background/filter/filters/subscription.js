@@ -27,7 +27,7 @@ import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
-import {filtersState} from "./filters-state";
+import { filtersState } from './filters-state';
 
 /**
  * Service that loads and parses filters metadata from backend server.
