@@ -1,28 +1,13 @@
-export const metadata = (() => {
-    /**
-     * object containing filter data
-     * @typedef {Object} FilterData
-     * @property {number} filterId - filter id
-     * @property {number} groupId - filter group id
-     * @property {String} name - filter name
-     * @property {String} description - filter description
-     * @property {String} homepage - filter homepage url
-     * @property {String} version - filter version
-     * @property {number} timeUpdated - filter update time
-     * @property {number} displayNumber - filter display number used to sort filters in the group
-     * @property {array.<string>} languages - filter base languages
-     * @property {number} expires - filter update interval
-     * @property {String} subscriptionUrl - filter update url
-     * @property {array.<number>} tags - filter tags ids
-     * @property {String} [customUrl] - custom filter url
-     * @property {Boolean} [trusted] - filter is trusted or not
-     */
+/* eslint-disable max-classes-per-file */
 
-    /**
-     * Filter metadata
-     * @param {FilterData} filterData
-     */
-    const SubscriptionFilter = function (filterData) {
+// eslint-disable-next-line max-classes-per-file
+
+/**
+ * Filter metadata
+ * @param {FilterData} filterData
+ */
+export class SubscriptionFilter {
+    constructor(filterData) {
         const {
             filterId,
             groupId,
@@ -63,28 +48,26 @@ export const metadata = (() => {
         if (typeof checksum !== 'undefined') {
             this.checksum = checksum;
         }
-    };
+    }
+}
 
-    /**
-     * Tag metadata
-     */
-    const FilterTag = function (tagId, keyword) {
-        this.tagId = tagId;
-        this.keyword = keyword;
-    };
-
-    /**
-     * Group metadata
-     */
-    const SubscriptionGroup = function (groupId, groupName, displayNumber) {
+/**
+ * Group metadata
+ */
+export class SubscriptionGroup {
+    constructor(groupId, groupName, displayNumber) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.displayNumber = displayNumber;
-    };
+    }
+}
 
-    return {
-        SubscriptionFilter,
-        SubscriptionGroup,
-        FilterTag,
-    };
-})();
+/**
+ * Tag metadata
+ */
+export class FilterTag {
+    constructor(tagId, keyword) {
+        this.tagId = tagId;
+        this.keyword = keyword;
+    }
+}

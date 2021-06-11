@@ -28,7 +28,8 @@ import { browserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
 import { filtersState } from './filters-state';
-import { SubscriptionFilter, SubscriptionGroup, FilterTag } from './metadata';
+import { SubscriptionFilter, SubscriptionGroup } from './metadata';
+import { metadataFactory } from './metadata-factory';
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -54,96 +55,6 @@ export const subscriptions = (() => {
     let groupsMap = {};
     let filters = [];
     let filtersMap = {};
-
-    /**
-     * @param timeUpdatedString String in format 'yyyy-MM-dd'T'HH:mm:ssZ'
-     * @returns timestamp from date string
-     */
-    function parseTimeUpdated(timeUpdatedString) {
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1272
-        if (Number.isInteger(timeUpdatedString)) {
-            return new Date(timeUpdatedString);
-        }
-
-        // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
-        let timeUpdated = Date.parse(timeUpdatedString);
-        if (Number.isNaN(timeUpdated)) {
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/478
-            timeUpdated = Date.parse(timeUpdatedString.replace(/\+(\d{2})(\d{2})$/, '+$1:$2'));
-        }
-        if (Number.isNaN(timeUpdated)) {
-            timeUpdated = new Date().getTime();
-        }
-        return timeUpdated;
-    }
-
-    /**
-     * Create tag from object
-     * @param tag Object
-     * @returns {FilterTag}
-     */
-    function createFilterTagFromJSON(tag) {
-        const tagId = tag.tagId - 0;
-        const { keyword } = tag;
-
-        return new FilterTag(tagId, keyword);
-    }
-
-    /**
-     * Create group from object
-     * @param group Object
-     * @returns {SubscriptionGroup}
-     */
-    function createSubscriptionGroupFromJSON(group) {
-        const groupId = group.groupId - 0;
-        const defaultGroupName = group.groupName;
-        const displayNumber = group.displayNumber - 0;
-
-        return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
-    }
-
-    /**
-     * Create filter from object
-     * @param filter Object
-     */
-    const createSubscriptionFilterFromJSON = function (filter) {
-        const filterId = filter.filterId - 0;
-        const groupId = filter.groupId - 0;
-        const defaultName = filter.name;
-        const defaultDescription = filter.description;
-        const { homepage } = filter;
-        const { version } = filter;
-        const timeUpdated = parseTimeUpdated(filter.timeUpdated);
-        const expires = filter.expires - 0;
-        const { subscriptionUrl } = filter;
-        const { languages } = filter;
-        const displayNumber = filter.displayNumber - 0;
-        const { tags } = filter;
-        const { customUrl } = filter;
-        const { trusted } = filter;
-        const { checksum } = filter;
-        if (tags.length === 0) {
-            tags.push(0);
-        }
-
-        return new SubscriptionFilter({
-            filterId,
-            groupId,
-            name: defaultName,
-            description: defaultDescription,
-            homepage,
-            version,
-            timeUpdated,
-            displayNumber,
-            languages,
-            expires,
-            subscriptionUrl,
-            tags,
-            customUrl,
-            trusted,
-            checksum,
-        });
-    };
 
     const parseExpiresStr = (str) => {
         const regexp = /(\d+)\s+(day|hour)/;
@@ -511,17 +422,17 @@ export const subscriptions = (() => {
         filtersMap = {};
 
         for (let i = 0; i < metadata.tags.length; i += 1) {
-            tags.push(createFilterTagFromJSON(metadata.tags[i]));
+            tags.push(metadataFactory.createFilterTagFromJSON(metadata.tags[i]));
         }
 
         for (let j = 0; j < metadata.filters.length; j += 1) {
-            const filter = createSubscriptionFilterFromJSON(metadata.filters[j]);
+            const filter = metadataFactory.createSubscriptionFilterFromJSON(metadata.filters[j]);
             filters.push(filter);
             filtersMap[filter.filterId] = filter;
         }
 
         for (let k = 0; k < metadata.groups.length; k += 1) {
-            const group = createSubscriptionGroupFromJSON(metadata.groups[k]);
+            const group = metadataFactory.createSubscriptionGroupFromJSON(metadata.groups[k]);
             groups.push(group);
             groupsMap[group.groupId] = group;
         }
@@ -537,7 +448,7 @@ export const subscriptions = (() => {
         // Load custom filters
         const customFilters = loadCustomFilters();
         customFilters.forEach((f) => {
-            const customFilter = createSubscriptionFilterFromJSON(f);
+            const customFilter = metadataFactory.createSubscriptionFilterFromJSON(f);
             filters.push(customFilter);
             filtersMap[customFilter.filterId] = customFilter;
         });
@@ -581,6 +492,29 @@ export const subscriptions = (() => {
         loadGroupsStateInfo();
 
         log.info('Filters metadata reloaded from backend');
+    };
+
+    /**
+     * Load metadata of the specified filters
+     *
+     * @param filterIds         Filters identifiers
+     */
+    const loadFiltersMetadata = async (filterIds) => {
+        if (!filterIds || filterIds.length === 0) {
+            return [];
+        }
+
+        const metadata = await backend.downloadMetadataFromBackend();
+
+        const filterMetadataList = [];
+        for (let i = 0; i < filterIds.length; i += 1) {
+            const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
+            if (filter) {
+                filterMetadataList.push(metadataFactory.createSubscriptionFilterFromJSON(filter));
+            }
+        }
+
+        return filterMetadataList;
     };
 
     /**
@@ -871,6 +805,7 @@ export const subscriptions = (() => {
     return {
         init,
         reloadMetadataFromBackend,
+        loadFiltersMetadata,
         getFilterIdsForLanguage,
         getTags,
         getGroups,
@@ -880,7 +815,6 @@ export const subscriptions = (() => {
         getCustomFilters,
         getFilter,
         isTrustedFilter,
-        createSubscriptionFilterFromJSON,
         updateCustomFilter,
         getCustomFilterInfo,
         getLangSuitableFilters,

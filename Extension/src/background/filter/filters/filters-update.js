@@ -114,7 +114,7 @@ export const filtersUpdate = (() => {
         }
 
         try {
-            const filterMetadataList = await backend.loadFiltersMetadata(filterIds);
+            const filterMetadataList = await subscriptions.loadFiltersMetadata(filterIds);
             log.debug(
                 'Retrieved response from server for {0} filters, result: {1} metadata',
                 filterIds.length,

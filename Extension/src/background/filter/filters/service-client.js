@@ -20,17 +20,15 @@ import { utils } from '../../utils/common';
 import { backgroundPage } from '../../extension-api/background-page';
 import { prefs } from '../../prefs';
 import { log } from '../../../common/log';
-import { subscriptions } from './subscription';
 import { browserUtils } from '../../utils/browser-utils';
 import { lazyGet } from '../../utils/lazy';
 
+/**
+ * Class for working with our backend server.
+ * All requests sent by this class are covered in the privacy policy:
+ * http://adguard.com/en/privacy.html#browsers
+ */
 export const backend = (function () {
-    /**
-     * Class for working with our backend server.
-     * All requests sent by this class are covered in the privacy policy:
-     * http://adguard.com/en/privacy.html#browsers
-     */
-
     /**
      * Settings
      */
@@ -217,29 +215,6 @@ export const backend = (function () {
         }
 
         return metadata;
-    };
-
-    /**
-     * Load metadata of the specified filters
-     *
-     * @param filterIds         Filters identifiers
-     */
-    const loadFiltersMetadata = async (filterIds) => {
-        if (!filterIds || filterIds.length === 0) {
-            return [];
-        }
-
-        const metadata = await downloadMetadataFromBackend();
-
-        const filterMetadataList = [];
-        for (let i = 0; i < filterIds.length; i += 1) {
-            const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
-            if (filter) {
-                filterMetadataList.push(subscriptions.createSubscriptionFilterFromJSON(filter));
-            }
-        }
-
-        return filterMetadataList;
     };
 
     /**
@@ -529,7 +504,6 @@ export const backend = (function () {
     };
 
     return {
-        loadFiltersMetadata,
         loadFilterRules,
 
         loadFilterRulesBySubscriptionUrl,
