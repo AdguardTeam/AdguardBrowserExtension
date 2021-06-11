@@ -94,3 +94,18 @@ export const passiveEventSupported = (() => {
         return passiveSupported;
     };
 })();
+
+export const copyToClipboard = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerText = text;
+    textarea.style = `
+        position: absolute;
+        display: hidden;
+        width: 0;
+        height: 0;
+    `;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    textarea.remove();
+};
