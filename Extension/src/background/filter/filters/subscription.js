@@ -27,6 +27,7 @@ import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
+import {filtersState} from "./filters-state";
 
 /**
  * Service that loads and parses filters metadata from backend server.
@@ -632,7 +633,7 @@ export const subscriptions = (() => {
      * Load groups and filters metadata
      * @returns {Promise} returns promise
      */
-    async function loadMetadata() {
+    const loadMetadata = async () => {
         let metadata;
 
         // Load from storage first
@@ -646,20 +647,23 @@ export const subscriptions = (() => {
         saveMetadata(metadata);
 
         log.info('Filters metadata loaded');
-    }
+    };
 
     /**
      * Reloads groups and filters metadata from backend
      * @returns {Promise} returns promise
      */
-    async function reloadMetadataFromBackend() {
+    const reloadMetadataFromBackend = async () => {
         const metadata = await backend.downloadMetadataFromBackend();
         localStorage.setItem(METADATA_STORAGE_KEY, JSON.stringify(metadata));
 
         saveMetadata(metadata);
 
+        loadFiltersVersionAndStateInfo();
+        loadGroupsStateInfo();
+
         log.info('Filters metadata reloaded from backend');
-    }
+    };
 
     /**
      * Localize tag
@@ -880,6 +884,58 @@ export const subscriptions = (() => {
         }
     };
 
+    /**
+     * Updates filters version and state info.
+     * Loads this data from the storage and then updates adguard.subscription.filters property
+     *
+     * @private
+     */
+    const loadFiltersVersionAndStateInfo = () => {
+        // Load filters metadata from the storage
+        const filtersVersionInfo = filtersState.getFiltersVersion();
+        // Load filters state from the storage
+        const filtersStateInfo = filtersState.getFiltersState();
+
+        for (let i = 0; i < filters.length; i += 1) {
+            const filter = filters[i];
+            const { filterId } = filter;
+            const versionInfo = filtersVersionInfo[filterId];
+            const stateInfo = filtersStateInfo[filterId];
+            if (versionInfo) {
+                filter.version = versionInfo.version;
+                filter.lastCheckTime = versionInfo.lastCheckTime;
+                filter.lastUpdateTime = versionInfo.lastUpdateTime;
+                if (versionInfo.expires) {
+                    filter.expires = versionInfo.expires;
+                }
+            }
+            if (stateInfo) {
+                filter.enabled = stateInfo.enabled;
+                filter.installed = stateInfo.installed;
+                filter.loaded = stateInfo.loaded;
+            }
+        }
+    };
+
+    /**
+     * Updates groups state info
+     * Loads state info from the storage and then updates adguard.subscription.groups properly
+     * @private
+     */
+    const loadGroupsStateInfo = () => {
+        // Load filters state from the storage
+        const groupsStateInfo = filtersState.getGroupsState();
+
+        for (let i = 0; i < groups.length; i += 1) {
+            const group = groups[i];
+            const { groupId } = group;
+            const stateInfo = groupsStateInfo[groupId];
+            if (stateInfo) {
+                group.enabled = stateInfo.enabled;
+            }
+        }
+    };
+
     // Add event listener to persist filter metadata to local storage
     listeners.addListener((event, payload) => {
         switch (event) {
@@ -910,6 +966,8 @@ export const subscriptions = (() => {
         updateCustomFilter,
         getCustomFilterInfo,
         getLangSuitableFilters,
+        loadFiltersVersionAndStateInfo,
+        loadGroupsStateInfo,
         CUSTOM_FILTERS_START_ID,
     };
 })();
