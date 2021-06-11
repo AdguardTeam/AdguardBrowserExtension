@@ -1,7 +1,4 @@
 /* eslint-disable max-classes-per-file */
-
-// eslint-disable-next-line max-classes-per-file
-
 /**
  * Filter metadata
  * @param {FilterData} filterData
