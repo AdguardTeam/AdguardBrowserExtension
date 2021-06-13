@@ -73,6 +73,12 @@ export const backend = (function () {
             return `${this.filtersUrl}/filters.js?${params.join('&')}`;
         },
 
+        // URL for downloading i18n localizations
+        get filtersI18nMetadataUrl() {
+            const params = browserUtils.getExtensionParams();
+            return `${this.filtersUrl}/filters_i18n.json?${params.join('&')}`;
+        },
+
         // URL for user complaints on missed ads or malware/phishing websites
         get reportUrl() {
             return `${this.backendUrl}/url-report.html`;
@@ -205,6 +211,24 @@ export const backend = (function () {
      */
     const downloadMetadataFromBackend = async () => {
         const response = await executeRequestAsync(settings.filtersMetadataUrl, 'application/json');
+        if (!response?.responseText) {
+            throw new Error(`Empty response: ${response}`);
+        }
+
+        const metadata = parseJson(response.responseText);
+        if (!metadata) {
+            throw new Error(`Invalid response: ${response}`);
+        }
+
+        return metadata;
+    };
+
+    /**
+     * Downloads i18n metadata from backend
+     * @return {Promise<void>}
+     */
+    const downloadI18nMetadataFromBackend = async () => {
+        const response = await executeRequestAsync(settings.filtersI18nMetadataUrl, 'application/json');
         if (!response?.responseText) {
             throw new Error(`Empty response: ${response}`);
         }
@@ -513,6 +537,7 @@ export const backend = (function () {
         getRedirectSources,
 
         downloadMetadataFromBackend,
+        downloadI18nMetadataFromBackend,
 
         lookupSafebrowsing,
 

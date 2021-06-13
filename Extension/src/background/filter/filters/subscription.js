@@ -38,10 +38,11 @@ import { customFilters } from './custom-filters';
  */
 export const subscriptions = (() => {
     /**
-     * Storage key for metadata object
+     * Storage keys for metadata objects
      * @type {string}
      */
     const METADATA_STORAGE_KEY = 'filters-metadata';
+    const I18N_METADATA_STORAGE_KEY = 'filters-i18n-metadata';
 
     /**
      * Updates filters version and state info.
@@ -269,17 +270,15 @@ export const subscriptions = (() => {
     };
 
     /**
-     * Loads groups and filters localizations
-     * @return {Promise} returns promise
+     * Refreshes subscription's objects with i18n metadata
+     * @param i18nMetadata
      */
-    const loadMetadataI18n = async () => {
-        log.info('Loading filters i18n metadata..');
-        const { tags, groups, filters } = metadataCache.getData();
-
-        const i18nMetadata = await backend.getLocalFiltersI18Metadata();
+    const saveI18nMetadata = (i18nMetadata) => {
         const tagsI18n = i18nMetadata.tags;
         const filtersI18n = i18nMetadata.filters;
         const groupsI18n = i18nMetadata.groups;
+
+        const { tags, groups, filters } = metadataCache.getData();
 
         for (let i = 0; i < tags.length; i += 1) {
             applyFilterTagLocalization(tags[i], tagsI18n);
@@ -294,7 +293,41 @@ export const subscriptions = (() => {
         }
 
         metadataCache.setData({ tags, groups, filters });
+    };
+
+    /**
+     * Loads groups and filters localizations
+     * @return {Promise} returns promise
+     */
+    const loadMetadataI18n = async () => {
+        log.info('Loading filters i18n metadata..');
+
+        let metadata;
+
+        // Load from storage first
+        const data = localStorage.getItem(I18N_METADATA_STORAGE_KEY);
+        if (data) {
+            metadata = JSON.parse(data);
+        } else {
+            metadata = await backend.getLocalFiltersI18Metadata();
+        }
+
+        saveI18nMetadata(metadata);
+
         log.info('Filters i18n metadata loaded');
+    };
+
+    /**
+     * Reloads i18n metadata localizations from backend
+     * @returns {Promise} returns promise
+     */
+    const reloadI18nMetadataFromBackend = async () => {
+        const metadata = await backend.downloadI18nMetadataFromBackend();
+        localStorage.setItem(I18N_METADATA_STORAGE_KEY, JSON.stringify(metadata));
+
+        saveI18nMetadata(metadata);
+
+        log.info('Filters i18n metadata reloaded from backend');
     };
 
     /**
@@ -432,6 +465,7 @@ export const subscriptions = (() => {
     return {
         init,
         reloadMetadataFromBackend,
+        reloadI18nMetadataFromBackend,
         loadFiltersVersionAndStateInfo,
         loadGroupsStateInfo,
 
