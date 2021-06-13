@@ -85,7 +85,7 @@ const Filter = observer(({ filter }) => {
         filterId,
         description,
         version,
-        lastUpdateTime,
+        lastCheckTime,
         timeUpdated,
         homepage,
         trusted,
@@ -154,8 +154,8 @@ const Filter = observer(({ filter }) => {
                                     }
                                     {reactTranslator.getMessage('options_filters_filter_updated')}
                                     {' '}
-                                    {lastUpdateTime
-                                        ? formatDate(lastUpdateTime)
+                                    {lastCheckTime
+                                        ? formatDate(lastCheckTime)
                                         : formatDate(timeUpdated)}
                                 </div>
                             </div>
