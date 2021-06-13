@@ -165,7 +165,7 @@ export const subscriptions = (() => {
         if (data) {
             metadata = JSON.parse(data);
         } else {
-            metadata = await backend.loadLocalFiltersMetadata();
+            metadata = await backend.getLocalFiltersMetadata();
         }
 
         saveMetadata(metadata);
@@ -194,7 +194,7 @@ export const subscriptions = (() => {
      *
      * @param filterIds         Filters identifiers
      */
-    const loadFiltersMetadata = async (filterIds) => {
+    const getFiltersMetadata = async (filterIds) => {
         if (!filterIds || filterIds.length === 0) {
             return [];
         }
@@ -276,7 +276,7 @@ export const subscriptions = (() => {
         log.info('Loading filters i18n metadata..');
         const { tags, groups, filters } = metadataCache.getData();
 
-        const i18nMetadata = await backend.loadLocalFiltersI18Metadata();
+        const i18nMetadata = await backend.getLocalFiltersI18Metadata();
         const tagsI18n = i18nMetadata.tags;
         const filtersI18n = i18nMetadata.filters;
         const groupsI18n = i18nMetadata.groups;
@@ -303,7 +303,7 @@ export const subscriptions = (() => {
      * @private
      */
     const loadLocalScriptRules = async () => {
-        const json = await backend.loadLocalScriptRules();
+        const json = await backend.getLocalScriptRules();
         localScriptRulesService.setLocalScriptRules(json);
         log.info('Filters local script rules loaded');
     };
@@ -314,7 +314,7 @@ export const subscriptions = (() => {
      * @private
      */
     const loadRedirectSources = async () => {
-        const txt = await backend.loadRedirectSources();
+        const txt = await backend.getRedirectSources();
         redirectService.init(txt);
         log.info('Filters redirect sources loaded');
     };
@@ -409,6 +409,9 @@ export const subscriptions = (() => {
         return filterIds;
     };
 
+    /**
+     * @return list of filters
+     */
     const getLangSuitableFilters = () => {
         // Get language-specific filters by user locale
         let filterIds = [];
@@ -429,8 +432,10 @@ export const subscriptions = (() => {
     return {
         init,
         reloadMetadataFromBackend,
-        loadFiltersMetadata,
+        loadFiltersVersionAndStateInfo,
+        loadGroupsStateInfo,
 
+        getFiltersMetadata,
         getFilterIdsForLanguage,
         getLangSuitableFilters,
 
@@ -442,8 +447,5 @@ export const subscriptions = (() => {
 
         isTrustedFilter,
         groupHasEnabledStatus,
-
-        loadFiltersVersionAndStateInfo,
-        loadGroupsStateInfo,
     };
 })();

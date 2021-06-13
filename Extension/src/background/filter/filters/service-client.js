@@ -225,7 +225,7 @@ export const backend = (function () {
      * @param useOptimizedFilters   Download optimized filters flag
      * @returns {Promise<string>}   Downloaded rules
      */
-    const loadFilterRules = (filterId, forceRemote, useOptimizedFilters) => {
+    const downloadFilterRules = (filterId, forceRemote, useOptimizedFilters) => {
         let url;
 
         if (forceRemote || settings.localFilterIds.indexOf(filterId) < 0) {
@@ -245,7 +245,7 @@ export const backend = (function () {
      *
      * @param url - Subscription url
      */
-    const loadFilterRulesBySubscriptionUrl = async (url) => {
+    const downloadFilterRulesBySubscriptionUrl = async (url) => {
         if (url in loadingSubscriptions) {
             return;
         }
@@ -287,7 +287,7 @@ export const backend = (function () {
     /**
      * Loads filter groups metadata
      */
-    const loadLocalFiltersMetadata = async () => {
+    const getLocalFiltersMetadata = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters.json`);
 
         let response;
@@ -315,7 +315,7 @@ export const backend = (function () {
      * Loads filter groups metadata from local file
      * @returns {Promise}
      */
-    const loadLocalFiltersI18Metadata = async () => {
+    const getLocalFiltersI18Metadata = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
 
         let response;
@@ -341,7 +341,7 @@ export const backend = (function () {
      * Loads script rules from local file
      * @returns {Promise}
      */
-    const loadLocalScriptRules = async () => {
+    const getLocalScriptRules = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
 
         let response;
@@ -370,7 +370,7 @@ export const backend = (function () {
      * Loads redirect sources from local file
      * @returns {Promise}
      */
-    const loadRedirectSources = async () => {
+    const getRedirectSources = async () => {
         const url = `${backgroundPage.getURL(settings.redirectSourcesFolder)}/redirects.yml`;
 
         let response;
@@ -504,18 +504,17 @@ export const backend = (function () {
     };
 
     return {
-        loadFilterRules,
+        downloadFilterRules,
+        downloadFilterRulesBySubscriptionUrl,
 
-        loadFilterRulesBySubscriptionUrl,
-
-        loadLocalFiltersMetadata,
-        loadLocalFiltersI18Metadata,
-        loadLocalScriptRules,
-        loadRedirectSources,
-
-        lookupSafebrowsing,
+        getLocalFiltersMetadata,
+        getLocalFiltersI18Metadata,
+        getLocalScriptRules,
+        getRedirectSources,
 
         downloadMetadataFromBackend,
+
+        lookupSafebrowsing,
 
         sendUrlReport,
         sendHitStats,

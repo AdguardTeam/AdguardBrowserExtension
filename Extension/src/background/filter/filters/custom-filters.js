@@ -231,7 +231,7 @@ export const customFilters = (() => {
 
         let rules;
         try {
-            rules = await backend.loadFilterRulesBySubscriptionUrl(url);
+            rules = await backend.downloadFilterRulesBySubscriptionUrl(url);
         } catch (e) {
             log.error(`Error download filter by url ${url}, cause: ${e || ''}`);
             return null;
@@ -325,7 +325,7 @@ export const customFilters = (() => {
 
         let rules;
         try {
-            rules = await backend.loadFilterRulesBySubscriptionUrl(url);
+            rules = await backend.downloadFilterRulesBySubscriptionUrl(url);
         } catch (e) {
             log.error(`Error download filter by url ${url}, cause: ${e || ''}`);
             return {};

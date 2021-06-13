@@ -115,7 +115,7 @@ export const filtersUpdate = (() => {
         }
 
         try {
-            const filterMetadataList = await subscriptions.loadFiltersMetadata(filterIds);
+            const filterMetadataList = await subscriptions.getFiltersMetadata(filterIds);
             log.debug(
                 'Retrieved response from server for {0} filters, result: {1} metadata',
                 filterIds.length,
@@ -145,7 +145,7 @@ export const filtersUpdate = (() => {
 
         let filterRules;
         try {
-            filterRules = await backend.loadFilterRules(
+            filterRules = await backend.downloadFilterRules(
                 filter.filterId,
                 forceRemote,
                 settings.isUseOptimizedFiltersEnabled(),
