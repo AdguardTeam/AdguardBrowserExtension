@@ -7,7 +7,6 @@ import {
     runInAction,
 } from 'mobx';
 import find from 'lodash/find';
-import identity from 'lodash/identity';
 import truncate from 'lodash/truncate';
 
 import { reactTranslator } from '../../../common/translators/reactTranslator';
@@ -39,28 +38,9 @@ const EVENT_TYPE_FILTERS = {
     OTHER: 'other',
 };
 
-const matchesFilter = (filters, filterId, check) => {
-    return filters.find((f) => f.id === filterId).enabled && check;
-};
-
-class LogStore {
-    @observable filteringEvents = [];
-
-    @observable tabsMap = {};
-
-    @observable selectedTabId = null;
-
-    @observable eventsSearchValue = '';
-
-    @observable preserveLogEnabled = false;
-
-    @observable selectedEvent = null;
-
-    @observable filtersMetadata = null;
-
-    @observable settings = null;
-
-    @observable miscellaneousFilters = [
+const initMiscellaneousFilters = {
+    allButtonEnabled: true,
+    filters: [
         {
             id: MISCELLANEOUS_FILTERS.REGULAR,
             enabled: true,
@@ -86,9 +66,12 @@ class LogStore {
             enabled: true,
             title: reactTranslator.getMessage('filtering_log_filter_user_rule'),
         },
-    ];
+    ],
+};
 
-    @observable requestSourceFilters = [
+const initRequestSourceFilters = {
+    allButtonEnabled: true,
+    filters: [
         {
             id: REQUEST_SOURCE_FILTERS.FIRST_PARTY,
             title: '1P',
@@ -99,9 +82,12 @@ class LogStore {
             title: '3P',
             enabled: true,
         },
-    ];
+    ],
+};
 
-    @observable eventTypesFilters = [
+const initEventTypesFilters = {
+    allButtonEnabled: true,
+    filters: [
         {
             id: EVENT_TYPE_FILTERS.HTML,
             title: 'HTML',
@@ -153,7 +139,34 @@ class LogStore {
             ],
             enabled: true,
         },
-    ];
+    ],
+};
+
+const matchesFilter = ({ filters }, filterId, check) => {
+    return filters.find((f) => f.id === filterId).enabled && check;
+};
+class LogStore {
+    @observable filteringEvents = [];
+
+    @observable tabsMap = {};
+
+    @observable selectedTabId = null;
+
+    @observable eventsSearchValue = '';
+
+    @observable preserveLogEnabled = false;
+
+    @observable selectedEvent = null;
+
+    @observable filtersMetadata = null;
+
+    @observable settings = null;
+
+    @observable miscellaneousFilters = initMiscellaneousFilters;
+
+    @observable requestSourceFilters = initRequestSourceFilters;
+
+    @observable eventTypesFilters = initEventTypesFilters;
 
     @observable
     selectIsOpen = false;
@@ -164,34 +177,28 @@ class LogStore {
     }
 
     @action
-    setMiscellaneousFilters = (filters) => {
-        this.miscellaneousFilters = filters;
+    setMiscellaneousFilters = (payload) => {
+        this.miscellaneousFilters = payload;
     };
 
     @action
-    setRequestSourceFilters = (filters) => {
-        this.requestSourceFilters = filters;
+    setRequestSourceFilters = (payload) => {
+        this.requestSourceFilters = payload;
     };
 
     @action
-    setEventTypesFilters = (filters) => {
-        this.eventTypesFilters = filters;
+    setEventTypesFilters = (payload) => {
+        this.eventTypesFilters = payload;
     };
 
     @action
     resetAllFilters = () => {
         // enable all eventTypesFilters
-        this.eventTypesFilters.forEach((filter) => {
-            filter.enabled = true;
-        });
+        this.eventTypesFilters = initEventTypesFilters;
         // disable all miscellaneousFilters
-        this.miscellaneousFilters.forEach((filter) => {
-            filter.enabled = true;
-        });
+        this.miscellaneousFilters = initMiscellaneousFilters;
         // disable all requestSourceFilters
-        this.requestSourceFilters.forEach((filter) => {
-            filter.enabled = true;
-        });
+        this.requestSourceFilters = initRequestSourceFilters;
     };
 
     @action
@@ -333,7 +340,7 @@ class LogStore {
             // Filter by requestType
             const { requestType } = filteringEvent;
             // check if request type is in eventTypesFilters
-            const filterForRequestType = this.eventTypesFilters.find((filter) => {
+            const filterForRequestType = this.eventTypesFilters.filters.find((filter) => {
                 // Cookie rules have document request type,
                 // but they refer to "other" filtering log events
                 if (filteringEvent?.requestRule?.isModifyingCookieRule) {
@@ -358,7 +365,7 @@ class LogStore {
             const isRegular = !isAllowlisted && !isBlocked && !isModified;
 
             // filter by miscellaneous filters
-            const showByMiscellaneous = this.miscellaneousFilters.every((f) => f.enabled)
+            const showByMiscellaneous = this.miscellaneousFilters.filters.every((f) => f.enabled)
                 || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.REGULAR, isRegular)
                 || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.ALLOWLISTED, isAllowlisted)
                 || matchesFilter(this.miscellaneousFilters, MISCELLANEOUS_FILTERS.BLOCKED, isBlocked)
@@ -370,7 +377,7 @@ class LogStore {
             }
 
             // filter by request source filter
-            const showByRequestSource = this.requestSourceFilters.every((f) => f.enabled)
+            const showByRequestSource = this.requestSourceFilters.filters.every((f) => f.enabled)
                 || matchesFilter(this.requestSourceFilters, REQUEST_SOURCE_FILTERS.FIRST_PARTY, isFirstParty)
                 || matchesFilter(this.requestSourceFilters, REQUEST_SOURCE_FILTERS.THIRD_PARTY, isThirdParty);
 

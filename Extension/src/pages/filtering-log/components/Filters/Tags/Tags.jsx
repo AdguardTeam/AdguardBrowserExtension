@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
@@ -10,36 +10,34 @@ export const Tags = ({
     setTags,
     type,
 }) => {
-    const everyTagEnabled = tags.every((tag) => tag.enabled);
-    const [allButtonEnabled, setAllEnabled] = useState(everyTagEnabled);
+    const { allButtonEnabled, filters } = tags;
 
     const enableOne = (tagId) => {
-        const updatedTags = tags.map((tag) => {
+        const updatedTags = filters.map((tag) => {
             return {
                 ...tag,
                 enabled: tag.id === tagId,
             };
         });
 
-        setAllEnabled(false);
-        setTags(updatedTags);
+        setTags({ filters: updatedTags, allButtonEnabled: false });
     };
 
     const enableAll = () => {
-        const updatedTags = tags.map((tag) => {
+        const updatedTags = filters.map((tag) => {
             return { ...tag, enabled: true };
         });
 
-        setTags(updatedTags);
+        setTags({ filters: updatedTags, allButtonEnabled: true });
     };
 
     const toggleMultiple = (tagId) => {
         let updatedTags;
-        const everyEnabled = tags.every((tag) => tag.enabled);
+        const everyEnabled = filters.every((tag) => tag.enabled);
         if (everyEnabled) {
             if (allButtonEnabled) {
                 // disable all, except selected
-                updatedTags = tags.map((tag) => {
+                updatedTags = filters.map((tag) => {
                     if (tag.id !== tagId) {
                         return {
                             ...tag,
@@ -48,11 +46,10 @@ export const Tags = ({
                     }
                     return { ...tag };
                 });
-                setAllEnabled(false);
-                setTags(updatedTags);
+                setTags({ filters: updatedTags, allButtonEnabled: false });
             } else {
                 // disable only selected
-                updatedTags = tags.map((tag) => {
+                updatedTags = filters.map((tag) => {
                     if (tag.id === tagId) {
                         return {
                             ...tag,
@@ -61,10 +58,10 @@ export const Tags = ({
                     }
                     return tag;
                 });
-                setTags(updatedTags);
+                setTags({ filters: updatedTags, allButtonEnabled });
             }
         } else {
-            updatedTags = tags.map((tag) => {
+            updatedTags = filters.map((tag) => {
                 return {
                     ...tag,
                     enabled: tag.id === tagId ? !tag.enabled : tag.enabled,
@@ -74,16 +71,15 @@ export const Tags = ({
             const allDisabled = updatedTags.every((tag) => !tag.enabled);
             if (allDisabled) {
                 // set all enabled
-                updatedTags = tags.map((tag) => {
+                updatedTags = filters.map((tag) => {
                     return {
                         ...tag,
                         enabled: true,
                     };
                 });
-                setAllEnabled(true);
-                setTags(updatedTags);
+                setTags({ filters: updatedTags, allButtonEnabled: true });
             } else {
-                setTags(updatedTags);
+                setTags({ filters: updatedTags, allButtonEnabled });
             }
         }
     };
@@ -98,11 +94,10 @@ export const Tags = ({
 
     const handleAllClick = () => {
         enableAll();
-        setAllEnabled(true);
     };
 
     const renderTypes = () => {
-        return tags.map((tag) => {
+        return filters.map((tag) => {
             const { id, title, enabled } = tag;
             return (
                 <button

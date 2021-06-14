@@ -1,0 +1,41 @@
+.tooltip {
+    z-index: 1;
+    position: absolute;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    padding: 8px 16px;
+    background-color: var(--white);
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    transform-origin: top left;
+    top: 0;
+    left: 0;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--gray700);
+    }
+
+    &--on {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &--off {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
+
+.light-mode {
+    .tooltip {
+        background-color: var(--white);
+    }
+}
+
+.dark-mode {
+    .tooltip {
+        background-color: var(--gray700);
+    } 
+}

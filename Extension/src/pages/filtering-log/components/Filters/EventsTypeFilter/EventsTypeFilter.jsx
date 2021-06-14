@@ -10,13 +10,18 @@ import { NAVIGATION_TAGS } from '../../../../../common/constants';
 const EventsTypeFilter = observer(() => {
     const { logStore } = useContext(rootStore);
 
+    const {
+        eventTypesFilters,
+        setEventTypesFilters,
+    } = logStore;
+
     return (
         <div className="events-types">
             <div className="events-types__content">
                 <Tags
                     type={NAVIGATION_TAGS.REGULAR}
-                    tags={logStore.eventTypesFilters}
-                    setTags={logStore.setEventTypesFilters}
+                    tags={eventTypesFilters}
+                    setTags={setEventTypesFilters}
                 />
             </div>
         </div>

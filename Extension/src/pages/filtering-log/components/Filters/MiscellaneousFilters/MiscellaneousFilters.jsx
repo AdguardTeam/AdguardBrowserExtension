@@ -15,6 +15,13 @@ const MiscellaneousFilters = observer(() => {
 
     const { logStore } = useContext(rootStore);
 
+    const {
+        requestSourceFilters,
+        setRequestSourceFilters,
+        miscellaneousFilters,
+        setMiscellaneousFilters,
+    } = logStore;
+
     return (
         <div className="miscellaneous-filters">
             <div
@@ -24,15 +31,15 @@ const MiscellaneousFilters = observer(() => {
                 <div className="miscellaneous-filters__section">
                     <Tags
                         type={NAVIGATION_TAGS.PARTY}
-                        tags={logStore.requestSourceFilters}
-                        setTags={logStore.setRequestSourceFilters}
+                        tags={requestSourceFilters}
+                        setTags={setRequestSourceFilters}
                     />
                 </div>
                 <div className="miscellaneous-filters__section">
                     <Tags
                         type={NAVIGATION_TAGS.REGULAR}
-                        tags={logStore.miscellaneousFilters}
-                        setTags={logStore.setMiscellaneousFilters}
+                        tags={miscellaneousFilters}
+                        setTags={setMiscellaneousFilters}
                     />
                 </div>
             </div>
