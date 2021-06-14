@@ -155,3 +155,17 @@ export const NAVIGATION_TAGS = {
     REGULAR: 'regular',
     PARTY: 'party',
 };
+
+/**
+ * Custom filters group display number
+ *
+ * @type {number}
+ */
+export const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99;
+
+/**
+ * Custom filters identifiers starts from this number
+ *
+ * @type {number}
+ */
+export const CUSTOM_FILTERS_START_ID = 1000;

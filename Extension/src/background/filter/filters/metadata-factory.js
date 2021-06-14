@@ -8,12 +8,12 @@ export const metadataFactory = (() => {
      * Parses string to date
      *
      * @param timeUpdatedString String in format 'yyyy-MM-dd'T'HH:mm:ssZ'
-     * @returns timestamp from date string
+     * @returns number from date string
      */
     const parseTimeUpdated = timeUpdatedString => {
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1272
         if (Number.isInteger(timeUpdatedString)) {
-            return new Date(timeUpdatedString);
+            return new Date(timeUpdatedString).getTime();
         }
 
         // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
@@ -35,7 +35,7 @@ export const metadataFactory = (() => {
      * @returns {FilterTag}
      */
     const createFilterTagFromJSON = tag => {
-        const tagId = tag.tagId - 0;
+        const tagId = Number.parseInt(tag.tagId, 10);
         const { keyword } = tag;
 
         return new FilterTag(tagId, keyword);
@@ -48,9 +48,9 @@ export const metadataFactory = (() => {
      * @returns {SubscriptionGroup}
      */
     const createSubscriptionGroupFromJSON = group => {
-        const groupId = group.groupId - 0;
+        const groupId = Number.parseInt(group.groupId, 10);
         const defaultGroupName = group.groupName;
-        const displayNumber = group.displayNumber - 0;
+        const displayNumber = Number.parseInt(group.displayNumber, 10);
 
         return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
     };
@@ -60,22 +60,17 @@ export const metadataFactory = (() => {
      *
      * @param filter Object
      */
-    const createSubscriptionFilterFromJSON = (filter) => {
-        const filterId = filter.filterId - 0;
-        const groupId = filter.groupId - 0;
-        const defaultName = filter.name;
-        const defaultDescription = filter.description;
-        const { homepage } = filter;
-        const { version } = filter;
+    const createSubscriptionFilterFromJSON = filter => {
+        const filterId = Number.parseInt(filter.filterId, 10);
+        const groupId = Number.parseInt(filter.groupId, 10);
         const timeUpdated = parseTimeUpdated(filter.timeUpdated);
-        const expires = filter.expires - 0;
-        const { subscriptionUrl } = filter;
-        const { languages } = filter;
-        const displayNumber = filter.displayNumber - 0;
-        const { tags } = filter;
-        const { customUrl } = filter;
-        const { trusted } = filter;
-        const { checksum } = filter;
+        const expires = Number.parseInt(filter.expires, 10);
+        const displayNumber = Number.parseInt(filter.displayNumber, 10);
+
+        const {
+            name, description, homepage, version, subscriptionUrl, languages, tags, customUrl, trusted, checksum,
+        } = filter;
+
         if (tags.length === 0) {
             tags.push(0);
         }
@@ -83,8 +78,8 @@ export const metadataFactory = (() => {
         return new SubscriptionFilter({
             filterId,
             groupId,
-            name: defaultName,
-            description: defaultDescription,
+            name,
+            description,
             homepage,
             version,
             timeUpdated,

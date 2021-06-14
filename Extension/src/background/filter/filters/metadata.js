@@ -1,28 +1,25 @@
 /* eslint-disable max-classes-per-file */
 /**
  * Filter metadata
- * @param {FilterData} filterData
  */
 export class SubscriptionFilter {
-    constructor(filterData) {
-        const {
-            filterId,
-            groupId,
-            name,
-            description,
-            homepage,
-            version,
-            timeUpdated,
-            displayNumber,
-            languages,
-            expires,
-            subscriptionUrl,
-            tags,
-            customUrl,
-            trusted,
-            checksum,
-        } = filterData;
-
+    constructor({
+        filterId,
+        groupId,
+        name,
+        description,
+        homepage,
+        version,
+        timeUpdated,
+        displayNumber = 0,
+        languages = [],
+        expires,
+        subscriptionUrl,
+        tags,
+        customUrl,
+        trusted,
+        checksum,
+    }) {
         this.filterId = filterId;
         this.groupId = groupId;
         this.name = name;

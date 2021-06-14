@@ -24,6 +24,7 @@ import { filtersUpdate } from './filter/filters/filters-update';
 import { listeners } from './notifier';
 import { ANTIBANNER_GROUPS_ID } from '../common/constants';
 import { customFilters } from './filter/filters/custom-filters';
+import { translator } from '../common/translators/translator';
 
 /**
  * AdGuard application class
@@ -336,6 +337,12 @@ export const application = (() => {
         if (res?.filter) {
             log.info('Custom filter data downloaded');
             return res;
+        }
+        if (res?.errorAlreadyExists) {
+            log.error('Custom filter already exists');
+            return {
+                error: translator.getMessage('options_antibanner_custom_filter_already_exists'),
+            };
         }
         if (res?.error) {
             log.error('Error occurred', res.error);
