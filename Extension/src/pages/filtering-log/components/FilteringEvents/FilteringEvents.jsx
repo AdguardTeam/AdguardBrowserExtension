@@ -172,6 +172,24 @@ const Row = observer(({
     );
 });
 
+const VirtualizedRow = ({
+    index,
+    style,
+    data,
+}) => {
+    const { events, columns, handleRowClick } = data;
+    const event = events[index];
+
+    return (
+        <Row
+            event={event}
+            columns={columns}
+            onClick={handleRowClick}
+            style={style}
+        />
+    );
+};
+
 const ITEM_HEIGHT_PX = 30;
 const FilteringEventsRows = observer(({
     logStore,
@@ -190,22 +208,15 @@ const FilteringEventsRows = observer(({
                         className="list"
                         height={height}
                         itemCount={events.length}
-                        itemData={events}
+                        itemData={{
+                            events,
+                            columns,
+                            handleRowClick,
+                        }}
                         itemSize={ITEM_HEIGHT_PX}
                         width={width}
                     >
-                        {({
-                            index,
-                            style,
-                            data,
-                        }) => (
-                            <Row
-                                event={data[index]}
-                                columns={columns}
-                                onClick={handleRowClick}
-                                style={style}
-                            />
-                        )}
+                        {VirtualizedRow}
                     </FixedSizeList>
                 );
             }}
