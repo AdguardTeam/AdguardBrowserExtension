@@ -20,17 +20,15 @@ import { utils } from '../../utils/common';
 import { backgroundPage } from '../../extension-api/background-page';
 import { prefs } from '../../prefs';
 import { log } from '../../../common/log';
-import { subscriptions } from './subscription';
 import { browserUtils } from '../../utils/browser-utils';
 import { lazyGet } from '../../utils/lazy';
 
+/**
+ * Class for working with our backend server.
+ * All requests sent by this class are covered in the privacy policy:
+ * http://adguard.com/en/privacy.html#browsers
+ */
 export const backend = (function () {
-    /**
-     * Class for working with our backend server.
-     * All requests sent by this class are covered in the privacy policy:
-     * http://adguard.com/en/privacy.html#browsers
-     */
-
     /**
      * Settings
      */
@@ -73,6 +71,12 @@ export const backend = (function () {
         get filtersMetadataUrl() {
             const params = browserUtils.getExtensionParams();
             return `${this.filtersUrl}/filters.js?${params.join('&')}`;
+        },
+
+        // URL for downloading i18n localizations
+        get filtersI18nMetadataUrl() {
+            const params = browserUtils.getExtensionParams();
+            return `${this.filtersUrl}/filters_i18n.json?${params.join('&')}`;
         },
 
         // URL for user complaints on missed ads or malware/phishing websites
@@ -202,37 +206,39 @@ export const backend = (function () {
     }
 
     /**
-     * Load metadata of the specified filters
-     *
-     * @param filterIds         Filters identifiers
+     * Downloads metadata from backend
+     * @return {Promise<void>}
      */
-    const loadFiltersMetadata = async (filterIds) => {
-        if (!filterIds || filterIds.length === 0) {
-            return [];
-        }
-
+    const downloadMetadataFromBackend = async () => {
         const response = await executeRequestAsync(settings.filtersMetadataUrl, 'application/json');
-
         if (!response?.responseText) {
             throw new Error(`Empty response: ${response}`);
         }
 
         const metadata = parseJson(response.responseText);
-
         if (!metadata) {
             throw new Error(`Invalid response: ${response}`);
         }
 
-        const filterMetadataList = [];
+        return metadata;
+    };
 
-        for (let i = 0; i < filterIds.length; i += 1) {
-            const filter = utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
-            if (filter) {
-                filterMetadataList.push(subscriptions.createSubscriptionFilterFromJSON(filter));
-            }
+    /**
+     * Downloads i18n metadata from backend
+     * @return {Promise<void>}
+     */
+    const downloadI18nMetadataFromBackend = async () => {
+        const response = await executeRequestAsync(settings.filtersI18nMetadataUrl, 'application/json');
+        if (!response?.responseText) {
+            throw new Error(`Empty response: ${response}`);
         }
 
-        return filterMetadataList;
+        const metadata = parseJson(response.responseText);
+        if (!metadata) {
+            throw new Error(`Invalid response: ${response}`);
+        }
+
+        return metadata;
     };
 
     /**
@@ -243,7 +249,7 @@ export const backend = (function () {
      * @param useOptimizedFilters   Download optimized filters flag
      * @returns {Promise<string>}   Downloaded rules
      */
-    const loadFilterRules = (filterId, forceRemote, useOptimizedFilters) => {
+    const downloadFilterRules = (filterId, forceRemote, useOptimizedFilters) => {
         let url;
 
         if (forceRemote || settings.localFilterIds.indexOf(filterId) < 0) {
@@ -263,7 +269,7 @@ export const backend = (function () {
      *
      * @param url - Subscription url
      */
-    const loadFilterRulesBySubscriptionUrl = async (url) => {
+    const downloadFilterRulesBySubscriptionUrl = async (url) => {
         if (url in loadingSubscriptions) {
             return;
         }
@@ -305,7 +311,7 @@ export const backend = (function () {
     /**
      * Loads filter groups metadata
      */
-    const loadLocalFiltersMetadata = async () => {
+    const getLocalFiltersMetadata = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters.json`);
 
         let response;
@@ -333,7 +339,7 @@ export const backend = (function () {
      * Loads filter groups metadata from local file
      * @returns {Promise}
      */
-    const loadLocalFiltersI18Metadata = async () => {
+    const getLocalFiltersI18Metadata = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/filters_i18n.json`);
 
         let response;
@@ -359,7 +365,7 @@ export const backend = (function () {
      * Loads script rules from local file
      * @returns {Promise}
      */
-    const loadLocalScriptRules = async () => {
+    const getLocalScriptRules = async () => {
         const url = backgroundPage.getURL(`${settings.localFiltersFolder}/local_script_rules.json`);
 
         let response;
@@ -388,7 +394,7 @@ export const backend = (function () {
      * Loads redirect sources from local file
      * @returns {Promise}
      */
-    const loadRedirectSources = async () => {
+    const getRedirectSources = async () => {
         const url = `${backgroundPage.getURL(settings.redirectSourcesFolder)}/redirects.yml`;
 
         let response;
@@ -522,15 +528,16 @@ export const backend = (function () {
     };
 
     return {
-        loadFiltersMetadata,
-        loadFilterRules,
+        downloadFilterRules,
+        downloadFilterRulesBySubscriptionUrl,
 
-        loadFilterRulesBySubscriptionUrl,
+        getLocalFiltersMetadata,
+        getLocalFiltersI18Metadata,
+        getLocalScriptRules,
+        getRedirectSources,
 
-        loadLocalFiltersMetadata,
-        loadLocalFiltersI18Metadata,
-        loadLocalScriptRules,
-        loadRedirectSources,
+        downloadMetadataFromBackend,
+        downloadI18nMetadataFromBackend,
 
         lookupSafebrowsing,
 
