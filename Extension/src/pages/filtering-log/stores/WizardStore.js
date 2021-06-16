@@ -26,6 +26,11 @@ export const WIZARD_STATES = {
     UNBLOCK_REQUEST: 'unblock.request',
 };
 
+const initAddedRuleState = {
+    block: false,
+    unblock: false,
+};
+
 class WizardStore {
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -51,6 +56,9 @@ class WizardStore {
         [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
         [RULE_OPTIONS.RULE_IMPORTANT]: { checked: false },
     };
+
+    @observable
+    addedRuleState = initAddedRuleState;
 
     @computed
     get requestModalStateEnum() {
@@ -101,6 +109,7 @@ class WizardStore {
     @action
     closeModal = () => {
         this.isModalOpen = false;
+        this.addedRuleState = initAddedRuleState;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
     };
 
@@ -112,6 +121,24 @@ class WizardStore {
     @action
     setUnblockState() {
         this.requestModalState = WIZARD_STATES.UNBLOCK_REQUEST;
+    }
+
+    @action
+    setAddedRuleState(addedRuleType) {
+        if (addedRuleType === 'block') {
+            this.addedRuleState = {
+                block: true,
+                unblock: false,
+            };
+        }
+        if (addedRuleType === 'unblock') {
+            this.addedRuleState = {
+                block: false,
+                unblock: true,
+            };
+        }
+
+        this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
     }
 
     @action
@@ -136,6 +163,12 @@ class WizardStore {
 
         this.closeModal();
     };
+
+    @action
+    removeAddedRuleFromUserFilter = async () => {
+        await messenger.removeUserRule(this.rule);
+        this.closeModal();
+    }
 
     @action
     setViewState() {

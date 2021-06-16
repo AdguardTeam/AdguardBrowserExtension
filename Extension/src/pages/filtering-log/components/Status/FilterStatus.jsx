@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from '../../../common/components/ui/Icon';
 import './status.pcss';
-import { StatusMode, getStatusMode } from '../../filteringLogStatus';
+import { StatusMode } from '../../filteringLogStatus';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { colorMap, getItemClassName } from './statusStyles';
 
@@ -26,9 +26,7 @@ const titleMap = {
     [StatusMode.ALLOWED]: StatusTitle.UNBLOCKED,
 };
 
-export const FilterStatus = (props) => {
-    const { statusCode, method } = props;
-    const mode = getStatusMode(props);
+export const FilterStatus = ({ statusCode, method, mode }) => {
     const color = colorMap[mode];
     const title = reactTranslator.getMessage(titleMap[mode]);
     const itemClassNames = getItemClassName(color);

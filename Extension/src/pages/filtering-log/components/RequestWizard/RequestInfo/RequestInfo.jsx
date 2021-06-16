@@ -13,6 +13,7 @@ import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/co
 import { Icon } from '../../../../common/components/ui/Icon';
 import { CopyToClipboard } from '../../../../common/components/CopyToClipboard';
 import { NetworkStatus, FilterStatus } from '../../Status';
+import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
 
 import './request-info.pcss';
 
@@ -99,7 +100,7 @@ const PARTS = {
 const RequestInfo = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
 
-    const { closeModal } = wizardStore;
+    const { closeModal, addedRuleState } = wizardStore;
 
     const { selectedEvent, filtersMetadata } = logStore;
 
@@ -282,9 +283,30 @@ const RequestInfo = observer(() => {
                 buttonTitleKey: 'filtering_modal_remove_user',
                 onClick: () => removeFromUserFilterHandler(event),
             },
+            REMOVE_ADDED_BLOCK_RULE: {
+                buttonTitleKey: 'filtering_modal_remove_user',
+                onClick: () => {
+                    wizardStore.removeAddedRuleFromUserFilter();
+                },
+            },
+            REMOVE_ADDED_UNBLOCK_RULE: {
+                buttonTitleKey: 'filtering_modal_block_again',
+                className: 'request-modal__button--red',
+                onClick: () => {
+                    wizardStore.removeAddedRuleFromUserFilter();
+                },
+            },
         };
 
         let props = BUTTON_MAP.BLOCK;
+
+        if (addedRuleState.block) {
+            return renderButton(BUTTON_MAP.REMOVE_ADDED_BLOCK_RULE);
+        }
+
+        if (addedRuleState.unblock) {
+            return renderButton(BUTTON_MAP.REMOVE_ADDED_UNBLOCK_RULE);
+        }
 
         if (!requestRule) {
             props = BUTTON_MAP.BLOCK;
@@ -310,6 +332,18 @@ const RequestInfo = observer(() => {
         }
 
         return renderButton(props);
+    };
+
+    const getFilterStatusMode = () => {
+        if (addedRuleState.block) {
+            return StatusMode.BLOCKED;
+        }
+
+        if (addedRuleState.unblock) {
+            return StatusMode.ALLOWED;
+        }
+
+        return getStatusMode(selectedEvent);
     };
 
     return (
@@ -340,7 +374,11 @@ const RequestInfo = observer(() => {
                     <div className="request-info__key">
                         {reactTranslator.getMessage('filtering_modal_filtering_status_text_desc')}
                     </div>
-                    <FilterStatus {...selectedEvent} />
+                    <FilterStatus
+                        mode={getFilterStatusMode()}
+                        statusCode={selectedEvent.statusCode}
+                        method={selectedEvent.method}
+                    />
                 </div>
                 {renderedInfo}
                 {renderImageIfNecessary(selectedEvent)}
