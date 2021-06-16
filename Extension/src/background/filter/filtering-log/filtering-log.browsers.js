@@ -634,6 +634,28 @@ const browsersFilteringLog = (function () {
     };
 
     /**
+     * Clean up events for tab
+     * @param tabId
+     */
+    const cleanUpEventsByTabId = function (tabId) {
+        const tabInfo = tabsInfoMap[tabId];
+
+        if (tabInfo && tabInfo?.filteringEvents?.length > 0) {
+            const updatedEvents = tabInfo.filteringEvents
+                .filter((event) => {
+                    // leave non-document type events
+                    return !(event.requestType === RequestTypes.DOCUMENT)
+                        // or document type with specified statusCode or removeParam parameters
+                        || (event.requestType === RequestTypes.DOCUMENT
+                            && (event.statusCode || event.removeParam));
+                });
+            const newTabInfo = { ...tabInfo, filteringEvents: updatedEvents };
+            tabsInfoMap[tabId] = newTabInfo;
+            listeners.notifyListeners(listeners.TAB_UPDATE, newTabInfo);
+        }
+    };
+
+    /**
      * Synchronize currently opened tabs with out state
      */
     const synchronizeOpenTabs = async function () {
@@ -719,6 +741,7 @@ const browsersFilteringLog = (function () {
         bindStealthActionsToHttpRequestEvent,
         bindCspReportBlockedToHttpRequestEvent,
         bindResponseDataToHttpRequestEvent,
+        cleanUpEventsByTabId,
         clearEventsByTabId,
 
         isOpen,

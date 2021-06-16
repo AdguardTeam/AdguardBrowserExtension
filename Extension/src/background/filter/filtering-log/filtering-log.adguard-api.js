@@ -32,6 +32,7 @@ const apiFilteringLog = {
     addRemoveHeaderEvent: notImplemented,
     addScriptInjectionEvent: notImplemented,
     bindStealthActionsToHttpRequestEvent: notImplemented,
+    cleanUpEventsByTabId: notImplemented,
     clearEventsByTabId: notImplemented,
     isOpen: notImplemented,
     onOpenFilteringLogPage: notImplemented,
