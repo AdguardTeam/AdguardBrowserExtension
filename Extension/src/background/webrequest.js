@@ -110,7 +110,7 @@ const webrequestInit = function () {
                 requestUrl,
                 referrerUrl: requestUrl,
                 originUrl,
-                requestType, 
+                requestType,
                 tab,
                 method,
             });
@@ -517,7 +517,6 @@ const webrequestInit = function () {
         const requestContext = requestContextStorage.get(requestId);
         if (!requestContext) {
             // Record request for other types
-                    //const { requestId, requestUrl, referrerUrl, originUrl, requestType, tab } = params;
             requestContextStorage.record({
                 requestId,
                 requestUrl,
