@@ -7,6 +7,7 @@ import cn from 'classnames';
 import { getFilterName, getRequestType } from '../utils';
 import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
+import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
@@ -300,11 +301,11 @@ const RequestInfo = observer(() => {
 
         let props = BUTTON_MAP.BLOCK;
 
-        if (addedRuleState.block) {
+        if (addedRuleState === ADDED_RULE_STATES.BLOCK) {
             return renderButton(BUTTON_MAP.REMOVE_ADDED_BLOCK_RULE);
         }
 
-        if (addedRuleState.unblock) {
+        if (addedRuleState === ADDED_RULE_STATES.UNBLOCK) {
             return renderButton(BUTTON_MAP.REMOVE_ADDED_UNBLOCK_RULE);
         }
 
@@ -335,11 +336,11 @@ const RequestInfo = observer(() => {
     };
 
     const getFilterStatusMode = () => {
-        if (addedRuleState.block) {
+        if (addedRuleState === ADDED_RULE_STATES.BLOCK) {
             return StatusMode.BLOCKED;
         }
 
-        if (addedRuleState.unblock) {
+        if (addedRuleState === ADDED_RULE_STATES.UNBLOCK) {
             return StatusMode.ALLOWED;
         }
 

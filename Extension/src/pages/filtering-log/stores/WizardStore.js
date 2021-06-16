@@ -26,9 +26,9 @@ export const WIZARD_STATES = {
     UNBLOCK_REQUEST: 'unblock.request',
 };
 
-const initAddedRuleState = {
-    block: false,
-    unblock: false,
+export const ADDED_RULE_STATES = {
+    BLOCK: 'block',
+    UNBLOCK: 'unblock',
 };
 
 class WizardStore {
@@ -58,7 +58,7 @@ class WizardStore {
     };
 
     @observable
-    addedRuleState = initAddedRuleState;
+    addedRuleState = null;
 
     @computed
     get requestModalStateEnum() {
@@ -109,7 +109,7 @@ class WizardStore {
     @action
     closeModal = () => {
         this.isModalOpen = false;
-        this.addedRuleState = initAddedRuleState;
+        this.addedRuleState = null;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
     };
 
@@ -124,20 +124,8 @@ class WizardStore {
     }
 
     @action
-    setAddedRuleState(addedRuleType) {
-        if (addedRuleType === 'block') {
-            this.addedRuleState = {
-                block: true,
-                unblock: false,
-            };
-        }
-        if (addedRuleType === 'unblock') {
-            this.addedRuleState = {
-                block: false,
-                unblock: true,
-            };
-        }
-
+    setAddedRuleState(nextAddedRuleState) {
+        this.addedRuleState = nextAddedRuleState;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
     }
 
