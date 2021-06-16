@@ -275,10 +275,17 @@ select:focus {
 }
 
 .ReactModal__Overlay {
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: rgba(0, 0, 0, 0.5)!important;
 }
 
 .ReactModal__Content--after-open {
+    position: static!important;
+    min-width: 300px;
+
     @media (prefers-color-scheme: dark) {
         background-color: var(--black)!important;
         border: 1px solid var(--gray900)!important;
