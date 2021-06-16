@@ -6,7 +6,7 @@ import { RULE_OPTIONS } from '../constants';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { WIZARD_STATES } from '../../../stores/WizardStore';
+import { ADDED_RULE_STATES, WIZARD_STATES } from '../../../stores/WizardStore';
 
 import './request-create-rule.pcss';
 
@@ -112,7 +112,11 @@ const RequestCreateRule = observer(() => {
 
     const handleAddRuleClick = async () => {
         await messenger.addUserRule(wizardStore.rule);
-        wizardStore.closeModal();
+        const addedRuleState = wizardStore.requestModalState === WIZARD_STATES.BLOCK_REQUEST
+            ? ADDED_RULE_STATES.BLOCK
+            : ADDED_RULE_STATES.UNBLOCK;
+
+        wizardStore.setAddedRuleState(addedRuleState);
     };
 
     const handleRuleChange = (e) => {
