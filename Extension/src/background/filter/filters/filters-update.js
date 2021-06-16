@@ -22,6 +22,7 @@ import { antiBannerService } from '../antibanner';
 import { log } from '../../../common/log';
 import { settings } from '../../settings/user-settings';
 import { browserUtils } from '../../utils/browser-utils';
+import { customFilters } from './custom-filters';
 
 /**
  * Filters update service
@@ -114,7 +115,7 @@ export const filtersUpdate = (() => {
         }
 
         try {
-            const filterMetadataList = await backend.loadFiltersMetadata(filterIds);
+            const filterMetadataList = await subscriptions.getFiltersMetadata(filterIds);
             log.debug(
                 'Retrieved response from server for {0} filters, result: {1} metadata',
                 filterIds.length,
@@ -144,7 +145,7 @@ export const filtersUpdate = (() => {
 
         let filterRules;
         try {
-            filterRules = await backend.loadFilterRules(
+            filterRules = await backend.downloadFilterRules(
                 filter.filterId,
                 forceRemote,
                 settings.isUseOptimizedFiltersEnabled(),
@@ -208,7 +209,7 @@ export const filtersUpdate = (() => {
 
         const promises = customFilterIds.map(async (filterId) => {
             const filter = subscriptions.getFilter(filterId);
-            const updatedFilterId = await subscriptions.updateCustomFilter(filter.customUrl, {});
+            const updatedFilterId = await customFilters.updateCustomFilter(filter.customUrl, {});
             if (updatedFilterId) {
                 return filter;
             }
@@ -234,6 +235,19 @@ export const filtersUpdate = (() => {
      */
 
     /**
+     * Downloads and saves metadata from backend
+     * @return {Promise<void>}
+     */
+    const updateMetadata = async () => {
+        log.info('Downloading metadata from backend..');
+
+        await subscriptions.reloadMetadataFromBackend();
+        await subscriptions.reloadI18nMetadataFromBackend();
+
+        log.info('Metadata updated from backend');
+    };
+
+    /**
      * Checks filters updates.
      *
      * @param [UpdateProps]
@@ -242,6 +256,11 @@ export const filtersUpdate = (() => {
         // Don't update in background if request filter isn't running
         if (!forceUpdate && !antiBannerService.isRunning()) {
             return [];
+        }
+
+        // On force initiated on first run on by user's direct call
+        if (forceUpdate && !filters) {
+            await updateMetadata();
         }
 
         log.info('Start checking filters updates');
@@ -303,7 +322,6 @@ export const filtersUpdate = (() => {
 
         // Retrieve current filters metadata for update
         const filterMetadataList = await loadFiltersMetadataFromBackend(filterIdsToUpdate);
-
         const filterMetadataListToUpdate = selectFilterMetadataListToUpdate(filterMetadataList, ignoreVersion);
 
         const loadedFilters = await loadFiltersFromBackendCallback(filterMetadataListToUpdate);

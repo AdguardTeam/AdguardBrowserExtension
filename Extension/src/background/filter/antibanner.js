@@ -22,7 +22,6 @@ import { applicationUpdateService } from '../update-service';
 import { subscriptions } from './filters/subscription';
 import { utils } from '../utils/common';
 import { settings } from '../settings/user-settings';
-import { filtersState } from './filters/filters-state';
 import { log } from '../../common/log';
 import { rulesStorage } from '../storage';
 import { filtersUpdate } from './filters/filters-update';
@@ -104,8 +103,9 @@ export const antiBannerService = (() => {
          * It is used to recreate RequestFilter object.
          */
         const initRequestFilter = async function () {
-            loadFiltersVersionAndStateInfo();
-            loadGroupsStateInfo();
+            subscriptions.loadFiltersVersionAndStateInfo();
+            subscriptions.loadGroupsStateInfo();
+
             await createRequestFilter();
             addFiltersChangeEventListener();
         };
@@ -258,62 +258,6 @@ export const antiBannerService = (() => {
      */
     async function reloadAntiBannerFilters() {
         await filtersUpdate.checkAntiBannerFiltersUpdate({ forceUpdate: true, ignoreVersion: true });
-    }
-
-    /**
-     * Updates groups state info
-     * Loads state info from the storage and then updates adguard.subscription.groups properly
-     * @private
-     */
-    function loadGroupsStateInfo() {
-        // Load filters state from the storage
-        const groupsStateInfo = filtersState.getGroupsState();
-
-        const groups = subscriptions.getGroups();
-
-        for (let i = 0; i < groups.length; i += 1) {
-            const group = groups[i];
-            const { groupId } = group;
-            const stateInfo = groupsStateInfo[groupId];
-            if (stateInfo) {
-                group.enabled = stateInfo.enabled;
-            }
-        }
-    }
-
-    /**
-     * Updates filters version and state info.
-     * Loads this data from the storage and then updates adguard.subscription.filters property
-     *
-     * @private
-     */
-    function loadFiltersVersionAndStateInfo() {
-        // Load filters metadata from the storage
-        const filtersVersionInfo = filtersState.getFiltersVersion();
-        // Load filters state from the storage
-        const filtersStateInfo = filtersState.getFiltersState();
-
-        const filters = subscriptions.getFilters();
-
-        for (let i = 0; i < filters.length; i += 1) {
-            const filter = filters[i];
-            const { filterId } = filter;
-            const versionInfo = filtersVersionInfo[filterId];
-            const stateInfo = filtersStateInfo[filterId];
-            if (versionInfo) {
-                filter.version = versionInfo.version;
-                filter.lastCheckTime = versionInfo.lastCheckTime;
-                filter.lastUpdateTime = versionInfo.lastUpdateTime;
-                if (versionInfo.expires) {
-                    filter.expires = versionInfo.expires;
-                }
-            }
-            if (stateInfo) {
-                filter.enabled = stateInfo.enabled;
-                filter.installed = stateInfo.installed;
-                filter.loaded = stateInfo.loaded;
-            }
-        }
     }
 
     /**

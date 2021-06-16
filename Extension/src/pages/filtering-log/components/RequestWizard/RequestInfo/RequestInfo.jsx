@@ -11,9 +11,10 @@ import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { CopyToClipboard } from '../../../../common/components/CopyToClipboard';
+import { NetworkStatus, FilterStatus } from '../../Status';
 
 import './request-info.pcss';
-import { NetworkStatus, FilterStatus } from '../../Status';
 
 const STEALTH_ACTIONS_NAMES = {
     HIDE_REFERRER: reactTranslator.getMessage('filtering_log_hide_referrer'),
@@ -209,8 +210,19 @@ const RequestInfo = observer(() => {
                 <div key={title} className="request-info">
                     <div className="request-info__key">{title}</div>
                     <div className="request-info__value">
-                        {data}
-                        {data === selectedEvent.requestUrl && renderOpenInNewTab(selectedEvent)}
+                        {data === selectedEvent.requestUrl
+                            ? (
+                                <>
+                                    <CopyToClipboard
+                                        wrapperClassName="request-info__copy-to-clipboard-wrapper"
+                                        className="request-info__copy-to-clipboard"
+                                    >
+                                        {data}
+                                    </CopyToClipboard>
+                                    {renderOpenInNewTab(selectedEvent)}
+                                </>
+                            )
+                            : data}
                     </div>
                 </div>
             );

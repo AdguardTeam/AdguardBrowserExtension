@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -8,6 +8,7 @@ import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { ConfirmModal } from '../../../common/components/ConfirmModal';
 
 const Miscellaneous = observer(() => {
     const {
@@ -16,6 +17,8 @@ const Miscellaneous = observer(() => {
     } = useContext(rootStore);
 
     const { settings } = settingsStore;
+
+    const [isOpenResetStatsModal, setIsOpenResetStatsModal] = useState(false);
 
     if (!settings) {
         return null;
@@ -34,6 +37,10 @@ const Miscellaneous = observer(() => {
     };
 
     const handleResetStatisticsClick = async () => {
+        setIsOpenResetStatsModal(true);
+    };
+
+    const handleResetStatisticsConfirm = async () => {
         await messenger.resetStatistics();
         uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_stats_done') });
     };
@@ -141,6 +148,19 @@ const Miscellaneous = observer(() => {
                 >
                     {reactTranslator.getMessage('options_open_log')}
                 </button>
+
+                {
+                    isOpenResetStatsModal
+                        && (
+                            <ConfirmModal
+                                title={reactTranslator.getMessage('options_clear_stats_confirm_modal_title')}
+                                isOpen={isOpenResetStatsModal}
+                                setIsOpen={setIsOpenResetStatsModal}
+                                onConfirm={handleResetStatisticsConfirm}
+                                customConfirmTitle={reactTranslator.getMessage('options_clear_stats_confirm_modal_clear_button')}
+                            />
+                        )
+                }
                 <button
                     type="button"
                     className="button button--list button--red"
