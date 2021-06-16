@@ -37,9 +37,12 @@ export const engine = (function () {
             engine: 'extension',
             version: backgroundPage.app && backgroundPage.app.getVersion(),
             verbose: true,
+            compatibility: TSUrlFilter.CompatibilityTypes.extension,
         };
 
-        engine = new TSUrlFilter.Engine(ruleStorage, config, true);
+        TSUrlFilter.setConfiguration(config);
+
+        engine = new TSUrlFilter.Engine(ruleStorage, true);
 
         /*
          * UI thread becomes blocked on the options page while request filter is created
