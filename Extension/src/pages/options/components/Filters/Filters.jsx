@@ -69,8 +69,11 @@ const Filters = observer(() => {
     };
 
     const groupClickHandler = (groupId) => () => {
-        settingsStore.setSelectedGroupId(groupId);
-        history.push(`/filters?group=${groupId}`);
+        // Prevent a click event after text selection
+        if (!window.getSelection().toString()) {
+            settingsStore.setSelectedGroupId(groupId);
+            history.push(`/filters?group=${groupId}`);
+        }
     };
 
     const getEnabledFiltersByGroup = (group) => (
