@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import './request-image.pcss';
+import '../RequestInfo/request-image.pcss';
 
-const RequestImage = (props) => {
-    const { url } = props;
+export const ImageRequest = ({ url, onError, onSuccess }) => {
     const [shouldRenderImage, setShouldRenderImage] = useState(false);
 
     useEffect(() => {
@@ -12,12 +11,17 @@ const RequestImage = (props) => {
 
         function loadHandler(event) {
             const { width, height } = event.target;
+
             if (width > 1 && height > 1) {
                 setShouldRenderImage(true);
+                onSuccess();
+            } else {
+                onError();
             }
         }
 
         image.addEventListener('load', loadHandler);
+        image.addEventListener('error', onError);
 
         return () => {
             image.removeEventListener('load', loadHandler);
@@ -30,5 +34,3 @@ const RequestImage = (props) => {
 
     return <img src={url} className="request-image" alt="request" />;
 };
-
-export { RequestImage };

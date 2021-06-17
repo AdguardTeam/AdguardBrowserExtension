@@ -14,6 +14,7 @@ import { RequestInfo } from '../RequestInfo';
 import { WIZARD_STATES } from '../../../stores/WizardStore';
 import { RequestCreateRule } from '../RequestCreateRule';
 import { optionsStorage } from '../../../../options/options-storage';
+import { RequestPreview } from '../RequestPreview';
 
 import './RequestModal.pcss';
 
@@ -62,6 +63,11 @@ const RequestModal = observer(() => {
         case WIZARD_STATES.BLOCK_REQUEST:
         case WIZARD_STATES.UNBLOCK_REQUEST: {
             modalContent = <RequestCreateRule />;
+            break;
+        }
+
+        case WIZARD_STATES.PREVIEW_REQUEST: {
+            modalContent = <RequestPreview />;
             break;
         }
 

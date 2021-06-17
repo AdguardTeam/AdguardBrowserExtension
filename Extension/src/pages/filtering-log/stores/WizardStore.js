@@ -24,6 +24,7 @@ export const WIZARD_STATES = {
     VIEW_REQUEST: 'view.request',
     BLOCK_REQUEST: 'block.request',
     UNBLOCK_REQUEST: 'unblock.request',
+    PREVIEW_REQUEST: 'preview.request',
 };
 
 export const ADDED_RULE_STATES = {
@@ -127,6 +128,11 @@ class WizardStore {
     setAddedRuleState(nextAddedRuleState) {
         this.addedRuleState = nextAddedRuleState;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+    }
+
+    @action
+    setPreviewState() {
+        this.requestModalState = WIZARD_STATES.PREVIEW_REQUEST;
     }
 
     @action
