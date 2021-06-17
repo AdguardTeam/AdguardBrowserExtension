@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /**
  * This is an abstract filtering log module with methods throwing errors if used.
  * It should be replaced by webpack during compilation
@@ -40,7 +39,6 @@ const abstractFilteringLog = {
     bindStealthActionsToHttpRequestEvent: errorFunction,
     bindCspReportBlockedToHttpRequestEvent: errorFunction,
     bindResponseDataToHttpRequestEvent: errorFunction,
-    cleanUpEventsByTabId: errorFunction,
     clearEventsByTabId: errorFunction,
     isOpen: errorFunction,
     onOpenFilteringLogPage: errorFunction,

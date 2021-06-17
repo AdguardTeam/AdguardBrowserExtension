@@ -241,6 +241,22 @@ const browsersFilteringLog = (function () {
             filteringEvent.eventId = nanoid();
         }
 
+        // clean up empty events
+        if (filteringEvent.requestType === RequestTypes.DOCUMENT
+            && tabInfo.filteringEvents.length > 0
+            && !filteringEvent.requestRule
+            && !filteringEvent.removeParam) {
+            const sortedPreviousEvents = tabInfo.filteringEvents
+                .filter((event) => {
+                    // leave non-document type events
+                    return !(event.requestType === RequestTypes.DOCUMENT)
+                        // or document type with defined statusCode or removeParam parameters
+                        || (event.requestType === RequestTypes.DOCUMENT
+                            && (event.statusCode || event.removeParam));
+                });
+            tabInfo.filteringEvents = sortedPreviousEvents;
+        }
+
         tabInfo.filteringEvents.push(filteringEvent);
 
         if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
@@ -634,28 +650,6 @@ const browsersFilteringLog = (function () {
     };
 
     /**
-     * Clean up events for tab
-     * @param tabId
-     */
-    const cleanUpEventsByTabId = function (tabId) {
-        const tabInfo = tabsInfoMap[tabId];
-
-        if (tabInfo && tabInfo?.filteringEvents?.length > 0) {
-            const updatedEvents = tabInfo.filteringEvents
-                .filter((event) => {
-                    // leave non-document type events
-                    return !(event.requestType === RequestTypes.DOCUMENT)
-                        // or document type with specified statusCode or removeParam parameters
-                        || (event.requestType === RequestTypes.DOCUMENT
-                            && (event.statusCode || event.removeParam));
-                });
-            const newTabInfo = { ...tabInfo, filteringEvents: updatedEvents };
-            tabsInfoMap[tabId] = newTabInfo;
-            listeners.notifyListeners(listeners.TAB_UPDATE, newTabInfo);
-        }
-    };
-
-    /**
      * Synchronize currently opened tabs with out state
      */
     const synchronizeOpenTabs = async function () {
@@ -741,7 +735,6 @@ const browsersFilteringLog = (function () {
         bindStealthActionsToHttpRequestEvent,
         bindCspReportBlockedToHttpRequestEvent,
         bindResponseDataToHttpRequestEvent,
-        cleanUpEventsByTabId,
         clearEventsByTabId,
 
         isOpen,
