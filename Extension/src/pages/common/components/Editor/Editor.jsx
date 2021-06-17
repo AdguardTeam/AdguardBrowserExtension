@@ -68,6 +68,7 @@ const Editor = ({
                 name={name}
                 showPrintMargin={false}
                 editorProps={{ $blockScrolling: true }}
+                fontSize={14}
                 value={value}
                 commands={shortcuts}
                 onChange={onChange}

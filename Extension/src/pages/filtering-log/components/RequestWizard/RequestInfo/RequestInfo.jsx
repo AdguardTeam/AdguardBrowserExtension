@@ -5,7 +5,6 @@ import identity from 'lodash/identity';
 import cn from 'classnames';
 
 import { getFilterName, getRequestType } from '../utils';
-import { RequestImage } from './RequestImage';
 import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { messenger } from '../../../../services/messenger';
@@ -15,6 +14,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { CopyToClipboard } from '../../../../common/components/CopyToClipboard';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
+import { RequestTypes } from '../../../../../background/utils/request-types';
 
 import './request-info.pcss';
 
@@ -161,13 +161,6 @@ const RequestInfo = observer(() => {
         ];
     }
 
-    const renderImageIfNecessary = (event) => {
-        if (event.requestType !== 'IMAGE') {
-            return null;
-        }
-        return <RequestImage url={event.requestUrl} />;
-    };
-
     const openInNewTabHandler = async () => {
         let url = selectedEvent.requestUrl;
 
@@ -246,6 +239,10 @@ const RequestInfo = observer(() => {
         wizardStore.removeFromAllowlistHandler();
     };
 
+    const previewClickHandler = () => {
+        wizardStore.setPreviewState();
+    };
+
     const renderButton = ({ buttonTitleKey, onClick, className }) => {
         const buttonClass = cn('request-modal__button', className);
 
@@ -263,7 +260,7 @@ const RequestInfo = observer(() => {
         );
     };
 
-    const renderBlockRequest = (event) => {
+    const renderControlButtons = (event) => {
         const { requestRule } = event;
 
         const BUTTON_MAP = {
@@ -297,9 +294,26 @@ const RequestInfo = observer(() => {
                     wizardStore.removeAddedRuleFromUserFilter();
                 },
             },
+            PREVIEW: {
+                buttonTitleKey: 'filtering_modal_preview_request_button',
+                onClick: previewClickHandler,
+            },
         };
 
-        let props = BUTTON_MAP.BLOCK;
+        let buttonProps = BUTTON_MAP.BLOCK;
+
+        const previewableTypes = [
+            RequestTypes.IMAGE,
+            RequestTypes.DOCUMENT,
+            RequestTypes.SUBDOCUMENT,
+            RequestTypes.SCRIPT,
+            RequestTypes.STYLESHEET,
+        ];
+
+        const showPreviewButton = previewableTypes.includes(event.requestType)
+            && !event?.element
+            && !event?.script
+            && !event?.cookieName;
 
         if (addedRuleState === ADDED_RULE_STATES.BLOCK) {
             return renderButton(BUTTON_MAP.REMOVE_ADDED_BLOCK_RULE);
@@ -310,29 +324,35 @@ const RequestInfo = observer(() => {
         }
 
         if (!requestRule) {
-            props = BUTTON_MAP.BLOCK;
+            buttonProps = BUTTON_MAP.BLOCK;
         } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
-            props = BUTTON_MAP.USER_FILTER;
+            buttonProps = BUTTON_MAP.USER_FILTER;
             if (requestRule.isStealthModeRule) {
-                props = BUTTON_MAP.UNBLOCK;
+                buttonProps = BUTTON_MAP.UNBLOCK;
             }
             if (requestRule.whitelistRule) {
                 return (
                     <>
                         {renderButton(BUTTON_MAP.BLOCK)}
-                        {renderButton(props)}
+                        {renderButton(buttonProps)}
+                        {showPreviewButton && renderButton(BUTTON_MAP.PREVIEW)}
                     </>
                 );
             }
         } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
-            props = BUTTON_MAP.ALLOWLIST;
+            buttonProps = BUTTON_MAP.ALLOWLIST;
         } else if (!requestRule.whitelistRule) {
-            props = BUTTON_MAP.UNBLOCK;
+            buttonProps = BUTTON_MAP.UNBLOCK;
         } else if (requestRule.whitelistRule) {
-            props = BUTTON_MAP.BLOCK;
+            buttonProps = BUTTON_MAP.BLOCK;
         }
 
-        return renderButton(props);
+        return (
+            <>
+                {renderButton(buttonProps)}
+                {showPreviewButton && renderButton(BUTTON_MAP.PREVIEW)}
+            </>
+        );
     };
 
     const getFilterStatusMode = () => {
@@ -382,10 +402,9 @@ const RequestInfo = observer(() => {
                     />
                 </div>
                 {renderedInfo}
-                {renderImageIfNecessary(selectedEvent)}
-                <div className="request-modal__controls">
-                    {renderBlockRequest(selectedEvent)}
-                </div>
+            </div>
+            <div className="request-modal__controls">
+                {renderControlButtons(selectedEvent)}
             </div>
         </>
     );

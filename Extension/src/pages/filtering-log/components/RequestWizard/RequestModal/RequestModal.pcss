@@ -22,6 +22,8 @@
     background-color: var(--white);
     background-attachment: local, scroll;
     background-position-y: var(--title-height);
+    display: flex;
+    flex-direction: column;
 
     @media (max-width: 640px) {
         width: 100%;
@@ -110,6 +112,7 @@
     }
 
     &__controls {
+        margin-top: auto;
         display: flex;
         justify-content: space-between;
 
@@ -189,8 +192,22 @@
     &__dragbar {
         position: absolute;
         height: 100%;
+        box-sizing: border-box;
         cursor: col-resize;
         border: 1px solid transparent;
+    }
+
+    &__text {
+        padding: 0 6px;
+        margin: 0 32px;
+        border: 1px solid #D8D8D8;
+        height: calc(100vh - 225px);
+        overflow-y: scroll;
+
+        code {
+            word-break: break-all;
+            white-space: break-spaces;
+        }
     }
 }
 
