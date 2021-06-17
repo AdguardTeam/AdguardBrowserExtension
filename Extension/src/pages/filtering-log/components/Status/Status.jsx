@@ -1,9 +1,11 @@
 import React from 'react';
 import cn from 'classnames';
+import moment from 'moment';
 import { Icon } from '../../../common/components/ui/Icon';
-import './status.pcss';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
 import { colorMap, getItemClassName, getbadgeClassNames } from './statusStyles';
+
+import './status.pcss';
 
 export const Status = (props) => {
     const {
@@ -13,7 +15,7 @@ export const Status = (props) => {
         requestUrl,
     } = props;
 
-    const timeString = new Date(timestamp).toLocaleTimeString();
+    const timeString = moment(timestamp).format('HH:mm:ss');
     const mode = getStatusMode(props);
     const color = colorMap[mode];
     const itemClassNames = getItemClassName(color);

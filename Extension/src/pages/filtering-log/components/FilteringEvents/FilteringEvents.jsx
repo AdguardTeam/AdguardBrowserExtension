@@ -432,15 +432,14 @@ const FilteringEvents = observer(() => {
                     <div className="tr">
                         {
                             columns.map((column, idx) => (
-                                <>
-                                    <div
-                                        className="th"
-                                        key={column.id}
-                                        style={{ width: column.getWidth() }}
-                                    >
-                                        {column.Header}
-                                        {
-                                            idx < columns.length - 1
+                                <div
+                                    className="th"
+                                    key={column.id}
+                                    style={{ width: column.getWidth() }}
+                                >
+                                    {column.Header}
+                                    {
+                                        idx < columns.length - 1
                                                 && (
                                                     <div
                                                         role="separator"
@@ -450,9 +449,8 @@ const FilteringEvents = observer(() => {
                                                         {...column.getResizerProps()}
                                                     />
                                                 )
-                                        }
-                                    </div>
-                                </>
+                                    }
+                                </div>
                             ))
                         }
                     </div>
