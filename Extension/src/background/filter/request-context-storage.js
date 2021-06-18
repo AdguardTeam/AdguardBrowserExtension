@@ -148,17 +148,9 @@ export const requestContextStorage = (function () {
     }) => {
         const eventId = getNextEventId();
 
-        // clears filtering log
-        if (requestType === RequestTypes.DOCUMENT) {
-            const { tabId } = tab;
-            if (contexts.has(requestId)) {
-                // if contexts map already contains this requests
-                // that means that we caught redirect or removeParam
-                filteringLog.clearEventsByTabId({ tabId, clearOnlyEmpty: true });
-            } else {
-                // otherwise wipe all filtering events
-                filteringLog.clearEventsByTabId({ tabId });
-            }
+        // Clears filtering log. If contexts map already contains this requests that means that we caught redirect
+        if (requestType === RequestTypes.DOCUMENT && !contexts.has(requestId)) {
+            filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         const timestamp = Date.now();

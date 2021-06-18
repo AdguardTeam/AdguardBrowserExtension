@@ -618,38 +618,18 @@ const browsersFilteringLog = (function () {
     };
 
     /**
-     * @typedef clearEventsData
-     * @property {number} tabId
-     * @property {boolean} [ignorePreserveLog=false]
-     * @property {boolean} [clearOnlyEmpty=false]
-     */
-
-    /**
      * Remove log requests for tab
-     * @param {clearEventsData} clearEventsData
+     * @param {number} tabId
+     * @param {boolean} ignorePreserveLog
      */
-    const clearEventsByTabId = function ({ tabId, ignorePreserveLog = false, clearOnlyEmpty = false }) {
+    const clearEventsByTabId = function (tabId, ignorePreserveLog = false) {
         const tabInfo = tabsInfoMap[tabId];
 
         const preserveLog = ignorePreserveLog ? false : preserveLogEnabled;
 
         if (tabInfo && !preserveLog) {
-            if (clearOnlyEmpty && tabInfo.filteringEvents?.length > 0) {
-                // clean up empty events
-                const filteredPreviousEvents = tabInfo.filteringEvents
-                    .filter((event) => {
-                        // leave non-document type events
-                        return !(event.requestType === RequestTypes.DOCUMENT)
-                            // or document type with defined removeParam parameters
-                            || (event.requestType === RequestTypes.DOCUMENT
-                                && event.removeParam);
-                    });
-                tabInfo.filteringEvents = filteredPreviousEvents;
-                listeners.notifyListeners(listeners.TAB_UPDATE, tabInfo);
-            } else {
-                delete tabInfo.filteringEvents;
-                listeners.notifyListeners(listeners.TAB_RESET, tabInfo);
-            }
+            delete tabInfo.filteringEvents;
+            listeners.notifyListeners(listeners.TAB_RESET, tabInfo);
         }
     };
 

@@ -155,7 +155,7 @@ export const webRequestService = (function () {
             referrerUrl,
             requestType,
             tab,
-            requestRule
+            requestRule,
         });
 
         return isRequestBlockedByRule(requestRule);
@@ -449,9 +449,9 @@ export const webRequestService = (function () {
                 const ruleResult = r.getAdvancedModifier().removeParameters(result);
                 if (ruleResult !== result) {
                     filteringLog.addRemoveParamEvent({
-                        tab, 
-                        frameUrl: requestUrl, 
-                        requestType, 
+                        tab,
+                        frameUrl: requestUrl,
+                        requestType,
                         rule: r,
                         timestamp: Date.now(),
                     });
