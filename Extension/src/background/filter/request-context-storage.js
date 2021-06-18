@@ -154,8 +154,7 @@ export const requestContextStorage = (function () {
             if (contexts.has(requestId)) {
                 // if contexts map already contains this requests
                 // that means that we caught redirect or removeParam
-                const SHOULD_CLEAR_EMPTY_EVENTS = true;
-                filteringLog.clearEventsByTabId({ tabId, clearOnlyEmpty: SHOULD_CLEAR_EMPTY_EVENTS });
+                filteringLog.clearEventsByTabId({ tabId, clearOnlyEmpty: true });
             } else {
                 // otherwise wipe all filtering events
                 filteringLog.clearEventsByTabId({ tabId });
