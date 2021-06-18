@@ -620,9 +620,9 @@ const browsersFilteringLog = (function () {
     /**
      * Remove log requests for tab
      * @param {number} tabId
-     * @param {boolean} ignorePreserveLog
+     * @param {boolean} [ignorePreserveLog]
      */
-    const clearEventsByTabId = function (tabId, ignorePreserveLog = false) {
+    const clearEventsByTabId = function (tabId, ignorePreserveLog) {
         const tabInfo = tabsInfoMap[tabId];
 
         const preserveLog = ignorePreserveLog ? false : preserveLogEnabled;
