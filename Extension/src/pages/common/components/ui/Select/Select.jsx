@@ -6,7 +6,14 @@ import './select.pcss';
 
 const renderOptions = (options) => options.map((option) => {
     const { value, title } = option;
-    return <option key={value} value={value}>{title}</option>;
+
+    // &#8201 - Invisible thin space
+    return (
+        <option key={value} value={value}>
+            &#8201;
+            {title}
+        </option>
+    );
 });
 
 const Select = (props) => {
