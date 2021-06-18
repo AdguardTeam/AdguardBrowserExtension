@@ -460,11 +460,9 @@ const createMessageHandler = () => {
                 filteringLog.onCloseFilteringLogPage();
                 break;
             case MESSAGE_TYPES.CLEAR_EVENTS_BY_TAB_ID:
-                // filteringLog.clearEventsByTabId(data.tabId, data.ignorePreserveLog);
                 filteringLog.clearEventsByTabId({ tabId: data.tabId, ignorePreserveLog: data.ignorePreserveLog });
                 break;
             case MESSAGE_TYPES.REFRESH_PAGE:
-                // filteringLog.clearEventsByTabId(data.tabId);
                 filteringLog.clearEventsByTabId({ tabId: data.tabId });
                 await tabsApi.reload(data.tabId);
                 break;
