@@ -201,11 +201,18 @@ const RequestInfo = observer(() => {
             if (!data) {
                 return null;
             }
+
+            const isRequestUrl = data === selectedEvent.requestUrl;
+            const isRule = data === selectedEvent.ruleText;
+            const isFilterName = data === selectedEvent.filterName;
+
+            const canCopyToClipboard = isRequestUrl || isRule || isFilterName;
+
             return (
                 <div key={title} className="request-info">
                     <div className="request-info__key">{title}</div>
                     <div className="request-info__value">
-                        {data === selectedEvent.requestUrl
+                        {canCopyToClipboard
                             ? (
                                 <>
                                     <CopyToClipboard
@@ -214,7 +221,9 @@ const RequestInfo = observer(() => {
                                     >
                                         {data}
                                     </CopyToClipboard>
-                                    {renderOpenInNewTab(selectedEvent)}
+                                    {isRequestUrl && (
+                                        renderOpenInNewTab(selectedEvent)
+                                    )}
                                 </>
                             )
                             : data}
