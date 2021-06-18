@@ -636,7 +636,7 @@ const browsersFilteringLog = (function () {
         if (tabInfo && !preserveLog) {
             if (clearOnlyEmpty && tabInfo.filteringEvents?.length > 0) {
                 // clean up empty events
-                const sortedPreviousEvents = tabInfo.filteringEvents
+                const filteredPreviousEvents = tabInfo.filteringEvents
                     .filter((event) => {
                         // leave non-document type events
                         return !(event.requestType === RequestTypes.DOCUMENT)
@@ -645,7 +645,7 @@ const browsersFilteringLog = (function () {
                                 // && (event.statusCode || event.removeParam));
                                 && event.removeParam);
                     });
-                tabInfo.filteringEvents = sortedPreviousEvents;
+                tabInfo.filteringEvents = filteredPreviousEvents;
                 listeners.notifyListeners(listeners.TAB_UPDATE, tabInfo);
             } else {
                 delete tabInfo.filteringEvents;
