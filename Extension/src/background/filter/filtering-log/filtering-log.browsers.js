@@ -241,22 +241,6 @@ const browsersFilteringLog = (function () {
             filteringEvent.eventId = nanoid();
         }
 
-        // clean up empty events
-        if (filteringEvent.requestType === RequestTypes.DOCUMENT
-            && tabInfo.filteringEvents.length > 0
-            && !filteringEvent.requestRule
-            && !filteringEvent.removeParam) {
-            const sortedPreviousEvents = tabInfo.filteringEvents
-                .filter((event) => {
-                    // leave non-document type events
-                    return !(event.requestType === RequestTypes.DOCUMENT)
-                        // or document type with defined statusCode or removeParam parameters
-                        || (event.requestType === RequestTypes.DOCUMENT
-                            && (event.statusCode || event.removeParam));
-                });
-            tabInfo.filteringEvents = sortedPreviousEvents;
-        }
-
         tabInfo.filteringEvents.push(filteringEvent);
 
         if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
@@ -634,18 +618,39 @@ const browsersFilteringLog = (function () {
     };
 
     /**
-     * Remove log requests for tab
-     * @param tabId
-     * @param {boolean} ignorePreserveLog
+     * @typedef clearEventsData
+     * @property {number} tabId
+     * @property {boolean} [ignorePreserveLog=false]
+     * @property {boolean} [clearOnlyEmpty=false]
      */
-    const clearEventsByTabId = function (tabId, ignorePreserveLog) {
+
+    /**
+     * Remove log requests for tab
+     * @param {clearEventsData} clearEventsData
+     */
+    const clearEventsByTabId = function ({ tabId, ignorePreserveLog = false, clearOnlyEmpty = false }) {
         const tabInfo = tabsInfoMap[tabId];
 
         const preserveLog = ignorePreserveLog ? false : preserveLogEnabled;
 
         if (tabInfo && !preserveLog) {
-            delete tabInfo.filteringEvents;
-            listeners.notifyListeners(listeners.TAB_RESET, tabInfo);
+            if (clearOnlyEmpty && tabInfo.filteringEvents?.length > 0) {
+                // clean up empty events
+                const sortedPreviousEvents = tabInfo.filteringEvents
+                    .filter((event) => {
+                        // leave non-document type events
+                        return !(event.requestType === RequestTypes.DOCUMENT)
+                            // or document type with defined removeParam parameters
+                            || (event.requestType === RequestTypes.DOCUMENT
+                                // && (event.statusCode || event.removeParam));
+                                && event.removeParam);
+                    });
+                tabInfo.filteringEvents = sortedPreviousEvents;
+                listeners.notifyListeners(listeners.TAB_UPDATE, tabInfo);
+            } else {
+                delete tabInfo.filteringEvents;
+                listeners.notifyListeners(listeners.TAB_RESET, tabInfo);
+            }
         }
     };
 
