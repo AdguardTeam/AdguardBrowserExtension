@@ -642,7 +642,6 @@ const browsersFilteringLog = (function () {
                         return !(event.requestType === RequestTypes.DOCUMENT)
                             // or document type with defined removeParam parameters
                             || (event.requestType === RequestTypes.DOCUMENT
-                                // && (event.statusCode || event.removeParam));
                                 && event.removeParam);
                     });
                 tabInfo.filteringEvents = filteredPreviousEvents;
