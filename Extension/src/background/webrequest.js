@@ -104,17 +104,6 @@ const webrequestInit = function () {
             // Reset tab button state
             listeners.notifyListeners(listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
-            // Record request context for the main frame
-            requestContextStorage.record({
-                requestId,
-                requestUrl,
-                referrerUrl: requestUrl,
-                originUrl,
-                requestType, 
-                tab,
-                method,
-            });
-
             /**
              * Just to remember!
              * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame
@@ -517,7 +506,6 @@ const webrequestInit = function () {
         const requestContext = requestContextStorage.get(requestId);
         if (!requestContext) {
             // Record request for other types
-                    //const { requestId, requestUrl, referrerUrl, originUrl, requestType, tab } = params;
             requestContextStorage.record({
                 requestId,
                 requestUrl,
