@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import beautify from 'js-beautify';
 
 import { RequestTypes } from '../../../../../background/utils/request-types';
-import { log } from '../../../../../common/log';
 
 const getBeautifier = (type) => {
     switch (type) {
@@ -19,42 +18,26 @@ const getBeautifier = (type) => {
 };
 
 export const TextRequest = ({
-    url,
+    text,
     requestType,
     shouldBeautify,
-    onError,
-    onSuccess,
 }) => {
-    const [response, setResponse] = useState(null);
-
-    useEffect(() => {
-        (async () => {
-            try {
-                const res = await fetch(url);
-                const text = await res.text();
-                onSuccess();
-                setResponse(text);
-            } catch (e) {
-                onError();
-                log.error(e);
-            }
-        })();
-    }, []);
+    const [textState, setTextState] = useState(text);
 
     useEffect(() => {
         if (shouldBeautify) {
             const beautifier = getBeautifier(requestType);
-            const beautifiedResponse = beautifier(response);
-            setResponse(beautifiedResponse);
+            const beautifiedResponse = beautifier(text);
+            setTextState(beautifiedResponse);
         }
-    }, [shouldBeautify]);
+    }, [shouldBeautify, requestType, text]);
 
-    if (response) {
+    if (textState) {
         return (
             <div className="request-modal__text">
                 <pre>
                     <code>
-                        {response}
+                        {textState}
                     </code>
                 </pre>
             </div>
