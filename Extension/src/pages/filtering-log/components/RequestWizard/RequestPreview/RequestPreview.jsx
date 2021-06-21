@@ -1,14 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useMachine } from '@xstate/react';
 
 import { Icon } from '../../../../common/components/ui/Icon';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { fetchMachine, FetchEvents, FetchStates } from '../../../../common/machines/fetchMachine';
 import { rootStore } from '../../../stores/RootStore';
 import { RequestTypes } from '../../../../../background/utils/request-types';
 import { ImageRequest } from './ImageRequest';
 import { TextRequest } from './TextRequest';
-import { PREVIEW_EVENTS, PREVIEW_STATES, previewLoadMachine } from './previewLoadMachine';
+import { fetchText, fetchImage } from './fetchers';
+
+import './request-preview.pcss';
+import '../RequestInfo/request-image.pcss';
 
 export const RequestPreview = observer(() => {
     const {
@@ -18,48 +22,40 @@ export const RequestPreview = observer(() => {
 
     const { selectedEvent } = logStore;
 
-    const [previewLoadCurrent, send] = useMachine(previewLoadMachine);
+    const { requestType, requestUrl } = selectedEvent;
+
+    const isText = requestType === RequestTypes.DOCUMENT
+        || requestType === RequestTypes.SUBDOCUMENT
+        || requestType === RequestTypes.SCRIPT
+        || requestType === RequestTypes.STYLESHEET;
+
+    const isImage = requestType === RequestTypes.IMAGE;
+
+    const getFetcher = () => {
+        if (isText) {
+            return fetchText;
+        }
+        if (isImage) {
+            return fetchImage;
+        }
+        return null;
+    };
+
+    const [previewState, send] = useMachine(fetchMachine, {
+        services: {
+            fetchData: getFetcher(),
+        },
+    });
 
     const [beautify, setBeautify] = useState(false);
 
-    const onPreviewLoadError = () => {
-        send(PREVIEW_EVENTS.ERROR);
-    };
+    useEffect(() => {
+        send(FetchEvents.FETCH, { url: requestUrl });
+    }, [requestUrl, send]);
 
-    const onPreviewLoadSuccess = () => {
-        send(PREVIEW_EVENTS.SUCCESS);
+    const onRetry = () => {
+        send(FetchEvents.RETRY, { url: requestUrl });
     };
-
-    let showBeautify = false;
-    let renderingInfo = null;
-    switch (selectedEvent.requestType) {
-        case RequestTypes.IMAGE:
-            renderingInfo = (
-                <ImageRequest
-                    url={selectedEvent.requestUrl}
-                    onError={onPreviewLoadError}
-                    onSuccess={onPreviewLoadSuccess}
-                />
-            );
-            break;
-        case RequestTypes.DOCUMENT:
-        case RequestTypes.SUBDOCUMENT:
-        case RequestTypes.SCRIPT:
-        case RequestTypes.STYLESHEET:
-            renderingInfo = (
-                <TextRequest
-                    url={selectedEvent.requestUrl}
-                    requestType={selectedEvent.requestType}
-                    shouldBeautify={beautify}
-                    onError={onPreviewLoadError}
-                    onSuccess={onPreviewLoadSuccess}
-                />
-            );
-            showBeautify = true;
-            break;
-        default:
-            break;
-    }
 
     const handleBackToRequestClick = () => {
         wizardStore.setViewState();
@@ -69,32 +65,58 @@ export const RequestPreview = observer(() => {
         setBeautify(true);
     };
 
+    const tryAgainButtonTitle = reactTranslator.getMessage('filtering_log_details_modal_try_again');
     const backToRequestButtonTitle = reactTranslator.getMessage('filtering_log_details_modal_back_button');
     const beautifyButtonTitle = reactTranslator.getMessage('filtering_log_details_modal_beautify_button');
 
-    const previewStatesMap = {
-        [PREVIEW_STATES.LOADING]: {
-            status: reactTranslator.getMessage('filtering_modal_status_text_loading'),
-        },
-        [PREVIEW_STATES.ERROR]: {
-            status: reactTranslator.getMessage('filtering_modal_status_text_error'),
-        },
-        [PREVIEW_STATES.SUCCESS]: null,
+    const renderContent = () => {
+        if (previewState.matches(FetchStates.LOADING)) {
+            return (
+                <div className="request-preview__status">
+                    <span className="request-info__value request-preview__text">
+                        {reactTranslator.getMessage('filtering_modal_status_text_loading')}
+                    </span>
+                </div>
+            );
+        }
+        if (previewState.matches(FetchStates.FAILURE)) {
+            return (
+                <div className="request-preview__status">
+                    <span className="request-info__error request-preview__text">
+                        {reactTranslator.getMessage('filtering_modal_status_text_error')}
+                    </span>
+                    <button
+                        type="button"
+                        className="request-preview__button request-preview__button--white"
+                        onClick={onRetry}
+                        title={tryAgainButtonTitle}
+                    >
+                        {tryAgainButtonTitle}
+                    </button>
+                </div>
+            );
+        }
+        if (previewState.matches(FetchStates.SUCCESS)) {
+            if (isImage) {
+                return (
+                    <ImageRequest
+                        src={previewState.context.data}
+                    />
+                );
+            }
+            if (isText) {
+                return (
+                    <TextRequest
+                        text={previewState.context.data}
+                        requestType={requestType}
+                        shouldBeautify={beautify}
+                    />
+                );
+            }
+            return null;
+        }
+        return null;
     };
-
-    const previewLoadCurrentData = previewStatesMap[previewLoadCurrent.value];
-    const errorOccurred = previewLoadCurrent.matches(PREVIEW_STATES.ERROR);
-
-    let statusComponent;
-    if (errorOccurred) {
-        statusComponent = (
-            <span className="request-info__error">
-                {previewLoadCurrentData.status}
-            </span>
-        );
-    } else {
-        statusComponent = previewLoadCurrentData?.status;
-    }
 
     return (
         <>
@@ -110,18 +132,8 @@ export const RequestPreview = observer(() => {
                     {reactTranslator.getMessage('filtering_modal_preview_title')}
                 </span>
             </div>
-            <div className="request-modal__content">
-                {previewLoadCurrentData && (
-                    <div className="request-info">
-                        <div className="request-info__key">
-                            {reactTranslator.getMessage('filtering_modal_status_text_desc')}
-                        </div>
-                        <div className="request-info__value">
-                            {statusComponent}
-                        </div>
-                    </div>
-                )}
-                {renderingInfo}
+            <div className="request-modal__content request-preview">
+                {renderContent()}
             </div>
             <div className="request-modal__controls">
                 <button
@@ -132,8 +144,7 @@ export const RequestPreview = observer(() => {
                 >
                     {backToRequestButtonTitle}
                 </button>
-
-                {showBeautify && !errorOccurred && (
+                {isText && previewState.matches(FetchStates.SUCCESS) && (
                     <button
                         type="button"
                         className="request-modal__button request-modal__button--white"

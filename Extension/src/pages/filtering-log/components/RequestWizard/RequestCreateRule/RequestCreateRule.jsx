@@ -183,14 +183,16 @@ const RequestCreateRule = observer(() => {
                     </div>
                 )}
             </div>
-            <button
-                type="button"
-                className="request-modal__button"
-                onClick={handleAddRuleClick}
-                title={reactTranslator.getMessage('filtering_modal_add_rule')}
-            >
-                {reactTranslator.getMessage('filtering_modal_add_rule')}
-            </button>
+            <div className="request-modal__controls">
+                <button
+                    type="button"
+                    className="request-modal__button"
+                    onClick={handleAddRuleClick}
+                    title={reactTranslator.getMessage('filtering_modal_add_rule')}
+                >
+                    {reactTranslator.getMessage('filtering_modal_add_rule')}
+                </button>
+            </div>
         </>
     );
 });
