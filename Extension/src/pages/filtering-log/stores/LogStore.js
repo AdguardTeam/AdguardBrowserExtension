@@ -445,6 +445,9 @@ class LogStore {
     @action
     setSelectedEventById = (eventIdString) => {
         const eventId = this.toNumberOrString(eventIdString);
+        if (this.selectedEvent && eventId !== this.selectedEvent.eventId) {
+            this.rootStore.wizardStore.setAddedRuleState(false);
+        }
         this.selectedEvent = find(this.filteringEvents, { eventId });
         this.rootStore.wizardStore.openModal();
     };
