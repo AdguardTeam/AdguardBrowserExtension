@@ -213,12 +213,10 @@ const browsersFilteringLog = (function () {
      */
     const canAddCookieEvent = (tabId, newCookieName) => {
         const tabInfo = getFilteringInfoByTabId(tabId);
-        // add cookie event only if there are no event
-        // or no event already added with such cookie name
-        return tabInfo?.filteringEvents.length === 0
-            || !(tabInfo?.filteringEvents.some((event) => {
-                return event.cookieName === newCookieName;
-            }));
+        // add cookie event only if no event already added with such cookie name
+        return !(tabInfo?.filteringEvents.some((event) => {
+            return event.cookieName === newCookieName;
+        }));
     };
 
     /**
