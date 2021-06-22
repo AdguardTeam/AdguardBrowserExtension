@@ -207,19 +207,6 @@ const browsersFilteringLog = (function () {
     };
 
     /**
-     * Checks if cookie event can be added
-     * @param {number} tabId
-     * @param {string} newCookieName
-     */
-    const canAddCookieEvent = (tabId, newCookieName) => {
-        const tabInfo = getFilteringInfoByTabId(tabId);
-        // add cookie event only if no event already added with such cookie name
-        return !(tabInfo?.filteringEvents.some((event) => {
-            return event.cookieName === newCookieName;
-        }));
-    };
-
-    /**
      * Writes to filtering event some useful properties from the request rule
      * @param filteringEvent
      * @param rule
@@ -481,7 +468,7 @@ const browsersFilteringLog = (function () {
         thirdParty,
         timestamp,
     }) => {
-        if (!canAddEvent(tabId) || !canAddCookieEvent(tabId, cookieName)) {
+        if (!canAddEvent(tabId)) {
             return;
         }
 
