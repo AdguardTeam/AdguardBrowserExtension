@@ -158,6 +158,8 @@ const RequestInfo = observer(() => {
             PARTS.TYPE,
             PARTS.SOURCE,
             PARTS.STEALTH, // FIXME determine first/third-party
+            PARTS.RULE,
+            PARTS.FILTER,
         ];
     }
 
