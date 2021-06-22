@@ -414,7 +414,7 @@ const createMessageHandler = () => {
                     cookieName: data.cookieName,
                     cookieDomain: data.cookieDomain,
                     cookieRule: new TSUrlFilter.NetworkRule(data.ruleText, data.filterId),
-                    isModifyingCookieRule: true,
+                    isModifyingCookieRule: false,
                     thirdParty: data.thirdParty,
                     timestamp: Date.now(),
                 });
