@@ -95,7 +95,10 @@ ace.define('ace/mode/css_highlight_rules', [], (require, exports, module) => {
                 token: 'text',
             }, {
                 token: 'punctuation.operator',
-                regex: '[:;]',
+                regex: '[:;!]',
+            }, {
+                token: 'support.constant',
+                regex: /important/,
             }, {
                 token: 'paren.rparen',
                 regex: '\\}',
@@ -103,7 +106,7 @@ ace.define('ace/mode/css_highlight_rules', [], (require, exports, module) => {
             }, {
                 include: ['strings', 'url', 'comments'],
             }, {
-                token: ['constant.numeric', 'keyword'],
+                token: ['constant.numeric'],
                 regex: `(${numRe})(ch|cm|deg|em|ex|fr|gd|grad|Hz|in|kHz|mm|ms|pc|pt|px|rad|rem|s|turn|vh|vmax|vmin|vm|vw|%)`,
             }, {
                 token: 'constant.numeric',
@@ -811,14 +814,14 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     token: 'keyword.operator',
                 },
                 {
-                    regex: /domain=/,
+                    regex: /(domain|app)=/,
                     token: 'keyword.control',
                     next: 'options_domain_app',
                 },
                 {
-                    regex: /app=/,
+                    regex: /(redirect|removeparam|cookie)=/,
                     token: 'keyword.control',
-                    next: 'options_domain_app',
+                    next: 'options_redirect_removeparam_cookie',
                 },
                 {
                     regex: /replace=/,
@@ -831,7 +834,7 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     next: 'csp-start',
                 },
                 {
-                    regex: /document|elemhide|content|urlblock|generichide|genericblock|jsinject|stealth/,
+                    regex: /document|elemhide|specifichide|content|urlblock|generichide|genericblock|jsinject|stealth/,
                     token: 'keyword.control',
                 },
                 {
@@ -855,6 +858,30 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                 },
             ],
             options_domain_app: [
+                {
+                    token: 'invalid',
+                    regex: /,$/,
+                    next: 'start',
+                },
+                {
+                    token: 'text',
+                    regex: /$/,
+                    next: 'start',
+                },
+                {
+                    regex: /,/,
+                    token: 'keyword.operator',
+                    next: 'options',
+                },
+                {
+                    regex: /\|/,
+                    token: 'keyword.operator',
+                },
+                {
+                    defaultToken: 'string.quoted',
+                },
+            ],
+            options_redirect_removeparam_cookie: [
                 {
                     token: 'invalid',
                     regex: /,$/,
