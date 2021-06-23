@@ -21,6 +21,10 @@ configure({ enforceActions: 'observed' });
 class PopupStore {
     TOTAL_BLOCKED_GROUP_ID = 'total';
 
+    // need for render blocking before first data retrieving
+    @observable
+    isInitialDataReceived = false;
+
     @observable
     applicationFilteringDisabled = null;
 
@@ -117,6 +121,8 @@ class PopupStore {
 
             // settings
             this.settings = settings;
+
+            this.isInitialDataReceived = true;
         });
     };
 

@@ -42,50 +42,54 @@ export const Main = observer(() => {
 
     return (
         <div className={`main main--${switcher.mode}`}>
-            <div className="main__header">
-                {store.showInfoAboutFullVersion && (
-                    <div className="main__cta-link">
-                        <a
-                            href="https://adguard.com/forward.html?action=compare&from=popup&app=browser_extension"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {reactTranslator.getMessage('popup_header_cta_link')}
-                        </a>
+            {store.isInitialDataReceived && (
+                <>
+                    <div className="main__header">
+                        {store.showInfoAboutFullVersion && (
+                            <div className="main__cta-link">
+                                <a
+                                    href="https://adguard.com/forward.html?action=compare&from=popup&app=browser_extension"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    {reactTranslator.getMessage('popup_header_cta_link')}
+                                </a>
+                            </div>
+                        )}
+                        <div className="main__stats">
+                            <div className="main__total-blocked-tab">
+                                {reactTranslator.getMessage('popup_tab_blocked_count', {
+                                    num: store.totalBlockedTab.toLocaleString(),
+                                })}
+                            </div>
+                            <div className="main__total-blocked-all">
+                                {reactTranslator.getMessage('popup_tab_blocked_all_count', {
+                                    num: store.totalBlocked.toLocaleString(),
+                                })}
+                            </div>
+                        </div>
                     </div>
-                )}
-                <div className="main__stats">
-                    <div className="main__total-blocked-tab">
-                        {reactTranslator.getMessage('popup_tab_blocked_count', {
-                            num: store.totalBlockedTab.toLocaleString(),
-                        })}
+                    <button
+                        type="button"
+                        className="switcher"
+                        onClick={switcher.handler}
+                        title={reactTranslator.getMessage('popup_switch_button')}
+                    >
+                        <div className="switcher__center" />
+                        <div className="switcher__btn">
+                            <Icon id="#checkmark" classname="icon--checkmark switcher__icon switcher__icon--checkmark" />
+                            <Icon id="#cross" classname="icon--cross switcher__icon switcher__icon--cross" />
+                            <Icon id="#play" classname="icon--play switcher__icon switcher__icon--play" />
+                        </div>
+                    </button>
+                    <div className="current-site">
+                        {store.currentSite}
                     </div>
-                    <div className="main__total-blocked-all">
-                        {reactTranslator.getMessage('popup_tab_blocked_all_count', {
-                            num: store.totalBlocked.toLocaleString(),
-                        })}
+                    <div className="current-status">
+                        {store.currentStatusMessage}
                     </div>
-                </div>
-            </div>
-            <button
-                type="button"
-                className="switcher"
-                onClick={switcher.handler}
-                title={reactTranslator.getMessage('popup_switch_button')}
-            >
-                <div className="switcher__center" />
-                <div className="switcher__btn">
-                    <Icon id="#checkmark" classname="icon--checkmark switcher__icon switcher__icon--checkmark" />
-                    <Icon id="#cross" classname="icon--cross switcher__icon switcher__icon--cross" />
-                    <Icon id="#play" classname="icon--play switcher__icon switcher__icon--play" />
-                </div>
-            </button>
-            <div className="current-site">
-                {store.currentSite}
-            </div>
-            <div className="current-status">
-                {store.currentStatusMessage}
-            </div>
+                </>
+            )}
         </div>
     );
 });
