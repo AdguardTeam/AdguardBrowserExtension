@@ -410,10 +410,9 @@ const createMessageHandler = () => {
             }
             case MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT: {
                 filteringLog.addCookieEvent({
-                    tabId: sender.tab,
+                    tabId: sender.tab.tabId,
                     cookieName: data.cookieName,
                     cookieDomain: data.cookieDomain,
-                    requestType: RequestType.Document,
                     cookieRule: new TSUrlFilter.NetworkRule(data.ruleText, data.filterId),
                     isModifyingCookieRule: false,
                     thirdParty: data.thirdParty,

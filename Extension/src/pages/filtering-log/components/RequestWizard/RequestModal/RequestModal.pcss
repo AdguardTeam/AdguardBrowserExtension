@@ -113,12 +113,14 @@
 
     &__controls {
         margin-top: auto;
+        padding: 0 32px;
         display: flex;
         justify-content: space-between;
 
         @media (max-width: 640px) {
             flex-direction: column;
             margin-top: 28px;
+            padding: 0 24px;
         }
     }
 
@@ -134,7 +136,7 @@
         height: 48px;
         text-transform: uppercase;
         width: 183px;
-        margin: 24px 32px;
+        margin: 24px 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -144,23 +146,16 @@
         }
 
         @media (min-width: 641px) {
-            &:first-child {
-                margin-right: 24px;
-            }
+            margin-right: 24px;
 
-            &:nth-child(2) {
-                margin-left: 0;
-                margin-right: 38px;
-            }
-
-            .request-modal__controls > &:nth-child(3) {
-                margin-top: 0;
+            &:last-child {
+                margin-right: 0;
             }
         }
 
         @media (max-width: 640px) {
-            width: calc(100% - 48px);
-            margin: 8px 24px;
+            width: 100%;
+            margin: 8px 0;
         }
 
         &--white {
