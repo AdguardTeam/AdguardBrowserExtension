@@ -61,4 +61,20 @@
             color: var(--white);
         }
     }
+
+    &--first_party,
+    &--third_party {
+        /* tooltip which is next to button */
+        + .tooltip {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        &:hover {
+            + .tooltip {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+    }
 }

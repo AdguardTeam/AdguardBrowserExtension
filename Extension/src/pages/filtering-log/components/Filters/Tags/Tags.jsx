@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { Tooltip } from '../../../../common/components/ui/Tooltip';
 
 const isMacOs = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
@@ -11,6 +12,8 @@ export const Tags = ({
     type,
 }) => {
     const { allButtonEnabled, filters } = tags;
+
+    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
     const enableOne = (tagId) => {
         const updatedTags = filters.map((tag) => {
@@ -92,6 +95,14 @@ export const Tags = ({
         }
     };
 
+    const handleMouseMove = (e) => {
+        const { clientX, clientY } = e;
+        setTooltipPosition({
+            x: clientX - 60,
+            y: clientY - 40,
+        });
+    };
+
     const handleAllClick = () => {
         enableAll();
     };
@@ -99,16 +110,24 @@ export const Tags = ({
     const renderTypes = () => {
         return filters.map((tag) => {
             const { id, title, enabled } = tag;
+            const tooltipText = reactTranslator.getMessage(`filtering_log_tooltip_${id}`);
             return (
-                <button
-                    className={classNames(`tag tag--${id}`, type && `tag--${type}`, { active: !allButtonEnabled && enabled })}
-                    type="button"
-                    onClick={handleTagClick}
-                    value={id}
-                    key={id}
-                >
-                    {title}
-                </button>
+                <>
+                    <button
+                        className={classNames(`tag tag--${id}`, type && `tag--${type}`, { active: !allButtonEnabled && enabled })}
+                        type="button"
+                        onClick={handleTagClick}
+                        onMouseMove={handleMouseMove}
+                        value={id}
+                        key={id}
+                    >
+                        {title}
+                    </button>
+                    <Tooltip
+                        text={tooltipText}
+                        position={tooltipPosition}
+                    />
+                </>
             );
         });
     };
