@@ -18,6 +18,7 @@ const Editor = ({
     shortcuts,
     onChange,
     fullscreen,
+    highlightRules,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
@@ -58,7 +59,7 @@ const Editor = ({
     );
 
     // highlight rules syntax only for user rules
-    const editorMode = name === 'user-rules' ? 'adguard' : '';
+    const editorMode = highlightRules ? 'adguard' : '';
 
     return (
         <div style={editorStyles} className={editorClassName}>

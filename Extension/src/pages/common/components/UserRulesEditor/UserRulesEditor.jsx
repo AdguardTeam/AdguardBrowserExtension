@@ -233,6 +233,8 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         window.close();
     };
 
+    const SHOULD_HIGHLIGHT_RULES = true;
+
     return (
         <>
             <Editor
@@ -240,6 +242,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 fullscreen={fullscreen}
+                highlightRules={SHOULD_HIGHLIGHT_RULES}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
