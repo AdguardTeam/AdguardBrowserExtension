@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -9,11 +9,14 @@ import { Icon } from '../../../common/components/ui/Icon';
 import './actions.pcss';
 import { EventsSearch } from '../Filters/EventsSearch';
 import { TabSelector } from '../Filters/TabSelector';
+import { Tooltip } from '../../../common/components/ui/Tooltip';
 
 const Actions = observer(() => {
     const { logStore } = useContext(rootStore);
 
     const { preserveLogEnabled } = logStore;
+
+    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
     const clearLogHandler = async (e) => {
         e.preventDefault();
@@ -25,6 +28,22 @@ const Actions = observer(() => {
         await logStore.refreshPage();
     };
 
+    const handleMouseClear = (e) => {
+        const { clientX, clientY } = e;
+        setTooltipPosition({
+            x: clientX - 30,
+            y: clientY + 20,
+        });
+    };
+
+    const handleMousePreserve = (e) => {
+        const { clientX, clientY } = e;
+        setTooltipPosition({
+            x: clientX - 920,
+            y: clientY,
+        });
+    };
+
     const preserveLogHandler = (e) => {
         logStore.setPreserveLog(e.target.checked);
     };
@@ -34,6 +53,12 @@ const Actions = observer(() => {
         { active: preserveLogEnabled },
     );
 
+    const clearLogToolpitText = reactTranslator.getMessage('filtering_clear_log_events');
+
+    const preserveLogToolpitText = preserveLogEnabled
+        ? reactTranslator.getMessage('filtering_log_preserve_log_on')
+        : reactTranslator.getMessage('filtering_log_preserve_log_off');
+
     return (
         <div className="actions">
             <div className="actions__col">
@@ -41,13 +66,18 @@ const Actions = observer(() => {
                 <EventsSearch />
             </div>
             <div className="actions__col">
-                <div className="actions__action">
+                <div className="actions__action actions__clear">
                     <button
                         className="actions__clear"
                         type="button"
                         onClick={clearLogHandler}
+                        onMouseMove={handleMouseClear}
                     >
                         <Icon id="#trash" classname="icon--trash actions__del" />
+                        <Tooltip
+                            text={clearLogToolpitText}
+                            position={tooltipPosition}
+                        />
                     </button>
                 </div>
                 <div className="actions__action actions__preserve">
@@ -59,13 +89,14 @@ const Actions = observer(() => {
                             onChange={preserveLogHandler}
                             defaultChecked={false}
                         />
-                        <div className={preserveLogClassName}>
-                            <div className="record__tooltip record__tooltip--off">
-                                {reactTranslator.getMessage('filtering_log_preserve_log_off')}
-                            </div>
-                            <div className="record__tooltip record__tooltip--on">
-                                {reactTranslator.getMessage('filtering_log_preserve_log_on')}
-                            </div>
+                        <div
+                            className={preserveLogClassName}
+                            onMouseMove={handleMousePreserve}
+                        >
+                            <Tooltip
+                                text={preserveLogToolpitText}
+                                position={tooltipPosition}
+                            />
                         </div>
                     </label>
                 </div>
