@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
@@ -14,6 +19,7 @@ import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { translator } from '../../../../common/translators/translator';
+import { Tooltip } from '../ui/Tooltip';
 
 /**
  * This module is placed in the common directory because it is used in the options page
@@ -24,6 +30,8 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+
+    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
     // Get initial storage content and set to the editor
     useEffect(() => {
@@ -233,6 +241,19 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         window.close();
     };
 
+    const handleMouseFullscreenClose = (e) => {
+        const { clientX, clientY } = e;
+        setTooltipPosition({
+            x: clientX,
+            y: clientY,
+        });
+    };
+
+    // similar to ToggleWrapButton
+    const handleMouseFullscreenOpen = () => {
+        setTooltipPosition({ x: -70, y: 30 });
+    };
+
     return (
         <>
             <Editor
@@ -273,21 +294,30 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                     {fullscreen ? (
                         <button
                             type="button"
-                            title={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
                             className="actions__btn actions__btn--icon"
                             onClick={closeEditorFullscreen}
+                            onMouseMove={handleMouseFullscreenClose}
+
                         >
                             <Icon classname="icon--extend" id="#reduce" />
+                            <Tooltip
+                                text={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
+                                position={tooltipPosition}
+                            />
                         </button>
                     )
                         : (
                             <button
                                 type="button"
-                                title={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
                                 className="actions__btn actions__btn--icon"
                                 onClick={openEditorFullscreen}
+                                onMouseMove={handleMouseFullscreenOpen}
                             >
                                 <Icon classname="icon--extend" id="#extend" />
+                                <Tooltip
+                                    text={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
+                                    position={tooltipPosition}
+                                />
                             </button>
                         )}
                 </div>
