@@ -240,6 +240,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 fullscreen={fullscreen}
+                highlightRules
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
