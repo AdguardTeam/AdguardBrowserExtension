@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 import identity from 'lodash/identity';
 import cn from 'classnames';
@@ -15,6 +15,7 @@ import { CopyToClipboard } from '../../../../common/components/CopyToClipboard';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
 import { RequestTypes } from '../../../../../background/utils/request-types';
+import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 
 import './request-info.pcss';
 
@@ -99,6 +100,9 @@ const PARTS = {
 };
 
 const RequestInfo = observer(() => {
+    const ref = useRef();
+    const contentOverflowed = useOverflowed(ref);
+
     const { logStore, wizardStore } = useContext(rootStore);
 
     const { closeModal, addedRuleState } = wizardStore;
@@ -380,7 +384,7 @@ const RequestInfo = observer(() => {
 
     return (
         <>
-            <div className="request-modal__title">
+            <div className={cn('request-modal__title', { 'request-modal__title_fixed': contentOverflowed })}>
                 <button
                     type="button"
                     onClick={closeModal}
@@ -390,7 +394,7 @@ const RequestInfo = observer(() => {
                 </button>
                 <span className="request-modal__header">{reactTranslator.getMessage('filtering_modal_info_title')}</span>
             </div>
-            <div className="request-modal__content">
+            <div ref={ref} className="request-modal__content">
                 {selectedEvent.method && (
                     <div className="request-info">
                         <div className="request-info__key">
@@ -414,7 +418,7 @@ const RequestInfo = observer(() => {
                 </div>
                 {renderedInfo}
             </div>
-            <div className="request-modal__controls">
+            <div className={cn('request-modal__controls', { 'request-modal__controls_fixed': contentOverflowed })}>
                 {renderControlButtons(selectedEvent)}
             </div>
         </>
