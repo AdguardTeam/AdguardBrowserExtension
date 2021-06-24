@@ -23,7 +23,9 @@ const Actions = observer(() => {
     const refreshPage = async (e) => {
         e.preventDefault();
         await logStore.refreshPage();
-        await wizardStore.closeModal();
+        if (!preserveLogEnabled) {
+            await wizardStore.closeModal();
+        }
     };
 
     const preserveLogHandler = (e) => {
