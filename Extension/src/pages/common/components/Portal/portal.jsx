@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 export const Portal = ({ id, children }) => {
-    const parent = document.getElementById(id);
+    const mount = document.getElementById(id);
     const el = document.createElement('div');
 
     useEffect(() => {
-        parent.appendChild(el);
-        return () => parent.removeChild(el);
-    }, [el, parent]);
+        mount.appendChild(el);
+        return () => mount.removeChild(el);
+    }, [el, mount]);
 
     return createPortal(children, el);
 };
