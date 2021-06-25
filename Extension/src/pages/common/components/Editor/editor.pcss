@@ -95,10 +95,10 @@
     }
 
     & .ace_keyword {
-        color: var(--brown-editor);
+        color: var(--red-editor);
 
         @media (prefers-color-scheme: dark) {
-            color: var(--yellow-editor);
+            color: var(--orange-editor);
         }
     }
 
@@ -158,11 +158,35 @@
         }
     }
 
+    & .ace_support.ace_function {
+        color: var(--red-editor)!important;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--orange-editor)!important;
+        }
+    }
+
+    & .ace_name.ace_function {
+        color: var(--brown-editor)!important;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--yellow-editor)!important;
+        }
+    }
+
     & .ace_constant.ace_numeric {
         color: var(--red-editor)!important;
 
         @media (prefers-color-scheme: dark) {
             color: var(--orange-editor)!important;
+        }
+    }
+
+    & .ace_storage.ace_type {
+        color: var(--blue-editor)!important;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--cyan-editor)!important;
         }
     }
 
@@ -198,15 +222,15 @@
         }
 
         & .ace_keyword {
-            color: var(--brown-editor);
+            color: var(--red-editor);
         }
 
         & .ace_control {
-            color: var(--cyan-editor);
+            color: var(--blue-editor);
         }
 
         & .ace_operator {
-            color: var(--cyan-editor)!important;
+            color: var(--blue-editor)!important;
         }
 
         & .ace_quoted {
@@ -229,8 +253,20 @@
             color: var(--red-editor)!important;
         }
 
+        & .ace_support.ace_function {
+            color: var(--red-editor)!important;
+        }
+
+        & .ace_name.ace_function {
+            color: var(--brown-editor)!important;
+        }
+
         & .ace_constant.ace_numeric {
             color: var(--red-editor)!important;
+        }
+
+        & .ace_storage.ace_type {
+            color: var(--blue-editor)!important;
         }
     }
 }
@@ -262,7 +298,7 @@
         }
 
         & .ace_keyword {
-            color: var(--yellow-editor);
+            color: var(--orange-editor);
         }
 
         & .ace_control {
@@ -293,8 +329,20 @@
             color: var(--orange-editor)!important;
         }
 
+        & .ace_support.ace_function {
+            color: var(--orange-editor)!important;
+        }
+
+        & .ace_name.ace_function {
+            color: var(--yellow-editor)!important;
+        }
+
         & .ace_constant.ace_numeric {
             color: var(--orange-editor)!important;
+        }
+
+        & .ace_storage.ace_type {
+            color: var(--cyan-editor)!important;
         }
     }
 }
