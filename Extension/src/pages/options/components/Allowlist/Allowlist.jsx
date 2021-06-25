@@ -92,7 +92,21 @@ const Allowlist = observer(() => {
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
                 description={settings.values[DEFAULT_ALLOWLIST_MODE]
-                    && reactTranslator.getMessage('options_allowlist_desc')}
+                    ? reactTranslator.getMessage('options_allowlist_desc')
+                    : (
+                        <>
+                            <div>
+                                <span className="setting__alert-desc">
+                                    {reactTranslator.getMessage('options_allowlist_alert_invert')}
+                                </span>
+                            </div>
+                            <div>
+                                <Link className="setting__alert-link" to="/miscellaneous">
+                                    {reactTranslator.getMessage('options_allowlist_disable')}
+                                </Link>
+                            </div>
+                        </>
+                    )}
                 inlineControl={(
                     <Setting
                         id={ALLOWLIST_ENABLED}
@@ -101,19 +115,7 @@ const Allowlist = observer(() => {
                         handler={allowlistChangeHandler}
                     />
                 )}
-            >
-                {!settings.values[DEFAULT_ALLOWLIST_MODE] && (
-                    <div className="setting__alert">
-                        <span className="setting__alert-desc">
-                            {reactTranslator.getMessage('options_allowlist_alert_invert')}
-                        </span>
-                        &nbsp;
-                        <Link className="setting__alert-link" to="/miscellaneous">
-                            {reactTranslator.getMessage('options_allowlist_disable')}
-                        </Link>
-                    </div>
-                )}
-            </SettingsSection>
+            />
             <Editor
                 name="allowlist"
                 editorRef={editorRef}
