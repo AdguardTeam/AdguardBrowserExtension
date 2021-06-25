@@ -11,7 +11,7 @@ import { EventsSearch } from '../Filters/EventsSearch';
 import { TabSelector } from '../Filters/TabSelector';
 
 const Actions = observer(() => {
-    const { logStore } = useContext(rootStore);
+    const { logStore, wizardStore } = useContext(rootStore);
 
     const { preserveLogEnabled } = logStore;
 
@@ -23,6 +23,9 @@ const Actions = observer(() => {
     const refreshPage = async (e) => {
         e.preventDefault();
         await logStore.refreshPage();
+        if (!preserveLogEnabled) {
+            await wizardStore.closeModal();
+        }
     };
 
     const preserveLogHandler = (e) => {

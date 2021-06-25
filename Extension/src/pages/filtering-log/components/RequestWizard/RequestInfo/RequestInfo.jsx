@@ -311,6 +311,7 @@ const RequestInfo = observer(() => {
             },
             PREVIEW: {
                 buttonTitleKey: 'filtering_modal_preview_request_button',
+                className: 'request-modal__button--white',
                 onClick: previewClickHandler,
             },
         };
