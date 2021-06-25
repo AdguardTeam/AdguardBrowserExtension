@@ -94,7 +94,7 @@ export const getRequestType = (event) => {
         case 'SCRIPT':
             return 'JavaScript';
         case 'XMLHTTPREQUEST':
-            return 'Ajax';
+            return 'XHR';
         case 'IMAGE':
             return 'Image';
         case 'OBJECT':
