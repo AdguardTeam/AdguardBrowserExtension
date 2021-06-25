@@ -39,7 +39,7 @@ export const Header = observer(() => {
                 {!applicationFilteringDisabled
                 && (
                     <button
-                        className="button"
+                        className="button popup-header__button"
                         type="button"
                         onClick={handlePauseClick}
                         title={reactTranslator.getMessage('context_disable_protection')}
@@ -53,7 +53,7 @@ export const Header = observer(() => {
                 {applicationFilteringDisabled
                 && (
                     <button
-                        className="button"
+                        className="button popup-header__button"
                         type="button"
                         onClick={handleEnableClick}
                         title={reactTranslator.getMessage('context_enable_protection')}
@@ -65,7 +65,7 @@ export const Header = observer(() => {
                     </button>
                 )}
                 <button
-                    className="button"
+                    className="button popup-header__button"
                     type="button"
                     onClick={handleSettingsClick}
                     title={reactTranslator.getMessage('options_settings')}
