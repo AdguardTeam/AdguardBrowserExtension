@@ -2,12 +2,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     height: 300px;
     color: white;
 
     @media (prefers-color-scheme: dark) {
         color: var(--gray300);
+    }
+
+    &__header {
+        min-height: 75px;
     }
 
     &__cta-link {
@@ -28,6 +32,7 @@
     }
 
     .current-site {
+        padding-bottom: 2px;
         font-size: 16px;
         max-width: 260px;
         text-align: center;
@@ -147,11 +152,17 @@
     opacity: 0;
     position: relative;
     cursor: pointer;
+    height: 80px;
+    padding: 30px 5px 0 5px;
 
     &:hover {
         & .switcher__btn {
             transform: scale(1.03);
         }
+    }
+
+    &__info {
+        padding-top: 35px;
     }
 
     &__center {
@@ -167,7 +178,7 @@
         width: 48px;
         height: 48px;
         right: 6px;
-        top: -11px;
+        top: 30px;
         border-radius: 50%;
         box-shadow: var(--switch-btn-shadow);
         background-image: var(--switch-ring);

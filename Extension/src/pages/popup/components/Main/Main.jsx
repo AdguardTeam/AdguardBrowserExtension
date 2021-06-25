@@ -82,11 +82,13 @@ export const Main = observer(() => {
                             <Icon id="#play" classname="icon--play switcher__icon switcher__icon--play" />
                         </div>
                     </button>
-                    <div className="current-site">
-                        {store.currentSite}
-                    </div>
-                    <div className="current-status">
-                        {store.currentStatusMessage}
+                    <div className="switcher__info">
+                        <div className="current-site">
+                            {store.currentSite}
+                        </div>
+                        <div className="current-status">
+                            {store.currentStatusMessage}
+                        </div>
                     </div>
                 </>
             )}
