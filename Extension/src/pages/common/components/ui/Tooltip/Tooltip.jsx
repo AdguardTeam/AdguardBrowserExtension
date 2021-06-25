@@ -78,7 +78,7 @@ Tooltip.propTypes = {
 };
 
 Tooltip.defaultProps = {
-    visible: false,
+    visible: true,
     position: {
         y: 0,
         x: 0,
