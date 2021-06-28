@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
+import { Popover } from '../../../common/components/ui/Popover';
 
 import './actions.pcss';
 import { EventsSearch } from '../Filters/EventsSearch';
@@ -37,21 +38,29 @@ const Actions = observer(() => {
         { active: preserveLogEnabled },
     );
 
+    const preserveLogToolpitText = preserveLogEnabled
+        ? reactTranslator.getMessage('filtering_log_preserve_log_on')
+        : reactTranslator.getMessage('filtering_log_preserve_log_off');
+
     return (
         <div className="actions">
             <div className="actions__col">
-                <TabSelector />
+                <Popover text={reactTranslator.getMessage('filtering_log_tooltip_switch_tab')}>
+                    <TabSelector />
+                </Popover>
                 <EventsSearch />
             </div>
             <div className="actions__col">
                 <div className="actions__action">
-                    <button
-                        className="actions__clear"
-                        type="button"
-                        onClick={clearLogHandler}
-                    >
-                        <Icon id="#trash" classname="icon--trash actions__del" />
-                    </button>
+                    <Popover text={reactTranslator.getMessage('filtering_clear_log_events')}>
+                        <button
+                            className="actions__clear"
+                            type="button"
+                            onClick={clearLogHandler}
+                        >
+                            <Icon id="#trash" classname="icon--trash actions__del" />
+                        </button>
+                    </Popover>
                 </div>
                 <div className="actions__action actions__preserve">
                     <label className="checkbox-label" htmlFor="preserveLog">
@@ -62,14 +71,9 @@ const Actions = observer(() => {
                             onChange={preserveLogHandler}
                             defaultChecked={false}
                         />
-                        <div className={preserveLogClassName}>
-                            <div className="record__tooltip record__tooltip--off">
-                                {reactTranslator.getMessage('filtering_log_preserve_log_off')}
-                            </div>
-                            <div className="record__tooltip record__tooltip--on">
-                                {reactTranslator.getMessage('filtering_log_preserve_log_on')}
-                            </div>
-                        </div>
+                        <Popover text={preserveLogToolpitText}>
+                            <div className={preserveLogClassName}></div>
+                        </Popover>
                     </label>
                 </div>
                 <div className="actions__action">
