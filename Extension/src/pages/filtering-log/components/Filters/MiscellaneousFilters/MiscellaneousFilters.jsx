@@ -7,6 +7,9 @@ import { observer } from 'mobx-react';
 import { NAVIGATION_TAGS } from '../../../../../common/constants';
 import { rootStore } from '../../../stores/RootStore';
 import { Tags } from '../Tags';
+import { Popover } from '../../../../common/components/ui/Popover';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { isMacOs } from '../../../../helpers';
 
 import './miscellaneous-filters.pcss';
 
@@ -22,6 +25,11 @@ const MiscellaneousFilters = observer(() => {
         setMiscellaneousFilters,
     } = logStore;
 
+
+    const multiplePopoverText = isMacOs
+        ? reactTranslator.getMessage('filtering_log_tooltip_multiple_filters_mac')
+        : reactTranslator.getMessage('filtering_log_tooltip_multiple_filters_win');
+
     return (
         <div className="miscellaneous-filters">
             <div
@@ -36,11 +44,13 @@ const MiscellaneousFilters = observer(() => {
                     />
                 </div>
                 <div className="miscellaneous-filters__section">
-                    <Tags
-                        type={NAVIGATION_TAGS.REGULAR}
-                        tags={miscellaneousFilters}
-                        setTags={setMiscellaneousFilters}
-                    />
+                    <Popover text={multiplePopoverText} delay={2000}>
+                        <Tags
+                            type={NAVIGATION_TAGS.REGULAR}
+                            tags={miscellaneousFilters}
+                            setTags={setMiscellaneousFilters}
+                        />
+                    </Popover>
                 </div>
             </div>
         </div>

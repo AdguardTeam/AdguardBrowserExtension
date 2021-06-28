@@ -2,9 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { Popover } from '../../../../common/components/ui/Popover/Popover';
-
-const isMacOs = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+import { Popover } from '../../../../common/components/ui/Popover';
+import { isMacOs } from '../../../../helpers';
 
 export const Tags = ({
     tags,
@@ -99,8 +98,8 @@ export const Tags = ({
 
     const renderTypes = () => {
         return filters.map((tag) => {
-            const { id, title, enabled } = tag;
-            return (
+            const { id, title, enabled, tooltip } = tag;
+            const button = (
                 <button
                     className={classNames(`tag tag--${id}`, type && `tag--${type}`, { active: !allButtonEnabled && enabled })}
                     type="button"
@@ -111,20 +110,23 @@ export const Tags = ({
                     {title}
                 </button>
             );
+            return tooltip
+                ? <Popover text={tooltip} key={id}>
+                    {button}
+                </Popover>
+                : button;
         });
     };
 
     return (
         <>
-            <Popover text={reactTranslator.getMessage('filtering_type_all')} style={{ display: 'inline-block' }}>
-                <button
-                    className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
-                    type="button"
-                    onClick={handleAllClick}
-                >
-                    {reactTranslator.getMessage('filtering_type_all')}
-                </button>
-            </Popover>
+            <button
+                className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
+                type="button"
+                onClick={handleAllClick}
+            >
+                {reactTranslator.getMessage('filtering_type_all')}
+            </button>
             {renderTypes()}
         </>
     );
