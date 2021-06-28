@@ -35,9 +35,6 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
             if (!editorContent) {
                 const { content } = await messenger.getUserRules();
-                if (content.length > 0) {
-                    store.setUserRulesExportAvailableState(true);
-                }
                 editorContent = content;
                 resetInfoThatContentChanged = true;
             }
@@ -64,6 +61,16 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             editorRef.current.editor.setValue(userRules, 1);
             store.setUserRulesEditorContentChangedState(false);
             await messenger.setEditorStorageContent(null);
+        }
+
+        // disable or enable export buttons
+        const { content } = await messenger.sendMessage(
+            MESSAGE_TYPES.GET_USER_RULES,
+        );
+        if (content.length > 0) {
+            store.setUserRulesExportAvailableState(true);
+        } else {
+            store.setUserRulesExportAvailableState(false);
         }
     };
 
