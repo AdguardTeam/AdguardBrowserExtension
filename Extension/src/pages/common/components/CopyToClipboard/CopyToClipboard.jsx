@@ -11,7 +11,7 @@ import { nanoid } from 'nanoid';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Tooltip } from '../ui/Tooltip';
 import { copyToClipboardStore } from './copyToClipboardStore';
-import { Portal } from '../Portal/Portal';
+import { Portal } from '../Portal';
 
 import './copy-to-clipboard.pcss';
 
