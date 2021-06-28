@@ -7,13 +7,13 @@ import { userRulesEditorStore } from './UserRulesEditorStore';
 import { Editor } from '../Editor';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { Popover } from '../ui/Popover';
 import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
 import { MESSAGE_TYPES, NOTIFIER_TYPES } from '../../../../common/constants';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { ToggleWrapButton } from './ToggleWrapButton';
-import { translator } from '../../../../common/translators/translator';
 
 /**
  * This module is placed in the common directory because it is used in the options page
@@ -272,24 +272,26 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 <div className="actions__group">
                     <ToggleWrapButton onClick={toggleWrap} />
                     {fullscreen ? (
-                        <button
-                            type="button"
-                            title={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
-                            className="actions__btn actions__btn--icon"
-                            onClick={closeEditorFullscreen}
-                        >
-                            <Icon classname="icon--extend" id="#reduce" />
-                        </button>
-                    )
-                        : (
+                        <Popover text={reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')}>
                             <button
                                 type="button"
-                                title={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
                                 className="actions__btn actions__btn--icon"
-                                onClick={openEditorFullscreen}
+                                onClick={closeEditorFullscreen}
                             >
-                                <Icon classname="icon--extend" id="#extend" />
+                                <Icon classname="icon--extend" id="#reduce" />
                             </button>
+                        </Popover>
+                    )
+                        : (
+                            <Popover text={reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip')}>
+                                <button
+                                    type="button"
+                                    className="actions__btn actions__btn--icon"
+                                    onClick={openEditorFullscreen}
+                                >
+                                    <Icon classname="icon--extend" id="#extend" />
+                                </button>
+                        </Popover>
                         )}
                 </div>
             </div>

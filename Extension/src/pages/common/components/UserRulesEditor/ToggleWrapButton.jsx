@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 
 import { userRulesEditorStore } from './UserRulesEditorStore';
+import { Popover } from '../ui/Popover';
 import { Icon } from '../ui/Icon';
-import { translator } from '../../../../common/translators/translator';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 /**
@@ -18,18 +18,19 @@ export const ToggleWrapButton = observer(({ onClick }) => {
         'actions__btn--active': store.userRulesEditorWrapState,
     });
 
+    const tooltipText = store.userRulesEditorWrapState
+        ? reactTranslator.getMessage('options_userfilter_line_break_on')
+        : reactTranslator.getMessage('options_userfilter_line_break_off');
+
     return (
-        <button
-            type="button"
-            className={lineBreakClassNames}
-            onClick={onClick}
-        >
-            <Icon classname="icon--extend" id="#line-break" />
-            <div className="tooltip">
-                {store.userRulesEditorWrapState
-                    ? reactTranslator.getMessage('options_userfilter_line_break_on')
-                    : reactTranslator.getMessage('options_userfilter_line_break_off')}
-            </div>
-        </button>
+        <Popover text={tooltipText}>
+            <button
+                type="button"
+                className={lineBreakClassNames}
+                onClick={onClick}
+            >
+                <Icon classname="icon--extend" id="#line-break" />
+            </button>
+        </Popover>
     );
 });
