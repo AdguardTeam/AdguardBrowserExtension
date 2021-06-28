@@ -25,6 +25,8 @@ class UserRulesEditorStore {
 
     @observable savingUserRulesState = savingService.initialState.value;
 
+    @observable userRulesExportAvailable = false;
+
     constructor() {
         makeObservable(this);
 
@@ -41,6 +43,11 @@ class UserRulesEditorStore {
     @action
     setUserRulesEditorContentChangedState = (state) => {
         this.userRulesEditorContentChanged = state;
+    };
+
+    @action
+    setUserRulesExportAvailableState = (state) => {
+        this.userRulesExportAvailable = state;
     };
 
     @action

@@ -35,6 +35,9 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
             if (!editorContent) {
                 const { content } = await messenger.getUserRules();
+                if (content.length > 0) {
+                    store.setUserRulesExportAvailableState(true);
+                }
                 editorContent = content;
                 resetInfoThatContentChanged = true;
             }
@@ -264,7 +267,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                         type="button"
                         className="button button--m button--transparent actions__btn"
                         onClick={exportClickHandler}
-                        disabled={!store.userRules}
+                        disabled={!store.userRulesExportAvailable}
                     >
                         {reactTranslator.getMessage('options_userfilter_export')}
                     </button>
