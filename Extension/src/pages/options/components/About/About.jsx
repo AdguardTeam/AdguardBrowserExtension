@@ -8,6 +8,8 @@ import {
     EULA_URL,
     GITHUB_URL,
     PRIVACY_URL,
+    WEBSITE_URL,
+    DISCUSS_URL,
 } from '../../../constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
@@ -73,6 +75,22 @@ const About = observer(() => {
                         className="about__menu-item"
                     >
                         {reactTranslator.getMessage('options_privacy_policy')}
+                    </a>
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={WEBSITE_URL}
+                        className="about__menu-item"
+                    >
+                        {reactTranslator.getMessage('options_site')}
+                    </a>
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={DISCUSS_URL}
+                        className="about__menu-item"
+                    >
+                        {reactTranslator.getMessage('options_discuss')}
                     </a>
                     <a
                         target="_blank"

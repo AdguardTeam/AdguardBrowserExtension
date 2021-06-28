@@ -36,6 +36,8 @@
     }
 
     &__content {
+        flex: 1;
+        overflow-y: auto;
         background-color: var(--white);
 
         @media (prefers-color-scheme: dark) {
@@ -55,10 +57,21 @@
 
         @media (prefers-color-scheme: dark) {
             background: var(--black);
+
+            &_fixed {
+                border-bottom: 1px solid var(--gray900);
+                box-shadow: none;
+            }
         }
 
         @media (max-width: 640px) {
             padding: 24px 16px 32px;
+        }
+
+        &_fixed {
+            z-index: 1;
+            box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+            border: none;
         }
     }
 
@@ -114,13 +127,22 @@
     &__controls {
         margin-top: auto;
         padding: 0 32px;
-        display: flex;
         justify-content: space-between;
 
         @media (max-width: 640px) {
-            flex-direction: column;
             margin-top: 28px;
             padding: 0 24px;
+        }
+
+        &_fixed {
+            z-index: 1;
+            box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+            border: none;
+
+            @media (prefers-color-scheme: dark) {
+                border-top: 1px solid var(--gray900);
+                box-shadow: none;
+            }
         }
     }
 
@@ -218,6 +240,18 @@
 
         &__title {
             background: var(--white);
+
+            &_fixed {
+                box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+                border: none;
+            }
+        }
+
+        &__controls {
+            &_fixed {
+                box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+                border: none;   
+            }
         }
 
         &__header {
@@ -263,6 +297,18 @@
 
         &__title {
             background: var(--black);
+
+            &_fixed {
+                border-bottom: 1px solid var(--gray900);
+                box-shadow: none;
+            }
+        }
+
+        &__controls {
+            &_fixed {
+                border-top: 1px solid var(--gray900);
+                box-shadow: none;  
+            }
         }
 
         &__header {

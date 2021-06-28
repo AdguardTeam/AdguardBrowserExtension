@@ -12,7 +12,7 @@ import { TabSelector } from '../Filters/TabSelector';
 import { Tooltip } from '../../../common/components/ui/Tooltip';
 
 const Actions = observer(() => {
-    const { logStore } = useContext(rootStore);
+    const { logStore, wizardStore } = useContext(rootStore);
 
     const { preserveLogEnabled } = logStore;
 
@@ -26,6 +26,9 @@ const Actions = observer(() => {
     const refreshPage = async (e) => {
         e.preventDefault();
         await logStore.refreshPage();
+        if (!preserveLogEnabled) {
+            await wizardStore.closeModal();
+        }
     };
 
     const handleMouseClear = (e) => {

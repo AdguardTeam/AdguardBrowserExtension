@@ -1,55 +1,54 @@
-import React, { useState } from 'react';
+import React, {
+    useContext,
+    useState,
+    useRef,
+    useEffect,
+} from 'react';
+import { observer } from 'mobx-react';
 import cn from 'classnames';
+import { nanoid } from 'nanoid';
 
-import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Tooltip } from '../ui/Tooltip';
+import { copyToClipboardStore } from './copyToClipboardStore';
+import { Portal } from '../Portal/Portal';
 
 import './copy-to-clipboard.pcss';
 
-export const CopyToClipboard = ({
+const TOOLTIP_MOUSE_PADDING_PX = 4;
+
+export const CopyToClipboard = observer(({
     children,
     className,
     wrapperClassName,
 }) => {
-    /*  We need to prevent copying when highlighting text
-
-        difference between click and text highlighting based on the sequence of mouse events:
-
-        mousedown -> mouseup  - click
-        mousedown -> mousemove -> mouseup  - text highlighting
-
-        Using boolean state shared between three handlers for detecting both actions
-    */
-    const [isCopyInit, handleCopyInit] = useState(false);
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-    const [isCopied, handleCopy] = useCopyToClipboard(1500);
+    const { currentContainerId, copyText, resetTooltipId } = useContext(copyToClipboardStore);
 
-    const handleInnerText = (e) => {
-        handleCopy(e.target.innerText);
+    const containerRef = useRef(nanoid());
+
+    // reset tooltip id on component unmount or text changing
+    useEffect(() => {
+        return () => {
+            resetTooltipId();
+        };
+    }, [children, resetTooltipId]);
+
+    const copyInnerText = (e) => {
+        copyText(containerRef.current, e.target.innerText);
     };
 
-    const handleMouseDown = () => {
-        handleCopyInit(true);
-    };
-
-    const handleMouseMove = () => {
-        if (isCopyInit) {
-            handleCopyInit(false);
-        }
-    };
-
-    const handleMouseUp = (e) => {
+    const handleClick = (e) => {
         e.preventDefault();
-        if (isCopyInit) {
-            handleInnerText(e);
-            // use e.nativeEvent for access offsetX and offsetY event props
-            const { offsetX, offsetY } = e.nativeEvent;
+        // if user highlights text, don't copy whole inner content
+        const selectedText = document.getSelection().toString();
+        if (selectedText.length < 1) {
+            copyInnerText(e);
 
             // shifting position for prevent cursor flashing on tooltip render
             setTooltipPosition({
-                x: offsetX + 4,
-                y: offsetY + 4,
+                x: e.clientX + TOOLTIP_MOUSE_PADDING_PX,
+                y: e.clientY + TOOLTIP_MOUSE_PADDING_PX,
             });
         }
     };
@@ -57,32 +56,32 @@ export const CopyToClipboard = ({
     const handleKeyUp = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            handleInnerText(e);
-            setTooltipPosition({ x: 0, y: -40 });
+            const rect = e.target.getBoundingClientRect();
+            copyInnerText(e);
+            setTooltipPosition({ x: rect.left, y: rect.bottom });
         }
     };
 
     return (
         <div className={cn('copy-to-clipboard-wrapper', wrapperClassName)}>
-            {isCopied && (
-                <Tooltip
-                    visible
-                    text={reactTranslator.getMessage('filtering_modal_copied')}
-                    position={tooltipPosition}
-                />
+            {(containerRef.current === currentContainerId) && (
+                <Portal id="root-portal">
+                    <Tooltip
+                        text={reactTranslator.getMessage('filtering_modal_copied')}
+                        position={tooltipPosition}
+                    />
+                </Portal>
             )}
             <div
                 className={cn('copy-to-clipboard', className)}
                 role="button"
                 tabIndex="0"
                 title={reactTranslator.getMessage('filtering_modal_copy_to_clipboard')}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
+                onClick={handleClick}
                 onKeyUp={handleKeyUp}
             >
                 {children}
             </div>
         </div>
     );
-};
+});

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { Tooltip } from '../../../../common/components/ui/Tooltip';
+import { Popover } from '../../../../common/components/ui/Popover/Popover';
 
 const isMacOs = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
@@ -134,13 +134,15 @@ export const Tags = ({
 
     return (
         <>
-            <button
-                className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
-                type="button"
-                onClick={handleAllClick}
-            >
-                {reactTranslator.getMessage('filtering_type_all')}
-            </button>
+            <Popover text={reactTranslator.getMessage('filtering_type_all')} style={{ display: 'inline-block' }}>
+                <button
+                    className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
+                    type="button"
+                    onClick={handleAllClick}
+                >
+                    {reactTranslator.getMessage('filtering_type_all')}
+                </button>
+            </Popover>
             {renderTypes()}
         </>
     );

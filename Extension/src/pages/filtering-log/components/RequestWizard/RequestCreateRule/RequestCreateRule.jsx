@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
+import cn from 'classnames';
 import { observer } from 'mobx-react';
 
 import { rootStore } from '../../../stores/RootStore';
@@ -7,10 +8,13 @@ import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { ADDED_RULE_STATES, WIZARD_STATES } from '../../../stores/WizardStore';
-
+import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import './request-create-rule.pcss';
 
 const RequestCreateRule = observer(() => {
+    const ref = useRef();
+    const contentOverflowed = useOverflowed(ref);
+
     const { wizardStore, logStore } = useContext(rootStore);
 
     const RULE_OPTIONS_MAP = {
@@ -145,7 +149,7 @@ const RequestCreateRule = observer(() => {
 
     return (
         <>
-            <div className="request-modal__title">
+            <div className={cn('request-modal__title', { 'request-modal__title_fixed': contentOverflowed })}>
                 <button
                     type="button"
                     onClick={handleBackClick}
@@ -155,7 +159,7 @@ const RequestCreateRule = observer(() => {
                 </button>
                 <span className="request-modal__header">{title}</span>
             </div>
-            <div className="request-modal__content">
+            <div ref={ref} className="request-modal__content">
                 <div className="request-info">
                     <div className="request-info__key">
                         {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
@@ -183,7 +187,7 @@ const RequestCreateRule = observer(() => {
                     </div>
                 )}
             </div>
-            <div className="request-modal__controls">
+            <div className={cn('request-modal__controls', { 'request-modal__controls_fixed': contentOverflowed })}>
                 <button
                     type="button"
                     className="request-modal__button"

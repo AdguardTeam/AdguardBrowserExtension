@@ -18,6 +18,7 @@ const Editor = ({
     shortcuts,
     onChange,
     fullscreen,
+    highlightRules,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
@@ -57,13 +58,16 @@ const Editor = ({
         { 'editor--full-screen': fullscreen },
     );
 
+    // highlight rules syntax only for user rules
+    const editorMode = highlightRules ? 'adguard' : '';
+
     return (
         <div style={editorStyles} className={editorClassName}>
             <AceEditor
                 ref={editorRef}
                 width="100%"
                 height="100%"
-                mode="adguard"
+                mode={editorMode}
                 theme="textmate"
                 name={name}
                 showPrintMargin={false}
