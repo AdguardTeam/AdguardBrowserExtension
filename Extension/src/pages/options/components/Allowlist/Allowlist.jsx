@@ -94,18 +94,15 @@ const Allowlist = observer(() => {
                 description={settings.values[DEFAULT_ALLOWLIST_MODE]
                     ? reactTranslator.getMessage('options_allowlist_desc')
                     : (
-                        <>
-                            <div>
-                                <span className="setting__alert-desc">
-                                    {reactTranslator.getMessage('options_allowlist_alert_invert')}
-                                </span>
-                            </div>
-                            <div>
-                                <Link className="setting__alert-link" to="/miscellaneous">
-                                    {reactTranslator.getMessage('options_allowlist_disable')}
-                                </Link>
-                            </div>
-                        </>
+                        <div>
+                            <span className="setting__alert-desc">
+                                {reactTranslator.getMessage('options_allowlist_alert_invert')}
+                            </span>
+                            &nbsp;
+                            <Link className="setting__alert-link" to="/miscellaneous">
+                                {reactTranslator.getMessage('options_allowlist_disable')}
+                            </Link>
+                        </div>
                     )}
                 inlineControl={(
                     <Setting
