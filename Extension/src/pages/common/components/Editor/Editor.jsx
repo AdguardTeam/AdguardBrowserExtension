@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/theme-textmate';
+import 'ace-builds/src-noconflict/mode-text'
 
 import { log } from '../../../../common/log';
 import './mode-adguard';
@@ -59,7 +60,7 @@ const Editor = ({
     );
 
     // highlight rules syntax only for user rules
-    const editorMode = highlightRules ? 'adguard' : '';
+    const editorMode = highlightRules ? 'adguard' : 'text';
 
     return (
         <div style={editorStyles} className={editorClassName}>
