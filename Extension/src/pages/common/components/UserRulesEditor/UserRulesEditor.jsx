@@ -62,6 +62,13 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             store.setUserRulesEditorContentChangedState(false);
             await messenger.setEditorStorageContent(null);
         }
+
+        // disable or enable export button
+        if (userRules.length > 0) {
+            store.setUserRulesExportAvailableState(true);
+        } else {
+            store.setUserRulesExportAvailableState(false);
+        }
     };
 
     // Append listeners
@@ -264,7 +271,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                         type="button"
                         className="button button--m button--transparent actions__btn"
                         onClick={exportClickHandler}
-                        disabled={!store.userRules}
+                        disabled={!store.userRulesExportAvailable}
                     >
                         {reactTranslator.getMessage('options_userfilter_export')}
                     </button>
