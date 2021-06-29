@@ -5,8 +5,6 @@ import { Tooltip } from '../Tooltip';
 
 const TOOLTIP_SHOW_DELAY_MS = 500;
 
-const DEFAULT_TOOLTIP_STYLE = { display: 'inline-block' };
-
 /*
     Wrap child container for handle tooltips rendering in overlay on hover
 */
@@ -42,7 +40,7 @@ export const Popover = ({ text, delay, children, ...props }) => {
     };
     return (
         <div
-            style={DEFAULT_TOOLTIP_STYLE}
+            className={'popover'}
             {...props}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

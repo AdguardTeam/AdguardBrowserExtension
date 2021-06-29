@@ -25,7 +25,6 @@ const MiscellaneousFilters = observer(() => {
         setMiscellaneousFilters,
     } = logStore;
 
-
     const multiplePopoverText = isMacOs
         ? reactTranslator.getMessage('filtering_log_tooltip_multiple_filters_mac')
         : reactTranslator.getMessage('filtering_log_tooltip_multiple_filters_win');
