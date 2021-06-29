@@ -233,6 +233,10 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         window.close();
     };
 
+    const fullscreenTooltipText = fullscreen
+        ? reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')
+        : reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip');
+
     return (
         <>
             <Editor
@@ -271,19 +275,17 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 </div>
                 <div className="actions__group">
                     <ToggleWrapButton onClick={toggleWrap} />
-                    {fullscreen ? (
-                        <Popover text={reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')}>
-                            <button
-                                type="button"
-                                className="actions__btn actions__btn--icon"
-                                onClick={closeEditorFullscreen}
-                            >
-                                <Icon classname="icon--extend" id="#reduce" />
-                            </button>
-                        </Popover>
-                    )
-                        : (
-                            <Popover text={reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip')}>
+                    <Popover text={fullscreenTooltipText}>
+                        {
+                            fullscreen ? (
+                                <button
+                                    type="button"
+                                    className="actions__btn actions__btn--icon"
+                                    onClick={closeEditorFullscreen}
+                                >
+                                    <Icon classname="icon--extend" id="#reduce" />
+                                </button>
+                            ) : (
                                 <button
                                     type="button"
                                     className="actions__btn actions__btn--icon"
@@ -291,8 +293,9 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                                 >
                                     <Icon classname="icon--extend" id="#extend" />
                                 </button>
-                        </Popover>
-                        )}
+                            )
+                        }
+                    </Popover>
                 </div>
             </div>
         </>
