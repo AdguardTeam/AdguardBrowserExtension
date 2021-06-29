@@ -63,11 +63,8 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             await messenger.setEditorStorageContent(null);
         }
 
-        // disable or enable export buttons
-        const { content } = await messenger.sendMessage(
-            MESSAGE_TYPES.GET_USER_RULES,
-        );
-        if (content.length > 0) {
+        // disable or enable export button
+        if (userRules.length > 0) {
             store.setUserRulesExportAvailableState(true);
         } else {
             store.setUserRulesExportAvailableState(false);
