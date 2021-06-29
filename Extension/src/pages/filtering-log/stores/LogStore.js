@@ -76,11 +76,13 @@ const initRequestSourceFilters = {
             id: REQUEST_SOURCE_FILTERS.FIRST_PARTY,
             title: '1P',
             enabled: true,
+            tooltip: reactTranslator.getMessage('filtering_log_tooltip_first_party'),
         },
         {
             id: REQUEST_SOURCE_FILTERS.THIRD_PARTY,
             title: '3P',
             enabled: true,
+            tooltip: reactTranslator.getMessage('filtering_log_tooltip_third_party'),
         },
     ],
 };
