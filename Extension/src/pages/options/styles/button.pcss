@@ -134,8 +134,16 @@
         border-radius: 4px;
         transition: var(--t3) background-color;
 
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300)
+        }
+
         &:hover {
             background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
         }
     }
 
@@ -155,6 +163,14 @@
             color: var(--gray-base);
             border: 1px solid var(--gray-base);
         }
+
+        &--list {
+            color: var(--gray-base);
+
+            &:hover {
+                background-color: var(--gray100);
+            }
+        }
     }
 }
 
@@ -168,6 +184,15 @@
         &--rate {
             border: 1px solid var(--gray300);
             color: var(--gray300);
+        }
+
+
+        &--list {
+            color: var(--gray300);
+
+            &:hover {
+                background-color: var(--gray900);
+            }
         }
     }
 }
