@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './checkbox.pcss';
@@ -9,13 +9,18 @@ const Checkbox = (props) => {
         handler,
         inverted,
         label,
+        value,
     } = props;
 
-    let { value } = props;
+    const computedValue = inverted ? !value : value;
+    const [state, setState] = useState(computedValue);
 
-    value = inverted ? !value : value;
+    useEffect(() => {
+        setState(computedValue);
+    }, [computedValue]);
 
     const changeHandler = (e) => {
+        setState(!state);
         const { target: { name: targetId, checked: data } } = e;
         handler({ id: targetId, data: inverted ? !data : data });
     };
@@ -27,7 +32,7 @@ const Checkbox = (props) => {
             <input
                 type="checkbox"
                 name={id}
-                checked={value}
+                checked={state}
                 onChange={changeHandler}
                 id={id}
                 className="checkbox__in"
