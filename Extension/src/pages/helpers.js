@@ -111,3 +111,32 @@ export const copyToClipboard = (text) => {
     document.execCommand('copy');
     textarea.remove();
 };
+
+/**
+ * Сalculate the angle of radius vector of the scroll motion
+ * and detect whether scroll is vertical
+ *
+ * @param {number} deltaY - wheel event deltaY value
+ * @param {number} deltaX - wheel event deltaX value
+ * @returns {boolean}
+ */
+export const isVerticalScroll = (() => {
+    const degToRad = (deg) => deg * (Math.PI / 180);
+
+    const deg60ToRad = degToRad(60);
+    const deg90ToRad = degToRad(90);
+    const deg120ToRad = degToRad(120);
+    const deg240ToRad = degToRad(240);
+    const deg270ToRad = degToRad(270);
+    const deg300ToRad = degToRad(300);
+
+    return (deltaY, deltaX) => {
+        if (deltaY === 0) {
+            return false;
+        }
+        let angle = Math.atan(deltaX / deltaY);
+        angle = (deltaY > 0) ? angle + deg90ToRad : angle + deg270ToRad;
+        return (angle > deg60ToRad && angle < deg120ToRad)
+            || (angle > deg240ToRad && angle < deg300ToRad);
+    };
+})();
