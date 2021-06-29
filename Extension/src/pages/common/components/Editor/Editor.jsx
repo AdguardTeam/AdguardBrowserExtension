@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import AceEditor from 'react-ace';
 import cn from 'classnames';
@@ -12,6 +12,11 @@ import './mode-adguard';
 
 import './editor.pcss';
 
+const DEFAULT_EDITOR_SIZE = {
+    width: '100%',
+    height: '300px',
+};
+
 const Editor = ({
     name,
     value,
@@ -21,29 +26,26 @@ const Editor = ({
     fullscreen,
     highlightRules,
 }) => {
+    const [size, setSize] = useState(DEFAULT_EDITOR_SIZE);
+
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
 
-    const DEFAULT_EDITOR_SIZE = {
-        width: '100%',
-        height: '300px',
-    };
+    useEffect(() => {
+        const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
 
-    let editorSize = DEFAULT_EDITOR_SIZE;
-
-    const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
-
-    if (editorStorageSize) {
-        try {
-            editorSize = JSON.parse(editorStorageSize);
-        } catch (e) {
-            editorSize = DEFAULT_EDITOR_SIZE;
-            log.debug(e.message);
+        if (editorStorageSize) {
+            try {
+                setSize(JSON.parse(editorStorageSize));
+            } catch (e) {
+                setSize(DEFAULT_EDITOR_SIZE);
+                log.debug(e.message);
+            }
         }
-    }
+    }, [setSize, SIZE_STORAGE_KEY]);
 
     const editorStyles = {
-        width: editorSize.width,
-        height: editorSize.height,
+        width: size.width,
+        height: size.height,
     };
 
     // On fullscreen ignore size change
