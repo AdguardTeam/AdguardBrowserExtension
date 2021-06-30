@@ -86,7 +86,7 @@ const Actions = observer(() => {
                     </button>
                 </div>
             </div>
-            <div className="actions__col">
+            <div className="actions__col actions__search">
                 <EventsSearch />
             </div>
         </div>
