@@ -12,6 +12,7 @@
 
     &__col {
         display: inline-flex;
+        margin-right: 16px;
         align-items: center;
         flex-shrink: 1;
 
@@ -24,6 +25,17 @@
                 width: auto;
                 margin-top: 0;
             }
+        }
+    }
+
+    &__buttons {
+        min-width: 154px;
+        height: 24px;
+        padding: 0 16px 0 0;
+        border-right: 1px solid var(--gray300);
+
+        @media (prefers-color-scheme: dark) {
+            border-right: 1px solid var(--gray400);
         }
     }
 
