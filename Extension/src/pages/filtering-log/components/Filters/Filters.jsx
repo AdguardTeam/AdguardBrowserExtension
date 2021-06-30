@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import throttle from 'lodash/throttle';
 
 import { Actions } from '../Actions';
 import { EventsTypeFilter } from './EventsTypeFilter';
@@ -8,16 +9,45 @@ import { isVerticalScroll } from '../../../helpers';
 
 import './filters.pcss';
 
+const RESIZE_OBSERVER_THROTTLE_MS = 500;
+
 const Filters = () => {
     const [leftArrow, setLeftArrow] = useState(false);
     const [rightArrow, setRightArrow] = useState(true);
     const ref = useRef();
-    const scrollTags = (e) => {
-        const { target: { scrollLeft, scrollWidth, clientWidth } } = e;
-        const maxScrollLeft = scrollWidth - clientWidth;
+
+    useEffect(() => {
+        const target = ref.current;
+
+        const observer = new ResizeObserver(throttle(([entry]) => {
+            const { scrollLeft, scrollWidth, clientWidth } = entry.target;
+
+            setLeftArrow(scrollLeft > 0);
+            setRightArrow(scrollWidth - clientWidth > scrollLeft);
+        }, RESIZE_OBSERVER_THROTTLE_MS));
+
+        observer.observe(target);
+
+        return () => {
+            observer.unobserve(target);
+        };
+    }, [ref]);
+
+    const scrollTags = () => {
+        const { scrollLeft, scrollWidth, clientWidth } = ref.current;
 
         setLeftArrow(scrollLeft > 0);
-        setRightArrow(maxScrollLeft > scrollLeft);
+        setRightArrow(scrollWidth - clientWidth > scrollLeft);
+    };
+
+    const scrollLeft = () => {
+        const { width } = ref.current.getBoundingClientRect();
+        ref.current.scrollLeft -= width;
+    };
+
+    const scrollRight = () => {
+        const { width } = ref.current.getBoundingClientRect();
+        ref.current.scrollLeft += width;
     };
 
     const handleWheel = (e) => {
@@ -40,10 +70,26 @@ const Filters = () => {
                     onWheel={handleWheel}
                     className="filters__events-filters"
                 >
-                    {leftArrow && <Icon id="#arrow-scrollbar" classname="filters__arrow filters__arrow--left" />}
+                    {leftArrow && (
+                        <button
+                            type="button"
+                            onClick={scrollLeft}
+                            className="filters__arrow filters__arrow--left"
+                        >
+                            <Icon classname="filters__arrow__icon" id="#arrow-scrollbar" />
+                        </button>
+                    )}
                     <MiscellaneousFilters />
                     <EventsTypeFilter />
-                    {rightArrow && <Icon id="#arrow-scrollbar" classname="filters__arrow filters__arrow--right" />}
+                    {rightArrow && (
+                        <button
+                            type="button"
+                            onClick={scrollRight}
+                            className="filters__arrow filters__arrow--right"
+                        >
+                            <Icon classname="filters__arrow__icon" id="#arrow-scrollbar" />
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
