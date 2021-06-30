@@ -45,9 +45,7 @@ const Actions = observer(() => {
     return (
         <div className="actions">
             <div className="actions__col">
-                <Popover text={reactTranslator.getMessage('filtering_log_tooltip_switch_tab')} delay={2000}>
-                    <TabSelector />
-                </Popover>
+                <TabSelector />
             </div>
             <div className="actions__col actions__buttons">
                 <div className="actions__action">
