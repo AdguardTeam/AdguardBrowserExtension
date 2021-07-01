@@ -74,7 +74,8 @@ const Filter = observer(({ filter }) => {
         await settingsStore.updateFilterSetting(filterIdWithoutPrefix, data);
     };
 
-    const removeCustomFilter = async () => {
+    const removeCustomFilter = async (e) => {
+        e.preventDefault();
         const result = window.confirm(reactTranslator.getMessage('options_delete_filter_confirm'));
         if (result) {
             await settingsStore.removeCustomFilter(filterId);

@@ -354,6 +354,7 @@ class SettingsStore {
         await messenger.removeCustomFilter(filterId);
         runInAction(() => {
             this.setFilters(this.filters.filter((filter) => filter.filterId !== filterId));
+            this.setVisibleFilters(this.visibleFilters.filter((filter) => filter.filterId !== filterId));
         });
     }
 
@@ -420,6 +421,11 @@ class SettingsStore {
     @action
     setFilters = (filters) => {
         this.filters = filters;
+    };
+
+    @action
+    setVisibleFilters = (visibleFilters) => {
+        this.visibleFilters = visibleFilters;
     };
 
     /**
