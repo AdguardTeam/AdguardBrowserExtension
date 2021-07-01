@@ -481,7 +481,19 @@ class SettingsStore {
                 return true;
             })
             .filter((filter) => {
-                return filter.name.match(searchQuery);
+                const nameIsMatching = filter.name.match(searchQuery);
+                if (nameIsMatching) {
+                    return true;
+                }
+
+                if (filter.tagsDetails) {
+                    const tagKeywordIsMatching = filter.tagsDetails.some((tag) => `#${tag.keyword}`.match(searchQuery));
+                    if (tagKeywordIsMatching) {
+                        return true;
+                    }
+                }
+
+                return false;
             });
     }
 

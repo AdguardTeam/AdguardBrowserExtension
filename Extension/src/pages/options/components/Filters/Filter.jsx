@@ -7,6 +7,7 @@ import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { HighlightSearch } from './Search/HighlightSearch';
+import { FilterTags } from './FilterTags';
 
 import './filter.pcss';
 
@@ -20,42 +21,6 @@ const formatDate = (date) => {
         minute: '2-digit',
     };
     return dateObj.toLocaleDateString('default', formatOptions);
-};
-
-const renderTags = (tags, trusted) => {
-    if (trusted) {
-        const tagString = `#${reactTranslator.getMessage('options_filters_filter_trusted_tag')}`;
-        return (
-            <div className="filter__tags">
-                <div
-                    data-tooltip={reactTranslator.getMessage('options_filters_filter_trusted_tag_desc')}
-                    className="filter__tag"
-                >
-                    {tagString}
-                </div>
-            </div>
-        );
-    }
-    if (!tags || tags?.length <= 0) {
-        return '';
-    }
-    const tagsNodes = tags.map((tag) => {
-        const tagString = `#${tag.keyword}`;
-        return (
-            <div
-                key={tag.tagId}
-                data-tooltip={tag.description}
-                className="filter__tag"
-            >
-                {tagString}
-            </div>
-        );
-    });
-    return (
-        <div className="filter__tags">
-            {tagsNodes}
-        </div>
-    );
 };
 
 const FILTER_PREFIX = 'filter-';
@@ -91,8 +56,17 @@ const Filter = observer(({ filter }) => {
         trusted,
         customUrl,
         enabled,
-        tagsDetails,
+        tagsDetails = [],
     } = filter;
+
+    // Trusted tag can be only on custom filters,
+    const tags = trusted
+        ? [...tagsDetails, {
+            tagId: 'trusted',
+            keyword: reactTranslator.getMessage('options_filters_filter_trusted_tag'),
+            description: reactTranslator.getMessage('options_filters_filter_trusted_tag_desc'),
+        }]
+        : [...tagsDetails];
 
     const handleFilterSwitch = async ({ id, data }) => {
         // remove prefix from filter id
@@ -169,7 +143,7 @@ const Filter = observer(({ filter }) => {
                                     {reactTranslator.getMessage('options_filters_filter_link')}
                                 </a>
                             </div>
-                            {renderTags(tagsDetails, trusted)}
+                            <FilterTags tags={tags} />
                         </div>
                         <div className="setting__inline-control">
                             <Setting
