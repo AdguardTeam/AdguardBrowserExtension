@@ -1,13 +1,14 @@
+/* eslint-disable jsx-a11y/no-autofocus */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { Icon } from '../../../../common/components/ui/Icon';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Select } from '../../../../common/components/ui/Select';
+import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { SEARCH_FILTERS } from './constants';
 
 import './search.pcss';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 
 const options = [
     {
