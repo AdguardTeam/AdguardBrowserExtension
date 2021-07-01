@@ -230,6 +230,20 @@ export const customFilters = (() => {
     };
 
     /**
+     * Limits filter download with timeout
+     * @param url
+     */
+    const downloadRulesWithTimeout = async (url) => {
+        const DOWNLOAD_LIMIT_MS = 3 * 1000;
+        return Promise.race([
+            downloadRules(url),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Fetch timeout is over')), DOWNLOAD_LIMIT_MS)
+            ),
+        ]);
+    }
+
+    /**
      * Adds or updates custom filter
      *
      * @param url subscriptionUrl
@@ -238,7 +252,7 @@ export const customFilters = (() => {
     const updateCustomFilter = async (url, options) => {
         const { title, trusted } = options;
 
-        const rules = await downloadRules(url);
+        const rules = await downloadRulesWithTimeout(url);
         if (!rules) {
             return null;
         }
