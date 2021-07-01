@@ -7,61 +7,101 @@ import './tooltip.pcss';
 const TOOLTIP_EDGE_PADDING = 4; // px
 
 export const Tooltip = ({ text, visible, position }) => {
-    const [positionState, setPositionState] = useState(position);
+    const [tooltipState, setTooltipState] = useState({
+        visible: false,
+        position,
+    });
 
     const ref = useRef();
 
-    // sync state and props
     useLayoutEffect(() => {
-        setPositionState(position);
+        /*
+            Prevent scrollbar shift when tooltip renders
+            with original position props near screen edge
+        */
+        const { body } = document;
+        const hasBodyHorizontalScrollbar = body.scrollWidth > body.clientWidth;
+        const hasBodyVerticalScrollbar = body.scrollHeight > body.clientHeight;
+
+        const originalBodyOverflowY = window.getComputedStyle(body).overflowY;
+        const originalBodyOverflowX = window.getComputedStyle(body).overflowX;
+
+        if (!hasBodyHorizontalScrollbar) {
+            body.style.overflowX = 'hidden';
+        }
+
+        if (!hasBodyVerticalScrollbar) {
+            body.style.overflowY = 'hidden';
+        }
+
+        /*
+            Put this function at the end of the macrotask stack
+            to ensure that the DOM element is rendered on the page
+        */
+        setTimeout(() => {
+            // we need to track if the tooltip exists in the next render
+            if (!ref.current) {
+                return;
+            }
+
+            // recalculate tooltip position near screen edge
+            const rect = ref.current.getBoundingClientRect();
+            const offsetEdge = {
+                top: rect.y,
+                right: window.innerWidth - rect.right,
+                bottom: window.innerHeight - rect.bottom,
+                left: rect.x,
+            };
+
+            let needPositionUpdate = false;
+            const nextPosition = { ...position };
+
+            if (offsetEdge.right < TOOLTIP_EDGE_PADDING) {
+                nextPosition.x = position.x + offsetEdge.right - TOOLTIP_EDGE_PADDING;
+                needPositionUpdate = true;
+            }
+
+            if (offsetEdge.left < TOOLTIP_EDGE_PADDING) {
+                nextPosition.x = position.x - offsetEdge.left + TOOLTIP_EDGE_PADDING;
+                needPositionUpdate = true;
+            }
+
+            if (offsetEdge.top < TOOLTIP_EDGE_PADDING) {
+                nextPosition.y = position.y - offsetEdge.top + TOOLTIP_EDGE_PADDING;
+                needPositionUpdate = true;
+            }
+
+            if (offsetEdge.bottom < TOOLTIP_EDGE_PADDING) {
+                nextPosition.y = position.y + offsetEdge.bottom - TOOLTIP_EDGE_PADDING;
+                needPositionUpdate = true;
+            }
+
+            if (needPositionUpdate) {
+                setTooltipState({
+                    visible: true,
+                    position: nextPosition,
+                });
+            } else {
+                setTooltipState({
+                    visible: true,
+                    position,
+                });
+            }
+
+            // reset body scroll
+            body.style.overflowX = originalBodyOverflowX;
+            body.style.overflowY = originalBodyOverflowY;
+        }, 0);
     }, [position]);
 
-    // recalculate tooltip position near screen edge
-    useLayoutEffect(() => {
-        const rect = ref.current.getBoundingClientRect();
-        const offsetEdge = {
-            top: rect.y,
-            right: window.innerWidth - rect.right,
-            bottom: window.innerHeight - rect.bottom,
-            left: rect.x,
-        };
-
-        let needUpdate = false;
-        const nextPosition = { ...positionState };
-
-        if (offsetEdge.right < TOOLTIP_EDGE_PADDING) {
-            nextPosition.x = positionState.x + offsetEdge.right - TOOLTIP_EDGE_PADDING;
-            needUpdate = true;
-        }
-
-        if (offsetEdge.left < TOOLTIP_EDGE_PADDING) {
-            nextPosition.x = positionState.x - offsetEdge.left + TOOLTIP_EDGE_PADDING;
-            needUpdate = true;
-        }
-
-        if (offsetEdge.top < TOOLTIP_EDGE_PADDING) {
-            nextPosition.y = positionState.y - offsetEdge.top + TOOLTIP_EDGE_PADDING;
-            needUpdate = true;
-        }
-
-        if (offsetEdge.bottom < TOOLTIP_EDGE_PADDING) {
-            nextPosition.y = positionState.y + offsetEdge.bottom - TOOLTIP_EDGE_PADDING;
-            needUpdate = true;
-        }
-
-        if (needUpdate) {
-            setPositionState(nextPosition);
-        }
-    }, [positionState]);
-
-    const { x, y } = positionState;
+    const { x, y } = tooltipState.position;
     const positionTransform = { transform: `translate(${x}px, ${y}px)` };
 
     return (
         <div
             ref={ref}
             style={positionTransform}
-            className={cn('tooltip', visible ? 'tooltip--on' : 'tooltip--off')}
+            className={cn('tooltip', visible && tooltipState.visible ? 'tooltip--on' : 'tooltip--off')}
         >
             {text}
         </div>

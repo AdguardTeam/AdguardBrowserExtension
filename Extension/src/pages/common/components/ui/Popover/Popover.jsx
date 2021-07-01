@@ -8,9 +8,16 @@ const TOOLTIP_SHOW_DELAY_MS = 500;
 /*
     Wrap child container for handle tooltips rendering in overlay on hover
 */
-export const Popover = ({ text, delay, children, ...props }) => {
-    const [showTooltip, setShowTooltip] = useState(false);
-    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+export const Popover = ({
+    text,
+    delay,
+    children,
+    ...props
+}) => {
+    const [tooltip, setTooltip] = useState({
+        visible: false,
+        position: null,
+    });
 
     const timer = useRef();
 
@@ -24,30 +31,35 @@ export const Popover = ({ text, delay, children, ...props }) => {
     const handleMouseEnter = (e) => {
         const rect = e.target.getBoundingClientRect();
 
-        setTooltipPosition({
-            x: rect.left,
-            y: rect.bottom,
-        });
-
         timer.current = setTimeout(() => {
-            setShowTooltip(true);
+            setTooltip({
+                visible: true,
+                position: {
+                    x: rect.left,
+                    y: rect.bottom,
+                },
+            });
         }, delay || TOOLTIP_SHOW_DELAY_MS);
     };
 
     const handleMouseLeave = () => {
         clearTimeout(timer.current);
-        setShowTooltip(false);
+        setTooltip({
+            visible: false,
+            position: null,
+        });
     };
+
     return (
         <div
-            className={'popover'}
+            className="popover"
             {...props}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            {showTooltip && (
+            {tooltip.visible && (
                 <Portal id="root-portal">
-                    <Tooltip position={tooltipPosition} text={text} />
+                    <Tooltip position={tooltip.position} text={text} />
                 </Portal>
             )}
             {children}
