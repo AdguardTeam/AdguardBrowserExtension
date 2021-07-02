@@ -40,7 +40,9 @@ export const init = () => {
         }
 
         async function checkRequestFilterReady() {
-            const response = await contentPage.sendMessage({ type: MESSAGE_TYPES.CHECK_REQUEST_FILTER_READY });
+            const response = await contentPage.sendMessage({
+                type: MESSAGE_TYPES.CHECK_REQUEST_FILTER_READY,
+            });
             if (response.ready) {
                 onLoaded();
             } else {

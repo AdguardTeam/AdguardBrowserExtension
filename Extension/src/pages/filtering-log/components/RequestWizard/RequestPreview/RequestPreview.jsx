@@ -123,10 +123,10 @@ export const RequestPreview = observer(() => {
             <div className="request-modal__title">
                 <button
                     type="button"
-                    onClick={wizardStore.closeModal}
+                    onClick={handleBackToRequestClick}
                     className="request-modal__navigation request-modal__navigation--close"
                 >
-                    <Icon id="#cross" classname="icon--contain" />
+                    <Icon id="#arrow-left" classname="icon--contain" />
                 </button>
                 <span className="request-modal__header">
                     {reactTranslator.getMessage('filtering_modal_preview_title')}
