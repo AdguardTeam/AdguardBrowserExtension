@@ -1,4 +1,5 @@
 import React from 'react';
+import { Popover } from '../../../../common/components/ui/Popover';
 
 import { FilterTag } from './FilterTag';
 
@@ -9,7 +10,11 @@ export const FilterTags = ({ tags }) => {
 
     return (
         <div className="filter__tags">
-            {tags.map((tag) => <FilterTag key={tag.tagId} tag={tag} />)}
+            {tags.map((tag) => (
+                <Popover text={tag.description} key={tag.tagId}>
+                    <FilterTag tag={tag} />
+                </Popover>
+            ))}
         </div>
     );
 };

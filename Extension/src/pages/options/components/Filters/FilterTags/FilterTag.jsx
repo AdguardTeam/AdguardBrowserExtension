@@ -17,7 +17,6 @@ export const FilterTag = observer(({ tag }) => {
 
     return (
         <div
-            data-tooltip={tag.description}
             className="filter__tag"
             onClick={handleClick}
         >

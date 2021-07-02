@@ -69,56 +69,6 @@
         margin-bottom: 10px;
         color: var(--green74);
         word-break: break-word;
-
-        &:before {
-            display: block;
-            position: absolute;
-            z-index: var(--z-idx7);
-            width: 200px;
-            top: 25px;
-            left: calc(50% - 115px);
-            visibility: hidden;
-            opacity: 0;
-            content: attr(data-tooltip);
-            border-radius: 3px;
-            padding: 24px;
-            color: var(--gray-base);
-            line-height: 19px;
-            font-size: 13px;
-            background-color: #ffffff;
-            transition: 0.3s ease opacity;
-            box-shadow: 0 0 10px 1px rgba(162, 161, 161, 0.3);
-
-            @media (prefers-color-scheme: dark) {
-                box-shadow: none;
-                color: var(--gray300);
-                background-color: var(--gray700);
-            }
-        }
-
-        &:after {
-            content: '▲';
-            z-index: 2;
-            display: block;
-            visibility: hidden;
-            opacity: 0;
-            position: absolute;
-            top: 14px;
-            left: calc(50% - 3px);
-            color: var(--white);
-            text-shadow: 0 -1px 2px rgba(162, 161, 161, .3);
-
-
-            @media (prefers-color-scheme: dark) {
-                color: var(--black);
-            }
-        }
-
-        &:hover:before,
-        &:hover:after {
-            visibility: visible;
-            opacity: 1;
-        }
     }
 
     &__remove {
@@ -126,38 +76,5 @@
         position: relative;
         top: -2px;
         cursor: pointer;
-    }
-}
-
-.light-mode {
-    .filter {
-        &__tag {
-            &:before {
-                color: var(--gray-base);
-                box-shadow: 0 0 10px 1px rgba(162, 161, 161, 0.3);
-                background-color: #ffffff;
-            }
-
-            &:after {
-                color: var(--white);
-            }
-        }
-    }
-}
-
-
-.dark-mode {
-    .filter {
-        &__tag {
-            &:before {
-                color: var(--gray300);
-                box-shadow: none;
-                background-color: var(--gray700);
-            }
-
-            &:after {
-                color: var(--black);
-            }
-        }
     }
 }
