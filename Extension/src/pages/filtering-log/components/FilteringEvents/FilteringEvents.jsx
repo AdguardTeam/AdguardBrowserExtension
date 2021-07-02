@@ -87,22 +87,7 @@ const urlAccessor = (props) => {
 };
 
 const typeAccessor = (props) => {
-    const formattedRequestType = getRequestType(props);
-
-    if (props.requestThirdParty) {
-        return (
-            <>
-                {formattedRequestType}
-                <Icon
-                    id="#chain"
-                    title="Third party"
-                    classname="third-party__icon icon--green"
-                />
-            </>
-        );
-    }
-
-    return formattedRequestType;
+    return getRequestType(props);
 };
 
 const ruleAccessor = (props) => {

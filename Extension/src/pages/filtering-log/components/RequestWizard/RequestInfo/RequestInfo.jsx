@@ -405,6 +405,7 @@ const RequestInfo = observer(() => {
                         <NetworkStatus
                             method={selectedEvent.method}
                             statusCode={selectedEvent.statusCode}
+                            isThirdParty={selectedEvent.requestThirdParty}
                         />
                     </div>
                 )}

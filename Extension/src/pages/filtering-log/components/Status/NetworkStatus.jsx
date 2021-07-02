@@ -1,8 +1,8 @@
 import React from 'react';
-import { getbadgeClassNames, StatusColor } from './statusStyles';
+import { getBadgeClassNames, StatusColor } from './statusStyles';
 
-export const NetworkStatus = ({ method, statusCode }) => {
-    const badgeClassNames = getbadgeClassNames(StatusColor.GRAY);
+export const NetworkStatus = ({ method, statusCode, isThirdParty }) => {
+    const badgeClassNames = getBadgeClassNames(StatusColor.GRAY);
 
     return (
         <div className="status">
@@ -16,6 +16,13 @@ export const NetworkStatus = ({ method, statusCode }) => {
                     {method}
                 </div>
             </div>
+            {isThirdParty && (
+                <div className="status__item">
+                    <div className="tag tag--third_party tag--party">
+                        3P
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

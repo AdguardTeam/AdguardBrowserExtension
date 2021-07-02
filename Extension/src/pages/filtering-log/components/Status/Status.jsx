@@ -1,9 +1,10 @@
 import React from 'react';
 import cn from 'classnames';
 import { format } from 'date-fns';
+
 import { Icon } from '../../../common/components/ui/Icon';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
-import { colorMap, getItemClassName, getbadgeClassNames } from './statusStyles';
+import { colorMap, getItemClassName, getBadgeClassNames } from './statusStyles';
 
 import './status.pcss';
 
@@ -13,13 +14,14 @@ export const Status = (props) => {
         timestamp,
         method,
         requestUrl,
+        requestThirdParty,
     } = props;
 
     const timeString = format(timestamp, 'HH:mm:ss');
     const mode = getStatusMode(props);
     const color = colorMap[mode];
     const itemClassNames = getItemClassName(color);
-    const badgeClassNames = getbadgeClassNames(color);
+    const badgeClassNames = getBadgeClassNames(color);
     const isBlocked = mode === StatusMode.BLOCKED;
 
     return (
@@ -51,6 +53,13 @@ export const Status = (props) => {
                     <div className="status__item">
                         <div className="status__badge status__badge--transparent">
                             {method}
+                        </div>
+                    </div>
+                )}
+                {requestThirdParty && (
+                    <div className="status__item">
+                        <div className="tag tag--third_party tag--party">
+                            3P
                         </div>
                     </div>
                 )}

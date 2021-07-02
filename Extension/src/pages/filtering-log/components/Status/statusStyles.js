@@ -27,7 +27,7 @@ export const getItemClassName = (color) => {
         : 'status__item';
 };
 
-export const getbadgeClassNames = (color) => {
+export const getBadgeClassNames = (color) => {
     return color
         ? `status__badge status__badge--${color}`
         : 'status__badge';
