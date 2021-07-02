@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { Nav } from '../Nav';
@@ -29,7 +30,9 @@ const Sidebar = () => {
                     </div>
                 )}
             <div className={className}>
-                <Icon id="#logo" classname="icon--logo sidebar__logo" />
+                <Link to="/">
+                    <Icon id="#logo" classname="icon--logo sidebar__logo" />
+                </Link>
                 <Nav closeSidebar={closeSidebar} />
             </div>
         </>
