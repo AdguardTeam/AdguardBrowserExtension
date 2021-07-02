@@ -329,7 +329,8 @@ const RequestInfo = observer(() => {
         const showPreviewButton = previewableTypes.includes(event.requestType)
             && !event?.element
             && !event?.script
-            && !event?.cookieName;
+            && !event?.cookieName
+            && !(getStatusMode(event) === StatusMode.BLOCKED);
 
         if (addedRuleState === ADDED_RULE_STATES.BLOCK) {
             return renderButton(BUTTON_MAP.REMOVE_ADDED_BLOCK_RULE);
