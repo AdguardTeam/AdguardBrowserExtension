@@ -14,6 +14,7 @@ import { MESSAGE_TYPES, NOTIFIER_TYPES } from '../../../../common/constants';
 import { uploadFile } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { ToggleWrapButton } from './ToggleWrapButton';
+import { exportData, ExportTypes } from '../../utils/export';
 
 /**
  * This module is placed in the common directory because it is used in the options page
@@ -208,8 +209,8 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         },
     ];
 
-    const exportClickHandler = async () => {
-        window.open('/pages/export.html#uf', '_blank');
+    const exportClickHandler = () => {
+        exportData(ExportTypes.USER_FILTER);
     };
 
     // We set wrap mode directly in order to avoid editor re-rendering

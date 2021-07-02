@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { Icon } from '../../../common/components/ui/Icon';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
 import { colorMap, getItemClassName, getbadgeClassNames } from './statusStyles';
@@ -15,7 +15,7 @@ export const Status = (props) => {
         requestUrl,
     } = props;
 
-    const timeString = moment(timestamp).format('HH:mm:ss');
+    const timeString = format(timestamp, 'HH:mm:ss');
     const mode = getStatusMode(props);
     const color = colorMap[mode];
     const itemClassNames = getItemClassName(color);

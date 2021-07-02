@@ -15,7 +15,6 @@ const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
 const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
 const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
 const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
-const EXPORT_PATH = path.resolve(__dirname, '../../Extension/pages/export');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
 const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
@@ -34,7 +33,6 @@ export const genCommonConfig = (browserConfig) => {
             'pages/popup': POPUP_PATH,
             'pages/filtering-log': FILTERING_LOG_PATH,
             'pages/filter-download': FILTER_DOWNLOAD_PATH,
-            'pages/export': EXPORT_PATH,
             'pages/content-script-start': CONTENT_SCRIPT_START_PATH,
             'pages/content-script-end': CONTENT_SCRIPT_END_PATH,
             'pages/thankyou': THANKYOU_PATH,
@@ -132,12 +130,6 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FILTER_DOWNLOAD_PATH, 'index.html'),
                 filename: 'pages/filter-download.html',
                 chunks: ['pages/filter-download'],
-                cache: false,
-            }),
-            new HtmlWebpackPlugin({
-                template: path.join(EXPORT_PATH, 'index.html'),
-                filename: 'pages/export.html',
-                chunks: ['pages/export'],
                 cache: false,
             }),
             new HtmlWebpackPlugin({

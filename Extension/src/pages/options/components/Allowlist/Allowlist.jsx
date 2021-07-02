@@ -11,6 +11,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
+import { exportData, ExportTypes } from '../../../common/utils/export';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -41,8 +42,8 @@ const Allowlist = observer(() => {
         inputRef.current.click();
     };
 
-    const exportClickHandler = async () => {
-        window.open('/pages/export.html#wl', '_blank');
+    const exportClickHandler = () => {
+        exportData(ExportTypes.ALLOW_LIST);
     };
 
     const inputChangeHandler = async (event) => {

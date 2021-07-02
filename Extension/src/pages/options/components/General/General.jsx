@@ -10,6 +10,7 @@ import { messenger } from '../../../services/messenger';
 import { hoursToMs, uploadFile } from '../../../helpers';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { APPEARANCE_THEMES } from '../../../constants';
+import { exportData, ExportTypes } from '../../../common/utils/export';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -74,7 +75,7 @@ const General = observer(() => {
     const inputEl = useRef(null);
 
     const handleExportSettings = () => {
-        window.open('/pages/export.html#exs', '_blank');
+        exportData(ExportTypes.SETTINGS);
     };
 
     const inputChangeHandler = async (event) => {
