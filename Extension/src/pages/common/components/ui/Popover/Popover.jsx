@@ -35,8 +35,8 @@ export const Popover = ({
             setTooltip({
                 visible: true,
                 position: {
-                    x: rect.left,
-                    y: rect.bottom,
+                    x: rect.left + window.scrollX,
+                    y: rect.bottom + window.scrollY,
                 },
             });
         }, delay || TOOLTIP_SHOW_DELAY_MS);
