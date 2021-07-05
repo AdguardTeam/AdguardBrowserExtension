@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-autofocus */
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
@@ -28,6 +28,8 @@ const options = [
 const Search = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
+    const searchInputRef = useRef();
+
     const {
         setSearchInput,
         searchInput,
@@ -46,6 +48,7 @@ const Search = observer(() => {
 
     const searchCloseHandler = () => {
         setSearchInput('');
+        searchInputRef.current.focus();
         setSearchSelect(SEARCH_FILTERS.ALL);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
@@ -65,6 +68,7 @@ const Search = observer(() => {
                 className="search__input"
                 type="text"
                 placeholder={reactTranslator.getMessage('options_filters_search')}
+                ref={searchInputRef}
                 onChange={searchInputHandler}
                 value={searchInput}
             />
