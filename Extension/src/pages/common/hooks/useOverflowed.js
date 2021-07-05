@@ -1,10 +1,5 @@
-import {
-    useState,
-    useEffect,
-    useCallback,
-} from 'react';
-
-import throttle from 'lodash/throttle';
+import { useState, useCallback } from 'react';
+import { useResizeObserver } from './useResizeObserver';
 
 /**
  * Detects if container content is overflowed
@@ -18,7 +13,8 @@ import throttle from 'lodash/throttle';
 export const useOverflowed = (ref, track = { x: false, y: true }, throttleTime = 500) => {
     const [isOverflowed, setOverflowed] = useState(false);
 
-    const calcIsOverflowed = useCallback((el) => {
+    const calcIsOverflowed = useCallback(([entry]) => {
+        const el = entry.target;
         let overflowedX = false;
         let overflowedY = false;
         if (track.x) {
@@ -28,23 +24,15 @@ export const useOverflowed = (ref, track = { x: false, y: true }, throttleTime =
             overflowedY = el.scrollHeight > el.offsetHeight;
         }
 
-        return overflowedX || overflowedY;
+        /**
+         * call setState within requestAnimationFrame to prevent inifinite loop
+         */
+        window.requestAnimationFrame(() => {
+            setOverflowed(overflowedX || overflowedY);
+        });
     }, [track]);
 
-    useEffect(() => {
-        const target = ref.current;
-        setOverflowed(calcIsOverflowed(target));
-
-        const observer = new ResizeObserver(throttle(([entry]) => {
-            setOverflowed(calcIsOverflowed(entry.target));
-        }, throttleTime));
-
-        observer.observe(target);
-
-        return () => {
-            observer.unobserve(target);
-        };
-    }, [ref, calcIsOverflowed, throttleTime]);
+    useResizeObserver(ref, calcIsOverflowed, throttleTime);
 
     return isOverflowed;
 };

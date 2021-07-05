@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import throttle from 'lodash/throttle';
+import React, { useState, useRef, useCallback } from 'react';
 
 import { Actions } from '../Actions';
 import { EventsTypeFilter } from './EventsTypeFilter';
 import { MiscellaneousFilters } from './MiscellaneousFilters';
 import { Icon } from '../../../common/components/ui/Icon';
 import { isVerticalScroll } from '../../../helpers';
+import { useResizeObserver } from '../../../common/hooks/useResizeObserver';
 
 import './filters.pcss';
 
@@ -16,22 +16,19 @@ const Filters = () => {
     const [rightArrow, setRightArrow] = useState(true);
     const ref = useRef();
 
-    useEffect(() => {
-        const target = ref.current;
+    const calcArrowState = useCallback(([entry]) => {
+        const { scrollLeft, scrollWidth, clientWidth } = entry.target;
 
-        const observer = new ResizeObserver(throttle(([entry]) => {
-            const { scrollLeft, scrollWidth, clientWidth } = entry.target;
-
+        /**
+         * call setState within requestAnimationFrame to prevent inifinite loop
+         */
+        window.requestAnimationFrame(() => {
             setLeftArrow(scrollLeft > 0);
             setRightArrow(scrollWidth - clientWidth > scrollLeft);
-        }, RESIZE_OBSERVER_THROTTLE_MS));
+        });
+    }, []);
 
-        observer.observe(target);
-
-        return () => {
-            observer.unobserve(target);
-        };
-    }, [ref]);
+    useResizeObserver(ref, calcArrowState, RESIZE_OBSERVER_THROTTLE_MS);
 
     const scrollTags = () => {
         const { scrollLeft, scrollWidth, clientWidth } = ref.current;
