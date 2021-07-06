@@ -192,6 +192,22 @@
 
     & .ace-tm {
         background-color: transparent!important;
+
+        & .ace_active-line {
+            background-color: var(--gray100)!important;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900)!important;
+            }
+        }
+
+        & .ace_selection {
+            background-color: var(--gray300)!important;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--grayDark)!important;
+            }
+        }
     }
 }
 
@@ -268,6 +284,16 @@
         & .ace_storage.ace_type {
             color: var(--blue-editor)!important;
         }
+
+        & .ace-tm {
+            & .ace_active-line {
+                background-color: var(--gray100)!important;
+            }
+
+            & .ace_selection {
+                background-color: var(--gray300)!important;
+            }
+        }
     }
 }
 
@@ -343,6 +369,16 @@
 
         & .ace_storage.ace_type {
             color: var(--cyan-editor)!important;
+        }
+
+        & .ace-tm {
+            & .ace_active-line {
+                background-color: var(--gray900)!important;
+            }
+
+            & .ace_selection {
+                background-color: var(--grayDark)!important;
+            }
         }
     }
 }
