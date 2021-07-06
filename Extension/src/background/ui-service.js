@@ -723,7 +723,8 @@ export const uiService = (function () {
      * @return {Promise<void>}
      */
     const openFullscreenUserRules = async () => {
-        const FULLSCREEN_USER_RULES_PAGE = 'fullscreen-user-rules.html';
+        const theme = settings.getProperty('appearance-theme');
+        const FULLSCREEN_USER_RULES_PAGE = `fullscreen-user-rules.html?theme=${theme}`;
         const options = { activateSameTab: true, inNewWindow: true };
         await openTab(getPageUrl(FULLSCREEN_USER_RULES_PAGE), options);
     };
