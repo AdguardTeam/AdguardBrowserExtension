@@ -140,11 +140,6 @@ describe('settingsProvider', () => {
         _.set(obj, ALLOWLIST_ENABLED_PATH, false);
         await settingsProvider.applySettingsBackup(JSON.stringify(obj));
         expect(settings.getAllowlistEnabledState()).toBeFalsy();
-
-        // by default should be true
-        _.unset(obj, ALLOWLIST_ENABLED_PATH);
-        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
-        expect(settings.getAllowlistEnabledState()).toBeTruthy();
     });
 
     it('handles enabled state of user filters', async () => {
@@ -158,10 +153,5 @@ describe('settingsProvider', () => {
         _.set(obj, USER_FILTER_ENABLED_PATH, false);
         await settingsProvider.applySettingsBackup(JSON.stringify(obj));
         expect(settings.getUserFilterEnabled()).toBeFalsy();
-
-        // by default should be true
-        _.unset(obj, USER_FILTER_ENABLED_PATH);
-        await settingsProvider.applySettingsBackup(JSON.stringify(obj));
-        expect(settings.getUserFilterEnabled()).toBeTruthy();
     });
 });
