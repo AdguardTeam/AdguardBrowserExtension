@@ -8,6 +8,8 @@ import { rootStore } from '../../stores/RootStore';
 import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import {
+    GLOBAL_PRIVACY_CONTROL_URL,
+    DO_NOT_TRACK_URL,
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
 } from '../../../constants';
@@ -66,21 +68,10 @@ const Stealth = observer(() => {
             />
 
             <SettingsSection
-                title={reactTranslator.getMessage('context_miscellaneous_settings')}
+                title={reactTranslator.getMessage('options_stealth_general_title')}
                 subTitle
                 disabled={isStealthModeDisabled}
             >
-                <SettingsSetCheckbox
-                    title={reactTranslator.getMessage('options_hide_referrer_title')}
-                    description={reactTranslator.getMessage('options_hide_referrer_desc')}
-                    disabled={!settings.values[HIDE_REFERRER]}
-                    id={HIDE_REFERRER}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_hide_referrer_title')}
-                    value={settings.values[HIDE_REFERRER]}
-                    handler={settingChangeHandler}
-                />
-
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_hide_search_queries_title')}
                     description={reactTranslator.getMessage('options_hide_search_queries_desc')}
@@ -91,10 +82,30 @@ const Stealth = observer(() => {
                     value={settings.values[HIDE_SEARCH_QUERIES]}
                     handler={settingChangeHandler}
                 />
-
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_send_not_track_title')}
-                    description={reactTranslator.getMessage('options_send_not_track_desc')}
+                    description={reactTranslator.getMessage('options_send_not_track_desc', {
+                        gpc: (chunks) => (
+                            <a
+                                className="desc--link"
+                                href={GLOBAL_PRIVACY_CONTROL_URL}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                {chunks}
+                            </a>
+                        ),
+                        dnt: (chunks) => (
+                            <a
+                                className="desc--link"
+                                href={DO_NOT_TRACK_URL}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                {chunks}
+                            </a>
+                        ),
+                    })}
                     disabled={!settings.values[SEND_DO_NOT_TRACK]}
                     id={SEND_DO_NOT_TRACK}
                     type={SETTINGS_TYPES.CHECKBOX}
@@ -102,45 +113,10 @@ const Stealth = observer(() => {
                     value={settings.values[SEND_DO_NOT_TRACK]}
                     handler={settingChangeHandler}
                 />
-
-                {settingsStore.isChrome && (
-                    <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_remove_client_data_title')}
-                        description={reactTranslator.getMessage('options_remove_client_data_desc')}
-                        disabled={!settings.values[BLOCK_CHROME_CLIENT_DATA]}
-                        id={BLOCK_CHROME_CLIENT_DATA}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_remove_client_data_title')}
-                        value={settings.values[BLOCK_CHROME_CLIENT_DATA]}
-                        handler={settingChangeHandler}
-                    />
-                )}
-
-                <SettingsSetCheckbox
-                    title={reactTranslator.getMessage('options_disable_webrtc_title')}
-                    description={reactTranslator.getMessage('options_disable_webrtc_desc')}
-                    disabled={!settings.values[BLOCK_WEBRTC]}
-                    id={BLOCK_WEBRTC}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_disable_webrtc_title')}
-                    value={settings.values[BLOCK_WEBRTC]}
-                    handler={settingChangeHandler}
-                />
-
-                <SettingsSetCheckbox
-                    title={reactTranslator.getMessage('options_strip_tracking_params_title')}
-                    description={reactTranslator.getMessage('options_strip_tracking_params_description')}
-                    disabled={!stripTrackingParameters}
-                    id={STRIP_TRACKING_PARAMETERS}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_strip_tracking_params_title')}
-                    value={stripTrackingParameters}
-                    handler={stripTrackingParametersChangeHandler}
-                />
             </SettingsSection>
 
             <SettingsSection
-                title={reactTranslator.getMessage('options_cookies_title')}
+                title={reactTranslator.getMessage('options_stealth_cookies_title')}
                 subTitle
                 disabled={isStealthModeDisabled}
             >
@@ -183,6 +159,58 @@ const Stealth = observer(() => {
                         placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
                     />
                 </SettingsSetCheckbox>
+            </SettingsSection>
+
+            <SettingsSection
+                title={reactTranslator.getMessage('options_stealth_miscellaneous_title')}
+                subTitle
+                disabled={isStealthModeDisabled}
+            >
+                <SettingsSetCheckbox
+                    title={reactTranslator.getMessage('options_hide_referrer_title')}
+                    description={reactTranslator.getMessage('options_hide_referrer_desc')}
+                    disabled={!settings.values[HIDE_REFERRER]}
+                    id={HIDE_REFERRER}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_hide_referrer_title')}
+                    value={settings.values[HIDE_REFERRER]}
+                    handler={settingChangeHandler}
+                />
+
+                {settingsStore.isChrome && (
+                    <SettingsSetCheckbox
+                        title={reactTranslator.getMessage('options_remove_client_data_title')}
+                        description={reactTranslator.getMessage('options_remove_client_data_desc')}
+                        disabled={!settings.values[BLOCK_CHROME_CLIENT_DATA]}
+                        id={BLOCK_CHROME_CLIENT_DATA}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_remove_client_data_title')}
+                        value={settings.values[BLOCK_CHROME_CLIENT_DATA]}
+                        handler={settingChangeHandler}
+                    />
+                )}
+
+                <SettingsSetCheckbox
+                    title={reactTranslator.getMessage('options_disable_webrtc_title')}
+                    description={reactTranslator.getMessage('options_disable_webrtc_desc')}
+                    disabled={!settings.values[BLOCK_WEBRTC]}
+                    id={BLOCK_WEBRTC}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_disable_webrtc_title')}
+                    value={settings.values[BLOCK_WEBRTC]}
+                    handler={settingChangeHandler}
+                />
+
+                <SettingsSetCheckbox
+                    title={reactTranslator.getMessage('options_strip_tracking_params_title')}
+                    description={reactTranslator.getMessage('options_strip_tracking_params_description')}
+                    disabled={!stripTrackingParameters}
+                    id={STRIP_TRACKING_PARAMETERS}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={reactTranslator.getMessage('options_strip_tracking_params_title')}
+                    value={stripTrackingParameters}
+                    handler={stripTrackingParametersChangeHandler}
+                />
             </SettingsSection>
         </>
     );

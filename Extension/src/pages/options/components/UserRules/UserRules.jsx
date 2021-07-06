@@ -8,6 +8,7 @@ import { MESSAGE_TYPES } from '../../../../common/constants';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { UserRulesSwitcher } from './UserRulesSwitcher';
+import { HOW_TO_CREATE_RULES_URL } from '../../../constants';
 
 import './styles.pcss';
 
@@ -26,7 +27,7 @@ const UserRules = observer(() => {
                     a: (chunks) => (
                         <a
                             className="desc--link"
-                            href="https://adguard.com/forward.html?action=userfilter_description&from=options&app=browser_extension"
+                            href={HOW_TO_CREATE_RULES_URL}
                             target="_blank"
                             rel="noreferrer"
                         >
