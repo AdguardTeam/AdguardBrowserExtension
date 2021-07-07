@@ -34,6 +34,12 @@
         &_centered {
             min-width: 30px;
             justify-content: center;
+
+            & .status__badge {
+                @media (prefers-color-scheme: dark) {
+                    color: var(--black);
+                }
+            }
         }
 
         &:last-child {
@@ -78,6 +84,22 @@
         &--transparent {
             color: var(--gray400);
             border: 1px solid var(--gray400);
+        }
+    }
+}
+
+.light-mode {
+    .status {
+        &__item_centered .status__badge {
+            color: var(--white);
+        }
+    }
+}
+
+.dark-mode {
+    .status {
+        &__item_centered .status__badge {
+            color: var(--black);
         }
     }
 }
