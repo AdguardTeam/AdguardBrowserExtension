@@ -819,9 +819,9 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     next: 'options_domain_app',
                 },
                 {
-                    regex: /(redirect|removeparam|cookie)=/,
+                    regex: /(redirect|removeparam|removeheader|cookie)/,
                     token: 'keyword.control',
-                    next: 'options_redirect_removeparam_cookie',
+                    next: 'options_redirect_removeparam_removeheader_cookie',
                 },
                 {
                     regex: /replace=/,
@@ -881,7 +881,7 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     defaultToken: 'string.quoted',
                 },
             ],
-            options_redirect_removeparam_cookie: [
+            options_redirect_removeparam_removeheader_cookie: [
                 {
                     token: 'invalid',
                     regex: /,$/,
@@ -891,6 +891,11 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     token: 'text',
                     regex: /$/,
                     next: 'start',
+                },
+                // without specified value
+                {
+                    regex: /redirect|removeparam|removeheader|cookie/,
+                    token: 'keyword.control',
                 },
                 {
                     regex: /,/,
