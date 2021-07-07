@@ -57,7 +57,7 @@ const Miscellaneous = observer(() => {
 
     return (
         <>
-            <SettingsSection title={reactTranslator.getMessage('context_miscellaneous_settings')}>
+            <SettingsSection title={reactTranslator.getMessage('options_miscellaneous_settings')}>
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_use_optimized_filters')}
                     description={reactTranslator.getMessage('options_use_optimized_filters_desc')}
