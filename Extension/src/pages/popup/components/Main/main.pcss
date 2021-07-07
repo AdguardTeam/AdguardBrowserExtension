@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     height: 300px;
-    color: white;
+    color: var(--gray);
 
     @media (prefers-color-scheme: dark) {
         color: var(--gray300);
@@ -50,8 +50,6 @@
     }
 
     &--allowlisted {
-        background-image: var(--allowlisted-bg);
-
         & .switcher {
             opacity: 1;
 
@@ -78,8 +76,6 @@
     }
 
     &--disabled {
-        background-image: var(--disabled-bg);
-
         & .switcher {
             opacity: 1;
 
@@ -112,8 +108,6 @@
     &--enabled,
     &--unavailable,
     &--in-exception {
-        background-image: var(--enabled-bg);
-
         & .switcher {
             opacity: 1;
         }
@@ -222,20 +216,12 @@
 
 .light-mode {
     .main {
-        color: white;
+        color: var(--gray);
     }
 }
 
 .dark-mode {
     .main {
         color: var(--gray300);
-    }
-
-    .main--enabled,
-    .main--unavailable,
-    .main--in-exception,
-    .stats-chart {
-        background-color: var(--black);
-        background-image: none;
     }
 }
