@@ -10,7 +10,7 @@ const SettingsSet = (props) => {
         setting: true,
         'setting--disabled': disabled,
         'setting--hide-border': hideBorder,
-        'setting--hover': isHover,
+        'setting--checkbox': isHover,
     });
 
     return (
