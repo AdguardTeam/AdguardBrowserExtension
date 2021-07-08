@@ -85,8 +85,10 @@ const General = observer(() => {
         try {
             const content = await uploadFile(file, 'json');
             const result = await messenger.applySettingsJson(content);
-            uiStore.addNotification({ description: reactTranslator.getMessage('options_popup_import_success_title') });
-            if (!result) {
+            if (result) {
+                const successMessage = reactTranslator.getMessage('options_popup_import_success_title');
+                uiStore.addNotification({ description: successMessage });
+            } else {
                 const errorMessage = reactTranslator.getMessage('options_popup_import_error_file_description');
                 uiStore.addNotification({ description: errorMessage });
             }
