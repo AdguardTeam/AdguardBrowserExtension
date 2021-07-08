@@ -23,6 +23,8 @@ export const Status = (props) => {
     const itemClassNames = getItemClassName(color);
     const badgeClassNames = getBadgeClassNames(color);
     const isBlocked = mode === StatusMode.BLOCKED;
+    const isModified = mode === StatusMode.MODIFIED;
+    const areNetworkBadgesVisible = requestUrl && !isModified;
 
     return (
         <div className="status-wrapper">
@@ -33,7 +35,7 @@ export const Status = (props) => {
                 <div className="status__item status__item_width60">
                     {timeString}
                 </div>
-                {requestUrl && (
+                {areNetworkBadgesVisible && (
                     <>
                         <div className={itemClassNames}>
                             <Icon id={statusCode ? '#transfer-status' : '#arrow-status'} classname="status__icon" />

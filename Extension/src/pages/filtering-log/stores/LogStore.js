@@ -363,11 +363,15 @@ class LogStore {
                 && !filteringEvent.requestRule.whitelistRule
                 && !filteringEvent.requestRule.cssRule
                 && !filteringEvent.requestRule.scriptRule
-                && !filteringEvent.removeParam;
+                && !filteringEvent.requestRule.cspRule
+                && !filteringEvent.removeParam
+                && !filteringEvent.removeHeader;
             const isModified = filteringEvent.requestRule?.isModifyingCookieRule
                 || filteringEvent.requestRule?.cssRule
                 || filteringEvent.requestRule?.scriptRule
-                || filteringEvent.removeParam;
+                || filteringEvent.requestRule?.cspRule
+                || filteringEvent.removeParam
+                || filteringEvent.removeHeader;
             const isUserFilter = filteringEvent.requestRule?.filterId === 0;
             const isFirstParty = !filteringEvent.requestThirdParty;
             const isThirdParty = filteringEvent.requestThirdParty;
