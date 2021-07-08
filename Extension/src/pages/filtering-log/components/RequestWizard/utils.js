@@ -70,22 +70,32 @@ export const getFilterName = (filterId, filtersMetadata) => {
  * @param event
  * @returns {String}
  */
-export const getRequestType = (event) => {
-    let { requestType } = event;
+export const getRequestEventType = (event) => {
+    const {
+        requestType,
+        requestRule,
+        cspReportBlocked,
+        removeHeader,
+        removeParam,
+    } = event;
 
-    const { requestRule, cspReportBlocked } = event;
+    let requestEventType = requestType;
 
     if (requestRule?.cookieRule
         || requestRule?.isModifyingCookieRule) {
-        requestType = RequestTypes.COOKIE;
+        requestEventType = RequestTypes.COOKIE;
     } else if (cspReportBlocked) {
         // By default csp requests in firefox have other request type,
         // but if event cspReportBlocked is true
         // we consider such request to have "CSP report" type
-        requestType = RequestTypes.CSP_REPORT;
+        requestEventType = RequestTypes.CSP_REPORT;
+    } else if (removeHeader) {
+        return 'REMOVEHEADER';
+    } else if (removeParam) {
+        return 'REMOVEPARAM';
     }
 
-    switch (requestType) {
+    switch (requestEventType) {
         case 'DOCUMENT':
         case 'SUBDOCUMENT':
             return 'HTML';
@@ -109,7 +119,7 @@ export const getRequestType = (event) => {
         case 'CSP':
             return 'CSP';
         case 'CSP_REPORT':
-            return 'Csp report';
+            return 'CSP report';
         case 'COOKIE':
             return 'Cookie';
         case 'PING':

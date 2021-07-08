@@ -23,6 +23,7 @@ export const getStatusMode = (event) => {
         replaceRules,
         requestRule,
         removeParam,
+        removeHeader,
     } = event;
 
     let mode = StatusMode.REGULAR;
@@ -40,7 +41,7 @@ export const getStatusMode = (event) => {
         if (requestRule.whitelistRule) {
             mode = StatusMode.ALLOWED;
             // eslint-disable-next-line max-len
-        } else if (requestRule.cssRule || requestRule.scriptRule || removeParam) {
+        } else if (requestRule.cssRule || requestRule.scriptRule || removeParam || removeHeader) {
             mode = StatusMode.MODIFIED;
         } else if (requestRule.cookieRule) {
             if (requestRule.isModifyingCookieRule) {
@@ -48,6 +49,8 @@ export const getStatusMode = (event) => {
             } else {
                 mode = StatusMode.BLOCKED;
             }
+        } else if (requestRule.cspRule) {
+            mode = StatusMode.MODIFIED;
         } else {
             mode = StatusMode.BLOCKED;
         }

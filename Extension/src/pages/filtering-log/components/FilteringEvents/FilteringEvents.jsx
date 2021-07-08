@@ -13,7 +13,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import throttle from 'lodash/throttle';
 
 import { rootStore } from '../../stores/RootStore';
-import { getRequestType } from '../RequestWizard/utils';
+import { getRequestEventType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
@@ -87,7 +87,7 @@ const urlAccessor = (props) => {
 };
 
 const typeAccessor = (props) => {
-    return getRequestType(props);
+    return getRequestEventType(props);
 };
 
 const ruleAccessor = (props) => {
