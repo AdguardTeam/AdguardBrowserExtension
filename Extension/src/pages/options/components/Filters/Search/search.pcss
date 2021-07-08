@@ -5,22 +5,27 @@
     align-items: center;
     background-color: var(--gray100);
     border-radius: 8px;
-    padding: 10px 16px;
     margin: 0 16px 24px;
+    padding: 0 16px 0 0;
 
     @media (prefers-color-scheme: dark) {
         border: 1px solid var(--gray900);
         background-color: var(--black);
     }
 
+    &__label {
+        padding: 10px 8px 10px 16px;
+        min-width: 90px;
+        flex-grow: 1;
+    }
+
     &__input {
         border: 0;
         background: none;
-        padding: 0 8px 0 0;
+        padding: 0;
         outline: none;
         font-size: 14px;
-        flex-grow: 1;
-        min-width: 90px;
+        width: 100%;
 
         @media (min-width: 640px) {
             font-size: 16px;

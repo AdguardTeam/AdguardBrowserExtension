@@ -45,6 +45,16 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             if (resetInfoThatContentChanged) {
                 store.setUserRulesEditorContentChangedState(false);
             }
+
+            // initial export button state
+            const { userRules } = await messenger.sendMessage(
+                MESSAGE_TYPES.GET_USER_RULES_EDITOR_DATA,
+            );
+            if (userRules.length > 0) {
+                store.setUserRulesExportAvailableState(true);
+            } else {
+                store.setUserRulesExportAvailableState(false);
+            }
         })();
     }, []);
 

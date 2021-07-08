@@ -1,12 +1,11 @@
 .footer {
-    & > &__rate,
-    & > &__nav {
+    & > &__rate {
         padding: 32px 32px 40px;
         display: flex;
         justify-content: center;
         align-items: center;
 
-        @media (min-width: 1024px) {
+        @media (min-width: 640px) {
             padding: 0 32px;
         }
     }
@@ -20,7 +19,7 @@
         align-items: flex-start;
         max-width: 100%;
 
-        @media (min-width: 1024px) {
+        @media (min-width: 640px) {
             flex-direction: row;
             align-items: center;
         }
@@ -39,7 +38,7 @@
             background-color: var(--grayDark);
         }
 
-        @media (min-width: 1024px) {
+        @media (min-width: 640px) {
             height: 56px;
         }
     }
@@ -47,27 +46,8 @@
     &__rate-desc {
         margin: 0 0 17px 0;
 
-        @media (min-width: 1024px) {
+        @media (min-width: 640px) {
             margin: 0 17px 0 0;
-        }
-    }
-
-    &__nav {
-        color: var(--white);
-        min-height: 140px;
-        background-color: var(--gray-base);
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--gray300);
-            color: var(--black);
-        }
-
-        @media (min-width: 1024px) {
-            min-height: 56px;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--gray300);
         }
     }
 
@@ -93,11 +73,6 @@
         &__rate {
             background-color: var(--greyf7);
         }
-
-        &__nav {
-            background-color: var(--gray-base);
-            color: var(--white);
-        }
     }
 }
 
@@ -105,11 +80,6 @@
     .footer {
         &__rate {
             background-color: var(--grayDark);
-        }
-
-        &__nav {
-            background-color: var(--gray300);
-            color: var(--black);
         }
     }
 }

@@ -63,15 +63,17 @@ const Search = observer(() => {
 
     return (
         <div className="search">
-            <input
-                autoFocus
-                className="search__input"
-                type="text"
-                placeholder={reactTranslator.getMessage('options_filters_search')}
-                ref={searchInputRef}
-                onChange={searchInputHandler}
-                value={searchInput}
-            />
+            <label className="search__label">
+                <input
+                    autoFocus
+                    className="search__input"
+                    type="text"
+                    placeholder={reactTranslator.getMessage('options_filters_search')}
+                    ref={searchInputRef}
+                    onChange={searchInputHandler}
+                    value={searchInput}
+                />
+            </label>
             {searchInput ? (
                 <button
                     type="button"
