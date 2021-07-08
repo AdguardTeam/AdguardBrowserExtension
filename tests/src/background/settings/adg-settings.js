@@ -29,7 +29,6 @@ export const adgSettings = JSON.stringify({
             'inverted': false,
             'domains': [],
             'inverted-domains': [],
-            'enabled': false,
         },
     },
     'stealth': {
