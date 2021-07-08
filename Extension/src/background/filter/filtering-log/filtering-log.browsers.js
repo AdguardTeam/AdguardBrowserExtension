@@ -420,6 +420,7 @@ const browsersFilteringLog = (function () {
             frameUrl,
             frameDomain,
             requestType: RequestTypes.DOCUMENT,
+            timestamp: Date.now(),
         };
 
         addRuleToFilteringEvent(filteringEvent, rule);

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import identity from 'lodash/identity';
 import cn from 'classnames';
 
-import { getFilterName, getRequestType } from '../utils';
+import { getFilterName, getRequestEventType } from '../utils';
 import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { messenger } from '../../../../services/messenger';
@@ -54,7 +54,7 @@ const getStealthActionsNames = (actions) => {
  * @return {String}
  */
 const getType = (selectedEvent) => {
-    return getRequestType(selectedEvent);
+    return getRequestEventType(selectedEvent);
 };
 
 /**
