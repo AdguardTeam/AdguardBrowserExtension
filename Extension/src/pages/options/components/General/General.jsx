@@ -206,6 +206,7 @@ const General = observer(() => {
                             handler={settingChangeHandler}
                         />
                     )}
+                    isHover
                 />
             </SettingsSection>
             <div className="actions">

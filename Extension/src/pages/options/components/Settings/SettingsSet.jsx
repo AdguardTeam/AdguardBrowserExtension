@@ -4,12 +4,13 @@ import classNames from 'classnames';
 
 const SettingsSet = (props) => {
     const {
-        title, description, children, disabled, inlineControl, hideBorder,
+        title, description, children, disabled, inlineControl, hideBorder, isHover,
     } = props;
     const settingClassName = classNames({
         setting: true,
         'setting--disabled': disabled,
         'setting--hide-border': hideBorder,
+        'setting--hover': isHover,
     });
 
     return (
