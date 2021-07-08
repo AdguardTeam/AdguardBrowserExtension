@@ -19,6 +19,7 @@ const Miscellaneous = observer(() => {
     const { settings } = settingsStore;
 
     const [isOpenResetStatsModal, setIsOpenResetStatsModal] = useState(false);
+    const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
 
     if (!settings) {
         return null;
@@ -43,6 +44,19 @@ const Miscellaneous = observer(() => {
     const handleResetStatisticsConfirm = async () => {
         await messenger.resetStatistics();
         uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_stats_done') });
+    };
+
+    const handleResetSettingsClick = async () => {
+        setIsOpenResetSettingsModal(true);
+    };
+
+    const handleResetSettingsConfirm = async () => {
+        const result = await messenger.resetSettings();
+        if (result) {
+            uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_settings_done') });
+        } else {
+            uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_settings_error') });
+        }
     };
 
     const {
@@ -167,6 +181,26 @@ const Miscellaneous = observer(() => {
                     onClick={handleResetStatisticsClick}
                 >
                     {reactTranslator.getMessage('options_reset_stats')}
+                </button>
+
+                {
+                    isOpenResetSettingsModal
+                    && (
+                        <ConfirmModal
+                            title={reactTranslator.getMessage('options_reset_settings_confirm_modal_title')}
+                            isOpen={isOpenResetSettingsModal}
+                            setIsOpen={setIsOpenResetSettingsModal}
+                            onConfirm={handleResetSettingsConfirm}
+                            customConfirmTitle={reactTranslator.getMessage('options_reset_settings_confirm_modal_clear_button')}
+                        />
+                    )
+                }
+                <button
+                    type="button"
+                    className="button button--list button--red"
+                    onClick={handleResetSettingsClick}
+                >
+                    {reactTranslator.getMessage('options_reset_settings')}
                 </button>
             </SettingsSection>
         </>

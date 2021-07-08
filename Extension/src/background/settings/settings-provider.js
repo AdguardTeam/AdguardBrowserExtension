@@ -25,6 +25,7 @@ import { utils } from '../utils/common';
 import { settings } from './user-settings';
 import { backgroundPage } from '../extension-api/background-page';
 import { customFilters } from '../filter/filters/custom-filters';
+import defaultSettings from './default-settings.json';
 
 /**
  * Application settings provider.
@@ -499,6 +500,26 @@ export const settingsProvider = (function () {
         }
     };
 
+    /**
+     * Applies default settings
+     *
+     * @return {Promise<boolean|undefined>}
+     */
+    const applyDefaultSettings = async () => {
+        const input = defaultSettings;
+
+        try {
+            await applyGeneralSettingsSection(input);
+            applyExtensionSpecificSettingsSection(input);
+            await applyFiltersSection(input);
+            await applyStealthModeSection(input);
+            return true;
+        } catch (e) {
+            log.error(e);
+            return false;
+        }
+    };
+
     // EXPOSE
     return {
         /**
@@ -510,5 +531,10 @@ export const settingsProvider = (function () {
          * Applies settings backup json
          */
         applySettingsBackup: applySettingsBackupJson,
+
+        /**
+         * Applies default settings json
+         */
+        applyDefaultSettings,
     };
 })();

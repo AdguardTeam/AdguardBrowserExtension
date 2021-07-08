@@ -55,6 +55,7 @@ export const MESSAGE_TYPES = {
     OPEN_FILTERING_LOG: 'openFilteringLog',
     OPEN_FULLSCREEN_USER_RULES: 'openFullscreenUserRules',
     RESET_BLOCKED_ADS_COUNT: 'resetBlockedAdsCount',
+    RESET_SETTINGS: 'resetSettings',
     GET_USER_RULES: 'getUserRules',
     SAVE_USER_RULES: 'saveUserRules',
     GET_ALLOWLIST_DOMAINS: 'getAllowlistDomains',
