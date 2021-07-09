@@ -21,9 +21,6 @@ const RequestCreateRule = observer(() => {
         [RULE_OPTIONS.RULE_DOMAIN]: {
             label: `${reactTranslator.getMessage('filtering_modal_apply_domains')}`,
         },
-        [RULE_OPTIONS.RULE_MATCH_CASE]: {
-            label: `${reactTranslator.getMessage('filtering_modal_match_case')}`,
-        },
         [RULE_OPTIONS.RULE_THIRD_PARTY]: {
             label: `${reactTranslator.getMessage('filtering_modal_third_party')}`,
         },

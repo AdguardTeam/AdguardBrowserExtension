@@ -179,7 +179,7 @@ const browsersFilteringLog = (function () {
 
             destinationRuleDTO.whitelistRule = sourceRule.isWhitelist();
             destinationRuleDTO.cspRule = sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Csp);
-            destinationRuleDTO.cspDirective = sourceRule.getAdvancedModifierValue();
+            destinationRuleDTO.modifierValue = sourceRule.getAdvancedModifierValue();
             destinationRuleDTO.cookieRule = sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Cookie);
         } else if (sourceRule instanceof TSUrlFilter.CosmeticRule) {
             const ruleType = sourceRule.getType();
