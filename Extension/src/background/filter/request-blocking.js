@@ -72,7 +72,8 @@ export const webRequestService = (function () {
      * @typedef {Object} SelectorsAndScripts
      * @property {SelectorsData} selectors An object with the CSS styles that needs to be applied
      * @property {string} scripts Javascript to be injected into the page
-     * @property {boolean} collapseAllElements If true, content script must force the collapse check of the page elements
+     * @property {boolean} collapseAllElements If true, content script must force
+     * the collapse check of the page elements
      */
 
     /**
@@ -541,7 +542,7 @@ export const webRequestService = (function () {
         return requestRule;
     };
 
-    var isCollectingCosmeticRulesHits = (tab) => {
+    const isCollectingCosmeticRulesHits = (tab) => {
         /**
          * Edge Legacy browser doesn't support css content attribute for node elements except
          * :before and :after

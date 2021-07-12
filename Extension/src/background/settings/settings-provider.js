@@ -498,8 +498,11 @@ export const settingsProvider = (function () {
             return false;
         }
 
-        if (!input || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION ||
-            !validateJSON(input)) {
+        if (
+            !input
+            || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION
+            || !validateJSON(input)
+        ) {
             log.error('Json input is invalid {0}', json);
             onFinished(false);
             return false;

@@ -19,7 +19,6 @@ import { utils } from '../utils/common';
 import { tabsImpl } from '../extension-api/tabs';
 
 const tabsApi = ((tabsImpl) => {
-
     const tabs = Object.create(null);
 
     // Fired when a tab is created. Note that the tab's URL may not be set at the time

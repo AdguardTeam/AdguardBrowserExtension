@@ -190,7 +190,7 @@ export const frames = (function () {
      *
      * @param tab Tab to reload
      */
-    var reloadFrameData = function (tab) {
+    const reloadFrameData = function (tab) {
         const frame = tabsApi.getTabFrame(tab.tabId, 0);
         if (frame) {
             const applicationFilteringDisabled = settings.isFilteringDisabled();

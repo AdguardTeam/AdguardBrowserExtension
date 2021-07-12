@@ -140,7 +140,7 @@ export const pageStats = (function () {
     };
 
     const createStatsDataItem = function (type, blocked) {
-        const result = new Object(null);
+        const result = {};
         if (type) {
             result[type] = blocked;
         }

@@ -290,19 +290,17 @@ export const tabsImpl = (function () {
                     logOperationError('Tab update', e);
                 }
             }
-        } else {
-            // https://developer.chrome.com/extensions/tabs#method-reload
-            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
-            if (browser.tabs.reload) {
-                try {
-                    await browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true });
-                } catch (e) {
-                    logOperationError('Tab reload', e);
-                }
-            } else {
-                // Reload page without cache via content script
-                sendMessage(tabId, { type: 'no-cache-reload' });
+        // https://developer.chrome.com/extensions/tabs#method-reload
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
+        } else if (browser.tabs.reload) {
+            try {
+                await browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true });
+            } catch (e) {
+                logOperationError('Tab reload', e);
             }
+        } else {
+            // Reload page without cache via content script
+            sendMessage(tabId, { type: 'no-cache-reload' });
         }
     };
 

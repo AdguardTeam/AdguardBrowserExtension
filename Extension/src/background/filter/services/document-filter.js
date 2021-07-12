@@ -30,7 +30,7 @@ export const documentFilterService = (function () {
             return lazyGet(
                 trustedCache,
                 'cache',
-                () => new ExpiringCache('document-block-cache')
+                () => new ExpiringCache('document-block-cache'),
             );
         },
     };

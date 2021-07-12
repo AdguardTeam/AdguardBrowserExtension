@@ -170,7 +170,7 @@ export const url = (function () {
             u1 = u1.split(/[#?]/)[0];
             // eslint-disable-next-line prefer-destructuring
             u2 = u2.split(/[#?]/)[0];
-            return u1 == u2;
+            return u1 === u2;
         },
     };
 

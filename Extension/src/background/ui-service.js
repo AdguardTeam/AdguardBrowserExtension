@@ -516,7 +516,7 @@ export const uiService = (function () {
     };
 
     const openExportRulesTab = function (hash) {
-        openTab(getPageUrl(`${'export.html' + '#'}${hash}`));
+        openTab(getPageUrl(`export.html#${hash}`));
     };
 
     /**
@@ -524,7 +524,7 @@ export const uiService = (function () {
      * @param anchor
      * @param hashParameters
      */
-    var openSettingsTab = function (anchor, hashParameters = {}) {
+    const openSettingsTab = function (anchor, hashParameters = {}) {
         if (anchor) {
             hashParameters.anchor = anchor;
         }
@@ -537,7 +537,7 @@ export const uiService = (function () {
         openTab(getPageUrl('options.html'), options);
     };
 
-    var openSiteReportTab = function (url) {
+    const openSiteReportTab = function (url) {
         const domain = utils.url.toPunyCode(utils.url.getDomainName(url));
         if (domain) {
             openTab(`https://adguard.com/site.html?domain=${encodeURIComponent(domain)}&utm_source=extension&aid=16593`);
@@ -630,7 +630,7 @@ export const uiService = (function () {
         return `${rowUrl}#${hashPart}`;
     };
 
-    var openTab = async (url, options = {}) => {
+    const openTab = async (url, options = {}) => {
         const {
             activateSameTab,
             inBackground,
@@ -774,21 +774,21 @@ export const uiService = (function () {
         await tabsApi.reload(tab.tabId);
     };
 
-    var allowlistTab = function (tab) {
+    const allowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         allowlist.allowlistUrl(tabInfo.url);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
 
-    var unAllowlistTab = function (tab) {
+    const unAllowlistTab = function (tab) {
         const tabInfo = frames.getFrameInfo(tab);
         userrules.unAllowlistFrame(tabInfo);
         updateTabIconAndContextMenu(tab, true);
         tabsApi.reload(tab.tabId);
     };
 
-    var changeApplicationFilteringDisabled = async function (disabled) {
+    const changeApplicationFilteringDisabled = async function (disabled) {
         settings.changeFilteringDisabled(disabled);
         const tab = await tabsApi.getActive();
         if (tab) {
