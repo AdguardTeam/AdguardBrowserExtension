@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -266,9 +267,14 @@ export const contentUtils = (function () {
         xhr.setRequestHeader('Pragma', 'no-cache');
         xhr.setRequestHeader('Expires', '-1');
         xhr.setRequestHeader('Expires', 'no-cache');
-        xhr.onload = xhr.onerror = xhr.onabort = xhr.ontimeout = function () {
+
+        const reload = () => {
             document.location.reload(true);
         };
+
+        xhr.onload = reload;
+        xhr.onerror = reload;
+        xhr.onabort = reload;
         xhr.send(null);
     }
 

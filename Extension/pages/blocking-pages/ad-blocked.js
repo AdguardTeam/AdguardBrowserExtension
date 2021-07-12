@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome */
-
 const fillBlockRule = (blockRule) => {
     const blockRuleNode = document.querySelector('#blockRule');
     blockRuleNode.textContent = blockRule;

@@ -2,13 +2,6 @@
  * Util class for work with strings
  */
 export const strings = (() => {
-    if (!String.prototype.endsWith) {
-        String.prototype.endsWith = function (suffix) {
-            const index = this.lastIndexOf(suffix);
-            return index !== -1 && index === this.length - suffix.length;
-        };
-    }
-
     const StringUtils = {
         isEmpty(str) {
             return !str || str.trim().length === 0;
@@ -67,7 +60,7 @@ export const strings = (() => {
                 return '';
             }
             const buf = [];
-            for (let i = startIndex; i < endIndex; i++) {
+            for (let i = startIndex; i < endIndex; i += 1) {
                 buf.push(array[i]);
             }
             return buf.join(separator);
@@ -158,7 +151,7 @@ export const strings = (() => {
             s.push('<');
             s.push(element.localName);
             const { attributes } = element;
-            for (let i = 0; i < attributes.length; i++) {
+            for (let i = 0; i < attributes.length; i += 1) {
                 const attr = attributes[i];
                 s.push(' ');
                 s.push(attr.name);
