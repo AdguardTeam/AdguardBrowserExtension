@@ -26,7 +26,7 @@ import { utils } from '../utils/common';
 import { settings } from './user-settings';
 import { backgroundPage } from '../extension-api/background-page';
 import { customFilters } from '../filter/filters/custom-filters';
-import defaultSettings from './default-settings.json';
+import { defaultSettings } from './default-settings.js';
 import settingsSchema from './settings.schema.json';
 
 /**
