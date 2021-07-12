@@ -164,6 +164,7 @@ const PageController = (response) => {
         const collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
         const trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
         const socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
+        // eslint-disable-next-line max-len
         const allowAcceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
 
         renderSafebrowsingSection(safebrowsingEnabled, collectHitsCount);
