@@ -523,7 +523,7 @@ export const settingsProvider = (function () {
     /**
      * Applies default settings
      *
-     * @return {Promise<boolean|undefined>}
+     * @return {Promise<boolean>}
      */
     const applyDefaultSettings = async () => {
         const input = defaultSettings;
