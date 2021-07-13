@@ -54,8 +54,7 @@ const Search = observer(() => {
         settingsStore.sortSearchGroups();
     };
 
-    const searchSelectHandler = (e) => {
-        const { value } = e.target;
+    const searchSelectHandler = (value) => {
         setSearchSelect(value);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
