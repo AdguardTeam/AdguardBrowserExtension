@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import { Icon } from '../Icon';
@@ -8,7 +8,7 @@ import './select.pcss';
 const Select = (props) => {
     const ref = useRef(null);
     const {
-        id, handler, options, value,
+        id, handler, options, value, selectDropdown, hideSelectDropdown,
     } = props;
 
     const [hidden, setHidden] = useState(true);
@@ -31,7 +31,16 @@ const Select = (props) => {
 
     useOutsideClick(ref, () => {
         setHidden(true);
+        if (selectDropdown === id) {
+            hideSelectDropdown();
+        }
     });
+
+    useEffect(() => {
+        if (selectDropdown === id) {
+            setHidden(false);
+        }
+    }, [id, selectDropdown]);
 
     const handleSelectClick = () => {
         if (hidden) {
@@ -63,11 +72,18 @@ const Select = (props) => {
     );
 };
 
+Select.defaultProps = {
+    selectDropdown: null,
+    hideSelectDropdown: null,
+};
+
 Select.propTypes = {
     id: PropTypes.string.isRequired,
     handler: PropTypes.func.isRequired,
     options: PropTypes.arrayOf(PropTypes.object).isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    selectDropdown: PropTypes.string,
+    hideSelectDropdown: PropTypes.func,
 };
 
 export { Select };
