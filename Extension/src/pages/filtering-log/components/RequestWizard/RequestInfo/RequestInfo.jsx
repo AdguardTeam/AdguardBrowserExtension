@@ -69,7 +69,11 @@ const getRule = (selectedEvent) => {
     }
 
     const requestRule = selectedEvent?.requestRule;
-    if (requestRule?.whitelistRule && requestRule?.documentLevelRule) {
+    if (
+        requestRule?.whitelistRule
+        && requestRule?.documentLevelRule
+        && requestRule?.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID
+    ) {
         return null;
     }
     return requestRule?.ruleText || null;
