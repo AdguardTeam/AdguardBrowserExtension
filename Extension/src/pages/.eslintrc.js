@@ -18,6 +18,7 @@ module.exports = {
         'react',
     ],
     rules: {
+        'no-use-before-define': 'off',
         'react/jsx-filename-extension': [
             1,
             {
@@ -36,5 +37,7 @@ module.exports = {
         'react/prop-types': 'off', // TODO enable prop-types validation
         'arrow-body-style': 'off',
         'react/jsx-props-no-spreading': 'off',
+        'func-names': ['error', 'as-needed'],
+        'no-param-reassign': ['error', { props: false }],
     },
 };

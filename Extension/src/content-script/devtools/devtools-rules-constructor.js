@@ -67,7 +67,12 @@ export const DevToolsRulesConstructor = (function () {
         while (el.parentNode) {
             const nodeName = el && el.nodeName ? el.nodeName.toUpperCase() : '';
             if (nodeName === 'BODY' && path.length === 0) {
-                const bodySelector = makeDefaultCssFilter(el, classList, excludeTagNameOverride ? excludeTagName : false, excludeId);
+                const bodySelector = makeDefaultCssFilter(
+                    el,
+                    classList,
+                    excludeTagNameOverride ? excludeTagName : false,
+                    excludeId,
+                );
                 path.unshift(bodySelector);
                 break;
             }
@@ -80,7 +85,12 @@ export const DevToolsRulesConstructor = (function () {
                  */
                 let cssSelector = '';
                 if (el === element) {
-                    cssSelector = makeDefaultCssFilter(el, classList || [], excludeTagNameOverride ? excludeTagName : true, excludeIdOverride ? excludeId : false);
+                    cssSelector = makeDefaultCssFilter(
+                        el,
+                        classList || [],
+                        excludeTagNameOverride ? excludeTagName : true,
+                        excludeIdOverride ? excludeId : false,
+                    );
                 } else {
                     cssSelector = makeDefaultCssFilter(el, [], true, false);
                 }
@@ -90,16 +100,16 @@ export const DevToolsRulesConstructor = (function () {
                 let c = 1;
                 for (let e = el; e.previousSibling; e = e.previousSibling) {
                     if (e.previousSibling.nodeType === 1) {
-                        c++;
+                        c += 1;
                     }
                 }
 
                 let cldCount = 0;
-                for (let i = 0; el.parentNode && i < el.parentNode.childNodes.length; i++) {
+                for (let i = 0; el.parentNode && i < el.parentNode.childNodes.length; i += 1) {
                     cldCount += el.parentNode.childNodes[i].nodeType === 1 ? 1 : 0;
                 }
 
-                var ch;
+                let ch;
                 if (cldCount === 0 || cldCount === 1) {
                     ch = '';
                 } else if (c === 1) {
@@ -114,7 +124,12 @@ export const DevToolsRulesConstructor = (function () {
                  * By default we include tag name and element classes to selector for element without id attribute
                  */
                 if (el === element) {
-                    let p = makeDefaultCssFilter(el, classList, excludeTagNameOverride ? excludeTagName : false, excludeId);
+                    let p = makeDefaultCssFilter(
+                        el,
+                        classList,
+                        excludeTagNameOverride ? excludeTagName : false,
+                        excludeId,
+                    );
                     p += ch;
                     path.unshift(p);
                 } else {
@@ -132,10 +147,10 @@ export const DevToolsRulesConstructor = (function () {
      * @param classList
      * @returns {string}
      */
-    var constructClassCssSelectorByAND = function (classList) {
+    const constructClassCssSelectorByAND = function (classList) {
         const selectors = [];
         if (classList) {
-            for (let i = 0; i < classList.length; i++) {
+            for (let i = 0; i < classList.length; i += 1) {
                 selectors.push(`.${CSS.escape(classList[i])}`);
             }
         }
@@ -150,7 +165,7 @@ export const DevToolsRulesConstructor = (function () {
     const constructClassCssSelectorByOR = function (classList) {
         const selectors = [];
         if (classList) {
-            for (let i = 0; i < classList.length; i++) {
+            for (let i = 0; i < classList.length; i += 1) {
                 selectors.push(`.${CSS.escape(classList[i])}`);
             }
         }
@@ -172,7 +187,8 @@ export const DevToolsRulesConstructor = (function () {
     /**
      * Creates css rule text
      * @param element Element
-     * @param options Construct options. For example: {cssSelectorType: 'STRICT_FULL', excludeTagName: false, excludeId: false, classList: []}
+     * @param options Construct options.
+     * For example: {cssSelectorType: 'STRICT_FULL', excludeTagName: false, excludeId: false, classList: []}
      * @returns {string}
      */
     const constructCssRuleText = function (element, options) {
@@ -194,6 +210,8 @@ export const DevToolsRulesConstructor = (function () {
             case 'SIMILAR':
                 selector = makeSimilarCssFilter(element, options.classList, true);
                 break;
+            default:
+                // do nothing
         }
 
         return selector ? CSS_RULE_MARK + selector : '';
@@ -228,7 +246,7 @@ export const DevToolsRulesConstructor = (function () {
         return domain.replace('www.', '').replace(/:\d+/, '');
     };
 
-    var getUrl = function (url) {
+    const getUrl = function (url) {
         const pattern = '^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$';
         const rx = new RegExp(pattern);
         const parts = rx.exec(url);
@@ -256,12 +274,12 @@ export const DevToolsRulesConstructor = (function () {
         return blockUrlRuleText;
     };
 
-    var getUrlBlockAttribute = function (element) {
+    const getUrlBlockAttribute = function (element) {
         if (!element || !element.getAttribute) {
             return null;
         }
 
-        for (let i = 0; i < URLBLOCK_ATTRIBUTES.length; i++) {
+        for (let i = 0; i < URLBLOCK_ATTRIBUTES.length; i += 1) {
             const attr = URLBLOCK_ATTRIBUTES[i];
             const value = element.getAttribute(attr);
             if (isValidUrl(value)) {
@@ -282,7 +300,7 @@ export const DevToolsRulesConstructor = (function () {
         const attributes = [];
         const elementAttributes = element.attributes;
         if (elementAttributes) {
-            for (let i = 0; i < elementAttributes.length; i++) {
+            for (let i = 0; i < elementAttributes.length; i += 1) {
                 const attr = elementAttributes[i];
                 attributes.push({
                     name: attr.name,
@@ -354,7 +372,12 @@ export const DevToolsRulesConstructor = (function () {
         const { ruleType } = options;
 
         if (ruleType === 'URL') {
-            const blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, croppedDomain);
+            const blockUrlRuleText = constructUrlBlockRuleText(
+                element,
+                options.urlMask,
+                options.isBlockOneDomain,
+                croppedDomain,
+            );
             if (blockUrlRuleText) {
                 return blockUrlRuleText;
             }

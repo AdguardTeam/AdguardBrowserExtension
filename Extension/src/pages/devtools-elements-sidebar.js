@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -17,7 +18,7 @@
 
 const browser = window.browser || chrome;
 
-export const devtoolsElementsSidebar = (function () {
+export const devtoolsElementsSidebar = (() => {
     const initPanel = function () {
         initTheme();
         initElements();
@@ -41,7 +42,10 @@ export const devtoolsElementsSidebar = (function () {
                 window.selectedElementInfo = info;
 
                 updateRule();
-                handleShowBlockSettings(info.haveUrlBlockParameter, info.haveClassAttribute && !info.haveIdAttribute);
+                handleShowBlockSettings(
+                    info.haveUrlBlockParameter,
+                    info.haveClassAttribute && !info.haveIdAttribute,
+                );
                 setupAttributesInfo(info);
             });
         };
@@ -51,20 +55,22 @@ export const devtoolsElementsSidebar = (function () {
             delete window.adguardDevToolsPreview;
         };
 
-        browser.devtools && browser.devtools.panels.elements.onSelectionChanged.addListener(onElementSelected);
-        browser.devtools && browser.devtools.network.onNavigated.addListener(onPageChanged);
+        if (browser.devtools) {
+            browser.devtools.panels.elements.onSelectionChanged.addListener(onElementSelected);
+            browser.devtools.network.onNavigated.addListener(onPageChanged);
+        }
 
         onElementSelected();
     };
 
-    var initTheme = function () {
+    const initTheme = function () {
         const theme = browser.devtools.panels.themeName;
         if (theme === 'dark') {
             document.body.classList.add('-theme-with-dark-background');
         }
     };
 
-    var initElements = function () {
+    const initElements = function () {
         document.querySelector('#block-by-url-checkbox').checked = false;
         document.querySelector('#create-full-css-path').checked = false;
         document.querySelector('#one-domain-checkbox').checked = true;
@@ -76,13 +82,13 @@ export const devtoolsElementsSidebar = (function () {
         }
     };
 
-    var updateRule = function () {
+    const updateRule = function () {
         getInspectedPageUrl((url) => {
             updateFilterRuleInput(window.selectedElementInfo, url);
         });
     };
 
-    var bindEvents = function () {
+    const bindEvents = function () {
         const previewRuleButton = document.getElementById('preview-rule-button');
         previewRuleButton.addEventListener('click', (e) => {
             e.preventDefault();
@@ -118,22 +124,19 @@ export const devtoolsElementsSidebar = (function () {
         });
 
         const updateRuleBlocks = document.querySelectorAll('.update-rule-block');
-        updateRuleBlocks.forEach(block => {
+        updateRuleBlocks.forEach((block) => {
             block.addEventListener('click', () => {
                 updatePanelElements();
                 updateRule();
             });
         });
 
-
         document.getElementById('select-attributes-checkbox').addEventListener('click', (e) => {
             const { checked } = e.currentTarget;
 
             const attributeCheckBoxes = document.querySelectorAll('.attribute-check-box');
-            attributeCheckBoxes.forEach(el => {
-                if (el) {
-                    el.checked = checked;
-                }
+            attributeCheckBoxes.forEach((el) => {
+                el.checked = checked;
             });
 
             updatePanelElements();
@@ -141,22 +144,22 @@ export const devtoolsElementsSidebar = (function () {
         });
     };
 
-    var updatePanelElements = function () {
+    const updatePanelElements = function () {
         const checkboxes = document.querySelectorAll('#one-domain-checkbox, #create-full-css-path, .attribute-check-box');
 
         // All checkboxes should be disabled if block by url is checked
         if (document.querySelector('#block-by-url-checkbox').checked) {
-            checkboxes.forEach(checkbox => {
+            checkboxes.forEach((checkbox) => {
                 checkbox.setAttribute('disabled', 'disabled');
             });
         } else {
-            checkboxes.forEach(checkbox => {
+            checkboxes.forEach((checkbox) => {
                 checkbox.removeAttribute('disabled');
             });
         }
     };
 
-    var handleShowBlockSettings = function (showBlockByUrl, createFullCssPath) {
+    const handleShowBlockSettings = function (showBlockByUrl, createFullCssPath) {
         if (showBlockByUrl) {
             document.querySelector('#block-by-url-checkbox-block').style.display = 'block';
         } else {
@@ -172,7 +175,7 @@ export const devtoolsElementsSidebar = (function () {
         }
     };
 
-    var setupAttributesInfo = function (info) {
+    const setupAttributesInfo = function (info) {
         const placeholder = document.getElementById('attributes-block');
 
         while (placeholder.firstChild) {
@@ -199,15 +202,17 @@ export const devtoolsElementsSidebar = (function () {
             placeholder.appendChild(createAttributeElement('tag', info.tagName.toLowerCase(), true));
         }
 
-        for (let i = 0; i < info.attributes.length; i++) {
+        for (let i = 0; i < info.attributes.length; i += 1) {
             const attribute = info.attributes[i];
 
             if (attribute.name === 'class' && attribute.value) {
                 const split = attribute.value.split(' ');
-                for (let j = 0; j < split.length; j++) {
+                for (let j = 0; j < split.length; j += 1) {
                     const value = split[j];
                     if (value) { // Skip empty values. Like 'class1 class2   '
-                        placeholder.appendChild(createAttributeElement(attribute.name, value, true));
+                        placeholder.appendChild(
+                            createAttributeElement(attribute.name, value, true),
+                        );
                     }
                 }
             } else {
@@ -222,13 +227,13 @@ export const devtoolsElementsSidebar = (function () {
         }
     };
 
-    var getInspectedPageUrl = function (callback) {
+    const getInspectedPageUrl = function (callback) {
         browser.devtools.inspectedWindow.eval('document.location && document.location.href', (result) => {
             callback(result);
         });
     };
 
-    var updateFilterRuleInput = function (info, url) {
+    const updateFilterRuleInput = function (info, url) {
         const isBlockByUrl = document.querySelector('#block-by-url-checkbox').checked;
         const createFullCssPath = document.querySelector('#create-full-css-path').checked;
         const isBlockOneDomain = document.querySelector('#one-domain-checkbox').checked;
@@ -277,17 +282,17 @@ export const devtoolsElementsSidebar = (function () {
         });
     };
 
-    var applyPreview = function (ruleText) {
+    const applyPreview = function (ruleText) {
         const func = `DevToolsHelper.applyPreview(${JSON.stringify({ ruleText })});`;
         browser.devtools.inspectedWindow.eval(func, { useContentScriptContext: true });
     };
 
-    var cancelPreview = function () {
+    const cancelPreview = function () {
         const func = 'DevToolsHelper.cancelPreview();';
         browser.devtools.inspectedWindow.eval(func, { useContentScriptContext: true });
     };
 
-    var addRuleForElement = function () {
+    const addRuleForElement = function () {
         if (window.adguardDevToolsPreview) {
             // Remove preview
             cancelPreview();

@@ -17,7 +17,14 @@
     "locales:info": "babel-node tools/locales.js info",
     "resources": "babel-node tools/resources.js",
     "lint": "eslint .",
-    "increment": "yarn version --patch --no-git-tag-version"
+    "increment": "yarn version --patch --no-git-tag-version",
+    "prepare": "husky install",
+    "lint-staged": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "node_modules/.bin/eslint --fix --max-warnings=0 ."
+    ]
   },
   "repository": {
     "type": "git",
@@ -57,7 +64,9 @@
     "form-data": "^2.5.0",
     "fs-extra": "^9.0.1",
     "html-webpack-plugin": "^4.5.2",
+    "husky": "^7.0.1",
     "jest": "^26.6.3",
+    "lint-staged": "^11.0.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.2.6",
     "postcss-import": "^14.0.0",
@@ -81,6 +90,7 @@
     "@babel/runtime": "^7.13.9",
     "@xstate/react": "^1.3.4",
     "ace-builds": "^1.4.12",
+    "ajv": "^8.6.1",
     "c3": "0.4.15",
     "classnames": "^2.2.6",
     "crypto-js": "^4.0.0",

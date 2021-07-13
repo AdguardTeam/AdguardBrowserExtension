@@ -16,8 +16,8 @@ describe('ruleCreators', () => {
             const result = splitToPatterns(url, domain, isAllowlist);
             expect(result).toHaveLength(4);
             expect(result[0]).toBe('||gstatic.com/firebasejs/6.0.4/firebase-app.js');
-            expect(result[1]).toBe('||gstatic.com/firebasejs/6.0.4/*');
-            expect(result[2]).toBe('||gstatic.com/firebasejs/*');
+            expect(result[1]).toBe('||gstatic.com/firebasejs/6.0.4/');
+            expect(result[2]).toBe('||gstatic.com/firebasejs/');
             expect(result[3]).toBe('||gstatic.com^');
         });
 
@@ -28,8 +28,8 @@ describe('ruleCreators', () => {
             const result = splitToPatterns(url, domain, isAllowlist);
             expect(result).toHaveLength(4);
             expect(result[0]).toBe('@@||gstatic.com/firebasejs/6.0.4/firebase-app.js');
-            expect(result[1]).toBe('@@||gstatic.com/firebasejs/6.0.4/*');
-            expect(result[2]).toBe('@@||gstatic.com/firebasejs/*');
+            expect(result[1]).toBe('@@||gstatic.com/firebasejs/6.0.4/');
+            expect(result[2]).toBe('@@||gstatic.com/firebasejs/');
             expect(result[3]).toBe('@@||gstatic.com^');
         });
     });

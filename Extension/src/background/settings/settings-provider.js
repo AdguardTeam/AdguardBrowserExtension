@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import Ajv from 'ajv';
 import { application } from '../application';
 import { log } from '../../common/log';
 import { subscriptions } from '../filter/filters/subscription';
@@ -25,12 +26,15 @@ import { utils } from '../utils/common';
 import { settings } from './user-settings';
 import { backgroundPage } from '../extension-api/background-page';
 import { customFilters } from '../filter/filters/custom-filters';
+import settingsSchema from './settings.schema.json';
 
 /**
  * Application settings provider.
  */
 export const settingsProvider = (function () {
     const BACKUP_PROTOCOL_VERSION = '1.0';
+
+    const validateJsonSchema = new Ajv().compile(settingsSchema);
 
     /**
      * Collect enabled filters ids without custom filters
@@ -455,6 +459,21 @@ export const settingsProvider = (function () {
     };
 
     /**
+     * Validates data
+     *
+     * @param data
+     */
+    const validateJSON = (data) => {
+        const valid = validateJsonSchema(data);
+        if (!valid) {
+            log.error(validateJsonSchema.errors);
+            return false;
+        }
+
+        return true;
+    };
+
+    /**
      * Imports settings set from json format
      * @param {string} json
      */
@@ -479,7 +498,11 @@ export const settingsProvider = (function () {
             return false;
         }
 
-        if (!input || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION) {
+        if (
+            !input
+            || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION
+            || !validateJSON(input)
+        ) {
             log.error('Json input is invalid {0}', json);
             onFinished(false);
             return false;

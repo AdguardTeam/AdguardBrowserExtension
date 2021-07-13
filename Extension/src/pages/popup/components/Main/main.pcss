@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     height: 300px;
-    color: white;
+    color: var(--gray);
 
     @media (prefers-color-scheme: dark) {
         color: var(--gray300);
@@ -50,17 +50,11 @@
     }
 
     &--allowlisted {
-        background-image: var(--allowlisted-bg);
-
         & .switcher {
             opacity: 1;
 
             &__btn {
-                right: 32px;
-
-                &:before {
-                    background-image: var(--allowlisted-btn);
-                }
+                right: 36px;
 
                 & .switcher__icon--play {
                     display: none;
@@ -70,7 +64,7 @@
                     display: none;
                 }
 
-                & .switcher__icon--cross {
+                & .switcher__icon--circle {
                     display: block;
                 }
             }
@@ -78,8 +72,6 @@
     }
 
     &--disabled {
-        background-image: var(--disabled-bg);
-
         & .switcher {
             opacity: 1;
 
@@ -90,10 +82,6 @@
             &__btn {
                 right: 18px;
 
-                &:before {
-                    background: var(--disabled-btn);
-                }
-
                 & .switcher__icon--play {
                     display: block;
                 }
@@ -102,7 +90,7 @@
                     display: none;
                 }
 
-                & .switcher__icon--cross {
+                & .switcher__icon--circle {
                     display: none;
                 }
             }
@@ -112,8 +100,6 @@
     &--enabled,
     &--unavailable,
     &--in-exception {
-        background-image: var(--enabled-bg);
-
         & .switcher {
             opacity: 1;
         }
@@ -166,22 +152,28 @@
     }
 
     &__center {
-        width: 74px;
-        height: 26px;
+        width: 80px;
+        height: 30px;
         border-radius: 100px;
-        background-color: var(--switch-field);
-        box-shadow: var(--switch-field-shadow);
+
+        &--enabled {
+            background-image: var(--switch-field-enabled);
+        }
+
+        &--allowlisted {
+            background-image: var(--switch-field-disabled);
+        }
     }
 
     &__btn {
         position: absolute;
-        width: 48px;
-        height: 48px;
-        right: 6px;
+        width: 50px;
+        height: 50px;
+        right: 5px;
         top: 30px;
         border-radius: 50%;
         box-shadow: var(--switch-btn-shadow);
-        background-image: var(--switch-ring);
+        background-color: var(--white);
         padding: 4px;
         cursor: pointer;
         transition: 0.3s ease transform;
@@ -192,23 +184,25 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background-image: var(--enabled-btn);
+            background-color: var(--white);
         }
     }
 
     &__icon {
         position: absolute;
+        left: 13px;
+        top: 13px;
 
         &--play {
             display: none;
-            left: 18px;
-            top: 16px
+        }
+
+        &--circle {
+            display: none;
         }
 
         &--checkmark {
             display: block;
-            left: 14px;
-            top: 17px;
         }
 
         &--cross {
@@ -222,7 +216,7 @@
 
 .light-mode {
     .main {
-        color: white;
+        color: var(--gray);
     }
 }
 

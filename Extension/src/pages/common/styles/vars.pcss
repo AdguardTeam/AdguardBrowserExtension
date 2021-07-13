@@ -37,23 +37,29 @@
     --red-row-hover: #ffb5a1;
     --red-row-active: #ff967b;
     --green-row: #dcffe5;
-    --green-row-hove: #c3ffd1;
+    --green-row-hover: #c3ffd1;
     --green-row-active: #a9ffbe;
-    --orange-row: rgba(235, 147, 0, 0.15);
-    --orange-row-active: rgba(235, 147, 0, 0.3);
+    --orange-row: #ffe4b7;
+    --orange-row-hover: #ffdda5;
+    --orange-row-active: #ffcf7d;
+    /*FILTERING-LOG-DARK*/
+    @media (prefers-color-scheme: dark) {
+        --red-row: #46231a;
+        --red-row-hover: #692d1e;
+        --red-row-active: #7a3320;
+        --green-row: #2c4332;
+        --green-row-hover: #3d6246;
+        --green-row-active: #457250;
+        --orange-row: #4d350d;
+        --orange-row-hover: #61410B;
+        --orange-row-active: #744c0a;
+    }
 
-    --switch-field: #2a4b57;
-    --switch-btn-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.7);
-    --switch-field-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.28);
+    --switch-btn-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
     --swamp: #547b88;
     /*GRADIENTS*/
-    --allowlisted-bg: radial-gradient(circle at 50% 54%, #7A3232, #253440);
-    --allowlisted-btn: linear-gradient(to bottom, #eba122, #eb6422);
-    --disabled-bg: radial-gradient(circle at 50% 54%, #848484, #253440);
-    --disabled-btn: linear-gradient(to bottom, #a8a8a8 0%,#4a4a4a 100%);
-    --enabled-bg: radial-gradient(circle at 50% 54%, #326e7a, #253440);
-    --enabled-btn: linear-gradient(to bottom, #64beb0, #74be64);
-    --switch-ring: linear-gradient(to bottom, #ffffff, #ebebeb);
+    --switch-field-enabled: linear-gradient(90deg, #67B279 0%, #39774C 100%);
+    --switch-field-disabled: linear-gradient(90deg, #732613 0%, #BF4829 100%);
 
     --greyf7: #f7f7f7;
     --gray05: rgba(239, 239, 239, 0.5);
@@ -76,24 +82,26 @@
     --z-idx6: 6;
     --z-idx7: 7;
     --z-idx8: 8;
-
-    --shadow-dark: rgba(0,0,0,0.20);
-
-    @media (prefers-color-scheme: dark) {
-        --enabled-bg: radial-gradient(circle at 50% 54%, #326e7a, var(--black));
-        --allowlisted-bg: radial-gradient(circle at 50% 54%, #7A3232, var(--black));
-        --disabled-bg: radial-gradient(circle at 50% 54%, #848484, var(--black));
-    }
 }
 
 .dark-mode {
-    --enabled-bg: radial-gradient(circle at 50% 54%, #326e7a, var(--black));
-    --allowlisted-bg: radial-gradient(circle at 50% 54%, #7A3232, var(--black));
-    --disabled-bg: radial-gradient(circle at 50% 54%, #848484, var(--black));
+    --red-row: #46231a;
+    --red-row-hover: #692d1e;
+    --red-row-active: #7a3320;
+    --green-row: #2c4332;
+    --green-row-hover: #3d6246;
+    --green-row-active: #457250;
+    --orange-row: #4d350d;
+    --orange-row-active: #744c0a;
 }
 
 .light-mode {
-    --enabled-bg: radial-gradient(circle at 50% 54%, #326e7a, #253440);
-    --allowlisted-bg: radial-gradient(circle at 50% 54%, #7A3232, #253440);
-    --disabled-bg: radial-gradient(circle at 50% 54%, #848484, #253440);
+    --red-row: #ffd3c7;
+    --red-row-hover: #ffb5a1;
+    --red-row-active: #ff967b;
+    --green-row: #dcffe5;
+    --green-row-hover: #c3ffd1;
+    --green-row-active: #a9ffbe;
+    --orange-row: rgba(235, 147, 0, 0.15);
+    --orange-row-active: rgba(235, 147, 0, 0.3);
 }

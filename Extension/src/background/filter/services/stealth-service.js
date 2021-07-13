@@ -17,12 +17,10 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { RequestTypes } from '../../utils/request-types';
 import { settings } from '../../settings/user-settings';
 import { log } from '../../../common/log';
 import { requestContextStorage } from '../request-context-storage';
 import { filteringApi } from '../filtering-api';
-import { filteringLog } from '../filtering-log';
 import { listeners } from '../../notifier';
 import { frames } from '../../tabs/frames';
 import { browserUtils } from '../../utils/browser-utils';

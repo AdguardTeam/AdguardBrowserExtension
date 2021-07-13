@@ -250,7 +250,6 @@ describe('RequestFilter', () => {
             expect(result).toBeTruthy();
             expect(result.getText()).toEqual(rule);
 
-
             requestFilter = await createRequestFilterWithRules([
                 rule, whitelist,
             ]);
@@ -341,7 +340,6 @@ describe('RequestFilter', () => {
             expect(requestFilter.findRuleForRequest(testUrl, '', RequestTypes.XMLHTTPREQUEST)).toBeFalsy();
         });
     });
-
 
     describe('$csp', () => {
         it('CSP rules', async () => {

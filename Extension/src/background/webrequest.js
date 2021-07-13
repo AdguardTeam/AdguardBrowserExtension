@@ -256,7 +256,8 @@ const webrequestInit = function () {
         let css = '';
         let iTagNames = tagNames.length;
 
-        while (iTagNames--) {
+        while (iTagNames) {
+            iTagNames -= 1;
             css += `${tagNames[iTagNames]}[src$="${srcUrl}"] ${collapseStyle}\n`;
         }
 
@@ -595,6 +596,9 @@ const webrequestInit = function () {
                     handlerBehaviorTimeout = null;
                     backgroundPage.webRequest.handlerBehaviorChanged();
                 }, 3000);
+                break;
+            default:
+                // do noting
         }
     });
 
@@ -771,6 +775,8 @@ const webrequestInit = function () {
                         return '\\u2028';
                     case '\u2029':
                         return '\\u2029';
+                    default:
+                        // do nothing
                 }
             }
 
@@ -1029,6 +1035,7 @@ const webrequestInit = function () {
                 return (frameUrl === mainFrameUrl
                         || frameUrl === 'about:blank'
                         || frameUrl === 'about:srcdoc'
+                        // eslint-disable-next-line no-script-url
                         || frameUrl.indexOf('javascript:') > -1)
                     && frameId !== MAIN_FRAME_ID;
             }

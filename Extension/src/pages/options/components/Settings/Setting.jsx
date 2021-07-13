@@ -34,12 +34,10 @@ export const Setting = (props) => {
             const {
                 id, handler, options, value,
             } = props;
-            const changeHandler = (e) => {
-                const { target: { value: data } } = e;
-
-                let dataValue = parseInt(data, 10);
+            const changeHandler = (currentValue) => {
+                let dataValue = parseInt(currentValue, 10);
                 if (Number.isNaN(dataValue)) {
-                    dataValue = data;
+                    dataValue = currentValue;
                 }
 
                 handler({ id, data: dataValue });

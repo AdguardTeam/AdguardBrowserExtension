@@ -237,11 +237,11 @@ export const customFilters = (() => {
         const DOWNLOAD_LIMIT_MS = 3 * 1000;
         return Promise.race([
             downloadRules(url),
-            new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Fetch timeout is over')), DOWNLOAD_LIMIT_MS)
-            ),
+            new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Fetch timeout is over')), DOWNLOAD_LIMIT_MS);
+            }),
         ]);
-    }
+    };
 
     /**
      * Adds or updates custom filter

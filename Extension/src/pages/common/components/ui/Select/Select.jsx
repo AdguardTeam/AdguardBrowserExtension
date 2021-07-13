@@ -1,37 +1,64 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import { Icon } from '../Icon';
 
 import './select.pcss';
 
-const renderOptions = (options) => options.map((option) => {
-    const { value, title } = option;
-
-    // &#8201 - Invisible thin space
-    return (
-        <option key={value} value={value}>
-            &#8201;
-            {title}
-        </option>
-    );
-});
-
 const Select = (props) => {
+    const ref = useRef(null);
     const {
         id, handler, options, value,
     } = props;
 
-    return (
-        <div className="select">
-            <Icon id="#select" classname="icon--select select__ico" />
-            <select
-                className="select__in"
-                onChange={handler}
-                id={id}
-                value={value}
+    const [hidden, setHidden] = useState(true);
+
+    const renderItems = () => options.map((option) => {
+        const { value: currentValue, title } = option;
+
+        return (
+            <button
+                type="button"
+                className="select__item"
+                onClick={() => handler(currentValue)}
+                key={currentValue}
+                value={currentValue}
             >
-                {renderOptions(options)}
-            </select>
+                {title}
+            </button>
+        );
+    });
+
+    useOutsideClick(ref, () => {
+        setHidden(true);
+    });
+
+    const handleSelectClick = () => {
+        if (hidden) {
+            setHidden(false);
+        }
+    };
+
+    const currentValue = options.find((i) => i.value === value);
+    const currentTitle = currentValue.title;
+
+    return (
+        <div id={id} className="select">
+            <button
+                ref={ref}
+                type="button"
+                className="select__value"
+                onClick={handleSelectClick}
+            >
+                {currentTitle}
+            </button>
+            <Icon id="#select" classname="icon--select select__ico" />
+            <div
+                hidden={hidden}
+                className="select__list"
+            >
+                {renderItems(options)}
+            </div>
         </div>
     );
 };
