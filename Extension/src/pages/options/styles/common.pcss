@@ -138,18 +138,30 @@ label.checkbox-label {
         color: var(--gray300)
     }
 
+    &__inner {
+        padding-top: 16px;
+    }
+
     &__container {
         position: relative;
         display: flex;
         justify-content: space-between;
-        padding: 32px 16px 24px;
+        padding: 32px 16px 16px;
+
+        &--sub > .title__inner {
+            padding-top: 0;
+        }
     }
 
     @media (min-width: 640px) {
         padding-right: 16px;
 
         &__container {
-            padding: 0 0 24px 16px;
+            padding: 0 0 16px 16px;
+
+            &--sub > .title__inner {
+                padding-top: 0;
+            }
         }
     }
 
@@ -191,7 +203,7 @@ label.checkbox-label {
 }
 
 .settings__group {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 
     &--disabled {
         opacity: 0.5;
