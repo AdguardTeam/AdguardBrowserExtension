@@ -53,6 +53,8 @@ const Miscellaneous = observer(() => {
     const handleResetSettingsConfirm = async () => {
         const result = await messenger.resetSettings();
         if (result) {
+            /* force all setting context data update with 'firstRender' option */
+            settingsStore.requestOptionsData(true);
             uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_settings_done') });
         } else {
             uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_settings_error') });
