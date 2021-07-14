@@ -1,25 +1,23 @@
-import { browserUtils } from '../utils/browser-utils';
-import { prefs } from '../prefs';
+import { settings } from './user-settings';
 
 /**
  * Default settings set
  */
 export const defaultSettings = {
     'general-settings': {
-        'allow-acceptable-ads': true,
-        'show-blocked-ads-count': true,
-        'autodetect-filters': true,
-        'safebrowsing-enabled': false,
-        'filters-update-period': -1,
-        'appearance-theme': 'system',
+        'allow-acceptable-ads': !settings.defaultProperties[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO],
+        'show-blocked-ads-count': !settings.defaultProperties[settings.DISABLE_SHOW_PAGE_STATS],
+        'autodetect-filters': !settings.defaultProperties[settings.DISABLE_DETECT_FILTERS],
+        'safebrowsing-enabled': !settings.defaultProperties[settings.DISABLE_SAFEBROWSING],
+        'filters-update-period': settings.DEFAULT_FILTERS_UPDATE_PERIOD,
+        'appearance-theme': settings.defaultProperties[settings.APPEARANCE_THEME],
     },
     'extension-specific-settings': {
-        'use-optimized-filters': prefs.mobile,
-        'collect-hits-count': false,
-        'show-context-menu': true,
-        'show-info-about-adguard': (browserUtils.isWindowsOs() || browserUtils.isMacOs())
-            && !browserUtils.isEdgeBrowser(),
-        'show-app-updated-info': true,
+        'use-optimized-filters': settings.defaultProperties[settings.USE_OPTIMIZED_FILTERS],
+        'collect-hits-count': !settings.defaultProperties[settings.DISABLE_COLLECT_HITS],
+        'show-context-menu': !settings.defaultProperties[settings.DISABLE_SHOW_CONTEXT_MENU],
+        'show-info-about-adguard': !settings.defaultProperties[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO],
+        'show-app-updated-info': !settings.defaultProperties[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION],
     },
     'filters': {
         'enabled-groups': [
@@ -47,15 +45,17 @@ export const defaultSettings = {
         },
     },
     'stealth': {
-        'stealth_disable_stealth_mode': true,
-        'stealth-hide-referrer': true,
-        'stealth-hide-search-queries': true,
-        'stealth-send-do-not-track': true,
-        'stealth-block-webrtc': false,
-        'stealth-block-third-party-cookies': true,
-        'stealth-block-third-party-cookies-time': '2880',
-        'stealth-block-first-party-cookies': false,
-        'stealth-block-first-party-cookies-time': '4320',
+        'stealth_disable_stealth_mode': settings.defaultProperties[settings.DISABLE_STEALTH_MODE],
+        'stealth-hide-referrer': settings.defaultProperties[settings.HIDE_REFERRER],
+        'stealth-hide-search-queries': settings.defaultProperties[settings.HIDE_SEARCH_QUERIES],
+        'stealth-send-do-not-track': settings.defaultProperties[settings.SEND_DO_NOT_TRACK],
+        'stealth-block-webrtc': settings.defaultProperties[settings.BLOCK_WEBRTC],
+        'stealth-block-third-party-cookies': settings.defaultProperties[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES],
+        'stealth-block-third-party-cookies-time':
+            settings.defaultProperties[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME],
+        'stealth-block-first-party-cookies': settings.defaultProperties[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES],
+        'stealth-block-first-party-cookies-time':
+            settings.defaultProperties[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME],
         'strip-tracking-parameters': false,
     },
 };
