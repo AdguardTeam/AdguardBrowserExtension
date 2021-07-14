@@ -533,6 +533,9 @@ export const settingsProvider = (function () {
             applyExtensionSpecificSettingsSection(input);
             await applyFiltersSection(input);
             await applyStealthModeSection(input);
+
+            await application.addAndEnableFilters(subscriptions.getLangSuitableFilters());
+
             return true;
         } catch (e) {
             log.error(e);
