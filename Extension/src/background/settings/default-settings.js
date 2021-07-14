@@ -22,6 +22,8 @@ export const defaultSettings = {
     'filters': {
         'enabled-groups': [
             1,
+            2,
+            3,
             4,
             6,
             7,
@@ -30,6 +32,8 @@ export const defaultSettings = {
             10,
             14,
             2,
+            3,
+            4,
         ],
         'custom-filters': [],
         'user-filter': {
