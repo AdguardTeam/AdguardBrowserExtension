@@ -98,7 +98,7 @@ describe('ruleCreators', () => {
             };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionCookieRule(rule, event);
-            expect(result).toBe('@@||example.org');
+            expect(result).toBe('@@||example.org^');
         });
     });
 

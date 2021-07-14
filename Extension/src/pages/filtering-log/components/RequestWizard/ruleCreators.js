@@ -149,10 +149,13 @@ export const createExceptionCssRule = (rule, event) => {
  */
 export const createExceptionCookieRule = (rule, event) => {
     let domain = event.frameDomain;
+
     if (domain[0] === '.') {
         domain = domain.substring(1);
     }
-    return MASK_ALLOWLIST + SimpleRegex.MASK_START_URL + domain;
+
+    const { MASK_START_URL, MASK_SEPARATOR } = SimpleRegex;
+    return MASK_ALLOWLIST + MASK_START_URL + domain + MASK_SEPARATOR;
 };
 
 /**
