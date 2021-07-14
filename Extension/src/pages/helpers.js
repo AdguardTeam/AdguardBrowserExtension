@@ -112,6 +112,21 @@ export const copyToClipboard = (text) => {
     textarea.remove();
 };
 
+export const measureTextWidth = (text) => {
+    const el = document.createElement('p');
+    el.innerText = text;
+    el.style = `
+        position: absolute;
+        display: hidden;
+        height: 0;
+        font-size: 14px;
+    `;
+    document.body.appendChild(el);
+    const pxLength = el.scrollWidth;
+    el.remove();
+    return pxLength;
+};
+
 /**
  * Сalculate the angle of radius vector of the scroll motion
  * and detect whether scroll is vertical

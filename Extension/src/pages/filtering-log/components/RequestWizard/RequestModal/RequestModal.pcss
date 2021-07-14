@@ -119,8 +119,9 @@
         }
 
         &--new-tab {
+            margin-left: 4px;
             position: relative;
-            top: -1px;
+            top: -2px;
         }
     }
 
@@ -195,6 +196,23 @@
 
         &:focus {
             outline: none;
+        }
+    }
+
+    &__url-button--show-hide-full-url {
+        display: inline-block;
+        cursor: pointer;
+        margin-top: 8px;
+        color: var(--green700);
+        padding-bottom: 1px;
+
+        &:hover {
+            padding-bottom: 0;
+            border-bottom: 1px solid var(--green700);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--green400);
         }
     }
 

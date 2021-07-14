@@ -45,13 +45,37 @@
 
     &__copy-to-clipboard-wrapper {
         display: inline;
-        margin-right: 4px;
     }
 
     &__copy-to-clipboard {
-        display: inline;
+        display: inline-block;
+        vertical-align: middle;
     }
 
+    &__url {
+        display: inline-block;
+        vertical-align: middle;
+
+        &-short {
+            width: calc(100% - 18px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            & .request-modal__navigation--new-tab {
+                position: absolute;
+                top: 0;
+                right: -18px;
+            }
+        }
+
+        &-full {
+            width: auto;
+            white-space: none; 
+            overflow: visibible;
+            text-overflow: initial;
+        }
+    }
 }
 
 .light-mode {
@@ -69,7 +93,6 @@
         &__value {
             color: var(--gray900);
         }
-
     }
 }
 
