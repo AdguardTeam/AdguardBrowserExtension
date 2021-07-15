@@ -257,7 +257,7 @@ const createMessageHandler = () => {
                 return { ready: filteringApi.isReady() };
             case MESSAGE_TYPES.ADD_AND_ENABLE_FILTER: {
                 const { filterId } = data;
-                return application.addAndEnableFilters([filterId]);
+                return application.addAndEnableFilters([filterId], { forceRemote: true });
             }
             case MESSAGE_TYPES.DISABLE_ANTIBANNER_FILTER: {
                 const { filterId, remove } = data;

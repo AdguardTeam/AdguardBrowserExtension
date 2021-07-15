@@ -349,7 +349,7 @@ export const settingsProvider = (function () {
      * @returns {Promise<any>}
      */
     const syncEnabledFilters = async (filterIds) => {
-        await application.addAndEnableFilters(filterIds);
+        await application.addAndEnableFilters(filterIds, { forceRemote: true });
         const enabledFilters = application.getEnabledFilters();
         const filtersToDisable = enabledFilters
             .filter(enabledFilter => !filterIds.includes(enabledFilter.filterId))

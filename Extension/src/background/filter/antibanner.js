@@ -213,41 +213,39 @@ export const antiBannerService = (() => {
      * @private
      */
     function getFilterById(filterId) {
-        const filter = subscriptions.getFilter(filterId);
-        if (!filter) {
+        const filterMetadata = subscriptions.getFilter(filterId);
+        if (!filterMetadata) {
             throw new Error(`Filter with id: ${filterId} not found`);
         }
-        return filter;
+        return filterMetadata;
     }
 
     /**
      * Loads filter from storage (if in extension package) or from backend
      *
      * @param filterId Filter identifier
+     * @param forceRemote Force download filter rules from backend
      */
-    const addAntiBannerFilter = async (filterId) => {
-        const filter = getFilterById(filterId);
-        if (filter.installed) {
+    const addAntiBannerFilter = async (filterId, forceRemote = false) => {
+        const filterMetadata = getFilterById(filterId);
+
+        if (filterMetadata.installed && !forceRemote) {
             return true;
         }
 
         const onFilterLoaded = (success) => {
             if (success) {
-                filter.installed = true;
-                listeners.notifyListeners(listeners.FILTER_ADD_REMOVE, filter);
+                filterMetadata.installed = true;
+                listeners.notifyListeners(listeners.FILTER_ADD_REMOVE, filterMetadata);
             }
             return success;
         };
 
-        if (filter.loaded) {
+        if (filterMetadata.loaded && !forceRemote) {
             return onFilterLoaded(true);
         }
 
-        /**
-         * TODO: when we want to load filter from backend,
-         *  we should retrieve metadata from backend too, but not from local file.
-         */
-        const result = await filtersUpdate.loadFilterRules(filter, false);
+        const result = await filtersUpdate.loadFilterRules(filterMetadata, forceRemote);
         return onFilterLoaded(result);
     };
 

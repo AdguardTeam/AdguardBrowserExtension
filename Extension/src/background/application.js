@@ -199,7 +199,7 @@ export const application = (() => {
     /**
      * Successively add filters from filterIds and then enable successfully added filters
      * @param filterIds Filter identifiers
-     * @param {{forceGroupEnable: boolean}} [options]
+     * @param {{forceGroupEnable: boolean, forceRemote: boolean }} [options]
      */
     const addAndEnableFilters = async (filterIds, options) => {
         const enabledFilters = [];
@@ -213,7 +213,7 @@ export const application = (() => {
         for (let i = 0; i < filterIds.length; i += 1) {
             const filterId = filterIds[i];
             // eslint-disable-next-line no-await-in-loop
-            const success = await antiBannerService.addAntiBannerFilter(filterId);
+            const success = await antiBannerService.addAntiBannerFilter(filterId, options && options.forceRemote);
             if (success) {
                 const changed = enableFilter(filterId, options);
                 if (changed) {
