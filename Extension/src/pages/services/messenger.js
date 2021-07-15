@@ -143,6 +143,10 @@ class Messenger {
         return this.sendMessage(MESSAGE_TYPES.RESET_BLOCKED_ADS_COUNT);
     }
 
+    async resetSettings() {
+        return this.sendMessage(MESSAGE_TYPES.RESET_SETTINGS);
+    }
+
     async getUserRules() {
         return this.sendMessage(MESSAGE_TYPES.GET_USER_RULES);
     }

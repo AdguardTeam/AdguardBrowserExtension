@@ -408,5 +408,8 @@ export const settings = (() => {
     api.getUserFilterEnabled = getUserFilterEnabled;
     api.setUserFilterEnabled = setUserFilterEnabled;
 
+    // Default properties
+    api.defaultProperties = defaultProperties.defaults;
+
     return api;
 })();

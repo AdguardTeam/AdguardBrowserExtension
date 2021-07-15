@@ -383,6 +383,8 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.RESET_BLOCKED_ADS_COUNT:
                 frames.resetBlockedAdsCount();
                 break;
+            case MESSAGE_TYPES.RESET_SETTINGS:
+                return settingsProvider.applyDefaultSettings();
             case MESSAGE_TYPES.GET_SELECTORS_AND_SCRIPTS: {
                 let urlForSelectors;
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1498
