@@ -77,7 +77,9 @@ class Messenger {
             callback(...args);
         };
 
-        let { listenerId } = await this.sendMessage(MESSAGE_TYPES.CREATE_EVENT_LISTENER, { events });
+        let { listenerId } = await this.sendMessage(
+            MESSAGE_TYPES.CREATE_EVENT_LISTENER, { events },
+        );
 
         browser.runtime.onMessage.addListener((message) => {
             if (message.type === MESSAGE_TYPES.NOTIFY_LISTENERS) {
@@ -166,13 +168,17 @@ class Messenger {
     }
 
     async updateGroupStatus(id, data) {
-        const type = data ? MESSAGE_TYPES.ENABLE_FILTERS_GROUP : MESSAGE_TYPES.DISABLE_FILTERS_GROUP;
+        const type = data
+            ? MESSAGE_TYPES.ENABLE_FILTERS_GROUP
+            : MESSAGE_TYPES.DISABLE_FILTERS_GROUP;
         const groupId = id - 0;
         await this.sendMessage(type, { groupId });
     }
 
     async updateFilterStatus(filterId, data) {
-        const type = data ? MESSAGE_TYPES.ADD_AND_ENABLE_FILTER : MESSAGE_TYPES.DISABLE_ANTIBANNER_FILTER;
+        const type = data
+            ? MESSAGE_TYPES.ADD_AND_ENABLE_FILTER
+            : MESSAGE_TYPES.DISABLE_ANTIBANNER_FILTER;
         await this.sendMessage(type, { filterId });
     }
 

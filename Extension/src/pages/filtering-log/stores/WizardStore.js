@@ -15,6 +15,8 @@ import {
     createDocumentLevelBlockRule,
     createExceptionCookieRule,
     createExceptionCssRule,
+    createExceptionRemoveParamRules,
+    createExceptionRemoveHeaderRules,
     createExceptionScriptRule,
     splitToPatterns,
 } from '../components/RequestWizard/ruleCreators';
@@ -32,6 +34,11 @@ export const ADDED_RULE_STATES = {
     UNBLOCK: 'unblock',
 };
 
+const defaultRuleOptions = {
+    [RULE_OPTIONS.RULE_DOMAIN]: { checked: true },
+    [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
+    [RULE_OPTIONS.RULE_IMPORTANT]: { checked: false },
+};
 class WizardStore {
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -51,12 +58,7 @@ class WizardStore {
     rulePattern = '';
 
     @observable
-    ruleOptions = {
-        [RULE_OPTIONS.RULE_DOMAIN]: { checked: false },
-        [RULE_OPTIONS.RULE_MATCH_CASE]: { checked: false },
-        [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
-        [RULE_OPTIONS.RULE_IMPORTANT]: { checked: false },
-    };
+    ruleOptions = defaultRuleOptions;
 
     @observable
     addedRuleState = null;
@@ -75,29 +77,19 @@ class WizardStore {
     updateRuleOptions() {
         const { selectedEvent } = this.rootStore.logStore;
         const {
-            isThirdPartyRequest,
-            frameDomain,
+            requestThirdParty,
+            requestRule,
         } = selectedEvent;
 
-        // set rule options to defaults
-        Object.values(RULE_OPTIONS)
-            .forEach((option) => {
-                this.ruleOptions[option].checked = false;
-            });
+        const isImportant = requestRule
+            && (requestRule.whitelistRule || requestRule.isImportant)
+            && !requestRule.documentLevelRule;
 
-        if (selectedEvent.requestRule
-            && (selectedEvent.requestRule.whitelistRule || selectedEvent.requestRule.isImportant)) {
-            this.ruleOptions[RULE_OPTIONS.RULE_IMPORTANT].checked = true;
-        }
-
-        if (isThirdPartyRequest && !frameDomain) {
-            this.ruleOptions[RULE_OPTIONS.RULE_THIRD_PARTY].checked = true;
-        }
-
-        if (selectedEvent.requestRule && selectedEvent.requestRule.documentLevelRule) {
-            this.ruleOptions[RULE_OPTIONS.RULE_DOMAIN].checked = true;
-            this.ruleOptions[RULE_OPTIONS.RULE_IMPORTANT].checked = false;
-        }
+        this.ruleOptions = {
+            [RULE_OPTIONS.RULE_DOMAIN]: { checked: true },
+            [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: requestThirdParty },
+            [RULE_OPTIONS.RULE_IMPORTANT]: { checked: isImportant },
+        };
     }
 
     @action
@@ -181,14 +173,13 @@ class WizardStore {
         this.ruleText = ruleText;
     }
 
-    createRuleFromParams = (
+    createRuleFromParams = ({
         urlPattern,
         urlDomain,
-        matchCase,
         thirdParty,
         important,
         mandatoryOptions,
-    ) => {
+    }) => {
         let ruleText = urlPattern;
 
         let options = [];
@@ -200,10 +191,6 @@ class WizardStore {
         // add important option
         if (important) {
             options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
-        }
-        // add match case option
-        if (matchCase) {
-            options.push(NETWORK_RULE_OPTIONS.MATCH_CASE);
         }
         // add third party option
         if (thirdParty) {
@@ -237,13 +224,11 @@ class WizardStore {
         const {
             ruleDomain,
             ruleImportant,
-            ruleMatchCase,
             ruleThirdParty,
         } = ruleOptions;
 
         const permitDomain = !ruleDomain.checked;
         const important = !!ruleImportant.checked;
-        const matchCase = !!ruleMatchCase.checked;
         const thirdParty = !!ruleThirdParty.checked;
 
         const domain = permitDomain ? selectedEvent.frameDomain : null;
@@ -272,25 +257,22 @@ class WizardStore {
         if (selectedEvent.element) {
             ruleText = this.createCssRuleFromParams(rulePattern, permitDomain);
         } else if (selectedEvent.cookieName) {
-            ruleText = this.createRuleFromParams(
-                rulePattern,
-                null,
-                null,
+            ruleText = this.createRuleFromParams({
+                urlPattern: rulePattern,
                 thirdParty,
                 important,
                 mandatoryOptions,
-            );
+            });
         } else if (selectedEvent.script) {
-            ruleText = this.createRuleFromParams(rulePattern);
+            ruleText = this.createRuleFromParams({ urlPattern: rulePattern });
         } else {
-            ruleText = this.createRuleFromParams(
-                rulePattern,
-                domain,
-                matchCase,
+            ruleText = this.createRuleFromParams({
+                urlPattern: rulePattern,
+                urlDomain: domain,
                 thirdParty,
                 important,
                 mandatoryOptions,
-            );
+            });
         }
 
         return ruleText;
@@ -307,7 +289,7 @@ class WizardStore {
         const { selectedEvent } = this.rootStore.logStore;
         if (this.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST) {
             let patterns;
-            if (selectedEvent.requestUrl) {
+            if (selectedEvent.requestUrl && selectedEvent.requestDomain) {
                 patterns = splitToPatterns(
                     selectedEvent.requestUrl,
                     selectedEvent.requestDomain,
@@ -329,6 +311,14 @@ class WizardStore {
 
             if (selectedEvent.script) {
                 patterns = [createExceptionScriptRule(selectedEvent.requestRule, selectedEvent)];
+            }
+
+            if (selectedEvent.removeParam) {
+                patterns = createExceptionRemoveParamRules(selectedEvent);
+            }
+
+            if (selectedEvent.removeHeader) {
+                patterns = createExceptionRemoveHeaderRules(selectedEvent);
             }
 
             this.setRulePattern(patterns[0]);

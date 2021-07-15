@@ -30,4 +30,3 @@ describe('Redirect service', () => {
         expect(redirectService.hasRedirect('invalid')).toBeFalsy();
     });
 });
-

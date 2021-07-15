@@ -32,14 +32,12 @@ export const Setting = (props) => {
         }
         case SETTINGS_TYPES.SELECT: {
             const {
-                id, handler, options, value,
+                id, handler, options, value, selectDropdown, hideSelectDropdown,
             } = props;
-            const changeHandler = (e) => {
-                const { target: { value: data } } = e;
-
-                let dataValue = parseInt(data, 10);
+            const changeHandler = (currentValue) => {
+                let dataValue = parseInt(currentValue, 10);
                 if (Number.isNaN(dataValue)) {
-                    dataValue = data;
+                    dataValue = currentValue;
                 }
 
                 handler({ id, data: dataValue });
@@ -50,6 +48,8 @@ export const Setting = (props) => {
                     handler={changeHandler}
                     options={options}
                     value={value}
+                    selectDropdown={selectDropdown}
+                    hideSelectDropdown={hideSelectDropdown}
                 />
             );
         }

@@ -73,7 +73,7 @@ export const requestSanitizer = (function () {
                 urls: ['<all_urls>'],
                 tabId: BACKGROUND_TAB_ID,
             },
-            onBeforeSendHeadersExtraInfoSpec
+            onBeforeSendHeadersExtraInfoSpec,
         );
     };
 

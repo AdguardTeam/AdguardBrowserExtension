@@ -18,6 +18,7 @@ const SettingsSection = (props) => {
 
     const titleContainerClass = classNames('title__container', {
         'title__container--navigation-back': renderBackButton,
+        'title__container--sub': subTitle,
     });
 
     const titleClass = classNames('title', {

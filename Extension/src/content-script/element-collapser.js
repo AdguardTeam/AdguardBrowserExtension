@@ -33,6 +33,7 @@ export const ElementCollapser = (function () {
         let codeUnit;
         let result = '';
         const firstCodeUnit = string.charCodeAt(0);
+        // eslint-disable-next-line no-plusplus
         while (++index < length) {
             codeUnit = string.charCodeAt(index);
             // Note: there’s no need to special-case astral symbols, surrogate
@@ -48,16 +49,16 @@ export const ElementCollapser = (function () {
             if (
                 // If the character is in the range [\1-\1F] (U+0001 to U+001F) or is
                 // U+007F, […]
-                (codeUnit >= 0x0001 && codeUnit <= 0x001F) || codeUnit == 0x007F
+                (codeUnit >= 0x0001 && codeUnit <= 0x001F) || codeUnit === 0x007F
                 // If the character is the first character and is in the range [0-9]
                 // (U+0030 to U+0039), […]
                 || (index === 0 && codeUnit >= 0x0030 && codeUnit <= 0x0039)
                 // If the character is the second character and is in the range [0-9]
                 // (U+0030 to U+0039) and the first character is a `-` (U+002D), […]
                 || (
-                    index == 1
+                    index === 1
                     && codeUnit >= 0x0030 && codeUnit <= 0x0039
-                    && firstCodeUnit == 0x002D
+                    && firstCodeUnit === 0x002D
                 )
             ) {
                 // https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
@@ -69,8 +70,8 @@ export const ElementCollapser = (function () {
                 // If the character is the first character and is a `-` (U+002D), and
                 // there is no second character, […]
                 index === 0
-                && length == 1
-                && codeUnit == 0x002D
+                && length === 1
+                && codeUnit === 0x002D
             ) {
                 result += `\\${string.charAt(index)}`;
                 continue;
@@ -82,11 +83,11 @@ export const ElementCollapser = (function () {
             // U+005A), or [a-z] (U+0061 to U+007A), […]
             if (
                 codeUnit >= 0x0080
-                || codeUnit == 0x002D
-                || codeUnit == 0x005F
-                || codeUnit >= 0x0030 && codeUnit <= 0x0039
-                || codeUnit >= 0x0041 && codeUnit <= 0x005A
-                || codeUnit >= 0x0061 && codeUnit <= 0x007A
+                || codeUnit === 0x002D
+                || codeUnit === 0x005F
+                || (codeUnit >= 0x0030 && codeUnit <= 0x0039)
+                || (codeUnit >= 0x0041 && codeUnit <= 0x005A)
+                || (codeUnit >= 0x0061 && codeUnit <= 0x007A)
             ) {
                 // the character itself
                 result += string.charAt(index);
@@ -132,7 +133,10 @@ export const ElementCollapser = (function () {
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
-            hideBySelector(selectorText, 'visibility: hidden!important; height: 0px!important; min-height: 0px!important;');
+            hideBySelector(
+                selectorText,
+                'visibility: hidden!important; height: 0px!important; min-height: 0px!important;',
+            );
         } else {
             hideBySelector(selectorText, null);
         }
@@ -161,6 +165,18 @@ export const ElementCollapser = (function () {
                 elementStyle.setProperty(prop, elCssValue, null);
             }
         });
+    };
+
+    /**
+     * Checks if specified element is already collapsed or not.
+     * There is a big chance that we've already done it from the background page
+     * (see collapseElement method in webrequest.js)
+     *
+     * @param {HTMLElement} element Element to check
+     */
+    const isCollapsed = function (element) {
+        const computedStyle = window.getComputedStyle(element);
+        return (computedStyle && computedStyle.display === 'none');
     };
 
     /**
@@ -200,7 +216,7 @@ export const ElementCollapser = (function () {
         let cssValue = 'none';
         const cssPriority = 'important';
 
-        if (tagName == 'frame') {
+        if (tagName === 'frame') {
             cssProperty = 'visibility';
             cssValue = 'hidden';
         }
@@ -212,20 +228,9 @@ export const ElementCollapser = (function () {
         // <input type="image"> elements try to load their image again
         // when the "display" CSS property is set. So we have to check
         // that it isn't already collapsed to avoid an infinite recursion.
-        if (elCssValue != cssValue || elCssPriority != cssPriority) {
+        if (elCssValue !== cssValue || elCssPriority !== cssPriority) {
             elementStyle.setProperty(cssProperty, cssValue, cssPriority);
         }
-    };
-
-    /**
-     * Checks if specified element is already collapsed or not.
-     * There is a big chance that we've already done it from the background page (see collapseElement method in webrequest.js)
-     *
-     * @param {HTMLElement} element Element to check
-     */
-    var isCollapsed = function (element) {
-        const computedStyle = window.getComputedStyle(element);
-        return (computedStyle && computedStyle.display === 'none');
     };
 
     /**

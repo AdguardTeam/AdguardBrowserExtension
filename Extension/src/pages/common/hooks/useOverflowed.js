@@ -28,9 +28,11 @@ export const useOverflowed = (ref, track = { x: false, y: true }, throttleTime =
          * call setState within requestAnimationFrame to prevent inifinite loop
          */
         window.requestAnimationFrame(() => {
-            setOverflowed(overflowedX || overflowedY);
+            if (ref && ref.current) {
+                setOverflowed(overflowedX || overflowedY);
+            }
         });
-    }, [track]);
+    }, [track, ref]);
 
     useResizeObserver(ref, calcIsOverflowed, throttleTime);
 

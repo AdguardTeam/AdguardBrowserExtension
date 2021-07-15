@@ -28,7 +28,6 @@ import {
     APPEARANCE_THEMES,
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
-    DEFAULT_TRACKING_PARAMETERS,
 } from '../../pages/constants';
 
 /**
@@ -82,12 +81,8 @@ export const settings = (() => {
         get defaults() {
             return lazyGet(this, 'defaults', () => {
                 // Initialize default properties
-                const defaults = Object.create(null);
-                for (const name in settings) {
-                    if (settings.hasOwnProperty(name)) {
-                        defaults[settings[name]] = false;
-                    }
-                }
+                const defaults = Object.fromEntries(Object.keys(settings).map(name => ([name, false])));
+
                 defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!browserUtils.isWindowsOs() && !browserUtils.isMacOs()) || browserUtils.isEdgeBrowser();
                 defaults[settings.DISABLE_SAFEBROWSING] = true;
                 defaults[settings.DISABLE_COLLECT_HITS] = true;
@@ -157,14 +152,12 @@ export const settings = (() => {
             defaultValues: Object.create(null),
         };
 
-        for (const key in settings) {
-            if (settings.hasOwnProperty(key)) {
-                const setting = settings[key];
-                result.names[key] = setting;
-                result.values[setting] = getProperty(setting);
-                result.defaultValues[setting] = defaultProperties.defaults[setting];
-            }
-        }
+        Object.entries(settings).forEach(([key, value]) => {
+            const setting = settings[key];
+            result.names[key] = setting;
+            result.values[value] = getProperty(setting);
+            result.defaultValues[value] = defaultProperties.defaults[setting];
+        });
 
         return result;
     };
@@ -351,14 +344,7 @@ export const settings = (() => {
         setProperty(settings.USER_FILTER_ENABLED, state);
     };
 
-    const api = {};
-
-    // Expose settings to api
-    for (const key in settings) {
-        if (settings.hasOwnProperty(key)) {
-            api[key] = settings[key];
-        }
-    }
+    const api = { ...settings };
 
     api.getProperty = getProperty;
     api.setProperty = setProperty;

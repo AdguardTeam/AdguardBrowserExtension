@@ -3,6 +3,7 @@ import React, {
     useState,
     useRef,
     useEffect,
+    forwardRef,
 } from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
@@ -17,11 +18,11 @@ import './copy-to-clipboard.pcss';
 
 const TOOLTIP_MOUSE_PADDING_PX = 4;
 
-export const CopyToClipboard = observer(({
+export const CopyToClipboard = observer(forwardRef(({
     children,
     className,
     wrapperClassName,
-}) => {
+}, ref) => {
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
     const { currentContainerId, copyText, resetTooltipId } = useContext(copyToClipboardStore);
 
@@ -73,6 +74,7 @@ export const CopyToClipboard = observer(({
                 </Portal>
             )}
             <div
+                ref={ref}
                 className={cn('copy-to-clipboard', className)}
                 role="button"
                 tabIndex="0"
@@ -84,4 +86,4 @@ export const CopyToClipboard = observer(({
             </div>
         </div>
     );
-});
+}));

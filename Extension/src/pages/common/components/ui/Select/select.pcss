@@ -2,7 +2,7 @@
     display: inline-block;
     position: relative;
 
-    &__in {
+    &__value {
         font-size: 16px;
         text-align-last: right;
         color: var(--gray-base);
@@ -23,20 +23,108 @@
         right: 5px;
         top: calc(50% - 4px);
     }
+
+    &__list {
+        position: absolute;
+        right: 0;
+        z-index: 10;
+        border: 1px solid var(--gray300);
+        border-radius: 4px;
+        max-height: 265px;
+        min-width: 160px;
+        max-width: 220px;
+        overflow-y: auto;
+        box-shadow: 0 0 7px 3px rgba(0, 0, 0, 0.1);
+        margin: 13px 0 0 0;
+        background-color: var(--white);
+        scrollbar-color: var(--gray700) white;
+        scrollbar-width: thin;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--black);
+        }
+
+        &[hidden] {
+            display: none;
+        }
+
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 0;
+            background-color: var(--gray700);
+        }
+    }
+
+    &__item {
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        padding: 16px 25px;
+        cursor: pointer;
+        border: 0;
+        background-color: transparent;
+        color: var(--gray900);
+        width: 100%;
+        text-align: left;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+
+        &:hover {
+            background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--black);
+                background-color: var(--gray300);
+            }
+        }
+    }
 }
 
 .light-mode {
     .select {
-        &__in {
+        &__value {
             color: var(--gray-base);
+        }
+
+        &__list {
+            background-color: var(--white);
+        }
+
+        &__item {
+            color: var(--gray900);
+
+            &:hover {
+                background-color: var(--gray100);
+                color: var(--gray900);
+            }
         }
     }
 }
 
 .dark-mode {
     .select {
-        &__in {
+        &__value {
             color: var(--gray300);
+        }
+
+        &__list {
+            background-color: var(--black);
+        }
+
+        &__item {
+            color: var(--gray300);
+
+            &:hover {
+                background-color: var(--gray300);
+                color: var(--black);
+            }
         }
     }
 }

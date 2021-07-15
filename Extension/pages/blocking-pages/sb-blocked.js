@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome */
-
 function hideNodes(nodes) {
     nodes.forEach((node) => {
         node.style.display = 'none';
@@ -41,7 +39,6 @@ const replaceHostTemplates = (nodes, host) => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-
     const advancedBtn = document.getElementById('advancedButton');
     const moreInfoBtn = document.getElementById('moreInfoButton');
     const btnProceed = document.getElementById('btnProceed');

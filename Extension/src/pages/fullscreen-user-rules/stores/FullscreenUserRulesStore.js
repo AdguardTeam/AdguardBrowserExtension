@@ -1,5 +1,10 @@
 import { createContext } from 'react';
-import { computed, makeObservable, observable, runInAction } from 'mobx';
+import {
+    computed,
+    makeObservable,
+    observable,
+    runInAction,
+} from 'mobx';
 import { messenger } from '../../services/messenger';
 import { MESSAGE_TYPES } from '../../../common/constants';
 

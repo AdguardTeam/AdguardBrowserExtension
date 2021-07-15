@@ -112,15 +112,17 @@ const browsersHitStats = (function () {
 
         let { domains } = hitStatsHolder.hitStats;
         if (!domains) {
-            hitStatsHolder.hitStats.domains = domains = Object.create(null);
+            domains = Object.create(null);
+            hitStatsHolder.hitStats.domains = domains;
         }
 
         let domainInfo = domains[domain];
         if (!domainInfo) {
-            domains[domain] = domainInfo = Object.create(null);
+            domainInfo = Object.create(null);
+            domains[domain] = domainInfo;
             domainInfo.views = 0;
         }
-        domainInfo.views++;
+        domainInfo.views += 1;
         hitStatsHolder.hitStats.views = (hitStatsHolder.hitStats.views || 0) + 1;
 
         saveHitsCountStats(hitStatsHolder.hitStats);
@@ -145,12 +147,14 @@ const browsersHitStats = (function () {
 
         let { rules } = domainInfo;
         if (!rules) {
-            domainInfo.rules = rules = Object.create(null);
+            rules = Object.create(null);
+            domainInfo.rules = rules;
         }
 
         let filterRules = rules[filterId];
         if (!filterRules) {
-            rules[filterId] = filterRules = Object.create(null);
+            filterRules = Object.create(null);
+            rules[filterId] = filterRules;
         }
 
         if (!(ruleText in filterRules)) {
@@ -159,7 +163,8 @@ const browsersHitStats = (function () {
 
         let ruleInfo = filterRules[ruleText];
         if (!ruleInfo) {
-            filterRules[ruleText] = ruleInfo = Object.create(null);
+            ruleInfo = Object.create(null);
+            filterRules[ruleText] = ruleInfo;
         }
 
         if (requestUrl) {

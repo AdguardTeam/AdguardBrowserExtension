@@ -16,7 +16,6 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { RequestType } from '@adguard/tsurlfilter/dist/es/request-type';
 
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './extension-api/background-page';
@@ -146,19 +145,15 @@ const createMessageHandler = () => {
      * Constructs objects that uses on extension pages, like: options.html, thankyou.html etc
      */
     function processInitializeFrameScriptRequest() {
-        const enabledFilters = Object.create(null);
-
         const AntiBannerFiltersId = utils.filters.ids;
 
-        for (const key in AntiBannerFiltersId) {
-            if (AntiBannerFiltersId.hasOwnProperty(key)) {
-                const filterId = AntiBannerFiltersId[key];
-                const enabled = application.isFilterEnabled(filterId);
-                if (enabled) {
-                    enabledFilters[filterId] = true;
-                }
+        const enabledFilters = {};
+        Object.values(AntiBannerFiltersId).forEach((filterId) => {
+            const enabled = application.isFilterEnabled(filterId);
+            if (enabled) {
+                enabledFilters[filterId] = true;
             }
-        }
+        });
 
         return {
             userSettings: settings.getAllSettings(),

@@ -152,7 +152,8 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
 
         request.onupgradeneeded = function (ev) {
             database = ev.target.result;
-            database.onerror = database.onabort = onError;
+            database.onerror = onError;
+            database.onabort = onError;
             // DB doesn't exist => creates new storage
             const table = database.createObjectStore(STORAGE_NAME, { keyPath: 'key' });
             table.createIndex('value', 'value', { unique: false });
@@ -160,18 +161,22 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
 
         request.onsuccess = function (ev) {
             database = ev.target.result;
-            database.onerror = database.onabort = onError;
+            database.onerror = onError;
+            database.onabort = onError;
             resolve(api);
         };
 
-        request.onerror = request.onblocked = function () {
+        const onRequestError = function () {
             onError(this.error);
             // Fallback to the browser.storage API
             resolve(initialAPI);
         };
+
+        request.onerror = onRequestError;
+        request.onblocked = onRequestError;
     });
 
-    var api = {
+    const api = {
         read,
         write,
         remove,

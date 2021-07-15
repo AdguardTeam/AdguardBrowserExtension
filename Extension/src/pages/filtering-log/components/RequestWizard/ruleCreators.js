@@ -44,7 +44,7 @@ export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
         let pattern = `${domain}/`;
         for (let i = 0; i < Math.min(parts.length - 1, PATTERNS_COUNT); i += 1) {
             pattern += `${parts[i]}/`;
-            patterns.push(prefix + pattern + SimpleRegex.MASK_ANY_CHARACTER);
+            patterns.push(prefix + pattern);
         }
         const file = parts[parts.length - 1];
         if (file && patterns.length < PATTERNS_COUNT) {
@@ -55,6 +55,12 @@ export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
 
     // add domain pattern to start
     patterns.unshift(prefix + domain + SimpleRegex.MASK_SEPARATOR);
+
+    // add 2LD to start, if it differs from the current one
+    const secondLevelDomain = domain.split('.').slice(-2).join('.');
+    if (secondLevelDomain !== domain) {
+        patterns.unshift(prefix + secondLevelDomain + SimpleRegex.MASK_SEPARATOR);
+    }
 
     // push full url pattern
     const url = UrlUtils.getUrlWithoutScheme(requestUrl);
@@ -143,10 +149,13 @@ export const createExceptionCssRule = (rule, event) => {
  */
 export const createExceptionCookieRule = (rule, event) => {
     let domain = event.frameDomain;
+
     if (domain[0] === '.') {
         domain = domain.substring(1);
     }
-    return MASK_ALLOWLIST + SimpleRegex.MASK_START_URL + domain;
+
+    const { MASK_START_URL, MASK_SEPARATOR } = SimpleRegex;
+    return MASK_ALLOWLIST + MASK_START_URL + domain + MASK_SEPARATOR;
 };
 
 /**
@@ -169,4 +178,33 @@ export const createExceptionScriptRule = (rule, event) => {
     }
 
     return '';
+};
+
+export const getUnblockDomainRule = (domain, ruleOption) => {
+    const { MASK_START_URL, MASK_SEPARATOR } = SimpleRegex;
+
+    return MASK_ALLOWLIST
+        + MASK_START_URL
+        + domain
+        + MASK_SEPARATOR
+        + OPTIONS_DELIMITER
+        + ruleOption;
+};
+
+export const createExceptionRemoveParamRules = (event) => {
+    const { frameDomain, requestRule } = event;
+
+    return [
+        getUnblockDomainRule(frameDomain, `removeparam=${requestRule.modifierValue}`),
+        getUnblockDomainRule(frameDomain, 'removeparam'),
+    ];
+};
+
+export const createExceptionRemoveHeaderRules = (event) => {
+    const { frameDomain, requestRule } = event;
+
+    return [
+        getUnblockDomainRule(frameDomain, `removeheader=${requestRule.modifierValue}`),
+        getUnblockDomainRule(frameDomain, 'removeheader'),
+    ];
 };

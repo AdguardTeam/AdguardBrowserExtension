@@ -75,10 +75,10 @@ export const Main = observer(() => {
                         onClick={switcher.handler}
                         title={reactTranslator.getMessage('popup_switch_button')}
                     >
-                        <div className="switcher__center" />
+                        <div className={`switcher__center switcher__center--${switcher.mode}`} />
                         <div className="switcher__btn">
-                            <Icon id="#checkmark" classname="icon--checkmark switcher__icon switcher__icon--checkmark" />
-                            <Icon id="#cross" classname="icon--cross switcher__icon switcher__icon--cross" />
+                            <Icon id="#checkmark" classname="icon--checkmark switcher__icon switcher__icon--checkmark" width="66" height="66" />
+                            <Icon id="#circle" classname="icon--circle switcher__icon switcher__icon--circle" />
                             <Icon id="#play" classname="icon--play switcher__icon switcher__icon--play" />
                         </div>
                     </button>

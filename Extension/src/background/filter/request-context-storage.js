@@ -336,7 +336,7 @@ export const requestContextStorage = (function () {
             }
 
             if (cspRules) {
-                for (const cspRule of cspRules) {
+                cspRules.forEach(cspRule => {
                     filteringLog.addHttpRequestEvent({
                         tab,
                         requestUrl,
@@ -345,7 +345,7 @@ export const requestContextStorage = (function () {
                         requestRule: cspRule,
                         timestamp: Date.now(),
                     });
-                }
+                });
 
                 ruleHitsRecords = ruleHitsRecords.concat(cspRules);
             }
@@ -371,9 +371,9 @@ export const requestContextStorage = (function () {
             }
 
             if (contentRules) {
-                for (const contentRule of contentRules) {
+                contentRules.forEach(contentRule => {
                     const elements = context.elements.get(contentRule) || [];
-                    for (const element of elements) {
+                    elements.forEach(element => {
                         filteringLog.addCosmeticEvent({
                             tab,
                             element,
@@ -382,9 +382,9 @@ export const requestContextStorage = (function () {
                             requestRule: contentRule,
                             timestamp: Date.now(),
                         });
-                    }
+                    });
                     context.elements.delete(contentRule);
-                }
+                });
                 ruleHitsRecords = ruleHitsRecords.concat(contentRules);
             }
         }

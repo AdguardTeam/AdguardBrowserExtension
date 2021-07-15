@@ -74,7 +74,8 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
                 addEventListener.call(window, 'message', onMessageReceived, false);
             }
 
-            const requestId = ++currentRequestId;
+            currentRequestId += 1;
+            const requestId = currentRequestId;
             requestsMap[requestId] = {
                 wrapper,
                 onResponseReceived,
@@ -294,7 +295,8 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
             const iceServers = safeCopyArray(
                 configuration.iceServers,
                 (iceServer) => {
-                    let { url, urls } = iceServer;
+                    let { urls } = iceServer;
+                    const { url } = iceServer;
 
                     // RTCPeerConnection doesn't iterate through pseudo Arrays of urls.
                     if (typeof urls !== 'undefined' && !(urls instanceof RealArray)) {
@@ -315,7 +317,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
                             value: safeCopyArray(urls, urlToString),
                         },
                     });
-                }
+                },
             );
 
             return createObject(configuration, {
@@ -413,7 +415,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
         copyProperties(
             RealRTCPeerConnection,
             boundWrappedRTCPeerConnection,
-            ['caller', 'generateCertificate', 'name', 'prototype']
+            ['caller', 'generateCertificate', 'name', 'prototype'],
         );
         RealRTCPeerConnection.prototype.constructor = boundWrappedRTCPeerConnection;
 
@@ -428,7 +430,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
     if (shouldOverrideWebRTC) {
         overrideWebRTC();
     }
-};
+}
 
 /**
  * This function is executed in the content script.

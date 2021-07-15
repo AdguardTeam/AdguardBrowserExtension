@@ -4,6 +4,7 @@ import React, {
     useEffect,
     useState,
     useRef,
+    useCallback,
 } from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
@@ -15,6 +16,7 @@ import { WIZARD_STATES } from '../../../stores/WizardStore';
 import { RequestCreateRule } from '../RequestCreateRule';
 import { optionsStorage } from '../../../../options/options-storage';
 import { RequestPreview } from '../RequestPreview';
+import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
 
 import './RequestModal.pcss';
 
@@ -22,20 +24,19 @@ Modal.setAppElement('#root');
 
 const RequestModal = observer(() => {
     const { wizardStore } = useContext(rootStore);
-    const onKeyUp = (e) => {
+    const onKeyUp = useCallback((e) => {
         if (e.key === 'Escape') {
             wizardStore.closeModal();
         }
-    };
+    }, [wizardStore]);
 
     useEffect(() => {
         window.addEventListener('keyup', onKeyUp);
         return () => {
             window.removeEventListener('keyup', onKeyUp);
         };
-    }, []);
+    }, [onKeyUp]);
 
-    const DEFAULT_MODAL_WIDTH_PX = 460;
     const MAX_MODAL_WIDTH_RATIO = 0.75;
 
     const startModalWidth = optionsStorage.getItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
