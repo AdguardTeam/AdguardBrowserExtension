@@ -22,18 +22,11 @@ export const defaultSettings = {
     'filters': {
         'enabled-groups': [
             1,
-            2,
-            3,
-            4,
             6,
-            7,
         ],
         'enabled-filters': [
             10,
-            14,
             2,
-            3,
-            4,
         ],
         'custom-filters': [],
         'user-filter': {
