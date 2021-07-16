@@ -119,10 +119,12 @@ export const measureTextWidth = (text) => {
         position: absolute;
         display: hidden;
         height: 0;
+        white-space: nowrap;
+        font-family: Roboto, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Arial, sans-serif;
         font-size: 14px;
     `;
     document.body.appendChild(el);
-    const pxLength = el.scrollWidth;
+    const pxLength = el.clientWidth;
     el.remove();
     return pxLength;
 };

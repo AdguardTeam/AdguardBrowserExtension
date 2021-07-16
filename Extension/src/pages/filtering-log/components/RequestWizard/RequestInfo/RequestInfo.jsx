@@ -133,14 +133,15 @@ const RequestInfo = observer(() => {
 
     useLayoutEffect(() => {
         const MODAL_PADDINGS_PX = 70;
-        const OPEN_URL_IN_NEW_TAB_BTN_WIDTH_PX = 18;
         const startModalWidth = optionsStorage.getItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
             || DEFAULT_MODAL_WIDTH_PX;
 
         const urlWidth = measureTextWidth(requestUrlRef?.current?.innerText);
 
-        // eslint-disable-next-line max-len
-        const isLongRequestUrl = urlWidth > startModalWidth - MODAL_PADDINGS_PX - OPEN_URL_IN_NEW_TAB_BTN_WIDTH_PX;
+        const LINE_COUNT_LIMIT = 3;
+        const urlWidthLimitPerLine = startModalWidth - MODAL_PADDINGS_PX;
+
+        const isLongRequestUrl = urlWidth > LINE_COUNT_LIMIT * urlWidthLimitPerLine;
 
         if (isLongRequestUrl) {
             setLongUrlHandlerButtonShown(true);
@@ -223,7 +224,7 @@ const RequestInfo = observer(() => {
         setFullUrlShown(!isFullUrlShown);
     };
 
-    const renderOpenUrlInNewTabButton = (event) => {
+    const renderInfoUrlButtons = (event) => {
         // there is nothing to open if log event reveals blocked element or cookie
         const showOpenInNewTabButton = !(
             event.element
@@ -231,33 +232,24 @@ const RequestInfo = observer(() => {
             || event.script
         );
 
-        return (
-            <>
-                {showOpenInNewTabButton && (
-                    <button
-                        className="request-modal__navigation request-modal__navigation--new-tab"
-                        type="button"
-                        onClick={openInNewTabHandler}
-                        title={reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
-                    >
-                        <Icon id="#link" classname="icon--link" />
-                    </button>
-                )}
-            </>
-        );
-    };
-
-    const renderInfoUrlButtons = () => {
-        // TODO: 'Preview' button is going to be here
         const showHideButtonText = isFullUrlShown
             ? reactTranslator.getMessage('filtering_modal_hide_full_url')
             : reactTranslator.getMessage('filtering_modal_show_full_url');
 
         return (
             <>
+                {showOpenInNewTabButton && (
+                    <div
+                        className="request-modal__url-button"
+                        type="button"
+                        onClick={openInNewTabHandler}
+                    >
+                        {reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
+                    </div>
+                )}
                 {isLongUrlHandlerButtonShown && (
                     <div
-                        className="request-modal__url-button--show-hide-full-url"
+                        className="request-modal__url-button"
                         type="button"
                         onClick={handleShowHideFullUrl}
                     >
@@ -299,7 +291,6 @@ const RequestInfo = observer(() => {
                                         )}
                                     >
                                         {data}
-                                        {isRequestUrl && renderOpenUrlInNewTabButton(selectedEvent)}
                                     </CopyToClipboard>
                                     {isRequestUrl && renderInfoUrlButtons(selectedEvent)}
                                 </>

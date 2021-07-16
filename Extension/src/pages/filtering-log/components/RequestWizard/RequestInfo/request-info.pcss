@@ -44,7 +44,7 @@
     }
 
     &__copy-to-clipboard-wrapper {
-        display: inline;
+        display: block;
     }
 
     &__copy-to-clipboard {
@@ -55,23 +55,17 @@
     &__url {
         display: inline-block;
         vertical-align: middle;
+        width: auto;
 
         &-short {
-            width: calc(100% - 18px);
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-
-            & .request-modal__navigation--new-tab {
-                position: absolute;
-                top: 0;
-                right: -18px;
-            }
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
         }
 
         &-full {
-            width: auto;
-            white-space: none; 
             overflow: visibible;
             text-overflow: initial;
         }
