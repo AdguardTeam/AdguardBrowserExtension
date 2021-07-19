@@ -5,12 +5,12 @@ export const copyExternals = async () => {
     const paths = [
         {
             from: [
-                'node_modules/scriptlets/dist/redirects.yml',
+                'node_modules/@adguard/scriptlets/dist/redirects.yml',
             ],
             to: 'Extension/assets/libs/scriptlets',
         },
         {
-            from: 'node_modules/scriptlets/dist/redirect-files/*',
+            from: 'node_modules/@adguard/scriptlets/dist/redirect-files/*',
             to: 'Extension/web-accessible-resources/redirects',
         },
     ];

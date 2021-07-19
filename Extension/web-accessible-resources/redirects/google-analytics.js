@@ -46,10 +46,31 @@ function GoogleAnalytics(source) {
     ga.loaded = true;
     window[googleAnalyticsName] = ga;
     var _window = window,
-        dataLayer = _window.dataLayer;
+        dataLayer = _window.dataLayer,
+        google_optimize = _window.google_optimize; // eslint-disable-line camelcase
 
-    if (dataLayer instanceof Object && dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
+    if (dataLayer instanceof Object === false) {
+      return;
+    }
+
+    if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
       dataLayer.hide.end();
+    }
+
+    if (typeof dataLayer.push === 'function') {
+      dataLayer.push = function (data) {
+        if (data instanceof Object && typeof data.eventCallback === 'function') {
+          setTimeout(data.eventCallback, 1);
+        }
+      };
+    } // https://github.com/AdguardTeam/Scriptlets/issues/81
+
+
+    if (google_optimize instanceof Object && typeof google_optimize.get === 'function') {
+      // eslint-disable-line camelcase
+      var googleOptimizeWrapper = {};
+      googleOptimizeWrapper.get = noopFunc;
+      window.google_optimize = googleOptimizeWrapper;
     }
 
     hit(source);
@@ -61,7 +82,8 @@ function hit(source, message) {
 
     try {
       var log = console.log.bind(console);
-      var trace = console.trace.bind(console);
+      var trace = console.trace.bind(console); // eslint-disable-line compat/compat
+
       var prefix = source.ruleText || '';
 
       if (source.domainName) {

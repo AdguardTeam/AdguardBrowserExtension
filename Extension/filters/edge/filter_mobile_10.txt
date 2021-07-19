@@ -1,8 +1,8 @@
-! Checksum: sivpzI7EGjeae2HngQv1OA
+! Checksum: 8dSegpJLmgieDOjJOOL3qA
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.39
-! TimeUpdated: 2021-06-02T14:30:28+00:00
+! Version: 2.0.1.40
+! TimeUpdated: 2021-06-19T18:30:21+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -122,6 +122,7 @@ ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored)
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
+news.fresheye.com#@#.bk2.spsite
 websearch.rakuten.co.jp#@##ad-ichiba
 epochtimes.de#@##spendPopupBG
 epochtimes.de#@##news-content .buchempfehlung ~ p

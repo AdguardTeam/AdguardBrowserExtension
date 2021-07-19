@@ -90,7 +90,8 @@ function hit(source, message) {
 
     try {
       var log = console.log.bind(console);
-      var trace = console.trace.bind(console);
+      var trace = console.trace.bind(console); // eslint-disable-line compat/compat
+
       var prefix = source.ruleText || '';
 
       if (source.domainName) {

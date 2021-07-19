@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { redirects } from 'scriptlets';
+import { redirects } from '@adguard/scriptlets';
 import { log } from '../../../common/log';
 import { resources } from '../../utils/resources';
 
