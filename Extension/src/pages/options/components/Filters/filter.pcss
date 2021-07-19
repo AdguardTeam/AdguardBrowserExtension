@@ -69,6 +69,14 @@
         margin-bottom: 10px;
         color: var(--green74);
         word-break: break-word;
+
+        & .filter__search {
+            color: var(--gray-base);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--gray300);
+            }
+        }
     }
 
     &__remove {
@@ -76,5 +84,25 @@
         position: relative;
         top: -2px;
         cursor: pointer;
+    }
+}
+
+.light-mode {
+    .filter {
+        &__tag {
+            & .filter__search {
+                color: var(--gray-base);
+            }
+        }
+    }
+}
+
+.dark-mode {
+    .filter {
+        &__tag {
+            & .filter__search {
+                color: var(--gray300);
+            }
+        }
     }
 }

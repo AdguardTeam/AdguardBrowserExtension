@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { rootStore } from '../../../stores/RootStore';
+import { HighlightSearch } from '../Search/HighlightSearch';
 
 export const FilterTag = observer(({ tag }) => {
     const { settingsStore } = useContext(rootStore);
@@ -20,7 +21,7 @@ export const FilterTag = observer(({ tag }) => {
             className="filter__tag"
             onClick={handleClick}
         >
-            {tagString}
+            <HighlightSearch string={tagString} />
         </div>
     );
 });

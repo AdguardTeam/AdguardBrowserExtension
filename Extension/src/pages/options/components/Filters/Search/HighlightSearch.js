@@ -5,13 +5,13 @@ import cn from 'classnames';
 import { rootStore } from '../../../stores/RootStore';
 import { containsIgnoreCase, findChunks } from '../../../../helpers';
 
-const HighlightSearch = observer(({ name }) => {
+const HighlightSearch = observer(({ string }) => {
     const { settingsStore: { searchInput } } = useContext(rootStore);
 
-    const renderName = () => {
-        const nameChunks = findChunks(name, searchInput);
+    const renderStr = () => {
+        const strChunks = findChunks(string, searchInput);
 
-        const displayName = nameChunks.map((chunk, i) => {
+        const displayName = strChunks.map((chunk, i) => {
             const isSearchMatch = chunk.toLowerCase() === searchInput.toLowerCase();
             const chunkClassName = cn({
                 filter__search: isSearchMatch,
@@ -29,9 +29,9 @@ const HighlightSearch = observer(({ name }) => {
         return displayName;
     };
 
-    return searchInput.length > 0 && containsIgnoreCase(name, searchInput)
-        ? renderName()
-        : name;
+    return searchInput.length > 0 && containsIgnoreCase(string, searchInput)
+        ? renderStr()
+        : string;
 });
 
 export { HighlightSearch };

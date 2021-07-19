@@ -1,3 +1,8 @@
+/*
+eslint-disable jsx-a11y/anchor-is-valid,
+jsx-a11y/click-events-have-key-events,
+jsx-a11y/no-static-element-interactions
+*/
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
@@ -111,7 +116,7 @@ const Filter = observer(({ filter }) => {
                         <div className="setting__inner">
                             <div className="filter__title">
                                 <span className="filter__title-in">
-                                    <HighlightSearch name={name} />
+                                    <HighlightSearch string={name} />
                                 </span>
                                 <span className="filter__controls">
                                     {renderRemoveButton()}
