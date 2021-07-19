@@ -25,6 +25,7 @@ import { settings } from '../settings/user-settings';
 import { log } from '../../common/log';
 import { rulesStorage } from '../storage';
 import { filtersUpdate } from './filters/filters-update';
+import { customFilters } from './filters/custom-filters';
 import { engine } from './engine';
 import { stealthService } from './services/stealth-service';
 
@@ -242,6 +243,13 @@ export const antiBannerService = (() => {
         };
 
         if (filterMetadata.loaded && !forceRemote) {
+            return onFilterLoaded(true);
+        }
+
+        if (filterMetadata.customUrl) {
+            const { title, trusted, enabled } = filterMetadata;
+
+            await customFilters.updateCustomFilter(filterMetadata.customUrl, { title, trusted, enabled });
             return onFilterLoaded(true);
         }
 

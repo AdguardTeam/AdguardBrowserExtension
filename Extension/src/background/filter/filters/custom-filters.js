@@ -207,6 +207,10 @@ export const customFilters = (() => {
         filter.lastCheckTime = lastCheckTime || filter.lastCheckTime;
         filter.expires = expires || filter.expires;
 
+        if ('enabled' in info) {
+            filter.enabled = info.enabled;
+        }
+
         metadataCache.updateFilters(filter);
 
         saveCustomFilterInStorage(filter);
@@ -250,7 +254,7 @@ export const customFilters = (() => {
      * @param options
      */
     const updateCustomFilter = async (url, options) => {
-        const { title, trusted } = options;
+        const { title, trusted, enabled } = options;
 
         const rules = await downloadRulesWithTimeout(url);
         if (!rules) {
@@ -267,12 +271,13 @@ export const customFilters = (() => {
         } = parsedData;
 
         const checksum = !version ? getChecksum(rules) : null;
-
         // Check if filter from this url was added before
         let filter = metadataCache.getFilters().find(f => f.customUrl === url);
         if (filter) {
             if (!isFilterUpdated(version, checksum, filter)) {
-                updateCustomFilterInfo(filter, { lastCheckTime: Date.now() });
+                updateCustomFilterInfo(filter, {
+                    lastCheckTime: Date.now(),
+                });
                 return null;
             }
 
@@ -302,6 +307,7 @@ export const customFilters = (() => {
 
             filter.lastCheckTime = Date.now();
             filter.loaded = true;
+            filter.enabled = enabled === true;
 
             metadataCache.updateFilters(filter);
             saveCustomFilterInStorage(filter);

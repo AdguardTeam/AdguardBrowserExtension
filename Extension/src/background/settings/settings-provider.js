@@ -252,10 +252,13 @@ export const settingsProvider = (function () {
      */
     const addCustomFilter = async (customFilterData) => {
         const {
-            customUrl, title, trusted,
+            customUrl,
+            title,
+            trusted,
+            enabled,
         } = customFilterData;
 
-        const options = { title, trusted };
+        const options = { title, trusted, enabled };
         const filter = await application.loadCustomFilter(customUrl, options);
         return filter;
     };

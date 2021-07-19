@@ -313,11 +313,11 @@ export const application = (() => {
         }
 
         const filterId = await customFilters.updateCustomFilter(url, options);
-
         if (filterId) {
             log.info('Custom filter downloaded');
 
             const filter = subscriptions.getFilter(filterId);
+
             // In case filter is loaded again and was removed before
             delete filter.removed;
             return filter;
