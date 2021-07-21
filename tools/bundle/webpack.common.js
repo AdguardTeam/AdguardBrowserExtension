@@ -2,6 +2,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 import path from 'path';
 
 import { BUILD_PATH, ENVS } from '../constants';
@@ -26,6 +27,23 @@ const OUTPUT_PATH = config.outputPath;
 export const genCommonConfig = (browserConfig) => {
     return {
         mode: config.mode,
+        optimization: {
+            minimize: true,
+            minimizer: [
+                new TerserPlugin({
+                    terserOptions: {
+                        compress: {
+                            defaults: false,
+                            unused: true,
+                        },
+                        mangle: false,
+                        format: {
+                            comments: 'all',
+                        },
+                    },
+                }),
+            ],
+        },
         devtool: process.env.BUILD_ENV === ENVS.DEV ? 'eval-source-map' : false,
         entry: {
             'pages/background': BACKGROUND_PATH,
