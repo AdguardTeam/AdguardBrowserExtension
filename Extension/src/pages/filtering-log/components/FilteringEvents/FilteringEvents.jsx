@@ -1,4 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable
+    react/jsx-props-no-spreading,
+    jsx-a11y/no-static-element-interactions,
+    jsx-a11y/click-events-have-key-events */
 import React, {
     useCallback,
     useContext,
@@ -16,7 +19,6 @@ import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
-import { Icon } from '../../../common/components/ui/Icon';
 import { FilteringEventsEmpty } from './FilteringEventsEmpty';
 import { optionsStorage } from '../../../options/options-storage';
 import { passiveEventSupported } from '../../../helpers';
@@ -75,8 +77,12 @@ const urlAccessor = (props) => {
         element,
     } = props;
 
-    if (cookieName) {
+    if (cookieName && cookieValue) {
         return `${cookieName} = ${cookieValue}`;
+    }
+
+    if (cookieName) {
+        return `${cookieName}`;
     }
 
     if (element) {
