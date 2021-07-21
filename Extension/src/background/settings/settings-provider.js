@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Ajv from 'ajv';
 import { application } from '../application';
 import { log } from '../../common/log';
 import { subscriptions } from '../filter/filters/subscription';
@@ -27,15 +26,18 @@ import { settings } from './user-settings';
 import { backgroundPage } from '../extension-api/background-page';
 import { customFilters } from '../filter/filters/custom-filters';
 import { defaultSettings } from './default-settings.js';
-import settingsSchema from './settings.schema.json';
+
+/**
+ * This is standalone validator module precompiled by ajv
+ * We use this module for prevent ajv run cached validator function code from string
+ */
+import validateJsonSchema from './validator';
 
 /**
  * Application settings provider.
  */
 export const settingsProvider = (function () {
     const BACKUP_PROTOCOL_VERSION = '1.0';
-
-    const validateJsonSchema = new Ajv().compile(settingsSchema);
 
     /**
      * Collect enabled filters ids without custom filters

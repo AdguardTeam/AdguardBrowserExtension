@@ -8,6 +8,7 @@ import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
+import { genValidators } from './genValidators';
 
 const bundleChrome = (watch) => {
     const webpackConfig = getWebpackConfig(BROWSERS.CHROME);
@@ -48,6 +49,7 @@ const bundleAdguardApi = async () => {
 };
 
 const devPlan = [
+    genValidators,
     copyExternals,
     bundleChrome,
     bundleFirefoxAmo,
@@ -59,6 +61,7 @@ const devPlan = [
 ];
 
 const betaPlan = [
+    genValidators,
     copyExternals,
     bundleChrome,
     bundleChromeCrx,
@@ -70,6 +73,7 @@ const betaPlan = [
 ];
 
 const releasePlan = [
+    genValidators,
     copyExternals,
     bundleChrome,
     bundleFirefoxAmo,
