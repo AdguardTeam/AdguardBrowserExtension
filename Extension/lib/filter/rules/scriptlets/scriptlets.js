@@ -1,10 +1,18 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.3.18
+ * Version 1.4.6
  */
 
 (function () {
+
+    /**
+     * Returns wildcard symbol
+     * @returns {string} '*'
+     */
+    var getWildcardSymbol = function getWildcardSymbol() {
+      return '*';
+    };
 
     /**
      * Generate random six symbols id
@@ -59,7 +67,18 @@
         };
       }
 
-      var prop = chain.slice(0, pos);
+      var prop = chain.slice(0, pos); // https://github.com/AdguardTeam/Scriptlets/issues/128
+
+      if (base === null) {
+        // if base is null, return 'null' as base.
+        // it's needed for triggering the reason logging while debugging
+        return {
+          base: base,
+          prop: prop,
+          chain: chain
+        };
+      }
+
       var nextBase = base[prop];
       chain = chain.slice(pos + 1);
 
@@ -96,6 +115,7 @@
      * @param {Array} [output=[]] result acc
      * @returns {Chain[]} array of objects
      */
+
     function getWildcardPropertyInChain(base, chain) {
       var lookThrough = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var output = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
@@ -103,7 +123,7 @@
 
       if (pos === -1) {
         // for paths like 'a.b.*' every final nested prop should be processed
-        if (chain === '*' || chain === '[]') {
+        if (chain === getWildcardSymbol() || chain === '[]') {
           // eslint-disable-next-line no-restricted-syntax
           for (var key in base) {
             // to process each key in base except inherited ones
@@ -125,7 +145,7 @@
       }
 
       var prop = chain.slice(0, pos);
-      var shouldLookThrough = prop === '[]' && Array.isArray(base) || prop === '*' && base instanceof Object;
+      var shouldLookThrough = prop === '[]' && Array.isArray(base) || prop === getWildcardSymbol() && base instanceof Object;
 
       if (shouldLookThrough) {
         var nextProp = chain.slice(pos + 1);
@@ -149,10 +169,88 @@
     }
 
     /**
+     * Determines whether the passed value is NaN
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
+     * @param {*} num
+     * @returns {boolean}
+     */
+    var nativeIsNaN = function nativeIsNaN(num) {
+      var native = Number.isNaN || window.isNaN; // eslint-disable-line compat/compat
+
+      return native(num);
+    };
+    /**
+     * Determines whether the passed value is a finite number
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
+     * @param {*} num
+     * @returns {boolean}
+     */
+
+    var nativeIsFinite = function nativeIsFinite(num) {
+      var native = Number.isFinite || window.isFinite; // eslint-disable-line compat/compat
+
+      return native(num);
+    };
+
+    /**
+     * Converts object to array of pairs.
+     * Object.entries() polyfill because it is not supported by IE
+     * https://caniuse.com/?search=Object.entries
+     * @param {Object} object
+     * @returns {Array} array of pairs
+     */
+    var getObjectEntries = function getObjectEntries(object) {
+      var keys = Object.keys(object);
+      var entries = [];
+      keys.forEach(function (key) {
+        return entries.push([key, object[key]]);
+      });
+      return entries;
+    };
+    /**
+     * Converts array of pairs to object.
+     * Object.fromEntries() polyfill because it is not supported by IE
+     * https://caniuse.com/?search=Object.fromEntries
+     * @param {Array} entries - array of pairs
+     * @returns {Object}
+     */
+
+    var getObjectFromEntries = function getObjectFromEntries(entries) {
+      var output = entries.reduce(function (acc, el) {
+        var key = el[0];
+        var value = el[1];
+        acc[key] = value;
+        return acc;
+      }, {});
+      return output;
+    };
+    /**
+     * Checks whether the obj is an empty object
+     * @param {Object} obj
+     * @returns {boolean}
+     */
+
+    var isEmptyObject = function isEmptyObject(obj) {
+      return Object.keys(obj).length === 0;
+    };
+
+    /**
+     * String.prototype.replaceAll polifill
+     * @param {string} input input string
+     * @param {string} substr to look for
+     * @param {string} newSubstr replacement
+     * @returns {string}
+     */
+
+    var replaceAll = function replaceAll(input, substr, newSubstr) {
+      return input.split(substr).join(newSubstr);
+    };
+    /**
      * Escapes special chars in string
      * @param {string} str
      * @returns {string}
      */
+
     var escapeRegExp = function escapeRegExp(str) {
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     };
@@ -279,6 +377,96 @@
       }
 
       return str;
+    };
+    /**
+     * @typedef {Object} MatchData
+     * @property {boolean} isInvertedMatch
+     * @property {RegExp} matchRegexp
+     */
+
+    /**
+     * Parses match arg with possible negation for no matching.
+     * Needed for prevent-setTimeout, prevent-setInterval,
+     * prevent-requestAnimationFrame and prevent-window-open
+     * @param {string} match
+     * @returns {MatchData}
+     */
+
+    var parseMatchArg = function parseMatchArg(match) {
+      var INVERT_MARKER = '!';
+      var isInvertedMatch = startsWith(match, INVERT_MARKER);
+      var matchValue = isInvertedMatch ? match.slice(1) : match;
+      var matchRegexp = toRegExp(matchValue);
+      return {
+        isInvertedMatch: isInvertedMatch,
+        matchRegexp: matchRegexp
+      };
+    };
+    /**
+     * @typedef {Object} DelayData
+     * @property {boolean} isInvertedDelayMatch
+     * @property {number|null} delayMatch
+     */
+
+    /**
+     * Parses delay arg with possible negation for no matching.
+     * Needed for prevent-setTimeout and prevent-setInterval
+     * @param {string} delay
+     * @returns {DelayData}
+     */
+
+    var parseDelayArg = function parseDelayArg(delay) {
+      var INVERT_MARKER = '!';
+      var isInvertedDelayMatch = startsWith(delay, INVERT_MARKER);
+      var delayValue = isInvertedDelayMatch ? delay.slice(1) : delay;
+      delayValue = parseInt(delayValue, 10);
+      var delayMatch = nativeIsNaN(delayValue) ? null : delayValue;
+      return {
+        isInvertedDelayMatch: isInvertedDelayMatch,
+        delayMatch: delayMatch
+      };
+    };
+    /**
+     * Converts object to string for logging
+     * @param {Object} obj data object
+     * @returns {string}
+     */
+
+    var objectToString = function objectToString(obj) {
+      return isEmptyObject(obj) ? '{}' : getObjectEntries(obj).map(function (pair) {
+        var key = pair[0];
+        var value = pair[1];
+        var recordValueStr = value;
+
+        if (value instanceof Object) {
+          recordValueStr = "{ ".concat(objectToString(value), " }");
+        }
+
+        return "".concat(key, ":\"").concat(recordValueStr, "\"");
+      }).join(' ');
+    };
+    /**
+     * Converts types into a string
+     * @param {*} value
+     * @returns {string}
+     */
+
+    var convertTypeToString = function convertTypeToString(value) {
+      var output;
+
+      if (typeof value === 'undefined') {
+        output = 'undefined';
+      } else if (typeof value === 'object') {
+        if (value === null) {
+          output = 'null';
+        } else {
+          output = objectToString(value);
+        }
+      } else {
+        output = value.toString();
+      }
+
+      return output;
     };
 
     /**
@@ -655,30 +843,6 @@
     };
 
     /**
-     * Determines whether the passed value is NaN
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
-     * @param {*} num
-     * @returns {boolean}
-     */
-    var nativeIsNaN = function nativeIsNaN(num) {
-      var native = Number.isNaN || window.isNaN; // eslint-disable-line compat/compat
-
-      return native(num);
-    };
-    /**
-     * Determines whether the passed value is a finite number
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
-     * @param {*} num
-     * @returns {boolean}
-     */
-
-    var nativeIsFinite = function nativeIsFinite(num) {
-      var native = Number.isFinite || window.isFinite; // eslint-disable-line compat/compat
-
-      return native(num);
-    };
-
-    /**
      * Prepares cookie string if given parameters are ok
      * @param {string} name cookie name to set
      * @param {string} value cookie value to set
@@ -732,8 +896,7 @@
     };
 
     var shouldMatchAnyDelay = function shouldMatchAnyDelay(delay) {
-      var ANY_DELAY_WILDCARD = '*';
-      return delay === ANY_DELAY_WILDCARD;
+      return delay === getWildcardSymbol();
     };
     /**
      * Handles input delay value
@@ -784,39 +947,6 @@
     };
 
     /**
-     * Converts object to array of pairs.
-     * Object.entries() polyfill because it is not supported by IE
-     * https://caniuse.com/?search=Object.entries
-     * @param {Object} object
-     * @returns {Array} array of pairs
-     */
-    var getObjectEntries = function getObjectEntries(object) {
-      var keys = Object.keys(object);
-      var entries = [];
-      keys.forEach(function (key) {
-        return entries.push([key, object[key]]);
-      });
-      return entries;
-    };
-    /**
-     * Converts array of pairs to object.
-     * Object.fromEntries() polyfill because it is not supported by IE
-     * https://caniuse.com/?search=Object.fromEntries
-     * @param {Array} entries - array of pairs
-     * @returns {Object}
-     */
-
-    var getObjectFromEntries = function getObjectFromEntries(entries) {
-      var output = entries.reduce(function (acc, el) {
-        var key = el[0];
-        var value = el[1];
-        acc[key] = value;
-        return acc;
-      }, {});
-      return output;
-    };
-
-    /**
      * Collects Request options to object
      * @param {Request} request
      * @returns {Object} data object
@@ -864,25 +994,6 @@
       return fetchPropsObj;
     };
     /**
-     * Converts object to string for logging
-     * @param {Object} obj data object
-     * @returns {string}
-     */
-
-    var objectToString = function objectToString(obj) {
-      return getObjectEntries(obj).map(function (pair) {
-        var key = pair[0];
-        var value = pair[1];
-        var recordValueStr = value;
-
-        if (value instanceof Object) {
-          recordValueStr = "{ ".concat(objectToString(value), " }");
-        }
-
-        return "".concat(key, ":\"").concat(recordValueStr, "\"");
-      }).join(' ');
-    };
-    /**
      * Converts prevent-fetch propsToMatch input string to object
      * @param {string} propsToMatchStr
      * @returns {Object} object where 'key' is prop name and 'value' is prop value
@@ -907,16 +1018,123 @@
       return propsObj;
     };
 
+    var handleOldReplacement = function handleOldReplacement(replacement) {
+      var result; // defaults to return noopFunc instead of window.open
+
+      if (!replacement) {
+        result = noopFunc;
+      } else if (replacement === 'trueFunc') {
+        result = trueFunc;
+      } else if (replacement.indexOf('=') > -1) {
+        // We should return noopFunc instead of window.open
+        // but with some property if website checks it (examples 5, 6)
+        // https://github.com/AdguardTeam/Scriptlets/issues/71
+        var isProp = startsWith(replacement, '{') && endsWith(replacement, '}');
+
+        if (isProp) {
+          var propertyPart = replacement.slice(1, -1);
+          var propertyName = substringBefore(propertyPart, '=');
+          var propertyValue = substringAfter(propertyPart, '=');
+
+          if (propertyValue === 'noopFunc') {
+            result = {};
+            result[propertyName] = noopFunc;
+          }
+        }
+      }
+
+      return result;
+    };
+    var createDecoy = function createDecoy(args) {
+      var OBJECT_TAG_NAME = 'object';
+      var OBJECT_URL_PROP_NAME = 'data';
+      var IFRAME_TAG_NAME = 'iframe';
+      var IFRAME_URL_PROP_NAME = 'src';
+      var replacement = args.replacement,
+          url = args.url,
+          delay = args.delay;
+      var tag;
+      var urlProp;
+
+      if (replacement === 'obj') {
+        tag = OBJECT_TAG_NAME;
+        urlProp = OBJECT_URL_PROP_NAME;
+      } else {
+        tag = IFRAME_TAG_NAME;
+        urlProp = IFRAME_URL_PROP_NAME;
+      }
+
+      var decoy = document.createElement(tag);
+      decoy[urlProp] = url;
+      decoy.style.setProperty('height', '1px', 'important');
+      decoy.style.setProperty('position', 'fixed', 'important');
+      decoy.style.setProperty('top', '-1px', 'important');
+      decoy.style.setProperty('width', '1px', 'important');
+      document.body.appendChild(decoy);
+      setTimeout(function () {
+        return decoy.remove();
+      }, delay * 1000);
+      return decoy;
+    };
+    var getPreventGetter = function getPreventGetter(nativeGetter) {
+      var preventGetter = function preventGetter(target, prop) {
+        if (prop && prop === 'closed') {
+          return false;
+        }
+
+        if (typeof nativeGetter === 'function') {
+          return noopFunc;
+        }
+
+        return prop && target[prop];
+      };
+
+      return preventGetter;
+    };
+
+    /**
+     * Validates event type
+     * @param {*} type
+     * @returns {boolean}
+     */
+    var validateType = function validateType(type) {
+      // https://github.com/AdguardTeam/Scriptlets/issues/125
+      return typeof type !== 'undefined';
+    };
+    /**
+     * Validates event listener
+     * @param {*} listener
+     * @returns {boolean}
+     */
+
+    var validateListener = function validateListener(listener) {
+      // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#parameters
+      return typeof listener !== 'undefined' && (typeof listener === 'function' || typeof listener === 'object' // https://github.com/AdguardTeam/Scriptlets/issues/76
+      && listener !== null && typeof listener.handleEvent === 'function');
+    };
+    /**
+     * Serialize valid event listener
+     * https://developer.mozilla.org/en-US/docs/Web/API/EventListener
+     * @param {EventListener} listener valid listener
+     * @returns {string}
+     */
+
+    var listenerToString = function listenerToString(listener) {
+      return typeof listener === 'function' ? listener.toString() : listener.handleEvent.toString();
+    };
+
     /**
      * This file must export all used dependencies
      */
 
     var dependencies = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        getWildcardSymbol: getWildcardSymbol,
         randomId: randomId,
         setPropertyAccess: setPropertyAccess,
         getPropertyInChain: getPropertyInChain,
         getWildcardPropertyInChain: getWildcardPropertyInChain,
+        replaceAll: replaceAll,
         escapeRegExp: escapeRegExp,
         toRegExp: toRegExp,
         getBeforeRegExp: getBeforeRegExp,
@@ -927,6 +1145,10 @@
         wrapInSingleQuotes: wrapInSingleQuotes,
         getStringInBraces: getStringInBraces,
         convertRtcConfigToString: convertRtcConfigToString,
+        parseMatchArg: parseMatchArg,
+        parseDelayArg: parseDelayArg,
+        objectToString: objectToString,
+        convertTypeToString: convertTypeToString,
         createOnErrorHandler: createOnErrorHandler,
         noopFunc: noopFunc,
         noopNull: noopNull,
@@ -953,10 +1175,16 @@
         getBoostMultiplier: getBoostMultiplier,
         getRequestData: getRequestData,
         getFetchData: getFetchData,
-        objectToString: objectToString,
         convertMatchPropsToObj: convertMatchPropsToObj,
         getObjectEntries: getObjectEntries,
-        getObjectFromEntries: getObjectFromEntries
+        getObjectFromEntries: getObjectFromEntries,
+        isEmptyObject: isEmptyObject,
+        handleOldReplacement: handleOldReplacement,
+        createDecoy: createDecoy,
+        getPreventGetter: getPreventGetter,
+        validateType: validateType,
+        validateListener: validateListener,
+        listenerToString: listenerToString
     });
 
     /**
@@ -1495,21 +1723,39 @@
     /* eslint-enable max-len */
 
     function preventSetTimeout(source, match, delay) {
+      // if browser does not support Proxy (e.g. Internet Explorer),
+      // we use none-proxy "legacy" wrapper for preventing
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+      var isProxySupported = typeof Proxy !== 'undefined';
       var nativeTimeout = window.setTimeout;
       var log = console.log.bind(console); // eslint-disable-line no-console
       // logs setTimeouts to console if no arguments have been specified
 
       var shouldLog = typeof match === 'undefined' && typeof delay === 'undefined';
-      var INVERT_MARKER = '!';
-      var isNotMatch = startsWith(match, INVERT_MARKER);
-      var matchValue = isNotMatch ? match.slice(1) : match;
-      var matchRegexp = toRegExp(matchValue);
-      var isNotDelay = startsWith(delay, INVERT_MARKER);
-      var delayValue = isNotDelay ? delay.slice(1) : delay;
-      delayValue = parseInt(delayValue, 10);
-      var delayMatch = nativeIsNaN(delayValue) ? null : delayValue;
 
-      var timeoutWrapper = function timeoutWrapper(callback, timeout) {
+      var _parseMatchArg = parseMatchArg(match),
+          isInvertedMatch = _parseMatchArg.isInvertedMatch,
+          matchRegexp = _parseMatchArg.matchRegexp;
+
+      var _parseDelayArg = parseDelayArg(delay),
+          isInvertedDelayMatch = _parseDelayArg.isInvertedDelayMatch,
+          delayMatch = _parseDelayArg.delayMatch;
+
+      var getShouldPrevent = function getShouldPrevent(callbackStr, timeout) {
+        var shouldPrevent = false;
+
+        if (!delayMatch) {
+          shouldPrevent = matchRegexp.test(callbackStr) !== isInvertedMatch;
+        } else if (!match) {
+          shouldPrevent = timeout === delayMatch !== isInvertedDelayMatch;
+        } else {
+          shouldPrevent = matchRegexp.test(callbackStr) !== isInvertedMatch && timeout === delayMatch !== isInvertedDelayMatch;
+        }
+
+        return shouldPrevent;
+      };
+
+      var legacyTimeoutWrapper = function legacyTimeoutWrapper(callback, timeout) {
         var shouldPrevent = false; // https://github.com/AdguardTeam/Scriptlets/issues/105
 
         var cbString = String(callback);
@@ -1517,12 +1763,8 @@
         if (shouldLog) {
           hit(source);
           log("setTimeout(".concat(cbString, ", ").concat(timeout, ")"));
-        } else if (!delayMatch) {
-          shouldPrevent = matchRegexp.test(cbString) !== isNotMatch;
-        } else if (matchValue === '/.?/') {
-          shouldPrevent = timeout === delayMatch !== isNotDelay;
         } else {
-          shouldPrevent = matchRegexp.test(cbString) !== isNotMatch && timeout === delayMatch !== isNotDelay;
+          shouldPrevent = getShouldPrevent(cbString, timeout);
         }
 
         if (shouldPrevent) {
@@ -1537,7 +1779,32 @@
         return nativeTimeout.apply(window, [callback, timeout].concat(args));
       };
 
-      window.setTimeout = timeoutWrapper;
+      var handlerWrapper = function handlerWrapper(target, thisArg, args) {
+        var callback = args[0];
+        var timeout = args[1];
+        var shouldPrevent = false; // https://github.com/AdguardTeam/Scriptlets/issues/105
+
+        var cbString = String(callback);
+
+        if (shouldLog) {
+          hit(source);
+          log("setTimeout(".concat(cbString, ", ").concat(timeout, ")"));
+        } else {
+          shouldPrevent = getShouldPrevent(cbString, timeout);
+        }
+
+        if (shouldPrevent) {
+          hit(source);
+          args[0] = noopFunc;
+        }
+
+        return target.apply(thisArg, args);
+      };
+
+      var setTimeoutHandler = {
+        apply: handlerWrapper
+      };
+      window.setTimeout = isProxySupported ? new Proxy(window.setTimeout, setTimeoutHandler) : legacyTimeoutWrapper;
     }
     preventSetTimeout.names = ['prevent-setTimeout', // aliases are needed for matching the related scriptlet converted into our syntax
     'no-setTimeout-if.js', // new implementation of setTimeout-defuser.js
@@ -1546,7 +1813,7 @@
     // should be removed eventually.
     // do not remove until other filter lists maintainers use them
     'setTimeout-defuser.js', 'ubo-setTimeout-defuser.js', 'ubo-setTimeout-defuser', 'std.js', 'ubo-std.js', 'ubo-std'];
-    preventSetTimeout.injections = [hit, toRegExp, startsWith, noopFunc, nativeIsNaN];
+    preventSetTimeout.injections = [hit, noopFunc, parseMatchArg, parseDelayArg, toRegExp, startsWith, nativeIsNaN];
 
     /* eslint-disable max-len */
 
@@ -1654,21 +1921,39 @@
     /* eslint-enable max-len */
 
     function preventSetInterval(source, match, delay) {
+      // if browser does not support Proxy (e.g. Internet Explorer),
+      // we use none-proxy "legacy" wrapper for preventing
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+      var isProxySupported = typeof Proxy !== 'undefined';
       var nativeInterval = window.setInterval;
       var log = console.log.bind(console); // eslint-disable-line no-console
       // logs setIntervals to console if no arguments have been specified
 
       var shouldLog = typeof match === 'undefined' && typeof delay === 'undefined';
-      var INVERT_MARKER = '!';
-      var isNotMatch = startsWith(match, INVERT_MARKER);
-      var matchValue = isNotMatch ? match.slice(1) : match;
-      var matchRegexp = toRegExp(matchValue);
-      var isNotDelay = startsWith(delay, INVERT_MARKER);
-      var delayValue = isNotDelay ? delay.slice(1) : delay;
-      delayValue = parseInt(delayValue, 10);
-      var delayMatch = nativeIsNaN(delayValue) ? null : delayValue;
 
-      var intervalWrapper = function intervalWrapper(callback, interval) {
+      var _parseMatchArg = parseMatchArg(match),
+          isInvertedMatch = _parseMatchArg.isInvertedMatch,
+          matchRegexp = _parseMatchArg.matchRegexp;
+
+      var _parseDelayArg = parseDelayArg(delay),
+          isInvertedDelayMatch = _parseDelayArg.isInvertedDelayMatch,
+          delayMatch = _parseDelayArg.delayMatch;
+
+      var getShouldPrevent = function getShouldPrevent(callbackStr, interval) {
+        var shouldPrevent = false;
+
+        if (!delayMatch) {
+          shouldPrevent = matchRegexp.test(callbackStr) !== isInvertedMatch;
+        } else if (!match) {
+          shouldPrevent = interval === delayMatch !== isInvertedDelayMatch;
+        } else {
+          shouldPrevent = matchRegexp.test(callbackStr) !== isInvertedMatch && interval === delayMatch !== isInvertedDelayMatch;
+        }
+
+        return shouldPrevent;
+      };
+
+      var legachyIntervalWrapper = function legachyIntervalWrapper(callback, interval) {
         var shouldPrevent = false; // https://github.com/AdguardTeam/Scriptlets/issues/105
 
         var cbString = String(callback);
@@ -1676,12 +1961,8 @@
         if (shouldLog) {
           hit(source);
           log("setInterval(".concat(cbString, ", ").concat(interval, ")"));
-        } else if (!delayMatch) {
-          shouldPrevent = matchRegexp.test(cbString) !== isNotMatch;
-        } else if (!match) {
-          shouldPrevent = interval === delayMatch !== isNotDelay;
         } else {
-          shouldPrevent = matchRegexp.test(cbString) !== isNotMatch && interval === delayMatch !== isNotDelay;
+          shouldPrevent = getShouldPrevent(cbString, interval);
         }
 
         if (shouldPrevent) {
@@ -1696,7 +1977,32 @@
         return nativeInterval.apply(window, [callback, interval].concat(args));
       };
 
-      window.setInterval = intervalWrapper;
+      var handlerWrapper = function handlerWrapper(target, thisArg, args) {
+        var callback = args[0];
+        var interval = args[1];
+        var shouldPrevent = false; // https://github.com/AdguardTeam/Scriptlets/issues/105
+
+        var cbString = String(callback);
+
+        if (shouldLog) {
+          hit(source);
+          log("setTimeout(".concat(cbString, ", ").concat(interval, ")"));
+        } else {
+          shouldPrevent = getShouldPrevent(cbString, interval);
+        }
+
+        if (shouldPrevent) {
+          hit(source);
+          args[0] = noopFunc;
+        }
+
+        return target.apply(thisArg, args);
+      };
+
+      var setIntervalHandler = {
+        apply: handlerWrapper
+      };
+      window.setInterval = isProxySupported ? new Proxy(window.setInterval, setIntervalHandler) : legachyIntervalWrapper;
     }
     preventSetInterval.names = ['prevent-setInterval', // aliases are needed for matching the related scriptlet converted into our syntax
     'no-setInterval-if.js', // new implementation of setInterval-defuser.js
@@ -1704,7 +2010,7 @@
     'ubo-setInterval-defuser.js', 'nosiif.js', // new short name of no-setInterval-if
     'ubo-nosiif.js', 'sid.js', // old short scriptlet name
     'ubo-sid.js', 'ubo-no-setInterval-if', 'ubo-setInterval-defuser', 'ubo-nosiif', 'ubo-sid'];
-    preventSetInterval.injections = [hit, toRegExp, startsWith, noopFunc, nativeIsNaN];
+    preventSetInterval.injections = [hit, noopFunc, parseMatchArg, parseDelayArg, toRegExp, startsWith, nativeIsNaN];
 
     /* eslint-disable max-len */
 
@@ -1719,14 +2025,21 @@
      *
      * **Syntax**
      * ```
-     * example.org#%#//scriptlet('prevent-window-open'[, match[, search[, replacement]]])
+     * example.org#%#//scriptlet('prevent-window-open'[, match[, delay[, replacement]]])
      * ```
      *
-     * - `match` - optional, defaults to "matching", any positive number or nothing for "matching", 0 or empty string for "not matching"
-     * - `search` - optional, string or regexp for matching the URL passed to `window.open` call; defaults to search all `window.open` call
-     * - `replacement` - optional, string to return prop value or property instead of window.open; defaults to return noopFunc
+     * - `match` - optional, string or regular expression. If not set, all window.open calls will be matched.
+     * If starts with `!`, scriptlet will not match the stringified callback but all other will be defused.
+     * If do not start with `!`, the stringified callback will be matched.
+     * - `delay` - optional, number of seconds. If not set, scriptlet will return `null`,
+     * otherwise valid sham window object as injected `iframe` will be returned
+     * for accessing it's methods (blur(), focus() etc.) and will be removed after the delay.
+     * - `replacement` - optional, string; one of the predefined constants:
+     *     - `obj` - for returning an object instead of default iframe;
+     *        for cases when the page requires a valid `window` instance to be returned
+     *     - `log` - for logging window.open calls; permitted for production filter lists.
      *
-     * **Example**
+     * **Examples**
      * 1. Prevent all `window.open` calls:
      * ```
      *     example.org#%#//scriptlet('prevent-window-open')
@@ -1734,45 +2047,50 @@
      *
      * 2. Prevent `window.open` for all URLs containing `example`:
      * ```
-     *     example.org#%#//scriptlet('prevent-window-open', '1', 'example')
+     *     example.org#%#//scriptlet('prevent-window-open', 'example')
      * ```
      *
      * 3. Prevent `window.open` for all URLs matching RegExp `/example\./`:
      * ```
-     *     example.org#%#//scriptlet('prevent-window-open', '1', '/example\./')
+     *     example.org#%#//scriptlet('prevent-window-open', '/example\./')
      * ```
      *
      * 4. Prevent `window.open` for all URLs **NOT** containing `example`:
      * ```
+     *     example.org#%#//scriptlet('prevent-window-open', '!example')
+     * ```
+     *
+     * Old syntax of prevent-window-open parameters:
+     * - `match` - optional, defaults to "matching", any positive number or nothing for "matching", 0 or empty string for "not matching"
+     * - `search` - optional, string or regexp for matching the URL passed to `window.open` call; defaults to search all `window.open` call
+     * - `replacement` - optional, string to return prop value or property instead of window.open; defaults to return noopFunc.
+     * **Examples**
+     * ```
+     *     example.org#%#//scriptlet('prevent-window-open', '1', '/example\./'
      *     example.org#%#//scriptlet('prevent-window-open', '0', 'example')
-     * ```
-     * 5. Prevent all `window.open` calls and return 'trueFunc' instead of it if website checks it:
-     * ```
      *     example.org#%#//scriptlet('prevent-window-open', '', '', 'trueFunc')
-     * ```
-     * 6. Prevent all `window.open` and returns callback
-     * which returns object with property 'propName'=noopFunc
-     * as a property of window.open if website checks it:
-     * ```
      *     example.org#%#//scriptlet('prevent-window-open', '1', '', '{propName=noopFunc}')
      * ```
+     *
+     * > For better compatibility with uBO, old syntax is not recommended to use.
      */
 
     /* eslint-enable max-len */
 
     function preventWindowOpen(source) {
-      var match = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-      var search = arguments.length > 2 ? arguments[2] : undefined;
+      var match = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getWildcardSymbol();
+      var delay = arguments.length > 2 ? arguments[2] : undefined;
       var replacement = arguments.length > 3 ? arguments[3] : undefined;
-      // Default value of 'match' is needed to prevent all `window.open` calls
-      // if the scriptlet is used without parameters
-      var nativeOpen = window.open; // unary plus converts 'match' to a number
-      // e.g.: +'1' -> 1; +false -> 0
+      // default match value is needed for preventing all window.open calls
+      // if scriptlet runs without args
+      var nativeOpen = window.open;
+      var isNewSyntax = match !== '0' && match !== '1';
 
-      match = +match > 0;
-      var searchRegexp = toRegExp(search); // eslint-disable-next-line consistent-return
+      var oldOpenWrapper = function oldOpenWrapper(str) {
+        match = Number(match) > 0; // 'delay' was 'search' prop for matching in old syntax
 
-      var openWrapper = function openWrapper(str) {
+        var searchRegexp = toRegExp(delay);
+
         if (match !== searchRegexp.test(str)) {
           for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
             args[_key - 1] = arguments[_key];
@@ -1782,41 +2100,76 @@
         }
 
         hit(source);
-        var result; // defaults to return noopFunc instead of window.open
-
-        if (!replacement) {
-          result = noopFunc;
-        } else if (replacement === 'trueFunc') {
-          result = trueFunc;
-        } else if (replacement.indexOf('=') > -1) {
-          // We should return noopFunc instead of window.open
-          // but with some property if website checks it (examples 5, 6)
-          // https://github.com/AdguardTeam/Scriptlets/issues/71
-          var isProp = startsWith(replacement, '{') && endsWith(replacement, '}');
-
-          if (isProp) {
-            var propertyPart = replacement.slice(1, -1);
-            var propertyName = substringBefore(propertyPart, '=');
-            var propertyValue = substringAfter(propertyPart, '=');
-
-            if (propertyValue === 'noopFunc') {
-              result = function result() {
-                var resObj = {};
-                resObj[propertyName] = noopFunc;
-                return resObj;
-              };
-            }
-          }
-        }
-
-        return result;
+        return handleOldReplacement(replacement);
       };
 
-      window.open = openWrapper;
+      var newOpenWrapper = function newOpenWrapper(url) {
+        var shouldLog = replacement && replacement.indexOf('log') > -1;
+
+        for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+          args[_key2 - 1] = arguments[_key2];
+        }
+
+        if (shouldLog) {
+          var argsStr = args && args.length > 0 ? ", ".concat(args.join(', ')) : '';
+          var logMessage = "log: window-open: ".concat(url).concat(argsStr);
+          hit(source, logMessage);
+        }
+
+        var shouldPrevent = false;
+
+        if (match === getWildcardSymbol()) {
+          shouldPrevent = true;
+        } else {
+          var _parseMatchArg = parseMatchArg(match),
+              isInvertedMatch = _parseMatchArg.isInvertedMatch,
+              matchRegexp = _parseMatchArg.matchRegexp;
+
+          shouldPrevent = matchRegexp.test(url) !== isInvertedMatch;
+        }
+
+        if (shouldPrevent) {
+          var parsedDelay = parseInt(delay, 10);
+          var result;
+
+          if (nativeIsNaN(parsedDelay)) {
+            result = noopNull();
+          } else {
+            var decoyArgs = {
+              replacement: replacement,
+              url: url,
+              delay: parsedDelay
+            };
+            var decoy = createDecoy(decoyArgs);
+            var popup = decoy.contentWindow;
+
+            if (typeof popup === 'object' && popup !== null) {
+              Object.defineProperty(popup, 'closed', {
+                value: false
+              });
+            } else {
+              var nativeGetter = decoy.contentWindow && decoy.contentWindow.get;
+              Object.defineProperty(decoy, 'contentWindow', {
+                get: getPreventGetter(nativeGetter)
+              });
+              popup = decoy.contentWindow;
+            }
+
+            result = popup;
+          }
+
+          hit(source);
+          return result;
+        }
+
+        return nativeOpen.apply(window, [url].concat(args));
+      };
+
+      window.open = isNewSyntax ? newOpenWrapper : oldOpenWrapper;
     }
     preventWindowOpen.names = ['prevent-window-open', // aliases are needed for matching the related scriptlet converted into our syntax
-    'window.open-defuser.js', 'ubo-window.open-defuser.js', 'ubo-window.open-defuser'];
-    preventWindowOpen.injections = [toRegExp, startsWith, endsWith, substringBefore, substringAfter, hit, noopFunc, trueFunc];
+    'window.open-defuser.js', 'ubo-window.open-defuser.js', 'ubo-window.open-defuser', 'nowoif.js', 'ubo-nowoif.js', 'ubo-nowoif'];
+    preventWindowOpen.injections = [hit, toRegExp, nativeIsNaN, parseMatchArg, handleOldReplacement, createDecoy, getPreventGetter, noopNull, getWildcardSymbol, noopFunc, trueFunc, startsWith, endsWith, substringBefore, substringAfter];
 
     /* eslint-disable max-len */
 
@@ -1886,6 +2239,7 @@
     function abortCurrentInlineScript(source, property, search) {
       var searchRegexp = toRegExp(search);
       var rid = randomId();
+      var SRC_DATA_MARKER = 'data:text/javascript;base64,';
 
       var getCurrentScript = function getCurrentScript() {
         if ('currentScript' in document) {
@@ -1916,7 +2270,16 @@
         } catch (e) {} // eslint-disable-line no-empty
 
 
+        debugger; // https://github.com/AdguardTeam/Scriptlets/issues/130
+
+        if (content.length === 0 && typeof scriptEl.src !== 'undefined' && startsWith(scriptEl.src, SRC_DATA_MARKER)) {
+          var encodedContent = scriptEl.src.slice(SRC_DATA_MARKER.length); // content = Buffer.from(encodedContent, 'base64');
+
+          content = atob(encodedContent);
+        }
+
         if (scriptEl instanceof HTMLScriptElement && content.length > 0 && scriptEl !== ourScript && searchRegexp.test(content)) {
+          scriptEl.src = SRC_DATA_MARKER;
           hit(source);
           throw new ReferenceError(rid);
         }
@@ -1976,8 +2339,10 @@
       window.onerror = createOnErrorHandler(rid).bind();
     }
     abortCurrentInlineScript.names = ['abort-current-inline-script', // aliases are needed for matching the related scriptlet converted into our syntax
+    'abort-current-script.js', 'ubo-abort-current-script.js', 'acs.js', 'ubo-acs.js', // "ubo"-aliases with no "js"-ending
+    'ubo-abort-current-script', 'ubo-acs', // obsolete but supported aliases
     'abort-current-inline-script.js', 'ubo-abort-current-inline-script.js', 'acis.js', 'ubo-acis.js', 'ubo-abort-current-inline-script', 'ubo-acis', 'abp-abort-current-inline-script'];
-    abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, hit];
+    abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, startsWith, createOnErrorHandler, hit];
 
     /* eslint-disable max-len */
 
@@ -2282,18 +2647,14 @@
       var funcSearchRegexp = toRegExp(funcSearch);
       var nativeAddEventListener = window.EventTarget.prototype.addEventListener;
 
-      function addEventListenerWrapper(eventName, callback) {
-        // The scriptlet might cause a website broke
-        // if the website uses test addEventListener with callback = null
-        // https://github.com/AdguardTeam/Scriptlets/issues/76
-        var funcToCheck = callback;
+      function addEventListenerWrapper(type, listener) {
+        var shouldPrevent = false;
 
-        if (callback && typeof callback === 'function') {
-          funcToCheck = callback.toString();
-        } // https://github.com/AdguardTeam/Scriptlets/issues/125
+        if (validateType(type) && validateListener(listener)) {
+          shouldPrevent = eventSearchRegexp.test(type.toString()) && funcSearchRegexp.test(listenerToString(listener));
+        }
 
-
-        if (typeof eventName !== 'undefined' && eventSearchRegexp.test(eventName.toString()) && funcSearchRegexp.test(funcToCheck)) {
+        if (shouldPrevent) {
           hit(source);
           return undefined;
         }
@@ -2302,14 +2663,14 @@
           args[_key - 2] = arguments[_key];
         }
 
-        return nativeAddEventListener.apply(this, [eventName, callback].concat(args));
+        return nativeAddEventListener.apply(this, [type, listener].concat(args));
       }
 
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
     preventAddEventListener.names = ['prevent-addEventListener', // aliases are needed for matching the related scriptlet converted into our syntax
     'addEventListener-defuser.js', 'ubo-addEventListener-defuser.js', 'aeld.js', 'ubo-aeld.js', 'ubo-addEventListener-defuser', 'ubo-aeld'];
-    preventAddEventListener.injections = [toRegExp, hit];
+    preventAddEventListener.injections = [hit, toRegExp, validateType, validateListener, listenerToString];
 
     /* eslint-disable consistent-return, no-eval */
     /**
@@ -2320,6 +2681,9 @@
      *
      * Related UBO scriptlet:
      * https://github.com/gorhill/uBlock/wiki/Resources-Library#bab-defuserjs-
+     *
+     * It also can be used as `$redirect` sometimes.
+     * See [redirect description](../wiki/about-redirects.md#prevent-bab).
      *
      * **Syntax**
      * ```
@@ -2454,7 +2818,6 @@
     'nowebrtc.js', 'ubo-nowebrtc.js', 'ubo-nowebrtc'];
     nowebrtc.injections = [hit, noopFunc, convertRtcConfigToString];
 
-    /* eslint-disable no-console */
     /**
      * @scriptlet log-addEventListener
      *
@@ -2471,34 +2834,33 @@
      */
 
     function logAddEventListener(source) {
+      // eslint-disable-next-line no-console
       var log = console.log.bind(console);
       var nativeAddEventListener = window.EventTarget.prototype.addEventListener;
 
-      function addEventListenerWrapper(eventName, callback) {
-        hit(source); // The scriptlet might cause a website broke
-        // if the website uses test addEventListener with callback = null
-        // https://github.com/AdguardTeam/Scriptlets/issues/76
+      function addEventListenerWrapper(type, listener) {
+        if (validateType(type) && validateListener(listener)) {
+          var logMessage = "log: addEventListener(\"".concat(type, "\", ").concat(listenerToString(listener), ")");
+          hit(source, logMessage);
+        } else if (source.verbose) {
+          // logging while debugging
+          var _logMessage = "Invalid event type or listener passed to addEventListener:\ntype: ".concat(convertTypeToString(type), "\nlistener: ").concat(convertTypeToString(listener));
 
-        var callbackToLog = callback;
-
-        if (callback && typeof callback === 'function') {
-          callbackToLog = callback.toString();
+          log(_logMessage);
         }
-
-        log("addEventListener(\"".concat(eventName, "\", ").concat(callbackToLog, ")"));
 
         for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
           args[_key - 2] = arguments[_key];
         }
 
-        return nativeAddEventListener.apply(this, [eventName, callback].concat(args));
+        return nativeAddEventListener.apply(this, [type, listener].concat(args));
       }
 
       window.EventTarget.prototype.addEventListener = addEventListenerWrapper;
     }
     logAddEventListener.names = ['log-addEventListener', // aliases are needed for matching the related scriptlet converted into our syntax
     'addEventListener-logger.js', 'ubo-addEventListener-logger.js', 'aell.js', 'ubo-aell.js', 'ubo-addEventListener-logger', 'ubo-aell'];
-    logAddEventListener.injections = [hit];
+    logAddEventListener.injections = [hit, validateType, validateListener, listenerToString, convertTypeToString, objectToString, isEmptyObject, getObjectEntries];
 
     /* eslint-disable no-console, no-eval */
     /**
@@ -3453,7 +3815,7 @@
     }
     adjustSetInterval.names = ['adjust-setInterval', // aliases are needed for matching the related scriptlet converted into our syntax
     'nano-setInterval-booster.js', 'ubo-nano-setInterval-booster.js', 'nano-sib.js', 'ubo-nano-sib.js', 'ubo-nano-setInterval-booster', 'ubo-nano-sib'];
-    adjustSetInterval.injections = [hit, toRegExp, nativeIsNaN, nativeIsFinite, getBoostMultiplier, getMatchDelay, shouldMatchAnyDelay, isDelayMatched];
+    adjustSetInterval.injections = [hit, toRegExp, getBoostMultiplier, isDelayMatched, nativeIsNaN, nativeIsFinite, getMatchDelay, getWildcardSymbol, shouldMatchAnyDelay];
 
     /* eslint-disable max-len */
 
@@ -3528,7 +3890,7 @@
     }
     adjustSetTimeout.names = ['adjust-setTimeout', // aliases are needed for matching the related scriptlet converted into our syntax
     'nano-setTimeout-booster.js', 'ubo-nano-setTimeout-booster.js', 'nano-stb.js', 'ubo-nano-stb.js', 'ubo-nano-setTimeout-booster', 'ubo-nano-stb'];
-    adjustSetTimeout.injections = [hit, toRegExp, nativeIsNaN, nativeIsFinite, getBoostMultiplier, getMatchDelay, shouldMatchAnyDelay, isDelayMatched];
+    adjustSetTimeout.injections = [hit, toRegExp, getBoostMultiplier, isDelayMatched, nativeIsNaN, nativeIsFinite, getMatchDelay, getWildcardSymbol, shouldMatchAnyDelay];
 
     /* eslint-disable max-len */
 
@@ -3773,7 +4135,7 @@
     }
     jsonPrune.names = ['json-prune', // aliases are needed for matching the related scriptlet converted into our syntax
     'json-prune.js', 'ubo-json-prune.js', 'ubo-json-prune', 'abp-json-prune'];
-    jsonPrune.injections = [hit, toRegExp, matchStackTrace, getWildcardPropertyInChain];
+    jsonPrune.injections = [hit, matchStackTrace, getWildcardPropertyInChain, toRegExp, getWildcardSymbol];
 
     /* eslint-disable max-len */
 
@@ -3851,10 +4213,10 @@
       var nativeRequestAnimationFrame = window.requestAnimationFrame; // logs requestAnimationFrame to console if no arguments have been specified
 
       var shouldLog = typeof match === 'undefined';
-      var INVERT_MARKER = '!';
-      var doNotMatch = startsWith(match, INVERT_MARKER);
-      var matchValue = doNotMatch ? match.slice(1) : match;
-      var matchRegexp = toRegExp(matchValue);
+
+      var _parseMatchArg = parseMatchArg(match),
+          isInvertedMatch = _parseMatchArg.isInvertedMatch,
+          matchRegexp = _parseMatchArg.matchRegexp;
 
       var rafWrapper = function rafWrapper(callback) {
         var shouldPrevent = false;
@@ -3863,7 +4225,7 @@
           var logMessage = "log: requestAnimationFrame(\"".concat(callback.toString(), "\")");
           hit(source, logMessage);
         } else {
-          shouldPrevent = matchRegexp.test(callback.toString()) !== doNotMatch;
+          shouldPrevent = matchRegexp.test(callback.toString()) !== isInvertedMatch;
         }
 
         if (shouldPrevent) {
@@ -3882,7 +4244,7 @@
     }
     preventRequestAnimationFrame.names = ['prevent-requestAnimationFrame', // aliases are needed for matching the related scriptlet converted into our syntax
     'no-requestAnimationFrame-if.js', 'ubo-no-requestAnimationFrame-if.js', 'norafif.js', 'ubo-norafif.js', 'ubo-no-requestAnimationFrame-if', 'ubo-norafif'];
-    preventRequestAnimationFrame.injections = [hit, startsWith, toRegExp, noopFunc];
+    preventRequestAnimationFrame.injections = [hit, noopFunc, parseMatchArg, toRegExp, startsWith];
 
     /* eslint-disable max-len */
 
@@ -4236,7 +4598,7 @@
           // log if no propsToMatch given
           var logMessage = "log: fetch( ".concat(objectToString(fetchData), " )");
           hit(source, logMessage);
-        } else if (propsToMatch === '' || propsToMatch === '*') {
+        } else if (propsToMatch === '' || propsToMatch === getWildcardSymbol()) {
           // prevent all fetch calls
           shouldPrevent = true;
         } else {
@@ -4263,7 +4625,187 @@
     }
     preventFetch.names = ['prevent-fetch', // aliases are needed for matching the related scriptlet converted into our syntax
     'no-fetch-if.js', 'ubo-no-fetch-if.js', 'ubo-no-fetch-if'];
-    preventFetch.injections = [hit, getFetchData, objectToString, convertMatchPropsToObj, noopPromiseResolve, toRegExp, getRequestData, getObjectEntries, getObjectFromEntries];
+    preventFetch.injections = [hit, getFetchData, objectToString, convertMatchPropsToObj, noopPromiseResolve, getWildcardSymbol, toRegExp, isEmptyObject, getRequestData, getObjectEntries, getObjectFromEntries];
+
+    /* eslint-disable max-len */
+
+    /**
+     * @scriptlet set-local-storage-item
+     *
+     * @description
+     * Adds specified key and its value to localStorage object, or updates the value of the key if it already exists.
+     *
+     * **Syntax**
+     * ```
+     * example.com#%#//scriptlet('set-local-storage-item', 'key', 'value')
+     * ```
+     *
+     * - `key` — required, key name to be set.
+     * - `value` - required, key value; possible values:
+     *     - positive decimal integer `<= 32767`
+     *     - one of the predefined constants:
+     *         - `undefined`
+     *         - `false`
+     *         - `true`
+     *         - `null`
+     *         - `emptyObj` - empty object
+     *         - `emptyArr` - empty array
+     *         - `''` - empty string
+     *
+     * **Examples**
+     * ```
+     * example.org#%#//scriptlet('set-local-storage-item', 'player.live.current.mute', 'false')
+     *
+     * example.org#%#//scriptlet('set-local-storage-item', 'exit-intent-marketing', '1')
+     * ```
+     */
+
+    /* eslint-enable max-len */
+
+    function setLocalStorageItem(source, key, value) {
+      if (!key || !value && value !== '') {
+        return;
+      }
+
+      var keyValue;
+
+      if (value === 'undefined') {
+        keyValue = undefined;
+      } else if (value === 'false') {
+        keyValue = false;
+      } else if (value === 'true') {
+        keyValue = true;
+      } else if (value === 'null') {
+        keyValue = null;
+      } else if (value === 'emptyArr') {
+        keyValue = '[]';
+      } else if (value === 'emptyObj') {
+        keyValue = '{}';
+      } else if (value === '') {
+        keyValue = '';
+      } else if (/^\d+$/.test(value)) {
+        keyValue = parseFloat(value);
+
+        if (nativeIsNaN(keyValue)) {
+          return;
+        }
+
+        if (Math.abs(keyValue) > 0x7FFF) {
+          return;
+        }
+      } else {
+        return;
+      }
+
+      var setItem = function setItem(key, value) {
+        var _window = window,
+            localStorage = _window.localStorage; // setItem() may throw an exception if the storage is full.
+
+        try {
+          localStorage.setItem(key, value);
+          hit(source);
+        } catch (e) {
+          if (source.verbose) {
+            // eslint-disable-next-line no-console
+            console.log("Was unable to set localStorage item due to: ".concat(e.message));
+          }
+        }
+      };
+
+      setItem(key, keyValue);
+    }
+    setLocalStorageItem.names = ['set-local-storage-item'];
+    setLocalStorageItem.injections = [hit, nativeIsNaN];
+
+    /* eslint-disable max-len */
+
+    /**
+     * @scriptlet set-session-storage-item
+     *
+     * @description
+     * Adds specified key and its value to sessionStorage object, or updates the value of the key if it already exists.
+     *
+     * **Syntax**
+     * ```
+     * example.com#%#//scriptlet('set-session-storage-item', 'key', 'value')
+     * ```
+     *
+     * - `key` — required, key name to be set.
+     * - `value` - required, key value; possible values:
+     *     - positive decimal integer `<= 32767`
+     *     - one of the predefined constants:
+     *         - `undefined`
+     *         - `false`
+     *         - `true`
+     *         - `null`
+     *         - `emptyObj` - empty object
+     *         - `emptyArr` - empty array
+     *         - `''` - empty string
+     *
+     * **Examples**
+     * ```
+     * example.org#%#//scriptlet('set-session-storage-item', 'player.live.current.mute', 'false')
+     *
+     * example.org#%#//scriptlet('set-session-storage-item', 'exit-intent-marketing', '1')
+     * ```
+     */
+
+    /* eslint-enable max-len */
+
+    function setSessionStorageItem(source, key, value) {
+      if (!key || !value && value !== '') {
+        return;
+      }
+
+      var keyValue;
+
+      if (value === 'undefined') {
+        keyValue = undefined;
+      } else if (value === 'false') {
+        keyValue = false;
+      } else if (value === 'true') {
+        keyValue = true;
+      } else if (value === 'null') {
+        keyValue = null;
+      } else if (value === 'emptyArr') {
+        keyValue = '[]';
+      } else if (value === 'emptyObj') {
+        keyValue = '{}';
+      } else if (value === '') {
+        keyValue = '';
+      } else if (/^\d+$/.test(value)) {
+        keyValue = parseFloat(value);
+
+        if (nativeIsNaN(keyValue)) {
+          return;
+        }
+
+        if (Math.abs(keyValue) > 0x7FFF) {
+          return;
+        }
+      } else {
+        return;
+      }
+
+      var setItem = function setItem(key, value) {
+        var _window = window,
+            sessionStorage = _window.sessionStorage; // setItem() may throw an exception if the storage is full.
+
+        try {
+          sessionStorage.setItem(key, value);
+          hit(source);
+        } catch (e) {
+          if (source.verbose) {
+            // eslint-disable-next-line no-console
+            console.log("Was unable to set sessionStorage item due to: ".concat(e.message));
+          }
+        }
+      };
+
+      setItem(key, keyValue);
+    }
+    setSessionStorageItem.names = ['set-session-storage-item'];
+    setSessionStorageItem.injections = [hit, nativeIsNaN];
 
     /**
      * This file must export all scriptlets which should be accessible
@@ -4307,10 +4849,110 @@
         hideInShadowDom: hideInShadowDom,
         removeInShadowDom: removeInShadowDom,
         noFloc: noFloc,
-        preventFetch: preventFetch
+        preventFetch: preventFetch,
+        setLocalStorageItem: setLocalStorageItem,
+        setSessionStorageItem: setSessionStorageItem
     });
 
-    const redirects=[{adg:"1x1-transparent.gif",ubo:"1x1.gif",abp:"1x1-transparent-gif"},{adg:"2x2-transparent.png",ubo:"2x2.png",abp:"2x2-transparent-png"},{adg:"3x2-transparent.png",ubo:"3x2.png",abp:"3x2-transparent-png"},{adg:"32x32-transparent.png",ubo:"32x32.png",abp:"32x32-transparent-png"},{adg:"amazon-apstag",ubo:"amazon_apstag.js"},{adg:"google-analytics",ubo:"google-analytics_analytics.js"},{adg:"google-analytics-ga",ubo:"google-analytics_ga.js"},{adg:"googlesyndication-adsbygoogle",ubo:"googlesyndication_adsbygoogle.js"},{adg:"googletagmanager-gtm (removed)",ubo:"googletagmanager_gtm.js (removed)"},{adg:"googletagservices-gpt",ubo:"googletagservices_gpt.js"},{adg:"metrika-yandex-watch"},{adg:"metrika-yandex-tag"},{adg:"noeval",ubo:"noeval-silent.js"},{adg:"noopcss",abp:"blank-css"},{adg:"noopframe",ubo:"noop.html",abp:"blank-html"},{adg:"noopjs",ubo:"noop.js",abp:"blank-js"},{adg:"nooptext",ubo:"noop.txt",abp:"blank-text"},{adg:"noopmp3-0.1s",ubo:"noop-0.1s.mp3",abp:"blank-mp3"},{adg:"noopmp4-1s",ubo:"noop-1s.mp4",abp:"blank-mp4"},{adg:"noopvmap-1.0",ubo:"noop-vmap1.0.xml"},{adg:"noopvast-2.0"},{adg:"noopvast-3.0"},{adg:"prevent-fab-3.2.0",ubo:"nofab.js"},{adg:"prevent-popads-net",ubo:"popads.js"},{adg:"scorecardresearch-beacon",ubo:"scorecardresearch_beacon.js"},{adg:"set-popads-dummy",ubo:"popads-dummy.js"},{ubo:"addthis_widget.js"},{ubo:"amazon_ads.js"},{ubo:"ampproject_v0.js"},{ubo:"chartbeat.js"},{ubo:"doubleclick_instream_ad_status.js"},{adg:"empty",ubo:"empty"},{ubo:"google-analytics_cx_api.js"},{ubo:"google-analytics_inpage_linkid.js"},{ubo:"hd-main.js"},{ubo:"ligatus_angular-tag.js"},{ubo:"monkeybroker.js"},{ubo:"outbrain-widget.js"},{ubo:"window.open-defuser.js"},{ubo:"nobab.js"},{ubo:"noeval.js"},{ubo:"click2load.html"}];
+    /**
+     * Store of ADG redirects names and thier analogs.
+     * As it is not a compatibility table, no need to keep in redirects array third-party redirects.
+     *
+     * Needed only for converion purposes.
+     * e.g. googletagmanager-gtm is removed and should be removed from compatibility table as well
+     * but now it works as alias for google-analytics so it should stay valid for compiler
+     */
+    var redirects = [{
+      adg: '1x1-transparent.gif',
+      ubo: '1x1.gif',
+      abp: '1x1-transparent-gif'
+    }, {
+      adg: '2x2-transparent.png',
+      ubo: '2x2.png',
+      abp: '2x2-transparent-png'
+    }, {
+      adg: '3x2-transparent.png',
+      ubo: '3x2.png',
+      abp: '3x2-transparent-png'
+    }, {
+      adg: '32x32-transparent.png',
+      ubo: '32x32.png',
+      abp: '32x32-transparent-png'
+    }, {
+      adg: 'amazon-apstag',
+      ubo: 'amazon_apstag.js'
+    }, {
+      adg: 'google-analytics',
+      ubo: 'google-analytics_analytics.js'
+    }, {
+      adg: 'google-analytics-ga',
+      ubo: 'google-analytics_ga.js'
+    }, {
+      adg: 'googlesyndication-adsbygoogle',
+      ubo: 'googlesyndication_adsbygoogle.js'
+    }, {
+      // https://github.com/AdguardTeam/Scriptlets/issues/127
+      adg: 'googletagmanager-gtm',
+      ubo: 'google-analytics_ga.js'
+    }, {
+      adg: 'googletagservices-gpt',
+      ubo: 'googletagservices_gpt.js'
+    }, {
+      adg: 'metrika-yandex-watch'
+    }, {
+      adg: 'metrika-yandex-tag'
+    }, {
+      adg: 'noeval',
+      ubo: 'noeval-silent.js'
+    }, {
+      adg: 'noopcss',
+      abp: 'blank-css'
+    }, {
+      adg: 'noopframe',
+      ubo: 'noop.html',
+      abp: 'blank-html'
+    }, {
+      adg: 'noopjs',
+      ubo: 'noop.js',
+      abp: 'blank-js'
+    }, {
+      adg: 'nooptext',
+      ubo: 'noop.txt',
+      abp: 'blank-text'
+    }, {
+      adg: 'noopmp3-0.1s',
+      ubo: 'noop-0.1s.mp3',
+      abp: 'blank-mp3'
+    }, {
+      adg: 'noopmp4-1s',
+      ubo: 'noop-1s.mp4',
+      abp: 'blank-mp4'
+    }, {
+      adg: 'noopvmap-1.0',
+      ubo: 'noop-vmap1.0.xml'
+    }, {
+      adg: 'noopvast-2.0'
+    }, {
+      adg: 'noopvast-3.0'
+    }, {
+      adg: 'prevent-bab',
+      ubo: 'nobab.js'
+    }, {
+      adg: 'prevent-fab-3.2.0',
+      ubo: 'nofab.js'
+    }, {
+      adg: 'prevent-popads-net',
+      ubo: 'popads.js'
+    }, {
+      adg: 'scorecardresearch-beacon',
+      ubo: 'scorecardresearch_beacon.js'
+    }, {
+      adg: 'set-popads-dummy',
+      ubo: 'popads-dummy.js'
+    }, {
+      adg: 'empty',
+      ubo: 'empty'
+    }];
 
     var JS_RULE_MARKER = '#%#';
     var COMMENT_MARKER = '!';
@@ -4426,7 +5068,6 @@
     var ABP_REDIRECT_MARKER = 'rewrite=abp-resource:';
     var EMPTY_REDIRECT_MARKER = 'empty';
     var VALID_SOURCE_TYPES = ['image', 'media', 'subdocument', 'stylesheet', 'script', 'xmlhttprequest', 'other'];
-    var EMPTY_REDIRECT_SUPPORTED_TYPES = ['subdocument', 'stylesheet', 'script', 'xmlhttprequest', 'other'];
     /**
      * Source types for redirect rules if there is no one of them.
      * Used for ADG -> UBO conversion.
@@ -4434,7 +5075,7 @@
 
     var ABSENT_SOURCE_TYPE_REPLACEMENT = [{
       NAME: 'nooptext',
-      TYPES: EMPTY_REDIRECT_SUPPORTED_TYPES
+      TYPES: VALID_SOURCE_TYPES
     }, {
       NAME: 'noopjs',
       TYPES: ['script']
@@ -4650,14 +5291,7 @@
       var isEmptyRedirect = ruleModifiers.indexOf("".concat(ADG_UBO_REDIRECT_MARKER).concat(EMPTY_REDIRECT_MARKER)) > -1;
 
       if (isEmptyRedirect) {
-        if (isSourceTypeSpecified) {
-          var isValidType = sourceTypes.every(function (sType) {
-            return EMPTY_REDIRECT_SUPPORTED_TYPES.indexOf(sType) > -1;
-          });
-          return isValidType;
-        } // no source type for 'empty' is allowed
-
-
+        // no source type for 'empty' is allowed
         return true;
       }
 
@@ -4768,7 +5402,8 @@
     var UBO_SCRIPTLET_TEMPLATE = '${domains}##+js(${args})'; // eslint-disable-next-line no-template-curly-in-string
 
     var UBO_SCRIPTLET_EXCEPTION_TEMPLATE = '${domains}#@#+js(${args})';
-    var UBO_ALIAS_NAME_MARKER = 'ubo-'; // https://github.com/gorhill/uBlock/wiki/Static-filter-syntax#xhr
+    var UBO_ALIAS_NAME_MARKER = 'ubo-';
+    var UBO_SCRIPTLET_JS_ENDING = '.js'; // https://github.com/gorhill/uBlock/wiki/Static-filter-syntax#xhr
 
     var UBO_XHR_TYPE = 'xhr';
     var ADG_XHR_TYPE = 'xmlhttprequest';
@@ -4777,8 +5412,17 @@
     var UBO_SET_CONSTANT_EMPTY_STRING = '\'\'';
     var ADG_PREVENT_FETCH_NAME = 'prevent-fetch';
     var ADG_PREVENT_FETCH_EMPTY_STRING = '';
-    var ADG_PREVENT_FETCH_WILDCARD = '*';
+    var ADG_PREVENT_FETCH_WILDCARD = getWildcardSymbol();
     var UBO_NO_FETCH_IF_WILDCARD = '/^/';
+    var ESCAPED_COMMA_SEPARATOR = '\\,';
+    var COMMA_SEPARATOR = ',';
+    var MAX_REMOVE_ATTR_CLASS_ARGS_COUNT = 3;
+    var REMOVE_ATTR_METHOD = 'removeAttr';
+    var REMOVE_CLASS_METHOD = 'removeClass';
+    var REMOVE_ATTR_ALIASES = scriptletList[REMOVE_ATTR_METHOD].names;
+    var REMOVE_CLASS_ALIASES = scriptletList[REMOVE_CLASS_METHOD].names;
+    var ADG_REMOVE_ATTR_NAME = REMOVE_ATTR_ALIASES[0];
+    var ADG_REMOVE_CLASS_NAME = REMOVE_CLASS_ALIASES[0];
     /**
      * Returns array of strings separated by space which not in quotes
      * @param {string} str
@@ -4827,13 +5471,22 @@
         parsedArgs = getStringInBraces(rule).split(/,/g);
       }
 
+      var scriptletName = parsedArgs[0].indexOf(UBO_SCRIPTLET_JS_ENDING) > -1 ? "ubo-".concat(parsedArgs[0]) : "ubo-".concat(parsedArgs[0]).concat(UBO_SCRIPTLET_JS_ENDING);
+
+      if ((REMOVE_ATTR_ALIASES.indexOf(scriptletName) > -1 || REMOVE_CLASS_ALIASES.indexOf(scriptletName) > -1) && parsedArgs.length > MAX_REMOVE_ATTR_CLASS_ARGS_COUNT) {
+        parsedArgs = [parsedArgs[0], parsedArgs[1], // if there are more than 3 args for remove-attr/class scriptlet,
+        // ubo rule has maltiple selector separated by comma. so we should:
+        // 1. join them into a single string
+        // 2. replace escaped commas by regular ones
+        // https://github.com/AdguardTeam/Scriptlets/issues/133
+        replaceAll(parsedArgs.slice(2).join("".concat(COMMA_SEPARATOR, " ")), ESCAPED_COMMA_SEPARATOR, COMMA_SEPARATOR)];
+      }
+
       var args = parsedArgs.map(function (arg, index) {
-        var outputArg;
+        var outputArg = arg;
 
         if (index === 0) {
-          outputArg = arg.indexOf('.js') > -1 ? "ubo-".concat(arg) : "ubo-".concat(arg, ".js");
-        } else {
-          outputArg = arg;
+          outputArg = scriptletName;
         } // for example: dramaserial.xyz##+js(abort-current-inline-script, $, popup)
 
 
@@ -4844,7 +5497,7 @@
         return outputArg;
       }).map(function (arg) {
         return wrapInSingleQuotes(arg);
-      }).join(', ');
+      }).join("".concat(COMMA_SEPARATOR, " "));
       var adgRule = replacePlaceholders(template, {
         domains: domains,
         args: args
@@ -4871,7 +5524,7 @@
           return index === 0 ? "abp-".concat(arg) : arg;
         }).map(function (arg) {
           return wrapInSingleQuotes(arg);
-        }).join(', ');
+        }).join("".concat(COMMA_SEPARATOR, " "));
       }).map(function (args) {
         return replacePlaceholders(template, {
           domains: domains,
@@ -4920,6 +5573,8 @@
         } else if (parsedName === ADG_PREVENT_FETCH_NAME // https://github.com/AdguardTeam/Scriptlets/issues/109
         && (parsedParams[0] === ADG_PREVENT_FETCH_WILDCARD || parsedParams[0] === ADG_PREVENT_FETCH_EMPTY_STRING)) {
           preparedParams = [UBO_NO_FETCH_IF_WILDCARD];
+        } else if ((parsedName === ADG_REMOVE_ATTR_NAME || parsedName === ADG_REMOVE_CLASS_NAME) && parsedParams[1] && parsedParams[1].indexOf(COMMA_SEPARATOR) > -1) {
+          preparedParams = [parsedParams[0], replaceAll(parsedParams[1], COMMA_SEPARATOR, ESCAPED_COMMA_SEPARATOR)];
         } else {
           preparedParams = parsedParams;
         } // object of name and aliases for the Adg-scriptlet
@@ -4960,8 +5615,8 @@
             var domains = getBeforeRegExp(rule, ADGUARD_SCRIPTLET_MASK_REG);
             var uboName = uboAlias.replace(UBO_ALIAS_NAME_MARKER, '') // '.js' in the Ubo scriptlet name can be omitted
             // https://github.com/gorhill/uBlock/wiki/Resources-Library#general-purpose-scriptlets
-            .replace('.js', '');
-            var args = preparedParams.length > 0 ? "".concat(uboName, ", ").concat(preparedParams.join(', ')) : uboName;
+            .replace(UBO_SCRIPTLET_JS_ENDING, '');
+            var args = preparedParams.length > 0 ? "".concat(uboName, ", ").concat(preparedParams.join("".concat(COMMA_SEPARATOR, " "))) : uboName;
             var uboRule = replacePlaceholders(template, {
               domains: domains,
               args: args
@@ -5015,7 +5670,7 @@
         }
 
         return el;
-      }).join(',');
+      }).join(COMMA_SEPARATOR);
       return "".concat(firstPartOfRule, "$").concat(adgModifiers);
     };
     /**
@@ -5035,7 +5690,7 @@
         }
 
         return el;
-      }).join(',');
+      }).join(COMMA_SEPARATOR);
       return "".concat(firstPartOfRule, "$").concat(adgModifiers);
     };
     /**
@@ -5088,6 +5743,11 @@
         var sourceTypesData = validator.ABSENT_SOURCE_TYPE_REPLACEMENT.find(function (el) {
           return el.NAME === adgRedirectName;
         });
+
+        if (typeof sourceTypesData === 'undefined') {
+          throw new Error("Unable to convert for uBO - no types to add for specific redirect in rule: ".concat(rule));
+        }
+
         var additionModifiers = sourceTypesData.TYPES;
         adgModifiers.push.apply(adgModifiers, toConsumableArray(additionModifiers));
       }
@@ -5098,7 +5758,7 @@
         }
 
         return el;
-      }).join(',');
+      }).join(COMMA_SEPARATOR);
       return "".concat(basePart, "$").concat(uboModifiers);
     };
 
@@ -5158,9 +5818,13 @@
 
       ga.create = function () {
         return new Tracker();
+      }; // https://github.com/AdguardTeam/Scriptlets/issues/134
+
+
+      ga.getByName = function () {
+        return new Tracker();
       };
 
-      ga.getByName = noopNull;
       ga.getAll = noopArray;
       ga.remove = noopFunc;
       ga.loaded = true;
@@ -5820,6 +6484,7 @@
         metrikaYandexTag: metrikaYandexTag,
         metrikaYandexWatch: metrikaYandexWatch,
         preventFab: preventFab,
+        preventBab: preventBab,
         setPopadsDummy: setPopadsDummy,
         preventPopadsNet: preventPopadsNet,
         AmazonApstag: AmazonApstag
