@@ -123,7 +123,7 @@ const createArtifact = async (done) => {
         apiSecret,
         sourceDir: paths.dest,
         artifactsDir: BUILD_DIR,
-        timeout: 5 * 60 * 1000, // 5 minutes
+        timeout: 10 * 60 * 1000, // 10 minutes
     }, {
         shouldExitProgram: false,
     });
