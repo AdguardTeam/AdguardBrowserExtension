@@ -7,6 +7,7 @@ const runQunit = (testFilePath, done) => {
     const qunitArgs = {
         targetUrl: `file://${path.resolve(__dirname, testFilePath)}`,
         timeout: 20000,
+        puppeteerArgs: ['--no-sandbox'],
         redirectConsole: true,
     };
 
