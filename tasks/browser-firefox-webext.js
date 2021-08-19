@@ -165,7 +165,11 @@ export default gulp.series(
     updateManifest,
     localesProcess,
     preprocess,
-    createArtifact,
-    createArchive,
-    createUpdateJson
+    createArchive
+    /**
+     * We stopped to create signed standalone xpi build for firefox, because mozilla doesn't
+     * allow to sign them immediately anymore. This can change in the future
+     */
+    // createArtifact,
+    // createUpdateJson
 );
