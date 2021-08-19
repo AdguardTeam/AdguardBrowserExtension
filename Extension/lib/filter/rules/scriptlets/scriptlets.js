@@ -1,7 +1,7 @@
 
 /**
  * AdGuard Scriptlets
- * Version 1.4.6
+ * Version 1.4.3
  */
 
 (function () {
@@ -2239,7 +2239,6 @@
     function abortCurrentInlineScript(source, property, search) {
       var searchRegexp = toRegExp(search);
       var rid = randomId();
-      var SRC_DATA_MARKER = 'data:text/javascript;base64,';
 
       var getCurrentScript = function getCurrentScript() {
         if ('currentScript' in document) {
@@ -2270,16 +2269,7 @@
         } catch (e) {} // eslint-disable-line no-empty
 
 
-        debugger; // https://github.com/AdguardTeam/Scriptlets/issues/130
-
-        if (content.length === 0 && typeof scriptEl.src !== 'undefined' && startsWith(scriptEl.src, SRC_DATA_MARKER)) {
-          var encodedContent = scriptEl.src.slice(SRC_DATA_MARKER.length); // content = Buffer.from(encodedContent, 'base64');
-
-          content = atob(encodedContent);
-        }
-
         if (scriptEl instanceof HTMLScriptElement && content.length > 0 && scriptEl !== ourScript && searchRegexp.test(content)) {
-          scriptEl.src = SRC_DATA_MARKER;
           hit(source);
           throw new ReferenceError(rid);
         }
@@ -2339,10 +2329,8 @@
       window.onerror = createOnErrorHandler(rid).bind();
     }
     abortCurrentInlineScript.names = ['abort-current-inline-script', // aliases are needed for matching the related scriptlet converted into our syntax
-    'abort-current-script.js', 'ubo-abort-current-script.js', 'acs.js', 'ubo-acs.js', // "ubo"-aliases with no "js"-ending
-    'ubo-abort-current-script', 'ubo-acs', // obsolete but supported aliases
     'abort-current-inline-script.js', 'ubo-abort-current-inline-script.js', 'acis.js', 'ubo-acis.js', 'ubo-abort-current-inline-script', 'ubo-acis', 'abp-abort-current-inline-script'];
-    abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, startsWith, createOnErrorHandler, hit];
+    abortCurrentInlineScript.injections = [randomId, setPropertyAccess, getPropertyInChain, toRegExp, createOnErrorHandler, hit];
 
     /* eslint-disable max-len */
 
@@ -5818,13 +5806,9 @@
 
       ga.create = function () {
         return new Tracker();
-      }; // https://github.com/AdguardTeam/Scriptlets/issues/134
-
-
-      ga.getByName = function () {
-        return new Tracker();
       };
 
+      ga.getByName = noopNull;
       ga.getAll = noopArray;
       ga.remove = noopFunc;
       ga.loaded = true;
