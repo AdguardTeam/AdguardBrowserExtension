@@ -197,6 +197,7 @@
         const updateIframeHtml = `<head></head>
                             <body>
                             <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
+                                <div id="adguard-new-version-popup-close" class="adguard-update-popup__close close-iframe"></div>
                                 <div class="adguard-update-popup__logo"></div>
                                 <div class="adguard-update-popup__title">
                                     ${title}
@@ -213,7 +214,6 @@
                                     </a>
                                 </div>
                                 <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
-                                    <div id="adguard-new-version-popup-close" class="adguard-update-popup__close close-iframe"></div>
                                     <div class="adguard-update-popup__offer-desc-wr">
                                         <div class="adguard-update-popup__offer-desc">
                                             ${offer}
