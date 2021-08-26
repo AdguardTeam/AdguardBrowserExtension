@@ -1,8 +1,8 @@
-! Checksum: Lq5I6ARLOx4/rgjDJOyaPQ
+! Checksum: qnME1Vi6LVUE+GvLZo2ylw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.22.16
-! TimeUpdated: 2021-08-18T12:30:25+00:00
+! Version: 2.0.22.47
+! TimeUpdated: 2021-08-25T21:30:20+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -213,6 +213,9 @@
 .ad.kakaocorp.com^
 .ad.kakao.com^
 !
+||isnssdk.com^
+||app.adjust.world^
+||app.adjust.net.in^
 ||ads.feelingtouch.com^
 ||ad.tencentmusic.com^
 ||ads.iosappsworld.com^
@@ -1247,6 +1250,10 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! m.bild.de gutschein ad
+m.bild.de#?#.block__layout-wrapper > .layout:has(> div[data-teaser-position*="konfigaro"])
+! https://github.com/AdguardTeam/AdguardFilters/issues/91541
+adme.ru#?#div[data-test-id="articles-list"] > div:not([data-test-id^="article-list-element-"]):not(:has(> a[data-test-id="logo-link"]))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/91294
 meeco.kr#?#div[style^="padding:"] > p img[src^="//img.meeco.kr/files/attach/images/"][alt*="배너"]:upward(.xe_content)
 ! conditional ad on head
@@ -1259,12 +1266,12 @@ m.timesofindia.com#?#.wrapperMobileHome div[class][style]:not([data-videomsid]) 
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89807
 spanishdict.com#?##adTopSmall-container ~ div:has(> #adHesion-container)
 ! m.winfuture.de - Tarif ad and amazon ad
-m.winfuture.de#?##main > h2:has(> a:contains(/für unter [0-9]{1,2} Euro/))
+m.winfuture.de#?##main > h2:has(> a:contains(/für (nur|unter) ([0-9]{1,2}|[0-9]{1,2}\,[0-9]{1,2}) Euro/))
 m.winfuture.de#?##main h2:has(> a:contains(/Nur heute\:|Nur diese Woche\:|Nur für [0-9]{1,} Tage|Jetzt reduziert\:|Nur noch heute|tark reduziert|Knaller-Tarif|Top-Preis|kurze Zeit|vorbestellen/))
 m.winfuture.de#?##main > h2:has(> a[href*="special/"][href*="/angebote/"])
 m.winfuture.de#?#body > h2:has( > a[href*="special"][href*="angebote"])
 !! m.winfuture.de/special/X/
-m.winfuture.de#?#body > h2:has(> a:contains(/Nur heute\:|Nur diese Woche\:|Nur für [0-9]{1,} Tage|Jetzt reduziert\:|Nur noch heute|tark reduziert|eals des Tages|Knaller-Tarif|Top-Preis|kurze Zeit|vorbestellen/))
+m.winfuture.de#?#body > h2:has(> a:contains(/Nur heute\:|Nur diese Woche\:|Nur für [0-9]{1,} Tage|Jetzt reduziert\:|Nur noch heute|tark reduziert|eals des Tages|Knaller-Tarif|Top-Preis|kurze Zeit|vorbestellen|Günstige Deals/))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/87208
 drive2.ru#?#.l-container > div.c-block--mh:has(> div[id^="adfox_"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88468
@@ -1667,6 +1674,8 @@ rambler.ru#?#main > div[class] ~ div[class] > div[class] div[class] > a[href^="h
 pornhub.com,pornhubthbh7ap3u.onion#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
 !#################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/90236
+popcornnews.ru#%#//scriptlet('remove-in-shadow-dom', '.i-amphtml-unresolved')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89046
 vivud.com#%#//scriptlet('set-cookie', 'rich_media', '1')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/81870
@@ -1764,6 +1773,9 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/91552#issuecomment-904292573
+news.mynavi.jp#$#.articleList-along { min-height: 0 !important; }
+news.mynavi.jp#$#.articleList-related-article { min-height: 0 !important; }
 ! minor cosmetic issue
 mag.app-liv.jp#$#.p-overlay--upper-ad { bottom: 0!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90538
@@ -2363,7 +2375,42 @@ o2.pl,onet.pl,whathifi.com,amp.n-tv.de,dni.ru,independent.co.uk,komputerswiat.pl
 ! ##.inline-ad-container
 theinventory.com,avclub.com,clickhole.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,splinternews.com,theinventory.com,theonion.com,theroot.com,thetakeout.com##.inline-ad-container
 !
+unian.net##.tabs-with-flex > div#tab1
+unian.net##.tabs-with-flex > div#tab1 + div#tabpanel1
+chanto.jp.net##.sp.sp_floating_area
+||3bitter.com/apbk-hbonetag.js
+appbank.net##.uz-ny
+appbank.net##div[id^="logly-"]
+brightside.me##div[data-test-id="articles-list"] > div:not([data-sharing-target]):not([data-test-id])
+brightside.me##div[data-test-id="article"] div.article + div:not([class]):not([id]):not([data-test-id]):not([data-sharing-target])
+matomedane.jp###AdvHeader
+matomedane.jp###AdvHeader2
+matomedane.jp##.fam_hybrid_adv
+kun.uz##.banner
+wezz-y.com##div[class^="admain"]
+wezz-y.com##div[id^="admain"]
+indiansexstories2.net,issstories.xyz###mhead
+filmcompanion.in###adsSection
+filmcompanion.in##.header-topads
+megacurioso.com.br###slider-partner
+megacurioso.com.br##.ad-leaderboard-sm-fixed
+adme.ru##div[data-test-id="article"] div[class] > div.article ~ div:not([class])
+m.focus.de##.fol_mew-flying-carpet-wrapper
+antenna.gamedivers.com###AdOverlayBanner
+m.ppomppu.co.kr###bbs_inform li[class^="bbs_ad"]
+eromanga-yoru.com###enhancedtextwidget-2
+eromanga-yoru.com###enhancedtextwidget-3
+eromanga-yoru.com###enhancedtextwidget-4
+eromanga-yoru.com###enhancedtextwidget-5
+eromanga-yoru.com###enhancedtextwidget-6
+eromanga-yoru.com###enhancedtextwidget-11
+eromanga-yoru.com###enhancedtextwidget-18
+eromanga-yoru.com###enhancedtextwidget-19
+hinata.me##div[class*="AdManager__AdWrapper"]
+tarosoku.com##.sp2_rss_wrapper
+sozcu.com.tr##.load_masthead
 automaton-media.com##.code-block.ai-viewport-3
+gadget2ch.com##.hgooglead
 gadget2ch.com###main > .posts-inner:first-child
 gadget2ch.com###page > center
 abendzeitung-muenchen.de##.artikel-detail-mobile-ad
@@ -2711,7 +2758,7 @@ politeka.net,znaj.ua##.amp-ad--wrapper
 ||smart-flash.jp/yahoo_ad.html
 m.haberturk.com###s300x200Sticky
 eporner.com###admobilemiddle
-2ip.ru##.item-vpn
+2-ip.online,2ip.io,2ip.ru##.item-vpn
 chronicle.wiki,ff4psp.jp,game-info.wiki,genron.blogos.com,memo.wiki,playing.wiki,pokemasujikaku.com,seesaawiki.jp,shitamachi.world,sokuhou.wiki,sougouwiki.com,st12.jp##.ad-300_250
 chronicle.wiki,ff4psp.jp,game-info.wiki,genron.blogos.com,memo.wiki,playing.wiki,pokemasujikaku.com,seesaawiki.jp,shitamachi.world,sokuhou.wiki,sougouwiki.com,st12.jp##.header-banner
 sammobile.com##.g-29
@@ -3577,8 +3624,6 @@ pdalife.ru##.js-banner
 anifresh.com###minpack-sticker-frame
 stockingfetishvideo.com##.happy-header-mobile
 opencritic.com,www-news18-com.cdn.ampproject.org,eurogamer.net,mumsnet.com,news18.com,amp.indiatimes.com,dronedj.com,bodybuilding.com,transfermarkt.de,mobil.stern.de##.ad-container
-jianshu.com##.dt-open-bg[data-scene="leftBtn"]
-jianshu.com##.note-comment-above-ad-wrap
 theinventory.com##main > div > script[type="application/ld+json"] ~ div[class*="-1 "][class*="-0 "]
 rbc.ru##.banners__mobile-freeze
 lifo.gr##.ad_inside > .sticky-wrap
@@ -3735,6 +3780,8 @@ mainichi.jp##.articledetail-body-pr
 mainichi.jp##div[id^="ad-sp-channel-infeed_"]
 mainichi.jp##div[id^="ad-sp-article-infeed_"]
 mainichi.jp##aside.ad
+bengo4.com##.recruiteBnr
+bengo4.com##div[style="min-width: 320px; min-height: 50px;"]
 bengo4.com##div[id^="ad-slot-"]
 tvbs.com.tw##.ad_320x50_mo
 tvbs.com.tw##.advertising_lightbox
@@ -3757,6 +3804,7 @@ sonicch.com###gn_interstitial_area
 ||e.z091u.cn^$domain=shenpinwu.com
 ||m.sdxlglm.cn^$domain=shenpinwu.com
 ||blog-sokuhou.com^$domain=bakufu.jp
+bakufu.jp##table[width="100%"][cellspacing="0"][cellpadding="3"][border="0"]
 bakufu.jp##.adList
 bakufu.jp##a[href^="http://ad.dmm.com"]
 bakufu.jp###blogRoll
@@ -4525,6 +4573,7 @@ m.tv.yandex.by,m.tv.yandex.kz,m.tv.yandex.ru,m.tv.yandex.ua##.grid-chunk__adv-wi
 ! Yandex.Zen
 zen.yandex.by,zen.yandex.com,zen.yandex.kz,zen.yandex.ru,zen.yandex.ua##.article-render-mobile__block_embed
 ! Yandex.Weather
+yandex.*##div[class^="Card_container"][class*="Advert"]
 yandex.md,yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.adv_type_top
 yandex.md,yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##div[id^="ADVERT_Y-A-"]
 yandex.md,yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##div[class*="Advert_container__"]
