@@ -1,8 +1,8 @@
-! Checksum: elY1ccQCX12P0kcrp0d2Xg
+! Checksum: m7z7cBjmtW8no/PfA0O0Jg
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.10.67
-! TimeUpdated: 2021-08-17T21:03:40+00:00
+! Version: 2.0.10.73
+! TimeUpdated: 2021-08-24T09:32:04+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -812,6 +812,8 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 ##.standard-ad
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
+topflix.vc#%#//scriptlet("adjust-setInterval", "adsHandle_noclick", "", "0.02")
+app.prende.tv#%#//scriptlet("json-prune", "ads breaks cuepoints times", "ads")
 maxitorrent.com#%#//scriptlet("prevent-window-open", "1", "?sid=")
 eusaudavel.net#%#//scriptlet('remove-class', 'hided', 'div#player')
 palaygo.site#%#//scriptlet("abort-current-inline-script", "onbeforeunload", "popit")
@@ -1058,7 +1060,9 @@ _publicitario.
 http://adw.
 /lJuB4eTB/init.js
 /^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispop.com|superflix.net
-serpadres.es##.henneoHB
+||topflix.vc/js/prot4.js
+globo.com##.bstn-feed-ad
+serpadres.es##div[id].henneoHB
 calculadorasonline.com##div[class="Anuncio1"]
 ||i.imgur.com/MoMGEEA.png
 ||netcine.io/first.js
@@ -1101,7 +1105,6 @@ lavanguardia.com##.module-box-ads
 olx.com.br###top-main-content
 eusaudavel.net##.banner + div.box
 climatempo.com.br##.wrapper-banner
-climatempo.com.br##.accordion-card
 psicocode.com##img[width="336"][height="250"]
 psicocode.com##img[width="336"][height="300"]
 culturageek.com.ar###sidebar div.theiaStickySidebar
@@ -1210,7 +1213,6 @@ elabueloeduca.com###pRectGA
 enrt.eu##a[href^="https://ads.enrt.eu/"]
 ||bp.blogspot.com$image,domain=enrt.eu
 independentespanol.com##.bnePEP
-||nezuko-ah.nl/asset/bann.js
 canalrural.com.br##div[class$="-anuncio-dfp"]
 pdfslide.tips##div[class*="gg_ads"]
 zonarutoppuden.com##.publibox
@@ -1364,7 +1366,6 @@ mtlnovel.com##amp-iframe[src^="https://ads.mtlnovel.com/"]
 nartag.com,fenixscan.com##.body-wrap > div.c-sidebar.wp-manga
 xanimu.com##.gofollow
 ||animetw.net/js/atag.js
-||animetw.xyz/asset/bann.js
 noticiasaominuto.com,noticiasaominuto.com.br##.pub-container
 trendencias.com,vidaextra.com##.sticky-sidebar-container .m-desvio-ecommerce
 tuhentaionline.com###clck_ntv
@@ -3220,6 +3221,15 @@ uol.com.br##ul.produtos
 ||uol.com.br/upload/banner/
 ||uol.com.br/*/banners/
 ||uol.com.br/*/sortear_
+@@||imasdk.googleapis.com/js/sdkloader/ima3_dai.js$domain=app.prende.tv
+@@||pubads.g.doubleclick.net/ssai/event/*/streams$domain=app.prende.tv
+@@||pubads.g.doubleclick.net/ondemand/hls/content/*/vid/*/streams$domain=app.prende.tv
+@@||dice-live-us.akamaized.net/ads-*/*/hls/live/$domain=app.prende.tv
+@@||dice-live-us.akamaized.net/ads-*/*/hls/*/event/*/master.m3u8$domain=app.prende.tv
+@@||dve-streams.akamaized.net/ads-*/*/dio/$domain=app.prende.tv
+@@||dve-streams.akamaized.net/ads-*/*/audio/$domain=app.prende.tv
+@@||dve-streams.akamaized.net/ads-*/*/video/$domain=app.prende.tv
+@@||dve-streams.akamaized.net/ads-*/*/ondemand/hls/content/*/master.m3u8$domain=app.prende.tv
 @@||files.windelivery-services.com/banners/$domain=fostershollywood.es
 @@||portal-algartelecom-files.s3.amazonaws.com/banners/imgs/$domain=algartelecom.com.br
 @@/promocao-$domain=tecnoblog.net

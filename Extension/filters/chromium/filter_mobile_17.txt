@@ -1,8 +1,8 @@
-! Checksum: J7Qt2Rg1eAxhuLtPzqWO0w
+! Checksum: lFEo9wkfEJcnbl4tMAWXmQ
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.0.80
-! TimeUpdated: 2021-08-12T16:30:44+00:00
+! Version: 2.0.0.86
+! TimeUpdated: 2021-08-24T11:31:13+00:00
 ! Expires: 4 days (update frequency)
 $removeparam=cmpid
 $removeparam=asgtbndr
@@ -19,7 +19,6 @@ $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
 $removeparam=fbclid
-$removeparam=gclid
 $removeparam=utm_campaign
 $removeparam=utm_channel
 $removeparam=utm_cid
@@ -39,6 +38,14 @@ $removeparam=utm_swu
 $removeparam=utm_term
 $removeparam=utm_userid
 $removeparam=utm_viz_id
+$removeparam=utm_product
+$removeparam=utm_campaignid
+$removeparam=utm_ad
+$removeparam=utm_brand
+$removeparam=gbraid
+$removeparam=wbraid
+$removeparam=gclsrc
+$removeparam=gclid
 $removeparam=yclid
 $removeparam=dpg_source
 $removeparam=dpg_campaign
@@ -48,7 +55,6 @@ $removeparam=admitad_uid
 $removeparam=adjust_tracker
 $removeparam=adjust_adgroup
 $removeparam=adjust_campaign
-$removeparam=utm_ad
 $removeparam=bsft_clkid
 $removeparam=bsft_eid
 $removeparam=bsft_mid
@@ -66,6 +72,10 @@ $removeparam=mtm_source
 $removeparam=pk_campaign
 $removeparam=pk_medium
 $removeparam=pk_source
+$removeparam=mbid
+||wikihow.com^$removeparam=?utm_source
+||kohls.com^$removeparam=CID
+||instagram.com^$removeparam=igshid
 ||euronews.com^$removeparam=_ope
 $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||mediamarkt.com.tr^$removeparam=rbtc
@@ -172,9 +182,17 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||twitter.com^$removeparam=ref_url
 ||zerkalo.io^$removeparam=tg
 ||zerkalo.io^$removeparam=vk
+||microsoft.com^$removeparam=tduid
+||microsoft.com^$removeparam=irclickid
+||microsoft.com^$removeparam=ranEAID
+||microsoft.com^$removeparam=ranSiteID
+||microsoft.com^$removeparam=ocid
+$removeparam=epi,domain=microsoft.com|xbox.com
 ||nbcume.sc.omtrdc.net/id?d_visid_ver=$removeparam=/mcorgid|mid|ts/,domain=nbcdfw.com
+$removeparam=dclid
 ||trendyol.com^$removeparam=_ga
 ||trendyol.com^$removeparam=utm_subaff
+||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
 ||adguard.com^$removeparam=aid
 ||hepsiburada.com^$removeparam=wt_af
@@ -209,8 +227,6 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||www.otto.de^$removeparam=AffiliateID
 ||www.otto.de^$removeparam=campid
 ||www.pricezilla.de^$removeparam=bid
-||mediamarkt.de/*.html$removeparam=dclid
-||saturn.de/*.html$removeparam=dclid
 ||boomstore.de*.html$removeparam=campaign
 ||www.alternate.de^$removeparam=campaign
 ||cosse.de^$removeparam=sPartner
