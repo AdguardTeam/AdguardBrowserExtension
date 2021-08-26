@@ -1,8 +1,8 @@
-! Checksum: gnDJ+nG3w1rpmfP53r8LZA
+! Checksum: GghgZhpHdXeV+jyF0SCPAw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.21.39
-! TimeUpdated: 2021-08-18T09:31:35+00:00
+! Version: 2.0.21.52
+! TimeUpdated: 2021-08-25T19:31:40+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -949,6 +949,9 @@ teleboy.ch#@#.adWrapper
 !
 ! Extended CSS rules
 !
+! bild.de - gutschein ads
+bild.de#?#.main-content > section.block:has(> .block__layout-wrapper > .layout > .taboola)
+bild.de#?#.main-content ~ .mtl--footer:has(> h4 > .anchor--external)
 ! gamestar.de - ad on main page
 gamestar.de#?#.scroll-container > div > .content-item-medium:has(> data[value="Deal"])
 ! winfuture.de Ads at main page
@@ -1582,6 +1585,8 @@ amateurbusters.com#?#.sb_area > .sb_area_headline:contains(Urlaub)
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/92109
+spiele.rtl.de#%#//scriptlet('remove-class', 'js-game-detail-link', '.game-startbutton a[href^="https://spiele.rtl.de/games/"].js-game-detail-link')
 ! popunder
 blasensex.com#%#//scriptlet("abort-on-property-read", "jsUnda")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90034
@@ -1928,6 +1933,18 @@ drwindows.de,wiesbadenaktuell.de,rauchmeldungen.de,simfans.de,wn.de,cosmopolitan
 ! ##.id-Container--proBEEP
 hallo-muenchen.de,az-online.de,lokalo24.de,rosenheim24.de,kreiszeitung.de,nordbuzz.de,mannheim24.de,merkur.de,oktoberfest-live.de,tz.de##.id-Container--proBEEP
 !
+bild.de##.ad-links
+serieslyawesome.tv###zwischenbanner
+serieslyawesome.tv##div[id^="werbebanner"]
+baumarkt-tracker.de##.ads-table
+schwaebische.de##body div[id^="schwaebische_medium_rectangle_inline_"]:not(#style_important)
+focus.de##div[data-bc-query-productid]
+bild.de##div[style="border:1px solid #d1d1d1; padding: 7px 0 4px 0;text-align:center;text-transform:uppercase; color:#666;font-size:11px;"]
+bild.de##.block--ad
+bild.de##div[data-teaser-position*="advertisement"]
+derprivatpatient.de###ad
+derprivatpatient.de###block-block-59
+derprivatpatient.de###block-block-53
 deine-tierwelt.de##div[id^="DTW_TM_D_"]
 hundund.de###block-werbung
 motorsport-total.com##div[data-display="plista_widget_infeed"]
@@ -2064,7 +2081,7 @@ pons.com###pons-ad-leaderboard__container
 movie.momo-net.com###video-player-area > div[style="visibility: visible;"]
 ran.de,prosieben.de,sat1.de##.ad-slot-container
 bunte.de##.bfa-ad-slot
-hoerzu.de##.funkedigital-ad
+tvdigital.de,hoerzu.de##.funkedigital-ad
 ||spark.cloud.funkedigital.de/spark.js$domain=hoerzu.de
 rheinpfalz.de##.nfy-banner
 rheinpfalz.de##.cmsSnippetSlide
@@ -3952,7 +3969,7 @@ bz-berlin.de##.article-bcode-medium-rectangle-bottom
 catplus.de##.asa_async_container
 mobiflip.de##.asadivmain
 augsburger-allgemeine.de##.aside > .hide + div[style*="background-color: none;"][style*="height:135px;"]
-deavita.com,n-land.de,prospektangebote.de,bonedo.de,mallorcamagazin.com,tageskarte.io,piste.de,ruhrnachrichten.de,spielspiele.de,1001spiele.at,bundesliga.de,lbb.de##.banner
+jetztspielen.ws,deavita.com,n-land.de,prospektangebote.de,bonedo.de,mallorcamagazin.com,tageskarte.io,piste.de,ruhrnachrichten.de,spielspiele.de,1001spiele.at,bundesliga.de,lbb.de##.banner
 simtimes.de##.banner-end-news
 mein-gartenbuch.de##.banner_content_single
 bildspielt.de##.banner_middle
@@ -4483,6 +4500,7 @@ tagesspiegel.de###urban-teaser1
 !###TEMPORARY###
 !###############
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/92109
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88720
 fahrrad.de#@#.is-sponsored
 ! https://github.com/AdguardTeam/AdguardFilters/issues/87832
@@ -5866,6 +5884,7 @@ telekom.de#@#a[href^="https://track.adform.net/"]
 ||areadvd.de/images/*/Teufel_100x150.gif
 ||areadvd.de/images/*/Teufel_300x25.png
 ||areadvd.de/IOTAVX.jpg
+||arminia.de^*/csm_Sponsoren-
 ||as.chartsurfer.de^
 ||astronomie.de/uploads/tx_sfbanners/
 ||astrowetter.com/surftipps/
@@ -6547,6 +6566,7 @@ telekom.de#@#a[href^="https://track.adform.net/"]
 ||sbb.it/images/default-source/*/s%C3%BCdtiroler_landwirt_gif.
 ||sbb.it/images/default-source/*_200x300.
 ||sbb.it/images/default-source/*_banner.
+||scfreiburg.com^*/04_Sponsoren/
 ||schnittberichte.com^*/werbung/
 ||schule-studium.de/AmazonBestellung.jpg
 ||schule-studium.de/buhv-Unterrichtsmaterial/Banner/
@@ -6580,6 +6600,7 @@ telekom.de#@#a[href^="https://track.adform.net/"]
 ||sexy-land.ch/images/banner/
 ||sg-flensburg-handewitt.de^*/Online_Banner/
 ||sg-flensburg-handewitt.de^*/Sponsors/
+||sgf1903.de^*/Partner/
 ||sgf1903.de^*/Sponsoring/
 ||sgleutershausen.de/wp-content/uploads/*/bwt-logo-neu.jpg
 ||shopanbieter.de/SponsorLogos/
@@ -6730,6 +6751,8 @@ telekom.de#@#a[href^="https://track.adform.net/"]
 ||velomotion.de^*/featured-ad.js
 ||vfb.de/?proxy=img/hauptsponsor_
 ||vfb.de^*/sponsoren/
+||vfl-bochum.de^*/Partner/
+||vfl-bochum.de^*/Premium_Partner/
 ||vfl.de/sportmedia/assets/sunmaker_logo.svg
 ||vfl.de^*-banner_
 ||vfl.de^*_sponsoren_
@@ -7373,6 +7396,7 @@ sexfilmegratis.net,sexvideoskostenlos.net###wa_join_btn
 games.ch###wallpaper
 spielesnacks.de###wallpaper-link
 astronews.com###wcontent
+bayer04.de###web-trekk-pageupdate
 weekli.de###weekli-interstitial
 belgieninfo.net###widget_sp_image-14
 wetteronline.de###woFooterBillboard
@@ -7500,6 +7524,7 @@ notebookinfo.de##.av-fade-carousel
 hsc2000.de##.av-partner-fake-img
 hsc2000.de##.avia-slideshow-1
 nrwhits.de##.ax-medium-rectangle-n
+fcaugsburg.de##.b-logo-listing
 browsergames.de##.background
 archzine.net##.banPlace1
 1001spiele.de,6navi.ch,anixehd.tv,bankkaufmann.com,buchmarkt.de,deavita.com,flugblattangebote.at,fruchtportal.de,fussballgucken.info,goldseiten.de,hcb.net,jobagent.ch,juve.de,komoedie-steinstrasse.de,laufen.de,macerkopf.de,melodieundrhythmus.com,modhoster.de,pfaffenhofen-today.de,pixelio.de,prospektangebote.de,salue.de,sexnews.ch,svs1916.de##.banner
@@ -7515,6 +7540,7 @@ donnerwetter.at,donnerwetter.ch,donnerwetter.de##.banner-place
 klassikradio.de##.banner-position
 curt.de##.banner-section
 bibliomed-pflege.de,magistrix.de##.banner-skyscraper
+arminia.de##.banner-slider
 scfreiburg.com##.banner-super-middle
 donnerwetter.at,donnerwetter.ch,donnerwetter.de##.banner-top
 immobilienscout24.de##.banner-top-placeholder
@@ -7554,7 +7580,7 @@ boersennews.de##.bg-smartbroker-dark
 boersennews.de##.bg-smartbroker-light
 bildercache.de##.bilde-widget
 designtagebuch.de##.billbo
-fnweb.de,laborjournal.de,ligaportal.at,mannheimer-morgen.de,tarnkappe.info,winfuture.de##.billboard
+bundesliga.com,fnweb.de,laborjournal.de,ligaportal.at,mannheimer-morgen.de,tarnkappe.info,winfuture.de##.billboard
 infranken.de##.billboard-wrapper
 djmag.de##.billboardbanner
 galaxy-ingolstadt.de##.block-11
@@ -7590,6 +7616,7 @@ eventelevator.de##.bwdfb-widget
 kremser-sc.at,sgleutershausen.de##.bx-viewport
 amerikawoche.com##.bxnxr_column
 amerikawoche.com##.bxv
+scfreiburg.com,sgf1903.de##.c-sponsors-list
 focus.de##.cad
 ka-news.de##.cad_box
 focus.de##.cad_native
@@ -7668,7 +7695,10 @@ euractiv.de##.ea-gat-slot-wrapper
 der-rissener.de##.ed-element
 laborjournal.de##.ed_d
 l-mag.de##.editorial-teaser
+eintracht.de##.ef-article-card--ad
+eintracht.de##.ef-footer__section
 eintracht.de##.ef-footer__section--logos
+eintracht.de##.ef-stadium-ad__banner
 fruchthandel.de##.element_leaderboard
 fruchthandel.de##.element_squarebuttongroup
 mundus-art.com##.elementor-element-0e1ce7d
@@ -7688,6 +7718,7 @@ gwd-minden.de##.footer
 gamepro.de##.footer-banner
 deutschepornos.co,erotik-sexvideos.com,geilesexclips.com,gratis-sex-videos.net,gratisfickvideos.net,kostenlose-sexvideos.biz,sexfilmetube.net,sexkostenlos.biz,xhamsterdeutsch.xyz##.footer-dingens
 hottime.ch##.footer-grey
+fcbayern.com##.footer-p4rtn3r-container
 ecrbs.redbulls.com,fussball.de##.footer-partner
 fcbayern.com##.footer-partner-container
 dtb.de##.footer-sponsor-section
@@ -7722,6 +7753,7 @@ fkk24.de##.head-top-bannerplace
 blickpunkt-brandenburg.de,fruchtportal.de,nh24.de,sunshine.it##.header-banner
 tennis.de##.header-logo-second-display
 radzeit.de##.header-main
+fcbayern.com##.header-presented-by
 taucher.net##.header-promo
 verlagshaus-jaumann.de##.header-right
 computersm.com##.header-top
@@ -7744,6 +7776,7 @@ kronenachrichten.com##.img-banner
 funcloud.club##.inArticleA
 bikemarkt.mtb-news.de##.incontent__container
 autoline.de,autoline24.at,autoline24.ch##.index-bns
+allround-pc.com##.infoHeadWrap1
 lippe-news.de##.inline_wrapper
 erotikinserate.ch##.inner
 sueddeutsche.de##.iqad
@@ -7802,6 +7835,7 @@ fc.de##.mod-sponsor-icon
 basses-blatt.de,beobachter-online.de,blaue-blume.tv,einbecker-morgenpost.de,gandersheimer-kreisblatt.de,goldstar-tv.de,romance-tv.de,studio-magazin.de##.mod_banner
 aarauer-nachrichten.ch,st-galler-nachrichten.ch,wiler-nachrichten.ch,winterthurer-zeitung.ch,zugerwoche.ch##.mod_printanzeigen
 schalke04.de##.module-advertising
+fc-union-berlin.de##.module-footer-sponsors
 jetztspielen.de##.mpu
 finanzen.net##.mrec-height-prefix
 quiz-lounge.com##.mt-3
@@ -7845,6 +7879,7 @@ spielregeln.de##.parallax_link
 duesseldorfer-anzeiger.de##.park-portal
 1000ps.at,1000ps.ch,1000ps.de,broncos.it,eulen-ludwigshafen.de,fc-suedtirol.com,fck.de,hc-erlangen-ev.de,hcinnsbruck.at,hsc-bad-neustadt.de,ibash.de,plattentests.de,veu-feldkirch.at##.partner
 esports.ch##.partner-logos
+herthabsc.com##.partner-main-footer
 bhc06.de##.partner-teaser
 eintracht.com##.partner-wrapper
 wallstreet-online.de##.partnerNews > a[target="_blank"]
@@ -7852,6 +7887,7 @@ rts-salzburg.at##.partner_section
 gota6.ch,highway-magazin.de##.partnerlinks
 deutscherskiverband.de##.partnerlogos
 hannover96.de,p-stadtkultur.de##.partners
+vfl-wolfsburg.de##.partners-footer
 floatmagazin.de##.partners-title + .partners
 tagesstimme.com##.pb-8.text-center.float-center
 fla.de##.pbph
@@ -7901,6 +7937,8 @@ fussballdaten.de,modhoster.de,rheintaler.ch##.rectangle
 radioguetersloh.de##.rectright
 jungle.world##.region-topad
 suche.freenet.de##.result-container > .container-right
+curved.de##.review-recommendation-headline
+curved.de##.review-recommendation-headline + a
 nydus.org##.right > .widgetbox2
 oberberg-aktuell.de##.right-leaderboard
 abload.de##.rightbanner
@@ -7961,6 +7999,7 @@ meetingpoint-brandenburg.de##.span > .white_bg[style="width: 100%; padding-right
 meetingpoint-brandenburg.de##.span.white_bg[style="padding: 7px 2px; margin-left: 5px;"]
 meetingpoint-brandenburg.de##.span[style="width: 160px; margin-left: 5px;"]
 german-porno-deutsch.info,spox.com##.spons
+fcaugsburg.de##.sponser-lead-inner
 argovia.ch,bolzano-bozen.it,europages.de,frischauf-gp.de,hc-elbflorenz.de,radio24.ch,scfreiburg.com,svww.de##.sponsor
 fcz.ch##.sponsor--margin
 dynamo-dresden.de##.sponsor-list
@@ -7968,12 +8007,12 @@ rittnerbuam.com##.sponsor-section
 asv-hamm-westfalen.de##.sponsor_col
 eisbaeren.de##.sponsor_wrapper
 ariva.de,zdnet.de##.sponsored
-budapester.hu,rot-weiss-erfurt.de,seo-united.de,vfb.de##.sponsoren
+arminia.de,budapester.hu,rot-weiss-erfurt.de,seo-united.de,vfb.de##.sponsoren
 hc-erlangen-ev.de##.sponsoren-right
 fcenergie.de##.sponsoren_wrapper
 tsv1860.de##.sponsorftr
 hc-erlangen.de##.sponsoring-footer
-bayer04.de,dhb.de,hallescherfc.de,hcpustertal.com,ofc.de,rundumkoeln.de##.sponsors
+bayer04.de,bvb.de,dhb.de,fc-union-berlin.de,hallescherfc.de,hcpustertal.com,ofc.de,rundumkoeln.de##.sponsors
 sg-flensburg-handewitt.de##.sponsors-col
 tsg-hoffenheim.de##.sponsors-slider
 freiburgesports.de##.sponsors-wrapper
@@ -8272,6 +8311,7 @@ tarnkappe.info##div[style="width:300px;height:250px"]
 news.ch##div[style="width:300px;padding:12px;float:left;"]
 korrekturen.de##div[style="width:728px; height: 90px; text-align: center; background-color:#c0c0c0;"]
 ableitungsrechner.net,integralrechner.de##div[style^="width: 728px;"]
+rbleipzig.com##img[alt="Logo Partner"]
 finanzen.net##img[alt="Passende Produkte von Vontobel"]
 finanzen.net##img[alt="Passende Produkte von der Société Générale"]
 t-online.de##img[alt^="Modetrends"]
