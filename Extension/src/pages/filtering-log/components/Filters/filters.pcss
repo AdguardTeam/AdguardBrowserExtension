@@ -1,0 +1,114 @@
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+
+    &__tab-selector {
+        padding: 16px;
+        box-sizing: border-box;
+        width: 360px;
+
+        @media (max-width: 640px) {
+            padding-bottom: 12px;
+        }
+
+        @media (max-width: 1200px) {
+            width: 55%;
+        }
+
+        @media (max-width: 640px) {
+            width: 100%;
+        }
+    }
+
+    &__events-search {
+        padding: 16px;
+        box-sizing: border-box;
+        width: 400px;
+
+        @media (max-width: 640px) {
+            padding-top: 12px;
+        }
+
+        @media (max-width: 1579px) {
+            width: 45%;
+        }
+
+        @media (max-width: 640px) {
+            width: 100%;
+        }
+    }
+
+    &__events-tags {
+        overflow-x: hidden;
+        position: relative;
+        padding: 0 25px 0 25px;
+
+        @media (max-width: 640px) {
+            padding: 0 21px 0 21px;
+        }
+    }
+
+    &__arrow {
+        width: 32px;
+        height: 32px;
+        position: absolute;
+        top: -6px;
+        color: var(--gray700);
+        outline: none;
+        background-color: transparent;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+
+        &__icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        &--left {
+            left: -5px;
+            transform: rotate(180deg);
+
+            @media (min-width: 640px) {
+                left: 0;
+            }
+        }
+
+        &--right {
+            right: -5px;
+
+            @media (min-width: 640px) {
+                right: 0;
+            }
+        }
+    }
+
+    &__events-filters {
+        scroll-behavior: smooth;
+        display: flex;
+        overflow-x: auto;
+        padding: 0 0 16px 0;
+
+        & .filters__arrow {
+            @media (min-width: 1350px) {
+                display: none;
+            }
+        }
+    }
+
+    &__miscellaneous-filters {
+        margin: 4px 20px 0 auto;
+        font-size: 13px;
+
+        @media (max-width: 640px) {
+            margin: 4px 8px 0 auto;
+        }
+    }
+
+    &__nav {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        align-items: center;
+    }
+}

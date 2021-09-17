@@ -1,0 +1,226 @@
+.setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: initial;
+    position: relative;
+    padding: 16px;
+    min-height: 52px;
+
+    &.group {
+        padding: 16px;
+
+        @media (min-width: 640px) {
+            justify-content: flex-start;
+            padding: 0;
+        }
+    }
+
+    &--disabled {
+        & .textarea,
+        & .input__in {
+            pointer-events: none;
+            cursor: default;
+            opacity: 0.5;
+        }
+    }
+
+    &__area {
+        display: flex;
+        align-items: center;
+        width: 80%;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+        outline: none;
+        text-align: left;
+        background-color: transparent;
+        transition: 0.3s ease background-color;
+
+
+        @media (min-width: 640px) {
+            padding: 15px 0 15px 16px;
+
+            &_group {
+                flex-grow: 1;
+                border-radius: 8px 0 0 8px;
+            }
+        }
+
+        &:hover {
+            background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
+        }
+    }
+
+    &__inline-control {
+        margin-left: 22px;
+        height: auto;
+
+        @media (min-width: 640px) {
+            &_group {
+                margin-left: 0;
+            }
+        }
+    }
+
+    &__container {
+        display: flex;
+
+        &--vertical {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        &--horizontal {
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        &--inline {
+            display: block;
+        }
+    }
+
+    &__info {
+        max-width: 530px;
+    }
+
+    &__title {
+        font-weight: 500;
+        font-size: 16px;
+        color: var(--gray-base);
+        line-height: 20px;
+        word-break: break-word;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300)
+        }
+    }
+
+    &__desc {
+        line-height: 18px;
+        padding: 4px 0 0;
+        color: var(--gray700);
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+
+        & a {
+            color: var(--green74);
+            text-decoration: underline;
+            white-space: nowrap;
+        }
+    }
+
+    &__desc-item {
+        margin-bottom: 13px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__tags {
+        display: flex;
+        font-size: 13px;
+        flex-wrap: wrap;
+    }
+
+    &__icon {
+        color: var(--green400);
+        margin-right: 20px;
+    }
+
+    &__back {
+        color: var(--gray700);
+        position: absolute;
+        padding-top: 16px;
+        left: -8px;
+        top: 33px;
+
+        @media (min-width: 640px) {
+            top: 3px;
+        }
+    }
+
+    &__alert-desc,
+    &__alert-link {
+        color: var(--red400);
+    }
+
+    &__checkbox {
+        display: none;
+    }
+}
+
+.setting-checkbox {
+    display: block;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--t3) background-color;
+
+    &:hover {
+        background-color: var(--gray100);
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray900);
+        }
+    }
+}
+
+.light-mode {
+    .setting {
+        &--checkbox {
+            &:hover {
+                background-color: var(--gray100);
+            }
+        }
+
+        &__title {
+            color: var(--gray-base);
+        }
+
+        &__area {
+            &:hover {
+                background-color: var(--gray100);
+            }
+        }
+    }
+
+    .setting-checkbox {
+        &:hover {
+            background-color: var(--gray100);
+        }
+    }
+}
+
+.dark-mode {
+    .setting {
+        &--checkbox {
+            &:hover {
+                background-color: var(--gray900);
+            }
+        }
+
+        &__title {
+            color: var(--gray300)
+        }
+
+        &__area {
+            &:hover {
+                background-color: var(--gray900);
+            }
+        }
+    }
+
+    .setting-checkbox {
+        &:hover {
+            background-color: var(--gray900);
+        }
+    }
+}

@@ -1,0 +1,116 @@
+.radio-button-label,
+.checkbox-label {
+    white-space: nowrap;
+    word-break: inherit;
+}
+
+.radio-button {
+    min-width: 17px;
+    align-self: flex-start;
+}
+
+.request-modal {
+    outline: none;
+
+    &__rule-text {
+        font-size: 16px;
+        color: var(--gray900);
+        border: none;
+        width: 100%;
+        outline: none;
+        resize: vertical;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+            background-color: var(--black);
+        }
+    }
+
+    &__view {
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}
+
+.patterns,
+.options {
+    font-size: 16px;
+    color: var(--gray900);
+    word-break: break-all;
+
+    @media (prefers-color-scheme: dark) {
+        color: var(--gray300);
+    }
+
+    & > .request-info__key {
+        margin-bottom: 16px;
+    }
+
+    &__content {
+        & > .radio-button-label{
+            margin-bottom: 22px;
+
+            &:only-child {
+                margin-bottom: 0;
+            }
+
+            @media (min-width: 640px) {
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+        & > .checkbox-label:not(:only-child) {
+            margin-bottom: 16px;
+
+            &:only-child {
+                margin-bottom: 0;
+            }
+
+            @media (min-width: 640px) {
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+        .custom-checkbox,
+        .radio-button {
+            margin-right: 8px;
+        }
+    }
+}
+
+.request-info.patterns {
+    word-break: break-all;
+}
+
+.light-mode {
+    & .request-modal {
+        &__rule-text {
+            color: var(--gray900);
+            background-color: transparent;
+        }
+    }
+
+    & .options {
+        color: var(--gray900);
+    }
+}
+
+.dark-mode {
+    & .request-modal {
+        &__rule-text {
+            color: var(--gray300);
+            background-color: var(--black);
+        }
+    }
+
+    & .options {
+        color: var(--gray300);
+    }
+}

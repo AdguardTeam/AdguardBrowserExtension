@@ -1,0 +1,52 @@
+.stats-chart {
+    height: 100%;
+
+    &__filters {
+        padding: 10px 10px 27px 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__select {
+        position: relative;
+        width: 50%;
+        display: inline-block;
+    }
+
+    &__select-in {
+        width: 100%;
+        outline: none;
+        height: 33px;
+        padding: 0 25px 0 10px;
+        font-weight: 500;
+        font-size: 12px;
+        color: var(--gray);
+        border: 0;
+        background-color: transparent;
+        appearance: none;
+        cursor: pointer;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
+
+    &__icon {
+        pointer-events: none;
+        position: absolute;
+        right: 6px;
+        top: 13px;
+    }
+}
+
+.light-mode {
+    .stats-chart__select-in {
+        color: var(--gray);
+    }
+}
+
+.dark-mode {
+    .stats-chart__select-in {
+        color: var(--gray300);
+    }
+}

@@ -1,0 +1,389 @@
+.filtering-log {
+    max-width: 100%;
+    height: 100%;
+    overflow-x: auto;
+
+    * {
+        box-sizing: border-box;
+    }
+
+    &__inner {
+        table-layout: fixed;
+        width: 100%;
+        height: calc(100% - 30px);
+
+        @media (min-width: 640px) {
+            height: calc(100% - 131px);
+        }
+
+        & .thead .th {
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--bgColor);
+            }
+        }
+
+        & .thead .tr {
+            box-shadow: 0 1px 0 0 var(--thColor);
+        }
+
+        & .tbody .tr {
+            border-top: 1px solid var(--borderColor);
+
+            &:hover {
+                cursor: pointer;
+                background: var(--regular-row-hover);
+            }
+
+            &:active {
+                background: var(--regular-row-active);
+            }
+
+            &.red {
+                background-color: var(--red-row);
+
+                &:hover {
+                    background-color: var(--red-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--red-row-active);
+                }
+            }
+
+            &.green {
+                background-color: var(--green-row);
+
+                &:hover {
+                    background-color: var(--green-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--green-row-active);
+                }
+            }
+
+            &.yellow {
+                background-color: var(--orange-row);
+
+                &:hover {
+                    background-color: var(--orange-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--orange-row-active);
+                }
+            }
+        }
+
+        & .th {
+            text-align: left;
+            padding: 7px 10px;
+            font-weight: normal;
+            font-size: 14px;
+            color: var(--darkText);
+            position: relative;
+
+            &:first-child {
+                width: 40%;
+
+                @media (max-width: 640px) {
+                    padding-left: 16px;
+                }
+            }
+
+            &:nth-child(2) {
+                width: 10%;
+            }
+
+            &:last-child {
+                &:after {
+                    display: none;
+                }
+            }
+        }
+
+        & .td {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding: 8px 10px;
+            color: var(--textColor);
+            font-size: 14px;
+
+            &:first-child {
+                color: var(--darkText);
+
+                @media (max-width: 640px) {
+                    padding-left: 16px;
+                }
+            }
+        }
+    }
+
+    &__empty {
+        width: 100vw;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 10;
+    }
+
+    &__empty-in {
+        width: 182px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__empty-img {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 18px;
+        color: var(--grayDark);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--white);
+        }
+    }
+
+    &__desc {
+        text-align: center;
+        font-size: 12px;
+        line-height: 18px;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
+
+    &__refresh {
+        font-size: 12px;
+        display: inline;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        padding: 0;
+        color: var(--green400);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--green700);
+        }
+    }
+
+    & .table {
+        & .tr {
+            height: 30px;
+        }
+
+        & .resizer {
+            display: inline-block;
+            background: transparent;
+            width: 20px;
+            height: 100%;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 1;
+            /* prevents from scrolling while dragging on touch devices */
+            touch-action: none;
+
+            &:after {
+                content: "";
+                display: block;
+                position: absolute;
+                right: 50%;
+                width: 1px;
+                height: 70%;
+                background-color: var(--gray400);
+            }
+        }
+
+        & .th, & .td {
+            padding: 0 10px;
+            height: 30px;
+            display: inline-block;
+            width: 20%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        & .td {
+            line-height: 30px;
+        }
+    }
+}
+
+.list {
+    div div {
+        left: -1px!important;
+        cursor: pointer;
+    }
+}
+
+.third-party {
+    &__label {
+        font-family: var(--font-roboto);
+        color: var(--gray400);
+        font-size: 14px;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray700);
+        }
+    }
+
+    &__icon {
+        margin: -11px 4px -5px 8px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.light-mode {
+    & .filtering-log {
+        &__desc {
+            color: var(--gray-base);
+        }
+
+        &__refresh {
+            color: var(--green400);
+        }
+
+        &__inner .thead .th {
+            background-color: var(--white);
+        }
+
+        &__inner .tbody .tr {
+            &:hover {
+                background: var(--regular-row-hover);
+            }
+
+            &:active {
+                background: var(--regular-row-active);
+            }
+
+            &.red {
+                background-color: var(--red-row);
+
+                &:hover {
+                    background-color: var(--red-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--red-row-active);
+                }
+            }
+
+            &.green {
+                background-color: var(--green-row);
+
+                &:hover {
+                    background-color: var(--green-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--green-row-active);
+                }
+            }
+
+            &.yellow {
+                background-color: var(--orange-row);
+
+                &:hover {
+                    background-color: var(--orange-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--orange-row-active);
+                }
+            }
+        }
+
+        &__empty-img {
+            color: var(--grayDark);
+        }
+    }
+
+    & .third-party {
+        &__label {
+            color: var(--gray400);
+        }
+    }
+}
+
+.dark-mode {
+    & .filtering-log {
+        &__desc {
+            color: var(--gray300);
+        }
+
+        &__refresh {
+            color: var(--green700);
+        }
+
+        &__inner .thead .th {
+            background-color: var(--bgColor);
+        }
+
+        &__inner .tbody .tr {
+            &:hover {
+                background: var(--regular-row-hover);
+            }
+
+            &:active {
+                background: var(--regular-row-active);
+            }
+
+            &.red {
+                background-color: var(--red-row);
+
+                &:hover {
+                    background-color: var(--red-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--red-row-active);
+                }
+            }
+
+            &.green {
+                background-color: var(--green-row);
+
+                &:hover {
+                    background-color: var(--green-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--green-row-active);
+                }
+            }
+
+            &.yellow {
+                background-color: var(--orange-row);
+
+                &:hover {
+                    background-color: var(--orange-row-hover);
+                }
+
+                &:active {
+                    background-color: var(--orange-row-active);
+                }
+            }
+        }
+
+        &__empty-img {
+            color: var(--white);
+        }
+    }
+
+    & .third-party {
+        &__label {
+            color: var(--gray700);
+        }
+    }
+}

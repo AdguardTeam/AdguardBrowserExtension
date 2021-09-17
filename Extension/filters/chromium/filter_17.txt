@@ -1,8 +1,8 @@
-! Checksum: 45ZH8PC0xCIp7SFy8aY6pg
+! Checksum: 2XDarTAsaBAmngzy1Q+tQA
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.0.86
-! TimeUpdated: 2021-08-24T11:31:13+00:00
+! Version: 2.0.0.90
+! TimeUpdated: 2021-08-31T09:08:29+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -97,8 +97,6 @@ $removeparam=pk_campaign
 $removeparam=pk_medium
 $removeparam=pk_source
 !
-! https://github.com/AdguardTeam/AdguardFilters/pull/91540
-$removeparam=mbid
 !---------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !---------------------------------------------------------------------------!
@@ -106,6 +104,17 @@ $removeparam=mbid
 ! The rules for specific sites
 !
 !
+! iqbroker.com - affiliate(ads) links tracking
+||iqbroker.com^$removeparam=afftrack
+||iqbroker.com^$removeparam=clickid
+||iqbroker.com^$removeparam=aff_model
+! https://github.com/AdguardTeam/AdguardFilters/issues/93072
+! https://github.com/AdguardTeam/AdguardFilters/issues/92383
+! ads_params - it contains information on a which website video iframe is embedded
+||dailymotion.com/embed/video/*?ads_params=*&origin=$removeparam=ads_params
+||dailymotion.com/embed/video/*?ads_params=*&origin=$removeparam=origin
+! https://github.com/AdguardTeam/AdguardFilters/pull/91540
+||wired.co.uk^$removeparam=mbid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/91233
 ||wikihow.com^$removeparam=?utm_source
 ! kohls.com - counter

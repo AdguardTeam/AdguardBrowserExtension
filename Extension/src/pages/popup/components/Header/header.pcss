@@ -1,0 +1,42 @@
+.popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 50px;
+    padding: 0 16px;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--black);
+    }
+
+    &__logo {
+        width: 113px;
+        height: 25px;
+    }
+
+    &__buttons {
+        display: flex;
+    }
+
+    &__button {
+        padding: 0 8px;
+        opacity: 0.5;
+        transition: var(--t3) opacity;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.light-mode {
+    .popup-header {
+        background-color: var(--white);
+    }
+}
+
+.dark-mode {
+    .popup-header {
+        background-color: var(--black);
+    }
+}

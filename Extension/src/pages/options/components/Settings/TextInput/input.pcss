@@ -1,0 +1,49 @@
+.input {
+    &__in {
+        height: 32px;
+        border: 1px solid var(--gray300);
+        padding: 2px 12px;
+        margin-top: 20px;
+        margin-bottom: 4px;
+        width: 100%;
+        border-radius: 4px;
+        outline: none;
+
+        @media (prefers-color-scheme: dark) {
+            border: 1px solid var(--gray900);
+            background-color: var(--black);
+            color: var(--gray300);
+        }
+
+        /* Chrome, Edge, Opera */
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Firefox */
+        &[type=number] {
+            -moz-appearance: textfield;
+        }
+    }
+}
+
+.light-mode {
+    .input {
+        &__in {
+            border: 1px solid var(--gray88);
+            background-color: transparent;
+            color: var(--gray-base);
+        }
+    }
+}
+
+.dark-mode {
+    .input {
+        &__in {
+            border: 1px solid var(--gray900);
+            background-color: var(--black);
+            color: var(--gray300);
+        }
+    }
+}

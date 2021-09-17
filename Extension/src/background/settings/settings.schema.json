@@ -1,0 +1,191 @@
+{
+  "$id": "settings.json",
+  "type": "object",
+  "properties": {
+    "protocol-version": {
+      "type": "string"
+    },
+    "general-settings": {
+      "type": "object",
+      "properties": {
+        "app-language": {
+          "type": "string"
+        },
+        "allow-acceptable-ads": {
+          "type": "boolean"
+        },
+        "show-blocked-ads-count": {
+          "type": "boolean"
+        },
+        "autodetect-filters": {
+          "type": "boolean"
+        },
+        "safebrowsing-enabled": {
+          "type": "boolean"
+        },
+        "filters-update-period": {
+          "type": "integer"
+        },
+        "appearance-theme": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "allow-acceptable-ads",
+        "show-blocked-ads-count",
+        "autodetect-filters",
+        "safebrowsing-enabled",
+        "filters-update-period"
+      ]
+    },
+    "extension-specific-settings": {
+      "type": "object",
+      "properties": {
+        "use-optimized-filters": {
+          "type": "boolean"
+        },
+        "collect-hits-count": {
+          "type": "boolean"
+        },
+        "show-context-menu": {
+          "type": "boolean"
+        },
+        "show-info-about-adguard": {
+          "type": "boolean"
+        },
+        "show-app-updated-info": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "use-optimized-filters",
+        "collect-hits-count",
+        "show-context-menu",
+        "show-info-about-adguard",
+        "show-app-updated-info"
+      ]
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "enabled-groups": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "enabled-filters": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "custom-filters": {
+          "type": "array",
+          "items": {}
+        },
+        "user-filter": {
+          "type": "object",
+          "properties": {
+            "rules": {
+              "type": "string"
+            },
+            "disabled-rules": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "rules",
+            "disabled-rules"
+          ]
+        },
+        "whitelist": {
+          "type": "object",
+          "properties": {
+            "inverted": {
+              "type": "boolean"
+            },
+            "domains": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "inverted-domains": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "inverted",
+            "domains",
+            "inverted-domains"
+          ]
+        }
+      },
+      "required": [
+        "enabled-groups",
+        "enabled-filters",
+        "custom-filters",
+        "user-filter",
+        "whitelist"
+      ]
+    },
+    "stealth": {
+      "type": "object",
+      "properties": {
+        "stealth_disable_stealth_mode": {
+          "type": "boolean"
+        },
+        "stealth-hide-referrer": {
+          "type": "boolean"
+        },
+        "stealth-hide-search-queries": {
+          "type": "boolean"
+        },
+        "stealth-send-do-not-track": {
+          "type": "boolean"
+        },
+        "stealth-block-webrtc": {
+          "type": "boolean"
+        },
+        "stealth-block-third-party-cookies": {
+          "type": "boolean"
+        },
+        "stealth-block-first-party-cookies": {
+          "type": "boolean"
+        },
+        "block-known-trackers": {
+          "type": "boolean"
+        },
+        "strip-tracking-parameters": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "stealth_disable_stealth_mode",
+        "stealth-hide-referrer",
+        "stealth-hide-search-queries",
+        "stealth-send-do-not-track",
+        "stealth-block-webrtc",
+        "stealth-block-third-party-cookies",
+        "stealth-block-first-party-cookies",
+        "strip-tracking-parameters"
+      ]
+    }
+  },
+  "required": [
+    "protocol-version",
+    "general-settings",
+    "extension-specific-settings",
+    "filters"
+  ]
+}

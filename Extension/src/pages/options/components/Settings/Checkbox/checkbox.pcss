@@ -1,0 +1,107 @@
+.checkbox {
+    position: relative;
+    height: 100%;
+
+    &__in {
+        position: absolute;
+        height: 20px;
+        width: 40px;
+        overflow: hidden;
+        clip: rect(1px, 1px, 1px, 1px);
+
+        &:checked + .checkbox__label {
+            &:after {
+                background-color: var(--green74);
+            }
+
+            &:before {
+                transform: translate(22px, 2px);
+
+                @media (min-width: 640px) {
+                    transform: translate(86px, 18px);
+                }
+            }
+        }
+    }
+
+    &__label {
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        position: relative;
+        width: 40px;
+        height: 20px;
+        font-size: 0;
+        border-radius: 8px;
+        transition: 0.3s ease background-color;
+
+        @media (min-width: 640px) {
+            width: 120px;
+            height: 100%;
+            padding: 16px;
+        }
+
+        &:hover {
+            background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
+        }
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translate(2px, 2px);
+            z-index: 1;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--white);
+            transition: var(--t3) transform;
+
+            @media (min-width: 640px) {
+                transform: translate(66px, 18px);
+            }
+        }
+
+        &:after {
+            content: "";
+            font-size: 0;
+            display: block;
+            width: 40px;
+            height: 20px;
+            border-radius: 10px;
+            background-color: var(--gray700);
+            cursor: pointer;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray700);
+            }
+        }
+    }
+}
+
+.light-mode {
+    .checkbox {
+        &__label {
+            &:hover {
+                background-color: var(--gray100);
+            }
+        }
+    }
+}
+
+
+.dark-mode {
+    .checkbox {
+        &__label {
+            &:hover {
+                background-color: var(--gray900);
+            }
+        }
+    }
+}

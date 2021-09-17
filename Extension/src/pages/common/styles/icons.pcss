@@ -1,0 +1,145 @@
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+
+    &--contain {
+        width: 100%;
+        height: 100%;
+    }
+
+    &--24 {
+        width: 24px;
+        height: 24px;
+    }
+
+    &--setting {
+        width: 24px;
+        height: 24px;
+    }
+
+    &--back {
+        width: 10px;
+        height: 18px;
+    }
+
+    &--checked {
+        width: 13px;
+        height: 12px;
+    }
+
+    &--empty {
+        width: 82px;
+        height: 104px;
+    }
+
+    &--link {
+        width: 14px;
+        height: 14px;
+        color: var(--green400);
+    }
+
+    &--logo {
+        width: 109px;
+        height: 24px;
+        color: #232323;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
+
+    &--magnifying {
+        width: 20px;
+        height: 20px;
+        color: var(--gray400);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray700);
+        }
+    }
+
+    &--trash {
+        width: 14px;
+        height: 17px;
+    }
+
+    &--reload {
+        width: 22px;
+        height: 15px;
+    }
+
+    &--menu {
+        width: 24px;
+        height: 26px;
+    }
+
+    &--select {
+        width: 14px;
+        height: 8px;
+
+        @media (max-width: 640px) {
+            width: 10px;
+            height: 6px;
+        }
+    }
+
+    &--filters {
+        width: 14px;
+        height: 13px;
+    }
+
+    &--like {
+        color: var(--gray900);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
+
+    &--extend {
+        width: 24px;
+        height: 24px;
+        color: var(--gray700);
+    }
+}
+
+.light-mode {
+    .icon {
+        &--logo {
+            color: #232323;
+        }
+
+        &--like {
+            color: var(--gray900);
+        }
+
+        &--magnifying {
+            color: var(--gray400);
+        }
+
+        &--extend {
+            color: var(--gray700);
+        }
+    }
+}
+
+.dark-mode {
+    .icon {
+        &--logo {
+            color: var(--gray300);
+        }
+
+        &--like {
+            color: var(--gray300);
+        }
+
+        &--magnifying {
+            color: var(--gray700);
+        }
+
+        &--extend {
+            color: var(--gray300);
+        }
+    }
+}

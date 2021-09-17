@@ -1,0 +1,44 @@
+.tooltip {
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    padding: 8px 16px;
+    color: var(--gray-base);
+    background-color: var(--white);
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+
+    @media (prefers-color-scheme: dark) {
+        color: var(--gray300);
+        background-color: var(--gray700);
+    }
+
+    &--on {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &--off {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
+
+.popover {
+    display: inline-block;
+}
+
+.light-mode {
+    .tooltip {
+        color: var(--gray-base);
+        background-color: var(--white);
+    }
+}
+
+.dark-mode {
+    .tooltip {
+        color: var(--gray300);
+        background-color: var(--gray700);
+    }
+}

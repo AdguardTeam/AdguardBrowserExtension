@@ -1,0 +1,151 @@
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bgColor);
+    font-family: Roboto, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Arial, sans-serif;
+
+    @media (min-width: 640px) {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+
+    &.col-resize * {
+        cursor: col-resize;
+        user-select: none;
+    }
+}
+
+/* custom checkbox */
+label.checkbox-label {
+    cursor: pointer;
+    color: var(--textColor);
+    display: flex;
+    align-items: center;
+
+    & input[type="checkbox"] {
+        display: none;
+
+        &:checked + .custom-checkbox {
+            background-color: var(--mainGreen);
+            border-color: var(--mainGreen);
+
+            & .icon {
+                display: block;
+            }
+        }
+    }
+
+    & .custom-checkbox {
+        min-width: 16px;
+        width: 16px;
+        height: 16px;
+        background-color: transparent;
+        border: 2px solid var(--inputsBorder);
+        border-radius: 2px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & .icon {
+            display: none;
+        }
+    }
+}
+
+/* custom radio-button */
+label.radio-button-label {
+    cursor: pointer;
+    color: var(--textColor);
+    display: flex;
+    align-items: center;
+
+    & input[type="radio"] {
+        display: none;
+
+        &:checked + .radio-button {
+            border: 2px solid var(--mainGreen);
+
+            &:after {
+                content: "";
+                position: absolute;
+                left: calc(50% - 6px);
+                top: calc(50% - 6px);
+                width: 12px;
+                height: 12px;
+                border-radius: 100%;
+                background-color: var(--mainGreen);
+            }
+        }
+    }
+
+    & .radio-button {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        background-color: transparent;
+        border: 2px solid var(--inputsBorder);
+        border-radius: 17px;
+        margin-right: 10px;
+        flex-shrink: 0;
+    }
+}
+
+/* green button */
+button.green-button {
+    cursor: pointer;
+    padding: 0.713em 1em;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--bgColor);
+    background-color: var(--mainGreen);
+    transition: 0.3s ease background-color;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:hover {
+        background-color: var(--darkGreen);
+    }
+}
+
+.icon {
+    &--24 {
+        --size: 24px;
+        width: var(--size);
+        height: var(--size);
+    }
+
+    &--green {
+        color: var(--green400);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--white);
+        }
+    }
+}
+
+.light-mode {
+    & .icon {
+        &--green {
+            color: var(--green400);
+        }
+    }
+}
+
+.dark-mode {
+    & .icon {
+        &--green {
+            color: var(--white);
+        }
+    }
+}

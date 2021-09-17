@@ -1,0 +1,207 @@
+.button {
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    padding: 0;
+
+    &--s {
+        padding: 0 29px;
+        height: 32px;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    &--m {
+        padding: 0 35px;
+        height: 40px;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    &--green {
+        color: var(--white);
+        background-color: var(--green86);
+        transition: 0.3s ease background-color;
+
+        &:hover {
+            background-color: var(--green75);
+        }
+    }
+
+    &--green-bd {
+        color: var(--green86);
+        box-shadow: inset 0 0 0 1px var(--green86);
+        transition: 0.3s ease background-color;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--white);
+            box-shadow: inset 0 0 0 1px var(--white);
+        }
+
+        &:hover {
+            background-color: var(--gray05);
+        }
+    }
+
+    &--red-bg {
+        color: var(--white);
+        background-color: var(--red300);
+        transition: 0.3s ease background-color;
+
+        &:hover {
+            background-color: var(--red400);
+        }
+    }
+
+    &--transparent {
+        box-shadow: 0 0 0 1px var(--gray700);
+        color: var(--gray700);
+        background-color: transparent;
+        transition: var(--t3) box-shadow, var(--t3) color;
+
+        &:hover {
+            box-shadow: 0 0 0 1px var(--gray900);
+            color: var(--gray900);
+        }
+    }
+
+    &--rate {
+        height: 40px;
+        min-width: 121px;
+        font-size: 14px;
+        color: var(--gray-base);
+        border: 1px solid var(--gray-base);
+        border-radius: 6px;
+        padding: 7px 16px;
+        background-size: 20px;
+        background-position: 25px 50%;
+        background-repeat: no-repeat;
+        letter-spacing: 0;
+        line-height: 22px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        cursor: pointer;
+
+        @media (prefers-color-scheme: dark) {
+            border: 1px solid var(--gray300);
+            color: var(--gray300);
+        }
+    }
+
+    &--add-custom-filter {
+        margin: 20px 0 0 15px;
+    }
+
+    &--empty-custom-filter {
+        display: block;
+        margin: 0 auto;
+    }
+
+    &__img {
+        margin-right: 7px;
+    }
+
+    &__label {
+        line-height: 26px;
+        max-height: 26px;
+        overflow: hidden;
+
+        &--rate {
+            cursor: inherit;
+        }
+    }
+
+    &--list {
+        display: block;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        color: var(--gray-base);
+        width: 100%;
+        text-align: left;
+        min-height: 52px;
+        padding: 16px;
+        border-radius: 4px;
+        transition: var(--t3) background-color;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300)
+        }
+
+        &:hover {
+            background-color: var(--gray100);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
+        }
+    }
+
+    &--red {
+        color: var(--red400);
+    }
+}
+
+.light-mode {
+    .button {
+        &--green-bd {
+            color: var(--green86);
+            box-shadow: inset 0 0 0 1px var(--green86);
+        }
+
+        &--rate {
+            color: var(--gray-base);
+            border: 1px solid var(--gray-base);
+        }
+
+        &--list {
+            color: var(--gray-base);
+
+            &:hover {
+                background-color: var(--gray100);
+            }
+        }
+
+        &--red {
+            color: var(--red400);
+        }
+    }
+}
+
+.dark-mode {
+    .button {
+        &--green-bd {
+            color: var(--white);
+            box-shadow: inset 0 0 0 1px var(--white);
+        }
+
+        &--rate {
+            border: 1px solid var(--gray300);
+            color: var(--gray300);
+        }
+
+
+        &--list {
+            color: var(--gray300);
+
+            &:hover {
+                background-color: var(--gray900);
+            }
+        }
+        
+        &--red {
+            color: var(--red400);
+        }
+    }
+}

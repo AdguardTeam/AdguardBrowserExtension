@@ -1,8 +1,8 @@
-! Checksum: qnME1Vi6LVUE+GvLZo2ylw
+! Checksum: vWPLycltqP6dq52A0ZJJhA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.22.47
-! TimeUpdated: 2021-08-25T21:30:20+00:00
+! Version: 2.0.22.80
+! TimeUpdated: 2021-09-05T13:30:20+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -213,6 +213,7 @@
 .ad.kakaocorp.com^
 .ad.kakao.com^
 !
+||events-*.op.hicloud.com^
 ||isnssdk.com^
 ||app.adjust.world^
 ||app.adjust.net.in^
@@ -1250,6 +1251,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! okinawatimes.co.jp placeholder
+okinawatimes.co.jp#?#li > #sp_article_infeed_1st:upward(1)
 ! m.bild.de gutschein ad
 m.bild.de#?#.block__layout-wrapper > .layout:has(> div[data-teaser-position*="konfigaro"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/91541
@@ -1267,7 +1270,7 @@ m.timesofindia.com#?#.wrapperMobileHome div[class][style]:not([data-videomsid]) 
 spanishdict.com#?##adTopSmall-container ~ div:has(> #adHesion-container)
 ! m.winfuture.de - Tarif ad and amazon ad
 m.winfuture.de#?##main > h2:has(> a:contains(/für (nur|unter) ([0-9]{1,2}|[0-9]{1,2}\,[0-9]{1,2}) Euro/))
-m.winfuture.de#?##main h2:has(> a:contains(/Nur heute\:|Nur diese Woche\:|Nur für [0-9]{1,} Tage|Jetzt reduziert\:|Nur noch heute|tark reduziert|Knaller-Tarif|Top-Preis|kurze Zeit|vorbestellen/))
+m.winfuture.de#?##main h2:has(> a:contains(/Nur heute\:|Nur diese Woche\:|Nur für [0-9]{1,} Tage|Jetzt reduziert\:|Nur noch heute|tark reduziert|Knaller-Tarif|Top-Preis|kurze Zeit|vorbestellen|Auslieferung gestartet:[\s\S]* sind da|jetzt im [\s\S]*Sale/))
 m.winfuture.de#?##main > h2:has(> a[href*="special/"][href*="/angebote/"])
 m.winfuture.de#?#body > h2:has( > a[href*="special"][href*="angebote"])
 !! m.winfuture.de/special/X/
@@ -1660,8 +1663,6 @@ rambler.ru#?#main > div[class] ~ div[class] > div[class] div[class] > a[href^="h
 ##amp-ad
 ##.amp_ad
 ##amp-sticky-ad
-! Popular ads on mobile Japanese sites
-##.plugin-blogroll
 !
 !---------------------------------------------------------------------------!
 !-------------- General javascript, CSS and HTML extensions ----------------!
@@ -1674,6 +1675,8 @@ rambler.ru#?#main > div[class] ~ div[class] > div[class] div[class] > a[href^="h
 pornhub.com,pornhubthbh7ap3u.onion#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
 !#################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/93574
+liquipedia.net#%#//scriptlet('remove-class', 'mobile-sticky-ad-is-active', 'body')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90236
 popcornnews.ru#%#//scriptlet('remove-in-shadow-dom', '.i-amphtml-unresolved')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89046
@@ -1773,6 +1776,13 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/92726
+izi.ua#$#div[class^="ProductFooter__root-"] { height: 0 !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/92579
+r7.com#$#body.main-r7mobile { margin-top: 50px !important; }
+r7.com#$#body.main-r7mobile .wrapper-mobile-header { height: 50px !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/92273
+miurayoshitaka.hatenablog.com#$#.ad-online-afc { position: absolute !important; left: -3000px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/91552#issuecomment-904292573
 news.mynavi.jp#$#.articleList-along { min-height: 0 !important; }
 news.mynavi.jp#$#.articleList-related-article { min-height: 0 !important; }
@@ -1903,6 +1913,9 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 ! AMP ads in ShadowRoot
 $$amp-ad
+amp.scmp.com$$div[class="inline-advert"]
+amp.scmp.com$$div[class="ad-header-container"]
+amp.scmp.com$$div[class="advert-fly-carpet-container"]
 zn.ua$$div[class="mix_advert_"]
 zoomtventertainment.com$$amp-embed[type="taboola"]
 24tv.ua$$div[class="within-ads"]
@@ -2011,6 +2024,7 @@ nasimke.ru$$script[tag-content="function show_ads"][max-length="6000"]
 ! ##### TEMPORARY END #####
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/92164
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/3933#issuecomment-895091276
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88141
 @@||sf*-*cdn-tos.pstatp.com^$domain=juejin.cn
@@ -2375,6 +2389,58 @@ o2.pl,onet.pl,whathifi.com,amp.n-tv.de,dni.ru,independent.co.uk,komputerswiat.pl
 ! ##.inline-ad-container
 theinventory.com,avclub.com,clickhole.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,splinternews.com,theinventory.com,theonion.com,theroot.com,thetakeout.com##.inline-ad-container
 !
+gamepur.com###sticky-top-mobile
+gamepur.com#?#.proper-ad-unit
+thesaurus.weblio.jp##.adThesaurus
+worldfn.net###bzrs1_1
+/lite2/ads.js
+/lite2/ads/infeed.js
+majikichi.com###article_bottom_v2 + aside#lite_link
+majikichi.com##.content > aside#lite_link
+pingpongmap.net###mobilefooter
+yoyaku-top10.jp##.p-floating_banner_box
+chomagireko.blog.jp###lite_link
+jateng.inews.id##.ads_mobile_wrap
+jateng.inews.id###fragmentx
+dic.nicovideo.jp##.st-Ad:not(#sdad)
+diamond.jp##.infeed
+producthunt.com##div[class*="styles_mobilePopoutAd_"]
+tofight.ru###cf-bg
+fontanka.ru##.AJdz
+fontanka.ru##.IFaef
+thetimes.co.uk##div[class*="NativeAd-"]
+spektrum.de##div[class="row collapse hide-for-print"]
+spektrum.de##.content__share
+spektrum.de##.teaser-category
+spektrum.de##aside[style="margin-top:-2.25rem;"]
+biz.chosun.com###adbay_floatingid
+biz.chosun.com##.layout__article-col > div.flex-chain-wrapper.box--pad-bottom-md
+skysports.com##div[data-format="floated-mpu"]
+supermarktcheck.de##.product-details > section:not([class]):not([id])
+renso-ruigo.com##.prem_invitation_fixed
+okinawatimes.co.jp##.ad_h250
+revolve-ysy.jp##.bfb_imgBanner
+masturhub.com##iframe[width="300"][height="100"]
+pikabu.ru##.ads-under-post
+||dailyportalz.jp/api/dpz/adPosts|
+dailyportalz.jp##main > div > div.contents_title:first-child
+||cpcdn.com/assets/device/ad/$domain=cookpad.com
+cookpad.com##.standard_ad_slot
+niji-gazo.com###dmm-recommend
+amp.scmp.com##.advert-fly-carpet-container
+r7.com###adsMobileFixed
+r7.com###adsTopMobileFixed
+fatede-go.com##div[id^="ovl_"]
+dcfever.com##div[class^="large_rect"]
+dcfever.com##.read_article > div[style^="margin-left:"][style*="position: relative;"][style*="min-height:"]
+dcfever.com##.container > .row > div[style^="margin-bottom:"][style*="text-align: center;"][style*="min-height:"]
+thetrendspotter.net##.mobile_advert
+thetrendspotter.net##.mysite-adsense-mobile-header
+miurayoshitaka.hatenablog.com##.ad-online-afc
+miurayoshitaka.hatenablog.com##.variable-rectangle-ad
+bgr.in##amp-fx-flying-carpet[height="300px"]
+bgr.in##div[class="amp-flying-carpet-text-border"][style^="font-size:12px;background-color: #000; color: #fff;text-align: center;"]
+gendai.ismedia.jp##div[style="min-height:250px;"]
 unian.net##.tabs-with-flex > div#tab1
 unian.net##.tabs-with-flex > div#tab1 + div#tabpanel1
 chanto.jp.net##.sp.sp_floating_area
@@ -2997,8 +3063,8 @@ rankedboost.com##.top-mob-div-stick
 russkoe-porno.me##.player-bn
 news18.com##.closestickybtn
 honeysanime.com###footerFloatingMenu
-www-kreiszeitung-de.cdn.ampproject.org,dnaindia.com,koimoi.com,kincir.com,zoomtventertainment.com,www-merkur-de.cdn.ampproject.org,merkur.de,amp-focus-de.cdn.ampproject.org##amp-fx-flying-carpet
-www-kreiszeitung-de.cdn.ampproject.org,dnaindia.com,koimoi.com,zoomtventertainment.com,www-merkur-de.cdn.ampproject.org,merkur.de,amp-focus-de.cdn.ampproject.org##.amp-flying-carpet-text-border
+crictracker.com,www-kreiszeitung-de.cdn.ampproject.org,dnaindia.com,koimoi.com,kincir.com,zoomtventertainment.com,www-merkur-de.cdn.ampproject.org,merkur.de,amp-focus-de.cdn.ampproject.org##amp-fx-flying-carpet
+crictracker.com,www-kreiszeitung-de.cdn.ampproject.org,dnaindia.com,koimoi.com,zoomtventertainment.com,www-merkur-de.cdn.ampproject.org,merkur.de,amp-focus-de.cdn.ampproject.org##.amp-flying-carpet-text-border
 amp-focus-de.cdn.ampproject.org##div[class="textBlock orange-button-artobj ps-tracking-position ps-trackingposition_OrangerButton"]
 znak.com##.SVKNative-Widget li[data-unit-type="promo"]
 pixnet.net##.in-read-ad
@@ -3909,14 +3975,12 @@ pnp.de###aufmacher > div[style*="color:#aaa"]
 m.onvista.de##.marketOverviewIntegration
 m.onvista.de##a[href^="https://track.adform.net"]
 m.onvista.de##.ANZEIGE
-nekopoi.cash##div[class^="mobileads"]
 zbporn.com,xbabe.com,hdpornfree.xxx,hellporno.net###fltd
 kozmopolitik.com.tr##div[class="iconHome1"]
 evdesifa.com##.code-block
 ||m.txxx.com/sizo^
 upornia.com,hotmovs.com##.topad
 wetter.com##div[id^="ad-fullbanner"]
-nekopoi.lol##.mobileadsbottom
 ||wasabisyrup.com/storage/*.gif|
 wasabisyrup.com##.tracking
 wasabisyrup.com##.bottom-group
@@ -4346,7 +4410,7 @@ theatlantic.com##.native-promo-slider
 ulm-news.de###SWU-schwabenstrom
 ulm-news.de##div[id^="banner_"]
 www.yahoo.com###act-ad-parallax
-rxlist.com,wap.lexun.com###ad
+medicinenet.com,rxlist.com,wap.lexun.com###ad
 kisscartoon.me###adsFloat1
 m.sondakika.com###adsgoogle
 lenfilm.tv###adv_kod_frame
