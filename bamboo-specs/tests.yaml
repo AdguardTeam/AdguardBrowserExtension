@@ -34,6 +34,8 @@ Test:
             ls -alt
 
             yarn install ${system.YARN_ARGS}
+            yarn lint
+            yarn test
             yarn dev
   artifacts:
     - name: build.txt
