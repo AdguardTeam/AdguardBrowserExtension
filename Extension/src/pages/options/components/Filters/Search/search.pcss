@@ -1,0 +1,117 @@
+.search {
+    height: 40px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--gray100);
+    border-radius: 8px;
+    margin: 8px 16px 24px;
+    padding: 0 16px 0 0;
+
+    @media (prefers-color-scheme: dark) {
+        border: 1px solid var(--gray900);
+        background-color: var(--black);
+    }
+
+    &__label {
+        min-width: 90px;
+        flex-grow: 1;
+    }
+
+    &__input {
+        border: 0;
+        background: none;
+        padding: 10px 8px 10px 16px;
+        outline: none;
+        font-size: 14px;
+        width: 100%;
+
+        @media (min-width: 640px) {
+            font-size: 16px;
+        }
+
+        &::placeholder {
+            color: var(--gray700);
+            font-size: 14px;
+
+            @media (min-width: 640px) {
+                font-size: 16px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
+
+    &__select {
+        @media (min-width: 640px) {
+            padding-left: 16px;
+            margin-left: 20px;
+            border-left: 1px solid var(--gray700);
+        }
+
+        & .select__ico,
+        .select__value,
+        option {
+            color: var(--gray700);
+            font-size: 14px;
+            font-weight: 400;
+
+            @media (min-width: 640px) {
+                font-size: 16px;
+            }
+        }
+    }
+
+    &__cross {
+        width: 12px;
+        min-width: 12px;
+        height: 12px;
+        position: relative;
+        color: var(--gray400);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray400);
+        }
+    }
+}
+
+.filters {
+    margin-bottom: 16px;
+
+    &--disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+.light-mode {
+    .search {
+        border: 0;
+        background-color: var(--gray100);
+
+        &__input {
+            color: var(--gray-base);
+        }
+
+        &__cross {
+            color: var(--gray400);
+        }
+    }
+}
+
+.dark-mode {
+    .search {
+        border: 1px solid var(--gray900);
+        background-color: var(--black);
+
+        &__input {
+            color: var(--gray300);
+        }
+
+        &__cross {
+            color: var(--gray400);
+        }
+    }
+}

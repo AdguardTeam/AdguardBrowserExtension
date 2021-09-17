@@ -1,0 +1,248 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--gray);
+
+    @media (prefers-color-scheme: dark) {
+        color: var(--gray300);
+    }
+
+    &__header {
+        min-height: 75px;
+    }
+
+    &__cta-link {
+        text-align: center;
+        font-size: 12px;
+        opacity: 0.6;
+    }
+
+    &__total-blocked-tab {
+        font-weight: bold;
+        text-align: center;
+        font-size: 24px;
+    }
+
+    &__total-blocked-all {
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .current-site {
+        padding-bottom: 2px;
+        font-size: 16px;
+        max-width: 260px;
+        text-align: center;
+        margin: 0 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    .current-status {
+        font-size: 14px;
+        text-align: center;
+        max-width: 280px;
+    }
+
+    &--allowlisted {
+        & .switcher {
+            opacity: 1;
+
+            &__btn {
+                right: 36px;
+
+                & .switcher__icon--play {
+                    display: none;
+                }
+
+                & .switcher__icon--checkmark {
+                    display: none;
+                }
+
+                & .switcher__icon--circle {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    &--disabled {
+        & .switcher {
+            opacity: 1;
+
+            &__center {
+                opacity: 0;
+            }
+
+            &__btn {
+                right: 18px;
+
+                & .switcher__icon--play {
+                    display: block;
+                }
+
+                & .switcher__icon--checkmark {
+                    display: none;
+                }
+
+                & .switcher__icon--circle {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &--enabled,
+    &--unavailable,
+    &--in-exception {
+        & .switcher {
+            opacity: 1;
+        }
+    }
+
+    &--unavailable {
+        & .switcher {
+            pointer-events: none;
+
+            &__center {
+                opacity: 0;
+            }
+
+            &__btn {
+                right: 18px;
+            }
+        }
+    }
+
+    &--in-exception {
+        & .switcher {
+            cursor: default;
+
+            &:hover {
+                & .switcher__btn {
+                    transform: none;
+                }
+            }
+
+            &__btn {
+                cursor: default;
+                right: 22px;
+
+                &:before {
+                    display: none;
+                }
+            }
+
+            & .switcher__icon--checkmark {
+                display: none;
+            }
+
+            & .switcher__icon--exclamation {
+                display: block;
+            }
+        }
+    }
+}
+
+.switcher {
+    opacity: 0;
+    position: relative;
+    cursor: pointer;
+    height: 80px;
+    padding: 30px 5px 0 5px;
+
+    &:hover {
+        & .switcher__btn {
+            transform: scale(1.03);
+        }
+    }
+
+    &__info {
+        padding-top: 35px;
+    }
+
+    &__center {
+        width: 80px;
+        height: 30px;
+        border-radius: 100px;
+
+        &--enabled {
+            background-image: var(--switch-field-enabled);
+        }
+
+        &--allowlisted {
+            background-image: var(--switch-field-disabled);
+        }
+    }
+
+    &__btn {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        right: 5px;
+        top: 30px;
+        border-radius: 50%;
+        box-shadow: var(--switch-btn-shadow);
+        background-color: var(--white);
+        padding: 4px;
+        cursor: pointer;
+        transition: 0.3s ease transform;
+
+        &:before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--white);
+        }
+    }
+
+    &__icon {
+        position: absolute;
+        left: 13px;
+        top: 13px;
+
+        &--play {
+            display: none;
+        }
+
+        &--circle {
+            display: none;
+        }
+
+        &--checkmark {
+            display: block;
+        }
+
+        &--exclamation {
+            display: none;
+            left: calc(50% - 2px);
+            top: 14px;
+        }
+
+        &--cross {
+            color: var(--white);
+            display: none;
+            left: 17px;
+            top: 17px;
+        }
+    }
+}
+
+.light-mode {
+    .main {
+        color: var(--gray);
+    }
+}
+
+.dark-mode {
+    .main {
+        color: var(--gray300);
+    }
+}

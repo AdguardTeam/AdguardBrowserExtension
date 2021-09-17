@@ -1,0 +1,118 @@
+.nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 0;
+
+    &__item {
+        padding: 9px 33px 9px 38px;
+        margin-bottom: 16px;
+        line-height: 22px;
+        color: var(--gray-base);
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        transition: var(--t3) box-shadow, var(--t3)  background-color, var(--t3) color;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+
+        &:hover {
+            background-color: var(--gray300);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--grayDark);
+            }
+        }
+
+        &--active {
+            background-color: var(--gray300);
+            position: relative;
+            font-weight: 500;
+            overflow: visible;
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--grayDark);
+            }
+
+            &:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 4px;
+                height: 100%;
+                background-color: var(--gray900);
+            }
+        }
+
+        &:last-child {
+            margin-bottom: 40px;
+        }
+    }
+
+    @media (min-width: 640px) {
+        padding: 0;
+    }
+
+    &__desc {
+        width: 100%;
+        padding: 28px 33px 0 38px;
+    }
+
+    &__message {
+        margin-bottom: 30px;
+    }
+
+    &__link {
+        /* white-space: nowrap; */
+        color: var(--green400);
+    }
+
+    &__hide {
+        border: 0;
+        padding: 0;
+        background-color: transparent;
+        cursor: pointer;
+        margin-top: 24px;
+        font-size: 14px;
+        color: var(--gray700);
+    }
+}
+
+.light-mode {
+    .nav {
+        &__item {
+            color: var(--gray-base);
+
+            &:hover {
+                color: var(--gray-base);
+            }
+
+            &--active {
+                color: var(--gray-base);
+            }
+        }
+    }
+}
+
+.dark-mode {
+    .nav {
+        &__item {
+            color: var(--gray300);
+
+            &:hover {
+                color: var(--grayDark);
+            }
+
+            &--active {
+                color: var(--grayDark);
+            }
+        }
+    }
+}

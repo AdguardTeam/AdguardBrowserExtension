@@ -1,0 +1,137 @@
+.modal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 330px;
+
+    &__title {
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 15px;
+    }
+
+    &__subtitle {
+        font-size: 16px;
+        font-weight: 400;
+        margin-bottom: 15px;
+    }
+
+    &__close {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        top: 30px;
+        right: 30px;
+        color: var(--gray700);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray400);
+        }
+    }
+
+    &__content {
+        width: 100%;
+        margin: auto 0;
+
+        &--center-text {
+            text-align: center;
+        }
+    }
+
+    &__input {
+        width: 100%;
+        border: 0;
+        line-height: 22px;
+        font-size: 14px;
+        border-bottom: 2px solid var(--green74);
+        margin-bottom: 22px;
+        padding: 7px 8px;
+        outline: none;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--black);
+            color: var(--gray300);
+        }
+    }
+
+    &__desc {
+        font-size: 14px;
+        line-height: 22px;
+        color: rgba(27, 27, 27, 0.9);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
+
+    &__btn {
+        margin: 0 auto;
+        margin-top: 15px;
+        min-width: 175px;
+
+        &--statistic {
+            line-height: 40px;
+            min-width: 100px;
+
+            &:first-child {
+                margin-right: 25px;
+            }
+        }
+    }
+
+    &__row {
+        display: flex;
+        margin-bottom: 7px;
+
+        &--info {
+            color: var(--grayd8);
+            font-size: 12px;
+            line-height: 15px;
+        }
+    }
+
+    &__cell {
+        font-size: 14px;
+        line-height: 22px;
+
+        &:first-child {
+            width: 160px;
+            padding-right: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+
+        &--title {
+            padding-top: 7px;
+        }
+
+        &--url {
+            word-break: break-all;
+        }
+    }
+}
+
+.light-mode {
+    .modal__desc {
+        color: rgba(27, 27, 27, 0.9);
+    }
+
+    .modal__input {
+        color: var(--gray-base);
+        background-color: transparent;
+    }
+}
+
+.dark-mode {
+    .modal__desc {
+        color: var(--gray300);
+    }
+
+    .modal__input {
+        background-color: var(--black);
+        color: var(--gray300);
+    }
+}

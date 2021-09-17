@@ -1,0 +1,45 @@
+.editor__label {
+    position: absolute;
+    top: -15px;
+    left: 15px;
+    right: 15px;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 22px;
+
+    @media (max-width: 500px) {
+        right: 0;
+        padding-left: 12px;
+    }
+
+    & .editor__icon {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 4px;
+    }
+
+    &--saved {
+        padding-right: 20px;
+
+        & .editor__icon {
+            display: block;
+        }
+    }
+}
+
+.editor__open {
+    text-align: center;
+    padding: 48px 16px;
+}
+
+.editor__open-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+

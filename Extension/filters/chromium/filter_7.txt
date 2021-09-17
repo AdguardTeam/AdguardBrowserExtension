@@ -1,8 +1,8 @@
-! Checksum: zcNHQ2eXuTu44pWyY8ECKw
+! Checksum: dkTzNUqHVgVB3fpKYyFPOA
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.11.25
-! TimeUpdated: 2021-08-25T17:03:28+00:00
+! Version: 2.0.11.57
+! TimeUpdated: 2021-09-05T12:31:36+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -138,6 +138,9 @@
 ! Eimg.jp
 ||adingo.jp.eimg.jp^
 !
+||ads.ressp.net^$third-party
+||resad.mediaid.click^$third-party
+||a.overlay.top^$third-party
 ||zastag.com^$third-party
 ||adcent.jp^$third-party
 ||pokoran.com^$third-party
@@ -398,7 +401,6 @@
 ||find-a.jp^$third-party
 ||fivecdm.com^$third-party
 ||fxprime-popular.com^$third-party
-||garss.jp^$third-party
 ||hitgraph.jp^$third-party
 ||hitweb.chosun.com^
 ||i2i.jp^$third-party
@@ -420,7 +422,6 @@
 ||rcm-jp.amazon.co.jp/e/cm?$third-party
 ||recommender.jp^$third-party
 ||rentracks.jp^$third-party
-||rssad.jp^$third-party
 *ad.durasite.net^$third-party
 ||scadnet.com^$third-party
 ||search.jword.jp^$third-party
@@ -516,7 +517,8 @@ manga1000.com#$##dsaxdsf2 { height: 1px!important; }
 goldencocco.jp#%#//scriptlet("set-constant", "adblock", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54025
 mottonoutore.jp#%#//scriptlet("set-constant", "adblock", "false")
-! https://github.com/AdguardTeam/AdguardFilters/issues/53079
+! https://github.com/AdguardTeam/AdguardFilters/issues/93086
+coron.tech#%#AG_onLoad(function(){var a=document.querySelector("#vcwidget"),b=document.createElement("a");a&&a.appendChild(b)});
 coron.tech#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'insertAdjacentHTML')
 connect.coron.tech#%#//scriptlet('prevent-addEventListener', 'load', 'dispatch')
 connect.coron.tech#%#//scriptlet('abort-current-inline-script', 'jQuery', 'decision')
@@ -693,11 +695,31 @@ zoku-sei.com#?#.entryinner #ninja-blog-inactive:upward(.entryinner)
 nikkan-gendai.com#?#._popIn_recommend_article_wrapper > a._popIn_recommend_article_ad:first-child + a._popIn_recommend_article_ad:upward(1)
 topics.or.jp#?##_popIn_recommend ul._popIn_infinite_page:has(> li > a._popIn_recommend_article_ad)
 daily.co.jp#?#._popIn_recommend_container a._popIn_recommend_article_ad:upward(._popIn_recommend_container)
-matome.response.jp,nordot.app,komachi.yomiuri.co.jp,animeanime.jp,books.j-cast.com,cafend.net,chosunonline.com,cinemacafe.net,citicpressjapan.com,cyzo.com,dailyportalz.jp,danshihack.com,mynavi.jp,gamespark.jp,getnavi.jp,gow.asia,honey-mag.jp,iionna.tokyo,inside-games.jp,japanese.joins.com,kanaloco.jp,lamire.jp,macaro-ni.jp,mag.digle.tokyo,media.mamatenna.jp,moneyforward.com,mirror.asahi.com,mxtv.jp,news.tv-asahi.co.jp,realsound.jp,ryukyushimpo.jp,saitama-np.co.jp,smart-flash.jp,taishu.jp,the-uranai.jp,uta-net.com,yamahack.com,yukawanet.com,zigsow.jp#?#li > ._popIn_recommend_article_ad:upward(1)
+bestcarweb.jp,matome.response.jp,nordot.app,komachi.yomiuri.co.jp,animeanime.jp,books.j-cast.com,cafend.net,chosunonline.com,cinemacafe.net,citicpressjapan.com,cyzo.com,dailyportalz.jp,danshihack.com,mynavi.jp,gamespark.jp,getnavi.jp,gow.asia,honey-mag.jp,iionna.tokyo,inside-games.jp,japanese.joins.com,kanaloco.jp,lamire.jp,macaro-ni.jp,mag.digle.tokyo,media.mamatenna.jp,moneyforward.com,mirror.asahi.com,mxtv.jp,news.tv-asahi.co.jp,realsound.jp,ryukyushimpo.jp,saitama-np.co.jp,smart-flash.jp,taishu.jp,the-uranai.jp,uta-net.com,yamahack.com,yukawanet.com,zigsow.jp#?#li > ._popIn_recommend_article_ad:upward(1)
 nordot.app,animeanime.jp,autocar.jp,cinemacafe.net,mynavi.jp,getnavi.jp,media.moneyforward.com,the-uranai.jp#?#li > ._popIn_recommend_article_ad_reserved:upward(1)
 sp.uta-net.com,otonasalone.jp,sumaiweb.jp#?#._popIn_infinite_page > a._popIn_recommend_article_ad:upward(1)
 otonasalone.jp,sumaiweb.jp#?#._popIn_infinite_page > a._popIn_recommend_article_ad_reserved:upward(1)
 !
+ac-illust.com#?#.ac-mb-3.text-center > div[id^="div-gpt-ad-side"]:upward(1)
+ac-illust.com#?#.ac-p-2.bg-e6e6e6.donation-box-right:has(> .ad-center)
+photo-ac.com#?#.noads-link:upward(1)
+blog.livedoor.jp#?#.plugin-memo > div.side > script[src*="//adm.shinobi.jp/"]:upward(2)
+blog.livedoor.jp#?#.plugin-memo > div.side > script[src^="//j.microad.net/"]:upward(2)
+blog.livedoor.jp#?#.plugin-memo > div.side > ins.adsbygoogle:upward(2)
+blog.livedoor.jp#?#.plugin-memo > div.side > p.gad:upward(2)
+blog.livedoor.jp#?#.plugin-memo > div.side > script[src*="i-mobile.co.jp/"]:upward(2)
+nofootynolife.blog.fc2.com#?##side_r > div[class^="plugin"]:has(a[name="amazletlink"])
+samuraisoccer.doorblog.jp#?#.plugin-memo > div.side > div[id^="i2i"]:upward(2)
+football-2ch.com#?##article-options > div[style="width: 100%;"] + h3:contains(楽天)
+football-2ch.com#?#.plugin-memo > div.side > script[src*="i2i.jp/"]:upward(2)
+w.atwiki.jp#?##body_footer:has(> a[href^="https://www.amazon.co.jp/"] > img)
+webcg.net#?#.type-1 > li > div[id^="div-gpt-ad"]:upward(1)
+gamehig.com#?#.plugin-memo > div.side > ins.adsbygoogle:upward(2)
+gamehig.com#?#.left-column-inner > .plugin-memo:nth-child(2):has(> div.side > a[href^="https://www.amazon.co.jp/"])
+fireflyframer.blog.jp#?#.article-body-inner > div:last-child > div:has(> a[href^="https://ck.jp.ap.valuecommerce.com/"])
+bokuslog.com#?#.readmoreWrap > p > ins.adsbygoogle:upward(1)
+bokuslog.com#?#.widget_text ins.adsbygoogle:upward(.widget_text)
+bokuslog.com#?#.widget_text script[src*="zucks.net"]:upward(.widget_text)
 manga100ka.jp#?#.contents_ad01:upward(1)
 matomecup.com#?#.plugin1_outline > div.plugin1_title:contains(PR):upward(1)
 matomecup.com#?#.plugin3_body > div.ta_center > div.plugin-freearea:upward(3)
@@ -708,7 +730,7 @@ gadget2ch.com#?#.posts-inner:contains(/スポンサードリンク|関連コン�
 libae.jp#?#.post > div.pc_display > div[id^="logly"]:upward(1)
 2ch-c.net#?#.nend_text_ad:upward(li)
 altema.jp#?#.slick-track > li:not(:has(> div))
-coron.tech#?##sidebar1 .adsbygoogle:upward(1)
+coron.tech#?#.fluid-sidebar .adsbygoogle:upward(1)
 hibiki-radio.jp#?#.ng-isolate-scope > li.ng-scope ins.adsbygoogle:upward(li)
 geartics.com#?#.mb-3.text-center:contains(スポンサーリンク)
 trailrunner.jp#?#.news_list > li > ins.adsbygoogle:upward(1)
@@ -875,10 +897,6 @@ toyokeizai.net#?##article-bottom > #trend-library.subsection:has(> .title-parts 
 ! https://github.com/AdguardTeam/AdguardFilters/issues/23925
 appllio.com#?##main-content > #content > .block.odd:has(aside[id^="div-gpt-ad"])
 appllio.com#?#.sidebar > .region-inner > .block.odd:has(div[id^="div-gpt-ad"])
-! https://github.com/AdguardTeam/AdguardFilters/issues/23120
-mindhack2ch.com#?#.article-body > .ad:has(> .adsbygoogle)
-mindhack2ch.com#?#.article-body > .rss:has(> script)
-mindhack2ch.com#?#.article-post-bottom > .rss-article:has(> .rss-article-item)
 !
 pokemon-matome.net#?#.blogparts_freeArea:has(a[href^="https://www.amazon.co.jp/exec/"])
 mainichi.jp#?#div[id^="ad-pc-article"]:upward(1)
@@ -1052,6 +1070,7 @@ repeat-drama.info#?#.side_inner > .box:contains(スポンサーリンク)
 ##a[href^="http://ad2.trafficgate.net/"]
 ##a[href^="http://www.rssad.jp/"]
 ##article[class^="post-"] div[class*="article-"] div[id*="-"][class*="%"]
+##div[class][data-index][style^="float: none; margin"]
 ##div[class^="google-2ad"]
 ##div[id^="post-"][class*="post-"] > div[id*="-"][class*="%"]
 ##[id][class*="post-"] [class*="-content"] div[id*="-"][class*="%"]
@@ -1130,6 +1149,16 @@ avgle.com#%#//scriptlet('abort-current-inline-script', '__htapop')
 !-------CSS---------
 !-------------------
 !
+! placeholder
+togetter.com#$#.clearfix.contents { min-height: auto!important; }
+! ads
+nukiez.tv#$?#.grid > div[id^=div_fam_async_]:upward(1) { remove: true; }
+nukiez.tv#$#li.large.grid { remove: true; }
+! overlay
+a-d.pw#$#.pum-overlay { display: none!important; }
+a-d.pw#$#.pum-open-overlay { overflow: auto!important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/92507
+gendai.ismedia.jp#$#.blockContainer[style$="-60px auto;"] > div[style="min-height: 90px;"] { min-height: 1px!important; }
 ! coinpost.jp placeholder
 coinpost.jp#$#.homelist-in[style^="text-align:center;height:"]  { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88158
@@ -1267,11 +1296,11 @@ iza.ne.jp#$#.sideFixedWrapper { position: relative!important; }
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com)).*$/$third-party,script,domain=9tsu.org|jshow.tv
+/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com)).*$/$third-party,script,domain=9tsu.org|jshow.tv
 ! porn sites
-/btm.js$domain=cho-hentaimura.work|choechiechimura.work|dochaero.com|doujin-darake.xyz|echiechi-land.work|echiechi-navi.xyz|echiechikissa.site|ero-hihou.work|ero-hotdog.work|ero-okazu.work|ero-road.work|ero-sogu.work|erodokoro.xyz|erodoujin-biyori.work|erodoujin-honpo.work|erodoujin-mecca.xyz|erodoujin-search.work|erodoujin-zanmai.xyz|erogajo.work|erogaki.site|erogakuen.site|erogakure.work|erogazone.work|erogazou-doujin.work|erogazou-eden.xyz|erogazou-march.com|erogazou-nijigen.work|erogazou-paradise.work|erogazouhouko.work|erogazoutch.work|erogetchu.xyz|erohakubutukan.work|eromanyon.work|eromotion.site|eromura.xyz|eroniji-gzu.xyz|eronijinomori.xyz|eronomanimani.xyz|eropippi.xyz|eroseiiki.xyz|erotic-company.work|hjanight.site|kindan-kjt.com|milk-boya.xyz|moenijierogazou.xyz|moroero.xyz|night-time.xyz|nijiechichi.xyz|nijiero-favorite.xyz|nijiero-house.work|nijiero-hunter.xyz|nijiero-jimu.work|nijiero-kantei.xyz|nijiero-mamire.xyz|nijiero-master.work|nijiero-park.xyz|nijiero-spot.work|nijiero-station.work|nijiero-suki.work|nijiero-watch.com|nijiero-world.work|nijierobox.site|nijierogazou.com|nijierogazou.xyz|nijierosuana.site|nijierosyukai.work|nijigazouhokan.xyz|nijigen-daisuki.work|nijigen-farm.work|nijigenero-matome.xyz|nijigennoero.xyz|nijimomo-antenna.com|nijincho.xyz|nijinokinsyoko.xyz|nikkan-doujin.work|pink-world.site|shikoraseya.work|shikotomo.work|tokuno-eromilk.xyz
-/res.js$domain=cho-hentaimura.work|choechiechimura.work|dochaero.com|doujin-darake.xyz|echiechi-land.work|echiechi-navi.xyz|echiechikissa.site|ero-hihou.work|ero-hotdog.work|ero-okazu.work|ero-road.work|ero-sogu.work|erodokoro.xyz|erodoujin-biyori.work|erodoujin-honpo.work|erodoujin-mecca.xyz|erodoujin-search.work|erodoujin-zanmai.xyz|erogajo.work|erogaki.site|erogakuen.site|erogakure.work|erogazone.work|erogazou-doujin.work|erogazou-eden.xyz|erogazou-march.com|erogazou-nijigen.work|erogazou-paradise.work|erogazouhouko.work|erogazoutch.work|erogetchu.xyz|erohakubutukan.work|eromanyon.work|eromotion.site|eromura.xyz|eroniji-gzu.xyz|eronijinomori.xyz|eronomanimani.xyz|eropippi.xyz|eroseiiki.xyz|erotic-company.work|hjanight.site|kindan-kjt.com|milk-boya.xyz|moenijierogazou.xyz|moroero.xyz|night-time.xyz|nijiechichi.xyz|nijiero-favorite.xyz|nijiero-house.work|nijiero-hunter.xyz|nijiero-jimu.work|nijiero-kantei.xyz|nijiero-mamire.xyz|nijiero-master.work|nijiero-park.xyz|nijiero-spot.work|nijiero-station.work|nijiero-suki.work|nijiero-watch.com|nijiero-world.work|nijierobox.site|nijierogazou.com|nijierogazou.xyz|nijierosuana.site|nijierosyukai.work|nijigazouhokan.xyz|nijigen-daisuki.work|nijigen-farm.work|nijigenero-matome.xyz|nijigennoero.xyz|nijimomo-antenna.com|nijincho.xyz|nijinokinsyoko.xyz|nikkan-doujin.work|pink-world.site|shikoraseya.work|shikotomo.work|tokuno-eromilk.xyz
-/top.js$domain=cho-hentaimura.work|choechiechimura.work|dochaero.com|doujin-darake.xyz|echiechi-land.work|echiechi-navi.xyz|echiechikissa.site|ero-hihou.work|ero-hotdog.work|ero-okazu.work|ero-road.work|ero-sogu.work|erodokoro.xyz|erodoujin-biyori.work|erodoujin-honpo.work|erodoujin-mecca.xyz|erodoujin-search.work|erodoujin-zanmai.xyz|erogajo.work|erogaki.site|erogakuen.site|erogakure.work|erogazone.work|erogazou-doujin.work|erogazou-eden.xyz|erogazou-march.com|erogazou-nijigen.work|erogazou-paradise.work|erogazouhouko.work|erogazoutch.work|erogetchu.xyz|erohakubutukan.work|eromanyon.work|eromotion.site|eromura.xyz|eroniji-gzu.xyz|eronijinomori.xyz|eronomanimani.xyz|eropippi.xyz|eroseiiki.xyz|erotic-company.work|hjanight.site|kindan-kjt.com|milk-boya.xyz|moenijierogazou.xyz|moroero.xyz|night-time.xyz|nijiechichi.xyz|nijiero-favorite.xyz|nijiero-house.work|nijiero-hunter.xyz|nijiero-jimu.work|nijiero-kantei.xyz|nijiero-mamire.xyz|nijiero-master.work|nijiero-park.xyz|nijiero-spot.work|nijiero-station.work|nijiero-suki.work|nijiero-watch.com|nijiero-world.work|nijierobox.site|nijierogazou.com|nijierogazou.xyz|nijierosuana.site|nijierosyukai.work|nijigazouhokan.xyz|nijigen-daisuki.work|nijigen-farm.work|nijigenero-matome.xyz|nijigennoero.xyz|nijimomo-antenna.com|nijincho.xyz|nijinokinsyoko.xyz|nikkan-doujin.work|pink-world.site|shikoraseya.work|shikotomo.work|tokuno-eromilk.xyz
+/btm.js$domain=cho-hentaimura.work|choechiechimura.work|dochaero.com|doujin-darake.xyz|echiechi-land.work|echiechi-navi.xyz|echiechikissa.site|ero-hihou.work|ero-hotdog.work|ero-okazu.work|ero-road.work|ero-sogu.work|erodokoro.xyz|erodoujin-biyori.work|erodoujin-honpo.work|erodoujin-mecca.xyz|erodoujin-search.work|erodoujin-zanmai.xyz|erogajo.work|erogaki.site|erogakuen.site|erogakure.work|erogazone.work|erogazou-doujin.work|erogazou-eden.xyz|erogazou-march.com|erogazou-nijigen.work|erogazou-paradise.work|erogazouhouko.work|erogazoutch.work|erogetchu.xyz|erohakubutukan.work|eromanyon.work|eromotion.site|eromura.xyz|eroniji-gzu.xyz|eronijinomori.xyz|eronomanimani.xyz|eropippi.xyz|eroseiiki.xyz|erotic-company.work|hjanight.site|kindan-kjt.com|milk-boya.xyz|moenijierogazou.xyz|moroero.xyz|night-time.xyz|nijiechichi.xyz|nijiero-favorite.xyz|nijiero-house.work|nijiero-hunter.xyz|nijiero-jimu.work|nijiero-kantei.xyz|nijiero-mamire.xyz|nijiero-master.work|nijiero-park.xyz|nijiero-spot.work|nijiero-station.work|nijiero-suki.work|nijiero-watch.com|nijiero-world.work|nijierobox.site|nijierogazou.com|nijierogazou.xyz|nijierosuana.site|nijierosyukai.work|nijigazouhokan.xyz|nijigen-daisuki.work|nijigen-farm.work|nijigenero-matome.xyz|nijigennoero.xyz|nijimomo-antenna.com|nijincho.xyz|nijinokinsyoko.xyz|nikkan-doujin.work|pink-world.site|shikoraseya.work|shikotomo.work|tokuno-eromilk.xyz|fatede-go.com
+/res.js$domain=cho-hentaimura.work|choechiechimura.work|dochaero.com|doujin-darake.xyz|echiechi-land.work|echiechi-navi.xyz|echiechikissa.site|ero-hihou.work|ero-hotdog.work|ero-okazu.work|ero-road.work|ero-sogu.work|erodokoro.xyz|erodoujin-biyori.work|erodoujin-honpo.work|erodoujin-mecca.xyz|erodoujin-search.work|erodoujin-zanmai.xyz|erogajo.work|erogaki.site|erogakuen.site|erogakure.work|erogazone.work|erogazou-doujin.work|erogazou-eden.xyz|erogazou-march.com|erogazou-nijigen.work|erogazou-paradise.work|erogazouhouko.work|erogazoutch.work|erogetchu.xyz|erohakubutukan.work|eromanyon.work|eromotion.site|eromura.xyz|eroniji-gzu.xyz|eronijinomori.xyz|eronomanimani.xyz|eropippi.xyz|eroseiiki.xyz|erotic-company.work|hjanight.site|kindan-kjt.com|milk-boya.xyz|moenijierogazou.xyz|moroero.xyz|night-time.xyz|nijiechichi.xyz|nijiero-favorite.xyz|nijiero-house.work|nijiero-hunter.xyz|nijiero-jimu.work|nijiero-kantei.xyz|nijiero-mamire.xyz|nijiero-master.work|nijiero-park.xyz|nijiero-spot.work|nijiero-station.work|nijiero-suki.work|nijiero-watch.com|nijiero-world.work|nijierobox.site|nijierogazou.com|nijierogazou.xyz|nijierosuana.site|nijierosyukai.work|nijigazouhokan.xyz|nijigen-daisuki.work|nijigen-farm.work|nijigenero-matome.xyz|nijigennoero.xyz|nijimomo-antenna.com|nijincho.xyz|nijinokinsyoko.xyz|nikkan-doujin.work|pink-world.site|shikoraseya.work|shikotomo.work|tokuno-eromilk.xyz|fatede-go.com
+/top.js$domain=cho-hentaimura.work|choechiechimura.work|dochaero.com|doujin-darake.xyz|echiechi-land.work|echiechi-navi.xyz|echiechikissa.site|ero-hihou.work|ero-hotdog.work|ero-okazu.work|ero-road.work|ero-sogu.work|erodokoro.xyz|erodoujin-biyori.work|erodoujin-honpo.work|erodoujin-mecca.xyz|erodoujin-search.work|erodoujin-zanmai.xyz|erogajo.work|erogaki.site|erogakuen.site|erogakure.work|erogazone.work|erogazou-doujin.work|erogazou-eden.xyz|erogazou-march.com|erogazou-nijigen.work|erogazou-paradise.work|erogazouhouko.work|erogazoutch.work|erogetchu.xyz|erohakubutukan.work|eromanyon.work|eromotion.site|eromura.xyz|eroniji-gzu.xyz|eronijinomori.xyz|eronomanimani.xyz|eropippi.xyz|eroseiiki.xyz|erotic-company.work|hjanight.site|kindan-kjt.com|milk-boya.xyz|moenijierogazou.xyz|moroero.xyz|night-time.xyz|nijiechichi.xyz|nijiero-favorite.xyz|nijiero-house.work|nijiero-hunter.xyz|nijiero-jimu.work|nijiero-kantei.xyz|nijiero-mamire.xyz|nijiero-master.work|nijiero-park.xyz|nijiero-spot.work|nijiero-station.work|nijiero-suki.work|nijiero-watch.com|nijiero-world.work|nijierobox.site|nijierogazou.com|nijierogazou.xyz|nijierosuana.site|nijierosyukai.work|nijigazouhokan.xyz|nijigen-daisuki.work|nijigen-farm.work|nijigenero-matome.xyz|nijigennoero.xyz|nijimomo-antenna.com|nijincho.xyz|nijinokinsyoko.xyz|nikkan-doujin.work|pink-world.site|shikoraseya.work|shikotomo.work|tokuno-eromilk.xyz|fatede-go.com
 cho-hentaimura.work,choechiechimura.work,dochaero.com,doujin-darake.xyz,echiechi-land.work,echiechi-navi.xyz,echiechikissa.site,ero-hihou.work,ero-hotdog.work,ero-okazu.work,ero-road.work,ero-sogu.work,erodokoro.xyz,erodoujin-biyori.work,erodoujin-honpo.work,erodoujin-mecca.xyz,erodoujin-search.work,erodoujin-zanmai.xyz,erogajo.work,erogaki.site,erogakuen.site,erogakure.work,erogazone.work,erogazou-doujin.work,erogazou-eden.xyz,erogazou-march.com,erogazou-nijigen.work,erogazou-paradise.work,erogazouhouko.work,erogazoutch.work,erogetchu.xyz,erohakubutukan.work,eromanyon.work,eromotion.site,eromura.xyz,eroniji-gzu.xyz,eronijinomori.xyz,eronomanimani.xyz,eropippi.xyz,eroseiiki.xyz,erotic-company.work,hjanight.site,kindan-kjt.com,milk-boya.xyz,moenijierogazou.xyz,moroero.xyz,night-time.xyz,nijiechichi.xyz,nijiero-favorite.xyz,nijiero-house.work,nijiero-hunter.xyz,nijiero-jimu.work,nijiero-kantei.xyz,nijiero-mamire.xyz,nijiero-master.work,nijiero-park.xyz,nijiero-spot.work,nijiero-station.work,nijiero-suki.work,nijiero-watch.com,nijiero-world.work,nijierobox.site,nijierogazou.*,nijierosuana.site,nijierosyukai.work,nijigazouhokan.xyz,nijigen-daisuki.work,nijigen-farm.work,nijigenero-matome.xyz,nijigennoero.xyz,nijimomo-antenna.com,nijincho.xyz,nijinokinsyoko.xyz,nikkan-doujin.work,pink-world.site,shikoraseya.work,shikotomo.work,tokuno-eromilk.xyz###toprss
 cho-hentaimura.work,choechiechimura.work,dochaero.com,doujin-darake.xyz,echiechi-land.work,echiechi-navi.xyz,echiechikissa.site,ero-hihou.work,ero-hotdog.work,ero-okazu.work,ero-road.work,ero-sogu.work,erodokoro.xyz,erodoujin-biyori.work,erodoujin-honpo.work,erodoujin-mecca.xyz,erodoujin-search.work,erodoujin-zanmai.xyz,erogajo.work,erogaki.site,erogakuen.site,erogakure.work,erogazone.work,erogazou-doujin.work,erogazou-eden.xyz,erogazou-march.com,erogazou-nijigen.work,erogazou-paradise.work,erogazouhouko.work,erogazoutch.work,erogetchu.xyz,erohakubutukan.work,eromanyon.work,eromotion.site,eromura.xyz,eroniji-gzu.xyz,eronijinomori.xyz,eronomanimani.xyz,eropippi.xyz,eroseiiki.xyz,erotic-company.work,hjanight.site,kindan-kjt.com,milk-boya.xyz,moenijierogazou.xyz,moroero.xyz,night-time.xyz,nijiechichi.xyz,nijiero-favorite.xyz,nijiero-house.work,nijiero-hunter.xyz,nijiero-jimu.work,nijiero-kantei.xyz,nijiero-mamire.xyz,nijiero-master.work,nijiero-park.xyz,nijiero-spot.work,nijiero-station.work,nijiero-suki.work,nijiero-watch.com,nijiero-world.work,nijierobox.site,nijierogazou.*,nijierosuana.site,nijierosyukai.work,nijigazouhokan.xyz,nijigen-daisuki.work,nijigen-farm.work,nijigenero-matome.xyz,nijigennoero.xyz,nijimomo-antenna.com,nijincho.xyz,nijinokinsyoko.xyz,nikkan-doujin.work,pink-world.site,shikoraseya.work,shikotomo.work,tokuno-eromilk.xyz###widget-under-related-entries
 ||hotanimeporno.com^$script,third-party
@@ -1283,15 +1312,87 @@ news.fresheye.com,pakutaso.com,video.fc2.com,gaydebulog.com,qoly.jp,ascii2d.net,
 ! `##.ads`
 moraerumall.com,nwi.jp,0taku.livedoor.biz,ginnga.blog.jp,tools4music.info,gaccom.jp,diskgarage.com,tagindex.com,flyteam.jp,keyakizaka46matomerabo.com,ryusoku.com,chixi.jp,chugoku-np.co.jp,2nn.jp,karapaia.com##.ads
 ! `##.add`
-otakukosodate.work,kensho-zukan.com,oyakudachi2525.com,mazisuka.com,hetano-yokozuki.net,uruoistyle.com,moto-neta.com,bunkai.biz,yuraika.com,mupon.net,affiliate-ruby.com,amehappi.com,bge.jp,bonsai.shikoku-np.co.jp,boosting-site.com,dietmiler.com,dohack.jp,gameo.jp,higeojisan-lab.com,manga-comic-netabare.com,manga-netabare-kanso.com,mangafull.jp,multilingualtraveler.com,niko25niko.xyz,ou-kagai.com,pear-farmers.life,shiba-teire.com,vtub0.com,yukiq.com##.add
+useful-notes.com,otakukosodate.work,kensho-zukan.com,oyakudachi2525.com,mazisuka.com,hetano-yokozuki.net,uruoistyle.com,moto-neta.com,bunkai.biz,yuraika.com,mupon.net,affiliate-ruby.com,amehappi.com,bge.jp,bonsai.shikoku-np.co.jp,boosting-site.com,dietmiler.com,dohack.jp,gameo.jp,higeojisan-lab.com,manga-comic-netabare.com,manga-netabare-kanso.com,mangafull.jp,multilingualtraveler.com,niko25niko.xyz,ou-kagai.com,pear-farmers.life,shiba-teire.com,vtub0.com,yukiq.com##.add
 ! `##.ad`
-newsphere.jp,tver.jp,cyzowoman.com,gorin.jp,otakomu.jp,volante.info,e-mansion.co.jp,rakuten-seo.info,buzip.net,women.benesse.ne.jp,candyrock25.com,nachukichi.com,sedoru.com,sidelife.net,vegelifemiki.net,nikkan.co.jp,dogatch.jp,sai-zen-sen.jp,followmanager.net,ure.pia.co.jp,xn--n9jvd7d3d0ad5cwnpcu694dohxad89g.com,smt-cinema.com,thetv.jp,gaydebulog.com,guitarmagazine.jp,anime-hiroba.com,blogmura.com,55sedori.com,chat.shalove.net,vogue.co.jp,gogo.gs,bikebros.co.jp,qoly.jp,movie.jorudan.co.jp,ascii.jp,kanaloco.jp,horiemon.com,kamigame.jp,e-words.jp,otona-life.com,gundam-futab.info,twi55.com,mindhack2ch.com,vippers.jp,repeat-drama.info##.ad
+webcg.net,newsphere.jp,tver.jp,cyzowoman.com,gorin.jp,otakomu.jp,volante.info,e-mansion.co.jp,rakuten-seo.info,buzip.net,women.benesse.ne.jp,candyrock25.com,nachukichi.com,sedoru.com,sidelife.net,vegelifemiki.net,nikkan.co.jp,dogatch.jp,sai-zen-sen.jp,followmanager.net,ure.pia.co.jp,xn--n9jvd7d3d0ad5cwnpcu694dohxad89g.com,smt-cinema.com,thetv.jp,gaydebulog.com,guitarmagazine.jp,anime-hiroba.com,blogmura.com,55sedori.com,chat.shalove.net,vogue.co.jp,gogo.gs,bikebros.co.jp,qoly.jp,movie.jorudan.co.jp,ascii.jp,kanaloco.jp,horiemon.com,kamigame.jp,e-words.jp,otona-life.com,gundam-futab.info,twi55.com,mindhack2ch.com,vippers.jp,repeat-drama.info##.ad
 ! gacraft ads
 ||gacraft.jp^$domain=mainichikirei.jp
 news24.jp,michill.jp,fnn.jp,bengo4.com,zigsow.jp,navitime.com,cazual.tv,crank-in.net,mantan-web.jp,millymilly.jp,rurubu.jp##.sherpa-component[data-ad_type]
 !
 ||feed.mikle.com^$domain=blog.livedoor.jp|crx7601.com|fate-rpg.jp|gadgetlife2ch.blomaga.jp|gtoys.blog.fc2.com|h1g.jp|hdouga.com|ibarakinews.jp|obutu.com|totalwar.doorblog.jp|xn--bckadddb2a0d4dnc8dwhngdtb58aya0l4a2om843g5npczp7dwh5g.com|xn--cckea5a6cidcbh6ce7ghug17a2ge3aht3nwigef51658aw7kd.com
 !
+||financial-c.net/img/am.png
+financial-c.net###custom_html-13
+erogamemod.com##.custom-box3
+erogamemod.com##.eroga-widget
+erogamemod.com###custom_html-14
+erogamemod.com###custom_html-15
+silhouette-ac.com###adsensehpsx
+silhouette-ac.com###adsenseside
+ac-illust.com,photo-ac.com###voting-taboola-wrapper
+ac-illust.com,photo-ac.com##.ac-p-2.bg-light.ac-mt-3
+ac-illust.com##.ad-colored-wrapper
+ac-illust.com##.ad-fluid
+zatugaku-gimonn.com##span[style="font-size:11px;"]
+useful-notes.com##.entry-content > div[align="center"]
+win-tab.net##a[href^="https://www.banggood.com/"]
+win-tab.net##div[style="padding:20px 0px;"] > center
+anonelife.com##.widget-in-article
+blog.domesoccer.jp###sp-link
+blog.livedoor.jp##.article-body-inner > div.article-body-more + p[style="”font-size:5pt;"] + center
+||ssl-images-amazon.com/images/i/$domain=nofootynolife.blog.fc2.com
+worldfn.net###third > div.plugin-memo:first-child
+worldfn.net##.adad
+samuraisoccer.doorblog.jp###more > a[href^="https://www.amazon.co.jp/"]
+samuraisoccer.doorblog.jp##.plugin-recent_articles_image + div.plugin-memo
+samuraisoccer.doorblog.jp##.plugin-rss:last-child
+football-2ch.com###sub > div.plugin-memo:first-child
+photo-tea.com###r-fix
+photo-tea.com##.ad-footer-related
+photo-tea.com##.googleAdPost
+photo-tea.com##.googleAdSide
+umamusumelabo.com##.yyi-rinker-contents
+||yoyaku-top10.jp/uploads/rectangle_banner/
+yoyaku-top10.jp##.p-rectangle_banner_box
+||amazonaws.com/adv-img.zucks.jp/$third-party
+webcg.net##.google-recommend
+webcg.net##div[id^="sub-top_2nd"]
+||pics.dmm.com/freegame/app/$image,third-party,domain=~dmm.co.jp
+gamehig.com###more > a[href^="https://www.amazon.co.jp/"]
+chomagireko.blog.jp##.left-column-inner > div.plugin-popular_articles_with_image + div.plugin-memo:last-child
+chomagireko.blog.jp##.right-column-inner > div.plugin-categorize + div.plugin-memo:last-child
+||amebaowndme.com/v2/public/pureads|
+the360.life##.adarea-content
+the360.life##.adarea-related
+fireflyframer.blog.jp##.message-board-outer
+libae.jp##div[id^="JP_LBE_"]
+yosemi-7.com###text-11
+okinawatimes.co.jp##div[style*="width:300px;height:250px"]
+ipentec.com##.FlexContainerAdsenseBottom
+ipentec.com##.FlexContainerAdsenseTop
+my-best.com###ad-product
+umamusumelabo.com,bokuslog.com##.adPost
+tenmusume.com##.home_block > div.pc.clearfix
+ear-phone-review.com##.hatena-module-html:first-child
+ear-phone-review.com##.hatena-module-html:nth-last-child(-n+2)
+ear-phone-review.com##div[class^="adsense"]
+musume4610.com###rightside > aside
+musume4610.com###statusbar
+fatede-go.com##.mod-rss
+fatede-go.com##.mod-rss-btm
+fatede-go.com##aside.mainbox:not(.block)
+fatede-go.com##.bnArea
+||joyu.info/pp/
+psneolog.com##.amazon-item-box
+psneolog.com###pc_text-74
+||warashi-asian-pornstars.fr/WAPdB-img/ep/
+||heydouga.com/ecpcommon/img/anzen-$third-party
+tunamod.com##.l-main .textwidget > a[href^="https://slim-base.com/"] > img
+tunamod.com##.l-main .textwidget > a[href^="https://slim-base.com/"] ~ br
+gapsis.jp###HTML16
+gapsis.jp###home-ad-top1
+gapsis.jp##.adiframe-wrapper-post-bottom
+gapsis.jp##.adimage-wrapper-sidebar
 bloomberg.co.jp##.leaderboard-container
 ||dmm-av.xyz/fc2/$script,domain=avnewrelease.blog.fc2.com
 boin.pink###text-9
@@ -1307,7 +1408,7 @@ moedb.net##.d-md-block.col[style^="flex:"]
 ||fc2.com/sugumiru18/dmm_$subdocument,domain=sugumiru18.com
 sugumiru18.com###content > center:first-child
 sugumiru18.com###secondary > aside.widget_text
-||embed.dugout.com^$domain=newsphere.jp
+||embed.dugout.com^$domain=newsphere.jp|kobe-np.co.jp
 matomecup.com##.menuLineDouble:first-child
 matomecup.com##.plugin3_outline:last-child
 wakibungu.com###mybox > div.widget_text
@@ -1333,7 +1434,6 @@ wikinis.net##.entry-content > table[style="border-style: none;"][border="1"]
 ||digiket.com/xml/ad/$third-party
 moeeki.net###sub > br
 ero-video.net##.base__advert-container
-gadget2ch.com###sidebar-scroll
 gadget2ch.com##.article-text-rss-box
 smt-cinema.com##.prBanner
 nukemanga.com##.scroll
@@ -1454,7 +1554,7 @@ dragonball-neta.com##.boxzilla-overlay
 gadgetdamage.blog.fc2.com##.admax-ads
 gadgetdamage.blog.fc2.com##.rtbox_tri_rec
 kimootoko.net###custom_html-12.head-under
-kimootoko.net###custom_html-5
+erogamemod.com,kimootoko.net###custom_html-5
 kimootoko.net##.posts-list-upper-widget
 kimootoko.net##div[style^=" width:620px; max-width: 100%"]
 kimootoko.net##div[style=" max-width:90%; margin-top:25px;"]
@@ -1703,7 +1803,7 @@ talknews.net##p[style*="color:#333; text-align:center;"]
 axismag.jp##.pr_posts
 ||omyutech.com/image/dns_ads/
 a-kimama.com##.banner.blogcard
-tarosoku.com,0taku.livedoor.biz,kabumatome.doorblog.jp,haijin-boys.com,hamusoku.com,ascii2d.net##.amazon
+chomagireko.blog.jp,tarosoku.com,0taku.livedoor.biz,kabumatome.doorblog.jp,haijin-boys.com,hamusoku.com,ascii2d.net##.amazon
 haijin-boys.com##.adsense
 hamachan.info###sidetop_ad_pc
 hamachan.info##.ad_m
@@ -1881,7 +1981,7 @@ koepota.jp###right > span[style="font-size:70%;"]
 koepota.jp###right > span[style="font-size:70%;"] ~ br
 ||cosp.jp/inc/ad.js
 cosp.jp##td[width="840"][bgcolor="#ffffff"] > span.black_mui12180
-chem-station.com###custom_html-3
+useful-notes.com,mohmongar.net,chem-station.com###custom_html-3
 chem-station.com###custom_html-6
 namatamago.net,chem-station.com###custom_html-9
 chem-station.com###contents > p[style="text-align: center;"]
@@ -1912,7 +2012,7 @@ kisspress.jp###footer_adbanner
 kisspress.jp##.adLandscape
 ||vcomi.jp/page_ad/
 l-media.tokyo###text-4
-alpaca76.com,l-media.tokyo###text-5
+roadbike-labo.com,alpaca76.com,l-media.tokyo###text-5
 l-media.tokyo,jj-blues.com###text-8
 l-media.tokyo##.post > .section-in > div[align=center]
 l-media.tokyo##.post > .section-in > table
@@ -2164,7 +2264,7 @@ rebosoku.com##.kiji-ad1
 rebosoku.com##.sidebody-r
 rebosoku.com##div[style="height:445px;"]
 wackwack.net##.hatena-module-html
-blog.syumikatu.info###sidebar-scroll
+curo.jp,gadget2ch.com,blog.syumikatu.info###sidebar-scroll
 blog.skeg.jp###gad-relatedentry
 figsoku.net,mysqlweb.net,nlab.itmedia.co.jp,securl.nu,blog.skeg.jp##.gad
 blog.skeg.jp##.gad-articletop
@@ -2258,7 +2358,7 @@ movie.eroterest.net##.edgBanner
 blog.40ch.net##.rakuten_group_item
 ||fx-koryaku.com/wp-content/uploads/*-bnr-
 fx-koryaku.com##center > a[target="_blank"] > img
-chiepedia.club,chem-station.com,sirabetter.com,fx-koryaku.com###custom_html-2
+mohmongar.net,chiepedia.club,chem-station.com,sirabetter.com,fx-koryaku.com###custom_html-2
 ||blog.fx-on.com/parts/ebooks_ranking_parts.php
 fx-koryaku.com##iframe[src^="https://blog.fx-on.com/parts/ebooks_ranking_parts.php"]
 fx-koryaku.com##.cta-content
@@ -2273,7 +2373,6 @@ front-row.jp##.after-btn-fb-nice-ad-pc
 theriver.jp##.related-posts
 alphapolis.co.jp##.ad-long
 newsphere.jp##.wprt-container > center
-photo-ac.com##.ac-p-2.bg-light.ac-mt-3
 bike-news.jp##.left.box300
 cazual.tv##.bnr_wd_wrap
 3751chat.com###chatroom_right
@@ -2300,7 +2399,7 @@ tvguide.or.jp##.l--spBanner
 lala.tv##.lala-common-ad
 tvlife.jp###tvl_pc_article_footer[style="width: 728px; height: 90px;"]
 tvlife.jp##div[id^="tvl_pc_all_"]
-chem-station.com,48idol.tv###custom_html-4
+mohmongar.net,chem-station.com,48idol.tv###custom_html-4
 dengekionline.com##div[id^="dol_all_"]
 moviewalker.jp##.bl_adSPWrap
 moviewalker.jp##div[style$="min-width: 300px; min-height: 270px;"]
@@ -2753,7 +2852,7 @@ ekilog.info###widget-under-article
 mammemo.net##.aaprad_con
 mammemo.net##.side_pc_con > div[style="text-align:center; margin-bottom:30px; padding:10px; overflow:hidden"]
 line-emoji.com##div[style="height:90px;;width:100%;"]
-comicspoil007.com,yoso-walk.net,poire122.com,automaton-media.com,pontako.com##.code-block
+crossbike.biz,comicspoil007.com,yoso-walk.net,poire122.com,automaton-media.com,pontako.com##.code-block
 pontako.com##div[id^="msmaflink-"]
 wws-channel.com###top-banner
 ||a.toremaga.com/ad/
@@ -2855,14 +2954,10 @@ milcow.com##.adaida
 eikaiwamastery.blogspot.jp###HTML2
 manga-comic-netabare.com,omansoku.com,sakasa-panty.com,shibukoi.com##.home_widget
 smhn.info###text-22
-coron.tech##.post_content .right:first-of-type
-coron.tech###maincnot\ content-main div[style="width:100%!important;min-height:570px;"]
-coron.tech###sidebar1 div#text-7
-coron.tech###sidebar1 div.center[style="min-height:280px;"]
-coron.tech###single-post > div[style="width:100%!important;min-height:188px;"]
+||coron.tech/wp-content/uploads/*._ac_sl1000_
 coron.tech###single-post div[style="width: 100% !important; min-height: 438px; visibility: visible;"]
-coron.tech##.section-hr
-coron.tech##div[style="height:auto;min-height:330px;"]
+coron.tech###text-10
+coron.tech##div[style="width:100%;max-width:730px;height:auto;min-height:190px;"]
 connect.coron.tech###container > div[style="margin:0 auto;min-height:92px;text-align:center;"]
 connect.coron.tech##div[style="width:100%;height:300px;"]
 connect.coron.tech###sub a[href^="https://www.amazon.co.jp/gp/"]
@@ -2900,7 +2995,7 @@ renote.jp##[class$="__ad__container"]
 gundam-futab.info###sidebar-widget > .widget_pc_text:first-child
 gundam-futab.info##.rss_label
 gundam-futab.info##.sousyoku
-gundam-futab.info##.widget-under-article
+anonelife.com,gundam-futab.info##.widget-under-article
 ||bblog.sso.biglobe.ne.jp/js/insert-ad.
 ||jav.guru^*/1600.gif
 ||jin115.com/js/amazon_
@@ -2967,7 +3062,7 @@ excite.co.jp##div[class^="ad-aside"]
 excite.co.jp##div[class^="ex-ad-rectangle"]
 excite.co.jp##div[id^="gpt_pc_news_"]
 ||chaos2ch.com/rss.html
-cyzo.com##.rectangle
+umamusumelabo.com,cyzo.com##.rectangle
 dlsoft.dmm.co.jp##.dmm-c-banner-tags
 dmm.co.jp###footer-ad-container
 hamusoku.com##.plugin-memo:first-child
@@ -3152,7 +3247,7 @@ www.weblio.jp##.firstDictBnr
 www.weblio.jp##.rectangle-ads-frame-www
 ad-contents.jp##.overlay-item
 ad-contents.jp##.overlay-mask
-||dmm.co.jp/litevideo/-/part/=/affi_id=$domain=~rapidshare-com-files.com|~thelivingcomic.com
+||dmm.co.jp/litevideo/-/part/=/affi_id=
 punyu.com###content > .box_title[style="width:700px;"]
 punyu.com###content > .box_title[style^="width:700px; margin-top:20px; "]
 punyu.com###content > .rank_table
@@ -3269,7 +3364,7 @@ mantan-web.jp##.ad-rec
 mantan-web.jp##.ad-fb
 yahoo.co.jp##.Module > .Banner
 punisoku.blogo.jp##.main-column-inner > a[href^="https://www.dlsite"]
-l-media.tokyo,jj-blues.com###text-6
+roadbike-labo.com,l-media.tokyo,jj-blues.com###text-6
 ||webcartop.jp/wp-content/themes/cartop/images/banner-motorsports.com.jpg
 webcartop.jp##div[style="min-height: 250px;"]
 webcartop.jp###category-tms2019-ad-hide
@@ -3553,7 +3648,7 @@ jin115.com##.dix_ad_n
 seesaa.jp##.banner-footer
 auone.jp##.side__ad-box
 yahoo.co.jp###bpComposite > a
-maho.jp,asahi.com##.Ad
+l-tike.com,maho.jp,asahi.com##.Ad
 fukuishimbun.co.jp##.admeasure
 jiji.com##.ArticleAdSide
 sponichi.co.jp##[class^="banner"]
@@ -3681,6 +3776,12 @@ avgle.com##body > div[style*="z-index"]:not([id]):not([class])
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+! whole breakage
+@@||dxlive.com^$image,subdocument,script,domain=alivechat.tv|kanjukulive.com
+! unbreak images
+@@||affiliate.dtiserv.com/image/$domain=xn--eckveb0l002pve5b.com
+! these sites are almost empty and the only contents are affiliate videos
+@@||dmm.co.jp/litevideo/-/part/=/affi_id=$subdocument,domain=adgene.net|rapidshare-com-files.com|thelivingcomic.com
 ! doesn't trigger anti-adb, exception made for privacy
 @@||vippers.jp/settings/ad.js
 ! https://github.com/uBlockOrigin/uAssets/issues/9693

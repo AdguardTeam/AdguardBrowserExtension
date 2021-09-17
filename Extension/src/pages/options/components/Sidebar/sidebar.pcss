@@ -1,0 +1,106 @@
+.sidebar {
+    padding: 48px 0 48px 0;
+    min-width: 231px;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: var(--gray100);
+    z-index: var(--z-idx6);
+    margin: 0;
+    width: 248px;
+    transform: translateX(-100%);
+    transition: transform var(--sidebar-transition);
+    overflow-y: auto;
+
+    @media (prefers-color-scheme: dark) {
+        background: var(--black);
+        border-right: 1px solid var(--gray900);
+    }
+
+    &__menu {
+        display: block;
+        position: fixed;
+        top: 0;
+        z-index: var(--z-idx6);
+        height: 40px;
+        width: 100%;
+        background-color: var(--white);
+        box-shadow: 0 2px 4px 0 var(--light-shadow);
+        font-size: 14px;
+        color: var(--gray-base);
+        line-height: 18px;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+            background-color: var(--black);
+        }
+    }
+
+    &__logo {
+        margin: 32px 102px 0 37px;
+    }
+
+    &__open-button {
+        margin: 6px 9px;
+        border: 0;
+        background-color: transparent;
+    }
+
+    &__overlay {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: var(--z-idx5);
+        left: 0;
+        top: 0;
+        background-color: var(--overlay-gray);
+        overflow-x: hidden;
+        animation-delay: 0.3s;
+    }
+
+    &--open {
+        transform: translateX(0);
+    }
+
+    @media (min-width: 640px) {
+        transform: translateX(0);
+        position: relative;
+
+        &__menu {
+            display: none;
+        }
+
+        &__logo {
+            margin: 0 0 24px 37px;
+        }
+
+        &__overlay {
+            display: none;
+        }
+    };
+}
+
+.light-mode {
+    .sidebar {
+        background: var(--gray100);
+        border-right: none;
+
+        &__menu {
+            color: var(--gray-base);
+            background-color: var(--white);
+        }
+    }
+}
+
+.dark-mode {
+    .sidebar {
+        background: var(--black);
+        border-right: 1px solid var(--gray900);
+
+        &__menu {
+            color: var(--gray300);
+            background-color: var(--black);
+        }
+    }
+}

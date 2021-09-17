@@ -23,7 +23,7 @@
 <br />
 
 <p align="center">
-    <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_settings.png" width="800" />
+    <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_4_settings.png" width="800" />
 </p>
 
 <hr />
@@ -47,6 +47,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
   * [How to build](#dev-build)
   * [Linter](#dev-linter)
   * [Update localizations](#dev-localizations)
+* [Minimum supported browser versions](#minimum-supported-browser-versions)
 
 <a id="installation"></a>
 ## Installation
@@ -99,6 +100,8 @@ Here is a [dedicated page](https://adguard.com/contribute.html) for those who ar
 <a id="dev"></a>
 ## Development
 
+> Since version 4.0, Adguard browser extension uses opensource [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) library for implementing content blocking rules.
+
 <a id="dev-requirements"></a>
 ### Requirements
 
@@ -128,8 +131,10 @@ Run the following command:
 This will create a build directory with unpacked extensions for all browsers:
 ```
   build/dev/chrome
-  build/dev/firefox
   build/dev/edge
+  build/dev/firefox-amo
+  build/dev/firefox-standalone
+  build/dev/opera
 ```
 
 **Building the beta and release versions**
@@ -150,7 +155,7 @@ You will need to put certificate.pem and mozilla_credentials.json files to the `
 
 Run the following command:
 ```
-yarn sample-api
+yarn adguard-api
 ```
 This will create a build directory with unpacked sample extension for chromium browsers:
 
@@ -160,7 +165,7 @@ build/dev/adguard-api
 
 <a id="dev-linter"></a>
 ### Linter
-Despite our code my not currently comply with new style configuration,
+Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
 <a id="dev-localizations"></a>
@@ -168,17 +173,35 @@ please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
 To download and append localizations run:
 ```
-  yarn locales-download
+  yarn locales:download
 ```
 
 To upload new phrases to crowdin you need the file with phrases `./Extension/_locales/en/messages.json`. Then run:
 ```
-  yarn locales-upload
+  yarn locales:upload
 ```
+
+To remove old messages from locale messages run:
+```
+  yarn locales:renew
+```
+
+To validate translations run:
+```
+  yarn locales:validate
+```
+
+To show locales info run:
+```
+  yarn locales:info
+```
+
+<a id="minimum-supported-browser-versions"></a>
+
 ## Minimum supported browser versions
 | Browser                 	| Version 	|
 |-------------------------	|:-------:	|
 | Chromium Based Browsers 	|    55   	|
-| Firefox                 	|    52   	|
+| Firefox                 	|    57   	|
 | Opera                   	|    42   	|
-| Edge                    	|    15.14942/39.14942   	|
+| Edge                    	|    79   	|

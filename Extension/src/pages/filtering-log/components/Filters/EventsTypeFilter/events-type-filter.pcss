@@ -1,0 +1,39 @@
+.events-types {
+    &__content {
+        white-space: nowrap;
+    }
+}
+
+.content-type {
+    &__modal {
+        width: 156px;
+        outline: none;
+        background: var(--white);
+        box-shadow: 2px 2px 10px var(--shadow);
+        align-items: flex-start;
+        padding: 11px 16px 18px;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(270px);
+
+        @media (prefers-color-scheme: dark) {
+            background: var(--black);
+        }
+    }
+
+    &__overlay {
+        background-color: transparent;
+    }
+}
+
+.light-mode {
+    .content-type__modal {
+        background: var(--white);
+    }
+}
+
+.dark-mode {
+    .content-type__modal {
+        background: var(--black);
+    }
+}
