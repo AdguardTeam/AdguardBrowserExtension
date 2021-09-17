@@ -38,30 +38,33 @@ Test:
             yarn test
             yarn dev
   artifacts:
+    - name: adguard-api.zip
+      location: build/dev
+      pattern: adguard-api.zip
+      required: true
     - name: build.txt
-      location: build
+      location: build/dev
       pattern: build.txt
-      shared: true
       required: true
     - name: chrome.zip
-      location: build
+      location: build/dev
       pattern: chrome.zip
-      shared: true
-      required: true
-    - name: firefox.zip
-      location: build
-      pattern: firefox.zip
-      shared: true
       required: true
     - name: edge.zip
-      location: build
+      location: build/dev
       pattern: edge.zip
-      shared: true
       required: true
-    - name: adguard-api.zip
-      location: build
-      pattern: adguard-api.zip
-      shared: true
+    - name: firefox-amo.zip
+      location: build/dev
+      pattern: firefox.zip
+      required: true
+    - name: firefox-standalone.zip
+      location: build/dev
+      pattern: firefox-standalone.zip
+      required: true
+    - name: opera.zip
+      location: build/dev
+      pattern: opera.zip
       required: true
   requirements:
     - adg-docker: 'true'
