@@ -40,7 +40,7 @@ Build:
             yarn install ${system.YARN_ARGS}
             CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn release
     - inject-variables:
-        file: build/build.txt
+        file: build/release/build.txt
         scope: RESULT
         namespace: inject
     - any-task:
