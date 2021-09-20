@@ -49,53 +49,53 @@ Build:
           selectedRepository: defaultRepository
           tagName: v${bamboo.inject.version}-beta
   artifacts:
+    - name: adguard-api.zip
+      location: build/beta
+      pattern: adguard-api.zip
+      shared: true
+      required: true
     - name: build.txt
-      location: build
+      location: build/beta
       pattern: build.txt
       shared: true
       required: true
     - name: chrome.zip
-      location: build
+      location: build/beta
       pattern: chrome.zip
       shared: true
       required: true
-    - name: firefox.zip
-      location: build
-      pattern: firefox.zip
-      shared: true
-      required: true
     - name: edge.zip
-      location: build
+      location: build/beta
       pattern: edge.zip
       shared: true
       required: true
+    - name: firefox.zip
+      location: build/beta
+      pattern: firefox.zip
+      shared: true
+      required: true
     - name: chrome.crx
-      location: build
+      location: build/beta
       pattern: chrome.crx
+      shared: true
+      required: true
+    - name: update.xml
+      location: build/beta
+      pattern: update.xml
       shared: true
       required: true
     # Temporarily disabled, as firefox doesn't sign builds automatically
     # TODO uncomment
     # - name: firefox.xpi
-    #   location: build
+    #   location: build/beta
     #   pattern: firefox.xpi
     #   shared: true
     #   required: true
     # - name: update.json
-    #   location: build
+    #   location: build/beta
     #   pattern: update.json
     #   shared: true
     #   required: true
-    - name: update.xml
-      location: build
-      pattern: update.xml
-      shared: true
-      required: true
-    - name: adguard-api.zip
-      location: build
-      pattern: adguard-api.zip
-      shared: true
-      required: true
   requirements:
     - adg-docker: 'true'
 
