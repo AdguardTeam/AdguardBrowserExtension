@@ -60,6 +60,7 @@ const Stealth = observer(() => {
             <SettingsSection
                 title={reactTranslator.getMessage('options_privacy_title')}
                 description={reactTranslator.getMessage('options_privacy_desc')}
+                mode="smallContainer"
                 inlineControl={(
                     <Setting
                         id={DISABLE_STEALTH_MODE}
@@ -74,7 +75,7 @@ const Stealth = observer(() => {
 
             <SettingsSection
                 title={reactTranslator.getMessage('options_stealth_general_title')}
-                subTitle
+                mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
@@ -143,7 +144,7 @@ const Stealth = observer(() => {
 
             <SettingsSection
                 title={reactTranslator.getMessage('options_stealth_cookies_title')}
-                subTitle
+                mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
@@ -189,7 +190,7 @@ const Stealth = observer(() => {
 
             <SettingsSection
                 title={reactTranslator.getMessage('options_stealth_miscellaneous_title')}
-                subTitle
+                mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox

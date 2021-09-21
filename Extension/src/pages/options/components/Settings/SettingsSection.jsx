@@ -9,7 +9,7 @@ const SettingsSection = (props) => {
         inlineControl,
         children,
         disabled,
-        subTitle,
+        mode,
     } = props;
 
     const settingGroupClassName = classNames('settings__group', {
@@ -17,13 +17,13 @@ const SettingsSection = (props) => {
     });
 
     const titleContainerClass = classNames('title__container', {
-        'title__container--navigation-back': renderBackButton,
-        'title__container--sub': subTitle,
+        'title__container--small': renderBackButton || mode === 'smallContainer',
+        'title__container--sub': mode === 'subTitle',
     });
 
     const titleClass = classNames('title', {
         'title--back-btn': renderBackButton,
-        'title--sub': subTitle,
+        'title--sub': mode === 'subTitle',
     });
 
     return (
