@@ -11,7 +11,7 @@
 
         @media (min-width: 640px) {
             justify-content: flex-start;
-            padding: 0;
+            padding: 0 16px 0 0;
         }
     }
 
@@ -42,7 +42,7 @@
 
             &_group {
                 flex-grow: 1;
-                border-radius: 8px 0 0 8px;
+                border-radius: 8px;
             }
         }
 
@@ -87,6 +87,9 @@
 
     &__info {
         max-width: 530px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     &__title {
@@ -113,7 +116,10 @@
         & a {
             color: var(--green74);
             text-decoration: underline;
-            white-space: nowrap;
+
+            @media (min-width: 640px) {
+                white-space: nowrap;
+            }
         }
     }
 
