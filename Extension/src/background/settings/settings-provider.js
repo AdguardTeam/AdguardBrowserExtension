@@ -170,6 +170,7 @@ export const settingsProvider = (function () {
                 'show-context-menu': settings.showContextMenu(),
                 'show-info-about-adguard': settings.isShowInfoAboutAdguardFullVersion(),
                 'show-app-updated-info': settings.isShowAppUpdatedNotification(),
+                'hide-rate-adguard': settings.isHideRateBlock(),
             },
         };
 
@@ -208,6 +209,7 @@ export const settingsProvider = (function () {
         settings.changeShowContextMenu(!!set['show-context-menu']);
         settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard']);
         settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info']);
+        settings.changeHideRateBlock(!!set['hide-rate-adguard']);
     };
 
     /**

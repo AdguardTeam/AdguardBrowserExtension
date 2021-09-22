@@ -10,9 +10,6 @@ export class OptionsStorage {
         /* allowlist editor wrap setting */
         ALLOWLIST_EDITOR_WRAP: 'allowlist-editor-wrap',
 
-        /* flag indicating visibility of footer rate in the store bar */
-        FOOTER_RATE_SHOW: 'footer-rate-show',
-
         /**
          * Filtering log columns widths
          */
@@ -32,7 +29,6 @@ export class OptionsStorage {
     DEFAULTS = {
         [this.KEYS.USER_RULES_EDITOR_WRAP]: false,
         [this.KEYS.ALLOWLIST_EDITOR_WRAP]: false,
-        [this.KEYS.FOOTER_RATE_SHOW]: true,
         [this.KEYS.REQUEST_INFO_MODAL_WIDTH]: null,
         [this.KEYS.COLUMNS_DATA]: {
             status: { width: 260 },

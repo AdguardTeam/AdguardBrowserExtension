@@ -69,6 +69,9 @@ export const settings = (() => {
         SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME: 'stealth-block-first-party-cookies-time',
+
+        /* UI misc */
+        HIDE_RATE_BLOCK: 'hide-rate-block',
     };
 
     const properties = Object.create(null);
@@ -104,6 +107,7 @@ export const settings = (() => {
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 defaults[settings.APPEARANCE_THEME] = APPEARANCE_THEMES.SYSTEM;
                 defaults[settings.USER_FILTER_ENABLED] = true;
+                defaults[settings.HIDE_RATE_BLOCK] = false;
                 return defaults;
             });
         },
@@ -203,8 +207,16 @@ export const settings = (() => {
         return !getProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION);
     };
 
+    const isHideRateBlock = function () {
+        return getProperty(settings.HIDE_RATE_BLOCK);
+    };
+
     const changeShowAppUpdatedNotification = function (show, options) {
         setProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, !show, options);
+    };
+
+    const changeHideRateBlock = function (hide, options) {
+        setProperty(settings.HIDE_RATE_BLOCK, hide, options);
     };
 
     const changeEnableSafebrowsing = function (enabled, options) {
@@ -361,7 +373,9 @@ export const settings = (() => {
     api.isShowInfoAboutAdguardFullVersion = isShowInfoAboutAdguardFullVersion;
     api.changeShowInfoAboutAdguardFullVersion = changeShowInfoAboutAdguardFullVersion;
     api.isShowAppUpdatedNotification = isShowAppUpdatedNotification;
+    api.isHideRateBlock = isHideRateBlock;
     api.changeShowAppUpdatedNotification = changeShowAppUpdatedNotification;
+    api.changeHideRateBlock = changeHideRateBlock;
     api.changeEnableSafebrowsing = changeEnableSafebrowsing;
     api.safebrowsingInfoEnabled = safebrowsingInfoEnabled;
     api.collectHitsCount = collectHitsCount;

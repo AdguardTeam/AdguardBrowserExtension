@@ -85,8 +85,6 @@ class SettingsStore {
 
     @observable allowlistEditorWrap = null;
 
-    @observable footerRateShow = null;
-
     @observable fullscreenUserRulesEditorIsOpen = false;
 
     constructor(rootStore) {
@@ -590,16 +588,12 @@ class SettingsStore {
 
     @computed
     get footerRateShowState() {
-        if (this.footerRateShow === null) {
-            this.footerRateShow = optionsStorage.getItem(optionsStorage.KEYS.FOOTER_RATE_SHOW);
-        }
-        return this.footerRateShow;
+        return !this.settings.values[this.settings.names.HIDE_RATE_BLOCK];
     }
 
     @action
-    hideFooterRateShow() {
-        this.footerRateShow = false;
-        optionsStorage.setItem(optionsStorage.KEYS.FOOTER_RATE_SHOW, this.footerRateShow);
+    async hideFooterRateShow() {
+        await this.updateSetting(this.settings.names.HIDE_RATE_BLOCK, true);
     }
 
     @action
