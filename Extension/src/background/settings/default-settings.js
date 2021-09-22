@@ -50,6 +50,7 @@ export const defaultSettings = {
         'stealth-hide-search-queries': settings.defaultProperties[settings.HIDE_SEARCH_QUERIES],
         'stealth-send-do-not-track': settings.defaultProperties[settings.SEND_DO_NOT_TRACK],
         'stealth-block-webrtc': settings.defaultProperties[settings.BLOCK_WEBRTC],
+        'stealth-remove-x-client': settings.defaultProperties[settings.BLOCK_CHROME_CLIENT_DATA],
         'stealth-block-third-party-cookies': settings.defaultProperties[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES],
         'stealth-block-third-party-cookies-time':
             settings.defaultProperties[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME],

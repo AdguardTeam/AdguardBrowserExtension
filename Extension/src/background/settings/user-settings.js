@@ -319,6 +319,7 @@ export const settings = (() => {
     const getHideSearchQueries = () => getProperty(settings.HIDE_SEARCH_QUERIES);
     const getSendDoNotTrack = () => getProperty(settings.SEND_DO_NOT_TRACK);
     const isWebRTCDisabled = () => getProperty(settings.BLOCK_WEBRTC);
+    const isRemoveXClientData = () => getProperty(settings.BLOCK_CHROME_CLIENT_DATA);
     const getAppearanceTheme = () => getProperty(settings.APPEARANCE_THEME);
 
     const setDisableStealthMode = (value) => {
@@ -347,6 +348,9 @@ export const settings = (() => {
     };
     const setWebRTCDisabled = (value) => {
         setProperty(settings.BLOCK_WEBRTC, value);
+    };
+    const setRemoveXClientData = (value) => {
+        setProperty(settings.BLOCK_CHROME_CLIENT_DATA, value);
     };
     const setAppearanceTheme = (theme) => {
         const isExistingTheme = Object.values(APPEARANCE_THEMES).some(t => t === theme);
@@ -415,6 +419,7 @@ export const settings = (() => {
     api.getHideSearchQueries = getHideSearchQueries;
     api.getSendDoNotTrack = getSendDoNotTrack;
     api.isWebRTCDisabled = isWebRTCDisabled;
+    api.isRemoveXClientData = isRemoveXClientData;
 
     api.setDisableStealthMode = setDisableStealthMode;
     api.setSelfDestructThirdPartyCookies = setSelfDestructThirdPartyCookies;
@@ -425,6 +430,7 @@ export const settings = (() => {
     api.setHideSearchQueries = setHideSearchQueries;
     api.setSendDoNotTrack = setSendDoNotTrack;
     api.setWebRTCDisabled = setWebRTCDisabled;
+    api.setRemoveXClientData = setRemoveXClientData;
 
     // Appearance mode methods
     api.setAppearanceTheme = setAppearanceTheme;
