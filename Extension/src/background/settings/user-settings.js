@@ -72,6 +72,7 @@ export const settings = (() => {
 
         /* UI misc */
         HIDE_RATE_BLOCK: 'hide-rate-block',
+        USER_RULES_EDITOR_WRAP: 'user-rules-editor-wrap',
     };
 
     const properties = Object.create(null);
@@ -108,6 +109,7 @@ export const settings = (() => {
                 defaults[settings.APPEARANCE_THEME] = APPEARANCE_THEMES.SYSTEM;
                 defaults[settings.USER_FILTER_ENABLED] = true;
                 defaults[settings.HIDE_RATE_BLOCK] = false;
+                defaults[settings.USER_RULES_EDITOR_WRAP] = false;
                 return defaults;
             });
         },
@@ -211,12 +213,20 @@ export const settings = (() => {
         return getProperty(settings.HIDE_RATE_BLOCK);
     };
 
+    const isUserRulesEditorWrap = function () {
+        return getProperty(settings.USER_RULES_EDITOR_WRAP);
+    };
+
     const changeShowAppUpdatedNotification = function (show, options) {
         setProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, !show, options);
     };
 
     const changeHideRateBlock = function (hide, options) {
         setProperty(settings.HIDE_RATE_BLOCK, hide, options);
+    };
+
+    const changeUserRulesEditorWrap = function (enabled, options) {
+        setProperty(settings.USER_RULES_EDITOR_WRAP, enabled, options);
     };
 
     const changeEnableSafebrowsing = function (enabled, options) {
@@ -374,8 +384,10 @@ export const settings = (() => {
     api.changeShowInfoAboutAdguardFullVersion = changeShowInfoAboutAdguardFullVersion;
     api.isShowAppUpdatedNotification = isShowAppUpdatedNotification;
     api.isHideRateBlock = isHideRateBlock;
+    api.isUserRulesEditorWrap = isUserRulesEditorWrap;
     api.changeShowAppUpdatedNotification = changeShowAppUpdatedNotification;
     api.changeHideRateBlock = changeHideRateBlock;
+    api.changeUserRulesEditorWrap = changeUserRulesEditorWrap;
     api.changeEnableSafebrowsing = changeEnableSafebrowsing;
     api.safebrowsingInfoEnabled = safebrowsingInfoEnabled;
     api.collectHitsCount = collectHitsCount;

@@ -1,14 +1,12 @@
 import { createContext } from 'react';
 import {
     action,
-    computed,
     observable,
     runInAction,
     makeObservable,
 } from 'mobx';
 
 import { messenger } from '../../../services/messenger';
-import { optionsStorage } from '../../../options/options-storage';
 import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../Editor/savingFSM';
 
 const savingService = createSavingService({
@@ -20,8 +18,6 @@ const savingService = createSavingService({
 
 class UserRulesEditorStore {
     @observable userRulesEditorContentChanged = false;
-
-    @observable userRulesEditorWrap = null;
 
     @observable savingUserRulesState = savingService.initialState.value;
 
@@ -49,23 +45,6 @@ class UserRulesEditorStore {
     setUserRulesExportAvailableState = (state) => {
         this.userRulesExportAvailable = state;
     };
-
-    @action
-    setUserRulesEditorWrapMode() {
-        this.userRulesEditorWrap = !this.userRulesEditorWrap;
-        optionsStorage.setItem(
-            optionsStorage.KEYS.USER_RULES_EDITOR_WRAP,
-            this.userRulesEditorWrap,
-        );
-    }
-
-    @computed
-    get userRulesEditorWrapState() {
-        this.userRulesEditorWrap = optionsStorage.getItem(
-            optionsStorage.KEYS.USER_RULES_EDITOR_WRAP,
-        );
-        return this.userRulesEditorWrap;
-    }
 
     // eslint-disable-next-line class-methods-use-this
     async saveUserRules(value) {

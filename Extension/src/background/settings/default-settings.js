@@ -19,6 +19,7 @@ export const defaultSettings = {
         'show-info-about-adguard': !settings.defaultProperties[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO],
         'show-app-updated-info': !settings.defaultProperties[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION],
         'hide-rate-adguard': settings.defaultProperties[settings.HIDE_RATE_BLOCK],
+        'user-rules-editor-wrap': settings.defaultProperties[settings.USER_RULES_EDITOR_WRAP],
     },
     'filters': {
         'enabled-groups': [

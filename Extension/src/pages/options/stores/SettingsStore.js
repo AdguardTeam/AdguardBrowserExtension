@@ -597,6 +597,16 @@ class SettingsStore {
     }
 
     @action
+    async setUserRulesEditorWrapMode() {
+        await this.updateSetting(this.settings.names.USER_RULES_EDITOR_WRAP, true);
+    }
+
+    @computed
+    get userRulesEditorWrapState() {
+        return !this.settings.values[this.settings.names.USER_RULES_EDITOR_WRAP];
+    }
+
+    @action
     setFullscreenUserRulesEditorState(isOpen) {
         this.fullscreenUserRulesEditorIsOpen = isOpen;
     }

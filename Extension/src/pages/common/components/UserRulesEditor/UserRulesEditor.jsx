@@ -10,6 +10,7 @@ import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
 import { RuleConverter } from '@adguard/tsurlfilter';
 
 import { userRulesEditorStore } from './UserRulesEditorStore';
+import { rootStore } from '../../../options/stores/RootStore';
 import { Editor } from '../Editor';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -27,6 +28,7 @@ import { exportData, ExportTypes } from '../../utils/export';
  * and fullscreen-user-rules page
  */
 export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
+    const { settingsStore } = useContext(rootStore);
     const store = useContext(userRulesEditorStore);
 
     const editorRef = useRef(null);
@@ -148,7 +150,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
     // set initial wrap mode
     useEffect(() => {
-        editorRef.current.editor.session.setUseWrapMode(store.userRulesEditorWrapState);
+        editorRef.current.editor.session.setUseWrapMode(settingsStore.userRulesEditorWrapState);
     }, [store]);
 
     const inputChangeHandler = async (event) => {
@@ -233,10 +235,10 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content
-    const toggleWrap = () => {
+    const toggleWrap = async () => {
         const toggledWrapMode = !editorRef.current.editor.session.getUseWrapMode();
         editorRef.current.editor.session.setUseWrapMode(toggledWrapMode);
-        store.setUserRulesEditorWrapMode(toggledWrapMode);
+        await settingsStore.setUserRulesEditorWrapMode(toggledWrapMode);
     };
 
     const openEditorFullscreen = async () => {

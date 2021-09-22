@@ -4,9 +4,6 @@ import { log } from '../../../common/log';
  */
 export class OptionsStorage {
     KEYS = {
-        /* user rules editor wrap setting */
-        USER_RULES_EDITOR_WRAP: 'user-rules-editor-wrap',
-
         /* allowlist editor wrap setting */
         ALLOWLIST_EDITOR_WRAP: 'allowlist-editor-wrap',
 
@@ -27,7 +24,6 @@ export class OptionsStorage {
     };
 
     DEFAULTS = {
-        [this.KEYS.USER_RULES_EDITOR_WRAP]: false,
         [this.KEYS.ALLOWLIST_EDITOR_WRAP]: false,
         [this.KEYS.REQUEST_INFO_MODAL_WIDTH]: null,
         [this.KEYS.COLUMNS_DATA]: {

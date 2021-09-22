@@ -171,6 +171,7 @@ export const settingsProvider = (function () {
                 'show-info-about-adguard': settings.isShowInfoAboutAdguardFullVersion(),
                 'show-app-updated-info': settings.isShowAppUpdatedNotification(),
                 'hide-rate-adguard': settings.isHideRateBlock(),
+                'user-rules-editor-wrap': settings.isUserRulesEditorWrap(),
             },
         };
 
@@ -210,6 +211,7 @@ export const settingsProvider = (function () {
         settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard']);
         settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info']);
         settings.changeHideRateBlock(!!set['hide-rate-adguard']);
+        settings.changeUserRulesEditorWrap(!!set['user-rules-editor-wrap']);
     };
 
     /**
