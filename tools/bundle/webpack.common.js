@@ -2,7 +2,6 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import TerserPlugin from 'terser-webpack-plugin';
 import path from 'path';
 
 import { BUILD_PATH, ENVS } from '../constants';
@@ -33,28 +32,17 @@ const htmlTemplatePluginCommonOptions = {
 };
 
 export const genCommonConfig = (browserConfig) => {
+    const isDev = process.env.BUILD_ENV === ENVS.DEV;
     return {
         mode: config.mode,
         optimization: {
-            minimize: true,
-            minimizer: [
-                new TerserPlugin({
-                    terserOptions: {
-                        compress: {
-                            defaults: false,
-                            unused: true,
-                        },
-                        mangle: false,
-                        format: {
-                            comments: 'all',
-                        },
-                    },
-                    extractComments: false,
-                }),
-            ],
+            minimize: false,
             runtimeChunk: 'single',
         },
-        devtool: process.env.BUILD_ENV === ENVS.DEV ? 'eval-source-map' : false,
+        cache: {
+            type: 'filesystem',
+        },
+        devtool: isDev ? 'eval-source-map' : false,
         entry: {
             'pages/background': {
                 import: BACKGROUND_PATH,
@@ -165,6 +153,22 @@ export const genCommonConfig = (browserConfig) => {
                             },
                         },
                     }],
+                },
+                /*
+                 * Prevent browser console warnings with source map issue
+                 * by deleting source map url comments in production build
+                 */
+                {
+                    test: /\.(js|jsx)$/,
+                    enforce: 'pre',
+                    use: [
+                        {
+                            loader: 'source-map-loader',
+                            options: {
+                                filterSourceMappingUrl: () => (isDev ? 'skip' : 'remove'),
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.(js|jsx)$/,
