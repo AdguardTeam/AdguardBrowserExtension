@@ -7,7 +7,6 @@ import React, {
 import { observer } from 'mobx-react';
 import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
-import { RuleConverter } from '@adguard/tsurlfilter';
 
 import { userRulesEditorStore } from './UserRulesEditorStore';
 import { Editor } from '../Editor';
@@ -158,7 +157,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         try {
             const rawNewRules = await uploadFile(file, 'txt');
             // convert rules before merging. AG-9862
-            const newRules = RuleConverter.convertRules(rawNewRules);
+            const newRules = await messenger.convertRuleText(rawNewRules);
             const oldRules = editorRef.current.editor.getValue();
             const unionRules = `${oldRules}\n${newRules}`.split('\n');
             const uniqRules = Array.from(new Set(unionRules)).join('\n');

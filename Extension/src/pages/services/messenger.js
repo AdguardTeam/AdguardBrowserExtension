@@ -297,6 +297,10 @@ class Messenger {
     async setEditorStorageContent(content) {
         return this.sendMessage(MESSAGE_TYPES.SET_EDITOR_STORAGE_CONTENT, { content });
     }
+
+    async convertRuleText(content) {
+        return this.sendMessage(MESSAGE_TYPES.CONVERT_RULES_TEXT, { content });
+    }
 }
 
 const messenger = new Messenger();

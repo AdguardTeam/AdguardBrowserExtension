@@ -114,6 +114,7 @@ export const MESSAGE_TYPES = {
     GET_USER_RULES_EDITOR_DATA: 'getUserRulesEditorData',
     GET_EDITOR_STORAGE_CONTENT: 'getEditorStorageContent',
     SET_EDITOR_STORAGE_CONTENT: 'setEditorStorageContent',
+    CONVERT_RULES_TEXT: 'convertRulesText',
 };
 
 export const NOTIFIER_TYPES = {

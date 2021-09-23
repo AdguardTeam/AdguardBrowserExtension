@@ -625,6 +625,10 @@ const createMessageHandler = () => {
                 editorStorage.setContent(content);
                 break;
             }
+            case MESSAGE_TYPES.CONVERT_RULES_TEXT: {
+                const { content } = data;
+                return TSUrlFilter.RuleConverter.convertRules(content);
+            }
             default:
                 // Unhandled message
                 throw new Error(`There is no such message type ${message.type}`);
