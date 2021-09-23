@@ -23,6 +23,8 @@ class UserRulesEditorStore {
 
     @observable userRulesExportAvailable = false;
 
+    @observable userRulesEditorPrefsDropped = false;
+
     constructor() {
         makeObservable(this);
 
@@ -44,6 +46,11 @@ class UserRulesEditorStore {
     @action
     setUserRulesExportAvailableState = (state) => {
         this.userRulesExportAvailable = state;
+    };
+
+    @action
+    setUserRulesEditorPrefsDropped = (state) => {
+        this.userRulesEditorPrefsDropped = state;
     };
 
     // eslint-disable-next-line class-methods-use-this

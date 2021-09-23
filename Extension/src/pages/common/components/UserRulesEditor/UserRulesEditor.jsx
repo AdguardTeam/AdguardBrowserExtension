@@ -88,6 +88,22 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         } else {
             store.setUserRulesExportAvailableState(false);
         }
+
+        if (store.userRulesEditorPrefsDropped) {
+            store.setUserRulesEditorPrefsDropped(false);
+
+            const SIZE_STORAGE_KEY = 'user-rules_editor-size';
+            localStorage.removeItem(SIZE_STORAGE_KEY);
+
+            // const DEFAULT_EDITOR_SIZE = {
+            //     width: '100%',
+            //     height: '300px',
+            // };
+
+            // TODO: Call editor resize
+            // editorRef.current.editor.session.setSize(DEFAULT_EDITOR_SIZE);
+            // editorRef.current.editor.resize();
+        }
     }, [store]);
 
     // Append listeners
