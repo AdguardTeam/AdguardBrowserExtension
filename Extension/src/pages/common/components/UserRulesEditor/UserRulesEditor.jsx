@@ -34,6 +34,12 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
     const editorRef = useRef(null);
     const inputRef = useRef(null);
 
+    let shouldResetSize = false;
+    if (store.userRulesEditorPrefsDropped) {
+        store.setUserRulesEditorPrefsDropped(false);
+        shouldResetSize = true;
+    }
+
     // Get initial storage content and set to the editor
     useEffect(() => {
         (async () => {
@@ -87,22 +93,6 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             store.setUserRulesExportAvailableState(true);
         } else {
             store.setUserRulesExportAvailableState(false);
-        }
-
-        if (store.userRulesEditorPrefsDropped) {
-            store.setUserRulesEditorPrefsDropped(false);
-
-            const SIZE_STORAGE_KEY = 'user-rules_editor-size';
-            localStorage.removeItem(SIZE_STORAGE_KEY);
-
-            // const DEFAULT_EDITOR_SIZE = {
-            //     width: '100%',
-            //     height: '300px',
-            // };
-
-            // TODO: Call editor resize
-            // editorRef.current.editor.session.setSize(DEFAULT_EDITOR_SIZE);
-            // editorRef.current.editor.resize();
         }
     }, [store]);
 
@@ -288,6 +278,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 fullscreen={fullscreen}
+                shouldResetSize={shouldResetSize}
                 highlightRules
             />
             <div className="actions actions--divided">
