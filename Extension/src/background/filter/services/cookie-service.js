@@ -49,10 +49,16 @@ export const getCookieRules = (tab, url, referrer) => {
  * @param tab
  * @param url
  * @param referrer
- * @returns {Array} serialized rules data
+ * @returns {Array|null} serialized rules data
  */
 export const getCookieRulesDataForContentScript = (tab, url, referrer) => {
-    const blockingRules = getCookieRules(tab, url, referrer).filter((rule) => {
+    const cookieRules = getCookieRules(tab, url, referrer);
+
+    if (!cookieRules) {
+        return null;
+    }
+
+    const blockingRules = cookieRules.filter((rule) => {
         const cookieModifier = rule.getAdvancedModifier();
         return !cookieModifier.getSameSite() && !cookieModifier.getMaxAge();
     });
