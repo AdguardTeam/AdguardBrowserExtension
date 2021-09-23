@@ -87,6 +87,8 @@ class SettingsStore {
 
     @observable fullscreenUserRulesEditorIsOpen = false;
 
+    @observable allowlistSizeReset = false;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -624,6 +626,11 @@ class SettingsStore {
     @computed
     get userFilterEnabled() {
         return this.settings.values[this.userFilterEnabledSettingId];
+    }
+
+    @action
+    setAllowlistSizeReset(value) {
+        this.allowlistSizeReset = value;
     }
 }
 

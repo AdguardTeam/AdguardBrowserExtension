@@ -54,6 +54,7 @@ const Miscellaneous = observer(() => {
     };
 
     const handleResetSettingsConfirm = async () => {
+        settingsStore.setAllowlistSizeReset(true);
         userRulesEditorStoreContext.setUserRulesEditorPrefsDropped(true);
 
         const result = await messenger.resetSettings();
