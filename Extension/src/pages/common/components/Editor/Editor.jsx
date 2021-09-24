@@ -46,6 +46,7 @@ const Editor = ({
 
     useEffect(() => {
         if (shouldResetSize) {
+            localStorage.removeItem(SIZE_STORAGE_KEY);
             setSize(DEFAULT_EDITOR_SIZE);
         }
     }, [shouldResetSize]);
