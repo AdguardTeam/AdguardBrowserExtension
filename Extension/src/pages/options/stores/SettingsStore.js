@@ -599,13 +599,13 @@ class SettingsStore {
     }
 
     @action
-    async setUserRulesEditorWrapMode() {
-        await this.updateSetting(this.settings.names.USER_RULES_EDITOR_WRAP, true);
+    async setUserRulesEditorWrapMode(state) {
+        await this.updateSetting(this.settings.names.USER_RULES_EDITOR_WRAP, state);
     }
 
     @computed
     get userRulesEditorWrapState() {
-        return !this.settings.values[this.settings.names.USER_RULES_EDITOR_WRAP];
+        return this.settings.values[this.settings.names.USER_RULES_EDITOR_WRAP];
     }
 
     @action
