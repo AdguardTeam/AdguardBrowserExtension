@@ -6,6 +6,7 @@ import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
+import { userRulesEditorStore } from '../../../common/components/UserRulesEditor/UserRulesEditorStore';
 import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
@@ -15,6 +16,8 @@ const Miscellaneous = observer(() => {
         settingsStore,
         uiStore,
     } = useContext(rootStore);
+
+    const userRulesEditorStoreContext = useContext(userRulesEditorStore);
 
     const { settings } = settingsStore;
 
@@ -51,6 +54,9 @@ const Miscellaneous = observer(() => {
     };
 
     const handleResetSettingsConfirm = async () => {
+        settingsStore.setAllowlistSizeReset(true);
+        userRulesEditorStoreContext.setUserRulesEditorPrefsDropped(true);
+
         const result = await messenger.resetSettings();
         if (result) {
             /* force all setting context data update with 'firstRender' option */

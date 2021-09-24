@@ -88,6 +88,12 @@ const Allowlist = observer(() => {
 
     const { ALLOWLIST_ENABLED } = settings.names;
 
+    let shouldResetSize = false;
+    if (settingsStore.allowlistSizeReset) {
+        settingsStore.setAllowlistSizeReset(false);
+        shouldResetSize = true;
+    }
+
     return (
         <>
             <SettingsSection
@@ -126,6 +132,7 @@ const Allowlist = observer(() => {
                 onChange={editorChangeHandler}
                 value={settingsStore.allowlist}
                 wrapEnabled={settingsStore.allowlistEditorWrap}
+                shouldResetSize={shouldResetSize}
             />
             <div className="actions actions--divided">
                 <div className="actions__group">
