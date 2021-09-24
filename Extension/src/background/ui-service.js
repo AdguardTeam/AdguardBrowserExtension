@@ -415,7 +415,7 @@ export const uiService = (function () {
      * @param previousVersion
      */
     const showVersionUpdatedPopup = async (currentVersion, previousVersion) => {
-        const notification = adguard.notifications.getCurrentNotification();
+        const notification = notifications.getCurrentNotification();
 
         if (!notification
             && browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
