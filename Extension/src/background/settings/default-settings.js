@@ -18,6 +18,8 @@ export const defaultSettings = {
         'show-context-menu': !settings.defaultProperties[settings.DISABLE_SHOW_CONTEXT_MENU],
         'show-info-about-adguard': !settings.defaultProperties[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO],
         'show-app-updated-info': !settings.defaultProperties[settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION],
+        'hide-rate-adguard': settings.defaultProperties[settings.HIDE_RATE_BLOCK],
+        'user-rules-editor-wrap': settings.defaultProperties[settings.USER_RULES_EDITOR_WRAP],
     },
     'filters': {
         'enabled-groups': [
@@ -48,6 +50,7 @@ export const defaultSettings = {
         'stealth-hide-search-queries': settings.defaultProperties[settings.HIDE_SEARCH_QUERIES],
         'stealth-send-do-not-track': settings.defaultProperties[settings.SEND_DO_NOT_TRACK],
         'stealth-block-webrtc': settings.defaultProperties[settings.BLOCK_WEBRTC],
+        'stealth-remove-x-client': settings.defaultProperties[settings.BLOCK_CHROME_CLIENT_DATA],
         'stealth-block-third-party-cookies': settings.defaultProperties[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES],
         'stealth-block-third-party-cookies-time':
             settings.defaultProperties[settings.SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME],

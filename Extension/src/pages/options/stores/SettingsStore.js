@@ -85,9 +85,9 @@ class SettingsStore {
 
     @observable allowlistEditorWrap = null;
 
-    @observable footerRateShow = null;
-
     @observable fullscreenUserRulesEditorIsOpen = false;
+
+    @observable allowlistSizeReset = false;
 
     constructor(rootStore) {
         makeObservable(this);
@@ -590,16 +590,22 @@ class SettingsStore {
 
     @computed
     get footerRateShowState() {
-        if (this.footerRateShow === null) {
-            this.footerRateShow = optionsStorage.getItem(optionsStorage.KEYS.FOOTER_RATE_SHOW);
-        }
-        return this.footerRateShow;
+        return !this.settings.values[this.settings.names.HIDE_RATE_BLOCK];
     }
 
     @action
-    hideFooterRateShow() {
-        this.footerRateShow = false;
-        optionsStorage.setItem(optionsStorage.KEYS.FOOTER_RATE_SHOW, this.footerRateShow);
+    async hideFooterRateShow() {
+        await this.updateSetting(this.settings.names.HIDE_RATE_BLOCK, true);
+    }
+
+    @action
+    async setUserRulesEditorWrapMode(state) {
+        await this.updateSetting(this.settings.names.USER_RULES_EDITOR_WRAP, state);
+    }
+
+    @computed
+    get userRulesEditorWrapState() {
+        return this.settings.values[this.settings.names.USER_RULES_EDITOR_WRAP];
     }
 
     @action
@@ -620,6 +626,11 @@ class SettingsStore {
     @computed
     get userFilterEnabled() {
         return this.settings.values[this.userFilterEnabledSettingId];
+    }
+
+    @action
+    setAllowlistSizeReset(value) {
+        this.allowlistSizeReset = value;
     }
 }
 

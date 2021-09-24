@@ -25,6 +25,7 @@ const Editor = ({
     onChange,
     fullscreen,
     highlightRules,
+    shouldResetSize,
 }) => {
     const [size, setSize] = useState(DEFAULT_EDITOR_SIZE);
 
@@ -42,6 +43,13 @@ const Editor = ({
             }
         }
     }, [setSize, SIZE_STORAGE_KEY]);
+
+    useEffect(() => {
+        if (shouldResetSize) {
+            localStorage.removeItem(SIZE_STORAGE_KEY);
+            setSize(DEFAULT_EDITOR_SIZE);
+        }
+    }, [shouldResetSize]);
 
     const editorStyles = {
         width: size.width,

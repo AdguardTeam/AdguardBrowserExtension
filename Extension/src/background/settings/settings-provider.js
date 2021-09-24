@@ -125,6 +125,7 @@ export const settingsProvider = (function () {
                 'stealth-hide-search-queries': settings.getHideSearchQueries(),
                 'stealth-send-do-not-track': settings.getSendDoNotTrack(),
                 'stealth-block-webrtc': settings.isWebRTCDisabled(),
+                'stealth-remove-x-client': settings.isRemoveXClientData(),
                 'stealth-block-third-party-cookies': settings.getSelfDestructThirdPartyCookies(),
                 'stealth-block-third-party-cookies-time': settings.getSelfDestructThirdPartyCookiesTime(),
                 'stealth-block-first-party-cookies': settings.getSelfDestructFirstPartyCookies(),
@@ -170,6 +171,8 @@ export const settingsProvider = (function () {
                 'show-context-menu': settings.showContextMenu(),
                 'show-info-about-adguard': settings.isShowInfoAboutAdguardFullVersion(),
                 'show-app-updated-info': settings.isShowAppUpdatedNotification(),
+                'hide-rate-adguard': settings.isHideRateBlock(),
+                'user-rules-editor-wrap': settings.isUserRulesEditorWrap(),
             },
         };
 
@@ -208,6 +211,8 @@ export const settingsProvider = (function () {
         settings.changeShowContextMenu(!!set['show-context-menu']);
         settings.changeShowInfoAboutAdguardFullVersion(!!set['show-info-about-adguard']);
         settings.changeShowAppUpdatedNotification(!!set['show-app-updated-info']);
+        settings.changeHideRateBlock(!!set['hide-rate-adguard']);
+        settings.changeUserRulesEditorWrap(!!set['user-rules-editor-wrap']);
     };
 
     /**
@@ -227,6 +232,7 @@ export const settingsProvider = (function () {
         settings.setHideSearchQueries(!!set['stealth-hide-search-queries']);
         settings.setSendDoNotTrack(!!set['stealth-send-do-not-track']);
         settings.setWebRTCDisabled(!!set['stealth-block-webrtc']);
+        settings.setRemoveXClientData(!!set['stealth-remove-x-client']);
         settings.setSelfDestructThirdPartyCookies(!!set['stealth-block-third-party-cookies']);
         settings.setSelfDestructThirdPartyCookiesTime(set['stealth-block-third-party-cookies-time']);
         settings.setSelfDestructFirstPartyCookies(!!set['stealth-block-first-party-cookies']);

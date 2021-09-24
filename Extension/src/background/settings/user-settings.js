@@ -69,6 +69,10 @@ export const settings = (() => {
         SELF_DESTRUCT_THIRD_PARTY_COOKIES_TIME: 'stealth-block-third-party-cookies-time',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES: 'stealth-block-first-party-cookies',
         SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME: 'stealth-block-first-party-cookies-time',
+
+        /* UI misc */
+        HIDE_RATE_BLOCK: 'hide-rate-block',
+        USER_RULES_EDITOR_WRAP: 'user-rules-editor-wrap',
     };
 
     const properties = Object.create(null);
@@ -104,6 +108,8 @@ export const settings = (() => {
                 defaults[settings.SELF_DESTRUCT_FIRST_PARTY_COOKIES_TIME] = DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN;
                 defaults[settings.APPEARANCE_THEME] = APPEARANCE_THEMES.SYSTEM;
                 defaults[settings.USER_FILTER_ENABLED] = true;
+                defaults[settings.HIDE_RATE_BLOCK] = false;
+                defaults[settings.USER_RULES_EDITOR_WRAP] = false;
                 return defaults;
             });
         },
@@ -203,8 +209,24 @@ export const settings = (() => {
         return !getProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION);
     };
 
+    const isHideRateBlock = function () {
+        return getProperty(settings.HIDE_RATE_BLOCK);
+    };
+
+    const isUserRulesEditorWrap = function () {
+        return getProperty(settings.USER_RULES_EDITOR_WRAP);
+    };
+
     const changeShowAppUpdatedNotification = function (show, options) {
         setProperty(settings.DISABLE_SHOW_APP_UPDATED_NOTIFICATION, !show, options);
+    };
+
+    const changeHideRateBlock = function (hide, options) {
+        setProperty(settings.HIDE_RATE_BLOCK, hide, options);
+    };
+
+    const changeUserRulesEditorWrap = function (enabled, options) {
+        setProperty(settings.USER_RULES_EDITOR_WRAP, enabled, options);
     };
 
     const changeEnableSafebrowsing = function (enabled, options) {
@@ -297,6 +319,7 @@ export const settings = (() => {
     const getHideSearchQueries = () => getProperty(settings.HIDE_SEARCH_QUERIES);
     const getSendDoNotTrack = () => getProperty(settings.SEND_DO_NOT_TRACK);
     const isWebRTCDisabled = () => getProperty(settings.BLOCK_WEBRTC);
+    const isRemoveXClientData = () => getProperty(settings.BLOCK_CHROME_CLIENT_DATA);
     const getAppearanceTheme = () => getProperty(settings.APPEARANCE_THEME);
 
     const setDisableStealthMode = (value) => {
@@ -325,6 +348,9 @@ export const settings = (() => {
     };
     const setWebRTCDisabled = (value) => {
         setProperty(settings.BLOCK_WEBRTC, value);
+    };
+    const setRemoveXClientData = (value) => {
+        setProperty(settings.BLOCK_CHROME_CLIENT_DATA, value);
     };
     const setAppearanceTheme = (theme) => {
         const isExistingTheme = Object.values(APPEARANCE_THEMES).some(t => t === theme);
@@ -361,7 +387,11 @@ export const settings = (() => {
     api.isShowInfoAboutAdguardFullVersion = isShowInfoAboutAdguardFullVersion;
     api.changeShowInfoAboutAdguardFullVersion = changeShowInfoAboutAdguardFullVersion;
     api.isShowAppUpdatedNotification = isShowAppUpdatedNotification;
+    api.isHideRateBlock = isHideRateBlock;
+    api.isUserRulesEditorWrap = isUserRulesEditorWrap;
     api.changeShowAppUpdatedNotification = changeShowAppUpdatedNotification;
+    api.changeHideRateBlock = changeHideRateBlock;
+    api.changeUserRulesEditorWrap = changeUserRulesEditorWrap;
     api.changeEnableSafebrowsing = changeEnableSafebrowsing;
     api.safebrowsingInfoEnabled = safebrowsingInfoEnabled;
     api.collectHitsCount = collectHitsCount;
@@ -389,6 +419,7 @@ export const settings = (() => {
     api.getHideSearchQueries = getHideSearchQueries;
     api.getSendDoNotTrack = getSendDoNotTrack;
     api.isWebRTCDisabled = isWebRTCDisabled;
+    api.isRemoveXClientData = isRemoveXClientData;
 
     api.setDisableStealthMode = setDisableStealthMode;
     api.setSelfDestructThirdPartyCookies = setSelfDestructThirdPartyCookies;
@@ -399,6 +430,7 @@ export const settings = (() => {
     api.setHideSearchQueries = setHideSearchQueries;
     api.setSendDoNotTrack = setSendDoNotTrack;
     api.setWebRTCDisabled = setWebRTCDisabled;
+    api.setRemoveXClientData = setRemoveXClientData;
 
     // Appearance mode methods
     api.setAppearanceTheme = setAppearanceTheme;

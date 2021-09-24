@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 
-import { userRulesEditorStore } from './UserRulesEditorStore';
+import { rootStore } from '../../../options/stores/RootStore';
 import { Popover } from '../ui/Popover';
 import { Icon } from '../ui/Icon';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -12,13 +12,13 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
  * to stop editor re-renderings on wrap mode changes
  */
 export const ToggleWrapButton = observer(({ onClick }) => {
-    const store = useContext(userRulesEditorStore);
+    const { settingsStore } = useContext(rootStore);
 
     const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
-        'actions__btn--active': store.userRulesEditorWrapState,
+        'actions__btn--active': settingsStore.userRulesEditorWrapState,
     });
 
-    const tooltipText = store.userRulesEditorWrapState
+    const tooltipText = settingsStore.userRulesEditorWrapState
         ? reactTranslator.getMessage('options_userfilter_line_break_on')
         : reactTranslator.getMessage('options_userfilter_line_break_off');
 
