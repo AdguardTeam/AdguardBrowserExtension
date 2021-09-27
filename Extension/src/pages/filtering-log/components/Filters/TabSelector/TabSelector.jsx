@@ -2,75 +2,164 @@
 eslint-disable jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-noninteractive-element-interactions
 */
-import React, { useContext, useEffect } from 'react';
+import React, {
+    useContext, useEffect, useState, useRef,
+} from 'react';
+import cn from 'classnames';
 import { observer } from 'mobx-react';
 
 import { rootStore } from '../../../stores/RootStore';
-import { Icon } from '../../../../common/components/ui/Icon';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
+import { useKeyDown } from '../../../../common/hooks/useKeyDown';
+import { WASTE_CHARACTERS } from '../../../../../common/constants';
+
+import { Search } from '../../Search';
 
 import './tab-selector.pcss';
 
 const TabSelector = observer(() => {
-    const { logStore } = useContext(rootStore);
+    const { logStore, wizardStore } = useContext(rootStore);
+    const refSelector = useRef(null);
+    const refResult = useRef(null);
+    const { tabs, selectedTabId, selectIsOpen } = logStore;
+
+    const [prevTabTitle, setPrevTabTitle] = useState('');
+    const [searchValue, setSearchValue] = useState('');
+    const [resultItems, setResultItems] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
+
+    const SELECTED_CLASS_NAME = 'selected';
 
     useEffect(() => {
-        logStore.setSelectIsOpenState(false);
+        if (refResult.current?.childNodes) {
+            setResultItems(Array.from(refResult.current.childNodes));
+        }
+    }, [searchValue]);
+
+    useEffect(() => {
+        if (resultItems) {
+            resultItems.forEach(
+                (el) => el.classList.remove(SELECTED_CLASS_NAME),
+            );
+
+            const currentEl = resultItems[currentStep];
+
+            currentEl?.classList.add(SELECTED_CLASS_NAME);
+            currentEl?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }, [currentStep, resultItems]);
+
+    useKeyDown(refResult, 'Enter', () => {
+        const targetElem = resultItems?.find(
+            (el) => el.classList.contains(SELECTED_CLASS_NAME),
+        );
+        if (targetElem) {
+            (async () => {
+                await selectionHandlerSearch(Number(targetElem.id));
+            })();
+            document.activeElement.blur();
+        }
     });
 
-    const { tabs, selectedTabId } = logStore;
+    useKeyDown(refResult, 'ArrowDown', () => {
+        const lastIndex = resultItems.length - 1;
+        const step = lastIndex > currentStep
+            ? currentStep + 1 : 0;
+        setCurrentStep(step);
+    });
 
-    const renderOptions = () => {
+    useKeyDown(refResult, 'ArrowUp', () => {
+        const lastIndex = resultItems.length - 1;
+        const step = currentStep > 0
+            ? currentStep - 1 : lastIndex;
+        setCurrentStep(step);
+    });
+
+    useOutsideClick(refSelector, () => {
+        if (
+            searchValue.length === 0
+            || !tabs.find((tab) => tab.title === searchValue)
+        ) {
+            setSearchValue(prevTabTitle);
+        }
+        logStore.setSelectIsOpenState(false);
+        setCurrentStep(0);
+    });
+
+    useEffect(() => {
+        const selectedTab = tabs.find((tab) => tab.tabId === selectedTabId);
+        const title = selectedTab?.title || '';
+        setPrevTabTitle(title);
+        if (!selectIsOpen) {
+            setSearchValue(title);
+        }
+    }, [selectedTabId, tabs, selectIsOpen]);
+
+    const selectionHandlerSearch = async (id) => {
+        logStore.setSelectIsOpenState(false);
+        setCurrentStep(0);
+        if (selectedTabId === id) {
+            setSearchValue(prevTabTitle);
+        }
+        await logStore.setSelectedTabId(id);
+    };
+
+    const renderSearchResult = () => {
+        const searchValueString = searchValue.replace(WASTE_CHARACTERS, '\\$&');
+        const searchQuery = new RegExp(searchValueString, 'ig');
         return tabs.map((tab) => {
             const { title, tabId } = tab;
-            return (
-                <option
-                    key={tabId}
-                    value={tabId}
-                >
-                    {title}
-                </option>
+
+            const itemClassName = cn(
+                'tab-selector__result-item',
+                { 'tab-selector__result-item--active': tabId === selectedTabId },
             );
+
+            if (title.match(searchQuery)) {
+                return (
+                    <button
+                        key={tabId}
+                        id={tabId}
+                        type="button"
+                        className={itemClassName}
+                        onClick={() => { selectionHandlerSearch(tabId); }}
+                    >
+                        {title}
+                    </button>
+                );
+            }
+
+            return null;
         });
     };
 
-    const selectionHandler = async (e) => {
-        e.preventDefault();
-        await logStore.setSelectedTabId(e.target.value);
+    const searchChangeHandler = (e) => {
+        setCurrentStep(0);
+        setSearchValue(e.currentTarget.value);
     };
 
-    const onFocus = () => {
+    const handleClear = () => {
+        setSearchValue('');
+        wizardStore.closeModal();
         logStore.setSelectIsOpenState(true);
-    };
-
-    const onClick = () => {
-        logStore.setSelectIsOpenState(true);
-    };
-
-    const onBlur = () => {
-        logStore.setSelectIsOpenState(false);
     };
 
     return (
-        <div className="tab-selector">
-            <div className="tab-selector__select">
-                <Icon id="#arrow-bottom" classname="tab-selector__select-ico" />
-                <label
-                    htmlFor="tab-selector"
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    onClick={onClick}
-                >
-                    <select
-                        className="tab-selector__select-in"
-                        name="tab-selector"
-                        id="tab-selector"
-                        onChange={selectionHandler}
-                        value={selectedTabId || ''}
-                    >
-                        {renderOptions()}
-                    </select>
-                </label>
-            </div>
+        <div id="tab-selector" className="tab-selector" ref={refSelector}>
+            <Search
+                select
+                changeHandler={searchChangeHandler}
+                value={searchValue}
+                placeholder={reactTranslator.getMessage('filtering_log_search_tabs_placeholder')}
+                handleClear={handleClear}
+                onFocus={handleClear}
+            />
+            {selectIsOpen && (
+                <div className="tab-selector__result" ref={refResult}>
+                    {renderSearchResult()}
+                </div>
+            )}
         </div>
     );
 });

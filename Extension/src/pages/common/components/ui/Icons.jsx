@@ -11,8 +11,9 @@ export const Icons = () => {
                 </g>
             </symbol>
 
-            <symbol id="cross" viewBox="0 0 15.642 15.642" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M8.882 7.821l6.541-6.541A.75.75 0 1 0 14.362.219L7.821 6.76 1.28.22A.75.75 0 1 0 .219 1.281L6.76 7.822l-6.54 6.54a.75.75 0 0 0 1.06 1.061l6.541-6.541 6.541 6.541a.75.75 0 1 0 1.06-1.061l-6.54-6.541z" fill="currentColor" />
+            <symbol id="cross" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.42857 6.42857L17.6043 17.6043" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M6.42871 17.5714L17.6045 6.39563" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </symbol>
 
             <symbol id="setting-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -124,11 +125,9 @@ export const Icons = () => {
                 </g>
             </symbol>
 
-            <symbol id="magnifying" viewBox="0 0 17 16">
-                <g fill="none" fillRule="evenodd" stroke="currentColor" transform="translate(1 1)">
-                    <circle cx="5.5" cy="5.5" r="5.5" />
-                    <path d="m10 10 5 5" strokeLinecap="round" />
-                </g>
+            <symbol id="magnifying" viewBox="0 0 24 24">
+                <circle cx="9.5" cy="9.5" r="5.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M14 14L19 19" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </symbol>
 
             <symbol id="tick" viewBox="0 0 512 512">

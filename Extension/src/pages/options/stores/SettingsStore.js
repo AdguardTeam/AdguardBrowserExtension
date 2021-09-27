@@ -5,7 +5,6 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-
 import { log } from '../../../common/log';
 import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../../common/components/Editor/savingFSM';
 import { sleep } from '../../helpers';
@@ -18,7 +17,7 @@ import {
     sortGroupsOnSearch,
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
-import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
+import { ANTIBANNER_GROUPS_ID, WASTE_CHARACTERS } from '../../../common/constants';
 
 const savingAllowlistService = createSavingService({
     id: 'allowlist',
@@ -513,7 +512,7 @@ class SettingsStore {
 
     @computed
     get filtersToRender() {
-        const searchInputString = this.searchInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const searchInputString = this.searchInput.replace(WASTE_CHARACTERS, '\\$&');
         const searchQuery = new RegExp(searchInputString, 'ig');
 
         let selectedFilters;
