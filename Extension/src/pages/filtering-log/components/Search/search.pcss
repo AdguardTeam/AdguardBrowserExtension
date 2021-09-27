@@ -1,7 +1,8 @@
-.events-search {
+.search {
     display: flex;
     align-items: center;
     position: relative;
+    z-index: 20;
     width: 100%;
 
     @media (max-width: 640px) {
@@ -14,6 +15,7 @@
         height: 32px;
         padding: 0 25px 0 34px;
         background-color: transparent;
+        text-overflow: ellipsis;
 
         @media (prefers-color-scheme: dark) {
             color: var(--gray300);
@@ -37,9 +39,8 @@
         background-color: transparent;
         cursor: pointer;
         position: absolute;
-        left: 0;
-        padding-left: 4px;
-        top: calc(50% - 9px);
+        left: -8px;
+        top: calc(50% - 13px);
 
         &:focus {
             outline: none;
@@ -47,8 +48,8 @@
     }
 
     &__cross {
-        width: 13px;
-        height: 13px;
+        width: 24px;
+        height: 24px;
         color: var(--gray700);
 
         @media (prefers-color-scheme: dark) {
@@ -57,17 +58,17 @@
     }
 
     &__ico {
-        width: 18px;
-        height: 18px;
+        width: 24px;
+        height: 24px;
         color: var(--gray700);
         position: absolute;
         left: 0;
-        top: calc(50% - 9px);
+        top: calc(50% - 12px);
     }
 }
 
 .light-mode {
-    .events-search {
+    .search {
         & input {
             color: var(--gray-base);
 
@@ -83,7 +84,7 @@
 }
 
 .dark-mode {
-    .events-search {
+    .search {
         & input {
             color: var(--gray300);
 
