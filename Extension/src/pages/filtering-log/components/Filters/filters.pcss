@@ -88,6 +88,12 @@
         display: flex;
         overflow-x: auto;
         padding: 0 0 16px 0;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         & .filters__arrow {
             @media (min-width: 1350px) {
