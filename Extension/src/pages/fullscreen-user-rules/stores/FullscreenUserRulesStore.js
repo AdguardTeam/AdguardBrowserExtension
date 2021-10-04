@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import {
+    action,
     computed,
     makeObservable,
     observable,
@@ -15,6 +16,7 @@ class FullscreenUserRulesStore {
         makeObservable(this);
     }
 
+    @action
     async getFullscreenUserRulesData() {
         const { settings } = await messenger.sendMessage(MESSAGE_TYPES.GET_USER_RULES_EDITOR_DATA);
         runInAction(() => {

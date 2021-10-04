@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import {
     action,
+    computed,
     observable,
     runInAction,
     makeObservable,
@@ -17,7 +18,11 @@ const savingService = createSavingService({
 });
 
 class UserRulesEditorStore {
+    @observable settings = null;
+
     @observable userRulesEditorContentChanged = false;
+
+    @observable userRulesEditorWrap = null;
 
     @observable savingUserRulesState = savingService.initialState.value;
 
@@ -39,6 +44,15 @@ class UserRulesEditorStore {
     }
 
     @action
+    async requestSettingsData() {
+        const data = await messenger.getOptionsData();
+
+        runInAction(() => {
+            this.settings = data.settings;
+        });
+    }
+
+    @action
     setUserRulesEditorContentChangedState = (state) => {
         this.userRulesEditorContentChanged = state;
     };
@@ -52,6 +66,41 @@ class UserRulesEditorStore {
     setUserRulesEditorPrefsDropped = (state) => {
         this.userRulesEditorPrefsDropped = state;
     };
+
+    @action
+    updateSetting(settingId, value) {
+        if (this.settings) {
+            this.settings.values[settingId] = value;
+        }
+
+        messenger.changeUserSetting(settingId, value);
+    }
+
+    @action
+    async toggleUserRulesEditorWrapMode() {
+        this.userRulesEditorWrap = !this.userRulesEditorWrap;
+        if (this.settings) {
+            await this.updateSetting(
+                this.settings.names.USER_RULES_EDITOR_WRAP, this.userRulesEditorWrap,
+            );
+        }
+    }
+
+    @action
+    setUserRulesEditorWrapMode(value) {
+        this.userRulesEditorWrap = value;
+    }
+
+    @computed
+    get userRulesEditorWrapState() {
+        if (this.settings) {
+            this.setUserRulesEditorWrapMode(
+                this.settings.values[this.settings.names.USER_RULES_EDITOR_WRAP],
+            );
+        }
+
+        return this.userRulesEditorWrap;
+    }
 
     // eslint-disable-next-line class-methods-use-this
     async saveUserRules(value) {
