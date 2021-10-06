@@ -1,8 +1,8 @@
-! Checksum: WEaW+oU7OSOT14FwTlOcbQ
+! Checksum: DuinwWogg9YxlADieYGWNQ
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.0.90
-! TimeUpdated: 2021-08-31T09:08:29+00:00
+! Version: 2.0.1.4
+! TimeUpdated: 2021-10-05T10:30:53+00:00
 ! Expires: 4 days (update frequency)
 $removeparam=cmpid
 $removeparam=asgtbndr
@@ -19,6 +19,7 @@ $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
 $removeparam=fbclid
+$removeparam=xtor
 $removeparam=utm_campaign
 $removeparam=utm_channel
 $removeparam=utm_cid
@@ -42,6 +43,8 @@ $removeparam=utm_product
 $removeparam=utm_campaignid
 $removeparam=utm_ad
 $removeparam=utm_brand
+$removeparam=utm_emcid
+$removeparam=utm_emmid
 $removeparam=gbraid
 $removeparam=wbraid
 $removeparam=gclsrc
@@ -72,6 +75,22 @@ $removeparam=mtm_source
 $removeparam=pk_campaign
 $removeparam=pk_medium
 $removeparam=pk_source
+||coupondunia.in^$removeparam=itm_source
+||adshares.net^$removeparam=cid
+||get.adobe.com^$removeparam=browser_type
+||get.adobe.com^$removeparam=browser_dist
+||get.adobe.com^$removeparam=type
+||get.adobe.com^$removeparam=workflow
+||get.adobe.com^$removeparam=promoid
+||get.adobe.com^$removeparam=TRILIBIS_EMULATOR_UA
+||ups.xplosion.de/ctx?event_id=$removeparam
+||app.5-delivery.ru^$removeparam=c
+||app.5-delivery.ru^$removeparam=pid
+||voyeur-house.tv^$removeparam=clickid
+||cht.com.tw^$removeparam=Source
+||cht.com.tw^$removeparam=Identifier
+||aufast.co^$removeparam=/^utm_/
+||aufast.co^$removeparam=clickid
 ||iqbroker.com^$removeparam=afftrack
 ||iqbroker.com^$removeparam=clickid
 ||iqbroker.com^$removeparam=aff_model
@@ -113,6 +132,7 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||cod.bitrec.com/topocentras-services/js/recs?$removeparam=externalVisitorId
 ||cod.bitrec.com/topocentras-services/js/recs?$removeparam=r
 ||play.google.*^$removeparam=referrer
+||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
 ||google.*/search$removeparam=dpr
@@ -127,43 +147,43 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
-||www.amazon.*$removeparam=tag
-||www.amazon.*$removeparam=creative
-||www.amazon.*$removeparam=creativeASIN
-||www.amazon.*$removeparam=camp
-||www.amazon.*$removeparam=ascsubtag
-||www.amazon.*$removeparam=ref
-||www.amazon.*$removeparam=vt
-||www.amazon.*$removeparam=refRID
-||www.amazon.*$removeparam=pd_rd_i
-||www.amazon.*$removeparam=pd_rd_r
-||www.amazon.*$removeparam=pd_rd_wg
-||www.amazon.*$removeparam=pd_rd_w
-||www.amazon.*$removeparam=pf_rd_i
-||www.amazon.*$removeparam=pf_rd_m
-||www.amazon.*$removeparam=pf_rd_p
-||www.amazon.*$removeparam=pf_rd_r
-||www.amazon.*$removeparam=pf_rd_s
-||www.amazon.*$removeparam=pf_rd_t
-||www.amazon.*$removeparam=pf_rd_w
-||www.amazon.*$removeparam=initialIssue
-||www.amazon.*$removeparam=smid
-||www.amazon.*$removeparam=plattr
-||www.amazon.*$removeparam=field-lbr_brands_browse-bin
-||www.amazon.*$removeparam=ingress
-||www.amazon.*$removeparam=visitId
-||www.amazon.*$removeparam=rdc
-||www.amazon.*$removeparam=qid
-||www.amazon.*$removeparam=dchild
-||www.amazon.*$removeparam=c
-||www.amazon.*$removeparam=ts_id
-||www.amazon.*/dp/$removeparam=tag
-||www.amazon.*/aa$removeparam=bitCampaignCode
-||www.amazon.*/hz/contact-us/csp$removeparam=/entries/
-||www.amazon.*/hz/contact-us/csp$removeparam=/Version/
-||www.amazon.*/hz/contact-us/csp$removeparam=source
-||www.amazon.*/hz/contact-us/csp$removeparam=from
-||www.amazon.*/message-us$removeparam=muClientName
+||amazon.*$removeparam=tag
+||amazon.*$removeparam=creative
+||amazon.*$removeparam=creativeASIN
+||amazon.*$removeparam=camp
+||amazon.*$removeparam=ascsubtag
+||amazon.*$removeparam=ref
+||amazon.*$removeparam=vt
+||amazon.*$removeparam=refRID
+||amazon.*$removeparam=pd_rd_i
+||amazon.*$removeparam=pd_rd_r
+||amazon.*$removeparam=pd_rd_wg
+||amazon.*$removeparam=pd_rd_w
+||amazon.*$removeparam=pf_rd_i
+||amazon.*$removeparam=pf_rd_m
+||amazon.*$removeparam=pf_rd_p
+||amazon.*$removeparam=pf_rd_r
+||amazon.*$removeparam=pf_rd_s
+||amazon.*$removeparam=pf_rd_t
+||amazon.*$removeparam=pf_rd_w
+||amazon.*$removeparam=initialIssue
+||amazon.*$removeparam=smid
+||amazon.*$removeparam=plattr
+||amazon.*$removeparam=field-lbr_brands_browse-bin
+||amazon.*$removeparam=ingress
+||amazon.*$removeparam=visitId
+||amazon.*$removeparam=rdc
+||amazon.*$removeparam=qid
+||amazon.*$removeparam=dchild
+||amazon.*$removeparam=c
+||amazon.*$removeparam=ts_id
+||amazon.*/dp/$removeparam=tag
+||amazon.*/aa$removeparam=bitCampaignCode
+||amazon.*/hz/contact-us/csp$removeparam=/entries/
+||amazon.*/hz/contact-us/csp$removeparam=/Version/
+||amazon.*/hz/contact-us/csp$removeparam=source
+||amazon.*/hz/contact-us/csp$removeparam=from
+||amazon.*/message-us$removeparam=muClientName
 ||app.mi.com/download/*?id=$removeparam=ref
 ||app.mi.com/download/*?id=$removeparam=nonce
 ||app.mi.com/download/*?id=$removeparam=appClientId
@@ -197,6 +217,8 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 $removeparam=dclid
 ||trendyol.com^$removeparam=_ga
 ||trendyol.com^$removeparam=utm_subaff
+||kaspersky.com^$removeparam=icid
+||coursera.org^$removeparam=siteID
 ||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
 ||adguard.com^$removeparam=aid

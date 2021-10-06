@@ -1,8 +1,8 @@
-! Checksum: hfTJZJNYclyoLbUpoEFJ8g
+! Checksum: DOgaeErIMS2DFpFuatBDnQ
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.45
-! TimeUpdated: 2021-08-30T11:30:22+00:00
+! Version: 2.0.1.47
+! TimeUpdated: 2021-10-01T10:30:21+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -143,6 +143,7 @@ google.*#@?##views > div > div[class][decode-data-ved="1"] > div[class]:has(> di
 google.*#@?#.sh-sr__blk > #sh-sr__results + div:has(> div > div > div > div > div[class][jscontroller] > div[class^=" _-"])
 google.*#@?#div[jscontroller][jsaction] > div[jsname][jscontroller][data-record-click-time]:has(> div[jsname] > div[class] > a[jsname] > div[class] > span.rllt__details > div > span[class]:contains(Ad))
 @@://www.google.*/aclk$urlblock
+google.*#@##search div[jscontroller][jsaction] > div[class] > div[jscontroller] div[jscontroller] > div[jscontroller] > div[jsname][jscontroller][jsaction][data-record-click-time][class]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/50294
 ! https://github.com/AdguardTeam/AdguardFilters/issues/37505
 ! Korean
@@ -221,6 +222,7 @@ amazon.de#@#span[class*="widget=loom-desktop-inline-slot"]
 amazon.de#@?#div[data-asin]:has(> div.sg-col-inner > span[class*="widget=loom-desktop-inline-slot"])
 amazon.de#@#.sbx-mobile
 amazon.*#@#span[class*="top-slot_hsa-id"]
+amazon.*#@##sims-mobile-consolidated-3
 !
 ! Mediafire premium upgrade
 mediafire.com#@##upsellBox

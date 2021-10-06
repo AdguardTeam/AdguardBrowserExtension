@@ -1,8 +1,8 @@
-! Checksum: Hz9R392HJ37r+kVbeTAaNQ
+! Checksum: M5B/jxQEt6jnElM/m1FwwQ
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.10.81
-! TimeUpdated: 2021-09-02T16:36:48+00:00
+! Version: 2.0.11.13
+! TimeUpdated: 2021-10-04T13:32:01+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -15,6 +15,9 @@
 #%#var AG_abortOnPropertyRead=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeGet:function(){b&&console.warn("AdGuard aborted property read: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
 #%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
 #%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
+||cameracaseira.com^$third-party
+||bloco.top^$third-party
+||fireadsone.com^$third-party
 ||xwktyiydn.com^
 ||pwjwgrtznpl.com^
 ||embedplayerbooyah.com^$third-party
@@ -38,7 +41,6 @@
 ||loboclick.com^$third-party
 ||zendplace.pro^$third-party
 ||bserver.gp-guia.net^
-||tags.orquideassp.com^$third-party
 ||widgets.informars.com^
 ||richaudience.com^$third-party
 ||potu.xyz^
@@ -204,6 +206,11 @@
 ||zebestof.com^$third-party
 tunovelaligera.com#%#//scriptlet("abort-on-property-write", "adregain_wall")
 tunovelaligera.com#%#//scriptlet("abort-on-property-read", "ad_nodes")
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=netmovies.com.br
+netmovies.com.br#%#//scriptlet('prevent-fetch', '/adsbygoogle.js')
+@@||dxmlinks.site^$generichide
+dxmlinks.site#%#(function(){if(-1<window.location.href.indexOf("/s.php?i="))try{for(var a=location.href.split("/s.php?i=")[1],c=0;10>c;c++){a=atob(a);try{new URL(a);var d=!0}catch(b){d=!1}if(d)try{a=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});a=decodeURIComponent(a);window.location=a;break}catch(b){}}}catch(b){}})();
+vivoplay.sigue.la#@#.adsBox
 @@||tpc.googlesyndication.com/safeframe/*/html/container.html$domain=muyhistoria.es|marie-claire.es|miarevista.es|muynegociosyeconomia.es|muyinteresante.es
 eletronicabr.com#%#//scriptlet("prevent-setTimeout", "test.offsetHeight")
 @@||tpc.googlesyndication.com/safeframe/*/html/container.html$domain=serpadres.es
@@ -641,6 +648,9 @@ peru21.pe#@#.adstop
 @@||autonocion.com/js/advertisement.js
 @@||subedlc.com^$elemhide
 yahoo.com#?#ul[class^="Mb(0)"] > li.js-stream-content:has(> div > a[rel="nofollow noopener noreferrer"]+div:contains(Patrocinado))
+anitube.cx#?#.well.z-body > .ad-title:upward(1)
+telesintese.com.br#?#.theiaStickySidebar > div.widget_text:has(script[src^="https://mkt.momentoeditorial.com.br/revive/www/delivery/ajs.php?zoneid="])
+telesintese.com.br#?#.theiaStickySidebar > div.widget_text:has(script[src^="https://pagead2.googlesyndication.com/"])
 naointendo.com.br#?#.sidebar > .sidebar-item[style] > iframe[src^="https://assets.naointendo.com.br/banners/"]:upward(1)
 homepedia.com.br#$?#.slick-track > .slick-slide > a[href*="?utm_campaign=homepedia:banner"]:upward(1) { remove: true; }
 porno-japones.top#?#.row > div.order-1:has(> div.video-block-happy)
@@ -817,6 +827,7 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 ##.standard-ad
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
+muyzorras.com#%#//scriptlet("prevent-window-open")
 topflix.vc#%#//scriptlet("adjust-setInterval", "adsHandle_noclick", "", "0.02")
 app.prende.tv#%#//scriptlet("json-prune", "ads breaks cuepoints times", "ads")
 maxitorrent.com#%#//scriptlet("prevent-window-open", "1", "?sid=")
@@ -927,6 +938,8 @@ newpct1.com#%#window.open = function() {};
 newpct1.com#%#window.atob = function() { };
 bludv.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 repelis.net#%#Object.defineProperty(window,'adbClick',{value:function(){}});
+hardware.com.br#$#.is_advertising .site-advertising { margin: 5px auto 0 !important; }
+hardware.com.br#$#.hd-ad--background { display: none !important; }
 gamevicio.com#$#.hasBgApb { margin-top: 0 !important; }
 infobae.com#$#.content_section > .top { margin-top: 100px !important; }
 flashreceitas.com,tudoemprego.online,blogdatecnologia.net,diariodecasamento.com,eusaudavel.net,modaestiloeafins.com,portalmundocurioso.com,turismoeviagem.com,receitasabores.com#$##framed > #player { display: block !important; }
@@ -1065,6 +1078,42 @@ _publicitario.
 http://adw.
 /lJuB4eTB/init.js
 /^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispop.com|superflix.net
+gazetadopovo.com.br##.ads-fixed
+estadao.com.br##.ajuste-banner
+em.com.br##.ads-ancorads
+sonovinhasbr.com##.lateral > aside[id^="custom_html-"]
+seudinheiro.com##.single__footer-banner
+seudinheiro.com##.banner-inArticle
+seudinheiro.com##.cotbar__ad
+novinhasdozapzap.com##p > a[target="_blank"] > img:not([height^="6"])
+||naoconto.com/wp-content/uploads/2021/09/CameraHot-
+naoconto.com##img[width="300"][height="250"]
+areah.com.br##div[class^="banner_footer"]
+areah.com.br##div[id^="div-ad-"]
+videosdesuavizinha.com##aside >div[id^="custom_html-"]
+gamezfull.com##center > a[target="_blank"][href^="http"]:not([href^="https://www.gamezfull.com/"])
+blizzboygames.net##div[class*="vc_btn3"] > a[href^="https://bit.ly/"][target="_blank"]
+mulheresafoder.com###aumento
+mulheresafoder.com###sexdate
+discoverybrasil.com##.ads-light
+quizcovery.com.br##.adunitContainer
+idescargar.com##div[class^="banner-descarga"]
+||muacknet.ipower.com/blanco.php
+gazetadopovo.com.br,umdoisesportes.com.br##.banner-topo
+semprefamilia.com.br##.box-ads-header-home
+semprefamilia.com.br##.banner-flying
+ahount.com##.site-content > div[style="height:300px"]
+||ledgerwallet.com/affiliate/
+ahount.com##.inside-right-sidebar > aside[id^="custom_html-"]
+elpais.com###paywallOfferSmall
+elpais.com###cta-button-container
+bracontece.com.br##.testad
+comidinhasdochef.com##.wrap-banner
+comidinhasdochef.com###sidebar > div[id^="text-"]
+heraldo.es###top_ads_container
+worlwidestream.net##[id^="player"] ~ div[onclick*="remove"]
+sportsonline.to,sportzonline.co###html1
+vivoplay.sigue.la##div[class*="faux"]:not(.fauxborder-left):not(.fauxcolumns)
 calcular.onlinegratis.tv##td[class="style6"][style="height: 53px"]
 lawebdelprogramador.com##.publi_sky
 naointendo.com.br##.Ad
@@ -1142,7 +1191,6 @@ mundoeducacao.uol.com.br##div[style="height:250px; width:300px;"]
 mundoeducacao.uol.com.br##.entry > div[style^="display: flex; align-items: center; justify-content: center;"]
 mundoeducacao.uol.com.br##div[id^="area_flutuante_"]
 brasilescola.uol.com.br##.br-grid-1-publicidade
-hardware.com.br##.hd-ad--background
 natelinha.uol.com.br##[id^="banner"]
 natelinha.uol.com.br##.arroba-texto
 natelinha.uol.com.br##.publicidade-label
@@ -1181,7 +1229,7 @@ lapoliticaonline.com.ar###header-banner-wrapper
 onepieceex.net##.banner-resposivo
 tecmundo.com.br##p > a[href^="https://bit.ly/"][target="_blank"] > span > img
 ||img.ibxk.com.br/*/banner-*.png$domain=tecmundo.com.br
-vozpopuli.com##.ad-container
+larepublica.pe,vozpopuli.com##.ad-container
 vozpopuli.com##.home_1_ad
 infobae.com##.navbar-ad-container
 conhecimentolivre.net##.inside-right-sidebar > #custom_html-2
@@ -2263,7 +2311,7 @@ ipcdigital.com###banner_dir_cima
 newpct.com###banner_header
 gizmodo.com.br###banner_meio
 meneame.net###banner_right
-canal13.cl,plus.es###banner_top
+areah.com.br,canal13.cl,plus.es###banner_top
 aquiacontece.com.br###banner_topo
 clb1.com###bannerbox
 diariolibre.com###bannermiddle728x90
@@ -3229,6 +3277,7 @@ uol.com.br##ul.produtos
 ||uol.com.br/upload/banner/
 ||uol.com.br/*/banners/
 ||uol.com.br/*/sortear_
+||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=jn.pt
 @@||jangboja.godohosting.com/shop/external/fix/IMG_BANNER/
 @@||imasdk.googleapis.com/js/sdkloader/ima3_dai.js$domain=app.prende.tv
 @@||pubads.g.doubleclick.net/ssai/event/*/streams$domain=app.prende.tv
