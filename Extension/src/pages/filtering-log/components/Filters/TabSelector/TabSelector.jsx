@@ -22,6 +22,7 @@ const TabSelector = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
     const refSelector = useRef(null);
     const refResult = useRef(null);
+    const searchInputRef = useRef(null);
     const { tabs, selectedTabId, selectIsOpen } = logStore;
 
     const [prevTabTitle, setPrevTabTitle] = useState('');
@@ -50,6 +51,27 @@ const TabSelector = observer(() => {
         }
     }, [currentStep, resultItems]);
 
+    const cancelTabSearch = () => {
+        if (!tabs.find((tab) => tab.title === searchValue)) {
+            setSearchValue(prevTabTitle);
+        }
+        logStore.setSelectIsOpenState(false);
+        setCurrentStep(0);
+    };
+
+    const quitTabSearch = () => {
+        cancelTabSearch();
+        document.activeElement.blur();
+    };
+
+    useKeyDown(refResult, 'Escape', () => {
+        if (searchValue.length === 0) {
+            quitTabSearch();
+        } else {
+            setSearchValue('');
+        }
+    });
+
     useKeyDown(refResult, 'Enter', () => {
         const targetElem = resultItems?.find(
             (el) => el.classList.contains(SELECTED_CLASS_NAME),
@@ -76,16 +98,7 @@ const TabSelector = observer(() => {
         setCurrentStep(step);
     });
 
-    useOutsideClick(refSelector, () => {
-        if (
-            searchValue.length === 0
-            || !tabs.find((tab) => tab.title === searchValue)
-        ) {
-            setSearchValue(prevTabTitle);
-        }
-        logStore.setSelectIsOpenState(false);
-        setCurrentStep(0);
-    });
+    useOutsideClick(refSelector, cancelTabSearch);
 
     useEffect(() => {
         const selectedTab = tabs.find((tab) => tab.tabId === selectedTabId);
@@ -145,16 +158,32 @@ const TabSelector = observer(() => {
         logStore.setSelectIsOpenState(true);
     };
 
+    const onTabSelectorFocus = () => {
+        if (selectIsOpen) {
+            quitTabSearch();
+        } else {
+            searchInputRef.current.focus();
+        }
+    };
+
     return (
-        <div id="tab-selector" className="tab-selector" ref={refSelector}>
-            <Search
-                select
-                changeHandler={searchChangeHandler}
-                value={searchValue}
-                placeholder={reactTranslator.getMessage('filtering_log_search_tabs_placeholder')}
-                handleClear={handleClear}
-                onFocus={handleClear}
-            />
+        <div
+            id="tab-selector"
+            className="tab-selector"
+            ref={refSelector}
+        >
+            <div onFocus={onTabSelectorFocus}>
+                <Search
+                    select
+                    ref={searchInputRef}
+                    changeHandler={searchChangeHandler}
+                    value={searchValue}
+                    placeholder={reactTranslator.getMessage('filtering_log_search_tabs_placeholder')}
+                    handleClear={handleClear}
+                    onFocus={handleClear}
+                    onOpenSelect={selectIsOpen}
+                />
+            </div>
             {selectIsOpen && (
                 <div className="tab-selector__result" ref={refResult}>
                     {renderSearchResult()}

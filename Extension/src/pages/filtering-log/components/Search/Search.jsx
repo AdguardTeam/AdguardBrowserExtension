@@ -1,12 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, forwardRef } from 'react';
+import cn from 'classnames';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './search.pcss';
 
-const Search = ({
-    changeHandler, handleClear, onFocus, value, placeholder, select,
-}) => {
-    const searchInputRef = useRef();
+const Search = forwardRef(({
+    changeHandler, handleClear, onFocus, value, placeholder, select, onOpenSelect,
+}, passedRef) => {
+    const localSearchInputRef = useRef(null);
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -17,7 +18,7 @@ const Search = ({
     };
 
     const onClear = () => {
-        searchInputRef.current.focus();
+        localSearchInputRef.current.focus();
         if (handleClear) {
             handleClear();
         }
@@ -36,7 +37,24 @@ const Search = ({
             );
         }
 
-        return <Icon id={select ? '#arrow-bottom' : '#magnifying'} classname="search__ico" />;
+        if (select) {
+            return (
+                <button
+                    type="button"
+                    className="search__btn"
+                >
+                    <Icon
+                        id="#arrow-bottom"
+                        classname={cn(
+                            'search__ico',
+                            onOpenSelect ? 'search__arrow-up' : 'search__arrow-down',
+                        )}
+                    />
+                </button>
+            );
+        }
+
+        return <Icon id="#magnifying" classname="search__ico" />;
     };
 
     return (
@@ -50,7 +68,7 @@ const Search = ({
                 id="log-search"
                 name="log-search"
                 placeholder={placeholder}
-                ref={searchInputRef}
+                ref={passedRef || localSearchInputRef}
                 onChange={onChange}
                 onFocus={onFocus}
                 value={value}
@@ -58,6 +76,6 @@ const Search = ({
             />
         </form>
     );
-};
+});
 
 export { Search };
