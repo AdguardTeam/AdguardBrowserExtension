@@ -176,3 +176,6 @@ export const CUSTOM_FILTERS_START_ID = 1000;
 
 // Unnecessary characters that will be replaced
 export const WASTE_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
+
+// Custom scrollbar width
+export const SCROLLBAR_WIDTH = 12;
