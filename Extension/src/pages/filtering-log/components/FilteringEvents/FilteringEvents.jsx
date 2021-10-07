@@ -18,7 +18,7 @@ import throttle from 'lodash/throttle';
 import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { ANTIBANNER_FILTERS_ID } from '../../../../common/constants';
+import { ANTIBANNER_FILTERS_ID, SCROLLBAR_WIDTH } from '../../../../common/constants';
 import { FilteringEventsEmpty } from './FilteringEventsEmpty';
 import { optionsStorage } from '../../../options/options-storage';
 import { passiveEventSupported } from '../../../helpers';
@@ -409,7 +409,7 @@ const FilteringEvents = observer(() => {
     };
 
     const minTableWidth = Object.values(columnsRenderData)
-        .reduce((acc, { width }) => acc + width, 0);
+        .reduce((acc, { width }) => acc + width + SCROLLBAR_WIDTH, 0);
 
     const columns = addMethods(columnsData);
 
