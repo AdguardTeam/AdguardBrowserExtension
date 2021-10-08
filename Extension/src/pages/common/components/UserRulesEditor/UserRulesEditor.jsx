@@ -173,7 +173,10 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             // convert rules before merging. AG-9862
             const newRules = await messenger.convertRuleText(rawNewRules);
             const oldRules = editorRef.current.editor.getValue();
-            const unionRules = `${oldRules}\n${newRules}`.split('\n');
+            // get rid of empty line after import into empty editor. AG-10493
+            const unionRules = oldRules === ''
+                ? `${newRules}`.split('\n')
+                : `${oldRules}\n${newRules}`.split('\n');
             const uniqRules = Array.from(new Set(unionRules)).join('\n');
             editorRef.current.editor.setValue(uniqRules, 1);
             await store.saveUserRules(uniqRules);
