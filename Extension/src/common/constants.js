@@ -161,6 +161,11 @@ export const NAVIGATION_TAGS = {
 };
 
 /**
+ * Trusted tag for custom filters
+ */
+export const TRUSTED_TAG = 'trusted';
+
+/**
  * Custom filters group display number
  *
  * @type {number}

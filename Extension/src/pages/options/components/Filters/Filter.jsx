@@ -14,6 +14,7 @@ import { Icon } from '../../../common/components/ui/Icon';
 import { HighlightSearch } from './Search/HighlightSearch';
 import { FilterTags } from './FilterTags';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
+import { TRUSTED_TAG } from '../../../../common/constants';
 
 import './filter.pcss';
 
@@ -70,8 +71,8 @@ const Filter = observer(({ filter }) => {
     // Trusted tag can be only on custom filters,
     const tags = trusted
         ? [...tagsDetails, {
-            tagId: 'trusted',
-            keyword: 'trusted',
+            tagId: TRUSTED_TAG,
+            keyword: TRUSTED_TAG,
             description: reactTranslator.getMessage('options_filters_filter_trusted_tag_desc'),
         }]
         : [...tagsDetails];
