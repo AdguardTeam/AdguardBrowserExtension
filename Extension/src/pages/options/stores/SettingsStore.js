@@ -17,7 +17,7 @@ import {
     sortGroupsOnSearch,
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
-import { ANTIBANNER_GROUPS_ID, WASTE_CHARACTERS } from '../../../common/constants';
+import { ANTIBANNER_GROUPS_ID, TRUSTED_TAG, WASTE_CHARACTERS } from '../../../common/constants';
 
 const savingAllowlistService = createSavingService({
     id: 'allowlist',
@@ -538,6 +538,14 @@ class SettingsStore {
                 if (filter.tagsDetails) {
                     const tagKeywordIsMatching = filter.tagsDetails.some((tag) => `#${tag.keyword}`.match(searchQuery));
                     if (tagKeywordIsMatching) {
+                        return true;
+                    }
+                }
+
+                // AG-10491
+                if (filter.trusted && filter.trusted === true) {
+                    const trustedTagMatching = `#${TRUSTED_TAG}`.match(searchQuery);
+                    if (trustedTagMatching) {
                         return true;
                     }
                 }
