@@ -6,6 +6,7 @@ const SettingsSection = (props) => {
         title,
         description,
         renderBackButton,
+        id,
         inlineControl,
         children,
         disabled,
@@ -19,6 +20,7 @@ const SettingsSection = (props) => {
     const titleContainerClass = classNames('title__container', {
         'title__container--small': renderBackButton || mode === 'smallContainer',
         'title__container--sub': mode === 'subTitle',
+        'title__container--control': id,
     });
 
     const titleClass = classNames('title', {
@@ -28,12 +30,18 @@ const SettingsSection = (props) => {
 
     return (
         <div className={settingGroupClassName} key={title}>
-            <div className={titleContainerClass}>
-                {renderBackButton?.()}
-                <div className="title__inner">
-                    {title && <h2 className={titleClass}>{title}</h2>}
-                    {description && <div className="title__desc">{description}</div>}
-                </div>
+            <label
+                className={titleContainerClass}
+                htmlFor={id}
+            >
+                {renderBackButton
+                    ? renderBackButton()
+                    : (
+                        <div className="title__inner">
+                            {title && <h2 className={titleClass}>{title}</h2>}
+                            {description && <div className="title__desc">{description}</div>}
+                        </div>
+                    )}
                 {inlineControl
                 && (
                     <div
@@ -42,7 +50,7 @@ const SettingsSection = (props) => {
                         {inlineControl}
                     </div>
                 )}
-            </div>
+            </label>
             <div>
                 {children}
             </div>

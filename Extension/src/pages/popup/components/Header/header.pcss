@@ -20,11 +20,19 @@
 
     &__button {
         padding: 0 8px;
-        opacity: 0.5;
-        transition: var(--t3) opacity;
+        color: var(--gray400);
+        transition: var(--t3) color;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray700);
+        }
 
         &:hover {
-            opacity: 1;
+            color: var(--gray700);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--gray400);
+            }
         }
     }
 }
@@ -32,11 +40,27 @@
 .light-mode {
     .popup-header {
         background-color: var(--white);
+
+        &__button {
+            color: var(--gray400);
+
+            &:hover {
+                color: var(--gray700);
+            }
+        }
     }
 }
 
 .dark-mode {
     .popup-header {
         background-color: var(--black);
+
+        &__button {
+            color: var(--gray700);
+
+            &:hover {
+                color: var(--gray400);
+            }
+        }
     }
 }

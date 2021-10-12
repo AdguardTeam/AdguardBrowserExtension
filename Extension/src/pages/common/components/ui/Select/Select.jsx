@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import { useSelect } from './SelectProvider';
@@ -37,6 +37,12 @@ export const Select = ({
             </button>
         );
     });
+
+    useEffect(() => {
+        return () => {
+            setHidden(true);
+        };
+    }, [setHidden]);
 
     useOutsideClick(ref, () => {
         setHidden(true);

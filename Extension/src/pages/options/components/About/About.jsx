@@ -28,7 +28,7 @@ const About = observer(() => {
 
     return (
         <>
-            <div className="title__container">
+            <div className="title__container title__container--about">
                 <h2 className="title">
                     {reactTranslator.getMessage('options_about')}
                 </h2>

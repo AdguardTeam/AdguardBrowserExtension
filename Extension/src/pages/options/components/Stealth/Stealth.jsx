@@ -61,6 +61,7 @@ const Stealth = observer(() => {
                 title={reactTranslator.getMessage('options_privacy_title')}
                 description={reactTranslator.getMessage('options_privacy_desc')}
                 mode="smallContainer"
+                id={DISABLE_STEALTH_MODE}
                 inlineControl={(
                     <Setting
                         id={DISABLE_STEALTH_MODE}
