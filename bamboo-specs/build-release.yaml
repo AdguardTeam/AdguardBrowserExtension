@@ -37,7 +37,7 @@ Build:
             set -e
             ls -la
 
-            yarn install ${system.YARN_ARGS}
+            yarn install ${bamboo.varsYarn}
             yarn locales:validate --min
             CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn release
     - inject-variables:
