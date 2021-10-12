@@ -289,6 +289,21 @@
         appendPopup(0);
     }
 
+    // FIXME remove
+    if (document.location.href.includes('example.org')) {
+        showVersionUpdatedPopup({
+            changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
+            changelogText: "What's new in this version?",
+            description: 'This version contains mostly bugfixes and minor improvements.',
+            disableNotificationText: 'Disable notifications',
+            offer: 'Create your own monster',
+            offerButtonHref: 'https://adguard.com/promo/halloween2021.html&from=version_popup',
+            offerButtonText: "It's alive!",
+            showPromoNotification: true,
+            title: 'AdGuard extension has been updated to version 3.6.14',
+            type: 'show-version-updated-popup',
+        });
+    }
     /**
      * Reload page without cache
      */

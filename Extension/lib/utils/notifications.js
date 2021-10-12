@@ -1,3 +1,5 @@
+// FIXME remove rule bellow
+/* eslint-disable no-unused-vars */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -25,56 +27,66 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const school2021Notification = {
-        id: 'school2021',
+    const halloween2021Notification = {
+        id: 'halloween2021',
         locales: {
             en: {
-                title: 'Back to school\nQUIZ',
-                btn: 'Let\'s go!',
+                title: 'Create your own monster',
+                btn: 'It\'s alive!',
             },
             ru: {
-                title: 'Проверь свои знания',
-                btn: 'Пройти тест',
+                title: 'Собери своего монстра',
+                btn: 'Поехали!',
             },
             ja: {
-                title: 'BACK TO SCHOOL クイズ',
-                btn: '答えてみる',
+                title: 'テストで自分のサイバーモンスターがわかる',
+                btn: '受けてみる',
             },
             ko: {
-                title: '백 투 스쿨\n게임',
-                btn: '시작',
+                title: '나만의 몬스터를 만들어 볼까요?',
+                btn: '게임시작',
             },
             zh_cn: {
-                title: '返校\n问答竞赛',
-                btn: '开始吧！',
+                title: '想要有自己的小鬼？',
+                btn: '快来体验',
             },
             zh_tw: {
-                title: '返校\n問答競賽',
-                btn: '開始吧！',
+                title: '創建自己的小鬼',
+                btn: '快來體驗',
             },
             fr: {
-                title: 'PASSEZ LE TEST ADGUARD',
-                btn: 'En avant !',
+                title: 'Inventons un nouveau monstre !',
+                btn: 'Jouer',
+            },
+            it: {
+                title: 'Immaginiamo un nuovo mostro!',
+                btn: 'Giocare',
             },
             es: {
-                title: 'VUELTA AL COLE QUIZ',
-                btn: '¡Vamos!',
+                title: 'Crea tu propio monstruo',
+                btn: 'Jugar',
             },
         },
+        // will be selected for locale, see usage of getNotificationText
         text: '',
-        url: 'https://adguard.com/forward.html?action=school21&app=browser_extension',
-        from: '31 August 2021 12:00:00',
-        to: '05 September 2021 23:59:00',
+        // FIXME add url to tds
+        url: 'https://adguard.com/promo/halloween2021.html',
+        // FIXME remove line bellow
+        from: '12 October 2021 12:00:00',
+        // FIXME uncomment line bellow
+        // from: '25 October 2021 12:00:00',
+        // FIXME find out when promo ends
+        to: '31 October 2021 23:59:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(school2021Notification, 'icons', () => ({
+            return adguard.lazyGet(halloween2021Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/school-enabled-19.png'),
-                    '38': adguard.getURL('icons/school-enabled-38.png'),
+                    '19': adguard.getURL('icons/halloween-enabled-19.png'),
+                    '38': adguard.getURL('icons/halloween-enabled-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/school-disabled-19.png'),
-                    '38': adguard.getURL('icons/school-disabled-38.png'),
+                    '19': adguard.getURL('icons/halloween-disabled-19.png'),
+                    '38': adguard.getURL('icons/halloween-disabled-38.png'),
                 },
             }));
         },
@@ -96,7 +108,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        school2021: school2021Notification,
+        halloween2021: halloween2021Notification,
     };
 
     /**
@@ -191,7 +203,8 @@ adguard.notifications = (function (adguard) {
             const { id } = currentNotification;
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
-                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                // FIXME uncomment
+                // adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
                 adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
                 currentNotification = null;
             }
@@ -210,19 +223,20 @@ adguard.notifications = (function (adguard) {
         }
 
         const currentTime = new Date().getTime();
-        const timeSinceLastNotification = currentTime - getLastNotificationTime();
-        if (timeSinceLastNotification < minPeriod) {
-            // Just a check to not show the notification too often
-            return null;
-        }
-
-        // Check not often than once in 10 minutes
-        const timeSinceLastCheck = currentTime - notificationCheckTime;
-        if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
-            return currentNotification;
-        }
-        // Update the last notification check time
-        notificationCheckTime = currentTime;
+        // FIXME uncomment
+        // const timeSinceLastNotification = currentTime - getLastNotificationTime();
+        // if (timeSinceLastNotification < minPeriod) {
+        //     // Just a check to not show the notification too often
+        //     return null;
+        // }
+        //
+        // // Check not often than once in 10 minutes
+        // const timeSinceLastCheck = currentTime - notificationCheckTime;
+        // if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
+        //     return currentNotification;
+        // }
+        // // Update the last notification check time
+        // notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
         const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
