@@ -151,17 +151,19 @@ const Filters = observer(() => {
 
     const openModalHandler = useCallback(() => {
         setModalIsOpen(true);
-        if (query.has(QUERY_PARAM_NAMES.TITLE) || query.has(QUERY_PARAM_NAMES.SUBSCRIBE)) {
-            query.delete(QUERY_PARAM_NAMES.TITLE);
-            query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
-            history.push(`${history.location.pathname}?${decodeURIComponent(query.toString())}`);
-        }
-    }, [history, query]);
+    }, [setModalIsOpen]);
 
     const closeModalHandler = () => {
         setModalIsOpen(false);
         setUrlToSubscribe('');
         setCustomFilterTitle('');
+
+        // clear querystring params
+        if (query.has(QUERY_PARAM_NAMES.TITLE) || query.has(QUERY_PARAM_NAMES.SUBSCRIBE)) {
+            query.delete(QUERY_PARAM_NAMES.TITLE);
+            query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
+            history.push(`${history.location.pathname}?${decodeURIComponent(query.toString())}`);
+        }
     };
 
     useEffect(() => {
