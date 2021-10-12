@@ -29,21 +29,24 @@
 
     &__link {
         margin-left: 15px;
-        opacity: 0.3;
-        transition: 0.3s ease opacity;
-
-        &:hover {
-            opacity: 1;
-        }
     }
 
     &__icon {
         width: 20px;
         height: 20px;
-        color: #888;
+        color: var(--gray400);
+        transition: 0.3s ease color;
+
+        &:hover {
+            color: var(--gray700);
+        }
 
         @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
+            color: var(--gray700);
+
+            &:hover {
+                color: var(--gray400);
+            }
         }
     }
 }
@@ -55,7 +58,11 @@
         box-shadow: 0 -2px 0 0 var(--gray100);
 
         &__icon {
-            color: #888;
+            color: var(--gray400);
+
+            &:hover {
+                color: var(--gray700);
+            }
         }
     }
 }
@@ -67,7 +74,11 @@
         box-shadow: 0 -2px 0 0 var(--grayDark);
 
         &__icon {
-            color: var(--gray300);
+            color: var(--gray700);
+
+            &:hover {
+                color: var(--gray400);
+            }
         }
     }
 }

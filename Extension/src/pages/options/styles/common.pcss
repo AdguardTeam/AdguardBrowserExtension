@@ -138,10 +138,6 @@ label.checkbox-label {
         color: var(--gray300)
     }
 
-    &__inner {
-        padding-top: 16px;
-    }
-
     &__container {
         position: relative;
         display: flex;
@@ -151,20 +147,40 @@ label.checkbox-label {
         &--sub > .title__inner {
             padding-top: 0;
         }
+
+        &--control {
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--t3) background-color;
+
+            &:hover {
+                background-color: var(--gray100);
+
+                @media (prefers-color-scheme: dark) {
+                    background-color: var(--gray900);
+                }
+            }
+        }
     }
 
     @media (min-width: 640px) {
         padding-right: 16px;
 
         &__container {
-            padding: 0 0 16px 16px;
+            padding: 16px 0 16px 16px;
 
             &--small {
-                padding: 0 16px 16px 16px;
+                padding: 16px;
             }
 
             &--sub > .title__inner {
                 padding-top: 0;
+            }
+
+            &--about {
+                @media (min-width: 640px) {
+                    padding: 16px 0 16px 16px;
+                }
             }
         }
     }
@@ -174,6 +190,12 @@ label.checkbox-label {
         font-weight: 400;
         color: var(--gray700);
         margin-top: 8px;
+    }
+
+    &--back-btn {
+        background-color: transparent;
+        border: 0;
+        cursor: pointer;
     }
 
     &--sub {
@@ -318,6 +340,14 @@ select:focus {
 
     .title {
         color: var(--gray-base);
+
+        &__container {
+            &--control {
+                &:hover {
+                    background-color: var(--gray100);
+                }
+            }
+        }
     }
 
     .ReactModal__Content--after-open {
@@ -364,12 +394,20 @@ select:focus {
     }
 
     .title {
-        color: var(--gray300)
+        color: var(--gray300);
+
+        &__container {
+            &--control {
+                &:hover {
+                    background-color: var(--gray900);
+                }
+            }
+        }
     }
 
     .ReactModal__Content--after-open {
         background-color: var(--black)!important;
-        border: 1px solid var(--gray900)!important;
+        border: 1px solid var(--gray700)!important;
     }
 
     .ace_content {

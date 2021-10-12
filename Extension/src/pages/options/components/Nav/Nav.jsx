@@ -14,6 +14,10 @@ const Nav = observer(({ closeSidebar }) => {
         await settingsStore.hideAdguardPromoInfo();
     };
 
+    const onClick = () => {
+        closeSidebar();
+    };
+
     return (
         <div className="nav">
             <NavLink
@@ -21,7 +25,7 @@ const Nav = observer(({ closeSidebar }) => {
                 exact
                 activeClassName="nav__item--active"
                 to="/"
-                onClick={closeSidebar}
+                onClick={onClick}
             >
                 {reactTranslator.getMessage('options_general_settings')}
             </NavLink>
@@ -29,7 +33,7 @@ const Nav = observer(({ closeSidebar }) => {
                 className="nav__item"
                 activeClassName="nav__item--active"
                 to="/filters"
-                onClick={closeSidebar}
+                onClick={onClick}
             >
                 {reactTranslator.getMessage('options_filters')}
             </NavLink>
@@ -37,7 +41,7 @@ const Nav = observer(({ closeSidebar }) => {
                 className="nav__item"
                 activeClassName="nav__item--active"
                 to="/stealth"
-                onClick={closeSidebar}
+                onClick={onClick}
             >
                 {reactTranslator.getMessage('options_privacy')}
             </NavLink>
@@ -45,7 +49,7 @@ const Nav = observer(({ closeSidebar }) => {
                 className="nav__item"
                 activeClassName="nav__item--active"
                 to="/allowlist"
-                onClick={closeSidebar}
+                onClick={onClick}
             >
                 {reactTranslator.getMessage('options_allowlist')}
             </NavLink>
@@ -53,7 +57,7 @@ const Nav = observer(({ closeSidebar }) => {
                 className="nav__item"
                 activeClassName="nav__item--active"
                 to="/user-filter"
-                onClick={closeSidebar}
+                onClick={onClick}
             >
                 {reactTranslator.getMessage('options_userfilter')}
             </NavLink>
@@ -61,7 +65,7 @@ const Nav = observer(({ closeSidebar }) => {
                 className="nav__item"
                 activeClassName="nav__item--active"
                 to="/miscellaneous"
-                onClick={closeSidebar}
+                onClick={onClick}
             >
                 {reactTranslator.getMessage('options_miscellaneous_settings')}
             </NavLink>
@@ -69,7 +73,7 @@ const Nav = observer(({ closeSidebar }) => {
                 className="nav__item"
                 activeClassName="nav__item--active"
                 to="/about"
-                onClick={closeSidebar}
+                onClick={onClick}
             >
                 {reactTranslator.getMessage('options_about')}
             </NavLink>

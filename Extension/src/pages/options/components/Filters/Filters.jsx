@@ -133,20 +133,27 @@ const Filters = observer(() => {
         const affectedGroupsIds = Object.keys(searchData).map((id) => Number(id));
         const groupsToRender = categories
             .filter((group) => affectedGroupsIds.includes(group.groupId));
-        return groupsToRender.map((group) => {
-            const filtersToShow = searchData[group.groupId];
-            return (
-                <SearchGroup
-                    key={group.groupId}
-                    groupName={group.groupName}
-                    groupId={group.groupId}
-                    filtersToShow={filtersToShow}
-                    groupClickHandler={groupClickHandler(group.groupId)}
-                    checkboxHandler={handleGroupSwitch}
-                    checkboxValue={!!group.enabled}
-                />
-            );
-        });
+        if (groupsToRender.length) {
+            return groupsToRender.map((group) => {
+                const filtersToShow = searchData[group.groupId];
+                return (
+                    <SearchGroup
+                        key={group.groupId}
+                        groupName={group.groupName}
+                        groupId={group.groupId}
+                        filtersToShow={filtersToShow}
+                        groupClickHandler={groupClickHandler(group.groupId)}
+                        checkboxHandler={handleGroupSwitch}
+                        checkboxValue={!!group.enabled}
+                    />
+                );
+            });
+        }
+        return (
+            <div className="filter__empty">
+                {reactTranslator.getMessage('options_filters_empty_title')}
+            </div>
+        );
     };
 
     const openModalHandler = useCallback(() => {
@@ -189,16 +196,6 @@ const Filters = observer(() => {
         );
     };
 
-    const renderBackButton = () => (
-        <button
-            type="button"
-            className="button setting__back"
-            onClick={handleReturnToGroups}
-        >
-            <Icon id="#arrow-back" classname="icon--back" />
-        </button>
-    );
-
     if (!groupDetermined) {
         return null;
     }
@@ -215,6 +212,28 @@ const Filters = observer(() => {
         const groupChangeHandler = async ({ id, data }) => {
             await settingsStore.updateGroupSetting(id, !data);
         };
+
+        const renderBackButton = () => (
+            <>
+                <button
+                    type="button"
+                    className="button setting__back"
+                    onClick={handleReturnToGroups}
+                >
+                    <Icon id="#arrow-back" classname="icon--back" />
+                </button>
+                <div className="title__inner">
+                    <button
+                        type="button"
+                        onClick={handleReturnToGroups}
+                        className="title title--back-btn"
+                    >
+                        {selectedGroup.groupName}
+                    </button>
+                    <div className="title__desc">{GROUP_DESCRIPTION[selectedGroup.groupId]}</div>
+                </div>
+            </>
+        );
 
         return (
             <SettingsSection
