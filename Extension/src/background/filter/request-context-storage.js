@@ -266,6 +266,9 @@ export const requestContextStorage = (function () {
             context.statusCode = update.statusCode;
             filteringLog.bindResponseDataToHttpRequestEvent(context.tab, context.statusCode, context.eventId);
         }
+        if ('contentType' in update) {
+            context.contentType = update.contentType;
+        }
     };
 
     /**

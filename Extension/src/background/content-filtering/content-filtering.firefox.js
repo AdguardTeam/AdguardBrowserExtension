@@ -17,6 +17,7 @@
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { requestContextStorage } from '../filter/request-context-storage';
+import { RequestTypes } from '../utils/request-types';
 
 /**
  * Listens content filtering callbacks
@@ -67,6 +68,19 @@ const modificationsListener = {
     },
 };
 
-const firefoxContentFiltering = new TSUrlFilter.ContentFiltering(modificationsListener);
+const firefoxContentFiltering = new TSUrlFilter.ContentFiltering(modificationsListener, (requestId) => {
+    const context = requestContextStorage.get(requestId);
+    if (!context) {
+        return null;
+    }
+
+    return {
+        request: new TSUrlFilter.Request(
+            context.requestUrl, context.referrerUrl, RequestTypes.transformRequestType(context.requestType),
+        ),
+        contentType: context.contentType,
+        statusCode: context.statusCode,
+    };
+});
 
 export default firefoxContentFiltering;

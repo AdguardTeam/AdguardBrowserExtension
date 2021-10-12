@@ -24,7 +24,7 @@ const errorFunction = () => {
 };
 
 const abstractContentFiltering = {
-    apply: errorFunction,
+    onBeforeRequest: errorFunction,
 };
 
 export default abstractContentFiltering;
