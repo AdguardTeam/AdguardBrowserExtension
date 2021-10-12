@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, {
+    useContext, useEffect, useRef, useState,
+} from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
@@ -16,6 +18,10 @@ import { exportData, ExportTypes } from '../../../common/utils/export';
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
+    // rerender allowlist after removed and none-saved domains and import
+    // AG-10492
+    const [shouldAllowlistRerender, setAllowlistRerender] = useState(false);
+
     const editorRef = useRef(null);
     const inputRef = useRef(null);
     const prevAllowlist = usePrevious(settingsStore.allowlist);
@@ -23,8 +29,9 @@ const Allowlist = observer(() => {
     useEffect(() => {
         (async () => {
             await settingsStore.getAllowlist();
+            setAllowlistRerender(false);
         })();
-    }, [settingsStore]);
+    }, [settingsStore, shouldAllowlistRerender]);
 
     useEffect(() => {
         if (prevAllowlist === '') {
@@ -53,6 +60,7 @@ const Allowlist = observer(() => {
         try {
             const content = await uploadFile(file, 'txt');
             await settingsStore.appendAllowlist(content);
+            setAllowlistRerender(true);
         } catch (e) {
             log.debug(e.message);
             uiStore.addNotification({ description: e.message });
