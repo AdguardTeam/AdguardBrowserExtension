@@ -1,5 +1,3 @@
-// FIXME remove rule bellow
-/* eslint-disable no-unused-vars */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -70,11 +68,7 @@ adguard.notifications = (function (adguard) {
         // will be selected for locale, see usage of getNotificationText
         text: '',
         url: 'https://adguard.com/forward.html?action=halloween21&app=browser_extension',
-        // FIXME remove line bellow
-        from: '12 October 2021 12:00:00',
-        // FIXME uncomment line bellow
-        // from: '25 October 2021 12:00:00',
-        // FIXME find out when promo ends
+        from: '25 October 2021 12:00:00',
         to: '31 October 2021 23:59:00',
         type: 'animated',
         get icons() {
