@@ -69,8 +69,7 @@ adguard.notifications = (function (adguard) {
         },
         // will be selected for locale, see usage of getNotificationText
         text: '',
-        // FIXME add url to tds
-        url: 'https://adguard.com/promo/halloween2021.html',
+        url: 'https://adguard.com/forward.html?action=halloween21&app=browser_extension',
         // FIXME remove line bellow
         from: '12 October 2021 12:00:00',
         // FIXME uncomment line bellow
