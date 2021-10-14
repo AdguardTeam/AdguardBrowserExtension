@@ -200,8 +200,7 @@ adguard.notifications = (function (adguard) {
             const { id } = currentNotification;
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
-                // FIXME uncomment
-                // adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                adguard.localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
                 adguard.tabs.getActive(adguard.ui.updateTabIconAndContextMenu);
                 currentNotification = null;
             }
@@ -220,20 +219,19 @@ adguard.notifications = (function (adguard) {
         }
 
         const currentTime = new Date().getTime();
-        // FIXME uncomment
-        // const timeSinceLastNotification = currentTime - getLastNotificationTime();
-        // if (timeSinceLastNotification < minPeriod) {
-        //     // Just a check to not show the notification too often
-        //     return null;
-        // }
-        //
-        // // Check not often than once in 10 minutes
-        // const timeSinceLastCheck = currentTime - notificationCheckTime;
-        // if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
-        //     return currentNotification;
-        // }
-        // // Update the last notification check time
-        // notificationCheckTime = currentTime;
+        const timeSinceLastNotification = currentTime - getLastNotificationTime();
+        if (timeSinceLastNotification < minPeriod) {
+            // Just a check to not show the notification too often
+            return null;
+        }
+
+        // Check not often than once in 10 minutes
+        const timeSinceLastCheck = currentTime - notificationCheckTime;
+        if (notificationCheckTime > 0 && timeSinceLastCheck <= checkTimeoutMs) {
+            return currentNotification;
+        }
+        // Update the last notification check time
+        notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
         const viewedNotifications = adguard.localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
