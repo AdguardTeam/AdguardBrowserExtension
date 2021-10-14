@@ -37,7 +37,7 @@ adguard.notifications = (function (adguard) {
                 btn: 'Поехали!',
             },
             ja: {
-                title: 'テストで自分のサイバーモンスターがわかる',
+                title: '自分のモンスター診断テスト',
                 btn: '受けてみる',
             },
             ko: {
@@ -53,16 +53,20 @@ adguard.notifications = (function (adguard) {
                 btn: '快來體驗',
             },
             fr: {
-                title: 'Inventons un nouveau monstre !',
+                title: 'Inventons un cybermonstre !',
                 btn: 'Jouer',
             },
             it: {
-                title: 'Immaginiamo un nuovo mostro!',
+                title: 'Immaginiamo un cybermostro!',
                 btn: 'Giocare',
             },
             es: {
                 title: 'Crea tu propio monstruo',
                 btn: 'Jugar',
+            },
+            uk: {
+                title: 'Створи свого монстра',
+                btn: 'Нумо!',
             },
         },
         // will be selected for locale, see usage of getNotificationText
