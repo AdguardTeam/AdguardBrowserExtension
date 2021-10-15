@@ -1,8 +1,8 @@
-! Checksum: is4UrLBRpCGhlYHKfUIvvA
+! Checksum: agbNKTGuUvJITKbEkQ2Plw
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.88
-! TimeUpdated: 2021-07-05T16:31:32+00:00
+! Version: 2.0.0.92
+! TimeUpdated: 2021-10-08T09:31:38+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -146,7 +146,8 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/92860
+adssettings.google.com##sc-survey-survey-manager
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -165,6 +166,9 @@
 /fbevents.js^
 /ads/beacon-
 /AppMeasurement-$script,domain=~mlb.com
+!
+||welcoming-carpets.tk^$third-party
+||creative-banana.tk^$third-party
 !-------------------------------------------------------------------!
 !------- Experimental rules for Social filter ----------------------!
 !-------------------------------------------------------------------!
