@@ -61,9 +61,7 @@ export const RequestFilter = (() => {
          * @returns {*} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl(url, options, ignoreTraditionalCss, ignoreExtCss) {
-            const hostname = utils.url.getHost(url);
-
-            const cosmeticResult = engine.getCosmeticResult(hostname, options);
+            const cosmeticResult = engine.getCosmeticResult(url, options);
 
             const elemhideCss = [...cosmeticResult.elementHiding.generic, ...cosmeticResult.elementHiding.specific];
             const injectCss = [...cosmeticResult.CSS.generic, ...cosmeticResult.CSS.specific];
@@ -104,8 +102,7 @@ export const RequestFilter = (() => {
          * @returns {CosmeticRule[]} Javascript for the specified URL
          */
         getScriptsForUrl(url, cosmeticOptions) {
-            const hostname = utils.url.getHost(url);
-            const cosmeticResult = engine.getCosmeticResult(hostname, cosmeticOptions);
+            const cosmeticResult = engine.getCosmeticResult(url, cosmeticOptions);
 
             return cosmeticResult.getScriptRules();
         },
@@ -258,9 +255,8 @@ export const RequestFilter = (() => {
          * @returns CosmeticRule[] of content rules
          */
         getContentRulesForUrl(documentUrl) {
-            const hostname = utils.url.getDomainName(documentUrl);
             // eslint-disable-next-line max-len
-            const cosmeticResult = engine.getCosmeticResult(hostname, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
+            const cosmeticResult = engine.getCosmeticResult(documentUrl, TSUrlFilter.CosmeticOption.CosmeticOptionHtml);
 
             return cosmeticResult.Html.getRules();
         },

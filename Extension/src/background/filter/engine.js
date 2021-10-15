@@ -19,6 +19,7 @@ import * as TSUrlFilter from '@adguard/tsurlfilter';
 import { log } from '../../common/log';
 import { backgroundPage } from '../extension-api/background-page';
 import { RequestTypes } from '../utils/request-types';
+import { utils } from '../utils/common';
 
 /**
  * TSUrlFilter Engine wrapper
@@ -134,16 +135,18 @@ export const engine = (function () {
     /**
      * Gets cosmetic result for the specified hostname and cosmetic options
      *
-     * @param hostname
+     * @param url
      * @param option
      * @returns CosmeticResult result
      */
-    const getCosmeticResult = (hostname, option) => {
+    const getCosmeticResult = (url, option) => {
         if (!engine) {
             return new TSUrlFilter.CosmeticResult();
         }
 
-        const request = new TSUrlFilter.Request(hostname, null, TSUrlFilter.RequestType.Document);
+        const frameUrl = utils.url.getHost(url);
+        const request = new TSUrlFilter.Request(url, frameUrl, TSUrlFilter.RequestType.Document);
+
         return engine.getCosmeticResult(request, option);
     };
 
