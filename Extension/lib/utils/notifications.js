@@ -72,8 +72,8 @@ adguard.notifications = (function (adguard) {
         // will be selected for locale, see usage of getNotificationText
         text: '',
         url: 'https://adguard.com/forward.html?action=halloween21&app=browser_extension',
-        from: '25 October 2021 12:00:00',
-        to: '31 October 2021 23:59:00',
+        from: '25 October 2021 00:00:00',
+        to: '01 November 2021 00:00:00',
         type: 'animated',
         get icons() {
             return adguard.lazyGet(halloween2021Notification, 'icons', () => ({
