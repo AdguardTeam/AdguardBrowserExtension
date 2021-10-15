@@ -162,7 +162,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
     // set initial wrap mode
     useEffect(() => {
         editorRef.current.editor.session.setUseWrapMode(store.userRulesEditorWrapState);
-    }, [store]);
+    }, [store.userRulesEditorWrapState]);
 
     const inputChangeHandler = async (event) => {
         event.persist();
@@ -250,7 +250,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content
     const toggleWrap = () => {
-        const toggledWrapMode = !editorRef.current.editor.session.getUseWrapMode();
+        const toggledWrapMode = !store.userRulesEditorWrapState;
         editorRef.current.editor.session.setUseWrapMode(toggledWrapMode);
         store.toggleUserRulesEditorWrapMode(toggledWrapMode);
     };
