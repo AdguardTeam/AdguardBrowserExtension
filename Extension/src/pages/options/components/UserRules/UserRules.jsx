@@ -23,6 +23,7 @@ const UserRules = observer(() => {
         <>
             <SettingsSection
                 title={reactTranslator.getMessage('options_userfilter')}
+                id={settingsStore.userFilterEnabledSettingId}
                 description={reactTranslator.getMessage('options_userfilter_description_key', {
                     a: (chunks) => (
                         <a
