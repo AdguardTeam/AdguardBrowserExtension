@@ -835,6 +835,12 @@ describe('RequestFilter', () => {
                 frameUrl: 'https://example.org',
                 requestType: RequestTypes.DOCUMENT,
             })).toBeTruthy();
+
+            expect(requestFilter.findRuleForRequest({
+                requestUrl: 'https://example.org',
+                frameUrl: 'https://example.org',
+                requestType: RequestTypes.SCRIPT,
+            })).toBeNull();
         });
 
         it('Domain restriction semantic', async () => {
