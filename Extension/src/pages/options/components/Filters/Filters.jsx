@@ -230,7 +230,7 @@ const Filters = observer(() => {
                     >
                         {selectedGroup.groupName}
                     </button>
-                    <div className="title__desc">{GROUP_DESCRIPTION[selectedGroup.groupId]}</div>
+                    <div className="title__desc title__desc--back">{GROUP_DESCRIPTION[selectedGroup.groupId]}</div>
                 </div>
             </>
         );
