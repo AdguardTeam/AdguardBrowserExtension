@@ -587,7 +587,11 @@ export const antiBannerService = (() => {
             // eslint-disable-next-line default-case
             switch (eventType) {
                 case listeners.ADD_RULES:
-                    loadedRulesText = loadedRulesText.concat(eventRules);
+                    // ditch empty first editor line while adding rule
+                    // AG-10727
+                    loadedRulesText = loadedRulesText.length === 1 && loadedRulesText[0] === ''
+                        ? eventRules
+                        : loadedRulesText.concat(eventRules);
                     log.debug('Add {0} rules to filter {1}', eventRules.length, filterId);
                     break;
                 case listeners.REMOVE_RULE: {
