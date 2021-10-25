@@ -463,7 +463,6 @@ const browsersFilteringLog = (function () {
         cookieName,
         cookieValue,
         cookieDomain,
-        requestType,
         cookieRule,
         isModifyingCookieRule,
         thirdParty,
@@ -475,7 +474,7 @@ const browsersFilteringLog = (function () {
 
         const filteringEvent = {
             frameDomain: cookieDomain,
-            requestType: RequestTypes.transformRequestTypeFromTs(requestType),
+            requestType: RequestTypes.COOKIE,
             requestThirdParty: thirdParty,
             cookieName,
             cookieValue,

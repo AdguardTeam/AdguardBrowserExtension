@@ -163,7 +163,7 @@ const RequestInfo = observer(() => {
         },
         [PARTS.COOKIE]: {
             title: reactTranslator.getMessage('filtering_modal_cookie'),
-            data: selectedEvent.cookieName,
+            data: `${selectedEvent.cookieName} = ${selectedEvent.cookieValue}`,
         },
         [PARTS.TYPE]: {
             title: reactTranslator.getMessage('filtering_modal_type'),
