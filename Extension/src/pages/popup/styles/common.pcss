@@ -11,6 +11,7 @@ body,
     min-height: 100%;
     width: 100%;
     min-width: 320px;
+    background-color: var(--width);
 
     @media (prefers-color-scheme: dark) {
         background-color: var(--black);
@@ -19,6 +20,11 @@ body,
 
 html {
     font-size: 10px;
+    background-color: var(--width);
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--black);
+    }
 }
 
 body {
@@ -48,13 +54,19 @@ a {
 }
 
 .light-mode {
-    body {
-        background-color: transparent;
+    background-color: var(--width);
+
+    body,
+    #root {
+        background-color: var(--width);
     }
 }
 
 .dark-mode {
-    body {
+    background-color: var(--black);
+
+    body,
+    #root {
         background-color: var(--black);
     }
 }
