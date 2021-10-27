@@ -59,7 +59,7 @@ const FiltersUpdate = observer(() => {
             <button
                 type="button"
                 onClick={updateClickHandler}
-                className="button button--m button--transparent"
+                className="button button--m button--transparent filters-update__btn"
                 title={reactTranslator.getMessage('options_update_antibanner_filters')}
             >
                 {filtersUpdating
