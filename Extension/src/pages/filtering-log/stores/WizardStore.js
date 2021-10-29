@@ -284,7 +284,7 @@ class WizardStore {
                 thirdParty,
                 important,
             });
-        } else if (selectedEvent.script) {
+        } else if (selectedEvent.script || selectedEvent?.requestRule?.documentLevelRule) {
             ruleText = this.createRuleFromParams({ urlPattern: rulePattern });
         } else {
             ruleText = this.createRuleFromParams({

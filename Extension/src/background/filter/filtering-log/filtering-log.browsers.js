@@ -170,7 +170,7 @@ const browsersFilteringLog = (function () {
             if (sourceRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Important)) {
                 destinationRuleDTO.isImportant = true;
             }
-            if (sourceRule.isDocumentAllowlistRule()) {
+            if (sourceRule.isDocumentLevelAllowlistRule()) {
                 destinationRuleDTO.documentLevelRule = true;
             }
             if (sourceRule.getFilterListId() === ANTIBANNER_FILTERS_ID.STEALTH_MODE_FILTER_ID) {
