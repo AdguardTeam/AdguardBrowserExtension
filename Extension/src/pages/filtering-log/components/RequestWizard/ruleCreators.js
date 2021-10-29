@@ -142,23 +142,6 @@ export const createExceptionCssRule = (rule, event) => {
 };
 
 /**
- * Creates exception rules for cookie rules
- * @param rule
- * @param event
- * @returns {string}
- */
-export const createExceptionCookieRule = (rule, event) => {
-    let domain = event.frameDomain;
-
-    if (domain[0] === '.') {
-        domain = domain.substring(1);
-    }
-
-    const { MASK_START_URL, MASK_SEPARATOR } = SimpleRegex;
-    return MASK_ALLOWLIST + MASK_START_URL + domain + MASK_SEPARATOR;
-};
-
-/**
  * Creates exception rule for blocking script rule
  * @param rule
  * @param event
@@ -180,23 +163,52 @@ export const createExceptionScriptRule = (rule, event) => {
     return '';
 };
 
-export const getUnblockDomainRule = (domain, ruleOption) => {
+const getBlockDomainRule = (domain, ruleOption) => {
     const { MASK_START_URL, MASK_SEPARATOR } = SimpleRegex;
 
-    return MASK_ALLOWLIST
-        + MASK_START_URL
+    return MASK_START_URL
         + domain
         + MASK_SEPARATOR
         + OPTIONS_DELIMITER
         + ruleOption;
 };
 
+const getUnblockDomainRule = (domain, ruleOption) => {
+    return MASK_ALLOWLIST + getBlockDomainRule(domain, ruleOption);
+};
+
+/**
+ * Create exception rules for cookie event
+ * @param event
+ * @returns {string[]} array of patterns
+ */
+export const createExceptionCookieRules = (event) => {
+    const {
+        frameDomain,
+        cookieName,
+        requestRule: { modifierValue },
+    } = event;
+    const domain = UrlUtils.getCookieDomain(frameDomain);
+    const totalUnblockingRule = getUnblockDomainRule(domain, NETWORK_RULE_OPTIONS.COOKIE);
+
+    const patterns = [];
+    if (cookieName) {
+        patterns.push(getUnblockDomainRule(domain, `${NETWORK_RULE_OPTIONS.COOKIE}=${cookieName}`));
+    }
+    if (modifierValue) {
+        patterns.push(getUnblockDomainRule(domain, `${NETWORK_RULE_OPTIONS.COOKIE}=${modifierValue}`));
+    }
+    patterns.push(totalUnblockingRule);
+
+    return patterns;
+};
+
 export const createExceptionRemoveParamRules = (event) => {
     const { frameDomain, requestRule } = event;
 
     return [
-        getUnblockDomainRule(frameDomain, `removeparam=${requestRule.modifierValue}`),
-        getUnblockDomainRule(frameDomain, 'removeparam'),
+        getUnblockDomainRule(frameDomain, `${NETWORK_RULE_OPTIONS.REMOVEPARAM}=${requestRule.modifierValue}`),
+        getUnblockDomainRule(frameDomain, NETWORK_RULE_OPTIONS.REMOVEPARAM),
     ];
 };
 
@@ -204,7 +216,29 @@ export const createExceptionRemoveHeaderRules = (event) => {
     const { frameDomain, requestRule } = event;
 
     return [
-        getUnblockDomainRule(frameDomain, `removeheader=${requestRule.modifierValue}`),
-        getUnblockDomainRule(frameDomain, 'removeheader'),
+        getUnblockDomainRule(frameDomain, `${NETWORK_RULE_OPTIONS.REMOVEHEADER}=${requestRule.modifierValue}`),
+        getUnblockDomainRule(frameDomain, NETWORK_RULE_OPTIONS.REMOVEHEADER),
     ];
+};
+
+/**
+ * Creates blocking rule for cookie event
+ * @param event
+ * @returns {string}
+ */
+export const createBlockingCookieRule = (event) => {
+    const {
+        frameDomain,
+        cookieName,
+    } = event;
+    const domain = UrlUtils.getCookieDomain(frameDomain);
+    const blockingRule = getBlockDomainRule(domain, NETWORK_RULE_OPTIONS.COOKIE);
+
+    const patterns = [];
+    if (cookieName) {
+        patterns.push(getBlockDomainRule(domain, `${NETWORK_RULE_OPTIONS.COOKIE}=${cookieName}`));
+    }
+    patterns.push(blockingRule);
+
+    return patterns;
 };

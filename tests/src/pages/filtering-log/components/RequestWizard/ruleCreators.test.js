@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import {
     createDocumentLevelBlockRule,
-    createExceptionCookieRule,
+    createExceptionCookieRules,
     createExceptionCssRule,
     createExceptionScriptRule,
     splitToPatterns,
@@ -92,13 +92,20 @@ describe('ruleCreators', () => {
     });
 
     describe('createExceptionCookieRule', () => {
-        it('creates exception cookie rule', () => {
-            const rule = {
-                ruleText: '||example.org^$cookie=NAME',
+        it('creates exception cookie rules', () => {
+            const RULE_MODIFIED_VALUE = '/test|name/';
+            const COOKIE_NAME = 'testName';
+
+            const event = {
+                cookieName: COOKIE_NAME,
+                frameDomain: 'example.org',
+                requestRule: { modifierValue: RULE_MODIFIED_VALUE },
             };
-            const event = { frameDomain: 'example.org' };
-            const result = createExceptionCookieRule(rule, event);
-            expect(result).toBe('@@||example.org^');
+            const result = createExceptionCookieRules(event);
+            expect(result).toHaveLength(3);
+            expect(result[0]).toBe(`@@||example.org^$cookie=${COOKIE_NAME}`);
+            expect(result[1]).toBe(`@@||example.org^$cookie=${RULE_MODIFIED_VALUE}`);
+            expect(result[2]).toBe('@@||example.org^$cookie');
         });
     });
 

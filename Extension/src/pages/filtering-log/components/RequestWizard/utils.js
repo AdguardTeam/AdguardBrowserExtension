@@ -5,7 +5,7 @@ import { RequestTypes } from '../../../../background/utils/request-types';
 
 /**
  * Url utils
- * @type {{getUrlWithoutScheme, isHierarchicUrl, getProtocol}}
+ * @type {{getUrlWithoutScheme, isHierarchicUrl, getProtocol, getCookieDomain}}
  */
 export const UrlUtils = {
     getProtocol(url) {
@@ -40,6 +40,17 @@ export const UrlUtils = {
      */
     isHierarchicUrl(url) {
         return url.indexOf('//') !== -1;
+    },
+
+    /**
+     * Gets domain for cookie rule
+     * @param {string} frameDomain
+     * @returns {string}
+     */
+    getCookieDomain(frameDomain) {
+        return frameDomain[0] === '.'
+            ? frameDomain.substring(1)
+            : frameDomain;
     },
 };
 
@@ -129,4 +140,18 @@ export const getRequestEventType = (event) => {
         default:
             return '';
     }
+};
+
+/**
+ * Returns data for cookie event
+ * @param event
+ * @return {string|null}
+ */
+export const getCookieData = (event) => {
+    if (!event.requestRule?.cookieRule || !event?.cookieName) {
+        return null;
+    }
+    return event.cookieValue
+        ? `${event.cookieName} = ${event.cookieValue}`
+        : event.cookieName;
 };

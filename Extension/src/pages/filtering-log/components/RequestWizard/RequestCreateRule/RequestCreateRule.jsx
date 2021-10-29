@@ -74,9 +74,10 @@ const RequestCreateRule = observer(() => {
                 return null;
             }
 
-            // for cookie rules only third-party modifier is active
+            // $third-party and $important modifiers are active for cookie rules
+            // so $domain modifier is forbidden
             if (logStore.selectedEvent?.requestRule?.cookieRule
-                && !(id === RULE_OPTIONS.RULE_THIRD_PARTY)) {
+                && id === RULE_OPTIONS.RULE_DOMAIN) {
                 return null;
             }
 
@@ -128,7 +129,6 @@ const RequestCreateRule = observer(() => {
         element,
         script,
         requestRule,
-        cookieName,
     } = logStore.selectedEvent;
 
     // Must invoke wizardStore.rulePatterns unconditionally to trigger wizardStore.rule computation
@@ -136,7 +136,7 @@ const RequestCreateRule = observer(() => {
     const options = renderOptions();
 
     const isElementOrScript = element || script;
-    const showPatterns = !isElementOrScript && !cookieName;
+    const showPatterns = !isElementOrScript;
     const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
 
     let title = reactTranslator.getMessage('filtering_modal_add_title');

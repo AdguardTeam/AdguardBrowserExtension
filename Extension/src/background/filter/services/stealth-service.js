@@ -16,7 +16,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as TSUrlFilter from '@adguard/tsurlfilter';
+import * as TSUrlFilter from '@adguard/tsurlfilter/dist/tsurlfilter.browser';
 import { settings } from '../../settings/user-settings';
 import { log } from '../../../common/log';
 import { requestContextStorage } from '../request-context-storage';
