@@ -136,7 +136,7 @@ const RequestCreateRule = observer(() => {
     const options = renderOptions();
 
     const isElementOrScript = element || script;
-    const showPatterns = !isElementOrScript;
+    const showPatterns = !isElementOrScript && !requestRule?.documentLevelRule;
     const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
 
     let title = reactTranslator.getMessage('filtering_modal_add_title');
