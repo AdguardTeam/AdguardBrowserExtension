@@ -13,11 +13,12 @@ import {
 import { RULE_OPTIONS } from '../components/RequestWizard/constants';
 import {
     createDocumentLevelBlockRule,
-    createExceptionCookieRule,
+    createExceptionCookieRules,
     createExceptionCssRule,
     createExceptionRemoveParamRules,
     createExceptionRemoveHeaderRules,
     createExceptionScriptRule,
+    createBlockingCookieRule,
     splitToPatterns,
 } from '../components/RequestWizard/ruleCreators';
 import { messenger } from '../../services/messenger';
@@ -33,6 +34,8 @@ export const ADDED_RULE_STATES = {
     BLOCK: 'block',
     UNBLOCK: 'unblock',
 };
+
+const MODIFIERS_DELIMITER = ',';
 
 const defaultRuleOptions = {
     [RULE_OPTIONS.RULE_DOMAIN]: { checked: false },
@@ -199,7 +202,7 @@ class WizardStore {
             options = options.concat(mandatoryOptions);
         }
         if (options.length > 0) {
-            ruleText += OPTIONS_DELIMITER + options.join(',');
+            ruleText += OPTIONS_DELIMITER + options.join(MODIFIERS_DELIMITER);
         }
 
         return ruleText;
@@ -209,6 +212,30 @@ class WizardStore {
         let ruleText = urlPattern;
         if (!permitDomain) {
             ruleText = ruleText.slice(ruleText.indexOf('#'));
+        }
+
+        return ruleText;
+    };
+
+    createCookieRuleFromParams = ({
+        rulePattern,
+        thirdParty,
+        important,
+    }) => {
+        let ruleText = rulePattern;
+
+        const options = [];
+
+        // add important option
+        if (important) {
+            options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
+        }
+        // add third party option
+        if (thirdParty) {
+            options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
+        }
+        if (options.length > 0) {
+            ruleText += MODIFIERS_DELIMITER + options.join(MODIFIERS_DELIMITER);
         }
 
         return ruleText;
@@ -240,10 +267,6 @@ class WizardStore {
             mandatoryOptions = [NETWORK_RULE_OPTIONS.CSP];
         }
 
-        if (requestRule && requestRule.cookieRule) {
-            mandatoryOptions = [NETWORK_RULE_OPTIONS.COOKIE];
-        }
-
         if (selectedEvent.requestUrl === 'content-security-policy-check') {
             mandatoryOptions = [NETWORK_RULE_OPTIONS.WEBRTC, NETWORK_RULE_OPTIONS.WEBSOCKET];
         }
@@ -256,11 +279,10 @@ class WizardStore {
         if (selectedEvent.element) {
             ruleText = this.createCssRuleFromParams(rulePattern, permitDomain);
         } else if (selectedEvent.cookieName) {
-            ruleText = this.createRuleFromParams({
-                urlPattern: rulePattern,
+            ruleText = this.createCookieRuleFromParams({
+                rulePattern,
                 thirdParty,
                 important,
-                mandatoryOptions,
             });
         } else if (selectedEvent.script) {
             ruleText = this.createRuleFromParams({ urlPattern: rulePattern });
@@ -305,7 +327,7 @@ class WizardStore {
             }
 
             if (selectedEvent.cookieName) {
-                patterns = [createExceptionCookieRule(selectedEvent.requestRule, selectedEvent)];
+                patterns = createExceptionCookieRules(selectedEvent);
             }
 
             if (selectedEvent.script) {
@@ -325,11 +347,16 @@ class WizardStore {
             return patterns;
         }
 
-        let patterns = splitToPatterns(
-            selectedEvent.requestUrl,
-            selectedEvent.requestDomain,
-            false,
-        );
+        let patterns = [];
+        if (selectedEvent.requestUrl && selectedEvent.requestDomain) {
+            patterns = splitToPatterns(
+                selectedEvent.requestUrl,
+                selectedEvent.requestDomain,
+                true,
+            );
+        } else if (selectedEvent.cookieName) {
+            patterns = createBlockingCookieRule(selectedEvent);
+        }
 
         if (selectedEvent.requestRule && selectedEvent.requestRule.documentLevelRule) {
             patterns = [createDocumentLevelBlockRule(selectedEvent.requestRule)];

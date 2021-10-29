@@ -10,7 +10,7 @@ import { observer } from 'mobx-react';
 import identity from 'lodash/identity';
 import cn from 'classnames';
 
-import { getFilterName, getRequestEventType } from '../utils';
+import { getFilterName, getRequestEventType, getCookieData } from '../utils';
 import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { messenger } from '../../../../services/messenger';
@@ -163,7 +163,7 @@ const RequestInfo = observer(() => {
         },
         [PARTS.COOKIE]: {
             title: reactTranslator.getMessage('filtering_modal_cookie'),
-            data: `${selectedEvent.cookieName} = ${selectedEvent.cookieValue}`,
+            data: getCookieData(selectedEvent),
         },
         [PARTS.TYPE]: {
             title: reactTranslator.getMessage('filtering_modal_type'),
