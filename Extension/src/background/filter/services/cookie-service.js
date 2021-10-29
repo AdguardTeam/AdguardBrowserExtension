@@ -69,6 +69,7 @@ export const getCookieRulesDataForContentScript = (tab, url, referrer) => {
             match: rule.getAdvancedModifierValue(),
             isThirdParty: rule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.ThirdParty),
             filterId: rule.getFilterListId(),
+            isAllowlist: rule.isAllowlist(),
         };
     });
 };
