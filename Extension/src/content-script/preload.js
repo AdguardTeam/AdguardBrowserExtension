@@ -538,7 +538,9 @@ export const preload = (function () {
         if (response.rulesData) {
             try {
                 const cookieController = new TSUrlFilter.CookieController(
-                    (cookieName, cookieValue, cookieDomain, ruleText, thirdParty, filterId) => {
+                    ({
+                        cookieName, cookieValue, cookieDomain, ruleText, thirdParty, filterId,
+                    }) => {
                         contentPage.sendMessage({
                             type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT,
                             data: {
