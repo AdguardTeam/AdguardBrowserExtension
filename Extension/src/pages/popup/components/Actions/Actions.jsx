@@ -117,7 +117,10 @@ export const Actions = observer(() => {
                         id="#small-cross"
                         classname="icon--action"
                     />
-                    <div className="action-title">
+                    <div
+                        className="action-title"
+                        title={reactTranslator.getMessage('popup_reset_custom_rules')}
+                    >
                         {reactTranslator.getMessage('popup_reset_custom_rules')}
                     </div>
                 </button>
