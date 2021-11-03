@@ -56,7 +56,7 @@ const firefoxRulesStorageImpl = (function (initialAPI) {
                 let lines = [];
                 const { result } = request;
                 if (result && result.value) {
-                    lines = result.value.split(/[\r\n]+/);
+                    lines = result.value.split(/\r?\n/);
                 }
                 resolve(lines);
             };
