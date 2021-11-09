@@ -210,13 +210,14 @@ export const antiBannerService = (() => {
      * Throws exception if filter not found.
      *
      * @param filterId Filter identifier
-     * @returns {*} Filter got from subscriptions.getFilter
+     * @returns {*} Filter got from subscriptions.getFilter OR null for no filter found
      * @private
      */
     function getFilterById(filterId) {
         const filterMetadata = subscriptions.getFilter(filterId);
         if (!filterMetadata) {
-            throw new Error(`Filter with id: ${filterId} not found`);
+            log.info(`Filter with id: ${filterId} not found`);
+            return null;
         }
         return filterMetadata;
     }
@@ -229,6 +230,10 @@ export const antiBannerService = (() => {
      */
     const addAntiBannerFilter = async (filterId, forceRemote = false) => {
         const filterMetadata = getFilterById(filterId);
+
+        if (!filterMetadata) {
+            return false;
+        }
 
         if (filterMetadata.installed && !forceRemote) {
             return true;
