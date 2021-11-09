@@ -352,7 +352,7 @@ class WizardStore {
             patterns = splitToPatterns(
                 selectedEvent.requestUrl,
                 selectedEvent.requestDomain,
-                true,
+                false,
             );
         } else if (selectedEvent.cookieName) {
             patterns = createBlockingCookieRule(selectedEvent);
