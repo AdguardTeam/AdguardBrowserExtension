@@ -37,6 +37,13 @@ import { RequestTypes } from '../../utils/request-types';
  */
 export const stealthService = (() => {
     /**
+     * Privacy permission for block webrtc stealth setting
+     */
+    const PRIVACY_PERMISSIONS = {
+        permissions: ['privacy'],
+    };
+
+    /**
      * Processes request headers
      *
      * @param {string} requestId Request identifier
@@ -273,44 +280,48 @@ export const stealthService = (() => {
         }
     };
 
-    const handleWebRTCEnabling = () => {
-        browserUtils.containsPermissions(['privacy'])
-            .then(result => {
-                if (result) {
-                    return true;
-                }
-                return browserUtils.requestPermissions(['privacy']);
-            })
-            .then(async (granted) => {
-                if (granted) {
-                    await handleBlockWebRTC();
-                } else {
-                    // If privacy permission is not granted set block webrtc value to false
-                    settings.setProperty(settings.BLOCK_WEBRTC, false);
-                }
-            })
-            .catch(error => {
-                log.error(error);
-            });
+    const handleWebRTCEnabling = async () => {
+        try {
+            let isPermissionsGranted = await browserUtils.containsPermissions(PRIVACY_PERMISSIONS);
+            if (isPermissionsGranted) {
+                // do nothing if permissions were granted
+                return;
+            }
+            isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
+            if (isPermissionsGranted) {
+                await handleBlockWebRTC();
+            } else {
+                // If privacy permission is not granted set block webrtc value to false
+                settings.setProperty(settings.BLOCK_WEBRTC, false);
+            }
+        } catch (e) {
+            log.error(e);
+        }
     };
 
-    const handleWebRTCDisabling = () => {
-        browserUtils.containsPermissions(['privacy'])
-            .then(async (result) => {
-                if (result) {
-                    await handleBlockWebRTC();
-                    return browserUtils.removePermission(['privacy']);
-                }
-                return true;
-            });
+    const handleWebRTCDisabling = async () => {
+        try {
+            let isPermissionsGranted = await browserUtils.containsPermissions(PRIVACY_PERMISSIONS);
+            if (isPermissionsGranted) {
+                // do nothing if permissions were granted
+                return;
+            }
+            isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
+            if (isPermissionsGranted) {
+                await handleBlockWebRTC();
+                await browserUtils.removePermission(PRIVACY_PERMISSIONS);
+            }
+        } catch (e) {
+            log.error(e);
+        }
     };
 
-    const handlePrivacyPermissions = () => {
+    const handlePrivacyPermissions = async () => {
         const webRTCEnabled = getStealthSettingValue(settings.BLOCK_WEBRTC);
         if (webRTCEnabled) {
-            handleWebRTCEnabling();
+            await handleWebRTCEnabling();
         } else {
-            handleWebRTCDisabling();
+            await handleWebRTCDisabling();
         }
     };
 
@@ -386,25 +397,32 @@ export const stealthService = (() => {
 
     if (canBlockWebRTC()) {
         settings.onUpdated.addListener(async (setting) => {
-            if (setting === settings.BLOCK_WEBRTC
-                || setting === settings.DISABLE_STEALTH_MODE) {
+            // for "block webrtc" enabling while stealth mode is enabled
+            // and stealth mode enabling with previously enabled "block webrtc"
+            if ((setting === settings.BLOCK_WEBRTC || setting === settings.DISABLE_STEALTH_MODE)
+                && settings.isWebRTCDisabled()
+                && !settings.getDisableStealthMode()
+            ) {
                 if (shouldHandlePrivacyPermission()) {
-                    handlePrivacyPermissions();
+                    await handlePrivacyPermissions();
                 } else {
                     await handleBlockWebRTC();
                 }
             }
         });
 
-        listeners.addListener((event) => {
+        listeners.addListener(async (event) => {
+            let isPermissionsGranted;
             switch (event) {
                 case listeners.APPLICATION_INITIALIZED:
-                    browserUtils.containsPermissions(['privacy'])
-                        .then(async (result) => {
-                            if (result) {
-                                await handleBlockWebRTC();
-                            }
-                        });
+                    try {
+                        isPermissionsGranted = await browserUtils.containsPermissions(PRIVACY_PERMISSIONS);
+                    } catch (e) {
+                        log.error(e);
+                    }
+                    if (isPermissionsGranted) {
+                        await handleBlockWebRTC();
+                    }
                     break;
                 default:
                     break;
