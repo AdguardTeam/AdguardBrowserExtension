@@ -227,11 +227,13 @@ export const settingsProvider = (function () {
             return;
         }
 
+        // set "block webrtc" setting as soon as possible. AG-9980
+        settings.setWebRTCDisabled(!!set['stealth-block-webrtc']);
+
         settings.setDisableStealthMode(!!set['stealth_disable_stealth_mode']);
         settings.setHideReferrer(!!set['stealth-hide-referrer']);
         settings.setHideSearchQueries(!!set['stealth-hide-search-queries']);
         settings.setSendDoNotTrack(!!set['stealth-send-do-not-track']);
-        settings.setWebRTCDisabled(!!set['stealth-block-webrtc']);
         settings.setRemoveXClientData(!!set['stealth-remove-x-client']);
         settings.setSelfDestructThirdPartyCookies(!!set['stealth-block-third-party-cookies']);
         settings.setSelfDestructThirdPartyCookiesTime(set['stealth-block-third-party-cookies-time']);
@@ -523,10 +525,11 @@ export const settingsProvider = (function () {
         }
 
         try {
+            // apply stealth settings as soon as possible due to WebRTC permissions. AG-9980
+            await applyStealthModeSection(input);
             await applyGeneralSettingsSection(input);
             applyExtensionSpecificSettingsSection(input);
             await applyFiltersSection(input);
-            await applyStealthModeSection(input);
             onFinished(true);
             return true;
         } catch (e) {

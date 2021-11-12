@@ -292,42 +292,38 @@ export const browserUtils = (function () {
         },
 
         /**
+         * @typedef PermissionsObj
+         * A Permissions object represents a collection of permissions
+         * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/permissions/Permissions
+         * @property {Array<string>} permissions
+         * @property {Array<string>} [origins]
+         */
+
+        /**
          * Checks if extension has required permissions
-         * @param {Array<string>} permissions
-         * @param {Array<string>} [origins]
+         * @param {PermissionsObj} permissions
          * @returns {Promise<boolean>}
          */
-        containsPermissions: (permissions, origins) => {
-            return browser.permissions.contains({
-                permissions,
-                origins,
-            });
+        containsPermissions: (permissions) => {
+            return browser.permissions.contains(permissions);
         },
 
         /**
-         * Requests required permission
-         * @param {Array<string>} permissions
-         * @param {Array<string>} [origins]
-         * @returns {Promise<any>}
+         * Requests required permissions
+         * @param {PermissionsObj} permissions
+         * @returns {Promise<boolean>}
          */
-        requestPermissions: (permissions, origins) => {
-            return browser.permissions.request({
-                permissions,
-                origins,
-            });
+        requestPermissions: (permissions) => {
+            return browser.permissions.request(permissions);
         },
 
         /**
-         * Removes unused permissions
-         * @param {Array<string>} permissions
-         * @param {Array<string>} [origins]
-         * @returns {Promise<any>}
+         * Removes required permissions
+         * @param {PermissionsObj} permissions
+         * @returns {Promise<boolean>}
          */
-        removePermission: (permissions, origins) => {
-            return browser.permissions.remove({
-                permissions,
-                origins,
-            });
+        removePermission: (permissions) => {
+            return browser.permissions.remove(permissions);
         },
     };
 
