@@ -1,8 +1,8 @@
-! Checksum: jaxNRtcQHbq8eEdqLUgWzA
+! Checksum: RuiXZz0ss1GX97ODpTvMSg
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.23.3
-! TimeUpdated: 2021-11-08T09:31:48+00:00
+! Version: 2.0.23.19
+! TimeUpdated: 2021-11-15T11:32:06+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -76,8 +76,8 @@
 !---------------------------------------------------------------------------!
 !-------------- Advertising networks ---------------------------------------!
 !---------------------------------------------------------------------------!
-||partners2.das-onlinespiel.de^$third-party
 ||ihreapotheken.de^$third-party
+||partners2.das-onlinespiel.de^$third-party
 ||intextlinks.idg.zone^$third-party
 ||megadeliveryn.com^$third-party
 ||hybrid-prd.ad-prd.s.joyn.de^
@@ -1441,7 +1441,6 @@ gamestar.de#%#window.blockAdBlock = function() {};
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1491
 @@||js.chefkoch-cdn.de/js/default/userinfo/werbe-banner/*.doubleclicktag.js
 ! http://forum.adguard.com/showthread.php?8908
-@@||cdn.videoplaza.tv/contrib/fr-canalplus/svm/homadConfigVideoplaza-d8.json^$domain=d8.tv
 @@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-vox.json$domain=vox.de
 @@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-nowtv.json
 @@||cdn.static-fra.de/*/adcontrol.min.js$domain=rtl.de|tvnow.de
@@ -1517,6 +1516,10 @@ teleboy.ch#@#.adWrapper
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/99433
+lokalklick.eu#?#.td_block_wrap:has(> h4 > span:contains(Anzeige))
+! https://github.com/AdguardTeam/AdguardFilters/issues/99270
+data-load.in#?#.p-body-sidebar > div.block:has(> div.block-container > div.block-body > center > a[target="_blank"] > img[src*="partner/"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96645
 online-stellenmarkt.net#?#.jobcontent > .col-lg-12:not(.jobtable) > .fj_post > .adsbygoogle:upward(1)
 ! travelbook.de - left-over at main page
@@ -1859,8 +1862,6 @@ lr-online.de#?#.module-list > li[-ext-has='small:contains(Anzeige)']
 macwelt.de#?##sidebar > .box[-ext-has='.banner-text:contains(-Anzeige-)']
 ! hilferuf.de - sidebar ad
 hilferuf.de#?##sidebar > li:contains(Anzeige)
-! t-online.de - left-over below headline in article
-t-online.de#?##Tcontbox > .Tgboxh[-ext-has='div[onfocus] > a[target="_blank"] > img']
 ! tvaktuell.com - ad text on main page
 tvaktuell.com#?#.entry-content > .idvl-editor > .size-content.padding-noPadding.columns-3[class*="theme-"]:not(.theme-default)[-ext-has='.slot']
 ! heise.de - telepolis left-over
@@ -2166,7 +2167,7 @@ pcgameshardware.de#?#.articleticker_item.archive[-ext-has="h3>a:contains([Anzeig
 pcwelt.de#?#section[class="post"][data-vr-contentbox][-ext-has="div.holder > a > div.tab:contains(Anzeige)"]
 ! https://forum.adguard.com/index.php?threads/13474/
 pcgames.de#?#.item.noImg[-ext-has='div.itemHeadline span.itemTitle:contains([Anzeige])']
-pcgames.de#?#.articleTicker > .item:has(a[href^="/E-Commerce-Thema-"])
+pcgames.de#?#.column > .module:has(> div[class] > div[class] > .item > span > a[href*="/E-Commerce-Thema-"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/8048
 wallstreet-online.de#?#.extract > strong:contains(Anzeige)
 !
@@ -2560,6 +2561,16 @@ drwindows.de,wiesbadenaktuell.de,rauchmeldungen.de,simfans.de,wn.de,cosmopolitan
 ! ##.id-Container--proBEEP
 hallo-muenchen.de,az-online.de,lokalo24.de,rosenheim24.de,kreiszeitung.de,nordbuzz.de,mannheim24.de,merkur.de,oktoberfest-live.de,tz.de##.id-Container--proBEEP
 !
+steuertipps.de##.goAdMan
+gmx.*##.left-col-bottom
+frankenpost.de##div[data-b-title*="Weekli"][data-b-title*="Prospekte"]
+tellows.de##.container #singlecomments > li:not([id])
+anisearch.de###top_outside
+anisearch.de##.rectX
+||anisearch.de/amazon
+pcgames.de##a[href*="/E-Commerce-Thema-"]
+winboard.org##.fh-sidebar
+data-load.in##center > a[target="_blank"] > img
 netzwelt.de##a[href^="https://www.awin1.com/cread.php?"]
 nzz.ch##.resor
 amazon.de##div[class*="ad-topper"]
@@ -2891,11 +2902,11 @@ dhv.de##body > .dhv_topcolor > table
 ||dhv.de/dbfiles/wbg/images/*.gif
 unicum.de##.box-werbung_box
 ||xhamsterdeutsch.xyz/bilder/mp4/*.mp4|
-/|$xmlhttprequest,script,domain=german-porno-deutsch.info|reifporn.de|sexvideos-hd.com|tube8-pornos.com|meinyouporn.com|hd-sexfilme.com|beeg-pornos.com|deinesexfilme.com|einfachtitten.com|gutesexfilme.com|halloporno.com|hd-pornos.net|hdpornos.net|herzporno.com|lesbenhd.com|milffabrik.com|nursexfilme.com|porn-monkey.com|porndrake.com|pornoaffe.com|pornodavid.com|pornoente.tv|pornofelix.com|pornofisch.com|pornohammer.com|pornohans.com|pornohelm.com|pornohirsch.net|pornoklinge.com|pornoschlange.com|pornotom.com|pornotom.com|pornotommy.com|pornovideos-hd.com|pornozebra.com|xhamster-sexvideos.com|xhamsterdeutsch.xyz
-german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz##.size-300x250
-german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz###wa_widget
-german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz##aside[class^="spc_height_"]
-german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz##iframe[src="about:blank"]
+/|$xmlhttprequest,script,domain=sexvideos-gratis.com|german-porno-deutsch.info|reifporn.de|sexvideos-hd.com|tube8-pornos.com|meinyouporn.com|hd-sexfilme.com|beeg-pornos.com|deinesexfilme.com|einfachtitten.com|gutesexfilme.com|halloporno.com|hd-pornos.net|hdpornos.net|herzporno.com|lesbenhd.com|milffabrik.com|nursexfilme.com|porn-monkey.com|porndrake.com|pornoaffe.com|pornodavid.com|pornoente.tv|pornofelix.com|pornofisch.com|pornohammer.com|pornohans.com|pornohelm.com|pornohirsch.net|pornoklinge.com|pornoschlange.com|pornotom.com|pornotom.com|pornotommy.com|pornovideos-hd.com|pornozebra.com|xhamster-sexvideos.com|xhamsterdeutsch.xyz
+sexvideos-gratis.com,german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz##.size-300x250
+sexvideos-gratis.com,german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz###wa_widget
+sexvideos-gratis.com,german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz##aside[class^="spc_height_"]
+sexvideos-gratis.com,german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz##iframe[src="about:blank"]
 wetteronline.de##app-ad-container
 homematic-forum.de###page-body > .post:not([id])
 gamestar.de###dfp-masthead
@@ -5223,7 +5234,6 @@ tagesspiegel.de###urban-teaser1
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3094
 ! https://github.com/AdguardTeam/AdguardFilters/issues/78871
 ! winfuture.de
-! canalplus.fr
 ! chip.de
 ! tvnow.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3012
@@ -6036,8 +6046,9 @@ auto-motor-und-sport.de,hardwareluxx.de,wetter.com#@#[id^="div-gpt-ad"]
 11freunde.de,auto-motor-und-sport.de,kochbar.de,rtl.de,vip.de#@#[id^="google_ads_iframe"]
 11freunde.de,auto-motor-und-sport.de,gofeminin.de,kochbar.de,vip.de#@#[id^="google_ads_iframe_"]
 kochbar.de#@#[name^="google_ads_iframe"]
+11freunde.de#@#a[href^="http://pubads.g.doubleclick.net/"]
 kochbar.de#@#a[href^="https://adclick.g.doubleclick.net/"]
-gofeminin.de#@#a[href^="https://pubads.g.doubleclick.net/"]
+11freunde.de,gofeminin.de#@#a[href^="https://pubads.g.doubleclick.net/"]
 telekom.de#@#a[href^="https://track.adform.net/"]
 ||4adtf.com.^$third-party
 ||4adtf.com^$third-party
@@ -6801,7 +6812,6 @@ telekom.de#@#a[href^="https://track.adform.net/"]
 ||cyclingmagazine.de/wp-content/uploads/*_Banner_
 ||daily-pia.de/wp-content/uploads/*/manitu_hostedby-
 ||dasbewegtdiewelt.de/wp-content/banner/
-||ddl-warez.to/images/ddownload_promo.png
 ||deinesexfilme.com/img/linklist2/
 ||deister-echo.de/wp-content/uploads/*/ad_
 ||delamar.de/wp-content/uploads/*/wallp_
@@ -8085,7 +8095,7 @@ hceintracht-hildesheim.de###module-sponsors
 wallstreet-online.de###mooTicker
 wallstreet-online.de###mooTickerContainerMobile
 gamereactor.de###mpu
-bz-berlin.de###mrec
+bild.de,bz-berlin.de###mrec
 meetingpoint-brandenburg.de###myspacerinner
 meetingpoint-brandenburg.de###myspacerright
 fupa.net###nab_container
@@ -8191,7 +8201,7 @@ eu-vertretung.de###stream-item-widget-3
 sims-3.net###subheader
 deutsche-versicherungsboerse.de###superBContainer
 aktionspreis.de###superBanner
-1000ps.at,1000ps.ch,1000ps.de,bz-berlin.de,firmenwissen.de,fussballdaten.de,golem.de###superbanner
+1000ps.at,1000ps.ch,1000ps.de,bild.de,bz-berlin.de,firmenwissen.de,fussballdaten.de,golem.de###superbanner
 hoerzu.de###superbanner-wrapper
 chilloutzone.net###superreplacement
 suche.t-online.de###tMRM_amazon
@@ -8401,7 +8411,7 @@ archzine.net##.banPlace1
 1001spiele.de,3gewinntspiele.com,6navi.ch,anixehd.tv,bankkaufmann.com,buchmarkt.de,deavita.com,flugblattangebote.at,fruchtportal.de,fussballgucken.info,goldseiten.de,hcb.net,jobagent.ch,juve.de,kartenspielen.de,knobelspiele.com,komoedie-steinstrasse.de,laufen.de,m.gota.ch,macerkopf.de,mein-wahres-ich.de,melodieundrhythmus.com,modhoster.de,pfaffenhofen-today.de,pixelio.de,prospektangebote.de,regionews.at,salue.de,sexnews.ch,snanews.de,spieleklassiker.com,svs1916.de,wimmelbildspiele.de##.banner
 w24.at##.banner-aspect-ratio
 spielkarussell.de##.banner-btf-side-rectangle
-skipper-bootshandel.de##.banner-container
+skipper-bootshandel.de,tvtoday.de##.banner-container
 wochenblatt.cc##.banner-header-left
 wochenblatt.cc##.banner-header-right
 medienjobs.ch,prewarcar.de##.banner-holder
@@ -8678,6 +8688,7 @@ buffed.de,pcgames.de##.item + .at_sponsored > .itemHeadline
 pragerzeitung.cz##.item-advert
 gamepro.de,gamestar.de##.jad-placeholder
 interaktiv.tagesspiegel.de##.jobunion-container
+eurocampings.de##.js-mock-banner
 kochbar.de##.kb-home-medrec-halfpage
 kicker.de##.kick__ad-pos_wrapper
 euro.kicker.de##.kick__euro2020-brand-sponsor
@@ -8775,8 +8786,6 @@ grenzecho.net##.pane-dpipub-rossel-imu-middle-moblile
 grenzecho.net##.pane-dpipub-rossel-native-top
 fotomagazin.de##.pane-landing-advertorial
 oekoportal.de##.panel-display > .panel-col-side > #block-views-website-block-1
-ddl-warez.to##.panel-heading[style="text-align:center;background-color:yellow;font-size:13px;color:#555555;"]
-ddl-warez.to##.panel-heading[style="text-align:center;background-color:yellow;font-size:16px;color:#555555;"]
 mytastedeu.com##.panorama
 paradiso.de##.paradiso-hp-ads-horizontal
 spielregeln.de##.parallax_link
@@ -8820,6 +8829,7 @@ zentrum-der-gesundheit.de##.products-inarticle-slider--parent
 aktionspreis.de##.produkt_uebersicht > div > br.clear
 coolibri.de##.promContainer
 endstation-rechts.de##.promo
+tvspielfilm.de##.promo-box-any-banner
 wegwerfemailadresse.com##.promobox
 europa-landmaschinen.de,suedtirolnews.it##.pub
 europa-landmaschinen.de##.pub-content
@@ -8977,6 +8987,7 @@ bestattungen.de##.tdp
 bild.de##.tea-rectangle
 wort.lu##.teaser--sponsored
 watson.ch##.teaser_type_paid_content
+computerbase.de##.text-ad
 analsexporno.net,deutsche-sexfilme.net,pornomonster.com##.tf-de
 kinox-filme.work##.tftable
 t3n.de##.tg-articletype-sponsored-deal.c-pin
@@ -9089,6 +9100,7 @@ emtb-news.de,ladies.de,mtb-news.de##a[href*="/redirect/"]
 strippokerregeln.com##a[href="/www/888casino"]
 outleter.org##a[href="http://topne.ws/onlineoutlet"]
 t-online.de##a[href="https://gebrauchtwagen-suche.t-online.de/marke-skoda/modell-superb"]
+tarnkappe.info##a[href^=" https://cell.cubbit.io?sca_ref="]
 tarnkappe.info##a[href^=" https://www.bit.ly/"]
 tarnkappe.info##a[href^=" https://www.rokkr.net/promo/"]
 hammerporno.xxx##a[href^="//plx.hammerporno.xxx/pool_link/"]
@@ -9168,9 +9180,6 @@ dervinschger.it##a[id="bottombanner"]
 wallstreet-online.de##a[onclick*="'tableAd'"]
 wallstreet-online.de##a[onclick*="'tableAd'"] + img
 shaz.ch##a[onclick^="__gaTracker('send', 'event', 'Ads'"]
-ddl-warez.to##a[onclick^="window.location.href='https://aj1574.online/"]
-ddl-warez.to##a[onclick^="window.location.href='https://ddownload.com/free"]
-ddl-warez.to##a[onclick^="window.location.href='https://rapidgator.net/article/premium/ref/"]
 computerbase.de##a[rel*="sponsored"] > img[alt="Anzeige"]
 schweizer-illustrierte.ch##a[rel="sponsored"]
 andalusien-aktuell.es,sex4u.ch##a[rel^="sponsored"]

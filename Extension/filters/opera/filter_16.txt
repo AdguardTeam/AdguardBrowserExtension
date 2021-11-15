@@ -1,8 +1,8 @@
-! Checksum: iOMcEMoFqJjTaeOaHFip9Q
+! Checksum: /1rn/BoLOtbQT1bFbItm6w
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.29.98
-! TimeUpdated: 2021-11-08T15:30:53+00:00
+! Version: 2.0.30.5
+! TimeUpdated: 2021-11-11T21:30:44+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -228,8 +228,6 @@ hack-life.net#%#//scriptlet("set-constant", "adBlockDetected", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41480
 mtlurb.com#@#.adsbygoogle
 mtlurb.com#$#.adsbygoogle { display: block!important; position: absolute!important; left: -3000px!important; }
-! https://forum.adguard.com/index.php?threads/issue-with-mycanal-fr.34924/
-@@||proxy.ads.canalplus-bo.net/web/canal/*/adserver/info^$domain=mycanal.fr
 ! recreatisse.com - antiadblock
 recreatisse.com#%#//scriptlet("abort-current-inline-script", "document.getElementById", "adback")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/39129
@@ -285,9 +283,8 @@ sante.journaldesfemmes.fr,linternaute.com#$#.AdBox.Ligatus.pub_300x250.pub_300x2
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=linternaute.com|p.ccmbg.com
 @@||player.ooyala.com/static/v*/stable/*/ad-plugin/google_ima.min.js$domain=linternaute.com|p.ccmbg.com
 ! https://forum.adguard.com/index.php?threads/15884/
-@@||static.canal-plus.net/resources/adframe.html?adName=$domain=mycanal.fr|canalplus.com
-@@||proxy.ads.canalplus-bo.net/web/*/adserver/info/?asset=$domain=mycanal.fr|canalplus.com
-@@||v.fwmrm.net/ad/g/1?*&vpaid=on$domain=mycanal.fr|canalplus.com
+@@||static.canal-plus.net/resources/adframe.html?adName=$domain=canalplus.com
+@@||proxy.ads.canalplus-bo.net/web/*/adserver/info/?asset=$domain=canalplus.com
 ! https://forum.adguard.com/index.php?threads/m-rtl-be-adguard-mobile.31398/
 @@||service.videoplaza.tv/proxy/bwtest.jpg$domain=rtl.be
 @@||service.videoplaza.tv/proxy/pulse-sdk-html5^$domain=rtl.be
@@ -582,8 +579,8 @@ lindependant.fr#%#//scriptlet("abort-on-property-read", "_adb")
 actu17.fr#%#//scriptlet("abort-on-property-write", "td_ad_background_click_link")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13192
 jacquieetmicheltv.net#%#var _st = window.setTimeout; window.setTimeout = function(a, b) { if(!/target_url/.test(a)){ _st(a,b);}};
-! https://forum.adguard.com/index.php?threads/22023/
-canalplus.fr#%#(function() { var w_open = window.open, regex = /smartadserver.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();
+! https://github.com/AdguardTeam/AdguardFilters/issues/83543
+canalplus.com#%#//scriptlet('set-constant', '__data.application.settings.featPlayerAds', 'false')
 ! http://forum.adguard.com/showthread.php?6907
 generation-nt.com#%#Object.defineProperty(window, 'AdvertBay', { get: function() { return []; } });
 !
@@ -620,8 +617,6 @@ actu17.fr#$#body.td-ad-background-link { cursor: auto!important; }
 torrents9.cc#$#a[href^="magnet:?"] { width: 100%!important; }
 ! https://forum.adguard.com/index.php?threads/www-malekal-com.29657/
 malekal.com#$#.adsbygoogle { height: 1px!important; visibility:hidden!important; }
-! https://forum.adguard.com/index.php?threads/22023/
-canalplus.fr#$#body { background-image: none!important; cursor: auto!important; }
 ! https://forum.adguard.com/index.php?threads/18388/
 cityplug.be#$#.preview-tabs-controls li { height: auto!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2947
@@ -657,6 +652,7 @@ all-stadium.net#$##layer2 {top:50px!important; left:950px!important;}
 /^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com)).*$/$third-party,script,domain=scan-fr.cc
 !
 !
+oxtorrent.*###vpnvpn
 ||widget.publishub.optimhub.com/assets/widget/widget_mntzm.js$domain=closermag.fr
 nouvelobs.com##.slice--ad
 ||streamonsport.info/fk.php
@@ -876,7 +872,6 @@ forums.cnetfrance.fr##.postbitlegacy a[href^="https://click.linksynergy.com/"] >
 brusselslife.be##.bxl-advert
 lacoccinelle.net##div[id^="sas_"]
 numerama.com##.wrap > div.top-bloc
-canalplus.fr###habillage
 bdzmag.actualitte.com##body > a.lienExterne
 moustique.be##.block-artwhere-ads
 onvasortir.com###pub_rectangle
@@ -971,6 +966,12 @@ lesfrontaliers.lu##.ad-listing
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/98589#issuecomment-963077457
+@@||olx.ua/*/?ad_id=$xmlhttprequest
+! https://forums.lanik.us/viewtopic.php?p=162232#p162232
+@@||integration.graphcomment.com/*.js$domain=lephoceen.fr
+! https://github.com/AdguardTeam/AdguardFilters/issues/98651
+gumtree.co.za#@#.ad-info
 ! https://github.com/AdguardTeam/AdguardFilters/issues/99134
 metacritic.com#@#.pub-img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97914
@@ -1300,7 +1301,7 @@ pixiv.net#@#.with-ad
 @@||clipwatching.com/embed-*.html$domain=alltube.pl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/48730
 ! Hdrezka
-@@/script.*.js$domain=hdrezkaonline.com|drhdrezka.com|mrhdrezka.com|hdrezka.sh|livekinopoisk.com|betahdrezka.com|cokinopoisk.com|hdrezka-ag.com|hdrezka.club|hdrezka.cm|hdrezka.co|hdrezka.com.ua|hdrezka.host|hdrezka.lol|hdrezka.name|hdrezka.site|hdrezka.today|hdrezka.tv|hdrezka.website|hdrezkaag.net|hdrezkaweb.com|hdrezkayou.com|instahdrezka.com|myhdrezka.com|freehdrezka.com|rezka.ag|tryhdrezka.com
+@@/script.*.js$domain=aghdrezka.com|hdrezkaonline.com|drhdrezka.com|mrhdrezka.com|hdrezka.sh|livekinopoisk.com|betahdrezka.com|cokinopoisk.com|hdrezka-ag.com|hdrezka.club|hdrezka.cm|hdrezka.co|hdrezka.com.ua|hdrezka.host|hdrezka.lol|hdrezka.name|hdrezka.site|hdrezka.today|hdrezka.tv|hdrezka.website|hdrezkaag.net|hdrezkaweb.com|hdrezkayou.com|instahdrezka.com|myhdrezka.com|freehdrezka.com|rezka.ag|tryhdrezka.com
 @@||static.hdrezka.ac^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/46671
 @@||uii.io/links/go$domain=uii.io
@@ -1679,11 +1680,6 @@ shoptimise.fr#@#iframe[id^="google_ads_iframe"]
 @@||pq-direct.revsci.net/pql?placementIdList=$domain=player.m6web.fr
 @@||cdn.videoplaza.tv/contrib/fr-m6/svm/homadConfigVideoplaza-clubic.json?cache=$domain=player.m6web.fr
 @@||cdn.videoplaza.tv/contrib/fr-m6/svm/vp_plugin.swf$domain=player.m6web.fr
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1415
-! broken by Adguard injections
-@@||mycanal.fr/library/Pelican/Ajax/$document
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/794
-@@||cdn.videoplaza.tv/contrib/fr-canalplus/svm/homadConfigVideoplaza-itele.json$domain=itele.fr
 ! hifi.fr - advanced search is broken by Adguard injections
 @@||hifi.fr/pm_advancedsearch$document
 !-------------- Liste FR rules -------------------------------------!

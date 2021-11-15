@@ -1,8 +1,8 @@
-! Checksum: yDfT9HVVJb4jxG9uGHk0iQ
+! Checksum: i1zex575tzyPF9djoKUGsw
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.24
-! TimeUpdated: 2021-11-04T17:30:45+00:00
+! Version: 2.0.1.31
+! TimeUpdated: 2021-11-15T10:30:54+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -29,11 +29,9 @@ $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
 $removeparam=fbclid
-!
 ! Campaign link tracking
 ! https://developers.atinternet-solutions.com/as2-tagging-en/javascript-en/campaigns-javascript-en/marketing-campaigns-javascript-en/#direct-method_5
 $removeparam=xtor
-!
 ! UTM
 $removeparam=utm_campaign
 $removeparam=utm_channel
@@ -60,29 +58,25 @@ $removeparam=utm_ad
 $removeparam=utm_brand
 $removeparam=utm_emcid
 $removeparam=utm_emmid
-!
+$removeparam=utm_umguk
 ! Google ads/analytics
 $removeparam=gbraid
 $removeparam=wbraid
 $removeparam=gclsrc
 $removeparam=gclid
 $removeparam=yclid
-!
 ! DPG Media analytics
 ! Used on Dutch sites
 $removeparam=dpg_source
 $removeparam=dpg_campaign
 $removeparam=dpg_medium
 $removeparam=dpg_content
-!
 ! AdmitAd tracking
 $removeparam=admitad_uid
-!
 ! adjust.com tracking
 $removeparam=adjust_tracker
 $removeparam=adjust_adgroup
 $removeparam=adjust_campaign
-!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89869
 ! email subscriptions tracking
 $removeparam=bsft_clkid
@@ -91,7 +85,6 @@ $removeparam=bsft_mid
 $removeparam=bsft_uid
 $removeparam=bsft_aaid
 $removeparam=bsft_ek
-!
 ! Matomo/Piwik
 $removeparam=mtm_campaign
 $removeparam=mtm_cid
@@ -116,7 +109,6 @@ $removeparam=rb_clickid
 ! https://github.com/brave/brave-browser/issues/13644
 $removeparam=oly_anon_id
 $removeparam=oly_enc_id
-!
 !---------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !---------------------------------------------------------------------------!
@@ -124,6 +116,22 @@ $removeparam=oly_enc_id
 ! The rules for specific sites
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/pull/99938
+! for more info - https://www.biaodianfu.com/spm.html
+$removeparam=spm,domain=aliyun.com|sohu.com
+||aliyun.com^$removeparam=scm
+$removeparam=dt_dapp,domain=douban.com|163.com
+||douban.com^$removeparam=dt_platform
+! https://github.com/AdguardTeam/AdguardFilters/issues/98659
+||listelerim.hepsiburada.com^$removeparam=af_ad
+||listelerim.hepsiburada.com^$removeparam=af_adset
+||listelerim.hepsiburada.com^$removeparam=af_force_deeplink
+||listelerim.hepsiburada.com^$removeparam=pid
+||listelerim.hepsiburada.com^$removeparam=c
+||listelerim.hepsiburada.com^$removeparam=is_retargeting
+||listelerim.hepsiburada.com^$removeparam=shortlink
+! Google Play source tracking
+||play.google.com/store/$removeparam=pcampaignid
 ! http://www.cyber-ad01.cc/0155/?ip=0155&id=L206
 ||cyber-ad01.cc^$removeparam=ip
 ! https://d-markets.net/markets/p/r?_loc=101928001&_article=1503722&_link=1449535&_lurl=http%3A%2F%2Fwww.cityheaven.net%2Faichi%2FA2302%2FA230201%2Ffujiko-ogaki_i%2Fnews%2FnewsId-1449535/?ref=myheaven
@@ -253,6 +261,9 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||yandex.*/news/$removeparam=stid
 ||yandex.*/sport/$removeparam=stid
 ||yandex.*/images/$removeparam=source-serpid
+! https://github.com/AdguardTeam/AdguardFilters/issues/88606
+||www.yandex.$removeparam=clid
+://yandex.$removeparam=source
 ! Baidu search - statictics
 ||www.baidu.com^$removeparam=rsv_pq
 ||www.baidu.com^$removeparam=rsv_t
@@ -453,6 +464,20 @@ $removeparam=dclid
 ||search.yahoo.co.jp^$removeparam=fr
 ! Daraz & Shop (Samesite)
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
+! Bilibili
+||bilibili.com^$removeparam=from
+||bilibili.com^$removeparam=seid
+||bilibili.com^$removeparam=share_source
+||bilibili.com^$removeparam=spm_id_from
+||bilibili.com^$removeparam=from_spm_id
+||bilibili.com^$removeparam=share_medium
+||bilibili.com^$removeparam=share_plat
+||bilibili.com^$removeparam=share_session_id
+||bilibili.com^$removeparam=share_source
+||bilibili.com^$removeparam=share_tag
+||bilibili.com^$removeparam=timestamp
+||bilibili.com^$removeparam=unique_k
+||search.bilibili.com^$removeparam=from_source
 !
 !---------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
