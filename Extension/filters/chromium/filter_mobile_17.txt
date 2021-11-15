@@ -1,8 +1,8 @@
-! Checksum: YG+JTwv2LCPJ3VamRbRcWA
+! Checksum: Nd5dfUq8frz7AXZKo43QDw
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.24
-! TimeUpdated: 2021-11-04T17:30:45+00:00
+! Version: 2.0.1.31
+! TimeUpdated: 2021-11-15T10:30:54+00:00
 ! Expires: 4 days (update frequency)
 $removeparam=_zucks_suid
 $removeparam=cmpid
@@ -46,6 +46,7 @@ $removeparam=utm_ad
 $removeparam=utm_brand
 $removeparam=utm_emcid
 $removeparam=utm_emmid
+$removeparam=utm_umguk
 $removeparam=gbraid
 $removeparam=wbraid
 $removeparam=gclsrc
@@ -83,6 +84,18 @@ $removeparam=ml_subscriber_hash
 $removeparam=rb_clickid
 $removeparam=oly_anon_id
 $removeparam=oly_enc_id
+$removeparam=spm,domain=aliyun.com|sohu.com
+||aliyun.com^$removeparam=scm
+$removeparam=dt_dapp,domain=douban.com|163.com
+||douban.com^$removeparam=dt_platform
+||listelerim.hepsiburada.com^$removeparam=af_ad
+||listelerim.hepsiburada.com^$removeparam=af_adset
+||listelerim.hepsiburada.com^$removeparam=af_force_deeplink
+||listelerim.hepsiburada.com^$removeparam=pid
+||listelerim.hepsiburada.com^$removeparam=c
+||listelerim.hepsiburada.com^$removeparam=is_retargeting
+||listelerim.hepsiburada.com^$removeparam=shortlink
+||play.google.com/store/$removeparam=pcampaignid
 ||cyber-ad01.cc^$removeparam=ip
 ||d-markets.net^$removeparam=ref
 ||coupang.com^$removeparam=wRef
@@ -169,6 +182,8 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||yandex.*/news/$removeparam=stid
 ||yandex.*/sport/$removeparam=stid
 ||yandex.*/images/$removeparam=source-serpid
+||www.yandex.$removeparam=clid
+://yandex.$removeparam=source
 ||www.baidu.com^$removeparam=rsv_pq
 ||www.baidu.com^$removeparam=rsv_t
 ||www.baidu.com/link?url=$removeparam=eqid
@@ -324,6 +339,19 @@ $removeparam=dclid
 ||rakuten.co.jp^*&trflg=$removeparam=trflg
 ||search.yahoo.co.jp^$removeparam=fr
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
+||bilibili.com^$removeparam=from
+||bilibili.com^$removeparam=seid
+||bilibili.com^$removeparam=share_source
+||bilibili.com^$removeparam=spm_id_from
+||bilibili.com^$removeparam=from_spm_id
+||bilibili.com^$removeparam=share_medium
+||bilibili.com^$removeparam=share_plat
+||bilibili.com^$removeparam=share_session_id
+||bilibili.com^$removeparam=share_source
+||bilibili.com^$removeparam=share_tag
+||bilibili.com^$removeparam=timestamp
+||bilibili.com^$removeparam=unique_k
+||search.bilibili.com^$removeparam=from_source
 !+ PLATFORM(ext_chromium, ext_ff, ext_opera)
 @@||userscript.zone^$removeparam=utm_campaign
 @@||img*.nga$removeparam=cmpid

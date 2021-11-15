@@ -1,8 +1,8 @@
-! Checksum: p67wwPn6WlwP/B3kHtuCyg
+! Checksum: 0cGQIMWxqsYPBMU8yV6C+w
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.24.49
-! TimeUpdated: 2021-11-08T08:30:20+00:00
+! Version: 2.0.24.70
+! TimeUpdated: 2021-11-15T11:30:41+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -213,6 +213,9 @@
 .ad.kakaocorp.com^
 .ad.kakao.com^
 !
+||videoads-cloud.rovio.com^
+||vmap.v.ad-generation.jp^
+||iyes.youku.com^
 ||adg.kajicam.com^
 ||ad.endpo.in^
 ||exelbid.com^
@@ -1257,6 +1260,15 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/98108
+nashemisto.dp.ua#?#footer > div:has(> amp-ad)
+nashemisto.dp.ua#?#footer > div:has(> amp-iframe[src^="https://m.mixadvert.com/"])
+! https://github.com/AdguardTeam/AdguardFilters/issues/98733
+radio.net#?##stationpage-holder > div:has(> div > div#RAD_NET_M_Station_Middle)
+radio.net#?#div[data-testid="RAD_NET_M_Search_Middle"] > div#RAD_NET_M_Search_Middle:upward(2)
+! https://github.com/AdguardTeam/AdguardFilters/issues/98485
+! https://github.com/AdguardTeam/AdguardFilters/issues/97560
+0629.com.ua#?#.linked-block > div.card-wrapper:has(> div.c-card > div.c-card__subinfo > div.c-card-label:contains(Реклама))
 ! chansoku.com ad leftover
 chansoku.com#?##article-contents > span:contains(スポンサードリンク)
 chansoku.com#?#.lattice-interres-standby > span:contains(スポンサードリンク)
@@ -2022,7 +2034,8 @@ yandex.ru#$#div[class*="_with-url-actualizer_yes"] > div.adv_type_top ~ div[clas
 ! ##### TEMPORARY END #####
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/95975#issuecomment-962839301
+! https://play.google.com/store/apps/details?id=com.ss.android.article.topbuzzvideo connection error
+! https://github.com/AdguardTeam/AdguardFilters/issues/98108
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96947
 ! https://github.com/AdguardTeam/AdguardFilters/issues/95096
 ! https://github.com/AdguardTeam/AdguardFilters/issues/92164
@@ -2351,6 +2364,22 @@ theinventory.com,avclub.com,clickhole.com,deadspin.com,gizmodo.com,jalopnik.com,
 ! ##.ads
 cartoonpornvideos.com,m.economictimes.com,beethovenmaster.com,m.mistrzowie.org,m.ura.news,siirtpress.com,up.ymgt.xyz,google.de,www-bento-de.cdn.ampproject.org,m-economictimes-com.cdn.ampproject.org,m.winfuture.de##.ads
 !
+jalan.net##.jlnsp-banner-frame
+jalan.net##.jlnsp-iframeItems
+jalan.net##.jsc-top__specialAdArea
+aseannow.com##div[id^="AA_article_"]
+||ebbs.jp/js/adjs01.js
+||ebbs.jp/test_ad/
+tsdm39.net##.wap_doze
+kinoafisha.info##.aka3evf3
+ua-football.com###main-menu > div[style^="width: 100%;"][style*="min-height: 90px;"]
+game.ettoday.net##.ad_pictxt_1
+pogoda.mail.ru##.wrapper_banner
+freesoft-100.com##.banner_block
+0629.com.ua##.f-banner
+starhit.ru##.promo-wrap
+bollywoodshaadis.com##div[style="min-height:330px;"]
+0629.com.ua,01.kg,0154.by,0472.ua,048.ua,0512.com.ua,0522.ua,0532.ua,0552.ua,056.ua,0564.ua,061.ua,06153.com.ua,0642.ua,62.ua,7152.kz,7232.kz,city04.kz,go152.by,go232.by,inaktau.kz,inalmaty.kz,inastana.kz,inatyrau.kz,inkaragandy.kz,inshymkent.kz,kaskelenec.kz,oshto.kg,qapshagai-city.kz,uralskcity.kz##app-main-popup-banner
 zn.ua##div[class^="mix_advert_ads_"]
 hentai-books.com##.sp-mieru
 mi-mollet.com###MM_SP_Billboard
@@ -2580,7 +2609,7 @@ skysports.com##div[data-format="floated-mpu"]
 supermarktcheck.de##.product-details > section:not([class]):not([id])
 renso-ruigo.com##.prem_invitation_fixed
 okinawatimes.co.jp##.ad_h250
-revolve-ysy.jp##.bfb_imgBanner
+resemara.xbiz.jp,revolve-ysy.jp##.bfb_imgBanner
 masturhub.com##iframe[Width="300"][height="100"]
 pikabu.ru##.ads-under-post
 ||dailyportalz.jp/api/dpz/adPosts|
@@ -2641,7 +2670,7 @@ gadget2ch.com##.hgooglead
 gadget2ch.com###main > .posts-inner:first-child
 gadget2ch.com###page > center
 abendzeitung-muenchen.de##.artikel-detail-mobile-ad
-ryukyushimpo.jp###sp_top_header
+fpsjp.net,ryukyushimpo.jp###sp_top_header
 blog.esuteru.com###article-1_5
 segodnya.ua##.branding-under-menu
 nukemanga.com##.enhanced-text-widget
@@ -2819,7 +2848,7 @@ mobimaniak.pl##div[style="margin:0px auto 10px auto; text-align:center; font-siz
 mobimaniak.pl,gsmmaniak.pl##div[style="margin:10px auto; text-align:center; font-size:8px;"]
 mobimaniak.pl,gsmmaniak.pl##div[style="margin:0 auto 10px auto; text-align:center; font-size:6px;"]
 m.sport-express.ru##div[style*="width:325px; height: 260px;"]
-ellegirl.ru,wday.ru,woman.ru##.creative-sticky
+maximonline.ru,ellegirl.ru,wday.ru,woman.ru##.creative-sticky
 tokyo-sports.co.jp##.ad-sp-bil
 praxistipps.focus.de##div[id^="contentad-sticky-"]
 mtb-news.de##.mtbnews-top
@@ -4865,6 +4894,10 @@ fplgameweek.com##mobile-sticky-ads
 ! Blocking Facebook mobile ads
 !
 !
+!
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/98633
+! https://github.com/AdguardTeam/AdguardFilters/issues/97770 (analytics request passes from facebook.com )
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97849
 ! https://github.com/AdguardTeam/AdguardFilters/issues/95618
 ! https://github.com/AdguardTeam/AdguardFilters/issues/95110

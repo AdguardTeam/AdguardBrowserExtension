@@ -1,8 +1,8 @@
-! Checksum: DLNULHbWqhMd3KVi5xxbsA
+! Checksum: /b4K3C1rafKodgdJQeRpDg
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.2.45
-! TimeUpdated: 2021-11-05T20:31:49+00:00
+! Version: 2.0.2.55
+! TimeUpdated: 2021-11-12T19:31:44+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -69,6 +69,7 @@ _advertentieleaderboardhome.
 ||xpartners.nl^$third-party
 .nl/adurl/$xmlhttprequest,domain=start-player.npo.nl
 ||advertising-cdn.dpgmedia.cloud^
+||advertising-module.api.dpgmedia.cloud^
 ||bnpparibasmarkets.nl/widget/$third-party
 ||bol.com/nl/upload/banners/
 ||bol.com/nl/upload/partnerprogramma/
@@ -104,6 +105,7 @@ _advertentieleaderboardhome.
 ||buzzbie.nl/uploads/banners/
 ||chatmetvreemden.be/static/html/
 ||chatmetvreemden.nl/static/html/
+||christelijknieuws.nl^*/banner/
 ||ciaotutti.nl/wp-content/uploads/Banner_
 ||clubbrugge.be^*/partner/
 ||coastline945fm.nl/cache/partners/
@@ -158,11 +160,14 @@ _advertentieleaderboardhome.
 ||motokicx.com/wp-content/uploads/*/Website-ad-
 ||netonline.be/slices/banners/
 ||nevobo.nl^*/sponsor/
+||niburu.co/images/banners/
 ||nieuwsuitnijmegen.nl/gfx/banners/
 ||noordkopcentraal.nl^*/banner_
 ||notebookcheck.nl/fileadmin/Sonstiges/am_$xmlhttprequest
 ||nrc.nl/tag/tag.js
 ||omroeppenm.nl^*/banner/
+||onderwijsland.com/files/banners/
+||onderwijsland.com/files/partners/
 ||ontdek-amerika.nl/marketing/bartsbanner.gif
 ||oogtv.nl/wp-content/banners/
 ||oops.nl/banner/
@@ -209,6 +214,7 @@ _advertentieleaderboardhome.
 ||unity.nu^*/Banners/
 ||vagina.nl/fish-hooks/fetch.json
 ||vbro.be/wp-content/uploads/*/autoonderdelen24_
+||visserijnieuws.nl/images/banners/
 ||vitesse.nl/assets/img/layout/etoro-logo.png
 ||vitesse.nl^*_sponsors_footer.png
 ||voetbalkrant.com/images/pub/
@@ -216,6 +222,7 @@ _advertentieleaderboardhome.
 ||volleybal.nl/uploads/images/Banners/
 ||volleybal.nl/uploads/images/Logos/
 ||wanttoknow.nl^*Banner
+||wereldstopcontacten.nl/wp-content/uploads/*/image-aff-nl.jpg
 ||wildfm.nl/wp-content/uploads/*/thumbnail_image002.png
 ||willem-ii.nl/banner/
 ||wp.com/romagazine.nl/14nwsite/wp-content/uploads/2021/07/amstelveen.jpg
@@ -244,6 +251,7 @@ _advertentieleaderboardhome.
 ###adRechts
 ###adRechts2
 ###advertentie
+##.advertentie-2-container
 ##.content-rechts-ad
 ##.gamereel_featured-ad
 ##.hoofdAd2
@@ -291,6 +299,7 @@ omroeppenm.nl,rickfm.nl###advertisement
 alle-tests.nl###advertising
 ciaotutti.nl###b_searchboxInc
 autowereld.nl###banner-detail-top
+autowereld.nl###banner-lister-top
 2dehands.be,marktplaats.nl###banner-top-dt-container
 dwtonline.com###banner1
 afkortingen.nu###banner_right
@@ -301,6 +310,7 @@ spreekbuis.nl###block-3
 willem-ii.nl###block-views-block-view-business-partners
 willem-ii.nl###block-views-block-view-main-sponsor
 willem-ii.nl###block-views-block-view-shirt-sponsor
+kekmama.nl###c1
 indiexl.nl###carousel-indiexl_partners_carousel_widget
 basketballbelgium.be###carousel-item-2
 topvolleybelgium.be###contacts3-5
@@ -310,8 +320,10 @@ grandprixradio.nl###custom_html-13
 grandprixradio.nl###custom_html-17
 grandprixradio.nl###custom_html-18
 omroepeemsdelta.nl###custom_html-2
-arrowcaz.nl###custom_html-3
+arrowcaz.nl,messianieuws.nl###custom_html-3
 historiek.net###custom_html-38
+messianieuws.nl###custom_html-4
+messianieuws.nl###custom_html-5
 rtvalbrandswaard.com###custom_html-6
 vroom.be###divBanneringSlot
 oops.nl###dropinboxv2cover
@@ -327,13 +339,17 @@ marktplaats.nl###inloggenDialog
 techzine.nl###lead
 eindexamens.nu###leaderboard
 made-in.be###leaderboard_row
+autowereld.nl###mainbanner
+messianieuws.nl###media_image-10
 spreekbuis.nl###media_image-11
 omroepalmere.nl###media_image-16
 omroepalmere.nl###media_image-18
+classicstogo.nl,messianieuws.nl###media_image-2
 omroepalmere.nl###media_image-21
 omroepalmere.nl###media_image-22
-keizerstad.nl,oomroepalmere.nl###media_image-3
-keizerstad.nl###media_image-4
+kanaancourant.nl,keizerstad.nl,oomroepalmere.nl,schiedamsnieuws.nl###media_image-3
+keizerstad.nl,schiedamsnieuws.nl###media_image-4
+messianieuws.nl###media_image-5
 maaslandradio.nl###media_image-7
 wielerflits.be,wielerflits.nl###mm_hpa
 wielerflits.be,wielerflits.nl###mm_leaderboard
@@ -364,6 +380,7 @@ easyfm.nl###sponsors-carousel
 h20.gg###text-14
 radiozuidrand.be###text-15
 loemedia.nl###text-17
+messianieuws.nl###text-24
 goedkoopstekeukensduitsland.nl###text-5
 goedkoopstekeukensduitsland.nl###text-6
 goedkoopstekeukensduitsland.nl###text-8
@@ -374,6 +391,8 @@ radio-minerva.be###topbanner
 voetbal-vandaag.nl###topbox
 hotradiohits.nl###tpl_banners
 omroepalmere.nl###widget_carousel_slider-3
+culturescope.nl###widget_sp_image-2
+culturescope.nl###widget_sp_image-4
 broadcastmagazine.nl##.Advertisement
 telegraaf.nl##.ArticleBodyBlocks__bannerWrapper
 telegraaf.nl##.ArticlePageWrapper__banner
@@ -396,10 +415,10 @@ voetbal.com##.adbox
 nieuwsmotor.nl##.add-background
 voetbalvandaag.be##.adds
 westerwoldeactueel.nl##.adr-wrapper
-handbal.nl,openrotterdam.nl##.ads
+handbal.nl,openrotterdam.nl,viamichelin.be,viamichelin.nl##.ads
 openingstijden.com,promootjesite.nl,radiofm.nl##.adsense
 amusement.tv,beurs.tv,cultuur.tv,formule1.tv,gamen.tv,geloof.tv,gezondheid.tv,informatief.tv,jongeren.tv,kennis.tv,kinderen.tv,kook.tv,lachen.tv,mensen.tv,mode.tv,muziek.tv,natuur.tv,nederland.tv,nieuws.tv,ondernemen.tv,onrecht.tv,oranje.tv,politiek.tv,reis.tv,serie.tv,spelletjes.tv,sporten.tv,talentenjacht.tv,vaartuig.tv,verkiezing.tv,voertuig.tv,voetbal.tv,weer.tv,woon.tv##.adv-tekst
-filmtotaal.nl##.advert
+filmtotaal.nl,intermediair.nl##.advert
 autoweek.nl##.advertise
 1twente.nl,bnnvara.nl,tvgids.tv##.advertisement
 sporza.be##.advertising
@@ -407,12 +426,14 @@ wielerflits.be,wielerflits.nl##.affiliate_links
 gfcnieuws.com,historiek.net##.ai-viewport-1
 rtvkrimpenerwaard.nl##.art-positioncontrol
 zeelandnet.nl##.article-bnr-first
+klimaatinfo.nl##.aside__add
 salvora.nl##.avia-content-slider1
 stadszaken.nl##.b-side
 afkortingen.nu,agf.nl,dutchitchannel.nl,folderz.nl,nrc.nl,simone.nl,startpagina.nl,televizier.nl,totaaltv.nl,tvgemist.be,tvgids.nl,unity.nu,waldnet.nl##.banner
 nieuwsuitnijmegen.nl##.banner-box-1
 speeleiland.nl##.banner-btf-side-rectangle
 feyenoord.nl##.banner-carousel
+tvblik.nl##.banner-fluid
 prewarcar.nl##.banner-holder
 ewmagazine.nl##.banner-leaderboard
 marktplaats.nl##.banner-row
@@ -433,10 +454,13 @@ bieos-omroep.nl##.bieos-widget
 gamer.nl,rtlnieuws.nl##.billboard
 psv.nl##.block-sponsors--psv
 psv.nl##.block-sponsors-desktop
+scholieren.com##.blockvertorial
 zeelandnet.nl##.bnr
 tpo.nl##.bol_pml_box
+bnr.nl##.branded
 classic.nl##.brievenbus
 tijd.be##.c-articleteaser--sponsored
+flaironline.nl##.c-commerical_banner
 ngf.nl##.c-footer-sponsors
 knltb.nl,tennis.nl##.c-site-footer__partners
 golf.nl##.c-sponsors
@@ -448,8 +472,9 @@ motorfietsblog.nl##.cbcontent
 autoscout24.be,autoscout24.nl##.cl-billboad-wrapper
 rd.nl##.codalt-container
 voetbaluitslagen.com##.cta
+kekmama.nl##.cts-row-wrapper
 touretappe.nl##.desktopad
-ad.nl,hln.be##.dfp
+ad.nl,bd.nl,bndestem.nl,destentor.nl,ed.nl,gelderlander.nl,goedgevoel.be,hln.be,pzc.nl,tubantia.nl##.dfp
 tpo.nl##.dus
 androidplanet.nl,iphoned.nl##.dynamic-content
 androidplanet.nl,iphoned.nl##.dynamic-content-native
@@ -469,12 +494,12 @@ rtvgo.nl##.footeradd
 burggolf.nl##.footercontent
 kanaalxxx.nl##.fpbnr
 motorrijdenexpert.nl##.full-row.relative-row.no-padding-bottom.title-txt-btn.flat-theme.flat-theme-content
-dbsuriname.com,westerwoldeactueel.nl##.g
+christmaholic.nl,dbsuriname.com,westerwoldeactueel.nl##.g
 zeelandnet.nl##.g_banner
 radiovisie.eu##.gmollik
 srherald.com##.gsrhera
 noordkopcentraal.nl##.headbanner
-televizier.nl##.header-banner
+televizier.nl,tvblik.nl##.header-banner
 schaatsen.nl##.header-partners-logo
 golf.be##.header__bottom
 ajax.nl##.header__partner-link
@@ -491,6 +516,7 @@ dolcevia.com##.ira-container.ira-format-block > .bookingaff
 reformatorischeomroep.nl##.item-banner
 beursgorilla.nl##.js--billboard
 beursgorilla.nl##.js--rect
+eurocampings.nl##.js-mock-banner
 speeleiland.nl##.leader-below-game
 atletiekkrant.be,autosportkrant.be,basketbalkrant.be,handbalkrant.be,hockeykrant.be,psv.nl,sport-planet.eu,sportid.be,tenniskrant.be,voetbalkrant.com,volleybalkrant.be,vrouwenvoetbalkrant.be,wielerkrant.be##.leaderboard
 blikopnieuws.nl##.ligatus-sidebar-block
@@ -508,6 +534,8 @@ schie.nu##.my-5
 iex.nl##.network:nth-of-type(2)
 nieuws.nl##.nieuws-banner
 tijd.be##.o-hpgrid__row-sponsoredcombo
+hardware.info##.overview-item--success
+classicstogo.nl##.owl-carousel
 ajax.nl##.page-footer__partners-block
 123video.nl##.page-load-switch
 klokradio.nl##.panel-grid.rslides-content
@@ -523,6 +551,7 @@ nnieuws.be##.region-banner-diamond
 halstadcentraal.nl##.respbanners
 gamer.nl##.rs-banner
 oisterwijknieuws.nl##.sam-container
+scholieren.com##.searchvertorial
 uitzendinggemist.net##.serie_info_adbox
 baanwacht.nl##.shailan_banner_widget
 fcgroningen.nl##.sidebar__item--banner
@@ -532,6 +561,7 @@ omroepwest.nl##.slider-wrapper
 volleyvlaanderen.be##.slider5
 maaslandradio.nl##.slides
 live-voetbal.com##.special-offer
+niburu.co##.sponsers
 sc-heerenveen.nl##.sponsor
 omroephouten.nl##.sponsor-carousel
 sc-heerenveen.nl##.sponsor-grid
@@ -566,9 +596,11 @@ osuradio.nl##.wdslider
 baarsclassicrock.nl,tweakers.net##.widebanner
 basketballbelgium.be##.widget-aoclubs-sponsors
 handbalstartpunt.nl##.widget-banner
+onderwijsland.com##.widget-partners
 nieuws.nl##.widget_add_widget
 riskcompliance.nl##.widget_itarget_banners
 rtvideaal.nl##.widget_random_banner_widget
+123geldzaken.nl##.widget_sponsor
 radioreflex.be##.widget_sponsors_widget
 wielerflits.be,wielerflits.nl##.wielerflits_ros_bravo_rectangle-halfpage
 telegraaf.nl##.withBanners
@@ -581,8 +613,8 @@ nu.nl##a[href*="/advertorial-"]
 racexpress.nl##a[href^="http://www.onderdelenstore24.nl/"]
 focus-wtv.be##a[href^="https://ads.focus-wtv.be/"]
 tennisplaza.be##a[href^="https://ds1.nl/"]
-radiozenders.fm##a[href^="https://partner.bol.com/"]
-tennisplaza.be##a[rel*="sponsored"]
+radiozenders.fm,wereldstopcontacten.nl##a[href^="https://partner.bol.com/"]
+gostreaming.nl,tennisplaza.be##a[rel*="sponsored"]
 oisterwijknieuws.nl##a[target="_blank"] > img
 pcmweb.nl##div.block:nth-of-type(1)
 pcmweb.nl##div.block:nth-of-type(2)
@@ -591,7 +623,8 @@ hartvannederland.nl##div[class*="-bannerWrapper-"]
 meteovista.be##div[class*="AdWrapper"]
 hartvannederland.nl##div[class^="a-bannerTopWrapper-"]
 omroepbrabant.nl##div[class^="ad-"]
-omroepbrabant.nl##div[class^="ad_"]
+omroepbrabant.nl,reclamefolder.nl##div[class^="ad_"]
+klimaatinfo.nl##div[class^="space_"]
 weeronline.nl##div[class^="styled__AdWrapper-"]
 weeronline.nl##div[class^="styled__FooterAdWrapper-"]
 basketball.nl##div[data-component="partner"]
@@ -622,6 +655,7 @@ dagbladdewest.com,dagelijksestandaard.nl,omroeprsh.nl,ucl-voetbal.nl##img[width=
 regio-voetbal.nl##img[width="300"][height="100"]
 goedkoopstekeukensduitsland.nl,thatsgaming.nl##img[width="300"][height="250"]
 racexpress.nl##img[width="310"][height="200"]
+streamwijzer.be##img[width="500"][height="500"]
 decibel.nl##img[width="640"][height="180"]
 volleyvlaanderen.be##img[width="670"][height="80"]
 wildfm.nl##img[width="699"][height="90"]
@@ -631,7 +665,9 @@ landenweb.nl##table[style="margin-left: auto; margin-right: auto; border: 1px so
 radiocaramba.nl##table[width="120"][height="600"]
 autobahn.eu#?#.d-none.d-md-block.mb-3:-abp-has(a[target="_blank"][rel="noopener"])
 businessinsider.nl#?#.widget_custom_html:-abp-has(h2:-abp-contains(Beter Beleggen))
+spaargids.be#?##latest_news_above:-abp-has(a[href^="https://www.deutschebank.be/"])
 srnieuws.com#?#.mb-10.p-10.card-view:-abp-has(a[target="_blank"][rel="noopener"])
+streamwijzer.be#?#.wp-block-group__inner-container:-abp-has(a[rel="noreferrer noopener"][target="_blank"])
 wielerflits.nl#?#.list-group-item:-abp-has(span:-abp-contains(Ad))
 wielerflits.nl#?#.w-100.p-3:-abp-has(span:-abp-contains(Ad))
 bokt.nl#@#.ad-body
@@ -663,7 +699,8 @@ indeleiderstrui.nl#%#//scriptlet("abort-current-inline-script", "Math", "Flags.n
 ||a.medialaancdn.be^
 @@||embed.kijk.nl/talpa-jw-skin/js/adsbygoogle.js$script,domain=embed.kijk.nl
 @@||looopings.nl/ad*.js
-looopings.nl#%#//scriptlet('abort-current-inline-script', 'document.getElementById', '"tester"')
+@@||looopings.nl/wp-banners.js
+looopings.nl#%#//scriptlet('abort-current-inline-script', 'document.getElementById', '.style.display=')
 windowstechblog.nl#@#.an-advert-banner
 windowstechblog.nl#@#.an-sponsored
 icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index: 9999"]:not([class]):not([id])
