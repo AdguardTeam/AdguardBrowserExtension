@@ -17,7 +17,14 @@ static.adguard.com:
         force-clean-build: 'true'
     - artifact-download:
         artifacts:
-          - {}
+          - name: edge.zip
+          - name: chrome.zip
+          - name: firefox.zip
+          - name: build.txt
+          - name: chrome.crx
+          - name: update.xml
+          - name: firefox.xpi
+          - name: update.json
     - script:
         interpreter: SHELL
         scripts:
@@ -49,7 +56,12 @@ Chrome WebStore:
         force-clean-build: 'true'
     - artifact-download:
         artifacts:
-          - {}
+          - name: edge.zip
+          - name: chrome.zip
+          - name: firefox.zip
+          - name: build.txt
+          - name: chrome.crx
+          - name: update.xml
     - script:
         interpreter: SHELL
         scripts:

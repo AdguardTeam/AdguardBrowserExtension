@@ -6,9 +6,7 @@ import { copyExternals } from './bundle/copy-external';
 import { BROWSERS, ENVS } from './constants';
 import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
-// Temporarily disabled, as firefox doesn't sign builds automatically
-// TODO uncomment
-// import { xpi } from './bundle/xpi';
+import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
 import { genValidators } from './genValidators';
 
@@ -41,11 +39,9 @@ const bundleChromeCrx = async () => {
     await crx(BROWSERS.CHROME);
 };
 
-// Temporarily disabled, as firefox doesn't sign builds automatically
-// TODO uncomment
-// const bundleFirefoxXpi = async () => {
-//     await xpi(BROWSERS.FIREFOX_STANDALONE);
-// };
+const bundleFirefoxXpi = async () => {
+    await xpi(BROWSERS.FIREFOX_STANDALONE);
+};
 
 const bundleAdguardApi = async () => {
     const webpackConfig = getWebpackConfig(BROWSERS.ADGUARD_API);
@@ -70,9 +66,7 @@ const betaPlan = [
     bundleChrome,
     bundleChromeCrx,
     bundleFirefoxStandalone,
-    // Temporarily disabled, as firefox doesn't sign builds automatically
-    // TODO uncomment
-    // bundleFirefoxXpi,
+    bundleFirefoxXpi,
     bundleEdge,
     bundleAdguardApi,
     buildInfo,

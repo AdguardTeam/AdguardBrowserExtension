@@ -85,18 +85,16 @@ Build:
       pattern: update.xml
       shared: true
       required: true
-    # Temporarily disabled, as firefox doesn't sign builds automatically
-    # TODO uncomment
-    # - name: firefox.xpi
-    #   location: build/beta
-    #   pattern: firefox.xpi
-    #   shared: true
-    #   required: true
-    # - name: update.json
-    #   location: build/beta
-    #   pattern: update.json
-    #   shared: true
-    #   required: true
+    - name: firefox.xpi
+      location: build/beta
+      pattern: firefox.xpi
+      shared: true
+      required: true
+    - name: update.json
+      location: build/beta
+      pattern: update.json
+      shared: true
+      required: true
   requirements:
     - adg-docker: 'true'
 
