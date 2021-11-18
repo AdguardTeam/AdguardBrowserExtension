@@ -25,65 +25,65 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const halloween2021Notification = {
-        id: 'halloween2021',
+    const bf2021Notification = {
+        id: 'bf2021',
         locales: {
             en: {
-                title: 'Create your own monster',
-                btn: 'It\'s alive!',
+                title: 'Black Friday Sale',
+                btn: 'Choose Deal',
             },
             ru: {
-                title: 'Собери своего монстра',
-                btn: 'Поехали!',
+                title: 'Чёрная пятница',
+                btn: 'Выбрать скидку',
             },
             ja: {
-                title: '自分のモンスター診断テスト',
-                btn: '受けてみる',
+                title: 'BLACK FRIDAY セール',
+                btn: '割引を選ぶ',
             },
             ko: {
-                title: '나만의 몬스터를 만들어 볼까요?',
-                btn: '게임시작',
+                title: '블랙 프라이데이 세일',
+                btn: '할인 선택',
             },
             zh_cn: {
-                title: '想要有自己的小鬼？',
-                btn: '快来体验',
+                title: '黑五来啦！',
+                btn: '选择你的折扣',
             },
             zh_tw: {
-                title: '創建自己的小鬼',
-                btn: '快來體驗',
+                title: '瘋狂優惠！',
+                btn: '選擇你的折扣',
             },
             fr: {
-                title: 'Inventons un cybermonstre !',
-                btn: 'Jouer',
+                title: 'Promo Black Friday',
+                btn: 'Choisir offre',
             },
             it: {
-                title: 'Immaginiamo un cybermostro!',
-                btn: 'Giocare',
+                title: 'Offerta Black Friday',
+                btn: 'Scegliere offerta',
             },
             es: {
-                title: 'Crea tu propio monstruo',
-                btn: 'Jugar',
+                title: 'Rebajas Black Friday',
+                btn: 'Elegir trato',
             },
             uk: {
-                title: 'Створи свого монстра',
-                btn: 'Нумо!',
+                title: 'Чорна п\'ятниця',
+                btn: 'Обрати знижку',
             },
         },
         // will be selected for locale, see usage of getNotificationText
         text: '',
-        url: 'https://adguard.com/forward.html?action=halloween21&app=browser_extension',
-        from: '25 October 2021 00:00:00',
-        to: '01 November 2021 00:00:00',
+        url: 'https://adguard.com/forward.html?action=bf2021&app=browser_extension',
+        from: '24 November 2021 18:00:00',
+        to: '01 December 2021 23:59:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(halloween2021Notification, 'icons', () => ({
+            return adguard.lazyGet(bf2021Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/halloween-enabled-19.png'),
-                    '38': adguard.getURL('icons/halloween-enabled-38.png'),
+                    '19': adguard.getURL('icons/bf-enabled-19.png'),
+                    '38': adguard.getURL('icons/bf-enabled-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/halloween-disabled-19.png'),
-                    '38': adguard.getURL('icons/halloween-disabled-38.png'),
+                    '19': adguard.getURL('icons/bf-disabled-19.png'),
+                    '38': adguard.getURL('icons/bf-disabled-38.png'),
                 },
             }));
         },
@@ -105,7 +105,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        halloween2021: halloween2021Notification,
+        bf2021: bf2021Notification,
     };
 
     /**
