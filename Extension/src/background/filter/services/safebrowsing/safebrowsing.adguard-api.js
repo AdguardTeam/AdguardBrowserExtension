@@ -27,6 +27,7 @@ const abstractSafebrowsing = {
     extractHosts: falseNoop,
     createHashesMap: falseNoop,
     processSbResponse: falseNoop,
+    clearCache: falseNoop(),
 };
 
 export default abstractSafebrowsing;

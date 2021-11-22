@@ -24,6 +24,7 @@ import { subscriptions } from './filter/filters/subscription';
 import { rulesStorage } from './storage';
 import { application } from './application';
 import { settings } from './settings/user-settings';
+import { safebrowsing } from './filter/services/safebrowsing';
 
 /**
  * Service that manages extension version information and handles
@@ -72,6 +73,10 @@ export const applicationUpdateService = (function () {
         if (currentUpdatePeriod === previousDefaultValue) {
             settings.setFiltersUpdatePeriod(settings.DEFAULT_FILTERS_UPDATE_PERIOD);
         }
+    }
+
+    function clearCaches() {
+        safebrowsing.clearCache();
     }
 
     /**
@@ -167,6 +172,8 @@ export const applicationUpdateService = (function () {
 
         // On every update remove if necessary obsolete filters
         methods.push(handleObsoleteFiltersRemoval);
+        // On every update clear persisted caches
+        methods.push(clearCaches);
 
         await executeMethods(methods);
     };

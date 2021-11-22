@@ -26,6 +26,7 @@ import { backend } from '../../filters/service-client';
 import { settings } from '../../../settings/user-settings';
 import { LruCache } from '../../../utils/lru-cache';
 import { lazyGet } from '../../../utils/lazy';
+import { listeners } from '../../../notifier';
 
 /**
  * Initializing SafebrowsingFilter.
@@ -339,6 +340,27 @@ const safebrowsing = (function () {
         safebrowsingCache.cache.saveValue(createHash(host), SB_ALLOW_LIST);
     };
 
+    /**
+     * Clears safebrowsing cache
+     */
+    const clearCache = () => {
+        safebrowsingCache.cache.clear();
+    };
+
+    /**
+     * Subscribes to safebrowsing setting change and clears cache when setting changes
+     */
+    const init = () => {
+        listeners.addSpecifiedListener(listeners.SETTING_UPDATED, (_, { propertyName }) => {
+            if (propertyName === settings.DISABLE_SAFEBROWSING) {
+                clearCache();
+            }
+        });
+    };
+
+    // Init
+    init();
+
     return {
         checkSafebrowsingFilter,
         lookupUrl,
@@ -347,6 +369,7 @@ const safebrowsing = (function () {
         extractHosts,
         createHashesMap,
         processSbResponse,
+        clearCache,
     };
 })();
 

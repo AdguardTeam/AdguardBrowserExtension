@@ -59,10 +59,10 @@ export function LruCache(storagePropertyName, size) {
     }
 
     /**
-         * Retrieves value from cache and checks if saved data is not expired yet.
-         * @param {string} key
-         * @returns {null|object} saved data
-         */
+     * Retrieves value from cache and checks if saved data is not expired yet.
+     * @param {string} key
+     * @returns {null|object} saved data
+     */
     function getValue(key) {
         return cache.get(key);
     }
@@ -80,6 +80,15 @@ export function LruCache(storagePropertyName, size) {
         }
     };
 
+    /**
+     * Clears cache
+     */
+    const clear = () => {
+        cache = new LRUMap(maxCacheSize, null);
+        cacheSize = cache.size;
+        saveCacheToLocalStorage();
+    };
+
     // Load cache
     cache = getCacheFromLocalStorage();
     cacheSize = cache.size;
@@ -87,5 +96,6 @@ export function LruCache(storagePropertyName, size) {
     return {
         getValue,
         saveValue,
+        clear,
     };
 }
