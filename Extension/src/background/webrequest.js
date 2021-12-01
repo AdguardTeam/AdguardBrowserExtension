@@ -222,12 +222,16 @@ const webrequestInit = function () {
                 request.tabId = tab.tabId;
                 request.method = method;
 
-                contentFiltering.onBeforeRequest(
-                    backgroundPage.webRequest.filterResponseData(requestId),
-                    request,
-                    replaceRules || [],
-                    htmlRules || [],
-                );
+                // Bypass images
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1906
+                if (requestType !== RequestTypes.IMAGE) {
+                    contentFiltering.onBeforeRequest(
+                        backgroundPage.webRequest.filterResponseData(requestId),
+                        request,
+                        replaceRules || [],
+                        htmlRules || [],
+                    );
+                }
             }
         }
 
