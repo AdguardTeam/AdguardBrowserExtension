@@ -26,22 +26,32 @@ export const contentUtils = (function () {
      * Creates iframe and appends it after target open tag
      * @param target Node where to append iframe with html
      * @param html html string to write inside iframe
+     * @param alertStylesUrl url to styles css
      * @returns {HTMLElement} iframe element
      */
-    const appendIframe = (target, html) => {
+    const appendIframe = (target, html, alertStylesUrl) => {
+        const cssLink = document.createElement('link');
+        cssLink.href = alertStylesUrl;
+        cssLink.rel = 'stylesheet';
+        cssLink.type = 'text/css';
+
+        const prependedHtml = `${cssLink.outerHTML}\n${html}`;
+
         const iframe = document.createElement('iframe');
         target.insertAdjacentElement('afterbegin', iframe);
         iframe.src = 'about:blank';
+        iframe.style.zIndex = MAX_Z_INDEX;
+
+        const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
         if (navigator.userAgent.indexOf('Edge') > -1) {
             // Edge doesn't allow to write html in iframe srcdoc
-            const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
             iframedoc.open();
-            iframedoc.write(html);
+            iframedoc.write(prependedHtml);
             iframedoc.close();
         } else {
-            iframe.srcdoc = html;
+            iframe.srcdoc = prependedHtml;
         }
-        iframe.style.zIndex = MAX_Z_INDEX;
+
         return iframe;
     };
 
@@ -64,13 +74,14 @@ export const contentUtils = (function () {
      * @param target
      * @param html
      * @param isAdguardTab
+     * @param alertStylesUrl
      * @returns {HTMLElement}
      */
-    const appendAlertElement = (target, html, isAdguardTab) => {
+    const appendAlertElement = (target, html, isAdguardTab, alertStylesUrl) => {
         if (isAdguardTab) {
             return appendDiv(target, html);
         }
-        return appendIframe(target, html);
+        return appendIframe(target, html, alertStylesUrl);
     };
 
     /**
@@ -112,7 +123,9 @@ export const contentUtils = (function () {
      * @param message Message text
      */
     function showAlertPopup(message) {
-        const { text, title, isAdguardTab } = message;
+        const {
+            text, title, isAdguardTab, alertStylesUrl,
+        } = message;
 
         if (!title && !text) {
             return;
@@ -143,7 +156,7 @@ export const contentUtils = (function () {
             }
 
             if (document.body) {
-                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab);
+                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab, alertStylesUrl);
                 alertElement.classList.add('adguard-alert-iframe');
                 setTimeout(() => {
                     if (alertElement && alertElement.parentNode) {
@@ -178,10 +191,10 @@ export const contentUtils = (function () {
             offerButtonText,
             showPromoNotification,
             disableNotificationText,
+            alertStylesUrl,
         } = message;
 
-        const updateIframeHtml = `<head></head>
-                            <body>
+        const updateIframeHtml = `
                             <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
                                 <div id="adguard-new-version-popup-close" class="adguard-update-popup__close close-iframe"></div>
                                 <div class="adguard-update-popup__logo"></div>
@@ -211,8 +224,7 @@ export const contentUtils = (function () {
                                         </a>
                                     </div>
                                 </div>
-                            </div>
-                            </body>`;
+                            </div>`;
 
         const triesCount = 10;
 
@@ -257,7 +269,7 @@ export const contentUtils = (function () {
             }
 
             if (document.body && !isAdguardTab) {
-                const iframe = appendIframe(document.body, updateIframeHtml);
+                const iframe = appendIframe(document.body, updateIframeHtml, alertStylesUrl);
                 iframe.classList.add('adguard-update-iframe');
                 const isListening = handleCloseIframe(iframe);
                 if (!isListening) {

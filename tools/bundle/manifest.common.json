@@ -24,9 +24,6 @@
     "content_scripts": [
         {
             "all_frames": true,
-            "css": [
-                "assets/css/alert-popup.css"
-            ],
             "js": [
                 "pages/content-script-start.js"
             ],
@@ -58,10 +55,23 @@
                 "*://*.adguard.com/*/thankyou.html*"
             ],
             "run_at": "document_start"
+        },
+        {
+            "all_frames": false,
+            "css": [
+                "assets/css/alert-popup.css"
+            ],
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "match_about_blank": true,
+            "run_at": "document_start"
         }
     ],
     "minimum_chrome_version": "55.0",
     "web_accessible_resources": [
-        "/web-accessible-resources/*"
+        "/web-accessible-resources/*",
+        "/assets/css/alert-popup.css"
     ]
 }

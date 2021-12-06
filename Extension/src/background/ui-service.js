@@ -39,6 +39,8 @@ import { translator } from '../common/translators/translator';
  * UI service
  */
 export const uiService = (function () {
+    const alertStylesUrl = backgroundPage.getURL('/assets/css/alert-popup.css');
+
     const browserActionTitle = translator.getMessage('name');
 
     const contextMenuCallbackMappings = {
@@ -389,6 +391,7 @@ export const uiService = (function () {
                 isAdguardTab: isAdguardTab(tab),
                 title,
                 text,
+                alertStylesUrl,
             });
         }
     };
@@ -435,6 +438,7 @@ export const uiService = (function () {
             offerButtonText,
             offerButtonHref,
             disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),
+            alertStylesUrl,
         };
 
         const tab = await tabsApi.getActive();
