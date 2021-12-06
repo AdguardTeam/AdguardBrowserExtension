@@ -415,23 +415,14 @@ export const uiService = (function () {
      * @param previousVersion
      */
     const showVersionUpdatedPopup = async (currentVersion, previousVersion) => {
-        const notification = notifications.getCurrentNotification();
-
-        if (!notification
-            && browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
+        if (browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
             && browserUtils.getMinorVersionNumber(currentVersion) === browserUtils.getMinorVersionNumber(previousVersion)) {
             return;
         }
 
-        let offer = translator.getMessage('options_popup_version_update_offer');
-        let offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
-        let offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
-
-        if (notification) {
-            offer = notification.text.title;
-            offerButtonText = notification.text.btn;
-            offerButtonHref = `${notification.url}&from=version_popup`;
-        }
+        const offer = translator.getMessage('options_popup_version_update_offer');
+        const offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
+        const offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
 
         const message = {
             type: 'show-version-updated-popup',
@@ -439,7 +430,7 @@ export const uiService = (function () {
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
-            showPromoNotification: !!notification,
+            showPromoNotification: false,
             offer,
             offerButtonText,
             offerButtonHref,
