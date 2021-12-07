@@ -40,6 +40,9 @@ import { translator } from '../common/translators/translator';
  */
 export const uiService = (function () {
     const alertStylesUrl = backgroundPage.getURL('/assets/css/alert-popup.css');
+    // TODO: Fetch content and inline it in the iframe
+    // const alertStyles = fetch(alertStylesUrl).text();
+    // console.log(alertStyles);
 
     const browserActionTitle = translator.getMessage('name');
 
