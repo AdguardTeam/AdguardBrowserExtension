@@ -25,6 +25,7 @@ export const contentUtils = (function () {
     /**
      * Create style element with provided css
      * @param css
+     * @returns {any | HTMLElement}
      */
     const createStyleElement = (css) => {
         const styleElement = document.createElement('style');
@@ -65,9 +66,13 @@ export const contentUtils = (function () {
      * Creates div and appends it to the page
      * @param target
      * @param html
+     * @param alertStyles
      * @returns {any | HTMLElement}
      */
-    const appendDiv = (target, html) => {
+    const appendDiv = (target, html, alertStyles) => {
+        const stylesElement = createStyleElement(alertStyles);
+        target.insertAdjacentElement('afterbegin', stylesElement);
+
         const div = document.createElement('div');
         div.innerHTML = html;
         target.insertAdjacentElement('afterbegin', div);
@@ -85,7 +90,7 @@ export const contentUtils = (function () {
      */
     const appendAlertElement = (target, html, isAdguardTab, alertStyles) => {
         if (isAdguardTab) {
-            return appendDiv(target, html);
+            return appendDiv(target, html, alertStyles);
         }
         return appendIframe(target, html, alertStyles);
     };
