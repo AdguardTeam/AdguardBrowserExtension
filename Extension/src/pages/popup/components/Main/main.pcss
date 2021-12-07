@@ -17,7 +17,20 @@
     &__cta-link {
         text-align: center;
         font-size: 12px;
-        opacity: 0.6;
+        color: var(--gray700);
+        transition: var(--t3) color;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray400);
+        }
+
+        &:hover {
+            color: var(--gray900);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--gray100);
+            }
+        }
     }
 
     &__total-blocked-tab {
@@ -158,7 +171,12 @@
 
     &:hover {
         & .switcher__btn {
-            transform: scale(1.03);
+            transition: var(--t3) box-shadow;
+            box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
+
+            @media (prefers-color-scheme: dark) {
+                box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
+            }
         }
     }
 
@@ -238,11 +256,43 @@
 .light-mode {
     .main {
         color: var(--gray900);
+
+        &__cta-link {
+            color: var(--gray700);
+
+            &:hover {
+                color: var(--gray900);
+            }
+        }
+    }
+
+    .switcher {
+        &:hover {
+            & .switcher__btn {
+                box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
+            }
+        }
     }
 }
 
 .dark-mode {
     .main {
         color: var(--gray300);
+
+        &__cta-link {
+            color: var(--gray400);
+
+            &:hover {
+                color: var(--gray100);
+            }
+        }
+    }
+
+    .switcher {
+        &:hover {
+            & .switcher__btn {
+                box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
+            }
+        }
     }
 }
