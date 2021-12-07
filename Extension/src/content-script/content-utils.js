@@ -31,6 +31,7 @@ export const contentUtils = (function () {
         const styleElement = document.createElement('style');
         styleElement.type = 'text/css';
         styleElement.appendChild(document.createTextNode(css));
+        return styleElement;
     };
 
     /**
@@ -66,13 +67,9 @@ export const contentUtils = (function () {
      * Creates div and appends it to the page
      * @param target
      * @param html
-     * @param alertStyles
      * @returns {any | HTMLElement}
      */
-    const appendDiv = (target, html, alertStyles) => {
-        const stylesElement = createStyleElement(alertStyles);
-        target.insertAdjacentElement('afterbegin', stylesElement);
-
+    const appendDiv = (target, html) => {
         const div = document.createElement('div');
         div.innerHTML = html;
         target.insertAdjacentElement('afterbegin', div);
@@ -89,9 +86,13 @@ export const contentUtils = (function () {
      * @returns {HTMLElement}
      */
     const appendAlertElement = (target, html, isAdguardTab, alertStyles) => {
+        const stylesElement = createStyleElement(alertStyles);
+        document.body.insertAdjacentElement('afterbegin', stylesElement);
+
         if (isAdguardTab) {
-            return appendDiv(target, html, alertStyles);
+            return appendDiv(target, html);
         }
+
         return appendIframe(target, html, alertStyles);
     };
 
@@ -280,6 +281,9 @@ export const contentUtils = (function () {
             }
 
             if (document.body && !isAdguardTab) {
+                const stylesElement = createStyleElement(alertStyles);
+                document.body.insertAdjacentElement('afterbegin', stylesElement);
+
                 const iframe = appendIframe(document.body, updateIframeHtml, alertStyles);
                 iframe.classList.add('adguard-update-iframe');
                 const isListening = handleCloseIframe(iframe);
