@@ -23,19 +23,25 @@ export const contentUtils = (function () {
     const MAX_Z_INDEX = '2147483647';
 
     /**
+     * Create style element with provided css
+     * @param css
+     */
+    const createStyleElement = (css) => {
+        const styleElement = document.createElement('style');
+        styleElement.type = 'text/css';
+        styleElement.appendChild(document.createTextNode(css));
+    };
+
+    /**
      * Creates iframe and appends it after target open tag
      * @param target Node where to append iframe with html
      * @param html html string to write inside iframe
-     * @param alertStylesUrl url to styles css
+     * @param alertStyles popup styles text
      * @returns {HTMLElement} iframe element
      */
-    const appendIframe = (target, html, alertStylesUrl) => {
-        const cssLink = document.createElement('link');
-        cssLink.href = alertStylesUrl;
-        cssLink.rel = 'stylesheet';
-        cssLink.type = 'text/css';
-
-        const prependedHtml = `${cssLink.outerHTML}\n${html}`;
+    const appendIframe = (target, html, alertStyles) => {
+        const styleElement = createStyleElement(alertStyles);
+        const prependedHtml = `${styleElement.outerHTML}\n${html}`;
 
         const iframe = document.createElement('iframe');
         target.insertAdjacentElement('afterbegin', iframe);
@@ -74,14 +80,14 @@ export const contentUtils = (function () {
      * @param target
      * @param html
      * @param isAdguardTab
-     * @param alertStylesUrl
+     * @param alertStyles
      * @returns {HTMLElement}
      */
-    const appendAlertElement = (target, html, isAdguardTab, alertStylesUrl) => {
+    const appendAlertElement = (target, html, isAdguardTab, alertStyles) => {
         if (isAdguardTab) {
             return appendDiv(target, html);
         }
-        return appendIframe(target, html, alertStylesUrl);
+        return appendIframe(target, html, alertStyles);
     };
 
     /**
@@ -124,7 +130,7 @@ export const contentUtils = (function () {
      */
     function showAlertPopup(message) {
         const {
-            text, title, isAdguardTab, alertStylesUrl,
+            text, title, isAdguardTab, alertStyles,
         } = message;
 
         if (!title && !text) {
@@ -156,7 +162,7 @@ export const contentUtils = (function () {
             }
 
             if (document.body) {
-                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab, alertStylesUrl);
+                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab, alertStyles);
                 alertElement.classList.add('adguard-alert-iframe');
                 setTimeout(() => {
                     if (alertElement && alertElement.parentNode) {
@@ -191,7 +197,7 @@ export const contentUtils = (function () {
             offerButtonText,
             showPromoNotification,
             disableNotificationText,
-            alertStylesUrl,
+            alertStyles,
         } = message;
 
         const updateIframeHtml = `
@@ -269,7 +275,7 @@ export const contentUtils = (function () {
             }
 
             if (document.body && !isAdguardTab) {
-                const iframe = appendIframe(document.body, updateIframeHtml, alertStylesUrl);
+                const iframe = appendIframe(document.body, updateIframeHtml, alertStyles);
                 iframe.classList.add('adguard-update-iframe');
                 const isListening = handleCloseIframe(iframe);
                 if (!isListening) {

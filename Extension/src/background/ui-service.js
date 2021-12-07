@@ -40,9 +40,6 @@ import { translator } from '../common/translators/translator';
  */
 export const uiService = (function () {
     const alertStylesUrl = backgroundPage.getURL('/assets/css/alert-popup.css');
-    // TODO: Fetch content and inline it in the iframe
-    // const alertStyles = fetch(alertStylesUrl).text();
-    // console.log(alertStyles);
 
     const browserActionTitle = translator.getMessage('name');
 
@@ -386,7 +383,7 @@ export const uiService = (function () {
         return parsedUrl.protocol.indexOf(schemeUrl) > -1;
     };
 
-    const showAlertMessagePopup = async (title, text) => {
+    const showAlertMessagePopup = async (title, text, alertStyles) => {
         const tab = await tabsApi.getActive();
         if (tab) {
             tabsApi.sendMessage(tab.tabId, {
@@ -394,7 +391,7 @@ export const uiService = (function () {
                 isAdguardTab: isAdguardTab(tab),
                 title,
                 text,
-                alertStylesUrl,
+                alertStyles,
             });
         }
     };
@@ -419,8 +416,9 @@ export const uiService = (function () {
      *
      * @param currentVersion
      * @param previousVersion
+     * @param alertStyles
      */
-    const showVersionUpdatedPopup = async (currentVersion, previousVersion) => {
+    const showVersionUpdatedPopup = async (currentVersion, previousVersion, alertStyles) => {
         if (browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
             && browserUtils.getMinorVersionNumber(currentVersion) === browserUtils.getMinorVersionNumber(previousVersion)) {
             return;
@@ -441,7 +439,7 @@ export const uiService = (function () {
             offerButtonText,
             offerButtonHref,
             disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),
-            alertStylesUrl,
+            alertStyles,
         };
 
         const tab = await tabsApi.getActive();
@@ -861,7 +859,10 @@ export const uiService = (function () {
         initAssistant(selectElement);
     };
 
-    const init = () => {
+    const init = async () => {
+        const response = await fetch(alertStylesUrl);
+        const alertStyles = await response.text();
+
         // update icon on event received
         listeners.addListener((event, tab, reset) => {
             if (event !== listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
@@ -941,7 +942,7 @@ export const uiService = (function () {
         listeners.addListener((event, info) => {
             if (event === listeners.APPLICATION_UPDATED) {
                 if (settings.isShowAppUpdatedNotification()) {
-                    showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
+                    showVersionUpdatedPopup(info.currentVersion, info.prevVersion, alertStyles);
                 }
             }
         });
@@ -950,7 +951,7 @@ export const uiService = (function () {
         listeners.addListener((event, enabledFilters) => {
             if (event === listeners.ENABLE_FILTER_SHOW_POPUP) {
                 const result = getFiltersEnabledResultMessage(enabledFilters);
-                showAlertMessagePopup(result.title, result.text);
+                showAlertMessagePopup(result.title, result.text, alertStyles);
             }
         });
 
