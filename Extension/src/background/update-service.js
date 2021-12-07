@@ -160,13 +160,15 @@ export const applicationUpdateService = (function () {
     const onUpdate = async function (runInfo) {
         const methods = [];
 
+        log.info(`The extension was updated from ${runInfo.prevVersion}`);
+
         if (browserUtils.isGreaterVersion('3.0.3', runInfo.prevVersion)) {
             methods.push(handleUndefinedGroupStatuses);
         }
         if (browserUtils.isGreaterVersion('3.3.5', runInfo.prevVersion)) {
             methods.push(handleDefaultUpdatePeriodSetting);
         }
-        if (browserUtils.isGreaterVersion('3.5.6', runInfo.prevVersion)) {
+        if (browserUtils.isGreaterVersion('4.0.67', runInfo.prevVersion)) {
             methods.push(onUpdateRuleConverter);
         }
 

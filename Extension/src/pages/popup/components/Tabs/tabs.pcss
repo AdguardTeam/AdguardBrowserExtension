@@ -1,6 +1,16 @@
 .tabs {
     &__panel {
         display: flex;
+        max-width: 288px;
+        padding: 4px;
+        border-radius: 12px;
+        margin: 0 auto;
+        background-color: var(--gray100);
+        overflow: hidden;
+
+        @media (prefers-color-scheme: dark) {
+            background: var(--gray900);
+        }
     }
 
     &__content {
@@ -15,22 +25,31 @@
     &__tab {
         font-size: 16px;
         width: 50%;
-        height: 40px;
+        height: 32px;
         border: 0;
-        background-color: var(--gray100);
         color: var(--gray700);
         cursor: pointer;
         text-align: center;
-        line-height: 40px;
+        line-height: 32px;
+        transition: var(--t3) color;
+
+        &:hover {
+            color: var(--gray900);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--gray100);
+            }
+        }
 
         @media (prefers-color-scheme: dark) {
-            background-color: var(--grayDark);
             color: var(--gray400);
         }
 
         &_active {
+            border-radius: 8px;
             background-color: var(--white);
             color: var(--gray900);
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.12), 0px 3px 1px rgba(0, 0, 0, 0.04);
 
             @media (prefers-color-scheme: dark) {
                 background-color: var(--black);
@@ -42,13 +61,20 @@
 
 .light-mode {
     .tabs {
+        &__panel {
+            background-color: var(--gray100);
+        }
+
         &__content {
             background-color: var(--white);
         }
 
         &__tab {
-            background-color: var(--gray100);
             color: var(--gray700);
+
+            &:hover {
+                color: var(--gray900);
+            }
 
             &_active {
                 background-color: var(--white);
@@ -60,13 +86,20 @@
 
 .dark-mode {
     .tabs {
+        &__panel {
+            background: var(--gray900);
+        }
+
         &__content {
             background-color: var(--black);
         }
 
         &__tab {
-            background-color: var(--grayDark);
             color: var(--gray400);
+
+            &:hover {
+                color: var(--gray100);
+            }
 
             &_active {
                 background-color: var(--black);
