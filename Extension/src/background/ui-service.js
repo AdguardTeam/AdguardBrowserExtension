@@ -419,6 +419,12 @@ export const uiService = (function () {
      * @param alertStyles
      */
     const showVersionUpdatedPopup = async (currentVersion, previousVersion, alertStyles) => {
+        const runningPromoNotification = notifications.getCurrentNotification();
+        if (runningPromoNotification) {
+            // Do not show version updated notification if promo notification is available
+            return;
+        }
+
         if (browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
             && browserUtils.getMinorVersionNumber(currentVersion) === browserUtils.getMinorVersionNumber(previousVersion)) {
             return;
