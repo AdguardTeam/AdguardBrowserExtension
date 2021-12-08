@@ -418,21 +418,24 @@ export const uiService = (function () {
      * @param previousVersion
      * @param alertStyles
      */
-    const showVersionUpdatedPopup = async (currentVersion, previousVersion, alertStyles) => {
-        const runningPromoNotification = notifications.getCurrentNotification();
-        if (runningPromoNotification) {
-            // Do not show version updated notification if promo notification is available
-            return;
-        }
-
-        if (browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
+    const showApplicationUpdatedPopup = async (currentVersion, previousVersion, alertStyles) => {
+        const promoNotification = notifications.getCurrentNotification();
+        if (!promoNotification
+            && browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
             && browserUtils.getMinorVersionNumber(currentVersion) === browserUtils.getMinorVersionNumber(previousVersion)) {
+            // In case of no promo available or versions equivalence
             return;
         }
 
-        const offer = translator.getMessage('options_popup_version_update_offer');
-        const offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
-        const offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
+        let offer = translator.getMessage('options_popup_version_update_offer');
+        let offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
+        let offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
+
+        if (promoNotification) {
+            offer = promoNotification.text.title;
+            offerButtonText = promoNotification.text.btn;
+            offerButtonHref = `${promoNotification.url}&from=version_popup`;
+        }
 
         const message = {
             type: 'show-version-updated-popup',
@@ -440,7 +443,7 @@ export const uiService = (function () {
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
-            showPromoNotification: false,
+            showPromoNotification: !!promoNotification,
             offer,
             offerButtonText,
             offerButtonHref,
@@ -948,7 +951,7 @@ export const uiService = (function () {
         listeners.addListener((event, info) => {
             if (event === listeners.APPLICATION_UPDATED) {
                 if (settings.isShowAppUpdatedNotification()) {
-                    showVersionUpdatedPopup(info.currentVersion, info.prevVersion, alertStyles);
+                    showApplicationUpdatedPopup(info.currentVersion, info.prevVersion, alertStyles);
                 }
             }
         });
