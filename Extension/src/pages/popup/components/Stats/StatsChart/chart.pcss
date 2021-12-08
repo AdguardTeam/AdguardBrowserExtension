@@ -1,6 +1,10 @@
 .chart {
     & .tick text {
-        fill: var(--gray300);
+        fill: var(--gray700);
+
+        @media (prefers-color-scheme: dark) {
+            fill: var(--gray300);
+        }
     }
 
     & .c3-line-data1 {
@@ -38,5 +42,18 @@
         border-top-color: var(--gray400);
         border-width: 8px;
         margin-left: -8px;
+    }
+}
+
+
+.light-mode {
+    & .tick text {
+        fill: var(--gray700);
+    }
+}
+
+.dark-mode {
+    & .tick text {
+        fill: var(--gray300);
     }
 }
