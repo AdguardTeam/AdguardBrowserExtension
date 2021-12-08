@@ -50,7 +50,8 @@ export const Filters = observer(() => {
 
     return (
         <div className="stats-chart__filters">
-            <div className="stats-chart__select">
+            <div className="stats-chart__select stats-chart__select--left">
+                <Icon id="#select" classname="icon--select stats-chart__icon" />
                 <select
                     className="stats-chart__select-in"
                     name="blocked-type"
@@ -69,9 +70,9 @@ export const Filters = observer(() => {
                         );
                     })}
                 </select>
-                <Icon id="#select" classname="icon--select stats-chart__icon" />
             </div>
-            <div className="stats-chart__select">
+            <div className="stats-chart__select stats-chart__select--left">
+                <Icon id="#select" classname="icon--select stats-chart__icon" />
                 <select
                     className="stats-chart__select-in"
                     name="time-range"
@@ -90,7 +91,6 @@ export const Filters = observer(() => {
                         );
                     })}
                 </select>
-                <Icon id="#select" classname="icon--select stats-chart__icon" />
             </div>
         </div>
     );

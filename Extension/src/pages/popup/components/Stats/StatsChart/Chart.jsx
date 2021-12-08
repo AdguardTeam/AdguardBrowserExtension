@@ -188,6 +188,9 @@ export const Chart = ({ stats, range, type }) => {
                 show: false,
             },
             grid: {
+                lines: {
+                    front: false,
+                },
                 x: {
                     lines,
                 },
