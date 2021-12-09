@@ -6,7 +6,6 @@ import {
 } from 'mobx';
 import {
     NETWORK_RULE_OPTIONS,
-    MASK_ALLOWLIST,
     OPTIONS_DELIMITER,
 } from '@adguard/tsurlfilter/dist/es/network-rule-options';
 
@@ -267,10 +266,6 @@ class WizardStore {
             mandatoryOptions = [NETWORK_RULE_OPTIONS.CSP];
         }
 
-        if (selectedEvent.requestUrl === 'content-security-policy-check') {
-            mandatoryOptions = [NETWORK_RULE_OPTIONS.WEBRTC, NETWORK_RULE_OPTIONS.WEBSOCKET];
-        }
-
         if (selectedEvent.replaceRules) {
             mandatoryOptions = [NETWORK_RULE_OPTIONS.REPLACE];
         }
@@ -316,10 +311,6 @@ class WizardStore {
                     selectedEvent.requestDomain,
                     true,
                 );
-            }
-
-            if (selectedEvent.requestUrl === 'content-security-policy-check') {
-                patterns = [MASK_ALLOWLIST];
             }
 
             if (selectedEvent.element) {
