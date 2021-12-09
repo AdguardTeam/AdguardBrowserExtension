@@ -195,7 +195,9 @@ export const createExceptionCookieRules = (event) => {
     if (cookieName) {
         patterns.push(getUnblockDomainRule(domain, `${NETWORK_RULE_OPTIONS.COOKIE}=${cookieName}`));
     }
-    if (modifierValue) {
+    if (modifierValue
+        && modifierValue !== cookieName
+    ) {
         patterns.push(getUnblockDomainRule(domain, `${NETWORK_RULE_OPTIONS.COOKIE}=${modifierValue}`));
     }
     patterns.push(totalUnblockingRule);
