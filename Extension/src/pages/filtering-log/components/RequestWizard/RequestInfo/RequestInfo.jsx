@@ -211,12 +211,7 @@ const RequestInfo = observer(() => {
     }
 
     const openInNewTabHandler = async () => {
-        let url = selectedEvent.requestUrl;
-
-        if (url === 'content-security-policy-check') {
-            url = selectedEvent.frameUrl;
-        }
-
+        const url = selectedEvent.requestUrl;
         await messenger.openTab(url, { inNewWindow: true });
     };
 
