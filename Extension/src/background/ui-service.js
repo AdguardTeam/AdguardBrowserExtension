@@ -451,11 +451,51 @@ export const uiService = (function () {
             alertStyles,
         };
 
-        const tab = await tabsApi.getActive();
-        if (tab) {
-            message.isAdguardTab = isAdguardTab(tab);
-            tabsApi.sendMessage(tab.tabId, message);
+        await sendMessageToActiveTab(message);
+    };
+
+    let sendMessageTries = 0;
+    const MAX_TRIES = 25;
+    const TRIES_TIMEOUT = 5000;
+
+    /**
+     * Tries to send message to an active tab,
+     * in case of updated app, the content script on not-reloaded tab will not be able to send success callback,
+     * so then we postpone the try by TRIES_TIMEOUT.
+     *
+     * @param message
+     */
+    const sendMessageToActiveTab = async (message) => {
+        const result = await trySendMessageToActiveTab(message);
+        if (result) {
+            return;
         }
+
+        sendMessageTries += 1;
+        if (sendMessageTries > MAX_TRIES) {
+            // Give up trying
+            log.warn('Reached max tries on attempts to show application popup');
+            return;
+        }
+
+        setTimeout(async () => {
+            await sendMessageToActiveTab(message);
+        }, TRIES_TIMEOUT);
+    };
+
+    const trySendMessageToActiveTab = async (message) => {
+        const tab = await tabsApi.getActive();
+        if (!tab) {
+            return false;
+        }
+
+        message.isAdguardTab = isAdguardTab(tab);
+        const result = await tabsApi.sendMessage(tab.tabId, message);
+        if (!result) {
+            return false;
+        }
+
+        return true;
     };
 
     function getFiltersUpdateResultMessage(success, updatedFilters) {

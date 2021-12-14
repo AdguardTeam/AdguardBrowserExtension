@@ -338,11 +338,12 @@ export const contentUtils = (function () {
             return;
         }
 
-        contentPage.onMessage.addListener((message) => {
+        contentPage.onMessage.addListener((message, sender, sendResponse) => {
             if (message.type === 'show-alert-popup') {
                 showAlertPopup(message);
             } else if (message.type === 'show-version-updated-popup') {
                 showVersionUpdatedPopup(message);
+                sendResponse(true);
             } else if (message.type === 'no-cache-reload') {
                 noCacheReload();
             } else if (message.type === 'update-tab-url') {
