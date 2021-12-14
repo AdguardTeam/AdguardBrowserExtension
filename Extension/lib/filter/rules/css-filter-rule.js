@@ -151,6 +151,14 @@
                     throw new Error(`Css injection rule with 'url' was omitted: ${rule}`);
                 }
 
+                // discard css inject rules containing other unsafe selectors
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1920
+                if (/{.*image-set\(.*\)/gi.test(cssContent) ||
+                    /{.*image\(.*\)/gi.test(cssContent) ||
+                    /{.*cross-fade\(.*\)/gi.test(cssContent)) {
+                    throw new Error(`CSS modifying rule with unsafe style was omitted: ${rule}`);
+                }
+
                 // Prohibit "\" character in CSS injection rules
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1444
                 if ((cssContent.indexOf('\\') > -1) && !isExtendedCss) {
@@ -248,7 +256,7 @@
      */
     CssFilterRule.ELEMHIDE_MARKERS = [
         api.FilterRule.MASK_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_RULE];
-        
+
     api.CssFilterRule = CssFilterRule;
 
 })(adguard, adguard.rules);

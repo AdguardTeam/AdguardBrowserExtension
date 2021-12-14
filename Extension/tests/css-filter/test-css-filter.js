@@ -879,6 +879,26 @@ QUnit.test('Test inject rules containing url in the css content', (assert) => {
     }, `Css injection rule with 'url' was omitted: ${ruleText}`);
 });
 
+QUnit.test('Test inject rules containing unsafe styles in the css content', (assert) => {
+    let ruleText = '*#$#* { background:image-set(\'https://hackvertor.co.uk/images/logo.gif\' 1x) }';
+    assert.throws(() => {
+        // eslint-disable-next-line no-unused-vars
+        const rule = new adguard.rules.CssFilterRule(ruleText);
+    }, `CSS modifying rule with unsafe style was omitted: ${ruleText}`);
+
+    ruleText = '*#$#* { background:image(\'https://hackvertor.co.uk/images/logo.gif\' 1x) }';
+    assert.throws(() => {
+        // eslint-disable-next-line no-unused-vars
+        const rule = new adguard.rules.CssFilterRule(ruleText);
+    }, `CSS modifying rule with unsafe style was omitted: ${ruleText}`);
+
+    ruleText = '*#$#* { background:cross-fade(\'https://hackvertor.co.uk/images/logo.gif\' 1x) }';
+    assert.throws(() => {
+        // eslint-disable-next-line no-unused-vars
+        const rule = new adguard.rules.CssFilterRule(ruleText);
+    }, `CSS modifying rule with unsafe style was omitted: ${ruleText}`);
+});
+
 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1444
 QUnit.test('Inject rules with backslash should be omitted', (assert) => {
     let ruleText = 'example.com#$#body { background: \\75 rl(http://example.org/empty.gif) }';
