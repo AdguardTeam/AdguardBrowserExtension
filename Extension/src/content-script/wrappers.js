@@ -17,6 +17,7 @@
 
 import { contentPage } from './content-script';
 import { MESSAGE_TYPES } from '../common/constants';
+import { AGPolicy } from './trusted-types-policy';
 
 /**
  * !!! Important do not change function declaration, otherwise it would loose its name,
@@ -135,7 +136,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
                 injectedFramesAdd(contentWindow);
                 contentWindow[scriptName] = messageChannel; // Left message channel for the injected script
                 const args = `'${scriptName}', ${shouldOverrideWebRTC}, true`;
-                contentWindow.eval(`(${injectedToString()})(${args});`);
+                contentWindow.eval(AGPolicy.createScript(`(${injectedToString()})(${args});`));
                 delete contentWindow[scriptName];
             }
         } catch (e) {

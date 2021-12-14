@@ -36,7 +36,7 @@ export const ConfirmModal = ({
                         {subtitle}
                     </div>
                 )}
-                <div className="modal__content">
+                <div className="modal__content modal__content--button">
                     <button
                         className="button button--m button--red-bg modal__btn modal__btn--statistic"
                         type="button"
