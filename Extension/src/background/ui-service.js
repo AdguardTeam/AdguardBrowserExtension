@@ -455,7 +455,7 @@ export const uiService = (function () {
     };
 
     let sendMessageTries = 0;
-    const MAX_TRIES = 25;
+    const MAX_TRIES = 500; // 2500 sec
     const TRIES_TIMEOUT = 5000;
 
     /**
