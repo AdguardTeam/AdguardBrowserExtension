@@ -1,9 +1,11 @@
-! Checksum: tYu/FWasFaH6ik634eViQg
+! Checksum: 3QeXJVwntav0Oa6+raciaQ
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.10
-! TimeUpdated: 2021-10-14T10:30:57+00:00
+! Version: 2.0.1.52
+! TimeUpdated: 2021-12-13T22:30:53+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=nx_source
+$removeparam=_zucks_suid
 $removeparam=cmpid
 $removeparam=asgtbndr
 $removeparam=guccounter
@@ -45,6 +47,7 @@ $removeparam=utm_ad
 $removeparam=utm_brand
 $removeparam=utm_emcid
 $removeparam=utm_emmid
+$removeparam=utm_umguk
 $removeparam=gbraid
 $removeparam=wbraid
 $removeparam=gclsrc
@@ -75,6 +78,80 @@ $removeparam=mtm_source
 $removeparam=pk_campaign
 $removeparam=pk_medium
 $removeparam=pk_source
+$removeparam=_branch_match_id
+$removeparam=vc_lpp
+$removeparam=ml_subscriber
+$removeparam=ml_subscriber_hash
+$removeparam=rb_clickid
+$removeparam=oly_anon_id
+$removeparam=oly_enc_id
+||upgrad.com^$removeparam=UTM_MEDIUM
+||adweek.com^$removeparam=traffic_source
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
+||kitbag.com^$removeparam=_ref
+||kitbag.com^$removeparam=ab
+||web.vstat.info$removeparam=guid
+||web.vstat.info$removeparam=user_agent
+||start.pm.by^$removeparam=adtag
+||mail.ru^$removeparam=oprtrack
+||redhotpawn.com^$removeparam=cbqsid
+||reddit.com^$removeparam=correlation_id
+||reddit.com^$removeparam=ref_campaign
+||reddit.com^$removeparam=ref_source
+||reddit.com^$removeparam=ref
+||trendyol.com^$removeparam=tyutm_source
+||trendyol.com^$removeparam=tyutm_medium
+||trendyol.com^$removeparam=tyutm_campaign
+||cc.loginfra.com/cc$removeparam=a
+||cc.loginfra.com/cc$removeparam=bw
+||cc.loginfra.com/cc$removeparam=px
+||cc.loginfra.com/cc$removeparam=py
+||cc.loginfra.com/cc$removeparam=sx
+||cc.loginfra.com/cc$removeparam=sy
+||cc.loginfra.com/cc$removeparam=nsc
+||mein.onlinekonto.de^$removeparam=ref
+||dengekionline.com^$removeparam=osusume_banner
+$removeparam=spm,domain=aliyun.com|sohu.com
+||aliyun.com^$removeparam=scm
+$removeparam=dt_dapp,domain=douban.com|163.com
+||douban.com^$removeparam=dt_platform
+||listelerim.hepsiburada.com^$removeparam=af_ad
+||listelerim.hepsiburada.com^$removeparam=af_adset
+||listelerim.hepsiburada.com^$removeparam=af_force_deeplink
+||listelerim.hepsiburada.com^$removeparam=pid
+||listelerim.hepsiburada.com^$removeparam=c
+||listelerim.hepsiburada.com^$removeparam=is_retargeting
+||listelerim.hepsiburada.com^$removeparam=shortlink
+||play.google.com/store/$removeparam=pcampaignid
+||cyber-ad01.cc^$removeparam=ip
+||d-markets.net^$removeparam=ref
+||coupang.com^$removeparam=wRef
+||coupang.com^$removeparam=traceid
+||coupang.com^$removeparam=wTime
+||coupang.com^$removeparam=wPcid
+||weidian.com^$removeparam=/distributorid|wfr|ifr|share_relation/
+||jasonsavard.com^$removeparam=/cUrl|ref/
+$removeparam=a_aid,domain=expressvpn.com|vpnarea.com
+||hog.*^$removeparam=ad
+||lcs.naver.com/m?u=$removeparam=os
+||lcs.naver.com/m?u=$removeparam=ln
+||lcs.naver.com/m?u=$removeparam=sr
+||lcs.naver.com/m?u=$removeparam=bw
+||lcs.naver.com/m?u=$removeparam=bh
+||lcs.naver.com/m?u=$removeparam=ls
+||lcs.naver.com/m?u=$removeparam=navigationStart
+||lcs.naver.com/m?u=$removeparam=requestStart
+||lcs.naver.com/m?u=$removeparam=responseStart
+||lcs.naver.com/m?u=$removeparam=responseEnd
+||lcs.naver.com/m?u=$removeparam=domLoading
+||lcs.naver.com/m?u=$removeparam=domInteractive
+||lcs.naver.com/m?u=$removeparam=domContentLoadedEventStart
+||lcs.naver.com/m?u=$removeparam=domContentLoadedEventEnd
+||lcs.naver.com/m?u=$removeparam=domComplete
+||lcs.naver.com/m?u=$removeparam=loadEventStart
+||lcs.naver.com/m?u=$removeparam=loadEventEnd
+||lcs.naver.com/m?u=$removeparam=pid
+||lcs.naver.com/m?u=$removeparam=ts
 ||edx.org^$removeparam=source
 ||infoq.com^$removeparam=/topicPageSponsorship|^itm_/
 ||coupondunia.in^$removeparam=itm_source
@@ -132,6 +209,9 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||yandex.*/news/$removeparam=stid
 ||yandex.*/sport/$removeparam=stid
 ||yandex.*/images/$removeparam=source-serpid
+||www.yandex.$removeparam=clid
+://yandex.$removeparam=clid
+://yandex.$removeparam=source
 ||www.baidu.com^$removeparam=rsv_pq
 ||www.baidu.com^$removeparam=rsv_t
 ||www.baidu.com/link?url=$removeparam=eqid
@@ -142,7 +222,6 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
-||google.*/search$removeparam=dpr
 ||google.*/search$removeparam=sa
 ||google.*/search$removeparam=source
 ||google.*/search$removeparam=aqs
@@ -209,6 +288,7 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||cam4.com^$removeparam=act
 ||cam4.com^$removeparam=suid
 ||cam4.com^$removeparam=showSignupPopup
+||bbc.com^$removeparam=ocid
 ||office.com^$removeparam=ocid
 ||twitter.com^$removeparam=ref_src
 ||twitter.com^$removeparam=ref_url
@@ -224,11 +304,11 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 $removeparam=dclid
 ||trendyol.com^$removeparam=_ga
 ||trendyol.com^$removeparam=utm_subaff
+||marktjagd.de^$removeparam=client
 ||kaspersky.com^$removeparam=icid
 ||coursera.org^$removeparam=siteID
 ||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
-||adguard.com^$removeparam=aid
 ||hepsiburada.com^$removeparam=wt_af
 ||mioga.de^$removeparam=pl
 ||mioga.de^$removeparam=idealoid
@@ -286,11 +366,26 @@ $removeparam=dclid
 ||rakuten.co.jp^*&trflg=$removeparam=trflg
 ||search.yahoo.co.jp^$removeparam=fr
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
+||bilibili.com^$removeparam=from
+||bilibili.com^$removeparam=seid
+||bilibili.com^$removeparam=share_source
+||bilibili.com^$removeparam=spm_id_from
+||bilibili.com^$removeparam=from_spm_id
+||bilibili.com^$removeparam=share_medium
+||bilibili.com^$removeparam=share_plat
+||bilibili.com^$removeparam=share_session_id
+||bilibili.com^$removeparam=share_source
+||bilibili.com^$removeparam=share_tag
+||bilibili.com^$removeparam=timestamp
+||bilibili.com^$removeparam=unique_k
+||search.bilibili.com^$removeparam=from_source
+@@||dkbs.sabio.de/sabio/services/$removeparam
+@@||sendgb.com/*/?utm_source=$removeparam=utm_source
+@@||img*.nga$removeparam=cmpid
+@@||mywot.com/*/confirmNewEmail/$removeparam
 @@||plex.tv/api/v*/users/*?utm_source=$removeparam=utm_source,domain=watch.plex.tv
 @@/embed/comments^$removeparam,~third-party,domain=avclub.com|clickhole.com|deadspin.com|gizmodo.com|jalopnik.com|jezebel.com|kotaku.com|lifehacker.com|splinternews.com|theinventory.com|theonion.com|theroot.com|thetakeout.com|sportskeeda.com
-@@||urldefense.com^$removeparam=utm_id
-@@||urldefense.com^$removeparam=utm_medium
-@@||urldefense.com^$removeparam=utm_source
+@@||urldefense.com^$removeparam
 @@||cdn.privatehost.com/videos*/$removeparam
 @@||rightnowtech.com/engagement/api/consumer/nvidia/*/requestEngagement?pool=$removeparam
 @@||insurancexblog.blogspot.com/?utm_source=$removeparam=utm_source
