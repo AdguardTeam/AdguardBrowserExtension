@@ -36,25 +36,44 @@
     const MAX_Z_INDEX = '2147483647';
 
     /**
+     * Create style element with provided css
+     * @param css
+     * @returns {any | HTMLElement}
+     */
+    const createStyleElement = (css) => {
+        const styleElement = document.createElement('style');
+        styleElement.type = 'text/css';
+        styleElement.appendChild(document.createTextNode(css));
+        return styleElement;
+    };
+
+    /**
+     /**
      * Creates iframe and appends it after target open tag
      * @param target Node where to append iframe with html
      * @param html html string to write inside iframe
+     * @param alertStyles popup styles text
      * @returns {HTMLElement} iframe element
      */
-    const appendIframe = (target, html) => {
+    const appendIframe = (target, html, alertStyles) => {
+        const styleElement = createStyleElement(alertStyles);
+        const prependedHtml = `${styleElement.outerHTML}\n${html}`;
+
         const iframe = document.createElement('iframe');
         target.insertAdjacentElement('afterbegin', iframe);
         iframe.src = 'about:blank';
+        iframe.style.zIndex = MAX_Z_INDEX;
+
+        const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
         if (navigator.userAgent.indexOf('Edge') > -1) {
             // Edge doesn't allow to write html in iframe srcdoc
-            const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
             iframedoc.open();
-            iframedoc.write(html);
+            iframedoc.write(prependedHtml);
             iframedoc.close();
         } else {
-            iframe.srcdoc = html;
+            iframe.srcdoc = prependedHtml;
         }
-        iframe.style.zIndex = MAX_Z_INDEX;
+
         return iframe;
     };
 
@@ -78,13 +97,18 @@
      * @param target
      * @param html
      * @param isAdguardTab
+     * @param alertStyles
      * @returns {HTMLElement}
      */
-    const appendAlertElement = (target, html, isAdguardTab) => {
+    const appendAlertElement = (target, html, isAdguardTab, alertStyles) => {
+        const stylesElement = createStyleElement(alertStyles);
+        document.body.insertAdjacentElement('afterbegin', stylesElement);
+
         if (isAdguardTab) {
             return appendDiv(target, html);
         }
-        return appendIframe(target, html);
+
+        return appendIframe(target, html, alertStyles);
     };
 
     /**
@@ -126,7 +150,9 @@
      * @param message Message text
      */
     function showAlertPopup(message) {
-        const { text, title, isAdguardTab } = message;
+        const {
+            text, title, isAdguardTab, alertStyles,
+        } = message;
 
         if (!title && !text) {
             return;
@@ -157,7 +183,7 @@
             }
 
             if (document.body) {
-                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab);
+                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab, alertStyles);
                 alertElement.classList.add('adguard-alert-iframe');
                 setTimeout(() => {
                     if (alertElement && alertElement.parentNode) {
@@ -192,10 +218,10 @@
             offerButtonText,
             showPromoNotification,
             disableNotificationText,
+            alertStyles,
         } = message;
 
-        const updateIframeHtml = `<head></head>
-                            <body>
+        const updateIframeHtml = `
                             <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
                                 <div id="adguard-new-version-popup-close" class="adguard-update-popup__close close-iframe"></div>
                                 <div class="adguard-update-popup__logo"></div>
@@ -225,8 +251,7 @@
                                         </a>
                                     </div>
                                 </div>
-                            </div>
-                            </body>`;
+                            </div>`;
 
         const triesCount = 10;
 
@@ -271,7 +296,10 @@
             }
 
             if (document.body && !isAdguardTab) {
-                const iframe = appendIframe(document.body, updateIframeHtml);
+                const stylesElement = createStyleElement(alertStyles);
+                document.body.insertAdjacentElement('afterbegin', stylesElement);
+
+                const iframe = appendIframe(document.body, updateIframeHtml, alertStyles);
                 iframe.classList.add('adguard-update-iframe');
                 const isListening = handleCloseIframe(iframe);
                 if (!isListening) {
@@ -304,11 +332,12 @@
         xhr.send(null);
     }
 
-    contentPage.onMessage.addListener((message) => {
+    contentPage.onMessage.addListener((message, sender, sendResponse) => {
         if (message.type === 'show-alert-popup') {
             showAlertPopup(message);
         } else if (message.type === 'show-version-updated-popup') {
             showVersionUpdatedPopup(message);
+            sendResponse(true);
         } else if (message.type === 'no-cache-reload') {
             noCacheReload();
         } else if (message.type === 'update-tab-url') {

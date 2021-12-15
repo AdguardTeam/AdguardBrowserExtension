@@ -18,7 +18,7 @@
 /**
  * Extension startup entry point
  */
-(function () {
+(async function () {
     adguard.console.info('Initializing adguard');
-    adguard.initialize();
+    await adguard.initialize();
 })();

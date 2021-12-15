@@ -20,8 +20,8 @@
 /**
  * Extension initialize logic. Called from start.js
  */
-adguard.initialize = function () {
-    function onLocalStorageLoaded() {
+adguard.initialize = async function () {
+    async function onLocalStorageLoaded() {
         adguard.console.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
 
         // Initialize popup button
@@ -41,7 +41,7 @@ adguard.initialize = function () {
 
         adguard.whitelist.init();
         adguard.filteringLog.init();
-        adguard.ui.init();
+        await adguard.ui.init();
 
         /**
          * Start application

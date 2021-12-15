@@ -16,6 +16,8 @@
  */
 
 adguard.ui = (function (adguard) { // jshint ignore:line
+    const alertStylesUrl = adguard.getURL('/lib/content-script/css/alert-popup.css');
+
     const browserActionTitle = adguard.i18n.getMessage('name');
 
     const contextMenuCallbackMappings = {
@@ -365,13 +367,14 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return parsedUrl.protocol.indexOf(schemeUrl) > -1;
     };
 
-    function showAlertMessagePopup(title, text) {
+    function showAlertMessagePopup(title, text, alertStyles) {
         adguard.tabs.getActive((tab) => {
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
                 isAdguardTab: isAdguardTab(tab),
                 title,
                 text,
+                alertStyles,
             });
         });
     }
@@ -396,8 +399,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      *
      * @param currentVersion
      * @param previousVersion
+     * @param alertStyles
      */
-    function showVersionUpdatedPopup(currentVersion, previousVersion) {
+    const showApplicationUpdatedPopup = async (currentVersion, previousVersion, alertStyles) => {
         // Suppress for v3.0 hotfix
         // TODO: Remove this in the next update
 
@@ -430,13 +434,50 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             offerButtonHref,
             offerButtonText,
             disableNotificationText: adguard.i18n.getMessage('options_popup_version_update_disable_notification'),
+            alertStyles,
         };
 
-        adguard.tabs.getActive((tab) => {
-            message.isAdguardTab = isAdguardTab(tab);
-            adguard.tabs.sendMessage(tab.tabId, message);
+        await sendMessageToActiveTab(message);
+    };
+
+    let sendMessageTries = 0;
+    const MAX_TRIES = 500; // 2500 sec
+    const TRIES_TIMEOUT = 5000;
+
+    /**
+     * Tries to send message to an active tab,
+     * in case of updated app, the content script on not-reloaded tab will not be able to send success callback,
+     * so then we postpone the try by TRIES_TIMEOUT.
+     *
+     * @param message
+     */
+    const sendMessageToActiveTab = async (message) => {
+        const result = await trySendMessageToActiveTab(message);
+        if (result) {
+            return;
+        }
+
+        sendMessageTries += 1;
+        if (sendMessageTries > MAX_TRIES) {
+            // Give up trying
+            return;
+        }
+
+        setTimeout(async () => {
+            await sendMessageToActiveTab(message);
+        }, TRIES_TIMEOUT);
+    };
+
+    const trySendMessageToActiveTab = async (message) => {
+        return new Promise((resolve) => {
+            adguard.tabs.getActive((tab) => {
+                message.isAdguardTab = isAdguardTab(tab);
+                adguard.tabs.sendMessage(tab.tabId, message, (result) => {
+                    resolve(result);
+                });
+            });
         });
-    }
+    };
 
     function getFiltersUpdateResultMessage(success, updatedFilters) {
         let title = '';
@@ -822,7 +863,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    const init = () => {
+    const init = async () => {
+        const response = await fetch(alertStylesUrl);
+        const alertStyles = await response.text();
+
         // update icon on event received
         adguard.listeners.addListener((event, tab, reset) => {
             if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
@@ -854,6 +898,23 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         // Update tab icon and context menu on active tab changed
         adguard.tabs.onActivated.addListener((tab) => {
             updateTabIconAndContextMenu(tab, true);
+        });
+
+        // on application updated event
+        adguard.listeners.addListener(async (event, info) => {
+            if (event === adguard.listeners.APPLICATION_UPDATED) {
+                if (adguard.settings.isShowAppUpdatedNotification()) {
+                    await showApplicationUpdatedPopup(info.currentVersion, info.prevVersion, alertStyles);
+                }
+            }
+        });
+
+        // on filter auto-enabled event
+        adguard.listeners.addListener((event, enabledFilters) => {
+            if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
+                const result = getFiltersEnabledResultMessage(enabledFilters);
+                showAlertMessagePopup(result.title, result.text, alertStyles);
+            }
         });
     };
 
@@ -890,23 +951,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     adguard.listeners.addListener((event) => {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {
             adguard.tabs.getActive(updateTabIconAndContextMenu);
-        }
-    });
-
-    // on application updated event
-    adguard.listeners.addListener((event, info) => {
-        if (event === adguard.listeners.APPLICATION_UPDATED) {
-            if (adguard.settings.isShowAppUpdatedNotification()) {
-                showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
-            }
-        }
-    });
-
-    // on filter auto-enabled event
-    adguard.listeners.addListener((event, enabledFilters) => {
-        if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
-            const result = getFiltersEnabledResultMessage(enabledFilters);
-            showAlertMessagePopup(result.title, result.text);
         }
     });
 
