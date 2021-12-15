@@ -53,7 +53,7 @@ export const startup = async function () {
 
         allowlist.init();
         filteringLog.init();
-        uiService.init();
+        await uiService.init();
         stealthService.init();
 
         /**
