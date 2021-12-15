@@ -39,6 +39,8 @@ import { translator } from '../common/translators/translator';
  * UI service
  */
 export const uiService = (function () {
+    const alertStylesUrl = backgroundPage.getURL('/assets/css/alert-popup.css');
+
     const browserActionTitle = translator.getMessage('name');
 
     const contextMenuCallbackMappings = {
@@ -381,7 +383,7 @@ export const uiService = (function () {
         return parsedUrl.protocol.indexOf(schemeUrl) > -1;
     };
 
-    const showAlertMessagePopup = async (title, text) => {
+    const showAlertMessagePopup = async (title, text, alertStyles) => {
         const tab = await tabsApi.getActive();
         if (tab) {
             tabsApi.sendMessage(tab.tabId, {
@@ -389,6 +391,7 @@ export const uiService = (function () {
                 isAdguardTab: isAdguardTab(tab),
                 title,
                 text,
+                alertStyles,
             });
         }
     };
@@ -413,13 +416,14 @@ export const uiService = (function () {
      *
      * @param currentVersion
      * @param previousVersion
+     * @param alertStyles
      */
-    const showVersionUpdatedPopup = async (currentVersion, previousVersion) => {
-        const notification = notifications.getCurrentNotification();
-
-        if (!notification
+    const showApplicationUpdatedPopup = async (currentVersion, previousVersion, alertStyles) => {
+        const promoNotification = notifications.getCurrentNotification();
+        if (!promoNotification
             && browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
             && browserUtils.getMinorVersionNumber(currentVersion) === browserUtils.getMinorVersionNumber(previousVersion)) {
+            // In case of no promo available or versions equivalence
             return;
         }
 
@@ -427,10 +431,10 @@ export const uiService = (function () {
         let offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
         let offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
 
-        if (notification) {
-            offer = notification.text.title;
-            offerButtonText = notification.text.btn;
-            offerButtonHref = `${notification.url}&from=version_popup`;
+        if (promoNotification) {
+            offer = promoNotification.text.title;
+            offerButtonText = promoNotification.text.btn;
+            offerButtonHref = `${promoNotification.url}&from=version_popup`;
         }
 
         const message = {
@@ -439,18 +443,59 @@ export const uiService = (function () {
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
             changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
-            showPromoNotification: !!notification,
+            showPromoNotification: !!promoNotification,
             offer,
             offerButtonText,
             offerButtonHref,
             disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),
+            alertStyles,
         };
 
-        const tab = await tabsApi.getActive();
-        if (tab) {
-            message.isAdguardTab = isAdguardTab(tab);
-            tabsApi.sendMessage(tab.tabId, message);
+        await sendMessageToActiveTab(message);
+    };
+
+    let sendMessageTries = 0;
+    const MAX_TRIES = 500; // 2500 sec
+    const TRIES_TIMEOUT = 5000;
+
+    /**
+     * Tries to send message to an active tab,
+     * in case of updated app, the content script on not-reloaded tab will not be able to send success callback,
+     * so then we postpone the try by TRIES_TIMEOUT.
+     *
+     * @param message
+     */
+    const sendMessageToActiveTab = async (message) => {
+        const result = await trySendMessageToActiveTab(message);
+        if (result) {
+            return;
         }
+
+        sendMessageTries += 1;
+        if (sendMessageTries > MAX_TRIES) {
+            // Give up trying
+            log.warn('Reached max tries on attempts to show application popup');
+            return;
+        }
+
+        setTimeout(async () => {
+            await sendMessageToActiveTab(message);
+        }, TRIES_TIMEOUT);
+    };
+
+    const trySendMessageToActiveTab = async (message) => {
+        const tab = await tabsApi.getActive();
+        if (!tab) {
+            return false;
+        }
+
+        message.isAdguardTab = isAdguardTab(tab);
+        const result = await tabsApi.sendMessage(tab.tabId, message);
+        if (!result) {
+            return false;
+        }
+
+        return true;
     };
 
     function getFiltersUpdateResultMessage(success, updatedFilters) {
@@ -863,7 +908,10 @@ export const uiService = (function () {
         initAssistant(selectElement);
     };
 
-    const init = () => {
+    const init = async () => {
+        const response = await fetch(alertStylesUrl);
+        const alertStyles = await response.text();
+
         // update icon on event received
         listeners.addListener((event, tab, reset) => {
             if (event !== listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
@@ -943,7 +991,7 @@ export const uiService = (function () {
         listeners.addListener((event, info) => {
             if (event === listeners.APPLICATION_UPDATED) {
                 if (settings.isShowAppUpdatedNotification()) {
-                    showVersionUpdatedPopup(info.currentVersion, info.prevVersion);
+                    showApplicationUpdatedPopup(info.currentVersion, info.prevVersion, alertStyles);
                 }
             }
         });
@@ -952,7 +1000,7 @@ export const uiService = (function () {
         listeners.addListener((event, enabledFilters) => {
             if (event === listeners.ENABLE_FILTER_SHOW_POPUP) {
                 const result = getFiltersEnabledResultMessage(enabledFilters);
-                showAlertMessagePopup(result.title, result.text);
+                showAlertMessagePopup(result.title, result.text, alertStyles);
             }
         });
 
