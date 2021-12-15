@@ -216,7 +216,7 @@
                                 <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
                                     <div class="adguard-update-popup__offer-desc-wr">
                                         <div class="adguard-update-popup__offer-desc">
-                                            ${offer}
+                                            ${offer ? offer : ''}
                                         </div>
                                     </div>
                                     <div class="adguard-update-popup__offer-bottom">

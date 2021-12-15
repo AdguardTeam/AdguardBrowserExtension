@@ -25,65 +25,58 @@ adguard.notifications = (function (adguard) {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const bf2021Notification = {
-        id: 'bf2021',
+    const ny2022Notification = {
+        id: 'ny2022',
         locales: {
             en: {
-                title: 'Black Friday Sale',
-                btn: 'Choose Deal',
+                btn: 'Unwrap your gift',
             },
             ru: {
-                title: 'Чёрная пятница',
-                btn: 'Выбрать скидку',
-            },
-            ja: {
-                title: 'BLACK FRIDAY セール',
-                btn: '割引を選ぶ',
-            },
-            ko: {
-                title: '블랙 프라이데이 세일',
-                btn: '할인 선택',
-            },
-            zh_cn: {
-                title: '黑五来啦！',
-                btn: '选择你的折扣',
-            },
-            zh_tw: {
-                title: '瘋狂優惠！',
-                btn: '選擇你的折扣',
-            },
-            fr: {
-                title: 'Promo Black Friday',
-                btn: 'Choisir offre',
-            },
-            it: {
-                title: 'Offerta Black Friday',
-                btn: 'Scegliere offerta',
+                btn: 'Открыть подарок',
             },
             es: {
-                title: 'Rebajas Black Friday',
-                btn: 'Elegir trato',
+                btn: 'Abre tu regalo',
+            },
+            fr: {
+                btn: 'Ouvrir mon cadeau',
+            },
+            it: {
+                btn: 'Scarta il regalo',
+            },
+            de: {
+                btn: 'Ihr Geschenk auspacken',
+            },
+            ja: {
+                btn: 'プレゼントをもらう',
+            },
+            ko: {
+                btn: '선물 받기',
+            },
+            zh_cn: {
+                btn: '抓个礼物',
+            },
+            zh_tw: {
+                btn: '享好禮',
             },
             uk: {
-                title: 'Чорна п\'ятниця',
-                btn: 'Обрати знижку',
+                btn: 'Отримайте подарунок',
             },
         },
         // will be selected for locale, see usage of getNotificationText
         text: '',
-        url: 'https://adguard.com/forward.html?action=bf2021&app=browser_extension',
-        from: '24 November 2021 18:00:00',
-        to: '01 December 2021 23:59:00',
+        url: 'https://adguard.com/forward.html?action=ny2022&app=browser_extension',
+        from: '24 December 2021 12:00:00',
+        to: '01 January 2022 23:59:00',
         type: 'animated',
         get icons() {
-            return adguard.lazyGet(bf2021Notification, 'icons', () => ({
+            return adguard.lazyGet(ny2022Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': adguard.getURL('icons/bf-enabled-19.png'),
-                    '38': adguard.getURL('icons/bf-enabled-38.png'),
+                    '19': adguard.getURL('icons/ny-enabled-19.png'),
+                    '38': adguard.getURL('icons/ny-enabled-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': adguard.getURL('icons/bf-disabled-19.png'),
-                    '38': adguard.getURL('icons/bf-disabled-38.png'),
+                    '19': adguard.getURL('icons/ny-disabled-19.png'),
+                    '38': adguard.getURL('icons/ny-disabled-38.png'),
                 },
             }));
         },
@@ -105,7 +98,7 @@ adguard.notifications = (function (adguard) {
      * @property {string} type;
      */
     const notifications = {
-        bf2021: bf2021Notification,
+        ny2022: ny2022Notification,
     };
 
     /**
