@@ -27,6 +27,9 @@ const RequestCreateRule = observer(() => {
         [RULE_OPTIONS.RULE_IMPORTANT]: {
             label: `${reactTranslator.getMessage('filtering_modal_important')}`,
         },
+        [RULE_OPTIONS.RULE_REMOVE_PARAM]: {
+            label: `${reactTranslator.getMessage('filtering_modal_remove_param')}`,
+        },
     };
 
     const handlePatternChange = (pattern) => () => {
@@ -78,6 +81,12 @@ const RequestCreateRule = observer(() => {
             // so $domain modifier is forbidden
             if (logStore.selectedEvent?.requestRule?.cookieRule
                 && id === RULE_OPTIONS.RULE_DOMAIN) {
+                return null;
+            }
+
+            // $removeparam option is available only for requests with query
+            if (id === RULE_OPTIONS.RULE_REMOVE_PARAM
+                && logStore.selectedEvent.requestUrl?.indexOf('?') < 0) {
                 return null;
             }
 

@@ -90,6 +90,7 @@ class WizardStore {
             [RULE_OPTIONS.RULE_DOMAIN]: { checked: false },
             [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
             [RULE_OPTIONS.RULE_IMPORTANT]: { checked: isImportant },
+            [RULE_OPTIONS.RULE_REMOVE_PARAM]: { checked: false },
         };
     }
 
@@ -180,6 +181,7 @@ class WizardStore {
         thirdParty,
         important,
         mandatoryOptions,
+        removeParam,
     }) => {
         let ruleText = urlPattern;
 
@@ -196,6 +198,10 @@ class WizardStore {
         // add third party option
         if (thirdParty) {
             options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
+        }
+        // add removeparam option
+        if (removeParam) {
+            options.push(NETWORK_RULE_OPTIONS.REMOVEPARAM);
         }
         if (mandatoryOptions) {
             options = options.concat(mandatoryOptions);
@@ -250,11 +256,13 @@ class WizardStore {
             ruleDomain,
             ruleImportant,
             ruleThirdParty,
+            ruleRemoveParam,
         } = ruleOptions;
 
         const permitDomain = !ruleDomain.checked;
         const important = !!ruleImportant.checked;
         const thirdParty = !!ruleThirdParty.checked;
+        const removeParam = !!ruleRemoveParam.checked;
 
         const domain = permitDomain ? selectedEvent.frameDomain : null;
 
@@ -288,6 +296,7 @@ class WizardStore {
                 thirdParty,
                 important,
                 mandatoryOptions,
+                removeParam,
             });
         }
 
