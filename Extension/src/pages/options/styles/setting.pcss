@@ -26,7 +26,6 @@
 
     &__area {
         display: flex;
-        align-items: center;
         width: 80%;
         border: 0;
         border-radius: 8px;
@@ -62,6 +61,14 @@
         @media (min-width: 640px) {
             &_group {
                 margin-left: 0;
+
+                & .checkbox__label {
+                    padding: 16px;
+
+                    &:before {
+                        top: 0;
+                    }
+                }
             }
         }
     }
