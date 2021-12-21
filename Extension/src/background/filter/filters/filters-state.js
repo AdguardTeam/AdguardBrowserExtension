@@ -123,9 +123,15 @@ export const filtersState = (function () {
      */
     const updateGroupState = function (group) {
         const groups = getGroupsState();
-        groups[group.groupId] = {
-            enabled: group.enabled,
-        };
+
+        if (typeof group.enabled === 'undefined') {
+            delete groups[group.groupId].enabled;
+        } else {
+            groups[group.groupId] = {
+                enabled: group.enabled,
+            };
+        }
+
         localStorage.setItem(GROUPS_STATE_PROP, JSON.stringify(groups));
     };
 

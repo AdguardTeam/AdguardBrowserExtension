@@ -25,6 +25,7 @@ import { utils } from '../utils/common';
 import { settings } from './user-settings';
 import { backgroundPage } from '../extension-api/background-page';
 import { customFilters } from '../filter/filters/custom-filters';
+import { categories } from '../filter/filters/filters-categories';
 import { defaultSettings } from './default-settings.js';
 
 /**
@@ -375,10 +376,11 @@ export const settingsProvider = (function () {
     /**
      * Enables groups by groupId and disable those groups which were not in the list
      * @param {array<number>} enabledGroups
+     * @param {boolean} drop enabled flag
      */
-    const syncEnabledGroups = (enabledGroups) => {
+    const syncEnabledGroups = (enabledGroups, drop) => {
         enabledGroups.forEach((groupId) => {
-            application.enableGroup(groupId);
+            categories.enableFiltersGroup(groupId);
         });
         log.info(`Settings sync: Next groups were enabled: ${enabledGroups}`);
 
@@ -390,15 +392,16 @@ export const settingsProvider = (function () {
             .filter(groupId => !enabledGroups.includes(groupId));
 
         groupIdsToDisable.forEach((groupId) => {
-            application.disableGroup(groupId);
+            categories.disableFiltersGroup(groupId, drop);
         });
     };
 
     /**
      * Applies filters section settings to application
      * @param section Section
+     * @param dropGroupsEnabled
      */
-    const applyFiltersSection = async function (section) {
+    const applyFiltersSection = async function (section, dropGroupsEnabled) {
         const allowlistSection = section.filters['whitelist'] || {};
         const allowlistDomains = allowlistSection.domains || [];
         const blacklistDomains = allowlistSection['inverted-domains'] || [];
@@ -448,7 +451,7 @@ export const settingsProvider = (function () {
 
         // STEP 4 sync enabled groups
         const enabledGroups = section.filters['enabled-groups'] || [];
-        syncEnabledGroups(enabledGroups);
+        syncEnabledGroups(enabledGroups, dropGroupsEnabled);
     };
 
     /**
@@ -550,7 +553,7 @@ export const settingsProvider = (function () {
         try {
             await applyGeneralSettingsSection(input);
             applyExtensionSpecificSettingsSection(input);
-            await applyFiltersSection(input);
+            await applyFiltersSection(input, true);
             await applyStealthModeSection(input);
 
             await application.addAndEnableFilters(subscriptions.getLangSuitableFilters());
