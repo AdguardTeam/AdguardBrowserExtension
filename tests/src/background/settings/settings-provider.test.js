@@ -54,6 +54,7 @@ jest.mock('../../../../Extension/src/background/filter/filters/subscription', ()
         subscriptions: {
             getCustomFilters: () => Object.values(filtersMap).filter(f => f.customUrl),
             getFilter: filterId => filtersMap[filterId],
+            getFilters: () => Object.keys(filtersMap).map(key => filtersMap[key]),
             getGroups: () => Object.keys(groupsMap).map(key => groupsMap[key]),
             getGroup: groupId => groupsMap[groupId],
         },
@@ -69,6 +70,8 @@ jest.mock('../../../../Extension/src/background/filter/userrules', () => {
         },
     };
 });
+
+jest.mock('../../../../Extension/src/background/filter/filters/filters-categories');
 
 describe('settingsProvider', () => {
     it('exports settings in json', async () => {

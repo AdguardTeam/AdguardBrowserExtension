@@ -156,9 +156,10 @@ export const categories = (() => {
     /**
      * Disables group
      * @param {number} groupId
+     * @param {boolean} drop
      */
-    const disableFiltersGroup = function (groupId) {
-        application.disableGroup(groupId);
+    const disableFiltersGroup = function (groupId, drop) {
+        application.disableGroup(groupId, drop);
     };
 
     return {

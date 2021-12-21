@@ -162,13 +162,19 @@ export const application = (() => {
     /**
      * Disable group
      * @param {number} groupId filter group identifier
+     * @param {boolean} drop
      */
-    const disableGroup = function (groupId) {
+    const disableGroup = (groupId, drop) => {
         const group = subscriptions.getGroup(groupId);
         if (!group || !group.enabled) {
             return;
         }
+
         group.enabled = false;
+        if (drop) {
+            delete group.enabled;
+        }
+
         listeners.notifyListeners(listeners.FILTER_GROUP_ENABLE_DISABLE, group);
     };
 
