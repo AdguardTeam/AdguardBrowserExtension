@@ -491,14 +491,14 @@ const createMessageHandler = () => {
             }
             // Popup methods
             case MESSAGE_TYPES.ADD_ALLOWLIST_DOMAIN_POPUP: {
-                const tab = await tabsApi.getActive();
+                const tab = await tabsApi.getActive(data.tabId);
                 if (tab) {
                     uiService.allowlistTab(tab);
                 }
                 break;
             }
             case MESSAGE_TYPES.REMOVE_ALLOWLIST_DOMAIN: {
-                const tab = await tabsApi.getActive();
+                const tab = await tabsApi.getActive(data.tabId);
                 if (tab) {
                     uiService.unAllowlistTab(tab);
                 }

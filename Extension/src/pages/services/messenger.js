@@ -226,12 +226,12 @@ class Messenger {
         );
     }
 
-    async removeAllowlistDomain() {
-        return this.sendMessage(MESSAGE_TYPES.REMOVE_ALLOWLIST_DOMAIN);
+    async removeAllowlistDomain(tabId) {
+        return this.sendMessage(MESSAGE_TYPES.REMOVE_ALLOWLIST_DOMAIN, { tabId });
     }
 
-    async addAllowlistDomain(url) {
-        return this.sendMessage(MESSAGE_TYPES.ADD_ALLOWLIST_DOMAIN_POPUP, { url });
+    async addAllowlistDomain(tabId) {
+        return this.sendMessage(MESSAGE_TYPES.ADD_ALLOWLIST_DOMAIN_POPUP, { tabId });
     }
 
     async getStatisticsData() {

@@ -76,6 +76,8 @@ class PopupStore {
     @observable
     settings = null;
 
+    currentTabId = null;
+
     constructor() {
         makeObservable(this);
     }
@@ -123,6 +125,7 @@ class PopupStore {
             this.settings = settings;
 
             this.isInitialDataReceived = true;
+            this.currentTabId = currentTab?.id;
         });
     };
 
@@ -183,10 +186,10 @@ class PopupStore {
         let isAllowlisted = this.documentAllowlisted;
 
         if (isAllowlisted) {
-            messenger.removeAllowlistDomain();
+            messenger.removeAllowlistDomain(this.currentTabId);
             isAllowlisted = false;
         } else {
-            messenger.addAllowlistDomain();
+            messenger.addAllowlistDomain(this.currentTabId);
             isAllowlisted = true;
         }
 
