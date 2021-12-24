@@ -21,6 +21,7 @@ import { utils } from '../utils/common';
 import { allowlist } from './allowlist';
 import { rulesStorage } from '../storage';
 import { listeners } from '../notifier';
+import { log } from '../../common/log';
 
 /**
  * Class for manage user rules
@@ -118,6 +119,55 @@ export const userrules = (function () {
             ));
     };
 
+    /**
+     * Map rules conversion result
+     * key is a result,
+     * value is a source rule
+     *
+     * @type {Map<String, String>}
+     */
+    const conversionMap = new Map();
+
+    /**
+     * Converts rules text lines with conversion map
+     *
+     * @param rulesLines
+     * @return {[String]}
+     */
+    const convertRules = (rulesLines) => {
+        conversionMap.clear();
+
+        const result = [];
+        for (let i = 0; i < rulesLines.length; i += 1) {
+            const line = rulesLines[i];
+            const converted = TSUrlFilter.RuleConverter.convertRule(line);
+            result.push(...converted);
+
+            if (converted.length > 0) {
+                if (converted.length > 1 || converted[0] !== line) {
+                    // Fill the map only for converted rules
+                    converted.forEach((x) => {
+                        conversionMap.set(x, line);
+                    });
+                }
+            }
+        }
+
+        log.debug('Converted {0} rules to {1} for user filter', rulesLines.length, result.length);
+
+        return result;
+    };
+
+    /**
+     * Returns source rule text if the rule has been converted
+     *
+     * @param ruleText
+     * @return {String}
+     */
+    const getSourceRule = (ruleText) => {
+        return conversionMap.get(ruleText);
+    };
+
     return {
         addRules,
         clearRules,
@@ -127,5 +177,7 @@ export const userrules = (function () {
         unAllowlistFrame,
         removeRulesByUrl,
         hasRulesForUrl,
+        convertRules,
+        getSourceRule,
     };
 })();

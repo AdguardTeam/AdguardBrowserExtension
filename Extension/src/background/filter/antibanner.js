@@ -28,6 +28,7 @@ import { filtersUpdate } from './filters/filters-update';
 import { customFilters } from './filters/custom-filters';
 import { engine } from './engine';
 import { stealthService } from './services/stealth-service';
+import { userrules } from './userrules';
 
 /**
  * Creating service that manages our filter rules.
@@ -438,9 +439,12 @@ export const antiBannerService = (() => {
          * @returns {*} Deferred object
          */
         const loadFilterRulesFromStorage = async (filterId, rulesFilterMap) => {
-            const rulesText = await rulesStorage.read(filterId);
-
+            let rulesText = await rulesStorage.read(filterId);
             if (rulesText) {
+                if (Number(filterId) === utils.filters.USER_FILTER_ID) {
+                    rulesText = userrules.convertRules(rulesText);
+                }
+
                 rulesFilterMap[filterId] = rulesText;
             }
         };
@@ -612,12 +616,15 @@ export const antiBannerService = (() => {
             }
         }
 
-        log.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
-        const converted = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+        let rulesTextToSave = loadedRulesText;
+        if (Number(filterId) !== utils.filters.USER_FILTER_ID) {
+            log.debug('Converting {0} rules for filter {1}', loadedRulesText.length, filterId);
+            rulesTextToSave = TSUrlFilter.RuleConverter.convertRules(loadedRulesText.join('\n')).split('\n');
+        }
 
-        log.debug('Saving {0} rules to filter {1}', converted.length, filterId);
+        log.debug('Saving {0} rules to filter {1}', rulesTextToSave.length, filterId);
 
-        await rulesStorage.write(filterId, converted);
+        await rulesStorage.write(filterId, rulesTextToSave);
         // notify that user rules were saved, to update saving button on options page
         if (Number(filterId) === utils.filters.USER_FILTER_ID) {
             listeners.notifyListeners(listeners.USER_FILTER_UPDATED);

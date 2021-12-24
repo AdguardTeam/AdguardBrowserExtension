@@ -25,6 +25,7 @@ import { listeners } from '../../notifier';
 import { translator } from '../../../common/translators/translator';
 import { RequestTypes } from '../../utils/request-types';
 import { ANTIBANNER_FILTERS_ID } from '../../../common/constants';
+import { userrules } from '../userrules';
 
 /**
  * Object for log http requests
@@ -190,6 +191,14 @@ const browsersFilteringLog = (function () {
                 destinationRuleDTO.cssRule = true;
             } else if (ruleType === TSUrlFilter.CosmeticRuleType.Js) {
                 destinationRuleDTO.scriptRule = true;
+            }
+        }
+
+        if (sourceRule.getFilterListId() === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
+            const originalRule = userrules.getSourceRule(sourceRule.getText());
+            if (originalRule) {
+                destinationRuleDTO.ruleText = originalRule;
+                destinationRuleDTO.appliedRuleText = sourceRule.getText();
             }
         }
     };
