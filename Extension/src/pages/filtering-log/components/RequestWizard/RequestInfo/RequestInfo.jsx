@@ -67,6 +67,23 @@ const getType = (selectedEvent) => {
 };
 
 /**
+ * Returns rule text with conversion info
+ *
+ * @param rule
+ */
+const getRuleText = (rule) => {
+    if (!rule) {
+        return null;
+    }
+
+    if (!rule.appliedRuleText) {
+        return rule.ruleText;
+    }
+
+    return `${rule.ruleText} (${reactTranslator.getMessage('filtering_modal_converted_to')} ${rule.appliedRuleText})`;
+};
+
+/**
  * Returns rule text
  * @param selectedEvent
  * @return {string|null}
@@ -74,7 +91,7 @@ const getType = (selectedEvent) => {
 const getRule = (selectedEvent) => {
     const replaceRules = selectedEvent?.replaceRules;
     if (replaceRules && replaceRules.length > 0) {
-        return replaceRules.map((rule) => rule.ruleText).join('\n');
+        return replaceRules.map((rule) => getRuleText(rule)).join('\n');
     }
 
     const requestRule = selectedEvent?.requestRule;
@@ -85,7 +102,7 @@ const getRule = (selectedEvent) => {
     ) {
         return null;
     }
-    return requestRule?.ruleText || null;
+    return getRuleText(requestRule);
 };
 
 /**

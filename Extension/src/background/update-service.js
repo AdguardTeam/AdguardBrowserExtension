@@ -25,6 +25,7 @@ import { rulesStorage } from './storage';
 import { application } from './application';
 import { settings } from './settings/user-settings';
 import { safebrowsing } from './filter/services/safebrowsing';
+import { utils } from './utils/common';
 
 /**
  * Service that manages extension version information and handles
@@ -88,6 +89,10 @@ export const applicationUpdateService = (function () {
             .map(filterId => Number.parseInt(filterId, 10));
 
         const reloadRulesPromises = installedFiltersIds.map(async (filterId) => {
+            if (filterId === utils.filters.USER_FILTER_ID) {
+                return;
+            }
+
             let loadedRulesText = await rulesStorage.read(filterId);
             if (!loadedRulesText) {
                 loadedRulesText = [];
