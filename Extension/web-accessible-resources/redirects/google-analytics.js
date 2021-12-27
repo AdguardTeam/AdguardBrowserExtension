@@ -38,10 +38,17 @@ function GoogleAnalytics(source) {
 
     ga.create = function () {
       return new Tracker();
+    }; // https://github.com/AdguardTeam/Scriptlets/issues/134
+
+
+    ga.getByName = function () {
+      return new Tracker();
     };
 
-    ga.getByName = noopNull;
-    ga.getAll = noopArray;
+    ga.getAll = function () {
+      return [new Tracker()];
+    };
+
     ga.remove = noopFunc;
     ga.loaded = true;
     window[googleAnalyticsName] = ga;
@@ -56,20 +63,46 @@ function GoogleAnalytics(source) {
     if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === 'function') {
       dataLayer.hide.end();
     }
+    /**
+     * checks data object and delays callback
+     * @param {Object|Array} data gtag payload
+     * @param {string} funcName callback prop name
+     * @returns
+     */
+
+
+    var handleCallback = function handleCallback(dataObj, funcName) {
+      if (dataObj && typeof dataObj[funcName] === 'function') {
+        setTimeout(dataObj[funcName]);
+      }
+    };
 
     if (typeof dataLayer.push === 'function') {
       dataLayer.push = function (data) {
-        if (data instanceof Object && typeof data.eventCallback === 'function') {
-          setTimeout(data.eventCallback, 1);
+        if (data instanceof Object) {
+          handleCallback(data, 'eventCallback'); // eslint-disable-next-line no-restricted-syntax, guard-for-in
+
+          for (var key in data) {
+            handleCallback(data[key], 'event_callback');
+          }
         }
+
+        if (Array.isArray(data)) {
+          data.forEach(function (arg) {
+            handleCallback(arg, 'callback');
+          });
+        }
+
+        return noopFunc;
       };
     } // https://github.com/AdguardTeam/Scriptlets/issues/81
 
 
     if (google_optimize instanceof Object && typeof google_optimize.get === 'function') {
       // eslint-disable-line camelcase
-      var googleOptimizeWrapper = {};
-      googleOptimizeWrapper.get = noopFunc;
+      var googleOptimizeWrapper = {
+        get: noopFunc
+      };
       window.google_optimize = googleOptimizeWrapper;
     }
 
@@ -139,6 +172,10 @@ function noopArray() {
     return [];
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        GoogleAnalytics.apply(this, updatedArgs);
+        try {
+            GoogleAnalytics.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"google-analytics","args":[]}, []);

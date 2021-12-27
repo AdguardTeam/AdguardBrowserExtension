@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>AdGuard Click2Load</title>
+    <style>
+      html,
+      body,
+      .wrapper {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: Roboto, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Arial, sans-serif
+      }
+
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .content {
+        min-height: 160px;
+        padding: 50px 24px;
+        text-align: center;
+      }
+
+      .logo {
+        background-image: url("data:image/svg+xml,%3Csvg fill='none' height='41' viewBox='0 0 41 41' width='41' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-rule='evenodd' fill-rule='evenodd'%3E%3Cpath d='m20.4996.5c-6.2513 0-13.79186 1.43422-19.999594 4.59105 0 6.81785-.085687 23.80335 19.999594 35.40895 20.0856-11.6056 20.0004-28.5911 20.0004-35.40895-6.2082-3.15683-13.7488-4.59105-20.0004-4.59105z' fill='%2368bc71'/%3E%3Cpath d='m20.5.5c-.0001 0-.0003 0-.0004 0-6.2513 0-13.79186 1.43422-19.999594 4.59105 0 .02866-.000003.05751-.000003.08653-.000361 6.87412-.001248 23.76562 19.999597 35.32242.0001-.0001.0003-.0002.0004-.0003z' fill='%2367b279'/%3E%3Cpath d='m20.3236 26.2143 11.605-15.3766c-.8504-.6701-1.5963-.1972-2.0069.169l-.015.0012-9.6763 9.8957-3.6457-4.3132c-1.7393-1.9755-4.1038-.4686-4.6561-.0704z' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: contain;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 16px;
+      }
+
+      .title {
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 25px;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 16px;
+        max-height: 50px;
+        overflow: hidden;
+        word-break: break-all;
+      }
+
+      .footer {
+        padding-top: 24px;
+      }
+
+      .button {
+        display: inline-block;
+        min-width: 90px;
+        padding: 6px 15px;
+        border-radius: 3px;
+        border: none;
+        background: #4d4d4d;
+        color: #fff;
+        text-align: center;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 21px;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="content">
+        <div class="logo"></div>
+        <div id="clickToLoadTitle" class="title"></div>
+        <div id="clickToLoadSubtitle" class="subtitle"></div>
+        <div class="footer">
+          <a id="clickToLoadLink" class="button" href="" rel="noreferrer noopener"></a>
+        </div>
+      </div>
+    </div>
+    <!-- script injection -->
+    <script>(function () {
+    'use strict';
+
+    function clickToLoad() {
+      var QUESTION_MARK = '?';
+      var AMPERSAND = '&';
+      var SEARCH_PARAMS_DIVIDER = '=';
+      var ORIGIN_URL_PARAM = '__origin';
+      var EXT_UNBLOCK_PARAM = '__unblock';
+      var CL_UNBLOCK_PARAM = '__adg_unblock_token';
+      var CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
+      var BLOCKING_RULE_PARAM = '__adg_blocking_rule';
+      var CLICK_EVENT = 'click';
+      var CL_FORCE_EVENT = 'force';
+      var neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
+      var parseSearchParam = function parseSearchParam(rawQueryStr) {
+        var res = {};
+        var pattern = /([^&=]+)=([^&]*)/g;
+        var matchedData;
+        var queryStr = rawQueryStr.substring(1);
+        while (matchedData = pattern.exec(queryStr)) {
+          if (neededParams.indexOf(matchedData[1]) > -1) {
+            res[matchedData[1]] = matchedData[2];
+          }
+          queryStr = queryStr.substring(matchedData[0]);
+        }
+        return res;
+      };
+      var paramsData = parseSearchParam(window.location.search);
+      var getParamByKey = function getParamByKey(key) {
+        return paramsData[key] || '';
+      };
+      var extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
+      var clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
+      var blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
+      var originUrl = clUnblockToken
+      ? window.location.href : decodeURIComponent(getParamByKey(ORIGIN_URL_PARAM));
+      var clickTitleElem = document.getElementById('clickToLoadTitle');
+      var clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
+      var clickButtonElem = document.getElementById('clickToLoadLink');
+      var originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
+      clickSubtitleElem.textContent = originUrlToDisplay;
+      clickButtonElem.href = originUrlToDisplay;
+      clickButtonElem.title = originUrlToDisplay;
+      var translationsData = {
+        en: {
+          title: 'Content blocked by AdGuard',
+          button: 'Click to load'
+        },
+        ru: {
+          title: 'AdGuard заблокировал загрузку контента',
+          button: 'Всё равно загрузить'
+        },
+        es: {
+          title: 'Contenido bloqueado por AdGuard',
+          button: 'Pulsa para cargar'
+        },
+        fr: {
+          title: 'Contenu bloqué par AdGuard',
+          button: 'Cliquez pour télécharger'
+        },
+        it: {
+          title: 'Contenuti bloccati da AdGuard',
+          button: 'Clicca per scaricare'
+        },
+        de: {
+          title: 'Inhalt blockiert durch AdGuard',
+          button: 'Trotzdem laden'
+        },
+        'zh-cn': {
+          title: 'AdGuard 已将该内容屏蔽',
+          button: '点击加载'
+        },
+        'zh-tw': {
+          title: 'AdGuard 已將該內容封鎖',
+          button: '點按載入'
+        },
+        ko: {
+          title: 'AdGuard에 의해 차단된 콘텐츠',
+          button: '로드하려면 클릭하세요'
+        },
+        ja: {
+          title: 'AdGuardがコンテンツをブロックしました。',
+          button: '読み込むにはこちらをクリック'
+        },
+        uk: {
+          title: 'AdGuard заблокував завантаження вмісту',
+          button: 'Однаково завантажити'
+        }
+      };
+      var getTranslations = function getTranslations() {
+        var baseLocaleData = translationsData.en;
+        try {
+          var currentLocale = navigator.language.toLowerCase();
+          var localeData = translationsData[currentLocale];
+          if (!localeData) {
+            var lang = currentLocale.split('-')[0];
+            localeData = translationsData[lang];
+          }
+          if (!localeData) {
+            localeData = baseLocaleData;
+          }
+          return localeData;
+        } catch (e) {
+          return baseLocaleData;
+        }
+      };
+      var translations = getTranslations();
+      clickTitleElem.textContent = translations.title;
+      clickButtonElem.textContent = translations.button;
+      var getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
+        var questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
+        var divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
+        if (originUrl.substring(questionMarkIndex).length === 1) {
+          divider = '';
+        }
+        return "".concat(originUrl).concat(divider).concat(unblockTokenName).concat(SEARCH_PARAMS_DIVIDER).concat(unblockTokenValue);
+      };
+      var extRun = function extRun() {
+        var replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
+        window.location.replace(replaceUrl);
+      };
+      var clRun = function clRun() {
+        var CL_SPECIFIC_UNBLOCK_VALUE = 1;
+        var replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
+        window.location.replace(replaceUrl);
+      };
+      clickButtonElem.addEventListener(CLICK_EVENT, function (e) {
+        if (e.isTrusted === false) {
+          return;
+        }
+        if (extUnblockToken) {
+          extRun();
+        } else if (clUnblockToken) {
+          clRun();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+      });
+      clickButtonElem.addEventListener(CL_FORCE_EVENT, function () {
+        clRun();
+      });
+      var hasFrameModifier = function hasFrameModifier(rule) {
+        var substringAfter = function substringAfter(str, separator) {
+          var index = str.indexOf(separator);
+          return index < 0 ? '' : str.substring(index + separator.length);
+        };
+        var FRAME_MARKER = 'frame';
+        var SUBDOCUMENT_MARKER = 'subdocument';
+        var ruleModifiers = substringAfter(rule, '$').split(',');
+        return ruleModifiers.indexOf(FRAME_MARKER) > -1 || ruleModifiers.indexOf(SUBDOCUMENT_MARKER) > -1;
+      };
+      var isInsideFrame = function isInsideFrame() {
+        return window.self !== window.top;
+      };
+      if (clUnblockToken && blockingRule && hasFrameModifier(blockingRule) && !isInsideFrame()) {
+        clickButtonElem.dispatchEvent(CL_FORCE_EVENT);
+      }
+    }
+    clickToLoad();
+
+}());
+</script>
+  </body>
+</html>

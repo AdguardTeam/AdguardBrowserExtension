@@ -66,6 +66,10 @@ function hit(source, message) {
     }
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        ScoreCardResearchBeacon.apply(this, updatedArgs);
+        try {
+            ScoreCardResearchBeacon.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"scorecardresearch-beacon","args":[]}, []);

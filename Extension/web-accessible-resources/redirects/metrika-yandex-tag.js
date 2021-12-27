@@ -1,7 +1,7 @@
 (function(source, args){
 function metrikaYandexTag(source) {
-    var asyncCallbackFromOptions = function asyncCallbackFromOptions(param) {
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       var callback = options.callback;
       var ctx = options.ctx;
 
@@ -12,11 +12,10 @@ function metrikaYandexTag(source) {
         });
       }
     };
-
-    var init = noopFunc;
     /**
      * https://yandex.ru/support/metrica/objects/addfileextension.html
      */
+
 
     var addFileExtension = noopFunc;
     /**
@@ -34,7 +33,11 @@ function metrikaYandexTag(source) {
      * @param {Function} cb
      */
 
-    var getClientID = function getClientID(cb) {
+    var getClientID = function getClientID(id, cb) {
+      if (!cb) {
+        return;
+      }
+
       setTimeout(cb(null));
     };
     /**
@@ -61,8 +64,8 @@ function metrikaYandexTag(source) {
      * @param {any} ctx
      */
 
-    var reachGoal = function reachGoal(target, params, callback, ctx) {
-      asyncCallbackFromOptions(null, {
+    var reachGoal = function reachGoal(id, target, params, callback, ctx) {
+      asyncCallbackFromOptions(null, null, {
         callback: callback,
         ctx: ctx
       });
@@ -79,7 +82,6 @@ function metrikaYandexTag(source) {
 
     var userParams = noopFunc;
     var api = {
-      init: init,
       addFileExtension: addFileExtension,
       extLink: extLink,
       file: file,
@@ -97,10 +99,27 @@ function metrikaYandexTag(source) {
         args[_key - 2] = arguments[_key];
       }
 
-      return api[funcName] && api[funcName].apply(api, args);
+      return api[funcName] && api[funcName].apply(api, [id].concat(args));
     }
 
-    window.ym = ym;
+    ym.a = [];
+
+    function init(id) {
+      // yaCounter object should provide api
+      window["yaCounter".concat(id)] = api;
+    }
+
+    if (typeof window.ym === 'undefined') {
+      window.ym = ym;
+    } else if (window.ym && window.ym.a) {
+      // Get id for yaCounter object
+      window.ym.a.forEach(function (params) {
+        var id = params[0];
+        init(id);
+      });
+      window.ym = ym;
+    }
+
     hit(source);
   }
 function hit(source, message) {
@@ -161,6 +180,10 @@ function hit(source, message) {
   }
 function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        metrikaYandexTag.apply(this, updatedArgs);
+        try {
+            metrikaYandexTag.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"metrika-yandex-tag","args":[]}, []);

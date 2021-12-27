@@ -61,6 +61,10 @@ function hit(source, message) {
     }
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        noeval.apply(this, updatedArgs);
+        try {
+            noeval.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"noeval","args":[]}, []);

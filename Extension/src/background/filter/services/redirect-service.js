@@ -17,6 +17,8 @@
 
 import { redirects } from '@adguard/scriptlets';
 import { log } from '../../../common/log';
+import { redirectsCache } from '../../utils/redirects-cache';
+import { redirectsTokensCache } from '../../utils/redirects-tokens-cache';
 import { resources } from '../../utils/resources';
 
 const { Redirects } = redirects;
@@ -26,22 +28,72 @@ const { Redirects } = redirects;
  */
 export const redirectService = (function () {
     let redirects = null;
+    // list of blocking type redirects, i.e. for click2load.html
+    let blockingRedirects = [];
 
     /**
      * Initialize service
      */
     const init = (rawYaml) => {
         redirects = new Redirects(rawYaml);
+        const redirectsData = redirects.redirects;
+        blockingRedirects = Object.keys(redirectsData)
+            .filter((r) => redirectsData[r].isBlocking);
+    };
+
+    /**
+     * Returns blocking redirects titles array
+     * @returns {string[]}
+     */
+    const getBlockingRedirects = () => blockingRedirects;
+
+    /**
+     * Check whether redirect creating is needed
+     * i.e. for click2load.html it's not needed after button click
+     * @param {string} redirectTitle
+     * @param {string} requestUrl
+     * @returns {boolean}
+     */
+    const shouldCreateRedirectUrl = (redirectTitle, requestUrl) => {
+        if (!blockingRedirects.includes(redirectTitle)) {
+            // no further checking is needed for most of redirects
+            // except blocking redirects, i.e. click2load.html
+            return true;
+        }
+
+        // unblock token passed to redirect by createRedirectFileUrl and returned back.
+        // it should be last parameter in url
+        const UNBLOCK_TOKEN_PARAM = '__unblock';
+        let cleanRequestUrl = requestUrl;
+        const url = new URL(requestUrl);
+        const params = new URLSearchParams(url.search);
+        const unblockToken = params.get(UNBLOCK_TOKEN_PARAM);
+        if (unblockToken) {
+            // if redirect has returned unblock token back,
+            // add url to cache for no further redirecting on button click;
+            // save cleaned origin url so unblock token parameter should be cut off
+            params.delete(UNBLOCK_TOKEN_PARAM);
+            cleanRequestUrl = `${url.origin}${url.pathname}?${params.toString}`;
+            redirectsCache.add(cleanRequestUrl);
+        }
+        return !redirectsCache.hasUrl(cleanRequestUrl)
+            || !redirectsTokensCache.hasToken(unblockToken);
     };
 
     /**
      * Creates url
      *
      * @param title
+     * @param requestUrl
      * @return string|null
      */
-    const createRedirectUrl = (title) => {
+    const createRedirectUrl = (title, requestUrl) => {
         if (!title) {
+            return null;
+        }
+
+        const shouldRedirect = shouldCreateRedirectUrl(title, requestUrl);
+        if (!shouldRedirect) {
             return null;
         }
 
@@ -51,7 +103,7 @@ export const redirectService = (function () {
             return null;
         }
 
-        return resources.createRedirectFileUrl(redirectSource.file);
+        return resources.createRedirectFileUrl(redirectSource.file, requestUrl);
     };
 
     const hasRedirect = (title) => {
@@ -62,5 +114,6 @@ export const redirectService = (function () {
         init,
         hasRedirect,
         createRedirectUrl,
+        getBlockingRedirects,
     };
 })();

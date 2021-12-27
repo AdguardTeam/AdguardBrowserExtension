@@ -74,6 +74,10 @@ function hit(source, message) {
     }
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        setPopadsDummy.apply(this, updatedArgs);
+        try {
+            setPopadsDummy.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"set-popads-dummy","args":[]}, []);

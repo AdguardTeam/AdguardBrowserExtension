@@ -26,7 +26,8 @@ function metrikaYandexWatch(source) {
     Metrika.prototype.addFileExtension = noopFunc;
     Metrika.prototype.getClientID = noopFunc;
     Metrika.prototype.setUserID = noopFunc;
-    Metrika.prototype.userParams = noopFunc; // Methods with options
+    Metrika.prototype.userParams = noopFunc;
+    Metrika.prototype.params = noopFunc; // Methods with options
     // The order of arguments should be kept in according to API
 
     Metrika.prototype.extLink = function (url, options) {
@@ -126,6 +127,10 @@ function hit(source, message) {
   }
 function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        metrikaYandexWatch.apply(this, updatedArgs);
+        try {
+            metrikaYandexWatch.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"metrika-yandex-watch","args":[]}, []);
