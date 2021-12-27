@@ -1,6 +1,7 @@
 import { merge } from 'webpack-merge';
 import fs from 'fs';
 import path from 'path';
+import { redirects } from '@adguard/scriptlets';
 import {
     ENVS,
     ENV_CONF,
@@ -12,6 +13,8 @@ import {
     LOCALE_DATA_FILENAME,
 } from './locales/locales-constants';
 import packageJson from '../package.json';
+
+const { Redirects } = redirects;
 
 export const getEnvConf = (env) => {
     const envConfig = ENV_CONF[env];
@@ -29,13 +32,21 @@ export const getBrowserConf = (browser) => {
     return browserConf;
 };
 
+const getClickToLoadSha = () => {
+    const redirectsYamlPath = path.resolve(__dirname, '../Extension/assets/libs/scriptlets/redirects.yml');
+    const rawYaml = fs.readFileSync(redirectsYamlPath);
+    const redirects = new Redirects(rawYaml);
+    const click2loadSource = redirects.getRedirect('click2load.html');
+    return click2loadSource.sha;
+};
+
 export const updateManifest = (env, targetPart, addedPart) => {
     const target = JSON.parse(targetPart.toString());
     const union = merge(target, addedPart);
 
     const devPolicy = env === ENVS.DEV
-        ? { content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self'" }
-        : {};
+        ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
+        : { content_security_policy: `script-src '${getClickToLoadSha()}'` };
 
     delete union.version;
 

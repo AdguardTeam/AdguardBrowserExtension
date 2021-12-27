@@ -1,8 +1,16 @@
 (function(source, args){
-function noeval(source) {
-    window.eval = function evalWrapper(s) {
-      hit(source, "AdGuard has prevented eval:\n".concat(s));
-    }.bind();
+function Gemius(source) {
+    var GemiusPlayer = function GemiusPlayer() {};
+
+    GemiusPlayer.prototype = {
+      setVideoObject: noopFunc,
+      newProgram: noopFunc,
+      programEvent: noopFunc,
+      newAd: noopFunc,
+      adEvent: noopFunc
+    };
+    window.GemiusPlayer = GemiusPlayer;
+    hit(source);
   }
 function hit(source, message) {
     if (source.verbose !== true) {
@@ -59,12 +67,13 @@ function hit(source, message) {
     if (typeof window.__debug === 'function') {
       window.__debug(source);
     }
-  };
+  }
+function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            noeval.apply(this, updatedArgs);
+            Gemius.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"noeval","args":[]}, []);
+})({"name":"gemius","args":[]}, []);

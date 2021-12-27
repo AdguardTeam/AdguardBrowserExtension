@@ -16,6 +16,8 @@
  */
 
 import { browser } from '../extension-api/browser';
+import { redirectService } from '../filter/services/redirect-service';
+import { redirectsTokensCache } from './redirects-tokens-cache';
 
 /**
  * Web accessible resources helper
@@ -89,11 +91,18 @@ export const resources = (function () {
     /**
      * Create url for redirect file
      *
-     * @param redirectFile
+     * @param {string} redirectFile
+     * @param {string} requestUrl
      * @return {*}
      */
-    const createRedirectFileUrl = (redirectFile) => {
-        return browser.runtime.getURL(`${WEB_ACCESSIBLE_RESOURCES}/redirects/${redirectFile}${warSecret()}`);
+    const createRedirectFileUrl = (redirectFile, requestUrl) => {
+        const params = new URLSearchParams(warSecret());
+        if (redirectService.getBlockingRedirects().includes(redirectFile)) {
+            const unblockToken = redirectsTokensCache.generateToken();
+            params.set('__unblock', unblockToken);
+            params.set('__origin', requestUrl);
+        }
+        return browser.runtime.getURL(`${WEB_ACCESSIBLE_RESOURCES}/redirects/${redirectFile}?${params.toString()}`);
     };
 
     // EXPOSE

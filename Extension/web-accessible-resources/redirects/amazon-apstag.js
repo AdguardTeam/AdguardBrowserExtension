@@ -71,6 +71,10 @@ function hit(source, message) {
   }
 function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        AmazonApstag.apply(this, updatedArgs);
+        try {
+            AmazonApstag.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"amazon-apstag","args":[]}, []);

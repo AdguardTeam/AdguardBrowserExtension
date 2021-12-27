@@ -1,8 +1,78 @@
 (function(source, args){
-function noeval(source) {
-    window.eval = function evalWrapper(s) {
-      hit(source, "AdGuard has prevented eval:\n".concat(s));
-    }.bind();
+function ATInternetSmartTag(source) {
+    var setNoopFuncWrapper = {
+      set: noopFunc
+    };
+    var sendNoopFuncWrapper = {
+      send: noopFunc
+    };
+    var ecommerceWrapper = {
+      displayCart: {
+        products: setNoopFuncWrapper,
+        cart: setNoopFuncWrapper
+      },
+      updateCart: {
+        cart: setNoopFuncWrapper
+      },
+      displayProduct: {
+        products: setNoopFuncWrapper
+      },
+      displayPageProduct: {
+        products: setNoopFuncWrapper
+      },
+      addProduct: {
+        products: setNoopFuncWrapper
+      },
+      removeProduct: {
+        products: setNoopFuncWrapper
+      }
+    }; // eslint-disable-next-line new-cap, func-names
+
+    var tag = function tag() {};
+
+    tag.prototype = {
+      setConfig: noopFunc,
+      setParam: noopFunc,
+      dispatch: noopFunc,
+      customVars: setNoopFuncWrapper,
+      publisher: setNoopFuncWrapper,
+      order: setNoopFuncWrapper,
+      click: sendNoopFuncWrapper,
+      clickListener: sendNoopFuncWrapper,
+      internalSearch: sendNoopFuncWrapper,
+      ecommerce: ecommerceWrapper,
+      identifiedVisitor: {
+        unset: noopFunc
+      },
+      page: {
+        set: noopFunc,
+        send: noopFunc
+      },
+      selfPromotion: {
+        add: noopFunc,
+        send: noopFunc
+      },
+      privacy: {
+        setVisitorMode: noopFunc,
+        getVisitorMode: noopFunc,
+        hit: noopFunc
+      },
+      richMedia: {
+        add: noopFunc,
+        send: noopFunc,
+        remove: noopFunc,
+        removeAll: noopFunc
+      }
+    };
+    var smartTagWrapper = {
+      Tracker: {
+        Tag: function Tag() {
+          return new tag(); // eslint-disable-line new-cap
+        }
+      }
+    };
+    window.ATInternet = smartTagWrapper;
+    hit(source);
   }
 function hit(source, message) {
     if (source.verbose !== true) {
@@ -59,12 +129,13 @@ function hit(source, message) {
     if (typeof window.__debug === 'function') {
       window.__debug(source);
     }
-  };
+  }
+function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            noeval.apply(this, updatedArgs);
+            ATInternetSmartTag.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"noeval","args":[]}, []);
+})({"name":"ati-smarttag","args":[]}, []);

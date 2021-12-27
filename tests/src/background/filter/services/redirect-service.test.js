@@ -7,12 +7,14 @@ describe('Redirect service', () => {
         const gifRedirectTitle = '1x1-transparent.gif';
         const noopjsTitle = 'noopjs';
         const blankJsAlias = 'blank-js';
+        const clickToLoadTitle = 'click2load.html';
+        const frameContentType = 'text/html';
 
         const rawYaml = `
         - title: ${gifRedirectTitle}
+          description: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
           aliases:
             - 1x1-transparent-gif
-          comment: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
           contentType: image/gif;base64
           content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 
@@ -20,13 +22,26 @@ describe('Redirect service', () => {
           aliases:
             - ${blankJsAlias}
           contentType: ${jsContentType}
-          content: ${noopJsContent}`;
+          content: ${noopJsContent}
+
+
+        - title: ${clickToLoadTitle}
+          description: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
+          aliases:
+            - ${clickToLoadTitle}
+          isBlocking: true
+          contentType: ${frameContentType}`;
 
         redirectService.init(rawYaml);
 
         expect(redirectService.hasRedirect(gifRedirectTitle)).toBeTruthy();
         expect(redirectService.hasRedirect(noopjsTitle)).toBeTruthy();
         expect(redirectService.hasRedirect(blankJsAlias)).toBeTruthy();
+        expect(redirectService.hasRedirect(clickToLoadTitle)).toBeTruthy();
         expect(redirectService.hasRedirect('invalid')).toBeFalsy();
+
+        const blockingRedirects = redirectService.getBlockingRedirects();
+        expect(blockingRedirects.length).toBe(1);
+        expect(blockingRedirects).toContain(clickToLoadTitle);
     });
 });

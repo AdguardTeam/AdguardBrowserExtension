@@ -1,8 +1,25 @@
 (function(source, args){
-function noeval(source) {
-    window.eval = function evalWrapper(s) {
-      hit(source, "AdGuard has prevented eval:\n".concat(s));
-    }.bind();
+function Matomo(source) {
+    var Tracker = function Tracker() {};
+
+    Tracker.prototype.setDoNotTrack = noopFunc;
+    Tracker.prototype.setDomains = noopFunc;
+    Tracker.prototype.setCustomDimension = noopFunc;
+    Tracker.prototype.trackPageView = noopFunc;
+
+    var AsyncTracker = function AsyncTracker() {};
+
+    AsyncTracker.prototype.addListener = noopFunc;
+    var matomoWrapper = {
+      getTracker: function getTracker() {
+        return new Tracker();
+      },
+      getAsyncTracker: function getAsyncTracker() {
+        return new AsyncTracker();
+      }
+    };
+    window.Piwik = matomoWrapper;
+    hit(source);
   }
 function hit(source, message) {
     if (source.verbose !== true) {
@@ -59,12 +76,13 @@ function hit(source, message) {
     if (typeof window.__debug === 'function') {
       window.__debug(source);
     }
-  };
+  }
+function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            noeval.apply(this, updatedArgs);
+            Matomo.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"noeval","args":[]}, []);
+})({"name":"matomo","args":[]}, []);

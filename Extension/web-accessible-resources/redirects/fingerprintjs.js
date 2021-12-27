@@ -1,8 +1,30 @@
 (function(source, args){
-function noeval(source) {
-    window.eval = function evalWrapper(s) {
-      hit(source, "AdGuard has prevented eval:\n".concat(s));
-    }.bind();
+function Fingerprintjs(source) {
+    var browserId = '';
+
+    for (var i = 0; i < 8; i += 1) {
+      browserId += (Math.random() * 0x10000 + 0x1000).toString(16).slice(-4);
+    }
+
+    var Fingerprint = function Fingerprint() {};
+
+    Fingerprint.get = function (options, callback) {
+      if (!callback) {
+        callback = options;
+      }
+
+      setTimeout(function () {
+        if (callback) {
+          callback(browserId, []);
+        }
+      }, 1);
+    };
+
+    Fingerprint.prototype = {
+      get: Fingerprint.get
+    };
+    window.Fingerprint2 = Fingerprint;
+    hit(source);
   }
 function hit(source, message) {
     if (source.verbose !== true) {
@@ -62,9 +84,9 @@ function hit(source, message) {
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            noeval.apply(this, updatedArgs);
+            Fingerprintjs.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"noeval","args":[]}, []);
+})({"name":"fingerprintjs","args":[]}, []);

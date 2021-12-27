@@ -19,6 +19,10 @@ function preventBab(source) {
     var signatures = [['blockadblock'], ['babasbm'], [/getItem\('babn'\)/], ['getElementById', 'String.fromCharCode', 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 'charAt', 'DOMContentLoaded', 'AdBlock', 'addEventListener', 'doScroll', 'fromCharCode', '<<2|r>>4', 'sessionStorage', 'clientWidth', 'localStorage', 'Math', 'random']];
 
     var check = function check(str) {
+      if (typeof str !== 'string') {
+        return false;
+      }
+
       for (var i = 0; i < signatures.length; i += 1) {
         var tokens = signatures[i];
         var match = 0;
@@ -120,6 +124,10 @@ function hit(source, message) {
     }
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        preventBab.apply(this, updatedArgs);
+        try {
+            preventBab.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"prevent-bab","args":[]}, []);

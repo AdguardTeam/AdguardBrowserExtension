@@ -21,9 +21,10 @@ function GoogleAnalyticsGa(source) {
       if (Array.isArray(data) === false) {
         return;
       } // https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._link
+      // https://github.com/uBlockOrigin/uBlock-issues/issues/1807
 
 
-      if (data[0] === '_link' && typeof data[1] === 'string') {
+      if (typeof data[0] === 'string' && /(^|\.)_link$/.test(data[0]) && typeof data[1] === 'string') {
         window.location.assign(data[1]);
       } // https://github.com/gorhill/uBlock/issues/2162
 
@@ -56,6 +57,23 @@ function GoogleAnalyticsGa(source) {
 
     tracker._getLinkerUrl = function (a) {
       return a;
+    }; // https://github.com/AdguardTeam/Scriptlets/issues/154
+
+
+    tracker._link = function (url) {
+      if (typeof url !== 'string') {
+        return;
+      }
+
+      try {
+        window.location.assign(url);
+      } catch (e) {
+        // log the error only while debugging
+        if (source.verbose) {
+          // eslint-disable-next-line no-console
+          console.log(e);
+        }
+      }
     };
 
     Gat.prototype._anonymizeIP = noopFunc;
@@ -141,6 +159,10 @@ function hit(source, message) {
   }
 function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        GoogleAnalyticsGa.apply(this, updatedArgs);
+        try {
+            GoogleAnalyticsGa.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"google-analytics-ga","args":[]}, []);

@@ -1,8 +1,28 @@
 (function(source, args){
-function noeval(source) {
-    window.eval = function evalWrapper(s) {
-      hit(source, "AdGuard has prevented eval:\n".concat(s));
-    }.bind();
+function preventBab2(source) {
+    // eslint-disable-next-line compat/compat
+    var script = document.currentScript;
+
+    if (script === null) {
+      return;
+    }
+
+    var url = script.src;
+
+    if (typeof url !== 'string') {
+      return;
+    }
+
+    var domainsStr = ['adclixx\\.net', 'adnetasia\\.com', 'adtrackers\\.net', 'bannertrack\\.net'].join('|');
+    var matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
+    var domainsRegex = new RegExp(matchStr);
+
+    if (domainsRegex.test(url) === false) {
+      return;
+    }
+
+    window.nH7eXzOsG = 858;
+    hit(source);
   }
 function hit(source, message) {
     if (source.verbose !== true) {
@@ -62,9 +82,9 @@ function hit(source, message) {
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            noeval.apply(this, updatedArgs);
+            preventBab2.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"noeval","args":[]}, []);
+})({"name":"prevent-bab2","args":[]}, []);

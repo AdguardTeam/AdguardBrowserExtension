@@ -98,6 +98,10 @@ function hit(source, message) {
     }
   };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
-        preventPopadsNet.apply(this, updatedArgs);
+        try {
+            preventPopadsNet.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
     
 })({"name":"prevent-popads-net","args":[]}, []);

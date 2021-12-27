@@ -276,8 +276,10 @@ export const webRequestService = (function () {
         // check if request rule is blocked by rule and is redirect rule
         } else if (requestRule && !requestRule.isAllowlist()) {
             if (requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Redirect)) {
-                // eslint-disable-next-line max-len
-                const redirectUrl = redirectService.createRedirectUrl(requestRule.getAdvancedModifierValue());
+                const redirectUrl = redirectService.createRedirectUrl(
+                    requestRule.getAdvancedModifierValue(),
+                    requestUrl,
+                );
                 if (redirectUrl) {
                     return { redirectUrl };
                 }
