@@ -18,7 +18,8 @@ const SettingsSection = (props) => {
     });
 
     const titleContainerClass = classNames('title__container', {
-        'title__container--small': renderBackButton || mode === 'smallContainer',
+        'title__container--small': mode === 'smallContainer',
+        'title__container--back': renderBackButton,
         'title__container--sub': mode === 'subTitle',
         'title__container--control': id,
     });
@@ -43,13 +44,13 @@ const SettingsSection = (props) => {
                         </div>
                     )}
                 {inlineControl
-                && (
-                    <div
-                        className="setting__container setting__container--inline setting__inline-control"
-                    >
-                        {inlineControl}
-                    </div>
-                )}
+                    && (
+                        <div
+                            className="setting__container setting__container--inline setting__inline-control"
+                        >
+                            {inlineControl}
+                        </div>
+                    )}
             </label>
             <div>
                 {children}
