@@ -212,8 +212,10 @@ export const stealthService = (() => {
 
     /**
      * Updates browser privacy.network settings depending on blocking WebRTC or not
+     *
+     * @param blockWebRTC
      */
-    const handleBlockWebRTC = async () => {
+    const setBlockWebRTC = async (blockWebRTC) => {
         // Edge doesn't support privacy api
         // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy
         if (!browser.privacy) {
@@ -224,12 +226,10 @@ export const stealthService = (() => {
             log.error('Error updating privacy.network settings: {0}', e);
         };
 
-        const webRTCDisabled = getStealthSettingValue(settings.BLOCK_WEBRTC);
-
         // Deprecated since Chrome 48
         if (typeof browser.privacy.network.webRTCMultipleRoutesEnabled === 'object') {
             try {
-                if (webRTCDisabled) {
+                if (blockWebRTC) {
                     await browser.privacy.network.webRTCMultipleRoutesEnabled.set({
                         value: false,
                         scope: 'regular',
@@ -247,7 +247,7 @@ export const stealthService = (() => {
         // Since chromium 48
         if (typeof browser.privacy.network.webRTCIPHandlingPolicy === 'object') {
             try {
-                if (webRTCDisabled) {
+                if (blockWebRTC) {
                     await browser.privacy.network.webRTCIPHandlingPolicy.set({
                         value: 'disable_non_proxied_udp',
                         scope: 'regular',
@@ -264,7 +264,7 @@ export const stealthService = (() => {
 
         if (typeof browser.privacy.network.peerConnectionEnabled === 'object') {
             try {
-                if (webRTCDisabled) {
+                if (blockWebRTC) {
                     browser.privacy.network.peerConnectionEnabled.set({
                         value: false,
                         scope: 'regular',
@@ -283,13 +283,12 @@ export const stealthService = (() => {
     const handleWebRTCEnabling = async () => {
         try {
             let isPermissionsGranted = await browserUtils.containsPermissions(PRIVACY_PERMISSIONS);
-            if (isPermissionsGranted) {
-                // do nothing if permissions were granted
-                return;
+            if (!isPermissionsGranted) {
+                isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
             }
-            isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
+
             if (isPermissionsGranted) {
-                await handleBlockWebRTC();
+                await setBlockWebRTC(false);
             } else {
                 // If privacy permission is not granted set block webrtc value to false
                 settings.setProperty(settings.BLOCK_WEBRTC, false);
@@ -302,13 +301,12 @@ export const stealthService = (() => {
     const handleWebRTCDisabling = async () => {
         try {
             let isPermissionsGranted = await browserUtils.containsPermissions(PRIVACY_PERMISSIONS);
-            if (isPermissionsGranted) {
-                // do nothing if permissions were granted
-                return;
+            if (!isPermissionsGranted) {
+                isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
             }
-            isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
+
             if (isPermissionsGranted) {
-                await handleBlockWebRTC();
+                await setBlockWebRTC(true);
                 await browserUtils.removePermission(PRIVACY_PERMISSIONS);
             }
         } catch (e) {
@@ -316,12 +314,11 @@ export const stealthService = (() => {
         }
     };
 
-    const handlePrivacyPermissions = async () => {
-        const webRTCEnabled = getStealthSettingValue(settings.BLOCK_WEBRTC);
-        if (webRTCEnabled) {
-            await handleWebRTCEnabling();
-        } else {
+    const handlePrivacyPermissions = async (shouldBlock) => {
+        if (shouldBlock) {
             await handleWebRTCDisabling();
+        } else {
+            await handleWebRTCEnabling();
         }
     };
 
@@ -396,17 +393,29 @@ export const stealthService = (() => {
     });
 
     if (canBlockWebRTC()) {
-        settings.onUpdated.addListener(async (setting) => {
-            // for "block webrtc" enabling while stealth mode is enabled
-            // and stealth mode enabling with previously enabled "block webrtc"
-            if ((setting === settings.BLOCK_WEBRTC || setting === settings.DISABLE_STEALTH_MODE)
-                && settings.isWebRTCDisabled()
-                && !settings.getDisableStealthMode()
-            ) {
+        settings.onUpdated.addListener(async (settingName, settingValue) => {
+            if (settingName === settings.BLOCK_WEBRTC || settingName === settings.DISABLE_STEALTH_MODE) {
+                let shouldBlock;
+                if (settingName === settings.BLOCK_WEBRTC) {
+                    if (!isStealthModeDisabled()) {
+                        shouldBlock = settingValue;
+                    }
+                } else if (settingName === settings.DISABLE_STEALTH_MODE) {
+                    if (settings.getProperty(settings.BLOCK_WEBRTC)) {
+                        // Enable webRTC if stealth mode is disabled
+                        shouldBlock = !settingValue;
+                    }
+                }
+
+                if (typeof shouldBlock === 'undefined') {
+                    // Nothing to change indeed
+                    return;
+                }
+
                 if (shouldHandlePrivacyPermission()) {
-                    await handlePrivacyPermissions();
+                    await handlePrivacyPermissions(shouldBlock);
                 } else {
-                    await handleBlockWebRTC();
+                    await setBlockWebRTC(shouldBlock);
                 }
             }
         });
@@ -421,7 +430,7 @@ export const stealthService = (() => {
                         log.error(e);
                     }
                     if (isPermissionsGranted) {
-                        await handleBlockWebRTC();
+                        await setBlockWebRTC(getStealthSettingValue(settings.BLOCK_WEBRTC));
                     }
                     break;
                 default:
