@@ -46,7 +46,7 @@ export const updateManifest = (env, targetPart, addedPart) => {
 
     const devPolicy = env === ENVS.DEV
         ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
-        : { content_security_policy: `script-src '${getClickToLoadSha()}'` };
+        : { content_security_policy: `script-src 'self' '${getClickToLoadSha()}'; object-src 'self'` };
 
     delete union.version;
 
