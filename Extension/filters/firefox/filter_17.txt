@@ -1,8 +1,8 @@
-! Checksum: i1zex575tzyPF9djoKUGsw
+! Checksum: t0g5X/EUlQ04MwsOqJvGcg
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.31
-! TimeUpdated: 2021-11-15T10:30:54+00:00
+! Version: 2.0.1.61
+! TimeUpdated: 2021-12-30T10:30:49+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -13,6 +13,7 @@
 !
 ! General rules
 !
+$removeparam=nx_source
 $removeparam=_zucks_suid
 $removeparam=cmpid
 $removeparam=asgtbndr
@@ -74,6 +75,8 @@ $removeparam=dpg_content
 ! AdmitAd tracking
 $removeparam=admitad_uid
 ! adjust.com tracking
+$removeparam=adjust_creative
+$removeparam=adjust_tracker_limit
 $removeparam=adjust_tracker
 $removeparam=adjust_adgroup
 $removeparam=adjust_campaign
@@ -116,6 +119,62 @@ $removeparam=oly_enc_id
 ! The rules for specific sites
 !
 !
+! reddit.com - email tracking
+||reddit.com^$removeparam=_branch_referrer
+||reddit.com^$removeparam=post_fullname
+! adjust.com tracking
+||adj.st^$removeparam=CollectionId
+||adj.st^$removeparam=adjust_deeplink
+! Alexa extension tracking
+||data.alexa.com/data/$xmlhttprequest,removeparam=/cdt|ref/
+! https://forum.adguard.com/index.php?threads/46096/
+||comodo.com^$removeparam=track
+||comodo.com^$removeparam=af
+! https://github.com/AdguardTeam/AdguardFilters/pull/104464
+||link.coupang.com^$removeparam=lptag
+! https://github.com/AdguardTeam/AdguardFilters/issues/101790
+||wuzhuiso.com^$removeparam=src
+! https://github.com/AdguardTeam/AdguardFilters/pull/103989
+||nordvpn.com^$removeparam=data1
+! https://github.com/AdguardTeam/AdguardFilters/issues/100580
+||upgrad.com^$removeparam=UTM_MEDIUM
+! https://github.com/uBlockOrigin/uAssets/issues/10867
+||adweek.com^$removeparam=traffic_source
+! AdGuard
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
+! https://github.com/AdguardTeam/AdguardFilters/pull/102144
+||kitbag.com^$removeparam=_ref
+||kitbag.com^$removeparam=ab
+! vstat extension tracking
+||web.vstat.info$removeparam=guid
+||web.vstat.info$removeparam=user_agent
+! https://github.com/AdguardTeam/AdguardFilters/issues/101590
+||start.pm.by^$removeparam=adtag
+! https://github.com/AdguardTeam/AdguardFilters/issues/100448
+||mail.ru^$removeparam=oprtrack
+! https://github.com/AdguardTeam/AdguardFilters/issues/100613
+||redhotpawn.com^$removeparam=cbqsid
+! https://github.com/AdguardTeam/AdguardFilters/issues/94662
+||reddit.com^$removeparam=correlation_id
+||reddit.com^$removeparam=ref_campaign
+||reddit.com^$removeparam=ref_source
+||reddit.com^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/99645
+||trendyol.com^$removeparam=tyutm_source
+||trendyol.com^$removeparam=tyutm_medium
+||trendyol.com^$removeparam=tyutm_campaign
+! https://github.com/AdguardTeam/AdguardFilters/pull/100181
+||cc.loginfra.com/cc$removeparam=a
+||cc.loginfra.com/cc$removeparam=bw
+||cc.loginfra.com/cc$removeparam=px
+||cc.loginfra.com/cc$removeparam=py
+||cc.loginfra.com/cc$removeparam=sx
+||cc.loginfra.com/cc$removeparam=sy
+||cc.loginfra.com/cc$removeparam=nsc
+! https://github.com/AdguardTeam/AdguardFilters/issues/99345
+||mein.onlinekonto.de^$removeparam=ref
+! https://github.com/Yuki2718/adblock/issues/39
+||dengekionline.com^$removeparam=osusume_banner
 ! https://github.com/AdguardTeam/AdguardFilters/pull/99938
 ! for more info - https://www.biaodianfu.com/spm.html
 $removeparam=spm,domain=aliyun.com|sohu.com
@@ -263,6 +322,7 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||yandex.*/images/$removeparam=source-serpid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88606
 ||www.yandex.$removeparam=clid
+://yandex.$removeparam=clid
 ://yandex.$removeparam=source
 ! Baidu search - statictics
 ||www.baidu.com^$removeparam=rsv_pq
@@ -284,7 +344,6 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
-||google.*/search$removeparam=dpr
 ||google.*/search$removeparam=sa
 ||google.*/search$removeparam=source
 ||google.*/search$removeparam=aqs
@@ -393,11 +452,11 @@ $removeparam=dclid
 ||trendyol.com^$removeparam=_ga
 ||trendyol.com^$removeparam=utm_subaff
 !
+||marktjagd.de^$removeparam=client
 ||kaspersky.com^$removeparam=icid
 ||coursera.org^$removeparam=siteID
 ||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
-||adguard.com^$removeparam=aid
 ||hepsiburada.com^$removeparam=wt_af
 ||mioga.de^$removeparam=pl
 ||mioga.de^$removeparam=idealoid
@@ -490,10 +549,24 @@ $removeparam=dclid
 !+ PLATFORM(ext_chromium, ext_ff, ext_opera)
 @@||userscript.zone^$removeparam=utm_campaign
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/103723
+! TODO: it can be removed after the release of the extension 4.0
+@@||jeep.com/mediaserver/$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/103211
+! TODO: it can be removed after the release of the extension 4.0
+@@||dodge.com/mediaserver/$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/100190
+! TODO: it can be removed after the release of the extension 4.0
+@@||dkbs.sabio.de/sabio/services/$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/100285
+@@||sendgb.com/*/?utm_source=$removeparam=utm_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96952
 @@||img*.nga$removeparam=cmpid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/95837#issuecomment-944914999
 ! it can be removed after the release of the extension 4.0
+!
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-1683830
+@@||mywot.com/*/confirmNewEmail/$removeparam
 !+ PLATFORM(ext_ff)
 @@/ws$removeparam,domain=speedtest.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96900

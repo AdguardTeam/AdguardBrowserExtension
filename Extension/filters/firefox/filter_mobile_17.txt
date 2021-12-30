@@ -1,9 +1,10 @@
-! Checksum: Zxrp9b9Z8DSnVKS3Rdy0mQ
+! Checksum: zemBxCZMXQcB3OLF/V2k/A
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.31
-! TimeUpdated: 2021-11-15T10:30:54+00:00
+! Version: 2.0.1.61
+! TimeUpdated: 2021-12-30T10:30:49+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=nx_source
 $removeparam=_zucks_suid
 $removeparam=cmpid
 $removeparam=asgtbndr
@@ -57,6 +58,8 @@ $removeparam=dpg_campaign
 $removeparam=dpg_medium
 $removeparam=dpg_content
 $removeparam=admitad_uid
+$removeparam=adjust_creative
+$removeparam=adjust_tracker_limit
 $removeparam=adjust_tracker
 $removeparam=adjust_adgroup
 $removeparam=adjust_campaign
@@ -84,6 +87,42 @@ $removeparam=ml_subscriber_hash
 $removeparam=rb_clickid
 $removeparam=oly_anon_id
 $removeparam=oly_enc_id
+||reddit.com^$removeparam=_branch_referrer
+||reddit.com^$removeparam=post_fullname
+||adj.st^$removeparam=CollectionId
+||adj.st^$removeparam=adjust_deeplink
+||data.alexa.com/data/$xmlhttprequest,removeparam=/cdt|ref/
+||comodo.com^$removeparam=track
+||comodo.com^$removeparam=af
+||link.coupang.com^$removeparam=lptag
+||wuzhuiso.com^$removeparam=src
+||nordvpn.com^$removeparam=data1
+||upgrad.com^$removeparam=UTM_MEDIUM
+||adweek.com^$removeparam=traffic_source
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
+||kitbag.com^$removeparam=_ref
+||kitbag.com^$removeparam=ab
+||web.vstat.info$removeparam=guid
+||web.vstat.info$removeparam=user_agent
+||start.pm.by^$removeparam=adtag
+||mail.ru^$removeparam=oprtrack
+||redhotpawn.com^$removeparam=cbqsid
+||reddit.com^$removeparam=correlation_id
+||reddit.com^$removeparam=ref_campaign
+||reddit.com^$removeparam=ref_source
+||reddit.com^$removeparam=ref
+||trendyol.com^$removeparam=tyutm_source
+||trendyol.com^$removeparam=tyutm_medium
+||trendyol.com^$removeparam=tyutm_campaign
+||cc.loginfra.com/cc$removeparam=a
+||cc.loginfra.com/cc$removeparam=bw
+||cc.loginfra.com/cc$removeparam=px
+||cc.loginfra.com/cc$removeparam=py
+||cc.loginfra.com/cc$removeparam=sx
+||cc.loginfra.com/cc$removeparam=sy
+||cc.loginfra.com/cc$removeparam=nsc
+||mein.onlinekonto.de^$removeparam=ref
+||dengekionline.com^$removeparam=osusume_banner
 $removeparam=spm,domain=aliyun.com|sohu.com
 ||aliyun.com^$removeparam=scm
 $removeparam=dt_dapp,domain=douban.com|163.com
@@ -183,6 +222,7 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||yandex.*/sport/$removeparam=stid
 ||yandex.*/images/$removeparam=source-serpid
 ||www.yandex.$removeparam=clid
+://yandex.$removeparam=clid
 ://yandex.$removeparam=source
 ||www.baidu.com^$removeparam=rsv_pq
 ||www.baidu.com^$removeparam=rsv_t
@@ -194,7 +234,6 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
-||google.*/search$removeparam=dpr
 ||google.*/search$removeparam=sa
 ||google.*/search$removeparam=source
 ||google.*/search$removeparam=aqs
@@ -277,11 +316,11 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 $removeparam=dclid
 ||trendyol.com^$removeparam=_ga
 ||trendyol.com^$removeparam=utm_subaff
+||marktjagd.de^$removeparam=client
 ||kaspersky.com^$removeparam=icid
 ||coursera.org^$removeparam=siteID
 ||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
-||adguard.com^$removeparam=aid
 ||hepsiburada.com^$removeparam=wt_af
 ||mioga.de^$removeparam=pl
 ||mioga.de^$removeparam=idealoid
@@ -354,7 +393,12 @@ $removeparam=dclid
 ||search.bilibili.com^$removeparam=from_source
 !+ PLATFORM(ext_chromium, ext_ff, ext_opera)
 @@||userscript.zone^$removeparam=utm_campaign
+@@||jeep.com/mediaserver/$removeparam
+@@||dodge.com/mediaserver/$removeparam
+@@||dkbs.sabio.de/sabio/services/$removeparam
+@@||sendgb.com/*/?utm_source=$removeparam=utm_source
 @@||img*.nga$removeparam=cmpid
+@@||mywot.com/*/confirmNewEmail/$removeparam
 !+ PLATFORM(ext_ff)
 @@/ws$removeparam,domain=speedtest.net
 @@||plex.tv/api/v*/users/*?utm_source=$removeparam=utm_source,domain=watch.plex.tv
