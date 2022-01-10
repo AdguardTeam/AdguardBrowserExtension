@@ -32,7 +32,7 @@ import { userrules } from './filter/userrules';
 import { browserUtils } from './utils/browser-utils';
 import { log } from '../common/log';
 import { runtimeImpl } from '../common/common-script';
-import { MESSAGE_TYPES } from '../common/constants';
+import { MESSAGE_TYPES, ANTIBANNER_FILTERS_ID } from '../common/constants';
 import { translator } from '../common/translators/translator';
 
 /**
@@ -591,7 +591,7 @@ export const uiService = (function () {
      * Generates query string with stealth options information
      * @returns {string}
      */
-    const getStealthString = () => {
+    const getStealthString = (filterIds) => {
         const stealthOptions = [
             { queryKey: 'ext_hide_referrer', settingKey: settings.HIDE_REFERRER },
             { queryKey: 'hide_search_queries', settingKey: settings.HIDE_SEARCH_QUERIES },
@@ -616,7 +616,7 @@ export const uiService = (function () {
             return `&stealth.enabled=${stealthEnabled}`;
         }
 
-        const stealthOptionsString = stealthOptions.map((option) => {
+        let stealthOptionsString = stealthOptions.map((option) => {
             const { queryKey, settingKey, settingValueKey } = option;
             const setting = settings.getProperty(settingKey);
             let settingString;
@@ -632,6 +632,12 @@ export const uiService = (function () {
         })
             .filter(string => string.length > 0)
             .join('&');
+
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1937
+        const isRemoveUrlParamsEnabled = filterIds.includes(ANTIBANNER_FILTERS_ID.URL_TRACKING_FILTER_ID);
+        if (isRemoveUrlParamsEnabled) {
+            stealthOptionsString = `${stealthOptionsString}&stealth.strip_url=true`;
+        }
 
         return `&stealth.enabled=${stealthEnabled}&${stealthOptionsString}`;
     };
@@ -751,7 +757,7 @@ export const uiService = (function () {
         }${browserDetails ? `&browser_detail=${encodeURIComponent(browserDetails)}` : ''
         }&url=${encodeURIComponent(url)
         }&filters=${encodeURIComponent(filterIds.join('.'))
-        }${getStealthString()
+        }${getStealthString(filterIds)
         }${getBrowserSecurityString()}`);
     };
 
