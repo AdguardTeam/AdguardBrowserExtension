@@ -32,7 +32,7 @@ export const ConfirmModal = ({
                     {title}
                 </div>
                 {subtitle && (
-                    <div className="modal__subtitle">
+                    <div className="modal__subtitle modal__subtitle--confirm">
                         {subtitle}
                     </div>
                 )}
