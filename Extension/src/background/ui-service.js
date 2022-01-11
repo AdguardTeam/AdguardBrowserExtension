@@ -1033,7 +1033,7 @@ export const uiService = (function () {
         listeners.addListener((event, success, updatedFilters) => {
             if (event === listeners.UPDATE_FILTERS_SHOW_POPUP) {
                 const result = getFiltersUpdateResultMessage(success, updatedFilters);
-                showAlertMessagePopup(result.title, result.text);
+                showAlertMessagePopup(result.title, result.text, alertStyles);
             }
         });
 
