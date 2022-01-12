@@ -172,9 +172,24 @@ export const uiService = (function () {
         }
     }
 
-    const updateTabIconAsync = utils.concurrent.debounce((tab) => {
-        updateTabIcon(tab);
-    }, 250);
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1915
+    let lastCallArgs = null;
+    let isWorking = false;
+    const updateTabIconAsync = utils.concurrent.debounce(async (...args) => {
+        if (isWorking) {
+            lastCallArgs = args;
+            return;
+        }
+
+        isWorking = true;
+        await updateTabIcon(...args);
+        if (lastCallArgs) {
+            args = lastCallArgs;
+            lastCallArgs = null;
+            await updateTabIcon(...args);
+        }
+        isWorking = false;
+    }, 100);
 
     /**
      * Update extension browser action popup window
@@ -550,11 +565,20 @@ export const uiService = (function () {
         };
     }
 
-    const updateTabIconAndContextMenu = function (tab, reloadFrameData) {
+    /**
+     * Updates extension icon and context menu for tab
+     * @param {Object} tab
+     * @param {boolean} reloadFrameData
+     * @param {boolean} [changeIcon=true]
+     */
+    const updateTabIconAndContextMenu = function (tab, reloadFrameData, changeIcon = true) {
         if (reloadFrameData) {
             frames.reloadFrameData(tab);
         }
-        updateTabIcon(tab);
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1917
+        if (changeIcon) {
+            updateTabIconAsync(tab);
+        }
         updateTabContextMenu(tab);
     };
 
@@ -851,7 +875,8 @@ export const uiService = (function () {
         settings.changeFilteringDisabled(disabled);
         const tab = await tabsApi.getActive();
         if (tab) {
-            updateTabIconAndContextMenu(tab, true);
+            // third arg is 'false' for no icon change to avoid icon blink
+            updateTabIconAndContextMenu(tab, true, false);
             tabsApi.reload(tab.tabId);
         }
     };
@@ -929,14 +954,14 @@ export const uiService = (function () {
                 options = { icon: prefs.ICONS.ICON_GREEN, badge: '' };
             }
 
-            updateTabIcon(tab, options);
+            updateTabIconAsync(tab, options);
         });
 
         // Update tab icon and context menu while loading
         tabsApi.onUpdated.addListener(async (tab) => {
             const { tabId } = tab;
             // BrowserAction is set separately for each tab
-            updateTabIcon(tab);
+            updateTabIconAsync(tab);
             const aTab = await tabsApi.getActive();
             if (aTab) {
                 if (aTab.tabId !== tabId) {
