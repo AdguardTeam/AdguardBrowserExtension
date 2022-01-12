@@ -58,7 +58,7 @@ export const backgroundPage = (() => {
 
     // Calculates scheme of this extension (e.g.: chrome-extension:// or moz-extension://)
     const extensionScheme = (function () {
-        const url = browser.extension.getURL('');
+        const url = browser.runtime.getURL('');
         if (!url) {
             return url;
         }
