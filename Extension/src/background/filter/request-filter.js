@@ -140,20 +140,18 @@ export const RequestFilter = (() => {
                     return true;
                 }
 
-                if (!isLocal) {
-                    /**
-                     * Note (!) (Firefox):
-                     * In case of Firefox add-ons
-                     * JS filtering rules are hardcoded into add-on code.
-                     * Look at localScriptRulesService.isLocal to learn more.
-                     * Commented instructions are preprocessed during compilation by webpack
-                     */
-                    /* @if remoteScripts == false */
-                    if (isFirefox) {
-                        return false;
-                    }
-                    /* @endif */
+                /* @if !remoteScripts */
+                /**
+                 * Note (!) (Firefox):
+                 * In case of Firefox add-ons
+                 * JS filtering rules are hardcoded into add-on code.
+                 * Look at localScriptRulesService.isLocal to learn more.
+                 * Commented instructions are preprocessed during compilation by webpack
+                 */
+                if (!isLocal && isFirefox) {
+                    return false;
                 }
+                /* @endif */
 
                 return true;
             });
