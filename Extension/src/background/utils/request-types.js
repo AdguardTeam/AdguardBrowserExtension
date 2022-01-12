@@ -57,6 +57,8 @@ export const RequestTypes = {
                 return RequestType.XmlHttpRequest;
             case contentTypes.WEBSOCKET:
                 return RequestType.Websocket;
+            case contentTypes.WEBRTC:
+                return RequestType.Webrtc;
             case contentTypes.PING:
                 return RequestType.Ping;
             default:

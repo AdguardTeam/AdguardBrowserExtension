@@ -443,7 +443,7 @@ export const initPageMessageListener = function () {
      *
      * @param event
      */
-    function pageMessageListener(event) {
+    async function pageMessageListener(event) {
         if (!(event.source === window
             && event.data.direction
             && event.data.direction === 'from-page-script@adguard'
@@ -460,22 +460,21 @@ export const initPageMessageListener = function () {
             requestId: event.data.requestId,
         };
 
-        contentPage.sendMessage(message, (response) => {
-            if (!response) {
-                return;
-            }
+        const response = await contentPage.sendMessage(message);
+        if (!response) {
+            return;
+        }
 
-            const message = {
-                direction: 'to-page-script@adguard',
-                elementUrl: event.data.elementUrl,
-                documentUrl: event.data.documentUrl,
-                requestType: event.data.requestType,
-                requestId: response.requestId,
-                block: response.block,
-            };
+        const responseMessage = {
+            direction: 'to-page-script@adguard',
+            elementUrl: event.data.elementUrl,
+            documentUrl: event.data.documentUrl,
+            requestType: event.data.requestType,
+            requestId: response.requestId,
+            block: response.block,
+        };
 
-            event.source.postMessage(message, event.origin);
-        });
+        event.source.postMessage(responseMessage, event.origin);
     }
 
     window.addEventListener('message', pageMessageListener, false);
