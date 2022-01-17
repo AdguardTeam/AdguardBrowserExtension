@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.5.7
+#    Version 1.5.14
 #
 - title: 1x1-transparent.gif
   description: |-
@@ -1515,8 +1515,10 @@
     function GoogleTagServicesGpt(source) {
         var companionAdsService = {
           addEventListener: noopThis,
+          removeEventListener: noopThis,
           enableSyncLoading: noopFunc,
-          setRefreshUnfilledSlots: noopFunc
+          setRefreshUnfilledSlots: noopFunc,
+          getSlots: noopArray
         };
         var contentService = {
           addEventListener: noopThis,
@@ -1583,7 +1585,7 @@
           enableVideoAds: noopFunc,
           get: noopNull,
           getAttributeKeys: noopArray,
-          getTargeting: noopFunc,
+          getTargeting: noopArray,
           getTargetingKeys: noopArray,
           getSlots: noopArray,
           refresh: noopFunc,

@@ -2,8 +2,10 @@
 function GoogleTagServicesGpt(source) {
     var companionAdsService = {
       addEventListener: noopThis,
+      removeEventListener: noopThis,
       enableSyncLoading: noopFunc,
-      setRefreshUnfilledSlots: noopFunc
+      setRefreshUnfilledSlots: noopFunc,
+      getSlots: noopArray
     };
     var contentService = {
       addEventListener: noopThis,
@@ -70,7 +72,7 @@ function GoogleTagServicesGpt(source) {
       enableVideoAds: noopFunc,
       get: noopNull,
       getAttributeKeys: noopArray,
-      getTargeting: noopFunc,
+      getTargeting: noopArray,
       getTargetingKeys: noopArray,
       getSlots: noopArray,
       refresh: noopFunc,
