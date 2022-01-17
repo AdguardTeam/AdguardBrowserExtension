@@ -1,8 +1,8 @@
-! Checksum: xU4TmshjC0Yz4iM4mrc7dw
+! Checksum: D9zDhWZjE1BW+3KgKVPFtA
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.61
-! TimeUpdated: 2021-12-30T10:30:49+00:00
+! Version: 2.0.1.75
+! TimeUpdated: 2022-01-15T10:30:43+00:00
 ! Expires: 4 days (update frequency)
 $removeparam=nx_source
 $removeparam=_zucks_suid
@@ -58,6 +58,8 @@ $removeparam=dpg_campaign
 $removeparam=dpg_medium
 $removeparam=dpg_content
 $removeparam=admitad_uid
+$removeparam=gps_adid
+$removeparam=unicorn_click_id
 $removeparam=adjust_creative
 $removeparam=adjust_tracker_limit
 $removeparam=adjust_tracker
@@ -87,6 +89,31 @@ $removeparam=ml_subscriber_hash
 $removeparam=rb_clickid
 $removeparam=oly_anon_id
 $removeparam=oly_enc_id
+$removeparam=ebisAdID
+||toku.yahoo.co.jp^$removeparam=fr
+||nikkei.com^$removeparam=i_cid
+||nikkei.com^$removeparam=n_cid
+||nikkeibp.co.jp^$removeparam=i_cid
+||zestradar.com^$removeparam=adclid
+||hit.gemius.pl/hitredir$removeparam=id
+||hit.gemius.pl/hitredir$removeparam=extra
+||adorama.com^$removeparam=obem
+||adorama.com^$removeparam=bc_pid
+||adjust.com^$removeparam=adgroup
+||tiktok.com^$removeparam=share_app_id
+||tiktok.com^$removeparam=share_author_id
+||tiktok.com^$removeparam=tt_from
+||reddit.app.link^$removeparam=adblock
+||reddit.app.link^$removeparam=compact_view
+||reddit.app.link^$removeparam=dnt
+||reddit.app.link^$removeparam=geoip_country
+||reddit.app.link^$removeparam=referrer_domain
+||reddit.app.link^$removeparam=referrer_url
+||dmkt-sp.jp^$removeparam=impressionId
+||dmm.co.jp^$removeparam=dmmref
+||dmm.co.jp^$removeparam=i3_ord
+||dmm.co.jp^$removeparam=i3_ref
+||livedoor.biz^$removeparam=ref
 ||reddit.com^$removeparam=_branch_referrer
 ||reddit.com^$removeparam=post_fullname
 ||adj.st^$removeparam=CollectionId
@@ -391,8 +418,7 @@ $removeparam=dclid
 ||bilibili.com^$removeparam=timestamp
 ||bilibili.com^$removeparam=unique_k
 ||search.bilibili.com^$removeparam=from_source
-@@||jeep.com/mediaserver/$removeparam
-@@||dodge.com/mediaserver/$removeparam
+@@/mediaserver/*$removeparam,domain=ramtrucks.com|chrysler.com|fiatusa.com|alfaromeousa.com|jeep.com|dodge.com
 @@||dkbs.sabio.de/sabio/services/$removeparam
 @@||sendgb.com/*/?utm_source=$removeparam=utm_source
 @@||img*.nga$removeparam=cmpid
