@@ -1,8 +1,8 @@
-! Checksum: gCfaz1dWxjzg6KqcuJ5GtA
+! Checksum: /CXo3LTvir4XahtvNgjsQA
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.12.39
-! TimeUpdated: 2021-12-29T14:31:42+00:00
+! Version: 2.0.12.46
+! TimeUpdated: 2022-01-14T16:38:24+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -285,6 +285,13 @@
 !
 ! AdRegain
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/105079
+oplanetatv.clickgratis.com.br#@#.ads-block
+oplanetatv.clickgratis.com.br#$#.ads.ads-block.prebid { display: block !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/106112
+daemon-hentai.com#@#.publicite
+! https://github.com/AdguardTeam/AdguardFilters/issues/103332
+@@||diariodenavarra.es/images/logo_dn_mini.png?v=*&ad$image
 ! https://github.com/AdguardTeam/AdguardFilters/issues/101503
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=sudoroot.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/101956
@@ -1077,6 +1084,7 @@ peru21.pe#@#.adstop
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24801
 yahoo.com#?#ul[class^="Mb(0)"] > li.js-stream-content:has(> div > a[rel="nofollow noopener noreferrer"]+div:contains(Patrocinado))
 !
+reforma.com#?#div[style^="height:250px;"]:has(> div > div#registroNuevoNL)
 cronista.com#?#.section > .block > .zone.zleft.z33ml:has(> .banner)
 reforma.com#?##contenido div[style^="height:250px;"]:has(script:contains(grAnuncio.DisplayAds) + div)
 separarensilabas.com#?#body > center > nav ~ center:has(> div#antiBannersGigantes)
@@ -1638,6 +1646,15 @@ jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,
 ! ##.ad
 laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##.ad
 !
+oplanetatv.clickgratis.com.br##.-ads
+oplanetatv.clickgratis.com.br##.block-ads-wrapper
+oplanetatv.clickgratis.com.br##.ads:not(.prebid)
+oplanetatv.clickgratis.com.br##.ads-block:not(.prebid)
+comoacaba.com##.aawp
+yugenmangas.com###teaser3
+yugenmangas.com##.site-header + .c-top-second-sidebar
+yugenmangas.com##.body-wrap > .c-bottom-sidebar
+diariodenavarra.es##.sticky_horizontal
 melhoresdestinos.com.br##div[class*="banner"]
 escolakids.uol.com.br##.wrapper-bnr
 escolakids.uol.com.br##div[class^="pub_"]
@@ -1700,7 +1717,6 @@ androidsis.com###text-3
 tecnoblog.net###sidebanner_single
 shock.co##div[class^="GoogleDfpAd-"]
 elpais.com##.ad-giga
-br.atsit.in##.entry-content > div[style*="text-align:"][style*="width:"][style*="!important;"]
 ||cdn.acritica.net/upload/dn_banner
 shmoop.com##.ff-dad
 eluniverso.com##.feature-taboola
@@ -1863,6 +1879,7 @@ megacurioso.com.br##.ad-halfpage-placeholder
 megacurioso.com.br##.ad-leaderboard-placeholder
 oficinadanet.com.br##div[class^="banner-"]
 concursosnobrasil.com.br##.label-publicidade
+elnacional.cat##.c-banner
 galeriadaarquitetura.com.br###bannerheader
 galeriadaarquitetura.com.br###publicidade-banner
 definicionabc.com##.analisis > div[class^="abc-"]

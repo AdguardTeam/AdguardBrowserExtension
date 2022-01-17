@@ -1,8 +1,8 @@
-! Checksum: OlfoaMAtup9xq7NEUjpDTA
+! Checksum: Qufx8UEhs4uL0H0snB8k3Q
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.61
-! TimeUpdated: 2021-12-30T10:30:49+00:00
+! Version: 2.0.1.75
+! TimeUpdated: 2022-01-15T10:30:43+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -75,6 +75,8 @@ $removeparam=dpg_content
 ! AdmitAd tracking
 $removeparam=admitad_uid
 ! adjust.com tracking
+$removeparam=gps_adid
+$removeparam=unicorn_click_id
 $removeparam=adjust_creative
 $removeparam=adjust_tracker_limit
 $removeparam=adjust_tracker
@@ -112,6 +114,8 @@ $removeparam=rb_clickid
 ! https://github.com/brave/brave-browser/issues/13644
 $removeparam=oly_anon_id
 $removeparam=oly_enc_id
+! AD EBiS
+$removeparam=ebisAdID
 !---------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !---------------------------------------------------------------------------!
@@ -119,6 +123,45 @@ $removeparam=oly_enc_id
 ! The rules for specific sites
 !
 !
+!
+! https://toku.yahoo.co.jp/ytop202111/entry?fr=weather_right_column
+||toku.yahoo.co.jp^$removeparam=fr
+! https://github.com/AdguardTeam/AdguardFilters/issues/106436
+! https://github.com/AdguardTeam/AdguardFilters/issues/106435
+! https://github.com/AdguardTeam/AdguardFilters/issues/106434
+! https://github.com/AdguardTeam/AdguardFilters/issues/106432
+||nikkei.com^$removeparam=i_cid
+||nikkei.com^$removeparam=n_cid
+||nikkeibp.co.jp^$removeparam=i_cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/106316
+||zestradar.com^$removeparam=adclid
+! https://github.com/AdguardTeam/AdguardFilters/issues/104773
+||hit.gemius.pl/hitredir$removeparam=id
+||hit.gemius.pl/hitredir$removeparam=extra
+! adorama.com
+||adorama.com^$removeparam=obem
+||adorama.com^$removeparam=bc_pid
+! https://github.com/AdguardTeam/AdguardFilters/commit/920d973db052ded91b48fbb8c7ca3fe2fdeda237
+||adjust.com^$removeparam=adgroup
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-1909327
+||tiktok.com^$removeparam=share_app_id
+||tiktok.com^$removeparam=share_author_id
+||tiktok.com^$removeparam=tt_from
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-1899731
+||reddit.app.link^$removeparam=adblock
+||reddit.app.link^$removeparam=compact_view
+||reddit.app.link^$removeparam=dnt
+||reddit.app.link^$removeparam=geoip_country
+||reddit.app.link^$removeparam=referrer_domain
+||reddit.app.link^$removeparam=referrer_url
+! https://github.com/AdguardTeam/AdguardFilters/issues/105183
+||dmkt-sp.jp^$removeparam=impressionId
+! www.dmm.co.jp trackparam
+||dmm.co.jp^$removeparam=dmmref
+||dmm.co.jp^$removeparam=i3_ord
+||dmm.co.jp^$removeparam=i3_ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/104987
+||livedoor.biz^$removeparam=ref
 ! reddit.com - email tracking
 ||reddit.com^$removeparam=_branch_referrer
 ||reddit.com^$removeparam=post_fullname
@@ -549,12 +592,11 @@ $removeparam=dclid
 !+ PLATFORM(ext_chromium, ext_ff, ext_opera)
 @@||userscript.zone^$removeparam=utm_campaign
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/105313
 ! https://github.com/AdguardTeam/AdguardFilters/issues/103723
-! TODO: it can be removed after the release of the extension 4.0
-@@||jeep.com/mediaserver/$removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/103211
 ! TODO: it can be removed after the release of the extension 4.0
-@@||dodge.com/mediaserver/$removeparam
+@@/mediaserver/*$removeparam,domain=ramtrucks.com|chrysler.com|fiatusa.com|alfaromeousa.com|jeep.com|dodge.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100190
 ! TODO: it can be removed after the release of the extension 4.0
 @@||dkbs.sabio.de/sabio/services/$removeparam
