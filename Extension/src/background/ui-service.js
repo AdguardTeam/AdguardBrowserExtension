@@ -189,7 +189,7 @@ export const uiService = (function () {
             await updateTabIcon(...args);
         }
         isWorking = false;
-    }, 100);
+    }, 400);
 
     /**
      * Update extension browser action popup window
@@ -876,6 +876,7 @@ export const uiService = (function () {
         const tab = await tabsApi.getActive();
         if (tab) {
             // third arg is 'false' for no icon change to avoid icon blink
+            // 500 for debounce timeout. AG-11591
             updateTabIconAndContextMenu(tab, true, false);
             tabsApi.reload(tab.tabId);
         }
