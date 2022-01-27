@@ -6,8 +6,11 @@ export const Icons = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" className="hidden">
             <symbol id="pause" viewBox="0 0 24 24">
-                <path fillRule="evenodd" clipRule="evenodd" d="M9 18L9 6L9 18Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path fillRule="evenodd" clipRule="evenodd" d="M15 18L15 6L15 18Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <g fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path fillRule="evenodd" clipRule="evenodd" d="M9.5 16L9.5 8L9.5 16Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path fillRule="evenodd" clipRule="evenodd" d="M14.5 16L14.5 8L14.5 16Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
             </symbol>
 
             <symbol id="start" viewBox="0 0 24 24">

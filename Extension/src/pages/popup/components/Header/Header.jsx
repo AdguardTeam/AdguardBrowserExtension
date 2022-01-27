@@ -37,33 +37,33 @@ export const Header = observer(() => {
             </div>
             <div className="popup-header__buttons">
                 {!applicationFilteringDisabled
-                && (
-                    <button
-                        className="button popup-header__button"
-                        type="button"
-                        onClick={handlePauseClick}
-                        title={reactTranslator.getMessage('context_disable_protection')}
-                    >
-                        <Icon
-                            id="#pause"
-                            classname="icon--button"
-                        />
-                    </button>
-                )}
+                    && (
+                        <button
+                            className="button popup-header__button"
+                            type="button"
+                            onClick={handlePauseClick}
+                            title={reactTranslator.getMessage('context_disable_protection')}
+                        >
+                            <Icon
+                                id="#pause"
+                                classname="icon--pause"
+                            />
+                        </button>
+                    )}
                 {applicationFilteringDisabled
-                && (
-                    <button
-                        className="button popup-header__button"
-                        type="button"
-                        onClick={handleEnableClick}
-                        title={reactTranslator.getMessage('context_enable_protection')}
-                    >
-                        <Icon
-                            id="#start"
-                            classname="icon--button icon--start"
-                        />
-                    </button>
-                )}
+                    && (
+                        <button
+                            className="button popup-header__button"
+                            type="button"
+                            onClick={handleEnableClick}
+                            title={reactTranslator.getMessage('context_enable_protection')}
+                        >
+                            <Icon
+                                id="#start"
+                                classname="icon--button icon--start"
+                            />
+                        </button>
+                    )}
                 <button
                     className="button popup-header__button"
                     type="button"
@@ -72,7 +72,7 @@ export const Header = observer(() => {
                 >
                     <Icon
                         id="#settings"
-                        classname="icon--button icon--settings"
+                        classname="icon--settings"
                     />
                 </button>
             </div>
