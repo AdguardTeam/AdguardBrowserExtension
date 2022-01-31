@@ -43,9 +43,9 @@ const bundleFirefoxXpi = async () => {
     await xpi(BROWSERS.FIREFOX_STANDALONE);
 };
 
-const bundleAdguardApi = async () => {
+const bundleAdguardApi = async (watch) => {
     const webpackConfig = getWebpackConfig(BROWSERS.ADGUARD_API);
-    return bundleRunner(webpackConfig);
+    return bundleRunner(webpackConfig, watch);
 };
 
 const devPlan = [
@@ -116,9 +116,9 @@ const main = async () => {
     }
 };
 
-const adguardApi = async () => {
+const adguardApi = async (watch) => {
     try {
-        await bundleAdguardApi();
+        await bundleAdguardApi(watch);
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -163,7 +163,9 @@ program
 program
     .command('adguard-api')
     .description('Builds sample extension with adguard api')
-    .action(adguardApi);
+    .action(() => {
+        adguardApi(program.watch);
+    });
 
 program
     .description('By default builds for all platforms')

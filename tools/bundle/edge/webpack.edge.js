@@ -6,7 +6,7 @@ import path from 'path';
 
 import { genCommonConfig } from '../webpack.common';
 import { edgeManifest } from './manifest.edge';
-import { updateManifest } from '../../helpers';
+import { updateManifestBuffer } from '../../helpers';
 
 export const genEdgeConfig = (browserConfig) => {
     const commonConfig = genCommonConfig(browserConfig);
@@ -27,7 +27,7 @@ export const genEdgeConfig = (browserConfig) => {
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifest(process.env.BUILD_ENV, content, edgeManifest),
+                        transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, edgeManifest),
                     },
                     {
                         context: 'Extension',

@@ -185,9 +185,11 @@ export const antiBannerService = (() => {
     /**
      * Clear request filter
      */
-    const stop = function () {
+    const stop = async function () {
         applicationRunning = false;
         requestFilter = new RequestFilter();
+        await engine.startEngine([]);
+
         listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
     };
 

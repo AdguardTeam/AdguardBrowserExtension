@@ -2,13 +2,11 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import CreateFileWebpack from 'create-file-webpack';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import path from 'path';
-import { BUILD_PATH } from '../../constants';
+import { BUILD_PATH, ENVS } from '../../constants';
 
-import { getEnvConf } from '../../helpers';
-import { adguardApiManifest } from './manifest.adguard-api';
+import { getEnvConf, updateManifestBuffer } from '../../helpers';
 import { getModuleReplacements } from '../module-replacements';
 
 const config = getEnvConf(process.env.BUILD_ENV);
@@ -17,18 +15,24 @@ const BACKGROUND_PATH = path.resolve(__dirname, '../../../Extension/api/sample-e
 const POPUP_PATH = path.resolve(__dirname, '../../../Extension/api/sample-extension/entries/popup');
 const ADGUARD_ASSISTANT_PATH = path.resolve(__dirname, '../../../Extension/api/sample-extension/entries/adguard-assistant.js');
 const ADGUARD_CONTENT_PATH = path.resolve(__dirname, '../../../Extension/api/sample-extension/entries/adguard-content.js');
+const ADGUARD_API_PATH = path.resolve(__dirname, '../../../Extension/api/sample-extension/entries/adguard-api.js');
 
 export const genSampleApiConfig = (browserConfig) => {
     const OUTPUT_PATH = path.join(BUILD_PATH, config.outputPath, browserConfig.buildDir);
+    const isDev = process.env.BUILD_ENV === ENVS.DEV;
 
     return {
         mode: config.mode,
-        devtool: false,
+        devtool: isDev ? 'eval-source-map' : false,
+        optimization: {
+            minimize: false,
+        },
         entry: {
             'background': BACKGROUND_PATH,
             'popup': POPUP_PATH,
             'adguard-assistant': ADGUARD_ASSISTANT_PATH,
             'adguard-content': ADGUARD_CONTENT_PATH,
+            'adguard-api': ADGUARD_API_PATH,
         },
         output: {
             path: OUTPUT_PATH,
@@ -86,10 +90,6 @@ export const genSampleApiConfig = (browserConfig) => {
                         from: 'adguard-api.md',
                         to: 'adguard-api.md',
                     },
-                ],
-            }),
-            new CopyWebpackPlugin({
-                patterns: [
                     {
                         context: 'Extension',
                         from: 'filters/chromium/filters_i18n.json',
@@ -111,16 +111,11 @@ export const genSampleApiConfig = (browserConfig) => {
                         to: 'adguard',
                     },
                     {
-                        context: 'Extension',
-                        from: 'src/content-script/subscribe.js',
-                        to: 'content-script/subscribe.js',
+                        from: path.resolve(__dirname, 'manifest.adguard-api.json'),
+                        to: 'manifest.json',
+                        transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, {}),
                     },
                 ],
-            }),
-            new CreateFileWebpack({
-                path: OUTPUT_PATH,
-                fileName: 'manifest.json',
-                content: JSON.stringify(adguardApiManifest, null, 4),
             }),
             new ZipWebpackPlugin({
                 path: '../',

@@ -26,6 +26,7 @@ const apiFilteringLog = {
     addHttpRequestEvent: notImplemented,
     bindRuleToHttpRequestEvent: notImplemented,
     bindReplaceRulesToHttpRequestEvent: notImplemented,
+    bindResponseDataToHttpRequestEvent: notImplemented,
     addCosmeticEvent: notImplemented,
     addCookieEvent: notImplemented,
     addRemoveParamEvent: notImplemented,
