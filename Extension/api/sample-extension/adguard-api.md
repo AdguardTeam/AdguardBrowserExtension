@@ -11,7 +11,7 @@ Here is what should be done for AdGuard API to work.
 ```
     {
       "all_frames": true,
-      "js": ["adguard/adguard-content.js"],
+      "js": ["adguard-content.js"],
       "matches": [
         "http://*/*",
         "https://*/*"
@@ -21,9 +21,11 @@ Here is what should be done for AdGuard API to work.
     }
 ```
 
-#### 2. Add AdGuard's script to the background page:
+#### 2. Place "adguard-assistant.js" script and "adguard" directory to the directory near manifest.json
+
+#### 3. Add AdGuard's script to the background page:
 ```
-<script type="text/javascript" src="adguard/adguard-api.js"></script>
+<script type="text/javascript" src="adguard-api.js"></script>
 ```
 
 
@@ -224,7 +226,8 @@ adguardApi.onRequestBlocked.addListener(onBlocked);
 // Add event listener for rules created by Adguard Assistant
 chrome.runtime.onMessage.addListener(function (message) {
     if (message.type === 'assistant-create-rule') {
-        console.log('Rule ' + message.ruleText + ' was created by Adguard Assistant');
+        const { ruleText } = message.data;
+        console.log(`Rule ${ruleText} was created by Adguard Assistant`);
         configuration.rules.push(message.ruleText);
         adguardApi.configure(configuration, function () {
             console.log('Finished Adguard API re-configuration');

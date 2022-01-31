@@ -5,7 +5,7 @@ import { merge } from 'webpack-merge';
 
 import { genCommonConfig } from '../webpack.common';
 import { firefoxManifest } from './manifest.firefox';
-import { updateManifest } from '../../helpers';
+import { updateManifestBuffer } from '../../helpers';
 import { ENVS } from '../../constants';
 
 export const genFirefoxConfig = (browserConfig) => {
@@ -24,7 +24,7 @@ export const genFirefoxConfig = (browserConfig) => {
                 {
                     from: path.resolve(__dirname, '../manifest.common.json'),
                     to: 'manifest.json',
-                    transform: (content) => updateManifest(process.env.BUILD_ENV, content, firefoxManifest),
+                    transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, firefoxManifest),
                 },
                 {
                     context: 'Extension',

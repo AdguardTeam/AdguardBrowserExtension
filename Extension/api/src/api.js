@@ -29,6 +29,7 @@ import { webrequest } from '../../src/background/webrequest';
 import { requestSanitizer } from '../../src/background/filter/request-sanitizer';
 import { localeDetect } from '../../src/background/filter/services/locale-detect';
 import { backgroundPage } from '../../src/background/extension-api/background-page';
+import { messageHandler } from '../../src/background/message-handler';
 
 /**
  * Adguard simple api
@@ -216,8 +217,8 @@ export const adguardApi = (function () {
      * Stop filtration
      * @param callback Callback function
      */
-    const stop = function (callback) {
-        application.stop();
+    const stop = async function (callback) {
+        await application.stop();
         if (callback) {
             callback();
         }
@@ -239,8 +240,8 @@ export const adguardApi = (function () {
      */
     const openAssistant = async (tabId) => {
         if (tabsApi.executeScriptFile) {
-            // Load Assistant code to the activate tab immediately
-            await tabsApi.executeScriptFile(null, { file: '/adguard/assistant/assistant.js' });
+            // Load Assistant code to activate tab immediately
+            await tabsApi.executeScriptFile(null, { file: '/adguard-assistant.js' });
             initAssistant(tabId);
         } else {
             // Manually start assistant
@@ -268,10 +269,12 @@ export const adguardApi = (function () {
     webrequest.init();
     requestSanitizer.init();
     localeDetect.init();
+    messageHandler.init();
 
     const handleMessage = async (message) => {
-        if (message.type === 'openAssistantInTab') {
-            await openAssistant(message.tabId);
+        const { type, data } = message;
+        if (type === 'openAssistantInTab') {
+            await openAssistant(data.tabId);
         }
         return Promise.resolve();
     };

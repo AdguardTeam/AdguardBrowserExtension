@@ -39,8 +39,8 @@ export const application = (() => {
         await antiBannerService.start(options);
     };
 
-    const stop = () => {
-        antiBannerService.stop();
+    const stop = async () => {
+        await antiBannerService.stop();
     };
 
     /**

@@ -40,9 +40,15 @@ const getClickToLoadSha = () => {
     return click2loadSource.sha;
 };
 
+/**
+ * Updates manifest object with new values
+ * @param env
+ * @param targetPart
+ * @param addedPart
+ * @returns {*&{content_security_policy: string, version: string}}
+ */
 export const updateManifest = (env, targetPart, addedPart) => {
-    const target = JSON.parse(targetPart.toString());
-    const union = merge(target, addedPart);
+    const union = merge(targetPart, addedPart);
 
     const devPolicy = env === ENVS.DEV
         ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
@@ -55,6 +61,21 @@ export const updateManifest = (env, targetPart, addedPart) => {
         ...union,
         ...devPolicy,
     };
+
+    return result;
+};
+
+/**
+ * Receives targetPart as a buffer updates it and returns it as a buffer
+ * @param env
+ * @param targetPart
+ * @param addedPart
+ * @returns {Buffer}
+ */
+export const updateManifestBuffer = (env, targetPart, addedPart) => {
+    const target = JSON.parse(targetPart.toString());
+
+    const result = updateManifest(env, target, addedPart);
 
     return Buffer.from(JSON.stringify(result, null, 4));
 };

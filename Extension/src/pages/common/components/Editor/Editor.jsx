@@ -49,7 +49,7 @@ const Editor = ({
             localStorage.removeItem(SIZE_STORAGE_KEY);
             setSize(DEFAULT_EDITOR_SIZE);
         }
-    }, [shouldResetSize]);
+    }, [shouldResetSize, SIZE_STORAGE_KEY]);
 
     const editorStyles = {
         width: size.width,
