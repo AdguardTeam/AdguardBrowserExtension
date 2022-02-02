@@ -379,13 +379,16 @@ const webrequestInit = function () {
      * @returns {{responseHeaders: *}} Headers to send
      */
     function onHeadersReceived(requestDetails) {
-        const { tab } = requestDetails;
-        const { requestUrl } = requestDetails;
+        const {
+            tab,
+            requestUrl,
+            requestType,
+            requestId,
+            statusCode,
+        } = requestDetails;
+
         let responseHeaders = requestDetails.responseHeaders || [];
-        const { requestType } = requestDetails;
         const referrerUrl = getReferrerUrl(requestDetails);
-        const { requestId } = requestDetails;
-        const { statusCode } = requestDetails;
 
         const contentType = browserUtils.getHeaderValueByName(responseHeaders, 'content-type');
 
@@ -413,7 +416,9 @@ const webrequestInit = function () {
             }
         }
 
-        cookieService.onHeadersReceived(requestDetails);
+        if (cookieService.onHeadersReceived(requestDetails)) {
+            responseHeadersModified = true;
+        }
 
         if (headersService.onHeadersReceived(requestDetails, getRemoveHeaderRules(tab, requestUrl, referrerUrl))) {
             responseHeadersModified = true;

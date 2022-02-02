@@ -453,6 +453,25 @@ const browsersFilteringLog = (function () {
         });
     };
 
+    const isExistingCookieEvent = ({
+        tabId,
+        cookieName,
+        cookieValue,
+        cookieDomain,
+    }) => {
+        const tabInfo = getFilteringInfoByTabId(tabId);
+        const filteringEvents = tabInfo?.filteringEvents;
+        if (!filteringEvents) {
+            return false;
+        }
+
+        return filteringEvents.some(event => {
+            return event.frameDomain === cookieDomain
+            && event.cookieName === cookieName
+            && event.cookieValue === cookieValue;
+        });
+    };
+
     /**
      * Adds cookie rule event
      *
@@ -461,7 +480,6 @@ const browsersFilteringLog = (function () {
      * @param {string} params.cookieName
      * @param {string} params.cookieValue
      * @param {string} params.cookieDomain
-     * @param {string} params.requestType
      * @param {object} params.cookieRule
      * @param {boolean} params.isModifyingCookieRule
      * @param {boolean} params.thirdParty
@@ -478,6 +496,15 @@ const browsersFilteringLog = (function () {
         timestamp,
     }) => {
         if (!canAddEvent(tabId)) {
+            return;
+        }
+
+        if (isExistingCookieEvent({
+            tabId,
+            cookieName,
+            cookieValue,
+            cookieDomain,
+        })) {
             return;
         }
 
