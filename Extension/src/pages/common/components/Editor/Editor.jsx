@@ -27,13 +27,11 @@ const Editor = ({
     highlightRules,
     shouldResetSize,
 }) => {
-    const [size, setSize] = useState(DEFAULT_EDITOR_SIZE);
-
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
+    const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
+    const [size, setSize] = useState(JSON.parse(editorStorageSize) || DEFAULT_EDITOR_SIZE);
 
     useEffect(() => {
-        const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
-
         if (editorStorageSize) {
             try {
                 setSize(JSON.parse(editorStorageSize));
@@ -42,7 +40,7 @@ const Editor = ({
                 log.debug(e.message);
             }
         }
-    }, [setSize, SIZE_STORAGE_KEY]);
+    }, [editorStorageSize]);
 
     useEffect(() => {
         if (shouldResetSize) {
@@ -58,7 +56,7 @@ const Editor = ({
 
     // On fullscreen ignore size change
     const onResize = fullscreen
-        ? () => {}
+        ? () => { }
         : (width, height) => {
             localStorage.setItem(SIZE_STORAGE_KEY, JSON.stringify({ width, height }));
             editorRef.current.editor.resize();
