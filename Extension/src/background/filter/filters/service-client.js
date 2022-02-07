@@ -277,7 +277,9 @@ export const backend = (function () {
         loadingSubscriptions[url] = true;
 
         try {
-            const lines = await FiltersDownloader.download(url, FilterCompilerConditionsConstants);
+            let lines = await FiltersDownloader.download(url, FilterCompilerConditionsConstants);
+            lines = FiltersDownloader.resolveConditions(lines, FilterCompilerConditionsConstants);
+
             delete loadingSubscriptions[url];
 
             if (lines[0].indexOf('[') === 0) {
