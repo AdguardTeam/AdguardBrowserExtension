@@ -39,7 +39,7 @@ export const url = (function () {
         },
 
         isHttpOrWsRequest(url) {
-            return url && (url.indexOf('http') === 0 || url.indexOf('ws') === 0);
+            return url && (url.indexOf('http') === 0 || url.indexOf('ws') === 0 || url.indexOf('file') === 0);
         },
 
         toPunyCode(domain) {
