@@ -38,6 +38,11 @@ export const url = (function () {
             return url && url.indexOf('http') === 0;
         },
 
+        /**
+         * Checks if url starts with http, ws or file schema
+         * @param url
+         * @return {boolean}
+         */
         isHttpOrWsRequest(url) {
             return url && (url.indexOf('http') === 0 || url.indexOf('ws') === 0 || url.indexOf('file') === 0);
         },
