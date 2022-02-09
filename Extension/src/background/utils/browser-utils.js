@@ -80,6 +80,17 @@ export const browserUtils = (function () {
         },
 
         /**
+         * Checks if version matches simple (without labels) semantic versioning scheme
+         * https://semver.org/
+         * @param {string} version
+         * @return {boolean}
+         */
+        isSemver(version) {
+            const semverRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+            return semverRegex.test(version);
+        },
+
+        /**
          * Checks if left version is greater than the right version
          */
         isGreaterVersion(leftVersion, rightVersion) {
