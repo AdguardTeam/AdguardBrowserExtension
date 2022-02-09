@@ -167,9 +167,12 @@ export const customFilters = (() => {
      * @returns Boolean
      */
     const isFilterUpdated = (newVersion, newChecksum, oldFilter) => {
-        if (newVersion) {
+        if (browserUtils.isSemver(oldFilter.version)
+            && browserUtils.isSemver(newVersion)
+        ) {
             return !browserUtils.isGreaterOrEqualsVersion(oldFilter.version, newVersion);
         }
+
         if (!oldFilter.checksum) {
             return true;
         }
@@ -270,7 +273,7 @@ export const customFilters = (() => {
             timeUpdated = new Date().toISOString(),
         } = parsedData;
 
-        const checksum = !version ? getChecksum(rules) : null;
+        const checksum = !version || !browserUtils.isSemver(version) ? getChecksum(rules) : null;
         // Check if filter from this url was added before
         let filter = metadataCache.getFilters().find(f => f.customUrl === url);
         if (filter) {

@@ -3,11 +3,13 @@ module.exports = (api) => {
     return {
         presets: [['@babel/preset-env', {
             targets: {
-                chrome: '55',
-                firefox: '52',
-                opera: '42',
+                chrome: '79',
+                firefox: '78',
+                opera: '66',
             },
             loose: true,
+            useBuiltIns: 'usage',
+            corejs: { version: 3, proposals: true },
         }], '@babel/preset-react'],
         'plugins': [
             ['@babel/plugin-proposal-decorators', { legacy: true }],
