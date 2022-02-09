@@ -15,5 +15,5 @@ export const operaManifest = {
     'optional_permissions': [
         'privacy',
     ],
-    'minimum_opera_version': '42',
+    'minimum_opera_version': '66',
 };

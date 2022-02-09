@@ -199,9 +199,9 @@ To show locales info run:
 <a id="minimum-supported-browser-versions"></a>
 
 ## Minimum supported browser versions
-| Browser                 	| Version 	|
-|-------------------------	|:-------:	|
-| Chromium Based Browsers 	|    55   	|
-| Firefox                 	|    57   	|
-| Opera                   	|    42   	|
-| Edge                    	|    79   	|
+| Browser                 	| Version 	 |
+|-------------------------	|:---------:|
+| Chromium Based Browsers 	|  79   	   |
+| Firefox                 	|  78   	   |
+| Opera                   	|  66   	   |
+| Edge                    	|  79   	   |
