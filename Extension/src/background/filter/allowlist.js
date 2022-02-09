@@ -24,30 +24,20 @@ import { listeners } from '../notifier';
 import { log } from '../../common/log';
 import { lazyGet, lazyGetClear } from '../utils/lazy';
 
-export const allowlist = (() => {
-    const ALLOWLIST_DOMAINS_LS_PROP = 'white-list-domains';
-    const BLOCKLIST_DOMAINS_LS_PROP = 'block-list-domains';
-
-    const allowAllAllowlistRule = new TSUrlFilter.NetworkRule(
-        '@@allowlist-all$document',
-        utils.filters.ALLOWLIST_FILTER_ID,
-    );
-
-    /**
-     * Returns allowlist mode
-     * In default mode filtration is enabled for all sites
-     * In inverted model filtration is disabled for all sites
-     */
-    function isDefaultAllowlistMode() {
-        return settings.isDefaultAllowlistMode();
+/**
+ * Read domains and initialize filters in a lazy manner
+ */
+class DomainsHolder {
+    constructor(storageKey) {
+        this.storageKey = storageKey;
     }
 
     /**
-     * Retrieve domains from local storage
+     * Retrieves domains from local storage
      * @param prop
-     * @returns {Array}
+     * @returns {string[]}
      */
-    function getDomainsFromLocalStorage(prop) {
+    static getDomainsFromLocalStorage(prop) {
         let domains = [];
         try {
             const json = localStorage.getItem(prop);
@@ -55,45 +45,55 @@ export const allowlist = (() => {
                 domains = JSON.parse(json);
             }
         } catch (ex) {
-            log.error('Error retrieve allowlist domains {0}, cause {1}', prop, ex);
+            log.error('Error retrieving the allowlist domains {0}, cause {1}', prop, ex);
         }
         return domains;
     }
 
-    /**
-     * Read domains and initialize filters lazy
-     */
-    const allowlistDomainsHolder = {
-        get domains() {
-            return lazyGet(allowlistDomainsHolder, 'domains', () => {
-                return getDomainsFromLocalStorage(ALLOWLIST_DOMAINS_LS_PROP);
-            });
-        },
-        add(domain) {
-            if (this.domains.indexOf(domain) < 0) {
-                this.domains.push(domain);
-            }
-        },
-        includes(domain) {
-            return this.domains.indexOf(domain) >= 0;
-        },
-    };
+    get domains() {
+        return lazyGet(this, 'domains', () => {
+            return DomainsHolder.getDomainsFromLocalStorage(this.storageKey);
+        });
+    }
 
-    const blocklistDomainsHolder = {
-        get domains() {
-            return lazyGet(blocklistDomainsHolder, 'domains', () => {
-                return getDomainsFromLocalStorage(BLOCKLIST_DOMAINS_LS_PROP);
-            });
-        },
-        add(domain) {
-            if (this.domains.indexOf(domain) < 0) {
-                this.domains.push(domain);
-            }
-        },
-        includes(domain) {
-            return this.domains.indexOf(domain) >= 0;
-        },
-    };
+    add(domain) {
+        if (this.domains.indexOf(domain) < 0) {
+            this.domains.push(domain);
+        }
+    }
+
+    includes(domain) {
+        return this.domains.some((d) => {
+            return d === domain || utils.url.getCroppedDomainName(d) === domain;
+        });
+    }
+}
+
+export const allowlist = (() => {
+    const ALLOWLIST_DOMAINS_LS_PROP = 'white-list-domains';
+    const BLOCKLIST_DOMAINS_LS_PROP = 'block-list-domains';
+
+    /**
+     * Rule which is returned, when allowlist is inverted
+     * @type {NetworkRule}
+     */
+    const allowAllAllowlistRule = new TSUrlFilter.NetworkRule(
+        '@@allowlist-all$document',
+        utils.filters.ALLOWLIST_FILTER_ID,
+    );
+
+    /**
+     * Returns allowlist mode
+     * In default mode the filtering is enabled for all sites
+     * In inverted model the filtering is disabled for all sites
+     */
+    function isDefaultAllowlistMode() {
+        return settings.isDefaultAllowlistMode();
+    }
+
+    const allowlistDomainsHolder = new DomainsHolder(ALLOWLIST_DOMAINS_LS_PROP);
+
+    const blocklistDomainsHolder = new DomainsHolder(BLOCKLIST_DOMAINS_LS_PROP);
 
     function notifyAllowlistUpdated() {
         listeners.notifyListeners(listeners.UPDATE_ALLOWLIST_FILTER_RULES);

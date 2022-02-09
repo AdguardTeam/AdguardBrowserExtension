@@ -103,7 +103,10 @@ export const adguardApi = (function () {
             allowlist.changeDefaultAllowlistMode(true);
             domains = configuration.whitelist;
         }
-        allowlist.updateAllowlistDomains(domains || []);
+
+        domains = domains || [];
+
+        allowlist.updateAllowlistDomains(domains);
     }
 
     /**
