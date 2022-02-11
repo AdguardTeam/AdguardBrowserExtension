@@ -30,6 +30,7 @@ import { documentFilterService } from './services/document-filter';
 import { redirectService } from './services/redirect-service';
 import { allowlist } from './allowlist';
 import { browserUtils } from '../utils/browser-utils';
+import { stealthService } from './services/stealth-service';
 
 export const webRequestService = (function () {
     const onRequestBlockedChannel = utils.channels.newChannel();
@@ -122,6 +123,9 @@ export const webRequestService = (function () {
             );
             // grep "localScriptRulesService" for details about script source
             result.scripts = filteringApi.getScriptsStringForUrl(documentUrl, tab, cosmeticOptions);
+
+            // add stealth dom signal script
+            result.scripts += stealthService.getSetDomSignalScript();
         } else {
             // In preload content script only ExtendedCss selectors are necessary.
             // Traditional css selectors would be injected via tabs.injectCss.

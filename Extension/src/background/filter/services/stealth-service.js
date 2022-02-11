@@ -439,12 +439,21 @@ export const stealthService = (() => {
         });
     }
 
+    /**
+     * Returns either script which will send dom signal, or empty string
+     * @returns {*}
+     */
+    const getSetDomSignalScript = () => {
+        return engine.getSetDomSignalScript();
+    };
+
     return {
         init,
         processRequestHeaders,
         getStealthModeRuleList,
         hasFilterRules,
         canBlockWebRTC,
+        getSetDomSignalScript,
         STEALTH_ACTIONS,
     };
 })();
