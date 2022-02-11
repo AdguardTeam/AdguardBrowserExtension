@@ -170,8 +170,11 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
         try {
             const rawNewRules = await uploadFile(file, 'txt');
-            editorRef.current.editor.setValue(rawNewRules, 1);
-            await store.saveUserRules(rawNewRules);
+            const trimmedNewRules = rawNewRules.trim();
+            if (trimmedNewRules.length > 0) {
+                editorRef.current.editor.setValue(trimmedNewRules, 1);
+                await store.saveUserRules(trimmedNewRules);
+            }
         } catch (e) {
             log.debug(e.message);
             if (uiStore?.addNotification) {
