@@ -7,7 +7,7 @@ import { SettingSetSelect } from '../Settings/SettingSetSelect';
 import { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { hoursToMs, uploadFile } from '../../../helpers';
+import { hoursToMs, handleFileUpload } from '../../../helpers';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { APPEARANCE_THEMES } from '../../../constants';
 import { exportData, ExportTypes } from '../../../common/utils/export';
@@ -83,7 +83,7 @@ const General = observer(() => {
         const file = event.target.files[0];
 
         try {
-            const content = await uploadFile(file, 'json');
+            const content = await handleFileUpload(file, 'json');
             const result = await messenger.applySettingsJson(content);
             if (result) {
                 const successMessage = reactTranslator.getMessage('options_popup_import_success_title');

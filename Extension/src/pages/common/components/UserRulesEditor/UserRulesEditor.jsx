@@ -16,7 +16,7 @@ import { Popover } from '../ui/Popover';
 import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
 import { MESSAGE_TYPES, NOTIFIER_TYPES } from '../../../../common/constants';
-import { uploadFile } from '../../../helpers';
+import { handleFileUpload } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { exportData, ExportTypes } from '../../utils/export';
@@ -169,11 +169,32 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         const file = event.target.files[0];
 
         try {
-            const rawNewRules = await uploadFile(file, 'txt');
+            const rawNewRules = await handleFileUpload(file, 'txt');
             const trimmedNewRules = rawNewRules.trim();
-            if (trimmedNewRules.length > 0) {
-                editorRef.current.editor.setValue(trimmedNewRules, 1);
-                await store.saveUserRules(trimmedNewRules);
+
+            if (trimmedNewRules.length < 0) {
+                return;
+            }
+
+            const oldRulesString = editorRef.current.editor.getValue();
+            const oldRules = oldRulesString.split('\n');
+            const newRules = trimmedNewRules.split('\n');
+            const uniqNewRules = newRules.filter((newRule) => {
+                const trimmedNewRule = newRule.trim();
+                if (trimmedNewRule.length === 0) {
+                    return true;
+                }
+
+                const isInOldRules = oldRules.some((oldRule) => oldRule === trimmedNewRule);
+                return !isInOldRules;
+            });
+
+            const rulesUnion = [...oldRules, ...uniqNewRules];
+            const rulesUnionString = rulesUnion.join('\n').trim();
+
+            if (oldRulesString !== rulesUnionString) {
+                editorRef.current.editor.setValue(rulesUnionString, 1);
+                await store.saveUserRules(rulesUnionString);
             }
         } catch (e) {
             log.debug(e.message);
