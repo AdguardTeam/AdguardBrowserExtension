@@ -13,7 +13,13 @@ export const getFilenameExtension = (filename) => {
     return parts[parts.length - 1];
 };
 
-export const uploadFile = (file, requiredExtension) => new Promise((resolve, reject) => {
+/**
+ * Handles file upload
+ * @param file
+ * @param requiredExtension
+ * @returns {Promise<string>}
+ */
+export const handleFileUpload = (file, requiredExtension) => new Promise((resolve, reject) => {
     if (getFilenameExtension(file.name) !== requiredExtension) {
         reject(new Error(translator.getMessage(
             'options_popup_import_settings_wrong_file_ext',

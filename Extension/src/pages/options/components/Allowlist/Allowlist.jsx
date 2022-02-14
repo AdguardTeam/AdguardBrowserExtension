@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Editor } from '../../../common/components/Editor';
 import { rootStore } from '../../stores/RootStore';
-import { uploadFile } from '../../../helpers';
+import { handleFileUpload } from '../../../helpers';
 import { log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AllowlistSavingButton } from './AllowlistSavingButton';
@@ -58,7 +58,7 @@ const Allowlist = observer(() => {
         const file = event.target.files[0];
 
         try {
-            const content = await uploadFile(file, 'txt');
+            const content = await handleFileUpload(file, 'txt');
             await settingsStore.appendAllowlist(content);
             setAllowlistRerender(true);
         } catch (e) {
