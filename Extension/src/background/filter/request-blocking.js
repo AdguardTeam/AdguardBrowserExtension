@@ -241,9 +241,7 @@ export const webRequestService = (function () {
      */
     const isDocumentBlockingRule = (requestRule) => {
         return requestRule && !requestRule.isAllowlist()
-            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Elemhide)
-            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Jsinject)
-            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Urlblock);
+            && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Document);
     };
 
     /**
@@ -584,10 +582,7 @@ export const webRequestService = (function () {
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === RequestTypes.DOCUMENT) {
                 // except rules with $document and $popup modifiers
-                const isDocumentRule = requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Urlblock)
-                    && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Elemhide)
-                    && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Jsinject)
-                    && requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Content);
+                const isDocumentRule = requestRule.isOptionEnabled(TSUrlFilter.NetworkRuleOption.Document);
                 const isPopupBlockingRule = isPopupBlockedByRule(requestRule);
 
                 if (!isDocumentRule && !isPopupBlockingRule) {
