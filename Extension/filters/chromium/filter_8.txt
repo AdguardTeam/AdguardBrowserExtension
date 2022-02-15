@@ -1,8 +1,8 @@
-! Checksum: 2lZgpzE+0fhchAk7J6lFqQ
+! Checksum: f1M+voE1ch6clMN6yhTbTw
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.3.27
-! TimeUpdated: 2022-01-17T10:31:43+00:00
+! Version: 2.0.3.33
+! TimeUpdated: 2022-02-14T18:31:49+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -120,6 +120,7 @@ _advertentieleaderboardhome.
 ||gratis-neuken.com^$third-party
 ||nonstoppartner.net^$third-party
 ||online-banners.nl^$third-party
+||optoutadvertising.com^$third-party
 ||sponsorkliks.com^$third-party
 ||static-dscn.net^$third-party
 ||tools.islive.nl^$third-party
@@ -339,6 +340,8 @@ _advertentieleaderboardhome.
 ||volleybal.nl/uploads/images/Logos/
 ||vtm.be^*-achtergrond-$domain=koken.vtm.be
 ||vtm.be^*-header-$domain=koken.vtm.be
+||waarzo.nl/imagestore/banners/
+||waarzo.nl/imagestore/site-banners/
 ||wanttoknow.nl^*Banner
 ||wereldstopcontacten.nl/wp-content/uploads/*/image-aff-nl.jpg
 ||wildfm.nl/wp-content/uploads/*/thumbnail_image002.png
@@ -684,6 +687,7 @@ voetbaluitslagen.com##.cta__toplist
 kekmama.nl##.cts-row-wrapper
 touretappe.nl##.desktopad
 ad.nl,bd.nl,bndestem.nl,destentor.nl,ed.nl,gelderlander.nl,goedgevoel.be,hln.be,pzc.nl,tubantia.nl##.dfp
+dagelijksekost.een.be##.dish-sponsors
 tpo.nl##.dus
 androidplanet.nl,iphoned.nl##.dynamic-content
 androidplanet.nl,iphoned.nl##.dynamic-content-native
@@ -808,6 +812,8 @@ volleyvlaanderen.be##.slider5
 maaslandradio.nl##.slides
 solarmagazine.nl##.sols
 live-voetbal.com##.special-offer
+spidersolitairespelen.nl##.spel_b1
+spidersolitairespelen.nl##.spel_b2
 niburu.co##.sponsers
 sc-heerenveen.nl##.sponsor
 omroephouten.nl##.sponsor-carousel
@@ -832,6 +838,7 @@ elegance.nl##.tdi_58
 waterkant.net##.tdi_68
 nu.nl##.tealium
 demorgen.be,volkskrant.nl##.teaser-branded
+startpagina.nl##.template-redesign-5-column-top-3-center-banner-outer
 netonline.be##.text_12_jobs_only
 meerdangewenst.nl##.tg-site-footer-section-1
 topgear.nl##.theme-advertorial
@@ -863,6 +870,7 @@ basketballbelgium.be##.widget-aoclubs-sponsors
 handbalstartpunt.nl##.widget-banner
 onderwijsland.com##.widget-partners
 indebuurt.nl##.widget-tabs--partner
+indebuurt.nl##.widget-tabs--partners
 autoblog.nl##.widget_ab_sidebar
 nieuws.nl##.widget_add_widget
 mannenstyle.nl##.widget_execphp
@@ -901,14 +909,11 @@ pcmweb.nl##div.block:nth-of-type(1)
 pcmweb.nl##div.block:nth-of-type(2)
 oisterwijknieuws.nl##div[align="center"] a[target="_blank"]
 hartvannederland.nl##div[class*="-bannerTopWrapper-"]
-hartvannederland.nl##div[class*="-bannerWrapper-"]
+hartvannederland.nl,shownieuws.nl,vivandaag.nl##div[class*="-bannerWrapper-"]
 meteovista.be##div[class*="AdWrapper"]
-veronicainside.nl##div[class^="Component-bannerTopWrapper"]
-hartvannederland.nl##div[class^="a-bannerTopWrapper-"]
 omroepbrabant.nl##div[class^="ad-"]
 omroepbrabant.nl,reclamefolder.nl##div[class^="ad_"]
 zoom.nl##div[class^="display-ad_container"]
-veronicainside.nl##div[class^="k-bannerWrapper"]
 klimaatinfo.nl##div[class^="space_"]
 weeronline.nl##div[class^="styled__AdWrapper-"]
 weeronline.nl##div[class^="styled__FooterAdWrapper-"]
@@ -960,6 +965,7 @@ landenweb.nl##table[style="margin-left: auto; margin-right: auto; border: 1px so
 radiocaramba.nl##table[width="120"][height="600"]
 autobahn.eu#?#.d-none.d-md-block.mb-3:-abp-has(a[target="_blank"][rel="noopener"])
 businessinsider.nl#?#.widget_custom_html:-abp-has(h2:-abp-contains(Beter Beleggen))
+indebuurt.nl#?#.list-item.list-item--aagje:-abp-has(.list-item__sponsor)
 spaargids.be#?##latest_news_above:-abp-has(a[href^="https://www.deutschebank.be/"])
 linda.nl#?#.article-row_article:-abp-has(.article-row_category.category-label_label:-abp-contains(Advertorial))
 nieuwslog.nl#?#.wp-block-genesis-blocks-gb-columns:-abp-has(a[href*="/go/www.bet365.nl/"])
@@ -986,19 +992,37 @@ vakantieplaats.nl#@#.topAds
 !-------------- Advertising networks ---------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Section contains list of advertising networks
+! This section contains the list of third-party advertising networks domains.
+! Note, that we only put rules that block full domains here and not URL parts (there's `general_url.txt` for that). Also, it must be domains that are used in a third-party context.
+!
+! Good: ||doubleclick.net^$third-party
+! Bad: /banner.jpg (should be in general_url.txt)
+! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
+!
 !
 ||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
 !
-! Section contains the list of advertising networks, which are hosted on non advertising sites as subdomains
+! This section contains the list of advertising networks domains, which are hosted on non advertising sites as subdomains.
+! Note, that we only put rules that block full subdomains here and not URL parts (there's `general_url.txt` for that).
+!
+! Good: ||ad.doubleclick.net^
+! Bad: /banner.jpg (should be in general_url.txt)
+! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
+!
 !
 ||content2.nrc.nl^
 !---------------------------------------------------------------------------!
 !-------------- Anti-adblock rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! These rules are against all kinds of ad blocking reinjection/circumvention scripts
+! First of all, this section has common rules that prevent most known ad block detections. In that case domain should be added to the common rules.
+! The section contains the list of the rules are against all kinds of ads reinjection or ad-blocking circumvention scripts. If such a script does not cripple the website, we add rules to the Annoyances filter.
+! Rules should generally be domain-specific. In some exceptional cases, it's allowed to add generic ones, but this should be approved by most of the maintainers.
+!
+! Good: ||example.org/adblock/detect.js
+! Good: @@/adblocker/detect.js$domain=example.org
+! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 ! Prevent AdFender detection
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
@@ -1069,7 +1093,11 @@ telegraaf.nl#%#window.canRunAds = true;
 !------------------ Extended CSS rules -----------------------------------------!
 !-------------------------------------------------------------------------------!
 !
-! Extended CSS rules
+! This section contains the list of extended CSS rules against ads.
+! Note, that rules should be domain-specific and you have to use special syntax `#?#` instead of `##`.
+!
+! Good: example.org#?#main > div.row:has(> div.ad)
+! Bad: example.org##main > div.ad (should be in specific.txt)
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/48649
 marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
@@ -1095,11 +1123,19 @@ klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Section contains list general hiding rules
+! This section contains generic element hiding rules that block ads.
+!
+! Good: ##.adv
+! Bad: example.org##.adv (should be in specific.txt)
 !
 !---------------------------------------------------------------------------!
 !-------------- General javascript, CSS and HTML extensions ----------------!
 !---------------------------------------------------------------------------!
+!
+! This section contains the list of ad blocking rules that fall under "advanced" category.
+!
+! Bad: example.org###rek (should be in specific.txt)
+!
 !--------------------------------------!
 !------- JS rules ---------------------!
 !--------------------------------------!
@@ -1120,22 +1156,31 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 !-------------- General URL blocking rules ---------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Banner names
+! This section contains the list of generic blocking rules.
+!
+! Good: .org/ads/
+! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
+!
 !
 !-------------------------------------------------------------------------------!
 !------------------ Content replacement rules ----------------------------------!
 !-------------------------------------------------------------------------------!
 !
-! The content replacement rules
+! This section contains the list of the content replacement rules that block ads. Rules must be domain-specific.
+!
+! Bad:  ||example.org/video-links (should be in specific.txt)
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6938
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
 !---------------------------------------------------------------------------!
-!--------------------------------------------------------!
-!-------------------- Specific rules --------------------!
-!--------------------------------------------------------!
 !
+! This section contains the list of domain-specific rules that block ads.
+!
+! Good: example.org###rek; ||example.com/ads/
+! Bad: example.org#$##rek { display: none !important; } (for instance, should be in general_extensions.txt)
+!
+||sdk.privacy-center.org^$script,domain=goplay.be
 itnijs.frl##.last.widget
 itnijs.frl##.widget-5 > div.banner
 ||itnijs.frl/wp-content/uploads/2017/10/bannerItNijs
@@ -1266,7 +1311,11 @@ klusidee.nl##td.td-ad
 !------ White list. Fixing filtration errors (false-positive) --------------!
 !---------------------------------------------------------------------------!
 !
-! White list. Fixing filtration errors (false-positive)
+! This section contains the list of rules that fix incorrect blocking. Rules must be domain-specific.
+!
+! Good: example.org#@#.ad
+! Bad:  @@||example.org^$stealth (should be in AdGuard Base - whitelist_stealth.txt)
+!
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/71460
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54225
