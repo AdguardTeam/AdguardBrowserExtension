@@ -1,8 +1,8 @@
-! Checksum: OmN2wU10xgbZPpLSWmECQQ
+! Checksum: dMEvUiHvoIyE1HXhn+KDZQ
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.54
-! TimeUpdated: 2022-01-17T10:30:14+00:00
+! Version: 2.0.1.60
+! TimeUpdated: 2022-02-09T12:30:17+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -76,6 +76,14 @@
 !---------------------------------------------------------------------------!
 !-------------- Advertising networks ---------------------------------------!
 !---------------------------------------------------------------------------!
+!
+! This section contains the list of the rules that unblock contextual (and only contextual) ads on the search engine result pages. Rules should be domain-specific.
+!
+! Good: example.org#@#.ad
+! Bad:  @@||example.org^$stealth (should be in AdGuard Base - whitelist_stealth.txt)
+!
+!
+!
 !-------------------------------------------------------------------------------!
 !----------------------------- Search engine result pages ----------------------!
 !-------------------------------------------------------------------------------!
@@ -87,13 +95,6 @@
 ! *** CAUTION: all rules below are wrapped by AG directive. Don't remove it, and don't add another directives***
 !
 !#safari_cb_affinity(general)
-!
-! Search.Avira.com
-!
-search.avira.com#@#.ad-zone
-@@||google.com/adsense/search/async-ads.js$domain=search.avira.com
-@@||csr.inspsearchapi.com/lib/advertisement.js$domain=search.avira.com
-@@||google.com/afs/ads$domain=search.avira.com
 !
 ! Bing
 !
@@ -147,6 +148,9 @@ google.*#@?#div[jscontroller][jsaction] > div[jsname][jscontroller][data-record-
 @@://www.google.*/aclk$urlblock
 google.*#@##search div[jscontroller][jsaction] > div[class] > div[jscontroller] div[jscontroller] > div[jscontroller] > div[jsname][jscontroller][jsaction][data-record-click-time][class]
 google.*#@#div[data-attrid="kc:/local:promotions"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/107444
+google.*#@#.commercial-unit-mobile-top
+google.*#@#.commercial-unit-mobile-top > div[data-pla="1"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/50294
 ! https://github.com/AdguardTeam/AdguardFilters/issues/37505
 ! Korean
@@ -227,6 +231,9 @@ amazon.de#@#div[class*="ad-topper"]
 amazon.*#@#div[data-slot="auto-sparkle-hsa-tetris"]
 amazon.*#@##recsWidget
 amazon.*#@#div[cel_widget_id^="tetris-"]
+amazon.*#@#.csm-widget-type-sponsored-products-mobile-list-card
+amazon.*#@?##WrapperDivToHideBTF > div[cel_widget_id]:has(> div[data-a-remove-bottom-gutter] > div[data-a-card-type] > div[cel_widget_id="mobile-dp-sims_SponsoredProductsSimsDpThematicMobile"])
+amazon.*#@#div[class*="btf_ad-placements-"]
 !
 ! Mediafire premium upgrade
 mediafire.com#@##upsellBox
@@ -288,8 +295,6 @@ org.rambler.ru#@#.ad-serp-item
 3g2upl4pq6kufc4m.onion,duckduckgo.com#@#.highlight_sponsored
 3g2upl4pq6kufc4m.onion,duckduckgo.com#@##ads
 3g2upl4pq6kufc4m.onion,duckduckgo.com#@#.js-results-ads
-! Comodo Search
-@@||search.comodo.com^$elemhide
 ! Ecosia search
 ecosia.org#@#.results-ads
 ecosia.org#@#.card-ad

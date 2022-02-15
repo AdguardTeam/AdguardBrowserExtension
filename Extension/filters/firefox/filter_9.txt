@@ -1,8 +1,8 @@
-! Checksum: iaLEuZuo4X84oH5oT1ZO6A
+! Checksum: 0e35Z0n0YqPEV/t0+Lah8A
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.12.46
-! TimeUpdated: 2022-01-14T16:38:24+00:00
+! Version: 2.0.12.66
+! TimeUpdated: 2022-02-15T11:31:46+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -78,7 +78,13 @@
 !-------------- Advertising networks ---------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Section contains list of advertising networks
+! This section contains the list of third-party advertising networks domains.
+! Note, that we only put rules that block full domains here and not URL parts (there's `general_url.txt` for that). Also, it must be domains that are used in a third-party context.
+!
+! Good: ||doubleclick.net^$third-party
+! Bad: /banner.jpg (should be in general_url.txt)
+! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
+!
 !
 ! https://forum.adguard.com/index.php?threads/ivoox-com-podcasts-issues.29530/
 ! ||addevweb.com^$third-party
@@ -281,7 +287,13 @@
 !-------------- Anti-adblock rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! These rules are against all kinds of ad blocking reinjection/circumvention scripts
+! First of all, this section has common rules that prevent most known ad block detections. In that case domain should be added to the common rules.
+! The section contains the list of the rules are against all kinds of ads reinjection or ad-blocking circumvention scripts. If such a script does not cripple the website, we add rules to the Annoyances filter.
+! Rules should generally be domain-specific. In some exceptional cases, it's allowed to add generic ones, but this should be approved by most of the maintainers.
+!
+! Good: ||example.org/adblock/detect.js
+! Good: @@/adblocker/detect.js$domain=example.org
+! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 ! AdRegain
 tunovelaligera.com#%#//scriptlet("abort-on-property-write", "adregain_wall")
@@ -291,6 +303,12 @@ tunovelaligera.com#@#.AdSense
 tunovelaligera.com#@#iframe[width="728"][height="90"]
 tunovelaligera.com#@#img[width="728"][height="90"]
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/109967
+acortaenlace.com#@#.adsbygoogle
+! https://github.com/uBlockOrigin/uAssets/issues/11586
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=marcaclaro.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/106023
+it-swarm-es.com#%#//scriptlet("prevent-setTimeout", "adsbygoogle")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/105079
 oplanetatv.clickgratis.com.br#@#.ads-block
 oplanetatv.clickgratis.com.br#$#.ads.ads-block.prebid { display: block !important; }
@@ -667,6 +685,11 @@ despistaos.es#$#.adsbygoogle { display: block!important; position: absolute!impo
 sudoroot.net#$#.content #loading { display: none !important; }
 sudoroot.net#$#.content #video { display: block !important; }
 ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,xmlhttprequest,redirect=noopjs,domain=sudoroot.net
+! https://github.com/AdguardTeam/AdguardFilters/issues/108698
+sejasaudavel.net#?#.content > div[id]:has(> center > b:contains(DESATIVE O ADBLOCK))
+sejasaudavel.net#$?#.content > div[id]:has(> center > #src_iframe) { display: block !important; }
+sejasaudavel.net#$#.content #src_iframe { display: block !important; }
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=noopjs,domain=sejasaudavel.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/49399
 ! https://github.com/AdguardTeam/AdguardFilters/issues/46190
 ! https://github.com/AdguardTeam/AdguardFilters/issues/43447
@@ -1397,11 +1420,16 @@ peru21.pe#@#.adstop
 !-------------- Extended CSS rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Extended CSS rules
+! This section contains the list of extended CSS rules against ads.
+! Note, that rules should be domain-specific and you have to use special syntax `#?#` instead of `##`.
+!
+! Good: example.org#?#main > div.row:has(> div.ad)
+! Bad: example.org##main > div.ad (should be in specific.txt)
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24801
 yahoo.com#?#ul[class^="Mb(0)"] > li.js-stream-content:has(> div > a[rel="nofollow noopener noreferrer"]+div:contains(Patrocinado))
 !
+hojeemdia.com.br#?#div[class^="Block__Component-"]:has(> label:contains(/^Publicidade$/))
 reforma.com#?#div[style^="height:250px;"]:has(> div > div#registroNuevoNL)
 cronista.com#?#.section > .block > .zone.zleft.z33ml:has(> .banner)
 reforma.com#?##contenido div[style^="height:250px;"]:has(script:contains(grAnuncio.DisplayAds) + div)
@@ -1513,7 +1541,11 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Section contains list general hiding rules
+! This section contains generic element hiding rules that block ads.
+!
+! Good: ##.adv
+! Bad: example.org##.adv (should be in specific.txt)
+!
 !
 ##.publicity-content
 ##.publicidad
@@ -1600,10 +1632,19 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 !---------------------------------------------------------------------------!
 !-------------- General javascript, CSS and HTML extensions ----------------!
 !---------------------------------------------------------------------------!
+!
+! This section contains the list of ad blocking rules that fall under "advanced" category.
+! By advanced we mean the following rule types: CSS, scriptlets, HTML filtering (`$$` marker), JS.
+!
+! Good: example.org#$##rek { display: none !important; }; example.org#%#//scriptlet('set-cookie', 'ad', '0'); example.org#%#document.cookie = "ad =0"; ; example.org$$script[tag-content="ad"][max-length="3000"].
+! Bad: example.org###rek (should be in specific.txt)
+!
 !--------------------------------------!
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/109967
+acortaenlace.com#%#AG_onLoad(function(){try{var a;"function"==typeof decode_link&&"string"==typeof link_out&&(a=decode_link(atob(link_out)),location.assign(a)),"string"==typeof api_key&&(document.cookie=`${api_key}=Wn275; path=/`);var b=document.querySelector("* > .button#contador");b&&a&&setTimeout(()=>{var c=b.cloneNode(!0);b.parentNode.replaceChild(c,b),c.addEventListener("click",function(){location.assign(a)},!1)},500)}catch(a){}});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/102624
 pelispop.me#%#//scriptlet("abort-on-property-read", "adk_pdisp")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/102845
@@ -1823,6 +1864,11 @@ repelis.net#%#Object.defineProperty(window,'adbClick',{value:function(){}});
 !------- CSS fixes --------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/108294
+blog.clarocombomais.com.br#$#body { overflow: auto !important; }
+blog.clarocombomais.com.br#$##progressModal { display: none !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/106118
+decorardicas.com.br,loucasporcabelos.com.br#$#.play { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97544
 adrianeboneck.com.br#$##colunas { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96283
@@ -1921,7 +1967,11 @@ animalog.biz$$script[tag-content="window["open"]("about:blank")"][max-length="42
 !-------------- General URL blocking rules ---------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Banner names
+! This section contains the list of generic blocking rules.
+!
+! Good: .org/ads/
+! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
+!
 !
 /imagenes_publicidad/*
 -publicidad-
@@ -2020,7 +2070,10 @@ http://adw.
 !------------------ Content replacement rules ------------------------------!
 !---------------------------------------------------------------------------!
 !
-! The content replacement rules
+! This section contains the list of the content replacement rules that block ads. Rules must be domain-specific.
+!
+! Good: ||example.org/video-links$replace=/vast":/vast_":/
+! Bad:  ||example.org/video-links (should be in specific.txt)
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/91363
 ||dve-streams.akamaized.net/ondemand/hls/content/*.m3u8$replace=/#EXTINF:(\d|\d\.\d+)\,\nhttps:\/\/redirector\.googlevideo\.com\/videoplayback\?[\s\S]*?&source=dclk_video_ads&[\s\S]*?\n//,domain=app.prende.tv
@@ -2033,9 +2086,12 @@ http://adw.
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
 !---------------------------------------------------------------------------!
-!--------------------------------------------------------!
-!-------------------- Specific rules --------------------!
-!--------------------------------------------------------!
+!
+! This section contains the list of domain-specific rules that block ads.
+!
+! Good: example.org###rek; ||example.com/ads/
+! Bad: example.org#$##rek { display: none !important; } (for instance, should be in general_extensions.txt)
+!
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
@@ -2046,6 +2102,25 @@ jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,
 ! ##.ad
 laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##.ad
 !
+||tcloudbase.com/access?
+||pelistorrent.org/wp-content/uploads/*/pandabanner.png
+blog.clarocombomais.com.br###block-10
+cambio21.cl###fullpageadd
+gamestorrents.fm##a[target="_blank"] > img[style="width: 100%;"]
+olimpicos.marcaclaro.com##.banner-leader
+lostiempos.com###takeover-desktop-counter
+legiaodosherois.com.br##.bg-ad-wrapper
+legiaodosherois.com.br##.widget--adsense
+elcomercio.pe##div[class^="content_gpt_"]
+dual1080p.blogspot.com##.sidebar #HTML5
+dual1080p.blogspot.com##.sidebar #Image1
+it-swarm-es.com##.adnet
+||it-swarm-es.com/bnet/
+otempo.com.br##div[id^="BTF_"]
+letras2.com,simsvip.com.br,majesy.com,damelibros.com,androidaba.com,eusouandroid.co,tabletsesmartphones.org,vivo-tv.com,vivotvhd.com##.adsbygoogle
+decorardicas.com.br,loucasporcabelos.com.br##.blue
+decorardicas.com.br,loucasporcabelos.com.br##div[style*="width:100%;"][style*="background:#FFF;"][style*="overflow:"]
+rd1.com.br##div[class^="code-block code-block-"][style^="margin: 8px"] > div[id^="Position_"]
 oplanetatv.clickgratis.com.br##.-ads
 oplanetatv.clickgratis.com.br##.block-ads-wrapper
 oplanetatv.clickgratis.com.br##.ads:not(.prebid)
@@ -2235,7 +2310,7 @@ ahount.com##.inside-right-sidebar > aside[id^="custom_html-"]
 ||plantaomaringa.com/fotos/anuncios
 elpais.com###paywallOfferSmall
 elpais.com###cta-button-container
-diariodocomercio.com.br##.code-block
+idinheiro.com.br,diariodocomercio.com.br##.code-block
 otvfoco.com.br##div[class^="code-block code-block-"][style^="margin: 8px"]
 bracontece.com.br##.testad
 noticiast.com##div[style="margin: 8px 0; clear: both;"]
@@ -2477,7 +2552,7 @@ uol.com.br##.shopping-produtos-uol
 uol.com.br##.label-produtos
 uol.com.br##.ecommerce-produtos-container
 ||hentaiporno.xxx/wp-content/plugins/modal-window/
-iteramos.com###bottom-bar-floating
+preguntandroid.com,iteramos.com###bottom-bar-floating
 ||wp.com/*donghuanosekai.com/wp-content/uploads/*/anuncia-aqui-0.png$domain=donghuanosekai.com
 auto10.com##.ad-boton-full-mega
 ||fadadosexo.com/wp-content/themes/fadadosexo-responsivo/banners/
@@ -2516,7 +2591,7 @@ animeflv.net##div[style="width:728px;height:90px"]
 ||animeflv.net/assets/animeflv/img/triviataku.jpg
 nestoria.com.br###afscontent2
 tudogostoso.com.br##.showcase-box[data-iab-tag^="content_mpu"]
-iteramos.com,enmimaquinafunciona.com##.intro-top > .mh-280
+preguntandroid.com,iteramos.com,enmimaquinafunciona.com##.intro-top > .mh-280
 ||pornolandia.xxx/static/player/preroll.js
 pcprogramasymas.net##a[href][target="_blank"] > img
 ig.com.br##.ig-ad
@@ -2954,7 +3029,6 @@ elespanol.com###homeBillboard
 ||p.jwpcdn.com/*/vast.js$important,domain=animesync.tv
 gazetadopovo.com.br##.c-publi
 torrentdosfilmeshd.net##a[href^="http://www.tradeadexchange.com/"]
-letras2.com##.adsbygoogle
 allsoftwarefull.com##.post-outer > div[style]:not([class]):not([id]) a
 allsoftwarefull.com###inPopUp
 allsoftwarefull.com###framePopUp
@@ -2968,7 +3042,6 @@ vertelevision.tv###capa2
 ||vercanalestv1.com/publimia.html
 ||vertelevision.tv/reproad300.html
 ||teleriumads-x64zcsqq.netdna-ssl.com/livestreaming.html
-simsvip.com.br##.adsbygoogle
 ||fgnoticias.ml/728.php
 ||fgnoticias.ml/300C.php
 ||fgnoticias.ml/big2.php
@@ -2981,7 +3054,6 @@ animesvision.net##.area_conteudo_news_fala > div[align="center"] > div[id][style
 animesvision.net###area_conteudo_secoes > .paginador_numerico_A > div[align="center"] > div[id][style="width: 336px; height: 280px;"]
 oantagonista.com##.container-banner-single
 jkanime.net##.side-300
-majesy.com##.adsbygoogle
 torrentmegafilmes.com##a[href^="https://goo.gl/"] > img
 europapress.es###SMNativeMainContainer
 jn.pt,dn.pt##.tg-adhesion-bar
@@ -3000,7 +3072,6 @@ peruanazotv.com,futbol-envivohd.com,vercanalestv1.com,tv-onlinehd.com###closeX1
 ||tv-onlinehd.com/publi/publi
 ||tv-onlinehd.com/publi/cerrar
 xtraordinaryfansub.com##.rectangle.ad
-damelibros.com##.adsbygoogle
 anitubebr.com##.google-ima-html5-preroll-plugin
 dn.pt##.t-pubbox-ct-1
 ||videoszoofiliahd.com/embed/bit.js
@@ -3040,7 +3111,6 @@ imperiodefamosas.com###photos > a[rel="nofollow"]
 imperiodefamosas.com###publi2
 androidaba.com##a[href*="goo.gl"] > img
 androidaba.com###widget_sp_image-2
-androidaba.com##.adsbygoogle
 seriesgato.tv##a[href^="https://ocio.leadzutw.com/"]
 seriesgato.tv##.TPlayerNv > .Button.STPb[data-tplayernv="Opt0"]
 tumejortorrent.com##.pub160x600
@@ -3172,7 +3242,6 @@ extremotv.info##iframe[src^="http://extremotv"][src*=".php"]:not([src*="lateral.
 cndfandres64.blogspot.de,cndfandres64.blogspot.com,cndfandres64.blogspot.com.au##.entry-content > center > b
 seriehd.me##a[href^="http://altadefinizione.pink"]
 eusouandroid.co##body .td-header-style-10 .td-g-rec-id-header .adsbygoogle
-eusouandroid.co##.adsbygoogle
 animesorion.tv##body > center
 animesorion.tv###sidebarGeral > .sidebar:first-child
 animesorion.tv###content > .contentBox + center
@@ -3195,7 +3264,6 @@ okdiario.com##.aux-col > .widget_aawp_widget_bestseller
 pornogratisdiario.com##.bnfo
 pornogratisdiario.com##.bnr
 embed.videosdemadurasx.com###floating-bn
-tabletsesmartphones.org##.adsbygoogle
 elcorreo.com,laverdad.es,diariosur.es##.voc-advertising
 3dgames.com.ar###sponsor_image
 cine-online.eu##body #expandirBotones
@@ -3257,7 +3325,6 @@ seriesgato.com##.TPlayer > div.TPlayerTb > div > a[rel="nofollow"]
 televisionparatodos.tv##a[href^="http://www.portablemusic.mobi/"]
 ||televisionparatodos.tv/wp-content/uploads/*/reproductor.gif
 ||televisionparatodos.tv/wp-content/uploads/*/padrongif.gif
-vivo-tv.com,vivotvhd.com##.adsbygoogle
 xn--hentaienespaol-1nb.net##.post-body > div[style="width: 1183px;height: 160px;"]
 tuporno.tv##iframe[width="220"]
 xtraordinaryfansub.com##.bloque_ads
@@ -4466,7 +4533,11 @@ urlcloud.us##.banner
 !------ White list. Fixing filtration errors (false-positive) --------------!
 !---------------------------------------------------------------------------!
 !
-! White list. Fixing filtration errors (false-positive)
+! This section contains the list of rules that fix incorrect blocking. Rules must be domain-specific.
+!
+! Good: example.org#@#.ad
+! Bad:  @@||example.org^$stealth (should be in AdGuard Base - whitelist_stealth.txt)
+!
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/103893
 @@||movistarplus.es/js/yomvi/player/publi.js
@@ -4641,7 +4712,6 @@ simple.ripley.com.pe#@#.dfp-ad-unit
 @@||avisooportunoexpress.mx/ajax_core.php*&adtype?$domain=avisooportunoexpress.mx
 @@||cdn.smartclip.net/easyroll/player.swf
 @@||ads.e-planning.net^$domain=ole.com.ar,object
-@@||checkm8.com^$domain=terra.com.br,document,object
 @@||diariosigloxxi.com/banners/logo_
 @@||e-planning.net/esb/*.swf?clickTag$domain=ole.com.ar
 @@||extraconfidencial.com/js/*$object

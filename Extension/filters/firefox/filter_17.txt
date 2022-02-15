@@ -1,8 +1,8 @@
-! Checksum: YrpdxNqFlWFADnG7cGM16Q
+! Checksum: VxZPzsRiDrbHN+MzW6GlmQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.75
-! TimeUpdated: 2022-01-15T10:30:43+00:00
+! Version: 2.0.1.97
+! TimeUpdated: 2022-02-11T16:30:43+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -11,7 +11,14 @@
 !-------------- General tracking parameters list  ----------------------------------!
 !---------------------------------------------------------------------------!
 !
-! General rules
+! This section contains the list of generic `$removeparam` rules that are applied on every website.
+! You should only put here known parameters that are used on many websites.
+! IMPORTANT: add a comment that explains where this parameter comes from (what tracking company is using it).
+! Ideally, supply a link to the document that explains how this parameter is used.
+!
+! Good: $removeparam=utm_id
+! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
+!
 !
 $removeparam=nx_source
 $removeparam=_zucks_suid
@@ -116,14 +123,64 @@ $removeparam=oly_anon_id
 $removeparam=oly_enc_id
 ! AD EBiS
 $removeparam=ebisAdID
+! https://github.com/AdguardTeam/AdguardFilters/issues/108478
+$removeparam=irgwc
 !---------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! The rules for specific sites
+! This section contains the list of domain-specific rules that remove URL tracking parameters. Rules have to contain only a single modifier: `removeparam`.
+! In some cases, it's allowed to add content type and `$domain` modifiers.
+!
+! Good: ||example.org^$removeparam=cx
+! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
-!
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-2155728
+||xkcd.com^$removeparam=trk
+! https://github.com/AdguardTeam/AdguardFilters/issues/109834
+||video.laxd.com^$removeparam=ref
+! https://support.mozilla.org/pl/questions/1364964#answer-1475794
+||msn.com^$removeparam=pc
+! https://github.com/AdguardTeam/AdguardFilters/issues/108915#issuecomment-1031525591
+! https://github.com/AdguardTeam/AdguardFilters/issues/109244
+||approach.yahoo.co.jp^$removeparam=code
+! Taobao
+||taobao.com^$removeparam=scm
+||taobao.com^$removeparam=pvid
+||taobao.com^$removeparam=utparam
+! Aliexpress
+||aliexpress.$removeparam=spm
+||aliexpress.$removeparam=scm
+||aliexpress.$removeparam=scm_id
+||aliexpress.$removeparam=scm-url
+||aliexpress.$removeparam=utparam
+||aliexpress.$removeparam=aff_fcid
+||aliexpress.$removeparam=terminal_id
+||aliexpress.$removeparam=aff_trace_key
+||aliexpress.$removeparam=aff_fsk
+||aliexpress.$removeparam=pvid
+||aliexpress.$removeparam=dp
+||aliexpress.$removeparam=sk
+! https://github.com/AdguardTeam/AdguardFilters/issues/108478
+||agoda.com^$removeparam=tag
+! https://github.com/AdguardTeam/AdguardFilters/issues/106186
+||editor.flixier.com^$removeparam=/fx_(source|medium|campaign)/
+! https://github.com/AdguardTeam/AdguardFilters/issues/108860
+||github.com/signup$removeparam=source
+||github.com/signup$removeparam=/^ref_/
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-2052109
+||tradingview.com^$removeparam=source
+! https://github.com/AdguardTeam/AdguardFilters/issues/107988
+||api.cxense.com^$removeparam=/^cx_/
+||api.cxense.com^$removeparam=/^pickup_list_click/
+! Rakuten sites self-promo links
+$removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
+||rakuten.co.jp^$removeparam=scid
+! https://github.com/AdguardTeam/AdguardFilters/issues/107266
+||azby.fmworld.net/cgi-bin/common/rd.cgi?$removeparam=affitest
+! https://github.com/AdguardTeam/AdguardFilters/issues/107199
+||azby.fmworld.net^$removeparam=mc_pc
 ! https://toku.yahoo.co.jp/ytop202111/entry?fr=weather_right_column
 ||toku.yahoo.co.jp^$removeparam=fr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/106436
@@ -133,6 +190,8 @@ $removeparam=ebisAdID
 ||nikkei.com^$removeparam=i_cid
 ||nikkei.com^$removeparam=n_cid
 ||nikkeibp.co.jp^$removeparam=i_cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/104716
+||cyberlink.com^$removeparam=affid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/106316
 ||zestradar.com^$removeparam=adclid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104773
@@ -160,6 +219,8 @@ $removeparam=ebisAdID
 ||dmm.co.jp^$removeparam=dmmref
 ||dmm.co.jp^$removeparam=i3_ord
 ||dmm.co.jp^$removeparam=i3_ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/105143
+||imdb.com^$removeparam=ref_
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104987
 ||livedoor.biz^$removeparam=ref
 ! reddit.com - email tracking
@@ -405,17 +466,17 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88627
 ! ||amazon.*$removeparam=ref_
 ! ||amazon.*$removeparam=ie
-!
-! ||amazon.*$removeparam=sr - breaks automatic jump to review details
-! ||amazon.*$removeparam=s - breaks URLs which include them to sort
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89163
 ! ||amazon.*/message-us$removeparam=origRef
+!
+! ||amazon.*$removeparam=ref - breaks adding article to basket when viewing all offers
+! ||amazon.*$removeparam=sr - breaks automatic jump to review details
+! ||amazon.*$removeparam=s - breaks URLs which include them to sort
 ||amazon.*$removeparam=tag
 ||amazon.*$removeparam=creative
 ||amazon.*$removeparam=creativeASIN
 ||amazon.*$removeparam=camp
 ||amazon.*$removeparam=ascsubtag
-||amazon.*$removeparam=ref
 ||amazon.*$removeparam=vt
 ||amazon.*$removeparam=refRID
 ||amazon.*$removeparam=pd_rd_i
@@ -458,6 +519,10 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||mp.weixin.qq.com^$removeparam=uin
 ||mp.weixin.qq.com^$removeparam=devicetype
 ||mp.weixin.qq.com^$removeparam=exportkey
+||mp.weixin.qq.com^$removeparam=mpshare
+||mp.weixin.qq.com^$removeparam=scene
+||mp.weixin.qq.com^$removeparam=srcid
+||mp.weixin.qq.com^$removeparam=nettype
 ! Prevent tracking when request is unblocked
 ||pixel.adsafeprotected.com/services/pub?$removeparam=slot
 ||pixel.adsafeprotected.com/services/pub?$removeparam=sessionId
@@ -495,6 +560,7 @@ $removeparam=dclid
 ||trendyol.com^$removeparam=_ga
 ||trendyol.com^$removeparam=utm_subaff
 !
+||duda.co^$removeparam=irclickid
 ||marktjagd.de^$removeparam=client
 ||kaspersky.com^$removeparam=icid
 ||coursera.org^$removeparam=siteID
@@ -580,18 +646,27 @@ $removeparam=dclid
 ||bilibili.com^$removeparam=timestamp
 ||bilibili.com^$removeparam=unique_k
 ||search.bilibili.com^$removeparam=from_source
+! Weibo
+||weibo.*^$removeparam=weibo_id
+||weibo.*^$removeparam=dt_dapp
 !
 !---------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
 !---------------------------------------------------------------------------!
 !
-! Fixing filtering errors
+! This section contains the list of rules that fix incorrect blocking. Rules should be domain-specific and only the `removeparam` modifier is allowed.
+!
+! Good: @@||example.org^$removeparam=cx
+! Bad:  @@||example.org^$stealth (should be in AdGuard Base - whitelist_stealth.txt)
+!
 !
 ! TEMPORARY
 ! https://github.com/AdguardTeam/tsurlfilter/issues/24
 !+ PLATFORM(ext_chromium, ext_ff, ext_opera)
 @@||userscript.zone^$removeparam=utm_campaign
 !
+! https://github.com/ClearURLs/Rules/issues/30
+@@||tix.axs.com^$removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/105313
 ! https://github.com/AdguardTeam/AdguardFilters/issues/103723
 ! https://github.com/AdguardTeam/AdguardFilters/issues/103211
