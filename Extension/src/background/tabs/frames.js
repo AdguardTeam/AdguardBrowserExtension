@@ -202,6 +202,7 @@ export const frames = (function () {
                     frameRule = filteringApi.findDocumentRule(url);
                 }
             }
+
             tabsApi.updateTabMetadata(tab.tabId, {
                 frameRule,
                 applicationFilteringDisabled,
