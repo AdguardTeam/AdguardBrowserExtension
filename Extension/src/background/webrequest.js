@@ -154,7 +154,7 @@ const webrequestInit = function () {
         );
 
         if (!requestRule?.isDocumentAllowlistRule()) {
-            cookieService.onBeforeRequest(requestDetails, getCookieRules(tab, requestUrl, referrerUrl));
+            cookieService.onBeforeRequest(requestDetails, getCookieRules(tab, requestUrl, referrerUrl) || []);
         }
 
         requestRule = webRequestService.postProcessRequest(
