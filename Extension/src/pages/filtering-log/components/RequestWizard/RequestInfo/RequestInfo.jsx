@@ -465,7 +465,7 @@ const RequestInfo = observer(() => {
                 <button
                     type="button"
                     onClick={closeModal}
-                    className="request-modal__navigation request-modal__navigation--close"
+                    className="request-modal__navigation request-modal__navigation--button"
                 >
                     <Icon id="#cross" classname="icon--contain" />
                 </button>

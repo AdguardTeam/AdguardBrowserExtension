@@ -161,7 +161,7 @@ const RequestCreateRule = observer(() => {
                 <button
                     type="button"
                     onClick={handleBackClick}
-                    className="request-modal__navigation request-modal__navigation--back"
+                    className="request-modal__navigation request-modal__navigation--button"
                 >
                     <Icon classname="icon--contain" id="#arrow-left" />
                 </button>

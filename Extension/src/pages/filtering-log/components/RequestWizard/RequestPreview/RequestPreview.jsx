@@ -124,7 +124,7 @@ export const RequestPreview = observer(() => {
                 <button
                     type="button"
                     onClick={handleBackToRequestClick}
-                    className="request-modal__navigation request-modal__navigation--back"
+                    className="request-modal__navigation request-modal__navigation--button"
                 >
                     <Icon id="#arrow-left" classname="icon--contain" />
                 </button>

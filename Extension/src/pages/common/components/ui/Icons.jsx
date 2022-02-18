@@ -4,11 +4,8 @@ import React from 'react';
 export const Icons = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" display="none">
-            <symbol id="arrow-left" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                <g fill="none" fillRule="evenodd">
-                    <path d="M-4-4h24v24H-4z" fill="currentColor" fillOpacity=".01" />
-                    <path d="M7.667 1L1 8h14m-7.333 7L1 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
+            <symbol id="arrow-left" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
 
             <symbol id="cross" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
