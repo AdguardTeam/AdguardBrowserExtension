@@ -62,6 +62,7 @@ export const collections = (() => {
          * @returns {*}
          */
         find(array, property, value) {
+            // eslint-disable-next-line react/destructuring-assignment
             if (typeof array.find === 'function') {
                 return array.find(a => a[property] === value);
             }

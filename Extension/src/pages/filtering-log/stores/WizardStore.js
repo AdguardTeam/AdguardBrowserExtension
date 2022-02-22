@@ -156,7 +156,7 @@ class WizardStore {
     removeAddedRuleFromUserFilter = async () => {
         await messenger.removeUserRule(this.rule);
         this.closeModal();
-    }
+    };
 
     @action
     setViewState() {

@@ -592,6 +592,7 @@ export const backgroundPage = (() => {
 
     const browserAction = {
         /* eslint-disable-next-line no-unused-vars */
+        /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
         async setBrowserAction(tab, icon, badge, badgeColor, title) {
             if (!browserActionSupported) {
                 return;

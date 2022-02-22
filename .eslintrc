@@ -1,77 +1,98 @@
 {
-    "env": {
-        "browser": true,
-        "node": true,
-        "jest": true
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": ["airbnb"],
-    "parser": "babel-eslint",
-    "globals": {
-        "adguard": true,
-        "chrome": true,
-        "browser": true,
-        "page": true,
-        "context": true,
-        "jestPuppeteer": true
-    },
-    "rules": {
-        "import/no-extraneous-dependencies": 0,
-        "import/no-cycle": "off",
-        "no-use-before-define": "off",
-        "indent": [
-            "error",
-            4,
-            {
-                "SwitchCase": 1,
-                "ignoreComments": false
-            }
-        ],
-        "no-useless-escape": "off",
-        "no-param-reassign": "off",
-        "wrap-iife": "off",
-        "func-names": "off",
-        "no-shadow": "off",
-        "no-multi-spaces": [
-            "error",
-            {
-                "ignoreEOLComments": true
-            }
-        ],
-        // Prefer destructuring from arrays and objects
-        // https://eslint.org/docs/rules/prefer-destructuring
-        "prefer-destructuring": [
-            "error",
-            {
-                "VariableDeclarator": {
-                    "array": false,
-                    "object": true
-                },
-                "AssignmentExpression": {
-                    "array": true,
-                    "object": false
-                }
-            },
-            {
-                "enforceForRenamedProperties": false
-            }
-        ],
-        "consistent-return": "off",
-        "no-prototype-builtins": "off",
-        "dot-notation": "off",
-        "quote-props": "off",
-        "no-continue": "off",
-        "strict": "off",
-        "no-bitwise": "off",
-        "no-underscore-dangle": "off",
-        "max-len": [
-            "error",
-            {
-                "code": 120
-            }
-        ],
-        "arrow-body-style": "off",
-        "import/prefer-default-export": "off",
-        "arrow-parens": "off",
-        "import/extensions": "off"
+    "project": "tsconfig.json"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
     }
+  },
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "import/no-extraneous-dependencies": 0,
+    "import/no-cycle": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "no-use-before-define": "off",
+    "@typescript-eslint/indent": "off",
+    "indent": [
+      "error",
+      4,
+      {
+        "SwitchCase": 1,
+        "ignoreComments": false
+      }
+    ],
+    "no-useless-escape": "off",
+    "no-param-reassign": "off",
+    "wrap-iife": "off",
+    "func-names": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "no-shadow": "off",
+    "no-multi-spaces": [
+      "error",
+      {
+        "ignoreEOLComments": true
+      }
+    ],
+    "prefer-destructuring": [
+      "error",
+      {
+        "VariableDeclarator": {
+          "array": false,
+          "object": true
+        },
+        "AssignmentExpression": {
+          "array": true,
+          "object": false
+        }
+      },
+      {
+        "enforceForRenamedProperties": false
+      }
+    ],
+    "consistent-return": "off",
+    "no-prototype-builtins": "off",
+    "@typescript-eslint/dot-notation": "off",
+    "dot-notation": "off",
+    "quote-props": "off",
+    "no-continue": "off",
+    "strict": "off",
+    "no-bitwise": "off",
+    "no-underscore-dangle": "off",
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ],
+    "arrow-body-style": "off",
+    "import/prefer-default-export": "off",
+    "arrow-parens": "off",
+    "import/extensions": "off"
+  },
+  "globals": {
+    "adguard": true,
+    "chrome": true,
+    "browser": true,
+    "page": true,
+    "context": true,
+    "jestPuppeteer": true
+  }
 }

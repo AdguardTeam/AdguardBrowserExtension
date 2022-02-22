@@ -24,7 +24,7 @@ export const url = (function () {
     const RE_V4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|0x[0-9a-f][0-9a-f]?|0[0-7]{3})$/i;
     const RE_V4_HEX = /^0x([0-9a-f]{8})$/i;
     const RE_V4_NUMERIC = /^[0-9]+$/;
-    const RE_V4inV6 = /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    const RE_V4_IN_V6 = /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 
     const RE_BAD_CHARACTERS = /([^0-9a-f:])/i;
     const RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]$)/i;
@@ -121,7 +121,7 @@ export const url = (function () {
 
         isIpv6(address) {
             let a4addon = 0;
-            const address4 = address.match(RE_V4inV6);
+            const address4 = address.match(RE_V4_IN_V6);
             if (address4) {
                 const temp4 = address4[0].split('.');
                 for (let i = 0; i < 4; i += 1) {
@@ -129,7 +129,7 @@ export const url = (function () {
                         return false;
                     }
                 }
-                address = address.replace(RE_V4inV6, '');
+                address = address.replace(RE_V4_IN_V6, '');
                 if (/[0-9]$/.test(address)) {
                     return false;
                 }

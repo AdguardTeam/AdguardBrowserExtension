@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * This function patches if necessary browser.windows implementation for Firefox for Android
  */

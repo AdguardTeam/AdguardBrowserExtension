@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable prefer-rest-params */
 /**
  * Util class for support timeout, retry operations, debounce

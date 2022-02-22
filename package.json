@@ -16,14 +16,14 @@
     "locales:validate": "babel-node tools/locales.js validate",
     "locales:info": "babel-node tools/locales.js info",
     "resources": "babel-node tools/resources.js",
-    "lint": "eslint . --ext .js,.jsx",
+    "lint": "eslint ./Extension --ext .js,.jsx,.ts,.tsx",
     "increment": "yarn version --patch --no-git-tag-version",
     "prepare": "husky install",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "eslint --fix"
+      "eslint"
     ]
   },
   "repository": {
@@ -41,7 +41,10 @@
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
@@ -55,6 +58,7 @@
     "css.escape": "^1.5.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^16.1.0",
     "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.24.0",
@@ -75,6 +79,7 @@
     "sinon-chrome": "^3.0.1",
     "source-map-loader": "^3.0.0",
     "style-loader": "^3.2.1",
+    "typescript": "^4.5.5",
     "web-ext": "^6.6.0",
     "webpack": "^5.50.0",
     "webpack-cli": "^4.7.2",

@@ -319,7 +319,7 @@ class PopupStore {
     updateBlockedStats = (tabInfo) => {
         this.totalBlocked = tabInfo.totalBlocked;
         this.totalBlockedTab = tabInfo.totalBlockedTab;
-    }
+    };
 
     @action
     onSettingUpdated = (name, value) => {
