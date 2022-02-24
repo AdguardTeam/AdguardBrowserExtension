@@ -55,7 +55,7 @@ export const startAssistant = () => {
         switch (message.type) {
             case 'initAssistant': {
                 const { options } = message;
-                const { addRuleCallbackName } = options;
+                const { addRuleCallbackName, token } = options;
                 let selectedElement = null;
                 if (clickedEl && options.selectElement) {
                     selectedElement = clickedEl;
@@ -68,7 +68,7 @@ export const startAssistant = () => {
                 }
 
                 assistant.start(selectedElement, (rules) => {
-                    contentPage.sendMessage({ type: addRuleCallbackName, data: { ruleText: rules } });
+                    contentPage.sendMessage({ type: addRuleCallbackName, data: { token, ruleText: rules } });
                 });
                 break;
             }

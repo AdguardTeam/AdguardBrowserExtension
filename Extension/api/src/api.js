@@ -30,6 +30,7 @@ import { requestSanitizer } from '../../src/background/filter/request-sanitizer'
 import { localeDetect } from '../../src/background/filter/services/locale-detect';
 import { backgroundPage } from '../../src/background/extension-api/background-page';
 import { messageHandler } from '../../src/background/message-handler';
+import { uiService } from '../../src/background/ui-service';
 
 /**
  * Adguard simple api
@@ -230,7 +231,9 @@ export const adguardApi = (function () {
     const initAssistant = function (tabId) {
         const assistantOptions = {
             addRuleCallbackName: 'assistant-create-rule',
+            token: uiService.getAssistantToken(),
         };
+
         tabsApi.sendMessage(tabId, {
             type: 'initAssistant',
             options: assistantOptions,
@@ -243,7 +246,7 @@ export const adguardApi = (function () {
      */
     const openAssistant = async (tabId) => {
         if (tabsApi.executeScriptFile) {
-            // Load Assistant code to activate tab immediately
+            // Load Assistant code to the active tab immediately
             await tabsApi.executeScriptFile(null, { file: '/adguard-assistant.js' });
             initAssistant(tabId);
         } else {
@@ -305,6 +308,7 @@ export const adguardApi = (function () {
         onRequestBlocked: webRequestService.onRequestBlocked,
         openAssistant,
         closeAssistant,
+        getAssistantToken: uiService.getAssistantToken,
     };
 })();
 

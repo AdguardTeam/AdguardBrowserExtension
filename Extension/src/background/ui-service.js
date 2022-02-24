@@ -17,6 +17,8 @@
 
 /* eslint-disable max-len */
 
+import { nanoid } from 'nanoid';
+
 import { application } from './application';
 import { backgroundPage } from './extension-api/background-page';
 import { utils, unload, BACKGROUND_TAB_ID } from './utils/common';
@@ -909,10 +911,19 @@ export const uiService = (function () {
         }
     };
 
+    const getAssistantToken = (() => {
+        const assistantToken = nanoid();
+
+        return () => {
+            return assistantToken;
+        };
+    })();
+
     const initAssistant = async (selectElement) => {
         const options = {
             addRuleCallbackName: MESSAGE_TYPES.ADD_USER_RULE,
             selectElement,
+            token: getAssistantToken(),
         };
 
         // init assistant
@@ -934,9 +945,9 @@ export const uiService = (function () {
      * @param {boolean} selectElement - if true select the element on which the Mousedown event was
      */
     const openAssistant = async (selectElement) => {
-        // Load Assistant code to the activate tab immediately
+        // Load Assistant code to the active tab immediately
         await tabsApi.executeScriptFile(null, { file: '/pages/assistant.js' });
-        initAssistant(selectElement);
+        await initAssistant(selectElement);
     };
 
     const init = async () => {
@@ -1090,5 +1101,7 @@ export const uiService = (function () {
         openTab,
 
         showAlertMessagePopup,
+
+        getAssistantToken,
     };
 })();
