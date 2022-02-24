@@ -220,6 +220,28 @@ const createMessageHandler = () => {
     };
 
     /**
+     * For dangerous (which can change user rules) messages we also check their origin
+     * @param message
+     * @param sender
+     * @return {boolean}
+     */
+    const isMessageAllowed = (message, sender) => {
+        const OPTIONS_PAGE_DANGEROUS_MESSAGES = [
+            MESSAGE_TYPES.SUBSCRIBE_TO_CUSTOM_FILTER,
+            MESSAGE_TYPES.SAVE_USER_RULES,
+            MESSAGE_TYPES.APPLY_SETTINGS_JSON,
+        ];
+
+        // dangerous messages are allowed only from own pages (popup, options)
+        if (OPTIONS_PAGE_DANGEROUS_MESSAGES.includes(message?.type)
+            && !backgroundPage.app.isOwnRequest(sender?.tab?.url)) {
+            return false;
+        }
+
+        return true;
+    };
+
+    /**
      * Main function for processing messages from content-scripts
      *
      * @param message
@@ -227,6 +249,11 @@ const createMessageHandler = () => {
      * @returns {*}
      */
     const handleMessage = async (message, sender) => {
+        if (!isMessageAllowed(message, sender)) {
+            log.error('Message: {0} is not allowed for the sender: {1} ', message, sender);
+            return;
+        }
+
         const { data, type } = message;
 
         switch (type) {
@@ -318,8 +345,21 @@ const createMessageHandler = () => {
                 });
             }
             case MESSAGE_TYPES.ADD_USER_RULE: {
-                const { ruleText } = data;
-                userrules.addRules([ruleText]);
+                const { ruleText, token } = data;
+                const expectedToken = uiService.getAssistantToken();
+                // check for token to avoid possible vulnerabilities AG-12883
+                // https://groups.google.com/a/chromium.org/g/chromium-extensions/c/0ei-UCHNm34/m/lDaXwQhzBAAJ?pli=1
+                // https://bugs.chromium.org/p/chromium/issues/detail?id=982326
+                if (token === expectedToken) {
+                    userrules.addRules([ruleText]);
+                } else {
+                    log.error(
+                        'Tokens for message {0} does not not match. Expected token: {1}. Received token: {2}',
+                        message,
+                        token,
+                        expectedToken,
+                    );
+                }
                 break;
             }
             case MESSAGE_TYPES.REMOVE_USER_RULE: {

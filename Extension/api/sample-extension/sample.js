@@ -30,7 +30,17 @@ adguardApi.onRequestBlocked.addListener(onBlocked);
 // Add event listener for rules created by Adguard Assistant
 chrome.runtime.onMessage.addListener((message) => {
     if (message.type === 'assistant-create-rule') {
-        const { ruleText } = message.data;
+        const { token, ruleText } = message.data;
+        const expectedToken = adguardApi.getAssistantToken();
+        // check for token to avoid possible vulnerabilities AG-12883
+        // https://groups.google.com/a/chromium.org/g/chromium-extensions/c/0ei-UCHNm34/m/lDaXwQhzBAAJ?pli=1
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=982326
+        if (token !== expectedToken) {
+            // eslint-disable-next-line max-len
+            console.error(`Tokens for message ${message} does not not match. Expected token: ${token}. Received token: ${expectedToken}`);
+            return;
+        }
+
         console.log(`Rule ${ruleText} was created by Adguard Assistant`);
         configuration.rules.push(ruleText);
         adguardApi.configure(configuration, () => {
