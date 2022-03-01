@@ -44,7 +44,7 @@ export const xpi = async (browser) => {
         apiSecret,
         sourceDir,
         artifactsDir: buildDir,
-        timeout: 5 * 60 * 1000, // 5 minutes
+        timeout: 15 * 60 * 1000, // 15 minutes
     }, {
         shouldExitProgram: false,
     });
