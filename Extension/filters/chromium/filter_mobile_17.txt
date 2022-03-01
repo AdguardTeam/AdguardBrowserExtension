@@ -1,8 +1,8 @@
-! Checksum: BhKIlXRgtGy39YplQ7TnAw
+! Checksum: KfLdngc4r8QR3uxYGur5nw
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.1.97
-! TimeUpdated: 2022-02-11T16:30:43+00:00
+! Version: 2.0.2.8
+! TimeUpdated: 2022-02-25T14:30:46+00:00
 ! Expires: 4 days (update frequency)
 $removeparam=nx_source
 $removeparam=_zucks_suid
@@ -91,6 +91,13 @@ $removeparam=oly_anon_id
 $removeparam=oly_enc_id
 $removeparam=ebisAdID
 $removeparam=irgwc
+||buzzfeednews.com^$removeparam=ref
+||goodreads.com^$removeparam=ref
+||journal.tinkoff.ru$removeparam=mindbox-click-id
+||coconala.com^$removeparam=ref
+||coconala.com^$removeparam=ref_kind
+||coconala.com^$removeparam=ref_no
+$domain=atlanticcouncil.org|digikey.com,removeparam=/^mkt_tok/
 ||xkcd.com^$removeparam=trk
 ||video.laxd.com^$removeparam=ref
 ||msn.com^$removeparam=pc
@@ -197,6 +204,8 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||play.google.com/store/$removeparam=pcampaignid
 ||cyber-ad01.cc^$removeparam=ip
 ||d-markets.net^$removeparam=ref
+||coupang.com/*/products/$removeparam=q
+||coupang.com/*/products/$removeparam=searchId
 ||coupang.com^$removeparam=wRef
 ||coupang.com^$removeparam=traceid
 ||coupang.com^$removeparam=wTime
@@ -261,7 +270,7 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||ksta.de^$removeparam=cb
 ||linkedin.com/authwall?$removeparam=trkInfo
 ||linkedin.com/authwall?$removeparam=originalReferer
-||digikey.com^$removeparam=/^mkt_tok/
+||linkedin.com^$removeparam=/^trk/
 ||digikey.com^$removeparam=/^utm_cid/
 ||nicovideo.jp^$removeparam=cmnhd_ref
 ||nicovideo.jp^$removeparam=ref
@@ -305,6 +314,7 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
+||amazon.*$removeparam=ref
 ||amazon.*$removeparam=tag
 ||amazon.*$removeparam=creative
 ||amazon.*$removeparam=creativeASIN
@@ -334,7 +344,6 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||amazon.*$removeparam=dchild
 ||amazon.*$removeparam=c
 ||amazon.*$removeparam=ts_id
-||amazon.*/dp/$removeparam=tag
 ||amazon.*/aa$removeparam=bitCampaignCode
 ||amazon.*/hz/contact-us/csp$removeparam=/entries/
 ||amazon.*/hz/contact-us/csp$removeparam=/Version/
@@ -459,6 +468,7 @@ $removeparam=dclid
 ||weibo.*^$removeparam=dt_dapp
 !+ PLATFORM(ext_chromium, ext_ff, ext_opera)
 @@||userscript.zone^$removeparam=utm_campaign
+@@||data.amazon.*/api/marketplaces/*/cart/carts/retail/items$removeparam=ref
 @@||tix.axs.com^$removeparam
 @@/mediaserver/*$removeparam,domain=ramtrucks.com|chrysler.com|fiatusa.com|alfaromeousa.com|jeep.com|dodge.com
 @@||dkbs.sabio.de/sabio/services/$removeparam
