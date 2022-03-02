@@ -17,85 +17,15 @@
 
 import { tabsApi } from './tabs-api';
 import { MAIN_FRAME_ID, utils } from '../utils/common';
-import { RequestTypes } from '../utils/request-types';
-import { listeners } from '../notifier';
 import { allowlist } from '../filter/allowlist';
 import { settings } from '../settings/user-settings';
 import { pageStats } from '../filter/page-stats';
-import { filteringApi } from '../filter/filtering-api';
 import { localStorage } from '../storage';
 
 /**
  * Object that contains info about every browser tab.
  */
 export const frames = (function () {
-    /**
-     * Adds frame to map. This method is called on first document request.
-     * If this is a main frame - saves this info in frame data.
-     *
-     * @param tab       Tab object
-     * @param frameId   Frame ID
-     * @param url       Page URL
-     * @param type      Request content type (UrlFilterRule.contentTypes)
-     * @returns Frame data
-     */
-    const recordFrame = function (tab, frameId, url, type) {
-        const frame = tabsApi.getTabFrame(tab.tabId, frameId);
-
-        let previousUrl = '';
-        if (type === RequestTypes.DOCUMENT) {
-            tabsApi.clearTabFrames(tab.tabId);
-            tabsApi.clearTabMetadata(tab.tabId);
-            if (frame) {
-                previousUrl = frame.url;
-            }
-        }
-
-        tabsApi.recordTabFrame(tab.tabId, frameId, url, utils.url.getDomainName(url));
-
-        if (type === RequestTypes.DOCUMENT) {
-            tabsApi.updateTabMetadata(tab.tabId, { previousUrl });
-            reloadFrameData(tab);
-        }
-    };
-
-    /**
-     * This method reloads frame data and updates previous url if necessary
-     * We use it in the webRequest.onCommit event because when website uses service worker
-     * main_frame request can not fire in the webRequest events
-     * @param tab
-     * @param frameId
-     * @param url
-     * @param type
-     */
-    const checkAndRecordMainFrame = (tab, frameId, url, type) => {
-        if (type !== RequestTypes.DOCUMENT) {
-            return;
-        }
-
-        const { tabId } = tab;
-
-        const frame = tabsApi.getTabFrame(tabId, frameId);
-
-        // If no main_frame in tab, than we consider this as a new page load
-        if (!frame) {
-            tabsApi.recordTabFrame(tabId, frameId, url, utils.url.getDomainName(url));
-            reloadFrameData(tab);
-            return;
-        }
-
-        // if frame has different rule, then we consider this as a new page load
-        let previousUrl = '';
-        if (frame && frame.url !== url) {
-            previousUrl = frame.url;
-            tabsApi.clearTabFrames(tabId);
-            tabsApi.clearTabMetadata(tabId);
-            tabsApi.recordTabFrame(tabId, frameId, url, utils.url.getDomainName(url));
-            tabsApi.updateTabMetadata(tabId, { previousUrl });
-            reloadFrameData(tab);
-        }
-    };
-
     /**
      * Gets frame URL
      *
@@ -183,31 +113,6 @@ export const frames = (function () {
      */
     const getFrameRule = function (tab) {
         return tabsApi.getTabMetadata(tab.tabId, 'frameRule');
-    };
-
-    /**
-     * Reloads tab data (checks allowlist and filtering status)
-     *
-     * @param tab Tab to reload
-     */
-    const reloadFrameData = function (tab) {
-        const frame = tabsApi.getTabFrame(tab.tabId, 0);
-        if (frame) {
-            const applicationFilteringDisabled = settings.isFilteringDisabled();
-            let frameRule = null;
-            if (!applicationFilteringDisabled) {
-                const { url } = frame;
-                frameRule = allowlist.findAllowlistRule(url);
-                if (!frameRule) {
-                    frameRule = filteringApi.findDocumentRule(url);
-                }
-            }
-
-            tabsApi.updateTabMetadata(tab.tabId, {
-                frameRule,
-                applicationFilteringDisabled,
-            });
-        }
     };
 
     /**
@@ -329,17 +234,7 @@ export const frames = (function () {
      */
     const shouldStopRequestProcess = tab => isTabProtectionDisabled(tab) || isTabAllowlisted(tab);
 
-    // Records frames on application initialization
-    listeners.addListener((event) => {
-        if (event === listeners.APPLICATION_INITIALIZED) {
-            tabsApi.forEach((tab) => {
-                recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
-            });
-        }
-    });
-
     return {
-        recordFrame,
         getFrameUrl,
         getMainFrameUrl,
         getFrameDomain,
@@ -349,13 +244,11 @@ export const frames = (function () {
         isTabAdguardAllowlisted,
         getTabAdguardUserAllowlistRule,
         getFrameRule,
-        reloadFrameData,
         recordFrameReferrerHeader,
         getFrameInfo,
         updateBlockedAdsCount,
         resetBlockedAdsCount,
         isIncognitoTab,
         shouldStopRequestProcess,
-        checkAndRecordMainFrame,
     };
 })();

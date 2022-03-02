@@ -571,10 +571,7 @@ export const uiService = (function () {
      * @param {boolean} reloadFrameData
      * @param {boolean} [changeIcon=true]
      */
-    const updateTabIconAndContextMenu = function (tab, reloadFrameData, changeIcon = true) {
-        if (reloadFrameData) {
-            frames.reloadFrameData(tab);
-        }
+    const updateTabIconAndContextMenu = function (tab, _reloadFrameData, changeIcon = true) {
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1917
         if (changeIcon) {
             updateTabIconAsync(tab);

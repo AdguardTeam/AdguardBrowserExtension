@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { browser } from './extension-api/browser';
 import { log } from '../common/log';
 import { backgroundPage } from './extension-api/background-page';
 import { rulesStorage, localStorage } from './storage';
@@ -22,8 +23,6 @@ import { allowlist } from './filter/allowlist';
 import { filteringLog } from './filter/filtering-log';
 import { uiService } from './ui-service';
 import { application } from './application';
-import { browser } from './extension-api/browser';
-import { stealthService } from './filter/services/stealth-service';
 import { ANTIBANNER_GROUPS_ID } from '../common/constants';
 
 /**
@@ -37,11 +36,6 @@ export const startup = async function () {
             backgroundPage.app.getId(),
         );
 
-        // Initialize popup button
-        backgroundPage.browserAction.setPopup({
-            popup: backgroundPage.getURL('pages/popup.html'),
-        });
-
         // Set uninstall page url
         // eslint-disable-next-line max-len
         const uninstallUrl = 'https://adguard.com/forward.html?action=adguard_uninstal_ext&from=background&app=browser_extension';
@@ -54,7 +48,6 @@ export const startup = async function () {
         allowlist.init();
         filteringLog.init();
         await uiService.init();
-        stealthService.init();
 
         /**
          * Start application

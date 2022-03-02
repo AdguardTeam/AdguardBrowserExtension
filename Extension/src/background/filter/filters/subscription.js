@@ -21,7 +21,6 @@ import { backgroundPage } from '../../extension-api/background-page';
 import { localStorage } from '../../storage';
 import { utils } from '../../utils/common';
 import { localScriptRulesService } from '../rules/local-script-rules';
-import { redirectService } from '../services/redirect-service';
 import { browserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { ANTIBANNER_GROUPS_ID } from '../../../common/constants';
@@ -344,17 +343,6 @@ export const subscriptions = (() => {
     };
 
     /**
-     * Loads redirect sources from local file
-     * @returns {Promise}
-     * @private
-     */
-    const loadRedirectSources = async () => {
-        const txt = await backend.getRedirectSources();
-        redirectService.init(txt);
-        log.info('Filters redirect sources loaded');
-    };
-
-    /**
      * Initialize subscription service, loading local filters metadata
      * @return {Promise}
      */
@@ -363,7 +351,6 @@ export const subscriptions = (() => {
             await loadMetadata();
             await loadMetadataI18n();
             await loadLocalScriptRules();
-            await loadRedirectSources();
         } catch (e) {
             log.error(`Error loading metadata, cause: ${e.message}`);
         }

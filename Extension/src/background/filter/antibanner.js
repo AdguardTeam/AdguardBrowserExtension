@@ -16,7 +16,6 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
-import { RequestFilter } from './request-filter';
 import { listeners } from '../notifier';
 import { applicationUpdateService } from '../update-service';
 import { subscriptions } from './filters/subscription';
@@ -26,18 +25,13 @@ import { log } from '../../common/log';
 import { rulesStorage } from '../storage';
 import { filtersUpdate } from './filters/filters-update';
 import { customFilters } from './filters/custom-filters';
-import { engine } from './engine';
-import { stealthService } from './services/stealth-service';
+import { tsWebExtensionWrapper } from '../tswebextension-wrapper';
 import { userrules } from './userrules';
 
 /**
  * Creating service that manages our filter rules.
  */
 export const antiBannerService = (() => {
-    // Request filter contains all filter rules
-    // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
-    let requestFilter = new RequestFilter();
-
     // Service is not initialized yet
     let requestFilterInitTime = 0;
 
@@ -173,13 +167,7 @@ export const antiBannerService = (() => {
      * Request Filter info
      */
     const getRequestFilterInfo = function () {
-        let rulesCount = 0;
-        if (requestFilter) {
-            rulesCount = requestFilter.getRulesCount();
-        }
-        return {
-            rulesCount,
-        };
+        return tsWebExtensionWrapper.getRulesCount();
     };
 
     /**
@@ -187,8 +175,8 @@ export const antiBannerService = (() => {
      */
     const stop = async function () {
         applicationRunning = false;
-        requestFilter = new RequestFilter();
-        await engine.startEngine([]);
+
+        await tsWebExtensionWrapper.stop();
 
         listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
     };
@@ -199,13 +187,6 @@ export const antiBannerService = (() => {
      */
     const isInitialized = function () {
         return applicationInitialized;
-    };
-
-    /**
-     * Getter for request filter
-     */
-    const getRequestFilter = function () {
-        return requestFilter;
     };
 
     /**
@@ -284,8 +265,6 @@ export const antiBannerService = (() => {
 
         log.info('Starting request filter initialization..');
 
-        const newRequestFilter = new RequestFilter();
-
         if (requestFilterInitTime === 0) {
             // Setting the time of request filter very first initialization
             requestFilterInitTime = new Date().getTime();
@@ -330,30 +309,28 @@ export const antiBannerService = (() => {
          * This is the last step of request filter initialization.
          */
         const requestFilterInitialized = function () {
-            // Request filter is ready
-            requestFilter = newRequestFilter;
-
             listeners.notifyListeners(listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+
             log.info(
                 'Finished request filter initialization in {0} ms. Rules count: {1}',
                 (new Date().getTime() - start),
-                newRequestFilter.getRulesCount(),
+                tsWebExtensionWrapper.getRulesCount(),
             );
 
             /**
              * If no one of filters is enabled, don't reload rules,
              * except when there are enabled stealth mode rules
              */
-            if (isEmptyRulesFilterMap(rulesFilterMap) && !stealthService.hasFilterRules()) {
+            if (isEmptyRulesFilterMap(rulesFilterMap)) {
                 return;
             }
 
-            if (newRequestFilter.getRulesCount() === 0 && !reloadedRules) {
+            if (tsWebExtensionWrapper.getRulesCount() === 0 && !reloadedRules) {
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
                 log.info('No rules have been found - checking filter updates');
                 reloadAntiBannerFilters();
                 reloadedRules = true;
-            } else if (newRequestFilter.getRulesCount() > 0 && reloadedRules) {
+            } else if (tsWebExtensionWrapper.getRulesCount() > 0 && reloadedRules) {
                 log.info('Filters reloaded, deleting reloadRules flag');
                 reloadedRules = false;
             }
@@ -365,41 +342,41 @@ export const antiBannerService = (() => {
         const startTSUrlFilterEngine = async () => {
             const lists = [];
 
-            let userFilterList;
+            let userrules = [];
+            let allowlist = [];
+
             // eslint-disable-next-line guard-for-in,no-restricted-syntax
             for (let filterId in rulesFilterMap) {
                 // To number
                 filterId = Number(filterId);
 
-                const isTrustedFilter = subscriptions.isTrustedFilter(filterId);
-                const rulesTexts = rulesFilterMap[filterId].join('\n');
-
-                const filterList = new TSUrlFilter.StringRuleList(
-                    filterId,
-                    rulesTexts,
-                    false,
-                    !isTrustedFilter,
-                    !isTrustedFilter,
-                );
-
                 if (filterId === utils.filters.USER_FILTER_ID) {
-                    userFilterList = filterList;
-                } else {
-                    lists.push(filterList);
+                    userrules = rulesFilterMap[filterId];
+                    continue;
                 }
+
+                if (filterId === utils.filters.ALLOWLIST_FILTER_ID) {
+                    allowlist = rulesFilterMap[filterId];
+                    continue;
+                }
+
+                lists.push({
+                    filterId,
+                    content: rulesFilterMap[filterId].join('\n'),
+                });
             }
 
-            // We push user filter list in the end in order to make possible script rules to work
-            // AG-9443
-            if (userFilterList) {
-                lists.push(userFilterList);
+            const config = {
+                filters: lists,
+                userrules,
+                allowlist,
+            };
+
+            if (!tsWebExtensionWrapper.tsWebExtension.isStarted) {
+                await tsWebExtensionWrapper.start(config);
+            } else {
+                await tsWebExtensionWrapper.configure(config);
             }
-
-            // append stealth mode rules
-            const stealthModeList = stealthService.getStealthModeRuleList();
-            lists.push(stealthModeList);
-
-            await engine.startEngine(lists);
 
             requestFilterInitialized();
         };
@@ -674,16 +651,18 @@ export const antiBannerService = (() => {
      */
     const isRunning = () => applicationRunning;
 
+    const isReady = () => getRequestFilterInitTime() > 0;
+
     return {
 
         start,
         stop,
         isInitialized,
         isRunning,
+        isReady,
 
         addAntiBannerFilter,
 
-        getRequestFilter,
         getRequestFilterInitTime,
 
         getRequestFilterInfo,

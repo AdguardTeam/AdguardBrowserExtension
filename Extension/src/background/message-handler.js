@@ -30,24 +30,20 @@ import { browserUtils } from './utils/browser-utils';
 import { frames } from './tabs/frames';
 import { safebrowsing } from './filter/services/safebrowsing';
 import { utils } from './utils/common';
-import { RequestTypes } from './utils/request-types';
 import { application } from './application';
 import { categories } from './filter/filters/filters-categories';
-import { webRequestService } from './filter/request-blocking';
 import { filteringLog } from './filter/filtering-log';
 import { pageStats } from './filter/page-stats';
 import { subscriptions } from './filter/filters/subscription';
-import { filteringApi } from './filter/filtering-api';
-import { stealthService } from './filter/services/stealth-service';
 import { prefs } from './prefs';
 import { allowlist } from './filter/allowlist';
 import { documentFilterService } from './filter/services/document-filter';
 import { antiBannerService } from './filter/antibanner';
 import { FILTERING_LOG, FULLSCREEN_USER_RULES_EDITOR, MESSAGE_TYPES } from '../common/constants';
-import { getCookieRulesDataForContentScript } from './filter/services/cookie-service';
 import { log } from '../common/log';
 import { fullscreenUserRulesEditor } from './fullscreen-user-rules-editor';
 import { editorStorage } from './utils/editor-storage';
+import { tsWebExtensionWrapper } from './tswebextension-wrapper';
 
 const onPortConnection = (port) => {
     switch (true) {
@@ -122,6 +118,8 @@ const createMessageHandler = () => {
      */
     const eventListeners = Object.create(null);
 
+    const tsWebExtensionMessageHandler = tsWebExtensionWrapper.tsWebExtension.getMessageHandler();
+
     /**
      * Adds event listener from content page
      * @param events
@@ -159,10 +157,10 @@ const createMessageHandler = () => {
             userSettings: settings.getAllSettings(),
             enabledFilters,
             filtersMetadata: subscriptions.getFilters(),
-            requestFilterInfo: filteringApi.getRequestFilterInfo(),
+            requestFilterInfo: antiBannerService.getRequestFilterInfo(),
             environmentOptions: {
                 isMacOs: browserUtils.isMacOs(),
-                canBlockWebRTC: stealthService.canBlockWebRTC(),
+                canBlockWebRTC: true,
                 isChrome: browserUtils.isChromeBrowser(),
                 Prefs: {
                     locale: backgroundPage.app.getLocale(),
@@ -176,33 +174,6 @@ const createMessageHandler = () => {
             },
         };
     }
-
-    /**
-     * Saves css hits from content-script.
-     * Message includes stats field. [{filterId: 1, ruleText: 'rule1'}, {filterId: 2, ruleText: 'rule2'}...]
-     * @param tab
-     * @param stats
-     */
-    function processSaveCssHitStats(tab, stats) {
-        if (!webRequestService.isCollectingCosmeticRulesHits(tab)) {
-            return;
-        }
-        const frameUrl = frames.getMainFrameUrl(tab);
-        for (let i = 0; i < stats.length; i += 1) {
-            const stat = stats[i];
-            const rule = new TSUrlFilter.CosmeticRule(stat.ruleText, stat.filterId);
-            webRequestService.recordRuleHit(tab, rule, frameUrl);
-            filteringLog.addCosmeticEvent({
-                tab,
-                element: stat.element,
-                frameUrl: tab.url,
-                requestType: RequestTypes.DOCUMENT,
-                requestRule: rule,
-                timestamp: Date.now(),
-            });
-        }
-    }
-
     const processGetOptionsData = () => {
         return {
             settings: settings.getAllSettings(),
@@ -254,7 +225,7 @@ const createMessageHandler = () => {
                 settings.setProperty(message.key, message.value);
                 break;
             case MESSAGE_TYPES.CHECK_REQUEST_FILTER_READY:
-                return { ready: filteringApi.isReady() };
+                return { ready: antiBannerService.isReady() };
             case MESSAGE_TYPES.ADD_AND_ENABLE_FILTER: {
                 const { filterId } = data;
                 return application.addAndEnableFilters([filterId], { forceRemote: true });
@@ -334,6 +305,7 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.LOAD_CUSTOM_FILTER_INFO:
                 try {
                     const { url, title } = data;
+                    // eslint-disable-next-line @typescript-eslint/return-await
                     return await application.loadCustomFilterInfo(url, { title });
                 } catch (e) {
                     return {};
@@ -386,70 +358,6 @@ const createMessageHandler = () => {
                 break;
             case MESSAGE_TYPES.RESET_SETTINGS:
                 return settingsProvider.applyDefaultSettings();
-            case MESSAGE_TYPES.GET_SELECTORS_AND_SCRIPTS: {
-                let urlForSelectors;
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1498
-                // when document url for iframe is about:blank then we use tab url
-                if (!utils.url.isHttpOrWsRequest(message.documentUrl) && sender.frameId !== 0) {
-                    urlForSelectors = sender.tab.url;
-                } else {
-                    urlForSelectors = message.documentUrl;
-                }
-                return webRequestService.processGetSelectorsAndScripts(sender.tab, urlForSelectors) || {};
-            }
-            case MESSAGE_TYPES.GET_COOKIE_RULES: {
-                if (!utils.url.isHttpOrWsRequest(message.documentUrl) && sender.frameId !== 0) {
-                    return {};
-                }
-
-                return {
-                    rulesData: getCookieRulesDataForContentScript(sender.tab, message.documentUrl, sender.tab.url),
-                };
-            }
-            case MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT: {
-                filteringLog.addCookieEvent({
-                    tabId: sender.tab.tabId,
-                    cookieName: data.cookieName,
-                    cookieDomain: data.cookieDomain,
-                    cookieRule: new TSUrlFilter.NetworkRule(data.ruleText, data.filterId),
-                    isModifyingCookieRule: false,
-                    thirdParty: data.thirdParty,
-                    timestamp: Date.now(),
-                });
-                break;
-            }
-            case MESSAGE_TYPES.CHECK_PAGE_SCRIPT_WRAPPER_REQUEST: {
-                const block = webRequestService.checkPageScriptWrapperRequest(
-                    sender.tab,
-                    message.elementUrl,
-                    message.documentUrl,
-                    message.requestType,
-                );
-                return {
-                    block,
-                    requestId: message.requestId,
-                };
-            }
-            case MESSAGE_TYPES.PROCESS_SHOULD_COLLAPSE: {
-                const collapse = webRequestService.processShouldCollapse(
-                    sender.tab,
-                    message.elementUrl,
-                    message.documentUrl,
-                    message.requestType,
-                );
-                return {
-                    collapse,
-                    requestId: message.requestId,
-                };
-            }
-            case MESSAGE_TYPES.PROCESS_SHOULD_COLLAPSE_MANY: {
-                const requests = webRequestService.processShouldCollapseMany(
-                    sender.tab,
-                    message.documentUrl,
-                    message.requests,
-                );
-                return { requests };
-            }
             case MESSAGE_TYPES.ON_OPEN_FILTERING_LOG_PAGE:
                 filteringLog.onOpenFilteringLogPage();
                 break;
@@ -570,9 +478,6 @@ const createMessageHandler = () => {
                 return {
                     stats: pageStats.getStatisticsData(),
                 };
-            case MESSAGE_TYPES.SAVE_CSS_HITS_STATS:
-                processSaveCssHitStats(sender.tab, message.stats);
-                break;
             case MESSAGE_TYPES.LOAD_SETTINGS_JSON: {
                 const appVersion = backgroundPage.app.getVersion();
                 const json = await settingsProvider.loadSettingsBackup();
@@ -630,8 +535,7 @@ const createMessageHandler = () => {
                 return TSUrlFilter.RuleConverter.convertRules(content);
             }
             default:
-                // Unhandled message
-                throw new Error(`There is no such message type ${message.type}`);
+                return tsWebExtensionMessageHandler(message, sender);
         }
         return Promise.resolve();
     };
