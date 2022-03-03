@@ -41,6 +41,8 @@ export const backgroundPage = (() => {
                         senderOverride.frameId = sender.frameId;
                     }
 
+                    senderOverride.original = sender;
+
                     return callback(message, senderOverride);
                 });
             },

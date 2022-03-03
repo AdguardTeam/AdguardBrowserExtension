@@ -1,11 +1,16 @@
-import { TsWebExtension, Configuration } from '@adguard/tswebextension';
+import {
+    TsWebExtension,
+    ManifestV2AppInterface,
+    Configuration,
+} from '@adguard/tswebextension';
 import merge from 'deepmerge';
 
 export class TsWebExtensionWrapper {
-  config: Configuration = {
+  static defaultConfig: Configuration = {
       filters: [],
       allowlist: [],
       userrules: [],
+      // TODO: update this options from ui
       verbose: false,
       settings: {
           collectStats: true,
@@ -24,12 +29,19 @@ export class TsWebExtensionWrapper {
       },
   };
 
-  constructor(
-      public tsWebExtension = new TsWebExtension('web-accessible-resources'),
-  ) { }
+  public config = TsWebExtensionWrapper.defaultConfig;
+
+  public tsWebExtension: ManifestV2AppInterface;
+
+  constructor() {
+      this.tsWebExtension = new TsWebExtension('web-accessible-resources');
+  }
 
   async start(config: Partial<Configuration>): Promise<void> {
-      const nextConfig = TsWebExtensionWrapper.mergeConfig(this.config, config);
+      const nextConfig = TsWebExtensionWrapper.mergeConfig(
+          TsWebExtensionWrapper.defaultConfig,
+          config,
+      );
 
       await this.tsWebExtension.start(nextConfig);
 

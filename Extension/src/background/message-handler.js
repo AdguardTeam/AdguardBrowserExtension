@@ -16,6 +16,7 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { MESSAGE_HANDLER_NAME } from '@adguard/tswebextension';
 
 import { settingsProvider } from './settings/settings-provider';
 import { backgroundPage } from './extension-api/background-page';
@@ -199,6 +200,10 @@ const createMessageHandler = () => {
      */
     const handleMessage = async (message, sender) => {
         const { data, type } = message;
+
+        if (message.handlerName === MESSAGE_HANDLER_NAME) {
+            return tsWebExtensionMessageHandler(message, sender.original);
+        }
 
         switch (type) {
             case MESSAGE_TYPES.GET_OPTIONS_DATA: {
@@ -535,7 +540,7 @@ const createMessageHandler = () => {
                 return TSUrlFilter.RuleConverter.convertRules(content);
             }
             default:
-                return tsWebExtensionMessageHandler(message, sender);
+                throw new Error(`There is no such message type ${message.type}`);
         }
         return Promise.resolve();
     };
