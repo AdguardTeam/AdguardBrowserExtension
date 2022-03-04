@@ -230,12 +230,25 @@ const createMessageHandler = () => {
             MESSAGE_TYPES.SUBSCRIBE_TO_CUSTOM_FILTER,
             MESSAGE_TYPES.SAVE_USER_RULES,
             MESSAGE_TYPES.APPLY_SETTINGS_JSON,
+            MESSAGE_TYPES.FILTERING_LOG_ADD_USER_RULE,
+            MESSAGE_TYPES.DEVTOOLS_ADD_USER_RULE,
         ];
 
-        // dangerous messages are allowed only from own pages (popup, options)
-        if (OPTIONS_PAGE_DANGEROUS_MESSAGES.includes(message?.type)
-            && !backgroundPage.app.isOwnRequest(sender?.tab?.url)) {
-            return false;
+        // Dangerous messages are allowed only from own pages (popup, options, filtering log, devtools)
+        if (OPTIONS_PAGE_DANGEROUS_MESSAGES.includes(message?.type)) {
+            // Allow empty sender. Empty sender can be in the messages from devtools and popup
+            // There is always sender for messages sent by content script
+            const isSenderEmpty = !sender || (sender && Object.keys(sender).length === 0);
+            if (isSenderEmpty) {
+                return true;
+            }
+
+            const url = sender.tab?.url;
+
+            const isOwnUrl = url && backgroundPage.app.isOwnRequest(url);
+            const isDevtoolsUrl = url && url.startsWith('devtools://');
+
+            return isOwnUrl || isDevtoolsUrl;
         }
 
         return true;
@@ -344,7 +357,17 @@ const createMessageHandler = () => {
                     });
                 });
             }
-            case MESSAGE_TYPES.ADD_USER_RULE: {
+            case MESSAGE_TYPES.FILTERING_LOG_ADD_USER_RULE: {
+                const { ruleText } = data;
+                userrules.addRules([ruleText]);
+                break;
+            }
+            case MESSAGE_TYPES.DEVTOOLS_ADD_USER_RULE: {
+                const { ruleText } = data;
+                userrules.addRules([ruleText]);
+                break;
+            }
+            case MESSAGE_TYPES.CONTENT_SCRIPT_ADD_USER_RULE: {
                 const { ruleText, token } = data;
                 const expectedToken = uiService.getAssistantToken();
                 // check for token to avoid possible vulnerabilities AG-12883

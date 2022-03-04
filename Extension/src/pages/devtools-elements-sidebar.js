@@ -1,4 +1,7 @@
 /* eslint-disable no-nested-ternary */
+
+import { MESSAGE_TYPES } from '../common/constants';
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -292,7 +295,21 @@ export const devtoolsElementsSidebar = (() => {
         browser.devtools.inspectedWindow.eval(func, { useContentScriptContext: true });
     };
 
-    const addRuleForElement = function () {
+    /**
+     * Adds userrule via background page
+     * We add rule via background page to mitigate vulnerabilities
+     * related with messages from content script
+     * @param {string} ruleText
+     * @returns {Promise<void>}
+     */
+    const addRule = async (ruleText) => {
+        browser.runtime.sendMessage({
+            type: MESSAGE_TYPES.DEVTOOLS_ADD_USER_RULE,
+            data: { ruleText },
+        });
+    };
+
+    const addRuleForElement = async () => {
         if (window.adguardDevToolsPreview) {
             // Remove preview
             cancelPreview();
@@ -303,16 +320,11 @@ export const devtoolsElementsSidebar = (() => {
             return;
         }
 
-        const func = `DevToolsHelper.addRule(${JSON.stringify({ ruleText })});`;
-        browser.devtools.inspectedWindow.eval(func, {
-            useContentScriptContext: true,
-        }, () => {
-            applyPreview(ruleText);
+        await addRule(ruleText);
 
-            delete window.selectedElementInfo;
-
-            initElements();
-        });
+        applyPreview(ruleText);
+        delete window.selectedElementInfo;
+        initElements();
     };
 
     const init = () => {

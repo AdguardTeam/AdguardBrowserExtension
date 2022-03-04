@@ -270,8 +270,8 @@ class Messenger {
         await this.sendMessage(MESSAGE_TYPES.OPEN_TAB, { url, options });
     }
 
-    async addUserRule(ruleText) {
-        await this.sendMessage(MESSAGE_TYPES.ADD_USER_RULE, { ruleText });
+    async filteringLogAddUserRule(ruleText) {
+        await this.sendMessage(MESSAGE_TYPES.FILTERING_LOG_ADD_USER_RULE, { ruleText });
     }
 
     async unAllowlistFrame(frameInfo) {

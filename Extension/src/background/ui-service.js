@@ -921,7 +921,7 @@ export const uiService = (function () {
 
     const initAssistant = async (selectElement) => {
         const options = {
-            addRuleCallbackName: MESSAGE_TYPES.ADD_USER_RULE,
+            addRuleCallbackName: MESSAGE_TYPES.CONTENT_SCRIPT_ADD_USER_RULE,
             selectElement,
             token: getAssistantToken(),
         };
