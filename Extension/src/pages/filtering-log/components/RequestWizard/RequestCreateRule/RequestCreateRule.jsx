@@ -122,7 +122,7 @@ const RequestCreateRule = observer(() => {
     };
 
     const handleAddRuleClick = async () => {
-        await messenger.addUserRule(wizardStore.rule);
+        await messenger.filteringLogAddUserRule(wizardStore.rule);
         const addedRuleState = wizardStore.requestModalState === WIZARD_STATES.BLOCK_REQUEST
             ? ADDED_RULE_STATES.BLOCK
             : ADDED_RULE_STATES.UNBLOCK;
