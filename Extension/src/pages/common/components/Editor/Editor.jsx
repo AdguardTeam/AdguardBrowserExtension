@@ -17,6 +17,8 @@ const DEFAULT_EDITOR_SIZE = {
     height: '300px',
 };
 
+const EDITOR_PADDING = 26;
+
 const Editor = ({
     name,
     value,
@@ -58,7 +60,9 @@ const Editor = ({
     const onResize = fullscreen
         ? () => { }
         : (width, height) => {
-            localStorage.setItem(SIZE_STORAGE_KEY, JSON.stringify({ width, height }));
+            localStorage.setItem(SIZE_STORAGE_KEY, JSON.stringify({
+                width: width + EDITOR_PADDING, height,
+            }));
             editorRef.current.editor.resize();
         };
 
