@@ -162,10 +162,12 @@ label.checkbox-label {
             }
 
             &:hover {
-                background-color: var(--gray100);
+                @media (min-width: 1024px) {
+                    background-color: var(--gray100);
 
-                @media (prefers-color-scheme: dark) {
-                    background-color: var(--gray900);
+                    @media (prefers-color-scheme: dark) {
+                        background-color: var(--gray900);
+                    }
                 }
             }
         }
