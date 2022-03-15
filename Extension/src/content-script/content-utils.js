@@ -51,14 +51,9 @@ export const contentUtils = (function () {
         iframe.style.zIndex = MAX_Z_INDEX;
 
         const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
-        if (navigator.userAgent.indexOf('Edge') > -1) {
-            // Edge doesn't allow to write html in iframe srcdoc
-            iframedoc.open();
-            iframedoc.write(prependedHtml);
-            iframedoc.close();
-        } else {
-            iframe.srcdoc = prependedHtml;
-        }
+        iframedoc.open();
+        iframedoc.write(prependedHtml);
+        iframedoc.close();
 
         return iframe;
     };
