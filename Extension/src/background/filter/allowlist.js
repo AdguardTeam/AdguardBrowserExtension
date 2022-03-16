@@ -136,10 +136,19 @@ export const allowlist = (() => {
         if (!domain) {
             return;
         }
+
+        /**
+         * Match domains from collection if they equal exactly do domain
+         * and if they equal to domain after removing www
+         */
+        const predicate = (domainFromCollection) => {
+            return domainFromCollection === domain || utils.url.getCroppedDomainName(domainFromCollection) === domain;
+        };
+
         if (isDefaultAllowlistMode()) {
-            utils.collections.removeAll(allowlistDomainsHolder.domains, domain);
+            utils.collections.removeBy(allowlistDomainsHolder.domains, predicate);
         } else {
-            utils.collections.removeAll(blocklistDomainsHolder.domains, domain);
+            utils.collections.removeBy(blocklistDomainsHolder.domains, predicate);
         }
     }
 

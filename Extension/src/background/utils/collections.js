@@ -25,6 +25,22 @@ export const collections = (() => {
             }
         },
 
+        /**
+         * Removes elements from collection if predicate returns true
+         * @param collection
+         * @param predicate
+         */
+        removeBy(collection, predicate) {
+            if (!predicate || !collection) {
+                return;
+            }
+            for (let i = collection.length - 1; i >= 0; i -= 1) {
+                if (predicate(collection[i])) {
+                    collection.splice(i, 1);
+                }
+            }
+        },
+
         removeRule(collection, rule) {
             if (!rule || !collection) {
                 return;
