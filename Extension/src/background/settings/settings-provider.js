@@ -229,7 +229,10 @@ export const settingsProvider = (function () {
         }
 
         // set "block webrtc" setting as soon as possible. AG-9980
-        settings.setWebRTCDisabled(!!set['stealth-block-webrtc']);
+        // don't set the actual value to avoid requesting permissions
+        if (settings.isWebRTCDisabled() !== !!set['stealth-block-webrtc']) {
+            settings.setWebRTCDisabled(!!set['stealth-block-webrtc']);
+        }
 
         settings.setDisableStealthMode(!!set['stealth_disable_stealth_mode']);
         settings.setHideReferrer(!!set['stealth-hide-referrer']);
