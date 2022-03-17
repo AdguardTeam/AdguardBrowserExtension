@@ -49,11 +49,7 @@ export const contentUtils = (function () {
         target.insertAdjacentElement('afterbegin', iframe);
         iframe.src = 'about:blank';
         iframe.style.zIndex = MAX_Z_INDEX;
-
-        const iframedoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframedoc.open();
-        iframedoc.write(prependedHtml);
-        iframedoc.close();
+        iframe.srcdoc = prependedHtml;
 
         return iframe;
     };
