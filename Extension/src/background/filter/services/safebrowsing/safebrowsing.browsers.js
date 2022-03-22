@@ -61,6 +61,14 @@ const safebrowsing = (function () {
      */
     const DOMAIN_HASH_LENGTH = 4;
 
+    function isMalwareList(listName) {
+        return utils.strings.contains(listName, 'malware');
+    }
+
+    function isPhishingList(listName) {
+        return utils.strings.contains(listName, 'phishing');
+    }
+
     /**
      * Parses safebrowsing service response
      *
@@ -106,7 +114,11 @@ const safebrowsing = (function () {
      * @private
      */
     function createResponse(sbList) {
-        return (sbList === SB_ALLOW_LIST) ? null : sbList;
+        if (isMalwareList(sbList) || isPhishingList(sbList)) {
+            return sbList;
+        }
+
+        return null;
     }
 
     /**
@@ -209,9 +221,8 @@ const safebrowsing = (function () {
      */
     const getErrorPageURL = function (requestUrl, referrerUrl, sbList) {
         const listName = sbList || 'malware';
-        const isMalware = utils.strings.contains(listName, 'malware');
         let url = 'pages/safebrowsing.html';
-        url += `?malware=${isMalware}`;
+        url += `?malware=${isMalwareList(listName)}`;
         url += `&host=${encodeURIComponent(utils.url.getHost(requestUrl))}`;
         url += `&url=${encodeURIComponent(requestUrl)}`;
         url += `&ref=${encodeURIComponent(referrerUrl)}`;
