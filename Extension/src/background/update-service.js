@@ -26,6 +26,7 @@ import { application } from './application';
 import { settings } from './settings/user-settings';
 import { safebrowsing } from './filter/services/safebrowsing';
 import { utils } from './utils/common';
+import { settingsProvider } from './settings/settings-provider';
 
 /**
  * Service that manages extension version information and handles
@@ -39,10 +40,16 @@ export const applicationUpdateService = (function () {
      * @private
      */
     async function executeMethods(methods) {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const method of methods) {
-            // eslint-disable-next-line no-await-in-loop
-            await method();
+        try {
+            // eslint-disable-next-line no-restricted-syntax
+            for (const method of methods) {
+                // eslint-disable-next-line no-await-in-loop
+                await method();
+            }
+        } catch (e) {
+            // if catch error while updating, reset settings and reload extension
+            await settingsProvider.applyDefaultSettings();
+            backgroundPage.runtime.reload();
         }
     }
 
