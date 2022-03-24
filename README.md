@@ -105,8 +105,9 @@ Here is a [dedicated page](https://adguard.com/contribute.html) for those who ar
 <a id="dev-requirements"></a>
 ### Requirements
 
-- [nodejs](https://nodejs.org/en/download/)
-- [yarn](https://yarnpkg.com/en/docs/install/)
+- [node.js LTS](https://nodejs.org/en/download/)
+- NPM v8
+- [yarn v1.22](https://yarnpkg.com/en/docs/install/)
 
 Install local dependencies by running:
 ```
