@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { Filter } from '../Filter';
@@ -61,19 +60,6 @@ const SearchGroup = ({
             </div>
         </>
     );
-};
-
-SearchGroup.defaultProps = {
-    filtersToShow: [],
-};
-
-SearchGroup.propTypes = {
-    groupName: PropTypes.string.isRequired,
-    groupId: PropTypes.number.isRequired,
-    checkboxHandler: PropTypes.func.isRequired,
-    checkboxValue: PropTypes.bool.isRequired,
-    filtersToShow: PropTypes.arrayOf(PropTypes.object),
-    groupClickHandler: PropTypes.func.isRequired,
 };
 
 export { SearchGroup };

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
@@ -103,19 +102,6 @@ const Group = ({
             </div>
         </>
     );
-};
-
-Group.defaultProps = {
-    enabledFilters: [],
-};
-
-Group.propTypes = {
-    groupName: PropTypes.string.isRequired,
-    groupId: PropTypes.number.isRequired,
-    checkboxHandler: PropTypes.func.isRequired,
-    checkboxValue: PropTypes.bool.isRequired,
-    enabledFilters: PropTypes.arrayOf(PropTypes.object),
-    groupClickHandler: PropTypes.func.isRequired,
 };
 
 export { Group };
