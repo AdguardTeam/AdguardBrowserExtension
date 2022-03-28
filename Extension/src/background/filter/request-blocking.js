@@ -117,7 +117,7 @@ export const webRequestService = (function () {
         });
 
         if (force || !prefs.features.canUseInsertCSSAndExecuteScript) {
-            // Retrieve ExtendedCss selectors only if canUseInsertCSSAndExecuteScript in unavailable
+            // Retrieve ExtendedCss selectors only if canUseInsertCSSAndExecuteScript is unavailable
             result.selectors = filteringApi.getSelectorsForUrl(
                 documentUrl, cosmeticOptions, true, !prefs.features.canUseInsertCSSAndExecuteScript,
             );
@@ -129,6 +129,7 @@ export const webRequestService = (function () {
         } else {
             // In preload content script only ExtendedCss selectors are necessary.
             // Traditional css selectors would be injected via tabs.injectCss.
+            // Except when browser starts with open tabs
             result.selectors = filteringApi.getSelectorsForUrl(
                 documentUrl, cosmeticOptions, false, true,
             );
@@ -185,6 +186,7 @@ export const webRequestService = (function () {
         }
 
         const requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+
         return isRequestBlockedByRule(requestRule);
     };
 

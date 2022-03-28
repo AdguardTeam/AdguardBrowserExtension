@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import { useSelect } from './SelectProvider';
 import { Icon } from '../Icon';
@@ -77,11 +76,4 @@ export const Select = ({
             </div>
         </div>
     );
-};
-
-Select.propTypes = {
-    id: PropTypes.string.isRequired,
-    handler: PropTypes.func.isRequired,
-    options: PropTypes.arrayOf(PropTypes.object).isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };

@@ -221,6 +221,7 @@ export const preload = (function () {
         }
 
         const elementUrl = getElementUrl(element);
+
         if (!elementUrl) {
             return;
         }
@@ -242,6 +243,7 @@ export const preload = (function () {
         };
 
         const response = await contentPage.sendMessage(message);
+
         onProcessShouldCollapseResponse(response);
     };
 

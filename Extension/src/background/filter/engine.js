@@ -29,8 +29,20 @@ export const engine = (function () {
 
     let engine;
 
+    /**
+     * Do not allow match requests until engine didn't load all rules
+     * Otherwise engine can cache empty results for match requests
+     * @return {*}
+     */
+    const isReady = () => {
+        return Boolean(engine);
+    };
+
     const startEngine = async (lists) => {
         log.info('Starting url filter engine');
+        // reset engine instance to avoid cached null values,
+        // which may occur if try to get match result before all rules are loaded
+        engine = null;
 
         const ruleStorage = new TSUrlFilter.RuleStorage(lists);
 
@@ -43,7 +55,7 @@ export const engine = (function () {
 
         TSUrlFilter.setConfiguration(config);
 
-        engine = new TSUrlFilter.Engine(ruleStorage, true);
+        const engineInstance = new TSUrlFilter.Engine(ruleStorage, true);
 
         /*
          * UI thread becomes blocked on the options page while request filter is created
@@ -51,11 +63,10 @@ export const engine = (function () {
          * Request filter creation is rather slow operation so we should
          * use setTimeout calls to give UI thread some time.
         */
-        await engine.loadRulesAsync(ASYNC_LOAD_CHUNK_SIZE);
+        await engineInstance.loadRulesAsync(ASYNC_LOAD_CHUNK_SIZE);
 
+        engine = engineInstance;
         log.info('Starting url filter engine..ok');
-
-        return engine;
     };
 
     /**
@@ -89,13 +100,7 @@ export const engine = (function () {
             requestType,
         );
 
-        const request = new TSUrlFilter.Request(
-            requestUrl,
-            frameUrl,
-            RequestTypes.transformRequestType(requestType),
-        );
-
-        if (!engine) {
+        if (!isReady()) {
             log.warn('Filtering engine is not ready');
             return null;
         }
@@ -103,6 +108,12 @@ export const engine = (function () {
         if (!frameRule) {
             frameRule = null;
         }
+
+        const request = new TSUrlFilter.Request(
+            requestUrl,
+            frameUrl,
+            RequestTypes.transformRequestType(requestType),
+        );
 
         const result = engine.matchRequest(request, frameRule);
 
@@ -124,7 +135,7 @@ export const engine = (function () {
      * @returns matching result or null
      */
     const matchFrame = (frameUrl) => {
-        if (!engine) {
+        if (!isReady()) {
             log.warn('Filtering engine is not ready');
             return null;
         }
@@ -140,7 +151,7 @@ export const engine = (function () {
      * @returns CosmeticResult result
      */
     const getCosmeticResult = (url, option) => {
-        if (!engine) {
+        if (!isReady()) {
             return new TSUrlFilter.CosmeticResult();
         }
 
@@ -154,12 +165,13 @@ export const engine = (function () {
      * @return Engine rules count
      */
     const getRulesCount = () => {
-        return engine ? engine.getRulesCount() : 0;
+        return isReady() ? engine.getRulesCount() : 0;
     };
 
     return {
         startEngine,
         getRulesCount,
+        isReady,
 
         matchRequest,
         matchFrame,

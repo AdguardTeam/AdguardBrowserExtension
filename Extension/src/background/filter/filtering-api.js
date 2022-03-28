@@ -16,6 +16,7 @@
  */
 
 import { antiBannerService } from './antibanner';
+import { engine } from './engine';
 
 /**
  * Api for filtering and elements hiding.
@@ -31,7 +32,7 @@ export const filteringApi = (function () {
      * @returns boolean true when request filter was initialized first time
      */
     const isReady = function () {
-        return antiBannerService.getRequestFilterInitTime() > 0;
+        return engine.isReady();
     };
 
     /**
