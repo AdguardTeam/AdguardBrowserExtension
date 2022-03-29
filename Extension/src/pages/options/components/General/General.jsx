@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -72,8 +72,6 @@ const General = observer(() => {
         return null;
     }
 
-    const inputEl = useRef(null);
-
     const handleExportSettings = () => {
         exportData(ExportTypes.SETTINGS);
     };
@@ -99,11 +97,6 @@ const General = observer(() => {
 
         // eslint-disable-next-line no-param-reassign
         event.target.value = '';
-    };
-
-    const handleImportSettings = (e) => {
-        e.preventDefault();
-        inputEl.current.click();
     };
 
     const allowAcceptableAdsChangeHandler = async ({ data }) => {
@@ -210,17 +203,15 @@ const General = observer(() => {
                     type="file"
                     id="inputEl"
                     accept="application/json"
-                    ref={inputEl}
                     onChange={inputChangeHandler}
                     style={{ display: 'none' }}
                 />
-                <button
-                    type="button"
+                <label
+                    htmlFor="inputEl"
                     className="button button--m button--transparent actions__btn"
-                    onClick={handleImportSettings}
                 >
                     {reactTranslator.getMessage('options_import_settings')}
-                </button>
+                </label>
             </div>
         </>
     );
