@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { nanoid } from 'nanoid';
 import { browser } from '../extension-api/browser';
 import { redirectService } from '../filter/services/redirect-service';
 import { redirectsTokensCache } from './redirects-tokens-cache';
@@ -34,11 +35,9 @@ export const resources = (function () {
      * Foil ability of web pages to identify extension through its web accessible resources.
      *
      * Inspired by:
-     * https://github.com/gorhill/uBlock/blob/7f999b759fe540e457e297363f55b25d9860dd3e/platform/chromium/vapi-background
+     * https://github.com/gorhill/uBlock/blob/7f999b7/platform/chromium/vapi-background.js
      */
     const warSecret = (() => {
-        const generateSecret = () => Math.floor(Math.random() * 982451653 + 982451653).toString(36);
-
         const root = browser.runtime.getURL('/');
         const secrets = [];
         let lastSecretTime = 0;
@@ -70,7 +69,7 @@ export const resources = (function () {
                 }
             }
             lastSecretTime = Date.now();
-            const secret = generateSecret();
+            const secret = nanoid();
             secrets.push(secret);
             return `?secret=${secret}`;
         };
