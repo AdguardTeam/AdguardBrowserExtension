@@ -35,7 +35,7 @@ export const resources = (function () {
      * Foil ability of web pages to identify extension through its web accessible resources.
      *
      * Inspired by:
-     * https://github.com/gorhill/uBlock/blob/7f999b759fe540e457e297363f55b25d9860dd3e/platform/chromium/vapi-background.js
+     * https://github.com/gorhill/uBlock/blob/7f999b7/platform/chromium/vapi-background.js
      */
     const warSecret = (() => {
         const root = browser.runtime.getURL('/');
