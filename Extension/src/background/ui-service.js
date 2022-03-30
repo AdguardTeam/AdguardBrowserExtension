@@ -395,7 +395,13 @@ export const uiService = (function () {
 
     const isAdguardTab = (tab) => {
         const { url } = tab;
-        const parsedUrl = new URL(url);
+        let parsedUrl;
+        try {
+            parsedUrl = new URL(url);
+        } catch (e) {
+            log.error(e);
+            return false;
+        }
         const schemeUrl = backgroundPage.app.getUrlScheme();
         return parsedUrl.protocol.indexOf(schemeUrl) > -1;
     };

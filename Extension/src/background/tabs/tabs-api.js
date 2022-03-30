@@ -118,18 +118,41 @@ const tabsApi = ((tabsImpl) => {
         return tabsImpl.sendMessage(tabId, message, options);
     };
 
+    /**
+     * Sometimes chrome does not return url and title on tab update events,
+     * but returns tabs with urls when tabs are requested by tabs api
+     * That is why during getting tabs we sync their urls with actual values
+     */
+    const syncTabs = (targetTabs, actualTab) => {
+        const { tabId } = actualTab;
+        const tab = targetTabs[tabId];
+
+        if (!tab) {
+            targetTabs[tabId] = actualTab;
+            return actualTab;
+        }
+
+        if (!tab.url && actualTab.url) {
+            tab.url = actualTab.url;
+        }
+
+        if (!tab.title && actualTab.title) {
+            tab.title = actualTab.title;
+        }
+
+        // update tab state in the target tabs array
+        targetTabs[tabId] = tab;
+
+        return tab;
+    };
+
     // Gets all opened tabs
     const getAll = async () => {
         const aTabs = await tabsImpl.getAll();
         const result = [];
         for (let i = 0; i < aTabs.length; i += 1) {
             const aTab = aTabs[i];
-            let tab = tabs[aTab.tabId];
-            if (!tab) {
-                // Synchronize state
-                tabs[aTab.tabId] = aTab;
-                tab = aTab;
-            }
+            const tab = syncTabs(tabs, aTab);
             result.push(tab);
         }
         return result;
@@ -165,6 +188,12 @@ const tabsApi = ((tabsImpl) => {
         let tab = tabs[tabId];
 
         if (tab) {
+            if (!tab.url || !tab.title) {
+                const aTab = await tabsImpl.get(tabId);
+                if (aTab) {
+                    syncTabs(tabs, aTab);
+                }
+            }
             return tab;
         }
 
