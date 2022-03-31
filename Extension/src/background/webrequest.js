@@ -136,12 +136,14 @@ const webrequestInit = function () {
         }
 
         // Record request for other types
-        requestContextStorage.record({
+        const context = requestContextStorage.record({
             requestId,
             requestUrl,
             referrerUrl,
             originUrl,
+            // TODO: use single requestType field
             requestType,
+            engineRequestType: RequestTypes.transformRequestType(requestType),
             tab,
             method,
         });
@@ -210,24 +212,25 @@ const webrequestInit = function () {
         }
 
         // Content filtering will be undefined for chromium based builds
-        if (contentFiltering) {
+        // Do not launch content filtering for blocked requests
+        if (!response?.cancel && contentFiltering) {
             const replaceRules = webRequestService.getReplaceRules(tab, requestUrl, referrerUrl, requestType) || [];
             const htmlRules = webRequestService.getContentRules(tab, referrerUrl) || [];
 
             if (replaceRules.length > 0 || htmlRules.length > 0) {
-                const request = new TSUrlFilter.Request(
-                    requestUrl, referrerUrl, RequestTypes.transformRequestType(requestType),
-                );
-                request.requestId = requestId;
-                request.tabId = tab.tabId;
-                request.method = method;
+                const supportedStreamFilterRequestTypes = [
+                    RequestTypes.DOCUMENT,
+                    RequestTypes.SUBDOCUMENT,
+                    RequestTypes.STYLESHEET,
+                    RequestTypes.SCRIPT,
+                    RequestTypes.XMLHTTPREQUEST,
+                    RequestTypes.OTHER,
+                ];
 
-                // Bypass images
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1906
-                if (requestType !== RequestTypes.IMAGE) {
+                if (supportedStreamFilterRequestTypes.includes(requestType)) {
                     contentFiltering.onBeforeRequest(
                         backgroundPage.webRequest.filterResponseData(requestId),
-                        request,
+                        context,
                         replaceRules || [],
                         htmlRules || [],
                     );
