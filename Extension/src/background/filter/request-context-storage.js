@@ -45,6 +45,7 @@ export const requestContextStorage = (function () {
      * @property {string} requestUrl - Request url
      * @property {string} referrerUrl - Request referrer url
      * @property {string} requestType - Request type
+     * @property {number} engineRequestType - TsUrlFilter Request type
      * @property {{tabId: Number}} tab - Request tab
      * @property {Array} requestHeaders - Original request headers
      * @property {Array} modifiedRequestHeaders - Modified request headers
@@ -123,7 +124,7 @@ export const requestContextStorage = (function () {
      * @param {string} requestId Request identifier
      */
     const get = (requestId) => {
-        return contexts.get(requestId);
+        return contexts.get(String(requestId));
     };
 
     /**
@@ -134,6 +135,7 @@ export const requestContextStorage = (function () {
      * @param {string} params.referrerUrl Request referrer url
      * @param {string} params.originUrl Request origin url (initiator)
      * @param {string} params.requestType Request type
+     * @param {string} params.engineRequestType TsUrlFilter Request type
      * @param {Object} params.tab Request tab
      * @param {string} params.method Request HTTP method
      */
@@ -143,13 +145,14 @@ export const requestContextStorage = (function () {
         referrerUrl,
         originUrl,
         requestType,
+        engineRequestType,
         tab,
         method,
     }) => {
         const eventId = getNextEventId();
 
         // Clears filtering log. If contexts map already contains this requests that means that we caught redirect
-        if (requestType === RequestTypes.DOCUMENT && !contexts.has(requestId)) {
+        if (requestType === RequestTypes.DOCUMENT && !contexts.has(String(requestId))) {
             filteringLog.clearEventsByTabId(tab.tabId);
         }
 
@@ -161,6 +164,7 @@ export const requestContextStorage = (function () {
             referrerUrl,
             originUrl,
             requestType,
+            engineRequestType,
             tab,
             eventId,
             requestState: States.PROCESSING,
@@ -168,7 +172,7 @@ export const requestContextStorage = (function () {
             timestamp,
             method,
         };
-        contexts.set(requestId, context);
+        contexts.set(String(requestId), context);
 
         filteringLog.addHttpRequestEvent({
             tab,
@@ -179,6 +183,8 @@ export const requestContextStorage = (function () {
             eventId,
             method,
         });
+
+        return context;
     };
 
     /**
@@ -215,7 +221,7 @@ export const requestContextStorage = (function () {
      * @param {RequestContext} update
      */
     const update = (requestId, update) => {
-        const context = contexts.get(requestId);
+        const context = contexts.get(String(requestId));
         if (!context) {
             return;
         }
@@ -279,7 +285,7 @@ export const requestContextStorage = (function () {
      * @param {object} elementHtml Serialized HTML element
      */
     const bindContentRule = (requestId, rule, elementHtml) => {
-        const context = contexts.get(requestId);
+        const context = contexts.get(String(requestId));
         if (!context) {
             return;
         }
@@ -310,7 +316,7 @@ export const requestContextStorage = (function () {
      * @param {string} requestId Request identifier
      */
     const remove = (requestId) => {
-        const context = contexts.get(requestId);
+        const context = contexts.get(String(requestId));
         if (!context) {
             return;
         }
@@ -399,7 +405,7 @@ export const requestContextStorage = (function () {
         // All processes finished
         if (context.requestState === States.NONE
             && context.contentModifyingState === States.NONE) {
-            contexts.delete(requestId);
+            contexts.delete(String(requestId));
         }
     };
 
