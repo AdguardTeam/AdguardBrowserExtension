@@ -100,7 +100,7 @@ const AddCustomModal = ({
     const renderInputStep = () => (
         <ModalContentWrapper
             closeModalHandler={closeModal}
-            title="New filter subscription"
+            title={reactTranslator.getMessage('options_popup_url_title')}
         >
             <form className="modal__content" onSubmit={handleSendUrlToCheck}>
                 <input
