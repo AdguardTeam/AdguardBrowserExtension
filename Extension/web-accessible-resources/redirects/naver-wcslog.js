@@ -1,80 +1,10 @@
 (function(source, args){
-function ATInternetSmartTag(source) {
-    var setNoopFuncWrapper = {
-      set: noopFunc
+function NaverWcslog(source) {
+    window.wcs_add = {};
+    window.wcs_do = noopFunc;
+    window.wcs = {
+      inflow: noopFunc
     };
-    var sendNoopFuncWrapper = {
-      send: noopFunc
-    };
-    var ecommerceWrapper = {
-      displayCart: {
-        products: setNoopFuncWrapper,
-        cart: setNoopFuncWrapper
-      },
-      updateCart: {
-        cart: setNoopFuncWrapper
-      },
-      displayProduct: {
-        products: setNoopFuncWrapper
-      },
-      displayPageProduct: {
-        products: setNoopFuncWrapper
-      },
-      addProduct: {
-        products: setNoopFuncWrapper
-      },
-      removeProduct: {
-        products: setNoopFuncWrapper
-      }
-    }; // eslint-disable-next-line new-cap, func-names
-
-    var tag = function tag() {};
-
-    tag.prototype = {
-      setConfig: noopFunc,
-      setParam: noopFunc,
-      dispatch: noopFunc,
-      customVars: setNoopFuncWrapper,
-      publisher: setNoopFuncWrapper,
-      order: setNoopFuncWrapper,
-      click: sendNoopFuncWrapper,
-      clickListener: sendNoopFuncWrapper,
-      internalSearch: {
-        set: noopFunc,
-        send: noopFunc
-      },
-      ecommerce: ecommerceWrapper,
-      identifiedVisitor: {
-        unset: noopFunc
-      },
-      page: {
-        set: noopFunc,
-        send: noopFunc
-      },
-      selfPromotion: {
-        add: noopFunc,
-        send: noopFunc
-      },
-      privacy: {
-        setVisitorMode: noopFunc,
-        getVisitorMode: noopFunc,
-        hit: noopFunc
-      },
-      richMedia: {
-        add: noopFunc,
-        send: noopFunc,
-        remove: noopFunc,
-        removeAll: noopFunc
-      }
-    };
-    var smartTagWrapper = {
-      Tracker: {
-        Tag: function Tag() {
-          return new tag(); // eslint-disable-line new-cap
-        }
-      }
-    };
-    window.ATInternet = smartTagWrapper;
     hit(source);
   }
 function hit(source, message) {
@@ -136,9 +66,9 @@ function hit(source, message) {
 function noopFunc() {};
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            ATInternetSmartTag.apply(this, updatedArgs);
+            NaverWcslog.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"ati-smarttag","args":[]}, []);
+})({"name":"naver-wcslog","args":[]}, []);

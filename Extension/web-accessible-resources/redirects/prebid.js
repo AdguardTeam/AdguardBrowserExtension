@@ -1,80 +1,48 @@
 (function(source, args){
-function ATInternetSmartTag(source) {
-    var setNoopFuncWrapper = {
-      set: noopFunc
-    };
-    var sendNoopFuncWrapper = {
-      send: noopFunc
-    };
-    var ecommerceWrapper = {
-      displayCart: {
-        products: setNoopFuncWrapper,
-        cart: setNoopFuncWrapper
-      },
-      updateCart: {
-        cart: setNoopFuncWrapper
-      },
-      displayProduct: {
-        products: setNoopFuncWrapper
-      },
-      displayPageProduct: {
-        products: setNoopFuncWrapper
-      },
-      addProduct: {
-        products: setNoopFuncWrapper
-      },
-      removeProduct: {
-        products: setNoopFuncWrapper
-      }
-    }; // eslint-disable-next-line new-cap, func-names
-
-    var tag = function tag() {};
-
-    tag.prototype = {
-      setConfig: noopFunc,
-      setParam: noopFunc,
-      dispatch: noopFunc,
-      customVars: setNoopFuncWrapper,
-      publisher: setNoopFuncWrapper,
-      order: setNoopFuncWrapper,
-      click: sendNoopFuncWrapper,
-      clickListener: sendNoopFuncWrapper,
-      internalSearch: {
-        set: noopFunc,
-        send: noopFunc
-      },
-      ecommerce: ecommerceWrapper,
-      identifiedVisitor: {
-        unset: noopFunc
-      },
-      page: {
-        set: noopFunc,
-        send: noopFunc
-      },
-      selfPromotion: {
-        add: noopFunc,
-        send: noopFunc
-      },
-      privacy: {
-        setVisitorMode: noopFunc,
-        getVisitorMode: noopFunc,
-        hit: noopFunc
-      },
-      richMedia: {
-        add: noopFunc,
-        send: noopFunc,
-        remove: noopFunc,
-        removeAll: noopFunc
-      }
-    };
-    var smartTagWrapper = {
-      Tracker: {
-        Tag: function Tag() {
-          return new tag(); // eslint-disable-line new-cap
+function Prebid(source) {
+    var pushFunction = function pushFunction(arg) {
+      if (typeof arg === 'function') {
+        try {
+          arg.call();
+        } catch (ex) {
+          /* empty */
         }
       }
     };
-    window.ATInternet = smartTagWrapper;
+
+    var pbjsWrapper = {
+      addAdUnits: function addAdUnits() {},
+      adServers: {
+        dfp: {
+          // https://docs.prebid.org/dev-docs/publisher-api-reference/adServers.dfp.buildVideoUrl.html
+          // returns ad URL
+          buildVideoUrl: noopStr
+        }
+      },
+      adUnits: [],
+      aliasBidder: function aliasBidder() {},
+      cmd: [],
+      enableAnalytics: function enableAnalytics() {},
+      getHighestCpmBids: noopArray,
+      libLoaded: true,
+      que: [],
+      requestBids: function requestBids(arg) {
+        if (arg instanceof Object && arg.bidsBackHandler) {
+          try {
+            arg.bidsBackHandler.call(); // https://docs.prebid.org/dev-docs/publisher-api-reference/requestBids.html
+          } catch (ex) {
+            /* empty */
+          }
+        }
+      },
+      removeAdUnit: function removeAdUnit() {},
+      setBidderConfig: function setBidderConfig() {},
+      setConfig: function setConfig() {},
+      setTargetingForGPTAsync: function setTargetingForGPTAsync() {}
+    };
+    pbjsWrapper.cmd.push = pushFunction;
+    pbjsWrapper.que.push = pushFunction;
+    window.pbjs = pbjsWrapper;
     hit(source);
   }
 function hit(source, message) {
@@ -133,12 +101,18 @@ function hit(source, message) {
       window.__debug(source);
     }
   }
-function noopFunc() {};
+function noopFunc() {}
+function noopStr() {
+    return '';
+  }
+function noopArray() {
+    return [];
+  };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            ATInternetSmartTag.apply(this, updatedArgs);
+            Prebid.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"ati-smarttag","args":[]}, []);
+})({"name":"prebid","args":[]}, []);

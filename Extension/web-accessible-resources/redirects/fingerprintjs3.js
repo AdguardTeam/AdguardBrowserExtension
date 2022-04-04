@@ -1,80 +1,31 @@
 (function(source, args){
-function ATInternetSmartTag(source) {
-    var setNoopFuncWrapper = {
-      set: noopFunc
-    };
-    var sendNoopFuncWrapper = {
-      send: noopFunc
-    };
-    var ecommerceWrapper = {
-      displayCart: {
-        products: setNoopFuncWrapper,
-        cart: setNoopFuncWrapper
-      },
-      updateCart: {
-        cart: setNoopFuncWrapper
-      },
-      displayProduct: {
-        products: setNoopFuncWrapper
-      },
-      displayPageProduct: {
-        products: setNoopFuncWrapper
-      },
-      addProduct: {
-        products: setNoopFuncWrapper
-      },
-      removeProduct: {
-        products: setNoopFuncWrapper
-      }
-    }; // eslint-disable-next-line new-cap, func-names
+function Fingerprintjs3(source) {
+    var visitorId = function () {
+      var id = '';
 
-    var tag = function tag() {};
+      for (var i = 0; i < 8; i += 1) {
+        id += (Math.random() * 0x10000 + 0x1000).toString(16).slice(-4);
+      }
 
-    tag.prototype = {
-      setConfig: noopFunc,
-      setParam: noopFunc,
-      dispatch: noopFunc,
-      customVars: setNoopFuncWrapper,
-      publisher: setNoopFuncWrapper,
-      order: setNoopFuncWrapper,
-      click: sendNoopFuncWrapper,
-      clickListener: sendNoopFuncWrapper,
-      internalSearch: {
-        set: noopFunc,
-        send: noopFunc
+      return id;
+    }();
+
+    var FingerprintJS = function FingerprintJS() {};
+
+    FingerprintJS.prototype = {
+      load: function load() {
+        // eslint-disable-next-line compat/compat
+        return Promise.resolve(new FingerprintJS());
       },
-      ecommerce: ecommerceWrapper,
-      identifiedVisitor: {
-        unset: noopFunc
+      get: function get() {
+        // eslint-disable-next-line compat/compat
+        return Promise.resolve({
+          visitorId: visitorId
+        });
       },
-      page: {
-        set: noopFunc,
-        send: noopFunc
-      },
-      selfPromotion: {
-        add: noopFunc,
-        send: noopFunc
-      },
-      privacy: {
-        setVisitorMode: noopFunc,
-        getVisitorMode: noopFunc,
-        hit: noopFunc
-      },
-      richMedia: {
-        add: noopFunc,
-        send: noopFunc,
-        remove: noopFunc,
-        removeAll: noopFunc
-      }
+      hashComponents: noopStr
     };
-    var smartTagWrapper = {
-      Tracker: {
-        Tag: function Tag() {
-          return new tag(); // eslint-disable-line new-cap
-        }
-      }
-    };
-    window.ATInternet = smartTagWrapper;
+    window.FingerprintJS = new FingerprintJS();
     hit(source);
   }
 function hit(source, message) {
@@ -133,12 +84,14 @@ function hit(source, message) {
       window.__debug(source);
     }
   }
-function noopFunc() {};
+function noopStr() {
+    return '';
+  };
         const updatedArgs = args ? [].concat(source).concat(args) : [source];
         try {
-            ATInternetSmartTag.apply(this, updatedArgs);
+            Fingerprintjs3.apply(this, updatedArgs);
         } catch (e) {
             console.log(e);
         }
     
-})({"name":"ati-smarttag","args":[]}, []);
+})({"name":"fingerprintjs3","args":[]}, []);
