@@ -84,6 +84,11 @@ function GoogleAnalytics(source) {
 
           for (var key in data) {
             handleCallback(data[key], 'event_callback');
+          } // eslint-disable-next-line no-prototype-builtins
+
+
+          if (!data.hasOwnProperty('eventCallback') && !data.hasOwnProperty('eventCallback')) {
+            [].push.call(window.dataLayer, data);
           }
         }
 

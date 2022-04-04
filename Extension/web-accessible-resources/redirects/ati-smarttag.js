@@ -39,7 +39,10 @@ function ATInternetSmartTag(source) {
       order: setNoopFuncWrapper,
       click: sendNoopFuncWrapper,
       clickListener: sendNoopFuncWrapper,
-      internalSearch: sendNoopFuncWrapper,
+      internalSearch: {
+        set: noopFunc,
+        send: noopFunc
+      },
       ecommerce: ecommerceWrapper,
       identifiedVisitor: {
         unset: noopFunc

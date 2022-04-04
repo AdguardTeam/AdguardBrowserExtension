@@ -52,6 +52,7 @@ function GoogleTagServicesGpt(source) {
     Slot.prototype.setTargeting = noopThis;
     var pubAdsService = {
       addEventListener: noopThis,
+      removeEventListener: noopThis,
       clear: noopFunc,
       clearCategoryExclusions: noopThis,
       clearTagForChildDirectedTreatment: noopThis,

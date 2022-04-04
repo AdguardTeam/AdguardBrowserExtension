@@ -80,7 +80,9 @@ function metrikaYandexTag(source) {
      * https://yandex.ru/support/metrica/objects/user-params.html
      */
 
-    var userParams = noopFunc;
+    var userParams = noopFunc; // https://github.com/AdguardTeam/Scriptlets/issues/198
+
+    var destruct = noopFunc;
     var api = {
       addFileExtension: addFileExtension,
       extLink: extLink,
@@ -91,7 +93,8 @@ function metrikaYandexTag(source) {
       params: params,
       reachGoal: reachGoal,
       setUserID: setUserID,
-      userParams: userParams
+      userParams: userParams,
+      destruct: destruct
     };
 
     function ym(id, funcName) {
@@ -107,17 +110,19 @@ function metrikaYandexTag(source) {
     function init(id) {
       // yaCounter object should provide api
       window["yaCounter".concat(id)] = api;
+      document.dispatchEvent(new Event("yacounter".concat(id, "inited")));
     }
 
     if (typeof window.ym === 'undefined') {
       window.ym = ym;
     } else if (window.ym && window.ym.a) {
       // Get id for yaCounter object
-      window.ym.a.forEach(function (params) {
+      var counters = window.ym.a;
+      window.ym = ym;
+      counters.forEach(function (params) {
         var id = params[0];
         init(id);
       });
-      window.ym = ym;
     }
 
     hit(source);
