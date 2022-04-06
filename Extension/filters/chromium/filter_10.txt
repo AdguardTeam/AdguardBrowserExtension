@@ -1,8 +1,8 @@
-! Checksum: LN68/eKyctizYSH/hhGhXg
+! Checksum: 0ZtC47tpZ1MxK/toTWw+tg
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.61
-! TimeUpdated: 2022-02-22T09:01:55+00:00
+! Version: 2.0.1.63
+! TimeUpdated: 2022-03-30T11:30:14+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -239,6 +239,8 @@ amazon.*#@#div[cel_widget_id^="tetris-"]
 amazon.*#@#.csm-widget-type-sponsored-products-mobile-list-card
 amazon.*#@?##WrapperDivToHideBTF > div[cel_widget_id]:has(> div[data-a-remove-bottom-gutter] > div[data-a-card-type] > div[cel_widget_id="mobile-dp-sims_SponsoredProductsSimsDpThematicMobile"])
 amazon.*#@#div[class*="btf_ad-placements-"]
+amazon.*#@#div[data-csm-widget-type="sponsored-products-mobile-grid-card"]
+amazon.*#@#div[data-cel-widget^="MAIN-SHOPPING_ADVISER-"]
 !
 ! Mediafire premium upgrade
 mediafire.com#@##upsellBox
