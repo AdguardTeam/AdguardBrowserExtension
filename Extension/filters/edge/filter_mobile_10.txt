@@ -1,8 +1,8 @@
-! Checksum: u4ttp8sgJHLLQt3hTC71Rw
+! Checksum: 2BBrkVVPgrWBo8qdJTpWBw
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.61
-! TimeUpdated: 2022-02-22T09:01:55+00:00
+! Version: 2.0.1.63
+! TimeUpdated: 2022-03-30T11:30:14+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -118,6 +118,8 @@ amazon.*#@#div[cel_widget_id^="tetris-"]
 amazon.*#@#.csm-widget-type-sponsored-products-mobile-list-card
 amazon.*#@?##WrapperDivToHideBTF > div[cel_widget_id]:has(> div[data-a-remove-bottom-gutter] > div[data-a-card-type] > div[cel_widget_id="mobile-dp-sims_SponsoredProductsSimsDpThematicMobile"])
 amazon.*#@#div[class*="btf_ad-placements-"]
+amazon.*#@#div[data-csm-widget-type="sponsored-products-mobile-grid-card"]
+amazon.*#@#div[data-cel-widget^="MAIN-SHOPPING_ADVISER-"]
 mediafire.com#@##upsellBox
 @@||startpage.com/adsense/search/async-ads.js$domain=startpage.com
 @@||startpage.com^$elemhide,content

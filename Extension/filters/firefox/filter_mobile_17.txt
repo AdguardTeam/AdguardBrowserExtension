@@ -1,9 +1,10 @@
-! Checksum: KFHFyNRqUjXyQo08MYq64w
+! Checksum: AqoLYrZWdg8Sbfsv6CpyQg
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.2.8
-! TimeUpdated: 2022-02-25T14:30:46+00:00
+! Version: 2.0.2.34
+! TimeUpdated: 2022-04-05T11:30:50+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=adfrom
 $removeparam=nx_source
 $removeparam=_zucks_suid
 $removeparam=cmpid
@@ -91,6 +92,58 @@ $removeparam=oly_anon_id
 $removeparam=oly_enc_id
 $removeparam=ebisAdID
 $removeparam=irgwc
+$removeparam=fbclid
+||api.cxense.com/public/widget/data?json=$script,removeparam=usi
+||api.cxense.com/public/widget/data?json=$script,removeparam=widgetId
+||lp.sophos.com^$removeparam=elqTrackId
+||player.theplatform.com^$removeparam=playeranalytics
+||player.theplatform.com^$removeparam=targetedlink
+||gearbest.com^$removeparam=lkid
+||gearbest.com^$removeparam=cid
+||zalando.$removeparam=wmc
+||zalando.$removeparam=/^cd\d+/
+||zalando.$removeparam=wt_cd
+||zalando.$removeparam=tm_hem
+||iguru.gr^$removeparam=_unique_id
+||iguru.gr^$removeparam=feed_id
+||quora.com/qemail/tc?$removeparam=al_imp
+||quora.com/qemail/tc?$removeparam=uid
+||humblebundle.com^$removeparam=hmb_medium
+||humblebundle.com^$removeparam=hmb_campaign
+||humblebundle.com^$removeparam=hmb_source
+||humblebundle.com^$removeparam=mcID
+||humblebundle.com^$removeparam=linkID
+||netkeiba.com^$removeparam=rf
+||services.addons.mozilla.org^$removeparam=telemetry-client-id
+||versioncheck.addons.mozilla.org^$xmlhttprequest,removeparam=appID
+||download.mozilla.org^$removeparam=attribution_sig
+||download.mozilla.org^$removeparam=attribution_code
+||nextgov.com^$removeparam=oref
+||defenseone.com^$removeparam=oref
+||ozon.ru^$removeparam=asb2
+||wizcase.com/?$removeparam=pageview_id
+||wizcase.com/?$removeparam=clickout_id
+||wizcase.com/?$removeparam=vid
+||microsoft.msafflnk.net^$removeparam=sharedid
+||microsoft.msafflnk.net^$removeparam=/^subid/
+||ojrq.net/p/$removeparam=cid
+||click.linksynergy.com/fs-bin/click?id=$removeparam=u1
+||click.linksynergy.com/fs-bin/click?id=$removeparam=u2
+||open.spotify.com^$removeparam=si
+||go.mysku.ru^$removeparam=~r
+||apple.com^$removeparam=ct
+||apple.com^$removeparam=pt
+$removeparam=ActionID,domain=otto.de|ottoversand.at
+$removeparam=AffiliateID,domain=otto.de|ottoversand.at
+$removeparam=campid,domain=otto.de|ottoversand.at
+||search.naver.com/p/crd/rd$removeparam=i
+||search.naver.com/p/crd/rd$removeparam=px
+||search.naver.com/p/crd/rd$removeparam=py
+||search.naver.com/p/crd/rd$removeparam=sx
+||search.naver.com/p/crd/rd$removeparam=sy
+||search.naver.com/p/crd/rd$removeparam=p
+||search.naver.com/p/crd/rd$removeparam=s
+||search.naver.com/p/crd/rd$removeparam=time
 ||buzzfeednews.com^$removeparam=ref
 ||goodreads.com^$removeparam=ref
 ||journal.tinkoff.ru$removeparam=mindbox-click-id
@@ -315,17 +368,19 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
 ||amazon.*$removeparam=ref
-||amazon.*$removeparam=tag
+||amazon.*$removeparam=ascsubtag
+||amazon.*$removeparam=c
+||amazon.*$removeparam=camp
 ||amazon.*$removeparam=creative
 ||amazon.*$removeparam=creativeASIN
-||amazon.*$removeparam=camp
-||amazon.*$removeparam=ascsubtag
-||amazon.*$removeparam=vt
-||amazon.*$removeparam=refRID
+||amazon.*$removeparam=dchild
+||amazon.*$removeparam=field-lbr_brands_browse-bin
+||amazon.*$removeparam=initialIssue
+||amazon.*$removeparam=ingress
 ||amazon.*$removeparam=pd_rd_i
 ||amazon.*$removeparam=pd_rd_r
-||amazon.*$removeparam=pd_rd_wg
 ||amazon.*$removeparam=pd_rd_w
+||amazon.*$removeparam=pd_rd_wg
 ||amazon.*$removeparam=pf_rd_i
 ||amazon.*$removeparam=pf_rd_m
 ||amazon.*$removeparam=pf_rd_p
@@ -333,22 +388,21 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||amazon.*$removeparam=pf_rd_s
 ||amazon.*$removeparam=pf_rd_t
 ||amazon.*$removeparam=pf_rd_w
-||amazon.*$removeparam=initialIssue
-||amazon.*$removeparam=smid
 ||amazon.*$removeparam=plattr
-||amazon.*$removeparam=field-lbr_brands_browse-bin
-||amazon.*$removeparam=ingress
-||amazon.*$removeparam=visitId
-||amazon.*$removeparam=rdc
 ||amazon.*$removeparam=qid
-||amazon.*$removeparam=dchild
-||amazon.*$removeparam=c
+||amazon.*$removeparam=rdc
+||amazon.*$removeparam=refRID
+||amazon.*$removeparam=smid
+||amazon.*$removeparam=tag
 ||amazon.*$removeparam=ts_id
+||amazon.*$removeparam=visitId
+||amazon.*$removeparam=vtr
 ||amazon.*/aa$removeparam=bitCampaignCode
+||amazon.*/dp/$removeparam=tag
 ||amazon.*/hz/contact-us/csp$removeparam=/entries/
 ||amazon.*/hz/contact-us/csp$removeparam=/Version/
-||amazon.*/hz/contact-us/csp$removeparam=source
 ||amazon.*/hz/contact-us/csp$removeparam=from
+||amazon.*/hz/contact-us/csp$removeparam=source
 ||amazon.*/message-us$removeparam=muClientName
 ||app.mi.com/download/*?id=$removeparam=ref
 ||app.mi.com/download/*?id=$removeparam=nonce
@@ -422,9 +476,6 @@ $removeparam=dclid
 ||www.galaxus.de^$removeparam=pcscpId
 ||marketing.net.idealo-partner.com^$removeparam=amc
 ||www.lidl.de^$removeparam=msktc
-||www.otto.de^$removeparam=ActionID
-||www.otto.de^$removeparam=AffiliateID
-||www.otto.de^$removeparam=campid
 ||www.pricezilla.de^$removeparam=bid
 ||boomstore.de*.html$removeparam=campaign
 ||www.alternate.de^$removeparam=campaign
@@ -475,8 +526,6 @@ $removeparam=dclid
 @@||sendgb.com/*/?utm_source=$removeparam=utm_source
 @@||img*.nga$removeparam=cmpid
 @@||mywot.com/*/confirmNewEmail/$removeparam
-!+ PLATFORM(ext_ff)
-@@/ws$removeparam,domain=speedtest.net
 @@||plex.tv/api/v*/users/*?utm_source=$removeparam=utm_source,domain=watch.plex.tv
 @@/embed/comments^$removeparam,~third-party,domain=avclub.com|clickhole.com|deadspin.com|gizmodo.com|jalopnik.com|jezebel.com|kotaku.com|lifehacker.com|splinternews.com|theinventory.com|theonion.com|theroot.com|thetakeout.com|sportskeeda.com
 @@||urldefense.com^$removeparam
