@@ -39,9 +39,7 @@ export const genCommonConfig = (browserConfig) => {
             minimize: false,
             runtimeChunk: 'single',
         },
-        cache: {
-            type: 'filesystem',
-        },
+        cache: false,
         devtool: isDev ? 'eval-source-map' : false,
         entry: {
             'pages/background': {
@@ -129,6 +127,7 @@ export const genCommonConfig = (browserConfig) => {
         },
         resolve: {
             extensions: ['*', '.js', '.jsx'],
+            symlinks: false,
             // Node modules polyfills
             fallback: {
                 url: require.resolve('url'),
