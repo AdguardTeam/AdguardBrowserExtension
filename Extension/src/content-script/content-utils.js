@@ -127,7 +127,10 @@ export const contentUtils = (function () {
      */
     function showAlertPopup(message) {
         const {
-            text, title, isAdguardTab, alertStyles,
+            text,
+            title,
+            isAdguardTab,
+            alertStyles,
         } = message;
 
         if (!title && !text) {
@@ -180,12 +183,13 @@ export const contentUtils = (function () {
      * Shows version updated popup.
      * Popup content is added right to the page content.
      *
-     * @param {{title,description, changelogHref, changelogText, offer, offerButtonHref, offerButtonText}} message
+     * @param {{title,description, changelogHref, changelogText, offer, offerDesc, offerButtonHref, offerButtonText}} message
      */
     function showVersionUpdatedPopup(message) {
         const {
             title,
             offer,
+            offerDesc,
             description,
             isAdguardTab,
             changelogHref,
@@ -198,7 +202,7 @@ export const contentUtils = (function () {
         } = message;
 
         const updateIframeHtml = `
-                            <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active">
+                            <div id="adguard-new-version-popup" class="adguard-update-popup adguard-update-popup--active${showPromoNotification ? ' adguard-update-popup--promo' : ''}">
                                 <div id="adguard-new-version-popup-close" class="adguard-update-popup__close close-iframe"></div>
                                 <div class="adguard-update-popup__logo"></div>
                                 <div class="adguard-update-popup__title">
@@ -216,15 +220,20 @@ export const contentUtils = (function () {
                                     </a>
                                 </div>
                                 <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
-                                    <div class="adguard-update-popup__offer-desc-wr">
-                                        <div class="adguard-update-popup__offer-desc">
-                                            ${offer}
+                                    <div class="adguard-update-popup__offer-inner">
+                                        <div class="adguard-update-popup__offer-desc-wr">
+                                            <div class="adguard-update-popup__offer-desc">
+                                                <div>
+                                                    ${offer}
+                                                </div>
+                                                ${offerDesc && `<div>${offerDesc}</div>`}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="adguard-update-popup__offer-bottom">
-                                        <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
-                                            ${offerButtonText}
-                                        </a>
+                                        <div class="adguard-update-popup__offer-bottom">
+                                            <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
+                                                ${offerButtonText}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>`;

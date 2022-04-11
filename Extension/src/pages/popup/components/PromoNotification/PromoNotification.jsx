@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { MESSAGE_TYPES } from '../../../../common/constants';
-import { Icon } from '../../../common/components/ui/Icon';
 
 import './promo-notification.pcss';
 
@@ -52,22 +51,40 @@ export const PromoNotification = observer(() => {
 
     return (
         <div className={notificationClassnames}>
-            <bitton className="promo-notification__close" onClick={handleNotificationClose}>
-                <Icon id="#cross" classname="icon--cross" />
-            </bitton>
             <div className="promo-notification__content">
-                {text.title
-                        && <div className="promo-notification__title">{text.title}</div>}
-                {text.btn
-                    && (
-                        <button
-                            type="button"
-                            className="promo-notification__btn"
-                            onClick={handleNotificationClick}
-                        >
-                            {text.btn}
-                        </button>
-                    )}
+                <div className="promo-notification__inner">
+                    <button
+                        aria-label="close"
+                        type="button"
+                        className="promo-notification__close"
+                        onClick={handleNotificationClose}
+                    />
+                    {text.title
+                        && (
+                            <div className="promo-notification__title">
+                                <div className="promo-notification__title-in">
+                                    {text.title}
+                                </div>
+                                {text.desc && (
+                                    <div className="promo-notification__title-in">
+                                        {text.desc}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    {text.btn
+                        && (
+                            <div className="holiday-notify__bottom">
+                                <button
+                                    type="button"
+                                    className="promo-notification__btn"
+                                    onClick={handleNotificationClick}
+                                >
+                                    {text.btn}
+                                </button>
+                            </div>
+                        )}
+                </div>
             </div>
         </div>
     );
