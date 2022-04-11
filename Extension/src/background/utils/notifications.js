@@ -30,52 +30,112 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const newYearNotification = {
-        id: 'newYear2020',
+    const easterNotification = {
+        id: 'easter2022',
         locales: {
             en: {
-                title: 'AdGuard wishes you happy holidays',
-                btn: 'Get your present',
-            },
-            de: {
-                title: 'AdGuard wünscht Ihnen frohe Festtage!',
-                btn: 'HOLEN SIE SICH IHR GESCHENK',
-            },
-            ko: {
-                title: 'AdGuard는 행복한 크리스마스가 되길 바랍니다',
-                btn: '선물 받기',
+                title: 'Easter Sale:',
+                desc: '40% off',
+                btn: 'Grab the deal',
             },
             ru: {
-                title: 'AdGuard поздравляет вас с праздниками',
-                btn: 'Получить подарок!',
+                title: 'Весенняя акция:',
+                desc: '−40%',
+                btn: 'Получить скидку',
             },
-            ja: {
-                title: 'AdGuardからのクリスマスプレゼント',
-                btn: 'プレゼントをGET',
+            es: {
+                title: 'Oferta de Pascua:',
+                desc: '40% off',
+                btn: 'Aprovechar',
+            },
+            ko: {
+                title: '부활절 세일:',
+                desc: '40% 할인',
+                btn: '할인 받기',
+            },
+            de: {
+                title: 'Oster-Sale:',
+                desc: '40% Rabatt',
+                btn: 'Rabatt nutzen',
             },
             fr: {
-                title: 'AdGuard vous souhaite de joyeuses fêtes !',
-                btn: 'VOIR CADEAU',
+                title: 'Promo Pâques :',
+                desc: 'remise 40%',
+                btn: 'Voir offre',
             },
             it: {
-                title: 'AdGuard vi augura buone feste!',
-                btn: 'VEDERE IL REGALO',
+                title: 'Promo di Pasqua:',
+                desc: '40% di sconto',
+                btn: 'Sconto qui',
+            },
+            zh_cn: {
+                title: '春季大优惠，',
+                desc: '享6折！',
+                btn: '把握好机会',
+            },
+            zh_tw: {
+                title: '春季優惠，',
+                desc: '享6折！',
+                btn: '把握機會',
+            },
+            uk: {
+                title: 'Весняні знижки:',
+                desc: '−40%',
+                btn: 'Отримати угоду',
+            },
+            be: {
+                title: 'Вясновыя зніжкі:',
+                desc: '−40%',
+                btn: 'Атрымаць здзелку',
+            },
+            ar: {
+                title: 'تخفيضات الربيع:',
+                desc: ' 40٪ خصم',
+                btn: 'احصل على الصفقة',
+            },
+            id: {
+                title: 'Penjualan musim semi',
+                btn: 'Dapatkan diskon 40%',
+            },
+            tr: {
+                title: 'Bahar satışı',
+                btn: '%40 indirim',
+            },
+            vi: {
+                title: 'Giảm giá mùa',
+                desc: 'xuân',
+                btn: 'Giảm giá 40%',
+            },
+            pl: {
+                title: 'Wyprzedaż',
+                desc: 'wielkanocna',
+                btn: '40% taniej',
+            },
+            pt_pt: {
+                title: 'Promoção da',
+                desc: 'Páscoa',
+                btn: 'Conseguir 40% off',
+            },
+            pt_br: {
+                title: 'Promoção da',
+                desc: 'Páscoa',
+                btn: 'Conseguir 40% off',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=ny2020_notify&from=popup&app=browser_extension',
-        from: '24 December 2019 00:00:00',
-        to: '1 January 2020 00:00:00',
+        url: 'https://adguard.com/forward.html?action=easter2022&app=browser_extension',
+        from: '14 April 2022 12:00:00',
+        to: '20 April 2022 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(newYearNotification, 'icons', () => ({
+            return lazyGet(easterNotification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('icons/green-19-ny.png'),
-                    '38': backgroundPage.getURL('icons/green-38-ny.png'),
+                    '19': backgroundPage.getURL('assets/icons/easter-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/easter-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('icons/gray-19-ny.png'),
-                    '38': backgroundPage.getURL('icons/gray-38-ny.png'),
+                    '19': backgroundPage.getURL('assets/icons/easter-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/easter-off-38.png'),
                 },
             }));
         },
@@ -97,7 +157,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        newYear2020: newYearNotification,
+        easter2022: easterNotification,
     };
 
     /**

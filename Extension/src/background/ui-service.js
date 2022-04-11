@@ -451,11 +451,13 @@ export const uiService = (function () {
         }
 
         let offer = translator.getMessage('options_popup_version_update_offer');
+        let offerDesc = '';
         let offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
         let offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
 
         if (promoNotification) {
             offer = promoNotification.text.title;
+            offerDesc = promoNotification.text.desc;
             offerButtonText = promoNotification.text.btn;
             offerButtonHref = `${promoNotification.url}&from=version_popup`;
         }
@@ -468,6 +470,7 @@ export const uiService = (function () {
             changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
             showPromoNotification: !!promoNotification,
             offer,
+            offerDesc,
             offerButtonText,
             offerButtonHref,
             disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),

@@ -307,7 +307,8 @@ class PopupStore {
 
     @action
     openPromoNotificationUrl = async () => {
-        const { url } = this.promoNotification;
+        let { url } = this.promoNotification;
+        url = `${url}&from=popup`;
         runInAction(() => {
             this.promoNotification = null;
         });

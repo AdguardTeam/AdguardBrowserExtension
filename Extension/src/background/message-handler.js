@@ -582,22 +582,15 @@ const createMessageHandler = () => {
                 break;
             }
             case MESSAGE_TYPES.OPEN_SITE_REPORT_TAB: {
-                if (data) {
-                    const { url } = data;
-                    uiService.openSiteReportTab(url);
-                } else {
-                    uiService.openSiteReportTab(message.url);
-                }
+                const { url } = data;
+                uiService.openSiteReportTab(url);
                 break;
             }
-            case MESSAGE_TYPES.OPEN_ABUSE_TAB:
-                if (data) {
-                    const { url } = data;
-                    uiService.openAbuseTab(url);
-                } else {
-                    uiService.openAbuseTab(message.url);
-                }
+            case MESSAGE_TYPES.OPEN_ABUSE_TAB: {
+                const { url } = data;
+                uiService.openAbuseTab(url);
                 break;
+            }
             case MESSAGE_TYPES.OPEN_SETTINGS_TAB:
                 uiService.openSettingsTab();
                 break;
@@ -632,7 +625,7 @@ const createMessageHandler = () => {
                 break;
             }
             case MESSAGE_TYPES.SET_NOTIFICATION_VIEWED:
-                notifications.setNotificationViewed(message.withDelay);
+                notifications.setNotificationViewed(data.withDelay);
                 break;
             case MESSAGE_TYPES.GET_STATISTICS_DATA:
                 // There can't be data till localstorage is initialized
