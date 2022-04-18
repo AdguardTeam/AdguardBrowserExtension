@@ -143,6 +143,10 @@ class Messenger {
         return this.sendMessage(MESSAGE_TYPES.RESET_BLOCKED_ADS_COUNT);
     }
 
+    async setFilteringLogWindowState(windowState) {
+        return this.sendMessage(MESSAGE_TYPES.SET_FILTERING_LOG_WINDOW_STATE, { windowState });
+    }
+
     async resetSettings() {
         return this.sendMessage(MESSAGE_TYPES.RESET_SETTINGS);
     }

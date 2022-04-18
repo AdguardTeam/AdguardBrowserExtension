@@ -29,6 +29,7 @@ import { uiService } from './ui-service';
 import { browserUtils } from './utils/browser-utils';
 import { frames } from './tabs/frames';
 import { safebrowsing } from './filter/services/safebrowsing';
+import { filteringLogWindowState } from './utils/filtering-log-window-state';
 import { utils } from './utils/common';
 import { RequestTypes } from './utils/request-types';
 import { application } from './application';
@@ -421,6 +422,9 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.OPEN_FILTERING_LOG:
                 uiService.openFilteringLog(message.tabId);
                 break;
+            case MESSAGE_TYPES.SET_FILTERING_LOG_WINDOW_STATE:
+                filteringLogWindowState.setState(data.windowState);
+                break;
             case MESSAGE_TYPES.OPEN_FULLSCREEN_USER_RULES:
                 uiService.openFullscreenUserRules();
                 break;
@@ -508,7 +512,6 @@ const createMessageHandler = () => {
                     message.documentUrl,
                     message.requestType,
                 );
-
                 return {
                     collapse,
                     requestId: message.requestId,
@@ -614,7 +617,7 @@ const createMessageHandler = () => {
                             showInfoAboutFullVersion: settings.isShowInfoAboutAdguardFullVersion(),
                             isMacOs: browserUtils.isMacOs(),
                             isEdgeBrowser: browserUtils.isEdgeBrowser()
-                                    || browserUtils.isEdgeChromiumBrowser(),
+                                || browserUtils.isEdgeChromiumBrowser(),
                             notification: notifications.getCurrentNotification(),
                             isDisableShowAdguardPromoInfo: settings.isDisableShowAdguardPromoInfo(),
                             hasCustomRulesToReset: await userrules.hasRulesForUrl(frameInfo.url),

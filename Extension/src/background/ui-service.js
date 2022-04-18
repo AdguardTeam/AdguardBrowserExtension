@@ -29,6 +29,7 @@ import { prefs } from './prefs';
 import { pageStats } from './filter/page-stats';
 import { frames } from './tabs/frames';
 import { notifications } from './utils/notifications';
+import { filteringLogWindowState } from './utils/filtering-log-window-state';
 import { allowlist } from './filter/allowlist';
 import { userrules } from './filter/userrules';
 import { browserUtils } from './utils/browser-utils';
@@ -730,6 +731,11 @@ export const uiService = (function () {
             inNewWindow,
             type,
             hashParameters,
+            width,
+            height,
+            top,
+            left,
+            isFullscreen,
         } = options;
 
         url = appendHashParameters(url, hashParameters);
@@ -761,6 +767,11 @@ export const uiService = (function () {
             type: type || 'normal',
             active: !inBackground,
             inNewWindow,
+            width,
+            height,
+            top,
+            left,
+            isFullscreen,
         });
 
         return tab;
@@ -798,7 +809,12 @@ export const uiService = (function () {
 
     const openFilteringLog = async function (tabId) {
         const FILTERING_LOG_PAGE = 'filtering-log.html';
-        const options = { activateSameTab: true, type: 'popup' };
+        const windowState = filteringLogWindowState.getState();
+        const options = {
+            activateSameTab: true,
+            type: 'popup',
+            ...windowState,
+        };
 
         if (!tabId) {
             const tab = await tabsApi.getActive();

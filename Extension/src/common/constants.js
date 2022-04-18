@@ -55,6 +55,7 @@ export const MESSAGE_TYPES = {
     ADD_AND_ENABLE_FILTER: 'addAndEnableFilter',
     APPLY_SETTINGS_JSON: 'applySettingsJson',
     OPEN_FILTERING_LOG: 'openFilteringLog',
+    SET_FILTERING_LOG_WINDOW_STATE: 'setFilteringLogWindowState',
     OPEN_FULLSCREEN_USER_RULES: 'openFullscreenUserRules',
     RESET_BLOCKED_ADS_COUNT: 'resetBlockedAdsCount',
     RESET_SETTINGS: 'resetSettings',

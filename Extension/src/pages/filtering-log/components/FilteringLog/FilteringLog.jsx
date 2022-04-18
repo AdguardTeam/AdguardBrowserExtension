@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
+import throttle from 'lodash/throttle';
 import { Filters } from '../Filters';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../common/log';
@@ -15,6 +16,7 @@ import '../../styles/styles.pcss';
 
 const FilteringLog = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
+    const RESIZE_THROTTLE = 500;
 
     useAppearanceTheme(logStore.appearanceTheme);
 
@@ -58,7 +60,7 @@ const FilteringLog = observer(() => {
 
     // append message listeners
     useEffect(() => {
-        let removeListenerCallback = async () => {};
+        let removeListenerCallback = async () => { };
 
         (async () => {
             const events = [
@@ -111,11 +113,43 @@ const FilteringLog = observer(() => {
         };
     }, [logStore]);
 
+    useEffect(() => {
+        const windowStateHandler = () => {
+            const {
+                outerWidth,
+                outerHeight,
+                screenTop,
+                screenLeft,
+            } = window;
+
+            // eslint-disable-next-line no-restricted-globals
+            const isFullscreen = innerWidth === screen.width && innerHeight === screen.height;
+
+            messenger.setFilteringLogWindowState({
+                width: outerWidth,
+                height: outerHeight,
+                top: screenTop,
+                left: screenLeft,
+                isFullscreen,
+            });
+        };
+
+        const throttledWindowStateHandler = throttle(windowStateHandler, RESIZE_THROTTLE);
+
+        window.addEventListener('beforeunload', windowStateHandler);
+        window.addEventListener('resize', throttledWindowStateHandler);
+
+        return () => {
+            window.removeEventListener('beforeunload', windowStateHandler);
+            window.removeEventListener('resize', throttledWindowStateHandler);
+        };
+    }, [logStore]);
+
     return (
         <>
             <Icons />
             {wizardStore.isModalOpen
-            && <RequestModal />}
+                && <RequestModal />}
             <Filters />
             <FilteringEvents />
         </>
