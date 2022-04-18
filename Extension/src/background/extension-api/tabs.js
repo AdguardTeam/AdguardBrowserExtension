@@ -128,7 +128,15 @@ export const tabsImpl = (function () {
      * @param createData
      */
     const create = async function (createData) {
-        const { url, inNewWindow } = createData;
+        const {
+            url,
+            inNewWindow,
+            width,
+            height,
+            top,
+            left,
+            isFullscreen,
+        } = createData;
         const active = createData.active === true;
 
         if (createData.type === 'popup'
@@ -138,12 +146,26 @@ export const tabsImpl = (function () {
             && !prefs.mobile) {
             // https://developer.chrome.com/extensions/windows#method-create
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
-            await browser.windows.create({
+            const windowState = isFullscreen ? { state: 'fullscreen' } : {
+                width: width || 1000,
+                height: height || 650,
+                top: top || 0,
+                left: left || 0,
+            };
+
+            const { id } = await browser.windows.create({
                 url,
                 type: 'popup',
-                width: 1000,
-                height: 650,
+                ...windowState,
             });
+
+            // Firefox currently can't .create with top and left due to bug
+            // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/create
+            // https://bugzilla.mozilla.org/show_bug.cgi?id=1271047
+            if (browserUtils.isFirefoxBrowser() && typeof windowState.top === 'number') {
+                await browser.windows.update(id, windowState);
+            }
+
             return;
         }
 
