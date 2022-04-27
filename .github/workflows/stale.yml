@@ -1,0 +1,31 @@
+name: 'Close stale issues'
+on:
+  schedule:
+    # Runs every hour
+    - cron: '0 * * * *'
+  # Make possible to run manually
+  workflow_dispatch:
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v4
+        with:
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            recent activity. It will be closed if no further activity occurs. Thank you
+            for your contributions.
+          # Label to use when marking on issue as stale
+          stale-issue-label: 'Wontfix'
+          # Issues with these labels will never be considered stale
+          exempt-issue-labels: 'Bug,Enhancement,Feature Request,Feature_Request,feature request,feature_request,Localization,Resolution: Fixed,Status: Closed'
+          # If set to true, the issues with an assignee will not be marked as stale automatically.
+          exempt-all-issue-assignees: true
+          days-before-issue-stale: 60
+          days-before-issue-close: 7
+          operations-per-run: 100
+          # automatically remove the stale label when the issues are updated
+          remove-issue-stale-when-updated: true
+          # the order used to fetch the issues
+          ascending: true
