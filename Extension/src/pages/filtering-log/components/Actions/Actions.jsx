@@ -66,7 +66,7 @@ const Actions = observer(() => {
                             name="preserveLog"
                             id="preserveLog"
                             onChange={preserveLogHandler}
-                            defaultChecked={false}
+                            checked={preserveLogEnabled}
                         />
                         <Popover text={preserveLogToolpitText}>
                             <div className={preserveLogClassName}>
