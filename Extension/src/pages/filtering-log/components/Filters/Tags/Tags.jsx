@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Popover } from '../../../../common/components/ui/Popover';
-import { isMacOs } from '../../../../helpers';
+import { isMacOs } from '../../../../../common/user-agent-utils';
 
 export const Tags = ({
     tags,

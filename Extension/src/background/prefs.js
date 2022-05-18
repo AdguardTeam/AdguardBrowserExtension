@@ -17,7 +17,16 @@
 
 import { browser } from './extension-api/browser';
 import { lazyGet } from './utils/lazy';
-
+import {
+    isAndroid,
+    isFirefox,
+    isOpera,
+    isYaBrowser,
+    isEdge,
+    isEdgeChromium,
+    chromeVersion,
+    firefoxVersion,
+} from '../common/user-agent-utils';
 /**
  * Extension global preferences.
  */
@@ -25,7 +34,7 @@ export const prefs = (() => {
     const Prefs = {
 
         get mobile() {
-            return lazyGet(Prefs, 'mobile', () => navigator.userAgent.indexOf('Android') >= 0);
+            return lazyGet(Prefs, 'mobile', () => isAndroid);
         },
 
         get platform() {
@@ -35,18 +44,15 @@ export const prefs = (() => {
         get browser() {
             return lazyGet(Prefs, 'browser', () => {
                 let browser;
-                let { userAgent } = navigator;
-                userAgent = userAgent.toLowerCase();
-                if (userAgent.indexOf('yabrowser') >= 0) {
+                if (isYaBrowser) {
                     browser = 'YaBrowser';
-                } else if (userAgent.indexOf('edge') >= 0) {
+                } else if (isEdge) {
                     browser = 'Edge';
-                } else if (userAgent.indexOf('edg') >= 0) {
+                } else if (isEdgeChromium) {
                     browser = 'EdgeChromium';
-                } else if (userAgent.indexOf('opera') >= 0
-                    || userAgent.indexOf('opr') >= 0) {
+                } else if (isOpera) {
                     browser = 'Opera';
-                } else if (userAgent.indexOf('firefox') >= 0) {
+                } else if (isFirefox) {
                     browser = 'Firefox';
                 } else {
                     browser = 'Chrome';
@@ -56,17 +62,11 @@ export const prefs = (() => {
         },
 
         get chromeVersion() {
-            return lazyGet(Prefs, 'chromeVersion', () => {
-                const match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
-                return match === null ? null : Number.parseInt(match[1], 10);
-            });
+            return lazyGet(Prefs, 'chromeVersion', () => chromeVersion);
         },
 
         get firefoxVersion() {
-            return lazyGet(Prefs, 'firefoxVersion', () => {
-                const match = /\sFirefox\/(\d+)\./.exec(navigator.userAgent);
-                return match === null ? null : Number.parseInt(match[1], 10);
-            });
+            return lazyGet(Prefs, 'firefoxVersion', () => firefoxVersion);
         },
 
         /**

@@ -17,6 +17,7 @@
 
 import { contentPage } from '../content-script/content-script';
 import { MESSAGE_TYPES } from '../common/constants';
+import { isFirefox } from '../common/user-agent-utils';
 
 const PageController = (response) => {
     const {
@@ -121,7 +122,7 @@ const PageController = (response) => {
         trackingFilterEnabledCheckbox.addEventListener('change', trackingFilterEnabledChange);
         socialFilterEnabledCheckbox.addEventListener('change', socialFilterEnabledChange);
         // ignore Firefox, see task AG-2322
-        if (!navigator.userAgent.includes('Firefox')) {
+        if (!isFirefox) {
             sendStatsCheckbox.addEventListener('change', sendStatsCheckboxChange);
         }
         allowAcceptableAdsCheckbox.addEventListener('change', allowAcceptableAdsChange);
