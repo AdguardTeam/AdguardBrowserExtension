@@ -797,8 +797,7 @@ export const uiService = (function () {
         const filterIds = application.getEnabledFiltersFromEnabledGroups()
             .map(filter => filter.filterId);
 
-        openTab(`https://reports.adguard.com/new_issue.html?product_type=Ext&product_version=${
-            encodeURIComponent(backgroundPage.app.getVersion())
+        openTab(`https://reports.adguard.com/new_issue.html?product_type=Ext&product_version=${encodeURIComponent(backgroundPage.app.getVersion())
         }&browser=${encodeURIComponent(browser)
         }${browserDetails ? `&browser_detail=${encodeURIComponent(browserDetails)}` : ''
         }&url=${encodeURIComponent(url)

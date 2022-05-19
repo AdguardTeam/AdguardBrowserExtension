@@ -30,112 +30,117 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const easterNotification = {
-        id: 'easter2022',
+    const birthday13Notification = {
+        id: 'birthday13',
         locales: {
             en: {
-                title: 'Easter Sale:',
-                desc: '40% off',
-                btn: 'Grab the deal',
+                title: 'AdGuard',
+                desc: 'Anniversary Quiz',
+                btn: 'Play',
             },
             ru: {
-                title: 'Весенняя акция:',
-                desc: '−40%',
-                btn: 'Получить скидку',
+                title: 'Нам 13 лет!',
+                desc: 'Отпразднуем?',
+                btn: 'Вперёд!',
             },
             es: {
-                title: 'Oferta de Pascua:',
-                desc: '40% off',
-                btn: 'Aprovechar',
-            },
-            ko: {
-                title: '부활절 세일:',
-                desc: '40% 할인',
-                btn: '할인 받기',
+                title: 'Test de cumpleaños',
+                desc: 'de AdGuard',
+                btn: 'Ponte a prueba',
             },
             de: {
-                title: 'Oster-Sale:',
-                desc: '40% Rabatt',
-                btn: 'Rabatt nutzen',
+                title: 'AdGuard-Quiz',
+                desc: 'zum 13. Geburtstag',
+                btn: "Los geht's!",
             },
             fr: {
-                title: 'Promo Pâques :',
-                desc: 'remise 40%',
-                btn: 'Voir offre',
+                title: 'AdGuard fête ses 13',
+                desc: 'ans !',
+                btn: 'Test festif ici',
             },
             it: {
-                title: 'Promo di Pasqua:',
-                desc: '40% di sconto',
-                btn: 'Sconto qui',
+                title: 'AdGuard celebra i',
+                desc: 'suoi 13 anni!',
+                btn: 'Test festivo qui',
+            },
+            ko: {
+                title: 'AdGuard 생일 퀴즈',
+                btn: '퀴즈 시작',
             },
             zh_cn: {
-                title: '春季大优惠，',
-                desc: '享6折！',
-                btn: '把握好机会',
+                title: 'AdGuard 生日会',
+                desc: '知识竞赛',
+                btn: '我要参加！',
             },
             zh_tw: {
-                title: '春季優惠，',
-                desc: '享6折！',
-                btn: '把握機會',
+                title: 'AdGuard 生日派對',
+                desc: '知識競賽',
+                btn: '我要參加！',
+            },
+            ja: {
+                title: 'AdGuard',
+                desc: '創業13周年クイズ',
+                btn: '答えてみる',
             },
             uk: {
-                title: 'Весняні знижки:',
-                desc: '−40%',
-                btn: 'Отримати угоду',
-            },
-            be: {
-                title: 'Вясновыя зніжкі:',
-                desc: '−40%',
-                btn: 'Атрымаць здзелку',
-            },
-            ar: {
-                title: 'تخفيضات الربيع:',
-                desc: ' 40٪ خصم',
-                btn: 'احصل على الصفقة',
-            },
-            id: {
-                title: 'Penjualan musim semi',
-                btn: 'Dapatkan diskon 40%',
-            },
-            tr: {
-                title: 'Bahar satışı',
-                btn: '%40 indirim',
-            },
-            vi: {
-                title: 'Giảm giá mùa',
-                desc: 'xuân',
-                btn: 'Giảm giá 40%',
-            },
-            pl: {
-                title: 'Wyprzedaż',
-                desc: 'wielkanocna',
-                btn: '40% taniej',
+                title: 'Вікторина до дня',
+                desc: 'народження AdGuard',
+                btn: 'Взяти участь',
             },
             pt_pt: {
-                title: 'Promoção da',
-                desc: 'Páscoa',
-                btn: 'Conseguir 40% off',
+                title: 'Quiz de aniversário',
+                desc: 'AdGuard',
+                btn: 'Teste-se',
             },
             pt_br: {
-                title: 'Promoção da',
-                desc: 'Páscoa',
-                btn: 'Conseguir 40% off',
+                title: 'Quiz de aniversário',
+                desc: 'AdGuard',
+                btn: 'Teste-se',
+            },
+            ar: {
+                title: 'اختبار عيد ميلاد',
+                desc: 'AdGuard',
+                btn: 'اختبر نفسك',
+            },
+            be: {
+                title: 'Тэст дня нараджэння',
+                btn: 'Праверце сябе',
+            },
+            id: {
+                title: 'Kuis ulang tahun',
+                desc: 'AdGuard',
+                btn: 'Uji dirimu',
+            },
+            pl: {
+                title: 'Quiz urodzinowy',
+                desc: 'AdGuard',
+                btn: 'Sprawdź się',
+            },
+            tr: {
+                title: 'AdGuard doğum günü',
+                desc: 'testi',
+                btn: 'Kendini test et',
+            },
+            vi: {
+                title: 'Câu đố sinh nhật',
+                desc: 'AdGuard',
+                btn: 'Tự kiểm tra',
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=easter2022&app=browser_extension',
-        from: '14 April 2022 12:00:00',
-        to: '20 April 2022 23:59:00',
+        url: 'https://adguard.com/forward.html?action=birthday13&app=browser_extension',
+        from: '31 May 2022 12:00:00',
+        to: '5 June 2022 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(easterNotification, 'icons', () => ({
+            return lazyGet(birthday13Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/easter-on-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/easter-on-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/b13-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/b13-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/easter-off-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/easter-off-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/b13-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/b13-off-38.png'),
                 },
             }));
         },
@@ -157,7 +162,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        easter2022: easterNotification,
+        birthday13: birthday13Notification,
     };
 
     /**
