@@ -4,27 +4,23 @@ jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-static-element-interactions
 */
 import React, {
-    useState, useContext, useRef, useLayoutEffect,
+    useContext, useRef,
 } from 'react';
 import { observer } from 'mobx-react';
 import identity from 'lodash/identity';
 import cn from 'classnames';
 
 import { getFilterName, getRequestEventType, getCookieData } from '../utils';
+import { RequestInfoField } from './RequestInfoField';
 import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
-import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { CopyToClipboard } from '../../../../common/components/CopyToClipboard';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
 import { RequestTypes } from '../../../../../background/utils/request-types';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
-import { optionsStorage } from '../../../../options/options-storage';
-import { measureTextWidth } from '../../../../helpers';
-import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
 
 import './request-info.pcss';
 
@@ -133,41 +129,11 @@ const RequestInfo = observer(() => {
     const contentRef = useRef();
     const contentOverflowed = useOverflowed(contentRef);
 
-    const requestUrlRef = useRef(null);
-
     const { logStore, wizardStore } = useContext(rootStore);
 
     const { closeModal, addedRuleState } = wizardStore;
 
     const { selectedEvent, filtersMetadata } = logStore;
-
-    /*
-        we consider that url is short enough and fits to RequestInfo modal
-        so we show full url and do not show 'Show/Hide full URL' button
-    */
-    const [isFullUrlShown, setFullUrlShown] = useState(true);
-    const [isLongUrlHandlerButtonShown, setLongUrlHandlerButtonShown] = useState(false);
-
-    useLayoutEffect(() => {
-        const MODAL_PADDINGS_PX = 70;
-        const startModalWidth = optionsStorage.getItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
-            || DEFAULT_MODAL_WIDTH_PX;
-
-        const urlWidth = measureTextWidth(requestUrlRef?.current?.innerText);
-
-        const LINE_COUNT_LIMIT = 3;
-        const urlWidthLimitPerLine = startModalWidth - MODAL_PADDINGS_PX;
-
-        const isLongRequestUrl = urlWidth > LINE_COUNT_LIMIT * urlWidthLimitPerLine;
-
-        if (isLongRequestUrl) {
-            setLongUrlHandlerButtonShown(true);
-            setFullUrlShown(false);
-        } else {
-            setLongUrlHandlerButtonShown(false);
-            setFullUrlShown(true);
-        }
-    }, [selectedEvent.eventId]);
 
     const eventPartsMap = {
         [PARTS.URL]: {
@@ -227,51 +193,6 @@ const RequestInfo = observer(() => {
         ];
     }
 
-    const openInNewTabHandler = async () => {
-        const url = selectedEvent.requestUrl;
-        await messenger.openTab(url, { inNewWindow: true });
-    };
-
-    const handleShowHideFullUrl = () => {
-        setFullUrlShown(!isFullUrlShown);
-    };
-
-    const renderInfoUrlButtons = (event) => {
-        // there is nothing to open if log event reveals blocked element or cookie
-        const showOpenInNewTabButton = !(
-            event.element
-            || event.cookieName
-            || event.script
-        );
-
-        const showHideButtonText = isFullUrlShown
-            ? reactTranslator.getMessage('filtering_modal_hide_full_url')
-            : reactTranslator.getMessage('filtering_modal_show_full_url');
-
-        return (
-            <>
-                {showOpenInNewTabButton && (
-                    <div
-                        className="request-modal__url-button"
-                        type="button"
-                        onClick={openInNewTabHandler}
-                    >
-                        {reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
-                    </div>
-                )}
-                {isLongUrlHandlerButtonShown && (
-                    <div
-                        className="request-modal__url-button"
-                        type="button"
-                        onClick={handleShowHideFullUrl}
-                    >
-                        {showHideButtonText}
-                    </div>
-                )}
-            </>
-        );
-    };
-
     const renderedInfo = infoElements
         .map((elementId) => eventPartsMap[elementId])
         .map(({ data, title }) => {
@@ -279,37 +200,13 @@ const RequestInfo = observer(() => {
                 return null;
             }
 
-            const isRequestUrl = data === selectedEvent.requestUrl;
-            const isRule = data === selectedEvent.ruleText;
-            const isFilterName = data === selectedEvent.filterName;
-
-            const canCopyToClipboard = isRequestUrl || isRule || isFilterName;
-
             return (
-                <div key={title} className="request-info">
-                    <div className="request-info__key">{title}</div>
-                    <div className="request-info__value">
-                        {canCopyToClipboard
-                            ? (
-                                <>
-                                    <CopyToClipboard
-                                        ref={isRequestUrl ? requestUrlRef : null}
-                                        wrapperClassName="request-info__copy-to-clipboard-wrapper"
-                                        className={cn(
-                                            'request-info__copy-to-clipboard',
-                                            isRequestUrl && !isFullUrlShown
-                                                ? 'request-info__url-short'
-                                                : 'request-info__url-full',
-                                        )}
-                                    >
-                                        {data}
-                                    </CopyToClipboard>
-                                    {isRequestUrl && renderInfoUrlButtons(selectedEvent)}
-                                </>
-                            )
-                            : data}
-                    </div>
-                </div>
+                <RequestInfoField
+                    key={title}
+                    data={data}
+                    title={title}
+                    event={selectedEvent}
+                />
             );
         });
 
