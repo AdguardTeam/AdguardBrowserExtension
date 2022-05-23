@@ -1,6 +1,7 @@
-import React, { useRef, forwardRef } from 'react';
+import React, { useRef, forwardRef, useEffect } from 'react';
 import cn from 'classnames';
 import { Icon } from '../../../common/components/ui/Icon';
+import { isMacOs } from '../../../../common/user-agent-utils';
 
 import './search.pcss';
 
@@ -8,6 +9,22 @@ const Search = forwardRef(({
     changeHandler, handleClear, onFocus, value, placeholder, select, onOpenSelect,
 }, passedRef) => {
     const localSearchInputRef = useRef(null);
+
+    useEffect(() => {
+        const modifierKeyProperty = isMacOs ? 'metaKey' : 'ctrlKey';
+        const handleSearchHotkey = (e) => {
+            const { code } = e;
+            if (e[modifierKeyProperty] && code === 'KeyF') {
+                e.preventDefault();
+                localSearchInputRef.current.focus();
+            }
+        };
+
+        window.addEventListener('keydown', handleSearchHotkey);
+        return function onUnmount() {
+            window.removeEventListener('keydown', handleSearchHotkey);
+        };
+    }, [localSearchInputRef]);
 
     const onSubmit = (e) => {
         e.preventDefault();
