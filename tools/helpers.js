@@ -119,7 +119,6 @@ export const updateLocalesMSGName = (content, env, browser) => {
 
     const messages = JSON.parse(content.toString());
     messages.name.message += suffix;
-    messages.short_name.message += suffix;
 
     return JSON.stringify(messages, null, 4);
 };
