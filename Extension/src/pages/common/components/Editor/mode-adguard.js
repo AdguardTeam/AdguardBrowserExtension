@@ -814,18 +814,34 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     token: 'keyword.operator',
                 },
                 {
-                    regex: /(domain|app)=/,
+                    regex: /(domain|app|denyallow)=/,
                     token: 'keyword.control',
                     next: 'options_domain_app',
                 },
                 {
-                    regex: /(redirect|redirect-rule|removeparam|queryprune|removeheader|cookie)=/,
+                    // deprecated modifiers:
+                    // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#object-subrequest-modifier
+                    // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#empty-modifier
+                    // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#mp4-modifier
+                    // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#removeparam-modifier
+                    regex: /object-subrequest|empty|mp4|queryprune/,
+                    token: 'invalid',
+                },
+                {
+                    // $webrtc modifier is still supported by AdGuard Browser extension
+                    // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#webrtc-modifier
+                    // it should be moved to deprecated modifiers above later
+                    regex: /webrtc/,
+                    token: 'keyword.control',
+                },
+                {
+                    regex: /(redirect|redirect-rule|removeparam|removeheader|cookie)=/,
                     token: 'keyword.control',
                     next: 'options_redirect_removeparam_removeheader_cookie',
                 },
                 // without specified value
                 {
-                    regex: /redirect|redirect-rule|removeparam|queryprune|removeheader|cookie/,
+                    regex: /redirect|redirect-rule|removeparam|removeheader|cookie/,
                     token: 'keyword.control',
                 },
                 {
@@ -847,15 +863,15 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     token: 'keyword.control',
                 },
                 {
-                    regex: /stylesheet|css|subdocument|frame|xmlhttprequest|xhr|font|image|media|object-subrequest|object|script|other|websocket/,
+                    regex: /stylesheet|css|subdocument|frame|xmlhttprequest|xhr|font|image|media|object|script|other|websocket/,
                     token: 'keyword.control',
                 },
                 {
-                    regex: /replace|empty|mp4|popup|network/,
+                    regex: /replace|popup|network/,
                     token: 'keyword.control',
                 },
                 {
-                    regex: /important|badfilter|match-case/,
+                    regex: /important|badfilter|match-case|all/,
                     token: 'keyword.control',
                 },
                 {
