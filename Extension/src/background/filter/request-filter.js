@@ -170,7 +170,12 @@ export const RequestFilter = (() => {
                 });
             }
 
-            const scripts = selectedScriptRules.map(scriptRule => scriptRule.getScript(debug));
+            const scripts = selectedScriptRules.map(scriptRule => scriptRule.getScript({
+                debug,
+                request: {
+                    domain: url,
+                },
+            }));
 
             // remove repeating scripts
             const scriptsCode = [...new Set(scripts)].join('\r\n');
