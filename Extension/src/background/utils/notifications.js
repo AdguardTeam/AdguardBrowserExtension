@@ -21,6 +21,7 @@ import { tabsApi } from '../tabs/tabs-api';
 import { uiService } from '../ui-service';
 import { lazyGet } from './lazy';
 import { browserUtils } from './browser-utils';
+import { localStorage } from '../storage';
 
 /**
  * Object that manages user settings.
@@ -30,8 +31,10 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
+    const BIRTHDAY_13_ID = 'birthday13';
+
     const birthday13Notification = {
-        id: 'birthday13',
+        id: BIRTHDAY_13_ID,
         locales: {
             en: {
                 title: 'AdGuard',
@@ -254,6 +257,11 @@ export const notifications = (function () {
         if (currentNotification) {
             const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
             const { id } = currentNotification;
+            // TODO remove if for the next promo action, used for hotfix
+            if (!viewedNotifications.includes(BIRTHDAY_13_ID)
+                && window.localStorage.getItem(VIEWED_NOTIFICATIONS) === BIRTHDAY_13_ID) {
+                viewedNotifications.push(BIRTHDAY_13_ID);
+            }
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
