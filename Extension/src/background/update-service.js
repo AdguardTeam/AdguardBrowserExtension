@@ -193,7 +193,7 @@ export const applicationUpdateService = (function () {
         if (browserUtils.isGreaterVersion('4.0.67', runInfo.prevVersion)) {
             methods.push(onUpdateRuleConverter);
         }
-        if (browserUtils.isGreaterVersion('4.0.171', runInfo.prevVersion)) {
+        if (browserUtils.isGreaterVersion('4.0.180', runInfo.prevVersion)) {
             methods.push(onUpdateClearPromoDetails);
         }
 
