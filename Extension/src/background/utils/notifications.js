@@ -257,12 +257,7 @@ export const notifications = (function () {
         if (currentNotification) {
             const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
             const { id } = currentNotification;
-            // TODO remove if for the next promo action, used for hotfix
-            if (!viewedNotifications.includes(BIRTHDAY_13_ID)
-                && window.localStorage.getItem(VIEWED_NOTIFICATIONS) === BIRTHDAY_13_ID) {
-                viewedNotifications.push(BIRTHDAY_13_ID);
-                localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
-            }
+
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
@@ -281,6 +276,13 @@ export const notifications = (function () {
      * @returns {null|Notification} - notification
      */
     const getCurrentNotification = function () {
+        // TODO remove to show next notification
+        const DISABLE_NOTIFICATIONS = true;
+
+        if (DISABLE_NOTIFICATIONS) {
+            return null;
+        }
+
         // Do not display notification on Firefox
         if (browserUtils.isFirefoxBrowser()) {
             return null;
@@ -324,5 +326,7 @@ export const notifications = (function () {
     return {
         getCurrentNotification,
         setNotificationViewed,
+        VIEWED_NOTIFICATIONS,
+        LAST_NOTIFICATION_TIME,
     };
 })();
