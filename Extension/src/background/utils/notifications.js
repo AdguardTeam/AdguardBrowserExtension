@@ -261,6 +261,7 @@ export const notifications = (function () {
             if (!viewedNotifications.includes(BIRTHDAY_13_ID)
                 && window.localStorage.getItem(VIEWED_NOTIFICATIONS) === BIRTHDAY_13_ID) {
                 viewedNotifications.push(BIRTHDAY_13_ID);
+                localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
             }
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
