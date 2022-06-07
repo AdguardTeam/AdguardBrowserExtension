@@ -22,7 +22,7 @@ import { allowlist } from '../../src/background/filter/allowlist';
 import { subscriptions } from '../../src/background/filter/filters/subscription';
 import { log } from '../../src/common/log';
 import { application } from '../../src/background/application';
-import { rulesStorage, localStorage } from '../../src/background/storage';
+import { rulesStorage, settingsStorage } from '../../src/background/storage';
 import { listeners } from '../../src/background/notifier';
 import { userrules } from '../../src/background/filter/userrules';
 import { webrequest } from '../../src/background/webrequest';
@@ -211,7 +211,7 @@ export const adguardApi = (function () {
         configuration.force = true;
 
         await rulesStorage.init();
-        await localStorage.init();
+        await settingsStorage.init();
 
         await application.start({});
         configure(configuration, callback);

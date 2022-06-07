@@ -3,24 +3,24 @@ import { subscriptions } from '../../../../Extension/src/background/filter/filte
 
 jest.mock('../../../../Extension/src/background/utils/local-storage', () => {
     const getItem = function (key) {
-        return global.localStorage.getItem(key);
+        return global.settingsStorage.getItem(key);
     };
 
     const setItem = function (key, value) {
-        global.localStorage.setItem(key, value);
+        global.settingsStorage.setItem(key, value);
     };
 
     const removeItem = function (key) {
-        global.localStorage.removeItem(key);
+        global.settingsStorage.removeItem(key);
     };
 
     const hasItem = function (key) {
-        return key in global.localStorage;
+        return key in global.settingsStorage;
     };
 
     return {
         __esModule: true,
-        localStorageImpl: {
+        settingsStorageImpl: {
             getItem,
             setItem,
             removeItem,

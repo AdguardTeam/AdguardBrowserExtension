@@ -18,7 +18,7 @@
 import { log } from '../../../common/log';
 import { backend } from './service-client';
 import { backgroundPage } from '../../extension-api/background-page';
-import { localStorage } from '../../storage';
+import { settingsStorage } from '../../storage';
 import { utils } from '../../utils/common';
 import { localScriptRulesService } from '../rules/local-script-rules';
 import { redirectService } from '../services/redirect-service';
@@ -162,7 +162,7 @@ export const subscriptions = (() => {
         let metadata;
 
         // Load from storage first
-        const data = localStorage.getItem(METADATA_STORAGE_KEY);
+        const data = settingsStorage.getItem(METADATA_STORAGE_KEY);
         if (data) {
             metadata = JSON.parse(data);
         } else {
@@ -180,7 +180,7 @@ export const subscriptions = (() => {
      */
     const reloadMetadataFromBackend = async () => {
         const metadata = await backend.downloadMetadataFromBackend();
-        localStorage.setItem(METADATA_STORAGE_KEY, JSON.stringify(metadata));
+        settingsStorage.setItem(METADATA_STORAGE_KEY, JSON.stringify(metadata));
 
         saveMetadata(metadata);
 
@@ -305,7 +305,7 @@ export const subscriptions = (() => {
         let metadata;
 
         // Load from storage first
-        const data = localStorage.getItem(I18N_METADATA_STORAGE_KEY);
+        const data = settingsStorage.getItem(I18N_METADATA_STORAGE_KEY);
         if (data) {
             metadata = JSON.parse(data);
         } else {
@@ -323,7 +323,7 @@ export const subscriptions = (() => {
      */
     const reloadI18nMetadataFromBackend = async () => {
         const metadata = await backend.downloadI18nMetadataFromBackend();
-        localStorage.setItem(I18N_METADATA_STORAGE_KEY, JSON.stringify(metadata));
+        settingsStorage.setItem(I18N_METADATA_STORAGE_KEY, JSON.stringify(metadata));
 
         saveI18nMetadata(metadata);
 

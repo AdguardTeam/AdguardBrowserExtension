@@ -23,7 +23,7 @@ import { settings } from './settings/user-settings';
 import { listeners } from './notifier';
 import { userrules } from './filter/userrules';
 import { notifications } from './utils/notifications';
-import { localStorage } from './storage';
+import { settingsStorage } from './storage';
 import { tabsApi } from './tabs/tabs-api';
 import { uiService } from './ui-service';
 import { browserUtils } from './utils/browser-utils';
@@ -603,8 +603,8 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.GET_TAB_INFO_FOR_POPUP: {
                 const tab = await tabsApi.getActive(data.tabId);
 
-                // There can't be data till localstorage is initialized
-                const stats = localStorage.isInitialized() ? pageStats.getStatisticsData() : {};
+                // There can't be data till settingsStorage is initialized
+                const stats = settingsStorage.isInitialized() ? pageStats.getStatisticsData() : {};
 
                 if (tab) {
                     const frameInfo = frames.getFrameInfo(tab);
@@ -631,8 +631,8 @@ const createMessageHandler = () => {
                 notifications.setNotificationViewed(data.withDelay);
                 break;
             case MESSAGE_TYPES.GET_STATISTICS_DATA:
-                // There can't be data till localstorage is initialized
-                if (!localStorage.isInitialized()) {
+                // There can't be data till settingsStorage is initialized
+                if (!settingsStorage.isInitialized()) {
                     return {};
                 }
                 return {

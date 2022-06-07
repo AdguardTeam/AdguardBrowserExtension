@@ -19,7 +19,7 @@ import * as TSUrlFilter from '@adguard/tsurlfilter';
 
 import { utils } from '../utils/common';
 import { settings } from '../settings/user-settings';
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 import { listeners } from '../notifier';
 import { log } from '../../common/log';
 import { lazyGet, lazyGetClear } from '../utils/lazy';
@@ -37,10 +37,10 @@ class DomainsHolder {
      * @param prop
      * @returns {string[]}
      */
-    static getDomainsFromLocalStorage(prop) {
+    static getDomainsFromSettingsStorage(prop) {
         let domains = [];
         try {
-            const json = localStorage.getItem(prop);
+            const json = settingsStorage.getItem(prop);
             if (json) {
                 domains = JSON.parse(json);
             }
@@ -52,7 +52,7 @@ class DomainsHolder {
 
     get domains() {
         return lazyGet(this, 'domains', () => {
-            return DomainsHolder.getDomainsFromLocalStorage(this.storageKey);
+            return DomainsHolder.getDomainsFromSettingsStorage(this.storageKey);
         });
     }
 
@@ -155,10 +155,10 @@ export const allowlist = (() => {
     /**
      * Save domains to local storage
      */
-    function saveDomainsToLocalStorage() {
-        localStorage.setItem(ALLOWLIST_DOMAINS_LS_PROP,
+    function saveDomainsToSettingsStorage() {
+        settingsStorage.setItem(ALLOWLIST_DOMAINS_LS_PROP,
             JSON.stringify(allowlistDomainsHolder.domains));
-        localStorage.setItem(BLOCKLIST_DOMAINS_LS_PROP,
+        settingsStorage.setItem(BLOCKLIST_DOMAINS_LS_PROP,
             JSON.stringify(blocklistDomainsHolder.domains));
     }
 
@@ -168,7 +168,7 @@ export const allowlist = (() => {
      */
     function removeFromAllowlist(domain) {
         removeDomainFromAllowlist(domain);
-        saveDomainsToLocalStorage();
+        saveDomainsToSettingsStorage();
         notifyAllowlistUpdated();
     }
 
@@ -182,7 +182,7 @@ export const allowlist = (() => {
         }
 
         addDomainToAllowlist(domain);
-        saveDomainsToLocalStorage();
+        saveDomainsToSettingsStorage();
         notifyAllowlistUpdated();
     }
 
@@ -253,7 +253,7 @@ export const allowlist = (() => {
      * Clear allowlisted only
      */
     const clearAllowlisted = function () {
-        localStorage.removeItem(ALLOWLIST_DOMAINS_LS_PROP);
+        settingsStorage.removeItem(ALLOWLIST_DOMAINS_LS_PROP);
         lazyGetClear(allowlistDomainsHolder, 'domains');
     };
 
@@ -269,14 +269,14 @@ export const allowlist = (() => {
             const domain = domains[i];
             allowlistDomainsHolder.add(domain);
         }
-        saveDomainsToLocalStorage();
+        saveDomainsToSettingsStorage();
     };
 
     /**
      * Clear blocklisted only
      */
     const clearBlocklisted = function () {
-        localStorage.removeItem(BLOCKLIST_DOMAINS_LS_PROP);
+        settingsStorage.removeItem(BLOCKLIST_DOMAINS_LS_PROP);
         lazyGetClear(blocklistDomainsHolder, 'domains');
     };
 
@@ -292,7 +292,7 @@ export const allowlist = (() => {
             const domain = domains[i];
             blocklistDomainsHolder.add(domain);
         }
-        saveDomainsToLocalStorage();
+        saveDomainsToSettingsStorage();
     };
 
     /**
@@ -362,7 +362,7 @@ export const allowlist = (() => {
      */
     const init = function () {
         /**
-         * Access to allowlist/blacklist domains before the proper initialization of localStorage
+         * Access to allowlist/blacklist domains before the proper initialization of settingsStorage
          * leads to wrong caching of its values
          * To prevent it we should clear cached values
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/933

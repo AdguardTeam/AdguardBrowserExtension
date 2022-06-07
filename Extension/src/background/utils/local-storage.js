@@ -21,7 +21,7 @@ import { log } from '../../common/log';
 /**
  * Local storage implementation for chromium-based browsers
  */
-export const localStorageImpl = (function () {
+export const settingsStorageImpl = (function () {
     const ADGUARD_SETTINGS_PROP = 'adguard-settings';
     let values = null;
 

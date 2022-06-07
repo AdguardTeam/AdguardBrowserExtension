@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { localStorage } from '../../../storage';
+import { settingsStorage } from '../../../storage';
 import { settings } from '../../../settings/user-settings';
 import { application } from '../../../application';
 import { backend } from '../../filters/service-client';
@@ -40,7 +40,7 @@ const browsersHitStats = (function () {
      * @returns {null}
      */
     function getHitCountStats() {
-        const json = localStorage.getItem(HITS_COUNT_PROP);
+        const json = settingsStorage.getItem(HITS_COUNT_PROP);
         let stats = Object.create(null);
         try {
             if (json) {
@@ -65,7 +65,7 @@ const browsersHitStats = (function () {
      * Cleanup stats
      */
     function cleanup() {
-        localStorage.removeItem(HITS_COUNT_PROP);
+        settingsStorage.removeItem(HITS_COUNT_PROP);
         lazyGetClear(hitStatsHolder, 'hitStats');
     }
 
@@ -93,7 +93,7 @@ const browsersHitStats = (function () {
         }
         throttleTimeoutId = setTimeout(() => {
             try {
-                localStorage.setItem(HITS_COUNT_PROP, JSON.stringify(stats));
+                settingsStorage.setItem(HITS_COUNT_PROP, JSON.stringify(stats));
             } catch (ex) {
                 log.error('Error save hit count statistic to storage, cause {0}', ex);
             }

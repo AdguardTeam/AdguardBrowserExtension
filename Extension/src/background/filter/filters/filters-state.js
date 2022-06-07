@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { localStorage } from '../../storage';
+import { settingsStorage } from '../../storage';
 import { log } from '../../../common/log';
 import { listeners } from '../../notifier';
 
@@ -34,7 +34,7 @@ export const filtersState = (function () {
     const getFiltersVersion = function () {
         let filters = Object.create(null);
         try {
-            const json = localStorage.getItem(FILTERS_VERSION_PROP);
+            const json = settingsStorage.getItem(FILTERS_VERSION_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
@@ -51,7 +51,7 @@ export const filtersState = (function () {
     const getFiltersState = function () {
         let filters = Object.create(null);
         try {
-            const json = localStorage.getItem(FILTERS_STATE_PROP);
+            const json = settingsStorage.getItem(FILTERS_STATE_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
@@ -68,7 +68,7 @@ export const filtersState = (function () {
     const getGroupsState = function () {
         let groups = Object.create(null);
         try {
-            const json = localStorage.getItem(GROUPS_STATE_PROP);
+            const json = settingsStorage.getItem(GROUPS_STATE_PROP);
             if (json) {
                 groups = JSON.parse(json);
             }
@@ -92,7 +92,7 @@ export const filtersState = (function () {
             expires: filter.expires,
         };
 
-        localStorage.setItem(FILTERS_VERSION_PROP, JSON.stringify(filters));
+        settingsStorage.setItem(FILTERS_VERSION_PROP, JSON.stringify(filters));
     };
 
     /**
@@ -107,13 +107,13 @@ export const filtersState = (function () {
             enabled: filter.enabled,
             installed: filter.installed,
         };
-        localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
+        settingsStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
     };
 
     const removeFilter = (filterId) => {
         const filters = getFiltersState();
         delete filters[filterId];
-        localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
+        settingsStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
     };
 
     /**
@@ -132,7 +132,7 @@ export const filtersState = (function () {
             };
         }
 
-        localStorage.setItem(GROUPS_STATE_PROP, JSON.stringify(groups));
+        settingsStorage.setItem(GROUPS_STATE_PROP, JSON.stringify(groups));
     };
 
     // Add event listener to persist filter metadata to local storage

@@ -16,43 +16,43 @@
  */
 
 import { log } from '../common/log';
-import { localStorageImpl } from './utils/local-storage';
+import { settingsStorageImpl } from './utils/local-storage';
 import { rulesStorageImpl } from './rules-storage';
 
 /**
  * This class manages local storage
  */
-export const localStorage = (function (localStorageImpl) {
+export const settingsStorage = (function (settingsStorageImpl) {
     const getItem = function (key) {
-        return localStorageImpl.getItem(key);
+        return settingsStorageImpl.getItem(key);
     };
 
     const setItem = function (key, value) {
         try {
-            localStorageImpl.setItem(key, value);
+            settingsStorageImpl.setItem(key, value);
         } catch (ex) {
-            log.error(`Error while saving item ${key} to the localStorage: ${ex}`);
+            log.error(`Error while saving item ${key} to the settingsStorage: ${ex}`);
         }
     };
 
     const removeItem = function (key) {
-        localStorageImpl.removeItem(key);
+        settingsStorageImpl.removeItem(key);
     };
 
     const hasItem = function (key) {
-        return localStorageImpl.hasItem(key);
+        return settingsStorageImpl.hasItem(key);
     };
 
     const init = async function () {
-        if (typeof localStorageImpl.init === 'function') {
-            await localStorageImpl.init();
+        if (typeof settingsStorageImpl.init === 'function') {
+            await settingsStorageImpl.init();
         }
     };
 
     const isInitialized = function () {
         // WebExtension storage has async initialization
-        if (typeof localStorageImpl.isInitialized === 'function') {
-            return localStorageImpl.isInitialized();
+        if (typeof settingsStorageImpl.isInitialized === 'function') {
+            return settingsStorageImpl.isInitialized();
         }
         return true;
     };
@@ -65,7 +65,7 @@ export const localStorage = (function (localStorageImpl) {
         init,
         isInitialized,
     };
-})(localStorageImpl);
+})(settingsStorageImpl);
 
 /**
  * This class manages storage for filters.

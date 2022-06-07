@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 import { log } from '../../common/log';
 
 export const ExpiringCache = (() => {
@@ -33,24 +33,24 @@ export const ExpiringCache = (() => {
         let cache;
         let cacheSize;
 
-        function getCacheFromLocalStorage() {
+        function getCacheFromSettingsStorage() {
             let data = Object.create(null);
             try {
-                const json = localStorage.getItem(storagePropertyName);
+                const json = settingsStorage.getItem(storagePropertyName);
                 if (json) {
                     data = JSON.parse(json);
                 }
             } catch (ex) {
                 // ignore
                 log.error('Error read from {0} cache, cause: {1}', storagePropertyName, ex);
-                localStorage.removeItem(storagePropertyName);
+                settingsStorage.removeItem(storagePropertyName);
             }
             return data;
         }
 
-        function saveCacheToLocalStorage() {
+        function saveCacheToSettingsStorage() {
             try {
-                localStorage.setItem(storagePropertyName, JSON.stringify(cache));
+                settingsStorage.setItem(storagePropertyName, JSON.stringify(cache));
             } catch (ex) {
                 log.error('Error save to {0} cache, cause: {1}', storagePropertyName, ex);
             }
@@ -94,7 +94,7 @@ export const ExpiringCache = (() => {
                     }
                 }
             }
-            saveCacheToLocalStorage();
+            saveCacheToSettingsStorage();
         }
 
         const saveValue = function (key, data, expires) {
@@ -111,12 +111,12 @@ export const ExpiringCache = (() => {
             cacheSize += 1;
 
             if (cacheSize % 20 === 0) {
-                saveCacheToLocalStorage();
+                saveCacheToSettingsStorage();
             }
         };
 
         // Load cache
-        cache = getCacheFromLocalStorage();
+        cache = getCacheFromSettingsStorage();
         cacheSize = Object.keys(cache).length;
 
         cleanup();

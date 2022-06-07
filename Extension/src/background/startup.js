@@ -17,7 +17,7 @@
 
 import { log } from '../common/log';
 import { backgroundPage } from './extension-api/background-page';
-import { rulesStorage, localStorage } from './storage';
+import { rulesStorage, settingsStorage } from './storage';
 import { allowlist } from './filter/allowlist';
 import { filteringLog } from './filter/filtering-log';
 import { uiService } from './ui-service';
@@ -30,7 +30,7 @@ import { ANTIBANNER_GROUPS_ID } from '../common/constants';
  * Extension initialize logic. Called from start.js
  */
 export const startup = async function () {
-    async function onLocalStorageLoaded() {
+    async function onSettingsStorageLoaded() {
         log.info(
             'Starting adguard... Version: {0}. Id: {1}',
             backgroundPage.app.getVersion(),
@@ -77,6 +77,6 @@ export const startup = async function () {
     }
 
     await rulesStorage.init();
-    await localStorage.init();
-    onLocalStorageLoaded();
+    await settingsStorage.init();
+    onSettingsStorageLoaded();
 };

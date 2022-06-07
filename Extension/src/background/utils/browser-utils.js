@@ -16,7 +16,7 @@
  */
 
 import { prefs } from '../prefs';
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 import { collections } from './collections';
 import { tabsApi } from '../tabs/tabs-api';
 import { backgroundPage } from '../extension-api/background-page';
@@ -64,7 +64,7 @@ export const browserUtils = (function () {
 
     const browserUtils = {
         getClientId() {
-            let clientId = localStorage.getItem('client-id');
+            let clientId = settingsStorage.getItem('client-id');
             if (!clientId) {
                 const result = [];
                 const suffix = (Date.now()) % 1e8;
@@ -74,7 +74,7 @@ export const browserUtils = (function () {
                     result.push(symbol);
                 }
                 clientId = result.join('') + suffix;
-                localStorage.setItem('client-id', clientId);
+                settingsStorage.setItem('client-id', clientId);
             }
 
             return clientId;
@@ -130,11 +130,11 @@ export const browserUtils = (function () {
          * @returns Extension version
          */
         getAppVersion() {
-            return localStorage.getItem('app-version');
+            return settingsStorage.getItem('app-version');
         },
 
         setAppVersion(version) {
-            localStorage.setItem('app-version', version);
+            settingsStorage.setItem('app-version', version);
         },
 
         isYaBrowser() {

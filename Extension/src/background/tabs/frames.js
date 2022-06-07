@@ -23,7 +23,7 @@ import { allowlist } from '../filter/allowlist';
 import { settings } from '../settings/user-settings';
 import { pageStats } from '../filter/page-stats';
 import { filteringApi } from '../filter/filtering-api';
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 
 /**
  * Object that contains info about every browser tab.
@@ -236,12 +236,12 @@ export const frames = (function () {
             url = frame.url;
         }
 
-        const localStorageInitialized = localStorage.isInitialized();
+        const settingsStorageInitialized = settingsStorage.isInitialized();
         const urlFilteringDisabled = !utils.url.isHttpRequest(url);
 
         // application is available for tabs where url is with http schema
         // and when localstorage is initialized
-        const applicationAvailable = localStorageInitialized && !urlFilteringDisabled;
+        const applicationAvailable = settingsStorageInitialized && !urlFilteringDisabled;
         let documentAllowlisted = false;
         let userAllowlisted = false;
         let canAddRemoveRule = false;

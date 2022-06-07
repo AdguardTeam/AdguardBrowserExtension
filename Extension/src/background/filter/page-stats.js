@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 import { utils } from '../utils/common';
 import { subscriptions } from './filters/subscription';
 import { prefs } from '../prefs';
@@ -49,7 +49,7 @@ export const pageStats = (function () {
             return lazyGet(pageStatsHolder, 'stats', () => {
                 let stats;
                 try {
-                    const json = localStorage.getItem(pageStatisticProperty);
+                    const json = settingsStorage.getItem(pageStatisticProperty);
                     if (json) {
                         stats = JSON.parse(json);
                     }
@@ -61,11 +61,11 @@ export const pageStats = (function () {
         },
 
         save: utils.concurrent.throttle(function () {
-            localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
+            settingsStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
         }, prefs.statsSaveInterval),
 
         clear() {
-            localStorage.removeItem(pageStatisticProperty);
+            settingsStorage.removeItem(pageStatisticProperty);
             lazyGetClear(pageStatsHolder, 'stats');
         },
     };

@@ -21,7 +21,7 @@ import { utils } from '../utils/common';
 import { prefs } from '../prefs';
 import { listeners } from '../notifier';
 import { log } from '../../common/log';
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 import { browserUtils } from '../utils/browser-utils';
 import { lazyGet } from '../utils/lazy';
 import {
@@ -123,15 +123,15 @@ export const settings = (() => {
         /**
          * Don't cache values in case of uninitialized storage
          */
-        if (!localStorage.isInitialized()) {
+        if (!settingsStorage.isInitialized()) {
             return defaultProperties.defaults[propertyName];
         }
 
         let propertyValue = null;
 
-        if (localStorage.hasItem(propertyName)) {
+        if (settingsStorage.hasItem(propertyName)) {
             try {
-                propertyValue = JSON.parse(localStorage.getItem(propertyName));
+                propertyValue = JSON.parse(settingsStorage.getItem(propertyName));
             } catch (ex) {
                 log.error('Error get property {0}, cause: {1}', propertyName, ex);
             }
@@ -145,7 +145,7 @@ export const settings = (() => {
     };
 
     const setProperty = (propertyName, propertyValue) => {
-        localStorage.setItem(propertyName, JSON.stringify(propertyValue));
+        settingsStorage.setItem(propertyName, JSON.stringify(propertyValue));
         properties[propertyName] = propertyValue;
         propertyUpdateChannel.notify(propertyName, propertyValue);
         listeners.notifyListeners(listeners.SETTING_UPDATED, { propertyName, propertyValue });

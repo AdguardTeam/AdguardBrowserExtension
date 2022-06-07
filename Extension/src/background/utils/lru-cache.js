@@ -16,7 +16,7 @@
  */
 
 import { LRUMap } from 'lru_map';
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 import { log } from '../../common/log';
 
 /**
@@ -33,10 +33,10 @@ export function LruCache(storagePropertyName, size) {
     let cache;
     let cacheSize;
 
-    function getCacheFromLocalStorage() {
+    function getCacheFromSettingsStorage() {
         let entries = null;
         try {
-            const json = localStorage.getItem(storagePropertyName);
+            const json = settingsStorage.getItem(storagePropertyName);
             if (json) {
                 const data = JSON.parse(json);
                 entries = data.map(x => [x.key, x.value]);
@@ -44,15 +44,15 @@ export function LruCache(storagePropertyName, size) {
         } catch (ex) {
             // ignore
             log.error('Error read from {0} cache, cause: {1}', storagePropertyName, ex);
-            localStorage.removeItem(storagePropertyName);
+            settingsStorage.removeItem(storagePropertyName);
         }
 
         return new LRUMap(maxCacheSize, entries);
     }
 
-    function saveCacheToLocalStorage() {
+    function saveCacheToSettingsStorage() {
         try {
-            localStorage.setItem(storagePropertyName, JSON.stringify(cache.toJSON()));
+            settingsStorage.setItem(storagePropertyName, JSON.stringify(cache.toJSON()));
         } catch (ex) {
             log.error('Error save to {0} cache, cause: {1}', storagePropertyName, ex);
         }
@@ -76,7 +76,7 @@ export function LruCache(storagePropertyName, size) {
         cacheSize += 1;
 
         if (cacheSize % 20 === 0) {
-            saveCacheToLocalStorage();
+            saveCacheToSettingsStorage();
         }
     };
 
@@ -86,11 +86,11 @@ export function LruCache(storagePropertyName, size) {
     const clear = () => {
         cache = new LRUMap(maxCacheSize, null);
         cacheSize = cache.size;
-        saveCacheToLocalStorage();
+        saveCacheToSettingsStorage();
     };
 
     // Load cache
-    cache = getCacheFromLocalStorage();
+    cache = getCacheFromSettingsStorage();
     cacheSize = cache.size;
 
     return {

@@ -1,6 +1,6 @@
 import MD5 from 'crypto-js/md5';
 import { metadataCache } from './metadata-cache';
-import { localStorage } from '../../storage';
+import { settingsStorage } from '../../storage';
 import { browserUtils } from '../../utils/browser-utils';
 import { backend } from './service-client';
 import { log } from '../../../common/log';
@@ -124,7 +124,7 @@ export const customFilters = (() => {
      * @returns {Array}
      */
     const loadCustomFilters = () => {
-        const customFilters = localStorage.getItem(CUSTOM_FILTERS_STORAGE_KEY);
+        const customFilters = settingsStorage.getItem(CUSTOM_FILTERS_STORAGE_KEY);
         return customFilters ? JSON.parse(customFilters) : [];
     };
 
@@ -139,7 +139,7 @@ export const customFilters = (() => {
         const updatedCustomFilters = customFilters.filter(f => f.filterId !== filter.filterId);
         updatedCustomFilters.push(filter);
 
-        localStorage.setItem(CUSTOM_FILTERS_STORAGE_KEY, JSON.stringify(updatedCustomFilters));
+        settingsStorage.setItem(CUSTOM_FILTERS_STORAGE_KEY, JSON.stringify(updatedCustomFilters));
     };
 
     /**
@@ -156,7 +156,7 @@ export const customFilters = (() => {
             return true;
         });
 
-        localStorage.setItem(CUSTOM_FILTERS_STORAGE_KEY, JSON.stringify(updatedCustomFilters));
+        settingsStorage.setItem(CUSTOM_FILTERS_STORAGE_KEY, JSON.stringify(updatedCustomFilters));
     };
 
     /**

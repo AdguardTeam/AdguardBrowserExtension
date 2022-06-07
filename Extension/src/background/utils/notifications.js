@@ -21,7 +21,7 @@ import { tabsApi } from '../tabs/tabs-api';
 import { uiService } from '../ui-service';
 import { lazyGet } from './lazy';
 import { browserUtils } from './browser-utils';
-import { localStorage } from '../storage';
+import { settingsStorage } from '../storage';
 
 /**
  * Object that manages user settings.
@@ -173,10 +173,10 @@ export const notifications = (function () {
      * If it was not shown yet, initialized with the current time.
      */
     const getLastNotificationTime = function () {
-        let lastTime = localStorage.getItem(LAST_NOTIFICATION_TIME) || 0;
+        let lastTime = settingsStorage.getItem(LAST_NOTIFICATION_TIME) || 0;
         if (lastTime === 0) {
             lastTime = new Date().getTime();
-            localStorage.setItem(LAST_NOTIFICATION_TIME, lastTime);
+            settingsStorage.setItem(LAST_NOTIFICATION_TIME, lastTime);
         }
         return lastTime;
     };
@@ -255,12 +255,12 @@ export const notifications = (function () {
         }
 
         if (currentNotification) {
-            const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+            const viewedNotifications = settingsStorage.getItem(VIEWED_NOTIFICATIONS) || [];
             const { id } = currentNotification;
 
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
-                localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
+                settingsStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
                 const tab = await tabsApi.getActive();
                 if (tab) {
                     uiService.updateTabIconAndContextMenu(tab);
@@ -304,7 +304,7 @@ export const notifications = (function () {
         notificationCheckTime = currentTime;
 
         const notificationsKeys = Object.keys(notifications);
-        const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
+        const viewedNotifications = settingsStorage.getItem(VIEWED_NOTIFICATIONS) || [];
 
         for (let i = 0; i < notificationsKeys.length; i += 1) {
             const notificationKey = notificationsKeys[i];

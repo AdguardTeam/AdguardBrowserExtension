@@ -20,7 +20,7 @@ import { LRUMap } from 'lru_map';
 import SHA256 from 'crypto-js/sha256';
 import { log } from '../../../../common/log';
 import { utils } from '../../../utils/common';
-import { localStorage } from '../../../storage';
+import { settingsStorage } from '../../../storage';
 import { backgroundPage } from '../../../extension-api/background-page';
 import { backend } from '../../filters/service-client';
 import { settings } from '../../../settings/user-settings';
@@ -126,7 +126,7 @@ const safebrowsing = (function () {
      * @private
      */
     function resumeSafebrowsing() {
-        localStorage.removeItem(suspendedFromProperty);
+        settingsStorage.removeItem(suspendedFromProperty);
     }
 
     /**
@@ -134,7 +134,7 @@ const safebrowsing = (function () {
      * @private
      */
     function suspendSafebrowsing() {
-        localStorage.setItem(suspendedFromProperty, Date.now());
+        settingsStorage.setItem(suspendedFromProperty, Date.now());
     }
 
     /**
@@ -253,7 +253,7 @@ const safebrowsing = (function () {
 
         // check safebrowsing is active
         const now = Date.now();
-        const suspendedFrom = localStorage.getItem(suspendedFromProperty) - 0;
+        const suspendedFrom = settingsStorage.getItem(suspendedFromProperty) - 0;
         if (suspendedFrom && (now - suspendedFrom) < SUSPEND_TTL) {
             return;
         }
