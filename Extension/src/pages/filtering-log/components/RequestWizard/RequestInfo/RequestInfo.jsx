@@ -17,14 +17,13 @@ import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { CopyToClipboard } from '../../../../common/components/CopyToClipboard';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
 import { RequestTypes } from '../../../../../background/utils/request-types';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import { optionsStorage } from '../../../../options/options-storage';
-import { measureTextWidth } from '../../../../helpers';
-import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
+import { DEFAULT_MODAL_WIDTH_PX, LINE_COUNT_LIMIT } from '../constants';
+import { TextCollapser } from '../../../../common/components/TextCollapser/TextCollapser';
 
 import './request-info.pcss';
 
@@ -133,7 +132,7 @@ const RequestInfo = observer(() => {
     const contentRef = useRef();
     const contentOverflowed = useOverflowed(contentRef);
 
-    const requestUrlRef = useRef(null);
+    const requestTextRef = useRef(null);
 
     const { logStore, wizardStore } = useContext(rootStore);
 
@@ -141,32 +140,14 @@ const RequestInfo = observer(() => {
 
     const { selectedEvent, filtersMetadata } = logStore;
 
-    /*
-        we consider that url is short enough and fits to RequestInfo modal
-        so we show full url and do not show 'Show/Hide full URL' button
-    */
-    const [isFullUrlShown, setFullUrlShown] = useState(true);
-    const [isLongUrlHandlerButtonShown, setLongUrlHandlerButtonShown] = useState(false);
+    const [textMaxWidth, setTextMaxWidth] = useState(DEFAULT_MODAL_WIDTH_PX);
 
     useLayoutEffect(() => {
         const MODAL_PADDINGS_PX = 70;
         const startModalWidth = optionsStorage.getItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
             || DEFAULT_MODAL_WIDTH_PX;
 
-        const urlWidth = measureTextWidth(requestUrlRef?.current?.innerText);
-
-        const LINE_COUNT_LIMIT = 3;
-        const urlWidthLimitPerLine = startModalWidth - MODAL_PADDINGS_PX;
-
-        const isLongRequestUrl = urlWidth > LINE_COUNT_LIMIT * urlWidthLimitPerLine;
-
-        if (isLongRequestUrl) {
-            setLongUrlHandlerButtonShown(true);
-            setFullUrlShown(false);
-        } else {
-            setLongUrlHandlerButtonShown(false);
-            setFullUrlShown(true);
-        }
+        setTextMaxWidth(startModalWidth - MODAL_PADDINGS_PX);
     }, [selectedEvent.eventId]);
 
     const eventPartsMap = {
@@ -232,10 +213,6 @@ const RequestInfo = observer(() => {
         await messenger.openTab(url, { inNewWindow: true });
     };
 
-    const handleShowHideFullUrl = () => {
-        setFullUrlShown(!isFullUrlShown);
-    };
-
     const renderInfoUrlButtons = (event) => {
         // there is nothing to open if log event reveals blocked element or cookie
         const showOpenInNewTabButton = !(
@@ -243,10 +220,6 @@ const RequestInfo = observer(() => {
             || event.cookieName
             || event.script
         );
-
-        const showHideButtonText = isFullUrlShown
-            ? reactTranslator.getMessage('filtering_modal_hide_full_url')
-            : reactTranslator.getMessage('filtering_modal_show_full_url');
 
         return (
             <>
@@ -257,15 +230,6 @@ const RequestInfo = observer(() => {
                         onClick={openInNewTabHandler}
                     >
                         {reactTranslator.getMessage('filtering_modal_open_in_new_tab')}
-                    </div>
-                )}
-                {isLongUrlHandlerButtonShown && (
-                    <div
-                        className="request-modal__url-button"
-                        type="button"
-                        onClick={handleShowHideFullUrl}
-                    >
-                        {showHideButtonText}
                     </div>
                 )}
             </>
@@ -282,32 +246,46 @@ const RequestInfo = observer(() => {
             const isRequestUrl = data === selectedEvent.requestUrl;
             const isRule = data === selectedEvent.ruleText;
             const isFilterName = data === selectedEvent.filterName;
-
+            const isElement = data === selectedEvent.element;
             const canCopyToClipboard = isRequestUrl || isRule || isFilterName;
+
+            let lineCountLimit = LINE_COUNT_LIMIT.REQUEST_URL;
+            if (isRule) {
+                lineCountLimit = LINE_COUNT_LIMIT.RULE;
+            }
+
+            let showMessage;
+            let hideMessage;
+            if (isRequestUrl) {
+                showMessage = 'filtering_modal_show_full_url';
+                hideMessage = 'filtering_modal_hide_full_url';
+            } else if (isRule) {
+                showMessage = 'filtering_modal_show_full_rule';
+                hideMessage = 'filtering_modal_hide_full_rule';
+            } else if (isElement) {
+                showMessage = 'filtering_modal_show_full_element';
+                hideMessage = 'filtering_modal_hide_full_element';
+            }
+            const collapserButtonMessages = {
+                showMessage,
+                hideMessage,
+            };
 
             return (
                 <div key={title} className="request-info">
                     <div className="request-info__key">{title}</div>
                     <div className="request-info__value">
-                        {canCopyToClipboard
-                            ? (
-                                <>
-                                    <CopyToClipboard
-                                        ref={isRequestUrl ? requestUrlRef : null}
-                                        wrapperClassName="request-info__copy-to-clipboard-wrapper"
-                                        className={cn(
-                                            'request-info__copy-to-clipboard',
-                                            isRequestUrl && !isFullUrlShown
-                                                ? 'request-info__url-short'
-                                                : 'request-info__url-full',
-                                        )}
-                                    >
-                                        {data}
-                                    </CopyToClipboard>
-                                    {isRequestUrl && renderInfoUrlButtons(selectedEvent)}
-                                </>
-                            )
-                            : data}
+                        <TextCollapser
+                            text={data}
+                            ref={isRequestUrl || isRule ? requestTextRef : null}
+                            width={textMaxWidth}
+                            lineCountLimit={lineCountLimit}
+                            collapserButtonMessages={collapserButtonMessages}
+                            collapsed
+                            canCopy={canCopyToClipboard}
+                        >
+                            {isRequestUrl && renderInfoUrlButtons(selectedEvent)}
+                        </TextCollapser>
                     </div>
                 </div>
             );
