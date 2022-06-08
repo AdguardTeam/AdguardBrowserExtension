@@ -21,6 +21,7 @@ const TOOLTIP_MOUSE_PADDING_PX = 4;
 export const CopyToClipboard = observer(forwardRef(({
     children,
     className,
+    style,
     wrapperClassName,
 }, ref) => {
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -73,6 +74,7 @@ export const CopyToClipboard = observer(forwardRef(({
             <div
                 ref={ref}
                 className={cn('copy-to-clipboard', className)}
+                style={style}
                 role="button"
                 tabIndex="0"
                 title={reactTranslator.getMessage('filtering_modal_copy_to_clipboard')}

@@ -1,0 +1,45 @@
+.text-collapser {
+    padding: 12px 38px 12px 32px;
+    word-break: break-all;
+
+        @media (max-width: 640px) {
+        padding: 12px 24px 12px 24px;
+
+            .request-modal__block.&:not(:last-child) {
+                border-bottom: 1px solid var(--gray100);
+
+                @media (prefers-color-scheme: dark) {
+                    border-bottom: 1px solid var(--grayDark);
+                }
+            }
+    }
+
+    &__copy-to-clipboard-wrapper {
+        display: block;
+    }
+
+    &__copy-to-clipboard {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    &__text {
+        display: inline-block;
+        vertical-align: middle;
+        width: auto;
+
+        &-short {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        &-full {
+            overflow: visibible;
+            text-overflow: initial;
+        }
+    }
+}
+
