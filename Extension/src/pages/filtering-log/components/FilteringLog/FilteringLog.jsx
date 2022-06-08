@@ -92,6 +92,7 @@ const FilteringLog = observer(() => {
                         case NOTIFIER_TYPES.TAB_RESET: {
                             const [tabInfo] = data;
                             logStore.onTabReset(tabInfo);
+                            wizardStore.closeModal();
                             break;
                         }
                         case NOTIFIER_TYPES.SETTING_UPDATED: {
@@ -111,7 +112,7 @@ const FilteringLog = observer(() => {
         return () => {
             removeListenerCallback();
         };
-    }, [logStore]);
+    }, [logStore, wizardStore]);
 
     useEffect(() => {
         const windowStateHandler = () => {

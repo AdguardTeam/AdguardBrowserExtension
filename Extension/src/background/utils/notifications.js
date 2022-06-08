@@ -21,6 +21,7 @@ import { tabsApi } from '../tabs/tabs-api';
 import { uiService } from '../ui-service';
 import { lazyGet } from './lazy';
 import { browserUtils } from './browser-utils';
+import { localStorage } from '../storage';
 
 /**
  * Object that manages user settings.
@@ -30,8 +31,10 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
+    const BIRTHDAY_13_ID = 'birthday13';
+
     const birthday13Notification = {
-        id: 'birthday13',
+        id: BIRTHDAY_13_ID,
         locales: {
             en: {
                 title: 'AdGuard',
@@ -254,6 +257,7 @@ export const notifications = (function () {
         if (currentNotification) {
             const viewedNotifications = localStorage.getItem(VIEWED_NOTIFICATIONS) || [];
             const { id } = currentNotification;
+
             if (!viewedNotifications.includes(id)) {
                 viewedNotifications.push(id);
                 localStorage.setItem(VIEWED_NOTIFICATIONS, viewedNotifications);
@@ -272,6 +276,13 @@ export const notifications = (function () {
      * @returns {null|Notification} - notification
      */
     const getCurrentNotification = function () {
+        // TODO remove to show next notification
+        const DISABLE_NOTIFICATIONS = true;
+
+        if (DISABLE_NOTIFICATIONS) {
+            return null;
+        }
+
         // Do not display notification on Firefox
         if (browserUtils.isFirefoxBrowser()) {
             return null;
@@ -315,5 +326,7 @@ export const notifications = (function () {
     return {
         getCurrentNotification,
         setNotificationViewed,
+        VIEWED_NOTIFICATIONS,
+        LAST_NOTIFICATION_TIME,
     };
 })();
