@@ -271,6 +271,11 @@ const createMessageHandler = () => {
         const { data, type } = message;
 
         switch (type) {
+            case MESSAGE_TYPES.SCRIPTLET_CLOSE_WINDOW: {
+                const { tabId } = sender.tab;
+                tabsApi.remove(tabId);
+                break;
+            }
             case MESSAGE_TYPES.GET_OPTIONS_DATA: {
                 return processGetOptionsData();
             }
