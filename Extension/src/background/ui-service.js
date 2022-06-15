@@ -265,6 +265,7 @@ export const uiService = (function () {
         function addSeparator() {
             backgroundPage.contextMenus.create({
                 type: 'separator',
+                contexts: ['all'],
             });
         }
 
