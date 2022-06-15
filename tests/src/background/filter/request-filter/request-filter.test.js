@@ -992,9 +992,8 @@ describe('RequestFilter', () => {
 
             const requestFilter = await createRequestFilterWithRules([validScriptletRuleText, invalidScriptletRuleText]);
             const scripts = requestFilter.getScriptsForUrl('https://example.org', TSUrlFilter.CosmeticOption.CosmeticOptionAll);
-
             expect(scripts).toHaveLength(1);
-            expect(scripts[0].script).toBeTruthy();
+            expect(scripts[0].getScript()).toBeTruthy();
         });
     });
 });
