@@ -107,6 +107,7 @@ const Allowlist = observer(() => {
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
                 id={ALLOWLIST_ENABLED}
+                mode="smallContainer"
                 description={settings.values[DEFAULT_ALLOWLIST_MODE]
                     ? reactTranslator.getMessage('options_allowlist_desc')
                     : (
