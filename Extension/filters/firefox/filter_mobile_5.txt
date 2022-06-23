@@ -1,8 +1,8 @@
-! Checksum: xriPf+i1efJp7X4CVwQDWA
+! Checksum: lmZlAacYUOKAwXKdQ3ufXg
 ! Title: AdGuard Experimental filter (Optimized)
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.0.96
-! TimeUpdated: 2022-03-17T07:31:25+00:00
+! Version: 2.0.1.2
+! TimeUpdated: 2022-06-19T15:31:35+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -19,18 +19,11 @@ www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-ri
 www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
 www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) { --ytd-rich-grid-items-per-row: 1 !important; }
 developer.android.com,adssettings.google.com##sc-survey-survey-manager
-/fbevents.js^
-/ads/beacon-
-/AppMeasurement-$script,domain=~mlb.com
-||welcoming-carpets.tk^$third-party
-||creative-banana.tk^$third-party
 ozerki.ru#?#header > div.popup:has(> div.popup__container div.rkf_popup_button > a[href="https://express.superapteka.ru/"])
 ||chrome.test.filter.com^$third-party
-reddit.com##.CommentsPage > article[id][class][style*="z-index: 1;"]
 !#######################################################
 !######### The list of dangerous rules #################
 !#######################################################
 !################## For advertisement ##################
-tumblr.com###base-container div[style="height:0;display:flex;flex-direction:column;overflow:hidden"] + div:not([class]):not([id]) > div[class]:not([data-id]):not([class*=" "])
 !################## For tracking ##################
 ||uim.tifbs.net/js/2048.js
