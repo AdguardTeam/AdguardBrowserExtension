@@ -23,7 +23,6 @@ import { runtimeImpl } from '../../common/common-script';
 import { browser } from './browser';
 import { prefs } from '../prefs';
 import { log } from '../../common/log';
-import { getIconImageData } from './iconsCache';
 
 export const backgroundPage = (() => {
     const runtime = (function () {
@@ -632,8 +631,8 @@ export const backgroundPage = (() => {
             }
 
             try {
-                const iconImageData = await getIconImageData(icon);
-                await browser.browserAction.setIcon({ tabId, path: iconImageData });
+                // use path rather than imageData due to conversion problems in fierfox for android
+                await browser.browserAction.setIcon({ tabId, path: icon });
             } catch (e) {
                 log.debug(new Error(e.message));
                 return;
