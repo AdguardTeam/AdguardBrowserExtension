@@ -1,8 +1,8 @@
-! Checksum: AqoLYrZWdg8Sbfsv6CpyQg
+! Checksum: G9o+cw9LpSfArLhD/LlGDw
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.2.34
-! TimeUpdated: 2022-04-05T11:30:50+00:00
+! Version: 2.0.2.73
+! TimeUpdated: 2022-06-17T15:30:47+00:00
 ! Expires: 4 days (update frequency)
 $removeparam=adfrom
 $removeparam=nx_source
@@ -22,7 +22,19 @@ $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
 $removeparam=fbclid
+$removeparam=ysclid
+$removeparam=yclid
+$removeparam=aiad_clid
+$removeparam=_sgm_campaign
+$removeparam=_sgm_source
+$removeparam=_sgm_action
+$removeparam=maf
+$removeparam=_clde
+$removeparam=_cldee
+$removeparam=wt_mc
+$removeparam=oprtrack
 $removeparam=xtor
+$removeparam=msclkid
 $removeparam=utm_campaign
 $removeparam=utm_channel
 $removeparam=utm_cid
@@ -40,6 +52,7 @@ $removeparam=utm_social-type
 $removeparam=utm_source
 $removeparam=utm_swu
 $removeparam=utm_term
+$removeparam=utm_keyword
 $removeparam=utm_userid
 $removeparam=utm_viz_id
 $removeparam=utm_product
@@ -53,7 +66,6 @@ $removeparam=gbraid
 $removeparam=wbraid
 $removeparam=gclsrc
 $removeparam=gclid
-$removeparam=yclid
 $removeparam=dpg_source
 $removeparam=dpg_campaign
 $removeparam=dpg_medium
@@ -93,6 +105,37 @@ $removeparam=oly_enc_id
 $removeparam=ebisAdID
 $removeparam=irgwc
 $removeparam=fbclid
+||get-express-vpns.com^$removeparam=sxid
+||get-express-vpns.com^$removeparam=ttorigin
+||mkaff.com/landings/$removeparam
+||lazada.vn^$removeparam=mkttid
+||lazada.vn^$removeparam=laz_trackid
+||trib.al$removeparam=fbclid
+||trib.al$removeparam=h
+||trib.al$removeparam=__tn__
+||trib.al$removeparam=c[0]
+$removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
+||pulse.mail.ru^$removeparam=/^(udid|DeviceID|ver|appbuild|vendor|model|device_name|device_type|instanceid|device_year|connection_class|appsflyerid)/
+||p.typekit.net^$stylesheet,removeparam
+||open.spotify.com^$removeparam=_branch_referrer
+||open.spotify.com^$removeparam=si
+||qcplay.co.jp/?shortlink=*&c=$removeparam=c
+||qcplay.co.jp^$removeparam=pid
+||qcplay.co.jp^$removeparam=shortlink
+||giphy.com^$removeparam=cid
+||giphy.com^$removeparam=ct
+||giphy.com^$removeparam=rid
+$removeparam=ref,domain=jin115.com|bipblog.com
+||cinematoday.jp^$removeparam=g_clk
+||xxvidsx.com^$removeparam=ad
+||xxvidsx.com^$removeparam=site
+||rapidgator.net^$removeparam=Referer
+||atlassian.net^$removeparam=atlOrigin
+||so-net.ne.jp^$removeparam=SmRcid
+||ameblo.jp^$removeparam=frm_id
+||popin.cc/popin_discovery/$script,removeparam=info
+||popin.cc/popin_discovery/$script,removeparam=uid
+||cancanlah.com^$removeparam=click_id
 ||api.cxense.com/public/widget/data?json=$script,removeparam=usi
 ||api.cxense.com/public/widget/data?json=$script,removeparam=widgetId
 ||lp.sophos.com^$removeparam=elqTrackId
@@ -129,7 +172,6 @@ $removeparam=fbclid
 ||ojrq.net/p/$removeparam=cid
 ||click.linksynergy.com/fs-bin/click?id=$removeparam=u1
 ||click.linksynergy.com/fs-bin/click?id=$removeparam=u2
-||open.spotify.com^$removeparam=si
 ||go.mysku.ru^$removeparam=~r
 ||apple.com^$removeparam=ct
 ||apple.com^$removeparam=pt
@@ -179,6 +221,7 @@ $domain=atlanticcouncil.org|digikey.com,removeparam=/^mkt_tok/
 ||api.cxense.com^$removeparam=/^pickup_list_click/
 $removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
 ||rakuten.co.jp^$removeparam=scid
+||rakuten.co.jp^$removeparam=sc2id
 ||azby.fmworld.net/cgi-bin/common/rd.cgi?$removeparam=affitest
 ||azby.fmworld.net^$removeparam=mc_pc
 ||toku.yahoo.co.jp^$removeparam=fr
@@ -212,6 +255,7 @@ $removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
 ||adj.st^$removeparam=CollectionId
 ||adj.st^$removeparam=adjust_deeplink
 ||data.alexa.com/data/$xmlhttprequest,removeparam=/cdt|ref/
+||comodo.com^$removeparam=key5sk1
 ||comodo.com^$removeparam=track
 ||comodo.com^$removeparam=af
 ||link.coupang.com^$removeparam=lptag
@@ -225,7 +269,6 @@ $removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
 ||web.vstat.info$removeparam=guid
 ||web.vstat.info$removeparam=user_agent
 ||start.pm.by^$removeparam=adtag
-||mail.ru^$removeparam=oprtrack
 ||redhotpawn.com^$removeparam=cbqsid
 ||reddit.com^$removeparam=correlation_id
 ||reddit.com^$removeparam=ref_campaign
@@ -312,6 +355,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||wired.co.uk^$removeparam=mbid
 ||wikihow.com^$removeparam=?utm_source
 ||kohls.com^$removeparam=CID
+||instagram.com^$removeparam=ig_rid
 ||instagram.com^$removeparam=igshid
 ||euronews.com^$removeparam=_ope
 $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
@@ -367,7 +411,6 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
-||amazon.*$removeparam=ref
 ||amazon.*$removeparam=ascsubtag
 ||amazon.*$removeparam=c
 ||amazon.*$removeparam=camp
@@ -417,6 +460,11 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||mp.weixin.qq.com^$removeparam=scene
 ||mp.weixin.qq.com^$removeparam=srcid
 ||mp.weixin.qq.com^$removeparam=nettype
+||mp.weixin.qq.com^$removeparam=WBAPIAnalysisOriUICodes
+||mp.weixin.qq.com^$removeparam=v_p
+||mp.weixin.qq.com^$removeparam=launchid
+||mp.weixin.qq.com^$removeparam=from
+||mp.weixin.qq.com^$removeparam=aid
 ||pixel.adsafeprotected.com/services/pub?$removeparam=slot
 ||pixel.adsafeprotected.com/services/pub?$removeparam=sessionId
 ||pixel.adsafeprotected.com/services/pub?$removeparam=anId
@@ -426,7 +474,15 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||cam4.com^$removeparam=act
 ||cam4.com^$removeparam=suid
 ||cam4.com^$removeparam=showSignupPopup
-||bbc.com^$removeparam=ocid
+$removeparam=ocid,domain=bbc.com|bbc.co.uk
+$removeparam=ns_mchannel,domain=bbc.com|bbc.co.uk
+$removeparam=ns_source,domain=bbc.com|bbc.co.uk
+$removeparam=ns_campaign,domain=bbc.com|bbc.co.uk
+$removeparam=ns_linkname,domain=bbc.com|bbc.co.uk
+$removeparam=ns_fee,domain=bbc.com|bbc.co.uk
+$removeparam=at_campaign,domain=bbc.com|bbc.co.uk
+$removeparam=/^at_custom/,domain=bbc.com|bbc.co.uk
+$removeparam=at_medium,domain=bbc.com|bbc.co.uk
 ||office.com^$removeparam=ocid
 ||twitter.com^$removeparam=ref_src
 ||twitter.com^$removeparam=ref_url
@@ -501,6 +557,19 @@ $removeparam=dclid
 ||websearch.rakuten.co.jp/Web?$removeparam=ref
 ||rakuten.co.jp^*&trflg=$removeparam=trflg
 ||search.yahoo.co.jp^$removeparam=fr
+||flipkart.com^$removeparam=_refId
+||flipkart.com^$removeparam=/^affExtParam/
+||flipkart.com^$removeparam=affid
+||flipkart.com^$removeparam=cid
+||flipkart.com^$removeparam=cmpid
+||flipkart.com^$removeparam=iid
+||flipkart.com^$removeparam=lid
+||flipkart.com^$removeparam=/^otracker/
+||flipkart.com^$removeparam=pageUID
+||flipkart.com^$removeparam=pid
+||flipkart.com^$removeparam=pwsvid
+||flipkart.com^$removeparam=ssid
+||flipkart.com^$removeparam=store
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
 ||bilibili.com^$removeparam=from
 ||bilibili.com^$removeparam=seid
@@ -517,9 +586,32 @@ $removeparam=dclid
 ||search.bilibili.com^$removeparam=from_source
 ||weibo.*^$removeparam=weibo_id
 ||weibo.*^$removeparam=dt_dapp
+||iqiyi.com^$removeparam=vfrm
+||iqiyi.com^$removeparam=vfrmblk
+||iqiyi.com^$removeparam=vfrmrst
+||sohu.com^$removeparam=_f
+||sohu.com^$removeparam=_trans_
+||sohu.com^$removeparam=scm
+||sohu.com^$removeparam=spm
+||v.youku.com^$removeparam=ptag
+||v.youku.com^$removeparam=scm
+||v.youku.com^$removeparam=spm
+||theregister.com^$removeparam=td
+||deezer.com^$removeparam=origin
 !+ PLATFORM(ext_chromium, ext_ff, ext_opera)
 @@||userscript.zone^$removeparam=utm_campaign
-@@||data.amazon.*/api/marketplaces/*/cart/carts/retail/items$removeparam=ref
+@@||mmcref.pl/?$removeparam=utm_medium
+@@||lanacion.com.ar/*module$removeparam=utm_source
+@@||t.send.vt.edu/r/?id=$removeparam=utm_source
+@@||t.send.vt.edu/r/?id=$removeparam=utm_medium
+@@||t.send.vt.edu/r/?id=$removeparam=utm_campaign
+@@||auto-swiat.pl/*&srcc=ucs$removeparam
+@@||komputerswiat.pl/*&srcc=ucs$removeparam
+@@||noizz.pl/*&srcc=ucs$removeparam
+@@||plejada.pl/*&srcc=ucs$removeparam
+@@||medonet.pl/*&srcc=ucs$removeparam
+@@||businessinsider.com.pl/*&srcc=ucs$removeparam
+@@||onet.pl/?utm_source=$removeparam
 @@||tix.axs.com^$removeparam
 @@/mediaserver/*$removeparam,domain=ramtrucks.com|chrysler.com|fiatusa.com|alfaromeousa.com|jeep.com|dodge.com
 @@||dkbs.sabio.de/sabio/services/$removeparam
