@@ -632,6 +632,7 @@ export const backgroundPage = (() => {
 
             try {
                 // use path rather than imageData due to conversion problems in firefox for android
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2032
                 await browser.browserAction.setIcon({ tabId, path: icon });
             } catch (e) {
                 log.debug(new Error(e.message));
