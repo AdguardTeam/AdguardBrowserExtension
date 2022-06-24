@@ -8,6 +8,7 @@ import React, {
     useEffect,
     useState,
     useRef,
+    forwardRef,
 } from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
@@ -26,6 +27,8 @@ import { passiveEventSupported } from '../../../helpers';
 import './filtering-events.pcss';
 import { Status } from '../Status';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
+
+const ITEM_HEIGHT_PX = 30;
 
 const filterNameAccessor = (props) => {
     const {
@@ -133,10 +136,13 @@ const Row = observer(({
 }) => {
     return (
         <div
-            style={style}
+            style={{
+                ...style,
+                top: `${parseFloat(style.top) + ITEM_HEIGHT_PX}px`,
+            }}
             id={event.eventId}
             onClick={onClick}
-            className={cn('tr', getRowClassName(event))}
+            className={cn('tr tr--tbody', getRowClassName(event))}
         >
             {
                 columns.map((column) => {
@@ -181,18 +187,59 @@ const VirtualizedRow = ({
     );
 };
 
-const ITEM_HEIGHT_PX = 30;
 const FilteringEventsRows = observer(({
     logStore,
     columns,
     handleRowClick,
 }) => {
     const { events } = logStore;
+
+    const TableHeader = ({ style }) => (
+        <div
+            className="thead"
+            style={style}
+        >
+            <div className="tr">
+                {
+                    columns.map((column) => (
+                        <div
+                            className="th"
+                            key={column.id}
+                            style={{ width: column.getWidth() }}
+                        >
+                            {column.Header}
+                            <div
+                                role="separator"
+                                className="resizer"
+                                key={column.id}
+                                style={{ cursor: 'col-resize' }}
+                                {...column.getResizerProps()}
+                            />
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    );
+
+    const tableHeader = forwardRef(({ children, ...rest }, ref) => (
+        <div ref={ref} {...rest}>
+            <TableHeader
+                index={0}
+                key={0}
+                style={{
+                    top: 0, left: 0, width: '100%', height: 30,
+                }}
+            />
+
+            {children}
+        </div>
+    ));
+
     return (
         <AutoSizer>
             {({
                 height,
-                width,
             }) => {
                 return (
                     <FixedSizeList
@@ -204,8 +251,8 @@ const FilteringEventsRows = observer(({
                             columns,
                             handleRowClick,
                         }}
+                        innerElementType={tableHeader}
                         itemSize={ITEM_HEIGHT_PX}
-                        width={width}
                     >
                         {VirtualizedRow}
                     </FixedSizeList>
@@ -420,28 +467,6 @@ const FilteringEvents = observer(() => {
                 className="table filtering-log__inner"
                 ref={tableRef}
             >
-                <div className="thead">
-                    <div className="tr">
-                        {
-                            columns.map((column) => (
-                                <div
-                                    className="th"
-                                    key={column.id}
-                                    style={{ width: column.getWidth() }}
-                                >
-                                    {column.Header}
-                                    <div
-                                        role="separator"
-                                        className="resizer"
-                                        key={column.id}
-                                        style={{ cursor: 'col-resize' }}
-                                        {...column.getResizerProps()}
-                                    />
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
                 <div className="tbody" style={{ height: '100%' }}>
                     <FilteringEventsRows
                         logStore={logStore}

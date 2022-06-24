@@ -2,7 +2,6 @@
     display: flex;
     max-width: 100%;
     height: 100%;
-    overflow-x: auto;
 
     * {
         box-sizing: border-box;
@@ -11,11 +10,22 @@
     &__inner {
         table-layout: fixed;
         width: 100%;
-        height: calc(100% - 30px);
+        height: 100%;
+
+        & .thead {
+            min-width: 100%;
+            position: sticky;
+            z-index: 2;
+            background-color: var(--white);
+            box-shadow: 0 1px 0 0 var(--thColor);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--bgColor);
+            }
+        }
 
         & .thead .th {
-            position: sticky;
-            top: 0;
+            box-shadow: 0 1px 0 0 var(--thColor);
             background-color: var(--white);
 
             @media (prefers-color-scheme: dark) {
@@ -23,15 +33,11 @@
             }
         }
 
-        & .thead .tr {
-            box-shadow: 0 1px 0 0 var(--thColor);
-        }
-
         & .tbody {
             z-index: 1;
         }
 
-        & .tbody .tr {
+        & .tr--tbody {
             border-top: 1px solid var(--borderColor);
 
             &:hover {
@@ -80,7 +86,12 @@
             }
         }
 
+        & .thead .tr {
+            border-top: 0;
+        }
+
         & .list {
+            width: 100vw;
             z-index: 1;
         }
 
@@ -139,6 +150,11 @@
         /* due to AG-10446 */
         position: relative;
         z-index: 10;
+        background-color: var(--white);
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--bgColor);
+        }
     }
 
     &__empty-in {
@@ -185,6 +201,10 @@
     & .table {
         & .tr {
             height: 30px;
+            display: flex;
+            flex-wrap: nowrap;
+            width: auto!important;
+            min-width: 100%;
         }
 
         & .resizer {
@@ -211,6 +231,7 @@
         }
 
         & .th, & .td {
+            flex-shrink: 0;
             padding: 0 10px;
             height: 30px;
             display: inline-block;
@@ -223,13 +244,6 @@
         & .td {
             line-height: 30px;
         }
-    }
-}
-
-.list {
-    div div {
-        left: -1px!important;
-        cursor: pointer;
     }
 }
 
@@ -252,6 +266,10 @@
 }
 
 .light-mode {
+    & .thead {
+        background-color: var(--white);
+    }
+
     & .filtering-log {
         &__desc {
             color: var(--gray-base);
@@ -265,7 +283,7 @@
             background-color: var(--white);
         }
 
-        &__inner .tbody .tr {
+        &__inner .tr--tbody {
             &:hover {
                 background: var(--regular-row-hover);
             }
@@ -309,6 +327,10 @@
                     background-color: var(--orange-row-active);
                 }
             }
+        }
+
+        &__empty {
+            background-color: var(--white);
         }
 
         &__empty-img {
@@ -324,6 +346,10 @@
 }
 
 .dark-mode {
+    & .thead {
+        background-color: var(--bgColor);
+    }
+
     & .filtering-log {
         &__desc {
             color: var(--gray300);
@@ -337,7 +363,7 @@
             background-color: var(--bgColor);
         }
 
-        &__inner .tbody .tr {
+        &__inner .tr--tbody {
             &:hover {
                 background: var(--regular-row-hover);
             }
@@ -381,6 +407,10 @@
                     background-color: var(--orange-row-active);
                 }
             }
+        }
+
+        &__empty {
+            background-color: var(--bgColor);
         }
 
         &__empty-img {
