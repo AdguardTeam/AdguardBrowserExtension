@@ -153,17 +153,34 @@ export const tabsImpl = (function () {
                 left: left || 0,
             };
 
-            const { id } = await browser.windows.create({
-                url,
-                type: 'popup',
-                ...windowState,
-            });
+            let tabId;
+            try {
+                const { id } = await browser.windows.create({
+                    url,
+                    type: 'popup',
+                    ...windowState,
+                });
+                tabId = id;
+            } catch (e) {
+                // Reopen tab with default pos if it was closed too far beyond the screen
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2100
+                if (e.message.includes('Invalid value for bounds.')) {
+                    const { id } = await browser.windows.create({
+                        url,
+                        type: 'popup',
+                        ...windowState,
+                        top: 0,
+                        left: 0,
+                    });
+                    tabId = id;
+                }
+            }
 
             // Firefox currently can't .create with top and left due to bug
             // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows/create
             // https://bugzilla.mozilla.org/show_bug.cgi?id=1271047
             if (browserUtils.isFirefoxBrowser() && typeof windowState.top === 'number') {
-                await browser.windows.update(id, windowState);
+                await browser.windows.update(tabId, windowState);
             }
 
             return;
