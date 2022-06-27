@@ -7,9 +7,11 @@ import { Select } from '../../../../common/components/ui/Select';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { isMacOs } from '../../../../../common/user-agent-utils';
 import { rootStore } from '../../../stores/RootStore';
-import { SEARCH_FILTERS } from './constants';
+import { SEARCH_FILTERS, TABLET_SCREEN_WIDTH } from './constants';
 
 import './search.pcss';
+
+const isDesktopScreen = window.innerWidth > TABLET_SCREEN_WIDTH;
 
 const options = [
     {
@@ -91,7 +93,9 @@ const Search = observer(() => {
             <label className="search__label" htmlFor="search__input">
                 <input
                     id="search__input"
-                    autoFocus
+                    // autofocus triggers the keypad on mobile devices, which worsens tab navigation
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2117
+                    autoFocus={isDesktopScreen}
                     className="search__input"
                     type="text"
                     placeholder={reactTranslator.getMessage('options_filters_search')}
