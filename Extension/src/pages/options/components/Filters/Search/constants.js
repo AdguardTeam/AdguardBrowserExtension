@@ -3,3 +3,5 @@ export const SEARCH_FILTERS = {
     ENABLED: 'enabled',
     DISABLED: 'disabled',
 };
+
+export const TABLET_SCREEN_WIDTH = 1024;
