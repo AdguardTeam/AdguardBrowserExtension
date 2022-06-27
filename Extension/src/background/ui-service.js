@@ -853,10 +853,7 @@ export const uiService = (function () {
         for (let i = 0; i < tabs.length; i += 1) {
             const tab = tabs[i];
             if (tab.url === filtersDownloadUrl) {
-                // In YaBrowser don't activate found page
-                if (!browserUtils.isYaBrowser()) {
-                    tabsApi.activate(tab.tabId);
-                }
+                tabsApi.activate(tab.tabId);
                 tabsApi.reload(tab.tabId, thankyouUrl);
                 return;
             }
@@ -870,7 +867,7 @@ export const uiService = (function () {
     };
 
     const openFiltersDownloadPage = function () {
-        openTab(getPageUrl('filter-download.html'), { inBackground: browserUtils.isYaBrowser() });
+        openTab(getPageUrl('filter-download.html'));
     };
 
     const openCustomFiltersModal = async (url, title) => {
