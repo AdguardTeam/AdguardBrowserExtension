@@ -612,7 +612,7 @@ const webrequestInit = function () {
                 }, 3000);
                 break;
             default:
-                // do noting
+            // do noting
         }
     });
 
@@ -790,7 +790,7 @@ const webrequestInit = function () {
                     case '\u2029':
                         return '\\u2029';
                     default:
-                        // do nothing
+                    // do nothing
                 }
             }
 
@@ -971,7 +971,7 @@ const webrequestInit = function () {
 
                 const injection = injections.get(tabId, frameId);
 
-                if (injection && !injection.ready) {
+                if ((injection && !injection.ready) || (browserUtils.isFirefoxBrowser() && !injection)) {
                     /**
                      * If injection is not ready yet, we call prepareScripts and tryInject functions again
                      * setTimeout callback lambda function accepts onCommitted details and eventName
@@ -1049,10 +1049,10 @@ const webrequestInit = function () {
              */
             function isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl) {
                 return (frameUrl === mainFrameUrl
-                        || frameUrl === 'about:blank'
-                        || frameUrl === 'about:srcdoc'
-                        // eslint-disable-next-line no-script-url
-                        || frameUrl.indexOf('javascript:') > -1)
+                    || frameUrl === 'about:blank'
+                    || frameUrl === 'about:srcdoc'
+                    // eslint-disable-next-line no-script-url
+                    || frameUrl.indexOf('javascript:') > -1)
                     && frameId !== MAIN_FRAME_ID;
             }
 
