@@ -612,7 +612,7 @@ const webrequestInit = function () {
                 }, 3000);
                 break;
             default:
-            // do noting
+                // do nothing
         }
     });
 
@@ -790,7 +790,7 @@ const webrequestInit = function () {
                     case '\u2029':
                         return '\\u2029';
                     default:
-                    // do nothing
+                        // do nothing
                 }
             }
 
@@ -1049,11 +1049,11 @@ const webrequestInit = function () {
              */
             function isIframeWithoutSrc(frameUrl, frameId, mainFrameUrl) {
                 return (frameUrl === mainFrameUrl
-                    || frameUrl === 'about:blank'
-                    || frameUrl === 'about:srcdoc'
-                    // eslint-disable-next-line no-script-url
-                    || frameUrl.indexOf('javascript:') > -1)
-                    && frameId !== MAIN_FRAME_ID;
+                        || frameUrl === 'about:blank'
+                        || frameUrl === 'about:srcdoc'
+                        // eslint-disable-next-line no-script-url
+                        || frameUrl.indexOf('javascript:') > -1)
+                        && frameId !== MAIN_FRAME_ID;
             }
 
             /**
