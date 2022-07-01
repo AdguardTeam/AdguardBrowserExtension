@@ -37,6 +37,7 @@ import { log } from '../common/log';
 import { runtimeImpl } from '../common/common-script';
 import { MESSAGE_TYPES, ANTIBANNER_FILTERS_ID } from '../common/constants';
 import { translator } from '../common/translators/translator';
+import { COMPARE_URL } from '../pages/constants';
 
 /**
  * UI service
@@ -862,6 +863,10 @@ export const uiService = (function () {
         await openTab(thankyouUrl);
     };
 
+    const openComparePage = async () => {
+        await openTab(COMPARE_URL);
+    };
+
     const openExtensionStore = async function () {
         await openTab(extensionStoreLink);
     };
@@ -1107,6 +1112,7 @@ export const uiService = (function () {
         openFilteringLog,
         openFullscreenUserRules,
         openThankYouPage,
+        openComparePage,
         openExtensionStore,
         openFiltersDownloadPage,
         openCustomFiltersModal,

@@ -53,6 +53,7 @@ export const MESSAGE_TYPES = {
     CREATE_EVENT_LISTENER: 'createEventListener',
     REMOVE_LISTENER: 'removeListener',
     OPEN_EXTENSION_STORE: 'openExtensionStore',
+    OPEN_COMPARE_PAGE: 'openComparePage',
     ADD_AND_ENABLE_FILTER: 'addAndEnableFilter',
     APPLY_SETTINGS_JSON: 'applySettingsJson',
     OPEN_FILTERING_LOG: 'openFilteringLog',

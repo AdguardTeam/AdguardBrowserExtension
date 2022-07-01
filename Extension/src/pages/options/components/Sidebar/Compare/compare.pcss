@@ -1,0 +1,49 @@
+.compare {
+    position: fixed;
+    z-index: 6;
+    margin: auto auto 0;
+    width: 208px;
+    bottom: 16px;
+    left: 16px;
+    padding: 24px;
+    border-radius: 8px;
+    background-color: var(--white);
+    word-break: break-word;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--grayDark);
+    }
+
+    &__message {
+        margin-bottom: 16px;
+        line-height: 22px;
+    }
+
+    &__close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        border: 0;
+        padding: 0;
+        background-color: transparent;
+        cursor: pointer;
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            color: var(--gray700);
+        }
+    }
+}
+
+.light-mode {
+    .compare {
+        background-color: var(--white);
+    }
+}
+
+.dark-mode {
+    .compare {
+        background-color: var(--grayDark);
+    }
+}
