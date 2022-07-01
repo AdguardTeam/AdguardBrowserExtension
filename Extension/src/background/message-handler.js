@@ -424,6 +424,9 @@ const createMessageHandler = () => {
             case MESSAGE_TYPES.OPEN_EXTENSION_STORE:
                 uiService.openExtensionStore();
                 break;
+            case MESSAGE_TYPES.OPEN_COMPARE_PAGE:
+                uiService.openComparePage();
+                break;
             case MESSAGE_TYPES.OPEN_FILTERING_LOG:
                 uiService.openFilteringLog(message.tabId);
                 break;

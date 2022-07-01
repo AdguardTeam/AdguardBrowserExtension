@@ -1,6 +1,8 @@
 .sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
     padding: 48px 0 48px 0;
-    min-width: 231px;
     height: 100%;
     position: fixed;
     left: 0;
@@ -8,10 +10,11 @@
     background: var(--gray100);
     z-index: var(--z-idx6);
     margin: 0;
-    width: 248px;
+    width: 240px;
     transform: translateX(-100%);
     transition: transform var(--sidebar-transition);
     overflow-y: auto;
+    overflow-x: hidden;
 
     @media (prefers-color-scheme: dark) {
         background: var(--black);
@@ -35,6 +38,11 @@
             color: var(--gray300);
             background-color: var(--black);
         }
+    }
+
+    &__link-logo {
+        display: block;
+        color: inherit;
     }
 
     &__logo {
@@ -64,7 +72,7 @@
     }
 
     @media (min-width: 640px) {
-        transform: translateX(0);
+        transform: unset;
         position: relative;
 
         &__menu {
