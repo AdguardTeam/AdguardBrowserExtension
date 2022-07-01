@@ -1,8 +1,8 @@
-! Checksum: fbqIKLF0a9CLl1b7RL9SWQ
+! Checksum: wc0QSv4h5Y8I0FKW1MLvhA
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.2.73
-! TimeUpdated: 2022-06-17T15:30:47+00:00
+! Version: 2.0.2.79
+! TimeUpdated: 2022-07-01T12:30:42+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -38,6 +38,19 @@ $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
 $removeparam=fbclid
+! Hubspot tracking https://knowledge.hubspot.com/ads/ad-tracking-in-hubspot
+$removeparam=hsa_acc
+$removeparam=hsa_ad
+$removeparam=hsa_cam
+$removeparam=hsa_grp
+$removeparam=hsa_kw
+$removeparam=hsa_la
+$removeparam=hsa_mt
+$removeparam=hsa_net
+$removeparam=hsa_ol
+$removeparam=hsa_src
+$removeparam=hsa_tgt
+$removeparam=hsa_ver
 ! Yandex Metrika
 $removeparam=ysclid
 $removeparam=yclid
@@ -65,6 +78,7 @@ $removeparam=xtor
 ! https://help.ads.microsoft.com/apex/index/3/en/60000
 $removeparam=msclkid
 ! UTM
+$removeparam=utm_affiliate
 $removeparam=utm_campaign
 $removeparam=utm_channel
 $removeparam=utm_cid
@@ -161,6 +175,16 @@ $removeparam=fbclid
 ! Good: ||example.org^$removeparam=cx
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/123160
+||whistleout.com.au^$cookie=ARRAffinity
+||whistleout.com.au^$cookie=ARRAffinitySameSite
+! https://github.com/AdguardTeam/AdguardFilters/pull/122979
+||heraldcorp.com/view.php$removeparam=pos
+! toomics.com
+||toomics.com^$removeparam=pid
+||toomics.com^$removeparam=subpid
+||toomics.com^$removeparam=channel
+||toomics.com^$removeparam=gen
 ! get-express-vpns.com
 ||get-express-vpns.com^$removeparam=sxid
 ||get-express-vpns.com^$removeparam=ttorigin
@@ -301,10 +325,18 @@ $domain=atlanticcouncil.org|digikey.com,removeparam=/^mkt_tok/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/108915#issuecomment-1031525591
 ! https://github.com/AdguardTeam/AdguardFilters/issues/109244
 ||approach.yahoo.co.jp^$removeparam=code
-! Taobao
+! Taobao, Tmall
 ||taobao.com^$removeparam=scm
 ||taobao.com^$removeparam=pvid
 ||taobao.com^$removeparam=utparam
+||tmall.com^$removeparam=ali_trackid
+||tmall.com^$removeparam=bxsign
+$removeparam=union_lens,domain=tmall.com|taobao.com
+||taobao.com^$removeparam=traceId
+||taobao.com^$removeparam=activityId
+||taobao.com^$removeparam=xId
+||taobao.com^$removeparam=ptl
+||taobao.com^$removeparam=app_pvid
 ! Aliexpress
 ||aliexpress.$removeparam=spm
 ||aliexpress.$removeparam=scm
