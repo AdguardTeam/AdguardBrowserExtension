@@ -85,8 +85,10 @@ const RequestCreateRule = observer(() => {
             }
 
             // $removeparam option is available only for requests with query
+            // and is not shown for cookie rules
             if (id === RULE_OPTIONS.RULE_REMOVE_PARAM
-                && logStore.selectedEvent.requestUrl?.indexOf('?') < 0) {
+                && (logStore.selectedEvent.requestUrl?.indexOf('?') < 0
+                || logStore.selectedEvent.requestRule.cookieRule)) {
                 return null;
             }
 
