@@ -60,14 +60,16 @@ const webrequestInit = function () {
      * Retrieve referrer url from request details.
      * Extract referrer by priority:
      * 1. referrerUrl in requestDetails
-     * 2. url of frame where request was created
-     * 3. url of main frame
+     * 2. originUrl in requestDetails
+     * 3. url of frame where request was created
+     * 4. url of main frame
      *
      * @param requestDetails
      * @returns {*|Frame}
      */
     function getReferrerUrl(requestDetails) {
         return requestDetails.referrerUrl
+            || requestDetails.originUrl
             || frames.getFrameUrl(requestDetails.tab, requestDetails.requestFrameId)
             || frames.getMainFrameUrl(requestDetails.tab);
     }
