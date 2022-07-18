@@ -243,6 +243,12 @@ class SettingsStore {
         return filter.enabled;
     }
 
+    isCategoryEnabled(categoryId) {
+        const category = this.categories
+            .find((c) => c.groupId === categoryId);
+        return category.enabled;
+    }
+
     isAllowAcceptableAdsFilterEnabled() {
         const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
         this.isFilterEnabled(SEARCH_AND_SELF_PROMO_FILTER_ID);
@@ -628,6 +634,12 @@ class SettingsStore {
     @action
     setAllowlistSizeReset(value) {
         this.allowlistSizeReset = value;
+    }
+
+    @computed
+    get isUpdateFiltersButtonDisabled() {
+        return !this.filters.some((filter) => filter.enabled
+            && this.isCategoryEnabled(filter.groupId));
     }
 }
 
