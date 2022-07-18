@@ -21,7 +21,7 @@ const FiltersUpdate = observer(() => {
         rulesCount,
         lastUpdateTime,
         filtersUpdating,
-        isUpdateFiltersButtonDisabled,
+        isUpdateFiltersButtonActive,
     } = settingsStore;
 
     const updateClickHandler = async () => {
@@ -62,7 +62,7 @@ const FiltersUpdate = observer(() => {
                 onClick={updateClickHandler}
                 className="button button--m button--transparent filters-update__btn"
                 title={reactTranslator.getMessage('options_update_antibanner_filters')}
-                disabled={isUpdateFiltersButtonDisabled}
+                disabled={!isUpdateFiltersButtonActive}
             >
                 {filtersUpdating
                     ? reactTranslator.getMessage('options_check_update_progress')

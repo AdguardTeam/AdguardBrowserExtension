@@ -637,8 +637,8 @@ class SettingsStore {
     }
 
     @computed
-    get isUpdateFiltersButtonDisabled() {
-        return !this.filters.some((filter) => filter.enabled
+    get isUpdateFiltersButtonActive() {
+        return this.filters.some((filter) => filter.enabled
             && this.isCategoryEnabled(filter.groupId));
     }
 }
