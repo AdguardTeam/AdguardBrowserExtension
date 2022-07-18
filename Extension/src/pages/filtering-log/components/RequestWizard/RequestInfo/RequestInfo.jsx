@@ -445,9 +445,11 @@ const RequestInfo = observer(() => {
                     onClick={closeModal}
                     className="request-modal__navigation request-modal__navigation--button"
                 >
-                    <Icon id="#cross" classname="icon--contain" />
+                    <Icon id="#cross" classname="icon--24" />
+                    <span className="request-modal__header">
+                        {reactTranslator.getMessage('filtering_modal_info_title')}
+                    </span>
                 </button>
-                <span className="request-modal__header">{reactTranslator.getMessage('filtering_modal_info_title')}</span>
             </div>
             <div ref={contentRef} className="request-modal__content">
                 {selectedEvent.method && (
