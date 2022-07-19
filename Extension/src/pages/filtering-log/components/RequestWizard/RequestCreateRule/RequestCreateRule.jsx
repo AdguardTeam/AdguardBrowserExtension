@@ -88,7 +88,7 @@ const RequestCreateRule = observer(() => {
             // and is not shown for cookie rules
             if (id === RULE_OPTIONS.RULE_REMOVE_PARAM
                 && (logStore.selectedEvent.requestUrl?.indexOf('?') < 0
-                || logStore.selectedEvent.requestRule.cookieRule)) {
+                || logStore.selectedEvent.requestRule?.cookieRule)) {
                 return null;
             }
 
