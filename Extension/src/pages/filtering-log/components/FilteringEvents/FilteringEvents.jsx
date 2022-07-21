@@ -272,7 +272,7 @@ const FilteringEvents = observer(() => {
 
     const handleRowClick = useCallback((e) => {
         const { id } = e.currentTarget;
-        logStore.setSelectedEventById(id);
+        logStore.handleSelectEvent(id);
     }, [logStore]);
 
     const columnsData = [

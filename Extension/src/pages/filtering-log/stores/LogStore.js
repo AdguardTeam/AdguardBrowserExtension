@@ -464,13 +464,25 @@ class LogStore {
     };
 
     @action
-    setSelectedEventById = (eventIdString) => {
+    handleSelectEvent = (eventIdString) => {
         const eventId = this.toNumberOrString(eventIdString);
-        if (this.selectedEvent && eventId !== this.selectedEvent.eventId) {
-            this.rootStore.wizardStore.setAddedRuleState(false);
+
+        if (this.selectedEvent
+            && this.rootStore.wizardStore.isModalOpen
+            && eventId === this.selectedEvent.eventId) {
+            this.selectedEvent = null;
+            this.rootStore.wizardStore.closeModal();
+            return;
         }
-        this.selectedEvent = find(this.filteringEvents, { eventId });
+
+        this.rootStore.wizardStore.setAddedRuleState(false);
+        this.setSelectedEventById(eventId);
         this.rootStore.wizardStore.openModal();
+    }
+
+    @action
+    setSelectedEventById = (eventId) => {
+        this.selectedEvent = find(this.filteringEvents, { eventId });
     };
 
     @computed
