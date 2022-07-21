@@ -126,11 +126,11 @@ export const RequestPreview = observer(() => {
                     onClick={handleBackToRequestClick}
                     className="request-modal__navigation request-modal__navigation--button"
                 >
-                    <Icon id="#arrow-left" classname="icon--contain" />
+                    <Icon id="#arrow-left" classname="icon--24" />
+                    <span className="request-modal__header">
+                        {reactTranslator.getMessage('filtering_modal_preview_title')}
+                    </span>
                 </button>
-                <span className="request-modal__header">
-                    {reactTranslator.getMessage('filtering_modal_preview_title')}
-                </span>
             </div>
             <div className="request-modal__content request-preview">
                 {renderContent()}

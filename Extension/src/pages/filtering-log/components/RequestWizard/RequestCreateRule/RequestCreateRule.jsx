@@ -165,9 +165,9 @@ const RequestCreateRule = observer(() => {
                     onClick={handleBackClick}
                     className="request-modal__navigation request-modal__navigation--button"
                 >
-                    <Icon classname="icon--contain" id="#arrow-left" />
+                    <Icon classname="icon--24" id="#arrow-left" />
+                    <span className="request-modal__header">{title}</span>
                 </button>
-                <span className="request-modal__header">{title}</span>
             </div>
             <div ref={ref} className="request-modal__content">
                 <div className="request-info">
