@@ -213,7 +213,7 @@ export const stealthService = (() => {
     /**
      * Updates browser privacy.network settings depending on blocking WebRTC or not
      *
-     * @param blockWebRTC
+     * @param {boolean} blockWebRTC
      */
     const setBlockWebRTC = async (blockWebRTC) => {
         // Edge doesn't support privacy api
@@ -280,45 +280,34 @@ export const stealthService = (() => {
         }
     };
 
-    const handleWebRTCEnabling = async () => {
+    /**
+     * Handle WebRTC blocking feature for Chromium browsers
+     *
+     * @param {boolean} shouldBlock
+     */
+    const handlePrivacyPermissions = async (shouldBlock) => {
         try {
-            let isPermissionsGranted = await browserUtils.containsPermissions(PRIVACY_PERMISSIONS);
-            if (!isPermissionsGranted) {
-                isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
+            if (!shouldBlock) {
+                // Unblocking WebRTC doesn't require any permissions
+                await setBlockWebRTC(shouldBlock);
+                return;
             }
 
-            if (isPermissionsGranted) {
-                await setBlockWebRTC(false);
-            } else {
-                // If privacy permission is not granted set block webrtc value to false
-                settings.setProperty(settings.BLOCK_WEBRTC, false);
-            }
-        } catch (e) {
-            log.error(e);
-        }
-    };
-
-    const handleWebRTCDisabling = async () => {
-        try {
             let isPermissionsGranted = await browserUtils.containsPermissions(PRIVACY_PERMISSIONS);
+
             if (!isPermissionsGranted) {
+                // If there is no permission already, request one
                 isPermissionsGranted = await browserUtils.requestPermissions(PRIVACY_PERMISSIONS);
             }
 
             if (isPermissionsGranted) {
                 await setBlockWebRTC(true);
-                await browserUtils.removePermission(PRIVACY_PERMISSIONS);
+            } else {
+                // If privacy permission is not granted set BLOCK_WEBRTC setting to false
+                settings.setProperty(settings.BLOCK_WEBRTC, false);
             }
         } catch (e) {
             log.error(e);
-        }
-    };
-
-    const handlePrivacyPermissions = async (shouldBlock) => {
-        if (shouldBlock) {
-            await handleWebRTCDisabling();
-        } else {
-            await handleWebRTCEnabling();
         }
     };
 
@@ -413,8 +402,10 @@ export const stealthService = (() => {
                 }
 
                 if (shouldHandlePrivacyPermission()) {
+                    // Block or unblock WebRTC while handling privacy permission
                     await handlePrivacyPermissions(shouldBlock);
                 } else {
+                    // Set WebRTC blocking as is for everything else
                     await setBlockWebRTC(shouldBlock);
                 }
             }
