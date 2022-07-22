@@ -187,14 +187,14 @@ const VirtualizedRow = ({
     );
 };
 
-const FilteringEventsRows = observer(({
-    logStore,
-    columns,
-    handleRowClick,
-}) => {
-    const { events } = logStore;
+const ColumnsContext = React.createContext({});
 
-    const TableHeader = ({ style }) => (
+const ColumnsProvider = ColumnsContext.Provider;
+
+const TableHeader = ({ style }) => {
+    const { columns } = useContext(ColumnsContext);
+
+    return (
         <div
             className="thead"
             style={style}
@@ -221,8 +221,10 @@ const FilteringEventsRows = observer(({
             </div>
         </div>
     );
+};
 
-    const tableHeader = forwardRef(({ children, ...rest }, ref) => (
+const TableInnerWrapper = forwardRef(({ children, ...rest }, ref) => {
+    return (
         <div ref={ref} {...rest}>
             <TableHeader
                 index={0}
@@ -234,31 +236,47 @@ const FilteringEventsRows = observer(({
 
             {children}
         </div>
-    ));
+    );
+});
+
+const FilteringEventsRows = observer(({
+    logStore,
+    columns,
+    handleRowClick,
+}) => {
+    const { events } = logStore;
 
     return (
-        <AutoSizer>
-            {({
-                height,
-            }) => {
-                return (
-                    <FixedSizeList
-                        className="list"
-                        height={height}
-                        itemCount={events.length}
-                        itemData={{
-                            events,
-                            columns,
-                            handleRowClick,
-                        }}
-                        innerElementType={tableHeader}
-                        itemSize={ITEM_HEIGHT_PX}
-                    >
-                        {VirtualizedRow}
-                    </FixedSizeList>
-                );
-            }}
-        </AutoSizer>
+        /**
+         * FixedSizeList does not support passing props to innerElementType component
+         * We use React Context API to bypass this limatation
+         *
+         * https://github.com/bvaughn/react-window/issues/404
+         */
+        <ColumnsProvider value={{ columns }}>
+            <AutoSizer>
+                {({
+                    height,
+                }) => {
+                    return (
+                        <FixedSizeList
+                            className="list"
+                            height={height}
+                            itemCount={events.length}
+                            itemData={{
+                                events,
+                                columns,
+                                handleRowClick,
+                            }}
+                            innerElementType={TableInnerWrapper}
+                            itemSize={ITEM_HEIGHT_PX}
+                        >
+                            {VirtualizedRow}
+                        </FixedSizeList>
+                    );
+                }}
+            </AutoSizer>
+        </ColumnsProvider>
     );
 });
 
