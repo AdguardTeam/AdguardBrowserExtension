@@ -100,7 +100,6 @@
         & .th {
             text-align: left;
             padding: 7px 10px;
-            font-weight: normal;
             font-size: 14px;
             color: var(--darkText);
             position: relative;
@@ -200,6 +199,10 @@
         }
     }
 
+    &__th {
+        line-height: 30px;
+    }
+
     & .table {
         & .tr {
             height: 30px;
@@ -225,16 +228,16 @@
                 content: "";
                 display: block;
                 position: absolute;
+                top: calc(50% - 10px);
                 right: 50%;
                 width: 1px;
-                height: 70%;
+                height: 20px;
                 background-color: var(--gray400);
             }
         }
 
         & .th, & .td {
             flex-shrink: 0;
-            padding: 0 10px;
             height: 30px;
             display: inline-block;
             width: 20%;
@@ -243,7 +246,14 @@
             overflow: hidden;
         }
 
+        & .th {
+            padding: 7px 10px;
+            font-weight: 450;
+            color: var(--gray900);
+        }
+
         & .td {
+            padding: 0 10px;
             line-height: 30px;
         }
     }
@@ -363,6 +373,7 @@
 
         &__inner .thead .th {
             background-color: var(--bgColor);
+            color: var(--gray300);
         }
 
         &__inner .tr--tbody {
