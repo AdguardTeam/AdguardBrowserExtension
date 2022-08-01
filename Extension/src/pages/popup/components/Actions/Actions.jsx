@@ -29,7 +29,7 @@ export const Actions = observer(() => {
         if (!store.applicationAvailable) {
             return;
         }
-        messenger.openAbuseSite(store.url);
+        messenger.openAbuseSite(store.url, 'popup');
         window.close();
     };
 

@@ -38,7 +38,7 @@ export const SafeBrowsing = () => {
                     </div>
                 </div>
                 <div className="alert__body">
-                    <a href="https://adguard.com" className="alert__logo" />
+                    <a href="https://link.adtidy.org/forward.html?action=adguard_site&from=safebrowsing&app=browser_extension" className="alert__logo" />
                     <div className="hero hero--red" />
                     <div className="alert__body-title">
                         {malware === 'true' ? ( // query param is string
@@ -67,7 +67,7 @@ export const SafeBrowsing = () => {
                         {advanced ? (
                             <>
                                 <a
-                                    href={`https://reports.adguard.com/${host}/report.html`}
+                                    href={`https://link.adtidy.org/forward.html?action=site_report_page&domain=${host}&from=safebrowsing&app=browser_extension`}
                                     className="button button--white alert__btn"
                                 >
                                     {reactTranslator.getMessage('blocking_pages_more_info_button')}

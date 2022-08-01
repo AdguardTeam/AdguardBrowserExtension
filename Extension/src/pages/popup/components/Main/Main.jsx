@@ -48,7 +48,7 @@ export const Main = observer(() => {
                         {store.showInfoAboutFullVersion && (
                             <div className="main__cta-link">
                                 <a
-                                    href="https://adguard.com/forward.html?action=compare&from=popup&app=browser_extension"
+                                    href="https://link.adtidy.org/forward.html?action=compare&from=popup&app=browser_extension"
                                     target="_blank"
                                     rel="noreferrer"
                                 >

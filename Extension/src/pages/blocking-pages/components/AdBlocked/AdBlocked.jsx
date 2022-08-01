@@ -31,7 +31,7 @@ export const AdBlocked = () => {
                     </div>
                 </div>
                 <div className="alert__body">
-                    <a href="https://adguard.com" className="alert__logo" />
+                    <a href="https://link.adtidy.org/forward.html?action=adguard_site&from=adblocked&app=browser_extension" className="alert__logo" />
                     <div className="hero hero--green" />
                     <div className="alert__body-title">
                         <span>

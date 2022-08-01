@@ -218,8 +218,8 @@ class Messenger {
         return this.sendMessage(MESSAGE_TYPES.OPEN_ASSISTANT);
     }
 
-    async openAbuseSite(url) {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_ABUSE_TAB, { url });
+    async openAbuseSite(url, from) {
+        return this.sendMessage(MESSAGE_TYPES.OPEN_ABUSE_TAB, { url, from });
     }
 
     async checkSiteSecurity(url) {

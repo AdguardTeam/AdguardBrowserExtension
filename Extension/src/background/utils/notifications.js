@@ -131,7 +131,7 @@ export const notifications = (function () {
             },
         },
         text: '',
-        url: 'https://adguard.com/forward.html?action=birthday13&app=browser_extension',
+        url: 'https://link.adtidy.org/forward.html?action=birthday13&app=browser_extension',
         from: '31 May 2022 12:00:00',
         to: '5 June 2022 23:59:00',
         type: 'animated',
