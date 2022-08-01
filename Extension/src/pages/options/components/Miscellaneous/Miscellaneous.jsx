@@ -29,7 +29,7 @@ const Miscellaneous = observer(() => {
     }
 
     // eslint-disable-next-line max-len
-    const COLLECT_HITS_LEARN_MORE_URL = 'https://adguard.com/forward.html?action=filter_rules&from=options_screen&app=browser_extension';
+    const COLLECT_HITS_LEARN_MORE_URL = 'https://link.adtidy.org/forward.html?action=filter_rules&from=options_screen&app=browser_extension';
 
     const settingChangeHandler = async ({ id, data }) => {
         log.info(`Setting ${id} set to ${data}`);

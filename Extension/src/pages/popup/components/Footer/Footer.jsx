@@ -10,8 +10,8 @@ import './footer.pcss';
 export const Footer = observer(() => {
     const store = useContext(popupStore);
 
-    const LINK_TO_IOS = 'https://adguard.com/forward.html?action=ios_about&from=popup&app=browser_extension';
-    const LINK_TO_ANDROID = 'https://adguard.com/forward.html?action=android_about&from=popup&app=browser_extension';
+    const LINK_TO_IOS = 'https://link.adtidy.org/forward.html?action=ios_about&from=popup&app=browser_extension';
+    const LINK_TO_ANDROID = 'https://link.adtidy.org/forward.html?action=android_about&from=popup&app=browser_extension';
 
     let footerContent = (
         <>

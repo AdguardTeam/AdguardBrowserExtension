@@ -598,8 +598,8 @@ const createMessageHandler = () => {
                 break;
             }
             case MESSAGE_TYPES.OPEN_ABUSE_TAB: {
-                const { url } = data;
-                uiService.openAbuseTab(url);
+                const { url, from } = data;
+                uiService.openAbuseTab(url, from);
                 break;
             }
             case MESSAGE_TYPES.OPEN_SETTINGS_TAB:

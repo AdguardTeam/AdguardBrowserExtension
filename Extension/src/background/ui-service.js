@@ -63,7 +63,7 @@ export const uiService = (function () {
         'context_complaint_website': async function () {
             const tab = await tabsApi.getActive();
             if (tab) {
-                openAbuseTab(tab.url);
+                openAbuseTab(tab.url, 'context_menu');
             }
         },
         'context_site_filtering_on': async function () {
@@ -107,10 +107,10 @@ export const uiService = (function () {
 
         const action = `${browser}_store`;
 
-        return `https://adguard.com/forward.html?action=${action}&from=options_screen&app=browser_extension`;
+        return `https://link.adtidy.org/forward.html?action=${action}&from=options_screen&app=browser_extension`;
     })();
 
-    const THANKYOU_PAGE_URL = 'https://welcome.adguard.com/v2/thankyou.html';
+    const THANKYOU_PAGE_URL = 'https://link.adtidy.org/forward.html?action=thank_you_page&from=background&app=browser_extension';
 
     /**
      * Update icon for tab
@@ -455,7 +455,7 @@ export const uiService = (function () {
 
         let offer = translator.getMessage('options_popup_version_update_offer');
         let offerDesc = '';
-        let offerButtonHref = 'https://adguard.com/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
+        let offerButtonHref = 'https://link.adtidy.org/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
         let offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
 
         if (promoNotification) {
@@ -469,7 +469,7 @@ export const uiService = (function () {
             type: 'show-version-updated-popup',
             title: translator.getMessage('options_popup_version_update_title_text', { current_version: currentVersion }),
             description: getUpdateDescriptionMessage(currentVersion, previousVersion),
-            changelogHref: 'https://adguard.com/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
+            changelogHref: 'https://link.adtidy.org/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
             changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
             showPromoNotification: !!promoNotification,
             offer,
@@ -621,7 +621,7 @@ export const uiService = (function () {
     const openSiteReportTab = function (url) {
         const domain = utils.url.toPunyCode(utils.url.getDomainName(url));
         if (domain) {
-            openTab(`https://adguard.com/site.html?domain=${encodeURIComponent(domain)}&utm_source=extension&aid=16593`);
+            openTab(`https://link.adtidy.org/forward.html?action=site_report_page&domain=${encodeURIComponent(domain)}&from=context_menu&app=browser_extension`);
         }
     };
 
@@ -784,7 +784,7 @@ export const uiService = (function () {
      * https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters
      * @param url
      */
-    const openAbuseTab = function (url) {
+    const openAbuseTab = function (url, from) {
         let browser;
         let browserDetails;
 
@@ -799,7 +799,7 @@ export const uiService = (function () {
         const filterIds = application.getEnabledFiltersFromEnabledGroups()
             .map(filter => filter.filterId);
 
-        openTab(`https://reports.adguard.com/new_issue.html?product_type=Ext&product_version=${encodeURIComponent(backgroundPage.app.getVersion())
+        openTab(`https://link.adtidy.org/forward.html?action=report&from=${from}&app=browser_extension&product_type=Ext&product_version=${encodeURIComponent(backgroundPage.app.getVersion())
         }&browser=${encodeURIComponent(browser)
         }${browserDetails ? `&browser_detail=${encodeURIComponent(browserDetails)}` : ''
         }&url=${encodeURIComponent(url)
@@ -843,7 +843,7 @@ export const uiService = (function () {
     const openThankYouPage = async () => {
         const params = browserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(backgroundPage.app.getLocale())}`);
-        const thankyouUrl = `${THANKYOU_PAGE_URL}?${params.join('&')}`;
+        const thankyouUrl = `${THANKYOU_PAGE_URL}&${params.join('&')}`;
 
         // TODO move url in constants
         const filtersDownloadUrl = getPageUrl('filter-download.html');

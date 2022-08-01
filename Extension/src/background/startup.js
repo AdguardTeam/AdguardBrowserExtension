@@ -44,7 +44,7 @@ export const startup = async function () {
 
         // Set uninstall page url
         // eslint-disable-next-line max-len
-        const uninstallUrl = 'https://adguard.com/forward.html?action=adguard_uninstal_ext&from=background&app=browser_extension';
+        const uninstallUrl = 'https://link.adtidy.org/forward.html?action=adguard_uninstal_ext&from=background&app=browser_extension';
         try {
             await browser.runtime.setUninstallURL(uninstallUrl);
         } catch (e) {
