@@ -1,8 +1,8 @@
-! Checksum: pPbvbf0Mr4SyHN0iwsOPRg
+! Checksum: DugKOtgzbRNVd8DilDDGww
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.14.25
-! TimeUpdated: 2022-06-30T07:31:54+00:00
+! Version: 2.0.14.42
+! TimeUpdated: 2022-08-01T09:04:03+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -289,6 +289,12 @@ tunovelaligera.com#@#.AdSense
 tunovelaligera.com#@#iframe[width="728"][height="90"]
 tunovelaligera.com#@#img[width="728"][height="90"]
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/125496
+@@||static.ads-twitter.com/uwt.js$domain=notipostingt.com
+notipostingt.com#%#//scriptlet('prevent-fetch', 'static.ads-twitter.com')
+! https://github.com/uBlockOrigin/uAssets/issues/14099
+raulprietofernandez.net#@#.adsbygoogle
+raulprietofernandez.net##ins.adsbygoogle
 ! https://github.com/uBlockOrigin/uAssets/issues/13696
 20minutos.es#%#//scriptlet("abort-on-property-read", "hb_now")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120512
@@ -1461,6 +1467,8 @@ peru21.pe#@#.adstop
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24801
 yahoo.com#?#ul[class^="Mb(0)"] > li.js-stream-content:has(> div > a[rel="nofollow noopener noreferrer"]+div:contains(Patrocinado))
 !
+mangapt.com#?#div[id^="block-"]:has(> .widget__inner > .widget-content > .adsbygoogle)
+mangapt.com#?#div[id^="custom_html-"]:has(> .widget__inner > .widget-content > .textwidget > .adsbygoogle)
 adrenaline.com.br#?#.main > div[style*="height: 250px;"]
 adrenaline.com.br#?#.text-center > small:contains(/Publicidade|publicidade/)
 estadao.com.br#?#div[class^="styles__Container-"]:has(> p.ads-placeholder-label)
@@ -1691,6 +1699,12 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/125382
+pelisplushd.site#%#//scriptlet('remove-attr', 'href', 'a[href^="https://adalites.site/"]')
+! https://github.com/uBlockOrigin/uAssets/issues/14099#issuecomment-1192722375
+raulprietofernandez.net#%#//scriptlet("abort-on-property-write", "pUrlArray")
+! https://github.com/AdguardTeam/AdguardFilters/issues/123894
+beachcam.meo.pt#%#//scriptlet('remove-class', 'bgPartners2019', '.videoContainer > div.beachPartners + div')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122276
 chinesetubex.com.es#%#//scriptlet('prevent-window-open')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/119040
@@ -2236,6 +2250,18 @@ link.estadao.com.br,atomixhq.*,jc.ne10.uol.com.br,internetpasoapaso.com,acidadeo
 ! ##.ad
 atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##.ad
 !
+mangapt.com##.body-wrap > .c-top-sidebar
+kimovil.com###user-sidebar div.kau
+raulprietofernandez.net###k2Container > div[class^="item"] div[style*="background-color"]
+beachcam.meo.pt##.beachPartners
+beachcam.meo.pt##.dealer-block
+beachcam.meo.pt##.liveCamInfoContainer > div.sponsorContainer + div
+brasil247.com##.adBackground
+brasil247.com##.textPublicidade
+rbtv.com.br##div[class^="div03-banner-"]
+||descargasdd.net/images/amazon.gif
+||enfasys.net/wp-content/uploads/*.gif
+mixmods.com.br##.customadimg
 eltiempo.com##.adunit-googleadmanager
 ||adrenaline.com.br/uploads/personalizacao/TEMPLATE-ADRENALINE-*.jpg
 ||chineseporn.xyz/*.php
@@ -3764,7 +3790,7 @@ tvgol.biz###anuncio1
 seriesyonkis.com###auto_banner
 lanacion.com.py###ba_avanza
 lanacion.com.py###ba_interbanco
-animeflv.net,cadenasuper.com,rcmpharma.com,terra.com.br###banner
+peladas69.com,animeflv.net,cadenasuper.com,rcmpharma.com,terra.com.br###banner
 braziliantimes.com###banner-topo
 vanguardia.com###banner0
 eleconomista.es,tudorondonia.com###banner1
@@ -4182,7 +4208,7 @@ peru.com##.marcopublicidad320250
 cadenaser.com##.marketplace2
 r7.com##.materia_coluna
 unam.mx##.medium-rectangle
-correiomanha.pt##.megaBanner
+muyinteresante.es,correiomanha.pt##.megaBanner
 filmixt.com##.midtopadd
 infobae.com##.mod-banner_300x50
 infobae.com##.mod-banner_650
@@ -4734,7 +4760,6 @@ uol.com.br##.banner_topo
 folha.uol.com.br##.bookstore
 uol.com.br##.cyrela_wrap
 uol.com.br##.google
-uol.com.br##.lista
 uol.com.br##.mod-servicos-box
 uol.com.br##.mod-uol-host
 uol.com.br##div[style="height: 90px;"]
@@ -4807,6 +4832,9 @@ urlcloud.us##.banner
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - whitelist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/123894
+@@||consensu.org^$domain=beachcam.meo.pt
+@@||cmp.quantcast.com^$domain=beachcam.meo.pt
 ! https://github.com/AdguardTeam/AdguardFilters/issues/117538
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=noopjs,domain=r7.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/116121

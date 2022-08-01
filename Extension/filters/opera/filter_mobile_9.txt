@@ -1,8 +1,8 @@
-! Checksum: pa1hUIZzSzzIc/1IlLJxiA
+! Checksum: hXrmA5FNfWGO32qdSnZmBQ
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.14.25
-! TimeUpdated: 2022-06-30T07:31:54+00:00
+! Version: 2.0.14.42
+! TimeUpdated: 2022-08-01T09:04:03+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -200,6 +200,10 @@ tunovelaligera.com#%#//scriptlet("abort-on-property-read", "ad_nodes")
 tunovelaligera.com#@#.AdSense
 tunovelaligera.com#@#iframe[width="728"][height="90"]
 tunovelaligera.com#@#img[width="728"][height="90"]
+@@||static.ads-twitter.com/uwt.js$domain=notipostingt.com
+notipostingt.com#%#//scriptlet('prevent-fetch', 'static.ads-twitter.com')
+raulprietofernandez.net#@#.adsbygoogle
+raulprietofernandez.net##ins.adsbygoogle
 20minutos.es#%#//scriptlet("abort-on-property-read", "hb_now")
 ||tecword.info/milionario/knust.js
 tecword.info#%#//scriptlet("prevent-setTimeout", "]]=== 0")
@@ -940,6 +944,8 @@ peru21.pe#@#.adstop
 @@||autonocion.com/js/advertisement.js
 @@||subedlc.com^$elemhide
 yahoo.com#?#ul[class^="Mb(0)"] > li.js-stream-content:has(> div > a[rel="nofollow noopener noreferrer"]+div:contains(Patrocinado))
+mangapt.com#?#div[id^="block-"]:has(> .widget__inner > .widget-content > .adsbygoogle)
+mangapt.com#?#div[id^="custom_html-"]:has(> .widget__inner > .widget-content > .textwidget > .adsbygoogle)
 adrenaline.com.br#?#.main > div[style*="height: 250px;"]
 adrenaline.com.br#?#.text-center > small:contains(/Publicidade|publicidade/)
 estadao.com.br#?#div[class^="styles__Container-"]:has(> p.ads-placeholder-label)
@@ -1148,6 +1154,9 @@ maisgasolina.com#?##main [id$="Block"][-ext-has='.adsbygoogle']
 ##.standard-ad
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
+pelisplushd.site#%#//scriptlet('remove-attr', 'href', 'a[href^="https://adalites.site/"]')
+raulprietofernandez.net#%#//scriptlet("abort-on-property-write", "pUrlArray")
+beachcam.meo.pt#%#//scriptlet('remove-class', 'bgPartners2019', '.videoContainer > div.beachPartners + div')
 chinesetubex.com.es#%#//scriptlet('prevent-window-open')
 netcine.*#%#//scriptlet("prevent-window-open")
 seriesgratis.biz#%#//scriptlet("prevent-setTimeout", "adsdirect")
@@ -1471,6 +1480,18 @@ http://adw.
 /^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net
 link.estadao.com.br,atomixhq.*,jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,infoescola.com,quatrorodas.abril.com.br,cbn.globoradio.globo.com,maxitorrent.com,veja.abril.com.br,odia.ig.com.br,especiais.g1.globo.com,tribunapr.com.br,novelasd.com,anime-tube.tv##.ads
 atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##.ad
+mangapt.com##.body-wrap > .c-top-sidebar
+kimovil.com###user-sidebar div.kau
+raulprietofernandez.net###k2Container > div[class^="item"] div[style*="background-color"]
+beachcam.meo.pt##.beachPartners
+beachcam.meo.pt##.dealer-block
+beachcam.meo.pt##.liveCamInfoContainer > div.sponsorContainer + div
+brasil247.com##.adBackground
+brasil247.com##.textPublicidade
+rbtv.com.br##div[class^="div03-banner-"]
+||descargasdd.net/images/amazon.gif
+||enfasys.net/wp-content/uploads/*.gif
+mixmods.com.br##.customadimg
 eltiempo.com##.adunit-googleadmanager
 ||adrenaline.com.br/uploads/personalizacao/TEMPLATE-ADRENALINE-*.jpg
 ||chineseporn.xyz/*.php
@@ -2999,7 +3020,7 @@ tvgol.biz###anuncio1
 seriesyonkis.com###auto_banner
 lanacion.com.py###ba_avanza
 lanacion.com.py###ba_interbanco
-animeflv.net,cadenasuper.com,rcmpharma.com,terra.com.br###banner
+peladas69.com,animeflv.net,cadenasuper.com,rcmpharma.com,terra.com.br###banner
 braziliantimes.com###banner-topo
 vanguardia.com###banner0
 eleconomista.es,tudorondonia.com###banner1
@@ -3417,7 +3438,7 @@ peru.com##.marcopublicidad320250
 cadenaser.com##.marketplace2
 r7.com##.materia_coluna
 unam.mx##.medium-rectangle
-correiomanha.pt##.megaBanner
+muyinteresante.es,correiomanha.pt##.megaBanner
 filmixt.com##.midtopadd
 infobae.com##.mod-banner_300x50
 infobae.com##.mod-banner_650
@@ -3967,7 +3988,6 @@ uol.com.br##.banner_topo
 folha.uol.com.br##.bookstore
 uol.com.br##.cyrela_wrap
 uol.com.br##.google
-uol.com.br##.lista
 uol.com.br##.mod-servicos-box
 uol.com.br##.mod-uol-host
 uol.com.br##div[style="height: 90px;"]
@@ -4011,6 +4031,8 @@ urlcero.com##.banner
 urlcloud.us##.adsbygoogle
 !+ NOT_OPTIMIZED PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 urlcloud.us##.banner
+@@||consensu.org^$domain=beachcam.meo.pt
+@@||cmp.quantcast.com^$domain=beachcam.meo.pt
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=noopjs,domain=r7.com
 flatout.com.br#@#.penci-google-adsense
 flatout.com.br#@#.penci_single_ad_before_content
