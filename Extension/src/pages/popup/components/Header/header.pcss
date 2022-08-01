@@ -40,7 +40,17 @@
                 color: var(--gray400);
             }
         }
+
+        &.updating-filters {
+            pointer-events: none;
+            animation: spin 1.5s infinite linear;
+        }
     }
+}
+
+@keyframes spin {
+    0% {transform: rotate(0)}
+    100% {transform: rotate(360deg)}
 }
 
 .light-mode {

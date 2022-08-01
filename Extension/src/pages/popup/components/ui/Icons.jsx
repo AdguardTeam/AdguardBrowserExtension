@@ -5,6 +5,15 @@ import './icons.pcss';
 export const Icons = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" className="hidden">
+            <symbol id="update-filters" viewBox="0 0 24 24">
+                <g fill="none">
+                    <path d="M17.3534 16.5104C16.1277 17.9637 14.321 18.9109 12.2915 18.994L12.0001 19C8.50404 19 5.60658 16.4371 5.08409 13.0876C5.07577 13.0342 5.02444 12.5409 5.01733 12.4872" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M3 12.8485L5.01723 11L6.581 12.578" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M6.64673 7.48953C7.87242 6.0363 9.67909 5.08906 11.7086 5.00596L12 5C15.4644 5 18.341 7.51668 18.9013 10.8215C18.9154 10.9049 18.9716 11.6168 18.9828 11.7011" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M20.9999 11.1515L18.9827 13L17.4189 11.423" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
+            </symbol>
+
             <symbol id="pause" viewBox="0 0 24 24">
                 <g fill="none">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
