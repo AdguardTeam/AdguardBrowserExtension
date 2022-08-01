@@ -26,3 +26,46 @@ export const runtimeImpl = (() => {
 
 // eslint-disable-next-line prefer-destructuring
 export const i18n = browser.i18n;
+
+/**
+ * Sleeps given period of time
+ * @param wait
+ * @returns {Promise<unknown>}
+ */
+export const sleep = (wait) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, wait);
+    });
+};
+
+/**
+ * Sleeps necessary period of time if minimum duration didn't pass since entry time
+ * @param {number} entryTimeMs
+ * @param {number} minDurationMs
+ * @returns {Promise<void>}
+ */
+export const sleepIfNecessary = async (entryTimeMs, minDurationMs) => {
+    if (Date.now() - entryTimeMs < minDurationMs) {
+        await sleep(minDurationMs - (Date.now() - entryTimeMs));
+    }
+};
+
+/**
+ * Executes async function with at least required time
+ * @param fn
+ * @param minDurationMs
+ */
+export const addMinDurationTime = (fn, minDurationMs) => {
+    return async (...args) => {
+        const start = Date.now();
+
+        try {
+            const response = await fn(...args);
+            await sleepIfNecessary(start, minDurationMs);
+            return response;
+        } catch (e) {
+            await sleepIfNecessary(start, minDurationMs);
+            throw e;
+        }
+    };
+};
