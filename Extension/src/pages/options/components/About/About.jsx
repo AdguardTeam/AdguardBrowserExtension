@@ -50,12 +50,12 @@ const About = observer(() => {
                         {reactTranslator.getMessage('options_copyright')}
                     </div>
                 </div>
-                <div className="about__menu">
+                <div className="links-menu">
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={CHANGELOG_URL}
-                        className="about__menu-item"
+                        className="links-menu__item"
                     >
                         {reactTranslator.getMessage('options_open_changelog')}
                     </a>
@@ -63,7 +63,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={PRIVACY_URL}
-                        className="about__menu-item"
+                        className="links-menu__item"
                     >
                         {reactTranslator.getMessage('options_privacy_policy')}
                     </a>
@@ -71,7 +71,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={WEBSITE_URL}
-                        className="about__menu-item"
+                        className="links-menu__item"
                     >
                         {reactTranslator.getMessage('options_site')}
                     </a>
@@ -79,7 +79,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={DISCUSS_URL}
-                        className="about__menu-item"
+                        className="links-menu__item"
                     >
                         {reactTranslator.getMessage('options_discuss')}
                     </a>
@@ -87,7 +87,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={ACKNOWLEDGMENTS_URL}
-                        className="about__menu-item"
+                        className="links-menu__item"
                     >
                         {reactTranslator.getMessage('options_acknowledgment')}
                     </a>
@@ -95,7 +95,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={GITHUB_URL}
-                        className="about__menu-item"
+                        className="links-menu__item"
                     >
                         {reactTranslator.getMessage('options_github')}
                     </a>

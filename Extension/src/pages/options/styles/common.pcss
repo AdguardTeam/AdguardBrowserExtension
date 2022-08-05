@@ -129,6 +129,30 @@ label.checkbox-label {
     display: flex;
 }
 
+.links-menu {
+    flex-direction: column;
+    align-items: flex-start;
+    display: flex;
+
+    button {
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    &__item {
+        color: var(--gray4a);
+        margin-bottom: 15px;
+        font-size: 16px;
+        text-decoration: underline;
+        cursor: pointer;
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
+    }
+}
+
 .footer {
     width: 100%;
     flex: 0 0 auto;
@@ -411,6 +435,12 @@ select:focus {
     .actions__btn--active {
         background-color: var(--gray100);
     }
+
+    .links-menu {
+        &__item {
+            color: var(--gray4a);
+        }
+    }
 }
 
 .dark-mode {
@@ -466,5 +496,11 @@ select:focus {
 
     .actions__btn--active {
         background-color: var(--gray900);
+    }
+
+    .links-menu {
+        &__item {
+            color:  var(--gray300);
+        }
     }
 }

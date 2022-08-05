@@ -9,8 +9,17 @@ import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { hoursToMs, handleFileUpload } from '../../../helpers';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { APPEARANCE_THEMES } from '../../../constants';
 import { exportData, ExportTypes } from '../../../common/utils/export';
+import {
+    isFirefox,
+    isEdgeChromium,
+    isOpera,
+} from '../../../../common/user-agent-utils';
+import {
+    APPEARANCE_THEMES,
+    GITHUB_URL,
+    BROWSER_ADDON_STORE_LINKS,
+} from '../../../constants';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -59,6 +68,15 @@ const APPEARANCE_THEMES_OPTIONS = [
 ];
 
 const ALLOW_ACCEPTABLE_ADS = 'allowAcceptableAds';
+
+let currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.CHROME;
+if (isFirefox) {
+    currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.FIREFOX;
+} else if (isEdgeChromium) {
+    currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.EDGE;
+} else if (isOpera) {
+    currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.OPERA;
+}
 
 const General = observer(() => {
     const {
@@ -191,10 +209,13 @@ const General = observer(() => {
                     handler={settingChangeHandler}
                 />
             </SettingsSection>
-            <div className="actions">
+            <div
+                className="links-menu"
+                style={{ marginLeft: '16px' }}
+            >
                 <button
                     type="button"
-                    className="button button--m button--transparent actions__btn"
+                    className="links-menu__item"
                     onClick={handleExportSettings}
                 >
                     {reactTranslator.getMessage('options_export_settings')}
@@ -208,10 +229,26 @@ const General = observer(() => {
                 />
                 <label
                     htmlFor="inputEl"
-                    className="button button--m button--transparent actions__btn"
+                    className="links-menu__item"
                 >
                     {reactTranslator.getMessage('options_import_settings')}
                 </label>
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={GITHUB_URL}
+                    className="links-menu__item"
+                >
+                    {reactTranslator.getMessage('options_report_bug')}
+                </a>
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={currentBrowserAddonStoreUrl}
+                    className="links-menu__item"
+                >
+                    {reactTranslator.getMessage('options_leave_feedback')}
+                </a>
             </div>
         </>
     );
