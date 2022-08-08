@@ -46,10 +46,11 @@ export const contentUtils = (function () {
         const prependedHtml = `${styleElement.outerHTML}\n${html}`;
 
         const iframe = document.createElement('iframe');
-        target.insertAdjacentElement('afterbegin', iframe);
         iframe.src = 'about:blank';
+        iframe.style.position = 'fixed';
         iframe.style.zIndex = MAX_Z_INDEX;
         iframe.srcdoc = prependedHtml;
+        target.insertAdjacentElement('afterbegin', iframe);
 
         return iframe;
     };
