@@ -28,6 +28,7 @@ export const ToggleWrapButton = observer(({ onClick }) => {
                 type="button"
                 className={lineBreakClassNames}
                 onClick={onClick}
+                aria-label={tooltipText}
             >
                 <Icon classname="icon--extend" id="#line-break" />
             </button>

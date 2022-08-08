@@ -38,7 +38,7 @@ const Actions = observer(() => {
         { active: preserveLogEnabled },
     );
 
-    const preserveLogToolpitText = preserveLogEnabled
+    const preserveLogTooltipText = preserveLogEnabled
         ? reactTranslator.getMessage('filtering_log_preserve_log_on')
         : reactTranslator.getMessage('filtering_log_preserve_log_off');
 
@@ -51,8 +51,9 @@ const Actions = observer(() => {
                 <div className="actions__action">
                     <Popover text={reactTranslator.getMessage('filtering_clear_log_events')}>
                         <button
-                            className="actions__clear"
                             type="button"
+                            className="actions__clear"
+                            aria-label={reactTranslator.getMessage('filtering_clear_log_events')}
                             onClick={clearLogHandler}
                         >
                             <Icon id="#trash" classname="icon--trash actions__del" />
@@ -67,8 +68,9 @@ const Actions = observer(() => {
                             id="preserveLog"
                             onChange={preserveLogHandler}
                             checked={preserveLogEnabled}
+                            aria-label={preserveLogTooltipText}
                         />
-                        <Popover text={preserveLogToolpitText}>
+                        <Popover text={preserveLogTooltipText}>
                             <div className={preserveLogClassName}>
                                 <Icon id="#radio" classname="icon--24" />
                             </div>

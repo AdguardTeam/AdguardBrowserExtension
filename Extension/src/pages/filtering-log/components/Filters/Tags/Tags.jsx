@@ -111,6 +111,7 @@ export const Tags = ({
                     onClick={handleTagClick}
                     value={id}
                     key={id}
+                    aria-label={tooltip}
                 >
                     {title}
                 </button>

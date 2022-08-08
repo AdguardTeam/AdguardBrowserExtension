@@ -444,12 +444,13 @@ const RequestInfo = observer(() => {
                     type="button"
                     onClick={closeModal}
                     className="request-modal__navigation request-modal__navigation--button"
+                    aria-label={reactTranslator.getMessage('close_button_title')}
                 >
                     <Icon id="#cross" classname="icon--24" />
-                    <span className="request-modal__header">
-                        {reactTranslator.getMessage('filtering_modal_info_title')}
-                    </span>
                 </button>
+                <span className="request-modal__header">
+                    {reactTranslator.getMessage('filtering_modal_info_title')}
+                </span>
             </div>
             <div ref={contentRef} className="request-modal__content">
                 {selectedEvent.method && (
