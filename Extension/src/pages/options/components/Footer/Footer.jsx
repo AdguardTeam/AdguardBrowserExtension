@@ -39,6 +39,7 @@ export const Footer = observer(() => {
                             type="button"
                             className="footer__rate-close"
                             onClick={hideRate}
+                            aria-label={reactTranslator.getMessage('close_button_title')}
                         >
                             <Icon id="#cross" classname="icon--cross" />
                         </button>

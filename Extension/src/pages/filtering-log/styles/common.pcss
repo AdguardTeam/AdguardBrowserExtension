@@ -68,13 +68,17 @@ button, input {
 
 /* custom checkbox */
 label.checkbox-label {
+    position: relative;
     cursor: pointer;
     color: var(--textColor);
     display: flex;
     align-items: center;
 
     & input[type="checkbox"] {
-        display: none;
+        position: absolute;
+        clip: rect(1px, 1px, 1px, 1px);
+        top: 0;
+        left: 0;
 
         &:checked + .custom-checkbox {
             background-color: var(--mainGreen);

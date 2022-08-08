@@ -108,6 +108,7 @@ const Search = observer(() => {
                 <button
                     type="button"
                     className="button"
+                    aria-label={reactTranslator.getMessage('close_button_title')}
                     onClick={searchCloseHandler}
                 >
                     <Icon id="#cross" classname="search__cross" />

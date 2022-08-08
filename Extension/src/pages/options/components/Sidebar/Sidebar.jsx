@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 
@@ -52,9 +51,7 @@ const Sidebar = observer(() => {
                     </div>
                 )}
             <div className={className}>
-                <Link className="sidebar__link-logo" to="/">
-                    <Icon id="#logo" classname="icon--logo sidebar__logo" />
-                </Link>
+                <Icon id="#logo" classname="icon--logo sidebar__logo" />
                 <Nav closeSidebar={closeSidebar} />
                 {settingsStore.showAdguardPromoInfo && (
                     <Compare

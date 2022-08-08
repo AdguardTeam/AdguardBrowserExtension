@@ -19,6 +19,7 @@ export const Compare = ({ click, hide }) => {
             <button
                 type="button"
                 className="compare__close"
+                aria-label={reactTranslator.getMessage('close_button_title')}
                 onClick={hide}
             >
                 <Icon id="#cross" />

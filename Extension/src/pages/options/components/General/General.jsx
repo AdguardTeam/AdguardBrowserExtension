@@ -220,17 +220,17 @@ const General = observer(() => {
                 >
                     {reactTranslator.getMessage('options_export_settings')}
                 </button>
-                <input
-                    type="file"
-                    id="inputEl"
-                    accept="application/json"
-                    onChange={inputChangeHandler}
-                    style={{ display: 'none' }}
-                />
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label
                     htmlFor="inputEl"
                     className="links-menu__item"
                 >
+                    <input
+                        type="file"
+                        accept="application/json"
+                        onChange={inputChangeHandler}
+                        className="actions__input-file"
+                    />
                     {reactTranslator.getMessage('options_import_settings')}
                 </label>
                 <a

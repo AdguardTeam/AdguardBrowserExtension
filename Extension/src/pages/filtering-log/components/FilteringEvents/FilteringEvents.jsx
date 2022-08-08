@@ -135,13 +135,14 @@ const Row = observer(({
     style,
 }) => {
     return (
-        <div
+        <button
             style={{
                 ...style,
                 top: `${parseFloat(style.top) + ITEM_HEIGHT_PX}px`,
             }}
             id={event.eventId}
             onClick={onClick}
+            type="button"
             className={cn('tr tr--tbody', getRowClassName(event))}
         >
             {
@@ -165,7 +166,7 @@ const Row = observer(({
                     );
                 })
             }
-        </div>
+        </button>
     );
 });
 
