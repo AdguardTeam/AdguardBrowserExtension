@@ -18,6 +18,7 @@ const Search = forwardRef(({
             if (e[modifierKeyProperty] && code === 'KeyF') {
                 e.preventDefault();
                 localSearchInputRef.current.focus();
+                localSearchInputRef.current.select();
             }
         };
 
