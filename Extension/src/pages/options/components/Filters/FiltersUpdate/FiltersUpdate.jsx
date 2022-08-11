@@ -15,7 +15,7 @@ const formatOptions = {
 };
 
 const FiltersUpdate = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore } = useContext(rootStore);
 
     const {
         rulesCount,
@@ -25,24 +25,7 @@ const FiltersUpdate = observer(() => {
     } = settingsStore;
 
     const updateClickHandler = async () => {
-        try {
-            const updates = await settingsStore.updateFilters();
-            const filterNames = updates.map((filter) => filter.name).join(', ');
-            let description;
-            if (updates.length === 0) {
-                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_not_found')}`;
-            } else if (updates.length === 1) {
-                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_filter')}`;
-            } else if (updates.length > 1) {
-                description = `${filterNames} ${reactTranslator.getMessage('options_popup_update_filters')}`;
-            }
-            uiStore.addNotification({ description });
-        } catch (error) {
-            uiStore.addNotification({
-                title: reactTranslator.getMessage('options_popup_update_title_error'),
-                description: reactTranslator.getMessage('options_popup_update_error'),
-            });
-        }
+        await settingsStore.updateFilters();
     };
 
     const dateObj = new Date(lastUpdateTime);
