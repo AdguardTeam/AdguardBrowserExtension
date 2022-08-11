@@ -47,6 +47,7 @@ const Search = observer(() => {
             if (e[modifierKeyProperty] && code === 'KeyF') {
                 e.preventDefault();
                 searchInputRef.current.focus();
+                searchInputRef.current.select();
             }
         };
         const handleResetHotkey = (e) => {
