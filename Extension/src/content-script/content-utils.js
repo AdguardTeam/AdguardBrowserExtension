@@ -80,7 +80,6 @@ export const contentUtils = (function () {
     const appendAlertElement = (target, html, isAdguardTab, alertStyles) => {
         const stylesElement = createStyleElement(alertStyles);
         document.body.insertAdjacentElement('afterbegin', stylesElement);
-
         if (isAdguardTab) {
             return appendDiv(target, html);
         }

@@ -16,9 +16,12 @@ export const SettingSetSelect = ({
     };
 
     return (
-        <button
+        <div
             className="setting-checkbox setting-checkbox--button"
             onClick={handleSettingClick}
+            onKeyUp={handleSettingClick}
+            role="button"
+            tabIndex="0"
             type="button"
         >
             <SettingsSet
@@ -31,6 +34,6 @@ export const SettingSetSelect = ({
                     />
                 )}
             />
-        </button>
+        </div>
     );
 };

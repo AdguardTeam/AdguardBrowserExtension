@@ -161,3 +161,28 @@ export const isVerticalScroll = (() => {
             || (angle > deg240ToRad && angle < deg300ToRad);
     };
 })();
+
+/**
+ * Checks the length of the array with filters and returns the contents for notification
+ *
+ * @param updatedFilters
+ */
+export const updateFilterDescription = (updatedFilters) => {
+    if (!updatedFilters) {
+        return {
+            title: translator.getMessage('options_popup_update_title_error'),
+            description: translator.getMessage('options_popup_update_error'),
+        };
+    }
+    const filterNames = updatedFilters.map((filter) => filter.name).join(', ');
+    let description;
+    if (updatedFilters.length === 0) {
+        description = `${filterNames} ${translator.getMessage('options_popup_update_not_found')}`;
+    } else if (updatedFilters.length === 1) {
+        description = `${filterNames} ${translator.getMessage('options_popup_update_filter')}`;
+    } else if (updatedFilters.length > 1) {
+        description = `${filterNames} ${translator.getMessage('options_popup_update_filters')}`;
+    }
+
+    return { description };
+};

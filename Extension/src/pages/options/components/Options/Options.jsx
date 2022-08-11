@@ -16,6 +16,7 @@ import { About } from '../About';
 import { Footer } from '../Footer';
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
+import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
 import { log } from '../../../../common/log';
 import { Icons } from '../../../common/components/ui/Icons';
@@ -25,7 +26,7 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import '../../styles/styles.pcss';
 
 const Options = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     useAppearanceTheme(settingsStore.appearanceTheme);
 
@@ -60,6 +61,7 @@ const Options = observer(() => {
                         case NOTIFIER_TYPES.FILTERS_UPDATE_CHECK_READY: {
                             const [updatedFilters] = message.data;
                             settingsStore.refreshFilters(updatedFilters);
+                            uiStore.addNotification(updateFilterDescription(updatedFilters));
                             break;
                         }
                         case NOTIFIER_TYPES.SETTING_UPDATED: {
