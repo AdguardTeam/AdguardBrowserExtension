@@ -34,6 +34,7 @@
         Slot.prototype.getDomId = noopStr;
         Slot.prototype.getSlotElementId = noopStr;
         Slot.prototype.getSlotId = noopThis;
+        Slot.prototype.getSizes = noopArray;
         Slot.prototype.getTargeting = noopArray;
         Slot.prototype.getTargetingKeys = noopArray;
         Slot.prototype.set = noopThis;

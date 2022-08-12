@@ -1,6 +1,5 @@
 (function(source, args) {
     function GoogleIma3(source) {
-        var _this = this;
         var VERSION = "3.453.0";
         var ima = {};
         var AdDisplayContainer = function AdDisplayContainer() {};
@@ -27,75 +26,75 @@
             v: "",
             getCompanionBackfill: noopFunc,
             getDisableCustomPlaybackForIOS10Plus: function getDisableCustomPlaybackForIOS10Plus() {
-                return _this.i;
+                return this.i;
             },
             getDisabledFlashAds: function getDisabledFlashAds() {
                 return true;
             },
             getFeatureFlags: function getFeatureFlags() {
-                return _this.f;
+                return this.f;
             },
             getLocale: function getLocale() {
-                return _this.l;
+                return this.l;
             },
             getNumRedirects: function getNumRedirects() {
-                return _this.r;
+                return this.r;
             },
             getPlayerType: function getPlayerType() {
-                return _this.t;
+                return this.t;
             },
             getPlayerVersion: function getPlayerVersion() {
-                return _this.v;
+                return this.v;
             },
             getPpid: function getPpid() {
-                return _this.p;
+                return this.p;
             },
             getVpaidMode: function getVpaidMode() {
-                return _this.C;
+                return this.C;
             },
             isCookiesEnabled: function isCookiesEnabled() {
-                return _this.c;
+                return this.c;
             },
             isVpaidAdapter: function isVpaidAdapter() {
-                return _this.M;
+                return this.M;
             },
             setCompanionBackfill: noopFunc,
             setAutoPlayAdBreaks: function setAutoPlayAdBreaks(a) {
-                _this.K = a;
+                this.K = a;
             },
             setCookiesEnabled: function setCookiesEnabled(c) {
-                _this.c = !!c;
+                this.c = !!c;
             },
             setDisableCustomPlaybackForIOS10Plus: function setDisableCustomPlaybackForIOS10Plus(i) {
-                _this.i = !!i;
+                this.i = !!i;
             },
             setDisableFlashAds: noopFunc,
             setFeatureFlags: function setFeatureFlags(f) {
-                _this.f = !!f;
+                this.f = !!f;
             },
             setIsVpaidAdapter: function setIsVpaidAdapter(a) {
-                _this.M = a;
+                this.M = a;
             },
             setLocale: function setLocale(l) {
-                _this.l = !!l;
+                this.l = !!l;
             },
             setNumRedirects: function setNumRedirects(r) {
-                _this.r = !!r;
+                this.r = !!r;
             },
             setPageCorrelator: function setPageCorrelator(a) {
-                _this.R = a;
+                this.R = a;
             },
             setPlayerType: function setPlayerType(t) {
-                _this.t = !!t;
+                this.t = !!t;
             },
             setPlayerVersion: function setPlayerVersion(v) {
-                _this.v = !!v;
+                this.v = !!v;
             },
             setPpid: function setPpid(p) {
-                _this.p = !!p;
+                this.p = !!p;
             },
             setVpaidMode: function setVpaidMode(a) {
-                _this.C = a;
+                this.C = a;
             },
             setSessionId: noopFunc,
             setStreamCorrelator: noopFunc,
@@ -111,10 +110,9 @@
             }
         };
         var managerLoaded = false;
-        var EventHandler = function EventHandler() {};
-        EventHandler.prototype = {
-            listeners: new Map,
-            _dispatch: function _dispatch(e) {
+        var EventHandler = function EventHandler() {
+            this.listeners = new Map;
+            this._dispatch = function(e) {
                 var listeners = this.listeners.get(e.type) || [];
                 for (var _i = 0, _Array$from = Array.from(listeners); _i < _Array$from.length; _i++) {
                     var listener = _Array$from[_i];
@@ -124,77 +122,76 @@
                         console.error(r);
                     }
                 }
-            },
-            addEventListener: function addEventListener(t, c) {
+            };
+            this.addEventListener = function(t, c) {
                 if (!this.listeners.has(t)) {
                     this.listeners.set(t, new Set);
                 }
                 this.listeners.get(t).add(c);
-            },
-            removeEventListener: function removeEventListener(t, c) {
+            };
+            this.removeEventListener = function(t, c) {
                 var _this$listeners$get;
                 (_this$listeners$get = this.listeners.get(t)) === null || _this$listeners$get === void 0 ? void 0 : _this$listeners$get.delete(c);
-            }
+            };
         };
-        var AdsManager = EventHandler;
-        AdsManager.prototype.volume = 1;
-        AdsManager.prototype.collapse = noopFunc;
-        AdsManager.prototype.configureAdsManager = noopFunc;
-        AdsManager.prototype.destroy = noopFunc;
-        AdsManager.prototype.discardAdBreak = noopFunc;
-        AdsManager.prototype.expand = noopFunc;
-        AdsManager.prototype.focus = noopFunc;
-        AdsManager.prototype.getAdSkippableState = function() {
+        var AdsManager = new EventHandler;
+        AdsManager.volume = 1;
+        AdsManager.collapse = noopFunc;
+        AdsManager.configureAdsManager = noopFunc;
+        AdsManager.destroy = noopFunc;
+        AdsManager.discardAdBreak = noopFunc;
+        AdsManager.expand = noopFunc;
+        AdsManager.focus = noopFunc;
+        AdsManager.getAdSkippableState = function() {
             return false;
         };
-        AdsManager.prototype.getCuePoints = function() {
+        AdsManager.getCuePoints = function() {
             return [ 0 ];
         };
-        AdsManager.prototype.getCurrentAd = function() {
+        AdsManager.getCurrentAd = function() {
             return currentAd;
         };
-        AdsManager.prototype.getCurrentAdCuePoints = function() {
+        AdsManager.getCurrentAdCuePoints = function() {
             return [];
         };
-        AdsManager.prototype.getRemainingTime = function() {
+        AdsManager.getRemainingTime = function() {
             return 0;
         };
-        AdsManager.prototype.getVolume = function() {
-            return _this.volume;
+        AdsManager.getVolume = function() {
+            return this.volume;
         };
-        AdsManager.prototype.init = noopFunc;
-        AdsManager.prototype.isCustomClickTrackingUsed = function() {
+        AdsManager.init = noopFunc;
+        AdsManager.isCustomClickTrackingUsed = function() {
             return false;
         };
-        AdsManager.prototype.isCustomPlaybackUsed = function() {
+        AdsManager.isCustomPlaybackUsed = function() {
             return false;
         };
-        AdsManager.prototype.pause = noopFunc;
-        AdsManager.prototype.requestNextAdBreak = noopFunc;
-        AdsManager.prototype.resize = noopFunc;
-        AdsManager.prototype.resume = noopFunc;
-        AdsManager.prototype.setVolume = function(v) {
-            _this.volume = v;
+        AdsManager.pause = noopFunc;
+        AdsManager.requestNextAdBreak = noopFunc;
+        AdsManager.resize = noopFunc;
+        AdsManager.resume = noopFunc;
+        AdsManager.setVolume = function(v) {
+            this.volume = v;
         };
-        AdsManager.prototype.skip = noopFunc;
-        AdsManager.prototype.start = function() {
-            for (var _i2 = 0, _arr = [ AdEvent.Type.LOADED, AdEvent.Type.STARTED, AdEvent.Type.AD_BUFFERING, AdEvent.Type.FIRST_QUARTILE, AdEvent.Type.MIDPOINT, AdEvent.Type.THIRD_QUARTILE, AdEvent.Type.COMPLETE, AdEvent.Type.ALL_ADS_COMPLETED ]; _i2 < _arr.length; _i2++) {
+        AdsManager.skip = noopFunc;
+        AdsManager.start = function() {
+            for (var _i2 = 0, _arr = [ AdEvent.Type.LOADED, AdEvent.Type.STARTED, AdEvent.Type.AD_BUFFERING, AdEvent.Type.FIRST_QUARTILE, AdEvent.Type.MIDPOINT, AdEvent.Type.THIRD_QUARTILE, AdEvent.Type.COMPLETE, AdEvent.Type.ALL_ADS_COMPLETED, AdEvent.Type.CONTENT_RESUME_REQUESTED ]; _i2 < _arr.length; _i2++) {
                 var type = _arr[_i2];
                 try {
-                    _this._dispatch(new ima.AdEvent(type));
+                    this._dispatch(new ima.AdEvent(type));
                 } catch (e) {
                     console.error(e);
                 }
             }
         };
-        AdsManager.prototype.stop = noopFunc;
-        AdsManager.prototype.updateAdsRenderingSettings = noopFunc;
+        AdsManager.stop = noopFunc;
+        AdsManager.updateAdsRenderingSettings = noopFunc;
         var manager = Object.create(AdsManager);
-        var AdsManagerLoadedEvent = function AdsManagerLoadedEvent() {};
+        var AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type) {
+            this.type = type;
+        };
         AdsManagerLoadedEvent.prototype = {
-            constructor: function constructor(type) {
-                _this.type = type;
-            },
             getAdsManager: function getAdsManager() {
                 return manager;
             },
@@ -213,13 +210,13 @@
         AdsLoader.prototype.getVersion = function() {
             return VERSION;
         };
-        AdsLoader.prototype.requestAds = function() {
-            var _this2 = this;
+        AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
+            var _this = this;
             if (!managerLoaded) {
                 managerLoaded = true;
+                var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
                 requestAnimationFrame((function() {
-                    var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
-                    _this2._dispatch(new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED));
+                    _this._dispatch(new ima.AdErrorEvent(e));
                 }));
             }
         };
@@ -258,7 +255,7 @@
                 return "";
             },
             getAdPodInfo: function getAdPodInfo() {
-                return _this.pi;
+                return this.pi;
             },
             getAdSystem: function getAdSystem() {
                 return "";
@@ -343,6 +340,9 @@
             },
             isLinear: function isLinear() {
                 return true;
+            },
+            isSkippable: function isSkippable() {
+                return true;
             }
         };
         var CompanionAd = function CompanionAd() {};
@@ -363,24 +363,28 @@
                 return 1;
             }
         };
-        var AdError = function AdError() {};
-        AdError.prototype = {
-            getErrorCode: function getErrorCode() {
-                return 0;
-            },
-            getInnerError: noopFunc,
-            getMessage: function getMessage() {
-                return "";
-            },
-            getType: function getType() {
-                return 1;
-            },
-            getVastErrorCode: function getVastErrorCode() {
-                return 0;
-            },
-            toString: function toString() {
-                return "";
-            }
+        var AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
+            this.errorCode = code;
+            this.message = message;
+            this.type = type;
+            this.adsRequest = adsRequest;
+            this.userRequestContext = userRequestContext;
+            this.getErrorCode = function() {
+                return this.errorCode;
+            };
+            this.getInnerError = function() {};
+            this.getMessage = function() {
+                return this.message;
+            };
+            this.getType = function() {
+                return this.type;
+            };
+            this.getVastErrorCode = function() {
+                return this.vastErrorCode;
+            };
+            this.toString = function() {
+                return "AdError ".concat(this.errorCode, ": ").concat(this.message);
+            };
         };
         AdError.ErrorCode = {};
         AdError.Type = {};
@@ -397,11 +401,10 @@
             return false;
         };
         var currentAd = isEngadget() ? undefined : new Ad;
-        var AdEvent = function AdEvent() {};
+        var AdEvent = function AdEvent(type) {
+            this.type = type;
+        };
         AdEvent.prototype = {
-            constructor: function constructor(type) {
-                _this.type = type;
-            },
             getAd: function getAd() {
                 return currentAd;
             },
@@ -441,10 +444,19 @@
             VOLUME_CHANGED: "volumeChange",
             VOLUME_MUTED: "mute"
         };
-        var AdErrorEvent = function AdErrorEvent() {};
-        AdErrorEvent.prototype = {
-            getError: noopFunc,
-            getUserRequestContext: function getUserRequestContext() {}
+        var AdErrorEvent = function AdErrorEvent(error) {
+            this.error = error;
+            this.type = "adError";
+            this.getError = function() {
+                return this.error;
+            };
+            this.getUserRequestContext = function() {
+                var _this$error;
+                if ((_this$error = this.error) !== null && _this$error !== void 0 && _this$error.userRequestContext) {
+                    return this.error.userRequestContext;
+                }
+                return {};
+            };
         };
         AdErrorEvent.Type = {
             AD_ERROR: "adError"
