@@ -132,27 +132,8 @@ export const prefs = (() => {
             && typeof browser.webRequest !== 'undefined'
             && typeof browser.webRequest.filterResponseData !== 'undefined');
 
-        const canUseInsertCSSAndExecuteScript = (
-            // Blink engine based browsers
-            (Prefs.browser === 'Chrome'
-                || Prefs.browser === 'Opera'
-                || Prefs.browser === 'YaBrowser'
-                || Prefs.browser === 'EdgeChromium')
-            // Support for tabs.insertCSS and tabs.executeScript on chrome
-            // requires chrome version above or equal to 39,
-            // as per documentation: https://developers.chrome.com/extensions/tabs
-            // But due to a bug, it requires version >= 50
-            // https://bugs.chromium.org/p/chromium/issues/detail?id=63979
-            && Prefs.chromeVersion >= 50
-        ) || (
-            Prefs.browser === 'Firefox' && (
-                typeof browser !== 'undefined'
-                && typeof browser.tabs !== 'undefined'
-                && typeof browser.tabs.insertCSS !== 'undefined'
-            )
-        );
-        // Edge browser does not support `runAt` in options of tabs.insertCSS
-        // and tabs.executeScript
+        const canUseInsertCSSAndExecuteScript = typeof browser.tabs?.insertCSS !== 'undefined'
+            && typeof browser.tabs?.executeScript !== 'undefined';
 
         return {
             responseContentFilteringSupported,
