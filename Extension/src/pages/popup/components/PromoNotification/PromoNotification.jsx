@@ -62,26 +62,28 @@ export const PromoNotification = observer(() => {
                     {text.title
                         && (
                             <div className="promo-notification__title">
-                                <div className="promo-notification__title-in">
-                                    {text.title}
-                                </div>
-                                {text.desc && (
+                                <div className="promo-notification__title-wr">
                                     <div className="promo-notification__title-in">
-                                        {text.desc}
+                                        {text.title}
                                     </div>
-                                )}
-                            </div>
-                        )}
-                    {text.btn
-                        && (
-                            <div className="holiday-notify__bottom">
-                                <button
-                                    type="button"
-                                    className="promo-notification__btn"
-                                    onClick={handleNotificationClick}
-                                >
-                                    {text.btn}
-                                </button>
+                                    {text.desc && (
+                                        <div className="promo-notification__title-in">
+                                            {text.desc}
+                                        </div>
+                                    )}
+                                    {text.btn
+                                        && (
+                                            <div className="promo-notification__bottom">
+                                                <button
+                                                    type="button"
+                                                    className="promo-notification__btn"
+                                                    onClick={handleNotificationClick}
+                                                >
+                                                    {text.btn}
+                                                </button>
+                                            </div>
+                                        )}
+                                </div>
                             </div>
                         )}
                 </div>

@@ -31,119 +31,113 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const BIRTHDAY_13_ID = 'birthday13';
+    const BACK_TO_SCHOOL_22_ID = 'backToSchool22';
 
-    const birthday13Notification = {
-        id: BIRTHDAY_13_ID,
+    const backToSchool22Notification = {
+        id: BACK_TO_SCHOOL_22_ID,
         locales: {
             en: {
-                title: 'AdGuard',
-                desc: 'Anniversary Quiz',
-                btn: 'Play',
+                title: 'Back',
+                desc: 'to school',
+                btn: 'Get 40% off',
             },
             ru: {
-                title: 'Нам 13 лет!',
-                desc: 'Отпразднуем?',
-                btn: 'Вперёд!',
+                title: 'Снова в',
+                desc: 'школу',
+                btn: '-40% на всё',
             },
             es: {
-                title: 'Test de cumpleaños',
-                desc: 'de AdGuard',
-                btn: 'Ponte a prueba',
+                title: 'Vuelta al',
+                desc: 'cole',
+                btn: 'Obtén un 40% off',
             },
             de: {
-                title: 'AdGuard-Quiz',
-                desc: 'zum 13. Geburtstag',
-                btn: "Los geht's!",
+                title: 'Zurück zur',
+                desc: 'Schule',
+                btn: '40% Rabatt',
             },
             fr: {
-                title: 'AdGuard fête ses 13',
-                desc: 'ans !',
-                btn: 'Test festif ici',
+                title: 'La rentrée',
+                desc: 'scolaire',
+                btn: '40% de remise',
             },
             it: {
-                title: 'AdGuard celebra i',
-                desc: 'suoi 13 anni!',
-                btn: 'Test festivo qui',
+                title: 'Ritorno a',
+                desc: 'scuola',
+                btn: '40% di sconto',
             },
             ko: {
-                title: 'AdGuard 생일 퀴즈',
-                btn: '퀴즈 시작',
+                title: '백 투 스쿨',
+                desc: '세일',
+                btn: '40% 할인',
             },
             zh_cn: {
-                title: 'AdGuard 生日会',
-                desc: '知识竞赛',
-                btn: '我要参加！',
+                title: '开学啦',
+                btn: '一律享受40%折扣',
             },
             zh_tw: {
-                title: 'AdGuard 生日派對',
-                desc: '知識競賽',
-                btn: '我要參加！',
-            },
-            ja: {
-                title: 'AdGuard',
-                desc: '創業13周年クイズ',
-                btn: '答えてみる',
+                title: '開學啦',
+                btn: '獲得40%的折扣',
             },
             uk: {
-                title: 'Вікторина до дня',
-                desc: 'народження AdGuard',
-                btn: 'Взяти участь',
+                title: 'Знову до',
+                desc: 'школи',
+                btn: 'Знижка 40%',
             },
             pt_pt: {
-                title: 'Quiz de aniversário',
-                desc: 'AdGuard',
-                btn: 'Teste-se',
+                title: 'De volta à',
+                desc: 'escola',
+                btn: 'Obter 40% de desconto',
             },
             pt_br: {
-                title: 'Quiz de aniversário',
-                desc: 'AdGuard',
-                btn: 'Teste-se',
+                title: 'De volta à',
+                desc: 'escola',
+                btn: 'Obtenha 40% de desconto',
             },
             ar: {
-                title: 'اختبار عيد ميلاد',
-                desc: 'AdGuard',
-                btn: 'اختبر نفسك',
+                title: 'العودة',
+                desc: 'إلى المدرسة',
+                btn: 'احصل على خصم 40%',
             },
             be: {
-                title: 'Тэст дня нараджэння',
-                btn: 'Праверце сябе',
+                title: 'Назад у',
+                desc: 'школу',
+                btn: 'Атрымайце скідку 40%',
             },
             id: {
-                title: 'Kuis ulang tahun',
-                desc: 'AdGuard',
-                btn: 'Uji dirimu',
+                title: 'Kembali ke',
+                desc: 'sekolah',
+                btn: 'Dapatkan diskon 40%',
             },
             pl: {
-                title: 'Quiz urodzinowy',
-                desc: 'AdGuard',
-                btn: 'Sprawdź się',
+                title: 'Powrót do',
+                desc: 'szkoły',
+                btn: 'Zyskaj 40% zniżki',
             },
             tr: {
-                title: 'AdGuard doğum günü',
-                desc: 'testi',
-                btn: 'Kendini test et',
+                title: 'Okula dönüş',
+                btn: '40 indirim kazanın',
             },
             vi: {
-                title: 'Câu đố sinh nhật',
-                desc: 'AdGuard',
-                btn: 'Tự kiểm tra',
+                title: 'Trở lại',
+                desc: 'trường học',
+                btn: 'Được GIẢM GIÁ 40%',
             },
         },
         text: '',
-        url: 'https://link.adtidy.org/forward.html?action=birthday13&app=browser_extension',
-        from: '31 May 2022 12:00:00',
-        to: '5 June 2022 23:59:00',
+        url: 'https://link.adtidy.org/forward.html?action=back_to_school_22&app=browser_extension',
+        from: '29 August 2022 12:00:00',
+        to: '4 September 2022 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(birthday13Notification, 'icons', () => ({
+            return lazyGet(backToSchool22Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/b13-on-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/b13-on-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/promo-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/promo-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/b13-off-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/b13-off-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/promo-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/promo-off-38.png'),
                 },
             }));
         },
@@ -165,7 +159,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        birthday13: birthday13Notification,
+        backToSchool22: backToSchool22Notification,
     };
 
     /**
@@ -276,13 +270,6 @@ export const notifications = (function () {
      * @returns {null|Notification} - notification
      */
     const getCurrentNotification = function () {
-        // TODO remove to show next notification
-        const DISABLE_NOTIFICATIONS = true;
-
-        if (DISABLE_NOTIFICATIONS) {
-            return null;
-        }
-
         // Do not display notification on Firefox
         if (browserUtils.isFirefoxBrowser()) {
             return null;
