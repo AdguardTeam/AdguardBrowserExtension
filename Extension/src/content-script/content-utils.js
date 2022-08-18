@@ -222,17 +222,19 @@ export const contentUtils = (function () {
                                 <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
                                     <div class="adguard-update-popup__offer-inner">
                                         <div class="adguard-update-popup__offer-desc-wr">
-                                            <div class="adguard-update-popup__offer-desc">
-                                                <div>
-                                                    ${offer}
+                                            <div class="adguard-update-popup__wrapper">
+                                                <div class="adguard-update-popup__offer-desc">
+                                                    <div>
+                                                        ${offer}
+                                                    </div>
+                                                    ${offerDesc && `<div>${offerDesc}</div>`}
                                                 </div>
-                                                ${offerDesc && `<div>${offerDesc}</div>`}
+                                                <div class="adguard-update-popup__offer-bottom">
+                                                    <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
+                                                        ${offerButtonText}
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="adguard-update-popup__offer-bottom">
-                                            <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
-                                                ${offerButtonText}
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
