@@ -97,7 +97,7 @@ export const notifications = (function () {
             ar: {
                 title: 'العودة',
                 desc: 'إلى المدرسة',
-                btn: 'احصل على خصم 40%',
+                btn: '%احصل على خصم 40',
             },
             be: {
                 title: 'Назад у',
