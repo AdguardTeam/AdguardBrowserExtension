@@ -73,7 +73,10 @@ const validateMessage = (baseKey, baseLocaleTranslations, localeTranslations) =>
     const baseMessageValue = baseLocaleTranslations[baseKey].message;
     const localeMessageValue = localeTranslations[baseKey].message;
     try {
-        validator.isTranslationValid(baseMessageValue, localeMessageValue);
+        const isTranslationValid = validator.isTranslationValid(baseMessageValue, localeMessageValue);
+        if (!isTranslationValid) {
+            throw new Error('Invalid translated string');
+        }
     } catch (error) {
         return { key: baseKey, error };
     }
