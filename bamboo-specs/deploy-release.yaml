@@ -78,6 +78,8 @@ Addons Mozilla:
     image: adguard/node-ssh:15.14--6
     volumes:
       ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+    # we use dns to avoid etimedout error when AMO is validating extension
+    docker-run-arguments: [ '--dns', '94.140.14.140' ]
   triggers: []
   tasks:
     - clean
