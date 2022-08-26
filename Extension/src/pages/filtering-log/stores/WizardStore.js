@@ -106,6 +106,7 @@ class WizardStore {
         this.isModalOpen = false;
         this.addedRuleState = null;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+        this.rootStore.logStore.removeSelectedEvent();
     };
 
     @action
