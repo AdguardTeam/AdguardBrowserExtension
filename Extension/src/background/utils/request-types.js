@@ -51,6 +51,8 @@ export const RequestTypes = {
                 return RequestType.Image;
             case contentTypes.MEDIA:
                 return RequestType.Media;
+            case contentTypes.OBJECT:
+                return RequestType.Object;
             case contentTypes.SCRIPT:
                 return RequestType.Script;
             case contentTypes.XMLHTTPREQUEST:
@@ -88,6 +90,8 @@ export const RequestTypes = {
                 return contentTypes.IMAGE;
             case RequestType.Media:
                 return contentTypes.MEDIA;
+            case RequestType.Object:
+                return contentTypes.OBJECT;
             case RequestType.Script:
                 return contentTypes.SCRIPT;
             case RequestType.XmlHttpRequest:
