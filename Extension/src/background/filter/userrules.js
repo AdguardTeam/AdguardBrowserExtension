@@ -140,7 +140,12 @@ export const userrules = (function () {
         const result = [];
         for (let i = 0; i < rulesLines.length; i += 1) {
             const line = rulesLines[i];
-            const converted = TSUrlFilter.RuleConverter.convertRule(line);
+            let converted = [];
+            try {
+                converted = TSUrlFilter.RuleConverter.convertRule(line);
+            } catch (e) {
+                log.info(`Error converting rule ${line}, due to: ${e.message}`);
+            }
             result.push(...converted);
 
             if (converted.length > 0) {
