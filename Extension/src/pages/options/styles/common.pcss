@@ -34,11 +34,21 @@ h2 {
     font-size: inherit;
 }
 
+a {
+    &:focus-visible {
+        outline: 2px solid var(--outline);
+    }
+}
+
 button,
 input,
 textarea,
 select {
     font-family: inherit;
+
+    &:focus-visible {
+        outline: 2px solid var(--outline);
+    }
 }
 
 /* custom checkbox */
@@ -323,7 +333,6 @@ label.checkbox-label {
     }
 
     &__btn {
-        outline: none;
         margin: 12px;
         position: relative;
 
@@ -346,6 +355,10 @@ label.checkbox-label {
     &__input-file {
         position: absolute;
         clip: rect(1px, 1px, 1px, 1px);
+
+        &:focus + .links-menu__item {
+            outline: 2px solid var(--outline);
+        }
     }
 }
 

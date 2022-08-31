@@ -69,11 +69,10 @@ const Group = ({
     return (
         <>
             <div className={groupClassName}>
-                <div
-                    role="button"
+                <button
+                    type="button"
                     tabIndex={0}
                     className="setting__area setting__area_group"
-                    onKeyUp={groupClickHandler}
                     onClick={groupClickHandler}
                 >
                     <Icon
@@ -88,7 +87,7 @@ const Group = ({
                             {renderEnabledFilters(enabledFilters)}
                         </div>
                     </div>
-                </div>
+                </button>
                 <div className="setting__inline-control setting__inline-control_group">
                     <Setting
                         id={groupId}

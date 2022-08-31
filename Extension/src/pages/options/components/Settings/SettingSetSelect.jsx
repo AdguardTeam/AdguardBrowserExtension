@@ -16,13 +16,14 @@ export const SettingSetSelect = ({
     };
 
     return (
+        // Interaction with the keyboard creates problems,
+        // leaving the possibility of interaction through
+        // the keyboard only with the internal selector
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
         <div
             className="setting-checkbox setting-checkbox--button"
             onClick={handleSettingClick}
-            onKeyUp={handleSettingClick}
-            role="button"
-            tabIndex="0"
-            type="button"
         >
             <SettingsSet
                 title={title}

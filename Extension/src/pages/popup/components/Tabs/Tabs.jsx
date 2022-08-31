@@ -38,7 +38,10 @@ export const Tabs = observer(() => {
                     onClick={handleTabClick(VIEW_STATES.STATS)}
                 />
             </div>
-            <div className="tabs__content">
+            <div
+                className="tabs__content"
+                tabIndex={TabContent === contentMap[VIEW_STATES.STATS] ? 0 : -1}
+            >
                 <TabContent />
             </div>
         </div>

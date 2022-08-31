@@ -42,6 +42,8 @@ const Actions = observer(() => {
         ? reactTranslator.getMessage('filtering_log_preserve_log_on')
         : reactTranslator.getMessage('filtering_log_preserve_log_off');
 
+    const preserveLogInputId = 'preserveLog';
+
     return (
         <div className="actions">
             <div className="actions__col">
@@ -61,15 +63,20 @@ const Actions = observer(() => {
                     </Popover>
                 </div>
                 <div className="actions__action actions__preserve">
-                    <label className="checkbox-label" htmlFor="preserveLog">
-                        <input
-                            type="checkbox"
-                            name="preserveLog"
-                            id="preserveLog"
-                            onChange={preserveLogHandler}
-                            checked={preserveLogEnabled}
-                            aria-label={preserveLogTooltipText}
-                        />
+                    <input
+                        className="checkbox-input"
+                        type="checkbox"
+                        name="preserveLog"
+                        id={preserveLogInputId}
+                        onChange={preserveLogHandler}
+                        checked={preserveLogEnabled}
+                        aria-label={preserveLogTooltipText}
+                    />
+                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                    <label
+                        htmlFor={preserveLogInputId}
+                        className="checkbox-label"
+                    >
                         <Popover text={preserveLogTooltipText}>
                             <div className={preserveLogClassName}>
                                 <Icon id="#radio" classname="icon--24" />

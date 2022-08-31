@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -22,7 +22,10 @@ export const Header = observer(() => {
         MIN_FILTERS_UPDATE_DISPLAY_DURATION,
     );
 
+    const refUpdatingBtn = useRef(null);
+
     const handleUpdateFiltersClick = async () => {
+        refUpdatingBtn.current.blur();
         setFiltersUpdating(true);
         await updateFiltersWithMinDuration();
         setFiltersUpdating(false);
@@ -57,6 +60,7 @@ export const Header = observer(() => {
                         'popup-header__button',
                         { 'updating-filters': filtersUpdating },
                     )}
+                    ref={refUpdatingBtn}
                     disabled={filtersUpdating}
                     type="button"
                     onClick={handleUpdateFiltersClick}

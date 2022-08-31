@@ -14,7 +14,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 export const ToggleWrapButton = observer(({ onClick }) => {
     const store = useContext(userRulesEditorStore);
 
-    const lineBreakClassNames = classnames('actions__btn actions__btn--icon', {
+    const lineBreakClassNames = classnames('button actions__btn actions__btn--icon', {
         'actions__btn--active': store.userRulesEditorWrapState,
     });
 

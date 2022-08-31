@@ -17,6 +17,7 @@
         & .thead {
             min-width: 100%;
             position: sticky;
+            transform: translateY(-3px);
             z-index: 2;
             background-color: var(--white);
             box-shadow: 0 1px 0 0 var(--thColor);
@@ -41,11 +42,15 @@
 
         & .tr--tbody {
             border: 0;
-            box-shadow: 0 1px 0 0 var(--borderColor);
+            border-bottom: 1px solid var(--borderColor);
             background-color: transparent;
             text-align: left;
             padding: 0;
             width: 100%;
+
+            &:focus {
+                z-index: 1;
+            }
 
             &:hover {
                 cursor: pointer;

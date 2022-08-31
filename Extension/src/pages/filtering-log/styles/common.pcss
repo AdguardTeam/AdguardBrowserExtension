@@ -62,33 +62,37 @@ body {
     }
 }
 
-button, input {
+a {
+    &:focus-visible {
+        outline: 2px solid var(--outline);
+    }
+}
+
+button,
+input,
+textarea,
+select {
     font-family: inherit;
+
+    &:focus-visible {
+        outline: 2px solid var(--outline);
+    }
 }
 
 /* custom checkbox */
-label.checkbox-label {
+.checkbox-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.checkbox-label {
     position: relative;
     cursor: pointer;
     color: var(--textColor);
     display: flex;
     align-items: center;
-
-    & input[type="checkbox"] {
-        position: absolute;
-        clip: rect(1px, 1px, 1px, 1px);
-        top: 0;
-        left: 0;
-
-        &:checked + .custom-checkbox {
-            background-color: var(--mainGreen);
-            border-color: var(--mainGreen);
-
-            & .icon {
-                display: block;
-            }
-        }
-    }
 
     & .custom-checkbox {
         min-width: 16px;
@@ -97,7 +101,6 @@ label.checkbox-label {
         background-color: transparent;
         border: 2px solid var(--inputsBorder);
         border-radius: 2px;
-        margin-right: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -106,33 +109,46 @@ label.checkbox-label {
             display: none;
         }
     }
+
+    &__desc {
+        margin-left: 10px;
+        white-space: nowrap;
+    }
+}
+
+.checkbox-input {
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+    top: 0;
+    left: 0;
+
+    &:focus-visible + .checkbox-label {
+        outline: 2px solid var(--outline);
+    }
+
+    &:checked + .checkbox-label .custom-checkbox {
+        background-color: var(--mainGreen);
+        border-color: var(--mainGreen);
+
+        & .icon {
+            display: block;
+        }
+    }
 }
 
 /* custom radio-button */
-label.radio-button-label {
+.radio-button-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.radio-button-label {
     cursor: pointer;
     color: var(--textColor);
     display: flex;
     align-items: center;
-
-    & input[type="radio"] {
-        display: none;
-
-        &:checked + .radio-button {
-            border: 2px solid var(--mainGreen);
-
-            &:after {
-                content: "";
-                position: absolute;
-                left: calc(50% - 6px);
-                top: calc(50% - 6px);
-                width: 12px;
-                height: 12px;
-                border-radius: 100%;
-                background-color: var(--mainGreen);
-            }
-        }
-    }
 
     & .radio-button {
         width: 18px;
@@ -141,9 +157,37 @@ label.radio-button-label {
         background-color: transparent;
         border: 2px solid var(--inputsBorder);
         border-radius: 17px;
-        margin-right: 10px;
         flex-shrink: 0;
     }
+}
+
+.radio-button-input {
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+
+    &:focus-visible + .radio-button-label {
+        outline: 2px solid var(--outline);
+    }
+
+    &:checked + .radio-button-label .radio-button {
+        border: 2px solid var(--mainGreen);
+
+        &:after {
+            content: "";
+            position: absolute;
+            left: calc(50% - 6px);
+            top: calc(50% - 6px);
+            width: 12px;
+            height: 12px;
+            border-radius: 100%;
+            background-color: var(--mainGreen);
+        }
+    }
+}
+
+.radio-button-desc {
+    margin-left: 10px;
+    white-space: nowrap;
 }
 
 /* green button */
@@ -157,10 +201,6 @@ button.green-button {
     color: var(--bgColor);
     background-color: var(--mainGreen);
     transition: 0.3s ease background-color;
-
-    &:focus {
-        outline: none;
-    }
 
     &:hover {
         background-color: var(--darkGreen);
