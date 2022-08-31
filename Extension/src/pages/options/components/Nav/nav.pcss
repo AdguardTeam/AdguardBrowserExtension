@@ -5,8 +5,8 @@
     padding: 24px 0;
 
     &__item {
-        padding: 10px 38px;
-        margin-bottom: 14px;
+        padding: 15px 38px;
+        margin-bottom: 8px;
         line-height: 20px;
         color: var(--gray-base);
         text-decoration: none;
@@ -23,7 +23,7 @@
         }
 
         &:hover {
-            background-color: var(--gray300);
+            background-color: var(--white);
 
             @media (prefers-color-scheme: dark) {
                 background-color: var(--gray900);
@@ -31,27 +31,13 @@
         }
 
         &--active {
-            background-color: var(--gray300);
+            background-color: var(--white);
             position: relative;
-            font-weight: 500;
+            font-weight: 600;
             overflow: visible;
 
             @media (prefers-color-scheme: dark) {
                 background-color: var(--gray900);
-            }
-
-            &:before {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 4px;
-                height: 100%;
-                background-color: var(--gray900);
-
-                @media (prefers-color-scheme: dark) {
-                    background-color: var(--grayDark);
-                }
             }
         }
 
@@ -72,12 +58,12 @@
 
             &:hover {
                 color: var(--gray-base);
-                background-color: var(--gray300);
+                background-color: var(--white);
             }
 
             &--active {
                 color: var(--gray-base);
-                background-color: var(--gray300);
+                background-color: var(--white);
             }
         }
     }
