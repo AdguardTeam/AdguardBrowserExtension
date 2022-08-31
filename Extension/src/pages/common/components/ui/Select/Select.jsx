@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
+import { useOutsideFocus } from '../../../hooks/useOutsideFocus';
 import { useSelect } from './SelectProvider';
 import { Icon } from '../Icon';
 
@@ -12,6 +13,7 @@ export const Select = ({
     value,
 }) => {
     const ref = useRef(null);
+    const refList = useRef(null);
 
     const [hidden, setHidden] = useSelect(id);
 
@@ -47,6 +49,10 @@ export const Select = ({
         setHidden(true);
     });
 
+    useOutsideFocus(refList, () => {
+        setHidden(true);
+    });
+
     const handleSelectClick = (e) => {
         e.stopPropagation();
         setHidden(!hidden);
@@ -68,12 +74,14 @@ export const Select = ({
                 id="#select"
                 classname="icon--select select__ico"
             />
-            <div
-                hidden={hidden}
-                className="select__list"
-            >
-                {renderItems(options)}
-            </div>
+            {!hidden && (
+                <div
+                    className="select__list"
+                    ref={refList}
+                >
+                    {renderItems(options)}
+                </div>
+            )}
         </div>
     );
 };

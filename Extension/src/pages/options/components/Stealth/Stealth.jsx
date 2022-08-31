@@ -83,6 +83,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_block_known_trackers_title')}
                     description={reactTranslator.getMessage('options_block_known_trackers_description')}
                     disabled={!blockKnownTrackers}
+                    sectionDisabled={isStealthModeDisabled}
                     id={BLOCK_KNOWN_TRACKERS}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_block_known_trackers_title')}
@@ -94,6 +95,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_strip_tracking_params_title')}
                     description={reactTranslator.getMessage('options_strip_tracking_params_description')}
                     disabled={!stripTrackingParameters}
+                    sectionDisabled={isStealthModeDisabled}
                     id={STRIP_TRACKING_PARAMETERS}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_strip_tracking_params_title')}
@@ -104,6 +106,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_hide_search_queries_title')}
                     description={reactTranslator.getMessage('options_hide_search_queries_desc')}
                     disabled={!settings.values[HIDE_SEARCH_QUERIES]}
+                    sectionDisabled={isStealthModeDisabled}
                     id={HIDE_SEARCH_QUERIES}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_hide_search_queries_title')}
@@ -135,6 +138,7 @@ const Stealth = observer(() => {
                         ),
                     })}
                     disabled={!settings.values[SEND_DO_NOT_TRACK]}
+                    sectionDisabled={isStealthModeDisabled}
                     id={SEND_DO_NOT_TRACK}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_send_not_track_title')}
@@ -152,6 +156,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_third_party_title')}
                     description={reactTranslator.getMessage('options_third_party_desc')}
                     disabled={!isThirdPartyCookiesEnabled}
+                    sectionDisabled={isStealthModeDisabled}
                     id={SELF_DESTRUCT_THIRD_PARTY_COOKIES}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_third_party_title')}
@@ -172,6 +177,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_first_party_title')}
                     description={reactTranslator.getMessage('options_first_party_desc')}
                     disabled={!isFirstPartyCookiesEnabled}
+                    sectionDisabled={isStealthModeDisabled}
                     id={SELF_DESTRUCT_FIRST_PARTY_COOKIES}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_first_party_title')}
@@ -198,6 +204,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_hide_referrer_title')}
                     description={reactTranslator.getMessage('options_hide_referrer_desc')}
                     disabled={!settings.values[HIDE_REFERRER]}
+                    sectionDisabled={isStealthModeDisabled}
                     id={HIDE_REFERRER}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_hide_referrer_title')}
@@ -210,6 +217,7 @@ const Stealth = observer(() => {
                         title={reactTranslator.getMessage('options_remove_client_data_title')}
                         description={reactTranslator.getMessage('options_remove_client_data_desc')}
                         disabled={!settings.values[BLOCK_CHROME_CLIENT_DATA]}
+                        sectionDisabled={isStealthModeDisabled}
                         id={BLOCK_CHROME_CLIENT_DATA}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={reactTranslator.getMessage('options_remove_client_data_title')}
@@ -222,6 +230,7 @@ const Stealth = observer(() => {
                     title={reactTranslator.getMessage('options_disable_webrtc_title')}
                     description={reactTranslator.getMessage('options_disable_webrtc_desc')}
                     disabled={!settings.values[BLOCK_WEBRTC]}
+                    sectionDisabled={isStealthModeDisabled}
                     id={BLOCK_WEBRTC}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_disable_webrtc_title')}

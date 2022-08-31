@@ -27,12 +27,11 @@ const SearchGroup = ({
     return (
         <>
             <div className={groupClassName}>
-                <div
-                    role="button"
+                <button
+                    type="button"
                     tabIndex={0}
                     className="setting__area setting__area_group"
                     onClick={groupClickHandler}
-                    onKeyUp={groupClickHandler}
                 >
                     <Icon
                         id={`#setting-${groupId}`}
@@ -43,7 +42,7 @@ const SearchGroup = ({
                             {groupName}
                         </div>
                     </div>
-                </div>
+                </button>
                 <div className="setting__inline-control setting__inline-control_group">
                     <Setting
                         id={groupId}

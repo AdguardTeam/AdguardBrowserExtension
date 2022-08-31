@@ -7,7 +7,7 @@ import { SettingsSet } from './SettingsSet';
 const SettingsSetCheckbox = (props) => {
     const {
         title, description, children, disabled,
-        id, handler, label, inverted, value,
+        id, handler, label, inverted, value, sectionDisabled,
     } = props;
 
     return (
@@ -27,6 +27,7 @@ const SettingsSetCheckbox = (props) => {
                         label={label}
                         handler={handler}
                         value={value}
+                        disabled={sectionDisabled}
                     />
                 )}
             >

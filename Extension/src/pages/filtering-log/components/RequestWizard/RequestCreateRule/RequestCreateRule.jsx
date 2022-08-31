@@ -38,24 +38,29 @@ const RequestCreateRule = observer(() => {
 
     const renderPatterns = (patterns) => {
         const patternItems = patterns.map((pattern, idx) => (
-            <label
-                /* eslint-disable-next-line react/no-array-index-key */
-                key={`pattern${idx}`}
-                className="radio-button-label"
-                htmlFor={pattern}
-            >
+            <div className="radio-button-wrapper">
                 <input
                     type="radio"
                     id={pattern}
                     name="rulePattern"
+                    className="radio-button-input"
                     value={pattern}
                     checked={pattern === wizardStore.rulePattern}
                     onChange={handlePatternChange(pattern)}
                 />
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                <div className="radio-button" />
-                {pattern}
-            </label>
+                <label
+                    /* eslint-disable-next-line react/no-array-index-key */
+                    key={`pattern${idx}`}
+                    className="radio-button-label"
+                    htmlFor={pattern}
+                >
+                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                    <div className="radio-button" />
+                </label>
+                <div className="radio-button-desc">
+                    {pattern}
+                </div>
+            </div>
         ));
 
         return (
@@ -88,25 +93,35 @@ const RequestCreateRule = observer(() => {
             // and is not shown for cookie rules
             if (id === RULE_OPTIONS.RULE_REMOVE_PARAM
                 && (logStore.selectedEvent.requestUrl?.indexOf('?') < 0
-                || logStore.selectedEvent.requestRule?.cookieRule)) {
+                    || logStore.selectedEvent.requestRule?.cookieRule)) {
                 return null;
             }
 
             return (
-                // eslint-disable-next-line jsx-a11y/label-has-associated-control
-                <label className="checkbox-label" key={id}>
+                <div className="checkbox-wrapper">
                     <input
+                        id={id}
+                        className="checkbox-input"
                         type="checkbox"
                         name={id}
                         value={id}
                         onChange={handleOptionsChange(id)}
                         checked={wizardStore.ruleOptions[id].checked}
                     />
-                    <div className="custom-checkbox">
-                        <Icon id="#checked" classname="icon--checked" />
+                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                    <label
+                        htmlFor={id}
+                        className="checkbox-label"
+                        key={id}
+                    >
+                        <div className="custom-checkbox">
+                            <Icon id="#checked" classname="icon--checked" />
+                        </div>
+                    </label>
+                    <div className="checkbox-label__desc">
+                        {label}
                     </div>
-                    {label}
-                </label>
+                </div>
             );
         });
 

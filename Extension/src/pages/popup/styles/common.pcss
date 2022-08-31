@@ -48,14 +48,23 @@ ul {
     display: none;
 }
 
-button,
-input,
-textarea {
-    font-family: inherit;
-}
-
 a {
     color: currentColor;
+
+    &:focus-visible {
+        outline: 2px solid var(--outline);
+    }
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+
+    &:focus-visible {
+        outline: 2px solid var(--outline);
+    }
 }
 
 .light-mode {

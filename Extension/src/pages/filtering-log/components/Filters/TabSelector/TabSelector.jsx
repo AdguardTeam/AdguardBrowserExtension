@@ -11,6 +11,7 @@ import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
+import { useOutsideFocus } from '../../../../common/hooks/useOutsideFocus';
 import { useKeyDown } from '../../../../common/hooks/useKeyDown';
 import { WASTE_CHARACTERS } from '../../../../../common/constants';
 
@@ -99,6 +100,8 @@ const TabSelector = observer(() => {
     });
 
     useOutsideClick(refSelector, cancelTabSearch);
+
+    useOutsideFocus(refSelector, cancelTabSearch);
 
     useEffect(() => {
         const selectedTab = tabs.find((tab) => tab.tabId === selectedTabId);
