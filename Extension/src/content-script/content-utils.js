@@ -164,6 +164,9 @@ export const contentUtils = (function () {
             if (document.body) {
                 const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab, alertStyles);
                 alertElement.classList.add('adguard-alert-iframe');
+                alertElement.onload = () => {
+                    alertElement.style.visibility = 'visible';
+                };
                 setTimeout(() => {
                     if (alertElement && alertElement.parentNode) {
                         alertElement.parentNode.removeChild(alertElement);
