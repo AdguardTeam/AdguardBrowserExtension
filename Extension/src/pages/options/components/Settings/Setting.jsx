@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Checkbox } from './Checkbox';
+import { Checkbox } from '../../../common/components/ui/Checkbox';
 import { Select } from '../../../common/components/ui/Select';
 import { TextInput } from './TextInput';
 import { Textarea } from './Textarea';
