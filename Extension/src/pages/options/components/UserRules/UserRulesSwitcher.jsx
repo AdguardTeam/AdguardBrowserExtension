@@ -4,8 +4,7 @@ import debounce from 'lodash/debounce';
 
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-
-const HANDLER_DELAY_MS = 2000; // less time leads to interface freeze
+import { HANDLER_DELAY_MS } from '../../../common/constants';
 
 export const UserRulesSwitcher = observer(() => {
     const { settingsStore } = useContext(rootStore);
