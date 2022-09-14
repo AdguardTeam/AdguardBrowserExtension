@@ -397,7 +397,8 @@ const createMessageHandler = () => {
                 break;
             }
             case MESSAGE_TYPES.CHECK_ANTIBANNER_FILTERS_UPDATE: {
-                const filters = await uiService.checkFiltersUpdates();
+                const { source } = data;
+                const filters = await uiService.checkFiltersUpdates(source);
                 return filters;
             }
             case MESSAGE_TYPES.LOAD_CUSTOM_FILTER_INFO:

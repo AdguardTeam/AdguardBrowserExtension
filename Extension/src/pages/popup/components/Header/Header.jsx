@@ -6,6 +6,7 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
+import { FILTERS_UPDATE_SOURCE } from '../../../../common/constants';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION } from '../../../common/constants';
 
 import './header.pcss';
@@ -18,7 +19,7 @@ export const Header = observer(() => {
     const { applicationFilteringDisabled } = store;
 
     const updateFiltersWithMinDuration = addMinDurationTime(
-        messenger.updateFilters.bind(messenger),
+        messenger.updateFilters.bind(messenger, FILTERS_UPDATE_SOURCE.POPUP),
         MIN_FILTERS_UPDATE_DISPLAY_DURATION,
     );
 

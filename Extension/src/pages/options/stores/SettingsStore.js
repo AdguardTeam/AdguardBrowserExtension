@@ -18,7 +18,12 @@ import {
     sortGroupsOnSearch,
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
-import { ANTIBANNER_GROUPS_ID, TRUSTED_TAG, WASTE_CHARACTERS } from '../../../common/constants';
+import {
+    ANTIBANNER_GROUPS_ID,
+    TRUSTED_TAG,
+    WASTE_CHARACTERS,
+    FILTERS_UPDATE_SOURCE,
+} from '../../../common/constants';
 
 const savingAllowlistService = createSavingService({
     id: 'allowlist',
@@ -368,7 +373,7 @@ class SettingsStore {
     async updateFilters() {
         this.setFiltersUpdating(true);
         try {
-            const filtersUpdates = await messenger.updateFilters();
+            const filtersUpdates = await messenger.updateFilters(FILTERS_UPDATE_SOURCE.OPTIONS);
             this.refreshFilters(filtersUpdates);
             setTimeout(() => {
                 this.setFiltersUpdating(false);

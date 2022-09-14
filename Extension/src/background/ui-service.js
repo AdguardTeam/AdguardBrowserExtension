@@ -35,9 +35,13 @@ import { userrules } from './filter/userrules';
 import { browserUtils } from './utils/browser-utils';
 import { log } from '../common/log';
 import { runtimeImpl } from '../common/common-script';
-import { MESSAGE_TYPES, ANTIBANNER_FILTERS_ID } from '../common/constants';
 import { translator } from '../common/translators/translator';
 import { COMPARE_URL } from '../pages/constants';
+import {
+    MESSAGE_TYPES,
+    ANTIBANNER_FILTERS_ID,
+    FILTERS_UPDATE_SOURCE,
+} from '../common/constants';
 
 /**
  * UI service
@@ -91,7 +95,7 @@ export const uiService = (function () {
             openFilteringLog();
         },
         'context_update_antibanner_filters': function () {
-            checkFiltersUpdates();
+            checkFiltersUpdates(FILTERS_UPDATE_SOURCE.CONTEXT_MENU);
         },
     };
 
@@ -914,16 +918,26 @@ export const uiService = (function () {
      * Checks filters updates and returns updated filter
      * @param {Object[]} [filters] optional list of filters
      * @param {boolean} [showPopup = true] show update filters popup
+     * @param {string} [source] source, which requested filters update
      * @return {Object[]} [filters] list of updated filters
      */
-    const checkFiltersUpdates = async (filters, showPopup = true) => {
+    const checkFiltersUpdates = async (source, filters, showPopup = true) => {
         const showPopupEvent = listeners.UPDATE_FILTERS_SHOW_POPUP;
+        const showSettingsEvent = listeners.FILTERS_UPDATE_CHECK_READY;
+
+        const notifyActiveTab = listeners.notifyListeners.bind(listeners, showPopupEvent);
+        const notifySettingsTab = listeners.notifyListeners.bind(listeners, showSettingsEvent);
 
         try {
             const updatedFilters = await application.checkFiltersUpdates(filters);
             if (showPopup) {
-                listeners.notifyListeners(showPopupEvent, true, updatedFilters);
-                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY, updatedFilters);
+                // Split notification rendering by source
+                if (source === FILTERS_UPDATE_SOURCE.POPUP || source === FILTERS_UPDATE_SOURCE.CONTEXT_MENU) {
+                    notifyActiveTab(true, updatedFilters);
+                }
+                if (source === FILTERS_UPDATE_SOURCE.OPTIONS) {
+                    notifySettingsTab(updatedFilters);
+                }
             } else if (updatedFilters && updatedFilters.length > 0) {
                 const updatedFilterStr = updatedFilters.map(f => `Filter ID: ${f.filterId}`).join(', ');
                 log.info(`Filters were auto updated: ${updatedFilterStr}`);
@@ -931,8 +945,11 @@ export const uiService = (function () {
             return updatedFilters;
         } catch (e) {
             if (showPopup) {
-                listeners.notifyListeners(showPopupEvent, false);
-                listeners.notifyListeners(listeners.FILTERS_UPDATE_CHECK_READY);
+                if (source === FILTERS_UPDATE_SOURCE.POPUP) {
+                    listeners.notifyListeners(false);
+                } else if (source === FILTERS_UPDATE_SOURCE.OPTIONS) {
+                    notifySettingsTab();
+                }
             }
             return [];
         }
@@ -1078,13 +1095,13 @@ export const uiService = (function () {
             switch (event) {
                 case listeners.FILTER_ENABLE_DISABLE:
                     if (payload.enabled) {
-                        checkFiltersUpdates([payload], false);
+                        checkFiltersUpdates('options', [payload], false);
                     }
                     break;
                 case listeners.FILTER_GROUP_ENABLE_DISABLE:
                     if (payload.enabled && payload.filters) {
                         const enabledFilters = payload.filters.filter(f => f.enabled);
-                        checkFiltersUpdates(enabledFilters, false);
+                        checkFiltersUpdates('options', enabledFilters, false);
                     }
                     break;
                 default:
