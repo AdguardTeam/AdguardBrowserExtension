@@ -14,9 +14,9 @@
     left: 0;
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
-    padding: 16px 23px;
+    padding: 16px 23px 16px 19px;
     border-radius: 8px;
     background-color: var(--gray900);
     color: var(--white);
@@ -36,6 +36,7 @@
 
     &__close {
         margin-left: auto;
+        transform: translateY(-3px);
     }
 
     &__icon {
@@ -44,22 +45,30 @@
         &--info {
             width: 24px;
             height: 24px;
-            margin-right: 16px;
         }
 
         &--close {
-            width: 12px;
-            height: 12px;
+            width: 24px;
+            height: 24px;
         }
     }
 
+    &__message {
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        margin: 0 22px 0 19px;
+        line-height: 16px;
+    }
+
     &__title {
-        font-size: 16px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
     }
 
     &__description {
-        font-size: 14px;
-        padding-right: 15px;
+        font-size: 12px;
     }
 }
 

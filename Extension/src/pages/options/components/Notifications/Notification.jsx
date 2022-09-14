@@ -44,9 +44,11 @@ export const Notification = (props) => {
     return (
         <div className={notificationClassnames}>
             <Icon id="#info" classname="notification__icon notification__icon--info" />
-            {title.length > 0
-            && <div className="notification__title">{title}</div>}
-            <div className="notification__description">{description}</div>
+            <div className="notification__message">
+                {title.length > 0
+                    && <div className="notification__title">{title}</div>}
+                <div className="notification__description">{description}</div>
+            </div>
             <button
                 type="button"
                 className="button notification__close"
