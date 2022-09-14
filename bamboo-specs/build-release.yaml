@@ -25,21 +25,25 @@ Build:
   tasks:
     - checkout:
         force-clean-build: 'true'
-    - checkout:
-        repository: extensions-private
-        path: private
-        force-clean-build: 'true'
     - script:
         interpreter: SHELL
         scripts:
           - |-
             set -x
             set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
             ls -la
 
             yarn install ${bamboo.varsYarn}
             yarn locales:validate --min
-            CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn release
+            yarn release
+
+            # build source zip for publishing on AMO
+            git archive --format=zip --output=build/release/source.zip HEAD
+
             rm -rf node_modules
     - inject-variables:
         file: build/release/build.txt
@@ -74,6 +78,11 @@ Build:
     - name: opera.zip
       location: build/release
       pattern: opera.zip
+      shared: true
+      required: true
+    - name: source.zip
+      location: build/release
+      pattern: source.zip
       shared: true
       required: true
   requirements:
