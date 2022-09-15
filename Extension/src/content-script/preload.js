@@ -541,12 +541,22 @@ export const preload = (function () {
             try {
                 const cookieController = new TSUrlFilter.CookieController(
                     ({
-                        cookieName, cookieValue, cookieDomain, ruleText, thirdParty, filterId,
+                        cookieName,
+                        cookieValue,
+                        cookieDomain,
+                        cookieRuleText,
+                        thirdParty,
+                        filterId,
                     }) => {
                         contentPage.sendMessage({
                             type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT,
                             data: {
-                                cookieName, cookieValue, cookieDomain, ruleText, thirdParty, filterId,
+                                cookieName,
+                                cookieValue,
+                                cookieDomain,
+                                ruleText: cookieRuleText,
+                                thirdParty,
+                                filterId,
                             },
                         });
                     },
