@@ -914,6 +914,16 @@ export const uiService = (function () {
         }
     };
 
+    const notifyActiveTab = (success, updatedFilters) => {
+        const showPopupEvent = listeners.UPDATE_FILTERS_SHOW_POPUP;
+        listeners.notifyListeners.call(listeners, showPopupEvent, success, updatedFilters);
+    };
+
+    const notifySettingsTab = (updatedFilters) => {
+        const showSettingsEvent = listeners.FILTERS_UPDATE_CHECK_READY;
+        listeners.notifyListeners.call(listeners, showSettingsEvent, updatedFilters);
+    };
+
     /**
      * Checks filters updates and returns updated filter
      * @param {Object[]} [filters] optional list of filters
@@ -922,12 +932,6 @@ export const uiService = (function () {
      * @return {Object[]} [filters] list of updated filters
      */
     const checkFiltersUpdates = async (source, filters, showPopup = true) => {
-        const showPopupEvent = listeners.UPDATE_FILTERS_SHOW_POPUP;
-        const showSettingsEvent = listeners.FILTERS_UPDATE_CHECK_READY;
-
-        const notifyActiveTab = listeners.notifyListeners.bind(listeners, showPopupEvent);
-        const notifySettingsTab = listeners.notifyListeners.bind(listeners, showSettingsEvent);
-
         try {
             const updatedFilters = await application.checkFiltersUpdates(filters);
             if (showPopup) {
