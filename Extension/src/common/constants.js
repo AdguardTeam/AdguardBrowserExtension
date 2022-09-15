@@ -190,7 +190,9 @@ export const WASTE_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
 // Custom scrollbar width
 export const SCROLLBAR_WIDTH = 12;
 
-// Custom scrollbar width
+/**
+ * Location of filters update caller
+ */
 export const FILTERS_UPDATE_SOURCE = {
     POPUP: 'popup',
     CONTEXT_MENU: 'context-menu',
