@@ -13,6 +13,14 @@
         background-color: var(--black);
     }
 
+    &--focused {
+        background-color: var(--gray300);
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray900);
+        }
+    }
+
     &__label {
         min-width: 90px;
         flex-grow: 1;
@@ -38,6 +46,10 @@
             @media (min-width: 640px) {
                 font-size: 16px;
             }
+        }
+
+        &:focus {
+            outline: none;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -99,6 +111,10 @@
         &__cross {
             color: var(--gray400);
         }
+
+        &--focused {
+            background-color: var(--gray300);
+        }
     }
 }
 
@@ -113,6 +129,10 @@
 
         &__cross {
             color: var(--gray400);
+        }
+
+        &--focused {
+            background-color: var(--gray900);
         }
     }
 }

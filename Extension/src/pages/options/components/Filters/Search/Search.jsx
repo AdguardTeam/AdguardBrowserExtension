@@ -33,6 +33,8 @@ const Search = observer(() => {
 
     const searchInputRef = useRef();
 
+    const searchRef = useRef();
+
     const {
         setSearchInput,
         searchInput,
@@ -89,14 +91,33 @@ const Search = observer(() => {
         settingsStore.sortSearchGroups();
     };
 
+    const onSearchInputFocus = () => {
+        if (searchRef.current) {
+            searchRef.current.classList.add('search--focused');
+        }
+    };
+
+    const onSearchInputBlur = () => {
+        if (searchRef.current) {
+            searchRef.current.classList.remove('search--focused');
+        }
+    };
+
+    useEffect(() => {
+        // autofocus triggers the keypad on mobile devices, which worsens tab navigation
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2117
+        if (searchInputRef.current && isDesktopScreen) {
+            searchInputRef.current.focus();
+        }
+    }, []);
+
     return (
-        <div className="search">
+        <div className="search" ref={searchRef}>
             <label className="search__label" htmlFor="search__input">
                 <input
                     id="search__input"
-                    // autofocus triggers the keypad on mobile devices, which worsens tab navigation
-                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2117
-                    autoFocus={isDesktopScreen}
+                    onFocus={onSearchInputFocus}
+                    onBlur={onSearchInputBlur}
                     className="search__input"
                     type="text"
                     placeholder={reactTranslator.getMessage('options_filters_search')}
