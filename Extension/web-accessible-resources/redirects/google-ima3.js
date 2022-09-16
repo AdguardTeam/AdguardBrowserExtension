@@ -176,7 +176,7 @@
         };
         AdsManager.skip = noopFunc;
         AdsManager.start = function() {
-            for (var _i2 = 0, _arr = [ AdEvent.Type.LOADED, AdEvent.Type.STARTED, AdEvent.Type.AD_BUFFERING, AdEvent.Type.FIRST_QUARTILE, AdEvent.Type.MIDPOINT, AdEvent.Type.THIRD_QUARTILE, AdEvent.Type.COMPLETE, AdEvent.Type.ALL_ADS_COMPLETED, AdEvent.Type.CONTENT_RESUME_REQUESTED ]; _i2 < _arr.length; _i2++) {
+            for (var _i2 = 0, _arr = [ AdEvent.Type.ALL_ADS_COMPLETED, AdEvent.Type.CONTENT_RESUME_REQUESTED ]; _i2 < _arr.length; _i2++) {
                 var type = _arr[_i2];
                 try {
                     this._dispatch(new ima.AdEvent(type));
@@ -188,14 +188,21 @@
         AdsManager.stop = noopFunc;
         AdsManager.updateAdsRenderingSettings = noopFunc;
         var manager = Object.create(AdsManager);
-        var AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type) {
+        var AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
             this.type = type;
+            this.adsRequest = adsRequest;
+            this.userRequestContext = userRequestContext;
         };
         AdsManagerLoadedEvent.prototype = {
             getAdsManager: function getAdsManager() {
                 return manager;
             },
-            getUserRequestContext: noopFunc
+            getUserRequestContext: function getUserRequestContext() {
+                if (this.userRequestContext) {
+                    return this.userRequestContext;
+                }
+                return {};
+            }
         };
         AdsManagerLoadedEvent.Type = {
             ADS_MANAGER_LOADED: "adsManagerLoaded"
@@ -214,6 +221,10 @@
             var _this = this;
             if (!managerLoaded) {
                 managerLoaded = true;
+                requestAnimationFrame((function() {
+                    var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                    _this._dispatch(new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext));
+                }));
                 var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
                 requestAnimationFrame((function() {
                     _this._dispatch(new ima.AdErrorEvent(e));
