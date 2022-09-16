@@ -1,8 +1,8 @@
-! Checksum: BO99NeOQU8avgSFcFNwdyw
+! Checksum: CtSejCfV6XHX6tqAqVHRUQ
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.4.10
-! TimeUpdated: 2022-07-20T16:31:48+00:00
+! Version: 2.0.4.17
+! TimeUpdated: 2022-09-07T09:04:01+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -442,7 +442,7 @@ grandprixradio.nl###custom_html-10
 cryptosjop.nl,grandprixradio.nl###custom_html-13
 grandprixradio.nl###custom_html-17
 grandprixradio.nl###custom_html-18
-omroepeemsdelta.nl,wereldreizigers.nl###custom_html-2
+minimumloon.nl,omroepeemsdelta.nl,wereldreizigers.nl###custom_html-2
 arrowcaz.nl,messianieuws.nl###custom_html-3
 historiek.net###custom_html-38
 messianieuws.nl###custom_html-4
@@ -717,8 +717,8 @@ biflatie.nl##.elementor-element-3f47075
 dartsactueel.nl##.elementor-element-4a0fad5
 domstadradio.nl##.elementor-element-a6b9134
 dartsactueel.nl##.elementor-element-b29a928
-radio182.nl##.elementor-element-bf3ae4f
 mr-online.nl##.elementor-element-b8e990e
+radio182.nl##.elementor-element-bf3ae4f
 dartsactueel.nl##.elementor-element-cda7c32
 mr-online.nl##.elementor-element-da14229
 biflatie.nl##.elementor-location-popup
@@ -871,6 +871,7 @@ infinance.nl##.slickcarousel
 omroepwest.nl##.slider-wrapper
 volleyvlaanderen.be##.slider5
 hyc.be,maaslandradio.nl##.slides
+funnygames.nl##.slot-container
 solarmagazine.nl##.sols
 live-voetbal.com##.special-offer
 spidersolitairespelen.nl##.spel_b1
@@ -1039,6 +1040,7 @@ advocatie.nl,goedkoopstekeukensduitsland.nl,lflmagazine.nl,mannennieuws.nl,strea
 racexpress.nl##img[Width="310"][height="200"]
 vives.nl##img[Width="330"][height="520"]
 advocatie.nl##img[Width="336"][height="280"]
+minimumloon.nl##img[Width="350"][height="350"]
 dutchcryptotalk.com##img[Width="468"][height="60"]
 streamwijzer.be##img[Width="500"][height="500"]
 decibel.nl##img[Width="640"][height="180"]
@@ -1063,6 +1065,7 @@ linda.nl#?#.article-row_article:-abp-has(.article-row_category.category-label_la
 mnm.be#?#.grid-item.grid-item-pebble:-abp-has(#pebble-label:-abp-contains(Advertentie))
 nieuwslog.nl#?#.wp-block-genesis-blocks-gb-columns:-abp-has(a[href*="/go/www.bet365.nl/"])
 nieuwsopbeeld.nl#?#.td_module_wrap:-abp-has(.td-post-category:-abp-contains(Gesponsord))
+rtlnieuws.nl#?#.autoscalable-block-wrapper:-abp-has(.entity-block-title:-abp-contains(Van onze partners))
 srnieuws.com#?#.mb-10.p-10.card-view:-abp-has(a[target="_blank"][rel="noopener"])
 streamwijzer.be#?#.wp-block-group__inner-container:-abp-has(a[rel="noreferrer noopener"][target="_blank"])
 tijd.be#?#.o-hpgrid__row-tijdconnect:-abp-has(h2:-abp-contains(Gesponsorde inhoud))
@@ -1107,8 +1110,7 @@ vier.be#@#.googleAd
 @@||videoplayer.persgroep.be/*/ad_smartads_.js$domain=vtm.be
 ||a.medialaancdn.be^
 @@||embed.kijk.nl/talpa-jw-skin/js/adsbygoogle.js$script,domain=embed.kijk.nl
-@@||looopings.nl/ad*.js
-@@||looopings.nl/wp-banners.js
+@@||looopings.nl/peel1.js
 icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index: 9999"]:not([class]):not([id])
 icttipsandtricks.nl#%#Object.defineProperty(window, 'ai_adb_detected', { get: function() { return function() {}; } });
 @@||static.webwereld.nl/javascripts/advert.js
@@ -1121,17 +1123,17 @@ icttipsandtricks.nl##body #adblock_screen
 telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 @@||telegraaf.tcdn.nl/javascript/showads*.js
-marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
-marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
-turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
+marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):-abp-has(> .mp-Listings__admarktTitle)
+marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:-abp-has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
+turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:-abp-has(> a > img[width="276"]) { remove: true; }
 appletips.nl#?#.padnoshow > div[class^="block"][-ext-has='#kpwrfeatured']
-androidplanet.nl#?#.sidebar > .widget_static_device_widget:has(.device-ad)
-androidplanet.nl#?#.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
+androidplanet.nl#?#.sidebar > .widget_static_device_widget:-abp-has(.device-ad)
+androidplanet.nl#?#.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:-abp-has(> .pd-advisor-offer > .result-badge:contains(Adv.))
 pcmweb.nl#?#.site__sidebar > .block[-ext-has='div.banner']
 pcmweb.nl#?#.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
 computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div#marketingcarrousseluitingen']
 computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div.banner']
-gfcnieuws.com#?#.entry-content div[class]:has(> ins.adsbygoogle)
+gfcnieuws.com#?#.entry-content div[class]:-abp-has(> ins.adsbygoogle)
 ad.nl#?#.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl#?#.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]

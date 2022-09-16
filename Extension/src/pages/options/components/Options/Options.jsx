@@ -85,7 +85,7 @@ const Options = observer(() => {
         return () => {
             removeListenerCallback();
         };
-    }, [settingsStore]);
+    }, [settingsStore, uiStore]);
 
     if (!settingsStore.optionsReadyToRender) {
         return null;

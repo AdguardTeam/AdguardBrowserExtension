@@ -73,18 +73,11 @@
                 consents: []
             }
         };
-        var __tcfapiWrapper = function __tcfapiWrapper() {
-            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
+        var __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
+            if (typeof callback !== "function" || command === "removeEventListener") {
+                return;
             }
-            for (var _i = 0, _args = args; _i < _args.length; _i++) {
-                var arg = _args[_i];
-                if (typeof arg === "function") {
-                    try {
-                        setTimeout(arg(tcData, true));
-                    } catch (ex) {}
-                }
-            }
+            callback(tcData, true);
         };
         window.__tcfapi = __tcfapiWrapper;
         var didomiEventListenersWrapper = {

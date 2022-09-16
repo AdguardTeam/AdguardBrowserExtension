@@ -1,14 +1,21 @@
-! Checksum: YwsXnv7OfFprYXc2QxH/UQ
+! Checksum: K/+JItM+NH3ZF7zQtCh6eA
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.1
-! TimeUpdated: 2022-07-29T14:31:01+00:00
+! Version: 2.0.3.43
+! TimeUpdated: 2022-09-14T10:30:54+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=mindbox-message-key
+$removeparam=_kx
 /?uclick=*;uclickhash=$removeparam
 &uclick=*&uclickhash=$removeparam
 /?r=dir&zoneid=$removeparam
 /?rb=*&zoneid=$removeparam
+$removeparam=s_cid
 $removeparam=awc
+$removeparam=__hsfp
+$removeparam=__hssc
+$removeparam=__hstc
+$removeparam=_hsenc
 $removeparam=hsa_acc
 $removeparam=hsa_ad
 $removeparam=hsa_cam
@@ -21,12 +28,15 @@ $removeparam=hsa_ol
 $removeparam=hsa_src
 $removeparam=hsa_tgt
 $removeparam=hsa_ver
+$removeparam=hsCtaTracking
 $removeparam=ysclid
 $removeparam=yclid
 $removeparam=aiad_clid
 $removeparam=_sgm_campaign
 $removeparam=_sgm_source
 $removeparam=_sgm_action
+$removeparam=/^__s=[A-Za-z0-9]{6\,}/,domain=~univis.uni-erlangen.de|~univis.uni-bamberg.de|~univis.uni-luebeck.de|~univis.uni-kiel.de|~univis.th-koeln.de
+$removeparam=mc_eid
 $removeparam=maf
 $removeparam=_clde
 $removeparam=_cldee
@@ -34,6 +44,13 @@ $removeparam=wt_mc
 $removeparam=oprtrack
 $removeparam=xtor
 $removeparam=msclkid
+$removeparam=vero_conv
+$removeparam=vero_id
+$removeparam=itm_source
+$removeparam=itm_medium
+$removeparam=itm_campaign
+$removeparam=itm_content
+$removeparam=itm_term
 $removeparam=utm_ad
 $removeparam=utm_affiliate
 $removeparam=utm_brand
@@ -69,6 +86,7 @@ $removeparam=gbraid
 $removeparam=wbraid
 $removeparam=gclsrc
 $removeparam=gclid
+$removeparam=usqp
 $removeparam=dpg_source
 $removeparam=dpg_campaign
 $removeparam=dpg_medium
@@ -106,6 +124,7 @@ $removeparam=rb_clickid
 $removeparam=oly_anon_id
 $removeparam=oly_enc_id
 $removeparam=ebisAdID
+$removeparam=wickedid
 $removeparam=irgwc
 $removeparam=fbclid
 $removeparam=adfrom
@@ -125,6 +144,47 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||store.udiscovermusic.com^$removeparam=/utm_/
+||hktvmall.com/yuicombo?$script,removeparam=/^\/_ui\/desktop\/common\/js\/uiAnalytics\//
+||go.xlivrdr.com^$removeparam
+||stripchat.com^$removeparam=affiliateId
+||stripchat.com^$removeparam=referrer
+||1password.university^$removeparam=utm_ref
+||blog.twitch.tv^$removeparam=/web_only|_branch_referrer/
+||michaelkors.global^$removeparam=ecid
+||michaelkors.global^$removeparam=cjevent
+||michaelkors.global^$removeparam=cjdata
+||doctolib.de^$removeparam=utm_website
+||doctolib.de^$removeparam=utm_page-url
+||doctolib.de^$removeparam=utm_content-group
+||doctolib.de^$removeparam=utm_button
+||nationalgeographic.com^$removeparam=utm_rd
+||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
+||stripchat.com^$removeparam=campaignId
+||stripchat.com^$removeparam=sourceId
+||stripchat.com^$removeparam=realDomain
+||fmworld.net^$removeparam=from
+||kaspersky.$removeparam=_ga
+||kaspersky.$removeparam=icid
+||facebook.com^$removeparam=extid
+||zenaps.com^$removeparam=cookie
+||zenaps.com^$removeparam=bId
+||awin1.com^$removeparam=linkid
+||awin1.com^$removeparam=clickref
+||awin1.com^$removeparam=awinaffid
+||music.apple.com^$removeparam=itsct
+||music.apple.com^$removeparam=itscg
+||netflix.com^$removeparam=trackId
+||netflix.com^$removeparam=tctx
+||moodfabrics.com^$removeparam=_kx
+||target.georiot.com/Proxy.ashx$removeparam=tsid
+||kamigame.jp^$removeparam=kamigame_source
+||shop.hololivepro.com^$removeparam=pr_rec_id
+||shop.hololivepro.com^$removeparam=pr_rec_pid
+||shop.hololivepro.com^$removeparam=pr_ref_pid
+||shop.hololivepro.com^$removeparam=pr_seq
+||shop.hololivepro.com^$removeparam=pr_prod_strat
+||wq.jd.com^$removeparam=pvid
 ||redirects.tradedoubler.com^$removeparam=tduid
 ||coolblue.nl^$removeparam=clickref
 ||coolblue.nl^$removeparam=ref
@@ -171,7 +231,7 @@ $removeparam=oref,domain=defenseone.com|govexec.com|nextgov.com|route-fifty.com
 ||trib.al$removeparam=c[0]
 $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||pulse.mail.ru^$removeparam=/^(udid|DeviceID|ver|appbuild|vendor|model|device_name|device_type|instanceid|device_year|connection_class|appsflyerid)/
-||use.typekit.net^$font,removeparam
+||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/
 ||p.typekit.net^$stylesheet,removeparam
 ||open.spotify.com^$removeparam=_branch_referrer
 ||open.spotify.com^$removeparam=si
@@ -264,6 +324,12 @@ $removeparam=union_lens,domain=tmall.com|taobao.com
 ||taobao.com^$removeparam=xId
 ||taobao.com^$removeparam=ptl
 ||taobao.com^$removeparam=app_pvid
+||aliexpress.$removeparam=algo_pvid
+||aliexpress.$removeparam=curPageLogUid
+||aliexpress.$removeparam=pdp_npi
+||aliexpress.$removeparam=aff_trace_key
+||aliexpress.$removeparam=aff_platform
+||aliexpress.$removeparam=aff_short_key
 ||aliexpress.$removeparam=spm
 ||aliexpress.$removeparam=scm
 ||aliexpress.$removeparam=scm_id
@@ -299,6 +365,8 @@ $removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
 ||adorama.com^$removeparam=obem
 ||adorama.com^$removeparam=bc_pid
 ||adjust.com^$removeparam=adgroup
+||tiktok.com^$removeparam=sec_uid
+||tiktok.com^$removeparam=web_id
 ||tiktok.com^$removeparam=share_app_id
 ||tiktok.com^$removeparam=share_author_id
 ||tiktok.com^$removeparam=tt_from
@@ -330,8 +398,8 @@ $removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
 $removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
-||web.vstat.info$removeparam=guid
-||web.vstat.info$removeparam=user_agent
+||web.vstat.info^$removeparam=guid
+||web.vstat.info^$removeparam=user_agent
 ||start.pm.by^$removeparam=adtag
 ||redhotpawn.com^$removeparam=cbqsid
 ||reddit.com^$removeparam=correlation_id
@@ -354,13 +422,14 @@ $removeparam=spm,domain=aliyun.com|sohu.com
 ||aliyun.com^$removeparam=scm
 $removeparam=dt_dapp,domain=douban.com|163.com
 ||douban.com^$removeparam=dt_platform
-||listelerim.hepsiburada.com^$removeparam=af_ad
-||listelerim.hepsiburada.com^$removeparam=af_adset
-||listelerim.hepsiburada.com^$removeparam=af_force_deeplink
-||listelerim.hepsiburada.com^$removeparam=pid
-||listelerim.hepsiburada.com^$removeparam=c
-||listelerim.hepsiburada.com^$removeparam=is_retargeting
-||listelerim.hepsiburada.com^$removeparam=shortlink
+||hepsiburada.com^$removeparam=af_ad
+||hepsiburada.com^$removeparam=af_adset
+||hepsiburada.com^$removeparam=af_click_lookback
+||hepsiburada.com^$removeparam=af_force_deeplink
+||hepsiburada.com^$removeparam=pid
+||hepsiburada.com^$removeparam=c
+||hepsiburada.com^$removeparam=is_retargeting
+||hepsiburada.com^$removeparam=shortlink
 ||play.google.com/store/$removeparam=pcampaignid
 ||cyber-ad01.cc^$removeparam=ip
 ||d-markets.net^$removeparam=ref
@@ -422,7 +491,6 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||instagram.com^$removeparam=ig_rid
 ||instagram.com^$removeparam=igshid
 ||euronews.com^$removeparam=_ope
-$removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||mediamarkt.com.tr^$removeparam=rbtc
 ||t.myvisualiq.net^$removeparam=~red
 ||uspoloassn.com^$removeparam=ref
@@ -478,6 +546,7 @@ $removeparam=/^curator_clanid/,domain=steampowered.com|steamcommunity.com
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
+||amazon.*$removeparam=AssociateTag
 ||amazon.*$removeparam=ascsubtag
 ||amazon.*$removeparam=c
 ||amazon.*$removeparam=camp
@@ -572,6 +641,7 @@ $removeparam=dclid
 ||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
 ||hepsiburada.com^$removeparam=wt_af
+||hepsiburada.com^$removeparam=wt_gl
 ||mioga.de^$removeparam=pl
 ||mioga.de^$removeparam=idealoid
 ||ejoker.de^$removeparam=sPartner
@@ -638,7 +708,6 @@ $removeparam=dclid
 ||flipkart.com^$removeparam=ssid
 ||flipkart.com^$removeparam=store
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
-||bilibili.com^$removeparam=from
 ||bilibili.com^$removeparam=seid
 ||bilibili.com^$removeparam=share_source
 ||bilibili.com^$removeparam=spm_id_from
@@ -670,16 +739,15 @@ $removeparam=dclid
 @@||t.send.vt.edu/r/?id=$removeparam=utm_source
 @@||t.send.vt.edu/r/?id=$removeparam=utm_medium
 @@||t.send.vt.edu/r/?id=$removeparam=utm_campaign
-@@||auto-swiat.pl/*&srcc=ucs$removeparam
-@@||komputerswiat.pl/*&srcc=ucs$removeparam
-@@||noizz.pl/*&srcc=ucs$removeparam
-@@||plejada.pl/*&srcc=ucs$removeparam
-@@||medonet.pl/*&srcc=ucs$removeparam
-@@||businessinsider.com.pl/*&srcc=ucs$removeparam
+@@||ofeminin.pl/*&srcc=ucs$removeparam=utm_source
+@@||auto-swiat.pl/*&srcc=ucs$removeparam=utm_source
+@@||komputerswiat.pl/*&srcc=ucs$removeparam=utm_source
+@@||noizz.pl/*&srcc=ucs$removeparam=utm_source
+@@||plejada.pl/*&srcc=ucs$removeparam=utm_source
+@@||medonet.pl/*&srcc=ucs$removeparam=utm_source
+@@||businessinsider.com.pl/*&srcc=ucs$removeparam=utm_source
 @@||onet.pl/?utm_source=$removeparam
 @@||tix.axs.com^$removeparam
-@@/mediaserver/*$removeparam,domain=ramtrucks.com|chrysler.com|fiatusa.com|alfaromeousa.com|jeep.com|dodge.com
-@@||dkbs.sabio.de/sabio/services/$removeparam
 @@||sendgb.com/*/?utm_source=$removeparam=utm_source
 @@||img*.nga$removeparam=cmpid
 @@||mywot.com/*/confirmNewEmail/$removeparam
