@@ -5,7 +5,7 @@ plan:
   key: BERELEASESPECS
   name: browser extension - build release
 variables:
-  dockerNode: adguard/node-ssh:15.14--6
+  dockerNode: adguard/node-ssh:14.18--2
 
 stages:
   - Build:
@@ -41,8 +41,8 @@ Build:
             yarn locales:validate --min
             yarn release
 
-            # build source zip for publishing on AMO
-            git archive --format=zip --output=build/release/source.zip HEAD
+            # zip source files for publishing on AMO
+            git ls-files | zip -@ build/beta/source.zip
 
             rm -rf node_modules
     - inject-variables:
