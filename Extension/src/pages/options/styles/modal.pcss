@@ -60,6 +60,15 @@
         padding: 7px 8px;
         outline: none;
 
+        &:focus-visible {
+            outline: none;
+            background-color: var(--gray300);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray900);
+            }
+        }
+
         @media (prefers-color-scheme: dark) {
             background-color: var(--black);
             color: var(--gray300);
@@ -133,6 +142,10 @@
     .modal__input {
         color: var(--gray-base);
         background-color: transparent;
+
+        &:focus-visible {
+            background-color: var(--gray300);
+        }
     }
 }
 
@@ -144,5 +157,9 @@
     .modal__input {
         background-color: var(--black);
         color: var(--gray300);
+
+        &:focus-visible {
+            background-color: var(--gray900);
+        }
     }
 }

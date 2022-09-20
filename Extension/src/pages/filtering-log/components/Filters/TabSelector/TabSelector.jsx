@@ -37,7 +37,7 @@ const TabSelector = observer(() => {
         if (refResult.current?.childNodes) {
             setResultItems(Array.from(refResult.current.childNodes));
         }
-    }, [searchValue]);
+    }, [selectIsOpen, searchValue]);
 
     useEffect(() => {
         if (resultItems) {
@@ -74,12 +74,18 @@ const TabSelector = observer(() => {
     });
 
     useKeyDown(refResult, 'Enter', () => {
+        // Selected with the arrow buttons
         const targetElem = resultItems?.find(
             (el) => el.classList.contains(SELECTED_CLASS_NAME),
         );
-        if (targetElem) {
+        // Selected with the tab button
+        const activeElem = resultItems?.find(
+            (el) => el === document.activeElement,
+        );
+
+        if (activeElem || targetElem) {
             (async () => {
-                await selectionHandlerSearch(Number(targetElem.id));
+                await selectionHandlerSearch(Number(activeElem ? activeElem.id : targetElem.id));
             })();
             document.activeElement.blur();
         }

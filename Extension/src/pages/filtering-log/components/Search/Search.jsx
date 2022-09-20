@@ -87,6 +87,7 @@ const Search = forwardRef(({
                 type="text"
                 id="log-search"
                 name="log-search"
+                className="search__input"
                 placeholder={placeholder}
                 ref={passedRef || localSearchInputRef}
                 onChange={onChange}
