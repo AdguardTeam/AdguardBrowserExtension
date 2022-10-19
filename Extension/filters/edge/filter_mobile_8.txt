@@ -1,8 +1,8 @@
-! Checksum: CtSejCfV6XHX6tqAqVHRUQ
+! Checksum: F0OaPDNUce163tzYwksNZA
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.4.17
-! TimeUpdated: 2022-09-07T09:04:01+00:00
+! Version: 2.0.4.23
+! TimeUpdated: 2022-10-11T12:40:23+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -782,7 +782,6 @@ rendez-vous.be##.leaderBoard
 atletiekkrant.be,autosportkrant.be,basketbalkrant.be,handbalkrant.be,hockeykrant.be,pcactive.nl,psv.nl,sport-planet.eu,sportid.be,tenniskrant.be,tradeidee.nl,voetbalkrant.com,volleybalkrant.be,vrouwenvoetbalkrant.be,wielerkrant.be##.leaderboard
 atv.be,robtv.be,tvl.be,tvoost.be##.leaderboardWrap
 blikopnieuws.nl##.ligatus-sidebar-block
-buienradar.nl##.linklist
 roulettefm.nl,rtvstichtsevecht.nl##.list-sponsors
 businessinsider.nl##.ll_partnerexpert
 sparta-rotterdam.nl##.logo_main_sponsor_image
@@ -858,6 +857,7 @@ scholieren.com##.searchvertorial
 ewmagazine.nl,fotografie.nl##.section-partners
 uitzendinggemist.net##.serie_info_adbox
 baanwacht.nl##.shailan_banner_widget
+indeleiderstrui.nl##.shopsuite-widget
 wijlimburg.nl##.sidebar-partners
 fcgroningen.nl##.sidebar__item--banner
 hardware.info##.sidebar_right_top
@@ -961,6 +961,7 @@ indebuurt.nl##.woty-banner
 streamwijzer.nl##.wp-block-buttons
 debestevpn.nl##.wpsm_promobox
 iphoned.nl##.wrap.hidden.lg\:flex.mt-8
+indeleiderstrui.nl##[data-ub-carousel]
 regionoordkop.nl##[id^="regio-"]
 geenstijl.nl##a[data-ga-event^="link-tip"]
 nu.nl##a[data-type="advertorial"]
@@ -1053,6 +1054,7 @@ landenweb.nl##table[style="margin-left: auto; margin-right: auto; border: 1px so
 radiocaramba.nl##table[Width="120"][height="600"]
 feijenoordnieuws.nl##.cv-table-left > a:not([target="_blank"]):not([rel="nofollow"]):not(a[href^="https://feijenoordnieuws.nl/"])
 autobahn.eu#?#.d-none.d-md-block.mb-3:-abp-has(a[target="_blank"][rel="noopener"])
+buienradar.nl#?#.linklist:-abp-has(h1:-abp-contains(Lekker Dichtbij Deals))
 businessinsider.nl#?#.widget_custom_html:-abp-has(h2:-abp-contains(Beter Beleggen))
 fcupdate.nl#?#p:-abp-has(a[href^="https://fcupdate.nl/jacks?"])
 geenstijl.nl#?#.article.row.no-image:-abp-has(.row.compost-warn:-abp-contains(- ingezonden mededeling -))
@@ -1093,6 +1095,8 @@ vakantieplaats.nl#@#.topAds
 ||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
 ||content2.nrc.nl^
+||aa.hwigroup.com^
+||ab.hwigroup.com^
 ||aa.tweakers.nl^
 ||ab.tweakers.nl^
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
@@ -1140,6 +1144,8 @@ klusidee.nl#?#tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+hardware.info##div[class^="bnr-"]
+security.nl##.banner_leaderboard
 iculture.nl##.ad-top-desktop
 iculture.nl##.feed-ad-wrapper
 tweakers.net###b_re
@@ -1273,6 +1279,7 @@ klusidee.nl##td.td-ad
 ||pcnltelecom.tdsapi.com/portal/iframe.js
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
+underarmour.nl#@#.b-header-banner
 frontpage.fok.nl#@#.advertentie
 @@||markup.nieuwsblad.be/extra/assets/advertising/dfp-setup.js
 @@||markup.nieuwsblad.be/extra/assets/advertising/prebid.js

@@ -1,9 +1,10 @@
-! Checksum: K/+JItM+NH3ZF7zQtCh6eA
+! Checksum: T3WDZI4kSdmBv1uf3a/cKQ
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.43
-! TimeUpdated: 2022-09-14T10:30:54+00:00
+! Version: 2.0.3.60
+! TimeUpdated: 2022-10-18T08:30:48+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=mkt_tok
 $removeparam=mindbox-message-key
 $removeparam=_kx
 /?uclick=*;uclickhash=$removeparam
@@ -144,6 +145,27 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||wiley.com^$removeparam=/elq/
+||thumbs4.redgifs.com/*&for=$removeparam=for
+||thumbs4.redgifs.com/*&for=$image,removeparam=for
+||politica.com.ua^$removeparam=isUser
+||shopee.ph^$removeparam=sp_atk
+||shopee.ph^$removeparam=xptdk
+||adguard.com^$removeparam=clid
+||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
+||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
+||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=exc_ads
+||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_adids
+||dzen.ru^$removeparam=stid
+||dzen.ru^$removeparam=persistent_id
+||teknosa.com^$removeparam=aid
+||teknosa.com^$removeparam=campid
+||teknosa.com^$removeparam=cid
+||teknosa.com^$removeparam=crid
+||teknosa.com^$removeparam=plid
+||teknosa.com^$removeparam=sid
+||teknosa.com^$removeparam=source
+||bunte.de^$removeparam=umt_source
 ||store.udiscovermusic.com^$removeparam=/utm_/
 ||hktvmall.com/yuicombo?$script,removeparam=/^\/_ui\/desktop\/common\/js\/uiAnalytics\//
 ||go.xlivrdr.com^$removeparam
@@ -225,6 +247,10 @@ $removeparam=oref,domain=defenseone.com|govexec.com|nextgov.com|route-fifty.com
 ||mkaff.com/landings/$removeparam
 ||lazada.vn^$removeparam=mkttid
 ||lazada.vn^$removeparam=laz_trackid
+||lazada.com.ph^$removeparam=spm
+||lazada.com.ph^$removeparam=scm
+||lazada.com.ph^$removeparam=acm
+||lazada.com.ph^$removeparam=clickTrackInfo
 ||trib.al$removeparam=fbclid
 ||trib.al$removeparam=h
 ||trib.al$removeparam=__tn__
@@ -466,6 +492,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||infoq.com^$removeparam=/topicPageSponsorship|^itm_/
 ||coupondunia.in^$removeparam=itm_source
 ||adshares.net^$removeparam=cid
+||creativecloud.adobe.com^$removeparam=trackingid
 ||get.adobe.com^$removeparam=browser_type
 ||get.adobe.com^$removeparam=browser_dist
 ||get.adobe.com^$removeparam=type
@@ -546,6 +573,16 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
+||amazon.*$removeparam=adgrpid
+||amazon.*$removeparam=hvadid
+||amazon.*$removeparam=hvbmt
+||amazon.*$removeparam=hvdev
+||amazon.*$removeparam=hvlocphy
+||amazon.*$removeparam=hvnetw
+||amazon.*$removeparam=hvqmt
+||amazon.*$removeparam=hvrand
+||amazon.*$removeparam=hvtargid
+||amazon.*$removeparam=hydadcr
 ||amazon.*$removeparam=AssociateTag
 ||amazon.*$removeparam=ascsubtag
 ||amazon.*$removeparam=c
