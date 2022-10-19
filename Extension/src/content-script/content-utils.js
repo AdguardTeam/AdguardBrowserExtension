@@ -75,11 +75,12 @@ export const contentUtils = (function () {
      * @param html
      * @param isAdguardTab
      * @param alertStyles
+     * @param alertContainerStyles
      * @returns {HTMLElement}
      */
-    const appendAlertElement = (target, html, isAdguardTab, alertStyles) => {
-        const stylesElement = createStyleElement(alertStyles);
-        document.body.insertAdjacentElement('afterbegin', stylesElement);
+    const appendAlertElement = (target, html, isAdguardTab, alertStyles, alertContainerStyles) => {
+        const alertContainerElement = createStyleElement(alertContainerStyles);
+        document.body.insertAdjacentElement('afterbegin', alertContainerElement);
         if (isAdguardTab) {
             return appendDiv(target, html);
         }
@@ -131,6 +132,7 @@ export const contentUtils = (function () {
             title,
             isAdguardTab,
             alertStyles,
+            alertContainerStyles,
         } = message;
 
         if (!title && !text) {
@@ -162,7 +164,13 @@ export const contentUtils = (function () {
             }
 
             if (document.body) {
-                const alertElement = appendAlertElement(document.body, alertDivHtml, isAdguardTab, alertStyles);
+                const alertElement = appendAlertElement(
+                    document.body,
+                    alertDivHtml,
+                    isAdguardTab,
+                    alertStyles,
+                    alertContainerStyles,
+                );
                 alertElement.classList.add('adguard-alert-iframe');
                 alertElement.onload = () => {
                     alertElement.style.visibility = 'visible';
@@ -192,7 +200,6 @@ export const contentUtils = (function () {
         const {
             title,
             offer,
-            offerDesc,
             description,
             isAdguardTab,
             changelogHref,
@@ -202,6 +209,7 @@ export const contentUtils = (function () {
             showPromoNotification,
             disableNotificationText,
             alertStyles,
+            updateIframeStyles,
         } = message;
 
         const updateIframeHtml = `
@@ -223,22 +231,14 @@ export const contentUtils = (function () {
                                     </a>
                                 </div>
                                 <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
-                                    <div class="adguard-update-popup__offer-inner">
-                                        <div class="adguard-update-popup__offer-desc-wr">
-                                            <div class="adguard-update-popup__wrapper">
-                                                <div class="adguard-update-popup__offer-desc">
-                                                    <div>
-                                                        ${offer}
-                                                    </div>
-                                                    ${offerDesc && `<div>${offerDesc}</div>`}
-                                                </div>
-                                                <div class="adguard-update-popup__offer-bottom">
-                                                    <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
-                                                        ${offerButtonText}
-                                                    </a>
-                                                </div>
-                                            </div>
+                                    <div class="adguard-update-popup__offer-close close-iframe set-notification-viewed"></div>
+                                    <div class="adguard-update-popup__offer-content">
+                                        <div class="adguard-update-popup__offer-title">
+                                            ${offer}
                                         </div>
+                                        <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
+                                            ${offerButtonText}
+                                        </a>
                                     </div>
                                 </div>
                             </div>`;
@@ -286,8 +286,8 @@ export const contentUtils = (function () {
             }
 
             if (document.body && !isAdguardTab) {
-                const stylesElement = createStyleElement(alertStyles);
-                document.body.insertAdjacentElement('afterbegin', stylesElement);
+                const updateIframeCss = createStyleElement(updateIframeStyles);
+                document.body.insertAdjacentElement('afterbegin', updateIframeCss);
 
                 const iframe = appendIframe(document.body, updateIframeHtml, alertStyles);
                 iframe.classList.add('adguard-update-iframe');

@@ -43,7 +43,17 @@ import { COMPARE_URL } from '../pages/constants';
  * UI service
  */
 export const uiService = (function () {
+    // styles for alert popup and update info popup
+    // should be used inside iframe
     const alertStylesUrl = backgroundPage.getURL('/assets/css/alert-popup.css');
+
+    // styles for alert popup container
+    // should be injected into web page to set the alert position on page properly
+    const alertContainerStylesUrl = backgroundPage.getURL('/assets/css/alert-container.css');
+
+    // style for the update info popup iframe
+    // should be injected into web page to set the popup position on page properly
+    const updateIframeStyleUrl = backgroundPage.getURL('/assets/css/update-iframe.css');
 
     const browserActionTitle = translator.getMessage('name');
 
@@ -411,6 +421,8 @@ export const uiService = (function () {
 
     const showAlertMessagePopup = async (title, text, alertStyles) => {
         const tab = await tabsApi.getActive();
+        const alertContainerStylesResponse = await fetch(alertContainerStylesUrl);
+        const alertContainerStyles = await alertContainerStylesResponse.text();
         if (tab) {
             tabsApi.sendMessage(tab.tabId, {
                 type: 'show-alert-popup',
@@ -418,6 +430,7 @@ export const uiService = (function () {
                 title,
                 text,
                 alertStyles,
+                alertContainerStyles,
             });
         }
     };
@@ -443,8 +456,9 @@ export const uiService = (function () {
      * @param currentVersion
      * @param previousVersion
      * @param alertStyles
+     * @param updateIframeStyles
      */
-    const showApplicationUpdatedPopup = async (currentVersion, previousVersion, alertStyles) => {
+    const showApplicationUpdatedPopup = async (currentVersion, previousVersion, alertStyles, updateIframeStyles) => {
         const promoNotification = notifications.getCurrentNotification();
         if (!promoNotification
             && browserUtils.getMajorVersionNumber(currentVersion) === browserUtils.getMajorVersionNumber(previousVersion)
@@ -478,6 +492,7 @@ export const uiService = (function () {
             offerButtonHref,
             disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),
             alertStyles,
+            updateIframeStyles,
         };
 
         await sendMessageToActiveTab(message);
@@ -978,8 +993,11 @@ export const uiService = (function () {
     };
 
     const init = async () => {
-        const response = await fetch(alertStylesUrl);
-        const alertStyles = await response.text();
+        const alertStylesResponse = await fetch(alertStylesUrl);
+        const alertStyles = await alertStylesResponse.text();
+
+        const updateIframeStylesResponse = await fetch(updateIframeStyleUrl);
+        const updateIframeStyles = await updateIframeStylesResponse.text();
 
         // update icon on event received
         listeners.addListener((event, tab, reset) => {
@@ -1060,7 +1078,7 @@ export const uiService = (function () {
         listeners.addListener((event, info) => {
             if (event === listeners.APPLICATION_UPDATED) {
                 if (settings.isShowAppUpdatedNotification()) {
-                    showApplicationUpdatedPopup(info.currentVersion, info.prevVersion, alertStyles);
+                    showApplicationUpdatedPopup(info.currentVersion, info.prevVersion, alertStyles, updateIframeStyles);
                 }
             }
         });
