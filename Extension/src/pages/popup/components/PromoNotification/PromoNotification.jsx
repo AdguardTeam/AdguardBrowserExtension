@@ -43,7 +43,7 @@ export const PromoNotification = observer(() => {
         openPromoNotificationUrl();
     };
 
-    const { text } = promoNotification;
+    const { title, btn } = promoNotification.text;
 
     const notificationClassnames = classnames('promo-notification', {
         'promo-notification--close': notificationOnClose,
@@ -51,42 +51,27 @@ export const PromoNotification = observer(() => {
 
     return (
         <div className={notificationClassnames}>
+            <button
+                aria-label="close"
+                type="button"
+                className="promo-notification__close"
+                onClick={handleNotificationClose}
+            >
+                <svg className="icon icon--button">
+                    <use xlinkHref="#cross-white" />
+                </svg>
+            </button>
             <div className="promo-notification__content">
-                <div className="promo-notification__inner">
-                    <button
-                        aria-label="close"
-                        type="button"
-                        className="promo-notification__close"
-                        onClick={handleNotificationClose}
-                    />
-                    {text.title
-                        && (
-                            <div className="promo-notification__title">
-                                <div className="promo-notification__title-wr">
-                                    <div className="promo-notification__title-in">
-                                        {text.title}
-                                    </div>
-                                    {text.desc && (
-                                        <div className="promo-notification__title-in">
-                                            {text.desc}
-                                        </div>
-                                    )}
-                                    {text.btn
-                                        && (
-                                            <div className="promo-notification__bottom">
-                                                <button
-                                                    type="button"
-                                                    className="promo-notification__btn"
-                                                    onClick={handleNotificationClick}
-                                                >
-                                                    {text.btn}
-                                                </button>
-                                            </div>
-                                        )}
-                                </div>
-                            </div>
-                        )}
+                <div className="promo-notification__title">
+                    {title}
                 </div>
+                <button
+                    type="button"
+                    className="promo-notification__btn"
+                    onClick={handleNotificationClick}
+                >
+                    {btn}
+                </button>
             </div>
         </div>
     );

@@ -31,113 +31,198 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const BACK_TO_SCHOOL_22_ID = 'backToSchool22';
+    const HALLOWEEN_PROMO_22_ID = 'halloweenPromo22';
 
-    const backToSchool22Notification = {
-        id: BACK_TO_SCHOOL_22_ID,
+    const halloweenPromo22Notification = {
+        id: HALLOWEEN_PROMO_22_ID,
         locales: {
             en: {
-                title: 'Back',
-                desc: 'to school',
+                title: 'Halloween promo',
                 btn: 'Get 40% off',
             },
             ru: {
-                title: 'Снова в',
-                desc: 'школу',
-                btn: '-40% на всё',
+                title: 'Акция на Хэллоуин',
+                btn: 'Скидка 40%',
+            },
+            ja: {
+                title: 'ハロウィンキャンペーン',
+                btn: '40%OFF割引をGET',
+            },
+            ko: {
+                title: '할로윈 프로모션',
+                btn: '40% 할인 받기',
             },
             es: {
-                title: 'Vuelta al',
-                desc: 'cole',
+                title: 'Rebajas de Halloween',
                 btn: 'Obtén un 40% off',
             },
             de: {
-                title: 'Zurück zur',
-                desc: 'Schule',
-                btn: '40% Rabatt',
+                title: 'Halloween-Sale',
+                btn: '40% Rabatt erhalten',
             },
             fr: {
-                title: 'La rentrée',
-                desc: 'scolaire',
-                btn: '40% de remise',
+                title: 'Promo Halloween',
+                btn: 'Remise 40%',
             },
             it: {
-                title: 'Ritorno a',
-                desc: 'scuola',
+                title: 'Offerta Halloween',
                 btn: '40% di sconto',
             },
-            ko: {
-                title: '백 투 스쿨',
-                desc: '세일',
-                btn: '40% 할인',
-            },
             zh_cn: {
-                title: '开学啦',
-                btn: '一律享受40%折扣',
+                title: '万圣节优惠',
+                btn: '低至6折',
             },
             zh_tw: {
-                title: '開學啦',
-                btn: '獲得40%的折扣',
-            },
-            uk: {
-                title: 'Знову до',
-                desc: 'школи',
-                btn: 'Знижка 40%',
+                title: '萬聖節折扣',
+                btn: '低至六折',
             },
             pt_pt: {
-                title: 'De volta à',
-                desc: 'escola',
-                btn: 'Obter 40% de desconto',
+                title: 'Promoção de Halloween',
+                btn: 'Garanta 40% off',
             },
             pt_br: {
-                title: 'De volta à',
-                desc: 'escola',
-                btn: 'Obtenha 40% de desconto',
+                title: 'Promoção de Halloween',
+                btn: 'Garanta 40% off',
+            },
+            uk: {
+                title: 'Акція на Хелловін',
+                btn: 'Знижка 40%',
             },
             ar: {
-                title: 'العودة',
-                desc: 'إلى المدرسة',
-                btn: '%احصل على خصم 40',
+                title: 'عرض عيد الهالوين',
+                btn: '٪احصل على خصم 40',
             },
             be: {
-                title: 'Назад у',
-                desc: 'школу',
-                btn: 'Атрымайце скідку 40%',
+                title: 'Прома на Хэлоўін',
+                btn: 'Зніжка 40%',
+            },
+            bg: {
+                title: 'Хелоуин промо',
+                btn: '40% отстъпка',
+            },
+            ca: {
+                title: 'Promoció de Halloween',
+                btn: '40% de descompte',
+            },
+            cs: {
+                title: 'Halloweenská promo akce',
+                btn: '40% sleva',
+            },
+            da: {
+                title: 'Halloween-kampagne',
+                btn: 'Få 40% rabat',
+            },
+            el: {
+                title: 'Απόκριες promo',
+                btn: 'Έκπτωση 40%',
+            },
+            es_419: {
+                title: 'Rebajas de Halloween',
+                btn: 'Obtén un 40% off',
+            },
+            fa: {
+                title: 'تبلیغاتی هالووین',
+                btn: 'دریافت 40٪ خاموش',
+            },
+            fi: {
+                title: 'Halloween-kampanja',
+                btn: 'Saat 40% alennuksen',
+            },
+            he: {
+                title: 'פרומו ליל כל הקדושים',
+                btn: 'קבל 40% הנחה',
+            },
+            hr: {
+                title: 'Promocija za Noć vještica',
+                btn: '40% popusta',
+            },
+            hu: {
+                title: 'Halloween promóció',
+                btn: '40% kedvezmény',
+            },
+            hy: {
+                title: 'Հելոուինի պրոմո',
+                btn: '40% զեղչ',
             },
             id: {
-                title: 'Kembali ke',
-                desc: 'sekolah',
+                title: 'Promosi Halloween',
                 btn: 'Dapatkan diskon 40%',
             },
+            lt: {
+                title: 'Helovino akcija',
+                btn: '40% nuolaida',
+            },
+            ms: {
+                title: 'Promosi Halloween',
+                btn: 'Diskaun 40%',
+            },
+            nb: {
+                title: 'Halloween-kampanje',
+                btn: 'Få 40% avslag',
+            },
+            nl: {
+                title: 'Halloween promotie',
+                btn: 'Ontvang 40% korting',
+            },
             pl: {
-                title: 'Powrót do',
-                desc: 'szkoły',
-                btn: 'Zyskaj 40% zniżki',
+                title: 'Promocja Halloween',
+                btn: 'Uzyskaj 40% zniżki',
+            },
+            ro: {
+                title: 'Promoție de Halloween',
+                btn: '40% reducere',
+            },
+            sk: {
+                title: 'Propagácia Halloweenu',
+                btn: 'Získajte 40% zľavu',
+            },
+            sl: {
+                title: 'Promocija noči čarovnic',
+                btn: 'Dobi 40% popusta',
+            },
+            sr: {
+                title: 'Promocija za Noć veštica',
+                btn: 'Skini 40% popusta',
+            },
+            sv: {
+                title: 'Halloween-kampanj',
+                btn: 'Få 40% rabatt',
             },
             tr: {
-                title: 'Okula dönüş',
-                btn: '40 indirim kazanın',
+                title: 'Cadılar Bayramı promosyonu',
+                btn: '%40 indirim',
             },
             vi: {
-                title: 'Trở lại',
-                desc: 'trường học',
-                btn: 'Được GIẢM GIÁ 40%',
+                title: 'Khuyến mãi Halloween',
+                btn: 'Giảm giá 40%',
+            },
+            hi: {
+                title: 'हेलोवीन पदोन्नति',
+                btn: '40% की छूट',
+            },
+            et: {
+                title: 'Halloweeni promo',
+                btn: '40% allahindlust',
+            },
+            th: {
+                title: 'โปรโมชั่นฮาโลวีน',
+                btn: 'รับส่วนลด 40%',
             },
         },
         text: '',
-        url: 'https://link.adtidy.org/forward.html?action=back_to_school_22&app=browser_extension',
-        from: '30 August 2022 12:00:00',
-        to: '4 September 2022 23:59:00',
+        url: 'https://link.adtidy.org/forward.html?action=halloween_promo_22&app=browser_extension',
+        from: '27 October 2022 12:00:00',
+        to: '2 November 2022 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(backToSchool22Notification, 'icons', () => ({
+            return lazyGet(halloweenPromo22Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/promo-on-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/promo-on-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/hlw22-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/hlw22-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/promo-off-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/promo-off-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/hlw22-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/hlw22-off-38.png'),
                 },
             }));
         },
@@ -159,7 +244,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        backToSchool22: backToSchool22Notification,
+        halloweenPromo22: halloweenPromo22Notification,
     };
 
     /**
