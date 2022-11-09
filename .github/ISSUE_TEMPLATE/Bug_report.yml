@@ -1,0 +1,176 @@
+---
+
+name: 🐞 Bug report
+description: Create a bug report to help us improve AdGuard Browser Extension.
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: app_version
+    attributes:
+      label: AdGuard Extension version
+      description: What version of our extension are you running?
+      placeholder: For example, 4.1.22 beta
+    validations:
+      required: true
+  - type: input
+    id: br_version
+    attributes:
+      label: Browser version
+      description: What browser do you use?
+      placeholder: For example, Chrome 106
+    validations:
+      required: true
+  - type: input
+    id: os_version
+    attributes:
+      label: OS version
+      description: What operating system do you use?
+      placeholder: For example, macOS 12.4
+    validations:
+      required: true
+  - type: dropdown
+    id: filters
+    attributes:
+      label: What filters do you have enabled?
+      description: Select enabled filters from the list.
+      multiple: true
+      options:
+        - No filters
+        - AdGuard Base filter
+        - AdGuard Mobile Ads filter
+        - AdGuard Chinese filter
+        - AdGuard Dutch filter
+        - AdGuard French filter
+        - AdGuard German filter
+        - AdGuard Japanese filter
+        - AdGuard Russian filter
+        - AdGuard Spanish/Portuguese filter
+        - AdGuard Turkish filter
+        - AdGuard Tracking Protection filter
+        - AdGuard URL Tracking filter
+        - AdGuard Social Media filter
+        - AdGuard Annoyances filter
+        - AdGuard DNS filter
+        - AdGuard Experimental filter
+        - Filter unblocking search ads and self-promotion
+        - ---Third-party filters---
+        - EasyList
+        - ABPindo
+        - Bulgarian list
+        - EasyList China
+        - EasyList Czech and Slovak
+        - EasyList Dutch
+        - EasyList Germany
+        - EasyList Hebrew
+        - EasyList Italy
+        - EasyList Lithuania
+        - Latvian List
+        - Liste AR
+        - Liste FR
+        - ROList
+        - EasyPrivacy
+        - Icelandic ABP List
+        - AdBlockID
+        - Greek AdBlock Filter
+        - Fanboy's Annoyances
+        - Fanboy's Social Blocking List
+        - Web Annoyances Ultralist
+        - Thai Ads Filters
+        - Hungarian filter
+        - Peter Lowe's Blocklist
+        - Xfiles
+        - Adblock Warning Removal List
+        - Online Malicious URL Blocklist
+        - Spam404
+        - RU AdList - Counters
+        - ABPVN List
+        - Fanboy's Enhanced Tracking List
+        - Official Polish filters for AdBlock, uBlock Origin & AdGuard
+        - Polish GDPR-Cookies Filters
+        - Estonian List
+        - ChinaList+EasyList
+        - CJX's Annoyances List
+        - Polish Social Filters
+        - Adblock-Persian list
+        - Fanboy's Swedish
+        - Fanboy's Anti-Facebook List
+        - Fanboy's Vietnamese
+        - List-KR
+        - xinggsf
+        - I don't care about cookies
+        - Fanboy's Spanish\/Portuguese
+        - EasyList Spanish
+        - KAD - Anti-Scam
+        - Adblock List for Finland
+        - ROLIST2
+        - Iranian filter
+        - road-block
+        - Polish Annoyances Filters
+        - Polish Anti Adblock Filters
+        - Fanboy's Anti-thirdparty Fonts
+        - BarbBlock
+        - EasyList Cookie List
+        - NoCoin Filter List
+        - Frellwit's Swedish Filter
+        - YousList
+        - AlleBlock
+        - EasyList Polish
+        - Polish Anti-Annoying Special Supplement
+        - Dandelion Sprout's Nordic Filters
+        - Dandelion Sprout's Annoyances List
+        - Legitimate URL Shortener
+        - Others
+    validations:
+      required: false
+  - type: dropdown
+    id: stealth
+    attributes:
+      label: What Stealth Mode options do you have enabled?
+      description: Select any of these options if you have them enabled in Stealth Mode.
+      multiple: true
+      options:
+        - Block trackers
+        - Remove tracking parameters
+        - Hide your search queries
+        - Send Do-Not-Track signals
+        - Self-destruction of third-party cookies
+        - Self-destruction of first-party cookies
+        - Hide Referrer from third parties
+        - Remove X-Client-Data header
+        - Disable WebRTC
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Issue Details
+      description: What happened?
+      placeholder: Please include all relevant details about the issue you've experienced.
+    validations:
+      required: false
+  - type: textarea
+    id: how_it_should_be
+    attributes:
+      label: Expected Behavior
+      description:
+      placeholder: A clear and concise description of what you expected to happen.
+    validations:
+      required: false
+  - type: textarea
+    id: screens
+    attributes:
+      label: Screenshots
+      description:
+      placeholder: If applicable add screenshots explaining your problem.
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description:
+      placeholder: Add any other context about the problem here.
+    validations:
+      required: false
