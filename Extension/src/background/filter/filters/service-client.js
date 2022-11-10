@@ -15,7 +15,10 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import FiltersDownloader from '@adguard/filters-downloader';
+// workaround for
+// https://github.com/import-js/eslint-plugin-import/issues/1810:
+// eslint-disable-next-line import/no-unresolved
+import FiltersDownloader from '@adguard/filters-downloader/browser';
 import { utils } from '../../utils/common';
 import { backgroundPage } from '../../extension-api/background-page';
 import { prefs } from '../../prefs';
