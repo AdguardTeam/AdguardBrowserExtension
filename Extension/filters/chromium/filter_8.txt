@@ -1,8 +1,8 @@
-! Checksum: EWBo9BCFeF0drKz7Z5H41Q
+! Checksum: gSVq4IvlkcaFBb6ZC1KjOQ
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.4.23
-! TimeUpdated: 2022-10-11T12:40:23+00:00
+! Version: 2.0.4.27
+! TimeUpdated: 2022-11-13T19:31:56+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -131,6 +131,7 @@ _advertentieleaderboardhome.
 ||vpscash.nl^$third-party
 ||xpartners.nl^$third-party
 .nl/adurl/$xmlhttprequest,domain=start-player.npo.nl
+||adcdn.ster.nl^$third-party
 ||advertising-cdn.dpgmedia.cloud^
 ||advertising-module.api.dpgmedia.cloud^
 ||bnpparibasmarkets.nl/widget/$third-party
@@ -806,7 +807,7 @@ radiovisie.eu##.gmollik
 srherald.com##.gsrhera
 ninefornews.nl##.gyehnsh
 noordkopcentraal.nl##.headbanner
-televizier.nl,tvblik.nl##.header-banner
+televizier.nl,tvblik.nl,voetbalnieuws.be##.header-banner
 hardware.info##.header-navigation__truelogo
 schaatsen.nl##.header-partners-logo
 wos.nl##.header-right
@@ -867,6 +868,7 @@ iex.nl##.network:nth-of-type(2)
 nieuws.nl##.nieuws-banner
 tijd.be##.o-hpgrid__row-sponsoredcombo
 vlaamskijken.nl##.order-book
+autoscout24.be,autoscout24.nl##.osa-as24-placeholder
 hardware.info##.overview-item--success
 classicstogo.nl##.owl-carousel
 lekkercryptisch.nl##.p-footer__randomPartner
@@ -877,7 +879,7 @@ atv.be,robtv.be,tvl.be,tvoost.be##.parallaxBnnr
 qmusic.nl##.partner
 sc-heerenveen.nl##.partner-grid
 sc-heerenveen.nl##.partnerlink
-clubbrugge.be,feyenoord.nl,ftm.nl,royalantwerpfc.be##.partners
+clubbrugge.be,feyenoord.nl,ftm.nl,royalantwerpfc.be,voetbalindebollenstreek.nl##.partners
 golf.be##.partners-holder
 weespernieuws.nl##.pbph
 denachtvlinders.nl##.plek-boven-artikel
@@ -1281,6 +1283,7 @@ pcmweb.nl#?#.site__sidebar > .block[-ext-has='div#marketingcarrousseluitingen']
 computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div#marketingcarrousseluitingen']
 computertotaal.nl#?##sidebar > .sidebarBlock[-ext-has='div.banner']
 !
+bnnvara.nl#?#div[id^="ster-ad-bnnvara-"]:upward(1)
 gfcnieuws.com#?#.entry-content div[class]:-abp-has(> ins.adsbygoogle)
 ad.nl#?#.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl#?#.page-content > .theme-default[-ext-has='div.ad']

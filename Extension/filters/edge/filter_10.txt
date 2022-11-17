@@ -1,8 +1,8 @@
-! Checksum: hIVpxb2Yi/zK7AGWJFlcEg
+! Checksum: UHPOScnM7ltbM+OeOi1k0w
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.86
-! TimeUpdated: 2022-09-21T18:30:16+00:00
+! Version: 2.0.1.89
+! TimeUpdated: 2022-11-14T13:02:15+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -257,6 +257,7 @@ amazon.*#@#div[data-csm-widget-type="sponsored-products-mobile-grid-card"]
 amazon.*#@#div[data-cel-widget^="MAIN-SHOPPING_ADVISER-"]
 amazon.*#@#.s-search-results > div[data-asin] div[data-component-props*="Sponsored"]
 amazon.*#@?#.s-search-results > div[data-asin]:-abp-has(> div[class] > div[cel_widget_id] > div[data-component-props*="Sponsored"])
+amazon.de,amazon.com,amazon.co.uk,amazon.fr,amazon.in,amazon.it,amazon.es#@#div[class*="widget=loom-"][class*="FEATURED"]
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/117527
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
@@ -371,10 +372,8 @@ baidu.com#@#.bds-list-ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/40808
 search.naver.com#@#.sp_power
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59466
-adda247.com#@#iframe[id^="google_ads_iframe"]
 adda247.com#@#iframe[name^="google_ads_iframe"]
 adda247.com#@#div[id^="div-gpt-ad"]
-adda247.com#@#div[id^="google_ads_iframe_"]
 @@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=adda247.com
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=adda247.com
 @@||securepubads.g.doubleclick.net/gampad/ads?gdfp_req=1$domain=adda247.com

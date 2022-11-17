@@ -1,8 +1,8 @@
-! Checksum: kNyJc1UfDDuODf1o3KwlkQ
+! Checksum: wLJTzOPeuqNx9qXAEp8Jaw
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.86
-! TimeUpdated: 2022-09-21T18:30:16+00:00
+! Version: 2.0.1.89
+! TimeUpdated: 2022-11-14T13:02:15+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -135,6 +135,7 @@ amazon.*#@#div[data-csm-widget-type="sponsored-products-mobile-grid-card"]
 amazon.*#@#div[data-cel-widget^="MAIN-SHOPPING_ADVISER-"]
 amazon.*#@#.s-search-results > div[data-asin] div[data-component-props*="Sponsored"]
 amazon.*#@?#.s-search-results > div[data-asin]:-abp-has(> div[class] > div[cel_widget_id] > div[data-component-props*="Sponsored"])
+amazon.de,amazon.com,amazon.co.uk,amazon.fr,amazon.in,amazon.it,amazon.es#@#div[class*="widget=loom-"][class*="FEATURED"]
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
 mediafire.com#@##upsellBox
 @@||startpage.com/adsense/search/async-ads.js$domain=startpage.com
@@ -204,10 +205,8 @@ stuttgarter-nachrichten.de#@#.ga_hptta .content > a[data-tags="Verlagsangebot"]
 stuttgarter-nachrichten.de#@?#.ga_hptta > .item:-abp-has(> .content > a[data-tags="Verlagsangebot"])
 baidu.com#@#.bds-list-ads
 search.naver.com#@#.sp_power
-adda247.com#@#iframe[id^="google_ads_iframe"]
 adda247.com#@#iframe[name^="google_ads_iframe"]
 adda247.com#@#div[id^="div-gpt-ad"]
-adda247.com#@#div[id^="google_ads_iframe_"]
 @@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=adda247.com
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=adda247.com
 @@||securepubads.g.doubleclick.net/gampad/ads?gdfp_req=1$domain=adda247.com

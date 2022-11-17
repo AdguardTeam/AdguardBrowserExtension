@@ -1,8 +1,8 @@
-! Checksum: P3SbTYqXePKkZotEPMHrYQ
+! Checksum: UV2H6OiAzsWUN7CiU9kz0A
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.60
-! TimeUpdated: 2022-10-18T08:30:48+00:00
+! Version: 2.0.3.76
+! TimeUpdated: 2022-11-17T13:02:48+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -19,6 +19,10 @@
 ! Good: $removeparam=utm_id
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
+! https://interactivead.ru/wp-content/uploads/2022/08/arir22_rkn.pdf
+$removeparam=erid
+! Cxense clickthrough tracking
+$removeparam=cx_click
 ! Marketo email tracking
 $removeparam=mkt_tok
 ! Mindbox email tracking
@@ -211,6 +215,7 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+!
 !---------------------------------------------------------------------------!
 !-------------- Specific web sites -----------------------------------------!
 !---------------------------------------------------------------------------!
@@ -221,6 +226,57 @@ $removeparam=fb_source
 ! Good: ||example.org^$removeparam=cx
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/134656
+||tumblr.com^$removeparam=_branch_referrer
+||tumblr.app.link^$removeparam=_p
+! https://github.com/AdguardTeam/AdguardFilters/issues/135099
+||dhits.docomo.ne.jp^$removeparam=affiliate
+! https://github.com/AdguardTeam/AdguardFilters/issues/134731
+||promo.korabli.su^$removeparam
+! Adjust
+||app.adjust.com^$removeparam=nend_click_id
+||app.adjust.com^$removeparam=install_callback
+||app.adjust.com^$removeparam=ip_address
+||app.adjust.com^$removeparam=user_agent
+||app.adjust.com^$removeparam=campaign
+||app.adjust.com^$removeparam=creative
+||app.adjust.com^$removeparam=/^event_callback_/
+! https://github.com/AdguardTeam/AdguardFilters/issues/134215
+||elgato.com^$removeparam=platform
+||elgato.com^$removeparam=link_id
+||elgato.com^$removeparam=token
+||elgato.com^$removeparam=contact_id
+||elgato.com^$removeparam=attribution_window
+! https://github.com/AdguardTeam/AdguardFilters/issues/134505
+||hepsiburada.com^$removeparam=wt_so
+||hepsiburada.com^$removeparam=af_xp
+! Emails from vercel.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/133525
+||vercel.com^$removeparam=redirected
+||vercel.com^$removeparam=sfmc_channel
+||vercel.com^$removeparam=sfmc_activity_name
+||vercel.com^$removeparam=sfmc_activity_id
+||vercel.com^$removeparam=sfmc_journey_name
+||vercel.com^$removeparam=sfmc_journey_id
+||vercel.com^$removeparam=sfmc_asset_id
+||vercel.com^$removeparam=sfmc_activityid
+! https://github.com/AdguardTeam/AdguardFilters/issues/133961
+||getir.com^$removeparam=af_xp
+||getir.com^$removeparam=af_force_deeplink
+||getir.com^$removeparam=pid
+||getir.com^$removeparam=is_retargeting
+||getir.com^$removeparam=shortlink
+||getir.com^$removeparam=deep_link_value
+||getir.com^$removeparam=c
+! https://github.com/AdguardTeam/AdguardFilters/issues/134281
+||imdb.com^$removeparam=pf_rd_m
+||imdb.com^$removeparam=pf_rd_p
+||imdb.com^$removeparam=pf_rd_r
+||imdb.com^$removeparam=pf_rd_s
+||imdb.com^$removeparam=pf_rd_t
+||imdb.com^$removeparam=pf_rd_i
+! https://github.com/uBlockOrigin/uAssets/issues/12972#issuecomment-1286665177
+||mirror.co.uk^$removeparam=int_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/132478
 ||wiley.com^$removeparam=/elq/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131490
@@ -390,7 +446,6 @@ $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||p.typekit.net^$stylesheet,removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/118376#issuecomment-1134132202
 ||open.spotify.com^$removeparam=_branch_referrer
-||open.spotify.com^$removeparam=si
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120276 ex. https://snail.qcplay.co.jp/?shortlink=tadqwmj0&c=GamerchPCJack0523-0606&pid=Gamerch
 ||qcplay.co.jp/?shortlink=*&c=$removeparam=c
 ||qcplay.co.jp^$removeparam=pid
@@ -837,6 +892,11 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ! Probably a bug
 ! ||www.google.com/url?$removeparam=ved
 ! ||google.*/search$removeparam=ved
+||google.*/search$removeparam=oq
+||google.*/search$removeparam=gs_l
+||google.*/search$removeparam=ie
+||google.*/search$removeparam=oe
+||google.*/search$removeparam=client
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
@@ -1109,6 +1169,10 @@ $removeparam=dclid
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/134443
+@@||s.click.aliexpress.com/deep_link.htm?aff_short_key=$removeparam=aff_short_key
+! https://github.com/AdguardTeam/AdguardFilters/issues/134007
+@@||transfernow.net/*/dltransfer$removeparam=utm_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/124425
 ! Fixing a redirect loop
 @@||assetstore.unity.com/packages/*?aid=*&utm_$removeparam
