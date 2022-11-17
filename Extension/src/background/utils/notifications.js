@@ -31,198 +31,198 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const HALLOWEEN_PROMO_22_ID = 'halloweenPromo22';
+    const BLACK_FRIDAY_PROMO_22_ID = 'blackFriday22';
 
-    const halloweenPromo22Notification = {
-        id: HALLOWEEN_PROMO_22_ID,
+    const blackFriday22Notification = {
+        id: BLACK_FRIDAY_PROMO_22_ID,
         locales: {
             en: {
-                title: 'Halloween promo',
-                btn: 'Get 40% off',
+                title: 'Black Friday',
+                btn: 'Get 50% off',
             },
             ru: {
-                title: 'Акция на Хэллоуин',
-                btn: 'Скидка 40%',
+                title: 'Чёрная пятница',
+                btn: 'Скидка 50%',
             },
             ja: {
-                title: 'ハロウィンキャンペーン',
-                btn: '40%OFF割引をGET',
+                title: 'BLACK FRIDAY',
+                btn: '50%OFF割引をGETする',
             },
             ko: {
-                title: '할로윈 프로모션',
-                btn: '40% 할인 받기',
+                title: '블랙 프라이데이',
+                btn: '50% 할인',
             },
             es: {
-                title: 'Rebajas de Halloween',
-                btn: 'Obtén un 40% off',
+                title: 'Black Friday',
+                btn: 'Descuento de 50%',
             },
             de: {
-                title: 'Halloween-Sale',
-                btn: '40% Rabatt erhalten',
+                title: 'Black Friday',
+                btn: '50% Rabatt',
             },
             fr: {
-                title: 'Promo Halloween',
-                btn: 'Remise 40%',
+                title: 'Black Friday',
+                btn: '50% de remise',
             },
             it: {
-                title: 'Offerta Halloween',
-                btn: '40% di sconto',
+                title: 'Black Friday',
+                btn: '50% di sconto',
             },
             zh_cn: {
-                title: '万圣节优惠',
-                btn: '低至6折',
+                title: '黑五优惠',
+                btn: '享5折',
             },
             zh_tw: {
-                title: '萬聖節折扣',
-                btn: '低至六折',
+                title: '黑五優惠',
+                btn: '享5折',
             },
             pt_pt: {
-                title: 'Promoção de Halloween',
-                btn: 'Garanta 40% off',
+                title: 'Black Friday',
+                btn: 'Desconto de 50%',
             },
             pt_br: {
-                title: 'Promoção de Halloween',
-                btn: 'Garanta 40% off',
+                title: 'Black Friday',
+                btn: 'Desconto de 50%',
             },
             uk: {
-                title: 'Акція на Хелловін',
-                btn: 'Знижка 40%',
+                title: 'Чорна п\'ятниця',
+                btn: 'Знижка 50%',
             },
             ar: {
-                title: 'عرض عيد الهالوين',
-                btn: '٪احصل على خصم 40',
+                title: 'الجمعة السوداء',
+                btn: '%خصم 50',
             },
             be: {
-                title: 'Прома на Хэлоўін',
-                btn: 'Зніжка 40%',
+                title: 'Чорная пятніца',
+                btn: '50% зніжка',
             },
             bg: {
-                title: 'Хелоуин промо',
-                btn: '40% отстъпка',
+                title: 'Черен петък',
+                btn: '50% отстъпка',
             },
             ca: {
-                title: 'Promoció de Halloween',
-                btn: '40% de descompte',
+                title: 'Divendres Negre',
+                btn: '50% de descompte',
             },
             cs: {
-                title: 'Halloweenská promo akce',
-                btn: '40% sleva',
+                title: 'Černý pátek',
+                btn: '50% sleva',
             },
             da: {
-                title: 'Halloween-kampagne',
-                btn: 'Få 40% rabat',
+                title: 'Black Friday',
+                btn: '50% rabat',
             },
             el: {
-                title: 'Απόκριες promo',
-                btn: 'Έκπτωση 40%',
+                title: 'Μαύρη Παρασκευή',
+                btn: '50% έκπτωση',
             },
             es_419: {
-                title: 'Rebajas de Halloween',
-                btn: 'Obtén un 40% off',
+                title: 'Viernes Negro',
+                btn: '50% de descuento',
             },
             fa: {
-                title: 'تبلیغاتی هالووین',
-                btn: 'دریافت 40٪ خاموش',
+                title: 'جمعه سیاه',
+                btn: '50٪ تخفیف',
             },
             fi: {
-                title: 'Halloween-kampanja',
-                btn: 'Saat 40% alennuksen',
+                title: 'Musta perjantai',
+                btn: '50% alennus',
             },
             he: {
-                title: 'פרומו ליל כל הקדושים',
-                btn: 'קבל 40% הנחה',
+                title: 'Black Friday',
+                btn: '50% הנחה',
             },
             hr: {
-                title: 'Promocija za Noć vještica',
-                btn: '40% popusta',
+                title: 'Crni petak',
+                btn: '50% popusta',
             },
             hu: {
-                title: 'Halloween promóció',
-                btn: '40% kedvezmény',
+                title: 'Fekete péntek',
+                btn: '50% kedvezmény',
             },
             hy: {
-                title: 'Հելոուինի պրոմո',
-                btn: '40% զեղչ',
+                title: 'Սեւ ուրբաթ',
+                btn: '50% զեղչ',
             },
             id: {
-                title: 'Promosi Halloween',
-                btn: 'Dapatkan diskon 40%',
+                title: 'Jumat Hitam',
+                btn: 'Diskon 50%',
             },
             lt: {
-                title: 'Helovino akcija',
-                btn: '40% nuolaida',
+                title: 'Juodasis penktadienis',
+                btn: '50% nuolaida',
             },
             ms: {
-                title: 'Promosi Halloween',
-                btn: 'Diskaun 40%',
+                title: 'Jumaat Hitam',
+                btn: 'Diskaun 50%',
             },
             nb: {
-                title: 'Halloween-kampanje',
-                btn: 'Få 40% avslag',
+                title: 'Svart fredag',
+                btn: '50% rabatt',
             },
             nl: {
-                title: 'Halloween promotie',
-                btn: 'Ontvang 40% korting',
+                title: 'Zwarte Vrijdag',
+                btn: '50% korting',
             },
             pl: {
-                title: 'Promocja Halloween',
-                btn: 'Uzyskaj 40% zniżki',
+                title: 'Czarny piątek',
+                btn: '50% zniżki',
             },
             ro: {
-                title: 'Promoție de Halloween',
-                btn: '40% reducere',
+                title: 'Back Friday',
+                btn: '50% reducere',
             },
             sk: {
-                title: 'Propagácia Halloweenu',
-                btn: 'Získajte 40% zľavu',
+                title: 'Čierny piatok',
+                btn: '50% zľava',
             },
             sl: {
-                title: 'Promocija noči čarovnic',
-                btn: 'Dobi 40% popusta',
+                title: 'Črni petek',
+                btn: '50% popust',
             },
             sr: {
-                title: 'Promocija za Noć veštica',
-                btn: 'Skini 40% popusta',
+                title: 'Crni petak',
+                btn: '50% popusta',
             },
             sv: {
-                title: 'Halloween-kampanj',
-                btn: 'Få 40% rabatt',
+                title: 'Black Friday',
+                btn: '50% rabatt',
             },
             tr: {
-                title: 'Cadılar Bayramı promosyonu',
-                btn: '%40 indirim',
+                title: 'Black Friday',
+                btn: '%50 indirim',
             },
             vi: {
-                title: 'Khuyến mãi Halloween',
-                btn: 'Giảm giá 40%',
+                title: 'Black Friday',
+                btn: 'Giảm giá 50%',
             },
             hi: {
-                title: 'हेलोवीन पदोन्नति',
-                btn: '40% की छूट',
+                title: 'ब्लैक फ्राइडे',
+                btn: '50% छूट',
             },
             et: {
-                title: 'Halloweeni promo',
-                btn: '40% allahindlust',
+                title: 'Must reede',
+                btn: '50% soodustust',
             },
             th: {
-                title: 'โปรโมชั่นฮาโลวีน',
-                btn: 'รับส่วนลด 40%',
+                title: 'Black Friday',
+                btn: 'ส่วนลด 50%',
             },
         },
         text: '',
-        url: 'https://link.adtidy.org/forward.html?action=halloween_promo_22&app=browser_extension',
-        from: '27 October 2022 12:00:00',
-        to: '2 November 2022 23:59:00',
+        url: 'https://link.adtidy.net/forward.html?action=black_friday_22&app=browser_extension',
+        from: '22 November 2022 15:00:00',
+        to: '29 November 2022 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(halloweenPromo22Notification, 'icons', () => ({
+            return lazyGet(blackFriday22Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/hlw22-on-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/hlw22-on-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/bf22-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/bf22-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/hlw22-off-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/hlw22-off-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/bf22-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/bf22-off-38.png'),
                 },
             }));
         },
@@ -244,7 +244,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        halloweenPromo22: halloweenPromo22Notification,
+        blackFriday22: blackFriday22Notification,
     };
 
     /**
