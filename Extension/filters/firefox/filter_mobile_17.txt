@@ -1,9 +1,11 @@
-! Checksum: T3WDZI4kSdmBv1uf3a/cKQ
+! Checksum: YV8H7cvqjyQeu5v/igGvjg
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.60
-! TimeUpdated: 2022-10-18T08:30:48+00:00
+! Version: 2.0.3.77
+! TimeUpdated: 2022-11-17T14:30:52+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=erid
+$removeparam=cx_click
 $removeparam=mkt_tok
 $removeparam=mindbox-message-key
 $removeparam=_kx
@@ -145,6 +147,47 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||tumblr.com^$removeparam=source
+||tumblr.com^$removeparam=_branch_referrer
+||tumblr.app.link^$removeparam=_p
+||dhits.docomo.ne.jp^$removeparam=affiliate
+||promo.korabli.su^$removeparam
+||app.adjust.com^$removeparam=nend_click_id
+||app.adjust.com^$removeparam=install_callback
+||app.adjust.com^$removeparam=ip_address
+||app.adjust.com^$removeparam=user_agent
+||app.adjust.com^$removeparam=campaign
+||app.adjust.com^$removeparam=creative
+||app.adjust.com^$removeparam=/^event_callback_/
+||elgato.com^$removeparam=platform
+||elgato.com^$removeparam=link_id
+||elgato.com^$removeparam=token
+||elgato.com^$removeparam=contact_id
+||elgato.com^$removeparam=attribution_window
+||hepsiburada.com^$removeparam=wt_so
+||hepsiburada.com^$removeparam=af_xp
+||vercel.com^$removeparam=redirected
+||vercel.com^$removeparam=sfmc_channel
+||vercel.com^$removeparam=sfmc_activity_name
+||vercel.com^$removeparam=sfmc_activity_id
+||vercel.com^$removeparam=sfmc_journey_name
+||vercel.com^$removeparam=sfmc_journey_id
+||vercel.com^$removeparam=sfmc_asset_id
+||vercel.com^$removeparam=sfmc_activityid
+||getir.com^$removeparam=af_xp
+||getir.com^$removeparam=af_force_deeplink
+||getir.com^$removeparam=pid
+||getir.com^$removeparam=is_retargeting
+||getir.com^$removeparam=shortlink
+||getir.com^$removeparam=deep_link_value
+||getir.com^$removeparam=c
+||imdb.com^$removeparam=pf_rd_m
+||imdb.com^$removeparam=pf_rd_p
+||imdb.com^$removeparam=pf_rd_r
+||imdb.com^$removeparam=pf_rd_s
+||imdb.com^$removeparam=pf_rd_t
+||imdb.com^$removeparam=pf_rd_i
+||mirror.co.uk^$removeparam=int_source
 ||wiley.com^$removeparam=/elq/
 ||thumbs4.redgifs.com/*&for=$removeparam=for
 ||thumbs4.redgifs.com/*&for=$image,removeparam=for
@@ -260,7 +303,6 @@ $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/
 ||p.typekit.net^$stylesheet,removeparam
 ||open.spotify.com^$removeparam=_branch_referrer
-||open.spotify.com^$removeparam=si
 ||qcplay.co.jp/?shortlink=*&c=$removeparam=c
 ||qcplay.co.jp^$removeparam=pid
 ||qcplay.co.jp^$removeparam=shortlink
@@ -559,6 +601,11 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||cod.bitrec.com/topocentras-services/js/recs?$removeparam=externalVisitorId
 ||cod.bitrec.com/topocentras-services/js/recs?$removeparam=r
 ||play.google.*^$removeparam=referrer
+||google.*/search$removeparam=oq
+||google.*/search$removeparam=gs_l
+||google.*/search$removeparam=ie
+||google.*/search$removeparam=oe
+||google.*/search$removeparam=client
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
@@ -770,6 +817,8 @@ $removeparam=dclid
 ||v.youku.com^$removeparam=spm
 ||theregister.com^$removeparam=td
 ||deezer.com^$removeparam=origin
+@@||s.click.aliexpress.com/deep_link.htm?aff_short_key=$removeparam=aff_short_key
+@@||transfernow.net/*/dltransfer$removeparam=utm_source
 @@||assetstore.unity.com/packages/*?aid=*&utm_$removeparam
 @@||mmcref.pl/?$removeparam=utm_medium
 @@||lanacion.com.ar/*module$removeparam=utm_source
