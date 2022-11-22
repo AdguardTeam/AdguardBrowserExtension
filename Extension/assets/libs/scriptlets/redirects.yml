@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.6.55
+#    Version 1.7.1
 #
 - title: 1x1-transparent.gif
   description: |-
@@ -1264,9 +1264,7 @@
                 try {
                     window.location.assign(url);
                 } catch (e) {
-                    if (source.verbose) {
-                        console.log(e);
-                    }
+                    logMessage(source, e);
                 }
             };
             Gat.prototype._anonymizeIP = noopFunc;
@@ -1330,6 +1328,12 @@
             }
         }
         function noopFunc() {}
+        function logMessage(source, message) {
+            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            if (forced || source.verbose) {
+                console.log("".concat(source.name, ": ").concat(message));
+            }
+        }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             GoogleAnalyticsGa.apply(this, updatedArgs);
@@ -1602,7 +1606,6 @@
                     INSECURE: 2
                 }
             };
-            var managerLoaded = false;
             var EventHandler = function EventHandler() {
                 this.listeners = new Map;
                 this._dispatch = function(e) {
@@ -1612,7 +1615,7 @@
                         try {
                             listener(e);
                         } catch (r) {
-                            console.error(r);
+                            logMessage(source, r);
                         }
                     }
                 };
@@ -1674,7 +1677,7 @@
                     try {
                         this._dispatch(new ima.AdEvent(type));
                     } catch (e) {
-                        console.error(e);
+                        logMessage(source, e);
                     }
                 }
             };
@@ -1712,17 +1715,15 @@
             };
             AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
                 var _this = this;
-                if (!managerLoaded) {
-                    managerLoaded = true;
-                    requestAnimationFrame((function() {
-                        var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
-                        _this._dispatch(new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext));
-                    }));
-                    var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
-                    requestAnimationFrame((function() {
-                        _this._dispatch(new ima.AdErrorEvent(e));
-                    }));
-                }
+                requestAnimationFrame((function() {
+                    var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                    var event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
+                    _this._dispatch(event);
+                }));
+                var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
+                requestAnimationFrame((function() {
+                    _this._dispatch(new ima.AdErrorEvent(e));
+                }));
             };
             var AdsRenderingSettings = noopFunc;
             var AdsRequest = function AdsRequest() {};
@@ -2080,6 +2081,12 @@
             }
         }
         function noopFunc() {}
+        function logMessage(source, message) {
+            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            if (forced || source.verbose) {
+                console.log("".concat(source.name, ": ").concat(message));
+            }
+        }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             GoogleIma3.apply(this, updatedArgs);
@@ -2113,7 +2120,7 @@
                             var key = _Object$keys[_i];
                             if (typeof arg[key] === "function") {
                                 try {
-                                    arg[key].call();
+                                    arg[key].call(this, {});
                                 } catch (_unused) {}
                             }
                         }
@@ -2618,17 +2625,17 @@
                 }
                 return api[funcName] && api[funcName].apply(api, [ id ].concat(args));
             }
-            ym.a = [];
             function init(id) {
                 window["yaCounter".concat(id)] = api;
                 document.dispatchEvent(new Event("yacounter".concat(id, "inited")));
             }
             if (typeof window.ym === "undefined") {
                 window.ym = ym;
+                ym.a = [];
             } else if (window.ym && window.ym.a) {
-                var counters = window.ym.a;
+                ym.a = window.ym.a;
                 window.ym = ym;
-                counters.forEach((function(params) {
+                window.ym.a.forEach((function(params) {
                     var id = params[0];
                     init(id);
                 }));
@@ -2934,7 +2941,7 @@
   file: noeval.js
 
 - title: pardot-1.0
-  comment: Mocks the pd.js file of Salesforce
+  comment: Mocks the pd.js file of Salesforce.
   aliases: []
   contentType: application/javascript
   content: |-
