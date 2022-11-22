@@ -109,7 +109,6 @@
                 INSECURE: 2
             }
         };
-        var managerLoaded = false;
         var EventHandler = function EventHandler() {
             this.listeners = new Map;
             this._dispatch = function(e) {
@@ -119,7 +118,7 @@
                     try {
                         listener(e);
                     } catch (r) {
-                        console.error(r);
+                        logMessage(source, r);
                     }
                 }
             };
@@ -181,7 +180,7 @@
                 try {
                     this._dispatch(new ima.AdEvent(type));
                 } catch (e) {
-                    console.error(e);
+                    logMessage(source, e);
                 }
             }
         };
@@ -219,17 +218,15 @@
         };
         AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
             var _this = this;
-            if (!managerLoaded) {
-                managerLoaded = true;
-                requestAnimationFrame((function() {
-                    var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
-                    _this._dispatch(new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext));
-                }));
-                var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
-                requestAnimationFrame((function() {
-                    _this._dispatch(new ima.AdErrorEvent(e));
-                }));
-            }
+            requestAnimationFrame((function() {
+                var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                var event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
+                _this._dispatch(event);
+            }));
+            var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
+            requestAnimationFrame((function() {
+                _this._dispatch(new ima.AdErrorEvent(e));
+            }));
         };
         var AdsRenderingSettings = noopFunc;
         var AdsRequest = function AdsRequest() {};
@@ -587,6 +584,12 @@
         }
     }
     function noopFunc() {}
+    function logMessage(source, message) {
+        var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        if (forced || source.verbose) {
+            console.log("".concat(source.name, ": ").concat(message));
+        }
+    }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
         GoogleIma3.apply(this, updatedArgs);
