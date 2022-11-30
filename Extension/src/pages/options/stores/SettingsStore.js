@@ -5,7 +5,7 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-import { log } from '../../../common/log';
+import { Log } from '../../../common/log';
 import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../../common/components/Editor/savingFSM';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION } from '../../common/constants';
 import { sleep } from '../../helpers';
@@ -18,7 +18,7 @@ import {
     sortGroupsOnSearch,
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
-import { ANTIBANNER_GROUPS_ID, TRUSTED_TAG, WASTE_CHARACTERS } from '../../../common/constants';
+import { AntibannerGroupsId, TRUSTED_TAG, WASTE_CHARACTERS } from '../../../common/constants';
 
 const savingAllowlistService = createSavingService({
     id: 'allowlist',
@@ -186,9 +186,9 @@ class SettingsStore {
 
     @action
     async setAllowAcceptableAdsState(enabled) {
-        const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
+        const { SearchAndSelfPromoFilterId } = this.constants.AntiBannerFiltersId;
         await this.setFilterRelatedSettingState(
-            SEARCH_AND_SELF_PROMO_FILTER_ID,
+            SearchAndSelfPromoFilterId,
             this.KEYS.ALLOW_ACCEPTABLE_ADS,
             !enabled,
         );
@@ -196,9 +196,9 @@ class SettingsStore {
 
     @action
     async setBlockKnownTrackersState(enabled) {
-        const { TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
+        const { TrackingFilterId } = this.constants.AntiBannerFiltersId;
         await this.setFilterRelatedSettingState(
-            TRACKING_FILTER_ID,
+            TrackingFilterId,
             this.KEYS.BLOCK_KNOWN_TRACKERS,
             enabled,
         );
@@ -206,9 +206,9 @@ class SettingsStore {
 
     @action
     async setStripTrackingParametersState(enabled) {
-        const { URL_TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
+        const { UrlTrackingFilterId } = this.constants.AntiBannerFiltersId;
         await this.setFilterRelatedSettingState(
-            URL_TRACKING_FILTER_ID,
+            UrlTrackingFilterId,
             this.KEYS.STRIP_TRACKING_PARAMETERS,
             enabled,
         );
@@ -222,20 +222,20 @@ class SettingsStore {
 
     @action
     setAllowAcceptableAds(filters) {
-        const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
-        this.setSetting(SEARCH_AND_SELF_PROMO_FILTER_ID, this.KEYS.ALLOW_ACCEPTABLE_ADS, filters);
+        const { SearchAndSelfPromoFilterId } = this.constants.AntiBannerFiltersId;
+        this.setSetting(SearchAndSelfPromoFilterId, this.KEYS.ALLOW_ACCEPTABLE_ADS, filters);
     }
 
     @action
     setBlockKnownTrackers(filters) {
-        const { TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
-        this.setSetting(TRACKING_FILTER_ID, this.KEYS.BLOCK_KNOWN_TRACKERS, filters);
+        const { TrackingFilterId } = this.constants.AntiBannerFiltersId;
+        this.setSetting(TrackingFilterId, this.KEYS.BLOCK_KNOWN_TRACKERS, filters);
     }
 
     @action
     setStripTrackingParameters(filters) {
-        const { URL_TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
-        this.setSetting(URL_TRACKING_FILTER_ID, this.KEYS.STRIP_TRACKING_PARAMETERS, filters);
+        const { UrlTrackingFilterId } = this.constants.AntiBannerFiltersId;
+        this.setSetting(UrlTrackingFilterId, this.KEYS.STRIP_TRACKING_PARAMETERS, filters);
     }
 
     isFilterEnabled(filterId) {
@@ -251,18 +251,18 @@ class SettingsStore {
     }
 
     isAllowAcceptableAdsFilterEnabled() {
-        const { SEARCH_AND_SELF_PROMO_FILTER_ID } = this.constants.AntiBannerFiltersId;
-        this.isFilterEnabled(SEARCH_AND_SELF_PROMO_FILTER_ID);
+        const { SearchAndSelfPromoFilterId } = this.constants.AntiBannerFiltersId;
+        this.isFilterEnabled(SearchAndSelfPromoFilterId);
     }
 
     isBlockKnownTrackersFilterEnabled() {
-        const { TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
-        this.isFilterEnabled(TRACKING_FILTER_ID);
+        const { TrackingFilterId } = this.constants.AntiBannerFiltersId;
+        this.isFilterEnabled(TrackingFilterId);
     }
 
     isStripTrackingParametersFilterEnabled() {
-        const { URL_TRACKING_FILTER_ID } = this.constants.AntiBannerFiltersId;
-        this.isFilterEnabled(URL_TRACKING_FILTER_ID);
+        const { UrlTrackingFilterId } = this.constants.AntiBannerFiltersId;
+        this.isFilterEnabled(UrlTrackingFilterId);
     }
 
     @computed
@@ -275,10 +275,10 @@ class SettingsStore {
         await messenger.updateGroupStatus(id, enabled);
         runInAction(() => {
             const groupId = parseInt(id, 10);
-            if (groupId === ANTIBANNER_GROUPS_ID.OTHER_FILTERS_GROUP_ID
+            if (groupId === AntibannerGroupsId.OtherFiltersGroupId
                 && this.isAllowAcceptableAdsFilterEnabled()) {
                 this.allowAcceptableAds = enabled;
-            } else if (groupId === ANTIBANNER_GROUPS_ID.PRIVACY_FILTERS_GROUP_ID) {
+            } else if (groupId === AntibannerGroupsId.PrivacyFilterGroupId) {
                 if (this.isBlockKnownTrackersFilterEnabled()) {
                     this.blockKnownTrackers = enabled;
                 }
@@ -346,15 +346,15 @@ class SettingsStore {
             const filters = await messenger.updateFilterStatus(filterId, enabled);
             this.refreshFilters(filters);
             // update allow acceptable ads setting
-            if (filterId === this.constants.AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
+            if (filterId === this.constants.AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
                 this.allowAcceptableAds = enabled;
-            } else if (filterId === this.constants.AntiBannerFiltersId.TRACKING_FILTER_ID) {
+            } else if (filterId === this.constants.AntiBannerFiltersId.TrackingFilterId) {
                 this.blockKnownTrackers = enabled;
-            } else if (filterId === this.constants.AntiBannerFiltersId.URL_TRACKING_FILTER_ID) {
+            } else if (filterId === this.constants.AntiBannerFiltersId.UrlTrackingFilterId) {
                 this.stripTrackingParameters = enabled;
             }
         } catch (e) {
-            log.error(e);
+            Log.error(e);
             this.setFilterEnabledState(filterId, !enabled);
         }
     }
@@ -419,7 +419,7 @@ class SettingsStore {
             const { content } = await messenger.getAllowlist();
             this.setAllowlist(content);
         } catch (e) {
-            log.debug(e);
+            Log.debug(e);
         }
     };
 
@@ -567,7 +567,7 @@ class SettingsStore {
             return null;
         }
 
-        return this.settings.values[this.settings.names.APPEARANCE_THEME];
+        return this.settings.values[this.settings.names.AppearanceTheme];
     }
 
     @computed
@@ -575,12 +575,12 @@ class SettingsStore {
         if (!this.settings) {
             return null;
         }
-        return !this.settings.values[this.settings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO];
+        return !this.settings.values[this.settings.names.DisableShowAdguardPromoInfo];
     }
 
     @action
     async hideAdguardPromoInfo() {
-        await this.updateSetting(this.settings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO, true);
+        await this.updateSetting(this.settings.names.DisableShowAdguardPromoInfo, true);
     }
 
     @computed
@@ -604,12 +604,12 @@ class SettingsStore {
 
     @computed
     get footerRateShowState() {
-        return !this.settings.values[this.settings.names.HIDE_RATE_BLOCK];
+        return !this.settings.values[this.settings.names.HideRateBlock];
     }
 
     @action
     async hideFooterRateShow() {
-        await this.updateSetting(this.settings.names.HIDE_RATE_BLOCK, true);
+        await this.updateSetting(this.settings.names.HideRateBlock, true);
     }
 
     @action
@@ -624,7 +624,7 @@ class SettingsStore {
 
     @computed
     get userFilterEnabledSettingId() {
-        return this.settings.names.USER_FILTER_ENABLED;
+        return this.settings.names.UserFilterEnabled;
     }
 
     @computed

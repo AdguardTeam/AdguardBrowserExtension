@@ -18,9 +18,9 @@ import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
 import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
-import { log } from '../../../../common/log';
+import { Log } from '../../../../common/log';
 import { Icons } from '../../../common/components/ui/Icons';
-import { NOTIFIER_TYPES } from '../../../../common/constants';
+import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 
 import '../../styles/styles.pcss';
@@ -37,11 +37,11 @@ const Options = observer(() => {
             await settingsStore.requestOptionsData(true);
 
             const events = [
-                NOTIFIER_TYPES.REQUEST_FILTER_UPDATED,
-                NOTIFIER_TYPES.UPDATE_ALLOWLIST_FILTER_RULES,
-                NOTIFIER_TYPES.FILTERS_UPDATE_CHECK_READY,
-                NOTIFIER_TYPES.SETTING_UPDATED,
-                NOTIFIER_TYPES.FULLSCREEN_USER_RULES_EDITOR_UPDATED,
+                NotifierType.RequestFilterUpdated,
+                NotifierType.UpdateAllowlistFilterRules,
+                NotifierType.FiltersUpdateCheckReady,
+                NotifierType.SettingUpdated,
+                NotifierType.FullscreenUserRulesEditorUpdated,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -50,31 +50,31 @@ const Options = observer(() => {
                     const { type } = message;
 
                     switch (type) {
-                        case NOTIFIER_TYPES.REQUEST_FILTER_UPDATED: {
+                        case NotifierType.RequestFilterUpdated: {
                             await settingsStore.requestOptionsData();
                             break;
                         }
-                        case NOTIFIER_TYPES.UPDATE_ALLOWLIST_FILTER_RULES: {
+                        case NotifierType.UpdateAllowlistFilterRules: {
                             await settingsStore.getAllowlist();
                             break;
                         }
-                        case NOTIFIER_TYPES.FILTERS_UPDATE_CHECK_READY: {
+                        case NotifierType.FiltersUpdateCheckReady: {
                             const [updatedFilters] = message.data;
                             settingsStore.refreshFilters(updatedFilters);
                             uiStore.addNotification(updateFilterDescription(updatedFilters));
                             break;
                         }
-                        case NOTIFIER_TYPES.SETTING_UPDATED: {
+                        case NotifierType.SettingUpdated: {
                             await settingsStore.requestOptionsData();
                             break;
                         }
-                        case NOTIFIER_TYPES.FULLSCREEN_USER_RULES_EDITOR_UPDATED: {
+                        case NotifierType.FullscreenUserRulesEditorUpdated: {
                             const [isOpen] = message.data;
                             await settingsStore.setFullscreenUserRulesEditorState(isOpen);
                             break;
                         }
                         default: {
-                            log.debug('Undefined message type:', type);
+                            Log.debug('Undefined message type:', type);
                             break;
                         }
                     }

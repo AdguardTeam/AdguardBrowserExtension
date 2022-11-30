@@ -1,17 +1,18 @@
-import { SimpleRegex } from '@adguard/tsurlfilter/dist/es/simple-regex';
 import {
+    SimpleRegex,
+    CosmeticRuleMarker,
     MASK_ALLOWLIST,
     OPTIONS_DELIMITER,
     NETWORK_RULE_OPTIONS,
-} from '@adguard/tsurlfilter/dist/es/network-rule-options';
-import { CosmeticRuleMarker } from '@adguard/tsurlfilter/dist/es/cosmetic-rule-marker';
+} from '@adguard/tsurlfilter';
 
 import { strings } from '../../../../common/strings';
 import { UrlUtils } from './utils';
-import { log } from '../../../../common/log';
+import { Log } from '../../../../common/log';
 
 /**
  * Splits request url by backslash to block or allow patterns
+ *
  * @param {string} requestUrl - request event url
  * @param {string} domain - request event domain
  * @param {boolean} isAllowlist - flag determining if patterns would be blocking or allowing
@@ -77,6 +78,7 @@ export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
  * Creates rule blocking document level rules
  * e.g. for rule "@@||example.org^$urlblock" ->
  *      blocking rule would be " @@||example.org^$urlblock,badfilter"
+ *
  * @param rule
  * @returns {string}
  */
@@ -90,6 +92,7 @@ export const createDocumentLevelBlockRule = (rule) => {
 
 /**
  * Generates exception rule with required mask
+ *
  * @param ruleText
  * @param mask
  * @returns {*}
@@ -107,6 +110,7 @@ const generateExceptionRule = (ruleText, mask) => {
 
 /**
  * Creates exception rules for css rules
+ *
  * @param rule
  * @param event
  * @returns {string}
@@ -136,13 +140,14 @@ export const createExceptionCssRule = (rule, event) => {
         return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Html);
     }
 
-    log.error('Cannot createExceptionCssRule for the rule:', rule);
+    Log.error('Cannot createExceptionCssRule for the rule:', rule);
 
     return '';
 };
 
 /**
  * Creates exception rule for blocking script rule
+ *
  * @param rule
  * @param event
  * @returns {string}
@@ -179,6 +184,7 @@ const getUnblockDomainRule = (domain, ruleOption) => {
 
 /**
  * Create exception rules for cookie event
+ *
  * @param event
  * @returns {string[]} array of patterns
  */
@@ -225,6 +231,7 @@ export const createExceptionRemoveHeaderRules = (event) => {
 
 /**
  * Creates blocking rule for cookie event
+ *
  * @param event
  * @returns {string}
  */

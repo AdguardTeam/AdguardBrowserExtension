@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 
-import { MESSAGE_TYPES } from '../common/constants';
+import { MessageType } from '../common/messages';
 
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -304,7 +304,7 @@ export const devtoolsElementsSidebar = (() => {
      */
     const addRule = async (ruleText) => {
         browser.runtime.sendMessage({
-            type: MESSAGE_TYPES.DEVTOOLS_ADD_USER_RULE,
+            type: MessageType.AddUserRule,
             data: { ruleText },
         });
     };

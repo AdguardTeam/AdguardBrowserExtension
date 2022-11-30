@@ -100,9 +100,12 @@
         }
 
         contentPage.sendMessage({
+            handlerName: 'app',
             type: 'addFilterSubscription',
-            url,
-            title,
+            data: {
+                url,
+                title,
+            },
         });
     };
 

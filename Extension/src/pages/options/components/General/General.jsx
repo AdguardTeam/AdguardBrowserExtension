@@ -9,17 +9,17 @@ import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { hoursToMs, handleFileUpload } from '../../../helpers';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { exportData, ExportTypes } from '../../../common/utils/export';
+import { AppearanceTheme } from '../../../../common/settings';
+
 import {
-    isFirefox,
-    isEdgeChromium,
-    isOpera,
-} from '../../../../common/user-agent-utils';
-import {
-    APPEARANCE_THEMES,
+    ACCEPTABLE_ADS_LEARN_MORE_URL,
+    SAFEBROWSING_LEARN_MORE_URL,
     GITHUB_URL,
-    BROWSER_ADDON_STORE_LINKS,
-} from '../../../constants';
+} from '../../constants';
+
+import { exportData, ExportTypes } from '../../../common/utils/export';
+import { UserAgent } from '../../../../common/user-agent';
+import { BROWSER_ADDON_STORE_LINKS } from '../../../constants';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -54,27 +54,27 @@ const filtersUpdatePeriodOptions = [
 
 const APPEARANCE_THEMES_OPTIONS = [
     {
-        value: APPEARANCE_THEMES.SYSTEM,
+        value: AppearanceTheme.System,
         title: reactTranslator.getMessage('options_theme_selector_system'),
     },
     {
-        value: APPEARANCE_THEMES.LIGHT,
+        value: AppearanceTheme.Light,
         title: reactTranslator.getMessage('options_theme_selector_light'),
     },
     {
-        value: APPEARANCE_THEMES.DARK,
+        value: AppearanceTheme.Dark,
         title: reactTranslator.getMessage('options_theme_selector_dark'),
     },
 ];
 
-const ALLOW_ACCEPTABLE_ADS = 'allowAcceptableAds';
+const AllowAcceptableAds = 'allowAcceptableAds';
 
 let currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.CHROME;
-if (isFirefox) {
+if (UserAgent.isFirefox) {
     currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.FIREFOX;
-} else if (isEdgeChromium) {
+} else if (UserAgent.isEdgeChromium) {
     currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.EDGE;
-} else if (isOpera) {
+} else if (UserAgent.isOpera) {
     currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.OPERA;
 }
 
@@ -126,26 +126,20 @@ const General = observer(() => {
     };
 
     const {
-        DISABLE_DETECT_FILTERS,
-        FILTERS_UPDATE_PERIOD,
-        DISABLE_SAFEBROWSING,
-        APPEARANCE_THEME,
+        DisableDetectFilters,
+        FiltersUpdatePeriod,
+        DisableSafebrowsing,
+        AppearanceTheme,
     } = settings.names;
-
-    // eslint-disable-next-line max-len
-    const ACCEPTABLE_ADS_LEARN_MORE_URL = 'https://link.adtidy.org/forward.html?action=self_promotion&from=options_screen&app=browser_extension';
-
-    // eslint-disable-next-line max-len
-    const SAFEBROWSING_LEARN_MORE_URL = 'https://link.adtidy.org/forward.html?action=protection_works&from=options_screen&app=browser_extension';
 
     return (
         <>
             <SettingsSection title={reactTranslator.getMessage('options_general_settings')}>
                 <SettingSetSelect
                     title={reactTranslator.getMessage('options_select_theme')}
-                    id={APPEARANCE_THEME}
+                    id={AppearanceTheme}
                     options={APPEARANCE_THEMES_OPTIONS}
-                    value={settings.values[APPEARANCE_THEME]}
+                    value={settings.values[AppearanceTheme]}
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
@@ -162,7 +156,7 @@ const General = observer(() => {
                         ),
                     })}
                     disabled={allowAcceptableAds}
-                    id={ALLOW_ACCEPTABLE_ADS}
+                    id={AllowAcceptableAds}
                     type={SETTINGS_TYPES.CHECKBOX}
                     value={!allowAcceptableAds}
                     label={reactTranslator.getMessage('options_block_acceptable_ads')}
@@ -181,31 +175,31 @@ const General = observer(() => {
                             </a>
                         ),
                     })}
-                    disabled={settings.values[DISABLE_SAFEBROWSING]}
-                    id={DISABLE_SAFEBROWSING}
+                    disabled={settings.values[DisableSafebrowsing]}
+                    id={DisableSafebrowsing}
                     type={SETTINGS_TYPES.CHECKBOX}
                     inverted
                     label={reactTranslator.getMessage('options_safebrowsing_enabled')}
-                    value={settings.values[DISABLE_SAFEBROWSING]}
+                    value={settings.values[DisableSafebrowsing]}
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_enable_autodetect_filter')}
                     description={reactTranslator.getMessage('options_enable_autodetect_filter_desc')}
-                    disabled={settings.values[DISABLE_DETECT_FILTERS]}
-                    id={DISABLE_DETECT_FILTERS}
+                    disabled={settings.values[DisableDetectFilters]}
+                    id={DisableDetectFilters}
                     type={SETTINGS_TYPES.CHECKBOX}
                     inverted
                     label={reactTranslator.getMessage('options_enable_autodetect_filter')}
                     handler={settingChangeHandler}
-                    value={settings.values[DISABLE_DETECT_FILTERS]}
+                    value={settings.values[DisableDetectFilters]}
                 />
                 <SettingSetSelect
                     title={reactTranslator.getMessage('options_set_update_interval')}
                     description={reactTranslator.getMessage('options_set_update_interval_desc')}
-                    id={FILTERS_UPDATE_PERIOD}
+                    id={FiltersUpdatePeriod}
                     options={filtersUpdatePeriodOptions}
-                    value={settings.values[FILTERS_UPDATE_PERIOD]}
+                    value={settings.values[FiltersUpdatePeriod]}
                     handler={settingChangeHandler}
                 />
             </SettingsSection>
@@ -231,6 +225,12 @@ const General = observer(() => {
                     htmlFor="inputEl"
                     className="links-menu__item"
                 >
+                    <input
+                        type="file"
+                        accept="application/json"
+                        onChange={inputChangeHandler}
+                        className="actions__input-file"
+                    />
                     {reactTranslator.getMessage('options_import_settings')}
                 </label>
                 <a

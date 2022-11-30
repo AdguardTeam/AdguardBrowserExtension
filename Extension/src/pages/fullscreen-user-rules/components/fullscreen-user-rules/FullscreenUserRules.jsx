@@ -2,9 +2,9 @@ import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
-import { FULLSCREEN_USER_RULES_EDITOR, NOTIFIER_TYPES } from '../../../../common/constants';
+import { FULLSCREEN_USER_RULES_EDITOR, NotifierType } from '../../../../common/constants';
 import { messenger } from '../../../services/messenger';
-import { log } from '../../../../common/log';
+import { Log } from '../../../../common/log';
 import { fullscreenUserRulesStore } from '../../stores/FullscreenUserRulesStore';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons } from '../../../common/components/ui/Icons';
@@ -25,7 +25,7 @@ export const FullscreenUserRules = observer(() => {
 
         (async () => {
             const events = [
-                NOTIFIER_TYPES.SETTING_UPDATED,
+                NotifierType.SettingUpdated,
             ];
 
             removeListenerCallback = messenger.createLongLivedConnection(
@@ -35,12 +35,12 @@ export const FullscreenUserRules = observer(() => {
                     const { type } = message;
 
                     switch (type) {
-                        case NOTIFIER_TYPES.SETTING_UPDATED: {
+                        case NotifierType.SettingUpdated: {
                             await store.getFullscreenUserRulesData();
                             break;
                         }
                         default: {
-                            log.debug('There is no listener for type:', type);
+                            Log.debug('There is no listener for type:', type);
                             break;
                         }
                     }

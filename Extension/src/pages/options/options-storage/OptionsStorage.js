@@ -1,4 +1,4 @@
-import { log } from '../../../common/log';
+import { Log } from '../../../common/log';
 /**
  * Module used to keep options page settings, which do not need extension level persistence
  */
@@ -44,7 +44,7 @@ export class OptionsStorage {
         try {
             this.storage.setItem(key, JSON.stringify(value));
         } catch (e) {
-            log.debug(e);
+            Log.debug(e);
         }
     }
 
@@ -53,7 +53,7 @@ export class OptionsStorage {
         try {
             storedValue = JSON.parse(this.storage.getItem(key));
         } catch (e) {
-            log.debug(e);
+            Log.debug(e);
             storedValue = null;
         }
 

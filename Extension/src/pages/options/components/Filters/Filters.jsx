@@ -23,7 +23,7 @@ import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
 import { SEARCH_FILTERS } from './Search/constants';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { ANTIBANNER_GROUPS_ID } from '../../../../common/constants';
+import { AntibannerGroupsId } from '../../../../common/constants';
 
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',
@@ -206,7 +206,7 @@ const Filters = observer(() => {
         });
 
         // eslint-disable-next-line max-len
-        const isCustom = settingsStore.selectedGroupId === ANTIBANNER_GROUPS_ID.CUSTOM_FILTERS_GROUP_ID;
+        const isCustom = settingsStore.selectedGroupId === AntibannerGroupsId.CustomFilterGroupId;
         const isEmpty = filtersToRender.length === 0;
 
         const groupChangeHandler = async ({ id, data }) => {

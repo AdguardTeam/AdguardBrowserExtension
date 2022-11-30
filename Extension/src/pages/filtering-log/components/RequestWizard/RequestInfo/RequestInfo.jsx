@@ -15,11 +15,10 @@ import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { ANTIBANNER_FILTERS_ID, STEALTH_ACTIONS } from '../../../../../common/constants';
+import { AntiBannerFiltersId, StealthAction, RequestType } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
-import { RequestTypes } from '../../../../../background/utils/request-types';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import { optionsStorage } from '../../../../options/options-storage';
 import { DEFAULT_MODAL_WIDTH_PX, LINE_COUNT_LIMIT } from '../constants';
@@ -27,14 +26,14 @@ import { TextCollapser } from '../../../../common/components/TextCollapser/TextC
 
 import './request-info.pcss';
 
-const STEALTH_ACTIONS_NAMES = {
-    HIDE_REFERRER: reactTranslator.getMessage('filtering_log_hide_referrer'),
-    SEND_DO_NOT_TRACK: reactTranslator.getMessage('filtering_log_send_not_track'),
-    HIDE_SEARCH_QUERIES: reactTranslator.getMessage('filtering_log_hide_search_queries'),
-    FIRST_PARTY_COOKIES: reactTranslator.getMessage('options_modified_first_party_cookie'),
-    THIRD_PARTY_COOKIES: reactTranslator.getMessage('options_modified_third_party_cookie'),
-    BLOCK_CHROME_CLIENT_DATA: reactTranslator.getMessage('filtering_log_remove_client_data'),
-    STRIPPED_TRACKING_URL: reactTranslator.getMessage('options_stripped_tracking_parameters'),
+const StealthActionNames = {
+    HideReferrer: reactTranslator.getMessage('filtering_log_hide_referrer'),
+    SendDoNotTrack: reactTranslator.getMessage('filtering_log_send_not_track'),
+    HideSearchQueries: reactTranslator.getMessage('filtering_log_hide_search_queries'),
+    FirstPartyCookies: reactTranslator.getMessage('options_modified_first_party_cookie'),
+    ThirdPartyCookies: reactTranslator.getMessage('options_modified_third_party_cookie'),
+    BlockChromeClientData: reactTranslator.getMessage('filtering_log_remove_client_data'),
+    StrippedTrackingUrl: reactTranslator.getMessage('options_stripped_tracking_parameters'),
 };
 
 /**
@@ -42,12 +41,12 @@ const STEALTH_ACTIONS_NAMES = {
  * @param actions
  * @returns {string[]|null}
  */
-const getStealthActionsNames = (actions) => {
-    const result = Object.keys(STEALTH_ACTIONS)
+const getStealthActionNames = (actions) => {
+    const result = Object.keys(StealthAction)
         .map((key) => {
-            const action = STEALTH_ACTIONS[key];
+            const action = StealthAction[key];
             if ((actions & action) === action) {
-                return STEALTH_ACTIONS_NAMES[key];
+                return StealthActionNames[key];
             }
             return null;
         })
@@ -97,7 +96,7 @@ const getRule = (selectedEvent) => {
     if (
         requestRule?.allowlistRule
         && requestRule?.documentLevelRule
-        && requestRule?.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID
+        && requestRule?.filterId === AntiBannerFiltersId.AllowlistFilterId
     ) {
         return null;
     }
@@ -182,7 +181,7 @@ const RequestInfo = observer(() => {
         },
         [PARTS.STEALTH]: {
             title: reactTranslator.getMessage('filtering_modal_privacy'),
-            data: getStealthActionsNames(selectedEvent.stealthActions),
+            data: getStealthActionNames(selectedEvent.stealthActions),
         },
     };
 
@@ -202,7 +201,8 @@ const RequestInfo = observer(() => {
             PARTS.COOKIE,
             PARTS.TYPE,
             PARTS.SOURCE,
-            PARTS.STEALTH, // FIXME determine first/third-party
+            // TODO: determine first/third-party
+            PARTS.STEALTH,
             PARTS.RULE,
             PARTS.FILTER,
         ];
@@ -372,11 +372,11 @@ const RequestInfo = observer(() => {
         let buttonProps = BUTTON_MAP.BLOCK;
 
         const previewableTypes = [
-            RequestTypes.IMAGE,
-            RequestTypes.DOCUMENT,
-            RequestTypes.SUBDOCUMENT,
-            RequestTypes.SCRIPT,
-            RequestTypes.STYLESHEET,
+            RequestType.Image,
+            RequestType.Document,
+            RequestType.Subdocument,
+            RequestType.Script,
+            RequestType.Stylesheet,
         ];
 
         const showPreviewButton = previewableTypes.includes(event.requestType)
@@ -395,7 +395,7 @@ const RequestInfo = observer(() => {
 
         if (!requestRule) {
             buttonProps = BUTTON_MAP.BLOCK;
-        } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.USER_FILTER_ID) {
+        } else if (requestRule.filterId === AntiBannerFiltersId.UserFilterId) {
             buttonProps = BUTTON_MAP.USER_FILTER;
             if (requestRule.isStealthModeRule) {
                 buttonProps = BUTTON_MAP.UNBLOCK;
@@ -409,7 +409,7 @@ const RequestInfo = observer(() => {
                     </>
                 );
             }
-        } else if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
+        } else if (requestRule.filterId === AntiBannerFiltersId.AllowlistFilterId) {
             buttonProps = BUTTON_MAP.ALLOWLIST;
         } else if (!requestRule.allowlistRule) {
             buttonProps = BUTTON_MAP.UNBLOCK;

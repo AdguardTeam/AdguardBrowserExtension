@@ -20,7 +20,7 @@ import TSUrlFilter from '@adguard/tsurlfilter/dist/TSUrlFilterContentScript';
 import { initPageMessageListener, injectPageScriptAPI } from './wrappers';
 import { contentPage } from './content-script';
 import { ElementCollapser } from './element-collapser';
-import { MESSAGE_TYPES } from '../common/constants';
+import { MessageType } from '../common/messages';
 
 export const preload = (function () {
     const requestTypeMap = {
@@ -235,7 +235,7 @@ export const preload = (function () {
 
         // Send a message to the background page to check if the element really should be collapsed
         const message = {
-            type: MESSAGE_TYPES.PROCESS_SHOULD_COLLAPSE,
+            type: MessageType.ProcessShouldCollapse,
             elementUrl,
             documentUrl: document.URL,
             requestType,
@@ -444,7 +444,7 @@ export const preload = (function () {
         }
 
         const message = {
-            type: MESSAGE_TYPES.PROCESS_SHOULD_COLLAPSE_MANY,
+            type: MessageType.ProcessShouldCollapseMany,
             requests,
             documentUrl: document.URL,
         };
@@ -487,7 +487,7 @@ export const preload = (function () {
 
         if (response.collectRulesHits) {
             cssHitsCounter = new TSUrlFilter.CssHitsCounter((stats) => {
-                contentPage.sendMessage({ type: MESSAGE_TYPES.SAVE_CSS_HITS_STATS, stats });
+                contentPage.sendMessage({ type: MessageType.SaveCssHitsStats, stats });
             });
         }
 
@@ -512,7 +512,7 @@ export const preload = (function () {
      */
     const tryLoadCssAndScripts = async () => {
         const message = {
-            type: MESSAGE_TYPES.GET_SELECTORS_AND_SCRIPTS,
+            type: MessageType.GetSelectorsAndScripts,
             documentUrl: window.location.href,
         };
 
@@ -529,7 +529,7 @@ export const preload = (function () {
      */
     const initCookieController = async () => {
         const response = await contentPage.sendMessage({
-            type: MESSAGE_TYPES.GET_COOKIE_RULES,
+            type: MessageType.GetCookieRules,
             documentUrl: window.location.href,
         });
 
@@ -549,7 +549,7 @@ export const preload = (function () {
                         filterId,
                     }) => {
                         contentPage.sendMessage({
-                            type: MESSAGE_TYPES.SAVE_COOKIE_LOG_EVENT,
+                            type: MessageType.SaveCookieLogEvent,
                             data: {
                                 cookieName,
                                 cookieValue,

@@ -35,8 +35,11 @@ export const Popup = observer(() => {
         const messageHandler = (message) => {
             switch (message.type) {
                 case 'updateTotalBlocked': {
-                    const { tabInfo } = message;
-                    updateBlockedStats(tabInfo);
+                    updateBlockedStats(message.data);
+                    break;
+                }
+                case 'appInitialized': {
+                    getPopupData();
                     break;
                 }
                 default:
@@ -49,7 +52,7 @@ export const Popup = observer(() => {
         return () => {
             messenger.onMessage.removeListener(messageHandler);
         };
-    }, [updateBlockedStats]);
+    }, [updateBlockedStats, getPopupData]);
 
     return (
         <div className="popup">

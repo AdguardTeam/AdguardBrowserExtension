@@ -81,7 +81,7 @@ class UserRulesEditorStore {
         this.userRulesEditorWrap = !this.userRulesEditorWrap;
         if (this.settings) {
             await this.updateSetting(
-                this.settings.names.USER_RULES_EDITOR_WRAP, this.userRulesEditorWrap,
+                this.settings.names.UserRulesEditorWrap, this.userRulesEditorWrap,
             );
         }
     }
@@ -95,7 +95,7 @@ class UserRulesEditorStore {
     get userRulesEditorWrapState() {
         if (this.settings) {
             this.setUserRulesEditorWrapMode(
-                this.settings.values[this.settings.names.USER_RULES_EDITOR_WRAP],
+                this.settings.values[this.settings.names.UserRulesEditorWrap],
             );
         }
 
@@ -104,7 +104,7 @@ class UserRulesEditorStore {
 
     @computed
     get userFilterEnabledSettingId() {
-        return this.settings.names.USER_FILTER_ENABLED;
+        return this.settings.names.UserFilterEnabled;
     }
 
     @computed

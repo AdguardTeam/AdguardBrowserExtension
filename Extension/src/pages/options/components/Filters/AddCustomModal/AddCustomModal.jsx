@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { log } from '../../../../../common/log';
+import { Log } from '../../../../../common/log';
 import { ModalContentWrapper } from './ModalContentWrapper';
 import { rootStore } from '../../../stores/RootStore';
 import { Icon } from '../../../../common/components/ui/Icon';
@@ -92,7 +92,7 @@ const AddCustomModal = ({
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
-            log.error(e);
+            Log.error(e);
             setStepToRender(STEPS.ERROR);
         }
     };
@@ -140,7 +140,7 @@ const AddCustomModal = ({
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
             setStepToRender(STEPS.ERROR);
-            log.error(e);
+            Log.error(e);
         }
         closeModal();
     };

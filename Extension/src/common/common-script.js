@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { browser } from '../background/extension-api/browser';
+import browser from 'webextension-polyfill';
 
 export const runtimeImpl = (() => {
     return {

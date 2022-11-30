@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import beautify from 'js-beautify';
 
-import { RequestTypes } from '../../../../../background/utils/request-types';
+import { RequestType } from '../../../../../common/constants';
 
 const getBeautifier = (type) => {
     switch (type) {
-        case RequestTypes.DOCUMENT:
-        case RequestTypes.SUBDOCUMENT:
+        case RequestType.Document:
+        case RequestType.Subdocument:
             return beautify.html;
-        case RequestTypes.SCRIPT:
+        case RequestType.Script:
             return beautify.js;
-        case RequestTypes.STYLESHEET:
+        case RequestType.Stylesheet:
             return beautify.css;
         default:
             return (i) => i;

@@ -1,0 +1,3749 @@
+#
+#    AdGuard Scriptlets (Redirects Source)
+#    Version 1.6.55
+#
+- title: 1x1-transparent.gif
+  description: |-
+    **Example**
+    ```
+    ||example.org^$image,redirect=1x1-transparent.gif
+    ```
+  aliases:
+    - 1x1.gif
+    - 1x1-transparent-gif
+  comment: 'http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever'
+  file: 1x1-transparent.gif
+  contentType: image/gif;base64
+  content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+
+- title: 2x2-transparent.png
+  description: |-
+    **Example**
+    ```
+    ||example.org^$image,redirect=2x2-transparent.png
+    ```
+  aliases:
+    - 2x2.png
+    - 2x2-transparent-png
+  file: 2x2-transparent.png
+  contentType: image/png;base64
+  content: >
+    iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAC0lEQVQI12NgQAcAABIAAe+JVKQAAAAA
+    SUVORK5CYII=
+
+- title: 3x2-transparent.png
+  description: |-
+    **Example**
+    ```
+    ||example.org^$image,redirect=3x2-transparent.png
+    ```
+  aliases:
+    - 3x2.png
+    - 3x2-transparent-png
+  file: 3x2-transparent.png
+  contentType: image/png;base64
+  content: >
+    iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAYAAACddGYaAAAAC0lEQVQI12NgwAUAABoAASRETuUAAAAA
+    SUVORK5CYII=
+
+- title: 32x32-transparent.png
+  description: |-
+    **Example**
+    ```
+    ||example.org^$image,redirect=32x32-transparent.png
+    ```
+  aliases:
+    - 32x32.png
+    - 32x32-transparent-png
+  file: 32x32-transparent.png
+  contentType: image/png;base64
+  content: >
+    iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGklEQVRYw+3BAQEAAACCIP+vbkhAAQAA
+    AO8GECAAAZf3V9cAAAAASUVORK5CYII=
+
+- title: noopframe
+  description: |-
+    **Example**
+    ```
+    ||example.com^$subdocument,redirect=noopframe,domain=example.org
+    ```
+  aliases:
+    - noop.html
+    - blank-html
+  file: noopframe.html
+  contentType: text/html
+  content: |-
+    <!DOCTYPE html>
+    <html>
+        <head><title></title></head>
+        <body></body>
+    </html>
+
+- title: noopcss
+  description: |-
+    **Example**
+    ```
+    ||example.org/style.css$stylesheet,redirect=noopcss
+    ```
+  aliases:
+    - blank-css
+  file: noopcss.css
+  contentType: text/css
+  content: ''
+
+- title: noopjs
+  description: |-
+    **Example**
+    ```
+    ||example.org/advert.js$script,redirect=noopjs
+    ```
+  aliases:
+    - noop.js
+    - blank-js
+  file: noopjs.js
+  contentType: application/javascript
+  content: '(function() {})()'
+
+- title: noopjson
+  description: |-
+    **Example**
+    ```
+    ||example.org/geo/location$xmlhttprequest,redirect=noopjson
+    ```
+  file: noopjson.json
+  contentType: application/json
+  content: '{}'
+
+- title: nooptext
+  description: |-
+    **Example**
+    ```
+    ||example.org/advert.js$xmlhttprequest,redirect=nooptext
+    ```
+  aliases:
+    - noop.txt
+    - blank-text
+  file: nooptext.js
+  contentType: text/plain
+  content: ''
+
+- title: empty
+  description: >-
+    Pretty much the same as `nooptext`. Used for conversion of modifier `empty`
+    so better avoid its using in production filter lists.
+
+
+    **Example**
+
+    ```
+
+    ||example.org/log$redirect=empty
+
+    ```
+  aliases:
+    - empty
+  file: nooptext.js
+  contentType: text/plain
+  content: ''
+
+- title: noopvmap-1.0
+  description: |-
+    Redirects request to an empty VMAP response.
+
+    **Example**
+    ```
+    ||example.org/vmap01.xml$xmlhttprequest,redirect=noopvmap-1.0
+    ```
+  aliases:
+    - noop-vmap1.0.xml
+  file: noopvmap01.xml
+  contentType: text/xml
+  content: >-
+    <vmap:VMAP xmlns:vmap="http://www.iab.net/videosuite/vmap"
+    version="1.0"></vmap:VMAP>
+
+- title: noopvast-2.0
+  description: |-
+    Redirects request to an empty VAST 2.0 response.
+
+    **Example**
+    ```
+    ||example.org/vast02.xml^$xmlhttprequest,redirect=noopvast-2.0
+    ```
+  file: noopvast02.xml
+  contentType: text/xml
+  content: <VAST version="2.0"></VAST>
+
+- title: noopvast-3.0
+  description: |-
+    Redirects request to an empty VAST 3.0 response.
+
+    **Example**
+    ```
+    ||example.org/vast03.xml^$xmlhttprequest,redirect=noopvast-3.0
+    ```
+  file: noopvast03.xml
+  contentType: text/xml
+  content: <VAST version="3.0"></VAST>
+
+- title: noopvast-4.0
+  description: |-
+    Redirects request to an empty VAST 4.0 response.
+
+    **Example**
+    ```
+    ||example.org/vast04.xml^$xmlhttprequest,redirect=noopvast-4.0
+    ```
+  file: noopvast04.xml
+  contentType: text/xml
+  content: <VAST version="4.0"></VAST>
+
+- title: noopmp3-0.1s
+  description: |-
+    **Example**
+    ```
+    ||example.org/advert.mp3$media,redirect=noopmp3-0.1s
+    ```
+  aliases:
+    - noopmp3-0.1s
+    - blank-mp3
+  comment: >
+    From:
+    https://ubuntuforums.org/showthread.php?t=1911430&p=11624471#post11624471
+    ffmpeg -ar 48000 -t 0.1 -f s16le -acodec pcm_s16le -ac 2 -i /dev/zero
+    -acodec libmp3lame -aq 4 output.mp3 But with 0.1 (second) instead of 60.
+  file: noopmp3.mp3
+  contentType: audio/mp3;base64
+  content: >
+    SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjQwLjEwMQAAAAAAAAAAAAAA//tUAAAAAAAAAAAAAAAA
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAGAAADAABgYGBgYGBgYGBgYGBgYGBggICAgICA
+    gICAgICAgICAgICgoKCgoKCgoKCgoKCgoKCgwMDAwMDAwMDAwMDAwMDAwMDg4ODg4ODg4ODg4ODg4ODg
+    4P////////////////////8AAAAATGF2YzU2LjYwAAAAAAAAAAAAAAAAJAAAAAAAAAAAAwDNZKlY//sU
+    ZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuOTkuNVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sUZB4P8AAAaQAAAAgAAA0gAAABAAABpAAA
+    ACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVV//sUZDwP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sUZFoP8AAAaQAAAAgA
+    AA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVV//sUZHgP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sU
+    ZJYP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+- title: noopmp4-1s
+  description: |-
+    **Example**
+    ```
+    ||example.org/advert.mp4$media,redirect=noopmp4-1s
+    ```
+  aliases:
+    - noop-1s.mp4
+    - blank-mp4
+  comment: |
+    From https://github.com/kud/blank-video
+  file: noopmp4.mp4
+  contentType: video/mp4;base64
+  content: >
+    AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAAGF21kYXTeBAAAbGliZmFhYyAxLjI4
+    AABCAJMgBDIARwAAArEGBf//rdxF6b3m2Ui3lizYINkj7u94MjY0IC0gY29yZSAxNDIgcjIgOTU2Yzhk
+    OCAtIEguMjY0L01QRUctNCBBVkMgY29kZWMgLSBDb3B5bGVmdCAyMDAzLTIwMTQgLSBodHRwOi8vd3d3
+    LnZpZGVvbGFuLm9yZy94MjY0Lmh0bWwgLSBvcHRpb25zOiBjYWJhYz0wIHJlZj0zIGRlYmxvY2s9MTow
+    OjAgYW5hbHlzZT0weDE6MHgxMTEgbWU9aGV4IHN1Ym1lPTcgcHN5PTEgcHN5X3JkPTEuMDA6MC4wMCBt
+    aXhlZF9yZWY9MSBtZV9yYW5nZT0xNiBjaHJvbWFfbWU9MSB0cmVsbGlzPTEgOHg4ZGN0PTAgY3FtPTAg
+    ZGVhZHpvbmU9MjEsMTEgZmFzdF9wc2tpcD0xIGNocm9tYV9xcF9vZmZzZXQ9LTIgdGhyZWFkcz02IGxv
+    b2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNl
+    ZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAg
+    a2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29r
+    YWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02
+    OSBxcHN0ZXA9NCB2YnZfbWF4cmF0ZT03NjggdmJ2X2J1ZnNpemU9MzAwMCBjcmZfbWF4PTAuMCBuYWxf
+    aHJkPW5vbmUgZmlsbGVyPTAgaXBfcmF0aW89MS40MCBhcT0xOjEuMDAAgAAAAFZliIQL8mKAAKvMnJyc
+    nJycnJycnXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    XXXXXXXXXXXXXXXXXiEASZACGQAjgCEASZACGQAjgAAAAAdBmjgX4GSAIQBJkAIZACOAAAAAB0GaVAX4
+    GSAhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZpgL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGagC/AySEA
+    SZACGQAjgAAAAAZBmqAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZrAL8DJIQBJkAIZACOAAAAABkGa
+    4C/AySEASZACGQAjgCEASZACGQAjgAAAAAZBmwAvwMkhAEmQAhkAI4AAAAAGQZsgL8DJIQBJkAIZACOA
+    IQBJkAIZACOAAAAABkGbQC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBm2AvwMkhAEmQAhkAI4AAAAAG
+    QZuAL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGboC/AySEASZACGQAjgAAAAAZBm8AvwMkhAEmQAhkA
+    I4AhAEmQAhkAI4AAAAAGQZvgL8DJIQBJkAIZACOAAAAABkGaAC/AySEASZACGQAjgCEASZACGQAjgAAA
+    AAZBmiAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZpAL8DJIQBJkAIZACOAAAAABkGaYC/AySEASZAC
+    GQAjgCEASZACGQAjgAAAAAZBmoAvwMkhAEmQAhkAI4AAAAAGQZqgL8DJIQBJkAIZACOAIQBJkAIZACOA
+    AAAABkGawC/AySEASZACGQAjgAAAAAZBmuAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZsAL8DJIQBJ
+    kAIZACOAAAAABkGbIC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBm0AvwMkhAEmQAhkAI4AhAEmQAhkA
+    I4AAAAAGQZtgL8DJIQBJkAIZACOAAAAABkGbgCvAySEASZACGQAjgCEASZACGQAjgAAAAAZBm6AnwMkh
+    AEmQAhkAI4AhAEmQAhkAI4AhAEmQAhkAI4AhAEmQAhkAI4AAAAhubW9vdgAAAGxtdmhkAAAAAAAAAAAA
+    AAAAAAAD6AAABDcAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABA
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAzB0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAA
+    AAABAAAAAAAAA+kAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABA
+    AAAAALAAAACQAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPpAAAAAAABAAAAAAKobWRpYQAAACBt
+    ZGhkAAAAAAAAAAAAAAAAAAB1MAAAdU5VxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABW
+    aWRlb0hhbmRsZXIAAAACU21pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAA
+    AAAAAQAAAAx1cmwgAAAAAQAAAhNzdGJsAAAAr3N0c2QAAAAAAAAAAQAAAJ9hdmMxAAAAAAAAAAEAAAAA
+    AAAAAAAAAAAAAAAAALAAkABIAAAASAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    AAAAGP//AAAALWF2Y0MBQsAN/+EAFWdCwA3ZAsTsBEAAAPpAADqYA8UKkgEABWjLg8sgAAAAHHV1aWRr
+    aEDyXyRPxbo5pRvPAyPzAAAAAAAAABhzdHRzAAAAAAAAAAEAAAAeAAAD6QAAABRzdHNzAAAAAAAAAAEA
+    AAABAAAAHHN0c2MAAAAAAAAAAQAAAAEAAAABAAAAAQAAAIxzdHN6AAAAAAAAAAAAAAAeAAADDwAAAAsA
+    AAALAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoA
+    AAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAAiHN0Y28A
+    AAAAAAAAHgAAAEYAAANnAAADewAAA5gAAAO0AAADxwAAA+MAAAP2AAAEEgAABCUAAARBAAAEXQAABHAA
+    AASMAAAEnwAABLsAAATOAAAE6gAABQYAAAUZAAAFNQAABUgAAAVkAAAFdwAABZMAAAWmAAAFwgAABd4A
+    AAXxAAAGDQAABGh0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAACAAAAAAAABDcAAAAAAAAAAAAAAAEB
+    AAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAkZWR0cwAAABxl
+    bHN0AAAAAAAAAAEAAAQkAAADcAABAAAAAAPgbWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAC7gAAAykBV
+    xAAAAAAALWhkbHIAAAAAAAAAAHNvdW4AAAAAAAAAAAAAAABTb3VuZEhhbmRsZXIAAAADi21pbmYAAAAQ
+    c21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAADT3N0YmwAAABn
+    c3RzZAAAAAAAAAABAAAAV21wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAAC7gAAAAAAAM2VzZHMAAAAA
+    A4CAgCIAAgAEgICAFEAVBbjYAAu4AAAADcoFgICAAhGQBoCAgAECAAAAIHN0dHMAAAAAAAAAAgAAADIA
+    AAQAAAAAAQAAAkAAAAFUc3RzYwAAAAAAAAAbAAAAAQAAAAEAAAABAAAAAgAAAAIAAAABAAAAAwAAAAEA
+    AAABAAAABAAAAAIAAAABAAAABgAAAAEAAAABAAAABwAAAAIAAAABAAAACAAAAAEAAAABAAAACQAAAAIA
+    AAABAAAACgAAAAEAAAABAAAACwAAAAIAAAABAAAADQAAAAEAAAABAAAADgAAAAIAAAABAAAADwAAAAEA
+    AAABAAAAEAAAAAIAAAABAAAAEQAAAAEAAAABAAAAEgAAAAIAAAABAAAAFAAAAAEAAAABAAAAFQAAAAIA
+    AAABAAAAFgAAAAEAAAABAAAAFwAAAAIAAAABAAAAGAAAAAEAAAABAAAAGQAAAAIAAAABAAAAGgAAAAEA
+    AAABAAAAGwAAAAIAAAABAAAAHQAAAAEAAAABAAAAHgAAAAIAAAABAAAAHwAAAAQAAAABAAAA4HN0c3oA
+    AAAAAAAAAAAAADMAAAAaAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkA
+    AAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkA
+    AAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkA
+    AAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAACMc3RjbwAAAAAAAAAfAAAALAAAA1UA
+    AANyAAADhgAAA6IAAAO+AAAD0QAAA+0AAAQAAAAEHAAABC8AAARLAAAEZwAABHoAAASWAAAEqQAABMUA
+    AATYAAAE9AAABRAAAAUjAAAFPwAABVIAAAVuAAAFgQAABZ0AAAWwAAAFzAAABegAAAX7AAAGFwAAAGJ1
+    ZHRhAAAAWm1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAALWlsc3QAAAAl
+    qXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNTUuMzMuMTAw
+
+- title: click2load.html
+  description: >-
+    Redirects resource and replaces supposed content by decoy frame with button
+    for original content recovering
+
+
+    Related UBO redirect resource:
+
+    https://github.com/gorhill/uBlock/blob/1.31.0/src/web_accessible_resources/click2load.html
+
+
+    **Example**
+
+    ```
+
+    ||youtube.com/embed/$frame,third-party,redirect=click2load.html
+
+    ```
+  aliases:
+    - click2load.html
+    - ubo-click2load.html
+  file: click2load.html
+  contentType: text/html
+  scriptPath: ./click2load.js
+  isBlocking: true
+  content: |
+    <!DOCTYPE html>
+    <html>
+
+      <head>
+        <meta charset="utf-8">
+        <title>AdGuard Click2Load</title>
+        <style>
+          html,
+          body,
+          .wrapper {
+            height: 100%;
+          }
+
+          body {
+            margin: 0;
+            font-family: Roboto, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Arial, sans-serif
+          }
+
+          .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .content {
+            min-height: 160px;
+            padding: 50px 24px;
+            text-align: center;
+          }
+
+          .logo {
+            background-image: url("data:image/svg+xml,%3Csvg fill='none' height='41' viewBox='0 0 41 41' width='41' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-rule='evenodd' fill-rule='evenodd'%3E%3Cpath d='m20.4996.5c-6.2513 0-13.79186 1.43422-19.999594 4.59105 0 6.81785-.085687 23.80335 19.999594 35.40895 20.0856-11.6056 20.0004-28.5911 20.0004-35.40895-6.2082-3.15683-13.7488-4.59105-20.0004-4.59105z' fill='%2368bc71'/%3E%3Cpath d='m20.5.5c-.0001 0-.0003 0-.0004 0-6.2513 0-13.79186 1.43422-19.999594 4.59105 0 .02866-.000003.05751-.000003.08653-.000361 6.87412-.001248 23.76562 19.999597 35.32242.0001-.0001.0003-.0002.0004-.0003z' fill='%2367b279'/%3E%3Cpath d='m20.3236 26.2143 11.605-15.3766c-.8504-.6701-1.5963-.1972-2.0069.169l-.015.0012-9.6763 9.8957-3.6457-4.3132c-1.7393-1.9755-4.1038-.4686-4.6561-.0704z' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: contain;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 16px;
+          }
+
+          .title {
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 25px;
+            margin-bottom: 8px;
+          }
+
+          .subtitle {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 16px;
+            max-height: 50px;
+            overflow: hidden;
+            word-break: break-all;
+          }
+
+          .footer {
+            padding-top: 24px;
+          }
+
+          .button {
+            display: inline-block;
+            min-width: 90px;
+            padding: 6px 15px;
+            border-radius: 3px;
+            border: none;
+            background: #4d4d4d;
+            color: #fff;
+            text-align: center;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 21px;
+            text-decoration: none;
+          }
+        </style>
+      </head>
+
+      <body>
+        <div class="wrapper">
+          <div class="content">
+            <div class="logo"></div>
+            <div id="clickToLoadTitle" class="title"></div>
+            <div id="clickToLoadSubtitle" class="subtitle"></div>
+            <div class="footer">
+              <a id="clickToLoadLink" class="button" href="" rel="noreferrer noopener"></a>
+            </div>
+          </div>
+        </div>
+        <!-- script injection -->
+        <script>(function () {
+        'use strict';
+
+        function clickToLoad() {
+          var QUESTION_MARK = '?';
+          var AMPERSAND = '&';
+          var SEARCH_PARAMS_DIVIDER = '=';
+          var ORIGIN_URL_PARAM = '__origin';
+          var EXT_UNBLOCK_PARAM = '__unblock';
+          var CL_UNBLOCK_PARAM = '__adg_unblock_token';
+          var CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
+          var BLOCKING_RULE_PARAM = '__adg_blocking_rule';
+          var CLICK_EVENT = 'click';
+          var CL_FORCE_EVENT = 'force';
+          var neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
+          var parseSearchParam = function parseSearchParam(rawQueryStr) {
+            var res = {};
+            var pattern = /([^&=]+)=([^&]*)/g;
+            var matchedData;
+            var queryStr = rawQueryStr.substring(1);
+            while (matchedData = pattern.exec(queryStr)) {
+              if (neededParams.indexOf(matchedData[1]) > -1) {
+                res[matchedData[1]] = matchedData[2];
+              }
+              queryStr = queryStr.substring(matchedData[0]);
+            }
+            return res;
+          };
+          var paramsData = parseSearchParam(window.location.search);
+          var getParamByKey = function getParamByKey(key) {
+            return paramsData[key] || '';
+          };
+          var extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
+          var clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
+          var blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
+          var originUrl = clUnblockToken
+          ? window.location.href : decodeURIComponent(getParamByKey(ORIGIN_URL_PARAM));
+          var clickTitleElem = document.getElementById('clickToLoadTitle');
+          var clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
+          var clickButtonElem = document.getElementById('clickToLoadLink');
+          var originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
+          clickSubtitleElem.textContent = originUrlToDisplay;
+          clickButtonElem.href = originUrlToDisplay;
+          clickButtonElem.title = originUrlToDisplay;
+          var translationsData = {
+            en: {
+              title: 'Content blocked by AdGuard',
+              button: 'Click to load'
+            },
+            ru: {
+              title: 'AdGuard заблокировал загрузку контента',
+              button: 'Всё равно загрузить'
+            },
+            es: {
+              title: 'Contenido bloqueado por AdGuard',
+              button: 'Pulsa para cargar'
+            },
+            fr: {
+              title: 'Contenu bloqué par AdGuard',
+              button: 'Cliquez pour télécharger'
+            },
+            it: {
+              title: 'Contenuti bloccati da AdGuard',
+              button: 'Clicca per scaricare'
+            },
+            de: {
+              title: 'Inhalt blockiert durch AdGuard',
+              button: 'Trotzdem laden'
+            },
+            'zh-cn': {
+              title: 'AdGuard 已将该内容屏蔽',
+              button: '点击加载'
+            },
+            'zh-tw': {
+              title: 'AdGuard 已將該內容封鎖',
+              button: '點按載入'
+            },
+            ko: {
+              title: 'AdGuard에 의해 차단된 콘텐츠',
+              button: '로드하려면 클릭하세요'
+            },
+            ja: {
+              title: 'AdGuardがコンテンツをブロックしました。',
+              button: '読み込むにはこちらをクリック'
+            },
+            uk: {
+              title: 'AdGuard заблокував завантаження вмісту',
+              button: 'Однаково завантажити'
+            }
+          };
+          var getTranslations = function getTranslations() {
+            var baseLocaleData = translationsData.en;
+            try {
+              var currentLocale = navigator.language.toLowerCase();
+              var localeData = translationsData[currentLocale];
+              if (!localeData) {
+                var lang = currentLocale.split('-')[0];
+                localeData = translationsData[lang];
+              }
+              if (!localeData) {
+                localeData = baseLocaleData;
+              }
+              return localeData;
+            } catch (e) {
+              return baseLocaleData;
+            }
+          };
+          var translations = getTranslations();
+          clickTitleElem.textContent = translations.title;
+          clickButtonElem.textContent = translations.button;
+          var getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
+            var questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
+            var divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
+            if (originUrl.substring(questionMarkIndex).length === 1) {
+              divider = '';
+            }
+            return "".concat(originUrl).concat(divider).concat(unblockTokenName).concat(SEARCH_PARAMS_DIVIDER).concat(unblockTokenValue);
+          };
+          var extRun = function extRun() {
+            var replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
+            window.location.replace(replaceUrl);
+          };
+          var clRun = function clRun() {
+            var CL_SPECIFIC_UNBLOCK_VALUE = 1;
+            var replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
+            window.location.replace(replaceUrl);
+          };
+          clickButtonElem.addEventListener(CLICK_EVENT, function (e) {
+            if (e.isTrusted === false) {
+              return;
+            }
+            if (extUnblockToken) {
+              extRun();
+            } else if (clUnblockToken) {
+              clRun();
+            }
+            e.preventDefault();
+            e.stopPropagation();
+          });
+          clickButtonElem.addEventListener(CL_FORCE_EVENT, function () {
+            clRun();
+          });
+          var hasFrameModifier = function hasFrameModifier(rule) {
+            var substringAfter = function substringAfter(str, separator) {
+              var index = str.indexOf(separator);
+              return index < 0 ? '' : str.substring(index + separator.length);
+            };
+            var FRAME_MARKER = 'frame';
+            var SUBDOCUMENT_MARKER = 'subdocument';
+            var ruleModifiers = substringAfter(rule, '$').split(',');
+            return ruleModifiers.indexOf(FRAME_MARKER) > -1 || ruleModifiers.indexOf(SUBDOCUMENT_MARKER) > -1;
+          };
+          var isInsideFrame = function isInsideFrame() {
+            return window.self !== window.top;
+          };
+          if (clUnblockToken && blockingRule && hasFrameModifier(blockingRule) && !isInsideFrame()) {
+            clickButtonElem.dispatchEvent(CL_FORCE_EVENT);
+          }
+        }
+        clickToLoad();
+
+    })();
+    </script>
+      </body>
+    </html>
+  sha: sha256-Bm6SGASuSJ/y5W6tMmcnxeShdKrQ2QtIV2mH1Oh8qho=
+
+- title: amazon-apstag
+  comment: Mocks Amazon's apstag.js
+  aliases:
+    - ubo-amazon_apstag.js
+    - amazon_apstag.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function AmazonApstag(source) {
+            var apstagWrapper = {
+                fetchBids: function fetchBids(a, b) {
+                    if (typeof b === "function") {
+                        b([]);
+                    }
+                },
+                init: noopFunc,
+                setDisplayBids: noopFunc,
+                targetingKeys: noopFunc
+            };
+            window.apstag = apstagWrapper;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            AmazonApstag.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "amazon-apstag",
+        args: []
+    }, []);
+  file: amazon-apstag.js
+
+- title: ati-smarttag
+  comment: Mocks AT Internat SmartTag.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function ATInternetSmartTag(source) {
+            var setNoopFuncWrapper = {
+                set: noopFunc
+            };
+            var sendNoopFuncWrapper = {
+                send: noopFunc
+            };
+            var ecommerceWrapper = {
+                displayCart: {
+                    products: setNoopFuncWrapper,
+                    cart: setNoopFuncWrapper
+                },
+                updateCart: {
+                    cart: setNoopFuncWrapper
+                },
+                displayProduct: {
+                    products: setNoopFuncWrapper
+                },
+                displayPageProduct: {
+                    products: setNoopFuncWrapper
+                },
+                addProduct: {
+                    products: setNoopFuncWrapper
+                },
+                removeProduct: {
+                    products: setNoopFuncWrapper
+                }
+            };
+            var tag = function tag() {};
+            tag.prototype = {
+                setConfig: noopFunc,
+                setParam: noopFunc,
+                dispatch: noopFunc,
+                customVars: setNoopFuncWrapper,
+                publisher: setNoopFuncWrapper,
+                order: setNoopFuncWrapper,
+                click: sendNoopFuncWrapper,
+                clickListener: sendNoopFuncWrapper,
+                internalSearch: {
+                    set: noopFunc,
+                    send: noopFunc
+                },
+                ecommerce: ecommerceWrapper,
+                identifiedVisitor: {
+                    unset: noopFunc
+                },
+                page: {
+                    set: noopFunc,
+                    send: noopFunc
+                },
+                selfPromotion: {
+                    add: noopFunc,
+                    send: noopFunc
+                },
+                privacy: {
+                    setVisitorMode: noopFunc,
+                    getVisitorMode: noopFunc,
+                    hit: noopFunc
+                },
+                richMedia: {
+                    add: noopFunc,
+                    send: noopFunc,
+                    remove: noopFunc,
+                    removeAll: noopFunc
+                }
+            };
+            var smartTagWrapper = {
+                Tracker: {
+                    Tag: function Tag() {
+                        return new tag;
+                    }
+                }
+            };
+            window.ATInternet = smartTagWrapper;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            ATInternetSmartTag.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "ati-smarttag",
+        args: []
+    }, []);
+  file: ati-smarttag.js
+
+- title: didomi-loader
+  comment: Mocks Didomi's CMP loader script.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function DidomiLoader(source) {
+            function UserConsentStatusForVendorSubscribe() {}
+            UserConsentStatusForVendorSubscribe.prototype.filter = function() {
+                return new UserConsentStatusForVendorSubscribe;
+            };
+            UserConsentStatusForVendorSubscribe.prototype.subscribe = noopFunc;
+            function UserConsentStatusForVendor() {}
+            UserConsentStatusForVendor.prototype.first = function() {
+                return new UserConsentStatusForVendorSubscribe;
+            };
+            UserConsentStatusForVendor.prototype.filter = function() {
+                return new UserConsentStatusForVendorSubscribe;
+            };
+            UserConsentStatusForVendor.prototype.subscribe = noopFunc;
+            var DidomiWrapper = {
+                isConsentRequired: falseFunc,
+                getUserConsentStatusForPurpose: trueFunc,
+                getUserConsentStatus: trueFunc,
+                getUserStatus: noopFunc,
+                getRequiredPurposes: noopArray,
+                getUserConsentStatusForVendor: trueFunc,
+                Purposes: {
+                    Cookies: "cookies"
+                },
+                notice: {
+                    configure: noopFunc,
+                    hide: noopFunc,
+                    isVisible: falseFunc,
+                    show: noopFunc,
+                    showDataProcessing: trueFunc
+                },
+                isUserConsentStatusPartial: falseFunc,
+                on: function on() {
+                    return {
+                        actions: {},
+                        emitter: {},
+                        services: {},
+                        store: {}
+                    };
+                },
+                shouldConsentBeCollected: falseFunc,
+                getUserConsentStatusForAll: noopFunc,
+                getObservableOnUserConsentStatusForVendor: function getObservableOnUserConsentStatusForVendor() {
+                    return new UserConsentStatusForVendor;
+                }
+            };
+            window.Didomi = DidomiWrapper;
+            var didomiStateWrapper = {
+                didomiExperimentId: "",
+                didomiExperimentUserGroup: "",
+                didomiGDPRApplies: 1,
+                didomiIABConsent: "",
+                didomiPurposesConsent: "",
+                didomiPurposesConsentDenied: "",
+                didomiPurposesConsentUnknown: "",
+                didomiVendorsConsent: "",
+                didomiVendorsConsentDenied: "",
+                didomiVendorsConsentUnknown: "",
+                didomiVendorsRawConsent: "",
+                didomiVendorsRawConsentDenied: "",
+                didomiVendorsRawConsentUnknown: ""
+            };
+            window.didomiState = didomiStateWrapper;
+            var tcData = {
+                eventStatus: "tcloaded",
+                gdprApplies: false,
+                listenerId: noopFunc,
+                vendor: {
+                    consents: []
+                },
+                purpose: {
+                    consents: []
+                }
+            };
+            var __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
+                if (typeof callback !== "function" || command === "removeEventListener") {
+                    return;
+                }
+                callback(tcData, true);
+            };
+            window.__tcfapi = __tcfapiWrapper;
+            var didomiEventListenersWrapper = {
+                stub: true,
+                push: noopFunc
+            };
+            window.didomiEventListeners = didomiEventListenersWrapper;
+            var didomiOnReadyWrapper = {
+                stub: true,
+                push: function push(arg) {
+                    if (typeof arg !== "function") {
+                        return;
+                    }
+                    if (document.readyState !== "complete") {
+                        window.addEventListener("load", (function() {
+                            setTimeout(arg(window.Didomi));
+                        }));
+                    } else {
+                        setTimeout(arg(window.Didomi));
+                    }
+                }
+            };
+            window.didomiOnReady = window.didomiOnReady || didomiOnReadyWrapper;
+            if (Array.isArray(window.didomiOnReady)) {
+                window.didomiOnReady.forEach((function(arg) {
+                    if (typeof arg === "function") {
+                        try {
+                            setTimeout(arg(window.Didomi));
+                        } catch (e) {}
+                    }
+                }));
+            }
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        function noopArray() {
+            return [];
+        }
+        function trueFunc() {
+            return true;
+        }
+        function falseFunc() {
+            return false;
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            DidomiLoader.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "didomi-loader",
+        args: []
+    }, []);
+  file: didomi-loader.js
+
+- title: fingerprintjs2
+  comment: Mocks FingerprintJS v2
+  aliases:
+    - ubo-fingerprint2.js
+    - fingerprint2.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function Fingerprintjs2(source) {
+            var browserId = "";
+            for (var i = 0; i < 8; i += 1) {
+                browserId += (Math.random() * 65536 + 4096).toString(16).slice(-4);
+            }
+            var Fingerprint2 = function Fingerprint2() {};
+            Fingerprint2.get = function(options, callback) {
+                if (!callback) {
+                    callback = options;
+                }
+                setTimeout((function() {
+                    if (callback) {
+                        callback(browserId, []);
+                    }
+                }), 1);
+            };
+            Fingerprint2.prototype = {
+                get: Fingerprint2.get
+            };
+            window.Fingerprint2 = Fingerprint2;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            Fingerprintjs2.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "fingerprintjs2",
+        args: []
+    }, []);
+  file: fingerprintjs2.js
+
+- title: fingerprintjs3
+  comment: Mocks FingerprintJS v3
+  aliases:
+    - ubo-fingerprint3.js
+    - fingerprint3.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function Fingerprintjs3(source) {
+            var visitorId = function() {
+                var id = "";
+                for (var i = 0; i < 8; i += 1) {
+                    id += (Math.random() * 65536 + 4096).toString(16).slice(-4);
+                }
+                return id;
+            }();
+            var FingerprintJS = function FingerprintJS() {};
+            FingerprintJS.prototype = {
+                load: function load() {
+                    return Promise.resolve(new FingerprintJS);
+                },
+                get: function get() {
+                    return Promise.resolve({
+                        visitorId: visitorId
+                    });
+                },
+                hashComponents: noopStr
+            };
+            window.FingerprintJS = new FingerprintJS;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopStr() {
+            return "";
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            Fingerprintjs3.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "fingerprintjs3",
+        args: []
+    }, []);
+  file: fingerprintjs3.js
+
+- title: gemius
+  comment: Mocks Gemius Analytics.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function Gemius(source) {
+            var GemiusPlayer = function GemiusPlayer() {};
+            GemiusPlayer.prototype = {
+                setVideoObject: noopFunc,
+                newProgram: noopFunc,
+                programEvent: noopFunc,
+                newAd: noopFunc,
+                adEvent: noopFunc
+            };
+            window.GemiusPlayer = GemiusPlayer;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            Gemius.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "gemius",
+        args: []
+    }, []);
+  file: gemius.js
+
+- title: google-analytics-ga
+  comment: Mocks old Google Analytics API.
+  aliases:
+    - ubo-google-analytics_ga.js
+    - google-analytics_ga.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function GoogleAnalyticsGa(source) {
+            function Gaq() {}
+            Gaq.prototype.Na = noopFunc;
+            Gaq.prototype.O = noopFunc;
+            Gaq.prototype.Sa = noopFunc;
+            Gaq.prototype.Ta = noopFunc;
+            Gaq.prototype.Va = noopFunc;
+            Gaq.prototype._createAsyncTracker = noopFunc;
+            Gaq.prototype._getAsyncTracker = noopFunc;
+            Gaq.prototype._getPlugin = noopFunc;
+            Gaq.prototype.push = function(data) {
+                if (typeof data === "function") {
+                    data();
+                    return;
+                }
+                if (Array.isArray(data) === false) {
+                    return;
+                }
+                if (typeof data[0] === "string" && /(^|\.)_link$/.test(data[0]) && typeof data[1] === "string") {
+                    window.location.assign(data[1]);
+                }
+                if (data[0] === "_set" && data[1] === "hitCallback" && typeof data[2] === "function") {
+                    data[2]();
+                }
+            };
+            var gaq = new Gaq;
+            var asyncTrackers = window._gaq || [];
+            if (Array.isArray(asyncTrackers)) {
+                while (asyncTrackers[0]) {
+                    gaq.push(asyncTrackers.shift());
+                }
+            }
+            window._gaq = gaq.qf = gaq;
+            function Gat() {}
+            var api = [ "_addIgnoredOrganic", "_addIgnoredRef", "_addItem", "_addOrganic", "_addTrans", "_clearIgnoredOrganic", "_clearIgnoredRef", "_clearOrganic", "_cookiePathCopy", "_deleteCustomVar", "_getName", "_setAccount", "_getAccount", "_getClientInfo", "_getDetectFlash", "_getDetectTitle", "_getLinkerUrl", "_getLocalGifPath", "_getServiceMode", "_getVersion", "_getVisitorCustomVar", "_initData", "_link", "_linkByPost", "_setAllowAnchor", "_setAllowHash", "_setAllowLinker", "_setCampContentKey", "_setCampMediumKey", "_setCampNameKey", "_setCampNOKey", "_setCampSourceKey", "_setCampTermKey", "_setCampaignCookieTimeout", "_setCampaignTrack", "_setClientInfo", "_setCookiePath", "_setCookiePersistence", "_setCookieTimeout", "_setCustomVar", "_setDetectFlash", "_setDetectTitle", "_setDomainName", "_setLocalGifPath", "_setLocalRemoteServerMode", "_setLocalServerMode", "_setReferrerOverride", "_setRemoteServerMode", "_setSampleRate", "_setSessionTimeout", "_setSiteSpeedSampleRate", "_setSessionCookieTimeout", "_setVar", "_setVisitorCookieTimeout", "_trackEvent", "_trackPageLoadTime", "_trackPageview", "_trackSocial", "_trackTiming", "_trackTrans", "_visitCode" ];
+            var tracker = api.reduce((function(res, funcName) {
+                res[funcName] = noopFunc;
+                return res;
+            }), {});
+            tracker._getLinkerUrl = function(a) {
+                return a;
+            };
+            tracker._link = function(url) {
+                if (typeof url !== "string") {
+                    return;
+                }
+                try {
+                    window.location.assign(url);
+                } catch (e) {
+                    if (source.verbose) {
+                        console.log(e);
+                    }
+                }
+            };
+            Gat.prototype._anonymizeIP = noopFunc;
+            Gat.prototype._createTracker = noopFunc;
+            Gat.prototype._forceSSL = noopFunc;
+            Gat.prototype._getPlugin = noopFunc;
+            Gat.prototype._getTracker = function() {
+                return tracker;
+            };
+            Gat.prototype._getTrackerByName = function() {
+                return tracker;
+            };
+            Gat.prototype._getTrackers = noopFunc;
+            Gat.prototype.aa = noopFunc;
+            Gat.prototype.ab = noopFunc;
+            Gat.prototype.hb = noopFunc;
+            Gat.prototype.la = noopFunc;
+            Gat.prototype.oa = noopFunc;
+            Gat.prototype.pa = noopFunc;
+            Gat.prototype.u = noopFunc;
+            var gat = new Gat;
+            window._gat = gat;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            GoogleAnalyticsGa.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "google-analytics-ga",
+        args: []
+    }, []);
+  file: google-analytics-ga.js
+
+- title: google-analytics
+  comment: Mocks Google's Analytics and Tag Manager APIs.
+  aliases:
+    - ubo-google-analytics_analytics.js
+    - google-analytics_analytics.js
+    - googletagmanager-gtm
+    - ubo-googletagmanager_gtm.js
+    - googletagmanager_gtm.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function GoogleAnalytics(source) {
+            var Tracker = function Tracker() {};
+            var proto = Tracker.prototype;
+            proto.get = noopFunc;
+            proto.set = noopFunc;
+            proto.send = noopFunc;
+            var googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
+            function ga(a) {
+                var len = arguments.length;
+                if (len === 0) {
+                    return;
+                }
+                var lastArg = arguments[len - 1];
+                var replacer;
+                if (lastArg instanceof Object && lastArg !== null && typeof lastArg.hitCallback === "function") {
+                    replacer = lastArg.hitCallback;
+                } else if (typeof lastArg === "function") {
+                    replacer = function replacer() {
+                        lastArg(ga.create());
+                    };
+                }
+                try {
+                    setTimeout(replacer, 1);
+                } catch (ex) {}
+            }
+            ga.create = function() {
+                return new Tracker;
+            };
+            ga.getByName = function() {
+                return new Tracker;
+            };
+            ga.getAll = function() {
+                return [ new Tracker ];
+            };
+            ga.remove = noopFunc;
+            ga.loaded = true;
+            window[googleAnalyticsName] = ga;
+            var _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
+            if (dataLayer instanceof Object === false) {
+                return;
+            }
+            if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === "function") {
+                dataLayer.hide.end();
+            }
+            var handleCallback = function handleCallback(dataObj, funcName) {
+                if (dataObj && typeof dataObj[funcName] === "function") {
+                    setTimeout(dataObj[funcName]);
+                }
+            };
+            if (typeof dataLayer.push === "function") {
+                dataLayer.push = function(data) {
+                    if (data instanceof Object) {
+                        handleCallback(data, "eventCallback");
+                        for (var key in data) {
+                            handleCallback(data[key], "event_callback");
+                        }
+                        if (!data.hasOwnProperty("eventCallback") && !data.hasOwnProperty("eventCallback")) {
+                            [].push.call(window.dataLayer, data);
+                        }
+                    }
+                    if (Array.isArray(data)) {
+                        data.forEach((function(arg) {
+                            handleCallback(arg, "callback");
+                        }));
+                    }
+                    return noopFunc;
+                };
+            }
+            if (google_optimize instanceof Object && typeof google_optimize.get === "function") {
+                var googleOptimizeWrapper = {
+                    get: noopFunc
+                };
+                window.google_optimize = googleOptimizeWrapper;
+            }
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        function noopNull() {
+            return null;
+        }
+        function noopArray() {
+            return [];
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            GoogleAnalytics.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "google-analytics",
+        args: []
+    }, []);
+  file: google-analytics.js
+
+- title: google-ima3
+  comment: Mocks the IMA SDK of Google.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function GoogleIma3(source) {
+            var VERSION = "3.453.0";
+            var ima = {};
+            var AdDisplayContainer = function AdDisplayContainer() {};
+            AdDisplayContainer.prototype.destroy = noopFunc;
+            AdDisplayContainer.prototype.initialize = noopFunc;
+            var ImaSdkSettings = function ImaSdkSettings() {};
+            ImaSdkSettings.CompanionBackfillMode = {
+                ALWAYS: "always",
+                ON_MASTER_AD: "on_master_ad"
+            };
+            ImaSdkSettings.VpaidMode = {
+                DISABLED: 0,
+                ENABLED: 1,
+                INSECURE: 2
+            };
+            ImaSdkSettings.prototype = {
+                c: true,
+                f: {},
+                i: false,
+                l: "",
+                p: "",
+                r: 0,
+                t: "",
+                v: "",
+                getCompanionBackfill: noopFunc,
+                getDisableCustomPlaybackForIOS10Plus: function getDisableCustomPlaybackForIOS10Plus() {
+                    return this.i;
+                },
+                getDisabledFlashAds: function getDisabledFlashAds() {
+                    return true;
+                },
+                getFeatureFlags: function getFeatureFlags() {
+                    return this.f;
+                },
+                getLocale: function getLocale() {
+                    return this.l;
+                },
+                getNumRedirects: function getNumRedirects() {
+                    return this.r;
+                },
+                getPlayerType: function getPlayerType() {
+                    return this.t;
+                },
+                getPlayerVersion: function getPlayerVersion() {
+                    return this.v;
+                },
+                getPpid: function getPpid() {
+                    return this.p;
+                },
+                getVpaidMode: function getVpaidMode() {
+                    return this.C;
+                },
+                isCookiesEnabled: function isCookiesEnabled() {
+                    return this.c;
+                },
+                isVpaidAdapter: function isVpaidAdapter() {
+                    return this.M;
+                },
+                setCompanionBackfill: noopFunc,
+                setAutoPlayAdBreaks: function setAutoPlayAdBreaks(a) {
+                    this.K = a;
+                },
+                setCookiesEnabled: function setCookiesEnabled(c) {
+                    this.c = !!c;
+                },
+                setDisableCustomPlaybackForIOS10Plus: function setDisableCustomPlaybackForIOS10Plus(i) {
+                    this.i = !!i;
+                },
+                setDisableFlashAds: noopFunc,
+                setFeatureFlags: function setFeatureFlags(f) {
+                    this.f = !!f;
+                },
+                setIsVpaidAdapter: function setIsVpaidAdapter(a) {
+                    this.M = a;
+                },
+                setLocale: function setLocale(l) {
+                    this.l = !!l;
+                },
+                setNumRedirects: function setNumRedirects(r) {
+                    this.r = !!r;
+                },
+                setPageCorrelator: function setPageCorrelator(a) {
+                    this.R = a;
+                },
+                setPlayerType: function setPlayerType(t) {
+                    this.t = !!t;
+                },
+                setPlayerVersion: function setPlayerVersion(v) {
+                    this.v = !!v;
+                },
+                setPpid: function setPpid(p) {
+                    this.p = !!p;
+                },
+                setVpaidMode: function setVpaidMode(a) {
+                    this.C = a;
+                },
+                setSessionId: noopFunc,
+                setStreamCorrelator: noopFunc,
+                setVpaidAllowed: noopFunc,
+                CompanionBackfillMode: {
+                    ALWAYS: "always",
+                    ON_MASTER_AD: "on_master_ad"
+                },
+                VpaidMode: {
+                    DISABLED: 0,
+                    ENABLED: 1,
+                    INSECURE: 2
+                }
+            };
+            var managerLoaded = false;
+            var EventHandler = function EventHandler() {
+                this.listeners = new Map;
+                this._dispatch = function(e) {
+                    var listeners = this.listeners.get(e.type) || [];
+                    for (var _i = 0, _Array$from = Array.from(listeners); _i < _Array$from.length; _i++) {
+                        var listener = _Array$from[_i];
+                        try {
+                            listener(e);
+                        } catch (r) {
+                            console.error(r);
+                        }
+                    }
+                };
+                this.addEventListener = function(t, c) {
+                    if (!this.listeners.has(t)) {
+                        this.listeners.set(t, new Set);
+                    }
+                    this.listeners.get(t).add(c);
+                };
+                this.removeEventListener = function(t, c) {
+                    var _this$listeners$get;
+                    (_this$listeners$get = this.listeners.get(t)) === null || _this$listeners$get === void 0 ? void 0 : _this$listeners$get.delete(c);
+                };
+            };
+            var AdsManager = new EventHandler;
+            AdsManager.volume = 1;
+            AdsManager.collapse = noopFunc;
+            AdsManager.configureAdsManager = noopFunc;
+            AdsManager.destroy = noopFunc;
+            AdsManager.discardAdBreak = noopFunc;
+            AdsManager.expand = noopFunc;
+            AdsManager.focus = noopFunc;
+            AdsManager.getAdSkippableState = function() {
+                return false;
+            };
+            AdsManager.getCuePoints = function() {
+                return [ 0 ];
+            };
+            AdsManager.getCurrentAd = function() {
+                return currentAd;
+            };
+            AdsManager.getCurrentAdCuePoints = function() {
+                return [];
+            };
+            AdsManager.getRemainingTime = function() {
+                return 0;
+            };
+            AdsManager.getVolume = function() {
+                return this.volume;
+            };
+            AdsManager.init = noopFunc;
+            AdsManager.isCustomClickTrackingUsed = function() {
+                return false;
+            };
+            AdsManager.isCustomPlaybackUsed = function() {
+                return false;
+            };
+            AdsManager.pause = noopFunc;
+            AdsManager.requestNextAdBreak = noopFunc;
+            AdsManager.resize = noopFunc;
+            AdsManager.resume = noopFunc;
+            AdsManager.setVolume = function(v) {
+                this.volume = v;
+            };
+            AdsManager.skip = noopFunc;
+            AdsManager.start = function() {
+                for (var _i2 = 0, _arr = [ AdEvent.Type.ALL_ADS_COMPLETED, AdEvent.Type.CONTENT_RESUME_REQUESTED ]; _i2 < _arr.length; _i2++) {
+                    var type = _arr[_i2];
+                    try {
+                        this._dispatch(new ima.AdEvent(type));
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+            };
+            AdsManager.stop = noopFunc;
+            AdsManager.updateAdsRenderingSettings = noopFunc;
+            var manager = Object.create(AdsManager);
+            var AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
+                this.type = type;
+                this.adsRequest = adsRequest;
+                this.userRequestContext = userRequestContext;
+            };
+            AdsManagerLoadedEvent.prototype = {
+                getAdsManager: function getAdsManager() {
+                    return manager;
+                },
+                getUserRequestContext: function getUserRequestContext() {
+                    if (this.userRequestContext) {
+                        return this.userRequestContext;
+                    }
+                    return {};
+                }
+            };
+            AdsManagerLoadedEvent.Type = {
+                ADS_MANAGER_LOADED: "adsManagerLoaded"
+            };
+            var AdsLoader = EventHandler;
+            AdsLoader.prototype.settings = new ImaSdkSettings;
+            AdsLoader.prototype.contentComplete = noopFunc;
+            AdsLoader.prototype.destroy = noopFunc;
+            AdsLoader.prototype.getSettings = function() {
+                return this.settings;
+            };
+            AdsLoader.prototype.getVersion = function() {
+                return VERSION;
+            };
+            AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
+                var _this = this;
+                if (!managerLoaded) {
+                    managerLoaded = true;
+                    requestAnimationFrame((function() {
+                        var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                        _this._dispatch(new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext));
+                    }));
+                    var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
+                    requestAnimationFrame((function() {
+                        _this._dispatch(new ima.AdErrorEvent(e));
+                    }));
+                }
+            };
+            var AdsRenderingSettings = noopFunc;
+            var AdsRequest = function AdsRequest() {};
+            AdsRequest.prototype = {
+                setAdWillAutoPlay: noopFunc,
+                setAdWillPlayMuted: noopFunc,
+                setContinuousPlayback: noopFunc
+            };
+            var AdPodInfo = function AdPodInfo() {};
+            AdPodInfo.prototype = {
+                getAdPosition: function getAdPosition() {
+                    return 1;
+                },
+                getIsBumper: function getIsBumper() {
+                    return false;
+                },
+                getMaxDuration: function getMaxDuration() {
+                    return -1;
+                },
+                getPodIndex: function getPodIndex() {
+                    return 1;
+                },
+                getTimeOffset: function getTimeOffset() {
+                    return 0;
+                },
+                getTotalAds: function getTotalAds() {
+                    return 1;
+                }
+            };
+            var Ad = function Ad() {};
+            Ad.prototype = {
+                pi: new AdPodInfo,
+                getAdId: function getAdId() {
+                    return "";
+                },
+                getAdPodInfo: function getAdPodInfo() {
+                    return this.pi;
+                },
+                getAdSystem: function getAdSystem() {
+                    return "";
+                },
+                getAdvertiserName: function getAdvertiserName() {
+                    return "";
+                },
+                getApiFramework: function getApiFramework() {
+                    return null;
+                },
+                getCompanionAds: function getCompanionAds() {
+                    return [];
+                },
+                getContentType: function getContentType() {
+                    return "";
+                },
+                getCreativeAdId: function getCreativeAdId() {
+                    return "";
+                },
+                getDealId: function getDealId() {
+                    return "";
+                },
+                getDescription: function getDescription() {
+                    return "";
+                },
+                getDuration: function getDuration() {
+                    return 8.5;
+                },
+                getHeight: function getHeight() {
+                    return 0;
+                },
+                getMediaUrl: function getMediaUrl() {
+                    return null;
+                },
+                getMinSuggestedDuration: function getMinSuggestedDuration() {
+                    return -2;
+                },
+                getSkipTimeOffset: function getSkipTimeOffset() {
+                    return -1;
+                },
+                getSurveyUrl: function getSurveyUrl() {
+                    return null;
+                },
+                getTitle: function getTitle() {
+                    return "";
+                },
+                getTraffickingParametersString: function getTraffickingParametersString() {
+                    return "";
+                },
+                getUiElements: function getUiElements() {
+                    return [ "" ];
+                },
+                getUniversalAdIdRegistry: function getUniversalAdIdRegistry() {
+                    return "unknown";
+                },
+                getUniversalAdIds: function getUniversalAdIds() {
+                    return [ "" ];
+                },
+                getUniversalAdIdValue: function getUniversalAdIdValue() {
+                    return "unknown";
+                },
+                getVastMediaBitrate: function getVastMediaBitrate() {
+                    return 0;
+                },
+                getVastMediaHeight: function getVastMediaHeight() {
+                    return 0;
+                },
+                getVastMediaWidth: function getVastMediaWidth() {
+                    return 0;
+                },
+                getWidth: function getWidth() {
+                    return 0;
+                },
+                getWrapperAdIds: function getWrapperAdIds() {
+                    return [ "" ];
+                },
+                getWrapperAdSystems: function getWrapperAdSystems() {
+                    return [ "" ];
+                },
+                getWrapperCreativeIds: function getWrapperCreativeIds() {
+                    return [ "" ];
+                },
+                isLinear: function isLinear() {
+                    return true;
+                },
+                isSkippable: function isSkippable() {
+                    return true;
+                }
+            };
+            var CompanionAd = function CompanionAd() {};
+            CompanionAd.prototype = {
+                getAdSlotId: function getAdSlotId() {
+                    return "";
+                },
+                getContent: function getContent() {
+                    return "";
+                },
+                getContentType: function getContentType() {
+                    return "";
+                },
+                getHeight: function getHeight() {
+                    return 1;
+                },
+                getWidth: function getWidth() {
+                    return 1;
+                }
+            };
+            var AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
+                this.errorCode = code;
+                this.message = message;
+                this.type = type;
+                this.adsRequest = adsRequest;
+                this.userRequestContext = userRequestContext;
+                this.getErrorCode = function() {
+                    return this.errorCode;
+                };
+                this.getInnerError = function() {};
+                this.getMessage = function() {
+                    return this.message;
+                };
+                this.getType = function() {
+                    return this.type;
+                };
+                this.getVastErrorCode = function() {
+                    return this.vastErrorCode;
+                };
+                this.toString = function() {
+                    return "AdError ".concat(this.errorCode, ": ").concat(this.message);
+                };
+            };
+            AdError.ErrorCode = {};
+            AdError.Type = {};
+            var isEngadget = function isEngadget() {
+                try {
+                    for (var _i3 = 0, _Object$values = Object.values(window.vidible._getContexts()); _i3 < _Object$values.length; _i3++) {
+                        var _ctx$getPlayer, _ctx$getPlayer$div;
+                        var ctx = _Object$values[_i3];
+                        if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer$div = _ctx$getPlayer.div) !== null && _ctx$getPlayer$div !== void 0 && _ctx$getPlayer$div.innerHTML.includes("www.engadget.com")) {
+                            return true;
+                        }
+                    }
+                } catch (e) {}
+                return false;
+            };
+            var currentAd = isEngadget() ? undefined : new Ad;
+            var AdEvent = function AdEvent(type) {
+                this.type = type;
+            };
+            AdEvent.prototype = {
+                getAd: function getAd() {
+                    return currentAd;
+                },
+                getAdData: function getAdData() {}
+            };
+            AdEvent.Type = {
+                AD_BREAK_READY: "adBreakReady",
+                AD_BUFFERING: "adBuffering",
+                AD_CAN_PLAY: "adCanPlay",
+                AD_METADATA: "adMetadata",
+                AD_PROGRESS: "adProgress",
+                ALL_ADS_COMPLETED: "allAdsCompleted",
+                CLICK: "click",
+                COMPLETE: "complete",
+                CONTENT_PAUSE_REQUESTED: "contentPauseRequested",
+                CONTENT_RESUME_REQUESTED: "contentResumeRequested",
+                DURATION_CHANGE: "durationChange",
+                EXPANDED_CHANGED: "expandedChanged",
+                FIRST_QUARTILE: "firstQuartile",
+                IMPRESSION: "impression",
+                INTERACTION: "interaction",
+                LINEAR_CHANGE: "linearChange",
+                LINEAR_CHANGED: "linearChanged",
+                LOADED: "loaded",
+                LOG: "log",
+                MIDPOINT: "midpoint",
+                PAUSED: "pause",
+                RESUMED: "resume",
+                SKIPPABLE_STATE_CHANGED: "skippableStateChanged",
+                SKIPPED: "skip",
+                STARTED: "start",
+                THIRD_QUARTILE: "thirdQuartile",
+                USER_CLOSE: "userClose",
+                VIDEO_CLICKED: "videoClicked",
+                VIDEO_ICON_CLICKED: "videoIconClicked",
+                VIEWABLE_IMPRESSION: "viewable_impression",
+                VOLUME_CHANGED: "volumeChange",
+                VOLUME_MUTED: "mute"
+            };
+            var AdErrorEvent = function AdErrorEvent(error) {
+                this.error = error;
+                this.type = "adError";
+                this.getError = function() {
+                    return this.error;
+                };
+                this.getUserRequestContext = function() {
+                    var _this$error;
+                    if ((_this$error = this.error) !== null && _this$error !== void 0 && _this$error.userRequestContext) {
+                        return this.error.userRequestContext;
+                    }
+                    return {};
+                };
+            };
+            AdErrorEvent.Type = {
+                AD_ERROR: "adError"
+            };
+            var CustomContentLoadedEvent = function CustomContentLoadedEvent() {};
+            CustomContentLoadedEvent.Type = {
+                CUSTOM_CONTENT_LOADED: "deprecated-event"
+            };
+            var CompanionAdSelectionSettings = function CompanionAdSelectionSettings() {};
+            CompanionAdSelectionSettings.CreativeType = {
+                ALL: "All",
+                FLASH: "Flash",
+                IMAGE: "Image"
+            };
+            CompanionAdSelectionSettings.ResourceType = {
+                ALL: "All",
+                HTML: "Html",
+                IFRAME: "IFrame",
+                STATIC: "Static"
+            };
+            CompanionAdSelectionSettings.SizeCriteria = {
+                IGNORE: "IgnoreSize",
+                SELECT_EXACT_MATCH: "SelectExactMatch",
+                SELECT_NEAR_MATCH: "SelectNearMatch"
+            };
+            var AdCuePoints = function AdCuePoints() {};
+            AdCuePoints.prototype = {
+                getCuePoints: function getCuePoints() {
+                    return [];
+                },
+                getAdIdRegistry: function getAdIdRegistry() {
+                    return "";
+                },
+                getAdIsValue: function getAdIsValue() {
+                    return "";
+                }
+            };
+            var AdProgressData = noopFunc;
+            var UniversalAdIdInfo = function UniversalAdIdInfo() {};
+            Object.assign(ima, {
+                AdCuePoints: AdCuePoints,
+                AdDisplayContainer: AdDisplayContainer,
+                AdError: AdError,
+                AdErrorEvent: AdErrorEvent,
+                AdEvent: AdEvent,
+                AdPodInfo: AdPodInfo,
+                AdProgressData: AdProgressData,
+                AdsLoader: AdsLoader,
+                AdsManager: manager,
+                AdsManagerLoadedEvent: AdsManagerLoadedEvent,
+                AdsRenderingSettings: AdsRenderingSettings,
+                AdsRequest: AdsRequest,
+                CompanionAd: CompanionAd,
+                CompanionAdSelectionSettings: CompanionAdSelectionSettings,
+                CustomContentLoadedEvent: CustomContentLoadedEvent,
+                gptProxyInstance: {},
+                ImaSdkSettings: ImaSdkSettings,
+                OmidAccessMode: {
+                    DOMAIN: "domain",
+                    FULL: "full",
+                    LIMITED: "limited"
+                },
+                settings: new ImaSdkSettings,
+                UiElements: {
+                    AD_ATTRIBUTION: "adAttribution",
+                    COUNTDOWN: "countdown"
+                },
+                UniversalAdIdInfo: UniversalAdIdInfo,
+                VERSION: VERSION,
+                ViewMode: {
+                    FULLSCREEN: "fullscreen",
+                    NORMAL: "normal"
+                }
+            });
+            if (!window.google) {
+                window.google = {};
+            }
+            window.google.ima = ima;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            GoogleIma3.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "google-ima3",
+        args: []
+    }, []);
+  file: google-ima3.js
+
+- title: googlesyndication-adsbygoogle
+  comment: Mocks Google AdSense API.
+  aliases:
+    - ubo-googlesyndication_adsbygoogle.js
+    - googlesyndication_adsbygoogle.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function GoogleSyndicationAdsByGoogle(source) {
+            window.adsbygoogle = {
+                loaded: true,
+                push: function push(arg) {
+                    if (typeof this.length === "undefined") {
+                        this.length = 0;
+                        this.length += 1;
+                    }
+                    if (arg !== null && arg instanceof Object && arg.constructor.name === "Object") {
+                        for (var _i = 0, _Object$keys = Object.keys(arg); _i < _Object$keys.length; _i++) {
+                            var key = _Object$keys[_i];
+                            if (typeof arg[key] === "function") {
+                                try {
+                                    arg[key].call();
+                                } catch (_unused) {}
+                            }
+                        }
+                    }
+                }
+            };
+            var adElems = document.querySelectorAll(".adsbygoogle");
+            var css = "height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;";
+            var statusAttrName = "data-adsbygoogle-status";
+            var ASWIFT_IFRAME_MARKER = "aswift_";
+            var GOOGLE_ADS_IFRAME_MARKER = "google_ads_iframe_";
+            var executed = false;
+            for (var i = 0; i < adElems.length; i += 1) {
+                var adElemChildNodes = adElems[i].childNodes;
+                var childNodesQuantity = adElemChildNodes.length;
+                var areIframesDefined = false;
+                if (childNodesQuantity > 0) {
+                    areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.indexOf(ASWIFT_IFRAME_MARKER) > -1 && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.indexOf(GOOGLE_ADS_IFRAME_MARKER) > -1;
+                }
+                if (!areIframesDefined) {
+                    adElems[i].setAttribute(statusAttrName, "done");
+                    var aswiftIframe = document.createElement("iframe");
+                    aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
+                    aswiftIframe.style = css;
+                    adElems[i].appendChild(aswiftIframe);
+                    var innerAswiftIframe = document.createElement("iframe");
+                    aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
+                    var googleadsIframe = document.createElement("iframe");
+                    googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
+                    googleadsIframe.style = css;
+                    adElems[i].appendChild(googleadsIframe);
+                    var innerGoogleadsIframe = document.createElement("iframe");
+                    googleadsIframe.contentWindow.document.body.appendChild(innerGoogleadsIframe);
+                    executed = true;
+                }
+            }
+            if (executed) {
+                hit(source);
+            }
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            GoogleSyndicationAdsByGoogle.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "googlesyndication-adsbygoogle",
+        args: []
+    }, []);
+  file: googlesyndication-adsbygoogle.js
+
+- title: googletagservices-gpt
+  comment: Mocks Google Publisher Tag API.
+  aliases:
+    - ubo-googletagservices_gpt.js
+    - googletagservices_gpt.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function GoogleTagServicesGpt(source) {
+            var slots = new Map;
+            var slotsById = new Map;
+            var eventCallbacks = new Map;
+            var addEventListener = function addEventListener(name, listener) {
+                if (!eventCallbacks.has(name)) {
+                    eventCallbacks.set(name, new Set);
+                }
+                eventCallbacks.get(name).add(listener);
+                return this;
+            };
+            var removeEventListener = function removeEventListener(name, listener) {
+                if (eventCallbacks.has(name)) {
+                    return eventCallbacks.get(name).delete(listener);
+                }
+                return false;
+            };
+            var fireSlotEvent = function fireSlotEvent(name, slot) {
+                return new Promise((function(resolve) {
+                    requestAnimationFrame((function() {
+                        var size = [ 0, 0 ];
+                        var callbacksSet = eventCallbacks.get(name) || [];
+                        var callbackArray = Array.from(callbacksSet);
+                        for (var i = 0; i < callbackArray.length; i += 1) {
+                            callbackArray[i]({
+                                isEmpty: true,
+                                size: size,
+                                slot: slot
+                            });
+                        }
+                        resolve();
+                    }));
+                }));
+            };
+            var displaySlot = function displaySlot(slot) {
+                if (!slot) {
+                    return;
+                }
+                var id = slot.getSlotElementId();
+                if (!document.getElementById(id)) {
+                    return;
+                }
+                var parent = document.getElementById(id);
+                if (parent) {
+                    parent.appendChild(document.createElement("div"));
+                }
+                fireSlotEvent("slotRenderEnded", slot);
+                fireSlotEvent("slotRequested", slot);
+                fireSlotEvent("slotResponseReceived", slot);
+                fireSlotEvent("slotOnload", slot);
+                fireSlotEvent("impressionViewable", slot);
+            };
+            var companionAdsService = {
+                addEventListener: addEventListener,
+                removeEventListener: removeEventListener,
+                enableSyncLoading: noopFunc,
+                setRefreshUnfilledSlots: noopFunc,
+                getSlots: noopArray
+            };
+            var contentService = {
+                addEventListener: addEventListener,
+                removeEventListener: removeEventListener,
+                setContent: noopFunc
+            };
+            function PassbackSlot() {}
+            PassbackSlot.prototype.display = noopFunc;
+            PassbackSlot.prototype.get = noopNull;
+            PassbackSlot.prototype.set = noopThis;
+            PassbackSlot.prototype.setClickUrl = noopThis;
+            PassbackSlot.prototype.setTagForChildDirectedTreatment = noopThis;
+            PassbackSlot.prototype.setTargeting = noopThis;
+            PassbackSlot.prototype.updateTargetingFromMap = noopThis;
+            function SizeMappingBuilder() {}
+            SizeMappingBuilder.prototype.addSize = noopThis;
+            SizeMappingBuilder.prototype.build = noopNull;
+            function Slot(adUnitPath, creatives, optDiv) {
+                this.adUnitPath = adUnitPath;
+                this.creatives = creatives;
+                this.optDiv = optDiv;
+                if (slotsById.has(optDiv)) {
+                    var _document$getElementB;
+                    (_document$getElementB = document.getElementById(optDiv)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.remove();
+                    return slotsById.get(optDiv);
+                }
+                slotsById.set(optDiv, this);
+            }
+            Slot.prototype.addService = noopThis;
+            Slot.prototype.clearCategoryExclusions = noopThis;
+            Slot.prototype.clearTargeting = noopThis;
+            Slot.prototype.defineSizeMapping = noopThis;
+            Slot.prototype.get = noopNull;
+            Slot.prototype.getAdUnitPath = function() {
+                return this.adUnitPath;
+            };
+            Slot.prototype.getAttributeKeys = noopArray;
+            Slot.prototype.getCategoryExclusions = noopArray;
+            Slot.prototype.getDomId = function() {
+                return this.optDiv;
+            };
+            Slot.prototype.getSlotElementId = function() {
+                return this.optDiv;
+            };
+            Slot.prototype.getSlotId = noopThis;
+            Slot.prototype.getSizes = noopArray;
+            Slot.prototype.getTargeting = noopArray;
+            Slot.prototype.getTargetingKeys = noopArray;
+            Slot.prototype.set = noopThis;
+            Slot.prototype.setCategoryExclusion = noopThis;
+            Slot.prototype.setClickUrl = noopThis;
+            Slot.prototype.setCollapseEmptyDiv = noopThis;
+            Slot.prototype.setTargeting = noopThis;
+            var pubAdsService = {
+                addEventListener: addEventListener,
+                removeEventListener: removeEventListener,
+                clear: noopFunc,
+                clearCategoryExclusions: noopThis,
+                clearTagForChildDirectedTreatment: noopThis,
+                clearTargeting: noopThis,
+                collapseEmptyDivs: noopFunc,
+                defineOutOfPagePassback: function defineOutOfPagePassback() {
+                    return new PassbackSlot;
+                },
+                definePassback: function definePassback() {
+                    return new PassbackSlot;
+                },
+                disableInitialLoad: noopFunc,
+                display: noopFunc,
+                enableAsyncRendering: noopFunc,
+                enableLazyLoad: noopFunc,
+                enableSingleRequest: noopFunc,
+                enableSyncRendering: noopFunc,
+                enableVideoAds: noopFunc,
+                get: noopNull,
+                getAttributeKeys: noopArray,
+                getTargeting: noopArray,
+                getTargetingKeys: noopArray,
+                getSlots: noopArray,
+                isInitialLoadDisabled: trueFunc,
+                refresh: noopFunc,
+                set: noopThis,
+                setCategoryExclusion: noopThis,
+                setCentering: noopFunc,
+                setCookieOptions: noopThis,
+                setForceSafeFrame: noopThis,
+                setLocation: noopThis,
+                setPublisherProvidedId: noopThis,
+                setRequestNonPersonalizedAds: noopThis,
+                setSafeFrameConfig: noopThis,
+                setTagForChildDirectedTreatment: noopThis,
+                setTargeting: noopThis,
+                setVideoContent: noopThis,
+                updateCorrelator: noopFunc
+            };
+            var getNewSlot = function getNewSlot(adUnitPath, creatives, optDiv) {
+                return new Slot(adUnitPath, creatives, optDiv);
+            };
+            var _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
+            var _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+            googletag.apiReady = true;
+            googletag.cmd = [];
+            googletag.cmd.push = function(a) {
+                try {
+                    a();
+                } catch (ex) {}
+                return 1;
+            };
+            googletag.companionAds = function() {
+                return companionAdsService;
+            };
+            googletag.content = function() {
+                return contentService;
+            };
+            googletag.defineOutOfPageSlot = getNewSlot;
+            googletag.defineSlot = getNewSlot;
+            googletag.destroySlots = function() {
+                slots.clear();
+                slotsById.clear();
+            };
+            googletag.disablePublisherConsole = noopFunc;
+            googletag.display = function(arg) {
+                var id;
+                if (arg !== null && arg !== void 0 && arg.getSlotElementId) {
+                    id = arg.getSlotElementId();
+                } else if (arg !== null && arg !== void 0 && arg.nodeType) {
+                    id = arg.id;
+                } else {
+                    id = String(arg);
+                }
+                displaySlot(slotsById.get(id));
+            };
+            googletag.enableServices = noopFunc;
+            googletag.getVersion = noopStr;
+            googletag.pubads = function() {
+                return pubAdsService;
+            };
+            googletag.pubadsReady = true;
+            googletag.setAdIframeTitle = noopFunc;
+            googletag.sizeMapping = function() {
+                return new SizeMappingBuilder;
+            };
+            window.googletag = googletag;
+            while (cmd.length !== 0) {
+                googletag.cmd.push(cmd.shift());
+            }
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        function noopThis() {
+            return this;
+        }
+        function noopNull() {
+            return null;
+        }
+        function noopArray() {
+            return [];
+        }
+        function noopStr() {
+            return "";
+        }
+        function trueFunc() {
+            return true;
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            GoogleTagServicesGpt.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "googletagservices-gpt",
+        args: []
+    }, []);
+  file: googletagservices-gpt.js
+
+- title: matomo
+  comment: Mocks the piwik.js file of Matomo (formerly Piwik).
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function Matomo(source) {
+            var Tracker = function Tracker() {};
+            Tracker.prototype.setDoNotTrack = noopFunc;
+            Tracker.prototype.setDomains = noopFunc;
+            Tracker.prototype.setCustomDimension = noopFunc;
+            Tracker.prototype.trackPageView = noopFunc;
+            var AsyncTracker = function AsyncTracker() {};
+            AsyncTracker.prototype.addListener = noopFunc;
+            var matomoWrapper = {
+                getTracker: function getTracker() {
+                    return new Tracker;
+                },
+                getAsyncTracker: function getAsyncTracker() {
+                    return new AsyncTracker;
+                }
+            };
+            window.Piwik = matomoWrapper;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            Matomo.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "matomo",
+        args: []
+    }, []);
+  file: matomo.js
+
+- title: metrika-yandex-tag
+  comment: Mocks Yandex Metrika API.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function metrikaYandexTag(source) {
+            var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
+                var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+                var callback = options.callback;
+                var ctx = options.ctx;
+                if (typeof callback === "function") {
+                    callback = ctx !== undefined ? callback.bind(ctx) : callback;
+                    setTimeout((function() {
+                        return callback();
+                    }));
+                }
+            };
+            var addFileExtension = noopFunc;
+            var extLink = asyncCallbackFromOptions;
+            var file = asyncCallbackFromOptions;
+            var getClientID = function getClientID(id, cb) {
+                if (!cb) {
+                    return;
+                }
+                setTimeout(cb(null));
+            };
+            var hitFunc = asyncCallbackFromOptions;
+            var notBounce = asyncCallbackFromOptions;
+            var params = noopFunc;
+            var reachGoal = function reachGoal(id, target, params, callback, ctx) {
+                asyncCallbackFromOptions(null, null, {
+                    callback: callback,
+                    ctx: ctx
+                });
+            };
+            var setUserID = noopFunc;
+            var userParams = noopFunc;
+            var destruct = noopFunc;
+            var api = {
+                addFileExtension: addFileExtension,
+                extLink: extLink,
+                file: file,
+                getClientID: getClientID,
+                hit: hitFunc,
+                notBounce: notBounce,
+                params: params,
+                reachGoal: reachGoal,
+                setUserID: setUserID,
+                userParams: userParams,
+                destruct: destruct
+            };
+            function ym(id, funcName) {
+                for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+                    args[_key - 2] = arguments[_key];
+                }
+                return api[funcName] && api[funcName].apply(api, [ id ].concat(args));
+            }
+            ym.a = [];
+            function init(id) {
+                window["yaCounter".concat(id)] = api;
+                document.dispatchEvent(new Event("yacounter".concat(id, "inited")));
+            }
+            if (typeof window.ym === "undefined") {
+                window.ym = ym;
+            } else if (window.ym && window.ym.a) {
+                var counters = window.ym.a;
+                window.ym = ym;
+                counters.forEach((function(params) {
+                    var id = params[0];
+                    init(id);
+                }));
+            }
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            metrikaYandexTag.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "metrika-yandex-tag",
+        args: []
+    }, []);
+  file: metrika-yandex-tag.js
+
+- title: metrika-yandex-watch
+  comment: Mocks the old Yandex Metrika API.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function metrikaYandexWatch(source) {
+            var cbName = "yandex_metrika_callbacks";
+            var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
+                var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+                var callback = options.callback;
+                var ctx = options.ctx;
+                if (typeof callback === "function") {
+                    callback = ctx !== undefined ? callback.bind(ctx) : callback;
+                    setTimeout((function() {
+                        return callback();
+                    }));
+                }
+            };
+            function Metrika() {}
+            Metrika.counters = noopArray;
+            Metrika.prototype.addFileExtension = noopFunc;
+            Metrika.prototype.getClientID = noopFunc;
+            Metrika.prototype.setUserID = noopFunc;
+            Metrika.prototype.userParams = noopFunc;
+            Metrika.prototype.params = noopFunc;
+            Metrika.prototype.counters = noopArray;
+            Metrika.prototype.extLink = function(url, options) {
+                asyncCallbackFromOptions(options);
+            };
+            Metrika.prototype.file = function(url, options) {
+                asyncCallbackFromOptions(options);
+            };
+            Metrika.prototype.hit = function(url, options) {
+                asyncCallbackFromOptions(options);
+            };
+            Metrika.prototype.reachGoal = function(target, params, cb, ctx) {
+                asyncCallbackFromOptions({
+                    callback: cb,
+                    ctx: ctx
+                });
+            };
+            Metrika.prototype.notBounce = asyncCallbackFromOptions;
+            if (window.Ya) {
+                window.Ya.Metrika = Metrika;
+            } else {
+                window.Ya = {
+                    Metrika: Metrika
+                };
+            }
+            if (window[cbName] && Array.isArray(window[cbName])) {
+                window[cbName].forEach((function(func) {
+                    if (typeof func === "function") {
+                        func();
+                    }
+                }));
+            }
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        function noopArray() {
+            return [];
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            metrikaYandexWatch.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "metrika-yandex-watch",
+        args: []
+    }, []);
+  file: metrika-yandex-watch.js
+
+- title: naver-wcslog
+  comment: Mocks wcslog.js of Naver Analytics.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function NaverWcslog(source) {
+            window.wcs_add = {};
+            window.wcs_do = noopFunc;
+            window.wcs = {
+                inflow: noopFunc
+            };
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            NaverWcslog.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "naver-wcslog",
+        args: []
+    }, []);
+  file: naver-wcslog.js
+
+- title: noeval
+  comment: >-
+    Redirects request to the source which sets static properties to PopAds and
+    popns objects.
+  aliases:
+    - noeval.js
+    - silent-noeval.js
+    - ubo-noeval.js
+    - ubo-silent-noeval.js
+    - ubo-noeval
+    - ubo-silent-noeval
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function noeval(source) {
+            window.eval = function evalWrapper(s) {
+                hit(source, "AdGuard has prevented eval:\n".concat(s));
+            }.bind();
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            noeval.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "noeval",
+        args: []
+    }, []);
+  file: noeval.js
+
+- title: pardot-1.0
+  comment: Mocks the pd.js file of Salesforce
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function Pardot(source) {
+            window.piVersion = "1.0.2";
+            window.piScriptNum = 0;
+            window.piScriptObj = [];
+            window.checkNamespace = noopFunc;
+            window.getPardotUrl = noopStr;
+            window.piGetParameter = noopNull;
+            window.piSetCookie = noopFunc;
+            window.piGetCookie = noopStr;
+            function piTracker() {
+                window.pi = {
+                    tracker: {
+                        visitor_id: "",
+                        visitor_id_sign: "",
+                        pi_opt_in: "",
+                        campaign_id: ""
+                    }
+                };
+                window.piScriptNum += 1;
+            }
+            window.piResponse = noopFunc;
+            window.piTracker = piTracker;
+            piTracker();
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        function noopStr() {
+            return "";
+        }
+        function noopNull() {
+            return null;
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            Pardot.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "pardot-1.0",
+        args: []
+    }, []);
+  file: pardot-1.0.js
+
+- title: prebid-ads
+  comment: 'Sets predefined constants on a page:'
+  aliases:
+    - ubo-prebid-ads.js
+    - prebid-ads.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function prebidAds(source) {
+            window.canRunAds = true;
+            window.isAdBlockActive = false;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            prebidAds.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "prebid-ads",
+        args: []
+    }, []);
+  file: prebid-ads.js
+
+- title: prebid
+  comment: Mocks the prebid.js header bidding suit.
+  aliases: []
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function Prebid(source) {
+            var pushFunction = function pushFunction(arg) {
+                if (typeof arg === "function") {
+                    try {
+                        arg.call();
+                    } catch (ex) {}
+                }
+            };
+            var pbjsWrapper = {
+                addAdUnits: function addAdUnits() {},
+                adServers: {
+                    dfp: {
+                        buildVideoUrl: noopStr
+                    }
+                },
+                adUnits: [],
+                aliasBidder: function aliasBidder() {},
+                cmd: [],
+                enableAnalytics: function enableAnalytics() {},
+                getHighestCpmBids: noopArray,
+                libLoaded: true,
+                que: [],
+                requestBids: function requestBids(arg) {
+                    if (arg instanceof Object && arg.bidsBackHandler) {
+                        try {
+                            arg.bidsBackHandler.call();
+                        } catch (ex) {}
+                    }
+                },
+                removeAdUnit: function removeAdUnit() {},
+                setBidderConfig: function setBidderConfig() {},
+                setConfig: function setConfig() {},
+                setTargetingForGPTAsync: function setTargetingForGPTAsync() {}
+            };
+            pbjsWrapper.cmd.push = pushFunction;
+            pbjsWrapper.que.push = pushFunction;
+            window.pbjs = pbjsWrapper;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        function noopStr() {
+            return "";
+        }
+        function noopArray() {
+            return [];
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            Prebid.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "prebid",
+        args: []
+    }, []);
+  file: prebid.js
+
+- title: prevent-bab
+  comment: Prevents BlockAdblock script from detecting an ad blocker.
+  aliases:
+    - nobab.js
+    - ubo-nobab.js
+    - bab-defuser.js
+    - ubo-bab-defuser.js
+    - ubo-nobab
+    - ubo-bab-defuser
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function preventBab(source) {
+            var nativeSetTimeout = window.setTimeout;
+            var babRegex = /\.bab_elementid.$/;
+            var timeoutWrapper = function timeoutWrapper(callback) {
+                if (typeof callback !== "string" || !babRegex.test(callback)) {
+                    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                        args[_key - 1] = arguments[_key];
+                    }
+                    return nativeSetTimeout.apply(window, [ callback ].concat(args));
+                }
+                hit(source);
+            };
+            window.setTimeout = timeoutWrapper;
+            var signatures = [ [ "blockadblock" ], [ "babasbm" ], [ /getItem\('babn'\)/ ], [ "getElementById", "String.fromCharCode", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "charAt", "DOMContentLoaded", "AdBlock", "addEventListener", "doScroll", "fromCharCode", "<<2|r>>4", "sessionStorage", "clientWidth", "localStorage", "Math", "random" ] ];
+            var check = function check(str) {
+                if (typeof str !== "string") {
+                    return false;
+                }
+                for (var i = 0; i < signatures.length; i += 1) {
+                    var tokens = signatures[i];
+                    var match = 0;
+                    for (var j = 0; j < tokens.length; j += 1) {
+                        var token = tokens[j];
+                        var found = token instanceof RegExp ? token.test(str) : str.indexOf(token) > -1;
+                        if (found) {
+                            match += 1;
+                        }
+                    }
+                    if (match / tokens.length >= .8) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            var nativeEval = window.eval;
+            var evalWrapper = function evalWrapper(str) {
+                if (!check(str)) {
+                    return nativeEval(str);
+                }
+                hit(source);
+                var bodyEl = document.body;
+                if (bodyEl) {
+                    bodyEl.style.removeProperty("visibility");
+                }
+                var el = document.getElementById("babasbmsgx");
+                if (el) {
+                    el.parentNode.removeChild(el);
+                }
+            };
+            window.eval = evalWrapper.bind(window);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            preventBab.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "prevent-bab",
+        args: []
+    }, []);
+  file: prevent-bab.js
+
+- title: prevent-bab2
+  comment: Prevents BlockAdblock script from detecting an ad blocker.
+  aliases:
+    - nobab2.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function preventBab2(source) {
+            var script = document.currentScript;
+            if (script === null) {
+                return;
+            }
+            var url = script.src;
+            if (typeof url !== "string") {
+                return;
+            }
+            var domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
+            var matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
+            var domainsRegex = new RegExp(matchStr);
+            if (domainsRegex.test(url) === false) {
+                return;
+            }
+            window.nH7eXzOsG = 858;
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            preventBab2.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "prevent-bab2",
+        args: []
+    }, []);
+  file: prevent-bab2.js
+
+- title: prevent-fab-3.2.0
+  comment: Redirects fuckadblock script to the source js file.
+  aliases:
+    - nofab.js
+    - ubo-nofab.js
+    - fuckadblock.js-3.2.0
+    - ubo-fuckadblock.js-3.2.0
+    - ubo-nofab
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function preventFab(source) {
+            hit(source);
+            var Fab = function Fab() {};
+            Fab.prototype.check = noopFunc;
+            Fab.prototype.clearEvent = noopFunc;
+            Fab.prototype.emitEvent = noopFunc;
+            Fab.prototype.on = function(a, b) {
+                if (!a) {
+                    b();
+                }
+                return this;
+            };
+            Fab.prototype.onDetected = noopThis;
+            Fab.prototype.onNotDetected = function(a) {
+                a();
+                return this;
+            };
+            Fab.prototype.setOption = noopFunc;
+            Fab.prototype.options = {
+                set: noopFunc,
+                get: noopFunc
+            };
+            var fab = new Fab;
+            var getSetFab = {
+                get: function get() {
+                    return Fab;
+                },
+                set: function set() {}
+            };
+            var getsetfab = {
+                get: function get() {
+                    return fab;
+                },
+                set: function set() {}
+            };
+            if (Object.prototype.hasOwnProperty.call(window, "FuckAdBlock")) {
+                window.FuckAdBlock = Fab;
+            } else {
+                Object.defineProperty(window, "FuckAdBlock", getSetFab);
+            }
+            if (Object.prototype.hasOwnProperty.call(window, "BlockAdBlock")) {
+                window.BlockAdBlock = Fab;
+            } else {
+                Object.defineProperty(window, "BlockAdBlock", getSetFab);
+            }
+            if (Object.prototype.hasOwnProperty.call(window, "SniffAdBlock")) {
+                window.SniffAdBlock = Fab;
+            } else {
+                Object.defineProperty(window, "SniffAdBlock", getSetFab);
+            }
+            if (Object.prototype.hasOwnProperty.call(window, "fuckAdBlock")) {
+                window.fuckAdBlock = fab;
+            } else {
+                Object.defineProperty(window, "fuckAdBlock", getsetfab);
+            }
+            if (Object.prototype.hasOwnProperty.call(window, "blockAdBlock")) {
+                window.blockAdBlock = fab;
+            } else {
+                Object.defineProperty(window, "blockAdBlock", getsetfab);
+            }
+            if (Object.prototype.hasOwnProperty.call(window, "sniffAdBlock")) {
+                window.sniffAdBlock = fab;
+            } else {
+                Object.defineProperty(window, "sniffAdBlock", getsetfab);
+            }
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        function noopFunc() {}
+        function noopThis() {
+            return this;
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            preventFab.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "prevent-fab-3.2.0",
+        args: []
+    }, []);
+  file: prevent-fab-3.2.0.js
+
+- title: prevent-popads-net
+  comment: >-
+    Redirects request to the source which sets static properties to PopAds and
+    popns objects.
+  aliases:
+    - popads.net.js
+    - ubo-popads.net.js
+    - ubo-popads.net
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function preventPopadsNet(source) {
+            var rid = randomId();
+            var throwError = function throwError() {
+                throw new ReferenceError(rid);
+            };
+            delete window.PopAds;
+            delete window.popns;
+            Object.defineProperties(window, {
+                PopAds: {
+                    set: throwError
+                },
+                popns: {
+                    set: throwError
+                }
+            });
+            window.onerror = createOnErrorHandler(rid).bind();
+            hit(source);
+        }
+        function createOnErrorHandler(rid) {
+            var nativeOnError = window.onerror;
+            return function onError(error) {
+                if (typeof error === "string" && error.indexOf(rid) !== -1) {
+                    return true;
+                }
+                if (nativeOnError instanceof Function) {
+                    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                        args[_key - 1] = arguments[_key];
+                    }
+                    return nativeOnError.apply(this, [ error ].concat(args));
+                }
+                return false;
+            };
+        }
+        function randomId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            preventPopadsNet.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "prevent-popads-net",
+        args: []
+    }, []);
+  file: prevent-popads-net.js
+
+- title: scorecardresearch-beacon
+  comment: Mocks Scorecard Research API.
+  aliases:
+    - ubo-scorecardresearch_beacon.js
+    - scorecardresearch_beacon.js
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function ScoreCardResearchBeacon(source) {
+            window.COMSCORE = {
+                purge: function purge() {
+                    window._comscore = [];
+                },
+                beacon: function beacon() {}
+            };
+            hit(source);
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            ScoreCardResearchBeacon.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "scorecardresearch-beacon",
+        args: []
+    }, []);
+  file: scorecardresearch-beacon.js
+
+- title: set-popads-dummy
+  comment: >-
+    Redirects request to the source which sets static properties to PopAds and
+    popns objects.
+  aliases:
+    - popads-dummy.js
+    - ubo-popads-dummy.js
+    - ubo-popads-dummy
+  contentType: application/javascript
+  content: |-
+    (function(source, args) {
+        function setPopadsDummy(source) {
+            delete window.PopAds;
+            delete window.popns;
+            Object.defineProperties(window, {
+                PopAds: {
+                    get: function get() {
+                        hit(source);
+                        return {};
+                    }
+                },
+                popns: {
+                    get: function get() {
+                        hit(source);
+                        return {};
+                    }
+                }
+            });
+        }
+        function hit(source, message) {
+            if (source.verbose !== true) {
+                return;
+            }
+            try {
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
+                if (source.domainName) {
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
+                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
+                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                        ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
+                    }
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    prefix = "".concat(source.domainName).concat(rulePart);
+                }
+                var LOG_MARKER = "log: ";
+                if (message) {
+                    if (message.indexOf(LOG_MARKER) === -1) {
+                        log("".concat(prefix, " message:\n").concat(message));
+                    } else {
+                        log(message.slice(LOG_MARKER.length));
+                    }
+                }
+                log("".concat(prefix, " trace start"));
+                if (trace) {
+                    trace();
+                }
+                log("".concat(prefix, " trace end"));
+            } catch (e) {}
+            if (typeof window.__debug === "function") {
+                window.__debug(source);
+            }
+        }
+        const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
+        try {
+            setPopadsDummy.apply(this, updatedArgs);
+        } catch (e) {
+            console.log(e);
+        }
+    })({
+        name: "set-popads-dummy",
+        args: []
+    }, []);
+  file: set-popads-dummy.js
