@@ -2,11 +2,11 @@ import React, { useContext, useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useMachine } from '@xstate/react';
 
+import { RequestType } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { fetchMachine, FetchEvents, FetchStates } from '../../../../common/machines/fetchMachine';
 import { rootStore } from '../../../stores/RootStore';
-import { RequestTypes } from '../../../../../background/utils/request-types';
 import { ImageRequest } from './ImageRequest';
 import { TextRequest } from './TextRequest';
 import { fetchText, fetchImage } from './fetchers';
@@ -24,12 +24,12 @@ export const RequestPreview = observer(() => {
 
     const { requestType, requestUrl } = selectedEvent;
 
-    const isText = requestType === RequestTypes.DOCUMENT
-        || requestType === RequestTypes.SUBDOCUMENT
-        || requestType === RequestTypes.SCRIPT
-        || requestType === RequestTypes.STYLESHEET;
+    const isText = requestType === RequestType.Document
+        || requestType === RequestType.Subdocument
+        || requestType === RequestType.Script
+        || requestType === RequestType.Stylesheet;
 
-    const isImage = requestType === RequestTypes.IMAGE;
+    const isImage = requestType === RequestType.Image;
 
     const getFetcher = () => {
         if (isText) {

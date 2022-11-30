@@ -23,12 +23,12 @@ class CopyToClipboardStore {
         this.tooltipTimer = setTimeout(() => {
             this.resetTooltipId();
         }, TOOLTIP_VISIBLE_TIME_MS);
-    }
+    };
 
     @action
     resetTooltipId = () => {
         this.currentContainerId = null;
-    }
+    };
 }
 
 export const copyToClipboardStore = createContext(new CopyToClipboardStore());

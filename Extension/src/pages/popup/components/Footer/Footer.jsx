@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { IOS_URL, ANDROID_URL } from '../../constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { popupStore } from '../../stores/PopupStore';
 import { Icon } from '../../../common/components/ui/Icon';
@@ -10,15 +11,12 @@ import './footer.pcss';
 export const Footer = observer(() => {
     const store = useContext(popupStore);
 
-    const LINK_TO_IOS = 'https://link.adtidy.org/forward.html?action=ios_about&from=popup&app=browser_extension';
-    const LINK_TO_ANDROID = 'https://link.adtidy.org/forward.html?action=android_about&from=popup&app=browser_extension';
-
     let footerContent = (
         <>
             <div className="footer__text">{reactTranslator.getMessage('popup_adguard_footer_title')}</div>
             <div className="footer__platforms">
                 <a
-                    href={LINK_TO_IOS}
+                    href={IOS_URL}
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
@@ -30,7 +28,7 @@ export const Footer = observer(() => {
                     />
                 </a>
                 <a
-                    href={LINK_TO_ANDROID}
+                    href={ANDROID_URL}
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"

@@ -2,12 +2,18 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useCallback } from 'react';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { Forward, ForwardAction, ForwardFrom } from '../../../../common/forward';
 
-import { MESSAGE_TYPES } from '../../../../common/constants';
+import { MessageType } from '../../../../common/messages';
 import { getParams } from '../../getParams';
 import { messenger } from '../../../services/messenger';
 
 import '../../styles/index.pcss';
+
+export const ADGUARD_SITE_URL = Forward.get({
+    action: ForwardAction.AdguardSite,
+    from: ForwardFrom.Adblocker,
+});
 
 export const AdBlocked = () => {
     const { rule, url } = getParams();
@@ -19,7 +25,7 @@ export const AdBlocked = () => {
 
     const handleProceed = useCallback((e) => {
         e.preventDefault();
-        messenger.sendMessage(MESSAGE_TYPES.ADD_URL_TO_TRUSTED, { url });
+        messenger.sendMessage(MessageType.AddUrlToTrusted, { url });
     }, [url]);
 
     return (
@@ -31,7 +37,7 @@ export const AdBlocked = () => {
                     </div>
                 </div>
                 <div className="alert__body">
-                    <a href="https://link.adtidy.org/forward.html?action=adguard_site&from=adblocked&app=browser_extension" className="alert__logo" />
+                    <a href={ADGUARD_SITE_URL} className="alert__logo" />
                     <div className="hero hero--green" />
                     <div className="alert__body-title">
                         <span>

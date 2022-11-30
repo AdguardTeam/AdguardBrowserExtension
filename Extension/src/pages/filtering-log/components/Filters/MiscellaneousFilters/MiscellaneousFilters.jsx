@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
-import { NAVIGATION_TAGS } from '../../../../../common/constants';
+import { NavigationTag } from '../../../../../common/constants';
 import { rootStore } from '../../../stores/RootStore';
 import { Tags } from '../Tags';
 
@@ -30,14 +30,14 @@ const MiscellaneousFilters = observer(() => {
             >
                 <div className="miscellaneous-filters__section">
                     <Tags
-                        type={NAVIGATION_TAGS.PARTY}
+                        type={NavigationTag.Party}
                         tags={requestSourceFilters}
                         setTags={setRequestSourceFilters}
                     />
                 </div>
                 <div className="miscellaneous-filters__section">
                     <Tags
-                        type={NAVIGATION_TAGS.REGULAR}
+                        type={NavigationTag.Regular}
                         tags={miscellaneousFilters}
                         setTags={setMiscellaneousFilters}
                     />

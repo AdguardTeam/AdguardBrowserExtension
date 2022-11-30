@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { popupStore } from '../../stores/PopupStore';
-import { POPUP_STATES } from '../../constants';
+import { POPUP_STATES, COMPARE_URL } from '../../constants';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './main.pcss';
@@ -48,7 +48,7 @@ export const Main = observer(() => {
                         {store.showInfoAboutFullVersion && (
                             <div className="main__cta-link">
                                 <a
-                                    href="https://link.adtidy.org/forward.html?action=compare&from=popup&app=browser_extension"
+                                    href={COMPARE_URL}
                                     target="_blank"
                                     rel="noreferrer"
                                 >

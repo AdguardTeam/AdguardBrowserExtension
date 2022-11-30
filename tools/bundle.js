@@ -8,7 +8,6 @@ import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
-import { genValidators } from './genValidators';
 
 const bundleChrome = (watch) => {
     const webpackConfig = getWebpackConfig(BROWSERS.CHROME);
@@ -43,37 +42,27 @@ const bundleFirefoxXpi = async () => {
     await xpi(BROWSERS.FIREFOX_STANDALONE);
 };
 
-const bundleAdguardApi = async (watch) => {
-    const webpackConfig = getWebpackConfig(BROWSERS.ADGUARD_API);
-    return bundleRunner(webpackConfig, watch);
-};
-
 const devPlan = [
-    genValidators,
     copyExternals,
     bundleChrome,
     bundleFirefoxAmo,
     bundleFirefoxStandalone,
     bundleEdge,
     bundleOpera,
-    bundleAdguardApi,
     buildInfo,
 ];
 
 const betaPlan = [
-    genValidators,
     copyExternals,
     bundleChrome,
     bundleChromeCrx,
     bundleFirefoxStandalone,
     bundleFirefoxXpi,
     bundleEdge,
-    bundleAdguardApi,
     buildInfo,
 ];
 
 const releasePlan = [
-    genValidators,
     copyExternals,
     bundleChrome,
     bundleFirefoxAmo,
@@ -116,15 +105,6 @@ const main = async () => {
     }
 };
 
-const adguardApi = async (watch) => {
-    try {
-        await bundleAdguardApi(watch);
-    } catch (e) {
-        console.error(e);
-        process.exit(1);
-    }
-};
-
 const chrome = async (watch) => {
     try {
         await bundleChrome(watch);
@@ -158,13 +138,6 @@ program
     .description('Builds extension for firefox browser')
     .action(() => {
         firefox(program.watch);
-    });
-
-program
-    .command('adguard-api')
-    .description('Builds sample extension with adguard api')
-    .action(() => {
-        adguardApi(program.watch);
     });
 
 program

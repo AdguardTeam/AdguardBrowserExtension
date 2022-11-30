@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Popover } from '../../../../common/components/ui/Popover';
-import { isMacOs } from '../../../../../common/user-agent-utils';
+import { UserAgent } from '../../../../../common/user-agent';
 
 export const Tags = ({
     tags,
@@ -85,7 +85,7 @@ export const Tags = ({
     };
 
     const handleTagClick = (e) => {
-        if (isMacOs ? e.metaKey : e.ctrlKey) {
+        if (UserAgent.isMacOs ? e.metaKey : e.ctrlKey) {
             toggleMultiple(e.target.value);
         } else {
             enableOne(e.target.value);

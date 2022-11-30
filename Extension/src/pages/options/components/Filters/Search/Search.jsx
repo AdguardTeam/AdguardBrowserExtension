@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Select } from '../../../../common/components/ui/Select';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { isMacOs } from '../../../../../common/user-agent-utils';
+import { UserAgent } from '../../../../../common/user-agent';
 import { rootStore } from '../../../stores/RootStore';
 import { SEARCH_FILTERS, TABLET_SCREEN_WIDTH } from './constants';
 
@@ -43,7 +43,7 @@ const Search = observer(() => {
     } = settingsStore;
 
     useEffect(() => {
-        const modifierKeyProperty = isMacOs ? 'metaKey' : 'ctrlKey';
+        const modifierKeyProperty = UserAgent.isMacOs ? 'metaKey' : 'ctrlKey';
         const handleSearchHotkey = (e) => {
             const { code } = e;
             if (e[modifierKeyProperty] && code === 'KeyF') {

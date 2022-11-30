@@ -16,7 +16,7 @@
  */
 
 import { contentPage } from './content-script';
-import { MESSAGE_TYPES } from '../common/constants';
+import { MessageType } from '../common/messages';
 import { AGPolicy } from './trusted-types-policy';
 
 /**
@@ -453,7 +453,7 @@ export const initPageMessageListener = function () {
         }
 
         const message = {
-            type: MESSAGE_TYPES.CHECK_PAGE_SCRIPT_WRAPPER_REQUEST,
+            type: MessageType.CheckPageScriptWrapperRequest,
             elementUrl: event.data.elementUrl,
             documentUrl: event.data.documentUrl,
             requestType: event.data.requestType,

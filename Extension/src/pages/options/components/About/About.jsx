@@ -9,7 +9,7 @@ import {
     PRIVACY_URL,
     WEBSITE_URL,
     DISCUSS_URL,
-} from '../../../constants';
+} from '../../constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 import './about-page.pcss';

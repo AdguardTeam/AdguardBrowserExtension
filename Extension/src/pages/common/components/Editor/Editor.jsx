@@ -7,7 +7,7 @@ import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/theme-textmate';
 import 'ace-builds/src-noconflict/mode-text';
 
-import { log } from '../../../../common/log';
+import { Log } from '../../../../common/log';
 import './mode-adguard';
 
 import './editor.pcss';
@@ -39,7 +39,7 @@ const Editor = ({
                 setSize(JSON.parse(editorStorageSize));
             } catch (e) {
                 setSize(DEFAULT_EDITOR_SIZE);
-                log.debug(e.message);
+                Log.debug(e.message);
             }
         }
     }, [editorStorageSize]);

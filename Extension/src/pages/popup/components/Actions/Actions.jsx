@@ -6,6 +6,7 @@ import { messenger } from '../../../services/messenger';
 import { popupStore } from '../../stores/PopupStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
+import { ForwardFrom } from '../../../../common/forward';
 
 import './actions.pcss';
 
@@ -29,7 +30,7 @@ export const Actions = observer(() => {
         if (!store.applicationAvailable) {
             return;
         }
-        messenger.openAbuseSite(store.url, 'popup');
+        messenger.openAbuseSite(store.url, ForwardFrom.Popup);
         window.close();
     };
 
@@ -37,7 +38,7 @@ export const Actions = observer(() => {
         if (!store.applicationAvailable) {
             return;
         }
-        messenger.checkSiteSecurity(store.url);
+        messenger.checkSiteSecurity(store.url, ForwardFrom.Popup);
         window.close();
     };
 

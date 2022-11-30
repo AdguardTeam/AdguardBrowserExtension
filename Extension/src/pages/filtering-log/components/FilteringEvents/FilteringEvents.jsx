@@ -19,7 +19,7 @@ import throttle from 'lodash/throttle';
 import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { ANTIBANNER_FILTERS_ID, SCROLLBAR_WIDTH } from '../../../../common/constants';
+import { AntiBannerFiltersId, SCROLLBAR_WIDTH } from '../../../../common/constants';
 import { FilteringEventsEmpty } from './FilteringEventsEmpty';
 import { optionsStorage } from '../../../options/options-storage';
 import { passiveEventSupported } from '../../../helpers';
@@ -107,7 +107,7 @@ const ruleAccessor = (props) => {
 
     let ruleText = '';
     if (requestRule) {
-        if (requestRule.filterId === ANTIBANNER_FILTERS_ID.ALLOWLIST_FILTER_ID) {
+        if (requestRule.filterId === AntiBannerFiltersId.AllowlistFilterId) {
             ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
         } else {
             ruleText = requestRule.ruleText;

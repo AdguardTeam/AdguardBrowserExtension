@@ -126,7 +126,7 @@ export const genCommonConfig = (browserConfig) => {
             filename: '[name].js',
         },
         resolve: {
-            extensions: ['*', '.js', '.jsx'],
+            extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
             // Node modules polyfills
             fallback: {
@@ -158,7 +158,7 @@ export const genCommonConfig = (browserConfig) => {
                  * by deleting source map url comments in production build
                  */
                 {
-                    test: /\.(js|jsx)$/,
+                    test: /\.(js|ts)x?$/,
                     enforce: 'pre',
                     use: [
                         {
@@ -170,7 +170,7 @@ export const genCommonConfig = (browserConfig) => {
                     ],
                 },
                 {
-                    test: /\.(js|jsx)$/,
+                    test: /\.(js|ts)x?$/,
                     exclude: /node_modules/,
                     use: [{
                         loader: 'babel-loader',

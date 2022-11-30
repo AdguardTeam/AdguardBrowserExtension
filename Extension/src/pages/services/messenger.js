@@ -1,27 +1,28 @@
 import browser from 'webextension-polyfill';
 import { nanoid } from 'nanoid';
 
-import { log } from '../../common/log';
-import { MESSAGE_TYPES } from '../../common/constants';
+import { Log } from '../../common/log';
+import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../../common/messages';
 
 class Messenger {
     onMessage = browser.runtime.onMessage;
 
     // eslint-disable-next-line class-methods-use-this
     async sendMessage(type, data) {
-        log.debug('Request type:', type);
+        Log.debug('Request type:', type);
         if (data) {
-            log.debug('Request data:', data);
+            Log.debug('Request data:', data);
         }
 
         const response = await browser.runtime.sendMessage({
+            handlerName: APP_MESSAGE_HANDLER_NAME,
             type,
             data,
         });
 
         if (response) {
-            log.debug('Response type:', type);
-            log.debug('Response data:', response);
+            Log.debug('Response type:', type);
+            Log.debug('Response data:', response);
         }
 
         return response;
@@ -40,10 +41,10 @@ class Messenger {
         };
 
         const port = browser.runtime.connect({ name: `${page}_${nanoid()}` });
-        port.postMessage({ type: MESSAGE_TYPES.ADD_LONG_LIVED_CONNECTION, data: { events } });
+        port.postMessage({ type: MessageType.AddLongLivedConnection, data: { events } });
 
         port.onMessage.addListener((message) => {
-            if (message.type === MESSAGE_TYPES.NOTIFY_LISTENERS) {
+            if (message.type === MessageType.NotifyListeners) {
                 const [type, ...data] = message.data;
                 eventListener({ type, data });
             }
@@ -51,7 +52,7 @@ class Messenger {
 
         port.onDisconnect.addListener(() => {
             if (browser.runtime.lastError) {
-                log.error(browser.runtime.lastError.message);
+                Log.error(browser.runtime.lastError.message);
             }
         });
 
@@ -78,11 +79,11 @@ class Messenger {
         };
 
         let { listenerId } = await this.sendMessage(
-            MESSAGE_TYPES.CREATE_EVENT_LISTENER, { events },
+            MessageType.CreateEventListener, { events },
         );
 
         browser.runtime.onMessage.addListener((message) => {
-            if (message.type === MESSAGE_TYPES.NOTIFY_LISTENERS) {
+            if (message.type === MessageType.NotifyListeners) {
                 const [type, ...data] = message.data;
                 eventListener({ type, data });
             }
@@ -90,7 +91,7 @@ class Messenger {
 
         const onUnload = async () => {
             if (listenerId) {
-                const type = MESSAGE_TYPES.REMOVE_LISTENER;
+                const type = MessageType.RemoveListener;
                 this.sendMessage(type, { listenerId });
                 listenerId = null;
                 if (typeof onUnloadCallback === 'function') {
@@ -106,208 +107,206 @@ class Messenger {
     };
 
     async getOptionsData() {
-        return this.sendMessage(MESSAGE_TYPES.GET_OPTIONS_DATA);
+        const res = await this.sendMessage(MessageType.GetOptionsData);
+        return res;
     }
 
-    // eslint-disable-next-line class-methods-use-this
     async changeUserSetting(settingId, value) {
-        // FIXME refactor message handler to use common message format { type, data }
-        await browser.runtime.sendMessage({
-            type: MESSAGE_TYPES.CHANGE_USER_SETTING,
+        await this.sendMessage(MessageType.ChangeUserSettings, {
             key: settingId,
             value,
         });
     }
 
     openExtensionStore = async () => {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_EXTENSION_STORE);
+        return this.sendMessage(MessageType.OpenExtensionStore);
     };
 
     openComparePage = async () => {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_COMPARE_PAGE);
+        return this.sendMessage(MessageType.OpenComparePage);
     };
 
     async enableFilter(filterId) {
-        return this.sendMessage(MESSAGE_TYPES.ADD_AND_ENABLE_FILTER, { filterId });
+        return this.sendMessage(MessageType.AddAndEnableFilter, { filterId });
     }
 
     async disableFilter(filterId) {
-        return this.sendMessage(MESSAGE_TYPES.DISABLE_ANTIBANNER_FILTER, { filterId });
+        return this.sendMessage(MessageType.DisableAntibannerFilter, { filterId });
     }
 
     async applySettingsJson(json) {
-        return this.sendMessage(MESSAGE_TYPES.APPLY_SETTINGS_JSON, { json });
+        return this.sendMessage(MessageType.ApplySettingsJson, { json });
     }
 
     async openFilteringLog() {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_FILTERING_LOG);
+        return this.sendMessage(MessageType.OpenFilteringLog);
     }
 
     async resetStatistics() {
-        return this.sendMessage(MESSAGE_TYPES.RESET_BLOCKED_ADS_COUNT);
+        return this.sendMessage(MessageType.ResetBlockedAdsCount);
     }
 
     async setFilteringLogWindowState(windowState) {
-        return this.sendMessage(MESSAGE_TYPES.SET_FILTERING_LOG_WINDOW_STATE, { windowState });
+        return this.sendMessage(MessageType.SetFilteringLogWindowState, { windowState });
     }
 
     async resetSettings() {
-        return this.sendMessage(MESSAGE_TYPES.RESET_SETTINGS);
+        return this.sendMessage(MessageType.ResetSettings);
     }
 
     async getUserRules() {
-        return this.sendMessage(MESSAGE_TYPES.GET_USER_RULES);
+        return this.sendMessage(MessageType.GetUserRules);
     }
 
     async saveUserRules(value) {
-        await this.sendMessage(MESSAGE_TYPES.SAVE_USER_RULES, { value });
+        await this.sendMessage(MessageType.SaveUserRules, { value });
     }
 
     async getAllowlist() {
-        return this.sendMessage(MESSAGE_TYPES.GET_ALLOWLIST_DOMAINS);
+        return this.sendMessage(MessageType.GetAllowlistDomains);
     }
 
     async saveAllowlist(value) {
-        await this.sendMessage(MESSAGE_TYPES.SAVE_ALLOWLIST_DOMAINS, { value });
+        await this.sendMessage(MessageType.SaveAllowlistDomains, { value });
     }
 
     async updateFilters() {
-        return this.sendMessage(MESSAGE_TYPES.CHECK_ANTIBANNER_FILTERS_UPDATE);
+        return this.sendMessage(MessageType.CheckAntibannerFiltersUpdate);
     }
 
     async updateGroupStatus(id, data) {
         const type = data
-            ? MESSAGE_TYPES.ENABLE_FILTERS_GROUP
-            : MESSAGE_TYPES.DISABLE_FILTERS_GROUP;
+            ? MessageType.EnableFiltersGroup
+            : MessageType.DisableFiltersGroup;
         const groupId = id - 0;
         await this.sendMessage(type, { groupId });
     }
 
     async updateFilterStatus(filterId, data) {
         const type = data
-            ? MESSAGE_TYPES.ADD_AND_ENABLE_FILTER
-            : MESSAGE_TYPES.DISABLE_ANTIBANNER_FILTER;
+            ? MessageType.AddAndEnableFilter
+            : MessageType.DisableAntibannerFilter;
         await this.sendMessage(type, { filterId });
     }
 
     async checkCustomUrl(url) {
-        return this.sendMessage(MESSAGE_TYPES.LOAD_CUSTOM_FILTER_INFO, { url });
+        return this.sendMessage(MessageType.LoadCustomFilterInfo, { url });
     }
 
     async addCustomFilter(filter) {
-        return this.sendMessage(MESSAGE_TYPES.SUBSCRIBE_TO_CUSTOM_FILTER, { filter });
+        return this.sendMessage(MessageType.SubscribeToCustomFilter, { filter });
     }
 
     async removeCustomFilter(filterId) {
-        await this.sendMessage(MESSAGE_TYPES.REMOVE_ANTIBANNER_FILTER, { filterId });
+        await this.sendMessage(MessageType.RemoveAntibannerFilter, { filterId });
     }
 
     async getTabInfoForPopup(tabId) {
-        return this.sendMessage(MESSAGE_TYPES.GET_TAB_INFO_FOR_POPUP, { tabId });
+        return this.sendMessage(MessageType.GetTabInfoForPopup, { tabId });
     }
 
     async changeApplicationFilteringDisabled(state) {
-        return this.sendMessage(MESSAGE_TYPES.CHANGE_APPLICATION_FILTERING_DISABLED, { state });
+        return this.sendMessage(MessageType.ChangeApplicationFilteringDisabled, { state });
     }
 
     async openSettingsTab() {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_SETTINGS_TAB);
+        return this.sendMessage(MessageType.OpenSettingsTab);
     }
 
     async openAssistant() {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_ASSISTANT);
+        return this.sendMessage(MessageType.OpenAssistant);
     }
 
     async openAbuseSite(url, from) {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_ABUSE_TAB, { url, from });
+        return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
     }
 
-    async checkSiteSecurity(url) {
-        return this.sendMessage(MESSAGE_TYPES.OPEN_SITE_REPORT_TAB, { url });
+    async checkSiteSecurity(url, from) {
+        return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
     }
 
     async resetCustomRulesForPage(url) {
         const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
         return this.sendMessage(
-            MESSAGE_TYPES.RESET_CUSTOM_RULES_FOR_PAGE,
+            MessageType.ResetCustomRulesForPage,
             { url, tabId: currentTab?.id },
         );
     }
 
     async removeAllowlistDomain(tabId) {
-        return this.sendMessage(MESSAGE_TYPES.REMOVE_ALLOWLIST_DOMAIN, { tabId });
+        return this.sendMessage(MessageType.RemoveAllowlistDomain, { tabId });
     }
 
     async addAllowlistDomain(tabId) {
-        return this.sendMessage(MESSAGE_TYPES.ADD_ALLOWLIST_DOMAIN_POPUP, { tabId });
+        return this.sendMessage(MessageType.AddAllowlistDomainPopup, { tabId });
     }
 
     async getStatisticsData() {
-        return this.sendMessage(MESSAGE_TYPES.GET_STATISTICS_DATA);
+        return this.sendMessage(MessageType.GetStatisticsData);
     }
 
     async onOpenFilteringLogPage() {
-        await this.sendMessage(MESSAGE_TYPES.ON_OPEN_FILTERING_LOG_PAGE);
+        await this.sendMessage(MessageType.OnOpenFilteringLogPage);
     }
 
     async getFilteringLogData() {
-        return this.sendMessage(MESSAGE_TYPES.GET_FILTERING_LOG_DATA);
+        return this.sendMessage(MessageType.GetFilteringLogData);
     }
 
     async onCloseFilteringLogPage() {
-        await this.sendMessage(MESSAGE_TYPES.ON_CLOSE_FILTERING_LOG_PAGE);
+        await this.sendMessage(MessageType.OnCloseFilteringLogPage);
     }
 
     async getFilteringInfoByTabId(tabId) {
-        return this.sendMessage(MESSAGE_TYPES.GET_FILTERING_INFO_BY_TAB_ID, { tabId });
+        return this.sendMessage(MessageType.GetFilteringInfoByTabId, { tabId });
     }
 
     async synchronizeOpenTabs() {
-        return this.sendMessage(MESSAGE_TYPES.SYNCHRONIZE_OPEN_TABS);
+        return this.sendMessage(MessageType.SynchronizeOpenTabs);
     }
 
     async clearEventsByTabId(tabId, ignorePreserveLog) {
-        return this.sendMessage(MESSAGE_TYPES.CLEAR_EVENTS_BY_TAB_ID, { tabId, ignorePreserveLog });
+        return this.sendMessage(MessageType.ClearEventsByTabId, { tabId, ignorePreserveLog });
     }
 
     async refreshPage(tabId, preserveLogEnabled) {
-        await this.sendMessage(MESSAGE_TYPES.REFRESH_PAGE, { tabId, preserveLogEnabled });
+        await this.sendMessage(MessageType.RefreshPage, { tabId, preserveLogEnabled });
     }
 
     async openTab(url, options) {
-        await this.sendMessage(MESSAGE_TYPES.OPEN_TAB, { url, options });
+        await this.sendMessage(MessageType.OpenTab, { url, options });
     }
 
-    async filteringLogAddUserRule(ruleText) {
-        await this.sendMessage(MESSAGE_TYPES.FILTERING_LOG_ADD_USER_RULE, { ruleText });
+    async addUserRule(ruleText) {
+        await this.sendMessage(MessageType.AddUserRule, { ruleText });
     }
 
     async unAllowlistFrame(frameInfo) {
-        await this.sendMessage(MESSAGE_TYPES.UN_ALLOWLIST_FRAME, { frameInfo });
+        await this.sendMessage(MessageType.UnAllowlistFrame, { frameInfo });
     }
 
     async removeUserRule(ruleText) {
-        await this.sendMessage(MESSAGE_TYPES.REMOVE_USER_RULE, { ruleText });
+        await this.sendMessage(MessageType.RemoveUserRule, { ruleText });
     }
 
     async getTabFrameInfoById(tabId) {
-        return this.sendMessage(MESSAGE_TYPES.GET_TAB_FRAME_INFO_BY_ID, { tabId });
+        return this.sendMessage(MessageType.GetTabFrameInfoById, { tabId });
     }
 
     async setPreserveLogState(state) {
-        return this.sendMessage(MESSAGE_TYPES.SET_PRESERVE_LOG_STATE, { state });
+        return this.sendMessage(MessageType.SetPreserveLogState, { state });
     }
 
     async getEditorStorageContent() {
-        return this.sendMessage(MESSAGE_TYPES.GET_EDITOR_STORAGE_CONTENT);
+        return this.sendMessage(MessageType.GetEditorStorageContent);
     }
 
     async setEditorStorageContent(content) {
-        return this.sendMessage(MESSAGE_TYPES.SET_EDITOR_STORAGE_CONTENT, { content });
+        return this.sendMessage(MessageType.SetEditorStorageContent, { content });
     }
 
     async convertRuleText(content) {
-        return this.sendMessage(MESSAGE_TYPES.CONVERT_RULES_TEXT, { content });
+        return this.sendMessage(MessageType.ConvertRulesText, { content });
     }
 }
 

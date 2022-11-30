@@ -13,7 +13,7 @@ import punycode from 'punycode/';
 import { messenger } from '../../services/messenger';
 import { POPUP_STATES, TIME_RANGES, VIEW_STATES } from '../constants';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
-import { MESSAGE_TYPES } from '../../../common/constants';
+import { MessageType } from '../../../common/messages';
 
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
@@ -92,6 +92,10 @@ class PopupStore {
         const currentTab = tabs?.[0];
 
         const response = await messenger.getTabInfoForPopup(currentTab?.id);
+
+        if (!response) {
+            return;
+        }
 
         runInAction(() => {
             const {
@@ -302,7 +306,7 @@ class PopupStore {
     @action
     closePromoNotification = async () => {
         this.promoNotification = null;
-        await messenger.sendMessage(MESSAGE_TYPES.SET_NOTIFICATION_VIEWED, { withDelay: false });
+        await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
     };
 
     @action
@@ -312,15 +316,15 @@ class PopupStore {
         runInAction(() => {
             this.promoNotification = null;
         });
-        await messenger.sendMessage(MESSAGE_TYPES.SET_NOTIFICATION_VIEWED, { withDelay: false });
-        await messenger.sendMessage('openTab', { url });
+        await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
+        await messenger.sendMessage(MessageType.OpenTab, { url });
     };
 
     @action
     updateBlockedStats = (tabInfo) => {
         this.totalBlocked = tabInfo.totalBlocked;
         this.totalBlockedTab = tabInfo.totalBlockedTab;
-    }
+    };
 
     @action
     onSettingUpdated = (name, value) => {
@@ -336,7 +340,7 @@ class PopupStore {
             return null;
         }
 
-        return this.settings.values[this.settings.names.APPEARANCE_THEME];
+        return this.settings.values[this.settings.names.AppearanceTheme];
     }
 }
 
