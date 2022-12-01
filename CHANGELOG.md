@@ -4,4 +4,4 @@
 
 ### Updated
 
-* TSUrlFilter to v1.0.54 with ExtendedCss v2.0.15
+* TSUrlFilter to v1.0.56 with ExtendedCss v2.0.18
