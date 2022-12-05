@@ -33,7 +33,7 @@ export class Version {
         for (let i = 3; i >= 0; i -= 1) {
             const part = parts[i];
 
-            if (!part) {
+            if (typeof part !== 'string') {
                 throw new Error('Can not parse version string');
             }
 
@@ -50,10 +50,10 @@ export class Version {
      */
     public compare(version: Version): number {
         for (let i = 0; i < 4; i += 1) {
-            const leftPart = this.data[i];
-            const rightPart = version.data[i];
+            const leftPart = this?.data?.[i];
+            const rightPart = version?.data?.[i];
 
-            if (!leftPart || !rightPart) {
+            if (typeof leftPart !== 'number' || typeof rightPart !== 'number') {
                 throw new Error('Can not compare versions');
             }
 
