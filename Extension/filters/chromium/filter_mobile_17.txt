@@ -1,9 +1,10 @@
-! Checksum: 3UVC+baoEMsN8hOpgMPHow
+! Checksum: HUFj+x9VXNv7PmNEInLURg
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.76
-! TimeUpdated: 2022-11-17T13:02:48+00:00
+! Version: 2.0.3.87
+! TimeUpdated: 2022-12-03T17:02:35+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=twclid
 $removeparam=erid
 $removeparam=cx_click
 $removeparam=mkt_tok
@@ -147,6 +148,14 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||oshiete.goo.ne.jp^$removeparam=from
+||immobilienscout24.de^$removeparam=referrer
+||immobilienscout24.de^$removeparam=navigationServiceUrl
+||immobilienscout24.de^$removeparam=searchId
+||immobilienscout24.de^$removeparam=searchGeoPath
+||immobilienscout24.de^$removeparam=enteredFrom
+||immobilienscout24.de^$removeparam=source
+||tumblr.com^$removeparam=source
 ||tumblr.com^$removeparam=_branch_referrer
 ||tumblr.app.link^$removeparam=_p
 ||dhits.docomo.ne.jp^$removeparam=affiliate
@@ -210,6 +219,9 @@ $removeparam=fb_source
 ||bunte.de^$removeparam=umt_source
 ||store.udiscovermusic.com^$removeparam=/utm_/
 ||hktvmall.com/yuicombo?$script,removeparam=/^\/_ui\/desktop\/common\/js\/uiAnalytics\//
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/analytics\/with-intersection-track.js/
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/InappCommunicationManager.js/
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/util\/jquery.analytics-utils.js/
 ||go.xlivrdr.com^$removeparam
 ||stripchat.com^$removeparam=affiliateId
 ||stripchat.com^$removeparam=referrer
@@ -417,7 +429,7 @@ $removeparam=union_lens,domain=tmall.com|taobao.com
 ||api.cxense.com^$removeparam=/^cx_/
 ||api.cxense.com^$removeparam=/^pickup_list_click/
 $removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
-||rakuten.co.jp^$removeparam=scid
+$removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||rakuten.co.jp^$removeparam=sc2id
 ||azby.fmworld.net/cgi-bin/common/rd.cgi?$removeparam=affitest
 ||azby.fmworld.net^$removeparam=mc_pc
@@ -572,6 +584,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||linkedin.com/authwall?$removeparam=originalReferer
 ||linkedin.com^$removeparam=/^trk/
 ||digikey.com^$removeparam=/^utm_cid/
+||nicovideo.jp^$removeparam=news_ref
 ||nicovideo.jp^$removeparam=cmnhd_ref
 ||nicovideo.jp^$removeparam=ref
 ||search.naver.com/search.naver$removeparam=tqi
@@ -580,6 +593,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||cc.naver.com/cc?a$removeparam=py
 ||cc.naver.com/cc?a$removeparam=sx
 ||cc.naver.com/cc?a$removeparam=sy
+||yandex.*/promo/$removeparam=utm-term
 ||yandex.*/news/$removeparam=from
 ||yandex.*/news/$removeparam=persistent_id
 ||yandex.*/sport/$removeparam=persistent_id
@@ -604,7 +618,6 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||google.*/search$removeparam=gs_l
 ||google.*/search$removeparam=ie
 ||google.*/search$removeparam=oe
-||google.*/search$removeparam=client
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
