@@ -1,8 +1,8 @@
-! Checksum: IOeuXY9jgC8hHXLhkj3CqA
+! Checksum: qkMUXWnI3qsK5BpZkOVxKA
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.76
-! TimeUpdated: 2022-11-17T13:02:48+00:00
+! Version: 2.0.3.87
+! TimeUpdated: 2022-12-03T17:02:35+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -19,6 +19,8 @@
 ! Good: $removeparam=utm_id
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
+! https://tsunen.team-lab.com/?twclid=2-3bhrj1ny7p11v5r9pap3anqge
+$removeparam=twclid
 ! https://interactivead.ru/wp-content/uploads/2022/08/arir22_rkn.pdf
 $removeparam=erid
 ! Cxense clickthrough tracking
@@ -227,6 +229,17 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://oshiete.goo.ne.jp/ksos/?from=hensyu_i
+||oshiete.goo.ne.jp^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/135493
+||immobilienscout24.de^$removeparam=referrer
+||immobilienscout24.de^$removeparam=navigationServiceUrl
+||immobilienscout24.de^$removeparam=searchId
+||immobilienscout24.de^$removeparam=searchGeoPath
+||immobilienscout24.de^$removeparam=enteredFrom
+||immobilienscout24.de^$removeparam=source
+! https://github.com/AdguardTeam/AdguardFilters/issues/134658
+||tumblr.com^$removeparam=source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134656
 ||tumblr.com^$removeparam=_branch_referrer
 ||tumblr.app.link^$removeparam=_p
@@ -312,6 +325,9 @@ $removeparam=fb_source
 ||store.udiscovermusic.com^$removeparam=/utm_/
 ! https://github.com/uBlockOrigin/uAssets/issues/14653
 ||hktvmall.com/yuicombo?$script,removeparam=/^\/_ui\/desktop\/common\/js\/uiAnalytics\//
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/analytics\/with-intersection-track.js/
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/InappCommunicationManager.js/
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/util\/jquery.analytics-utils.js/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128820
 ||go.xlivrdr.com^$removeparam
 ||stripchat.com^$removeparam=affiliateId
@@ -612,7 +628,7 @@ $removeparam=union_lens,domain=tmall.com|taobao.com
 ||api.cxense.com^$removeparam=/^pickup_list_click/
 ! Rakuten sites self-promo links
 $removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
-||rakuten.co.jp^$removeparam=scid
+$removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||rakuten.co.jp^$removeparam=sc2id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/107266
 ||azby.fmworld.net/cgi-bin/common/rd.cgi?$removeparam=affitest
@@ -850,6 +866,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||digikey.com^$removeparam=/^utm_cid/
 !
 ! NicoNico (nicovideo.jp)
+||nicovideo.jp^$removeparam=news_ref
 ||nicovideo.jp^$removeparam=cmnhd_ref
 ||nicovideo.jp^$removeparam=ref
 ! Naver (naver.com) - tracking parameter
@@ -862,6 +879,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||cc.naver.com/cc?a$removeparam=sy
 ! Yandex
 ! may be merged in regex rule over time
+||yandex.*/promo/$removeparam=utm-term
 ||yandex.*/news/$removeparam=from
 ||yandex.*/news/$removeparam=persistent_id
 ||yandex.*/sport/$removeparam=persistent_id
@@ -897,7 +915,6 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||google.*/search$removeparam=gs_l
 ||google.*/search$removeparam=ie
 ||google.*/search$removeparam=oe
-||google.*/search$removeparam=client
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
