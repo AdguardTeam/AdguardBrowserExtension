@@ -1,8 +1,8 @@
-! Checksum: 2e52AT71NkTvvdNHmTxciQ
+! Checksum: bZg8EeaQvorjCkWp30E9dQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.35.51
-! TimeUpdated: 2022-12-07T08:30:22+00:00
+! Version: 2.0.35.55
+! TimeUpdated: 2022-12-08T08:30:22+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1477,6 +1477,7 @@ amp.focus.de#?#.textBlock > .caption:-abp-has(> .source:contains(ANZEIGE))
 lxax.com#?#article > div.in-row > iframe[src^="/_ad#"]:upward(2)
 mildch.com#?##container > div.free-area > div[align="center"] > script[src*="adingo.jp"]:upward(2)
 standard.co.uk#?##main > div[class]:-abp-has(> div#taboola-carousel-thumbnails)
+m.proporn.com#$?##banner_overlay-postitial-content { remove: true; }
 m.proporn.com#$?##banner_overlay-postitial-video { remove: true; }
 greatist.com#?##announcementBar ~ aside[class] button.icon-hl-close-thick:upward(2)
 gadgetsnow.com##.grid_wrapper > div[class]:not([id], [data-msid]):-abp-has(> .dfp)
@@ -1714,6 +1715,9 @@ rambler.ru#?#main > div[class] ~ div[class] > div[class] div[class] > a[href^="h
 !-------JS----------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/136536
+m.proporn.com#%#//scriptlet("set-cookie", "playcnt", "1")
+m.proporn.com#%#//scriptlet("set-cookie", "no_postitial_content", "1")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136216
 timesnownews.com#%#//scriptlet('hide-in-shadow-dom', '.aftAd')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134894
@@ -2665,7 +2669,7 @@ scmp.com,theinventory.com,avclub.com,clickhole.com,deadspin.com,gizmodo.com,jalo
 ! ##.ads
 berkem.ru,pixiv.net,cartoonpornvideos.com,m.economictimes.com,beethovenmaster.com,m.mistrzowie.org,m.ura.news,up.ymgt.xyz,google.de,www-bento-de.cdn.ampproject.org,m-economictimes-com.cdn.ampproject.org,m.winfuture.de##.ads
 ! ##.ad
-rakuraku-info.jp,sugoren.com,dailynewsonline.jp,yakuji.co.jp,asahi.com,m.winporn.com,slate.com,sankei.com,gameranbu.jp,seiga.nicovideo.jp,m.arukikata.co.jp,setn.com,hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,syosetu.org##.ad
+m.proporn.com,rakuraku-info.jp,sugoren.com,dailynewsonline.jp,yakuji.co.jp,asahi.com,m.winporn.com,slate.com,sankei.com,gameranbu.jp,seiga.nicovideo.jp,m.arukikata.co.jp,setn.com,hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,syosetu.org##.ad
 !
 a-to-monhan.com###select-menu + div.center
 t24.com.tr##div[style="margin-bottom:20px;min-height:120px"]
@@ -4555,7 +4559,6 @@ gamepress.gg,amazingribs.com##.top-mobile-ad
 www-fr-de.cdn.ampproject.org##.amp-flying-carpet-text-border[style="display: none !important;"] + amp-fx-flying-carpet
 ixbt.com##.br-mobile-pic-bg
 ||image.whox2.co.kr/*/banner/
-||mediacategory.com/servlet/adbnMobileBanner
 m.youtube.com##.companion-ad-container
 erkiss.live###upa
 hosyusokuhou.jp###ovrss
@@ -5331,14 +5334,6 @@ kozmopolitik.com.tr##div[class="iconHome1"]
 ||m.txxx.com/sizo^
 upornia.com,hotmovs.com##.topad
 wetter.com##div[id^="ad-fullbanner"]
-||wasabisyrup.com/storage/*.gif|
-wasabisyrup.com##.tracking
-wasabisyrup.com##.bottom-group
-wasabisyrup.com###main > .content-group:not(.gallery-section)
-||filecast.co.kr^$domain=wasabisyrup.com
-wasabisyrup.com##.top-group
-/wasabisyrup.com\/storage\/[-_a-zA-Z0-9]{8,}.gif/$domain=wasabisyrup.com
-wasabisyrup.com##.article-gallery > .article-gallery-group > .content-group
 redtube.com,redtube.net###content_container > div[class]:not(.show_page_modals):not([id]):not([style]):not([class^="content"])
 youtube.com##ytm-promoted-video-renderer
 m.alpha.facebook.com,touch.alpha.facebook.com,mtouch.alpha.facebook.com,x.alpha.facebook.com,iphone.alpha.facebook.com,touch.facebook.com,mtouch.facebook.com,x.facebook.com,iphone.facebook.com,m.beta.facebook.com,touch.beta.facebook.com,mtouch.beta.facebook.com,x.beta.facebook.com,iphone.beta.facebook.com,touch.facebookcorewwwi.onion,mtouch.facebookcorewwwi.onion,x.facebookcorewwwi.onion,iphone.facebookcorewwwi.onion,touch.beta.facebookcorewwwi.onion,m.facebook.com,m.facebookcorewwwi.onion,b-m.facebook.com,b-m.facebookcorewwwi.onion,mobile.facebook.com,mobile.facebookcorewwwi.onion###m_newsfeed_stream article[data-ft*='"ei\":']
@@ -5886,7 +5881,7 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 !
 ! xhamster.com
 xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##.wio-p
-xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##.wio-ypremium-overlay
+xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##aside[class^="wio-"][class*="premium-overlay"]
 xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##.thumb-list-mobile > .thumb-list-mobile-item--widget
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/121631
@@ -6150,7 +6145,6 @@ fplgameweek.com##mobile-sticky-ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/114631
 ! https://github.com/AdguardTeam/AdguardFilters/issues/108202
 ! https://github.com/AdguardTeam/AdguardFilters/issues/106671
-! https://github.com/AdguardTeam/AdguardFilters/issues/102947
 ! https://github.com/AdguardTeam/AdguardFilters/issues/101531
 ! https://github.com/AdguardTeam/AdguardFilters/issues/101150
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100543

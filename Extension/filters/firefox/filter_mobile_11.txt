@@ -1,8 +1,8 @@
-! Checksum: lwyfaxg5ID5qEtu9JWQF7w
+! Checksum: NciZ+SeyHqPo19nmJkmVFQ
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.35.51
-! TimeUpdated: 2022-12-07T08:30:22+00:00
+! Version: 2.0.35.55
+! TimeUpdated: 2022-12-08T08:30:22+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1296,6 +1296,7 @@ amp.focus.de#?#.textBlock > .caption:-abp-has(> .source:contains(ANZEIGE))
 lxax.com#?#article > div.in-row > iframe[src^="/_ad#"]:upward(2)
 mildch.com#?##container > div.free-area > div[align="center"] > script[src*="adingo.jp"]:upward(2)
 standard.co.uk#?##main > div[class]:-abp-has(> div#taboola-carousel-thumbnails)
+m.proporn.com#$?##banner_overlay-postitial-content { remove: true; }
 m.proporn.com#$?##banner_overlay-postitial-video { remove: true; }
 greatist.com#?##announcementBar ~ aside[class] button.icon-hl-close-thick:upward(2)
 gadgetsnow.com##.grid_wrapper > div[class]:not([id], [data-msid]):-abp-has(> .dfp)
@@ -1491,6 +1492,8 @@ rambler.ru#?#main > div[class] ~ div[class] > div[class] div[class] > a[href^="h
 ##amp-sticky-ad
 !+ NOT_OPTIMIZED
 ##body > style + div[id="ics"]
+m.proporn.com#%#//scriptlet("set-cookie", "playcnt", "1")
+m.proporn.com#%#//scriptlet("set-cookie", "no_postitial_content", "1")
 timesnownews.com#%#//scriptlet('hide-in-shadow-dom', '.aftAd')
 pornhub.com,pornhub.org,pornhub.net,pornhubthbh7ap3u.onion#%#//scriptlet('set-constant', 'abp1', '0')
 pornhub.com,pornhubthbh7ap3u.onion#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
@@ -1958,7 +1961,7 @@ gamesradar.com,laptopmag.com,livescience.com,musicradar.com,pcgamer.com,techrada
 gazeteduvar.com.tr,innpoland.pl,wired.com,sports.ru,manager-magazin.de,amp.macwelt.de,amp.fitforfun.de,tomsguide.com,nordbayern.de,dallasnews.com,kansascity.com,futurezone.de,fr.de,spox.com,ran.de,stern.de,ruhr24.de,golem.de,berliner-zeitung.de,news.de,abendzeitung-muenchen.de,inside-digital.de,boerse.de,emtb-news.de,caravaning.de,areadvd.de,familie.de,derwesten.de,finanzen.net,o2.pl,onet.pl,whathifi.com,amp.n-tv.de,dni.ru,independent.co.uk,komputerswiat.pl,dobreprogramy.pl,amp.pcwelt.de,tomshardware.com,techbook.de,forbes.com,auto-swiat.pl,dialog.ua,mobile.reuters.com,spiegel.de,amp.welt.de,forum.xda-developers.com,sueddeutsche.de,amp.usatoday.com,m.gadgets.ndtv.com##amp-ad
 scmp.com,theinventory.com,avclub.com,clickhole.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kotaku.com,lifehacker.com,splinternews.com,theinventory.com,theonion.com,theroot.com,thetakeout.com##.inline-ad-container
 berkem.ru,pixiv.net,cartoonpornvideos.com,m.economictimes.com,beethovenmaster.com,m.mistrzowie.org,m.ura.news,up.ymgt.xyz,google.de,www-bento-de.cdn.ampproject.org,m-economictimes-com.cdn.ampproject.org,m.winfuture.de##.ads
-rakuraku-info.jp,sugoren.com,dailynewsonline.jp,yakuji.co.jp,asahi.com,m.winporn.com,slate.com,sankei.com,gameranbu.jp,seiga.nicovideo.jp,m.arukikata.co.jp,setn.com,hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,syosetu.org##.ad
+m.proporn.com,rakuraku-info.jp,sugoren.com,dailynewsonline.jp,yakuji.co.jp,asahi.com,m.winporn.com,slate.com,sankei.com,gameranbu.jp,seiga.nicovideo.jp,m.arukikata.co.jp,setn.com,hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,syosetu.org##.ad
 a-to-monhan.com###select-menu + div.center
 t24.com.tr##div[style="margin-bottom:20px;min-height:120px"]
 focus.ua##.u-m-h-250
@@ -3847,7 +3850,6 @@ gamepress.gg,amazingribs.com##.top-mobile-ad
 www-fr-de.cdn.ampproject.org##.amp-flying-carpet-text-border[style="display: none !important;"] + amp-fx-flying-carpet
 ixbt.com##.br-mobile-pic-bg
 ||image.whox2.co.kr/*/banner/
-||mediacategory.com/servlet/adbnMobileBanner
 m.youtube.com##.companion-ad-container
 erkiss.live###upa
 hosyusokuhou.jp###ovrss
@@ -4623,14 +4625,6 @@ kozmopolitik.com.tr##div[class="iconHome1"]
 ||m.txxx.com/sizo^
 upornia.com,hotmovs.com##.topad
 wetter.com##div[id^="ad-fullbanner"]
-||wasabisyrup.com/storage/*.gif|
-wasabisyrup.com##.tracking
-wasabisyrup.com##.bottom-group
-wasabisyrup.com###main > .content-group:not(.gallery-section)
-||filecast.co.kr^$domain=wasabisyrup.com
-wasabisyrup.com##.top-group
-/wasabisyrup.com\/storage\/[-_a-zA-Z0-9]{8,}.gif/$domain=wasabisyrup.com
-wasabisyrup.com##.article-gallery > .article-gallery-group > .content-group
 redtube.com,redtube.net###content_container > div[class]:not(.show_page_modals):not([id]):not([style]):not([class^="content"])
 youtube.com##ytm-promoted-video-renderer
 m.alpha.facebook.com,touch.alpha.facebook.com,mtouch.alpha.facebook.com,x.alpha.facebook.com,iphone.alpha.facebook.com,touch.facebook.com,mtouch.facebook.com,x.facebook.com,iphone.facebook.com,m.beta.facebook.com,touch.beta.facebook.com,mtouch.beta.facebook.com,x.beta.facebook.com,iphone.beta.facebook.com,touch.facebookcorewwwi.onion,mtouch.facebookcorewwwi.onion,x.facebookcorewwwi.onion,iphone.facebookcorewwwi.onion,touch.beta.facebookcorewwwi.onion,m.facebook.com,m.facebookcorewwwi.onion,b-m.facebook.com,b-m.facebookcorewwwi.onion,mobile.facebook.com,mobile.facebookcorewwwi.onion###m_newsfeed_stream article[data-ft*='"ei\":']
@@ -5176,7 +5170,7 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||ymcdn.ymtrack6.co/offer_single_files/
 ||youtube.com/_get_ads?
 xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##.wio-p
-xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##.wio-ypremium-overlay
+xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##aside[class^="wio-"][class*="premium-overlay"]
 xhmoon5.com,xhwide8.com,xhplanet2.com,megaxh.com,xhamster16.*,hamsterix.*,xhamster13.*,xhamster18.*,xhamster19.*,xhamster11.*,xhamster5.*,xhamster10.*,xhamster4.*,xhamster3.*,xhamster2.*,xhamster.*##.thumb-list-mobile > .thumb-list-mobile-item--widget
 01.kg,0154.by,0312.ua,032.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0382.ua,0412.ua,04141.com.ua,0432.ua,04563.com.ua,04597.com.ua,04598.com.ua,0462.ua,0472.ua,048.ua,04868.com.ua,0512.com.ua,05136.com.ua,0522.ua,0532.ua,05366.com.ua,0542.ua,05447.com.ua,0552.ua,056.ua,0564.ua,0566.com.ua,0569.com.ua,057.ua,061.ua,06153.com.ua,0619.com.ua,0623.com.ua,06236.com.ua,06237.com.ua,06239.com.ua,06242.ua,06252.com.ua,06267.com.ua,06272.com.ua,06274.com.ua,06277.com.ua,0629.com.ua,0642.ua,06452.com.ua,1rnd.ru,3652.ru,3654.ru,3849.com.ua,44.ua,4594.com.ua,5692.com.ua,62.ua,6262.com.ua,6264.com.ua,65.media,7152.kz,7232.kz,8422city.ru,8692.ru,city04.kz,city41.ru,citydomodedovo.ru,go152.by,go212.by,go232.by,go31.ru,go61.ru,go7812.ru,gorod3466.ru,inaktau.kz,inalmaty.kz,inastana.kz,inatyrau.kz,inkaragandy.kz,inshymkent.kz,karelia.news,kaskelenec.kz,oshto.kg,qapshagai-city.kz,uralskcity.kz##app-news-popup-banner
 google.*##.commercial-unit-mobile-top .jackpot-main-content-container > div[data-hveid] + div[style] div.vci
