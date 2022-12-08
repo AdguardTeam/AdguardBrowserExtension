@@ -1,8 +1,8 @@
-! Checksum: gpN1uZoObfrvgQmiYpRO8g
+! Checksum: 4irJJ3YHptXhXldoquntqw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.31.14
-! TimeUpdated: 2022-12-07T08:31:52+00:00
+! Version: 2.0.31.19
+! TimeUpdated: 2022-12-08T08:31:59+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1021,6 +1021,9 @@ urbia.de,essen-und-trinken.de#@#.playerAd
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/136880
+stadt-bremerhaven.de#$#.fc-ab-root {display: none !important; }
+stadt-bremerhaven.de#$#body { overflow: auto !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136577
 @@||crackwatch.eu/wp-content/plugins/dh-anti-adblocker/public/js/*.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134287
@@ -2895,6 +2898,7 @@ vergleich.focus.de,chip.de,gutefrage.net,reisefrage.net,motorradfrage.net,autofr
 ! ##.adsbygoogle
 winfuture.de,netzwelt.de,quoka.de,farmeramania.de,bravofly.de,computerbild.de,digitalfernsehen.de,hl-live.de,chinamobilemag.de,focus.de,pcwelt.de##.adsbygoogle
 !
+t3n.de##div[class*="LegacyAd__"]
 computerbild.de##.billboardBtfContainer
 computerwoche.de##.idgLeaderBoardBottom
 prad.de##.pd-ad-block
@@ -7497,7 +7501,9 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||3druck.com/wp-content/uploads/*/doku-dez-2020.jpg
 ||3fach.ch/storage/app/uploads/public/*/thumb_18790_1380_0_0_0_auto.jpg
 ||6navi.ch/banners/
+||a.zdg.de^
 ||a2.zdg.de^$domain=zentrum-der-gesundheit.de
+||a3.zdg.de^
 ||abg-net.de/typo3temp/pics/f3f468fcef.png
 ||abg-net.de/uploads/tx_macinabanners/
 ||ad-hoc-news.de/js/aTraffic.js
@@ -10109,7 +10115,7 @@ popkultur.de##.sc-button[href^="https://www.amazon.de/"]
 servus.com,terramatermagazin.com##.sda
 sport.sky.de##.sdc-site-au__leaderboard
 sport.sky.de##.sdc-site-au__mpu-1
-t-online.de##.sdgSlotContainer
+golem.de,t-online.de,watson.de##.sdgSlotContainer
 sportdeutschland.tv##.sdtv-gothaer
 mytastedeu.com##.search-affiliate__part
 trvlcounter.de##.second_slot
@@ -10237,6 +10243,7 @@ bestattungen.de##.tdp
 bild.de##.tea-rectangle
 wort.lu##.teaser--sponsored
 watson.ch##.teaser_type_paid_content
+watson.de##.teaserheld-wrapper
 computerbase.de##.text-ad
 analsexporno.net,deutsche-sexfilme.net,pornomonster.com##.tf-de
 m.tvspielfilm.de##.tfm-banner

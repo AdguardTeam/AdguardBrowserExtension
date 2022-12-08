@@ -1,8 +1,8 @@
-! Checksum: Z14aHr/VJOQQvmqh0wcL9Q
+! Checksum: /ZHDR75xlohWBzD5OrVWHQ
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.0.74.53
-! TimeUpdated: 2022-12-07T07:31:14+00:00
+! Version: 2.0.74.69
+! TimeUpdated: 2022-12-08T14:31:22+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -85,6 +85,8 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||kveff.com^
+||kvmaa.com^
 ||gposrzz.cn^
 ||kvbgoc.com^
 ||jcreje.com^
@@ -809,6 +811,8 @@ nfmovies.com#$#a[onclick*="openurl"][target="_blank"] img[src^="/static/"] { pos
 ! Good: example.org#?#main > div.row:-abp-has(> div.ad)
 ! Bad: example.org##main > div.ad (should be in specific.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/136875
+v.qq.com#$?#.video-card-module > div[dt-params^="ad_creative_id="] { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134240
 bilibili.com#?#.bili-video-card:-abp-has(> .bili-video-card__wrap > .bili-video-card__info > .bili-video-card__info--right > .bili-video-card__info--tit > a > [class^="bili-video-card__info--ad"])
 bilibili.com#?#.eva-extension-feed-body > div:not([class], [id]):-abp-has(> .bili-video-card > .bili-video-card__wrap > .bili-video-card__info > .bili-video-card__info--right > .bili-video-card__info--tit > a > [class^="bili-video-card__info--ad"])
@@ -1216,6 +1220,9 @@ ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com###content_left > .r
 !
 !
 !
+v.qq.com##.video-card-module > div[dt-params^="ad_creative_id="]
+1010dy3.com##div[id^="slide"]
+1010dy3.com###arBRyGHxuDYU
 91rb99.com##.top
 jieav.com##.b300
 jieav.com##ul[id^="jieav_"]
@@ -2606,6 +2613,7 @@ nfmovies.com#@?#div[id]:-abp-has(>img[onclick="openurl()"])
 !--------------- EasyList China rules --------------------------------------!
 !---------------------------------------------------------------------------!
 -*-*-*-*.panda^$script,third-party
+/fn666/shouye.php
 -1688-wp-media/ads/
 -90mh-gg.
 .bid/ads/
@@ -3433,6 +3441,8 @@ ubmcmm.baidustatic.com
 ###ks > .DaKuang
 ###ldgindexbuttom
 ###leftCouple
+##.txtguanggao
+##a[href*=".xyz:"] > img[src*=".qlogo.cn"]
 ###leftCouple1
 ###leftCouplet
 ###leftFloat + #rightFloat
@@ -4015,6 +4025,7 @@ ubmcmm.baidustatic.com
 ##div[style^="position"][onclick^="window.open"]
 ##dl#listwoBox
 ##img#adv1
+###arBRyGHxuDYU
 ##img[data-link][data-src*="/u/"]:not([data-link*="/i/"])
 ##img[data-src*=".alicdn.com/img/ibank/"][src="/static/images/loadingerror.gif"]
 ##img[onclick*=".qq.com/doc/"]
@@ -4101,6 +4112,7 @@ ubmcmm.baidustatic.com
 ||86o0h.top^
 ||8861203.com^
 ||897263tqs.com^
+||8q2h.icu^
 ||91pk.love^
 ||9795x.com^
 ||99886aaa.com^
@@ -4158,6 +4170,7 @@ ubmcmm.baidustatic.com
 ||eganilglw.cyou^
 ||egrnmic.cn^
 ||eidphap.cn^
+||emfrig.xyz^
 ||enzagpt.cn^
 ||epfmfqh.cn^
 ||epmf4.cn^
@@ -4222,6 +4235,7 @@ ubmcmm.baidustatic.com
 ||j41.xyz^
 ||j721s.top^
 ||japsmna.cyou^
+||jatytuo.cn^
 ||jghmrie.cn^
 ||jiedu.fun^
 ||jieshimaya.xyz^
@@ -4278,6 +4292,7 @@ ubmcmm.baidustatic.com
 ||mhhsa.xyz^
 ||mqnggnsx.fun^
 ||mrhboe.xyz^
+||mrzhao.life^
 ||myproteincn.com^
 ||n0633.com^
 ||nhtieoo.cn^
@@ -4319,6 +4334,7 @@ ubmcmm.baidustatic.com
 ||qbcydxr.cn^
 ||qczj.xyz^
 ||qdc7y9x.xyz^
+||qectme.xyz^
 ||qfgfpi.cn^
 ||qganilgly.cyou^
 ||qiangqi.shop^
@@ -4373,6 +4389,7 @@ ubmcmm.baidustatic.com
 ||rvyjbwr.cn^
 ||rzngisyz.xyz^
 ||s4ls9.top^
+||s7w53.icu^
 ||s93isp.top^
 ||sapsmnb.cyou^
 ||sbb8w.top^
@@ -4410,6 +4427,7 @@ ubmcmm.baidustatic.com
 ||tptp001.buzz^
 ||tpvdcqw.cn^
 ||tqnggnsi.fun^
+||trgzurt.cn^
 ||troxa.xyz^
 ||trqhf.xyz^
 ||trqpfc.cn^
@@ -4495,10 +4513,23 @@ ubmcmm.baidustatic.com
 ||zvxwvny.cn^
 ||zw2b9.cn^
 ||zzngisyq.xyz^
-||s7w53.icu^
-||qectme.xyz^
-||jatytuo.cn^
-||mrzhao.life^
+||ggsdogn.cn^
+||hhgxbxk.cn^
+||qingfeng.homes^
+||qibmrq.xyz^
+||xtzx.xyz^
+##a[href*="/kk5377.com:"]
+##a[href*="/wns8499608.xyz"]
+||oehwv.xyz^
+||cjkl.online^
+##a[href*=".832103.top"]
+||kdegznb.cn^
+||wmgocya.cn^
+||huilianji.com^
+||zk6.me^
+||kvmaa.com^
+||kveff.com^
+||u1885.com^
 .8ox.cn
 ##.btn[href*="/viphktv.com/"]
 ##[class][onclick*=".ununxsxs.top"]
@@ -13430,7 +13461,6 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||chinaz.com/zz_img/
 ||chinaz.com^*_g/
 ||chinesetoday.cn/2017/ad/*.gif
-||chiphell.com/activity/
 ||chnmoney.com/dfile/
 ||chok8.com/statics/ad/
 ||chongdiantou.com/wp-content/uploads/2019/02/pzb.jpg
@@ -16526,6 +16556,8 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||zzz4.com/JS_AD/
 ||zzzyk.com/js/
 szxx.com.cn###A0
+qq.com##.card-wrap[dt-params^="ad_creative_"]
+qq.com##.focus-item[dt-params^="ad_creative_"]
 szxx.com.cn###A1
 szxx.com.cn###A2
 gpcxw.com###AA2
@@ -22194,7 +22226,7 @@ gohome.com.hk#@#div[id^="div-gpt-ad"]
 @@||192.168.*.1/$generichide
 @@||192.168.*/advertising_$stylesheet
 @@||199it.com^$generichide
-@@||1vkx.cn/public/1/assets/js/common/plugins/jquery/jquery.min.js
+@@||1vkx.cn/public/*/jquery.min.js
 @@||2018x.bid/adview.js
 @@||210.40.130.91^*/ad.css?$stylesheet
 @@||2345.com/images/activity/20171111/open/j/close.png
@@ -24161,6 +24193,7 @@ $image,third-party,domain=258zw.com
 .com/js/wap_billing.js
 ##.downcode[style^="position:fixed;z-index:1000;top:200px;"]
 .html?android=hx*&_$csp=script-src
+.icu/*_*_rony.js
 .js?ssid=_$script,third-party
 ##.look_more_a[onclick^="open_app"]
 .lu/js/wap_billing.js
@@ -24208,8 +24241,9 @@ $image,third-party,domain=258zw.com
 /xxgg/gzh.js
 /xxgg/pf*.js
 /xxgg/pv.js
-.icu/*_*_rony.js
 /xxgg/xsggs.js
+/168tjsdsdsiqxxvi93.js
+/145tdww/*.js
 ://*:*/chunyu.html?k=$csp=script-src
 ://*:*/yeyue.html?k=$csp=script-src
 ##[class][onclick="window.location.href='/api/goapp/'"]
