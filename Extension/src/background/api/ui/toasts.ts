@@ -25,18 +25,29 @@ import { TabsApi } from '../extension';
 import { notificationApi } from './notification';
 import { FilterMetadata } from '../filters';
 
+enum StylesAssetsPath {
+    AlertPopup = '/assets/css/alert-popup.css',
+    AlertContainer = '/assets/css/alert-container.css',
+    UpdateContainer = '/assets/css/update-container.css',
+}
+
 export class Toasts {
     private static maxTries = 500; // 2500 sec
 
     private static triesTimeout = 5000; // 5 sec
 
-    private static stylesUrl = browser.runtime.getURL('/assets/css/alert-popup.css');
-
-    private styles: string | undefined;
+    private styles: Map<StylesAssetsPath, string | undefined> = new Map();
 
     public async init(): Promise<void> {
-        const response = await fetch(Toasts.stylesUrl);
-        this.styles = await response.text();
+        const tasks = Object.values(StylesAssetsPath)
+            .map(async (path) => {
+                const url = browser.runtime.getURL(path);
+                const response = await fetch(url);
+                const styles = await response.text();
+                this.styles.set(path, styles);
+            });
+
+        await Promise.all(tasks);
     }
 
     public async showAlertMessage(title: string, text: string | string[], triesCount = 1): Promise<void> {
@@ -55,7 +66,8 @@ export class Toasts {
                     isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
                     title,
                     text,
-                    alertStyles: this.styles,
+                    alertStyles: this.styles.get(StylesAssetsPath.AlertPopup),
+                    alertContainerStyles: this.styles.get(StylesAssetsPath.AlertContainer),
                 });
             }
         } catch (e) {
@@ -139,7 +151,8 @@ export class Toasts {
             offerButtonText,
             offerButtonHref,
             disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),
-            alertStyles: this.styles,
+            alertStyles: this.styles.get(StylesAssetsPath.AlertPopup),
+            updateContainerStyles: this.styles.get(StylesAssetsPath.UpdateContainer),
         };
 
         try {

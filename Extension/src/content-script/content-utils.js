@@ -211,7 +211,7 @@ export const contentUtils = (function () {
             showPromoNotification,
             disableNotificationText,
             alertStyles,
-            updateIframeStyles,
+            updateContainerStyles,
         } = message;
 
         const updateIframeHtml = `
@@ -286,7 +286,7 @@ export const contentUtils = (function () {
             }
 
             if (document.body && !isAdguardTab) {
-                const updateIframeCss = createStyleElement(updateIframeStyles);
+                const updateIframeCss = createStyleElement(updateContainerStyles);
                 document.body.insertAdjacentElement('afterbegin', updateIframeCss);
 
                 const iframe = appendIframe(document.body, updateIframeHtml, alertStyles);

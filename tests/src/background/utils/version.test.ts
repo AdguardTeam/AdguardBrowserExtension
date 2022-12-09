@@ -1,29 +1,54 @@
 import { Version } from '../../../../Extension/src/background/utils';
 
 describe('version', () => {
-    it('parses parts from semver string', () => {
-        const semver = '1.2.3.4';
-        const expectedVersionData = [1, 2, 3, 4];
+    describe('parses parts from semver string', () => {
+        const cases = [
+            { value: '1', expected: [1, 0, 0, 0] },
+            { value: '1.2', expected: [1, 2, 0, 0] },
+            { value: '1.2.3.4', expected: [1, 2, 3, 4] },
+        ];
 
-        const version = new Version(semver);
-
-        expect(version.data).toStrictEqual(expectedVersionData);
+        it.each(cases)('parses parts from $value', ({ value, expected }) => {
+            expect(new Version(value).data).toStrictEqual(expected);
+        });
     });
 
-    it('throws parse error, if semver string is invalid', () => {
-        const invalidSemver = 'test';
-        const expectedErrorMessage = 'Can not parse version string';
+    describe('throws parse error', () => {
+        const createFoundEmptyPartCase = (value: string): { value: string, expected: string } => {
+            return { value, expected: `Found empty part in string '${value}'` };
+        };
 
-        expect(() => new Version(invalidSemver)).toThrow(expectedErrorMessage);
+        const createCannotParseCase = (value: string): { value: string, expected: string } => {
+            return { value, expected: `Can not parse '${value}' string` };
+        };
+
+        const cases = [
+            createFoundEmptyPartCase(''),
+            createFoundEmptyPartCase('1.2.'),
+            createFoundEmptyPartCase('1..2'),
+            createFoundEmptyPartCase('.1.2'),
+            createCannotParseCase('test'),
+            createCannotParseCase('1.test.2.1'),
+        ];
+
+        it.each(cases)('throws parse error, if argument is $value', ({ value, expected }) => {
+            expect(() => new Version(value)).toThrow(expected);
+        });
     });
 
-    it('compares versions', () => {
-        const v1 = new Version('1.0.0.0');
-        const v2 = new Version('2.0.0.0');
+    describe('compares versions', () => {
+        const cases = [
+            { left: '1.0.0.0', right: '2.0.0.0', expected: -1 },
+            { left: '2.0.0.0', right: '1.0.0.0', expected: 1 },
+            { left: '1.0.0.0', right: '1.0.0.0', expected: 0 },
+            { left: '1.0.0.1', right: '1.0.0.2', expected: -1 },
+            { left: '1.2', right: '1.0.2', expected: 1 },
+            { left: '1.0.0.0.1', right: '1.0.0.0', expected: 0 },
+        ];
 
-        expect(v1.compare(v2)).toBe(-1);
-        expect(v2.compare(v1)).toBe(1);
-        expect(v2.compare(v2)).toBe(0);
+        it.each(cases)('compares $left with $right', ({ left, right, expected }) => {
+            expect(new Version(left).compare(new Version(right))).toBe(expected);
+        });
     });
 
     it('throws error, if versions cannot be compared', () => {
