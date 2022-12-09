@@ -17,27 +17,38 @@
  */
 
 /**
- * Helper class for work with semver (x.x.x)
+ * Helper class for work with semver
+ *
+ * Parsed semver string saves in {@link data} property.
+ * We save first {@link MAX_LENGTH} parts of parsed string.
+ * If there are less than {@link MAX_LENGTH} parts in the version, the missing ones are filled with zeros
+ * For example, entry string `1.1` will be parsed as `[1, 1, 0, 0]`.
  *
  * @param version - semver string
  * @class
  * @throws error, if passed string cannot be parsed
  */
 export class Version {
+    private static MAX_LENGTH = 4;
+
     // splitted semver
     public data: number[] = [];
 
     constructor(version: string) {
-        const parts = String(version || '').split('.');
+        const parts = String(version || '').split('.', Version.MAX_LENGTH);
 
-        for (let i = 3; i >= 0; i -= 1) {
-            const part = parts[i];
-
-            if (typeof part !== 'string') {
-                throw new Error('Can not parse version string');
+        for (let i = 0; i < Version.MAX_LENGTH; i += 1) {
+            if (parts[i] === '') {
+                throw new Error(`Found empty part in string '${version}'`);
             }
 
-            this.data[i] = Version.parseVersionPart(part);
+            const part = parts[i] || '0';
+
+            if (Number.isNaN(Number.parseInt(part, 10))) {
+                throw new Error(`Can not parse '${version}' string`);
+            }
+
+            this.data[i] = Math.max(Number(part), 0);
         }
     }
 
@@ -49,7 +60,7 @@ export class Version {
      * @throws error, if some version data is invalid
      */
     public compare(version: Version): number {
-        for (let i = 0; i < 4; i += 1) {
+        for (let i = 0; i < Version.MAX_LENGTH; i += 1) {
             const leftPart = this?.data?.[i];
             const rightPart = version?.data?.[i];
 
@@ -65,19 +76,5 @@ export class Version {
             }
         }
         return 0;
-    }
-
-    /**
-     * Cast semver part to number
-     *
-     * @param part - splitted semver part
-     * @returns semver part number
-     */
-    private static parseVersionPart(part: string): number {
-        if (Number.isNaN(part)) {
-            return 0;
-        }
-
-        return Math.max(Number(part) - 0, 0);
     }
 }
