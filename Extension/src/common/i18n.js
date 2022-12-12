@@ -1,4 +1,5 @@
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -19,6 +20,12 @@ import { i18n } from './common-script';
 import { I18nHelper } from '../content-script/i18n-helper';
 
 const i18nPatched = (() => {
+    /**
+     *
+     * @param element
+     * @param messageId
+     * @param args
+     */
     function translateElement(element, messageId, args) {
         const message = i18n.getMessage(messageId, args);
         I18nHelper.translateElement(element, message);

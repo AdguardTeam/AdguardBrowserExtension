@@ -1,4 +1,5 @@
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -28,6 +29,7 @@ export const DevToolsHelper = (function () {
 
     /**
      * Add rule preview
+     *
      * @param options Object {ruleText: 'ruleText'}
      */
     const applyPreview = function (options) {

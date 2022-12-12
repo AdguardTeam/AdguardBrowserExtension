@@ -1,4 +1,5 @@
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -29,6 +30,7 @@ export const i18n = browser.i18n;
 
 /**
  * Sleeps given period of time
+ *
  * @param wait
  * @returns {Promise<unknown>}
  */
@@ -40,6 +42,7 @@ export const sleep = (wait) => {
 
 /**
  * Sleeps necessary period of time if minimum duration didn't pass since entry time
+ *
  * @param {number} entryTimeMs
  * @param {number} minDurationMs
  * @returns {Promise<void>}
@@ -52,6 +55,7 @@ export const sleepIfNecessary = async (entryTimeMs, minDurationMs) => {
 
 /**
  * Executes async function with at least required time
+ *
  * @param fn
  * @param minDurationMs
  */

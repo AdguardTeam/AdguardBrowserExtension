@@ -48,9 +48,7 @@
             try {
                 window.location.assign(url);
             } catch (e) {
-                if (source.verbose) {
-                    console.log(e);
-                }
+                logMessage(source, e);
             }
         };
         Gat.prototype._anonymizeIP = noopFunc;
@@ -114,6 +112,12 @@
         }
     }
     function noopFunc() {}
+    function logMessage(source, message) {
+        var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        if (forced || source.verbose) {
+            console.log("".concat(source.name, ": ").concat(message));
+        }
+    }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
         GoogleAnalyticsGa.apply(this, updatedArgs);

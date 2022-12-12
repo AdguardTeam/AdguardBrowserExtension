@@ -1,5 +1,5 @@
-/* eslint-disable max-len */
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -16,6 +16,8 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable max-len */
+
 import { contentPage } from './content-script';
 import { MessageType } from '../common/messages';
 import { messenger } from '../pages/services/messenger';
@@ -26,6 +28,7 @@ export const contentUtils = (function () {
 
     /**
      * Create style element with provided css
+     *
      * @param css
      * @returns {any | HTMLElement}
      */
@@ -38,6 +41,7 @@ export const contentUtils = (function () {
 
     /**
      * Creates iframe and appends it after target open tag
+     *
      * @param target Node where to append iframe with html
      * @param html html string to write inside iframe
      * @param alertStyles popup styles text
@@ -59,6 +63,7 @@ export const contentUtils = (function () {
 
     /**
      * Creates div and appends it to the page
+     *
      * @param target
      * @param html
      * @returns {any | HTMLElement}
@@ -73,6 +78,7 @@ export const contentUtils = (function () {
 
     /**
      * If isAdguardTab we append div, else we append iframe
+     *
      * @param target
      * @param html
      * @param isAdguardTab
@@ -92,6 +98,7 @@ export const contentUtils = (function () {
 
     /**
      * Generates alert html
+     *
      * @param {string} title
      * @param {string} text
      * @returns {string}

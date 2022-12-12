@@ -1,3 +1,21 @@
+/**
+ * @file
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import browser from 'webextension-polyfill';
 import { nanoid } from 'nanoid';
 
@@ -30,10 +48,11 @@ class Messenger {
 
     /**
      * Creates long lived connections between popup and background page
+     *
      * @param {string} page
      * @param events
      * @param callback
-     * @returns {function}
+     * @returns {Function}
      */
     createLongLivedConnection = (page, events, callback) => {
         const eventListener = (...args) => {
@@ -68,6 +87,7 @@ class Messenger {
 
     /**
      * Method subscribes to notifier module events
+     *
      * @param events - list of events to which subscribe
      * @param callback - callback called when event fires
      * @param onUnloadCallback - callback used to remove listener on unload

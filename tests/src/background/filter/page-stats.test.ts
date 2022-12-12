@@ -61,6 +61,7 @@ describe('pageStats', () => {
 
     /**
      * removes from array total data equal to 0
+     *
      * @param {Array.<{total: number}>} arr
      */
     const getNonEmptyData = (arr) => {
