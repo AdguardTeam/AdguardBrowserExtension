@@ -59,6 +59,11 @@ Build:
           selectedRepository: defaultRepository
           tagName: v${bamboo.inject.version}-beta
   artifacts:
+    - name: adguard-api.zip
+      location: build/beta
+      pattern: adguard-api.zip
+      shared: true
+      required: false
     - name: build.txt
       location: build/beta
       pattern: build.txt
