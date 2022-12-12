@@ -1,4 +1,22 @@
 /**
+ * @file
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
  * Util class for work with strings
  */
 export const strings = (() => {
@@ -68,6 +86,7 @@ export const strings = (() => {
 
         /**
          * Get string before regexp first match
+         *
          * @param {string} str
          * @param {RegExp} rx
          */
@@ -82,7 +101,7 @@ export const strings = (() => {
          * @param str   String to search
          * @param chars Chars to search for
          * @param start Start index (optional, inclusive)
-         * @return int Index of the element found or null
+         * @returns int Index of the element found or null
          */
         indexOfAny(str, chars, start) {
             start = start || 0;
@@ -103,6 +122,7 @@ export const strings = (() => {
 
         /**
          * Splits string by a delimiter, ignoring escaped delimiters
+         *
          * @param str               String to split
          * @param delimiter         Delimiter
          * @param escapeCharacter   Escape character
@@ -144,6 +164,7 @@ export const strings = (() => {
 
         /**
          * Serialize HTML element
+         *
          * @param element
          */
         elementToString(element) {
@@ -166,10 +187,11 @@ export const strings = (() => {
 
         /**
          * Checks if the specified string starts with a substr at the specified index.
+         *
          * @param str - String to check
          * @param startIndex - Index to start checking from
          * @param substr - Substring to check
-         * @return boolean true if it does start
+         * @returns boolean true if it does start
          */
         startsAtIndexWith(str, startIndex, substr) {
             if (str.length - startIndex < substr.length) {
@@ -187,6 +209,7 @@ export const strings = (() => {
 
         /**
          * Checks if str has unquoted substr
+         *
          * @param str
          * @param substr
          */

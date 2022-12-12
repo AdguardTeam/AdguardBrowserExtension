@@ -16,15 +16,16 @@
     "locales:validate": "babel-node tools/locales.js validate",
     "locales:info": "babel-node tools/locales.js info",
     "resources": "babel-node tools/resources.js",
-    "lint": "eslint ./Extension/src/background --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint --ext .jsx,.js,.tsx,.ts ./",
     "increment": "yarn version --patch --no-git-tag-version",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
-    "check-types": "tsc --project tsconfig.background.json --noEmit"
+    "check-types": "tsc --project tsconfig.background.json --noEmit",
+    "disclaimer": "yarn lint | babel-node tools/insert-disclaimer.js"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint"
+      "eslint --ext .jsx,.js,.tsx,.ts ./"
     ]
   },
   "repository": {
@@ -66,7 +67,8 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^16.1.0",
-    "eslint-plugin-import": "^2.24.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsdoc": "^39.3.6",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.24.0",

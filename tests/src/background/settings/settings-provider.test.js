@@ -1,8 +1,13 @@
 import _ from 'lodash';
 
+// FIXME: fix imports
+// eslint-disable-next-line import/no-unresolved
 import { settingsProvider } from '../../../../Extension/src/background/settings/settings-provider';
 import { adgSettings } from './adg-settings';
-import { APPEARANCE_THEMES } from '../../../../Extension/src/pages/constants';
+import { AppearanceTheme } from '../../../../Extension/src/common/settings';
+
+// FIXME: fix imports
+// eslint-disable-next-line import/no-unresolved
 import { settings } from '../../../../Extension/src/background/settings/user-settings';
 
 jest.mock('../../../../Extension/src/common/log');
@@ -96,7 +101,7 @@ describe('settingsProvider', () => {
         delete obj['general-settings']['appearance-theme'];
         const success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
         expect(success).toBeTruthy();
-        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.SYSTEM);
+        expect(settings.getAppearanceTheme()).toBe(AppearanceTheme.SYSTEM);
     });
 
     it('handles settings with defined appearance theme', async () => {
@@ -104,22 +109,22 @@ describe('settingsProvider', () => {
         const MODE_PATH = 'general-settings.appearance-theme';
 
         // Set light theme
-        _.set(obj, MODE_PATH, APPEARANCE_THEMES.LIGHT);
+        _.set(obj, MODE_PATH, AppearanceTheme.LIGHT);
         let success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
         expect(success).toBeTruthy();
-        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.LIGHT);
+        expect(settings.getAppearanceTheme()).toBe(AppearanceTheme.LIGHT);
 
         // Set dark theme
-        _.set(obj, MODE_PATH, APPEARANCE_THEMES.DARK);
+        _.set(obj, MODE_PATH, AppearanceTheme.DARK);
         success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
         expect(success).toBeTruthy();
-        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.DARK);
+        expect(settings.getAppearanceTheme()).toBe(AppearanceTheme.DARK);
 
         // Set wrong theme
         _.set(obj, MODE_PATH, 'black');
         success = await settingsProvider.applySettingsBackup(JSON.stringify(obj));
         expect(success).toBeTruthy();
-        expect(settings.getAppearanceTheme()).toBe(APPEARANCE_THEMES.SYSTEM);
+        expect(settings.getAppearanceTheme()).toBe(AppearanceTheme.SYSTEM);
     });
 
     it('handles settings without stealth section', async () => {

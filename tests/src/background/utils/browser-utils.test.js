@@ -1,15 +1,15 @@
-import { browserUtils } from '../../../../Extension/src/background/utils/browser-utils';
+import { BrowserUtils } from '../../../../Extension/src/background/utils/browser-utils';
 
 describe('browserUtils', () => {
     it('isSemver', () => {
-        expect(browserUtils.isSemver('4.0.1')).toBeTruthy();
-        expect(browserUtils.isSemver('not.valid.semver')).toBeFalsy();
-        expect(browserUtils.isSemver('4.0.102')).toBeTruthy();
-        expect(browserUtils.isSemver('04.0.102')).toBeFalsy();
-        expect(browserUtils.isSemver('05February2022v1')).toBeFalsy();
-        expect(browserUtils.isSemver(null)).toBeFalsy();
-        expect(browserUtils.isSemver(false)).toBeFalsy();
-        expect(browserUtils.isSemver('')).toBeFalsy();
-        expect(browserUtils.isSemver()).toBeFalsy();
+        expect(BrowserUtils.isSemver('4.0.1')).toBeTruthy();
+        expect(BrowserUtils.isSemver('not.valid.semver')).toBeFalsy();
+        expect(BrowserUtils.isSemver('4.0.102')).toBeTruthy();
+        expect(BrowserUtils.isSemver('04.0.102')).toBeFalsy();
+        expect(BrowserUtils.isSemver('05February2022v1')).toBeFalsy();
+        expect(BrowserUtils.isSemver(null)).toBeFalsy();
+        expect(BrowserUtils.isSemver(false)).toBeFalsy();
+        expect(BrowserUtils.isSemver('')).toBeFalsy();
+        expect(BrowserUtils.isSemver()).toBeFalsy();
     });
 });

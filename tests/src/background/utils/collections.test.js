@@ -1,3 +1,5 @@
+// FIXME: Fix import
+// eslint-disable-next-line import/no-unresolved
 import { utils } from '../../../../Extension/src/background/utils/common';
 
 describe('collections', () => {

@@ -1,4 +1,5 @@
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -128,6 +129,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
 
     /**
      * Injects wrapper's script into passed window
+     *
      * @param contentWindow Frame's content window
      */
     function injectPageScriptAPIInWindow(contentWindow) {
@@ -147,6 +149,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
     /**
      * Overrides access to contentWindow/contentDocument for the passed HTML element's interface (iframe, frame, object)
      * If the content of one of these objects is requested we will inject our wrapper script.
+     *
      * @param iface HTML element's interface
      */
     function overrideContentAccess(iface) {
@@ -183,6 +186,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
 
     /**
      * Defines properties in destination object
+     *
      * @param src Source object
      * @param dest Destination object
      * @param properties Properties to copy
@@ -200,6 +204,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
 
     /**
      * Check request by sending message to content script
+     *
      * @param url URL to block
      * @param type Request type
      * @param callback Result callback
@@ -245,6 +250,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
 
         /**
          * Convert passed url to string
+         *
          * @param url URL
          * @returns {string}
          */
@@ -256,6 +262,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
 
         /**
          * Creates new immutable array from original with some transform function
+         *
          * @param original
          * @param transform
          * @returns {*}
@@ -285,6 +292,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
 
         /**
          * Protect configuration from mutations
+         *
          * @param configuration RTCPeerConnection configuration object
          * @returns {*}
          */
@@ -333,6 +341,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
 
         /**
          * Check WebRTC connection's URL and close if it's blocked by rule
+         *
          * @param connection Connection
          * @param url URL to check
          */

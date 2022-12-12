@@ -1,4 +1,5 @@
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -22,6 +23,9 @@ export const ElementCollapser = (function () {
     /**
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1436
      * Because Edge doesn't support CSS.escape use next function
+     *
+     * @param value
+     * @throws TypeError when non arguments provided.
      */
     const cssEscape = CSS.escape || function (value) {
         if (arguments.length === 0) {
@@ -108,6 +112,7 @@ export const ElementCollapser = (function () {
 
     /**
      * Adds "selectorText { display:none!important; }" style
+     *
      * @param selectorText
      * @param cssText optional
      */
@@ -125,6 +130,9 @@ export const ElementCollapser = (function () {
 
     /**
      * Adds "selectorText { display:none!important; }" style
+     *
+     * @param selectorText
+     * @param tagName
      */
     const hideBySelectorAndTagName = function (selectorText, tagName) {
         if (tagName === 'frame' || tagName === 'iframe') {
@@ -144,6 +152,9 @@ export const ElementCollapser = (function () {
 
     /**
      * Creates selector for specified tagName and src attribute
+     *
+     * @param srcAttrValue
+     * @param tagName
      */
     const createSelectorForSrcAttr = function (srcAttrValue, tagName) {
         return `${tagName}[src="${cssEscape(srcAttrValue)}"]`;

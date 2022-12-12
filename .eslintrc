@@ -17,12 +17,16 @@
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {
+          "alwaysTryTypes": true
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
   },
-  "plugins": [
-    "@typescript-eslint",
-    "jsdoc"
-  ],
   "extends": [
     "airbnb",
     "airbnb-typescript",
@@ -32,11 +36,23 @@
   ],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "@typescript-eslint/dot-notation": "off",
+
     "import/no-extraneous-dependencies": 0,
     "import/no-cycle": "off",
-    "@typescript-eslint/no-use-before-define": "off",
-    "no-use-before-define": "off",
-    "@typescript-eslint/indent": "off",
+    "import/prefer-default-export": "off",
+    "import/extensions": "off",
+
+    "strict": "off",
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ],
     "indent": [
       "error",
       4,
@@ -45,18 +61,8 @@
         "ignoreComments": false
       }
     ],
-    "no-useless-escape": "off",
-    "no-param-reassign": "off",
     "wrap-iife": "off",
     "func-names": "off",
-    "@typescript-eslint/no-shadow": "off",
-    "no-shadow": "off",
-    "no-multi-spaces": [
-      "error",
-      {
-        "ignoreEOLComments": true
-      }
-    ],
     "prefer-destructuring": [
       "error",
       {
@@ -74,24 +80,25 @@
       }
     ],
     "consistent-return": "off",
-    "no-prototype-builtins": "off",
-    "@typescript-eslint/dot-notation": "off",
     "dot-notation": "off",
     "quote-props": "off",
-    "no-continue": "off",
-    "strict": "off",
-    "no-bitwise": "off",
-    "no-underscore-dangle": "off",
-    "max-len": [
+    "arrow-body-style": "off",
+    "arrow-parens": "off",
+
+    "no-use-before-define": "off",
+    "no-useless-escape": "off",
+    "no-param-reassign": "off",
+    "no-shadow": "off",
+    "no-multi-spaces": [
       "error",
       {
-        "code": 120
+        "ignoreEOLComments": true
       }
     ],
-    "arrow-body-style": "off",
-    "import/prefer-default-export": "off",
-    "arrow-parens": "off",
-    "import/extensions": "off",
+    "no-prototype-builtins": "off",
+    "no-continue": "off",
+    "no-bitwise": "off",
+    "no-underscore-dangle": "off",
 
     // types described in ts
     "jsdoc/require-param-type": "off",
@@ -108,5 +115,15 @@
     "page": true,
     "context": true,
     "jestPuppeteer": true
-  }
+  },
+  "ignorePatterns": [
+    "node_modules",
+    "build",
+    "private",
+    "Extension/src/pages/common/components/Editor/mode-adguard.js",
+    "Extension/pages/blocking-pages/app.js",
+    "Extension/web-accessible-resources/*",
+    "tests/src/background/filter/request-filter/test_filter.js",
+    "Extension/src/background/settings/validator.js"
+  ]
 }

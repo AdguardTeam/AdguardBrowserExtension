@@ -1,4 +1,5 @@
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -144,6 +145,7 @@ export const DevToolsRulesConstructor = (function () {
 
     /**
      * Constructs css selector by combining classes by AND
+     *
      * @param classList
      * @returns {string}
      */
@@ -159,6 +161,7 @@ export const DevToolsRulesConstructor = (function () {
 
     /**
      * Constructs css selector by combining classes by OR
+     *
      * @param classList
      * @returns {string}
      */
@@ -186,6 +189,7 @@ export const DevToolsRulesConstructor = (function () {
 
     /**
      * Creates css rule text
+     *
      * @param element Element
      * @param options Construct options.
      * For example: {cssSelectorType: 'STRICT_FULL', excludeTagName: false, excludeId: false, classList: []}

@@ -1,4 +1,5 @@
 /**
+ * @file
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
@@ -15,7 +16,8 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSUrlFilter from '@adguard/tsurlfilter/dist/TSUrlFilterContentScript';
+// TODO: Separate content-script build in the TSUrlFilter
+import TSUrlFilter from '@adguard/tsurlfilter';
 
 import { initPageMessageListener, injectPageScriptAPI } from './wrappers';
 import { contentPage } from './content-script';
@@ -51,6 +53,7 @@ export const preload = (function () {
 
     /**
      * Execute scripts in a page context and cleanup itself when execution completes
+     *
      * @param {string} script Script to execute
      */
     const executeScript = function (script) {
@@ -68,6 +71,7 @@ export const preload = (function () {
 
     /**
      * Applies JS injections.
+     *
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     const applyScripts = function (scripts) {
@@ -110,6 +114,7 @@ export const preload = (function () {
 
     /**
      * Execute several scripts
+     *
      * @param {Array<string>} scripts Scripts to execute
      */
     const executeScripts = function (scripts) {
@@ -146,6 +151,7 @@ export const preload = (function () {
 
     /**
      * Extracts element URL from the dom node
+     *
      * @param element DOM node
      */
     const getElementUrl = function (element) {
@@ -171,8 +177,9 @@ export const preload = (function () {
 
     /**
      * Saves collapse request (to be reused after we get result from bg page)
+     *
      * @param element Element to check
-     * @return request ID
+     * @returns request ID
      */
     const saveCollapseRequest = function (element) {
         const tagName = element.tagName.toLowerCase();
@@ -189,6 +196,7 @@ export const preload = (function () {
 
     /**
      * Response callback for "processShouldCollapse" message.
+     *
      * @param response Response got from the background page
      */
     const onProcessShouldCollapseResponse = function (response) {
@@ -212,6 +220,7 @@ export const preload = (function () {
 
     /**
      * Checks if element is blocked by AG and should be hidden
+     *
      * @param element Element to check
      */
     const checkShouldCollapseElement = async function (element) {
@@ -249,6 +258,7 @@ export const preload = (function () {
 
     /**
      * Checks if loaded element is blocked by AG and should be hidden
+     *
      * @param event Load or error event
      */
     const checkShouldCollapse = function (event) {
@@ -280,6 +290,7 @@ export const preload = (function () {
 
     /**
      * Sets "style" DOM element content.
+     *
      * @param styleEl       "style" DOM element
      * @param cssContent    CSS content to set
      */
@@ -386,6 +397,7 @@ export const preload = (function () {
 
     /**
      * Applies CSS and extended CSS stylesheets
+     *
      * @param selectors     Object with the stylesheets got from the background page.
      */
     const applySelectors = function (selectors) {
@@ -399,6 +411,7 @@ export const preload = (function () {
 
     /**
      * Response callback for "processShouldCollapseMany" message.
+     *
      * @param response Response from bg page.
      */
     const onProcessShouldCollapseManyResponse = function (response) {
@@ -471,6 +484,7 @@ export const preload = (function () {
 
     /**
      * Processes response from the background page containing CSS and JS injections
+     *
      * @param response Response from the background page
      */
     const processCssAndScriptsResponse = (response) => {
@@ -525,7 +539,7 @@ export const preload = (function () {
     /**
      * Initializes cookie content script
      *
-     * @return {Promise<void>}
+     * @returns {Promise<void>}
      */
     const initCookieController = async () => {
         const response = await contentPage.sendMessage({

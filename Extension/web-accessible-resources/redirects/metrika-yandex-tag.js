@@ -51,17 +51,17 @@
             }
             return api[funcName] && api[funcName].apply(api, [ id ].concat(args));
         }
-        ym.a = [];
         function init(id) {
             window["yaCounter".concat(id)] = api;
             document.dispatchEvent(new Event("yacounter".concat(id, "inited")));
         }
         if (typeof window.ym === "undefined") {
             window.ym = ym;
+            ym.a = [];
         } else if (window.ym && window.ym.a) {
-            var counters = window.ym.a;
+            ym.a = window.ym.a;
             window.ym = ym;
-            counters.forEach((function(params) {
+            window.ym.a.forEach((function(params) {
                 var id = params[0];
                 init(id);
             }));

@@ -12,7 +12,7 @@
                         var key = _Object$keys[_i];
                         if (typeof arg[key] === "function") {
                             try {
-                                arg[key].call();
+                                arg[key].call(this, {});
                             } catch (_unused) {}
                         }
                     }
