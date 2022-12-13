@@ -31,198 +31,194 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const BLACK_FRIDAY_PROMO_22_ID = 'blackFriday22';
+    const XMAS_PROMO_23_ID = 'xmasPromo23';
 
-    const blackFriday22Notification = {
-        id: BLACK_FRIDAY_PROMO_22_ID,
+    const xmasPromo23Notification = {
+        id: XMAS_PROMO_23_ID,
         locales: {
             en: {
-                title: 'Black Friday',
-                btn: 'Get 50% off',
+                title: 'AdGuard X-mas promo!',
+                btn: 'Upgrade protection',
             },
             ru: {
-                title: 'Чёрная пятница',
-                btn: 'Скидка 50%',
+                title: 'Новогодняя акция',
+                btn: 'Улучшите защиту',
             },
             ja: {
-                title: 'BLACK FRIDAY',
-                btn: '50%OFF割引をGETする',
+                title: 'AdGuard Christmas',
+                btn: '保護をアップグレード',
             },
             ko: {
-                title: '블랙 프라이데이',
-                btn: '50% 할인',
+                title: 'AdGuard 크리스마스 세일',
+                btn: '보호 업그레이드',
             },
             es: {
-                title: 'Black Friday',
-                btn: 'Descuento de 50%',
+                title: 'Promoción de Navidad',
+                btn: 'Aumenta tu protección',
             },
             de: {
-                title: 'Black Friday',
-                btn: '50% Rabatt',
-            },
-            fr: {
-                title: 'Black Friday',
-                btn: '50% de remise',
-            },
-            it: {
-                title: 'Black Friday',
-                btn: '50% di sconto',
-            },
-            zh_cn: {
-                title: '黑五优惠',
-                btn: '享5折',
-            },
-            zh_tw: {
-                title: '黑五優惠',
-                btn: '享5折',
+                title: 'AdGuards Weihnachtsangebot',
+                btn: 'Schutz erweitern',
             },
             pt_pt: {
-                title: 'Black Friday',
-                btn: 'Desconto de 50%',
+                title: 'Promoção de Natal',
+                btn: 'Aumenta tua proteção',
             },
             pt_br: {
-                title: 'Black Friday',
-                btn: 'Desconto de 50%',
+                title: 'Promoção de Natal',
+                btn: 'Aumente sua proteção',
+            },
+            zh_tw: {
+                title: 'AdGuard 聖誕折扣',
+                btn: '升級保護',
+            },
+            zh_cn: {
+                title: 'AdGuard 圣诞优惠',
+                btn: '升级保护',
+            },
+            fr: {
+                title: 'Promo de Noël chez AdGuard',
+                btn: 'Augmentez la protection',
+            },
+            it: {
+                title: 'Promo di Natale ad AdGuard',
+                btn: 'Aumentare protezione',
             },
             uk: {
-                title: 'Чорна п\'ятниця',
-                btn: 'Знижка 50%',
+                title: 'Новорічна акція',
+                btn: 'Покращити захист',
             },
             ar: {
-                title: 'الجمعة السوداء',
-                btn: '%خصم 50',
+                title: 'العام الجديد الترويجي',
+                btn: 'ترقية الحماية',
             },
             be: {
-                title: 'Чорная пятніца',
-                btn: '50% зніжка',
+                title: 'Навагодняя акцыя',
+                btn: 'Палепшыце абарону',
             },
             bg: {
-                title: 'Черен петък',
-                btn: '50% отстъпка',
+                title: 'Новогодишна промоция',
+                btn: 'Надстройте защитата си',
             },
             ca: {
-                title: 'Divendres Negre',
-                btn: '50% de descompte',
+                title: 'Promoció d\'Any Nou',
+                btn: 'Millora la protecció',
             },
             cs: {
-                title: 'Černý pátek',
-                btn: '50% sleva',
+                title: 'Vánoční promo akce',
+                btn: 'Upgradujte svou ochranu',
             },
             da: {
-                title: 'Black Friday',
-                btn: '50% rabat',
+                title: 'Nytårs promo',
+                btn: 'Beskyttelse mod opgradering',
             },
             el: {
-                title: 'Μαύρη Παρασκευή',
-                btn: '50% έκπτωση',
-            },
-            es_419: {
-                title: 'Viernes Negro',
-                btn: '50% de descuento',
+                title: 'Πρωτοχρονιάτικη προσφορά',
+                btn: 'Προστασία αναβάθμισης',
             },
             fa: {
-                title: 'جمعه سیاه',
-                btn: '50٪ تخفیف',
+                title: 'تخفیف های سال نو',
+                btn: 'ارتقاء حفاظت',
             },
             fi: {
-                title: 'Musta perjantai',
-                btn: '50% alennus',
+                title: 'Uudenvuoden promo',
+                btn: 'Päivityksen suojaus',
             },
             he: {
-                title: 'Black Friday',
-                btn: '50% הנחה',
+                title: 'פרומו לשנה החדשה',
+                btn: 'הגנת שדרוג',
             },
             hr: {
-                title: 'Crni petak',
-                btn: '50% popusta',
+                title: 'Božićna promocija',
+                btn: 'Zaštita od nadogradnje',
             },
             hu: {
-                title: 'Fekete péntek',
-                btn: '50% kedvezmény',
+                title: 'Újévi promóció',
+                btn: 'A védelem frissítése',
             },
             hy: {
-                title: 'Սեւ ուրբաթ',
-                btn: '50% զեղչ',
+                title: 'Ամանորյա պրոմո',
+                btn: 'Բարձրացնել պաշտպանությունը',
             },
             id: {
-                title: 'Jumat Hitam',
-                btn: 'Diskon 50%',
+                title: 'Promo Tahun Baru',
+                btn: 'Tingkatkan perlindungan',
             },
             lt: {
-                title: 'Juodasis penktadienis',
-                btn: '50% nuolaida',
+                title: 'Kalėdų reklama',
+                btn: 'Atnaujinkite apsaugą',
             },
             ms: {
-                title: 'Jumaat Hitam',
-                btn: 'Diskaun 50%',
+                title: 'Promosi Tahun Baru',
+                btn: 'Perlindungan naik taraf',
             },
             nb: {
-                title: 'Svart fredag',
-                btn: '50% rabatt',
+                title: 'Nyttårskampanje',
+                btn: 'Oppgrader beskyttelse',
             },
             nl: {
-                title: 'Zwarte Vrijdag',
-                btn: '50% korting',
+                title: 'Nieuwjaarspromo',
+                btn: 'Upgrade bescherming',
             },
             pl: {
-                title: 'Czarny piątek',
-                btn: '50% zniżki',
+                title: 'Świąteczna promocja',
+                btn: 'Ochrona przed aktualizacją',
             },
             ro: {
-                title: 'Back Friday',
-                btn: '50% reducere',
+                title: 'Promoția de Anul Nou',
+                btn: 'Protecția upgrade-ului',
             },
             sk: {
-                title: 'Čierny piatok',
-                btn: '50% zľava',
+                title: 'Novoročné promo',
+                btn: 'Inovujte svoju ochranu',
             },
             sl: {
-                title: 'Črni petek',
-                btn: '50% popust',
+                title: 'Novoletni promo',
+                btn: 'Nadgradite svojo zaščito',
             },
             sr: {
-                title: 'Crni petak',
-                btn: '50% popusta',
+                title: 'Novogodišnja promocija',
+                btn: 'Poboljšanje bezbednosti',
             },
             sv: {
-                title: 'Black Friday',
-                btn: '50% rabatt',
+                title: 'Nyårskampanj',
+                btn: 'Uppgradera skydd',
             },
             tr: {
-                title: 'Black Friday',
-                btn: '%50 indirim',
+                title: 'Yılbaşı İndirimi',
+                btn: 'Yükseltme koruması',
             },
             vi: {
-                title: 'Black Friday',
-                btn: 'Giảm giá 50%',
+                title: 'Khuyến mãi năm mới',
+                btn: 'Bảo vệ nâng cấp',
             },
             hi: {
-                title: 'ब्लैक फ्राइडे',
-                btn: '50% छूट',
+                title: 'नए साल का प्रोमो',
+                btn: 'सुरक्षा का नवीनीकरण करें',
             },
             et: {
-                title: 'Must reede',
-                btn: '50% soodustust',
+                title: 'Uusaasta promo',
+                btn: 'Täienduse kaitse',
             },
             th: {
-                title: 'Black Friday',
-                btn: 'ส่วนลด 50%',
+                title: 'โปรโมชั่นปีใหม่',
+                btn: 'การป้องกันการอัพเกรด',
             },
         },
         text: '',
-        url: 'https://link.adtidy.net/forward.html?action=black_friday_22&app=browser_extension',
-        from: '22 November 2022 15:00:00',
-        to: '29 November 2022 23:59:00',
+        url: 'https://link.adtidy.net/forward.html?action=xmas_promo_23&app=browser_extension',
+        from: '22 December 2022 15:00:00',
+        to: '02 January 2023 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(blackFriday22Notification, 'icons', () => ({
+            return lazyGet(xmasPromo23Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/bf22-on-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/bf22-on-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/xmas23-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/xmas23-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/bf22-off-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/bf22-off-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/xmas23-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/xmas23-off-38.png'),
                 },
             }));
         },
@@ -244,7 +240,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        blackFriday22: blackFriday22Notification,
+        xmasPromo23: xmasPromo23Notification,
     };
 
     /**
