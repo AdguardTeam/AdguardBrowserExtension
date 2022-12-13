@@ -16,8 +16,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: Separate content-script build in the TSUrlFilter
-import TSUrlFilter from '@adguard/tsurlfilter';
+import { ExtendedCss, CssHitsCounter, CookieController } from '@adguard/tswebextension/content-script';
 
 import { initPageMessageListener, injectPageScriptAPI } from './wrappers';
 import { contentPage } from './content-script';
@@ -386,7 +385,7 @@ export const preload = (function () {
             return;
         }
 
-        const extcss = new TSUrlFilter.ExtendedCss({
+        const extcss = new ExtendedCss({
             styleSheet,
             beforeStyleApplied: (cssHitsCounter
                 ? cssHitsCounter.countAffectedByExtendedCss.bind(cssHitsCounter)
@@ -500,7 +499,7 @@ export const preload = (function () {
         }
 
         if (response.collectRulesHits) {
-            cssHitsCounter = new TSUrlFilter.CssHitsCounter((stats) => {
+            cssHitsCounter = new CssHitsCounter((stats) => {
                 contentPage.sendMessage({ type: MessageType.SaveCssHitsStats, stats });
             });
         }
@@ -553,7 +552,7 @@ export const preload = (function () {
 
         if (response.rulesData) {
             try {
-                const cookieController = new TSUrlFilter.CookieController(
+                const cookieController = new CookieController(
                     ({
                         cookieName,
                         cookieValue,
