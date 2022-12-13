@@ -46,69 +46,165 @@ export const xmasPromo23Notification: Notification = {
             title: 'Новогодняя акция',
             btn: 'Улучшите защиту',
         },
-        es: {
-            title: 'Vuelta al',
-            btn: 'Obtén un 40% off',
-        },
-        de: {
-            title: 'Zurück zur',
-            btn: '40% Rabatt',
-        },
-        fr: {
-            title: 'La rentrée',
-            btn: '40% de remise',
-        },
-        it: {
-            title: 'Ritorno a',
-            btn: '40% di sconto',
+        ja: {
+            title: 'AdGuard Christmas',
+            btn: '保護をアップグレード',
         },
         ko: {
-            title: '백 투 스쿨',
-            btn: '40% 할인',
+            title: 'AdGuard 크리스마스 세일',
+            btn: '',
         },
-        zh_cn: {
-            title: '开学啦',
-            btn: '一律享受40%折扣',
+        es: {
+            title: 'Promoción de Navidad',
+            btn: '',
         },
-        zh_tw: {
-            title: '開學啦',
-            btn: '獲得40%的折扣',
-        },
-        uk: {
-            title: 'Знову до',
-            btn: 'Знижка 40%',
+        de: {
+            title: 'AdGuards Weihnachtsangebot',
+            btn: 'Schutz erweitern',
         },
         pt_pt: {
-            title: 'De volta à',
-            btn: 'Obter 40% de desconto',
+            title: 'Promoção de Natal',
+            btn: '',
         },
         pt_br: {
-            title: 'De volta à',
-            btn: 'Obtenha 40% de desconto',
+            title: 'Promoção de Natal',
+            btn: '',
+        },
+        zh_tw: {
+            title: 'AdGuard 聖誕折扣',
+            btn: '',
+        },
+        zh_cn: {
+            title: 'AdGuard 圣诞优惠',
+            btn: '',
+        },
+        fr: {
+            title: 'Promo de Noël chez AdGuard',
+            btn: '',
+        },
+        it: {
+            title: 'Promo di Natale ad AdGuard',
+            btn: '',
+        },
+        uk: {
+            title: 'Новорічна акція',
+            btn: 'Покращити захист',
         },
         ar: {
-            title: 'العودة',
-            btn: '%احصل على خصم 40',
+            title: 'العام الجديد الترويجي',
+            btn: 'ترقية الحماية',
         },
         be: {
-            title: 'Назад у',
-            btn: 'Атрымайце скідку 40%',
+            title: 'Навагодняя акцыя',
+            btn: 'Палепшыце абарону',
+        },
+        bg: {
+            title: 'Новогодишна промоция',
+            btn: 'Надстройте защитата си',
+        },
+        ca: {
+            title: 'Promoció d\'Any Nou',
+            btn: 'Millora la protecció',
+        },
+        cs: {
+            title: 'Novoroční propagace',
+            btn: 'Upgradujte svou ochranu',
+        },
+        da: {
+            title: 'Nytårs promo',
+            btn: 'Beskyttelse mod opgradering',
+        },
+        el: {
+            title: 'Πρωτοχρονιάτικη προσφορά',
+            btn: 'Προστασία αναβάθμισης',
+        },
+        fa: {
+            title: 'تخفیف های سال نو',
+            btn: 'ارتقاء حفاظت',
+        },
+        fi: {
+            title: 'Uudenvuoden promo',
+            btn: 'Päivityksen suojaus',
+        },
+        he: {
+            title: 'פרומו לשנה החדשה',
+            btn: 'הגנת שדרוג',
+        },
+        hr: {
+            title: 'Novogodišnja promocija',
+            btn: 'Zaštita od nadogradnje',
+        },
+        hu: {
+            title: 'Újévi promóció',
+            btn: 'A védelem frissítése',
+        },
+        hy: {
+            title: 'Ամանորյա պրոմո',
+            btn: 'Բարձրացնել պաշտպանությունը',
         },
         id: {
-            title: 'Kembali ke',
-            btn: 'Dapatkan diskon 40%',
+            title: 'Promo Tahun Baru',
+            btn: 'Tingkatkan perlindungan',
+        },
+        lt: {
+            title: 'Naujųjų metų reklama',
+            btn: 'Atnaujinkite apsaugą',
+        },
+        ms: {
+            title: 'Promosi Tahun Baru',
+            btn: 'Perlindungan naik taraf',
+        },
+        nb: {
+            title: 'Nyttårskampanje',
+            btn: 'Oppgrader beskyttelse',
+        },
+        nl: {
+            title: 'Nieuwjaarspromo',
+            btn: 'Upgrade bescherming',
         },
         pl: {
-            title: 'Powrót do',
-            btn: 'Zyskaj 40% zniżki',
+            title: 'Promocja noworoczna',
+            btn: 'Ochrona przed aktualizacją',
+        },
+        ro: {
+            title: 'Promoția de Anul Nou',
+            btn: 'Protecția upgrade-ului',
+        },
+        sk: {
+            title: 'Novoročné promo',
+            btn: 'Inovujte svoju ochranu',
+        },
+        sl: {
+            title: 'Novoletni promo',
+            btn: 'Nadgradite svojo zaščito',
+        },
+        sr: {
+            title: 'Novogodišnja promocija',
+            btn: 'Poboljšanje bezbednosti',
+        },
+        sv: {
+            title: 'Nyårskampanj',
+            btn: 'Uppgradera skydd',
         },
         tr: {
-            title: 'Okula dönüş',
-            btn: '40 indirim kazanın',
+            title: 'Yılbaşı İndirimi',
+            btn: 'Yükseltme koruması',
         },
         vi: {
-            title: 'Trở lại',
-            btn: 'Được GIẢM GIÁ 40%',
+            title: 'Khuyến mãi năm mới',
+            btn: 'Bảo vệ nâng cấp',
+        },
+        hi: {
+            title: 'नए साल का प्रोमो',
+            btn: 'सुरक्षा का नवीनीकरण करें',
+        },
+        et: {
+            title: 'Uusaasta promo',
+            btn: 'Täienduse kaitse',
+        },
+        th: {
+            title: 'โปรโมชั่นปีใหม่',
+            btn: 'การป้องกันการอัพเกรด',
         },
     },
     text: '',
