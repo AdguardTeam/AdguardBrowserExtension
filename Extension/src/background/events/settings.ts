@@ -38,6 +38,10 @@ export class SettingsEvents {
             return Promise.resolve(listener(value));
         }
     }
+
+    public removeListeners(): void {
+        this.listenersMap.clear();
+    }
 }
 
 export const settingsEvents = new SettingsEvents();

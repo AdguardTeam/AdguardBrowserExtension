@@ -50,6 +50,10 @@ export class MessageHandler {
       this.listeners.delete(type);
   }
 
+  public removeListeners(): void {
+      this.listeners.clear();
+  }
+
   private handleMessage<T extends Message | EngineMessage>(
       message: T,
       sender: Runtime.MessageSender,

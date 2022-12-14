@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { RuleConverter, RuleSyntaxUtils } from '@adguard/tsurlfilter';
+// TODO: fix tree-shacking
+import TSUrlFilter from '@adguard/tsurlfilter';
 
 import { Log } from '../../../common/log';
 import { AntiBannerFiltersId } from '../../../common/constants';
@@ -71,7 +72,7 @@ export class UserRulesApi {
         }
 
         const userRules = await UserRulesApi.getUserRules();
-        return userRules.some(userRuleString => RuleSyntaxUtils.isRuleForUrl(
+        return userRules.some(userRuleString => TSUrlFilter.RuleSyntaxUtils.isRuleForUrl(
             userRuleString,
             url,
         ));
@@ -116,7 +117,7 @@ export class UserRulesApi {
     public static async removeRulesByUrl(url: string): Promise<void> {
         const userRules = await UserRulesApi.getUserRules();
 
-        await UserRulesApi.setUserRules(userRules.filter(rule => !RuleSyntaxUtils.isRuleForUrl(rule, url)));
+        await UserRulesApi.setUserRules(userRules.filter(rule => !TSUrlFilter.RuleSyntaxUtils.isRuleForUrl(rule, url)));
     }
 
     /**
@@ -163,7 +164,7 @@ export class UserRulesApi {
         rules.forEach((line) => {
             let converted: string[] = [];
             try {
-                converted = RuleConverter.convertRule(line);
+                converted = TSUrlFilter.RuleConverter.convertRule(line);
             } catch (e: unknown) {
                 Log.info(`Error converting rule ${line}, due to: ${e instanceof Error ? e.message : e}`);
             }
