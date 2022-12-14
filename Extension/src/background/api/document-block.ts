@@ -18,7 +18,7 @@
 import { trustedDomainsStorage } from '../storages';
 
 export class DocumentBlockApi {
-    private static TRUSTED_TTL_MS = 40 * 60 * 1000; // 40 min
+    public static TRUSTED_TTL_MS = 40 * 60 * 1000; // 40 min
 
     public static async init(): Promise<void> {
         try {

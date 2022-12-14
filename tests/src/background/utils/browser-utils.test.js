@@ -12,4 +12,6 @@ describe('browserUtils', () => {
         expect(BrowserUtils.isSemver('')).toBeFalsy();
         expect(BrowserUtils.isSemver()).toBeFalsy();
     });
+
+    // TODO: cover other cases
 });

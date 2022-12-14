@@ -1,10 +1,12 @@
-import path from 'path';
-
 import { network } from '../../../../../Extension/src/background/api/network';
+import { mockFilterPath } from '../../../../helpers';
 
 describe('network', () => {
     it('loads filters considering conditions', async () => {
-        const lines = await network.downloadFilterRulesBySubscriptionUrl(path.resolve(__dirname, 'test-filter.txt'));
+        // This mock needs to simulate external request in the filters downloader
+        const mockNetworkRequestPrefix = 'mock:/';
+        const filePath = `${mockNetworkRequestPrefix}${mockFilterPath}`;
+        const lines = await network.downloadFilterRulesBySubscriptionUrl(filePath);
         expect(lines).toHaveLength(2);
     });
 });

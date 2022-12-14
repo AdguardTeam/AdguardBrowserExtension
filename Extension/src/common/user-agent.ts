@@ -16,48 +16,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// WICG Spec: https://wicg.github.io/ua-client-hints
-
-// https://wicg.github.io/ua-client-hints/#navigatorua
-declare global {
-    interface Navigator {
-        readonly userAgentData?: NavigatorUAData;
-    }
-}
-
-// https://wicg.github.io/ua-client-hints/#dictdef-navigatoruabrandversion
-interface NavigatorUABrandVersion {
-    readonly brand: string;
-    readonly version: string;
-}
-
-// https://wicg.github.io/ua-client-hints/#dictdef-uadatavalues
-interface UADataValues {
-    readonly brands?: NavigatorUABrandVersion[];
-    readonly mobile?: boolean;
-    readonly platform?: string;
-    readonly architecture?: string;
-    readonly bitness?: string;
-    readonly model?: string;
-    readonly platformVersion?: string;
-    /** @deprecated in favour of fullVersionList */
-    readonly uaFullVersion?: string;
-    readonly fullVersionList?: NavigatorUABrandVersion[];
-    readonly wow64?: boolean;
-}
-
-// https://wicg.github.io/ua-client-hints/#dictdef-ualowentropyjson
-interface UALowEntropyJSON {
-    readonly brands: NavigatorUABrandVersion[];
-    readonly mobile: boolean;
-    readonly platform: string;
-}
-
-// https://wicg.github.io/ua-client-hints/#navigatoruadata
-interface NavigatorUAData extends UALowEntropyJSON {
-    getHighEntropyValues(hints: string[]): Promise<UADataValues>;
-    toJSON(): UALowEntropyJSON;
-}
+import UAParser from 'ua-parser-js';
 
 /**
  * Helper class for user agent data
@@ -65,69 +24,15 @@ interface NavigatorUAData extends UALowEntropyJSON {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/User-Agent_Client_Hints_API#browser_compatibility
  */
 export class UserAgent {
-    static browserDataMap: Record<
-        string,
-        {
-            uaStringName: string;
-            brand?: string;
-        }
-    > = {
-        Chrome: {
-            brand: 'Google Chrome',
-            uaStringName: 'Chrome',
-        },
-        Firefox: {
-            uaStringName: 'Firefox',
-        },
-        Safari: {
-            uaStringName: 'Safari',
-        },
-        Opera: {
-            brand: 'Opera',
-            uaStringName: 'OPR',
-        },
-        YaBrowser: {
-            brand: 'Yandex',
-            uaStringName: 'YaBrowser',
-        },
-        Edge: {
-            uaStringName: 'edge',
-        },
-        EdgeChromium: {
-            brand: 'Microsoft Edge',
-            uaStringName: 'edg',
-        },
-    };
+    static parser = new UAParser(navigator.userAgent);
 
     /**
      * Gets current browser name
      *
      * @returns user agent browser name
      */
-    static getBrowserName(): string | null {
-        const brandsData = navigator?.userAgentData?.brands;
-
-        const browserDataEntries = Object.entries(UserAgent.browserDataMap);
-
-        for (let i = 0; i < browserDataEntries.length; i += 1) {
-            const browserData = browserDataEntries[i];
-
-            if (!browserData) {
-                continue;
-            }
-
-            const [name, data] = browserData;
-
-            if (brandsData?.some((brandData) => brandData.brand === data.brand)) {
-                return name;
-            }
-
-            if (navigator.userAgent.indexOf(data.uaStringName) >= 0) {
-                return name;
-            }
-        }
-
-        return null;
+    static getBrowserName(): string | undefined {
+        return this.parser.getBrowser().name;
     }
 
     /**
@@ -137,28 +42,7 @@ export class UserAgent {
      * @returns true, if current browser has specified name
      */
     static isTargetBrowser(browserName: string): boolean {
-        const brand = UserAgent.browserDataMap[browserName]?.brand;
-        const uaStringName = UserAgent.browserDataMap[browserName]?.uaStringName;
-
-        const brandsData = navigator?.userAgentData?.brands;
-
-        if ((!brandsData || !brand) && uaStringName) {
-            return navigator.userAgent.indexOf(uaStringName) >= 0;
-        }
-
-        if (!brandsData) {
-            return false;
-        }
-
-        for (let i = 0; i < brandsData.length; i += 1) {
-            const data = brandsData[i];
-
-            if (data?.brand === brand) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.parser.getBrowser().name === browserName;
     }
 
     /**
@@ -168,52 +52,19 @@ export class UserAgent {
      * @returns true, if current browser has specified name
      */
     static isTargetPlatform(platformName: string): boolean {
-        const platformString = navigator?.userAgentData?.platform;
-
-        return platformString
-            ? platformString.toUpperCase().indexOf(platformName) >= 0
-            : navigator.userAgent.toUpperCase().indexOf(platformName) >= 0;
+        return this.parser.getOS().name === platformName;
     }
 
     /**
      * Get browser version by name
      *
      * @param browserName - Browser Name
-     * @returns browser version number or null
+     * @returns browser version number or undefined
      */
-    static getBrowserVersion(browserName: string): number | null {
-        let brand: string | undefined;
-        let uaStringMask: RegExp | undefined;
+    static getBrowserVersion(browserName: string): number | undefined {
+        const browser = this.parser.getBrowser();
 
-        if (browserName === 'Chrome') {
-            brand = 'Google Chrome';
-            uaStringMask = /\sChrome\/(\d+)\./;
-        } else if (browserName === 'Firefox') {
-            uaStringMask = /\sFirefox\/(\d+)\./;
-        }
-
-        const brandsData = navigator?.userAgentData?.brands;
-
-        if (!brandsData || !brand) {
-            const match = uaStringMask ? uaStringMask.exec(navigator.userAgent) : null;
-
-            if (match?.[1]) {
-                return Number.parseInt(match[1], 10);
-            }
-
-            return null;
-        }
-
-        for (let i = 0; i < brandsData.length; i += 1) {
-            const data = brandsData[i];
-
-            if (data?.brand === brand) {
-                const { version } = data;
-                return Number.parseInt(version, 10);
-            }
-        }
-
-        return null;
+        return browser.name === browserName ? Number(browser.version) : undefined;
     }
 
     static isChrome = UserAgent.isTargetBrowser('Chrome');
@@ -222,11 +73,11 @@ export class UserAgent {
 
     static isOpera = UserAgent.isTargetBrowser('Opera');
 
-    static isYandex = UserAgent.isTargetBrowser('YaBrowser');
+    static isYandex = UserAgent.isTargetBrowser('Yandex');
 
     static isEdge = UserAgent.isTargetBrowser('Edge');
 
-    static isEdgeChromium = UserAgent.isTargetBrowser('EdgeChromium');
+    static isEdgeChromium = Number(UserAgent.getBrowserVersion('Edge')) >= 79;
 
     static chromeVersion = UserAgent.getBrowserVersion('Chrome');
 
@@ -234,11 +85,11 @@ export class UserAgent {
 
     static operaVersion = UserAgent.getBrowserVersion('Opera');
 
-    static isMacOs = UserAgent.isTargetPlatform('MAC');
+    static isMacOs = UserAgent.isTargetPlatform('Mac OS');
 
-    static isWindows = UserAgent.isTargetPlatform('WIN');
+    static isWindows = UserAgent.isTargetPlatform('Windows');
 
-    static isAndroid = UserAgent.isTargetPlatform('ANDROID');
+    static isAndroid = UserAgent.isTargetPlatform('Android');
 
     static isSupportedBrowser =
         (UserAgent.isChrome && Number(UserAgent.chromeVersion) >= 79)

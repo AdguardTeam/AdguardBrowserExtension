@@ -100,7 +100,7 @@ export class PagesApi {
 
     static async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
         let { browserName } = UserAgent;
-        let browserDetails: string | null = null;
+        let browserDetails: string | undefined;
 
         if (!UserAgent.isSupportedBrowser) {
             browserDetails = browserName;
