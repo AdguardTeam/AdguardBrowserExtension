@@ -52,6 +52,10 @@ export class ContextMenuEvents {
             return Promise.resolve(listener());
         }
     }
+
+    public removeListeners(): void {
+        this.listenersMap.clear();
+    }
 }
 
 export const contextMenuEvents = new ContextMenuEvents();

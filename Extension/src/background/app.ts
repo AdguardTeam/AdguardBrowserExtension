@@ -64,6 +64,7 @@ import {
 import { SettingOption } from './schema';
 import { getRunInfo } from './utils';
 import { CLIENT_ID_KEY } from '../common/constants';
+import { contextMenuEvents, settingsEvents } from './events';
 
 /**
  * This class is app entry point
@@ -82,6 +83,9 @@ export class App {
      * and handle webextension API events for first install and update scenario
      */
     public static async init(): Promise<void> {
+        // removes listeners on re-initialization, because new ones will be registered during process
+        App.removeListeners();
+
         // Initializes connection and message handler as soon as possible
         // to prevent connection errors from extension pages
         ConnectionHandler.init();
@@ -214,6 +218,15 @@ export class App {
         appContext.set(AppContextKey.IsInit, true);
 
         await sendMessage<MessageType.AppInitialized>({ type: MessageType.AppInitialized });
+    }
+
+    /**
+     * Remove all registered app event listeners
+     */
+    private static removeListeners(): void {
+        messageHandler.removeListeners();
+        contextMenuEvents.removeListeners();
+        settingsEvents.removeListeners();
     }
 
     /**

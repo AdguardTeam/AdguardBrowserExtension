@@ -29,14 +29,6 @@ import {
     metadataValidator,
 } from '../../schema';
 
-declare module '@adguard/filters-downloader/browser' {
-    interface ResolveConditions {
-        (lines: string[], options: DefinedExpressions): string[];
-    }
-
-    const resolveConditions: ResolveConditions;
-}
-
 export type NetworkConfiguration = {
     filtersMetadataUrl?: string,
     filterRulesUrl?: string,
@@ -111,8 +103,7 @@ export class Network {
 
         try {
             // TODO: runtime validation
-            let lines = await FiltersDownloader.download(url, this.filterCompilerConditionsConstants) as string[];
-            lines = FiltersDownloader.resolveConditions(lines, this.filterCompilerConditionsConstants);
+            const lines = await FiltersDownloader.download(url, this.filterCompilerConditionsConstants) as string[];
 
             delete this.loadingSubscriptions[url];
 
@@ -128,7 +119,7 @@ export class Network {
                 ? e.message
                 : 'Unknown error while filter downloading by subscription url';
 
-            throw new Error(message);
+            throw new Error(message, { cause: e });
         }
     }
 

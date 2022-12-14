@@ -15,12 +15,36 @@
  * You should have received a copy of the GNU General Public License
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import browser from 'sinon-chrome/webextensions';
+
+// replace unsupported fetch API by xhr requests
+import 'whatwg-fetch';
+
+import escape from 'css.escape';
+import browser from 'sinon-chrome';
+import lodash, { DebouncedFunc } from 'lodash';
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
+
+// Important: import user-agent mock directly from file to guarantee that
+// mocking of user-agent will be executed first, before all others mocks and
+// fixtures.
+import { mockUserAgent } from './tests/helpers/mocks/user-agent';
+// Mock user agent
+// eslint-disable-next-line max-len
+mockUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.0.2468 Yowser/2.5 Safari/537.36');
+
+// After mocked user-agent, we can import all other mocks
+// eslint-disable-next-line import/first
+import {
+    MockedTsWebExtension,
+    mockLocalStorage,
+    mockXhrRequests,
+} from './tests/helpers';
+
+// set missing CSS.escape polyfill for test env
+global.CSS.escape = escape;
 
 /**
  * sinon-chrome does declare a browser.runtime.id property, but its value is null, which caused the duck-typing to fail.
@@ -29,22 +53,32 @@ import chrome from 'sinon-chrome/extensions';
  */
 chrome.runtime.id = 'text';
 
+// mock chrome webextension api
 global.chrome = chrome;
 
-jest.mock('webextension-polyfill', () => ({
-    ...browser,
-    runtime: {
-        ...browser.runtime,
-        getURL: (): string => 'chrome-extension://test',
-        getManifest: (): { version: string } => ({ version: '0.0.0' }),
-    },
-    i18n: {
-        ...browser.i18n,
-        getUILanguage: (): string => 'en',
-        getMessage: (value: string): string => value,
-    },
-}));
+// implements some global function for 'webextension-polyfill' before mocking
+browser.runtime.getURL.callsFake((url: string) => `chrome-extension://test/${url}`);
+browser.runtime.getManifest.returns({ version: '0.0.0' });
+
+browser.i18n.getUILanguage.returns('en');
+browser.i18n.getMessage.callsFake((value: string) => value);
 
 jest.mock('nanoid', () => ({
-    nanoid: jest.fn((): string => '1'),
+    nanoid: jest.fn((): string => 'cTkoV5Vs'),
 }));
+
+jest.mock('webextension-polyfill', () => browser);
+
+// It is important to load tswebextension after browser polyfill mocking
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+jest.spyOn(require('@adguard/tswebextension'), 'TsWebExtension').mockImplementation(() => new MockedTsWebExtension());
+
+jest.spyOn(lodash, 'debounce').mockImplementation(((
+    func: (...args: unknown[]) => unknown,
+) => func as DebouncedFunc<(...args: unknown[]) => unknown>));
+
+// create browser.storage.local emulator and bound it with sinon-chrome stub
+mockLocalStorage();
+
+// register fake server for xhr requests
+mockXhrRequests();
