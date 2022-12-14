@@ -45,7 +45,7 @@ export const notifications = (function () {
                 btn: 'Улучшите защиту',
             },
             ja: {
-                title: 'AdGuard Christmas',
+                title: 'AdGuard Christmas キャンペーン',
                 btn: '保護をアップグレード',
             },
             ko: {
