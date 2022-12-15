@@ -46,14 +46,14 @@ export const notifications = (function () {
             },
             ja: {
                 title: 'AdGuard Christmas キャンペーン',
-                btn: '保護をアップグレード',
+                btn: 'お得にアップグレード',
             },
             ko: {
-                title: 'AdGuard 크리스마스 세일',
+                title: 'AdGuard 크리스마스 프로모션',
                 btn: '보호 업그레이드',
             },
             es: {
-                title: 'Promoción de Navidad',
+                title: 'Promo de Navidad',
                 btn: 'Aumenta tu protección',
             },
             de: {
@@ -61,23 +61,23 @@ export const notifications = (function () {
                 btn: 'Schutz erweitern',
             },
             pt_pt: {
-                title: 'Promoção de Natal',
+                title: 'Promo de Natal',
                 btn: 'Aumenta tua proteção',
             },
             pt_br: {
-                title: 'Promoção de Natal',
+                title: 'Promo de Natal',
                 btn: 'Aumente sua proteção',
             },
             zh_tw: {
-                title: 'AdGuard 聖誕折扣',
+                title: 'AdGuard 聖誕節促銷',
                 btn: '升級保護',
             },
             zh_cn: {
-                title: 'AdGuard 圣诞优惠',
+                title: 'AdGuard 圣诞促销',
                 btn: '升级保护',
             },
             fr: {
-                title: 'Promo de Noël chez AdGuard',
+                title: 'Promo Noël chez AdGuard',
                 btn: 'Augmentez la protection',
             },
             it: {
