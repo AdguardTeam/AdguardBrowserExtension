@@ -1,8 +1,8 @@
-! Checksum: VTlfK6fYmnHufMHDClphtg
+! Checksum: p2KiPThkQT0cGtRjXonLgw
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.88
-! TimeUpdated: 2022-12-07T11:31:06+00:00
+! Version: 2.0.3.92
+! TimeUpdated: 2022-12-15T13:02:46+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -229,6 +229,22 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/136734
+||investing.com^$cookie=smd
+||investing.com^$cookie=udid
+! https://github.com/AdguardTeam/AdguardFilters/issues/136987
+||japan.cnet.com^$removeparam=tag
+! https://github.com/AdguardTeam/AdguardFilters/issues/136988
+||asahi.com^$removeparam=iref
+||asahi.com^$removeparam=ref
+||asahi.com^$removeparam=cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/136989
+||cnn.co.jp^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/136990
+||jiji.com^$removeparam=g
+||jiji.com^$removeparam=m
+! https://github.com/AdguardTeam/AdguardFilters/issues/136991
+||fashion-press.net^$removeparam=media
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136853
 ||douban.com^$removeparam=_i
 ! https://oshiete.goo.ne.jp/ksos/?from=hensyu_i
@@ -460,8 +476,8 @@ $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||pulse.mail.ru^$removeparam=/^(udid|DeviceID|ver|appbuild|vendor|model|device_name|device_type|instanceid|device_year|connection_class|appsflyerid)/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120891
 ! Removing "primer", "subset_id" parameters causes that some fonts are displaying incorrectly - https://github.com/AdguardTeam/AdguardFilters/issues/126288
-! another one https://github.com/AdguardTeam/AdguardFilters/issues/126333
-||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/
+! another one https://github.com/AdguardTeam/AdguardFilters/issues/126333, https://github.com/AdguardTeam/AdguardFilters/issues/134475
+||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/,domain=~fonts.adobe.com
 ||p.typekit.net^$stylesheet,removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/118376#issuecomment-1134132202
 ||open.spotify.com^$removeparam=_branch_referrer

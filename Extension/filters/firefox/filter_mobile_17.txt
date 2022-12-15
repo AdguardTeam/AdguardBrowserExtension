@@ -1,8 +1,8 @@
-! Checksum: v7fnTlJ3i7l8Me1QUbCSag
+! Checksum: kyW/OzqprmhcMSCaJmPTSA
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.88
-! TimeUpdated: 2022-12-07T11:31:06+00:00
+! Version: 2.0.3.92
+! TimeUpdated: 2022-12-15T13:02:46+00:00
 ! Expires: 4 days (update frequency)
 $removeparam=twclid
 $removeparam=erid
@@ -148,6 +148,16 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||investing.com^$cookie=smd
+||investing.com^$cookie=udid
+||japan.cnet.com^$removeparam=tag
+||asahi.com^$removeparam=iref
+||asahi.com^$removeparam=ref
+||asahi.com^$removeparam=cid
+||cnn.co.jp^$removeparam=ref
+||jiji.com^$removeparam=g
+||jiji.com^$removeparam=m
+||fashion-press.net^$removeparam=media
 ||douban.com^$removeparam=_i
 ||oshiete.goo.ne.jp^$removeparam=from
 ||immobilienscout24.de^$removeparam=referrer
@@ -312,7 +322,7 @@ $removeparam=oref,domain=defenseone.com|govexec.com|nextgov.com|route-fifty.com
 ||trib.al$removeparam=c[0]
 $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||pulse.mail.ru^$removeparam=/^(udid|DeviceID|ver|appbuild|vendor|model|device_name|device_type|instanceid|device_year|connection_class|appsflyerid)/
-||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/
+||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/,domain=~fonts.adobe.com
 ||p.typekit.net^$stylesheet,removeparam
 ||open.spotify.com^$removeparam=_branch_referrer
 ||qcplay.co.jp/?shortlink=*&c=$removeparam=c
