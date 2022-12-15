@@ -1,8 +1,8 @@
-! Checksum: igFak5zMaCpY8yI9PUT0PQ
+! Checksum: yLLRL2Ro/X7CoUKBPRmWig
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish and Portuguese languages.
-! Version: 2.0.15.99
-! TimeUpdated: 2022-12-07T09:32:10+00:00
+! Version: 2.0.16.6
+! TimeUpdated: 2022-12-15T13:32:15+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -288,6 +288,10 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/137471
+! https://github.com/AdguardTeam/AdguardFilters/issues/137450
+gamestorrents.one#$##pbt { display: none !important; }
+gamestorrents.one#$#body { overflow: auto !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136826
 legendei.net#@#.adsBanner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136480
@@ -1905,7 +1909,7 @@ http://adw.
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net
+/^(?!.*(bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com)).*$/$third-party,script,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net|mangatigre.net
 !
 ! ##.ad
 mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##.ad
@@ -1914,6 +1918,13 @@ bebe.abril.com.br,tribunapr.uol.com.br,diariodonordeste.verdesmares.com.br,sbt.c
 ! ##.banner
 voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com.ar,mundotecnologias.com,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##.banner
 !
+visao.sapo.pt#$##TinAdPopup { display: none !important; }
+visao.sapo.pt#$#.modal-open { overflow: auto !important; }
+ferplei.com##div[id^="arcad-feature"]
+pressdigital.es##.openx
+dafiti.com.br###ad-placements
+eleconomista.es##[class*="banner"]
+eleconomista.es##.adsLinicom
 letras-lyrics.com.br##div[class^="pub"]
 poder360.com.br##.advertisement
 poder360.com.br##div[class^="box-banner-footer"]
@@ -2105,7 +2116,7 @@ fungoepigeo.eu##div[style*="width:300px;height:250px;"]
 cienradios.com##.navBarAd
 cienradios.com##.d-grid > div[class*="Caja-"]
 pelisplus.one##.e3lan
-lacronicadebadajoz.elperiodicoextremadura.com##[data-ad-position-baldomero]:not([data-bbnx-module])
+elperiodicoextremadura.com##[data-ad-position-baldomero]:not([data-bbnx-module])
 oglobo.globo.com,techtudo.com.br###ad-container-top-placeholder
 em.com.br##.containerads
 pelando.com.br##div[aria-label="anúncio patrocinado"]
