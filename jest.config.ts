@@ -31,6 +31,7 @@ const config: JestConfigWithTsJest = {
     ],
     transformIgnorePatterns: [
         `<rootDir>/node_modules/(?!(${transformedModules.join('|')}))`,
+        '.*\\.json',
     ],
     transform: {
         '.+\\.(js|ts|jsx|tsx)': 'ts-jest',

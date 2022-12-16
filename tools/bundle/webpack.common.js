@@ -16,7 +16,6 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable max-len */
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
@@ -256,7 +255,13 @@ export const genCommonConfig = (browserConfig) => {
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: 'pages/fullscreen-user-rules.html',
-                chunks: ['vendors/react', 'vendors/mobx', 'vendors/xstate', 'shared/editor', 'pages/fullscreen-user-rules'],
+                chunks: [
+                    'vendors/react',
+                    'vendors/mobx',
+                    'vendors/xstate',
+                    'shared/editor',
+                    'pages/fullscreen-user-rules',
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
