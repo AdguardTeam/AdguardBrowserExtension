@@ -601,6 +601,8 @@ export const preload = (function () {
 
         initRequestWrappers();
 
+        // TODO: It looks like it has already been moved to the tswebextension.
+        // Check it and if so, remove those function calls and their code.
         // initCollapseEventListeners();
         // tryLoadCssAndScripts();
         // initCookieController();
