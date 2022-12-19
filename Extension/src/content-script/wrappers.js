@@ -104,6 +104,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
     })();
 
     /**
+     * TODO: This approach may be outdated. Check it out.
      * In some case Chrome won't run content scripts inside frames.
      * So we have to intercept access to contentWindow/contentDocument and manually
      * inject wrapper script into this context
