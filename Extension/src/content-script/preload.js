@@ -17,7 +17,10 @@
  */
 
 import {
-    ExtendedCss, CssHitsCounter, CookieController, createTrustedTypesPolicy,
+    ExtendedCss,
+    CssHitsCounter,
+    CookieController,
+    createTrustedTypesPolicy,
 } from '@adguard/tswebextension/content-script';
 
 import { initPageMessageListener, injectPageScriptAPI } from './wrappers';

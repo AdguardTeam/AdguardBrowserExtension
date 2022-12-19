@@ -16,7 +16,6 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// eslint-disable-next-line import/no-unresolved
 import '@adguard/tswebextension/content-script';
 
 import { preload } from '../../src/content-script/preload';

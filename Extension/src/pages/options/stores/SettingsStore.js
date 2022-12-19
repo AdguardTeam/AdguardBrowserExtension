@@ -24,7 +24,11 @@ import {
     runInAction,
 } from 'mobx';
 import { Log } from '../../../common/log';
-import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../../common/components/Editor/savingFSM';
+import {
+    createSavingService,
+    EVENTS as SAVING_FSM_EVENTS,
+    STATES,
+} from '../../common/components/Editor/savingFSM';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION } from '../../common/constants';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
@@ -36,7 +40,11 @@ import {
     sortGroupsOnSearch,
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
-import { AntibannerGroupsId, TRUSTED_TAG, WASTE_CHARACTERS } from '../../../common/constants';
+import {
+    AntibannerGroupsId,
+    TRUSTED_TAG,
+    WASTE_CHARACTERS,
+} from '../../../common/constants';
 
 const savingAllowlistService = createSavingService({
     id: 'allowlist',

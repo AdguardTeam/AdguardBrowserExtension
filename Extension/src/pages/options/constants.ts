@@ -16,7 +16,11 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ForwardAction, ForwardFrom, Forward } from '../../common/forward';
+import {
+    ForwardAction,
+    ForwardFrom,
+    Forward,
+} from '../../common/forward';
 
 export const PRIVACY_URL = Forward.get({
     action: ForwardAction.Privacy,

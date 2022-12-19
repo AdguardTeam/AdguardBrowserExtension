@@ -16,7 +16,11 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 

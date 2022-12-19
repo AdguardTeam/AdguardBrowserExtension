@@ -16,10 +16,7 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, {
-    useContext,
-    useRef,
-} from 'react';
+import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import { NavigationTag } from '../../../../../common/constants';

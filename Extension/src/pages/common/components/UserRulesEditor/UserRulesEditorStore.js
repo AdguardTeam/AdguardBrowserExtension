@@ -26,7 +26,11 @@ import {
 } from 'mobx';
 
 import { messenger } from '../../../services/messenger';
-import { createSavingService, EVENTS as SAVING_FSM_EVENTS, STATES } from '../Editor/savingFSM';
+import {
+    createSavingService,
+    EVENTS as SAVING_FSM_EVENTS,
+    STATES,
+} from '../Editor/savingFSM';
 
 const savingService = createSavingService({
     id: 'userRules',

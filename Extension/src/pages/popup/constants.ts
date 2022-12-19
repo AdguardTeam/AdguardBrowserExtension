@@ -16,7 +16,11 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Forward, ForwardAction, ForwardFrom } from '../../common/forward';
+import {
+    Forward,
+    ForwardAction,
+    ForwardFrom,
+} from '../../common/forward';
 
 export const IOS_URL = Forward.get({
     action: ForwardAction.IOS,

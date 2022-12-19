@@ -17,9 +17,7 @@
  */
 import { HIT_STATISTIC_KEY } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
-import {
-    HitStatsStorageData,
-} from '../schema';
+import { HitStatsStorageData } from '../schema';
 import { storage } from './main';
 
 /**

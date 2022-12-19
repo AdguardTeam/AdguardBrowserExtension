@@ -21,10 +21,7 @@ import { isHttpRequest, getDomain } from '@adguard/tswebextension';
 
 import { UserAgent } from '../../common/user-agent';
 import { RegularFilterMetadata, SettingOption } from '../schema';
-import {
-    metadataStorage,
-    settingsStorage,
-} from '../storages';
+import { metadataStorage, settingsStorage } from '../storages';
 import { Engine } from '../engine';
 import { toasts } from '../api/ui';
 import { FiltersApi } from '../api/filters/main';

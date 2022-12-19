@@ -17,7 +17,11 @@
  */
 
 /* eslint-disable jsx-a11y/no-autofocus */
-import React, { useContext, useRef, useEffect } from 'react';
+import React, {
+    useContext,
+    useRef,
+    useEffect,
+} from 'react';
 import { observer } from 'mobx-react';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';

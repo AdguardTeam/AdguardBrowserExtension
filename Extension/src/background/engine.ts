@@ -16,7 +16,11 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { debounce } from 'lodash';
-import { TsWebExtension, ConfigurationMV2, MESSAGE_HANDLER_NAME } from '@adguard/tswebextension';
+import {
+    TsWebExtension,
+    ConfigurationMV2,
+    MESSAGE_HANDLER_NAME,
+} from '@adguard/tswebextension';
 import { Log } from '../common/log';
 import { listeners } from './notifier';
 
