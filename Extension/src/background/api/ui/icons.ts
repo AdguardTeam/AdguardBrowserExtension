@@ -27,7 +27,6 @@ export class IconsApi {
     static async updateTabIcon(
         tabId: number,
         {
-            urlFilteringDisabled,
             documentAllowlisted,
             applicationFilteringDisabled,
             totalBlockedTab,
@@ -37,9 +36,8 @@ export class IconsApi {
         let badge: string;
         let badgeColor = '#555';
 
-        const disabled = urlFilteringDisabled
-            || documentAllowlisted
-            || applicationFilteringDisabled;
+        // Icon is gray only if application is disabled or site is in exception
+        const disabled = documentAllowlisted || applicationFilteringDisabled;
 
         let blocked: number;
 

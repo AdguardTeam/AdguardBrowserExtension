@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @file
  *
@@ -17,8 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* eslint-disable no-console */
 
 /**
  * Simple logger with log levels
@@ -70,6 +67,7 @@ export class Log {
     private static print(
         level: LogLevel,
         method: LogMethod,
+        // eslint-disable-next-line
         args: any[],
     ): void {
         // check log level
@@ -105,6 +103,7 @@ export class Log {
         });
 
         formatted = `${Log.getLocalTimeString(new Date())}: ${formatted}`;
+        // eslint-disable-next-line no-console
         console[method](formatted);
     }
 }
