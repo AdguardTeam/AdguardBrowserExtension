@@ -18,7 +18,6 @@
 
 import { contentPage } from './content-script';
 import { MessageType } from '../common/messages';
-import { AGPolicy } from './trusted-types-policy';
 
 /**
  * !!! Important do not change function declaration, otherwise it would loose its name,
@@ -30,8 +29,12 @@ import { AGPolicy } from './trusted-types-policy';
  * @param shouldOverrideWebRTC If true we should override WebRTC objects
  * @param isInjected True means that we've already injected scripts in the contentWindow,
  * i.e. wrapped request objects and passed message channel
+ * @param createTtpFn Function that creates a trusted-types policy to allow some
+ * unsafe content operations, such as 'eval', when the browser restricts these
+ * operations because of a CSP header sent with the `require-trusted-types-for'
+ * directive.
  */
-export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected) {
+export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected, createTtpFn) {
     /**
      * If script have been injected into a frame via contentWindow then we can simply take
      * the copy of messageChannel left for us by parent document
@@ -137,8 +140,30 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
             if (contentWindow && !injectedFramesHas(contentWindow)) {
                 injectedFramesAdd(contentWindow);
                 contentWindow[scriptName] = messageChannel; // Left message channel for the injected script
-                const args = `'${scriptName}', ${shouldOverrideWebRTC}, true`;
-                contentWindow.eval(AGPolicy.createScript(`(${injectedToString()})(${args});`));
+                const isInjected = true;
+                const args = `'${scriptName}', ${shouldOverrideWebRTC}, ${isInjected}`;
+                const rawScriptForEval = `(${injectedToString()})(${args});`;
+                try {
+                    contentWindow.eval(rawScriptForEval);
+                } catch (e) {
+                    // Checking the error through instanceof does not work,
+                    // so checking by error's name
+                    if (e.name === 'EvalError') {
+                        // Use Trusted Types Policy only if server provided
+                        // `require-trusted-types-for` directive in CSP header
+                        console.debug('Cannot eval script possibly due to CSP');
+                        try {
+                            const AGPolicy = createTtpFn();
+                            const sanitizedScript = AGPolicy.createScript(rawScriptForEval);
+                            contentWindow.eval(sanitizedScript);
+                        } catch (e) {
+                            // ignore
+                        }
+                    } else {
+                        // ignore
+                    }
+                }
+
                 delete contentWindow[scriptName];
             }
         } catch (e) {
@@ -157,7 +182,8 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
         const contentDocumentDescriptor = Object.getOwnPropertyDescriptor(iface.prototype, 'contentDocument');
 
         // Apparently in HTMLObjectElement.prototype.contentWindow does not exist
-        // in older versions of Chrome such as 42.
+        // in older versions of Chrome such as 52 and lower.
+        // See https://caniuse.com/mdn-api_htmlobjectelement_contentwindow
         if (!contentWindowDescriptor) {
             return;
         }

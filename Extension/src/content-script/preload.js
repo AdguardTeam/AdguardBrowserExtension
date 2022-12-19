@@ -16,7 +16,9 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ExtendedCss, CssHitsCounter, CookieController } from '@adguard/tswebextension/content-script';
+import {
+    ExtendedCss, CssHitsCounter, CookieController, createTrustedTypesPolicy,
+} from '@adguard/tswebextension/content-script';
 
 import { initPageMessageListener, injectPageScriptAPI } from './wrappers';
 import { contentPage } from './content-script';
@@ -144,7 +146,11 @@ export const preload = (function () {
         initPageMessageListener();
 
         const wrapperScriptName = `wrapper-script-${Math.random().toString().substr(2)}`;
-        const script = `(${injectPageScriptAPI.toString()})('${wrapperScriptName}', true);`;
+        const shouldOverrideWebRTC = true;
+        const isInjected = false;
+        const createTtpFn = createTrustedTypesPolicy.toString();
+        const args = `'${wrapperScriptName}', ${shouldOverrideWebRTC}, ${isInjected}, ${createTtpFn}`;
+        const script = `(${injectPageScriptAPI.toString()})(${args});`;
         executeScripts([script]);
     };
 
@@ -592,9 +598,9 @@ export const preload = (function () {
 
         initRequestWrappers();
 
-        initCollapseEventListeners();
-        tryLoadCssAndScripts();
-        initCookieController();
+        // initCollapseEventListeners();
+        // tryLoadCssAndScripts();
+        // initCookieController();
     };
 
     return {

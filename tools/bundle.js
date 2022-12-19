@@ -28,7 +28,7 @@ import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
 
 const bundleChrome = (watch) => {
-    const webpackConfig = getWebpackConfig(BROWSERS.CHROME);
+    const webpackConfig = getWebpackConfig(BROWSERS.CHROME, watch);
     return bundleRunner(webpackConfig, watch);
 };
 
