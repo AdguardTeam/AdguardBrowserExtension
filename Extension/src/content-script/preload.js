@@ -148,7 +148,7 @@ export const preload = (function () {
          */
         initPageMessageListener();
 
-        const wrapperScriptName = `wrapper-script-${Math.random().toString().substr(2)}`;
+        const wrapperScriptName = `wrapper-script-${Math.random().toString().slice(2)}`;
         const shouldOverrideWebRTC = true;
         const isInjected = false;
         const createTtpFn = createTrustedTypesPolicy.toString();

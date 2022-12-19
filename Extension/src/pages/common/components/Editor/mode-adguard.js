@@ -606,7 +606,7 @@ ace.define('ace/mode/javascript_highlight_rules', [], (require, exports, module)
                     value: val.slice(0, offset),
                 }, {
                     type: 'meta.tag.tag-name.xml',
-                    value: val.substr(offset),
+                    value: val.slice(offset),
                 }];
             },
             regex: `</?${tagRegex}`,
