@@ -33,7 +33,7 @@ const bundleChrome = (watch) => {
 };
 
 const bundleFirefoxAmo = (watch) => {
-    const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_AMO);
+    const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_AMO, watch);
     return bundleRunner(webpackConfig, watch);
 };
 
