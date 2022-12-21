@@ -29,7 +29,11 @@ import {
 import punycode from 'punycode/';
 
 import { messenger } from '../../services/messenger';
-import { POPUP_STATES, TIME_RANGES, VIEW_STATES } from '../constants';
+import {
+    POPUP_STATES,
+    TIME_RANGES,
+    VIEW_STATES,
+} from '../constants';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { MessageType } from '../../../common/messages';
 

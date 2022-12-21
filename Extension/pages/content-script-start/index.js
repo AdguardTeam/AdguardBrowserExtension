@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// eslint-disable-next-line import/no-unresolved
 import '@adguard/tswebextension/content-script';
 
 import { contentUtils } from '../../src/content-script/content-utils';

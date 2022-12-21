@@ -37,7 +37,11 @@ import {
 } from '../api';
 import { Prefs } from '../prefs';
 import { listeners } from '../notifier';
-import { ContextMenuAction, contextMenuEvents, settingsEvents } from '../events';
+import {
+    ContextMenuAction,
+    contextMenuEvents,
+    settingsEvents,
+} from '../events';
 import { fullscreenUserRulesEditor } from './fullscreen-user-rules-editor';
 
 export type ExportMessageResponse = {

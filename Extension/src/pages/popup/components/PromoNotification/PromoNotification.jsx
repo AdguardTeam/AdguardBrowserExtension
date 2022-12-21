@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useState,
+} from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 

@@ -26,7 +26,11 @@ import { messageHandler } from '../message-handler';
 import { Engine } from '../engine';
 import { SettingOption } from '../schema';
 import { AllowlistApi, TabsApi } from '../api';
-import { ContextMenuAction, contextMenuEvents, settingsEvents } from '../events';
+import {
+    ContextMenuAction,
+    contextMenuEvents,
+    settingsEvents,
+} from '../events';
 import { Prefs } from '../prefs';
 
 export type GetAllowlistDomainsResponse = {

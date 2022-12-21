@@ -17,7 +17,11 @@
  */
 
 import { createContext } from 'react';
-import { observable, action, makeObservable } from 'mobx';
+import {
+    observable,
+    action,
+    makeObservable,
+} from 'mobx';
 
 import { copyToClipboard } from '../../../helpers';
 

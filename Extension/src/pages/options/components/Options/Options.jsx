@@ -16,11 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, {
-    useContext,
-    useEffect,
-} from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import {
+    HashRouter,
+    Route,
+    Switch,
+} from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import { General } from '../General';

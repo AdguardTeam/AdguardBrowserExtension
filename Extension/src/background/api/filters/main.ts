@@ -16,10 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Log } from '../../../common/log';
-import {
-    AntibannerGroupsId,
-    CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
-} from '../../../common/constants';
+import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
 
 import {

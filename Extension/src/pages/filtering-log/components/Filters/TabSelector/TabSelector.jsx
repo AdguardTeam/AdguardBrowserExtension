@@ -21,7 +21,10 @@ eslint-disable jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-noninteractive-element-interactions
 */
 import React, {
-    useContext, useEffect, useState, useRef,
+    useContext,
+    useEffect,
+    useState,
+    useRef,
 } from 'react';
 import cn from 'classnames';
 import { observer } from 'mobx-react';

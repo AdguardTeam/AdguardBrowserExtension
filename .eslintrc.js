@@ -50,15 +50,19 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:jsdoc/recommended',
     ],
+    'plugins': [
+        'import-newlines',
+    ],
     'rules': {
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/indent': 'off',
         '@typescript-eslint/no-shadow': 'off',
         '@typescript-eslint/dot-notation': 'off',
-        'import/no-extraneous-dependencies': 0,
+        'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         'import/prefer-default-export': 'off',
         'import/extensions': 'off',
+        'import-newlines/enforce': ['error', 2, 120],
         'strict': 'off',
         'max-len': [
             'error',

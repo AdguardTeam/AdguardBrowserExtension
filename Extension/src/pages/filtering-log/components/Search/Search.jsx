@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useRef, forwardRef, useEffect } from 'react';
+import React, {
+    useRef,
+    forwardRef,
+    useEffect,
+} from 'react';
 import cn from 'classnames';
 import { Icon } from '../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../common/user-agent';

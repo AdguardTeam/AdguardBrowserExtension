@@ -23,12 +23,12 @@ import { genEdgeConfig } from './edge/webpack.edge';
 import { genOperaConfig } from './opera/webpack.opera';
 import { getBrowserConf } from '../helpers';
 
-export const getWebpackConfig = (browser) => {
+export const getWebpackConfig = (browser, isWatchMode = false) => {
     const browserConf = getBrowserConf(browser);
 
     switch (browser) {
         case BROWSERS.CHROME: {
-            return genChromeConfig(browserConf);
+            return genChromeConfig(browserConf, isWatchMode);
         }
         case BROWSERS.FIREFOX_STANDALONE:
         case BROWSERS.FIREFOX_AMO: {

@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, {
+    useState,
+    useRef,
+    useCallback,
+} from 'react';
 
 import { Actions } from '../Actions';
 import { EventsTypeFilter } from './EventsTypeFilter';
