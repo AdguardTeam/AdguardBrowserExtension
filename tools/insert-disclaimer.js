@@ -72,6 +72,7 @@ const insertDisclaimer = async (data) => {
 };
 
 const insertAndSave = (path) => {
+    // eslint-disable-next-line no-console
     console.log('insert disclaimer to: ', path);
 
     const rows = fs.readFileSync(path).toString().split('\n');

@@ -1,3 +1,4 @@
+/* eslint-disable */
 ace.define('ace/mode/css_highlight_rules', [], (require, exports, module) => {
     const oop = require('../lib/oop');
     const lang = require('../lib/lang');

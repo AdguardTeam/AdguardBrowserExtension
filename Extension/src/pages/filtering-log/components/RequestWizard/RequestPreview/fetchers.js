@@ -42,7 +42,7 @@ export const fetchImage = async (ctx, { url }) => {
         const image = new Image();
         image.src = url;
 
-        function loadHandler(event) {
+        const loadHandler = (event) => {
             const { width, height } = event.target;
 
             if (width > 1 && height > 1) {
@@ -50,7 +50,7 @@ export const fetchImage = async (ctx, { url }) => {
             } else {
                 reject(new Error('Image is too small'));
             }
-        }
+        };
 
         image.addEventListener('load', loadHandler);
         image.addEventListener('error', reject);

@@ -16,10 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable
-    react/jsx-props-no-spreading,
-    jsx-a11y/no-static-element-interactions,
-    jsx-a11y/click-events-have-key-events */
 import React, {
     useCallback,
     useContext,
