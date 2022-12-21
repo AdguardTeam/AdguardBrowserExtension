@@ -22,6 +22,10 @@ describe('version', () => {
             return { value, expected: `Can not parse '${value}' string` };
         };
 
+        const createCannotParseLeadingZero = (value: string): { value: string, expected: string } => {
+            return { value, expected: `Can not parse ${value}. Leading zeros are not allowed in the version parts` };
+        };
+
         const cases = [
             createFoundEmptyPartCase(''),
             createFoundEmptyPartCase('1.2.'),
@@ -29,6 +33,7 @@ describe('version', () => {
             createFoundEmptyPartCase('.1.2'),
             createCannotParseCase('test'),
             createCannotParseCase('1.test.2.1'),
+            createCannotParseLeadingZero('01.1.2'),
         ];
 
         it.each(cases)('throws parse error, if argument is $value', ({ value, expected }) => {
