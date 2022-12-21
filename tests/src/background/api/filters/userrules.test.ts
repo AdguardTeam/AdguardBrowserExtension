@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { UserRulesApi } from '../../../../../Extension/src/background/api/filters/userrules';
 
 describe('userRules', () => {

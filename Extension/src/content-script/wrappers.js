@@ -252,7 +252,7 @@ export function injectPageScriptAPI(scriptName, shouldOverrideWebRTC, isInjected
          * Convert passed url to string
          *
          * @param url URL
-         * @returns {string}
+         * @returns {string} String representation of the URL
          */
         function urlToString(url) {
             if (typeof url !== 'undefined') {

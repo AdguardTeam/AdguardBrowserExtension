@@ -16,7 +16,7 @@
     "locales:validate": "babel-node tools/locales.js validate",
     "locales:info": "babel-node tools/locales.js info",
     "resources": "babel-node tools/resources.js",
-    "lint": "eslint --ext .jsx,.js,.tsx,.ts ./",
+    "lint": "eslint --ext .jsx,.js,.tsx,.ts .",
     "increment": "yarn version --patch --no-git-tag-version",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
@@ -25,7 +25,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint --ext .jsx,.js,.tsx,.ts ./"
+      "eslint --ext .jsx,.js,.tsx,.ts ."
     ]
   },
   "repository": {
