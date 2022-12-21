@@ -26,7 +26,7 @@ import { genCommonConfig } from '../webpack.common';
 import { chromeManifest } from './manifest.chrome';
 import { updateManifestBuffer } from '../../helpers';
 
-export const genChromeConfig = (browserConfig) => {
+export const genChromeConfig = (browserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);
 
     const DEVTOOLS_PATH = path.resolve(__dirname, '../../../Extension/pages/devtools');
@@ -64,12 +64,16 @@ export const genChromeConfig = (browserConfig) => {
                 filename: 'pages/devtools-elements-sidebar.html',
                 chunks: ['pages/devtools-elements-sidebar'],
             }),
-            new ZipWebpackPlugin({
-                path: '../',
-                filename: `${browserConfig.browser}.zip`,
-            }),
         ],
     };
+
+    // Run the archive only if it is not a watch mode
+    if (!isWatchMode) {
+        chromeConfig.plugins.push(new ZipWebpackPlugin({
+            path: '../',
+            filename: `${browserConfig.browser}.zip`,
+        }));
+    }
 
     return merge(commonConfig, chromeConfig);
 };

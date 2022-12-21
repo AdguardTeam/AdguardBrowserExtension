@@ -26,10 +26,7 @@ import {
     BROWSERS,
     BROWSERS_CONF,
 } from './constants';
-import {
-    LOCALES_ABSOLUTE_PATH,
-    LOCALE_DATA_FILENAME,
-} from './locales/locales-constants';
+import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 import packageJson from '../package.json';
 
 const { Redirects } = redirects;

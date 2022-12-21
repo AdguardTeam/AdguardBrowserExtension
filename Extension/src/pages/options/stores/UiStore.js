@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { observable, action, makeObservable } from 'mobx';
+import {
+    observable,
+    action,
+    makeObservable,
+} from 'mobx';
 import { nanoid } from 'nanoid';
 
 class UiStore {

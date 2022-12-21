@@ -16,14 +16,22 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useState, useEffect } from 'react';
+import React, {
+    useContext,
+    useState,
+    useEffect,
+} from 'react';
 import { observer } from 'mobx-react';
 import { useMachine } from '@xstate/react';
 
 import { RequestType } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { fetchMachine, FetchEvents, FetchStates } from '../../../../common/machines/fetchMachine';
+import {
+    fetchMachine,
+    FetchEvents,
+    FetchStates,
+} from '../../../../common/machines/fetchMachine';
 import { rootStore } from '../../../stores/RootStore';
 import { ImageRequest } from './ImageRequest';
 import { TextRequest } from './TextRequest';

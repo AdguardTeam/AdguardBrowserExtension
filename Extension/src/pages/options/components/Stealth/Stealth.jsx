@@ -25,10 +25,7 @@ import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { Log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import {
-    GLOBAL_PRIVACY_CONTROL_URL,
-    DO_NOT_TRACK_URL,
-} from '../../constants';
+import { GLOBAL_PRIVACY_CONTROL_URL, DO_NOT_TRACK_URL } from '../../constants';
 
 import {
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,

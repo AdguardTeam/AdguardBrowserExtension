@@ -24,7 +24,11 @@ import { Icon } from '../../../common/components/ui/Icon';
 import { Popover } from '../../../common/components/ui/Popover';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
-import { colorMap, getItemClassName, getBadgeClassNames } from './statusStyles';
+import {
+    colorMap,
+    getItemClassName,
+    getBadgeClassNames,
+} from './statusStyles';
 import { getStatusTitle } from './statusTitles';
 
 import './status.pcss';

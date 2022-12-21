@@ -1,7 +1,10 @@
 import sinon from 'sinon';
 
 import {
-    getMetadataFixture, getI18nMetadataFixture, getFilterTextFixture, filterTextFixture,
+    getMetadataFixture,
+    getI18nMetadataFixture,
+    getFilterTextFixture,
+    filterTextFixture,
 } from '../fixtures';
 
 const metadata = getMetadataFixture();

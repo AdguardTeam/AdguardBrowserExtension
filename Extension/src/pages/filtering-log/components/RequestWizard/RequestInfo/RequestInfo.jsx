@@ -22,18 +22,29 @@ jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-static-element-interactions
 */
 import React, {
-    useState, useContext, useRef, useLayoutEffect,
+    useState,
+    useContext,
+    useRef,
+    useLayoutEffect,
 } from 'react';
 import { observer } from 'mobx-react';
 import identity from 'lodash/identity';
 import cn from 'classnames';
 
-import { getFilterName, getRequestEventType, getCookieData } from '../utils';
+import {
+    getFilterName,
+    getRequestEventType,
+    getCookieData,
+} from '../utils';
 import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { AntiBannerFiltersId, StealthAction, RequestType } from '../../../../../common/constants';
+import {
+    AntiBannerFiltersId,
+    StealthAction,
+    RequestType,
+} from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';

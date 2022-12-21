@@ -26,7 +26,7 @@ import { firefoxManifest } from './manifest.firefox';
 import { updateManifestBuffer } from '../../helpers';
 import { ENVS } from '../../constants';
 
-export const genFirefoxConfig = (browserConfig) => {
+export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);
 
     let zipFilename = `${browserConfig.browser}.zip`;
@@ -51,11 +51,15 @@ export const genFirefoxConfig = (browserConfig) => {
                 },
             ],
         }),
-        new ZipWebpackPlugin({
+    ];
+
+    // Run the archive only if it is not a watch mode
+    if (!isWatchMode) {
+        plugins.push(new ZipWebpackPlugin({
             path: '../',
             filename: zipFilename,
-        }),
-    ];
+        }));
+    }
 
     const firefoxConfig = {
         output: {

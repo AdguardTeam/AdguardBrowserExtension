@@ -28,7 +28,11 @@ import {
 import { messageHandler } from '../message-handler';
 import { Engine } from '../engine';
 import { SettingOption } from '../schema';
-import { SettingsApi, SettingsData, UserRulesApi } from '../api';
+import {
+    SettingsApi,
+    SettingsData,
+    UserRulesApi,
+} from '../api';
 import { settingsEvents } from '../events';
 import { Prefs } from '../prefs';
 

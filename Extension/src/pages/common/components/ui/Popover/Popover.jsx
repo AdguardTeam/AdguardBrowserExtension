@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+    useState,
+    useEffect,
+    useRef,
+} from 'react';
 
 import { AttachmentPortal } from '../../AttachmentPortal';
 import { Tooltip } from '../Tooltip';

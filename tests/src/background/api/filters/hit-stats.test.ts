@@ -1,10 +1,7 @@
 import { Storage } from 'webextension-polyfill';
 import { HitStatsApi } from '../../../../../Extension/src/background/api/filters/hit-stats';
 import { HitStatsStorageData } from '../../../../../Extension/src/background/schema';
-import {
-    AntiBannerFiltersId,
-    HIT_STATISTIC_KEY,
-} from '../../../../../Extension/src/common/constants';
+import { AntiBannerFiltersId, HIT_STATISTIC_KEY } from '../../../../../Extension/src/common/constants';
 
 import { mockLocalStorage } from '../../../../helpers';
 

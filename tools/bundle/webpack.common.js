@@ -56,7 +56,7 @@ export const genCommonConfig = (browserConfig) => {
             minimize: false,
             runtimeChunk: 'single',
         },
-        cache: false,
+        cache: isDev,
         devtool: isDev ? 'eval-source-map' : false,
         entry: {
             'pages/background': {

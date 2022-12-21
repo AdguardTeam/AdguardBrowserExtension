@@ -18,10 +18,7 @@
 import browser from 'webextension-polyfill';
 import { SettingsConfig } from '@adguard/tswebextension';
 import { Log } from '../../common/log';
-import {
-    AppearanceTheme,
-    defaultSettings,
-} from '../../common/settings';
+import { AppearanceTheme, defaultSettings } from '../../common/settings';
 
 import {
     AllowlistConfig,
@@ -60,7 +57,11 @@ import {
     AllowlistApi,
 } from './filters';
 
-import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId, DOCUMENT_BLOCK_PAGE_PATH } from '../../common/constants';
+import {
+    ADGUARD_SETTINGS_KEY,
+    AntiBannerFiltersId,
+    DOCUMENT_BLOCK_PAGE_PATH,
+} from '../../common/constants';
 import { settingsEvents } from '../events';
 import { listeners } from '../notifier';
 
