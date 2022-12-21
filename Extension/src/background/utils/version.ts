@@ -34,7 +34,7 @@ export class Version {
     // splitted semver
     public data: number[] = [];
 
-    constructor(version: string) {
+    constructor(version: unknown) {
         const parts = String(version || '').split('.', Version.MAX_LENGTH);
 
         for (let i = 0; i < Version.MAX_LENGTH; i += 1) {
@@ -43,6 +43,10 @@ export class Version {
             }
 
             const part = parts[i] || '0';
+
+            if (part.length > 1 && part.startsWith('0')) {
+                throw new Error(`Can not parse ${version}. Leading zeros are not allowed in the version parts`);
+            }
 
             if (Number.isNaN(Number.parseInt(part, 10))) {
                 throw new Error(`Can not parse '${version}' string`);

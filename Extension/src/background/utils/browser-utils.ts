@@ -19,6 +19,7 @@ import { Prefs } from '../prefs';
 import { appContext, AppContextKey } from '../storages';
 
 import { Version } from './version';
+import { Log } from '../../common/log';
 
 /**
  * Helper class for working with browser extension context
@@ -77,16 +78,24 @@ export class BrowserUtils {
     }
 
     /**
-     * {@link BrowserUtils.isSemver} checks if version matches simple (without labels) semantic versioning scheme
-     * https://semver.org/
+     * {@link BrowserUtils.isSemver} checks if version can be parsed. Our format is different from
+     * usual semver format, because it can handle 4 parts (1.1.1.1 - usually filters use such
+     * format) in version. To find out more details see {@link Version}
      *
      * @param version - version string
      *
-     * @returns true, if string matches simple (without labels) semantic versioning scheme, else returns false
+     * @returns true, if string matches our versioning scheme, otherwise returns false
      */
-    public static isSemver(version: string): boolean {
-        const semverRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
-        return semverRegex.test(version);
+    public static isSemver(version?: unknown): boolean {
+        try {
+            // eslint-disable-next-line no-new
+            new Version(version);
+        } catch (e: unknown) {
+            const errorMessage = e instanceof Error ? e.message : 'unknown error';
+            Log.debug(`Can\'t parse version: "${version}", error: "${errorMessage}"`);
+            return false;
+        }
+        return true;
     }
 
     /**

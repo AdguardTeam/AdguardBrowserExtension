@@ -11,6 +11,9 @@ describe('browserUtils', () => {
         expect(BrowserUtils.isSemver(false)).toBeFalsy();
         expect(BrowserUtils.isSemver('')).toBeFalsy();
         expect(BrowserUtils.isSemver()).toBeFalsy();
+        expect(BrowserUtils.isSemver('1.1.1.1')).toBeTruthy();
+        expect(BrowserUtils.isSemver('1.1')).toBeTruthy();
+        expect(BrowserUtils.isSemver('1')).toBeTruthy();
     });
 
     // TODO: cover other cases
