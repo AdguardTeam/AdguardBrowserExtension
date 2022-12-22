@@ -825,15 +825,9 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#empty-modifier
                     // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#mp4-modifier
                     // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#removeparam-modifier
-                    regex: /object-subrequest|empty|mp4|queryprune/,
-                    token: 'invalid',
-                },
-                {
-                    // $webrtc modifier is still supported by AdGuard Browser extension
                     // https://kb.adguard.com/general/how-to-create-your-own-ad-filters#webrtc-modifier
-                    // it should be moved to deprecated modifiers above later
-                    regex: /webrtc/,
-                    token: 'keyword.control',
+                    regex: /object-subrequest|empty|mp4|queryprune|webrtc/,
+                    token: 'invalid',
                 },
                 {
                     regex: /(redirect|redirect-rule|removeparam|removeheader|cookie)=/,
