@@ -152,3 +152,83 @@ export const getEmptyStatisticDataFixture = (): GetStatisticsDataResponse => {
         ],
     };
 };
+
+export const SETTINGS_V_1_0 = {
+    'protocol-version': '1.0',
+    'general-settings': {
+        'allow-acceptable-ads': true,
+        'show-blocked-ads-count': true,
+        'autodetect-filters': true,
+        'safebrowsing-enabled': false,
+        'filters-update-period': -1,
+        'appearance-theme': 'system',
+    },
+    'extension-specific-settings': {
+        'use-optimized-filters': false,
+        'collect-hits-count': false,
+        'show-context-menu': true,
+        'show-info-about-adguard': false,
+        'show-app-updated-info': true,
+        'hide-rate-adguard': true,
+        'user-rules-editor-wrap': false,
+    },
+    'filters': {
+        'enabled-filters': [
+            2,
+            10,
+        ],
+        'enabled-groups': [
+            0,
+            1,
+            6,
+            7,
+        ],
+        'custom-filters': [],
+        'user-filter': {
+            'enabled': true,
+            'rules': '',
+            'disabled-rules': '',
+        },
+        'whitelist': {
+            'enabled': false,
+            'inverted': false,
+            'domains': [
+                'allowdomain.com',
+                'allowdomain.net',
+            ],
+            'inverted-domains': [
+                'invertedallowlist.com',
+            ],
+        },
+    },
+    'stealth': {
+        'stealth_disable_stealth_mode': true,
+        'stealth-hide-referrer': true,
+        'stealth-hide-search-queries': true,
+        'stealth-send-do-not-track': true,
+        'stealth-block-webrtc': false,
+        'stealth-remove-x-client': true,
+        'stealth-block-third-party-cookies': true,
+        'stealth-block-third-party-cookies-time': 2880,
+        'stealth-block-first-party-cookies': false,
+        'stealth-block-first-party-cookies-time': 4320,
+        'block-known-trackers': false,
+        'strip-tracking-parameters': false,
+    },
+};
+
+export const SETTINGS_V_2_0 = {
+    'general-settings': SETTINGS_V_1_0['general-settings'],
+    'extension-specific-settings': SETTINGS_V_1_0['extension-specific-settings'],
+    'stealth': SETTINGS_V_1_0.stealth,
+    'protocol-version': '2.0',
+    'filters': {
+        'enabled-filters': SETTINGS_V_1_0.filters['enabled-filters'],
+        'enabled-groups': SETTINGS_V_1_0.filters['enabled-groups'],
+        'custom-filters': SETTINGS_V_1_0.filters['custom-filters'],
+        'user-filter': SETTINGS_V_1_0.filters['user-filter'],
+        'allowlist': {
+            ...SETTINGS_V_1_0.filters.whitelist,
+        },
+    },
+};

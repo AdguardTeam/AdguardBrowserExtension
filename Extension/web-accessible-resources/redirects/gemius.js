@@ -11,7 +11,7 @@
         window.GemiusPlayer = GemiusPlayer;
         hit(source);
     }
-    function hit(source, message) {
+    function hit(source) {
         if (source.verbose !== true) {
             return;
         }
@@ -30,14 +30,6 @@
                 }
                 var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
-            }
-            var LOG_MARKER = "log: ";
-            if (message) {
-                if (message.indexOf(LOG_MARKER) === -1) {
-                    log("".concat(prefix, " message:\n").concat(message));
-                } else {
-                    log(message.slice(LOG_MARKER.length));
-                }
             }
             log("".concat(prefix, " trace start"));
             if (trace) {

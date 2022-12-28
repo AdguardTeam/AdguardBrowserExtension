@@ -39,11 +39,11 @@ import { InstallApi } from '../install';
 
 export class UpdateApi {
     private static schemaMigrationMap: Record<string, () => Promise<void>> = {
-        [UpdateApi.createSchemaMigrationKey(0, 1)]: UpdateApi.migrateFromV0toV1,
+        '0': UpdateApi.migrateFromV0toV1,
     };
 
     /**
-     * Runs app updates depends on previous and current data scheme
+     * Runs app updates depends on previous and current data schema
      *
      * @param runInfo - info about extension start up
      * @param runInfo.clientId - client id
@@ -71,61 +71,51 @@ export class UpdateApi {
         // clear persisted caches
         await UpdateApi.clearCache();
 
-        // if schema version changes, process migration
-        if (previousSchemaVersion !== currentSchemaVersion) {
-            await UpdateApi.runSchemaMigration(previousSchemaVersion, currentSchemaVersion);
-        }
-    }
-
-    /**
-     * Create scheme migration key for mapping update strategy
-     *
-     * @param previousSchemaVersion - previous data schema version
-     * @param currentSchemaVersion - current data schema version
-     * @returns scheme migration key
-     */
-    private static createSchemaMigrationKey(
-        previousSchemaVersion: number,
-        currentSchemaVersion: number,
-    ): string {
-        return `${previousSchemaVersion}-${currentSchemaVersion}`;
-    }
-
-    /**
-     * Run scheme migration
-     *
-     * @param previousSchemaVersion - previous data schema version
-     * @param currentSchemaVersion - current data schema version
-     */
-    private static async runSchemaMigration(
-        previousSchemaVersion: number,
-        currentSchemaVersion: number,
-    ): Promise<void> {
-        const schemaMigrationKey = UpdateApi.createSchemaMigrationKey(previousSchemaVersion, currentSchemaVersion);
-        const schemaMigrationAction = UpdateApi.schemaMigrationMap[schemaMigrationKey];
-
         try {
-            if (!schemaMigrationAction) {
-                throw new Error('can`t find schema migration action');
+            // if schema version changes, process migration
+            for (let schema = previousSchemaVersion; schema < currentSchemaVersion; schema += 1) {
+                const schemaMigrationAction = this.schemaMigrationMap[schema];
+
+                if (!schemaMigrationAction) {
+                    throw new Error(`Can't find schema migration action from ${previousSchemaVersion} `
+                        + `to ${currentSchemaVersion}.`);
+                }
+
+                // eslint-disable-next-line no-await-in-loop
+                await UpdateApi.runSchemaMigration(schemaMigrationAction, schema, schema + 1);
             }
-
-            await schemaMigrationAction();
         } catch (e) {
-            Log.error(`Error while schema migrating from ${
-                previousSchemaVersion
-            } to ${
-                currentSchemaVersion
-            }: ${
-                e instanceof Error ? e.message : e
-            }`);
-
+            Log.error('Error while migrate: ', e);
             Log.info('Reset settings...');
             await storage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
         }
     }
 
     /**
-     * Run data migration from scheme v0 to scheme v1
+     * Runs schema migration
+     *
+     * @param schemaMigrationAction - schema migration action
+     * @param previousSchemaVersion - previous data schema version
+     * @param currentSchemaVersion - current data schema version
+     */
+    private static async runSchemaMigration(
+        schemaMigrationAction: () => Promise<void>,
+        previousSchemaVersion: number,
+        currentSchemaVersion: number,
+    ): Promise<void> {
+        try {
+            await schemaMigrationAction();
+        } catch (e) {
+            const errMessage = `Error while schema migrating from ${previousSchemaVersion} `
+                + `to ${currentSchemaVersion}: ${e instanceof Error ? e.message : e}`;
+            Log.error(errMessage);
+
+            throw new Error(errMessage, { cause: e });
+        }
+    }
+
+    /**
+     * Run data migration from schema v0 to schema v1
      */
     private static async migrateFromV0toV1(): Promise<void> {
         // In the v4.0.171 we have littered window.localStorage with proms used in the promo notifications module,
@@ -134,7 +124,7 @@ export class UpdateApi {
         window.localStorage.removeItem(VIEWED_NOTIFICATIONS_KEY);
         window.localStorage.removeItem(LAST_NOTIFICATION_TIME_KEY);
 
-        // In the v4.2.0 we refactoring storage data structure
+        // In the v4.2.0 we are refactoring storage data structure
 
         // get current settings
         const storageData = await storage.get(ADGUARD_SETTINGS_KEY);
@@ -143,7 +133,7 @@ export class UpdateApi {
         const currentSettings = zod.record(zod.unknown()).parse(storageData);
 
         // delete app version from settings
-        if (currentSettings[APP_VERSION_KEY]) {
+        if (currentSettings?.[APP_VERSION_KEY]) {
             delete currentSettings[APP_VERSION_KEY];
         }
 
@@ -154,6 +144,39 @@ export class UpdateApi {
 
         if (currentSettings?.[SettingOption.Metadata]) {
             delete currentSettings[SettingOption.Metadata];
+        }
+
+        // move them to new fields
+        if (currentSettings?.['default-whitelist-mode'] !== undefined) {
+            currentSettings[SettingOption.DefaultAllowlistMode] = currentSettings['default-whitelist-mode'];
+            delete currentSettings['default-whitelist-mode'];
+        }
+
+        if (currentSettings?.['white-list-domains'] !== undefined) {
+            currentSettings[SettingOption.AllowlistDomains] = currentSettings['white-list-domains'];
+            delete currentSettings['white-list-domains'];
+        }
+
+        /**
+         * New group state 'toggled' field added in 4.2
+         *
+         * zod 'parse then transform' approach is used to transform data to actual schema
+         */
+        if (typeof currentSettings?.[SettingOption.GroupsState] === 'string') {
+            // create data transformer
+            const groupsStateTransformer = zod.record(
+                zod.object({
+                    enabled: zod.boolean(),
+                }).transform(({ enabled }) => ({
+                    enabled,
+                    toggled: enabled,
+                })),
+            );
+
+            const currentGroupsStateData = JSON.parse(currentSettings[SettingOption.GroupsState]);
+            currentSettings[SettingOption.GroupsState] = JSON.stringify(
+                groupsStateTransformer.parse(currentGroupsStateData),
+            );
         }
 
         // mode notification data from settings to root storage

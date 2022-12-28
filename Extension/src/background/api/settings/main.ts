@@ -17,8 +17,8 @@
  */
 import browser from 'webextension-polyfill';
 import { SettingsConfig } from '@adguard/tswebextension';
-import { Log } from '../../common/log';
-import { AppearanceTheme, defaultSettings } from '../../common/settings';
+import { Log } from '../../../common/log';
+import { AppearanceTheme, defaultSettings } from '../../../common/settings';
 
 import {
     AllowlistConfig,
@@ -39,14 +39,14 @@ import {
     SettingOption,
     Settings,
     settingsValidator,
-} from '../schema';
+} from '../../schema';
 
 import {
     filterStateStorage,
     groupStateStorage,
     settingsStorage,
     storage,
-} from '../storages';
+} from '../../storages';
 
 import {
     CommonFilterApi,
@@ -55,15 +55,17 @@ import {
     FiltersApi,
     UserRulesApi,
     AllowlistApi,
-} from './filters';
+} from '../filters';
 
 import {
     ADGUARD_SETTINGS_KEY,
     AntiBannerFiltersId,
     DOCUMENT_BLOCK_PAGE_PATH,
-} from '../../common/constants';
-import { settingsEvents } from '../events';
-import { listeners } from '../notifier';
+} from '../../../common/constants';
+import { settingsEvents } from '../../events';
+import { listeners } from '../../notifier';
+import { SettingsMigrations } from './migrations';
+import { Unknown } from '../../utils';
 
 export type SettingsData = {
     names: typeof SettingOption,
@@ -157,7 +159,19 @@ export class SettingsApi {
 
     public static async import(configText: string): Promise<boolean> {
         try {
-            const json = JSON.parse(configText);
+            let json = JSON.parse(configText) as unknown;
+
+            const protocolVersion = Unknown.get(json, RootOption.ProtocolVersion);
+
+            if (typeof protocolVersion !== 'string') {
+                throw new Error(`Not found string protocol version for provided settings: "${configText}"`);
+            }
+
+            // Try to migrate `unknown` settings to the latest version of settings
+            if (protocolVersion !== PROTOCOL_VERSION) {
+                json = await SettingsMigrations.migrateSettings(protocolVersion, json);
+            }
+
             const validConfig = configValidator.parse(json);
 
             await SettingsApi.reset();

@@ -1,5 +1,5 @@
 (function(source, args) {
-    function preventBab(source) {
+    function preventBab$1(source) {
         var nativeSetTimeout = window.setTimeout;
         var babRegex = /\.bab_elementid.$/;
         var timeoutWrapper = function timeoutWrapper(callback) {
@@ -50,7 +50,7 @@
         };
         window.eval = evalWrapper.bind(window);
     }
-    function hit(source, message) {
+    function hit(source) {
         if (source.verbose !== true) {
             return;
         }
@@ -70,14 +70,6 @@
                 var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
-            var LOG_MARKER = "log: ";
-            if (message) {
-                if (message.indexOf(LOG_MARKER) === -1) {
-                    log("".concat(prefix, " message:\n").concat(message));
-                } else {
-                    log(message.slice(LOG_MARKER.length));
-                }
-            }
             log("".concat(prefix, " trace start"));
             if (trace) {
                 trace();
@@ -90,7 +82,7 @@
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
-        preventBab.apply(this, updatedArgs);
+        preventBab$1.apply(this, updatedArgs);
     } catch (e) {
         console.log(e);
     }

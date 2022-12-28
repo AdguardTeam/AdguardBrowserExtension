@@ -15,6 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Current version of app storage data schema.
+ *
+ * Schema version is used on extension version update.
+ *
+ * Note: Do not to be confused with the protocol version of the imported config.
+ */
 export const APP_SCHEMA_VERSION = 1;
 
 export const CLIENT_ID_KEY = 'client-id';

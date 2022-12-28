@@ -34,7 +34,7 @@ export enum SettingOption {
     DisableShowPageStats = 'disable-show-page-statistic',
 
     // allowlist domains
-    AllowlistDomains = 'white-list-domains',
+    AllowlistDomains = 'allowlist-domains',
     InvertedAllowlistDomains = 'block-list-domains',
 
     // flag used to show link to comparison of desktop and browser adblocker versions
@@ -45,7 +45,7 @@ export enum SettingOption {
     DisableCollectHits = 'hits-count-disabled',
     DisableShowContextMenu = 'context-menu-disabled',
     UseOptimizedFilters = 'use-optimized-filters',
-    DefaultAllowlistMode = 'default-whitelist-mode',
+    DefaultAllowlistMode = 'default-allowlist-mode',
     AllowlistEnabled = 'allowlist-enabled',
     DisableShowAppUpdatedNotification = 'show-app-updated-disabled',
     FiltersUpdatePeriod = 'filters-update-period',
