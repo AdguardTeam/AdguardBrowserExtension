@@ -24,7 +24,7 @@ import { stealthConfigValidator } from './stealth';
 
 // Root configuration
 
-export const PROTOCOL_VERSION = '1.0';
+export const PROTOCOL_VERSION = '2.0';
 
 export const enum RootOption {
     ProtocolVersion = 'protocol-version',

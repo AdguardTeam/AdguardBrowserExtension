@@ -21,14 +21,13 @@ import { customFiltersConfigValidator } from './custom-filters';
 import { userFilterValidator } from './user-filter';
 import { allowlistValidator } from './allowlist';
 
-// Adguard filters configuration
-
+// AdGuard filters configuration
 export const enum FiltersOption {
     EnabledGroups = 'enabled-groups',
     EnabledFilters = 'enabled-filters',
     CustomFilters = 'custom-filters',
     UserFilter = 'user-filter',
-    Allowlist = 'whitelist',
+    Allowlist = 'allowlist',
 }
 
 export const filtersConfigValidator = zod.object({

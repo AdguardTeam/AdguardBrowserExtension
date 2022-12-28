@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { format } from 'date-fns';
 
 /**
  * Number presentation of log levels. Order is important. Higher number, more messages to be visible.
@@ -123,19 +124,6 @@ export class Log {
     }
 
     /**
-     * Returns local time string.
-     *
-     * @param date Some date.
-     * @private
-     */
-    private static getLocalTimeString(date: Date): string {
-        const ONE_MINUTE_MS = 60 * 1000;
-        const timeZoneOffsetMs = date.getTimezoneOffset() * ONE_MINUTE_MS;
-        const localTime = new Date(date.getMilliseconds() - timeZoneOffsetMs);
-        return localTime.toISOString().replace('Z', '');
-    }
-
-    /**
      * Wrapper over log methods.
      *
      * @param level Log level.
@@ -173,7 +161,7 @@ export class Log {
             return String(value);
         });
 
-        const formattedTime = `${Log.getLocalTimeString(new Date())}:`;
+        const formattedTime = `${format(Date.now(), 'HH.mm.ss.SSS')}:`;
 
         // eslint-disable-next-line no-console
         console[method](formattedTime, ...formattedArgs);

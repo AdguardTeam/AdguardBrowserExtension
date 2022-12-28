@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import zod from 'zod';
 import {
     ADGUARD_SETTINGS_KEY,
     APP_SCHEMA_VERSION,
@@ -47,12 +48,14 @@ async function getData(key: string, fallback = true): Promise<unknown | null> {
         return data;
     }
 
-    // Before v4.2, app version, schema version and client id were stored in settings
+    // Before v4.2, app version and client id were stored in settings
     if (fallback) {
         const settings = await storage.get(ADGUARD_SETTINGS_KEY);
 
-        if (Object(settings)[key]) {
-            return key;
+        const result = zod.record(zod.unknown()).safeParse(settings);
+
+        if (result.success && key in result.data) {
+            return result.data[key];
         }
     }
 

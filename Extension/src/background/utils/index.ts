@@ -21,3 +21,4 @@ export * from './string-storage';
 export * from './url';
 export * from './version';
 export * from './run-info';
+export * from './unknown';
