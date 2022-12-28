@@ -18,9 +18,8 @@
  */
 
 /**
- * Simple logger with log levels
+ * Number presentation of log levels. Order is important. Higher number, more messages to be visible.
  */
-
 export const enum LogLevel {
     Error = 1,
     Warn,
@@ -28,35 +27,107 @@ export const enum LogLevel {
     Debug,
 }
 
+/**
+ * Methods supported by console. Used to manage levels.
+ */
 export const enum LogMethod {
     Log = 'log',
     Info = 'info',
     Error = 'error',
 }
 
-export class Log {
-    private static currentLevel = LogLevel.Info;
+/**
+ * String presentation of log levels, for convenient users usage.
+ */
+enum LogLevelString {
+    Error = 'error',
+    Warn = 'warn',
+    Info = 'info',
+    Debug = 'debug',
+}
 
+/**
+ * Simple logger with log levels
+ */
+export class Log {
+    private static currentLevelValue = LogLevel.Info;
+
+    /**
+     * Print debug messages. Usually used for technical information.
+     *
+     * @param args Printed arguments.
+     */
     public static debug(...args: unknown[]): void {
         Log.print(LogLevel.Debug, LogMethod.Log, args);
     }
 
+    /**
+     * Print messages you want to disclose to users.
+     *
+     * @param args Printed arguments.
+     */
     public static info(...args: unknown[]): void {
         Log.print(LogLevel.Info, LogMethod.Info, args);
     }
 
+    /**
+     * Print warn messages.
+     *
+     * @param args Printed arguments.
+     */
     public static warn(...args: unknown[]): void {
         Log.print(LogLevel.Warn, LogMethod.Info, args);
     }
 
+    /**
+     * Print error messages
+     *
+     * @param args Printed arguments.
+     */
     public static error(...args: unknown[]): void {
         Log.print(LogLevel.Error, LogMethod.Error, args);
     }
 
+    /**
+     * Setter for log level. With this method log level can be updated dynamically.
+     *
+     * @param logLevel Log level.
+     */
+    public static set currentLevel(logLevel: LogLevelString) {
+        switch (logLevel) {
+            case LogLevelString.Error:
+                Log.currentLevelValue = LogLevel.Error;
+                break;
+            case LogLevelString.Warn:
+                Log.currentLevelValue = LogLevel.Warn;
+                break;
+            case LogLevelString.Info:
+                Log.currentLevelValue = LogLevel.Info;
+                break;
+            case LogLevelString.Debug:
+                Log.currentLevelValue = LogLevel.Debug;
+                break;
+            default:
+                throw new Error(`Logger supports only next levels: ${[Object.values(LogLevelString).join(', ')]}`);
+        }
+    }
+
+    /**
+     * Converts error to string.
+     *
+     * @param error Error to print.
+     * @private
+     */
     private static errorToString(error: Error): string {
         return `${error.toString()}\nStack trace:\n${error.stack}`;
     }
 
+    /**
+     * Returns local time string.
+     *
+     * @param date Some date.
+     * @private
+     */
     private static getLocalTimeString(date: Date): string {
         const ONE_MINUTE_MS = 60 * 1000;
         const timeZoneOffsetMs = date.getTimezoneOffset() * ONE_MINUTE_MS;
@@ -64,46 +135,69 @@ export class Log {
         return localTime.toISOString().replace('Z', '');
     }
 
+    /**
+     * Wrapper over log methods.
+     *
+     * @param level Log level.
+     * @param method Log method.
+     * @param args
+     * @private
+     */
     private static print(
         level: LogLevel,
         method: LogMethod,
-        // eslint-disable-next-line
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         args: any[],
     ): void {
         // check log level
-        if (this.currentLevel < level) {
+        if (Log.currentLevelValue < level) {
             return;
         }
         if (!args || args.length === 0 || !args[0]) {
             return;
         }
 
-        const str = `${args[0]}`;
-        args = Array.prototype.slice.call(args, 1);
-        let formatted = str.replace(/{(\d+)}/g, (match: string, number: number): string => {
-            if (typeof args[number] !== 'undefined') {
-                const value = args[number];
-
-                if (value instanceof Error) {
-                    return Log.errorToString(value);
-                }
-
-                if (typeof value.message === 'string') {
-                    return value.message;
-                }
-
-                if (typeof value === 'object') {
-                    return JSON.stringify(value);
-                }
-
-                return String(value);
+        const formattedArgs = args.map(value => {
+            if (value instanceof Error) {
+                return Log.errorToString(value);
             }
 
-            return match;
+            if (typeof value.message === 'string') {
+                return value.message;
+            }
+
+            if (typeof value === 'object') {
+                return JSON.stringify(value);
+            }
+
+            return String(value);
         });
 
-        formatted = `${Log.getLocalTimeString(new Date())}: ${formatted}`;
+        const formattedTime = `${Log.getLocalTimeString(new Date())}:`;
+
         // eslint-disable-next-line no-console
-        console[method](formatted);
+        console[method](formattedTime, ...formattedArgs);
+    }
+
+    /**
+     * Exposes logger globally, so user be able to update log level and print more info.
+     *
+     * @param window DOM Window object.
+     */
+    static expose(window: Window) {
+        const adguard = window.adguard ?? {};
+        window.adguard = adguard;
+
+        adguard.Log = Log;
     }
 }
+
+declare global {
+    interface Window {
+        adguard: {
+            Log: Log;
+        }
+    }
+}
+
+Log.expose(window);

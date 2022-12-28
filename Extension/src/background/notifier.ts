@@ -118,7 +118,7 @@ class Notifier {
             try {
                 listener.apply(listener, args);
             } catch (ex) {
-                Log.error('Error invoking listener for {0} cause: {1}', event, ex);
+                Log.error(`Error invoking listener for ${event} cause:`, ex);
             }
         });
     }

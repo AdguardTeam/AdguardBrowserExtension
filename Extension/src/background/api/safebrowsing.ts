@@ -90,7 +90,7 @@ export class SafebrowsingApi {
             return;
         }
 
-        Log.debug('Checking safebrowsing filter for {0}', requestUrl);
+        Log.debug('Checking safebrowsing filter for', requestUrl);
 
         const sbList = await SafebrowsingApi.lookupUrl(requestUrl);
 
@@ -99,7 +99,7 @@ export class SafebrowsingApi {
             return;
         }
 
-        Log.debug('Following safebrowsing filter has been fired: {0}', sbList);
+        Log.debug('Following safebrowsing filter has been fired:', sbList);
         return SafebrowsingApi.getErrorPageURL(requestUrl, referrerUrl, sbList);
     }
 
@@ -153,14 +153,14 @@ export class SafebrowsingApi {
         try {
             response = await network.lookupSafebrowsing(shortHashes);
         } catch (e) {
-            Log.error('Error response from safebrowsing lookup server for {0}', host);
+            Log.error('Error response from safebrowsing lookup server for', host);
             await SafebrowsingApi.suspendSafebrowsing();
             return null;
         }
 
         if (response && response.status >= 500) {
             // Error on server side, suspend request
-            Log.error('Error response status {0} received from safebrowsing lookup server.', response.status);
+            Log.error(`Error response status ${response.status} received from safebrowsing lookup server.`);
             await SafebrowsingApi.suspendSafebrowsing();
             return null;
         }
@@ -274,7 +274,7 @@ export class SafebrowsingApi {
 
             return null;
         } catch (ex) {
-            Log.error('Error parse safebrowsing response, cause {0}', ex);
+            Log.error('Error parse safebrowsing response, cause', ex);
         }
         return null;
     }

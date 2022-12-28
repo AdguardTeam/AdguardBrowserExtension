@@ -178,7 +178,7 @@ export class UserRulesApi {
             }
         });
 
-        Log.debug('Converted {0} rules to {1} for user filter', rules.length, result.length);
+        Log.debug(`Converted ${rules.length} rules to ${result.length} for user filter`);
 
         return result;
     }
