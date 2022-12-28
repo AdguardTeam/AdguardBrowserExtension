@@ -97,7 +97,7 @@ export class CustomFilterService {
      *
      * @param details - onCommitted event request details
      */
-    static injectSubscriptionScript(details: WebNavigation.OnCommittedDetailsType): void {
+    static async injectSubscriptionScript(details: WebNavigation.OnCommittedDetailsType): Promise<void> {
         const { tabId, frameId } = details;
 
         if (tabId === BACKGROUND_TAB_ID) {
@@ -121,7 +121,7 @@ export class CustomFilterService {
         }
 
         try {
-            browser.tabs.executeScript(tabId, {
+            await browser.tabs.executeScript(tabId, {
                 file: '/content-script/subscribe.js',
                 runAt: 'document_start',
                 frameId,
