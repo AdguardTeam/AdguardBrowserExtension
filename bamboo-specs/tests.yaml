@@ -33,7 +33,8 @@ Test:
             set -e
             ls -la
 
-            yarn install ${bamboo.varsYarn}
+            # don't use --ignore-optional flag, because esbuild requires optional deps 
+            yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
             yarn lint
             yarn check-types
             yarn test

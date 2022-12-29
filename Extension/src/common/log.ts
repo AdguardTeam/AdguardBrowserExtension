@@ -161,7 +161,7 @@ export class Log {
             return String(value);
         });
 
-        const formattedTime = `${format(Date.now(), 'HH.mm.ss.SSS')}:`;
+        const formattedTime = `${format(Date.now(), "yyyy-MM-dd'T'HH:mm:ss:SSS")}:`;
 
         // eslint-disable-next-line no-console
         console[method](formattedTime, ...formattedArgs);

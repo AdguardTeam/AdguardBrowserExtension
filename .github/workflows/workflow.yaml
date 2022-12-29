@@ -16,7 +16,7 @@ jobs:
           node-version: 14.x
 
       - name: yarn install
-        run: yarn install
+        run: yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
 
       - name: yarn test
         run: yarn run test

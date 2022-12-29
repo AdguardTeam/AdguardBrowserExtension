@@ -20,20 +20,12 @@
 import 'whatwg-fetch';
 
 import escape from 'css.escape';
-import browser from 'sinon-chrome';
-import lodash, { DebouncedFunc } from 'lodash';
+import mockBrowser from 'sinon-chrome';
+import { DebouncedFunc } from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
-
-// Important: import user-agent mock directly from file to guarantee that
-// mocking of user-agent will be executed first, before all others mocks and
-// fixtures.
-import { mockUserAgent } from './tests/helpers/mocks/user-agent';
-// Mock user agent
-// eslint-disable-next-line max-len
-mockUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.0.2468 Yowser/2.5 Safari/537.36');
 
 // After mocked user-agent, we can import all other mocks
 // eslint-disable-next-line import/first
@@ -57,25 +49,27 @@ chrome.runtime.id = 'text';
 global.chrome = chrome;
 
 // implements some global function for 'webextension-polyfill' before mocking
-browser.runtime.getURL.callsFake((url: string) => `chrome-extension://test/${url}`);
-browser.runtime.getManifest.returns({ version: '0.0.0' });
+mockBrowser.runtime.getURL.callsFake((url: string) => `chrome-extension://test/${url}`);
+mockBrowser.runtime.getManifest.returns({ version: '0.0.0' });
 
-browser.i18n.getUILanguage.returns('en');
-browser.i18n.getMessage.callsFake((value: string) => value);
+mockBrowser.i18n.getUILanguage.returns('en');
+mockBrowser.i18n.getMessage.callsFake((value: string) => value);
+
+jest.mock('webextension-polyfill', () => mockBrowser);
 
 jest.mock('nanoid', () => ({
     nanoid: jest.fn((): string => 'cTkoV5Vs'),
 }));
 
-jest.mock('webextension-polyfill', () => browser);
+jest.mock('@adguard/tswebextension', () => ({
+    ...(jest.requireActual('@adguard/tswebextension')),
+    TsWebExtension: MockedTsWebExtension,
+}));
 
-// It is important to load tswebextension after browser polyfill mocking
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-jest.spyOn(require('@adguard/tswebextension'), 'TsWebExtension').mockImplementation(() => new MockedTsWebExtension());
-
-jest.spyOn(lodash, 'debounce').mockImplementation(((
-    func: (...args: unknown[]) => unknown,
-) => func as DebouncedFunc<(...args: unknown[]) => unknown>));
+jest.mock('lodash', () => ({
+    ...jest.requireActual('lodash'),
+    debounce: ((func: (...args: unknown[]) => unknown) => func as DebouncedFunc<(...args: unknown[]) => unknown>),
+}));
 
 // create browser.storage.local emulator and bound it with sinon-chrome stub
 mockLocalStorage();
