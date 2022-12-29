@@ -25,6 +25,10 @@ const transformedModules = [
 const config: JestConfigWithTsJest = {
     verbose: true,
     testEnvironment: 'jsdom',
+    testEnvironmentOptions: {
+        // eslint-disable-next-line max-len
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.0.2468 Yowser/2.5 Safari/537.36',
+    },
     testRegex: '(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$',
     setupFiles: [
         './testSetup.ts',
@@ -34,7 +38,7 @@ const config: JestConfigWithTsJest = {
         '.*\\.json',
     ],
     transform: {
-        '.+\\.(js|ts|jsx|tsx)': 'ts-jest',
+        '.+\\.(js|ts|jsx|tsx)': 'esbuild-jest',
     },
 };
 
