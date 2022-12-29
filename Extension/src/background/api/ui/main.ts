@@ -33,7 +33,7 @@ export class UiApi {
 
         const frameData = FramesApi.getMainFrameData(tabContext);
 
-        await ContextMenuApi.updateMenu(frameData);
+        await ContextMenuApi.throttledUpdateMenu(frameData);
 
         debounce(() => {
             IconsApi.updateTabIcon(tabId, frameData);
@@ -43,7 +43,7 @@ export class UiApi {
 
     private static async broadcastTotalBlockedMessage({ totalBlocked, totalBlockedTab }: FrameData): Promise<void> {
         try {
-            sendMessage<MessageType.UpdateTotalBlocked>({
+            await sendMessage<MessageType.UpdateTotalBlocked>({
                 type: MessageType.UpdateTotalBlocked,
                 data: {
                     totalBlocked,
