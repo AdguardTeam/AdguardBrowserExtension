@@ -16,6 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO remove no-explicit-any disabling
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
+
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
@@ -38,6 +41,11 @@ import {
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { UserAgent } from '../../../../common/user-agent';
 import { BROWSER_ADDON_STORE_LINKS } from '../../../constants';
+import { getErrorMessage } from '../../../../common/error';
+import { SettingHandler } from '../../types';
+import { ensurePermission } from '../../ensure-permission';
+import { translator } from '../../../../common/translators/translator';
+import { Unknown } from '../../../../common/unknown';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -96,13 +104,31 @@ if (UserAgent.isFirefox) {
     currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.OPERA;
 }
 
+/**
+ * We need to handle privacy permission on user action.
+ * That is why we check for privacy permission on the UI.
+ *
+ * @throws error if privacy permission is required, but it wasn't given
+ */
+const handlePrivacyPermissionForWebRtc = (content: string): Promise<boolean> => {
+    const json: unknown = JSON.parse(content);
+
+    const blockWebRtc = Unknown.get(json, 'stealth.stealth-block-webrtc');
+
+    if (typeof blockWebRtc !== 'boolean') {
+        throw new Error('Was not able to parse file content');
+    }
+
+    return ensurePermission(blockWebRtc);
+};
+
 const General = observer(() => {
     const {
         settingsStore,
         uiStore,
     } = useContext(rootStore);
 
-    const { settings, allowAcceptableAds } = settingsStore;
+    const { settings, allowAcceptableAds }: any = settingsStore;
 
     if (!settings) {
         return null;
@@ -112,12 +138,21 @@ const General = observer(() => {
         exportData(ExportTypes.SETTINGS);
     };
 
-    const inputChangeHandler = async (event) => {
+    const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
         event.persist();
-        const file = event.target.files[0];
+        const file = event.target.files?.[0];
 
         try {
             const content = await handleFileUpload(file, 'json');
+            const success = await handlePrivacyPermissionForWebRtc(content);
+            if (!success) {
+                uiStore.addNotification({
+                    description: translator.getMessage('options_popup_import_error_required_privacy_permission'),
+                });
+                event.target.value = '';
+                return;
+            }
+
             const result = await messenger.applySettingsJson(content);
             if (result) {
                 const successMessage = reactTranslator.getMessage('options_popup_import_success_title');
@@ -127,7 +162,7 @@ const General = observer(() => {
                 uiStore.addNotification({ description: errorMessage });
             }
         } catch (e) {
-            const message = e.message || reactTranslator.getMessage('options_popup_import_error_title');
+            const message = getErrorMessage(e) || reactTranslator.getMessage('options_popup_import_error_title');
             uiStore.addNotification({ description: message });
         }
 
@@ -135,11 +170,11 @@ const General = observer(() => {
         event.target.value = '';
     };
 
-    const allowAcceptableAdsChangeHandler = async ({ data }) => {
+    const allowAcceptableAdsChangeHandler: SettingHandler = async ({ data }) => {
         await settingsStore.setAllowAcceptableAdsState(data);
     };
 
-    const settingChangeHandler = async ({ id, data }) => {
+    const settingChangeHandler: SettingHandler = async ({ id, data }) => {
         await settingsStore.updateSetting(id, data);
     };
 
@@ -153,6 +188,8 @@ const General = observer(() => {
     return (
         <>
             <SettingsSection title={reactTranslator.getMessage('options_general_settings')}>
+                { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                {/* @ts-ignore */}
                 <SettingSetSelect
                     title={reactTranslator.getMessage('options_select_theme')}
                     id={AppearanceTheme}
@@ -161,8 +198,12 @@ const General = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_block_acceptable_ads')}
                     description={reactTranslator.getMessage('options_block_acceptable_ads_desc', {
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
                         a: (chunks) => (
                             <a
                                 href={ACCEPTABLE_ADS_LEARN_MORE_URL}
@@ -181,8 +222,12 @@ const General = observer(() => {
                     handler={allowAcceptableAdsChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_safebrowsing_enabled')}
                     description={reactTranslator.getMessage('options_safebrowsing_enabled_desc', {
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
                         a: (chunks) => (
                             <a
                                 href={SAFEBROWSING_LEARN_MORE_URL}
@@ -202,6 +247,8 @@ const General = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_enable_autodetect_filter')}
                     description={reactTranslator.getMessage('options_enable_autodetect_filter_desc')}
                     disabled={settings.values[DisableDetectFilters]}

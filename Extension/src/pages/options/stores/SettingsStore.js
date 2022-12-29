@@ -182,9 +182,12 @@ class SettingsStore {
     }
 
     @action
-    updateSetting(settingId, value) {
+    updateSetting(settingId, value, ignoreBackground = false) {
         this.settings.values[settingId] = value;
-        messenger.changeUserSetting(settingId, value);
+
+        if (!ignoreBackground) {
+            messenger.changeUserSetting(settingId, value);
+        }
     }
 
     async setFilterRelatedSettingState(filterId, optionKey, enabled) {
