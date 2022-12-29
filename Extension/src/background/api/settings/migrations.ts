@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Unknown } from '../../utils';
+import { Unknown } from '../../../common/unknown';
 
 /**
  * Migration type describes which action should apply to settings

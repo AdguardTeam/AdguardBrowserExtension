@@ -65,7 +65,7 @@ import {
 import { settingsEvents } from '../../events';
 import { listeners } from '../../notifier';
 import { SettingsMigrations } from './migrations';
-import { Unknown } from '../../utils';
+import { Unknown } from '../../../common/unknown';
 
 export type SettingsData = {
     names: typeof SettingOption,

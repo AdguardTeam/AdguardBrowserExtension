@@ -15,10 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './browser-utils';
-export * from './i18n';
-export * from './string-storage';
-export * from './url';
-export * from './version';
-export * from './run-info';
-export * from '../../common/unknown';
+
+// TODO remove when types can be placed in the corresponding places.
+// This file is temporary storage for common types. We use it until not all modules moved to
+// typescript
+
+type HandlerPayload = {
+    data: unknown,
+    id: string,
+};
+
+export type SettingHandler = {
+    (payload: HandlerPayload): void;
+};

@@ -16,6 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO remove all @ts-ignore, and explicit any
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
+
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
@@ -31,29 +34,46 @@ import {
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
 } from '../../../../common/settings';
+import { SettingHandler } from '../../types';
+import { ensurePermission } from '../../ensure-permission';
 
 const BlockKnownTrackers = 'blockKnownTrackers';
 const STRIP_TRACKING_PARAMETERS = 'stripTrackingParameters';
 
 const Stealth = observer(() => {
     const { settingsStore } = useContext(rootStore);
-    const { settings, blockKnownTrackers, stripTrackingParameters } = settingsStore;
+    const { settings, blockKnownTrackers, stripTrackingParameters }: any = settingsStore;
 
     if (!settings) {
         return null;
     }
 
-    const blockKnownTrackersChangeHandler = async ({ data }) => {
+    const blockKnownTrackersChangeHandler: SettingHandler = async ({ data }) => {
         await settingsStore.setBlockKnownTrackersState(data);
     };
 
-    const stripTrackingParametersChangeHandler = async ({ data }) => {
+    const stripTrackingParametersChangeHandler: SettingHandler = async ({ data }) => {
         await settingsStore.setStripTrackingParametersState(data);
     };
 
-    const settingChangeHandler = async ({ id, data }) => {
+    const settingChangeHandler: SettingHandler = async ({ id, data }) => {
         Log.info(`Setting ${id} set to ${data}`);
         await settingsStore.updateSetting(id, data);
+    };
+
+    const webRtcHandler: SettingHandler = async (payload) => {
+        const { id, data } = payload;
+
+        await settingsStore.updateSetting(id, data, true);
+
+        // TODO remove "as boolean" after payload types be better defined
+        const successfullyHandled = await ensurePermission(data as boolean);
+
+        if (successfullyHandled) {
+            await settingsStore.updateSetting(id, data);
+        } else {
+            await settingsStore.updateSetting(id, !data, true);
+        }
     };
 
     const {
@@ -98,6 +118,8 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_block_known_trackers_title')}
                     description={reactTranslator.getMessage('options_block_known_trackers_description')}
                     disabled={!blockKnownTrackers}
@@ -110,6 +132,8 @@ const Stealth = observer(() => {
                 />
 
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_strip_tracking_params_title')}
                     description={reactTranslator.getMessage('options_strip_tracking_params_description')}
                     disabled={!stripTrackingParameters}
@@ -121,6 +145,8 @@ const Stealth = observer(() => {
                     handler={stripTrackingParametersChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_hide_search_queries_title')}
                     description={reactTranslator.getMessage('options_hide_search_queries_desc')}
                     disabled={!settings.values[HideSearchQueries]}
@@ -132,8 +158,12 @@ const Stealth = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_send_not_track_title')}
                     description={reactTranslator.getMessage('options_send_not_track_desc', {
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
                         gpc: (chunks) => (
                             <a
                                 className="desc--link"
@@ -144,6 +174,8 @@ const Stealth = observer(() => {
                                 {chunks}
                             </a>
                         ),
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
                         dnt: (chunks) => (
                             <a
                                 className="desc--link"
@@ -170,6 +202,8 @@ const Stealth = observer(() => {
                 mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
+                { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                {/* @ts-ignore */}
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_third_party_title')}
                     description={reactTranslator.getMessage('options_third_party_desc')}
@@ -191,6 +225,8 @@ const Stealth = observer(() => {
                     />
                 </SettingsSetCheckbox>
 
+                { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                {/* @ts-ignore */}
                 <SettingsSetCheckbox
                     title={reactTranslator.getMessage('options_first_party_title')}
                     description={reactTranslator.getMessage('options_first_party_desc')}
@@ -219,6 +255,8 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_hide_referrer_title')}
                     description={reactTranslator.getMessage('options_hide_referrer_desc')}
                     disabled={!settings.values[HideReferrer]}
@@ -232,6 +270,8 @@ const Stealth = observer(() => {
 
                 {settingsStore.isChrome && (
                     <SettingsSetCheckbox
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
                         title={reactTranslator.getMessage('options_remove_client_data_title')}
                         description={reactTranslator.getMessage('options_remove_client_data_desc')}
                         disabled={!settings.values[BlockChromeClientData]}
@@ -245,6 +285,8 @@ const Stealth = observer(() => {
                 )}
 
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={reactTranslator.getMessage('options_disable_webrtc_title')}
                     description={reactTranslator.getMessage('options_disable_webrtc_desc')}
                     disabled={!settings.values[BlockWebRTC]}
@@ -253,7 +295,7 @@ const Stealth = observer(() => {
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_disable_webrtc_title')}
                     value={settings.values[BlockWebRTC]}
-                    handler={settingChangeHandler}
+                    handler={webRtcHandler}
                 />
             </SettingsSection>
         </>
