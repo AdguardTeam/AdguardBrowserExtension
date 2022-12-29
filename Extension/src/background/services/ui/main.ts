@@ -46,6 +46,7 @@ import {
     PageStatsApi,
     SettingsData,
     FilterMetadata,
+    ContextMenuApi,
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
@@ -76,6 +77,7 @@ export type InitializeFrameScriptResponse = {
 export class UiService {
     public static async init(): Promise<void> {
         await toasts.init();
+        ContextMenuApi.init();
 
         messageHandler.addListener(MessageType.OpenTab, TabsApi.openTab);
 
