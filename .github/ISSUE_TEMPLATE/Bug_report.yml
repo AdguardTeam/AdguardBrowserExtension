@@ -36,7 +36,10 @@ body:
     id: filters
     attributes:
       label: What filters do you have enabled?
-      description: Select enabled filters from the list.
+      description: |
+        Select enabled filters from the list if they are related to the extension bug.
+        If the issue is related to the filtering (missed ads, cookie, etc.)
+        use the [Web Reporting Tool](https://kb.adguard.com/en/technical-support/reporting-tool) please.
       multiple: true
       options:
         - No filters
@@ -54,6 +57,11 @@ body:
         - AdGuard URL Tracking filter
         - AdGuard Social Media filter
         - AdGuard Annoyances filter
+        - AdGuard Cookie Notices filter
+        - AdGuard Popups filter
+        - AdGuard Mobile App Banners filter
+        - AdGuard Widgets filter
+        - AdGuard Other Annoyances filter
         - AdGuard DNS filter
         - AdGuard Experimental filter
         - Filter unblocking search ads and self-promotion
@@ -85,24 +93,18 @@ body:
         - Xfiles
         - Adblock Warning Removal List
         - Online Malicious URL Blocklist
-        - Spam404
         - RU AdList - Counters
         - ABPVN List
         - Fanboy's Enhanced Tracking List
         - Official Polish filters for AdBlock, uBlock Origin & AdGuard
         - Polish GDPR-Cookies Filters
         - Estonian List
-        - ChinaList+EasyList
         - CJX's Annoyances List
         - Polish Social Filters
-        - Adblock-Persian list
-        - Fanboy's Swedish
         - Fanboy's Anti-Facebook List
-        - Fanboy's Vietnamese
         - List-KR
         - xinggsf
         - I don't care about cookies
-        - Fanboy's Spanish\/Portuguese
         - EasyList Spanish
         - KAD - Anti-Scam
         - Adblock List for Finland
@@ -112,7 +114,6 @@ body:
         - Polish Annoyances Filters
         - Polish Anti Adblock Filters
         - Fanboy's Anti-thirdparty Fonts
-        - BarbBlock
         - EasyList Cookie List
         - NoCoin Filter List
         - Frellwit's Swedish Filter
@@ -123,6 +124,8 @@ body:
         - Dandelion Sprout's Nordic Filters
         - Dandelion Sprout's Annoyances List
         - Legitimate URL Shortener
+        - Dandelion Sprout's Serbo-Croatian List
+        - IndianList
         - Others
     validations:
       required: false
@@ -136,7 +139,7 @@ body:
         - Block trackers
         - Remove tracking parameters
         - Hide your search queries
-        - Send Do-Not-Track signals
+        - Send websites signals not to track you
         - Self-destruction of third-party cookies
         - Self-destruction of first-party cookies
         - Hide Referrer from third parties
@@ -162,8 +165,17 @@ body:
     id: screens
     attributes:
       label: Screenshots
-      description:
+      description: |
+        If applicable add screenshots explaining your problem.
+        You can drag and drop images or paste them from clipboard.
+        Use `<details> </details>` tag to hide screenshots under the spoiler.
       placeholder: If applicable add screenshots explaining your problem.
+      value: |
+          <details><summary>Screenshot 1:</summary>
+
+          <!-- paste screenshot here -->
+
+          </details>
     validations:
       required: false
   - type: textarea
