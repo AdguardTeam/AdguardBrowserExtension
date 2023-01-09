@@ -51,7 +51,10 @@ import {
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
 
-export type InitializeFrameScriptResponse = {
+/**
+ * Init app data for extension pages
+ */
+export type PageInitAppData = {
     userSettings: SettingsData,
     enabledFilters: Record<string, boolean>,
     filtersMetadata: FilterMetadata[],
@@ -74,7 +77,18 @@ export type InitializeFrameScriptResponse = {
     },
 };
 
+/**
+ * Service for processing extension UI events (navigation, popups, alerts etc.)
+ */
 export class UiService {
+    /**
+     * Increment value for request blocking counting and page stats collection
+     */
+    private static blockedCountIncrement = 1;
+
+    /**
+     * Initialize linked services and register listeners
+     */
     public static async init(): Promise<void> {
         await toasts.init();
         ContextMenuApi.init();
@@ -88,10 +102,10 @@ export class UiService {
         contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
 
         messageHandler.addListener(MessageType.OpenAbuseTab, UiService.openAbusePage);
-        contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageFromPContextMenu);
+        contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageForActiveTab);
 
         messageHandler.addListener(MessageType.OpenSiteReportTab, UiService.openSiteReportPage);
-        contextMenuEvents.addListener(ContextMenuAction.SecurityReport, UiService.openSiteReportPageFromContextMenu);
+        contextMenuEvents.addListener(ContextMenuAction.SecurityReport, UiService.openSiteReportPageForActiveTab);
 
         messageHandler.addListener(MessageType.OpenThankyouPage, PagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, PagesApi.openExtensionStorePage);
@@ -105,7 +119,7 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);
         contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
 
-        messageHandler.addListener(MessageType.InitializeFrameScript, UiService.initializeFrameScript);
+        messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
 
         tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
         tsWebExtTabApi.onActivated.subscribe(UiApi.update);
@@ -113,13 +127,22 @@ export class UiService {
         defaultFilteringLog.addEventListener(FilteringEventType.APPLY_BASIC_RULE, UiService.onBasicRuleApply);
     }
 
+    /**
+     * Handles {@link OpenAbuseTabMessage} and opens abuse page for passed site url in new tab
+     *
+     * @param message - incoming {@link OpenAbuseTabMessage}
+     * @param message.data - site url and {@link ForwardFrom} token for creating abuse page url params
+     */
     private static async openAbusePage({ data }: OpenAbuseTabMessage): Promise<void> {
         const { url, from } = data;
 
         await PagesApi.openAbusePage(url, from);
     }
 
-    private static async openAbusePageFromPContextMenu(): Promise<void> {
+    /**
+     * Opens abuse page for current active tab url in new tab
+     */
+    private static async openAbusePageForActiveTab(): Promise<void> {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.url) {
@@ -129,13 +152,22 @@ export class UiService {
         }
     }
 
+    /**
+     * Handles {@link OpenSiteReportTabMessage} and opens site report page for passed site url in new tab
+     *
+     * @param message - incoming {@link OpenSiteReportTabMessage}
+     * @param message.data - site url and {@link ForwardFrom} token for creating site report url params
+     */
     private static async openSiteReportPage({ data }: OpenSiteReportTabMessage): Promise<void> {
         const { url, from } = data;
 
         await PagesApi.openSiteReportPage(url, from);
     }
 
-    private static async openSiteReportPageFromContextMenu(): Promise<void> {
+    /**
+     * Opens site report page for current active tab url in new tab
+     */
+    private static async openSiteReportPageForActiveTab(): Promise<void> {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.url) {
@@ -145,7 +177,12 @@ export class UiService {
         }
     }
 
-    private static initializeFrameScript(): InitializeFrameScriptResponse {
+    /**
+     * Gets {@link PageInitAppData} that uses on extension pages, like thankyou.html
+     *
+     * @returns init app data
+     */
+    private static getPageInitAppData(): PageInitAppData {
         const enabledFilters: Record<string, boolean> = {};
         Object.values(AntiBannerFiltersId).forEach((filterId) => {
             const enabled = FiltersApi.isFilterEnabled(Number(filterId));
@@ -187,16 +224,26 @@ export class UiService {
         };
     }
 
+    /**
+     * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter
+     *
+     * @param event - {@link ApplyBasicRuleEvent}
+     * @param event.data - event data
+     */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
         const { rule, tabId } = data;
 
-        const blockedCountIncrement = 1;
+        // If rule is not blocking, ignore it
+        if (rule.isAllowlist()) {
+            return;
+        }
 
-        await PageStatsApi.updateStats(rule.getFilterListId(), blockedCountIncrement);
-        PageStatsApi.incrementTotalBlocked(blockedCountIncrement);
+        await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
+        PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
 
         const tabContext = tsWebExtTabApi.getTabContext(tabId);
 
+        // If tab context is not found, do not update request blocking counter and icon badge for tab
         if (!tabContext) {
             return;
         }
