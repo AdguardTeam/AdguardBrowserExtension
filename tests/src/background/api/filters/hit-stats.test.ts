@@ -1,12 +1,19 @@
 import { Storage } from 'webextension-polyfill';
 import { HitStatsApi } from '../../../../../Extension/src/background/api/filters/hit-stats';
 import { HitStatsStorageData } from '../../../../../Extension/src/background/schema';
-import { AntiBannerFiltersId, HIT_STATISTIC_KEY } from '../../../../../Extension/src/common/constants';
+import {
+    AntiBannerFiltersId,
+    CUSTOM_FILTERS_START_ID,
+    HIT_STATISTIC_KEY,
+} from '../../../../../Extension/src/common/constants';
 
 import { mockLocalStorage } from '../../../../helpers';
 
 describe('Hit Stats Api', () => {
     let storage: Storage.StorageArea;
+
+    const ruleText = '||example.org^';
+    const filterId = AntiBannerFiltersId.EnglishFilterId;
 
     beforeEach(async () => {
         storage = mockLocalStorage();
@@ -21,13 +28,13 @@ describe('Hit Stats Api', () => {
     it('Adds rule hit', async () => {
         await HitStatsApi.init();
 
-        HitStatsApi.addRuleHit('example.org', AntiBannerFiltersId.UserFilterId);
+        HitStatsApi.addRuleHit(ruleText, filterId);
 
         const expected: HitStatsStorageData = {
             stats: {
                 filters: {
-                    [AntiBannerFiltersId.UserFilterId]: {
-                        'example.org': 1,
+                    [filterId]: {
+                        [ruleText]: 1,
                     },
                 },
             },
@@ -42,8 +49,8 @@ describe('Hit Stats Api', () => {
             [HIT_STATISTIC_KEY]: JSON.stringify({
                 stats: {
                     filters: {
-                        [AntiBannerFiltersId.UserFilterId]: {
-                            'example.org': 1,
+                        [filterId]: {
+                            [ruleText]: 1,
                         },
                     },
                 },
@@ -56,5 +63,21 @@ describe('Hit Stats Api', () => {
         await HitStatsApi.cleanup();
 
         expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({ [HIT_STATISTIC_KEY]: JSON.stringify({}) });
+    });
+
+    describe('Ignores rule hits from unsupported filters', () => {
+        const unsupportedFilters = [
+            { title: 'User filter', filterId: AntiBannerFiltersId.UserFilterId },
+            { title: 'Allowlist filter', filterId: AntiBannerFiltersId.AllowlistFilterId },
+            { title: 'Custom filter', filterId: CUSTOM_FILTERS_START_ID + 1 },
+        ];
+
+        it.each(unsupportedFilters)('Ignores rule from $title', async ({ filterId }) => {
+            await HitStatsApi.init();
+
+            HitStatsApi.addRuleHit(ruleText, filterId);
+
+            expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({ [HIT_STATISTIC_KEY]: JSON.stringify({}) });
+        });
     });
 });

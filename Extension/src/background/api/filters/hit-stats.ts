@@ -17,6 +17,7 @@
  */
 import { debounce } from 'lodash';
 
+import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { Log } from '../../../common/log';
 import { hitStatsStorageDataValidator } from '../../schema';
 import { hitStatsStorage } from '../../storages';
@@ -65,8 +66,13 @@ export class HitStatsApi {
      */
     public static addRuleHit(
         ruleText: string,
-        filterId = 1,
+        filterId: number,
     ): void {
+        // We collect hit stats only for own predefined filter lists
+        if (!HitStatsApi.shouldCollectHitStats(filterId)) {
+            return;
+        }
+
         hitStatsStorage.addRuleHitToCache(ruleText, filterId);
         HitStatsApi.debounceSaveAndSaveHitStats();
     }
@@ -101,5 +107,20 @@ export class HitStatsApi {
     private static async saveAndSaveHitStats(): Promise<void> {
         await hitStatsStorage.save();
         await HitStatsApi.sendStats();
+    }
+
+    /**
+     * Checks if hit stats should be collected
+     *
+     * We collect statistics only for own predefined filter lists
+     *
+     * @param filterId - filter list id
+     *
+     * @returns true, if hit stats should be collected
+     */
+    private static shouldCollectHitStats(filterId: number): boolean {
+        return filterId < CUSTOM_FILTERS_START_ID
+            && filterId !== AntiBannerFiltersId.UserFilterId
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
     }
 }
