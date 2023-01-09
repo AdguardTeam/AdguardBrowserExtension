@@ -18,7 +18,7 @@
 
 /* eslint-disable no-nested-ternary */
 
-import { MessageType } from '../common/messages';
+import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../common/messages';
 
 const browser = window.browser || chrome;
 
@@ -305,7 +305,8 @@ export const devtoolsElementsSidebar = (() => {
      * @returns {Promise<void>}
      */
     const addRule = async (ruleText) => {
-        browser.runtime.sendMessage({
+        return browser.runtime.sendMessage({
+            handlerName: APP_MESSAGE_HANDLER_NAME,
             type: MessageType.AddUserRule,
             data: { ruleText },
         });
