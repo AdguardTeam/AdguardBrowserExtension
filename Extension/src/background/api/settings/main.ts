@@ -75,9 +75,18 @@ export type SettingsData = {
 
 export class SettingsApi {
     public static async init(): Promise<void> {
-        const data = await storage.get(ADGUARD_SETTINGS_KEY);
-        const settings = settingsValidator.parse(data);
-        settingsStorage.setCache(settings);
+        try {
+            const data = await storage.get(ADGUARD_SETTINGS_KEY);
+            const settings = settingsValidator.parse(data);
+            settingsStorage.setCache(settings);
+        } catch (e) {
+            Log.error('Can\'t init settings from storage: ', e);
+            Log.info('Reverting settings to default values');
+            const settings = { ...defaultSettings };
+
+            // Update settings in the cache and in the storage
+            settingsStorage.setData(settings);
+        }
     }
 
     /**
