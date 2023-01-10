@@ -19,6 +19,30 @@ describe('Settings Api', () => {
         storage.clear();
     });
 
+    describe('Reverting settings to default values when: ', () => {
+        it('one of fields is omitted', async () => {
+            const deepCopy = JSON.parse(JSON.stringify(defaultSettings));
+            delete deepCopy[SettingOption.DisableShowAdguardPromoInfo];
+            storage = mockLocalStorage({
+                [ADGUARD_SETTINGS_KEY]: deepCopy,
+            });
+            await SettingsApi.init();
+
+            const settings = await storage.get(ADGUARD_SETTINGS_KEY);
+            expect(settings).toStrictEqual({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+        });
+
+        it('entire settings object is omitted', async () => {
+            storage = mockLocalStorage({
+                [ADGUARD_SETTINGS_KEY]: {},
+            });
+            await SettingsApi.init();
+
+            const settings = await storage.get(ADGUARD_SETTINGS_KEY);
+            expect(settings).toStrictEqual({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+        });
+    });
+
     describe('reads and writes setting storage data', () => {
         beforeEach(async () => {
             storage = mockLocalStorage({ [ADGUARD_SETTINGS_KEY]: defaultSettings });

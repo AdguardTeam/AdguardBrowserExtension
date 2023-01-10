@@ -61,6 +61,9 @@ jest.mock('nanoid', () => ({
     nanoid: jest.fn((): string => 'cTkoV5Vs'),
 }));
 
+// Mock log to hide all logger message
+jest.mock('./Extension/src/common/log.ts');
+
 jest.mock('@adguard/tswebextension', () => ({
     ...(jest.requireActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,
