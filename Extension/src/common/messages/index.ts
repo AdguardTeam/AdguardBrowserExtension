@@ -17,4 +17,5 @@
  */
 
 export * from './constants';
-export * from './sendMessage';
+export * from './send-message';
+export * from './message-handler';

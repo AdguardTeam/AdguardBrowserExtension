@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
+import { I18n } from '../../src/common/i18n';
 import { FilterDownload } from '../../src/pages/filter-download';
 
+I18n.init();
 FilterDownload.init();

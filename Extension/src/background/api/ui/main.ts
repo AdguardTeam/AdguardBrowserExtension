@@ -43,7 +43,7 @@ export class UiApi {
 
     private static async broadcastTotalBlockedMessage({ totalBlocked, totalBlockedTab }: FrameData): Promise<void> {
         try {
-            await sendMessage<MessageType.UpdateTotalBlocked>({
+            await sendMessage({
                 type: MessageType.UpdateTotalBlocked,
                 data: {
                     totalBlocked,

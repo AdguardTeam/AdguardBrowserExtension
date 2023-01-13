@@ -15,42 +15,54 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { contentPage } from './content-script';
+import { MessageType, sendMessage } from '../common/messages';
 
 /**
  * Script used to subscribe to scriptlets dispatched events
  * Loaded on content script start to ensure the fastest load
  */
-export const subscribeToScriptlets = (function () {
+export class SubscribeToScriptlets {
+    private static removeListenerTimeoutMs = 1000;
+
+    private static closeWindowEventName = 'adguard:scriptlet-close-window';
+
+    private static subscribedToCloseWindowEventName = 'adguard:subscribed-to-close-window';
+
+    /**
+     * Initializing content script
+     */
+    public static init(): void {
+        SubscribeToScriptlets.subscribeToCloseWindow();
+    }
+
     /**
      * Subscribe to close-window scriptlet's event
      * window.close() usage is restricted in Chrome so we use tabs API to do that
      * https://github.com/AdguardTeam/Scriptlets/issues/170
      */
-    const subscribeToCloseWindow = async () => {
-        const closeWindowHandler = () => {
-            contentPage.sendMessage({
-                type: 'scriptletCloseWindow',
-            });
-        };
+    private static subscribeToCloseWindow(): void {
         // Events may be passed differently in MV3
-        window.addEventListener('adguard:scriptlet-close-window', closeWindowHandler);
+        window.addEventListener(
+            SubscribeToScriptlets.closeWindowEventName,
+            SubscribeToScriptlets.closeWindowHandler,
+        );
+
         setTimeout(() => {
-            window.removeEventListener('adguard:scriptlet-close-window', closeWindowHandler);
-        }, 1000);
+            window.removeEventListener(
+                SubscribeToScriptlets.closeWindowEventName,
+                SubscribeToScriptlets.closeWindowHandler,
+            );
+        }, SubscribeToScriptlets.removeListenerTimeoutMs);
+
         // Scriptlet is loaded first so we notify it that content script is ready
-        dispatchEvent(new Event('adguard:subscribed-to-close-window'));
-    };
+        dispatchEvent(new Event(SubscribeToScriptlets.subscribedToCloseWindowEventName));
+    }
 
     /**
-     * Initializing content script
+     * Send {@link MessageType.ScriptletCloseWindow} to background
      */
-    const init = function () {
-        subscribeToCloseWindow();
-    };
-
-    return {
-        init,
-    };
-})();
+    private static closeWindowHandler(): void {
+        // TODO: implement handling in background
+        sendMessage({ type: MessageType.ScriptletCloseWindow });
+    }
+}

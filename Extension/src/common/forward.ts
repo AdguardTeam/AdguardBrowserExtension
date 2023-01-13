@@ -41,6 +41,7 @@ export const enum ForwardAction {
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
+    GithubVersion = 'github_version_popup',
 }
 
 export const enum ForwardFrom {
@@ -51,6 +52,7 @@ export const enum ForwardFrom {
     Popup = 'popup',
     Safebrowsing = 'safebrowsing',
     Adblocker = 'adblocked',
+    VersionPopup = 'version_popup',
 }
 
 export const enum ForwardApp {

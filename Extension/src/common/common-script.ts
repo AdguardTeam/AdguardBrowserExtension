@@ -16,60 +16,53 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser from 'webextension-polyfill';
-
-export const runtimeImpl = (() => {
-    return {
-        onMessage: browser.runtime.onMessage,
-        sendMessage: browser.runtime.sendMessage,
-    };
-})();
-
-// eslint-disable-next-line prefer-destructuring
-export const i18n = browser.i18n;
-
 /**
- * Sleeps given period of time
+ * Sleeps given period of milliseconds
  *
- * @param wait
- * @returns {Promise<unknown>}
+ * @param ms - milliseconds
  */
-export const sleep = (wait) => {
+export async function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => {
-        setTimeout(resolve, wait);
+        setTimeout(resolve, ms);
     });
-};
+}
 
 /**
  * Sleeps necessary period of time if minimum duration didn't pass since entry time
  *
- * @param {number} entryTimeMs
- * @param {number} minDurationMs
- * @returns {Promise<void>}
+ * @param entryTimeMs
+ * @param minDurationMs
  */
-export const sleepIfNecessary = async (entryTimeMs, minDurationMs) => {
+export async function sleepIfNecessary(
+    entryTimeMs: number,
+    minDurationMs: number,
+): Promise<void> {
     if (Date.now() - entryTimeMs < minDurationMs) {
         await sleep(minDurationMs - (Date.now() - entryTimeMs));
     }
-};
+}
 
 /**
  * Executes async function with at least required time
  *
- * @param fn
- * @param minDurationMs
+ * @param fn - function to execute
+ * @param minDurationMs - minimum executing time
  */
-export const addMinDurationTime = (fn, minDurationMs) => {
-    return async (...args) => {
+// TODO: generic types
+export function addMinDurationTime(
+    fn: (...args: unknown[]) => Promise<unknown>,
+    minDurationMs: number,
+): (...args: unknown[]) => Promise<unknown> {
+    return async (...args: unknown[]) => {
         const start = Date.now();
 
         try {
             const response = await fn(...args);
             await sleepIfNecessary(start, minDurationMs);
-            return response;
+            return response as unknown;
         } catch (e) {
             await sleepIfNecessary(start, minDurationMs);
             throw e;
         }
     };
-};
+}

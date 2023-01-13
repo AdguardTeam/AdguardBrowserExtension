@@ -217,7 +217,7 @@ export class App {
 
         appContext.set(AppContextKey.IsInit, true);
 
-        await sendMessage<MessageType.AppInitialized>({ type: MessageType.AppInitialized });
+        await sendMessage({ type: MessageType.AppInitialized });
     }
 
     /**

@@ -122,7 +122,7 @@ export class CustomFilterService {
 
         try {
             await browser.tabs.executeScript(tabId, {
-                file: '/content-script/subscribe.js',
+                file: '/pages/subscribe.js',
                 runAt: 'document_start',
                 frameId,
             });

@@ -23,6 +23,8 @@ import {
     APP_MESSAGE_HANDLER_NAME,
 } from './constants';
 
+export type MessageWithoutHandlerName<T> = { type: T } & Omit<ExtractedMessage<T>, 'handlerName'>;
+
 /**
  * {@link sendMessage} sends app message via {@link browser.runtime.sendMessage} and
  * gets response from another extension page message handler
@@ -32,11 +34,33 @@ import {
  * @returns message handler response
  */
 export async function sendMessage<T extends MessageType>(
-    message: Omit<ExtractedMessage<T>, 'handlerName'>,
+    message: MessageWithoutHandlerName<T>,
 ): Promise<unknown> {
     try {
-        return await browser.runtime.sendMessage({ handlerName: APP_MESSAGE_HANDLER_NAME, ...message });
+        return await browser.runtime.sendMessage({
+            handlerName: APP_MESSAGE_HANDLER_NAME,
+            ...message,
+        });
     } catch (e) {
         // do nothing
     }
+}
+
+/**
+ * {@link sendTabMessage} sends message to specified tab via {@link browser.tabs.sendMessage} and
+ * gets response from it
+ *
+ * @param tabId - tab id
+ * @param message - partial {@link Message} record without {@link Message.handlerName} field
+ *
+ * @returns tab message handler response
+ */
+export async function sendTabMessage<T extends MessageType>(
+    tabId: number,
+    message: MessageWithoutHandlerName<T>,
+): Promise<unknown> {
+    return browser.tabs.sendMessage(tabId, {
+        handlerName: APP_MESSAGE_HANDLER_NAME,
+        ...message,
+    });
 }
