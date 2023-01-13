@@ -22,8 +22,6 @@ import { MessageType } from '../common/messages';
 import { Log } from '../common/log';
 import { messenger } from './services/messenger';
 
-import '../common/i18n'; // !!! DO NOT REMOVE, THIS MODULE HANDLES TRANSLATIONS
-
 export class FilterDownload {
     private static nanobar = new Nanobar({
         classname: 'adg-progress-bar',

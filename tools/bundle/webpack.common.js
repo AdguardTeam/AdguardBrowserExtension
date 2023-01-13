@@ -34,8 +34,8 @@ const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filter
 const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
+const SUBSCRIBE_PATH = path.resolve(__dirname, '../../Extension/pages/subscribe');
 const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
-const ASSISTANT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant');
 const FULLSCREEN_USER_RULES_PATH = path.resolve(__dirname, '../../Extension/pages/fullscreen-user-rules');
 const SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/safebrowsing');
 const AD_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/ad-blocked');
@@ -99,12 +99,12 @@ export const genCommonConfig = (browserConfig) => {
                 import: CONTENT_SCRIPT_END_PATH,
                 runtime: false,
             },
-            'pages/thankyou': {
-                import: THANKYOU_PATH,
+            'pages/subscribe': {
+                import: SUBSCRIBE_PATH,
                 runtime: false,
             },
-            'pages/assistant': {
-                import: ASSISTANT_PATH,
+            'pages/thankyou': {
+                import: THANKYOU_PATH,
                 runtime: false,
             },
             'pages/fullscreen-user-rules': {
@@ -294,11 +294,6 @@ export const genCommonConfig = (browserConfig) => {
                         context: 'Extension',
                         from: 'web-accessible-resources',
                         to: 'web-accessible-resources',
-                    },
-                    {
-                        context: 'Extension',
-                        from: 'src/content-script/subscribe.js',
-                        to: 'content-script/subscribe.js',
                     },
                 ],
             }),

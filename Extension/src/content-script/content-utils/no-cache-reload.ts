@@ -15,8 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { I18n } from '../../src/common/i18n';
-import { FilterDownload } from '../../src/pages/filter-download';
 
-I18n.init();
-FilterDownload.init();
+/**
+ * Reloads current page with empty cache
+ *
+ * Called while fallback tab reloading vai content script
+ */
+// TODO:
+// Fallback tab reload via content script was implemented in previous version.
+// First, check if following logic is not legacy.
+// If it's actual, move it in tswebextension, else remove.
+export function noCacheReload() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', document.location.href);
+    xhr.setRequestHeader('Pragma', 'no-cache');
+    xhr.setRequestHeader('Expires', '-1');
+    xhr.setRequestHeader('Expires', 'no-cache');
+
+    const reload = () => {
+        document.location.reload();
+    };
+
+    xhr.onload = reload;
+    xhr.onerror = reload;
+    xhr.onabort = reload;
+    xhr.send(null);
+}

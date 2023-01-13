@@ -24,6 +24,12 @@ import { notificationTextRecordValidator } from '../../schema';
 import { TabsApi } from '../extension';
 import { notificationApi } from './notification';
 import { FilterMetadata } from '../filters';
+import { sendTabMessage, MessageType } from '../../../common/messages';
+import {
+    Forward,
+    ForwardAction,
+    ForwardFrom,
+} from '../../../common/forward';
 
 enum StylesAssetsPath {
     AlertPopup = '/assets/css/alert-popup.css',
@@ -59,15 +65,24 @@ export class Toasts {
             }
 
             const tab = await TabsApi.getActive();
+            const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
+            const alertContainerStyles = this.styles.get(StylesAssetsPath.AlertContainer);
+
+            if (!alertStyles || !alertContainerStyles) {
+                Log.error('Alert assets is not loaded!');
+                return;
+            }
 
             if (tab?.id) {
-                await browser.tabs.sendMessage(tab.id, {
-                    type: 'show-alert-popup',
-                    isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
-                    title,
-                    text,
-                    alertStyles: this.styles.get(StylesAssetsPath.AlertPopup),
-                    alertContainerStyles: this.styles.get(StylesAssetsPath.AlertContainer),
+                await sendTabMessage(tab.id, {
+                    type: MessageType.ShowAlertPopup,
+                    data: {
+                        isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
+                        title,
+                        text,
+                        alertStyles,
+                        alertContainerStyles,
+                    },
                 });
             }
         } catch (e) {
@@ -135,26 +150,6 @@ export class Toasts {
             }
         }
 
-        const message = {
-            type: 'show-version-updated-popup',
-            title: translator.getMessage(
-                'options_popup_version_update_title_text',
-                { current_version: currentVersion },
-            ),
-            description: Toasts.getUpdateDescriptionMessage(currentVersion, previousVersion),
-            // eslint-disable-next-line max-len
-            changelogHref: 'https://link.adtidy.org/forward.html?action=github_version_popup&from=version_popup&app=browser_extension',
-            changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
-            showPromoNotification: !!promoNotification,
-            offer,
-            offerDesc,
-            offerButtonText,
-            offerButtonHref,
-            disableNotificationText: translator.getMessage('options_popup_version_update_disable_notification'),
-            alertStyles: this.styles.get(StylesAssetsPath.AlertPopup),
-            updateContainerStyles: this.styles.get(StylesAssetsPath.UpdateContainer),
-        };
-
         try {
             if (triesCount > Toasts.maxTries) {
                 // Give up
@@ -163,8 +158,41 @@ export class Toasts {
             }
 
             const tab = await TabsApi.getActive();
+            const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
+            const iframeStyles = this.styles.get(StylesAssetsPath.UpdateContainer);
+
+            if (!alertStyles || !iframeStyles) {
+                Log.error('Update popup assets is not loaded!');
+                return;
+            }
+
             if (tab?.id) {
-                await browser.tabs.sendMessage(tab.id, message);
+                await sendTabMessage(tab.id, {
+                    type: MessageType.ShowVersionUpdatedPopup,
+                    data: {
+                        isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
+                        title: translator.getMessage(
+                            'options_popup_version_update_title_text',
+                            { current_version: currentVersion },
+                        ),
+                        description: Toasts.getUpdateDescriptionMessage(currentVersion, previousVersion),
+                        changelogHref: Forward.get({
+                            action: ForwardAction.GithubVersion,
+                            from: ForwardFrom.VersionPopup,
+                        }),
+                        changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
+                        showPromoNotification: !!promoNotification,
+                        offer,
+                        offerDesc,
+                        offerButtonText,
+                        offerButtonHref,
+                        disableNotificationText: translator.getMessage(
+                            'options_popup_version_update_disable_notification',
+                        ),
+                        alertStyles,
+                        iframeStyles,
+                    },
+                });
             }
         } catch (e) {
             setTimeout(() => {

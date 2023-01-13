@@ -15,10 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { Runtime } from 'webextension-polyfill';
 
-import { runtimeImpl } from '../common/common-script';
+import {
+    MessageHandler,
+    MessageListener,
+    Message,
+} from '../../common/messages';
 
-export const contentPage = {
-    sendMessage: runtimeImpl.sendMessage,
-    onMessage: runtimeImpl.onMessage,
-};
+export class ContentScriptMessageHandler extends MessageHandler {
+    protected handleMessage<T extends Message>(
+        message: T,
+        sender: Runtime.MessageSender,
+    ): Promise<unknown> | undefined {
+        const listener = this.listeners.get(message.type) as MessageListener<T>;
+
+        if (listener) {
+            return Promise.resolve(listener(message, sender));
+        }
+    }
+}
+
+export const messageHandler = new ContentScriptMessageHandler();

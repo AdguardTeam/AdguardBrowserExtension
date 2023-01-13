@@ -16,6 +16,5 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { startAssistant } from '../../src/content-script/assistant';
-
-startAssistant();
+// Content script entry point
+export { ContentUtils } from './main';
