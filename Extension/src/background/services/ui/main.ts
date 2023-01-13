@@ -120,6 +120,7 @@ export class UiService {
         contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
 
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
+        messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 
         tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
         tsWebExtTabApi.onActivated.subscribe(UiApi.update);

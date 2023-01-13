@@ -62,7 +62,6 @@ export class SubscribeToScriptlets {
      * Send {@link MessageType.ScriptletCloseWindow} to background
      */
     private static closeWindowHandler(): void {
-        // TODO: implement handling in background
         sendMessage({ type: MessageType.ScriptletCloseWindow });
     }
 }

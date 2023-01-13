@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Windows } from 'webextension-polyfill';
+import browser, { Runtime, Windows } from 'webextension-polyfill';
 import { UserAgent } from '../../../common/user-agent';
-import { AddFilteringSubscriptionMessage } from '../../../common/messages';
+import { AddFilteringSubscriptionMessage, ScriptletCloseWindowMessage } from '../../../common/messages';
 import {
     Forward,
     ForwardAction,
@@ -60,14 +60,14 @@ export class PagesApi {
 
     public static extensionStoreUrl = PagesApi.getExtensionStoreUrl();
 
-    static async openSettingsPage(): Promise<void> {
+    public static async openSettingsPage(): Promise<void> {
         await TabsApi.openTab({
             focusIfOpen: true,
             url: PagesApi.settingsUrl,
         });
     }
 
-    static async openFullscreenUserRulesPage(): Promise<void> {
+    public static async openFullscreenUserRulesPage(): Promise<void> {
         const theme = settingsStorage.get(SettingOption.AppearanceTheme);
         const url = PagesApi.getExtensionPageUrl(`fullscreen-user-rules.html?theme=${theme}`);
 
@@ -79,7 +79,7 @@ export class PagesApi {
         });
     }
 
-    static async openFilteringLogPage(): Promise<void> {
+    public static async openFilteringLogPage(): Promise<void> {
         const activeTab = await TabsApi.getActive();
 
         if (!activeTab) {
@@ -98,7 +98,7 @@ export class PagesApi {
         });
     }
 
-    static async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
+    public static async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
         let { browserName } = UserAgent;
         let browserDetails: string | undefined;
 
@@ -142,7 +142,7 @@ export class PagesApi {
         });
     }
 
-    static async openSiteReportPage(siteUrl: string, from: ForwardFrom): Promise<void> {
+    public static async openSiteReportPage(siteUrl: string, from: ForwardFrom): Promise<void> {
         const domain = UrlUtils.getDomainName(siteUrl);
 
         if (!domain) {
@@ -190,23 +190,6 @@ export class PagesApi {
         await TabsApi.openTab({ url: PagesApi.extensionStoreUrl });
     }
 
-    private static getExtensionStoreUrl(): string {
-        let action = ForwardAction.ChromeStore;
-
-        if (UserAgent.isOpera) {
-            action = ForwardAction.OperaStore;
-        } else if (UserAgent.isFirefox) {
-            action = ForwardAction.FirefoxStore;
-        } else if (UserAgent.isEdge) {
-            action = ForwardAction.EdgeStore;
-        }
-
-        return Forward.get({
-            action,
-            from: ForwardFrom.Options,
-        });
-    }
-
     public static async openSettingsPageWithCustomFilterModal(message: AddFilteringSubscriptionMessage): Promise<void> {
         const { url, title } = message.data;
 
@@ -221,6 +204,34 @@ export class PagesApi {
         await TabsApi.openTab({
             focusIfOpen: true,
             url: path,
+        });
+    }
+
+    public static async closePage(
+        message: ScriptletCloseWindowMessage,
+        sender: Runtime.MessageSender,
+    ): Promise<void> {
+        const tabId = sender.tab?.id;
+
+        if (tabId) {
+            await browser.tabs.remove(tabId);
+        }
+    }
+
+    private static getExtensionStoreUrl(): string {
+        let action = ForwardAction.ChromeStore;
+
+        if (UserAgent.isOpera) {
+            action = ForwardAction.OperaStore;
+        } else if (UserAgent.isFirefox) {
+            action = ForwardAction.FirefoxStore;
+        } else if (UserAgent.isEdge) {
+            action = ForwardAction.EdgeStore;
+        }
+
+        return Forward.get({
+            action,
+            from: ForwardFrom.Options,
         });
     }
 

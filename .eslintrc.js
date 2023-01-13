@@ -47,7 +47,6 @@ module.exports = {
         'airbnb',
         'airbnb-typescript',
         'airbnb/hooks',
-        'plugin:@typescript-eslint/recommended',
         'plugin:jsdoc/recommended',
     ],
     'plugins': [
