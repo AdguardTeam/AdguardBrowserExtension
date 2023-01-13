@@ -66,17 +66,6 @@ export const enum AntibannerGroupsId {
     LanguageFiltersGroupId = 7,
 }
 
-// Stealth action bitwise masks used o the background page and on the filtering log page
-export enum StealthAction {
-    HideReferrer = 1 << 0,
-    HideSearchQueries = 1 << 1,
-    BlockChromeClientData = 1 << 2,
-    SendDoNotTrack = 1 << 3,
-    StrippedTrackingUrl = 1 << 4,
-    FirstPartyCookies = 1 << 5,
-    ThirdPartyCookies = 1 << 6,
-}
-
 export enum NotifierType {
     RequestFilterUpdated = 'event.request.filter.updated',
     userFilterUpdated = 'event.user.filter.updated',
