@@ -31,6 +31,8 @@ import { observer } from 'mobx-react';
 import identity from 'lodash/identity';
 import cn from 'classnames';
 
+import { StealthActions } from '@adguard/tswebextension';
+
 import {
     getFilterName,
     getRequestEventType,
@@ -40,11 +42,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import {
-    AntiBannerFiltersId,
-    StealthAction,
-    RequestType,
-} from '../../../../../common/constants';
+import { AntiBannerFiltersId, RequestType } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
@@ -62,6 +60,7 @@ const StealthActionNames = {
     FirstPartyCookies: reactTranslator.getMessage('options_modified_first_party_cookie'),
     ThirdPartyCookies: reactTranslator.getMessage('options_modified_third_party_cookie'),
     BlockChromeClientData: reactTranslator.getMessage('filtering_log_remove_client_data'),
+    // TODO: Obsoleted, remove
     StrippedTrackingUrl: reactTranslator.getMessage('options_stripped_tracking_parameters'),
 };
 
@@ -72,9 +71,9 @@ const StealthActionNames = {
  * @returns {string[]|null}
  */
 const getStealthActionNames = (actions) => {
-    const result = Object.keys(StealthAction)
+    const result = Object.keys(StealthActions)
         .map((key) => {
-            const action = StealthAction[key];
+            const action = StealthActions[key];
             if ((actions & action) === action) {
                 return StealthActionNames[key];
             }
