@@ -15,6 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { ContentScriptInjector } from './content-script-injector';
 import { App } from './app';
 
+// inject content scripts into opened tabs
+ContentScriptInjector.init();
+
+// initialize background services
 App.init();

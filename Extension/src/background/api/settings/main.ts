@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
 import { SettingsConfig } from '@adguard/tswebextension';
 import { Log } from '../../../common/log';
 import { AppearanceTheme, defaultSettings } from '../../../common/settings';
@@ -57,15 +56,13 @@ import {
     AllowlistApi,
 } from '../filters';
 
-import {
-    ADGUARD_SETTINGS_KEY,
-    AntiBannerFiltersId,
-    DOCUMENT_BLOCK_PAGE_PATH,
-} from '../../../common/constants';
+import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
 import { settingsEvents } from '../../events';
 import { listeners } from '../../notifier';
 import { SettingsMigrations } from './migrations';
 import { Unknown } from '../../../common/unknown';
+import { Prefs } from '../../prefs';
+import { DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
 
 export type SettingsData = {
     names: typeof SettingOption,
@@ -128,7 +125,7 @@ export class SettingsApi {
 
     public static getTsWebExtConfiguration(): SettingsConfig {
         return {
-            documentBlockingPageUrl: browser.runtime.getURL(DOCUMENT_BLOCK_PAGE_PATH),
+            documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
             collectStats: !settingsStorage.get(SettingOption.DisableCollectHits),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),

@@ -35,11 +35,12 @@ import {
     network,
 } from './api';
 import { UserAgent } from '../common/user-agent';
+import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
 
 export type { Message as EngineMessage } from '@adguard/tswebextension';
 
 export class Engine {
-    static api = new TsWebExtension('web-accessible-resources');
+    static api = new TsWebExtension(WEB_ACCESSIBLE_RESOURCES_OUTPUT);
 
     static updateTimeoutMs = 1000;
 
