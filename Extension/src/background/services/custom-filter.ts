@@ -29,6 +29,7 @@ import { CustomFilterApi, GetCustomFilterInfoResult } from '../api';
 import { messageHandler } from '../message-handler';
 import { Engine } from '../engine';
 import { CustomFilterMetadata } from '../schema';
+import { SUBSCRIBE_OUTPUT } from '../../../../constants';
 
 /**
  * Service for processing events with custom filters
@@ -122,7 +123,7 @@ export class CustomFilterService {
 
         try {
             await browser.tabs.executeScript(tabId, {
-                file: '/pages/subscribe.js',
+                file: `/${SUBSCRIBE_OUTPUT}.js`,
                 runAt: 'document_start',
                 frameId,
             });

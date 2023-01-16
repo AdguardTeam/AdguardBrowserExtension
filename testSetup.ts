@@ -55,6 +55,8 @@ mockBrowser.runtime.getManifest.returns({ version: '0.0.0' });
 mockBrowser.i18n.getUILanguage.returns('en');
 mockBrowser.i18n.getMessage.callsFake((value: string) => value);
 
+mockBrowser.tabs.query.returns([]);
+
 jest.mock('webextension-polyfill', () => mockBrowser);
 
 jest.mock('nanoid', () => ({

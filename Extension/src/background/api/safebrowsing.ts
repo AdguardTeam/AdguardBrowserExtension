@@ -19,7 +19,7 @@ import browser from 'webextension-polyfill';
 import SHA256 from 'crypto-js/sha256';
 
 import { Log } from '../../common/log';
-import { SB_SUSPENDED_CACHE_KEY, SAFEBROWSING_PAGE_PATH } from '../../common/constants';
+import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
 
 import {
     storage,
@@ -30,6 +30,7 @@ import {
 import { ExtensionXMLHttpRequest, network } from './network';
 import { UrlUtils } from '../utils/url';
 import { SettingOption } from '../schema';
+import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 
 export class SafebrowsingApi {
     /**
@@ -215,7 +216,7 @@ export class SafebrowsingApi {
     ): string {
         const listName = sbList || 'malware';
         const isMalware = listName.includes('malware');
-        let url = SAFEBROWSING_PAGE_PATH;
+        let url = `${SAFEBROWSING_OUTPUT}.html`;
         url += `?malware=${isMalware}`;
 
         const host = UrlUtils.getHost(requestUrl);

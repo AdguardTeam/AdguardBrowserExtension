@@ -33,11 +33,17 @@ import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common
 
 import { TabsApi } from '../extension';
 import { Prefs } from '../../prefs';
+import {
+    FILTERING_LOG_OUTPUT,
+    FILTER_DOWNLOAD_OUTPUT,
+    FULLSCREEN_USER_RULES_OUTPUT,
+    OPTIONS_OUTPUT,
+} from '../../../../../constants';
 
 export class PagesApi {
-    public static settingsUrl = PagesApi.getExtensionPageUrl('options.html');
+    public static settingsUrl = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT);
 
-    public static filteringLogUrl = PagesApi.getExtensionPageUrl('filtering-log.html');
+    public static filteringLogUrl = PagesApi.getExtensionPageUrl(FILTERING_LOG_OUTPUT);
 
     public static defaultFilteringLogWindowState: Windows.CreateCreateDataType = {
         width: 1000,
@@ -46,7 +52,7 @@ export class PagesApi {
         left: 0,
     };
 
-    public static filtersDownloadPageUrl = PagesApi.getExtensionPageUrl('filter-download.html');
+    public static filtersDownloadPageUrl = PagesApi.getExtensionPageUrl(FILTER_DOWNLOAD_OUTPUT);
 
     public static thankYouPageUrl = Forward.get({
         action: ForwardAction.ThankYou,
@@ -69,7 +75,7 @@ export class PagesApi {
 
     public static async openFullscreenUserRulesPage(): Promise<void> {
         const theme = settingsStorage.get(SettingOption.AppearanceTheme);
-        const url = PagesApi.getExtensionPageUrl(`fullscreen-user-rules.html?theme=${theme}`);
+        const url = PagesApi.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT, `?theme=${theme}`);
 
         await TabsApi.openWindow({
             url,
@@ -160,8 +166,14 @@ export class PagesApi {
         });
     }
 
-    public static getExtensionPageUrl(path: string): string {
-        return `${Prefs.baseUrl}pages/${path}`;
+    public static getExtensionPageUrl(filename: string, optionalPart?: string): string {
+        let url = `${Prefs.baseUrl}${filename}.html`;
+
+        if (typeof optionalPart === 'string') {
+            url += optionalPart;
+        }
+
+        return url;
     }
 
     public static async openFiltersDownloadPage(): Promise<void> {
@@ -193,13 +205,13 @@ export class PagesApi {
     public static async openSettingsPageWithCustomFilterModal(message: AddFilteringSubscriptionMessage): Promise<void> {
         const { url, title } = message.data;
 
-        let path = 'options.html#filters?group=0';
+        let optionalPart = '#filters?group=0';
         if (title) {
-            path += `&title=${title}`;
+            optionalPart += `&title=${title}`;
         }
-        path += `&subscribe=${encodeURIComponent(url)}`;
+        optionalPart += `&subscribe=${encodeURIComponent(url)}`;
 
-        path = PagesApi.getExtensionPageUrl(path);
+        const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, optionalPart);
 
         await TabsApi.openTab({
             focusIfOpen: true,

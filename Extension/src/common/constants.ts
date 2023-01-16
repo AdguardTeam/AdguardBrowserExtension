@@ -38,9 +38,6 @@ export const LAST_NOTIFICATION_TIME_KEY = 'viewed-notification-time';
 export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 
-export const SAFEBROWSING_PAGE_PATH = 'pages/safebrowsing.html';
-export const DOCUMENT_BLOCK_PAGE_PATH = 'pages/ad-blocked.html';
-
 // Filter ids used in the code on the background page and filtering log page
 export enum AntiBannerFiltersId {
     StealthModeFilterId = -1,

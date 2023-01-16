@@ -1,10 +1,11 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import { DOCUMENT_BLOCK_OUTPUT } from '../../../../constants';
 import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import { SettingOption } from '../../../../Extension/src/background/schema';
 import { settingsStorage } from '../../../../Extension/src/background/storages';
-import { ADGUARD_SETTINGS_KEY, DOCUMENT_BLOCK_PAGE_PATH } from '../../../../Extension/src/common/constants';
+import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 import { defaultSettings } from '../../../../Extension/src/common/settings';
 import {
     getDefaultExportFixture,
@@ -74,7 +75,9 @@ describe('Settings Api', () => {
         });
 
         it('Gets tswebextension config', async () => {
-            const expected = getDefaultSettingsConfigFixture(browser.runtime.getURL(DOCUMENT_BLOCK_PAGE_PATH));
+            const expected = getDefaultSettingsConfigFixture(
+                browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+            );
             expect(SettingsApi.getTsWebExtConfiguration()).toStrictEqual(expected);
         });
     });
