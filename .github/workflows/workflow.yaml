@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 18.x
 
       - name: yarn install
         run: yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Conclusion
-        uses: technote-space/workflow-conclusion-action@v1
+        uses: technote-space/workflow-conclusion-action@v3
       - name: Send Slack notif
         uses: 8398a7/action-slack@v3
         with:
