@@ -47,6 +47,8 @@ export class LocaleDetect {
         'ua': 'ru',
         'by': 'ru',
         'kz': 'ru',
+        'uz': 'ru',
+        'kg': 'ru',
         // English
         'com': 'en',
         'au': 'en',
@@ -55,18 +57,45 @@ export class LocaleDetect {
         // German
         'de': 'de',
         'at': 'de',
+        'li': 'de',
         // Japanese
         'jp': 'ja',
         // Dutch
         'nl': 'nl',
+        'sr': 'nl',
         // French
         'fr': 'fr',
+        'mc': 'fr',
+        'ht': 'fr',
         // Spanish
         'es': 'es',
+        'mx': 'es',
+        'ar': 'es',
+        'cl': 'es',
+        'uy': 'es',
+        'pe': 'es',
+        've': 'es',
+        'ec': 'es',
+        'bo': 'es',
+        'py': 'es',
+        'pa': 'es',
+        'cr': 'es',
+        'ni': 'es',
+        'hn': 'es',
+        'gt': 'es',
+        'sv': 'es',
+        'do': 'es',
+        'pr': 'es',
+        'cat': 'es',
         // Italian
         'it': 'it',
+        'sm': 'it',
         // Portuguese
         'pt': 'pt',
+        'br': 'pt',
+        'ao': 'pt',
+        'mz': 'pt',
+        'cv': 'cv',
         // Polish
         'pl': 'pl',
         // Czech
@@ -82,10 +111,18 @@ export class LocaleDetect {
         'dz': 'ar',
         'kw': 'ar',
         'ae': 'ar',
+        'ma': 'ar',
+        'jo': 'ar',
+        'lb': 'ar',
+        'bh': 'ar',
+        'qa': 'ar',
+        'iq': 'ar',
+        'tn': 'ar',
         // Slovakian
         'sk': 'sk',
         // Romanian
         'ro': 'ro',
+        'md': 'ro',
         // Suomi
         'fi': 'fi',
         // Icelandic
@@ -100,10 +137,42 @@ export class LocaleDetect {
         'il': 'he',
         // Chinese
         'cn': 'zh',
+        'tw': 'zh',
         // Indonesian
         'id': 'id',
+        // Malaysian
+        'my': 'id',
         // Turkish
         'tr': 'tr',
+        // Serbian
+        'sr': 'sr',
+        'ba': 'sr',
+        // Croatian
+        'hr': 'hr',
+        // Hindi
+        'in': 'hi',
+        // Bangla:
+        'bd': 'hi',
+        // Sri Lanka
+        'lk': 'hi',
+        // Nepal:
+        'np': 'hi',
+        // Estonian:
+        'ee': 'et',
+        // Persian:
+        'ir': 'fa',
+        // Tajik:
+        'tj': 'fa',
+        // Korean:
+        'kr': 'ko',
+        // Danish:
+        'dk': 'da',
+        // Faroese:
+        'fo': 'fo',
+        // Vietnamese:
+        'vn': 'vi',
+        // Thai:
+        'th', 'th',
     };
 
     private browsingLanguages: BrowsingLanguage[] = [];
