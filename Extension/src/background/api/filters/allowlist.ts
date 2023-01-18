@@ -16,8 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
-import { getDomain } from 'tldts';
-import { tabsApi as tsWebExtTabsApi } from '@adguard/tswebextension';
+import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
 import browser from 'webextension-polyfill';
 
 import { Log } from '../../../common/log';
