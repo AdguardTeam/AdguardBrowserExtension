@@ -33,16 +33,30 @@ export class I18n {
     ): string | null {
         const lang = locale.replace('-', '_');
 
-        if (lang in locales) {
+        if (I18n.isIncludesLocale(locales, locale)) {
             return lang;
         }
 
         const [localePart] = lang.split('_');
 
-        if (localePart && localePart in locales) {
+        if (localePart && I18n.isIncludesLocale(locales, localePart)) {
             return localePart;
         }
 
         return null;
+    }
+
+    /**
+     * Checks if {@link locales} includes {@link locale}
+     *
+     * @param locales Locales array or record.
+     * @param locale Target locale.
+     * @returns true if {@link locales} includes {@link locale}, else returns false
+     */
+    private static isIncludesLocale(
+        locales: string[] | Record<string, unknown>,
+        locale: string,
+    ): boolean {
+        return Array.isArray(locales) ? locales.includes(locale) : locale in locales;
     }
 }
