@@ -1,37 +1,37 @@
 (function(source, args) {
     function Prebid(source) {
-        const pushFunction = function pushFunction(arg) {
+        var pushFunction = function pushFunction(arg) {
             if (typeof arg === "function") {
                 try {
                     arg.call();
                 } catch (ex) {}
             }
         };
-        const pbjsWrapper = {
-            addAdUnits() {},
+        var pbjsWrapper = {
+            addAdUnits: function addAdUnits() {},
             adServers: {
                 dfp: {
                     buildVideoUrl: noopStr
                 }
             },
             adUnits: [],
-            aliasBidder() {},
+            aliasBidder: function aliasBidder() {},
             cmd: [],
-            enableAnalytics() {},
+            enableAnalytics: function enableAnalytics() {},
             getHighestCpmBids: noopArray,
             libLoaded: true,
             que: [],
-            requestBids(arg) {
+            requestBids: function requestBids(arg) {
                 if (arg instanceof Object && arg.bidsBackHandler) {
                     try {
                         arg.bidsBackHandler.call();
                     } catch (ex) {}
                 }
             },
-            removeAdUnit() {},
-            setBidderConfig() {},
-            setConfig() {},
-            setTargetingForGPTAsync() {}
+            removeAdUnit: function removeAdUnit() {},
+            setBidderConfig: function setBidderConfig() {},
+            setConfig: function setConfig() {},
+            setTargetingForGPTAsync: function setTargetingForGPTAsync() {}
         };
         pbjsWrapper.cmd.push = pushFunction;
         pbjsWrapper.que.push = pushFunction;
@@ -43,19 +43,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

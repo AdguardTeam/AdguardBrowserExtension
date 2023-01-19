@@ -1,7 +1,7 @@
 (function(source, args) {
     function preventPopadsNet(source) {
-        const rid = randomId();
-        const throwError = function throwError() {
+        var rid = randomId();
+        var throwError = function throwError() {
             throw new ReferenceError(rid);
         };
         delete window.PopAds;
@@ -18,7 +18,7 @@
         hit(source);
     }
     function createOnErrorHandler(rid) {
-        const nativeOnError = window.onerror;
+        var nativeOnError = window.onerror;
         return function onError(error) {
             if (typeof error === "string" && error.indexOf(rid) !== -1) {
                 return true;
@@ -27,32 +27,32 @@
                 for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                     args[_key - 1] = arguments[_key];
                 }
-                return nativeOnError.apply(this, [ error, ...args ]);
+                return nativeOnError.apply(this, [ error ].concat(args));
             }
             return false;
         };
     }
     function randomId() {
-        return Math.random().toString(36).slice(2, 9);
+        return Math.random().toString(36).substr(2, 9);
     }
     function hit(source) {
         if (source.verbose !== true) {
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
