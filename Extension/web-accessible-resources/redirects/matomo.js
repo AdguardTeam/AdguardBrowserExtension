@@ -1,15 +1,19 @@
 (function(source, args) {
     function Matomo(source) {
-        const Tracker = function Tracker() {};
+        var Tracker = function Tracker() {};
         Tracker.prototype.setDoNotTrack = noopFunc;
         Tracker.prototype.setDomains = noopFunc;
         Tracker.prototype.setCustomDimension = noopFunc;
         Tracker.prototype.trackPageView = noopFunc;
-        const AsyncTracker = function AsyncTracker() {};
+        var AsyncTracker = function AsyncTracker() {};
         AsyncTracker.prototype.addListener = noopFunc;
-        const matomoWrapper = {
-            getTracker: Tracker,
-            getAsyncTracker: AsyncTracker
+        var matomoWrapper = {
+            getTracker: function getTracker() {
+                return new Tracker;
+            },
+            getAsyncTracker: function getAsyncTracker() {
+                return new AsyncTracker;
+            }
         };
         window.Piwik = matomoWrapper;
         hit(source);
@@ -19,19 +23,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

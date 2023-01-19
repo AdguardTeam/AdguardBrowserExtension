@@ -13,7 +13,7 @@
             return new UserConsentStatusForVendorSubscribe;
         };
         UserConsentStatusForVendor.prototype.subscribe = noopFunc;
-        const DidomiWrapper = {
+        var DidomiWrapper = {
             isConsentRequired: falseFunc,
             getUserConsentStatusForPurpose: trueFunc,
             getUserConsentStatus: trueFunc,
@@ -31,7 +31,7 @@
                 showDataProcessing: trueFunc
             },
             isUserConsentStatusPartial: falseFunc,
-            on() {
+            on: function on() {
                 return {
                     actions: {},
                     emitter: {},
@@ -41,12 +41,12 @@
             },
             shouldConsentBeCollected: falseFunc,
             getUserConsentStatusForAll: noopFunc,
-            getObservableOnUserConsentStatusForVendor() {
+            getObservableOnUserConsentStatusForVendor: function getObservableOnUserConsentStatusForVendor() {
                 return new UserConsentStatusForVendor;
             }
         };
         window.Didomi = DidomiWrapper;
-        const didomiStateWrapper = {
+        var didomiStateWrapper = {
             didomiExperimentId: "",
             didomiExperimentUserGroup: "",
             didomiGDPRApplies: 1,
@@ -62,7 +62,7 @@
             didomiVendorsRawConsentUnknown: ""
         };
         window.didomiState = didomiStateWrapper;
-        const tcData = {
+        var tcData = {
             eventStatus: "tcloaded",
             gdprApplies: false,
             listenerId: noopFunc,
@@ -73,21 +73,21 @@
                 consents: []
             }
         };
-        const __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
+        var __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
             if (typeof callback !== "function" || command === "removeEventListener") {
                 return;
             }
             callback(tcData, true);
         };
         window.__tcfapi = __tcfapiWrapper;
-        const didomiEventListenersWrapper = {
+        var didomiEventListenersWrapper = {
             stub: true,
             push: noopFunc
         };
         window.didomiEventListeners = didomiEventListenersWrapper;
-        const didomiOnReadyWrapper = {
+        var didomiOnReadyWrapper = {
             stub: true,
-            push(arg) {
+            push: function push(arg) {
                 if (typeof arg !== "function") {
                     return;
                 }
@@ -117,19 +117,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
