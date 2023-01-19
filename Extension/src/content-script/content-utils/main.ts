@@ -18,8 +18,6 @@
 import { MessageType } from '../../common/messages';
 import { messageHandler } from './message-handler';
 import { Popups } from './popups';
-// TODO: Check if following message is deprecated.
-// import { noCacheReload } from './no-cache-reload';
 
 export class ContentUtils {
     public static init(): void {
@@ -35,15 +33,5 @@ export class ContentUtils {
 
         messageHandler.addListener(MessageType.ShowAlertPopup, Popups.showAlertPopup);
         messageHandler.addListener(MessageType.ShowVersionUpdatedPopup, Popups.showVersionUpdatedPopup);
-
-        // TODO:
-        // Fallback tab reload via content script was implemented in previous version.
-        // First, check if following logic is not legacy.
-        // If it's actual, move it in tswebextension, else remove.
-        //
-        // messageHandler.addListener(MessageType.NoCacheReload, noCacheReload);
-        // messageHandler.addListener(MessageType.UpdateTabUrl, ({ data: { url }}) => {
-        //     window.location = url;
-        // });
     }
 }

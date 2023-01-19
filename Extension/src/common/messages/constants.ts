@@ -105,9 +105,6 @@ export enum MessageType {
   ScriptletCloseWindow = 'scriptletCloseWindow',
   ShowAlertPopup = 'showAlertPopup',
   ShowVersionUpdatedPopup = 'showVersionUpdatedPopup',
-  // TODO: Check if following message types is not deprecated.
-  NoCacheReload = 'noCacheReload',
-  UpdateTabUrl = 'updateTabUrl',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -444,19 +441,6 @@ export type ShowVersionUpdatedPopupMessage = {
   }
 };
 
-// TODO: Check if following message is not deprecated.
-export type NoCacheReloadMessage = {
-  type: MessageType.NoCacheReload,
-};
-
-// TODO: Check if following message is not deprecated.
-export type UpdateTabUrlMessage = {
-  type: MessageType.UpdateTabUrl,
-  data: {
-    url: string,
-  }
-};
-
 export type Message = (
   | ApplySettingsJsonMessage
   | AddFilteringSubscriptionMessage
@@ -505,8 +489,6 @@ export type Message = (
   | ScriptletCloseWindowMessage
   | ShowAlertPopupMessage
   | ShowVersionUpdatedPopupMessage
-  | NoCacheReloadMessage
-  | UpdateTabUrlMessage
 ) &
   MessageCommonProps;
 
