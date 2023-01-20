@@ -44,6 +44,9 @@ import {
     MOBX_VENDOR_OUTPUT,
     XSTATE_VENDOR_OUTPUT,
     ASSISTANT_INJECT_OUTPUT,
+    TSURLFILTER_VENDOR_OUTPUT,
+    TSWEBEXTENSION_VENDOR_OUTPUT,
+    LODASH_VENDOR_OUTPUT,
 } from '../../constants';
 
 const config = getEnvConf(process.env.BUILD_ENV);
@@ -84,11 +87,16 @@ export const genCommonConfig = (browserConfig) => {
         entry: {
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
-                runtime: false,
+                dependOn: [
+                    LODASH_VENDOR_OUTPUT,
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                ],
             },
             [OPTIONS_OUTPUT]: {
                 import: OPTIONS_PATH,
                 dependOn: [
+                    LODASH_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -105,6 +113,8 @@ export const genCommonConfig = (browserConfig) => {
             [FILTERING_LOG_OUTPUT]: {
                 import: FILTERING_LOG_PATH,
                 dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -159,11 +169,15 @@ export const genCommonConfig = (browserConfig) => {
                 import: EDITOR_PATH,
                 dependOn: [
                     REACT_VENDOR_OUTPUT,
+                    TSURLFILTER_VENDOR_OUTPUT,
                 ],
             },
             [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
             [MOBX_VENDOR_OUTPUT]: ['mobx'],
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
+            [LODASH_VENDOR_OUTPUT]: ['lodash'],
+            [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
+            [TSWEBEXTENSION_VENDOR_OUTPUT]: ['@adguard/tswebextension'],
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
@@ -252,13 +266,20 @@ export const genCommonConfig = (browserConfig) => {
                     browser: process.env.BROWSER,
                 },
                 filename: `${BACKGROUND_OUTPUT}.html`,
-                chunks: [BACKGROUND_OUTPUT],
+                chunks: [
+                    LODASH_VENDOR_OUTPUT,
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                    BACKGROUND_OUTPUT,
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
+                    LODASH_VENDOR_OUTPUT,
+                    TSURLFILTER_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -277,6 +298,8 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FILTERING_LOG_PATH, 'index.html'),
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -294,6 +317,7 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,

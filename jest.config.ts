@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import type { JestConfigWithTsJest } from 'ts-jest';
+import type { Config } from 'jest';
 
 const transformedModules = [
     '@adguard/tsurlfilter',
     '@adguard/tswebextension',
 ];
 
-const config: JestConfigWithTsJest = {
+const config: Config = {
     verbose: true,
     testEnvironment: 'jsdom',
     testEnvironmentOptions: {
@@ -38,7 +38,7 @@ const config: JestConfigWithTsJest = {
         '.*\\.json',
     ],
     transform: {
-        '.+\\.(js|ts|jsx|tsx)': 'esbuild-jest',
+        '.+\\.(js|ts|jsx|tsx)': '@swc/jest',
     },
 };
 
