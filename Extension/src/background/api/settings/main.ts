@@ -62,7 +62,7 @@ import { listeners } from '../../notifier';
 import { SettingsMigrations } from './migrations';
 import { Unknown } from '../../../common/unknown';
 import { Prefs } from '../../prefs';
-import { DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
+import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
 
 export type SettingsData = {
     names: typeof SettingOption,
@@ -125,6 +125,7 @@ export class SettingsApi {
 
     public static getTsWebExtConfiguration(): SettingsConfig {
         return {
+            assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
             documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
             collectStats: !settingsStorage.get(SettingOption.DisableCollectHits),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
