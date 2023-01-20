@@ -90,7 +90,9 @@ export const getDefaultExportFixture = (): Config => ({
 
 export const getDefaultSettingsConfigFixture = (
     documentBlockingPageUrl: string,
+    assistantUrl: string,
 ): SettingsConfig => ({
+    assistantUrl,
     documentBlockingPageUrl,
     collectStats: !defaultSettings[SettingOption.DisableCollectHits],
     allowlistInverted: !defaultSettings[SettingOption.DefaultAllowlistMode],

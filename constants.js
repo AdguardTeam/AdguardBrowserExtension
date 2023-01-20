@@ -32,6 +32,7 @@ export const SUBSCRIBE_OUTPUT = 'pages/subscribe';
 export const CONTENT_SCRIPT_START_OUTPUT = 'pages/content-script-start';
 export const CONTENT_SCRIPT_END_OUTPUT = 'pages/content-script-end';
 export const THANKYOU_OUTPUT = 'pages/thankyou';
+export const ASSISTANT_INJECT_OUTPUT = 'pages/assistant-inject';
 
 export const EDITOR_OUTPUT = 'shared/editor';
 

@@ -43,6 +43,7 @@ import {
     REACT_VENDOR_OUTPUT,
     MOBX_VENDOR_OUTPUT,
     XSTATE_VENDOR_OUTPUT,
+    ASSISTANT_INJECT_OUTPUT,
 } from '../../constants';
 
 const config = getEnvConf(process.env.BUILD_ENV);
@@ -53,6 +54,7 @@ const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
 const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
 const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
+const ASSISTANT_INJECT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant-inject');
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
 const SUBSCRIBE_PATH = path.resolve(__dirname, '../../Extension/pages/subscribe');
 const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
@@ -72,6 +74,7 @@ export const genCommonConfig = (browserConfig) => {
     const isDev = process.env.BUILD_ENV === ENVS.DEV;
     return {
         mode: config.mode,
+        target: 'web',
         optimization: {
             minimize: false,
             runtimeChunk: 'single',
@@ -113,6 +116,10 @@ export const genCommonConfig = (browserConfig) => {
             },
             [CONTENT_SCRIPT_START_OUTPUT]: {
                 import: CONTENT_SCRIPT_START_PATH,
+                runtime: false,
+            },
+            [ASSISTANT_INJECT_OUTPUT]: {
+                import: ASSISTANT_INJECT_PATH,
                 runtime: false,
             },
             [CONTENT_SCRIPT_END_OUTPUT]: {

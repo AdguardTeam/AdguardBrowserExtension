@@ -1,6 +1,6 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
-import { DOCUMENT_BLOCK_OUTPUT } from '../../../../constants';
+import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../constants';
 import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import { SettingOption } from '../../../../Extension/src/background/schema';
@@ -77,6 +77,7 @@ describe('Settings Api', () => {
         it('Gets tswebextension config', async () => {
             const expected = getDefaultSettingsConfigFixture(
                 browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                `/${ASSISTANT_INJECT_OUTPUT}.js`,
             );
             expect(SettingsApi.getTsWebExtConfiguration()).toStrictEqual(expected);
         });

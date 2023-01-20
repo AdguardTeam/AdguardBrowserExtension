@@ -23,7 +23,8 @@ import {
     MessageType,
 } from '../../common/messages';
 import { Elements } from './elements';
-import { SettingOption } from '../../background/schema';
+// !Important! Direct import to avoid side effects on tree shaking.
+import { SettingOption } from '../../background/schema/settings';
 
 // target always is document
 export type AppendAlertPopupProps = Omit<AppendAlertElementProps, 'target'>;
