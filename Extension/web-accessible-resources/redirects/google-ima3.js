@@ -1,11 +1,11 @@
 (function(source, args) {
     function GoogleIma3(source) {
-        var VERSION = "3.453.0";
-        var ima = {};
-        var AdDisplayContainer = function AdDisplayContainer() {};
+        const VERSION = "3.453.0";
+        const ima = {};
+        const AdDisplayContainer = function AdDisplayContainer() {};
         AdDisplayContainer.prototype.destroy = noopFunc;
         AdDisplayContainer.prototype.initialize = noopFunc;
-        var ImaSdkSettings = function ImaSdkSettings() {};
+        const ImaSdkSettings = function ImaSdkSettings() {};
         ImaSdkSettings.CompanionBackfillMode = {
             ALWAYS: "always",
             ON_MASTER_AD: "on_master_ad"
@@ -25,75 +25,75 @@
             t: "",
             v: "",
             getCompanionBackfill: noopFunc,
-            getDisableCustomPlaybackForIOS10Plus: function getDisableCustomPlaybackForIOS10Plus() {
+            getDisableCustomPlaybackForIOS10Plus() {
                 return this.i;
             },
             getDisabledFlashAds: function getDisabledFlashAds() {
                 return true;
             },
-            getFeatureFlags: function getFeatureFlags() {
+            getFeatureFlags() {
                 return this.f;
             },
-            getLocale: function getLocale() {
+            getLocale() {
                 return this.l;
             },
-            getNumRedirects: function getNumRedirects() {
+            getNumRedirects() {
                 return this.r;
             },
-            getPlayerType: function getPlayerType() {
+            getPlayerType() {
                 return this.t;
             },
-            getPlayerVersion: function getPlayerVersion() {
+            getPlayerVersion() {
                 return this.v;
             },
-            getPpid: function getPpid() {
+            getPpid() {
                 return this.p;
             },
-            getVpaidMode: function getVpaidMode() {
+            getVpaidMode() {
                 return this.C;
             },
-            isCookiesEnabled: function isCookiesEnabled() {
+            isCookiesEnabled() {
                 return this.c;
             },
-            isVpaidAdapter: function isVpaidAdapter() {
+            isVpaidAdapter() {
                 return this.M;
             },
             setCompanionBackfill: noopFunc,
-            setAutoPlayAdBreaks: function setAutoPlayAdBreaks(a) {
+            setAutoPlayAdBreaks(a) {
                 this.K = a;
             },
-            setCookiesEnabled: function setCookiesEnabled(c) {
+            setCookiesEnabled(c) {
                 this.c = !!c;
             },
-            setDisableCustomPlaybackForIOS10Plus: function setDisableCustomPlaybackForIOS10Plus(i) {
+            setDisableCustomPlaybackForIOS10Plus(i) {
                 this.i = !!i;
             },
             setDisableFlashAds: noopFunc,
-            setFeatureFlags: function setFeatureFlags(f) {
+            setFeatureFlags(f) {
                 this.f = !!f;
             },
-            setIsVpaidAdapter: function setIsVpaidAdapter(a) {
+            setIsVpaidAdapter(a) {
                 this.M = a;
             },
-            setLocale: function setLocale(l) {
+            setLocale(l) {
                 this.l = !!l;
             },
-            setNumRedirects: function setNumRedirects(r) {
+            setNumRedirects(r) {
                 this.r = !!r;
             },
-            setPageCorrelator: function setPageCorrelator(a) {
+            setPageCorrelator(a) {
                 this.R = a;
             },
-            setPlayerType: function setPlayerType(t) {
+            setPlayerType(t) {
                 this.t = !!t;
             },
-            setPlayerVersion: function setPlayerVersion(v) {
+            setPlayerVersion(v) {
                 this.v = !!v;
             },
-            setPpid: function setPpid(p) {
+            setPpid(p) {
                 this.p = !!p;
             },
-            setVpaidMode: function setVpaidMode(a) {
+            setVpaidMode(a) {
                 this.C = a;
             },
             setSessionId: noopFunc,
@@ -109,12 +109,12 @@
                 INSECURE: 2
             }
         };
-        var EventHandler = function EventHandler() {
+        const EventHandler = function EventHandler() {
             this.listeners = new Map;
             this._dispatch = function(e) {
-                var listeners = this.listeners.get(e.type) || [];
+                const listeners = this.listeners.get(e.type) || [];
                 for (var _i = 0, _Array$from = Array.from(listeners); _i < _Array$from.length; _i++) {
-                    var listener = _Array$from[_i];
+                    const listener = _Array$from[_i];
                     try {
                         listener(e);
                     } catch (r) {
@@ -133,7 +133,7 @@
                 (_this$listeners$get = this.listeners.get(t)) === null || _this$listeners$get === void 0 ? void 0 : _this$listeners$get.delete(c);
             };
         };
-        var AdsManager = new EventHandler;
+        const AdsManager = new EventHandler;
         AdsManager.volume = 1;
         AdsManager.collapse = noopFunc;
         AdsManager.configureAdsManager = noopFunc;
@@ -176,7 +176,7 @@
         AdsManager.skip = noopFunc;
         AdsManager.start = function() {
             for (var _i2 = 0, _arr = [ AdEvent.Type.ALL_ADS_COMPLETED, AdEvent.Type.CONTENT_RESUME_REQUESTED ]; _i2 < _arr.length; _i2++) {
-                var type = _arr[_i2];
+                const type = _arr[_i2];
                 try {
                     this._dispatch(new ima.AdEvent(type));
                 } catch (e) {
@@ -186,8 +186,8 @@
         };
         AdsManager.stop = noopFunc;
         AdsManager.updateAdsRenderingSettings = noopFunc;
-        var manager = Object.create(AdsManager);
-        var AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
+        const manager = Object.create(AdsManager);
+        const AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
             this.type = type;
             this.adsRequest = adsRequest;
             this.userRequestContext = userRequestContext;
@@ -196,7 +196,7 @@
             getAdsManager: function getAdsManager() {
                 return manager;
             },
-            getUserRequestContext: function getUserRequestContext() {
+            getUserRequestContext() {
                 if (this.userRequestContext) {
                     return this.userRequestContext;
                 }
@@ -206,7 +206,7 @@
         AdsManagerLoadedEvent.Type = {
             ADS_MANAGER_LOADED: "adsManagerLoaded"
         };
-        var AdsLoader = EventHandler;
+        const AdsLoader = EventHandler;
         AdsLoader.prototype.settings = new ImaSdkSettings;
         AdsLoader.prototype.contentComplete = noopFunc;
         AdsLoader.prototype.destroy = noopFunc;
@@ -219,23 +219,23 @@
         AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
             var _this = this;
             requestAnimationFrame((function() {
-                var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
-                var event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
+                const ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                const event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
                 _this._dispatch(event);
             }));
-            var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
+            const e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
             requestAnimationFrame((function() {
                 _this._dispatch(new ima.AdErrorEvent(e));
             }));
         };
-        var AdsRenderingSettings = noopFunc;
-        var AdsRequest = function AdsRequest() {};
+        const AdsRenderingSettings = noopFunc;
+        const AdsRequest = function AdsRequest() {};
         AdsRequest.prototype = {
             setAdWillAutoPlay: noopFunc,
             setAdWillPlayMuted: noopFunc,
             setContinuousPlayback: noopFunc
         };
-        var AdPodInfo = function AdPodInfo() {};
+        const AdPodInfo = function AdPodInfo() {};
         AdPodInfo.prototype = {
             getAdPosition: function getAdPosition() {
                 return 1;
@@ -256,13 +256,13 @@
                 return 1;
             }
         };
-        var Ad = function Ad() {};
+        const Ad = function Ad() {};
         Ad.prototype = {
             pi: new AdPodInfo,
             getAdId: function getAdId() {
                 return "";
             },
-            getAdPodInfo: function getAdPodInfo() {
+            getAdPodInfo() {
                 return this.pi;
             },
             getAdSystem: function getAdSystem() {
@@ -349,11 +349,11 @@
             isLinear: function isLinear() {
                 return true;
             },
-            isSkippable: function isSkippable() {
+            isSkippable() {
                 return true;
             }
         };
-        var CompanionAd = function CompanionAd() {};
+        const CompanionAd = function CompanionAd() {};
         CompanionAd.prototype = {
             getAdSlotId: function getAdSlotId() {
                 return "";
@@ -371,7 +371,7 @@
                 return 1;
             }
         };
-        var AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
+        const AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
             this.errorCode = code;
             this.message = message;
             this.type = type;
@@ -396,11 +396,11 @@
         };
         AdError.ErrorCode = {};
         AdError.Type = {};
-        var isEngadget = function isEngadget() {
+        const isEngadget = function isEngadget() {
             try {
                 for (var _i3 = 0, _Object$values = Object.values(window.vidible._getContexts()); _i3 < _Object$values.length; _i3++) {
                     var _ctx$getPlayer, _ctx$getPlayer$div;
-                    var ctx = _Object$values[_i3];
+                    const ctx = _Object$values[_i3];
                     if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer$div = _ctx$getPlayer.div) !== null && _ctx$getPlayer$div !== void 0 && _ctx$getPlayer$div.innerHTML.includes("www.engadget.com")) {
                         return true;
                     }
@@ -408,8 +408,8 @@
             } catch (e) {}
             return false;
         };
-        var currentAd = isEngadget() ? undefined : new Ad;
-        var AdEvent = function AdEvent(type) {
+        const currentAd = isEngadget() ? undefined : new Ad;
+        const AdEvent = function AdEvent(type) {
             this.type = type;
         };
         AdEvent.prototype = {
@@ -452,7 +452,7 @@
             VOLUME_CHANGED: "volumeChange",
             VOLUME_MUTED: "mute"
         };
-        var AdErrorEvent = function AdErrorEvent(error) {
+        const AdErrorEvent = function AdErrorEvent(error) {
             this.error = error;
             this.type = "adError";
             this.getError = function() {
@@ -469,11 +469,11 @@
         AdErrorEvent.Type = {
             AD_ERROR: "adError"
         };
-        var CustomContentLoadedEvent = function CustomContentLoadedEvent() {};
+        const CustomContentLoadedEvent = function CustomContentLoadedEvent() {};
         CustomContentLoadedEvent.Type = {
             CUSTOM_CONTENT_LOADED: "deprecated-event"
         };
-        var CompanionAdSelectionSettings = function CompanionAdSelectionSettings() {};
+        const CompanionAdSelectionSettings = function CompanionAdSelectionSettings() {};
         CompanionAdSelectionSettings.CreativeType = {
             ALL: "All",
             FLASH: "Flash",
@@ -490,7 +490,7 @@
             SELECT_EXACT_MATCH: "SelectExactMatch",
             SELECT_NEAR_MATCH: "SelectNearMatch"
         };
-        var AdCuePoints = function AdCuePoints() {};
+        const AdCuePoints = function AdCuePoints() {};
         AdCuePoints.prototype = {
             getCuePoints: function getCuePoints() {
                 return [];
@@ -502,8 +502,8 @@
                 return "";
             }
         };
-        var AdProgressData = noopFunc;
-        var UniversalAdIdInfo = function UniversalAdIdInfo() {};
+        const AdProgressData = noopFunc;
+        const UniversalAdIdInfo = function UniversalAdIdInfo() {};
         Object.assign(ima, {
             AdCuePoints: AdCuePoints,
             AdDisplayContainer: AdDisplayContainer,
@@ -550,19 +550,19 @@
             return;
         }
         try {
-            var log = console.log.bind(console);
-            var trace = console.trace.bind(console);
-            var prefix = source.ruleText || "";
+            const log = console.log.bind(console);
+            const trace = console.trace.bind(console);
+            let prefix = source.ruleText || "";
             if (source.domainName) {
-                var AG_SCRIPTLET_MARKER = "#%#//";
-                var UBO_SCRIPTLET_MARKER = "##+js";
-                var ruleStartIndex;
+                const AG_SCRIPTLET_MARKER = "#%#//";
+                const UBO_SCRIPTLET_MARKER = "##+js";
+                let ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                var rulePart = source.ruleText.slice(ruleStartIndex);
+                const rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
@@ -577,10 +577,21 @@
     }
     function noopFunc() {}
     function logMessage(source, message) {
-        var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-        if (forced || source.verbose) {
-            console.log("".concat(source.name, ": ").concat(message));
+        let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+        if (!forced && !verbose) {
+            return;
         }
+        let messageStr = "".concat(name, ": ").concat(message);
+        if (ruleText) {
+            const RULE_MARKER = "#%#//scriptlet";
+            const markerIdx = ruleText.indexOf(RULE_MARKER);
+            if (markerIdx > -1) {
+                const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
+                messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
+            }
+        }
+        console.log(messageStr);
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
