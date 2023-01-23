@@ -90,22 +90,22 @@
     'use strict';
 
     function clickToLoad() {
-      var QUESTION_MARK = '?';
-      var AMPERSAND = '&';
-      var SEARCH_PARAMS_DIVIDER = '=';
-      var ORIGIN_URL_PARAM = '__origin';
-      var EXT_UNBLOCK_PARAM = '__unblock';
-      var CL_UNBLOCK_PARAM = '__adg_unblock_token';
-      var CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
-      var BLOCKING_RULE_PARAM = '__adg_blocking_rule';
-      var CLICK_EVENT = 'click';
-      var CL_FORCE_EVENT = 'force';
-      var neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
-      var parseSearchParam = function parseSearchParam(rawQueryStr) {
-        var res = {};
-        var pattern = /([^&=]+)=([^&]*)/g;
-        var matchedData;
-        var queryStr = rawQueryStr.substring(1);
+      const QUESTION_MARK = '?';
+      const AMPERSAND = '&';
+      const SEARCH_PARAMS_DIVIDER = '=';
+      const ORIGIN_URL_PARAM = '__origin';
+      const EXT_UNBLOCK_PARAM = '__unblock';
+      const CL_UNBLOCK_PARAM = '__adg_unblock_token';
+      const CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
+      const BLOCKING_RULE_PARAM = '__adg_blocking_rule';
+      const CLICK_EVENT = 'click';
+      const CL_FORCE_EVENT = 'force';
+      const neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
+      const parseSearchParam = function parseSearchParam(rawQueryStr) {
+        const res = {};
+        const pattern = /([^&=]+)=([^&]*)/g;
+        let matchedData;
+        let queryStr = rawQueryStr.substring(1);
         while (matchedData = pattern.exec(queryStr)) {
           if (neededParams.indexOf(matchedData[1]) > -1) {
             res[matchedData[1]] = matchedData[2];
@@ -114,23 +114,23 @@
         }
         return res;
       };
-      var paramsData = parseSearchParam(window.location.search);
-      var getParamByKey = function getParamByKey(key) {
+      const paramsData = parseSearchParam(window.location.search);
+      const getParamByKey = function getParamByKey(key) {
         return paramsData[key] || '';
       };
-      var extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
-      var clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
-      var blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
-      var originUrl = clUnblockToken
+      const extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
+      const clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
+      const blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
+      const originUrl = clUnblockToken
       ? window.location.href : decodeURIComponent(getParamByKey(ORIGIN_URL_PARAM));
-      var clickTitleElem = document.getElementById('clickToLoadTitle');
-      var clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
-      var clickButtonElem = document.getElementById('clickToLoadLink');
-      var originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
+      const clickTitleElem = document.getElementById('clickToLoadTitle');
+      const clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
+      const clickButtonElem = document.getElementById('clickToLoadLink');
+      const originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
       clickSubtitleElem.textContent = originUrlToDisplay;
       clickButtonElem.href = originUrlToDisplay;
       clickButtonElem.title = originUrlToDisplay;
-      var translationsData = {
+      const translationsData = {
         en: {
           title: 'Content blocked by AdGuard',
           button: 'Click to load'
@@ -176,13 +176,13 @@
           button: 'Однаково завантажити'
         }
       };
-      var getTranslations = function getTranslations() {
-        var baseLocaleData = translationsData.en;
+      const getTranslations = function getTranslations() {
+        const baseLocaleData = translationsData.en;
         try {
-          var currentLocale = navigator.language.toLowerCase();
-          var localeData = translationsData[currentLocale];
+          const currentLocale = navigator.language.toLowerCase();
+          let localeData = translationsData[currentLocale];
           if (!localeData) {
-            var lang = currentLocale.split('-')[0];
+            const lang = currentLocale.split('-')[0];
             localeData = translationsData[lang];
           }
           if (!localeData) {
@@ -193,24 +193,24 @@
           return baseLocaleData;
         }
       };
-      var translations = getTranslations();
+      const translations = getTranslations();
       clickTitleElem.textContent = translations.title;
       clickButtonElem.textContent = translations.button;
-      var getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
-        var questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
-        var divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
+      const getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
+        const questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
+        let divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
         if (originUrl.substring(questionMarkIndex).length === 1) {
           divider = '';
         }
         return "".concat(originUrl).concat(divider).concat(unblockTokenName).concat(SEARCH_PARAMS_DIVIDER).concat(unblockTokenValue);
       };
-      var extRun = function extRun() {
-        var replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
+      const extRun = function extRun() {
+        const replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
         window.location.replace(replaceUrl);
       };
-      var clRun = function clRun() {
-        var CL_SPECIFIC_UNBLOCK_VALUE = 1;
-        var replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
+      const clRun = function clRun() {
+        const CL_SPECIFIC_UNBLOCK_VALUE = 1;
+        const replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
         window.location.replace(replaceUrl);
       };
       clickButtonElem.addEventListener(CLICK_EVENT, function (e) {
@@ -228,17 +228,17 @@
       clickButtonElem.addEventListener(CL_FORCE_EVENT, function () {
         clRun();
       });
-      var hasFrameModifier = function hasFrameModifier(rule) {
-        var substringAfter = function substringAfter(str, separator) {
-          var index = str.indexOf(separator);
+      const hasFrameModifier = function hasFrameModifier(rule) {
+        const substringAfter = function substringAfter(str, separator) {
+          const index = str.indexOf(separator);
           return index < 0 ? '' : str.substring(index + separator.length);
         };
-        var FRAME_MARKER = 'frame';
-        var SUBDOCUMENT_MARKER = 'subdocument';
-        var ruleModifiers = substringAfter(rule, '$').split(',');
+        const FRAME_MARKER = 'frame';
+        const SUBDOCUMENT_MARKER = 'subdocument';
+        const ruleModifiers = substringAfter(rule, '$').split(',');
         return ruleModifiers.indexOf(FRAME_MARKER) > -1 || ruleModifiers.indexOf(SUBDOCUMENT_MARKER) > -1;
       };
-      var isInsideFrame = function isInsideFrame() {
+      const isInsideFrame = function isInsideFrame() {
         return window.self !== window.top;
       };
       if (clUnblockToken && blockingRule && hasFrameModifier(blockingRule) && !isInsideFrame()) {

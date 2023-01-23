@@ -1,7 +1,7 @@
 (function(source, args) {
     function preventFab(source) {
         hit(source);
-        var Fab = function Fab() {};
+        const Fab = function Fab() {};
         Fab.prototype.check = noopFunc;
         Fab.prototype.clearEvent = noopFunc;
         Fab.prototype.emitEvent = noopFunc;
@@ -21,18 +21,18 @@
             set: noopFunc,
             get: noopFunc
         };
-        var fab = new Fab;
-        var getSetFab = {
-            get: function get() {
+        const fab = new Fab;
+        const getSetFab = {
+            get() {
                 return Fab;
             },
-            set: function set() {}
+            set() {}
         };
-        var getsetfab = {
-            get: function get() {
+        const getsetfab = {
+            get() {
                 return fab;
             },
-            set: function set() {}
+            set() {}
         };
         if (Object.prototype.hasOwnProperty.call(window, "FuckAdBlock")) {
             window.FuckAdBlock = Fab;
@@ -70,19 +70,19 @@
             return;
         }
         try {
-            var log = console.log.bind(console);
-            var trace = console.trace.bind(console);
-            var prefix = source.ruleText || "";
+            const log = console.log.bind(console);
+            const trace = console.trace.bind(console);
+            let prefix = source.ruleText || "";
             if (source.domainName) {
-                var AG_SCRIPTLET_MARKER = "#%#//";
-                var UBO_SCRIPTLET_MARKER = "##+js";
-                var ruleStartIndex;
+                const AG_SCRIPTLET_MARKER = "#%#//";
+                const UBO_SCRIPTLET_MARKER = "##+js";
+                let ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                var rulePart = source.ruleText.slice(ruleStartIndex);
+                const rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

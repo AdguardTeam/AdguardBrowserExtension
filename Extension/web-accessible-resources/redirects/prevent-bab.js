@@ -1,28 +1,28 @@
 (function(source, args) {
     function preventBab$1(source) {
-        var nativeSetTimeout = window.setTimeout;
-        var babRegex = /\.bab_elementid.$/;
-        var timeoutWrapper = function timeoutWrapper(callback) {
+        const nativeSetTimeout = window.setTimeout;
+        const babRegex = /\.bab_elementid.$/;
+        const timeoutWrapper = function timeoutWrapper(callback) {
             if (typeof callback !== "string" || !babRegex.test(callback)) {
                 for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                     args[_key - 1] = arguments[_key];
                 }
-                return nativeSetTimeout.apply(window, [ callback ].concat(args));
+                return nativeSetTimeout.apply(window, [ callback, ...args ]);
             }
             hit(source);
         };
         window.setTimeout = timeoutWrapper;
-        var signatures = [ [ "blockadblock" ], [ "babasbm" ], [ /getItem\('babn'\)/ ], [ "getElementById", "String.fromCharCode", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "charAt", "DOMContentLoaded", "AdBlock", "addEventListener", "doScroll", "fromCharCode", "<<2|r>>4", "sessionStorage", "clientWidth", "localStorage", "Math", "random" ] ];
-        var check = function check(str) {
+        const signatures = [ [ "blockadblock" ], [ "babasbm" ], [ /getItem\('babn'\)/ ], [ "getElementById", "String.fromCharCode", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "charAt", "DOMContentLoaded", "AdBlock", "addEventListener", "doScroll", "fromCharCode", "<<2|r>>4", "sessionStorage", "clientWidth", "localStorage", "Math", "random" ] ];
+        const check = function check(str) {
             if (typeof str !== "string") {
                 return false;
             }
-            for (var i = 0; i < signatures.length; i += 1) {
-                var tokens = signatures[i];
-                var match = 0;
-                for (var j = 0; j < tokens.length; j += 1) {
-                    var token = tokens[j];
-                    var found = token instanceof RegExp ? token.test(str) : str.indexOf(token) > -1;
+            for (let i = 0; i < signatures.length; i += 1) {
+                const tokens = signatures[i];
+                let match = 0;
+                for (let j = 0; j < tokens.length; j += 1) {
+                    const token = tokens[j];
+                    const found = token instanceof RegExp ? token.test(str) : str.indexOf(token) > -1;
                     if (found) {
                         match += 1;
                     }
@@ -33,17 +33,17 @@
             }
             return false;
         };
-        var nativeEval = window.eval;
-        var evalWrapper = function evalWrapper(str) {
+        const nativeEval = window.eval;
+        const evalWrapper = function evalWrapper(str) {
             if (!check(str)) {
                 return nativeEval(str);
             }
             hit(source);
-            var bodyEl = document.body;
+            const bodyEl = document.body;
             if (bodyEl) {
                 bodyEl.style.removeProperty("visibility");
             }
-            var el = document.getElementById("babasbmsgx");
+            const el = document.getElementById("babasbmsgx");
             if (el) {
                 el.parentNode.removeChild(el);
             }
@@ -55,19 +55,19 @@
             return;
         }
         try {
-            var log = console.log.bind(console);
-            var trace = console.trace.bind(console);
-            var prefix = source.ruleText || "";
+            const log = console.log.bind(console);
+            const trace = console.trace.bind(console);
+            let prefix = source.ruleText || "";
             if (source.domainName) {
-                var AG_SCRIPTLET_MARKER = "#%#//";
-                var UBO_SCRIPTLET_MARKER = "##+js";
-                var ruleStartIndex;
+                const AG_SCRIPTLET_MARKER = "#%#//";
+                const UBO_SCRIPTLET_MARKER = "##+js";
+                let ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                var rulePart = source.ruleText.slice(ruleStartIndex);
+                const rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
