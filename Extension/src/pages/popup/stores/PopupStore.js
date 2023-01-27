@@ -339,7 +339,7 @@ class PopupStore {
             this.promoNotification = null;
         });
         await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
-        await messenger.sendMessage(MessageType.OpenTab, { url });
+        await browser.tabs.create({ url });
     };
 
     @action

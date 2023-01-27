@@ -293,10 +293,6 @@ class Messenger {
         await this.sendMessage(MessageType.RefreshPage, { tabId, preserveLogEnabled });
     }
 
-    async openTab(url, options) {
-        await this.sendMessage(MessageType.OpenTab, { url, options });
-    }
-
     async addUserRule(ruleText) {
         await this.sendMessage(MessageType.AddUserRule, { ruleText });
     }
