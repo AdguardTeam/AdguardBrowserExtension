@@ -31,25 +31,25 @@ import {
 import { Engine } from '../../engine';
 
 /**
- * Allowlist and Inverted Allowlist storages have same api
- * This type is used in generic private methods of {@link AllowlistApi}
+ * Allowlist and Inverted Allowlist storages have same api.
+ * This type is used in generic private methods of {@link AllowlistApi}.
  */
 type DomainsStorage =
     | typeof allowlistDomainsStorage
     | typeof invertedAllowlistDomainsStorage;
 
 /**
- * API for managing allowlist domain lists
+ * API for managing allowlist domain lists.
  *
  * This class provided methods for creating and deleting rules in
- * {@link allowlistDomainsStorage} and {@link invertedAllowlistDomainsStorage}
+ * {@link allowlistDomainsStorage} and {@link invertedAllowlistDomainsStorage}.
  *
  */
 export class AllowlistApi {
     /**
      * Reads stringified domains arrays from persisted storages
-     * and save it in cache.
-     * if data is not exist, set empty arrays.
+     * and saves it in cache.
+     * If data is not exist, set empty arrays.
      */
     public static init(): void {
         AllowlistApi.initStorage(allowlistDomainsStorage);
@@ -57,90 +57,90 @@ export class AllowlistApi {
     }
 
     /**
-     * Checks if allowlist in inverted
+     * Checks if allowlist in inverted.
      *
-     * @returns true, if inverted, else returns false
+     * @returns True, if inverted, else returns false.
      */
     public static isInverted(): boolean {
         return !settingsStorage.get(SettingOption.DefaultAllowlistMode);
     }
 
     /**
-     * Checks if allowlist is enabled
+     * Checks if allowlist is enabled.
      *
-     * @returns true, if enabled, else returns false
+     * @returns True, if enabled, else returns false.
      */
     public static isEnabled(): boolean {
         return settingsStorage.get(SettingOption.AllowlistEnabled);
     }
 
     /**
-     * Gets domain list from {@link allowlistDomainsStorage}
+     * Gets domain list from {@link allowlistDomainsStorage}.
      *
-     * @returns list of allowlisted domains in default mode
+     * @returns List of allowlisted domains in default mode.
      */
     public static getAllowlistDomains(): string[] {
         return AllowlistApi.getDomains(allowlistDomainsStorage);
     }
 
     /**
-     * Gets domain list from {@link invertedAllowlistDomainsStorage}
+     * Gets domain list from {@link invertedAllowlistDomainsStorage}.
      *
-     * @returns list of allowlisted domains in inverted mode
+     * @returns List of allowlisted domains in inverted mode.
      */
     public static getInvertedAllowlistDomains(): string[] {
         return AllowlistApi.getDomains(invertedAllowlistDomainsStorage);
     }
 
     /**
-     * Set domain list to {@link allowlistDomainsStorage}
+     * Sets domain list to {@link allowlistDomainsStorage}.
      *
-     * @param domains - array of domains
+     * @param domains - Array of domains.
      */
     public static setAllowlistDomains(domains: string[]): void {
         AllowlistApi.setDomains(domains, allowlistDomainsStorage);
     }
 
     /**
-     * Set domain list to {@link invertedAllowlistDomainsStorage}
+     * Sets domain list to {@link invertedAllowlistDomainsStorage}.
      *
-     * @param domains - array of domains
+     * @param domains - Array of domains.
      */
     public static setInvertedAllowlistDomains(domains: string[]): void {
         AllowlistApi.setDomains(domains, invertedAllowlistDomainsStorage);
     }
 
     /**
-     * Add domain to {@link allowlistDomainsStorage}
+     * Add domain to {@link allowlistDomainsStorage}.
      *
-     * @param domain - domain string
+     * @param domain - Domain string.
      */
     public static addAllowlistDomain(domain: string): void {
         AllowlistApi.addDomain(domain, allowlistDomainsStorage);
     }
 
     /**
-     * Add domain to {@link invertedAllowlistDomainsStorage}
+     * Add domain to {@link invertedAllowlistDomainsStorage}.
      *
-     * @param domain - domain string
+     * @param domain - Domain string.
      */
     public static addInvertedAllowlistDomain(domain: string): void {
         AllowlistApi.addDomain(domain, invertedAllowlistDomainsStorage);
     }
 
     /**
-     * Remove domain from {@link allowlistDomainsStorage}
+     * Remove domain from {@link allowlistDomainsStorage}.
      *
-     * @param domain - domain string
+     * @param domain - Domain string.
      */
     public static removeAllowlistDomain(domain: string): void {
         AllowlistApi.removeDomain(domain, allowlistDomainsStorage);
     }
 
     /**
-     * Remove domain from {@link invertedAllowlistDomainsStorage}
+     * Remove domain from {@link invertedAllowlistDomainsStorage}.
      *
-     * @param domain - domain string
+     * @param domain - Domain string.
      */
     public static removeInvertedAllowlistDomain(domain: string): void {
         AllowlistApi.removeDomain(domain, invertedAllowlistDomainsStorage);
@@ -152,7 +152,7 @@ export class AllowlistApi {
      * If inverted allowlist mode, adds domain to {@link invertedAllowlistDomainsStorage}.
      * Updates tswebextension configuration and reload tab after changes apply.
      *
-     * @param tabId - tab id
+     * @param tabId Tab id.
      */
     public static async removeTabUrlFromAllowlist(tabId: number): Promise<void> {
         const mainFrame = tsWebExtTabsApi.getTabMainFrame(tabId);
@@ -184,7 +184,7 @@ export class AllowlistApi {
      * If inverted allowlist mode, removes domain from  {@link allowlistDomainsStorage}.
      * Updates tswebextension configuration and reload tab after changes apply.
      *
-     * @param tabId - tab id
+     * @param tabId Tab id.
      */
     public static async addTabUrlToAllowlist(tabId: number): Promise<void> {
         const mainFrame = tsWebExtTabsApi.getTabMainFrame(tabId);
@@ -211,10 +211,10 @@ export class AllowlistApi {
     }
 
     /**
-     * Add domain to specified {@link DomainsStorage}
+     * Add domain to specified {@link DomainsStorage}.
      *
-     * @param domain - domain string
-     * @param storage - specified {@link DomainsStorage}
+     * @param domain - Domain string.
+     * @param storage - Specified {@link DomainsStorage}.
      */
     private static addDomain(domain: string, storage: DomainsStorage): void {
         const domains = storage.getData();
@@ -225,10 +225,10 @@ export class AllowlistApi {
     }
 
     /**
-     * Remove domain to specified storage
+     * Remove domain to specified storage.
      *
-     * @param domain - domain string
-     * @param storage - specified {@link DomainsStorage}
+     * @param domain - Domain string.
+     * @param storage - Specified {@link DomainsStorage}.
      */
     private static removeDomain(domain: string, storage: DomainsStorage): void {
         const domains = storage.getData();
@@ -237,31 +237,27 @@ export class AllowlistApi {
     }
 
     /**
-     * Get domains from specified storage
+     * Get domains from specified storage.
      *
-     * @param storage - specified {@link DomainsStorage}
+     * @param storage - Specified {@link DomainsStorage}.
      *
-     * @returns list of domains
+     * @returns List of domains.
      */
     private static getDomains(storage: DomainsStorage): string[] {
         return storage.getData();
     }
 
     /**
-     * Set domains list to specified storage
+     * Set domains list to specified storage.
      *
-     * @param domains - list of domains
-     * @param storage - specified {@link DomainsStorage}
+     * @param domains - List of domains.
+     * @param storage - Specified {@link DomainsStorage}.
      */
     private static setDomains(domains: string[], storage: DomainsStorage): void {
-        /**
-         * remove empty strings
-         */
+        // remove empty strings
         domains = domains.filter(domain => !!domain);
 
-        /**
-         * remove duplicates
-         */
+        // remove duplicates
         domains = Array.from(new Set(domains));
 
         storage.setData(domains);
@@ -271,12 +267,12 @@ export class AllowlistApi {
 
     /**
      * Read stringified domains array from specified allowlist storage,
-     * parse it and set memory cache
+     * parse it and set memory cache.
      *
-     * if data is not exist, set default data
+     * If data is not exist, set default data.
      *
-     * @param storage - default allowlist or inverted domains storage
-     * @param defaultData - default storage data
+     * @param storage - Default allowlist or inverted domains storage.
+     * @param defaultData - Default storage data.
      */
     private static initStorage(storage: DomainsStorage, defaultData: string[] = []): void {
         try {

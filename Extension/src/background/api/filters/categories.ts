@@ -36,7 +36,7 @@ import {
 import { Log } from '../../../common/log';
 
 /**
- * Filter data displayed in category section on options page
+ * Filter data displayed in category section on options page.
  */
 export type CategoriesFilterData = (
     (RegularFilterMetadata | CustomFilterMetadata) &
@@ -46,7 +46,7 @@ export type CategoriesFilterData = (
 );
 
 /**
- * Groups data displayed on options page
+ * Groups data displayed on options page.
  */
 export type CategoriesGroupData = (
     GroupMetadata &
@@ -55,7 +55,7 @@ export type CategoriesGroupData = (
 );
 
 /**
- * Aggregated data for options page
+ * Aggregated data for options page.
  */
 export type CategoriesData = {
     categories: CategoriesGroupData[],
@@ -63,7 +63,7 @@ export type CategoriesData = {
 };
 
 /**
- * Class for filter groups management
+ * Class for filter groups management.
  */
 export class Categories {
     private static RECOMMENDED_TAG_ID = 10;
@@ -71,9 +71,9 @@ export class Categories {
     private static PURPOSE_MOBILE_TAG_ID = 19;
 
     /**
-     * Get aggregated filters category data for option page
+     * Get aggregated filters category data for option page.
      *
-     * @returns categories aggregated data
+     * @returns Categories aggregated data.
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
@@ -91,10 +91,10 @@ export class Categories {
     }
 
     /**
-     * On first group enable enables recommended filters by groupId
-     * On the next calls just enables group
+     * On first group enable enables recommended filters by groupId.
+     * On the next calls just enables group.
      *
-     * @param groupId - groupId
+     * @param groupId GroupId.
      */
     public static async enableGroup(groupId: number): Promise<void> {
         const group = groupStateStorage.get(groupId);
@@ -108,42 +108,42 @@ export class Categories {
     }
 
     /**
-     * Disable group
+     * Disable group.
      *
-     * @param groupId - group id
+     * @param groupId Group id.
      */
     public static disableGroup(groupId: number): void {
         groupStateStorage.disableGroups([groupId]);
     }
 
     /**
-     * Checks if filter has recommended tag
+     * Checks if filter has recommended tag.
      *
-     * @param filter - filter metadata
+     * @param filter Filter metadata.
      *
-     * @returns true, if filter has recommended tag, else returns false
+     * @returns True, if filter has recommended tag, else returns false.
      */
     private static isRecommendedFilter(filter: FilterMetadata): boolean {
         return filter.tags.includes(Categories.RECOMMENDED_TAG_ID);
     }
 
     /**
-     * Checks if filter has mobile tag
+     * Checks if filter has mobile tag.
      *
-     * @param filter - filter metadata
+     * @param filter Filter metadata.
      *
-     * @returns true, if filter has mobile tag, else returns false
+     * @returns True, if filter has mobile tag, else returns false.
      */
     private static isMobileFilter(filter: FilterMetadata): boolean {
         return filter.tags.includes(Categories.PURPOSE_MOBILE_TAG_ID);
     }
 
     /**
-     * If filter has mobile tag we check if platform is mobile, in other cases we do not check
+     * If filter has mobile tag we check if platform is mobile, in other cases we do not check.
      *
-     * @param filter - filter metadata
+     * @param filter Filter metadata.
      *
-     * @returns true, if filter match platform, else returns false
+     * @returns True, if filter match platform, else returns false.
      */
     private static isFilterMatchPlatform(filter: FilterMetadata): boolean {
         if (Categories.isMobileFilter(filter)) {
@@ -153,14 +153,14 @@ export class Categories {
     }
 
     /**
-     * Returns recommended filters, which meet next requirements
-     * 1. filter has recommended tag
-     * 2. if filter has language tag, tag should match with user locale
-     * 3. filter should correspond to platform mobile or desktop
+     * Returns recommended filters, which meet next requirements:
+     * 1. Filter has recommended tag;
+     * 2. If filter has language tag, tag should match with user locale;
+     * 3. Filter should correspond to platform mobile or desktop.
      *
-     * @param groupId - group id
+     * @param groupId Group id.
      *
-     * @returns recommended filters by groupId
+     * @returns Recommended filters by groupId.
      */
     private static getRecommendedFilterIdsByGroupId(groupId: number): number[] {
         const { categories } = Categories.getCategories();
@@ -195,11 +195,11 @@ export class Categories {
     }
 
     /**
-     * Get tags metadata from {@link metadataStorage}
+     * Get tags metadata from {@link metadataStorage}.
      *
-     * @param tagsIds - tags ids
+     * @param tagsIds Tags ids.
      *
-     * @returns aggregated groups data
+     * @returns Aggregated groups data.
      */
     private static getTagsDetails(tagsIds: number[]): TagMetadata[] {
         const tagsMetadata = metadataStorage.getTags();
@@ -234,7 +234,7 @@ export class Categories {
      * {@link customFilterMetadataStorage}, {@link filterStateStorage} and
      * {@link filterVersionStorage}.
      *
-     * @returns aggregated filters data
+     * @returns Aggregated filters data.
      */
     private static getFilters(): CategoriesFilterData[] {
         const filtersMetadata = FiltersApi.getFiltersMetadata();
@@ -270,9 +270,9 @@ export class Categories {
     }
 
     /**
-     * Get groups data from {@link metadataStorage} and {@link groupStateStorage}
+     * Get groups data from {@link metadataStorage} and {@link groupStateStorage}.
      *
-     * @returns aggregated groups data
+     * @returns Aggregated groups data.
      */
     private static getGroups(): CategoriesGroupData[] {
         const groupsMetadata = metadataStorage.getGroups();
@@ -297,11 +297,11 @@ export class Categories {
     }
 
     /**
-     * Get filters data for specified group
+     * Get filters data for specified group.
      *
-     * @param groupId - group id
-     * @param filters - aggregated filters data
-     * @returns aggregated filters data for specified group
+     * @param groupId Group id.
+     * @param filters Aggregated filters data.
+     * @returns Aggregated filters data for specified group.
      */
     private static selectFiltersByGroupId(groupId: number, filters: CategoriesFilterData[]): CategoriesFilterData[] {
         return filters.filter(filter => filter.groupId === groupId);

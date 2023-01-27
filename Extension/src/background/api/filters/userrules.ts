@@ -28,12 +28,12 @@ import {
 } from '../../storages';
 
 /**
- * Api for managing user rules list
+ * API for managing user rules list.
  */
 export class UserRulesApi {
     /**
-     * Parse data from user rules list
-     * If it's undefined, sets empty user rules list
+     * Parses data from user rules list.
+     * If it's undefined, sets empty user rules list.
      */
     public static async init(): Promise<void> {
         try {
@@ -49,20 +49,20 @@ export class UserRulesApi {
     }
 
     /**
-     * Checks, if user list is enabled
+     * Checks, if user list is enabled.
      *
-     * @returns true, if user list is enabled, else returns false
+     * @returns True, if user list is enabled, else returns false.
      */
     public static isEnabled(): boolean {
         return settingsStorage.get(SettingOption.UserFilterEnabled);
     }
 
     /**
-     * Checks, if user list contains rules for specified url
+     * Checks, if user list contains rules for specified url.
      *
-     * @param url - page url
+     * @param url Page url.
      *
-     * @returns true, if user list contains rules for {@link url}, else returns false
+     * @returns True, if user list contains rules for {@link url}, else returns false.
      */
     public static async hasRulesForUrl(url: string | undefined): Promise<boolean> {
         if (!url) {
@@ -77,16 +77,16 @@ export class UserRulesApi {
     }
 
     /**
-     * Get rules from user list
+     * Gets rules from user list.
      */
     public static async getUserRules(): Promise<string[]> {
         return FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
     }
 
     /**
-     * Add rule to user list
+     * Adds rule to user list.
      *
-     * @param rule - rule text
+     * @param rule Rule text.
      */
     public static async addUserRule(rule: string): Promise<void> {
         const userRules = await UserRulesApi.getUserRules();
@@ -97,9 +97,9 @@ export class UserRulesApi {
     }
 
     /**
-     * Remove rule from user list
+     * Removes rule from user list.
      *
-     * @param rule - rule text
+     * @param rule Rule text.
      */
     public static async removeUserRule(rule: string): Promise<void> {
         const userRules = await UserRulesApi.getUserRules();
@@ -108,9 +108,9 @@ export class UserRulesApi {
     }
 
     /**
-     * Remove rules for specified url from user list
+     * Removes rules for specified url from user list.
      *
-     * @param url - page url
+     * @param url Page url.
      */
     public static async removeRulesByUrl(url: string): Promise<void> {
         const userRules = await UserRulesApi.getUserRules();
@@ -119,9 +119,9 @@ export class UserRulesApi {
     }
 
     /**
-     * Set user rule list to storage
+     * Sets user rule list to storage.
      *
-     * @param rules - list of rule strings
+     * @param rules List of rule strings.
      */
     public static async setUserRules(rules: string[]): Promise<void> {
         await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rules);
@@ -130,29 +130,29 @@ export class UserRulesApi {
     }
 
     /**
-     * Get persisted rules during switches between common and fullscreen modes
+     * Gets persisted rules during switches between common and fullscreen modes.
      *
-     * @returns - user rules editor content
+     * @returns User rules editor content.
      */
     public static getEditorStorageData(): string | undefined {
         return editorStorage.get();
     }
 
     /**
-     * Set persisted rules during switches between common and fullscreen modes
+     * Sets persisted rules during switches between common and fullscreen modes.
      *
-     * @param data - user rules editor content
+     * @param data User rules editor content.
      */
     public static setEditorStorageData(data: string): void {
         editorStorage.set(data);
     }
 
     /**
-     * Converts rules text lines with conversion map
+     * Converts rules text lines with conversion map.
      *
-     * @param rules - list of rule strings
+     * @param rules List of rule strings.
      *
-     * @returns list of converted rule strings
+     * @returns List of converted rule strings.
      */
     public static convertRules(rules: string[]): string[] {
         ruleConversionStorage.clear();
@@ -184,10 +184,10 @@ export class UserRulesApi {
     }
 
     /**
-     * Returns source rule text if the rule has been converted
+     * Returns source rule text if the rule has been converted.
      *
-     * @param rule - converted rule text
-     * @returns source rule text, if exist, else undefined
+     * @param rule Converted rule text.
+     * @returns Source rule text, if exist, else undefined.
      */
     public static getSourceRule(rule: string): string | undefined {
         return ruleConversionStorage.get(rule);

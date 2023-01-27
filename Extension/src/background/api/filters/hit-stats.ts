@@ -26,7 +26,7 @@ import { network } from '../network';
 /**
  * This API is used to store and track ad filters usage stats.
  * It is used if user has enabled "Send statistics for ad filters usage" option.
- * More info about ad filters stats: http://adguard.com/en/filter-rules-statistics.html
+ * More info about ad filters stats: http://adguard.com/en/filter-rules-statistics.html.
  */
 export class HitStatsApi {
     private static maxTotalHits = 1000;
@@ -34,14 +34,14 @@ export class HitStatsApi {
     private static saveTimeoutMs = 2000; // 2 sec
 
     /**
-     * Saves and sends hit stats with {@link saveTimeoutMs} debounce
+     * Saves and sends hit stats with {@link saveTimeoutMs} debounce.
      */
     private static debounceSaveAndSaveHitStats = debounce(() => {
         HitStatsApi.saveAndSaveHitStats();
     }, HitStatsApi.saveTimeoutMs);
 
     /**
-     * Init hit stats storage
+     * Init hit stats storage.
      */
     public static async init(): Promise<void> {
         try {
@@ -59,10 +59,10 @@ export class HitStatsApi {
     }
 
     /**
-     * Add 1 rule hit to stats
+     * Add 1 rule hit to stats.
      *
-     * @param ruleText - rule test
-     * @param filterId - filter id
+     * @param ruleText Rule test.
+     * @param filterId Filter id.
      */
     public static addRuleHit(
         ruleText: string,
@@ -78,16 +78,16 @@ export class HitStatsApi {
     }
 
     /**
-     * Cleanup stats
+     * Cleanup stats.
      *
-     * @returns promise, resolved when storage is cleaned
+     * @returns Promise, resolved when storage is cleaned.
      */
     public static cleanup(): Promise<void> {
         return hitStatsStorage.setData({});
     }
 
     /**
-     * Sends hit stats to backend server
+     * Sends hit stats to backend server.
      */
     private static async sendStats(): Promise<void> {
         const hitStats = hitStatsStorage.getData();
@@ -102,7 +102,7 @@ export class HitStatsApi {
     }
 
     /**
-     * Saves and sends hit stats
+     * Saves and sends hit stats.
      */
     private static async saveAndSaveHitStats(): Promise<void> {
         await hitStatsStorage.save();
@@ -110,13 +110,13 @@ export class HitStatsApi {
     }
 
     /**
-     * Checks if hit stats should be collected
+     * Checks if hit stats should be collected.
      *
-     * We collect statistics only for own predefined filter lists
+     * We collect statistics only for own predefined filter lists.
      *
-     * @param filterId - filter list id
+     * @param filterId Filter list id.
      *
-     * @returns true, if hit stats should be collected
+     * @returns True, if hit stats should be collected.
      */
     private static shouldCollectHitStats(filterId: number): boolean {
         return filterId < CUSTOM_FILTERS_START_ID

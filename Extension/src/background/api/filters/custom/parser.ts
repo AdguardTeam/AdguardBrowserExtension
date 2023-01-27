@@ -25,20 +25,20 @@ export type CustomFilterParsedData = {
 };
 
 /**
- * Helper class for parsing custom filter metadata, loaded from remote source
+ * Helper class for parsing custom filter metadata, loaded from remote source.
  */
 export class CustomFilterParser {
     /**
-     * Amount of lines to parse metadata from filter's header
+     * Amount of lines to parse metadata from filter's header.
      */
     private static AMOUNT_OF_LINES_TO_PARSE = 50;
 
     /**
-     * Parses filter metadata from rules header
+     * Parses filter metadata from rules header.
      *
-     * @param rules - lines of raw filter data text
+     * @param rules Lines of raw filter data text.
      *
-     * @returns parsed filter data
+     * @returns Parsed filter data.
      */
     static parseFilterDataFromHeader(rules: string[]): CustomFilterParsedData {
         return {
@@ -52,12 +52,12 @@ export class CustomFilterParser {
     }
 
     /**
-     * Finds value of specified header tag in filter rules text
+     * Finds value of specified header tag in filter rules text.
      *
-     * @param tagName - filter header tag name
-     * @param rules - lines of filter rules text
+     * @param tagName Filter header tag name.
+     * @param rules Lines of filter rules text.
      *
-     * @returns value of specified header tag
+     * @returns Value of specified header tag.
      */
     private static parseTag(tagName: string, rules: string[]): string {
         let result = '';
@@ -91,11 +91,11 @@ export class CustomFilterParser {
     }
 
     /**
-     * Parses string value of 'Expires' header tag
+     * Parses string value of 'Expires' header tag.
      *
-     * @param str - line of rule text with 'Expires' tag
+     * @param str Line of rule text with 'Expires' tag.
      *
-     * @returns parsed value of 'Expires' header tag
+     * @returns Parsed value of 'Expires' header tag.
      */
     private static parseExpiresStr(str: string): number {
         const regexp = /(\d+)\s+(day|hour)/;

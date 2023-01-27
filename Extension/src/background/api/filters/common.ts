@@ -38,37 +38,37 @@ import { CustomFilterApi } from './custom';
  *
  * This class provides methods for reading common filter metadata from {@link metadataStorage.data.filters},
  * installation and updating common filters data, stored in next storages:
- * - {@link filterStateStorage} - filters states
- * - {@link filterVersionStorage} - filters versions
- * - {@link FiltersStorage}  - filter rules
+ * - {@link filterStateStorage} filters states;
+ * - {@link filterVersionStorage} filters versions;
+ * - {@link FiltersStorage} filter rules.
  */
 export class CommonFilterApi {
     /**
-     * Get common filter metadata
+     * Get common filter metadata.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns common filter metadata
+     * @returns Common filter metadata.
      */
     public static getFilterMetadata(filterId: number): RegularFilterMetadata | undefined {
         return metadataStorage.getFilter(filterId);
     }
 
     /**
-     * Get common filters metadata
+     * Get common filters metadata.
      *
-     * @returns common filters metadata array
+     * @returns Common filters metadata array.
      */
     public static getFiltersMetadata(): RegularFilterMetadata[] {
         return metadataStorage.getFilters();
     }
 
     /**
-     * Checks if filter is common
+     * Checks if filter is common.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns true, if filter is common, else returns false
+     * @returns True, if filter is common, else returns false.
      */
     public static isCommonFilter(filterId: number): boolean {
         return !CustomFilterApi.isCustomFilter(filterId)
@@ -77,11 +77,11 @@ export class CommonFilterApi {
     }
 
     /**
-     * Update common filter
+     * Update common filter.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns updated filter metadata or null, if update is not required
+     * @returns Updated filter metadata or null, if update is not required.
      */
     public static async updateFilter(filterId: number): Promise<RegularFilterMetadata | null> {
         Log.info(`Update filter ${filterId}`);
@@ -109,10 +109,10 @@ export class CommonFilterApi {
     }
 
     /**
-     * Download filter rules from backend and update filter state and metadata
+     * Download filter rules from backend and update filter state and metadata.
      *
-     * @param filterId - filter id
-     * @param remote - is filter rules loaded from backend
+     * @param filterId Filter id.
+     * @param remote Is filter rules loaded from backend.
      */
     public static async loadFilterRulesFromBackend(filterId: number, remote: boolean): Promise<void> {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
@@ -146,7 +146,7 @@ export class CommonFilterApi {
     /**
      * Load and enable default common filters.
      *
-     * Called on extension installation
+     * Called on extension installation.
      */
     public static async initDefaultFilters(): Promise<void> {
         groupStateStorage.enableGroups([
@@ -173,9 +173,9 @@ export class CommonFilterApi {
     }
 
     /**
-     * Get language-specific filters by user locale
+     * Get language-specific filters by user locale.
      *
-     * @returns list of language-specific filters ids
+     * @returns List of language-specific filters ids.
      */
     public static getLangSuitableFilters(): number[] {
         let filterIds: number[] = [];
@@ -199,9 +199,9 @@ export class CommonFilterApi {
      * Checks if common filter need update.
      * Matches version from updated metadata with data in filter version storage.
      *
-     * @param filterMetadata - updated filter metadata
+     * @param filterMetadata Updated filter metadata.
      *
-     * @returns true, if filter update is required, else returns false.
+     * @returns True, if filter update is required, else returns false.
      */
     private static isFilterNeedUpdate(filterMetadata: RegularFilterMetadata): boolean {
         Log.info(`Check if filter ${filterMetadata.filterId} need to update`);

@@ -31,7 +31,7 @@ export class I18n {
         locales: string[] | Record<string, unknown>,
         locale: string,
     ): string | null {
-        const lang = locale.replace('-', '_');
+        const lang = this.normalizeLanguageCode(locale);
 
         if (I18n.isIncludesLocale(locales, locale)) {
             return lang;
@@ -58,5 +58,16 @@ export class I18n {
         locale: string,
     ): boolean {
         return Array.isArray(locales) ? locales.includes(locale) : locale in locales;
+    }
+
+    /**
+     * Normalizes language code.
+     *
+     * @param locale Language code.
+     *
+     * @returns Normalized language code.
+     */
+    public static normalizeLanguageCode(locale: string): string {
+        return locale.toLowerCase().replace('-', '_');
     }
 }

@@ -31,13 +31,13 @@ import { CustomFilterApi } from './custom';
 import { CommonFilterApi } from './common';
 
 /**
- * API for filter rules updates
+ * API for filter rules updates.
  */
 export class FilterUpdateApi {
     /**
-     * Check enabled filters update
+     * Checks enabled filters update.
      *
-     * Called when user manually run update
+     * Called when user manually run update.
      */
     public static async updateEnabledFilters(): Promise<FilterMetadata[]> {
         const enabledFilters = FiltersApi.getEnabledFilters();
@@ -50,8 +50,8 @@ export class FilterUpdateApi {
     }
 
     /**
-     * Check installed filters update on initialization
-     * by matching update period via filters version check and expires timestamps
+     * Checks installed filters update on initialization
+     * by matching update period via filters version check and expires timestamps.
      */
     public static async autoUpdateFilters(): Promise<void> {
         const updatePeriod = settingsStorage.get(SettingOption.FiltersUpdatePeriod);
@@ -88,9 +88,9 @@ export class FilterUpdateApi {
     }
 
     /**
-     * Update filters
+     * Updates filters.
      *
-     * @param filtersIds - list of filters ids to update
+     * @param filtersIds List of filters ids to update.
      */
     public static async updateFilters(filtersIds: number[]): Promise<FilterMetadata[]> {
         /**
