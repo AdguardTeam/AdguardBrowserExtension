@@ -41,13 +41,13 @@ export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: b
 /**
  * Api for working with our backend server.
  * All requests sent by this class are covered in the privacy policy:
- * http://adguard.com/en/privacy.html#browsers
+ * http://adguard.com/en/privacy.html#browsers.
  */
 export class Network {
     private settings = new NetworkSettings();
 
     /**
-     * FiltersDownloader constants
+     * FiltersDownloader constants.
      */
     private filterCompilerConditionsConstants = {
         adguard: true,
@@ -59,16 +59,16 @@ export class Network {
     };
 
     /**
-     * Loading subscriptions map
+     * Loading subscriptions map.
      */
     private loadingSubscriptions: Record<string, boolean> = {};
 
     /**
-     * Downloads filter rules by filter ID
+     * Downloads filter rules by filter ID.
      *
-     * @param filterId              Filter identifier
-     * @param forceRemote           Force download filter rules from remote server
-     * @param useOptimizedFilters   Download optimized filters flag
+     * @param filterId              Filter identifier.
+     * @param forceRemote           Force download filter rules from remote server.
+     * @param useOptimizedFilters   Download optimized filters flag.
      */
     public async downloadFilterRules(
         filterId: number,
@@ -90,9 +90,9 @@ export class Network {
     }
 
     /**
-     * Downloads filter rules by url
+     * Downloads filter rules by url.
      *
-     * @param url - Subscription url
+     * @param url Subscription url.
      */
     public async downloadFilterRulesBySubscriptionUrl(url: string): Promise<string[] | undefined> {
         if (url in this.loadingSubscriptions) {
@@ -124,11 +124,11 @@ export class Network {
     }
 
     /**
-     * Loads filter groups metadata
+     * Loads filter groups metadata.
      *
-     * @throws Error if metadata is invalid
+     * @throws Error if metadata is invalid.
      *
-     * @returns @see {@link Metadata}
+     * @returns Object of {@link Metadata}.
      */
     public async getLocalFiltersMetadata(): Promise<Metadata> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filters.json`);
@@ -157,11 +157,11 @@ export class Network {
     }
 
     /**
-     * Loads filter groups metadata from local file
+     * Loads filter groups metadata from local file.
      *
-     * @throws Error if metadata is invalid
+     * @throws Error if metadata is invalid.
      *
-     * @returns @see {@link I18nMetadata}
+     * @returns Object of {@link I18nMetadata}.
      */
     public async getLocalFiltersI18nMetadata(): Promise<I18nMetadata> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filters_i18n.json`);
@@ -190,11 +190,11 @@ export class Network {
     }
 
     /**
-     * Loads script rules from local file
+     * Loads script rules from local file.
      *
-     * @throws Error if metadata is invalid
+     * @throws Error if metadata is invalid.
      *
-     * @returns Array of string script rules
+     * @returns Array of string script rules.
      */
     public async getLocalScriptRules(): Promise<LocalScriptRules> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/local_script_rules.json`);
@@ -222,9 +222,9 @@ export class Network {
     }
 
     /**
-     * Downloads metadata from backend
+     * Downloads metadata from backend.
      *
-     * @throws Error if metadata is invalid
+     * @throws Error if metadata is invalid.
      */
     public async downloadMetadataFromBackend(): Promise<Metadata> {
         const url = this.settings.filtersMetadataUrl;
@@ -242,11 +242,11 @@ export class Network {
     }
 
     /**
-     * Downloads i18n metadata from backend and returns it
+     * Downloads i18n metadata from backend and returns it.
      *
-     * @throws Error if metadata is invalid
+     * @throws Error if metadata is invalid.
      *
-     * @returns @see {@link I18nMetadata}
+     * @returns Object of {@link I18nMetadata}.
      */
     public async downloadI18nMetadataFromBackend(): Promise<I18nMetadata> {
         const response = await Network.executeRequestAsync(
@@ -267,9 +267,9 @@ export class Network {
     }
 
     /**
-     * Checks specified host hashes with our safebrowsing service
+     * Checks specified host hashes with our safebrowsing service.
      *
-     * @param hashes - Host hashes
+     * @param hashes Host hashes.
      */
     public async lookupSafebrowsing(hashes: string[]): Promise<ExtensionXMLHttpRequest> {
         const url = `${this.settings.safebrowsingLookupUrl}?prefixes=${encodeURIComponent(hashes.join('/'))}`;
@@ -278,11 +278,11 @@ export class Network {
     }
 
     /**
-     * Sends feedback from the user to our server
+     * Sends feedback from the user to our server.
      *
-     * @param url - URL
-     * @param messageType - Message type
-     * @param comment - Message text
+     * @param url URL.
+     * @param messageType Message type.
+     * @param comment Message text.
      */
     public sendUrlReport(url: string, messageType: string, comment: string): void {
         let params = `url=${encodeURIComponent(url)}`;
@@ -302,9 +302,9 @@ export class Network {
      * Sends filter hits stats to backend server.
      * This method is used if user has enabled "Send statistics for ad filters usage".
      * More information about ad filters usage stats:
-     * http://adguard.com/en/filter-rules-statistics.html
+     * http://adguard.com/en/filter-rules-statistics.html.
      *
-     * @param stats - {@link HitStats}
+     * @param stats {@link HitStats}.
      */
     public sendHitStats(stats: string): void {
         const request = new XMLHttpRequest();
@@ -314,12 +314,12 @@ export class Network {
     }
 
     /**
-     * URL for downloading AG filter
+     * URL for downloading AG filter.
      *
-     * @param filterId - Filter identifier
-     * @param useOptimizedFilters - if true, download optimized filters
+     * @param filterId Filter identifier.
+     * @param useOptimizedFilters If true, download optimized filters.
      *
-     * @returns url for filter downloading
+     * @returns Url for filter downloading.
      */
     private getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
         const url = useOptimizedFilters ? this.settings.optimizedFilterRulesUrl : this.settings.filterRulesUrl;
@@ -327,21 +327,21 @@ export class Network {
     }
 
     /**
-     * Appends request key to url
+     * Appends request key to url.
      *
-     * @param url - url string
+     * @param url Url string.
      *
-     * @returns url with key query param
+     * @returns Url with key query param.
      */
     private addKeyParameter(url: string): string {
         return `${url}&key=${this.settings.apiKey}`;
     }
 
     /**
-     * Executes async request
+     * Executes async request.
      *
-     * @param url Url
-     * @param contentType Content type
+     * @param url Url.
+     * @param contentType Content type.
      */
     private static async executeRequestAsync(url: string, contentType: string): Promise<ExtensionXMLHttpRequest> {
         return new Promise((resolve, reject) => {
@@ -377,6 +377,16 @@ export class Network {
         });
     }
 
+    /**
+     * Creates a custom network error to throw it to a higher level.
+     *
+     * @param message Error message.
+     * @param url Url where the error occurred.
+     * @param response Network response information {@link ExtensionXMLHttpRequest}.
+     * @param originError Original error.
+     *
+     * @returns Error "wrapper".
+     */
     private static createError(
         message: string,
         url: string,

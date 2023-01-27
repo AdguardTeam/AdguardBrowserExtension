@@ -20,7 +20,7 @@ import { Unknown } from '../../../common/unknown';
 
 /**
  * Migration type describes which action should apply to settings
- * when migration from version 'from' to version 'to'
+ * when migration from version 'from' to version 'to'.
  */
 type Migration = {
     from: string,
@@ -34,21 +34,21 @@ type Migration = {
  */
 export class SettingsMigrations {
     /**
-     * Stores migrations with according versions
+     * Stores migrations with according versions.
      */
     private static settingsMigrationMap: Migration[] = [
         { from: '1.0', to: '2.0', action: this.migrateFromV1_0toV2_0 },
     ];
 
     /**
-     * Migrates settings from any outdated version and returns settings of the latest version
+     * Migrates settings from any outdated version and returns settings of the latest version.
      *
      * @throws Error when not found migration for current version or
-     * not found action for migrate
+     * not found action for migrate.
      *
-     * @param protocolVersion protocol version of provided JSON settings
-     * @param settings JSON settings with outdated version
-     * @returns JSON settings of the latest version
+     * @param protocolVersion Protocol version of provided JSON settings.
+     * @param settings JSON settings with outdated version.
+     * @returns JSON settings of the latest version.
      */
     public static async migrateSettings(protocolVersion: string, settings: unknown): Promise<unknown> {
         // Create copy to not modify arg value
@@ -77,12 +77,12 @@ export class SettingsMigrations {
     }
 
     /**
-     * Migrates settings from version 1.0 to version 2.0
+     * Migrates settings from version 1.0 to version 2.0.
      *
-     * @throws Error when not found field 'filters.whitelist' to rename it
+     * @throws Error when not found field 'filters.whitelist' to rename it.
      *
-     * @param settings JSON settings with version 1.0
-     * @returns JSON settings of version 2.0
+     * @param settings JSON settings with version 1.0.
+     * @returns JSON settings of version 2.0.
      */
     private static async migrateFromV1_0toV2_0(settings: unknown): Promise<unknown> {
         if (!settings

@@ -17,15 +17,16 @@
  */
 import browser, { Tabs } from 'webextension-polyfill';
 import { Prefs } from '../../prefs';
+
 /**
- * Helper class for browser.tabs API
+ * Helper class for browser.tabs API.
  */
 export class TabsApi {
     /**
-     * Get first matched tab for passed {@link Tabs.QueryQueryInfoType}
+     * Get first matched tab for passed {@link Tabs.QueryQueryInfoType}.
      *
-     * @param queryInfo - browser.tabs.query argument
-     * @returns first matched tab or undefined
+     * @param queryInfo Browser.tabs.query argument.
+     * @returns First matched tab or undefined.
      */
     public static async findOne(queryInfo: Tabs.QueryQueryInfoType): Promise<Tabs.Tab | undefined> {
         const [tab] = await browser.tabs.query(queryInfo);
@@ -34,9 +35,9 @@ export class TabsApi {
     }
 
     /**
-     * Activates an existing tab regardless of the browser window
+     * Activates an existing tab regardless of the browser window.
      *
-     * @param tab - {@link Tabs.Tab} data
+     * @param tab {@link Tabs.Tab} Data.
      */
     public static async focus(tab: Tabs.Tab): Promise<void> {
         const { id, windowId } = tab;
@@ -48,18 +49,18 @@ export class TabsApi {
     }
 
     /**
-     * Get all opened tabs info
+     * Get all opened tabs info.
      *
-     * @returns array of opened tabs
+     * @returns Array of opened tabs.
      */
     public static async getAll(): Promise<Tabs.Tab[]> {
         return browser.tabs.query({});
     }
 
     /**
-     * Get active tab in current window
+     * Get active tab in current window.
      *
-     * @returns active tab info or undefined
+     * @returns Active tab info or undefined.
      */
     public static async getActive(): Promise<Tabs.Tab | undefined> {
         return TabsApi.findOne({
@@ -69,10 +70,10 @@ export class TabsApi {
     }
 
     /**
-     * Check, if page in tab is extension page
+     * Check, if page in tab is extension page.
      *
-     * @param tab - {@link Tabs.Tab} data
-     * @returns true if it is extension page, else returns false
+     * @param tab {@link Tabs.Tab} Data.
+     * @returns True if it is extension page, else returns false.
      */
     public static isAdguardExtensionTab(tab: Tabs.Tab): boolean {
         const { url } = tab;

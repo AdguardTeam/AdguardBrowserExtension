@@ -47,9 +47,21 @@ export type FrameData = {
 };
 
 /**
- * Helper class for retrieving main frame data from both tswebextension and app state
+ * Helper class for retrieving main frame data from both tswebextension and app state.
  */
 export class FramesApi {
+    /**
+     * Tries to find the main frame data for the provided tab context
+     * and returns it.
+     *
+     * @param tabContext Tab context.
+     * @param tabContext.info Tab's context information {@link Tabs.Tab}.
+     * @param tabContext.frames Tab's context frames.
+     * @param tabContext.metadata Tab's context metadata {@link TabMetadata}.
+     *
+     * @returns The {@link FrameData} object can be partially empty if no frames
+     * were found for a given tab context.
+     */
     public static getMainFrameData({
         info,
         frames,

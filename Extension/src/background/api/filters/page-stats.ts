@@ -42,9 +42,12 @@ export type GetGroupsResponse = (GroupMetadata | {
     groupName: string;
 })[];
 
+/**
+ * Page Stats API is responsible for storing statistics of blocked requests.
+ */
 export class PageStatsApi {
     /**
-     * Init page stats storage
+     * Initializes page stats storage.
      */
     public static async init(): Promise<void> {
         try {
@@ -62,20 +65,20 @@ export class PageStatsApi {
     }
 
     /**
-     * Get total count of blocked requests
+     * Gets total count of blocked requests.
      *
-     * @returns total count of blocked requests
+     * @returns Total count of blocked requests.
      */
     public static getTotalBlocked(): number {
         return pageStatsStorage.getTotalBlocked() || 0;
     }
 
     /**
-     * Increment total count of blocked requests
+     * Increment total count of blocked requests.
      *
-     * @param value - increment value
+     * @param value Increment value.
      *
-     * @returns incremented total blocked value
+     * @returns Incremented total blocked value.
      */
     public static incrementTotalBlocked(value: number): number {
         let totalBlocked = PageStatsApi.getTotalBlocked();
@@ -87,19 +90,19 @@ export class PageStatsApi {
     }
 
     /**
-     * Resets stats
+     * Resets stats.
      */
     public static async reset(): Promise<void> {
         await pageStatsStorage.setData({});
     }
 
     /**
-     * Updates stats data
+     * Updates stats data.
      *
-     * We store last 24 hours, 30 days and all past months stats
+     * We store last 24 hours, 30 days and all past months stats.
      *
-     * @param filterId - filter id
-     * @param blocked - count of blocked requests
+     * @param filterId Filter id.
+     * @param blocked Count of blocked requests.
      */
     public static async updateStats(
         filterId: number,
@@ -125,9 +128,9 @@ export class PageStatsApi {
     }
 
     /**
-     * Get page stats and groups data from storages for popup statistics section
+     * Gets page stats and groups data from storages for popup statistics section.
      *
-     * @returns full statistics data record
+     * @returns Full statistics data record.
      */
     public static getStatisticsData(): GetStatisticsDataResponse {
         const stats = pageStatsStorage.getStatisticsData();
@@ -143,9 +146,9 @@ export class PageStatsApi {
     }
 
     /**
-     * Get groups data from storage and add synthetic 'total' group for popup statistics section
+     * Gets groups data from storage and add synthetic 'total' group for popup statistics section.
      *
-     * @returns groups data
+     * @returns Groups data.
      */
     private static getGroups(): GetGroupsResponse {
         const groups = metadataStorage.getGroups();

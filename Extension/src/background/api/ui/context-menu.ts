@@ -33,9 +33,12 @@ export type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
 };
 
 /**
- * Api for creating and updating browser context menu
+ * API for creating and updating browser context menu.
  */
 export class ContextMenuApi {
+    /**
+     * Initializes Context Menu API.
+     */
     public static init(): void {
         settingsEvents.addListener(SettingOption.DisableShowContextMenu, ContextMenuApi.handleDisableShowContextMenu);
     }
@@ -43,19 +46,19 @@ export class ContextMenuApi {
     /**
      * Throttled updateMenu.
      * Used in because updateMenu can be called multiple times from various event listeners, but
-     * context menu doesn't require fast update
+     * context menu doesn't require fast update.
      */
     public static throttledUpdateMenu = throttle(ContextMenuApi.updateMenu, 100);
 
     /**
-     * Updates context menu depends on tab filtering state
+     * Updates context menu depends on tab filtering state.
      *
-     * @param frameData - frame data from both tswebextension and app state
-     * @param frameData.applicationFilteringDisabled - is app filtering disabled globally
-     * @param frameData.urlFilteringDisabled - is app filtering disabled for current tab
-     * @param frameData.documentAllowlisted - is website allowlisted
-     * @param frameData.userAllowlisted - is current website allowlisted by user rule
-     * @param frameData.canAddRemoveRule - is user rules was applied on current website
+     * @param frameData Frame data from both tswebextension and app state.
+     * @param frameData.applicationFilteringDisabled Is app filtering disabled globally.
+     * @param frameData.urlFilteringDisabled Is app filtering disabled for current tab.
+     * @param frameData.documentAllowlisted Is website allowlisted.
+     * @param frameData.userAllowlisted Is current website allowlisted by user rule.
+     * @param frameData.canAddRemoveRule Is user rules was applied on current website.
      */
     private static async updateMenu({
         applicationFilteringDisabled,
@@ -117,7 +120,7 @@ export class ContextMenuApi {
     }
 
     /**
-     * Creates menu items for context menu, displayed, when app filtering disabled globally
+     * Creates menu items for context menu, displayed, when app filtering disabled globally.
      */
     private static async addFilteringDisabledMenuItems(): Promise<void> {
         await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled);
@@ -128,7 +131,7 @@ export class ContextMenuApi {
     }
 
     /**
-     * Creates menu items for context menu, displayed, when app filtering disabled for current tab
+     * Creates menu items for context menu, displayed, when app filtering disabled for current tab.
      */
     private static async addUrlFilteringDisabledContextMenuAction(): Promise<void> {
         await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled);
@@ -139,10 +142,10 @@ export class ContextMenuApi {
     }
 
     /**
-     * Creates menu item for context menu
+     * Creates menu item for context menu.
      *
-     * @param action - context menu action key
-     * @param options - {@link browser.contextMenus.create} options
+     * @param action Context menu action key.
+     * @param options {@link browser.contextMenus.create} Options.
      */
     private static async addMenuItem(action: ContextMenuAction, options: AddMenuItemOptions = {}): Promise<void> {
         const { messageArgs, ...rest } = options;
@@ -158,7 +161,7 @@ export class ContextMenuApi {
     }
 
     /**
-     * Creates menu separator
+     * Creates menu separator.
      */
     private static async addSeparator(): Promise<void> {
         await browser.contextMenus.create({

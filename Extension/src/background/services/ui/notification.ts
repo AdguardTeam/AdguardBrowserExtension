@@ -20,7 +20,7 @@ import { notificationApi } from '../../api';
 import { messageHandler } from '../../message-handler';
 
 /**
- * Service that manages adguard events notifications.
+ * Service that manages AdGuard events notifications.
  */
 export class NotificationService {
     public static init(): void {

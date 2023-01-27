@@ -37,19 +37,23 @@ import { RunInfo } from '../../utils';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 
+/**
+ * Update API is a facade for migrations to make sure that the application
+ * runs on the latest schema.
+ */
 export class UpdateApi {
     private static schemaMigrationMap: Record<string, () => Promise<void>> = {
         '0': UpdateApi.migrateFromV0toV1,
     };
 
     /**
-     * Runs app updates depends on previous and current data schema
+     * Runs app updates depends on previous and current data schema.
      *
-     * @param runInfo - info about extension start up
-     * @param runInfo.clientId - client id
-     * @param runInfo.currentAppVersion - current extension version
-     * @param runInfo.currentSchemaVersion - current data schema version
-     * @param runInfo.previousSchemaVersion - previous data schema version
+     * @param runInfo Info about extension start up.
+     * @param runInfo.clientId Client id.
+     * @param runInfo.currentAppVersion Current extension version.
+     * @param runInfo.currentSchemaVersion Current data schema version.
+     * @param runInfo.previousSchemaVersion Previous data schema version.
      */
     public static async update({
         clientId,
@@ -92,11 +96,11 @@ export class UpdateApi {
     }
 
     /**
-     * Runs schema migration
+     * Runs schema migration.
      *
-     * @param schemaMigrationAction - schema migration action
-     * @param previousSchemaVersion - previous data schema version
-     * @param currentSchemaVersion - current data schema version
+     * @param schemaMigrationAction Schema migration action.
+     * @param previousSchemaVersion Previous data schema version.
+     * @param currentSchemaVersion Current data schema version.
      */
     private static async runSchemaMigration(
         schemaMigrationAction: () => Promise<void>,
@@ -105,7 +109,7 @@ export class UpdateApi {
     ): Promise<void> {
         try {
             await schemaMigrationAction();
-        } catch (e) {
+        } catch (e: unknown) {
             const errMessage = `Error while schema migrating from ${previousSchemaVersion} `
                 + `to ${currentSchemaVersion}: ${e instanceof Error ? e.message : e}`;
             Log.error(errMessage);
@@ -115,7 +119,7 @@ export class UpdateApi {
     }
 
     /**
-     * Run data migration from schema v0 to schema v1
+     * Run data migration from schema v0 to schema v1.
      */
     private static async migrateFromV0toV1(): Promise<void> {
         // In the v4.0.171 we have littered window.localStorage with proms used in the promo notifications module,
@@ -157,11 +161,8 @@ export class UpdateApi {
             delete currentSettings['white-list-domains'];
         }
 
-        /**
-         * New group state 'toggled' field added in 4.2
-         *
-         * zod 'parse then transform' approach is used to transform data to actual schema
-         */
+        // New group state 'toggled' field added in 4.2
+        // zod 'parse then transform' approach is used to transform data to actual schema
         if (typeof currentSettings?.[SettingOption.GroupsState] === 'string') {
             // create data transformer
             const groupsStateTransformer = zod.record(
@@ -201,10 +202,10 @@ export class UpdateApi {
     }
 
     /**
-     * Moves data from settings to root storage
+     * Moves data from settings to root storage.
      *
-     * @param key - settings key
-     * @param currentSettings - current settings object
+     * @param key Settings key.
+     * @param currentSettings Current settings object.
      */
     private static async moveStorageData(
         key: string,
@@ -219,7 +220,7 @@ export class UpdateApi {
     }
 
     /**
-     * Purge data, which don't need to save while app updating
+     * Purge data, which don't need to save while app updating.
      */
     private static async clearCache(): Promise<void> {
         await SafebrowsingApi.clearCache();

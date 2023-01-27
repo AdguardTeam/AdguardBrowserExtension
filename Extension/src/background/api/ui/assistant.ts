@@ -20,11 +20,11 @@ import { Engine } from '../../engine';
 import { TabsApi } from '../extension';
 
 /**
- * Extension assistant api
+ * Extension assistant API.
  */
 export class AssistantApi {
     /**
-     * Open assistant window in active tab
+     * Opens assistant window in active tab.
      */
     static async openAssistant(): Promise<void> {
         const activeTab = await TabsApi.getActive();

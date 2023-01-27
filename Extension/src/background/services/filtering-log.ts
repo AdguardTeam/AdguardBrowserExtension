@@ -253,7 +253,6 @@ export class FilteringLogService {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            requestRule: { replaceRule: true },
             replaceRules: rules.map(rule => FilteringLogApi.createNetworkRuleEventData(rule)),
         });
 

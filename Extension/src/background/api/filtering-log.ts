@@ -25,6 +25,7 @@ import {
     NetworkRule,
     CosmeticRuleType,
     NetworkRuleOption,
+    StealthActionEvent,
 } from '@adguard/tswebextension';
 
 import { AntiBannerFiltersId } from '../../common/constants';
@@ -67,6 +68,8 @@ export type FilteringLogEvent = {
     cookieName?: string,
     cookieValue?: string,
     isModifyingCookieRule?: boolean,
+    replaceRules?: FilteringEventRuleData[],
+    stealthActions?: StealthActionEvent['data']['stealthActions'],
 };
 
 export type FilteringLogTabInfo = {
@@ -76,8 +79,12 @@ export type FilteringLogTabInfo = {
     filteringEvents: FilteringLogEvent[],
 };
 
+/**
+ * The filtering log collects all available information about requests
+ * and the rules applied to them.
+ */
 export class FilteringLogApi {
-    private static REQUESTS_SIZE_PER_TAB = 1000;
+    private static readonly REQUESTS_SIZE_PER_TAB = 1000;
 
     private preserveLogEnabled = false;
 
@@ -86,41 +93,41 @@ export class FilteringLogApi {
     private tabsInfoMap = new Map<number, FilteringLogTabInfo>();
 
     /**
-     * Checks if filtering log page is opened
+     * Checks if filtering log page is opened.
      *
-     * @returns true, if filtering log page is opened, else false
+     * @returns True, if filtering log page is opened, else false.
      */
     public isOpen(): boolean {
         return this.openedFilteringLogsPages > 0;
     }
 
     /**
-     * Checks if preserve log is enabled
+     * Checks if preserve log is enabled.
      *
-     * @returns true, if preserve log is enabled, else false
+     * @returns True, if preserve log is enabled, else false.
      */
     public isPreserveLogEnabled(): boolean {
         return this.preserveLogEnabled;
     }
 
     /**
-     * Set preserve log state
+     * Sets preserve log state.
      *
-     * @param enabled - is preserve log enabled
+     * @param enabled Is preserve log enabled.
      */
     public setPreserveLogState(enabled: boolean): void {
         this.preserveLogEnabled = enabled;
     }
 
     /**
-     * We collect filtering events if opened at least one page of log
+     * We collect filtering events if opened at least one page of log.
      */
     public onOpenFilteringLogPage(): void {
         this.openedFilteringLogsPages += 1;
     }
 
     /**
-     * Cleanup when last page of log closes
+     * Cleanups when last page of log closes.
      */
     public onCloseFilteringLogPage(): void {
         this.openedFilteringLogsPages = Math.max(this.openedFilteringLogsPages - 1, 0);
@@ -133,10 +140,10 @@ export class FilteringLogApi {
     }
 
     /**
-     * Create tab info
+     * Creates tab info.
      *
-     * @param tab - {@link browser.Tabs.Tab} data
-     * @param isSyntheticTab - is tab is used to send initial requests from new tab in chrome
+     * @param tab {@link browser.Tabs.Tab} Data.
+     * @param isSyntheticTab Is tab is used to send initial requests from new tab in chrome.
      */
     public createTabInfo(tab: Tabs.Tab, isSyntheticTab = false): void {
         const { id, title, url } = tab;
@@ -164,9 +171,9 @@ export class FilteringLogApi {
     }
 
     /**
-     * Update tab title and url
+     * Updates tab title and url.
      *
-     * @param tab - {@link browser.Tabs.Tab} data
+     * @param tab {@link browser.Tabs.Tab} Data.
      */
     public updateTabInfo(tab: Tabs.Tab): void {
         const { id, title, url } = tab;
@@ -194,9 +201,9 @@ export class FilteringLogApi {
     }
 
     /**
-     * Removes tab info
+     * Removes tab info.
      *
-     * @param id - tab id
+     * @param id Tab id.
      */
     public removeTabInfo(id: number): void {
         // Background tab can't be removed
@@ -214,18 +221,18 @@ export class FilteringLogApi {
     }
 
     /**
-     * Get filtering info for tab
+     * Get filtering info for tab.
      *
-     * @param tabId - tab id
+     * @param tabId Tab id.
      *
-     * @returns tab data for filtering log window
+     * @returns Tab data for filtering log window.
      */
     public getFilteringInfoByTabId(tabId: number): FilteringLogTabInfo | undefined {
         return this.tabsInfoMap.get(tabId);
     }
 
     /**
-     * Synchronize currently opened tabs with out state
+     * Synchronizes currently opened tabs with out state.
      */
     public async synchronizeOpenTabs(): Promise<FilteringLogTabInfo[]> {
         const tabs = await TabsApi.getAll();
@@ -267,10 +274,10 @@ export class FilteringLogApi {
     }
 
     /**
-     * Remove log requests for tab
+     * Remove log requests for tab.
      *
-     * @param tabId - tab id
-     * @param ignorePreserveLog - is {@link preserveLogEnabled} flag ignored
+     * @param tabId Tab id.
+     * @param ignorePreserveLog Is {@link preserveLogEnabled} flag ignored.
      */
     public clearEventsByTabId(tabId: number, ignorePreserveLog = false): void {
         const tabInfo = this.tabsInfoMap.get(tabId);
@@ -283,6 +290,13 @@ export class FilteringLogApi {
         }
     }
 
+    /**
+     * Adds a filter log event (for example when applying a csp rule, enforcing a script, sending a request)
+     * with data related to that event.
+     *
+     * @param tabId Tab id.
+     * @param data {@link FilteringLogEvent} Event data.
+     */
     public addEventData(tabId: number, data: FilteringLogEvent): void {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
         if (!tabInfo || !this.isOpen) {
@@ -299,7 +313,18 @@ export class FilteringLogApi {
         listeners.notifyListeners(listeners.LogEventAdded, tabInfo, data);
     }
 
-    public updateEventData(tabId: number, eventId: string, data: unknown): void {
+    /**
+     * Updates the event data for an already recorded event.
+     *
+     * @param tabId Tab id.
+     * @param eventId Event id.
+     * @param data Event data.
+     */
+    public updateEventData(
+        tabId: number,
+        eventId: string,
+        data: Partial<FilteringLogEvent>,
+    ): void {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
         if (!tabInfo || !this.isOpen) {
             return;
@@ -316,6 +341,14 @@ export class FilteringLogApi {
         }
     }
 
+    /**
+     * Checks if a cookie event exists or not.
+     *
+     * @param cookieEvent Cookie event.
+     * @param cookieEvent.data Cookie event data.
+     * @returns True if a cookie with the same frame domain, name and value
+     * has already been written, and false otherwise.
+     */
     public isExistingCookieEvent({ data }: CookieEvent): boolean {
         const {
             tabId,
@@ -338,8 +371,14 @@ export class FilteringLogApi {
         });
     }
 
+    /**
+     * Creates {@link FilteringEventRuleData} from {@link NetworkRule}.
+     *
+     * @param rule Network rule.
+     * @returns Object of {@link FilteringEventRuleData}.
+     */
     public static createNetworkRuleEventData(rule: NetworkRule): FilteringEventRuleData {
-        const data = Object.create(null);
+        const data: FilteringEventRuleData = Object.create(null);
 
         const filterId = rule.getFilterListId();
         const ruleText = rule.getText();
@@ -361,8 +400,12 @@ export class FilteringLogApi {
 
         data.allowlistRule = rule.isAllowlist();
         data.cspRule = rule.isOptionEnabled(NetworkRuleOption.Csp);
-        data.modifierValue = rule.getAdvancedModifierValue();
         data.cookieRule = rule.isOptionEnabled(NetworkRuleOption.Cookie);
+
+        const advancedModifiedValue = rule.getAdvancedModifierValue();
+        if (advancedModifiedValue !== null) {
+            data.modifierValue = advancedModifiedValue;
+        }
 
         if (filterId === AntiBannerFiltersId.UserFilterId) {
             const originalRule = UserRulesApi.getSourceRule(rule.getText());
@@ -375,8 +418,14 @@ export class FilteringLogApi {
         return data;
     }
 
+    /**
+     * Creates {@link FilteringEventRuleData} from {@link CosmeticRule}.
+     *
+     * @param rule Cosmetic rule.
+     * @returns Object of {@link FilteringEventRuleData}.
+     */
     public static createCosmeticRuleEventData(rule: CosmeticRule): FilteringEventRuleData {
-        const data = Object.create(null);
+        const data: FilteringEventRuleData = Object.create(null);
 
         const filterId = rule.getFilterListId();
         const ruleText = rule.getText();

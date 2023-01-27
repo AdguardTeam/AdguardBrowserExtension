@@ -17,9 +17,20 @@
  */
 import { trustedDomainsStorage } from '../storages';
 
+/**
+ * Provides an API for working with trusted domains (domains that have been
+ * excluded from blocking by $document rules for some time).
+ */
 export class DocumentBlockApi {
-    public static TRUSTED_TTL_MS = 40 * 60 * 1000; // 40 min
+    /**
+     * For how long will the application exclude the provided domain
+     * from blocking by the $document rule.
+     */
+    public static readonly TRUSTED_TTL_MS = 40 * 60 * 1000; // 40 min
 
+    /**
+     * Initializes the storage for the API.
+     */
     public static async init(): Promise<void> {
         try {
             const storageData = await trustedDomainsStorage.read();
@@ -33,6 +44,9 @@ export class DocumentBlockApi {
         }
     }
 
+    /**
+     * Returns an array of trusted domains.
+     */
     public static async getTrustedDomains(): Promise<string[]> {
         const now = Date.now();
 
@@ -43,6 +57,11 @@ export class DocumentBlockApi {
         return data.map(({ domain }) => domain);
     }
 
+    /**
+     * Adds the domain to the list of trusted domains with DocumentBlockApi#TRUSTED_TTL_MS timeout.
+     *
+     * @param url A trusted domain to add.
+     */
     public static async setTrustedDomain(url: string): Promise<void> {
         const { hostname } = new URL(url);
 

@@ -70,7 +70,16 @@ export type SettingsData = {
     values: Settings,
 };
 
+/**
+ * SettingsApi is a facade class for encapsulating the work with extension
+ * settings: getting, installing, gathering tswebextension configuration from
+ * current settings, importing and exporting.
+ */
 export class SettingsApi {
+    /**
+     * Initializes settings: checks the settings from the repository and resets
+     * them to defaults if the data are not valid.
+     */
     public static async init(): Promise<void> {
         try {
             const data = await storage.get(ADGUARD_SETTINGS_KEY);
@@ -87,10 +96,10 @@ export class SettingsApi {
     }
 
     /**
-     * Set setting to storage and publish setting event
+     * Set setting to storage and publish setting event.
      *
-     * @param key - setting option key
-     * @param value - settings option value
+     * @param key Setting option key.
+     * @param value Settings option value.
      */
     public static async setSetting<T extends SettingOption>(key: T, value: Settings[T]): Promise<void> {
         settingsStorage.set(key, value);
@@ -105,16 +114,21 @@ export class SettingsApi {
     }
 
     /**
-     * Get setting from setting storage
+     * Get setting from setting storage.
      *
-     * @param key - setting option key
+     * @param key Setting option key.
      *
-     * @returns settings option value
+     * @returns Settings option value.
      */
     public static getSetting<T extends SettingOption>(key: T): Settings[T] {
         return settingsStorage.get(key);
     }
 
+    /**
+     * Returns settings data.
+     *
+     * @returns Object of {@link SettingsData}.
+     */
     public static getData(): SettingsData {
         return {
             names: SettingOption,
@@ -123,6 +137,11 @@ export class SettingsApi {
         };
     }
 
+    /**
+     * Collects {@link SettingsConfig} for tswebextension from current extension settings.
+     *
+     * @returns Collected {@link SettingsConfig} for tswebextension.
+     */
     public static getTsWebExtConfiguration(): SettingsConfig {
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
@@ -150,6 +169,9 @@ export class SettingsApi {
         };
     }
 
+    /**
+     * Resets to default settings.
+     */
     public static async reset(): Promise<void> {
         await UserRulesApi.setUserRules([]);
 
@@ -164,6 +186,13 @@ export class SettingsApi {
         await CommonFilterApi.initDefaultFilters();
     }
 
+    /**
+     * Imports settings from the configuration string.
+     *
+     * @param configText Configuration in JSON format.
+     *
+     * @returns True if the import was successful, or false if not.
+     */
     public static async import(configText: string): Promise<boolean> {
         try {
             let json = JSON.parse(configText) as unknown;
@@ -203,6 +232,9 @@ export class SettingsApi {
         }
     }
 
+    /**
+     * Exports settings to string with JSON format.
+     */
     public static async export(): Promise<string> {
         return JSON.stringify({
             [RootOption.ProtocolVersion]: PROTOCOL_VERSION,
@@ -213,6 +245,9 @@ export class SettingsApi {
         });
     }
 
+    /**
+     * Imports general settings from object of {@link GeneralSettingsConfig}.
+     */
     private static async importGeneralSettings({
         [GeneralSettingsOption.AllowAcceptableAds]: allowAcceptableAds,
         [GeneralSettingsOption.ShowBlockedAdsCount]: showBlockedAdsCount,
@@ -243,6 +278,11 @@ export class SettingsApi {
         }
     }
 
+    /**
+     * Exports general settings to object of {@link GeneralSettingsConfig}.
+     *
+     * @returns Object of {@link GeneralSettingsConfig}.
+     */
     private static exportGeneralSettings(): GeneralSettingsConfig {
         return {
             [GeneralSettingsOption.AllowAcceptableAds]: (
@@ -258,6 +298,9 @@ export class SettingsApi {
         };
     }
 
+    /**
+     * Imports extension specific settings from object of {@link ExtensionSpecificSettingsConfig}.
+     */
     private static importExtensionSpecificSettings({
         [ExtensionSpecificSettingsOption.UseOptimizedFilters]: useOptimizedFilters,
         [ExtensionSpecificSettingsOption.CollectHitsCount]: collectHitsCount,
@@ -276,6 +319,11 @@ export class SettingsApi {
         settingsStorage.set(SettingOption.UserRulesEditorWrap, userRulesEditorWrap);
     }
 
+    /**
+     * Exports extension specific settings to object of {@link ExtensionSpecificSettingsConfig}.
+     *
+     * @returns Object of {@link ExtensionSpecificSettingsConfig}.
+     */
     private static exportExtensionSpecificSettings(): ExtensionSpecificSettingsConfig {
         return {
             [ExtensionSpecificSettingsOption.UseOptimizedFilters]: (
@@ -302,6 +350,9 @@ export class SettingsApi {
         };
     }
 
+    /**
+     * Imports filters settings from object of {@link FiltersConfig}.
+     */
     private static async importFilters({
         [FiltersOption.EnabledFilters]: enabledFilters,
         [FiltersOption.EnabledGroups]: enabledGroups,
@@ -323,6 +374,11 @@ export class SettingsApi {
         groupStateStorage.enableGroups(enabledGroups);
     }
 
+    /**
+     * Exports filters settings to object of {@link FiltersConfig}.
+     *
+     * @returns Object of {@link FiltersConfig}.
+     */
     private static async exportFilters(): Promise<FiltersConfig> {
         return {
             [FiltersOption.EnabledFilters]: filterStateStorage.getEnabledFilters(),
@@ -333,6 +389,9 @@ export class SettingsApi {
         };
     }
 
+    /**
+     * Imports user rules from object of {@link UserFilterConfig}.
+     */
     private static async importUserFilter({
         [UserFilterOption.Enabled]: enabled,
         [UserFilterOption.Rules]: rules,
@@ -346,6 +405,11 @@ export class SettingsApi {
         await UserRulesApi.setUserRules(rules.split('\n'));
     }
 
+    /**
+     * Exports user rules to object of {@link UserFilterConfig}.
+     *
+     * @returns Object of {@link UserFilterConfig}.
+     */
     private static async exportUserFilter(): Promise<UserFilterConfig> {
         return {
             [UserFilterOption.Enabled]: settingsStorage.get(SettingOption.UserFilterEnabled),
@@ -354,6 +418,9 @@ export class SettingsApi {
         };
     }
 
+    /**
+     * Imports extension allowlist from object of {@link AllowlistConfig}.
+     */
     private static importAllowlist({
         [AllowlistOption.Enabled]: enabled,
         [AllowlistOption.Inverted]: inverted,
@@ -376,6 +443,11 @@ export class SettingsApi {
         AllowlistApi.setInvertedAllowlistDomains(invertedDomains);
     }
 
+    /**
+     * Exports extension allowlist to object of {@link AllowlistConfig}.
+     *
+     * @returns Object of {@link AllowlistConfig}.
+     */
     private static exportAllowlist(): AllowlistConfig {
         return {
             [AllowlistOption.Enabled]: settingsStorage.get(SettingOption.AllowlistEnabled),
@@ -385,6 +457,9 @@ export class SettingsApi {
         };
     }
 
+    /**
+     * Imports stealth mode settings from object of {@link StealthConfig}.
+     */
     private static async importStealth({
         [StealthOption.DisableStealthMode]: disableStealthMode,
         [StealthOption.HideReferrer]: hideReferrer,
@@ -400,8 +475,8 @@ export class SettingsApi {
         [StealthOption.StripTrackingParams]: stripTrackingParam,
     }: StealthConfig): Promise<void> {
         /**
-         * set "block webrtc" setting as soon as possible. AG-9980
-         * don't set the actual value to avoid requesting permissions
+         * Set "block webrtc" setting as soon as possible. AG-9980
+         * don't set the actual value to avoid requesting permissions.
          */
         if (settingsStorage.get(SettingOption.BlockWebRTC) !== blockWebRTC) {
             settingsStorage.set(SettingOption.BlockWebRTC, blockWebRTC);
@@ -437,6 +512,11 @@ export class SettingsApi {
         }
     }
 
+    /**
+     * Exports stealth mode settings to object of {@link StealthConfig}.
+     *
+     * @returns Object of {@link StealthConfig}.
+     */
     private static exportStealth(): StealthConfig {
         return {
             [StealthOption.DisableStealthMode]: settingsStorage.get(SettingOption.DisableStealthMode),

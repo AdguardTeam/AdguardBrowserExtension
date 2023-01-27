@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { Runtime, Windows } from 'webextension-polyfill';
+
 import { UserAgent } from '../../../common/user-agent';
 import { AddFilteringSubscriptionMessage, ScriptletCloseWindowMessage } from '../../../common/messages';
 import {
@@ -30,7 +31,6 @@ import { storage, settingsStorage } from '../../storages';
 import { SettingOption } from '../../schema';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
-
 import { TabsApi } from '../extension';
 import { Prefs } from '../../prefs';
 import {
@@ -43,23 +43,23 @@ import {
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
 /**
- * Pages API provides methods for managing browser pages
+ * Pages API provides methods for managing browser pages.
  */
 export class PagesApi {
     /**
      * Settings page url.
      */
-    public static settingsUrl = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT);
+    public static readonly settingsUrl = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT);
 
     /**
      * Filtering log page url.
      */
-    public static filteringLogUrl = PagesApi.getExtensionPageUrl(FILTERING_LOG_OUTPUT);
+    public static readonly filteringLogUrl = PagesApi.getExtensionPageUrl(FILTERING_LOG_OUTPUT);
 
     /**
      * Fullscreen user rule editor page url.
      */
-    public static fullscreenUserRulesPageUrl = PagesApi.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
+    public static readonly fullscreenUserRulesPageUrl = PagesApi.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
 
     /**
      * Default state of filtering log window.
@@ -74,12 +74,12 @@ export class PagesApi {
     /**
      * Filters download page url.
      */
-    public static filtersDownloadPageUrl = PagesApi.getExtensionPageUrl(FILTER_DOWNLOAD_OUTPUT);
+    public static readonly filtersDownloadPageUrl = PagesApi.getExtensionPageUrl(FILTER_DOWNLOAD_OUTPUT);
 
     /**
      * Thank you page page url.
      */
-    public static thankYouPageUrl = Forward.get({
+    public static readonly thankYouPageUrl = Forward.get({
         action: ForwardAction.ThankYou,
         from: ForwardFrom.Background,
     });
@@ -87,7 +87,7 @@ export class PagesApi {
     /**
      * Compare page url.
      */
-    public static comparePageUrl = Forward.get({
+    public static readonly comparePageUrl = Forward.get({
         action: ForwardAction.Compare,
         from: ForwardFrom.Options,
     });
@@ -95,7 +95,7 @@ export class PagesApi {
     /**
      *  Extension browser store url.
      */
-    public static extensionStoreUrl = PagesApi.getExtensionStoreUrl();
+    public static readonly extensionStoreUrl = PagesApi.getExtensionStoreUrl();
 
     /**
      * Opens settings page tab.
@@ -295,7 +295,7 @@ export class PagesApi {
      * Opens 'Add custom filter' modal window into settings page.
      * If the page has been already opened, reload it with new custom filter query params, passed from content script.
      *
-     * @param message - content script message with custom filter data.
+     * @param message - Content script message with custom filter data.
      */
     public static async openSettingsPageWithCustomFilterModal(message: AddFilteringSubscriptionMessage): Promise<void> {
         const { url, title } = message.data;
@@ -325,8 +325,8 @@ export class PagesApi {
     /**
      * Closes page with {@link Runtime.MessageSender} tab id.
      *
-     * @param message - content script message with custom filter data.
-     * @param sender - {@link Runtime.MessageSender}
+     * @param message - Content script message with custom filter data.
+     * @param sender - Sender with type {@link Runtime.MessageSender}.
      */
     public static async closePage(
         message: ScriptletCloseWindowMessage,
@@ -384,6 +384,7 @@ export class PagesApi {
             return { 'stealth.enabled': 'false' };
         }
 
+        // TODO: Check values of queryKey and maybe move them to some ENUM?
         const stealthOptions = [
             {
                 queryKey: 'stealth.ext_hide_referrer',
@@ -439,8 +440,9 @@ export class PagesApi {
             stealthOptionsEntries.push([queryKey, option]);
         });
 
+        // TODO: Check, maybe obsoleted because we don't have option 'strip url'
+        // in the Stealth Mode options.
         const isRemoveUrlParamsEnabled = filterIds.includes(AntiBannerFiltersId.UrlTrackingFilterId);
-
         if (isRemoveUrlParamsEnabled) {
             stealthOptionsEntries.push(['stealth.strip_url', 'true']);
         }

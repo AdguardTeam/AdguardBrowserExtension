@@ -80,7 +80,7 @@ export class FiltersApi {
      * Load metadata from remote source and reload linked storages.
      * Called before filters rules are updated or loaded from backend.
      *
-     * @param remote - is metadata loaded from backend
+     * @param remote Is metadata loaded from backend.
      */
     public static async loadMetadata(remote: boolean): Promise<void> {
         await FiltersApi.loadI18nMetadataFromBackend(remote);
@@ -95,9 +95,9 @@ export class FiltersApi {
      * Checks if filter rules exist in browser storage.
      * Called while filters loading.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns true, if filter is loaded, else returns false
+     * @returns True, if filter is loaded, else returns false.
      */
     public static isFilterRulesIsLoaded(filterId: number): boolean {
         const filterState = filterStateStorage.get(filterId);
@@ -106,11 +106,11 @@ export class FiltersApi {
     }
 
     /**
-     * Checks if filter is enabled
+     * Checks if filter is enabled.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns true, if filter is enabled, else returns false
+     * @returns True, if filter is enabled, else returns false.
      */
     public static isFilterEnabled(filterId: number): boolean {
         const filterState = filterStateStorage.get(filterId);
@@ -121,9 +121,9 @@ export class FiltersApi {
     /**
      * Checks if filter is trusted.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns true, if filter is trusted, else returns false
+     * @returns True, if filter is trusted, else returns false.
      */
     public static isFilterTrusted(filterId: number): boolean {
         if (!CustomFilterApi.isCustomFilter(filterId)) {
@@ -138,15 +138,12 @@ export class FiltersApi {
     /**
      * Update metadata from external source and download rules for uploaded filters.
      *
-     * @param filtersIds - loaded filters ids
-     * @param remote - is metadata and rules loaded from backend
+     * @param filtersIds Loaded filters ids.
+     * @param remote Is metadata and rules loaded from backend.
      */
     public static async loadFilters(filtersIds: number[], remote: boolean): Promise<void> {
-        /**
-         * Ignore loaded filters
-         * Custom filters always has loaded state,
-         * so we don't need additional check
-         */
+        // Ignore loaded filters
+        // Custom filters always has loaded state, so we don't need additional check
         const unloadedFilters = filtersIds.filter(id => !FiltersApi.isFilterRulesIsLoaded(id));
 
         if (unloadedFilters.length === 0) {
@@ -162,8 +159,8 @@ export class FiltersApi {
      * Loads and enables specified filters.
      * Called on filter option switch.
      *
-     * @param filtersIds - filters ids
-     * @param remote - is metadata and rules loaded from backend
+     * @param filtersIds Filters ids.
+     * @param remote Is metadata and rules loaded from backend.
      */
     public static async loadAndEnableFilters(filtersIds: number[], remote = true): Promise<void> {
         await FiltersApi.loadFilters(filtersIds, remote);
@@ -178,7 +175,7 @@ export class FiltersApi {
      * Disables specified filters.
      * Called on filter option switch.
      *
-     * @param filtersIds - filters ids
+     * @param filtersIds Filters ids.
      */
     public static disableFilters(filtersIds: number[]): void {
         filterStateStorage.disableFilters(filtersIds);
@@ -192,9 +189,7 @@ export class FiltersApi {
     public static async reloadEnabledFilters(): Promise<void> {
         const filtersIds = FiltersApi.getEnabledFilters();
 
-        /**
-         * Ignore custom filters
-         */
+        // Ignore custom filters
         const commonFilters = filtersIds.filter(id => CommonFilterApi.isCommonFilter(id));
 
         await FiltersApi.loadMetadata(true);
@@ -210,9 +205,9 @@ export class FiltersApi {
      * Common filters metadata is stored in {@link metadataStorage.data.filters}.
      * Custom filters metadata is stored in {@link customFilterMetadataStorage}.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns filter metadata
+     * @returns Filter metadata.
      */
     public static getFilterMetadata(filterId: number): FilterMetadata | undefined {
         if (CustomFilterApi.isCustomFilter(filterId)) {
@@ -225,7 +220,7 @@ export class FiltersApi {
     /**
      * Get filters metadata from both {@link metadataStorage.data.filters} and {@link customFilterMetadataStorage}.
      *
-     * @returns filters metadata array
+     * @returns Filters metadata array.
      */
     public static getFiltersMetadata(): FilterMetadata[] {
         return [
@@ -235,9 +230,9 @@ export class FiltersApi {
     }
 
     /**
-     * Get enabled filters given the state of the group
+     * Get enabled filters given the state of the group.
      *
-     * @returns filters ids array
+     * @returns Filters ids array.
      */
     public static getEnabledFilters(): number[] {
         const enabledFilters = filterStateStorage.getEnabledFilters();
@@ -251,11 +246,11 @@ export class FiltersApi {
     }
 
     /**
-     * Enable filters groups that were not toggled by users
+     * Enable filters groups that were not toggled by users.
      *
-     * Called on filter enabling
+     * Called on filter enabling.
      *
-     * @param filtersIds - filters ids
+     * @param filtersIds Filters ids.
      */
     private static enableGroupsWereNotToggled(filtersIds: number[]): void {
         const groupIds: number[] = [];
@@ -281,9 +276,9 @@ export class FiltersApi {
     }
 
     /**
-     * Load i18n metadata from remote source and save it
+     * Load i18n metadata from remote source and save it.
      *
-     * @param remote - if true, download data from backend, else load it from local files
+     * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadI18nMetadataFromBackend(remote: boolean): Promise<void> {
         const i18nMetadata = remote
@@ -296,9 +291,9 @@ export class FiltersApi {
     /**
      * Load metadata from remote source,
      * apply i18n metadata, add custom group
-     * and save it
+     * and save it.
      *
-     * @param remote - if true, download data from backend, else load it from local files
+     * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadMetadataFromFromBackend(remote: boolean): Promise<void> {
         const metadata = remote
@@ -320,8 +315,8 @@ export class FiltersApi {
     }
 
     /**
-     * Read stringified i18n metadata from settings storage
-     * if data is not exist, load it from local assets
+     * Read stringified i18n metadata from settings storage.
+     * If data is not exist, load it from local assets.
      */
     private static async initI18nMetadata(): Promise<void> {
         const storageData = i18nMetadataStorage.read();
@@ -341,8 +336,8 @@ export class FiltersApi {
     }
 
     /**
-     * Read stringified metadata from settings storage
-     * if data is not exist, load it from local assets
+     * Read stringified metadata from settings storage.
+     * If data is not exist, load it from local assets.
      */
     private static async initMetadata(): Promise<void> {
         const storageData = metadataStorage.read();
@@ -362,7 +357,7 @@ export class FiltersApi {
     }
 
     /**
-     * Set filtering states storages based on app metadata
+     * Set filtering states storages based on app metadata.
      */
     private static loadFilteringStates(): void {
         const metadata = metadataStorage.getData();
@@ -373,10 +368,10 @@ export class FiltersApi {
     }
 
     /**
-     * Read stringified filter states data from settings storage
-     * if data is not exist or partial, update filter states storage based on current metadata
+     * Read stringified filter states data from settings storage.
+     * If data is not exist or partial, update filter states storage based on current metadata.
      *
-     * @param metadata - app metadata
+     * @param metadata App metadata.
      */
     private static initFilterStateStorage(metadata: Metadata): void {
         const storageData = filterStateStorage.read();
@@ -398,10 +393,10 @@ export class FiltersApi {
     }
 
     /**
-     * Read stringified group states data from settings storage
-     * if data is not exist or partial, update group states storage based on current group metadata
+     * Read stringified group states data from settings storage.
+     * If data is not exist or partial, update group states storage based on current group metadata.
      *
-     * @param metadata - app metadata
+     * @param metadata App metadata.
      */
     private static initGroupStateStorage(metadata: Metadata): void {
         const storageData = groupStateStorage.read();
@@ -423,10 +418,10 @@ export class FiltersApi {
     }
 
     /**
-     * Read stringified filter version data from settings storage
-     * if data is not exist or partial, update filter version storage based on current filter metadata
+     * Read stringified filter version data from settings storage.
+     * If data is not exist or partial, update filter version storage based on current filter metadata.
      *
-     * @param metadata - app metadata
+     * @param metadata App metadata.
      */
     private static initFilterVersionStorage(metadata: Metadata): void {
         const storageData = filterVersionStorage.read();
@@ -448,7 +443,7 @@ export class FiltersApi {
     }
 
     /**
-     * Remove if necessary obsolete filters
+     * Remove if necessary obsolete filters.
      */
     private static async removeObsoleteFilters(): Promise<void> {
         const installedFiltersIds = filterStateStorage.getInstalledFilters();

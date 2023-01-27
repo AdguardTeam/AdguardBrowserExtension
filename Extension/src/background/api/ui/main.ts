@@ -23,7 +23,22 @@ import { ContextMenuApi } from './context-menu';
 import { FrameData, FramesApi } from './frames';
 import { IconsApi } from './icons';
 
+/**
+ * The UI API provides a singleton to update the tab icon and the counters of
+ * blocked requests on the tab.
+ */
 export class UiApi {
+    /**
+     * Throttle to update tab's information.
+     */
+    private static readonly UPDATE_THROTTLE_MS = 100;
+
+    /**
+     * Updates the tab icon and the blocked requests counter on the provided tab
+     * with debounce UiApi#UPDATE_THROTTLE_MS.
+     *
+     * @param tabContext {@link TabContext}.
+     */
     public static async update(tabContext: TabContext): Promise<void> {
         const tabId = tabContext?.info?.id;
 
@@ -37,10 +52,17 @@ export class UiApi {
 
         debounce(() => {
             IconsApi.updateTabIcon(tabId, frameData);
-            UiApi.broadcastTotalBlockedMessage(frameData);
-        }, 100)();
+            this.broadcastTotalBlockedMessage(frameData);
+        }, UiApi.UPDATE_THROTTLE_MS)();
     }
 
+    /**
+     * Sends message with updated counters of blocked requests.
+     *
+     * @param frameData {@link FrameData}.
+     * @param frameData.totalBlocked Total count of blocked requests.
+     * @param frameData.totalBlockedTab Number of blocked requests.
+     */
     private static async broadcastTotalBlockedMessage({ totalBlocked, totalBlockedTab }: FrameData): Promise<void> {
         try {
             await sendMessage({
