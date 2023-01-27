@@ -53,6 +53,7 @@ module.exports = {
         'import-newlines',
     ],
     'rules': {
+        'no-console': 'error',
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/indent': 'off',
         '@typescript-eslint/no-shadow': 'off',

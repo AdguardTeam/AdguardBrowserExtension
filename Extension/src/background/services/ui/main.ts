@@ -93,8 +93,6 @@ export class UiService {
         await toasts.init();
         ContextMenuApi.init();
 
-        messageHandler.addListener(MessageType.OpenTab, TabsApi.openTab);
-
         messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
         contextMenuEvents.addListener(ContextMenuAction.OpenSettings, PagesApi.openSettingsPage);
 

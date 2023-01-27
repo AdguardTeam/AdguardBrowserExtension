@@ -70,7 +70,6 @@ export enum MessageType {
   SynchronizeOpenTabs = 'synchronizeOpenTabs',
   ClearEventsByTabId = 'clearEventsByTabId',
   RefreshPage = 'refreshPage',
-  OpenTab = 'openTab',
   AddUserRule = 'addUserRule',
   UnAllowlistFrame = 'unAllowlistFrame',
   RemoveUserRule = 'removeUserRule',

@@ -35,7 +35,7 @@ Test:
 
             # don't use --ignore-optional flag, because esbuild requires optional deps 
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
-            yarn lint
+            yarn lint --max-warnings=0
             yarn check-types
             yarn test
             yarn dev
