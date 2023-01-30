@@ -110,7 +110,7 @@ export class I18n {
     }
 
     /**
-     * Creates elements with specified attributes
+     * Creates elements with specified attributes.
      *
      * @param tagName - element tag
      * @param attributes - attributes string value
@@ -168,7 +168,7 @@ export class I18n {
     }
 
     /**
-     * Gets element attribute value and translate it
+     * Returns element attribute value and translate it.
      *
      * @param element - page element
      * @param attributeName - name of element attribute

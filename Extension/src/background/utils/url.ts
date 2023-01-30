@@ -18,7 +18,7 @@
 import punycode from 'punycode';
 
 /**
- * Helper class to work with URLs
+ * Helper class to work with URLs.
  */
 export class UrlUtils {
     // eslint-disable-next-line max-len
@@ -37,7 +37,7 @@ export class UrlUtils {
     /**
      * Converts provided Unicode string to {@link https://tools.ietf.org/html/rfc3492 Punycode}.
      *
-     * @param domain domain name
+     * @param domain Domain name.
      *
      * @returns Domain name in {@link https://tools.ietf.org/html/rfc3492 Punycode}.
      */
@@ -60,9 +60,9 @@ export class UrlUtils {
         let firstIdx = url.indexOf('//');
         if (firstIdx === -1) {
         /**
-         * It's non hierarchical structured URL (e.g. stun: or turn:)
+         * It's non hierarchical structured URL (e.g. Stun: or turn:)
          * https://tools.ietf.org/html/rfc4395#section-2.2
-         * https://tools.ietf.org/html/draft-nandakumar-rtcweb-stun-uri-08#appendix-B
+         * https://tools.ietf.org/html/draft-nandakumar-rtcweb-stun-uri-08#appendix-B.
          */
             firstIdx = url.indexOf(':');
             if (firstIdx === -1) {
@@ -123,7 +123,7 @@ export class UrlUtils {
     /**
      * Checks that provided string is a IPv4.
      *
-     * @param address ip address
+     * @param address Ip address.
      *
      * @returns True if provided string is a IPv4.
      */
@@ -143,7 +143,7 @@ export class UrlUtils {
     /**
      * Checks that provided string is a IPv6.
      *
-     * @param address ip address
+     * @param address Ip address.
      *
      * @returns True if provided string is a IPv6.
      */

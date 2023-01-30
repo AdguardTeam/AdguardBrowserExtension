@@ -17,16 +17,16 @@
  */
 
 /**
- * Helper class for work with semver
+ * Helper class for work with semver.
  *
  * Parsed semver string saves in {@link data} property.
  * We save first {@link MAX_LENGTH} parts of parsed string.
  * If there are less than {@link MAX_LENGTH} parts in the version, the missing ones are filled with zeros
  * For example, entry string `1.1` will be parsed as `[1, 1, 0, 0]`.
  *
- * @param version - semver string
+ * @param version Semver string.
  * @class
- * @throws error, if passed string cannot be parsed
+ * @throws Error, if passed string cannot be parsed.
  */
 export class Version {
     private static MAX_LENGTH = 4;
@@ -37,7 +37,7 @@ export class Version {
     /**
      * Creates new object of {@link Version}.
      *
-     * @param version Version in {@link https://semver.org/lang/ru/ Semantic Version}
+     * @param version Version in {@link https://semver.org/lang/ru/ Semantic Version}.
      */
     constructor(version: unknown) {
         const parts = String(version || '').split('.', Version.MAX_LENGTH);
@@ -62,11 +62,11 @@ export class Version {
     }
 
     /**
-     * Compare current semver with passed
+     * Compare current semver with passed.
      *
-     * @param version - {@link Version} instance
-     * @returns number, indicates the result of the comparison (1 - greater, -1 - less, 0 - equals).
-     * @throws error, if some version data is invalid
+     * @param version Instance of {@link Version}.
+     * @returns Number, indicates the result of the comparison (1 greater, -1 less, 0 equals).
+     * @throws Error, if some version data is invalid.
      */
     public compare(version: Version): number {
         for (let i = 0; i < Version.MAX_LENGTH; i += 1) {

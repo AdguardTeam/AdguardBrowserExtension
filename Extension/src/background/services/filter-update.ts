@@ -18,7 +18,7 @@
 import { FilterUpdateApi } from '../api';
 
 /**
- * Service for scheduling filter update checks
+ * Service for scheduling filter update checks.
  *
  * It delays update check on initialization on 5 min.
  * After initialization scheduler checks filter updates every 30 minutes.
@@ -44,7 +44,7 @@ export class FilterUpdateService {
     }
 
     /**
-     * Run update scheduler after {@link INIT_DELAY_MS} timeout
+     * Run update scheduler after {@link INIT_DELAY_MS} timeout.
      */
     public async init(): Promise<void> {
         setTimeout(async () => {

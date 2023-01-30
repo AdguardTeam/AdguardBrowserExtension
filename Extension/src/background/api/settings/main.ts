@@ -114,7 +114,7 @@ export class SettingsApi {
     }
 
     /**
-     * Get setting from setting storage.
+     * Returns setting from setting storage.
      *
      * @param key Setting option key.
      *

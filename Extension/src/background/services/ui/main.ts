@@ -52,7 +52,7 @@ import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
 
 /**
- * Init app data for extension pages
+ * Init app data for extension pages.
  */
 export type PageInitAppData = {
     userSettings: SettingsData,
@@ -78,16 +78,16 @@ export type PageInitAppData = {
 };
 
 /**
- * Service for processing extension UI events (navigation, popups, alerts etc.)
+ * Service for processing extension UI events (navigation, popups, alerts etc.).
  */
 export class UiService {
     /**
-     * Increment value for request blocking counting and page stats collection
+     * Increment value for request blocking counting and page stats collection.
      */
     private static blockedCountIncrement = 1;
 
     /**
-     * Initialize linked services and register listeners
+     * Initialize linked services and register listeners.
      */
     public static async init(): Promise<void> {
         await toasts.init();
@@ -128,10 +128,10 @@ export class UiService {
     }
 
     /**
-     * Handles {@link OpenAbuseTabMessage} and opens abuse page for passed site url in new tab
+     * Handles {@link OpenAbuseTabMessage} and opens abuse page for passed site url in new tab.
      *
-     * @param message - incoming {@link OpenAbuseTabMessage}
-     * @param message.data - site url and {@link ForwardFrom} token for creating abuse page url params
+     * @param message Incoming {@link OpenAbuseTabMessage}.
+     * @param message.data Site url and {@link ForwardFrom} token for creating abuse page url params.
      */
     private static async openAbusePage({ data }: OpenAbuseTabMessage): Promise<void> {
         const { url, from } = data;
@@ -140,7 +140,7 @@ export class UiService {
     }
 
     /**
-     * Opens abuse page for current active tab url in new tab
+     * Opens abuse page for current active tab url in new tab.
      */
     private static async openAbusePageForActiveTab(): Promise<void> {
         const activeTab = await TabsApi.getActive();
@@ -153,10 +153,10 @@ export class UiService {
     }
 
     /**
-     * Handles {@link OpenSiteReportTabMessage} and opens site report page for passed site url in new tab
+     * Handles {@link OpenSiteReportTabMessage} and opens site report page for passed site url in new tab.
      *
-     * @param message - incoming {@link OpenSiteReportTabMessage}
-     * @param message.data - site url and {@link ForwardFrom} token for creating site report url params
+     * @param message Incoming {@link OpenSiteReportTabMessage}.
+     * @param message.data Site url and {@link ForwardFrom} token for creating site report url params.
      */
     private static async openSiteReportPage({ data }: OpenSiteReportTabMessage): Promise<void> {
         const { url, from } = data;
@@ -165,7 +165,7 @@ export class UiService {
     }
 
     /**
-     * Opens site report page for current active tab url in new tab
+     * Opens site report page for current active tab url in new tab.
      */
     private static async openSiteReportPageForActiveTab(): Promise<void> {
         const activeTab = await TabsApi.getActive();
@@ -178,9 +178,9 @@ export class UiService {
     }
 
     /**
-     * Gets {@link PageInitAppData} that uses on extension pages, like thankyou.html
+     * Returns {@link PageInitAppData} that uses on extension pages, like thankyou.html.
      *
-     * @returns init app data
+     * @returns Init app data.
      */
     private static getPageInitAppData(): PageInitAppData {
         const enabledFilters: Record<string, boolean> = {};
@@ -204,10 +204,10 @@ export class UiService {
                  * Browsers api doesn't allow to get optional permissions
                  * via chrome.permissions.getAll and we can't check privacy
                  * availability via `browser.privacy !== undefined` till permission
-                 * isn't enabled by the user
+                 * isn't enabled by the user.
                  *
                  * That's why use edge browser detection
-                 * Privacy methods are not working at all in the Edge
+                 * Privacy methods are not working at all in the Edge.
                  */
                 canBlockWebRTC: !UserAgent.isEdge,
                 isChrome: UserAgent.isChrome,
@@ -225,10 +225,10 @@ export class UiService {
     }
 
     /**
-     * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter
+     * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter.
      *
-     * @param event - {@link ApplyBasicRuleEvent}
-     * @param event.data - event data
+     * @param event {@link ApplyBasicRuleEvent}.
+     * @param event.data Event data.
      */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
         const { rule, tabId } = data;

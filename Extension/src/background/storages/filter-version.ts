@@ -26,7 +26,7 @@ import { settingsStorage } from './settings';
 
 /**
  * Class for synchronous control {@link FilterVersionStorageData},
- * that is persisted as string in another key value storage
+ * that is persisted as string in another key value storage.
  *
  * @see {@link StringStorage}
  */
@@ -36,11 +36,11 @@ export class FilterVersionStorage extends StringStorage<
     'sync'
 > {
     /**
-     * Gets specified filter version
+     * Returns specified filter version.
      *
-     * @param filterId - filter id
-     * @returns specified filter state or undefined, if it is not found
-     * @throws error if filter version data is not initialized
+     * @param filterId Filter id.
+     * @returns Specified filter state or undefined, if it is not found.
+     * @throws Error if filter version data is not initialized.
      */
     public get(filterId: number): FilterVersionData | undefined {
         if (!this.data) {
@@ -51,11 +51,11 @@ export class FilterVersionStorage extends StringStorage<
     }
 
     /**
-     * Sets specified filter version
+     * Sets specified filter version.
      *
-     * @param filterId - filter id
-     * @param data - filter version data
-     * @throws error if filter version data is not initialized
+     * @param filterId Filter id.
+     * @param data Filter version data.
+     * @throws Error if filter version data is not initialized.
      */
     public set(filterId: number, data: FilterVersionData): void {
         if (!this.data) {
@@ -68,10 +68,10 @@ export class FilterVersionStorage extends StringStorage<
     }
 
     /**
-     * Deletes specified filter version
+     * Deletes specified filter version.
      *
-     * @param filterId - filter id
-     * @throws error if filter version data is not initialized
+     * @param filterId Filter id.
+     * @throws Error if filter version data is not initialized.
      */
     public delete(filterId: number): void {
         if (!this.data) {
@@ -84,10 +84,10 @@ export class FilterVersionStorage extends StringStorage<
     }
 
     /**
-     * Update last check time stamp for specified filters with current time
+     * Update last check time stamp for specified filters with current time.
      *
-     * @param filtersIds - list of filters ids
-     * @throws error if filter version data is not initialized
+     * @param filtersIds List of filters ids.
+     * @throws Error if filter version data is not initialized.
      */
     public refreshLastCheckTime(filtersIds: number[]): void {
         if (!this.data) {
@@ -114,11 +114,11 @@ export class FilterVersionStorage extends StringStorage<
     }
 
     /**
-     * Sets version data for new filters, found in passed {@link Metadata}
+     * Sets version data for new filters, found in passed {@link Metadata}.
      *
-     * @param data - current {@link FilterVersionStorageData}
-     * @param metadata - app {@link Metadata}
-     * @returns - updated {@link FilterVersionStorageData}
+     * @param data Current {@link FilterVersionStorageData}.
+     * @param metadata App {@link Metadata}.
+     * @returns Updated {@link FilterVersionStorageData}.
      */
     public static applyMetadata(
         data: FilterVersionStorageData,
@@ -156,8 +156,8 @@ export class FilterVersionStorage extends StringStorage<
 }
 
 /**
- * {@link FilterVersionStorage} instance, that stores
+ * {@link FilterVersionStorage} Instance, that stores
  * stringified {@link FilterVersionStorageData} in {@link settingsStorage} under
- * {@link SettingOption.FiltersVersion} key
+ * {@link SettingOption.FiltersVersion} key.
  */
 export const filterVersionStorage = new FilterVersionStorage(SettingOption.FiltersVersion, settingsStorage);

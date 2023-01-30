@@ -75,7 +75,7 @@ export class AllowlistApi {
     }
 
     /**
-     * Gets domain list from {@link allowlistDomainsStorage}.
+     * Returns domain list from {@link allowlistDomainsStorage}.
      *
      * @returns List of allowlisted domains in default mode.
      */
@@ -84,7 +84,7 @@ export class AllowlistApi {
     }
 
     /**
-     * Gets domain list from {@link invertedAllowlistDomainsStorage}.
+     * Returns domain list from {@link invertedAllowlistDomainsStorage}.
      *
      * @returns List of allowlisted domains in inverted mode.
      */
@@ -147,7 +147,7 @@ export class AllowlistApi {
     }
 
     /**
-     * Gets domain from {@link tswebextension.TabContext}.
+     * Returns domain from {@link tswebextension.TabContext}.
      * If default allowlist mode, removes domain from {@link allowlistDomainsStorage}.
      * If inverted allowlist mode, adds domain to {@link invertedAllowlistDomainsStorage}.
      * Updates tswebextension configuration and reload tab after changes apply.
@@ -179,7 +179,7 @@ export class AllowlistApi {
     }
 
     /**
-     * Gets domain from {@link tswebextension.TabContext}.
+     * Returns domain from {@link tswebextension.TabContext}.
      * If default allowlist mode, adds domain to {@link invertedAllowlistDomainsStorage}.
      * If inverted allowlist mode, removes domain from  {@link allowlistDomainsStorage}.
      * Updates tswebextension configuration and reload tab after changes apply.
@@ -237,7 +237,7 @@ export class AllowlistApi {
     }
 
     /**
-     * Get domains from specified storage.
+     * Returns domains from specified storage.
      *
      * @param storage - Specified {@link DomainsStorage}.
      *
