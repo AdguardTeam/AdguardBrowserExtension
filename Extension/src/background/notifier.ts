@@ -127,20 +127,6 @@ class Notifier {
             }
         });
     }
-
-    /**
-     * Asynchronously notifies all listeners about the events passed as arguments of this function.
-     * Some events should be dispatched asynchronously, for instance this is very important for Safari:
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/251
-     *
-     * @param args - notifier event types
-     */
-    notifyListenersAsync(...args: [string, ...unknown[]]): void {
-        // TODO: Maybe set timeout only for Safari, if this isn't need for other browsers?
-        setTimeout(() => {
-            this.notifyListeners(...args);
-        }, Notifier.NOTIFY_TIMEOUT_MS);
-    }
 }
 
 export const listeners = new Notifier() as Notifier & typeof NotifierType;
