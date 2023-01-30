@@ -24,29 +24,36 @@ import { FilterUpdateApi } from '../api';
  * 5 min after initialization scheduler checks filter updates every 30 minutes
  */
 export class FilterUpdateService {
-    // update checking initialization delay
-    private static initDelay = 1000 * 60 * 5; // 5 min
+    /**
+     * Update checking initialization delay.
+     */
+    private static readonly INIT_DELAY_MS = 1000 * 60 * 5; // 5 min
 
-    // checking period
-    private static checkPeriodMs = 1000 * 60 * 30; // 30 min
+    /**
+     * Checking period.
+     */
+    private static readonly CHECK_PERIOD_MS = 1000 * 60 * 30; // 30 min
 
     private timerId: number | undefined;
 
+    /**
+     * Creates new {@link FilterUpdateService}.
+     */
     constructor() {
         this.update = this.update.bind(this);
     }
 
     /**
-     * Run update scheduler after {@link initDelay} timeout
+     * Run update scheduler after {@link INIT_DELAY_MS} timeout
      */
     public async init(): Promise<void> {
         setTimeout(async () => {
             await this.update();
-        }, FilterUpdateService.initDelay);
+        }, FilterUpdateService.INIT_DELAY_MS);
     }
 
     /**
-     * Checks filter updates every {@link checkPeriodMs} period
+     * Checks filter updates every {@link CHECK_PERIOD_MS} period
      */
     private async update(): Promise<void> {
         window.clearTimeout(this.timerId);
@@ -55,7 +62,7 @@ export class FilterUpdateService {
 
         this.timerId = window.setTimeout(async () => {
             await this.update();
-        }, FilterUpdateService.checkPeriodMs);
+        }, FilterUpdateService.CHECK_PERIOD_MS);
     }
 }
 

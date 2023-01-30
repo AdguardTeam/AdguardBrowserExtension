@@ -28,21 +28,38 @@ export type CreateEventListenerResponse = {
     listenerId: number,
 };
 
+/**
+ * The EventService class operates with event listeners: creates or removes them.
+ */
 export class EventService {
     // TODO: types
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private eventListeners = new Map<number, any>();;
+    private eventListeners = new Map<number, any>();
 
+    /**
+     * Creates new {@link EventService}.
+     */
     constructor() {
         this.createEventListener = this.createEventListener.bind(this);
         this.removeEventListener = this.removeEventListener.bind(this);
     }
 
+    /**
+     * Registers event listeners in the {@link messageHandler} with background messages.
+     */
     public init(): void {
         messageHandler.addListener(MessageType.CreateEventListener, this.createEventListener);
         messageHandler.addListener(MessageType.RemoveListener, this.removeEventListener);
     }
 
+    /**
+     * Creates new event listener and returs its id.
+     *
+     * @param message Item of {@link CreateEventListenerMessage}.
+     * @param sender Item of {@link Runtime.MessageSender}.
+     *
+     * @returns The identifier of the event listener enclosed in the {@link CreateEventListenerResponse} type.
+     */
     private createEventListener(
         message: CreateEventListenerMessage,
         sender: Runtime.MessageSender,
@@ -63,6 +80,11 @@ export class EventService {
         return { listenerId };
     }
 
+    /**
+     * Removes listener for provided message.
+     *
+     * @param message Message of type {@link RemoveListenerMessage}.
+     */
     private removeEventListener(message: RemoveListenerMessage): void {
         const { listenerId } = message.data;
 

@@ -65,7 +65,18 @@ export type GetOptionsDataResponse = {
     fullscreenUserRulesEditorIsOpen: boolean,
 };
 
+/**
+ * SettingsService handles all setting-related messages and
+ * calls {@link SettingsApi} to handle settings.
+ */
 export class SettingsService {
+    /**
+     * Adds a listener for background messages about settings: load/apply settings
+     * from JSON and change/reset/return of custom settings.
+     * Adds a listener with the action of updating the engine when you change
+     * any {@link SettingOption} parameter.
+     * Adds a listener to enable or disable protection from the context menu.
+     */
     static init(): void {
         messageHandler.addListener(MessageType.GetOptionsData, SettingsService.getOptionsData);
         messageHandler.addListener(MessageType.ResetSettings, SettingsService.reset);
@@ -77,43 +88,24 @@ export class SettingsService {
         settingsEvents.addListener(SettingOption.HideReferrer, Engine.update);
         settingsEvents.addListener(SettingOption.HideSearchQueries, Engine.update);
         settingsEvents.addListener(SettingOption.SendDoNotTrack, Engine.update);
-        settingsEvents.addListener(
-            SettingOption.BlockChromeClientData,
-            Engine.update,
-        );
+        settingsEvents.addListener(SettingOption.BlockChromeClientData, Engine.update);
         settingsEvents.addListener(SettingOption.BlockWebRTC, Engine.update);
-        settingsEvents.addListener(
-            SettingOption.SelfDestructThirdPartyCookies,
-            Engine.update,
-        );
-        settingsEvents.addListener(
-            SettingOption.SelfDestructThirdPartyCookiesTime,
-            Engine.update,
-        );
-        settingsEvents.addListener(
-            SettingOption.SelfDestructFirstPartyCookies,
-            Engine.update,
-        );
-        settingsEvents.addListener(
-            SettingOption.SelfDestructFirstPartyCookiesTime,
-            Engine.update,
-        );
-        settingsEvents.addListener(
-            SettingOption.DisableFiltering,
-            SettingsService.onFilteringStateChange,
-        );
+        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookies, Engine.update);
+        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookiesTime, Engine.update);
+        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookies, Engine.update);
+        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookiesTime, Engine.update);
+        settingsEvents.addListener(SettingOption.DisableFiltering, SettingsService.onFilteringStateChange);
 
-        contextMenuEvents.addListener(
-            ContextMenuAction.EnableProtection,
-            SettingsService.enableFiltering,
-        );
-
-        contextMenuEvents.addListener(
-            ContextMenuAction.DisableProtection,
-            SettingsService.disableFiltering,
-        );
+        contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsService.enableFiltering);
+        contextMenuEvents.addListener(ContextMenuAction.DisableProtection, SettingsService.disableFiltering);
     }
 
+    /**
+     * Returns settings with some additional data: app version,
+     * environment options, constants, filters info, filters metadata.
+     *
+     * @returns Item of {@link GetOptionsDataResponse}
+     */
     static getOptionsData(): GetOptionsDataResponse {
         return {
             settings: SettingsApi.getData(),
@@ -132,21 +124,39 @@ export class SettingsService {
         };
     }
 
+    /**
+     * Changes user settings.
+     *
+     * @param message Item of {@link ChangeUserSettingMessage}.
+     */
     static async changeUserSettings(message: ChangeUserSettingMessage): Promise<void> {
         const { key, value } = message.data;
         await SettingsApi.setSetting(key, value);
+
+        // TODO: Don't we need to update the engine after changes?
     }
 
+    /**
+     * Resets user settings and updates engine.
+     *
+     * @returns Result of resetting.
+     */
     static async reset(): Promise<boolean> {
         try {
             await SettingsApi.reset();
             await Engine.update();
+
             return true;
         } catch (e) {
             return false;
         }
     }
 
+    /**
+     * Imports settings from JSON.
+     *
+     * @param message Message with JSON settings {@link ApplySettingsJsonMessage}.
+     */
     static async import(message: ApplySettingsJsonMessage): Promise<boolean> {
         const { json } = message.data;
 
@@ -158,6 +168,11 @@ export class SettingsService {
         return isImported;
     }
 
+    /**
+     * Exports settings.
+     *
+     * @returns Promise with {@link ExportMessageResponse}.
+     */
     static async export(): Promise<ExportMessageResponse> {
         return {
             content: await SettingsApi.export(),
@@ -165,6 +180,9 @@ export class SettingsService {
         };
     }
 
+    /**
+     * Called when filtering state changed.
+     */
     static async onFilteringStateChange(): Promise<void> {
         await Engine.update();
 
@@ -175,10 +193,16 @@ export class SettingsService {
         }
     }
 
+    /**
+     * Called when protection enabling is requested.
+     */
     static async enableFiltering(): Promise<void> {
         await SettingsApi.setSetting(SettingOption.DisableFiltering, false);
     }
 
+    /**
+     * Called when protection disabling is requested.
+     */
     static async disableFiltering(): Promise<void> {
         await SettingsApi.setSetting(SettingOption.DisableFiltering, true);
     }

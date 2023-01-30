@@ -63,6 +63,11 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
         this.data.totalHits = (this.data.totalHits || 0) + 1;
     }
 
+    /**
+     * Helper for create a basic {@link Error} with a custom message.
+     *
+     * @returns A basic {@link Error} with a custom message.
+     */
     private static createNotInitializedError(): Error {
         return new Error('hit stats is not initialized');
     }

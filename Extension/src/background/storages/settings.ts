@@ -118,6 +118,11 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
         this.save();
     }
 
+    /**
+     * Helper for create a basic {@link Error} with a custom message.
+     *
+     * @returns A basic {@link Error} with a custom message.
+     */
     private static createNotInitializedError(): Error {
         return new Error('settings is not initialized');
     }

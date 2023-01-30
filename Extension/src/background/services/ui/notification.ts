@@ -23,13 +23,23 @@ import { messageHandler } from '../../message-handler';
  * Service that manages AdGuard events notifications.
  */
 export class NotificationService {
+    /**
+     * Adds a listener to mark the notification as watched.
+     */
     public static init(): void {
         notificationApi.init();
 
         messageHandler.addListener(MessageType.SetNotificationViewed, NotificationService.setNotificationViewed);
     }
 
+    /**
+     * Marks the notification as watched.
+     *
+     * @param message Message of type {@link SetNotificationViewedMessage}.
+     * @param message.data Delay of hiding notification.
+     */
     private static async setNotificationViewed({ data }: SetNotificationViewedMessage): Promise<void> {
+        // TODO: Don't we need some kind of notification identifier?
         const { withDelay } = data;
 
         await notificationApi.setNotificationViewed(withDelay);

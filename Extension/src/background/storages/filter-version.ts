@@ -145,6 +145,11 @@ export class FilterVersionStorage extends StringStorage<
         return data;
     }
 
+    /**
+     * Helper for create a basic {@link Error} with a custom message.
+     *
+     * @returns A basic {@link Error} with a custom message.
+     */
     private static createNotInitializedError(): Error {
         return new Error('Filter version data is not initialized');
     }

@@ -260,6 +260,9 @@ export class App {
         }
     }
 
+    /**
+     * Initializes App storage data.
+     */
     private static async initClientId(): Promise<void> {
         const storageClientId = await storage.get(CLIENT_ID_KEY);
         let clientId: string;

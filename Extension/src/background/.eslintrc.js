@@ -11,8 +11,8 @@ module.exports = {
     },
     rules: {
         '@typescript-eslint/no-explicit-any': 'error',
-
         '@typescript-eslint/explicit-function-return-type': 'error',
+
         'jsdoc/require-param-description': 'error',
         'jsdoc/require-property-description': 'error',
         'jsdoc/require-returns-description': 'error',
@@ -20,6 +20,28 @@ module.exports = {
         'jsdoc/require-param': 'error',
         'jsdoc/no-undefined-types': 'error',
         'jsdoc/require-returns-check': 'error',
-        'jsdoc/require-jsdoc': 'error',
+
+        'jsdoc/require-jsdoc': [
+            'error',
+            {
+                contexts: [
+                    'ClassDeclaration',
+                    'ClassProperty',
+                    'FunctionDeclaration',
+                    'MethodDefinition',
+                ],
+            },
+        ],
+        'jsdoc/require-description': [
+            'error',
+            {
+                contexts: [
+                    'ClassDeclaration',
+                    'ClassProperty',
+                    'FunctionDeclaration',
+                    'MethodDefinition',
+                ],
+            },
+        ]
     },
 };

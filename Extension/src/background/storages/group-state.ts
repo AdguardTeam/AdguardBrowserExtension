@@ -180,6 +180,11 @@ export class GroupStateStorage extends StringStorage<
         return states;
     }
 
+    /**
+     * Helper for create a basic {@link Error} with a custom message.
+     *
+     * @returns A basic {@link Error} with a custom message.
+     */
     private static createNotInitializedError(): Error {
         return new Error('Group state data is not initialized');
     }

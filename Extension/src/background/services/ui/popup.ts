@@ -53,7 +53,13 @@ export type GetTabInfoForPopupResponse = {
     },
 };
 
+/**
+ * Handles work with popups.
+ */
 export class PopupService {
+    /**
+     * Creates listeners for getter of tab info and for popup.
+     */
     static init(): void {
         messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
         messageHandler.addListener(
@@ -62,9 +68,19 @@ export class PopupService {
         );
     }
 
-    static async getTabInfoForPopup({
-        data,
-    }: GetTabInfoForPopupMessage): Promise<GetTabInfoForPopupResponse | undefined> {
+    /**
+     * Returns tab info: frame info, stats form {@link PageStatsApi},
+     * current settings and some other options.
+     *
+     * @param message Message of type {@link GetTabInfoForPopupMessage}.
+     * @param message.data Contains tab id.
+     *
+     * @returns If found - tab context {@link GetTabInfoForPopupResponse},
+     * or undefined if not found.
+     */
+    static async getTabInfoForPopup(
+        { data }: GetTabInfoForPopupMessage,
+    ): Promise<GetTabInfoForPopupResponse | undefined> {
         const { tabId } = data;
 
         const tabContext = tsWebExtTabApi.getTabContext(tabId);
@@ -88,9 +104,15 @@ export class PopupService {
         }
     }
 
+    /**
+     * Called when protection enabling or disabling is requested.
+     *
+     * @param message Message of {@link ChangeApplicationFilteringDisabledMessage}.
+     * @param message.data State of protection.
+     */
     private static async onChangeFilteringDisable({ data }: ChangeApplicationFilteringDisabledMessage): Promise<void> {
-        const { state: disabled } = data;
+        const { state } = data;
 
-        await SettingsApi.setSetting(SettingOption.DisableFiltering, disabled);
+        await SettingsApi.setSetting(SettingOption.DisableFiltering, state);
     }
 }

@@ -151,7 +151,7 @@ class Messenger {
     }
 
     async disableFilter(filterId) {
-        return this.sendMessage(MessageType.DisableAntibannerFilter, { filterId });
+        return this.sendMessage(MessageType.DisableFilter, { filterId });
     }
 
     async applySettingsJson(json) {
@@ -191,7 +191,7 @@ class Messenger {
     }
 
     async updateFilters() {
-        return this.sendMessage(MessageType.CheckAntibannerFiltersUpdate);
+        return this.sendMessage(MessageType.CheckFiltersUpdate);
     }
 
     async updateGroupStatus(id, data) {
@@ -205,7 +205,7 @@ class Messenger {
     async updateFilterStatus(filterId, data) {
         const type = data
             ? MessageType.AddAndEnableFilter
-            : MessageType.DisableAntibannerFilter;
+            : MessageType.DisableFilter;
         await this.sendMessage(type, { filterId });
     }
 
@@ -218,7 +218,7 @@ class Messenger {
     }
 
     async removeCustomFilter(filterId) {
-        await this.sendMessage(MessageType.RemoveAntibannerFilter, { filterId });
+        await this.sendMessage(MessageType.RemoveAntiBannerFilter, { filterId });
     }
 
     async getTabInfoForPopup(tabId) {
