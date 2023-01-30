@@ -79,6 +79,7 @@ const Search = forwardRef(({
             );
         }
 
+        // Render with tab selector search in drop-down menu
         if (select) {
             return (
                 <button

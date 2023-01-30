@@ -77,7 +77,9 @@ const TabSelector = observer(() => {
         if (!tabs.find((tab) => tab.title === searchValue)) {
             setSearchValue(prevTabTitle);
         }
-        logStore.setSelectIsOpenState(false);
+        if (selectIsOpen) {
+            logStore.setSelectIsOpenState(false);
+        }
         setCurrentStep(0);
     };
 
