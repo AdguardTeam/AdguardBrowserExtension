@@ -21,7 +21,7 @@ import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
 import { getIconImageData } from '../extension';
 import { FrameData } from './frames';
-import { notificationApi } from './notification';
+import { promoNotificationApi } from './promo-notification';
 
 /**
  * The Icons API is responsible for setting the icon that corresponds
@@ -84,7 +84,7 @@ export class IconsApi {
             }
 
             // If there's an active notification, indicate it on the badge
-            const notification = await notificationApi.getCurrentNotification();
+            const notification = await promoNotificationApi.getCurrentNotification();
             if (notification) {
                 badge = notification.badgeText || badge;
                 badgeColor = notification.badgeBgColor || badgeColor;

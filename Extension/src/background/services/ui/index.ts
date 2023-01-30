@@ -17,4 +17,4 @@
  */
 export * from './main';
 export * from './popup';
-export * from './notification';
+export * from './promo-notification';
