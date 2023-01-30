@@ -50,7 +50,7 @@ export class UrlUtils {
     }
 
     /**
-     * Tries to extract host name from provided url and return it, if found.
+     * Tries to extract host name from provided url and returns it, if found.
      *
      * @param url Url address.
      *

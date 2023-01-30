@@ -277,7 +277,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     }
 
     /**
-     * Helper for create a basic {@link Error} with a custom message.
+     * Helper function to create a basic {@link Error} with a custom message.
      *
      * @returns A basic {@link Error} with a custom message.
      */

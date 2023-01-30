@@ -133,7 +133,9 @@ export class SettingsService {
         const { key, value } = message.data;
         await SettingsApi.setSetting(key, value);
 
-        // TODO: Don't we need to update the engine after changes?
+        // TODO: Potential place to optimize: we don't need update engine
+        // for every setting change.
+        await Engine.update();
     }
 
     /**

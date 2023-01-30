@@ -119,7 +119,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
     }
 
     /**
-     * Helper for create a basic {@link Error} with a custom message.
+     * Helper function to create a basic {@link Error} with a custom message.
      *
      * @returns A basic {@link Error} with a custom message.
      */
