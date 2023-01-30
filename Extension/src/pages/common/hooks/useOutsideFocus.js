@@ -31,5 +31,5 @@ export const useOutsideFocus = (ref, callback) => {
         return () => {
             document.removeEventListener('focusin', handleFocus);
         };
-    }, [handleFocus]);
+    }, [ref, handleFocus]);
 };
