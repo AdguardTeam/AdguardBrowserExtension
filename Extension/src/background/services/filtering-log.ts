@@ -374,7 +374,7 @@ export class FilteringLogService {
     }
 
     /**
-     * Deletes of a tab.
+     * Deletes a tab.
      *
      * @param tabContext Item of {@link TabContext}.
      */
@@ -426,7 +426,8 @@ export class FilteringLogService {
      * @param message Message with type {@link GetFilteringInfoByTabIdMessage}.
      * @param message.data Tab id from {@link GetFilteringInfoByTabIdMessage}.
      *
-     * @returns Item with type {@link FilteringLogTabInfo} for specified tab id.
+     * @returns Item with type {@link FilteringLogTabInfo} for specified tab id
+     * or undefined.
      */
     private static onGetFilteringLogInfoById(
         { data }: GetFilteringInfoByTabIdMessage,

@@ -20,8 +20,8 @@ import { FilterUpdateApi } from '../api';
 /**
  * Service for scheduling filter update checks
  *
- * It delays update check on initialization on 5 min
- * 5 min after initialization scheduler checks filter updates every 30 minutes
+ * It delays update check on initialization on 5 min.
+ * After initialization scheduler checks filter updates every 30 minutes.
  */
 export class FilterUpdateService {
     /**
@@ -53,7 +53,8 @@ export class FilterUpdateService {
     }
 
     /**
-     * Checks filter updates every {@link CHECK_PERIOD_MS} period
+     * Checks every {@link CHECK_PERIOD_MS} period whether the enabled filters
+     * should be updated.
      */
     private async update(): Promise<void> {
         window.clearTimeout(this.timerId);
