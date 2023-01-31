@@ -123,7 +123,7 @@ export class UrlUtils {
     /**
      * Checks that provided string is a IPv4.
      *
-     * @param address Ip address.
+     * @param address IP address.
      *
      * @returns True if provided string is a IPv4.
      */
@@ -143,7 +143,7 @@ export class UrlUtils {
     /**
      * Checks that provided string is a IPv6.
      *
-     * @param address Ip address.
+     * @param address IP address.
      *
      * @returns True if provided string is a IPv6.
      */
