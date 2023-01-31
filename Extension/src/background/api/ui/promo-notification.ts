@@ -192,7 +192,7 @@ export class PromoNotificationApi {
     }
 
     /**
-     * Gets the last time a notification was shown.
+     * Returns the last time a notification was shown.
      * If it was not shown yet, initialized with the current time.
      */
     private static async getLastNotificationTime(): Promise<number> {

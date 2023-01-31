@@ -18,7 +18,7 @@
 import browser from 'webextension-polyfill';
 
 /**
- * Extension global preferences
+ * Extension global preferences.
  */
 export class Prefs {
     public static id = browser.runtime.id;

@@ -81,7 +81,7 @@ export class Log {
     }
 
     /**
-     * Print error messages
+     * Print error messages.
      *
      * @param args Printed arguments.
      */

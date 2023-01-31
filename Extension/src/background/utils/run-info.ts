@@ -35,11 +35,11 @@ export type RunInfo = {
 };
 
 /**
- * Gets data from storage by specified key
+ * Gets data from storage by specified key.
  *
- * @param key - storage key
- * @param fallback - if true, try to get data from legacy destination
- * @returns specified storage value
+ * @param key Storage key.
+ * @param fallback If true, try to get data from legacy destination.
+ * @returns Specified storage value.
  */
 async function getData(key: string, fallback = true): Promise<unknown | null> {
     const data = await storage.get(key);
@@ -63,7 +63,7 @@ async function getData(key: string, fallback = true): Promise<unknown | null> {
 }
 
 /**
- * Get client id from storage
+ * Get client id from storage.
  */
 async function getClientId(): Promise<string | null> {
     const clientId = await getData(CLIENT_ID_KEY);
@@ -76,7 +76,7 @@ async function getClientId(): Promise<string | null> {
 }
 
 /**
- * Get app version from storage
+ * Get app version from storage.
  */
 async function getAppVersion(): Promise<string | null> {
     const appVersion = await getData(APP_VERSION_KEY);
@@ -89,7 +89,7 @@ async function getAppVersion(): Promise<string | null> {
 }
 
 /**
- * Get schema version from storage
+ * Get schema version from storage.
  */
 async function getSchemaVersion(): Promise<number> {
     // don't search schema version in legacy source, because it was added in v4.2
@@ -104,7 +104,7 @@ async function getSchemaVersion(): Promise<number> {
 }
 
 /**
- * Gets app running info from storage
+ * Gets app running info from storage.
  */
 export async function getRunInfo(): Promise<RunInfo> {
     const currentAppVersion = Prefs.version;

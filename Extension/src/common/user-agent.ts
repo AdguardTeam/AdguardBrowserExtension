@@ -27,7 +27,7 @@ export class UserAgent {
     static parser = new UAParser(navigator.userAgent);
 
     /**
-     * Gets current browser name
+     * Returns current browser name.
      *
      * @returns user agent browser name
      */
@@ -36,7 +36,7 @@ export class UserAgent {
     }
 
     /**
-     * Check if current browser is as given
+     * Check if current browser is as given.
      *
      * @param browserName - Browser Name
      * @returns true, if current browser has specified name
@@ -46,7 +46,7 @@ export class UserAgent {
     }
 
     /**
-     * Check if current platform is as given
+     * Check if current platform is as given.
      *
      * @param platformName - Platform name
      * @returns true, if current browser has specified name
@@ -56,7 +56,7 @@ export class UserAgent {
     }
 
     /**
-     * Get browser version by name
+     * Returns browser version by name.
      *
      * @param browserName - Browser Name
      * @returns browser version number or undefined

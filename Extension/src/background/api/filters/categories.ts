@@ -71,7 +71,7 @@ export class Categories {
     private static PURPOSE_MOBILE_TAG_ID = 19;
 
     /**
-     * Get aggregated filters category data for option page.
+     * Returns aggregated filters category data for option page.
      *
      * @returns Categories aggregated data.
      */
@@ -195,7 +195,7 @@ export class Categories {
     }
 
     /**
-     * Get tags metadata from {@link metadataStorage}.
+     * Returns tags metadata from {@link metadataStorage}.
      *
      * @param tagsIds Tags ids.
      *
@@ -230,7 +230,7 @@ export class Categories {
     }
 
     /**
-     * Get filters data from {@link metadataStorage},
+     * Returns filters data from {@link metadataStorage},
      * {@link customFilterMetadataStorage}, {@link filterStateStorage} and
      * {@link filterVersionStorage}.
      *
@@ -270,7 +270,7 @@ export class Categories {
     }
 
     /**
-     * Get groups data from {@link metadataStorage} and {@link groupStateStorage}.
+     * Returns groups data from {@link metadataStorage} and {@link groupStateStorage}.
      *
      * @returns Aggregated groups data.
      */
@@ -297,7 +297,7 @@ export class Categories {
     }
 
     /**
-     * Get filters data for specified group.
+     * Returns filters data for specified group.
      *
      * @param groupId Group id.
      * @param filters Aggregated filters data.

@@ -19,7 +19,7 @@ import zod from 'zod';
 import { SchemaPreprocessor } from '../preprocessor';
 
 /**
- * Runtime validator for persistent filter state data
+ * Runtime validator for persistent filter state data.
  */
 export const filterStateDataValidator = zod.object({
     enabled: zod.boolean(),

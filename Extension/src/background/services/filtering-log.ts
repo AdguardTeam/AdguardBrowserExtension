@@ -72,7 +72,9 @@ type GetFilteringLogDataResponse = {
  * to record them and show.
  */
 export class FilteringLogService {
-    /** Creates handlers for all possible actions */
+    /**
+     * Creates handlers for all possible actions.
+     */
     public static init(): void {
         messageHandler.addListener(MessageType.GetFilteringLogData, FilteringLogService.onGetFilteringLogData);
         messageHandler.addListener(MessageType.SynchronizeOpenTabs, FilteringLogService.onSyncOpenTabs);
@@ -134,7 +136,7 @@ export class FilteringLogService {
     /**
      * Records the initiation of a request.
      *
-     * @param sendRequestEvent Event with type {@link SendRequestEvent}
+     * @param sendRequestEvent Event with type {@link SendRequestEvent}.
      * @param sendRequestEvent.data Contains data about the request and the tab
      * from which the request was initiated.
      */

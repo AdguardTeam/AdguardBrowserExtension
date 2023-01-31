@@ -67,10 +67,10 @@ import { CLIENT_ID_KEY } from '../common/constants';
 import { contextMenuEvents, settingsEvents } from './events';
 
 /**
- * This class is app entry point
+ * This class is app entry point.
  *
  * {@link App.init} Initializes all app services
- * and handle webextension API events for first install and update scenario
+ * and handle webextension API events for first install and update scenario.
  */
 export class App {
     private static uninstallUrl = Forward.get({
@@ -80,7 +80,7 @@ export class App {
 
     /**
      * Initializes all app services
-     * and handle webextension API events for first install and update scenario
+     * and handle webextension API events for first install and update scenario.
      */
     public static async init(): Promise<void> {
         // removes listeners on re-initialization, because new ones will be registered during process
@@ -123,7 +123,7 @@ export class App {
          * - Loads app i18n metadata and caches it in i18n-metadata storage
          * - Loads app metadata, apply localization from i18n-metadata storage and caches it in metadata storage
          * - Initializes storages for userrules, allowlist, custom filters metadata and page-stats
-         * - Initializes storages for filters state, groups state and filters versions, based on app metadata
+         * - Initializes storages for filters state, groups state and filters versions, based on app metadata.
          */
         await FiltersApi.init();
 
@@ -133,7 +133,7 @@ export class App {
         /**
          * Initializes promo notifications:
          * - Initializes notifications storage
-         * - Adds listeners for notification events
+         * - Adds listeners for notification events.
          */
         PromoNotificationService.init();
 
@@ -157,7 +157,7 @@ export class App {
 
         /**
          * Adds listeners for managing ui
-         * (routing between extension pages, toasts, icon update)
+         * (routing between extension pages, toasts, icon update).
          */
         await UiService.init();
 
@@ -168,9 +168,9 @@ export class App {
         localeDetect.init();
 
         /**
-         * Adds listener for creating `notifier` events. Triggers by frontend
+         * Adds listener for creating `notifier` events. Triggers by frontend.
          *
-         * TODO: delete after frontend refactoring
+         * TODO: delete after frontend refactoring.
          */
         eventService.init();
 
@@ -179,14 +179,14 @@ export class App {
          * - Initializes persisted lru cache for hashes
          * - Adds listener for filtering web requests
          * - Adds listener for safebrowsing settings option switcher
-         * - Adds listener for "add trusted domain" message
+         * - Adds listener for "add trusted domain" message.
          */
         await SafebrowsingService.init();
 
         /**
          * Initializes Document block module
          * - Initializes persisted cache for trusted domains
-         * - Adds listener for "add trusted domain" message
+         * - Adds listener for "add trusted domain" message.
          */
         await DocumentBlockService.init();
 
@@ -221,7 +221,7 @@ export class App {
     }
 
     /**
-     * Remove all registered app event listeners
+     * Remove all registered app event listeners.
      */
     private static removeListeners(): void {
         messageHandler.removeListeners();
@@ -230,9 +230,9 @@ export class App {
     }
 
     /**
-     * Handles engine status request from filters-download page
+     * Handles engine status request from filters-download page.
      *
-     * @returns true, if filter engine is initialized, else false.
+     * @returns True, if filter engine is initialized, else false.
      */
     private static onCheckRequestFilterReady(): boolean {
         const ready = Engine.api.isStarted;
@@ -240,7 +240,7 @@ export class App {
         /**
          * If engine is ready, user will be redirected to thankyou page.
          *
-         * CheckRequestFilterReady listener is not needed anymore
+         * CheckRequestFilterReady listener is not needed anymore.
          */
         if (ready) {
             messageHandler.removeListener(MessageType.CheckRequestFilterReady);
@@ -250,7 +250,7 @@ export class App {
     }
 
     /**
-     * Sets app uninstall url
+     * Sets app uninstall url.
      */
     private static async setUninstallUrl(): Promise<void> {
         try {

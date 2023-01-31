@@ -40,7 +40,7 @@ export class ConnectionHandler {
     /**
      * Handles long-live connection to the port.
      *
-     * @param port Object of {@link Runtime.Port}
+     * @param port Object of {@link Runtime.Port}.
      */
     private static handleConnection(port: Runtime.Port): void {
         let listenerId: number;
@@ -77,7 +77,7 @@ export class ConnectionHandler {
      * @throws Basic {@link Error} if the page specified in the port name
      * is not found.
      *
-     * @param port Object of {@link Runtime.Port}
+     * @param port Object of {@link Runtime.Port}.
      */
     private static onPortConnection(port: Runtime.Port): void {
         switch (true) {
@@ -103,7 +103,7 @@ export class ConnectionHandler {
      * @throws Basic {@link Error} if the page specified in the port name
      * is not found.
      *
-     * @param port Object of {@link Runtime.Port}
+     * @param port Object of {@link Runtime.Port}.
      */
     private static onPortDisconnection(port: Runtime.Port): void {
         switch (true) {

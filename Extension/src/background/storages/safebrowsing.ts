@@ -22,16 +22,16 @@ import { Log } from '../../common/log';
 import { storage } from './main';
 
 /**
- * Class for control persisted {@link LRUMap} safebrowsing cache
+ * Class for control persisted {@link LRUMap} safebrowsing cache.
  */
 export class SbCache {
     private cache = new LRUMap<string, string>(1000);
 
     /**
      * Reads safebrowsing {@link LRUMap} stringified entries from {@link storage},
-     * parse it and sets to {@link cache}
+     * parse it and sets to {@link cache}.
      *
-     * @returns promise, resolved when data successfully initialized
+     * @returns Promise, resolved when data successfully initialized.
      */
     public async init(): Promise<void> {
         const storageData = await storage.get(SB_LRU_CACHE_KEY);
@@ -53,28 +53,28 @@ export class SbCache {
     }
 
     /**
-     * Saves stringified safebrowsing {@link cache} entries in {@link storage}
+     * Saves stringified safebrowsing {@link cache} entries in {@link storage}.
      */
     public async save(): Promise<void> {
         await storage.set(SB_LRU_CACHE_KEY, JSON.stringify(this.cache.toJSON()));
     }
 
     /**
-     * Gets value from {@link cache}
+     * Returns value from {@link cache}.
      *
-     * @param key - cache key
-     * @returns cache value
+     * @param key Cache key.
+     * @returns Cache value.
      */
     public get(key: string): string | undefined {
         return this.cache.get(key);
     }
 
     /**
-     * Sets value to {@link cache}
+     * Sets value to {@link cache}.
      *
-     * @param key - cache key
-     * @param value - cache value
-     * @returns updated {@link cache} instance
+     * @param key Cache key.
+     * @param value Cache value.
+     * @returns Updated {@link cache} instance.
      */
     public async set(key: string, value: string): Promise<SbCache> {
         this.cache.set(key, value);
@@ -87,7 +87,7 @@ export class SbCache {
     }
 
     /**
-     * Clear {@link cache} and {@link storage} data
+     * Clear {@link cache} and {@link storage} data.
      */
     public async clear(): Promise<void> {
         this.cache.clear();

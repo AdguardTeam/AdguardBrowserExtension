@@ -32,11 +32,11 @@ import { CustomFilterMetadata } from '../schema';
 import { SUBSCRIBE_OUTPUT } from '../../../../constants';
 
 /**
- * Service for processing events with custom filters
+ * Service for processing events with custom filters.
  */
 export class CustomFilterService {
     /**
-     * Init handlers
+     * Init handlers.
      */
     static init(): void {
         messageHandler.addListener(MessageType.LoadCustomFilterInfo, CustomFilterService.onCustomFilterInfoLoad);
@@ -50,9 +50,9 @@ export class CustomFilterService {
     }
 
     /**
-     * Get custom filter info for modal window
+     * Returns custom filter info for modal window.
      *
-     * @param message - message data
+     * @param message Message data.
      */
     static async onCustomFilterInfoLoad(message: LoadCustomFilterInfoMessage): Promise<GetCustomFilterInfoResult> {
         const { url, title } = message.data;
@@ -61,9 +61,9 @@ export class CustomFilterService {
     }
 
     /**
-     * Add new custom filter
+     * Add new custom filter.
      *
-     * @param message - message data
+     * @param message Message data.
      */
     static async onCustomFilterSubscription(message: SubscribeToCustomFilterMessage): Promise<CustomFilterMetadata> {
         const { filter } = message.data;
@@ -83,9 +83,9 @@ export class CustomFilterService {
     }
 
     /**
-     * Remove custom filter
+     * Remove custom filter.
      *
-     * @param message - message data
+     * @param message Message data.
      */
     static async onCustomFilterRemove(message: RemoveAntiBannerFilterMessage): Promise<void> {
         const { filterId } = message.data;
@@ -94,9 +94,9 @@ export class CustomFilterService {
     }
 
     /**
-     * Inject custom filter subscription content script to tab
+     * Inject custom filter subscription content script to tab.
      *
-     * @param details - onCommitted event request details
+     * @param details OnCommitted event request details.
      */
     static async injectSubscriptionScript(details: WebNavigation.OnCommittedDetailsType): Promise<void> {
         const { tabId, frameId } = details;

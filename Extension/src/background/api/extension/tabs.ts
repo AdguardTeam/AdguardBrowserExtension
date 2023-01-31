@@ -23,7 +23,7 @@ import { Prefs } from '../../prefs';
  */
 export class TabsApi {
     /**
-     * Get first matched tab for passed {@link Tabs.QueryQueryInfoType}.
+     * Returns first matched tab for passed {@link Tabs.QueryQueryInfoType}.
      *
      * @param queryInfo Browser.tabs.query argument.
      * @returns First matched tab or undefined.
@@ -49,7 +49,7 @@ export class TabsApi {
     }
 
     /**
-     * Get all opened tabs info.
+     * Returns all opened tabs info.
      *
      * @returns Array of opened tabs.
      */
@@ -58,7 +58,7 @@ export class TabsApi {
     }
 
     /**
-     * Get active tab in current window.
+     * Returns active tab in current window.
      *
      * @returns Active tab info or undefined.
      */
