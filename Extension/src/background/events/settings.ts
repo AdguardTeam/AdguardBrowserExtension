@@ -20,7 +20,7 @@ import { SettingOption, Settings } from '../schema';
 export type SettingsListener<T extends keyof Settings> = (value: Settings[T]) => void | Promise<void>;
 
 /**
- * Type-safe mediator for setting options change events
+ * Type-safe mediator for setting options change events.
  */
 export class SettingsEvents {
     private listenersMap = new Map();

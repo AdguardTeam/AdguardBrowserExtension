@@ -27,7 +27,7 @@ export type AppContextData = {
 };
 
 /**
- * Memory storage for app global context
+ * Memory storage for app global context.
  */
 export class AppContext {
     // Initialize with default data
@@ -36,20 +36,20 @@ export class AppContext {
     };
 
     /**
-     * Gets app context value
+     * Returns app context value.
      *
-     * @param key - context key
-     * @returns context value
+     * @param key Context key.
+     * @returns Context value.
      */
     public get<T extends AppContextKey>(key: T): AppContextData[T] {
         return this.data[key];
     }
 
     /**
-     * Sets app context value
+     * Sets app context value.
      *
-     * @param key - context key
-     * @param value - context value
+     * @param key Context key.
+     * @param value Context value.
      */
     public set<T extends AppContextKey>(key: T, value: AppContextData[T]): void {
         this.data[key] = value;

@@ -109,7 +109,7 @@ export class Engine {
     }
 
     /**
-     * Creates tswebextension configuration based on current app state
+     * Creates tswebextension configuration based on current app state.
      */
     private static async getConfiguration(): Promise<ConfigurationMV2> {
         const enabledFilters = FiltersApi.getEnabledFilters();
@@ -149,19 +149,13 @@ export class Engine {
         if (UserRulesApi.isEnabled()) {
             userrules = await UserRulesApi.getUserRules();
 
-            /**
-             * remove empty strings
-             */
+            // Remove empty strings.
             userrules = userrules.filter(rule => !!rule);
 
-            /**
-             * remove duplicates
-             */
+            // Remove duplicates.
             userrules = Array.from(new Set(userrules));
 
-            /**
-             * Convert user rules
-             */
+            // Convert user rules.
             userrules = UserRulesApi.convertRules(userrules);
         }
 

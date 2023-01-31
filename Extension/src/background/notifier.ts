@@ -37,7 +37,7 @@ class Notifier {
     private listenersEventsMap: Record<number, unknown[]> = {};
 
     /**
-     * Make accessible only constants without functions. They will be passed to content-page
+     * Make accessible only constants without functions. They will be passed to content-page.
      */
     events = NotifierType;
 
@@ -54,13 +54,13 @@ class Notifier {
     }
 
     /**
-     * Subscribes listener to the specified events
+     * Subscribes listener to the specified events.
      *
-     * @param events - Event type listener will be notified of
-     * @param listener - Listener callback
+     * @param events Event type listener will be notified of.
+     * @param listener Listener callback.
      *
-     * @returns listener id
-     * @throws error if listener is not a function
+     * @returns Listener id.
+     * @throws Error if listener is not a function.
      */
     addSpecifiedListener(events: unknown[], listener: Listener): number {
         if (typeof listener !== 'function') {
@@ -74,11 +74,11 @@ class Notifier {
     }
 
     /**
-     * Subscribe specified listener to all events
+     * Subscribe specified listener to all events.
      *
-     * @param listener - Listener callback
-     * @returns listener id
-     * @throws error if listener is not a function
+     * @param listener Listener callback.
+     * @returns Listener id.
+     * @throws Error if listener is not a function.
      */
     addListener(listener: Listener): number {
         if (typeof listener !== 'function') {
@@ -91,9 +91,9 @@ class Notifier {
     }
 
     /**
-     * Unsubscribe listener
+     * Unsubscribe listener.
      *
-     * @param listenerId - listener id
+     * @param listenerId Listener id.
      */
     removeListener(listenerId: number): void {
         delete this.listenersMap[listenerId];
@@ -103,9 +103,9 @@ class Notifier {
     /**
      * Notifies listeners about the events passed as arguments of this function.
      *
-     * @param args - notifier event types
+     * @param args Notifier event types.
      *
-     * @throws error if some event is illegal
+     * @throws Error if some event is illegal.
      */
     notifyListeners(...args: [string, ...unknown[]]): void {
         const [event] = args;

@@ -176,7 +176,7 @@ export class Popups {
     }
 
     /**
-     * Appends alert popup to page
+     * Appends alert popup to page.
      *
      * @param count - try count
      * @param props - {@link AppendAlertElementProps} with omitted target property
@@ -215,7 +215,7 @@ export class Popups {
     }
 
     /**
-     * Appends version update popup to page
+     * Appends version update popup to page.
      *
      * @param count - try count
      * @param props - {@link AppendVersionUpdatedPopupProps}
@@ -262,7 +262,7 @@ export class Popups {
     }
 
     /**
-     * Handle manual close of iframe popup
+     * Handle manual close of iframe popup.
      *
      * @param iframe - iframe element
      * @param showPromoNotification - notification show flag

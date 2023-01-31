@@ -65,7 +65,7 @@ export class PageStatsApi {
     }
 
     /**
-     * Gets total count of blocked requests.
+     * Returns total count of blocked requests.
      *
      * @returns Total count of blocked requests.
      */
@@ -128,7 +128,7 @@ export class PageStatsApi {
     }
 
     /**
-     * Gets page stats and groups data from storages for popup statistics section.
+     * Returns page stats and groups data from storages for popup statistics section.
      *
      * @returns Full statistics data record.
      */
@@ -146,7 +146,7 @@ export class PageStatsApi {
     }
 
     /**
-     * Gets groups data from storage and add synthetic 'total' group for popup statistics section.
+     * Returns groups data from storage and add synthetic 'total' group for popup statistics section.
      *
      * @returns Groups data.
      */

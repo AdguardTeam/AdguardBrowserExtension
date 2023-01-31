@@ -47,7 +47,7 @@ class Messenger {
     }
 
     /**
-     * Creates long lived connections between popup and background page
+     * Creates long lived connections between popup and background page.
      *
      * @param {string} page
      * @param events
@@ -86,7 +86,7 @@ class Messenger {
     };
 
     /**
-     * Method subscribes to notifier module events
+     * Method subscribes to notifier module events.
      *
      * @param events - list of events to which subscribe
      * @param callback - callback called when event fires

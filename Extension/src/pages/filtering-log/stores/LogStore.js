@@ -439,7 +439,7 @@ class LogStore {
     }
 
     /**
-     * Clears filtering events ignoring preserve log
+     * Clears filtering events ignoring preserve log.
      *
      * @returns {Promise<void>}
      */

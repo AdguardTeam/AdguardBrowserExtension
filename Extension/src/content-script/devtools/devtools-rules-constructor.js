@@ -144,7 +144,7 @@ export const DevToolsRulesConstructor = (function () {
     };
 
     /**
-     * Constructs css selector by combining classes by AND
+     * Constructs css selector by combining classes by AND.
      *
      * @param classList
      * @returns {string}
@@ -160,7 +160,7 @@ export const DevToolsRulesConstructor = (function () {
     };
 
     /**
-     * Constructs css selector by combining classes by OR
+     * Constructs css selector by combining classes by OR.
      *
      * @param classList
      * @returns {string}
@@ -188,7 +188,7 @@ export const DevToolsRulesConstructor = (function () {
     };
 
     /**
-     * Creates css rule text
+     * Creates css rule text.
      *
      * @param element Element
      * @param options Construct options.
@@ -295,7 +295,7 @@ export const DevToolsRulesConstructor = (function () {
     };
 
     /**
-     * Returns detailed element info
+     * Returns detailed element info.
      *
      * @param element
      */
@@ -324,7 +324,7 @@ export const DevToolsRulesConstructor = (function () {
     };
 
     /**
-     * Constructs css selector for specified rule
+     * Constructs css selector for specified rule.
      *
      * @param ruleText rule text
      * @returns {string} css style selector
@@ -352,7 +352,7 @@ export const DevToolsRulesConstructor = (function () {
     };
 
     /**
-     * Constructs adguard rule text from element node and specified options
+     * Constructs adguard rule text from element node and specified options.
      *
      * var options = {
      *  urlBlockAttribute: url mask,

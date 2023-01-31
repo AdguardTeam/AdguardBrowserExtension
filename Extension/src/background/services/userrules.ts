@@ -103,7 +103,7 @@ export class UserRulesService {
     /**
      * Adds one new user rule.
      *
-     * @param rule new user rule.
+     * @param rule New user rule.
      */
     private static async addUserRule(rule: string): Promise<void> {
         await UserRulesApi.addUserRule(rule);

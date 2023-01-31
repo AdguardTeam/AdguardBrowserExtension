@@ -77,7 +77,7 @@ export class UserRulesApi {
     }
 
     /**
-     * Gets rules from user list.
+     * Returns rules from user list.
      */
     public static async getUserRules(): Promise<string[]> {
         return FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
@@ -130,7 +130,7 @@ export class UserRulesApi {
     }
 
     /**
-     * Gets persisted rules during switches between common and fullscreen modes.
+     * Returns persisted rules during switches between common and fullscreen modes.
      *
      * @returns User rules editor content.
      */

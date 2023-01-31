@@ -44,7 +44,7 @@ import { CustomFilterApi } from './custom';
  */
 export class CommonFilterApi {
     /**
-     * Get common filter metadata.
+     * Returns common filter metadata.
      *
      * @param filterId Filter id.
      *
@@ -55,7 +55,7 @@ export class CommonFilterApi {
     }
 
     /**
-     * Get common filters metadata.
+     * Returns common filters metadata.
      *
      * @returns Common filters metadata array.
      */
@@ -173,7 +173,7 @@ export class CommonFilterApi {
     }
 
     /**
-     * Get language-specific filters by user locale.
+     * Returns language-specific filters by user locale.
      *
      * @returns List of language-specific filters ids.
      */

@@ -17,7 +17,6 @@
  */
 
 /**
- * Map rules conversion result
- * key is a result, value is a source rule
+ * Map rules conversion result where key is a result, value is a source rule.
  */
 export const ruleConversionStorage = new Map<string, string>();

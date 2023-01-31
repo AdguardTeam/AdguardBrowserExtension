@@ -76,7 +76,7 @@ export class Alerts {
     }
 
     /**
-     * Generates alert html
+     * Generates alert html.
      *
      * @param props - {@link GenAlertHtmlProps}
      * @returns html string

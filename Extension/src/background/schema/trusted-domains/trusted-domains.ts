@@ -18,7 +18,7 @@
 import zod from 'zod';
 
 /**
- * Runtime validator for persistent trusted domains data
+ * Runtime validator for persistent trusted domains data.
  */
 export const trustedDomainDataValidator = zod.object({
     domain: zod.string(),

@@ -19,7 +19,7 @@ import { listeners } from '../notifier';
 import { NotifierType } from '../../common/constants';
 
 /**
- * Module used to keep track of userrules editor opened in the fullscreen mode
+ * Module used to keep track of userrules editor opened in the fullscreen mode.
  */
 class FullscreenUserRulesEditor {
     private openPagesCount = 0;

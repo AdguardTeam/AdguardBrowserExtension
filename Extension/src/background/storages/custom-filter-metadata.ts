@@ -25,7 +25,7 @@ import {
 
 /**
  * Class for synchronous control {@link CustomFilterMetadataStorageData},
- * that is persisted as string in another key value storage
+ * that is persisted as string in another key value storage.
  *
  * @see {@link StringStorage}
  */
@@ -35,29 +35,29 @@ export class CustomFilterMetadataStorage extends StringStorage<
     'sync'
 > {
     /**
-     * Get custom filter metadata by filter id
+     * Returns custom filter metadata by filter id.
      *
-     * @param filterId - filter id
-     * @returns custom filter metadata
+     * @param filterId Filter id.
+     * @returns Custom filter metadata.
      */
     public getById(filterId: number): CustomFilterMetadata | undefined {
         return this.getData().find(f => f.filterId === filterId);
     }
 
     /**
-     * Get custom filter metadata by filter subscription url
+     * Returns custom filter metadata by filter subscription url.
      *
-     * @param url - subscription url
-     * @returns custom filter metadata or undefined, if metadata is not found
+     * @param url Subscription url.
+     * @returns Custom filter metadata or undefined, if metadata is not found.
      */
     public getByUrl(url: string): CustomFilterMetadata | undefined {
         return this.getData().find(f => f.customUrl === url);
     }
 
     /**
-     * Set custom filter metadata with filterId key
+     * Set custom filter metadata with filterId key.
      *
-     * @param filter - custom filter metadata
+     * @param filter Custom filter metadata.
      */
     public set(filter: CustomFilterMetadata): void {
         const data = this.getData().filter(f => f.filterId !== filter.filterId);
@@ -68,9 +68,9 @@ export class CustomFilterMetadataStorage extends StringStorage<
     }
 
     /**
-     * Remove custom filter metadata
+     * Remove custom filter metadata.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      */
     public remove(filterId: number): void {
         const data = this.getData().filter(f => f.filterId !== filterId);

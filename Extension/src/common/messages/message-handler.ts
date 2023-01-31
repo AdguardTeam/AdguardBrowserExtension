@@ -59,7 +59,7 @@ export abstract class MessageHandler {
     }
 
     /**
-     * Removes message listener
+     * Removes message listener.
      *
      * @param type - {@link MessageType}
      */

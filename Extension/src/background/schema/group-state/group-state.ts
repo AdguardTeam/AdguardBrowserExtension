@@ -19,7 +19,7 @@ import zod from 'zod';
 import { SchemaPreprocessor } from '../preprocessor';
 
 /**
- * Runtime validator for persistent group state data
+ * Runtime validator for persistent group state data.
  */
 export const groupStateDataValidator = zod.object({
     enabled: zod.boolean(),

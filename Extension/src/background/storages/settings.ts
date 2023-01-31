@@ -22,13 +22,13 @@ import { storage } from './main';
 import { Settings, SettingOption } from '../schema';
 
 /**
- * Storage for app settings
+ * Storage for app settings.
  */
 export class SettingsStorage implements StorageInterface<SettingOption, Settings[SettingOption]> {
     static saveTimeoutMs = 100;
 
     /**
-     * Saves settings in browser.storage.local with {@link saveTimeoutMs} debounce
+     * Saves settings in browser.storage.local with {@link saveTimeoutMs} debounce.
      */
     private save = debounce(() => {
         storage.set(ADGUARD_SETTINGS_KEY, this.settings);
@@ -37,12 +37,12 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
     private settings: Settings | undefined;
 
     /**
-     * Sets setting to storage
+     * Sets setting to storage.
      *
-     * @param key - setting key
-     * @param value - setting value
+     * @param key Setting key.
+     * @param value Setting value.
      *
-     * @throws error if settings is not initialized
+     * @throws Error if settings is not initialized.
      */
     public set<T extends SettingOption>(key: T, value: Settings[T]): void {
         if (!this.settings) {
@@ -54,11 +54,11 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
     }
 
     /**
-     * Gets setting from storage
+     * Returns setting from storage.
      *
-     * @param key - setting key
-     * @returns setting value
-     * @throws error if settings is not initialized
+     * @param key Setting key.
+     * @returns Setting value.
+     * @throws Error if settings is not initialized.
      */
     public get<T extends SettingOption>(key: T): Settings[T] {
         if (!this.settings) {
@@ -69,10 +69,10 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
     }
 
     /**
-     * Remove setting from storage
+     * Remove setting from storage.
      *
-     * @param key - setting key
-     * @throws error if settings is not initialized
+     * @param key Setting key.
+     * @throws Error if settings is not initialized.
      */
     public remove(key: SettingOption): void {
         if (!this.settings) {
@@ -86,10 +86,10 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
     }
 
     /**
-     * Gets current settings
+     * Returns current settings.
      *
-     * @returns current settings
-     * @throws error if settings is not initialized
+     * @returns Current settings.
+     * @throws Error if settings is not initialized.
      */
     public getData(): Settings {
         if (!this.settings) {
@@ -100,18 +100,18 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
     }
 
     /**
-     * Set settings to memory cache
+     * Set settings to memory cache.
      *
-     * @param settings - settings data
+     * @param settings Settings data.
      */
     public setCache(settings: Settings): void {
         this.settings = settings;
     }
 
     /**
-     * Set settings to cache and save in browser.storage.local
+     * Set settings to cache and save in browser.storage.local.
      *
-     * @param settings - settings data
+     * @param settings Settings data.
      */
     public setData(settings: Settings): void {
         this.setCache(settings);

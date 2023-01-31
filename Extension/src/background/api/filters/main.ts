@@ -200,7 +200,7 @@ export class FiltersApi {
     }
 
     /**
-     * Get filter metadata from correct storage.
+     * Returns filter metadata from correct storage.
      *
      * Common filters metadata is stored in {@link metadataStorage.data.filters}.
      * Custom filters metadata is stored in {@link customFilterMetadataStorage}.
@@ -218,7 +218,7 @@ export class FiltersApi {
     }
 
     /**
-     * Get filters metadata from both {@link metadataStorage.data.filters} and {@link customFilterMetadataStorage}.
+     * Returns filters metadata from both {@link metadataStorage.data.filters} and {@link customFilterMetadataStorage}.
      *
      * @returns Filters metadata array.
      */
@@ -230,7 +230,7 @@ export class FiltersApi {
     }
 
     /**
-     * Get enabled filters given the state of the group.
+     * Returns enabled filters given the state of the group.
      *
      * @returns Filters ids array.
      */

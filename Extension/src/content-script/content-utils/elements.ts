@@ -38,7 +38,7 @@ export type AppendDivProps = {
  */
 export class Elements {
     /**
-     * Create style element with provided css
+     * Create style element with provided css.
      *
      * @param css - css text
      */
@@ -49,7 +49,7 @@ export class Elements {
     }
 
     /**
-     * Creates iframe and appends it after target open tag
+     * Creates iframe and appends it after target open tag.
      *
      * @param props - {@link AppendIframeProps}
      * @param props.target - Node where to append iframe with html
@@ -76,7 +76,7 @@ export class Elements {
     }
 
     /**
-     * Creates div and appends it to the page
+     * Creates div and appends it to the page.
      *
      * @param props - {@link AppendDivProps}
      * @param props.target - Node where to append div with html

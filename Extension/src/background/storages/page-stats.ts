@@ -35,7 +35,7 @@ import { storage } from './main';
 
 /**
  * Class for asynchronous control {@link PageStats} storage data,
- * that is persisted as string in another key value storage
+ * that is persisted as string in another key value storage.
  *
  * @see {@link StringStorage}
  */
@@ -49,21 +49,21 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     public static MAX_MONTHS_HISTORY = 3;
 
     /**
-     * Gets number of total blocked requests
+     * Returns number of total blocked requests.
      *
-     * @returns number of total blocked requests or undefined, if it is not set
+     * @returns Number of total blocked requests or undefined, if it is not set.
      */
     public getTotalBlocked(): number | undefined {
         return this.getData().totalBlocked;
     }
 
     /**
-     * Sets number of total blocked requests
+     * Sets number of total blocked requests.
      *
-     * @param value - number of total blocked requests
+     * @param value Number of total blocked requests.
      *
-     * @returns promise, resolved when total blocked requests number is successfully set
-     * @throws error if page stats data is not initialized
+     * @returns Promise, resolved when total blocked requests number is successfully set.
+     * @throws Error if page stats data is not initialized.
      */
     public setTotalBlocked(value: number): Promise<void> {
         if (!this.data) {
@@ -76,12 +76,12 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
 
     /**
      * Sets page statistics data.
-     * If page statistics data is empty, creates new
+     * If page statistics data is empty, creates new.
      *
-     * @param data - page stats data
+     * @param data Page stats data.
      *
-     * @returns promise, resolved when data is successfully set
-     * @throws error if page stats data is not initialized
+     * @returns Promise, resolved when data is successfully set.
+     * @throws Error if page stats data is not initialized.
      */
     public setStatisticsData(data: PageStatsData): Promise<void> {
         if (!this.data) {
@@ -93,11 +93,11 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     }
 
     /**
-     * Gets page statistics data.
-     * If page statistics data is not defined, creates new
+     * Returns page statistics data.
+     * If page statistics data is not defined, creates new.
      *
-     * @returns page statistics data
-     * @throws error if page stats data is not initialized
+     * @returns Page statistics data.
+     * @throws Error if page stats data is not initialized.
      */
     public getStatisticsData(): PageStatsData {
         if (!this.data) {
@@ -112,12 +112,12 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     }
 
     /**
-     * Creates page statistics data for specified filter group
+     * Creates page statistics data for specified filter group.
      *
-     * @param groupId - group id
-     * @param blocked - number of request blocks
+     * @param groupId Group id.
+     * @param blocked Number of request blocks.
      *
-     * @returns page statistics data
+     * @returns Page statistics data.
      */
     public static createStatsData(
         groupId: number | null,
@@ -152,13 +152,13 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     }
 
     /**
-     * Updates page statistics data for specified filter group
+     * Updates page statistics data for specified filter group.
      *
-     * @param groupId - group id
-     * @param blocked - number of request blocks
-     * @param data - current page statistics data
+     * @param groupId Group id.
+     * @param blocked Number of request blocks.
+     * @param data Current page statistics data.
      *
-     * @returns updated page statistics data
+     * @returns Updated page statistics data.
      */
     public static updateStatsData(
         groupId: number,
@@ -235,12 +235,12 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     }
 
     /**
-     * Creates page statistics data item for specified filter group
+     * Creates page statistics data item for specified filter group.
      *
-     * @param groupId - group id
-     * @param blocked - number of request blocks
+     * @param groupId Group id.
+     * @param blocked Number of request blocks.
      *
-     * @returns updated page statistics data item
+     * @returns Updated page statistics data item.
      */
     private static createStatsDataItem(
         groupId: number | null,
@@ -257,13 +257,13 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     }
 
     /**
-     * Updates page statistics data item for specified filter group
+     * Updates page statistics data item for specified filter group.
      *
-     * @param groupId - group id
-     * @param blocked - number of request blocks
-     * @param data - current page statistics data item
+     * @param groupId Group id.
+     * @param blocked Number of request blocks.
+     * @param data Current page statistics data item.
      *
-     * @returns updated page statistics data item
+     * @returns Updated page statistics data item.
      */
     private static updateStatsDataItem(
         groupId: number,
@@ -287,9 +287,9 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
 }
 
 /**
- * {@link PageStatsStorage} instance, that stores
+ * {@link PageStatsStorage} Instance, that stores
  * stringified {@link PageStats} in {@link storage} under
- * {@link PAGE_STATISTIC_KEY} key
+ * {@link PAGE_STATISTIC_KEY} key.
  */
 export const pageStatsStorage = new PageStatsStorage(
     PAGE_STATISTIC_KEY,

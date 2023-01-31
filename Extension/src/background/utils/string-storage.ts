@@ -18,7 +18,7 @@
 import { StorageInterface } from '../../common/storage';
 
 /**
- * Class for managing data that is persisted as string in another key value storage
+ * Class for managing data that is persisted as string in another key value storage.
  */
 export class StringStorage<K, V, Mode extends 'sync' | 'async'> {
     // parent storage key
@@ -33,8 +33,8 @@ export class StringStorage<K, V, Mode extends 'sync' | 'async'> {
     /**
      * Creates new StringStorage.
      *
-     * @param key parent storage key
-     * @param storage parent storage
+     * @param key Parent storage key.
+     * @param storage Parent storage.
      */
     constructor(
         key: K,
@@ -45,10 +45,10 @@ export class StringStorage<K, V, Mode extends 'sync' | 'async'> {
     }
 
     /**
-     * Gets cached data
+     * Returns cached data.
      *
-     * @returns cached data
-     * @throws error, if cache is not initialized
+     * @returns Cached data.
+     * @throws Error, if cache is not initialized.
      */
     public getData(): V {
         if (!this.data) {
@@ -58,20 +58,20 @@ export class StringStorage<K, V, Mode extends 'sync' | 'async'> {
     }
 
     /**
-     * Sets parsed data to cache
+     * Sets parsed data to cache.
      *
-     * @param data - parsed storage data
+     * @param data Parsed storage data.
      */
     public setCache(data: V): void {
         this.data = data;
     }
 
     /**
-     * Sets {@link data} to cache and saves it's stringified version in {@link storage}
+     * Sets {@link data} to cache and saves it's stringified version in {@link storage}.
      *
-     * @param data - parsed data
+     * @param data Parsed data.
      *
-     * @returns promise, resolved when stringified {@link data} is saved in {@link storage} and {@link Mode} is async
+     * @returns Promise, resolved when stringified {@link data} is saved in {@link storage} and {@link Mode} is async.
      */
     public setData(data: V): Mode extends 'async' ? Promise<void> : void {
         this.setCache(data);
@@ -79,22 +79,22 @@ export class StringStorage<K, V, Mode extends 'sync' | 'async'> {
     }
 
     /**
-     * Saves stringified {@link data} in {@link storage}
+     * Saves stringified {@link data} in {@link storage}.
      *
-     * @returns promise, resolved when stringified {@link data} is saved in {@link storage} and {@link Mode} is async
+     * @returns Promise, resolved when stringified {@link data} is saved in {@link storage} and {@link Mode} is async.
      */
     public save(): Mode extends 'async' ? Promise<void> : void {
         return this.storage.set(this.key, JSON.stringify(this.data));
     }
 
     /**
-     * Reads raw data from {@link storage}
+     * Reads raw data from {@link storage}.
      *
      * Note: this method returns 'unknown', because in fact we don't know, what data stored in {@link storage}.
      * You should validate it after reading by this method.
      * In case of {@link StringStorage} we expect string.
      *
-     * @returns promise, resolved with raw data from {@link storage}, if {@link Mode} is async,
+     * @returns Promise, resolved with raw data from {@link storage}, if {@link Mode} is async,
      * else returns raw data.
      */
     public read(): Mode extends 'async' ? Promise<unknown> : unknown {

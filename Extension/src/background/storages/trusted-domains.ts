@@ -21,9 +21,9 @@ import { StringStorage } from '../utils/string-storage';
 import { storage } from './main';
 
 /**
- * {@link StringStorage} instance, that stores
+ * Instance of {@link StringStorage}, that stores
  * {@link TrustedDomainData} list in {@link storage} under
- * {@link TRUSTED_DOCUMENTS_CACHE_KEY} key
+ * {@link TRUSTED_DOCUMENTS_CACHE_KEY} key.
  */
 export const trustedDomainsStorage = new StringStorage<
     typeof TRUSTED_DOCUMENTS_CACHE_KEY,

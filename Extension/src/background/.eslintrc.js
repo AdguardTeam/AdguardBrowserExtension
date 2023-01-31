@@ -20,7 +20,7 @@ module.exports = {
         'jsdoc/require-param': 'error',
         'jsdoc/no-undefined-types': 'error',
         'jsdoc/require-returns-check': 'error',
-
+        'jsdoc/require-description-complete-sentence': ['error'],
         'jsdoc/require-jsdoc': [
             'error',
             {

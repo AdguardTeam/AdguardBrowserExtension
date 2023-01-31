@@ -120,7 +120,7 @@ export class CustomFilterApi {
     }
 
     /**
-     * Gets Custom filter info for modal window.
+     * Returns Custom filter info for modal window.
      * Checks if custom filter with passed url is exist.
      * If url is new, downloads filter data from remote source, parse it and create new {@link CustomFilterInfo}.
      *
@@ -245,7 +245,7 @@ export class CustomFilterApi {
     /**
      * Updates custom filter data by id.
      *
-     * Gets subscription url from {@link customFilterMetadataStorage}.
+     * Returns subscription url from {@link customFilterMetadataStorage}.
      * Downloads data from remote source.
      * Checks, if new filter version available.
      * If filter need for update, save new filter data in storages.
@@ -314,7 +314,7 @@ export class CustomFilterApi {
     }
 
     /**
-     * Get custom filter metadata for {@link customFilterMetadataStorage}.
+     * Returns custom filter metadata for {@link customFilterMetadataStorage}.
      *
      * @param filterId Custom filter id.
      *
@@ -325,7 +325,7 @@ export class CustomFilterApi {
     }
 
     /**
-     * Get metadata for all custom filters.
+     * Returns metadata for all custom filters.
      *
      * @returns Array of metadata records for all custom filters.
      */
@@ -334,7 +334,7 @@ export class CustomFilterApi {
     }
 
     /**
-     * Get saved custom filters data transfer objects.
+     * Returns saved custom filters data transfer objects.
      *
      * @returns Array of existed custom filters DTO's.
      */

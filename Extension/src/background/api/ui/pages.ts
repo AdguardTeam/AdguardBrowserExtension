@@ -340,7 +340,7 @@ export class PagesApi {
     }
 
     /**
-     * Gets extension store url based on UA data.
+     * Returns extension store url based on UA data.
      *
      * @returns Extension store url.
      */
@@ -362,7 +362,7 @@ export class PagesApi {
     }
 
     /**
-     * Gets browser security url params.
+     * Returns browser security url params.
      *
      * @returns Browser security url params record.
      */
@@ -372,7 +372,7 @@ export class PagesApi {
     }
 
     /**
-     * Gets stealth url params.
+     * Returns stealth url params.
      *
      * @param filterIds List of filters id.
      * @returns Stealth url params record.

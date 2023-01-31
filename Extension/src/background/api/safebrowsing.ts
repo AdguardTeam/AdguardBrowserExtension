@@ -315,7 +315,7 @@ export class SafebrowsingApi {
 
     /**
      * Calculates SHA256 hashes for strings in hosts and then
-     * gets prefixes for calculated hashes.
+     * Returns prefixes for calculated hashes.
      *
      * @param hosts List of hosts.
      *

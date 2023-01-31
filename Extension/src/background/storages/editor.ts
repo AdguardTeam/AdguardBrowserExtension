@@ -18,25 +18,25 @@
 
 /**
  * Class used to persist user rules editor content in memory
- * during switches between common and fullscreen modes
+ * during switches between common and fullscreen modes.
  */
 export class EditorStorage {
     // current content
     private data: string | undefined;
 
     /**
-     * Sets user rules editor content
+     * Sets user rules editor content.
      *
-     * @param data - user rules editor content
+     * @param data User rules editor content.
      */
     set(data: string): void {
         this.data = data;
     }
 
     /**
-     * Gets user rules editor content
+     * Returns user rules editor content.
      *
-     * @returns user rules editor content
+     * @returns User rules editor content.
      */
     get(): string | undefined {
         return this.data;

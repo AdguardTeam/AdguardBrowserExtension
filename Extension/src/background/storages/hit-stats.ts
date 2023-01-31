@@ -22,17 +22,17 @@ import { storage } from './main';
 
 /**
  * Class for asynchronous control {@link HitStats} storage data,
- * that is persisted as string in another key value storage
+ * that is persisted as string in another key value storage.
  *
  * @see {@link StringStorage}
  */
 export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, HitStatsStorageData, 'async'> {
     /**
-     * Add 1 rule hit to stats
+     * Add 1 rule hit to stats.
      *
-     * @param ruleText - rule test
-     * @param filterId - filter id
-     * @throws error, if storage is not initialized
+     * @param ruleText Rule test.
+     * @param filterId Filter id.
+     * @throws Error, if storage is not initialized.
      */
     addRuleHitToCache(
         ruleText: string,
@@ -74,9 +74,9 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
 }
 
 /**
- * {@link HitStatsStorage} instance, that stores
+ * Instance of {@link HitStatsStorage}, that stores
  * stringified {@link HitStats} in {@link storage} under
- * {@link HIT_STATISTIC_KEY} key
+ * {@link HIT_STATISTIC_KEY} key.
  */
 export const hitStatsStorage = new HitStatsStorage(
     HIT_STATISTIC_KEY,

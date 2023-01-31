@@ -26,11 +26,11 @@ import {
 } from '../../../constants';
 
 /**
- * helper class for injecting content script into tabs, opened before extension initialization
+ * Helper class for injecting content script into tabs, opened before extension initialization.
  */
 export class ContentScriptInjector {
     /**
-     * Content-scripts src relative paths
+     * Content-scripts src relative paths.
      */
     private static contentScripts = [
         ContentScriptInjector.createContentScriptUrl(CONTENT_SCRIPT_START_OUTPUT),
@@ -39,7 +39,7 @@ export class ContentScriptInjector {
     ];
 
     /**
-     * Gets open tabs and injects content scripts into tab contexts
+     * Returns open tabs and injects content scripts into tab contexts.
      */
     public static async init(): Promise<void> {
         const tabs = await TabsApi.getAll();
@@ -75,10 +75,10 @@ export class ContentScriptInjector {
     }
 
     /**
-     * Inject content-script into specified tab
+     * Inject content-script into specified tab.
      *
-     * @param tabId - Tab id
-     * @param src - Path to content-script src
+     * @param tabId Tab id.
+     * @param src Path to content-script src.
      */
     private static async inject(
         tabId: number,

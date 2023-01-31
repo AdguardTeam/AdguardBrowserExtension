@@ -34,7 +34,7 @@ export const enum ContextMenuAction {
 export type ContextMenuListener = () => unknown | Promise<unknown>;
 
 /**
- * Type-safe mediator for context menu events
+ * Type-safe mediator for context menu events.
  */
 export class ContextMenuEvents {
     private listenersMap = new Map<unknown, ContextMenuListener>();

@@ -104,7 +104,7 @@ export class SettingsService {
      * Returns settings with some additional data: app version,
      * environment options, constants, filters info, filters metadata.
      *
-     * @returns Item of {@link GetOptionsDataResponse}
+     * @returns Item of {@link GetOptionsDataResponse}.
      */
     static getOptionsData(): GetOptionsDataResponse {
         return {

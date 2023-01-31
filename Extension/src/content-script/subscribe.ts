@@ -92,7 +92,7 @@ export class Subscribe {
     }
 
     /**
-     * Checks if anchor element has subscription link
+     * Checks if anchor element has subscription link.
      *
      * @param element - anchor element
      * @returns true, if anchor element has subscription link, else returns false
@@ -113,7 +113,7 @@ export class Subscribe {
     }
 
     /**
-     * Parses payload from query string of anchor element
+     * Parses payload from query string of anchor element.
      *
      * @param element - anchor element
      * @param element.search - link url query string

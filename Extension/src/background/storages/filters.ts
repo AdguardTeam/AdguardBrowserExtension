@@ -19,14 +19,14 @@ import zod from 'zod';
 import { storage } from './main';
 
 /**
- * Encapsulates interaction with stored filter rules
+ * Encapsulates interaction with stored filter rules.
  */
 export class FiltersStorage {
     /**
-     * Sets specified filter list to {@link storage}
+     * Sets specified filter list to {@link storage}.
      *
-     * @param filterId - filter id
-     * @param filter - filter rules strings
+     * @param filterId Filter id.
+     * @param filter Filter rules strings.
      */
     static async set(filterId: number, filter: string[]): Promise<void> {
         const key = FiltersStorage.getFilterKey(filterId);
@@ -35,12 +35,12 @@ export class FiltersStorage {
     }
 
     /**
-     * Gets specified filter list from {@link storage}
+     * Returns specified filter list from {@link storage}.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      *
-     * @returns promise, resolved with filter rules strings
-     * @throws error, if filter list data is not valid
+     * @returns Promise, resolved with filter rules strings.
+     * @throws Error, if filter list data is not valid.
      */
     static async get(filterId: number): Promise<string[]> {
         const key = FiltersStorage.getFilterKey(filterId);
@@ -51,9 +51,9 @@ export class FiltersStorage {
     }
 
     /**
-     * Removes specified filter list from {@link storage}
+     * Removes specified filter list from {@link storage}.
      *
-     * @param filterId - filter id
+     * @param filterId Filter id.
      */
     static async remove(filterId: number): Promise<void> {
         const key = FiltersStorage.getFilterKey(filterId);
@@ -61,10 +61,10 @@ export class FiltersStorage {
     }
 
     /**
-     * Gets {@link storage} key from specified filter list
+     * Returns {@link storage} key from specified filter list.
      *
-     * @param filterId - filter id
-     * @returns storage key from specified filter list
+     * @param filterId Filter id.
+     * @returns Storage key from specified filter list.
      */
     private static getFilterKey(filterId: number): string {
         return `filterrules_${filterId}.txt`;

@@ -85,7 +85,7 @@ export const strings = (() => {
         },
 
         /**
-         * Get string before regexp first match
+         * Returns string before regexp first match
          *
          * @param {string} str
          * @param {RegExp} rx

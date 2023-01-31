@@ -221,7 +221,7 @@ export class FilteringLogApi {
     }
 
     /**
-     * Get filtering info for tab.
+     * Returns filtering info for tab.
      *
      * @param tabId Tab id.
      *

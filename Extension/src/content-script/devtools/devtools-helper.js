@@ -28,7 +28,7 @@ export const DevToolsHelper = (function () {
     const PREVIEW_STYLE_ID = 'adguard-preview-style';
 
     /**
-     * Add rule preview
+     * Add rule preview.
      *
      * @param options Object {ruleText: 'ruleText'}
      */

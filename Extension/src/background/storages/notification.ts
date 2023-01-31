@@ -144,7 +144,7 @@ export const backToSchool22Notification: Notification = {
 };
 
 /**
- * In-memory notifications mapping
+ * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
     [BACK_TO_SCHOOL_22_ID, backToSchool22Notification],

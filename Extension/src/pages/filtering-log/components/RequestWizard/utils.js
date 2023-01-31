@@ -54,7 +54,7 @@ export const UrlUtils = {
     },
 
     /**
-     * Checks the given URL whether is hierarchical or not
+     * Checks the given URL whether is hierarchical or not.
      *
      * @param url
      * @returns {boolean}
@@ -64,7 +64,7 @@ export const UrlUtils = {
     },
 
     /**
-     * Gets domain for cookie rule
+     * Returns domain for cookie rule.
      *
      * @param {string} frameDomain
      * @returns {string}

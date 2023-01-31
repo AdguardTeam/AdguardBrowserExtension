@@ -27,7 +27,7 @@ import {
 
 /**
  * Class for synchronous control {@link FilterStateStorageData},
- * that is persisted as string in another key value storage
+ * that is persisted as string in another key value storage.
  *
  * @see {@link StringStorage}
  */
@@ -50,11 +50,11 @@ export class FilterStateStorage extends StringStorage<
     };
 
     /**
-     * Gets specified filter state
+     * Returns specified filter state.
      *
-     * @param filterId - filter id
-     * @returns specified filter state
-     * @throws error if filter state data is not initialized
+     * @param filterId Filter id.
+     * @returns Specified filter state.
+     * @throws Error if filter state data is not initialized.
      */
     public get(filterId: number): FilterStateData | undefined {
         if (!this.data) {
@@ -65,11 +65,11 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Sets specified filter state
+     * Sets specified filter state.
      *
-     * @param filterId - filter id
-     * @param state - filter state
-     * @throws error if filter state data is not initialized
+     * @param filterId Filter id.
+     * @param state Filter state.
+     * @throws Error if filter state data is not initialized.
      */
     public set(filterId: number, state: FilterStateData): void {
         if (!this.data) {
@@ -82,10 +82,10 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Deletes specified filter state
+     * Deletes specified filter state.
      *
-     * @param filterId - filter id
-     * @throws error if filter state data is not initialized
+     * @param filterId Filter id.
+     * @throws Error if filter state data is not initialized.
      */
     public delete(filterId: number): void {
         if (!this.data) {
@@ -98,10 +98,10 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Gets list of enabled filters ids
+     * Returns list of enabled filters ids.
      *
-     * @returns list of enabled filters ids
-     * @throws error if filter state data is not initialized
+     * @returns List of enabled filters ids.
+     * @throws Error if filter state data is not initialized.
      */
     public getEnabledFilters(): number[] {
         if (!this.data) {
@@ -115,10 +115,10 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Gets list of installed filters ids
+     * Returns list of installed filters ids.
      *
-     * @returns list of installed filters ids
-     * @throws error if filter state data is not initialized
+     * @returns List of installed filters ids.
+     * @throws Error if filter state data is not initialized.
      */
     public getInstalledFilters(): number[] {
         if (!this.data) {
@@ -132,10 +132,10 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Enables specified filters
+     * Enables specified filters.
      *
-     * @param filtersIds - list of filters to enable
-     * @throws error if filter state data is not initialized
+     * @param filtersIds List of filters to enable.
+     * @throws Error if filter state data is not initialized.
      */
     public enableFilters(filtersIds: number[]): void {
         if (!this.data) {
@@ -160,10 +160,10 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Disables specified filters
+     * Disables specified filters.
      *
-     * @param filtersIds - list of filters to disable
-     * @throws error if filter state data is not initialized
+     * @param filtersIds List of filters to disable.
+     * @throws Error if filter state data is not initialized.
      */
     public disableFilters(filtersIds: number[]): void {
         if (!this.data) {
@@ -187,11 +187,11 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Sets {@link defaultState} for new filters, found in passed {@link Metadata}
+     * Sets {@link defaultState} for new filters, found in passed {@link Metadata}.
      *
-     * @param states - current {@link FilterStateStorageData}
-     * @param metadata - app {@link Metadata}
-     * @returns - updated {@link FilterStateStorageData}
+     * @param states Current {@link FilterStateStorageData}.
+     * @param metadata App {@link Metadata}.
+     * @returns Updated {@link FilterStateStorageData}.
      */
     public static applyMetadata(
         states: FilterStateStorageData,
@@ -200,7 +200,7 @@ export class FilterStateStorage extends StringStorage<
         const { filters } = metadata;
         /**
          * Don't create filter state context for allowlist and user rules lists
-         * Their state is controlled by separate modules
+         * Their state is controlled by separate modules.
          */
         const supportedFiltersMetadata = filters.filter(({ filterId }) => {
             return !FilterStateStorage.unsupportedFiltersIds.includes(filterId);
@@ -226,8 +226,8 @@ export class FilterStateStorage extends StringStorage<
 }
 
 /**
- * {@link FilterStateStorage} instance, that stores
+ * {@link FilterStateStorage} Instance, that stores
  * stringified {@link FilterStateStorageData} in {@link settingsStorage} under
- * {@link SettingOption.FiltersState} key
+ * {@link SettingOption.FiltersState} key.
  */
 export const filterStateStorage = new FilterStateStorage(SettingOption.FiltersState, settingsStorage);

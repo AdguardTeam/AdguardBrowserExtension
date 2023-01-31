@@ -20,9 +20,9 @@ import { StringStorage } from '../utils/string-storage';
 import { settingsStorage } from './settings';
 
 /**
- * {@link StringStorage} instance, that stores
+ * Instance of {@link StringStorage}, that stores
  * stringified {@link I18nMetadata} in {@link settingsStorage} under
- * {@link SettingOption.I18nMetadata} key
+ * {@link SettingOption.I18nMetadata} key.
  */
 export const i18nMetadataStorage = new StringStorage<SettingOption.I18nMetadata, I18nMetadata, 'sync'>(
     SettingOption.I18nMetadata,

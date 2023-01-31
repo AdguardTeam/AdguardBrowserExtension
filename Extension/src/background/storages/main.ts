@@ -19,36 +19,36 @@ import browser from 'webextension-polyfill';
 import { StorageInterface } from '../../common/storage';
 
 /**
- * browser.storage.local wrapper with dev-friendly interface
+ * Wrapper for browser.storage.local with dev-friendly interface.
  */
 export class Storage implements StorageInterface<string, unknown, 'async'> {
     // extension storage API
     private storage = browser.storage.local;
 
     /**
-     * Sets data to storage
+     * Sets data to storage.
      *
-     * @param key - storage key
-     * @param value - storage value
+     * @param key Storage key.
+     * @param value Storage value.
      */
     public async set(key: string, value: unknown): Promise<void> {
         await this.storage.set({ [key]: value });
     }
 
     /**
-     * Gets data from storage
+     * Returns data from storage.
      *
-     * @param key - storage key
-     * @returns storage value
+     * @param key Storage key.
+     * @returns Storage value.
      */
     public async get(key: string): Promise<unknown> {
         return (await this.storage.get(key))?.[key];
     }
 
     /**
-     * Removes data from storage
+     * Removes data from storage.
      *
-     * @param key - storage key
+     * @param key Storage key.
      */
     public async remove(key: string): Promise<void> {
         await this.storage.remove(key);
