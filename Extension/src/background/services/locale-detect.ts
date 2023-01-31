@@ -108,17 +108,30 @@ export class LocaleDetect {
 
     private browsingLanguages: BrowsingLanguage[] = [];
 
+    /**
+     * Creates new {@link LocaleDetect}
+     */
     constructor() {
         this.onTabUpdated = this.onTabUpdated.bind(this);
     }
 
+    /**
+     * Adds listener for tab update message
+     */
     public init(): void {
         browser.tabs.onUpdated.addListener(this.onTabUpdated);
     }
 
+    /**
+     * Called when tab is updated.
+     *
+     * @param tabId tab id. Unused.
+     * @param changeInfo info about tab changed ({@link Tabs.OnUpdatedChangeInfoType}). Unused.
+     * @param tab Item of {@link Tabs.Tab}.
+     */
     private async onTabUpdated(
-        _tabId: number,
-        _changeInfo: Tabs.OnUpdatedChangeInfoType,
+        tabId: number,
+        changeInfo: Tabs.OnUpdatedChangeInfoType,
         tab: Tabs.Tab,
     ): Promise<void> {
         if (tab.status === 'complete') {

@@ -276,6 +276,11 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
         return data;
     }
 
+    /**
+     * Helper function to create a basic {@link Error} with a custom message.
+     *
+     * @returns A basic {@link Error} with a custom message.
+     */
     private static createNotInitializedError(): Error {
         return new Error('Page stats is not initialized');
     }

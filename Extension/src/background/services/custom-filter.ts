@@ -44,7 +44,7 @@ export class CustomFilterService {
             MessageType.SubscribeToCustomFilter,
             CustomFilterService.onCustomFilterSubscription,
         );
-        messageHandler.addListener(MessageType.RemoveAntibannerFilter, CustomFilterService.onCustomFilterRemove);
+        messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFilterService.onCustomFilterRemove);
 
         browser.webNavigation.onCommitted.addListener(CustomFilterService.injectSubscriptionScript);
     }

@@ -25,7 +25,22 @@ import {
     MessageListener,
 } from '../common/messages';
 
+/**
+ * Common message handler {@link MessageHandler} specified for background
+ * messages with type {@link EngineMessage}.
+ *
+ * @augments MessageHandler {@link MessageHandler}.
+ */
 export class BackgroundMessageHandler extends MessageHandler {
+    // eslint-disable-next-line jsdoc/require-returns-check
+    /**
+     * Handles messages for webextension engine {@link EngineMessage}.
+     *
+     * @param message Message of basic type {@link Message} or {@link EngineMessage}.
+     * @param sender Item of {@link Runtime.MessageSender}.
+     *
+     * @returns The result from the listener, if the listener was found. If not found, an undefined value is returned.
+     */
     protected handleMessage<T extends Message | EngineMessage>(
         message: T,
         sender: Runtime.MessageSender,

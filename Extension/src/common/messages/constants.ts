@@ -45,12 +45,12 @@ export enum MessageType {
   SaveUserRules = 'saveUserRules',
   GetAllowlistDomains = 'getAllowlistDomains',
   SaveAllowlistDomains = 'saveAllowlistDomains',
-  CheckAntibannerFiltersUpdate = 'checkAntiBannerFiltersUpdate',
+  CheckFiltersUpdate = 'checkFiltersUpdate',
   DisableFiltersGroup = 'disableFiltersGroup',
-  DisableAntibannerFilter = 'disableAntiBannerFilter',
+  DisableFilter = 'disableFilter',
   LoadCustomFilterInfo = 'loadCustomFilterInfo',
   SubscribeToCustomFilter = 'subscribeToCustomFilter',
-  RemoveAntibannerFilter = 'removeAntiBannerFilter',
+  RemoveAntiBannerFilter = 'removeAntiBannerFilter',
   GetTabInfoForPopup = 'getTabInfoForPopup',
   ChangeApplicationFilteringDisabled = 'changeApplicationFilteringDisabled',
   OpenSettingsTab = 'openSettingsTab',
@@ -200,8 +200,8 @@ export type AddAndEnableFilterMessage = {
   }
 };
 
-export type DisableAntiBannerFilterMessage = {
-  type: MessageType.DisableAntibannerFilter
+export type DisableFilterMessage = {
+  type: MessageType.DisableFilter
   data: {
     filterId: number,
     remove: boolean
@@ -209,7 +209,7 @@ export type DisableAntiBannerFilterMessage = {
 };
 
 export type RemoveAntiBannerFilterMessage = {
-  type: MessageType.RemoveAntibannerFilter
+  type: MessageType.RemoveAntiBannerFilter
   data: {
     filterId: number
   }
@@ -454,7 +454,7 @@ export type Message = (
   | ChangeUserSettingMessage
   | ResetSettingsMessage
   | AddAndEnableFilterMessage
-  | DisableAntiBannerFilterMessage
+  | DisableFilterMessage
   | RemoveAntiBannerFilterMessage
   | SaveAllowlistDomainsMessage
   | SaveUserRulesMessage

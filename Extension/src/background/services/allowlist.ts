@@ -87,12 +87,22 @@ export class AllowlistService {
         return { content, appVersion: Prefs.version };
     }
 
+    /**
+     * The listener for the allowlist domain addition event.
+     *
+     * @param message Message of type {@link AddAllowlistDomainPopupMessage}.
+     */
     private static async onAddAllowlistDomain(message: AddAllowlistDomainPopupMessage): Promise<void> {
         const { tabId } = message.data;
 
         await AllowlistApi.addTabUrlToAllowlist(tabId);
     }
 
+    /**
+     * The listener for the allowlist domain deletion event.
+     *
+     * @param message Message of type {@link RemoveAllowlistDomainMessage}.
+     */
     private static async onRemoveAllowlistDomain(message: RemoveAllowlistDomainMessage): Promise<void> {
         const { tabId } = message.data;
 
@@ -118,6 +128,9 @@ export class AllowlistService {
         await Engine.update();
     }
 
+    /**
+     * Listener for an event to enable site filtering from the context menu.
+     */
     private static async enableSiteFilteringFromContextMenu(): Promise<void> {
         const activeTab = await TabsApi.getActive();
 
@@ -128,6 +141,9 @@ export class AllowlistService {
         }
     }
 
+    /**
+     * Listener for an event to disable site filtering from the context menu.
+     */
     private static async disableSiteFilteringFromContextMenu(): Promise<void> {
         const activeTab = await TabsApi.getActive();
 

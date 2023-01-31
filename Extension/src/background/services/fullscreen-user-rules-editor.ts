@@ -22,13 +22,19 @@ import { NotifierType } from '../../common/constants';
  * Module used to keep track of userrules editor opened in the fullscreen mode
  */
 class FullscreenUserRulesEditor {
-    openPagesCount = 0;
+    private openPagesCount = 0;
 
+    /**
+     * Increases number of opened pages.
+     */
     onOpenPage(): void {
         this.openPagesCount += 1;
         this.onPagesCountChanged();
     }
 
+    /**
+     * Decreases number of opened pages.
+     */
     onClosePage(): void {
         if (this.openPagesCount <= 0) {
             return;
@@ -37,10 +43,18 @@ class FullscreenUserRulesEditor {
         this.onPagesCountChanged();
     }
 
+    /**
+     * Notifies listeners of changes in the open page counter.
+     */
     onPagesCountChanged(): void {
         listeners.notifyListeners(NotifierType.FullscreenUserRulesEditorUpdated, this.isOpen());
     }
 
+    /**
+     * If there is more than one open page, the editor is open. Otherwise it is closed.
+     *
+     * @returns Status of editor.
+     */
     isOpen(): boolean {
         return this.openPagesCount > 0;
     }

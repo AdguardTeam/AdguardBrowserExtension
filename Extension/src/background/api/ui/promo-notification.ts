@@ -32,9 +32,9 @@ import { Log } from '../../../common/log';
 import { I18n } from '../../utils';
 
 /**
- * Notification API is needed to work with notifications.
+ * Promo Notification API is needed to work with notifications.
  */
-export class NotificationApi {
+export class PromoNotificationApi {
     private static readonly CHECK_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
     private static readonly MIN_PERIOD_MS = 30 * 60 * 1000; // 30 minutes
@@ -54,7 +54,7 @@ export class NotificationApi {
      */
     public init(): void {
         notificationStorage.forEach((notification, notificationKey, map) => {
-            notification.text = NotificationApi.getNotificationText(notification) || null;
+            notification.text = PromoNotificationApi.getNotificationText(notification) || null;
 
             const to = new Date(notification.to).getTime();
             const expired = new Date().getTime() > to;
@@ -79,7 +79,8 @@ export class NotificationApi {
 
             this.timeoutId = window.setTimeout(() => {
                 this.setNotificationViewed(false);
-            }, NotificationApi.DELAY_MS);
+            }, PromoNotificationApi.DELAY_MS);
+
             return;
         }
 
@@ -125,16 +126,16 @@ export class NotificationApi {
         }
 
         const currentTime = Date.now();
-        const timeSinceLastNotification = currentTime - await NotificationApi.getLastNotificationTime();
+        const timeSinceLastNotification = currentTime - await PromoNotificationApi.getLastNotificationTime();
 
         // Just a check to not show the notification too often
-        if (timeSinceLastNotification < NotificationApi.MIN_PERIOD_MS) {
+        if (timeSinceLastNotification < PromoNotificationApi.MIN_PERIOD_MS) {
             return null;
         }
 
         // Check not often than once in 10 minutes
         const timeSinceLastCheck = currentTime - this.notificationCheckTime;
-        if (this.notificationCheckTime > 0 && timeSinceLastCheck <= NotificationApi.CHECK_TIMEOUT_MS) {
+        if (this.notificationCheckTime > 0 && timeSinceLastCheck <= PromoNotificationApi.CHECK_TIMEOUT_MS) {
             return this.currentNotification;
         }
 
@@ -206,4 +207,4 @@ export class NotificationApi {
     }
 }
 
-export const notificationApi = new NotificationApi();
+export const promoNotificationApi = new PromoNotificationApi();

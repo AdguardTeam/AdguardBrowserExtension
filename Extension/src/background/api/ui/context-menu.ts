@@ -99,7 +99,7 @@ export class ContextMenuApi {
                 await ContextMenuApi.addMenuItem(ContextMenuAction.SecurityReport);
                 await ContextMenuApi.addMenuItem(ContextMenuAction.ComplaintWebsite);
                 await ContextMenuApi.addSeparator();
-                await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateAntibannerFilters);
+                await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
                 await ContextMenuApi.addSeparator();
                 await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
                 await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
@@ -138,7 +138,7 @@ export class ContextMenuApi {
         await ContextMenuApi.addSeparator();
         await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
         await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
-        await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateAntibannerFilters);
+        await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
     }
 
     /**

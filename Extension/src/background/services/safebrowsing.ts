@@ -24,21 +24,33 @@ import { settingsEvents } from '../events';
 import { messageHandler } from '../message-handler';
 import { MessageType, OpenSafebrowsingTrustedMessage } from '../../common/messages';
 
+/**
+ * SafebrowsingService adds listeners for correct work of {@link SafebrowsingApi} module.
+ */
 export class SafebrowsingService {
+    /**
+     * Initializes the cache in {@link SafebrowsingApi} and registers listeners:
+     * - for disabling secure browsing in settings;
+     * - for {@link RequestEvents.onHeadersReceived};
+     * - for adding a trusted domain.
+     */
     public static async init(): Promise<void> {
         await SafebrowsingApi.initCache();
 
-        settingsEvents.addListener(
-            SettingOption.DisableSafebrowsing,
-            SafebrowsingApi.clearCache,
-        );
+        settingsEvents.addListener(SettingOption.DisableSafebrowsing, SafebrowsingApi.clearCache);
 
-        RequestEvents.onHeadersReceived.addListener(SafebrowsingService.onHeaderReceived);
+        RequestEvents.onHeadersReceived.addListener(SafebrowsingService.onHeadersReceived);
 
         messageHandler.addListener(MessageType.OpenSafebrowsingTrusted, SafebrowsingService.onAddTrustedDomain);
     }
 
-    private static onHeaderReceived({ context }: RequestData<WebRequest.OnHeadersReceivedDetailsType>): void {
+    /**
+     * Called with every web request when the headers are received.
+     *
+     * @param event Item of {@link RequestData<WebRequest.OnHeadersReceivedDetailsType>}.
+     * @param event.context Context of the request: status code, request url, tab id, etc.
+     */
+    private static onHeadersReceived({ context }: RequestData<WebRequest.OnHeadersReceivedDetailsType>): void {
         if (!context) {
             return;
         }
@@ -63,6 +75,12 @@ export class SafebrowsingService {
         }
     }
 
+    /**
+     * Called when a trusted domain is added.
+     *
+     * @param message Message of type {@link OpenSafebrowsingTrustedMessage}.
+     * @param message.data Trusted domain url.
+     */
     private static async onAddTrustedDomain({ data }: OpenSafebrowsingTrustedMessage): Promise<void> {
         const { url } = data;
         await SafebrowsingApi.addToSafebrowsingTrusted(url);

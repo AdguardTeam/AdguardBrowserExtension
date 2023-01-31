@@ -45,7 +45,14 @@ export type GetUserRulesEditorDataResponse = {
     userRules: string,
     settings: SettingsData,
 };
+
+/**
+ * Service for handling user rules: reading, adding, deleting.
+ */
 export class UserRulesService {
+    /**
+     * Initializes UserRulesService: creates handlers for operations on user rules.
+     */
     public static async init(): Promise<void> {
         await UserRulesApi.init();
 
@@ -66,6 +73,11 @@ export class UserRulesService {
         );
     }
 
+    /**
+     * Returns all user rules concatenated via '\n' divider.
+     *
+     * @returns All user rules concatenated via '\n' divider.
+     */
     private static async getUserRules(): Promise<GetUserRulesResponse> {
         const userRules = await UserRulesApi.getUserRules();
 
@@ -74,6 +86,9 @@ export class UserRulesService {
         return { content, appVersion: Prefs.version };
     }
 
+    /**
+     * Returns all user rules concatenated via '\n' divider for the editor.
+     */
     private static async getUserRulesEditorData(): Promise<GetUserRulesEditorDataResponse> {
         const userRules = await UserRulesApi.getUserRules();
 
@@ -85,11 +100,21 @@ export class UserRulesService {
         };
     }
 
+    /**
+     * Adds one new user rule.
+     *
+     * @param rule new user rule.
+     */
     private static async addUserRule(rule: string): Promise<void> {
         await UserRulesApi.addUserRule(rule);
         await Engine.update();
     }
 
+    /**
+     * Saves new rules and updates the engine.
+     *
+     * @param message Message of type {@link SaveUserRulesMessage} with new user rules.
+     */
     private static async handleUserRulesSave(message: SaveUserRulesMessage): Promise<void> {
         const { value } = message.data;
 
@@ -97,6 +122,11 @@ export class UserRulesService {
         await Engine.update();
     }
 
+    /**
+     * Adds new rule and updates the tswebextension engine.
+     *
+     * @param message Message of type {@link AddUserRuleMessage} with new user rule.
+     */
     private static async handleUserRuleAdd(message: AddUserRuleMessage): Promise<void> {
         const { ruleText } = message.data;
 
@@ -104,6 +134,11 @@ export class UserRulesService {
         await Engine.update();
     }
 
+    /**
+     * Removes specified rule and updates the tswebextension engine.
+     *
+     * @param message Message of type {@link RemoveUserRuleMessage} with user rule to delete.
+     */
     private static async handleUserRuleRemove(message: RemoveUserRuleMessage): Promise<void> {
         const { ruleText } = message.data;
 
@@ -111,10 +146,18 @@ export class UserRulesService {
         await Engine.update();
     }
 
+    /**
+     * Updates the tswebextension engine.
+     */
     private static async handleEnableStateChange(): Promise<void> {
         await Engine.update();
     }
 
+    /**
+     * Removes user rules for provided url on the specified tab.
+     *
+     * @param message Message of type {@link ResetCustomRulesForPageMessage} with url and tab info.
+     */
     private static async resetCustomRulesForPage(message: ResetCustomRulesForPageMessage): Promise<void> {
         const { url, tabId } = message.data;
 
@@ -124,10 +167,20 @@ export class UserRulesService {
         await browser.tabs.reload(tabId);
     }
 
+    /**
+     * Returns persisted rules during switches between common and fullscreen modes.
+     *
+     * @returns User rules editor content or undefined if not found.
+     */
     private static getEditorStorageContent(): string | undefined {
         return UserRulesApi.getEditorStorageData();
     }
 
+    /**
+     * Sets persisted rules during switches between common and fullscreen modes.
+     *
+     * @param message Message of type {@link SetEditorStorageContentMessage} with content of editor.
+     */
     private static setEditorStorageContent(message: SetEditorStorageContentMessage): void {
         const { content } = message.data;
 

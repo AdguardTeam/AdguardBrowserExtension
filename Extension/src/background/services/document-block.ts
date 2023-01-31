@@ -22,13 +22,27 @@ import { DocumentBlockApi, TabsApi } from '../api';
 import { Engine } from '../engine';
 import { messageHandler } from '../message-handler';
 
+/**
+ * The DocumentBlockService controls events when an already blocked site
+ * is excluded from the blocking mechanism for a period of time.
+ */
 export class DocumentBlockService {
+    /**
+     * Initializes {@link DocumentBlockApi} and registers a listener for
+     * the event of adding a domain to trusted domains.
+     */
     public static async init(): Promise<void> {
         await DocumentBlockApi.init();
 
         messageHandler.addListener(MessageType.AddUrlToTrusted, DocumentBlockService.onAddUrlToTrusted);
     }
 
+    /**
+     * Listener for the event of adding a domain to trusted domains.
+     *
+     * @param message Message of type {@link AddUrlToTrustedMessage}.
+     * @param message.data Contains string url domain.
+     */
     private static async onAddUrlToTrusted({ data }: AddUrlToTrustedMessage): Promise<void> {
         const { url } = data;
 

@@ -48,7 +48,7 @@ const PageController = (response) => {
                 filterId: AntiBannerFiltersId.TrackingFilterId,
             });
         } else {
-            messenger.sendMessage(MessageType.DisableAntibannerFilter, {
+            messenger.sendMessage(MessageType.DisableFilter, {
                 filterId: AntiBannerFiltersId.TrackingFilterId,
                 remove: true,
             });
@@ -62,7 +62,7 @@ const PageController = (response) => {
                 filterId: AntiBannerFiltersId.SocialFilterId,
             });
         } else {
-            messenger.sendMessage(MessageType.DisableAntibannerFilter, {
+            messenger.sendMessage(MessageType.DisableFilter, {
                 filterId: AntiBannerFiltersId.SocialFilterId,
                 remove: true,
             });
@@ -84,7 +84,7 @@ const PageController = (response) => {
                 filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId,
             });
         } else {
-            messenger.sendMessage(MessageType.DisableAntibannerFilter, {
+            messenger.sendMessage(MessageType.DisableFilter, {
                 filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId,
                 remove: true,
             });

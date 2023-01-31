@@ -26,11 +26,22 @@ import { listeners } from './notifier';
 import { filteringLogApi } from './api';
 import { fullscreenUserRulesEditor } from './services';
 
+/**
+ * ConnectionHandler manages long-lived connections to the {@link Runtime.Port}.
+ */
 export class ConnectionHandler {
+    /**
+     * Initializes event listener for {@link browser.runtime.onConnect}.
+     */
     public static init(): void {
         browser.runtime.onConnect.addListener(ConnectionHandler.handleConnection);
     }
 
+    /**
+     * Handles long-live connection to the port.
+     *
+     * @param port Object of {@link Runtime.Port}
+     */
     private static handleConnection(port: Runtime.Port): void {
         let listenerId: number;
 
@@ -60,6 +71,14 @@ export class ConnectionHandler {
         });
     }
 
+    /**
+     * Handler for initial port connection.
+     *
+     * @throws Basic {@link Error} if the page specified in the port name
+     * is not found.
+     *
+     * @param port Object of {@link Runtime.Port}
+     */
     private static onPortConnection(port: Runtime.Port): void {
         switch (true) {
             case port.name.startsWith(FILTERING_LOG): {
@@ -78,6 +97,14 @@ export class ConnectionHandler {
         }
     }
 
+    /**
+     * Handler for port disconnection.
+     *
+     * @throws Basic {@link Error} if the page specified in the port name
+     * is not found.
+     *
+     * @param port Object of {@link Runtime.Port}
+     */
     private static onPortDisconnection(port: Runtime.Port): void {
         switch (true) {
             case port.name.startsWith(FILTERING_LOG): {

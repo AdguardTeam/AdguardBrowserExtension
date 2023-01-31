@@ -17,7 +17,7 @@
  */
 import {
     AddAndEnableFilterMessage,
-    DisableAntiBannerFilterMessage,
+    DisableFilterMessage,
     DisableFiltersGroupMessage,
     EnableFiltersGroupMessage,
     MessageType,
@@ -42,20 +42,37 @@ import {
 } from '../events';
 import { listeners } from '../notifier';
 
+/**
+ * FiltersService creates handlers for messages that relate to filters.
+ */
 export class FiltersService {
+    /**
+     * Adds a listener for background messages about working with filters:
+     * disabling, enabling, adding, removing.
+     * Adds a listener for updating filters from the context menu.
+     * Adds a listener for changing the settings of optimized filters and
+     * disabling hit collection.
+     */
     public static async init(): Promise<void> {
         messageHandler.addListener(MessageType.AddAndEnableFilter, FiltersService.onFilterEnable);
-        messageHandler.addListener(MessageType.DisableAntibannerFilter, FiltersService.onFilterDisable);
+        messageHandler.addListener(MessageType.DisableFilter, FiltersService.onFilterDisable);
         messageHandler.addListener(MessageType.EnableFiltersGroup, FiltersService.onGroupEnable);
         messageHandler.addListener(MessageType.DisableFiltersGroup, FiltersService.onGroupDisable);
-        messageHandler.addListener(MessageType.CheckAntibannerFiltersUpdate, FiltersService.checkFiltersUpdate);
+        messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.checkFiltersUpdate);
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
-        contextMenuEvents.addListener(ContextMenuAction.UpdateAntibannerFilters, FiltersService.checkFiltersUpdate);
+
+        contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.checkFiltersUpdate);
 
         settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
         settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
     }
 
+    /**
+     * Called at the request to enable the filter.
+     *
+     * @param message Message of {@link AddAndEnableFilterMessage} with filter
+     * id to enable.
+     */
     private static async onFilterEnable(message: AddAndEnableFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
@@ -64,7 +81,13 @@ export class FiltersService {
         Engine.debounceUpdate();
     }
 
-    private static async onFilterDisable(message: DisableAntiBannerFilterMessage): Promise<void> {
+    /**
+     * Called at the request to disable filter.
+     *
+     * @param message Message of {@link DisableFilterMessage} with filter
+     * id to disable.
+     */
+    private static async onFilterDisable(message: DisableFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
         FiltersApi.disableFilters([filterId]);
@@ -72,6 +95,12 @@ export class FiltersService {
         Engine.debounceUpdate();
     }
 
+    /**
+     * Called at the request to enable group of filters.
+     *
+     * @param message Message of {@link EnableFiltersGroupMessage} with group
+     * id to enable.
+     */
     private static async onGroupEnable(message: EnableFiltersGroupMessage): Promise<void> {
         const { groupId } = message.data;
 
@@ -79,6 +108,12 @@ export class FiltersService {
         Engine.debounceUpdate();
     }
 
+    /**
+     * Called at the request to disable group of filters.
+     *
+     * @param message Message of {@link DisableFiltersGroupMessage} with group
+     * id to disable.
+     */
     private static async onGroupDisable(message: DisableFiltersGroupMessage): Promise<void> {
         const { groupId } = message.data;
 
@@ -86,6 +121,9 @@ export class FiltersService {
         Engine.debounceUpdate();
     }
 
+    /**
+     * Called when requesting an update for filters.
+     */
     private static async checkFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
         try {
             const updatedFilters = await FilterUpdateApi.updateEnabledFilters();
@@ -102,17 +140,28 @@ export class FiltersService {
         }
     }
 
+    /**
+     * Called at the request to use optimized filters.
+     */
     private static async onOptimizedFiltersSwitch(): Promise<void> {
         await FiltersApi.reloadEnabledFilters();
         await Engine.update();
     }
 
+    /**
+     * Called when prompted to disable or enable hit collection.
+     *
+     * @param value Desired collecting status.
+     */
     private static async onCollectHitsSwitch(value: boolean): Promise<void> {
         if (value) {
             HitStatsApi.cleanup();
         }
     }
 
+    /**
+     * Called on a request to reset the counters of blocked ads.
+     */
     private static async resetBlockedAdsCount(): Promise<void> {
         await PageStatsApi.reset();
     }

@@ -30,6 +30,12 @@ export class StringStorage<K, V, Mode extends 'sync' | 'async'> {
     // cached parsed data
     protected data: V | undefined;
 
+    /**
+     * Creates new StringStorage.
+     *
+     * @param key parent storage key
+     * @param storage parent storage
+     */
     constructor(
         key: K,
         storage: StorageInterface<K, unknown, Mode>,

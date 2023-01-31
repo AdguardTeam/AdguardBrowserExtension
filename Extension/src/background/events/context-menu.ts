@@ -28,7 +28,7 @@ export const enum ContextMenuAction {
     DisableProtection = 'context_disable_protection',
     OpenSettings = 'context_open_settings',
     OpenLog = 'context_open_log',
-    UpdateAntibannerFilters = 'context_update_antibanner_filters',
+    UpdateFilters = 'context_update_filters',
 }
 
 export type ContextMenuListener = () => unknown | Promise<unknown>;
@@ -37,22 +37,39 @@ export type ContextMenuListener = () => unknown | Promise<unknown>;
  * Type-safe mediator for context menu events
  */
 export class ContextMenuEvents {
-    private listenersMap = new Map();
+    private listenersMap = new Map<unknown, ContextMenuListener>();
 
-    public addListener<T extends ContextMenuAction>(type: T, listener: ContextMenuListener): void {
-        if (this.listenersMap.has(type)) {
-            throw new Error(`${type} listener has already been registered`);
+    /**
+     * Adds a listener for context menu events.
+     * Only one listener per event.
+     *
+     * @param event Event with some generic type.
+     * @param listener Listener for this event.
+     *
+     * @throws Basic {@link Error} if a listener was registered for the event.
+     */
+    public addListener<T extends ContextMenuAction>(event: T, listener: ContextMenuListener): void {
+        if (this.listenersMap.has(event)) {
+            throw new Error(`${event} listener has already been registered`);
         }
-        this.listenersMap.set(type, listener);
+        this.listenersMap.set(event, listener);
     }
 
-    public async publishEvent<T extends ContextMenuAction>(type: T): Promise<void> {
-        const listener = this.listenersMap.get(type);
+    /**
+     * Publishes the event and, if a listener is found, notifies the listener.
+     *
+     * @param event Event with some generic type.
+     */
+    public async publishEvent<T extends ContextMenuAction>(event: T): Promise<unknown> {
+        const listener = this.listenersMap.get(event);
         if (listener) {
             return Promise.resolve(listener());
         }
     }
 
+    /**
+     * Removes all listeners.
+     */
     public removeListeners(): void {
         this.listenersMap.clear();
     }

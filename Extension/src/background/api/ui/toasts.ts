@@ -22,7 +22,7 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { notificationTextRecordValidator } from '../../schema';
 import { TabsApi } from '../extension';
-import { notificationApi } from './notification';
+import { promoNotificationApi } from './promo-notification';
 import { FilterMetadata } from '../filters';
 import { sendTabMessage, MessageType } from '../../../common/messages';
 import {
@@ -141,7 +141,7 @@ export class Toasts {
         previousVersion: string,
         triesCount = 1,
     ): Promise<void> {
-        const promoNotification = await notificationApi.getCurrentNotification();
+        const promoNotification = await promoNotificationApi.getCurrentNotification();
         if (!promoNotification
             && BrowserUtils.getMajorVersionNumber(
                 currentVersion,

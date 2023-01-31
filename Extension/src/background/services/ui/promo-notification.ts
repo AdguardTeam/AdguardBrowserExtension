@@ -16,22 +16,33 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { MessageType, SetNotificationViewedMessage } from '../../../common/messages';
-import { notificationApi } from '../../api';
+import { promoNotificationApi } from '../../api';
 import { messageHandler } from '../../message-handler';
 
 /**
- * Service that manages AdGuard events notifications.
+ * Service that manages events for promo notifications.
  */
-export class NotificationService {
+export class PromoNotificationService {
+    /**
+     * Adds a listener to mark the promo notification as watched.
+     */
     public static init(): void {
-        notificationApi.init();
+        promoNotificationApi.init();
 
-        messageHandler.addListener(MessageType.SetNotificationViewed, NotificationService.setNotificationViewed);
+        messageHandler.addListener(MessageType.SetNotificationViewed, PromoNotificationService.setNotificationViewed);
     }
 
+    /**
+     * Marks the promo notification as watched.
+     *
+     * @param message Message of type {@link SetNotificationViewedMessage}.
+     * @param message.data Delay of hiding notification.
+     */
     private static async setNotificationViewed({ data }: SetNotificationViewedMessage): Promise<void> {
+        // We don't need id of the notification, because we don't show several
+        // notification at once.
         const { withDelay } = data;
 
-        await notificationApi.setNotificationViewed(withDelay);
+        await promoNotificationApi.setNotificationViewed(withDelay);
     }
 }
