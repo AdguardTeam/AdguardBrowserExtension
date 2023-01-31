@@ -79,6 +79,9 @@ export class FiltersApi {
     /**
      * Load metadata from remote source and reload linked storages.
      * Called before filters rules are updated or loaded from backend.
+     * The metadata cannot be loaded individually because the all metadata needs
+     * to be updated in order to, for example, update translations or track
+     * the removal/addition of filters.
      *
      * @param remote Is metadata loaded from backend.
      */

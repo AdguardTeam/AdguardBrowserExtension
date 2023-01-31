@@ -50,8 +50,10 @@ export class FilterUpdateApi {
     }
 
     /**
-     * Checks installed filters update on initialization
-     * by matching update period via filters version check and expires timestamps.
+     * Checks installed filters update by matching update period via filters
+     * version check and expires timestamps and also update metadata for all
+     * installed filters.
+     * Installed filters are filters whose rules are loaded in browser.storage.local.
      */
     public static async autoUpdateFilters(): Promise<void> {
         const updatePeriod = settingsStorage.get(SettingOption.FiltersUpdatePeriod);
@@ -71,11 +73,20 @@ export class FilterUpdateApi {
             .filter(([id]) => !!filtersStates?.[Number(id)]?.installed);
 
         const filtersIdsToUpdate = installedFilterVersionEntries
+            // 'lastCheckTime' is a time of the last check by the sheduler
+            // (every FilterUpdateService.CHECK_PERIOD_MS it is overwritten
+            // by the sheduler or if the user presses check for updates from
+            // the settings).
+            // 'expires' is a data from filter metadata: after how long to check the update.
             .filter(([, { lastCheckTime, expires }]) => {
+                // By default, check the expires field for each filter.
                 if (updatePeriod === DEFAULT_FILTERS_UPDATE_PERIOD) {
+                    // If it is time to check the update, add it to the array
                     return lastCheckTime + expires <= Date.now();
                 }
 
+                // Check, if the renewal period of each filter has passed.
+                // If it is time to check the renewal, add to the array.
                 return lastCheckTime + updatePeriod <= Date.now();
             })
             .map(([id]) => Number(id));
@@ -88,7 +99,8 @@ export class FilterUpdateApi {
     }
 
     /**
-     * Updates filters.
+     * Updates the content of filters for the provided list of identifiers and
+     * updates the metadata of all filters.
      *
      * @param filtersIds List of filters ids to update.
      */
