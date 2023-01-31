@@ -52,7 +52,7 @@ export class UiApi {
 
         debounce(() => {
             IconsApi.updateTabIcon(tabId, frameData);
-            this.broadcastTotalBlockedMessage(frameData);
+            UiApi.broadcastTotalBlockedMessage(frameData);
         }, UiApi.UPDATE_THROTTLE_MS)();
     }
 
