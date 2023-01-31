@@ -34,6 +34,11 @@ export class Version {
     // splitted semver
     public data: number[] = [];
 
+    /**
+     * Creates new object of {@link Version}.
+     *
+     * @param version Version in {@link https://semver.org/lang/ru/ Semantic Version}
+     */
     constructor(version: unknown) {
         const parts = String(version || '').split('.', Version.MAX_LENGTH);
 

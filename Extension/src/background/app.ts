@@ -52,7 +52,7 @@ import {
     SafebrowsingService,
     DocumentBlockService,
     localeDetect,
-    NotificationService,
+    PromoNotificationService,
     filterUpdateService,
 } from './services';
 import {
@@ -131,11 +131,11 @@ export class App {
         await filterUpdateService.init();
 
         /**
-         * Initializes app notifications:
+         * Initializes promo notifications:
          * - Initializes notifications storage
          * - Adds listeners for notification events
          */
-        NotificationService.init();
+        PromoNotificationService.init();
 
         // Adds listeners for settings events
         SettingsService.init();
@@ -260,6 +260,9 @@ export class App {
         }
     }
 
+    /**
+     * Initializes App storage data.
+     */
     private static async initClientId(): Promise<void> {
         const storageClientId = await storage.get(CLIENT_ID_KEY);
         let clientId: string;

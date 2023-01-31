@@ -25,20 +25,37 @@ export type SettingsListener<T extends keyof Settings> = (value: Settings[T]) =>
 export class SettingsEvents {
     private listenersMap = new Map();
 
-    public addListener<T extends SettingOption>(type: T, listener: SettingsListener<T>): void {
-        if (this.listenersMap.has(type)) {
-            throw new Error(`${type} listener has already been registered`);
+    /**
+     * Adds a listener for settings events. Only one listener per event.
+     *
+     * @param event Event with some generic type.
+     * @param listener Listener for this event.
+     *
+     * @throws Basic {@link Error} if a listener was registered for the event.
+     */
+    public addListener<T extends SettingOption>(event: T, listener: SettingsListener<T>): void {
+        if (this.listenersMap.has(event)) {
+            throw new Error(`${event} listener has already been registered`);
         }
-        this.listenersMap.set(type, listener);
+        this.listenersMap.set(event, listener);
     }
 
-    public async publishEvent<T extends SettingOption>(type: T, value: Settings[T]): Promise<void> {
-        const listener = this.listenersMap.get(type) as SettingsListener<T>;
+    /**
+     * Publishes the event and, if a listener is found, notifies the listener.
+     *
+     * @param event Event with some generic type.
+     * @param value Some filed in the {@link Settings} object.
+     */
+    public async publishEvent<T extends SettingOption>(event: T, value: Settings[T]): Promise<void> {
+        const listener = this.listenersMap.get(event) as SettingsListener<T>;
         if (listener) {
             return Promise.resolve(listener(value));
         }
     }
 
+    /**
+     * Removes all listeners.
+     */
     public removeListeners(): void {
         this.listenersMap.clear();
     }
