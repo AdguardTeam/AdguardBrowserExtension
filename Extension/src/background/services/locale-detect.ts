@@ -173,6 +173,9 @@ export class LocaleDetect {
         'vn': 'vi',
         // Thai:
         'th', 'th',
+        // Swedish:
+        'se', 'sv',
+        'ax', 'sv',
     };
 
     private browsingLanguages: BrowsingLanguage[] = [];
