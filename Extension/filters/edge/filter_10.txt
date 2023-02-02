@@ -1,8 +1,8 @@
-! Checksum: UHPOScnM7ltbM+OeOi1k0w
+! Checksum: SM7xS84I1gbc5QKJmnACRA
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search (Duckduckgo, Google, Bing, Yahoo) and self-promo ads. Self-promotion definition: when an ad on a website is promoting this very website or other websites/social media/etc closely related to it, such ad is considered a self-promoting one.
-! Version: 2.0.1.89
-! TimeUpdated: 2022-11-14T13:02:15+00:00
+! Version: 2.0.1.94
+! TimeUpdated: 2023-01-01T12:30:17+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -258,7 +258,15 @@ amazon.*#@#div[data-cel-widget^="MAIN-SHOPPING_ADVISER-"]
 amazon.*#@#.s-search-results > div[data-asin] div[data-component-props*="Sponsored"]
 amazon.*#@?#.s-search-results > div[data-asin]:-abp-has(> div[class] > div[cel_widget_id] > div[data-component-props*="Sponsored"])
 amazon.de,amazon.com,amazon.co.uk,amazon.fr,amazon.in,amazon.it,amazon.es#@#div[class*="widget=loom-"][class*="FEATURED"]
+amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.se,amazon.sg#@#div[id^="sp_detail"]
+amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.se,amazon.sg#@##sponsoredProducts2_feature_div
+amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.se,amazon.sg#@#div[id^="sponsoredProducts"]
+amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.se,amazon.sg#@#div[cel_widget_id="sims-consolidated-3_csm_instrumentation_wrapper"]
+amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.se,amazon.sg#@#div[cel_widget_id*="_SponsoredProducts"]
+amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.se,amazon.sg#@#div[cel_widget_id*="desktop-dp-"]
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/136364
+search.brave.com#@#div[data-advertiser-id]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/117527
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
 !
@@ -367,6 +375,8 @@ etsy.com#@#div[data-behat-search-results-lg] .listing-link.logged:not([data-shop
 ! stuttgarter-nachrichten.de - whitelisting Verlagsangebot
 stuttgarter-nachrichten.de#@#.ga_hptta .content > a[data-tags="Verlagsangebot"]
 stuttgarter-nachrichten.de#@?#.ga_hptta > .item:-abp-has(> .content > a[data-tags="Verlagsangebot"])
+! https://github.com/AdguardTeam/AdguardFilters/issues/138396
+ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com#@##content_left > div:not([class]) > div[data-placeid]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/33697
 baidu.com#@#.bds-list-ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/40808
@@ -384,5 +394,7 @@ adda247.com#@#div[id^="div-gpt-ad"]
 www.tf1.fr#@#div[class^="MaxBanner_container_"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120040
 home.kingsoft.jp#@?#.search > span.url > a.pr:upward(2)
+! https://forum.adguard.com/index.php?threads/anyway-to-get-rid-of-sponsered-ads-please.50960/
+walmart.com#@?#.flex > div[class]:-abp-has(> div[class][style*="contain-intrinsic-size"] > div[data-item-id] > a[href^="https://wrd.walmart.com/track?adUid"])
 !
 !#safari_cb_affinity
