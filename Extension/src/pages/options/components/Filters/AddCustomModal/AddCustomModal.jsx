@@ -72,6 +72,7 @@ const AddCustomModal = ({
     const [error, setError] = useState(reactTranslator.getMessage('options_popup_check_false_description'));
     const [filterToAdd, setFilterToAdd] = useState(null);
     const [filterToAddName, setFilterToAddName] = useState(initialTitle);
+    const customUrlToAddIsEmpty = customUrlToAdd.trim() === '';
 
     const closeModal = () => {
         closeModalHandler();
@@ -95,7 +96,15 @@ const AddCustomModal = ({
         filterToAdd.name = value;
     };
 
-    const handleSendUrlToCheck = async () => {
+    const handleSendUrlToCheck = async (e) => {
+        // If the input is empty, we do not send the form to prevent
+        // an error when loading HTML code instead of filter rules due
+        // to incorrect url
+        if (customUrlToAddIsEmpty) {
+            e.preventDefault();
+            return;
+        }
+
         setStepToRender(STEPS.CHECKING);
 
         try {
@@ -140,6 +149,7 @@ const AddCustomModal = ({
                 className="button button--m button--green modal__btn"
                 type="button"
                 onClick={handleSendUrlToCheck}
+                disabled={customUrlToAddIsEmpty}
             >
                 {reactTranslator.getMessage('options_popup_next_button')}
             </button>

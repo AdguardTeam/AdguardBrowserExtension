@@ -40,10 +40,7 @@ export class CustomFilterService {
      */
     static init(): void {
         messageHandler.addListener(MessageType.LoadCustomFilterInfo, CustomFilterService.onCustomFilterInfoLoad);
-        messageHandler.addListener(
-            MessageType.SubscribeToCustomFilter,
-            CustomFilterService.onCustomFilterSubscription,
-        );
+        messageHandler.addListener(MessageType.SubscribeToCustomFilter, CustomFilterService.onCustomFilterSubscription);
         messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFilterService.onCustomFilterRemove);
 
         browser.webNavigation.onCommitted.addListener(CustomFilterService.injectSubscriptionScript);
