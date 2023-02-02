@@ -103,7 +103,7 @@ export class Network {
 
         try {
             // TODO: runtime validation
-            const lines = await FiltersDownloader.download(url, this.filterCompilerConditionsConstants) as string[];
+            const lines = await FiltersDownloader.download(url, this.filterCompilerConditionsConstants);
 
             delete this.loadingSubscriptions[url];
 
