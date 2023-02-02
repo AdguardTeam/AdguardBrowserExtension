@@ -1,8 +1,8 @@
-! Checksum: ggf+ZnwzZuL3l1bObcrxfw
+! Checksum: cS2MUfHH9bB3p/J5HnFzXA
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.3.77
-! TimeUpdated: 2022-11-17T14:30:52+00:00
+! Version: 2.0.4.19
+! TimeUpdated: 2023-01-27T10:30:50+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -19,6 +19,13 @@
 ! Good: $removeparam=utm_id
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/141140
+! fake dating sites
+click_id=*_branch_referrer=$removeparam
+! https://resplend.jp/eyepudding/af2/pc/?utm_source=fing&utm_medium=ade&_buyer=5754&famad_xuid=5754,361,5368,xuidx78fca5569fx371
+$removeparam=famad_xuid
+! https://tsunen.team-lab.com/?twclid=2-3bhrj1ny7p11v5r9pap3anqge
+$removeparam=twclid
 ! https://interactivead.ru/wp-content/uploads/2022/08/arir22_rkn.pdf
 $removeparam=erid
 ! Cxense clickthrough tracking
@@ -31,6 +38,7 @@ $removeparam=mindbox-message-key
 $removeparam=_kx
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123544
 ! ad click tracking
+?uclick=*&uclickhash=$removeparam
 /?uclick=*;uclickhash=$removeparam
 &uclick=*&uclickhash=$removeparam
 ! PopMagic clickthrough tracking
@@ -111,6 +119,7 @@ $removeparam=utm_campaignid
 $removeparam=utm_channel
 $removeparam=utm_cid
 $removeparam=utm_content
+$removeparam=utm_creative
 $removeparam=utm_emcid
 $removeparam=utm_emmid
 $removeparam=utm_id
@@ -227,6 +236,75 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/140672
+||awaliwa.com^$removeparam=lg
+||awaliwa.com^$removeparam=s
+||awaliwa.com^$removeparam=c
+||awaliwa.com^$removeparam=z
+||awaliwa.com^$removeparam=old
+||awaliwa.com^$removeparam=bd_vid
+||awaliwa.com^$removeparam=acr
+! https://github.com/AdguardTeam/AdguardFilters/issues/140847
+||megaknihy.cz^$removeparam=/utm_si|matchtype|device|creative|keyword|placement|adposition|campaignid|adgroupid|feeditemid|targetid|loc_|searchtype|network|search_pos|cat_pos|block|position/
+! https://github.com/AdguardTeam/AdguardFilters/issues/140642
+||brazzers.com^$removeparam=ats
+! https://github.com/AdguardTeam/AdguardFilters/pull/140612
+||whale.naver.com^$removeparam=wpid
+! https://github.com/AdguardTeam/AdguardFilters/issues/140300
+||wemakeprice.com^$removeparam=refer
+! https://joshi-spa.jp/1213445?cx_clicks_art_mdl=2_title
+||joshi-spa.jp^$removeparam=cx_clicks_art_mdl
+||joshi-spa.jp^$removeparam=cx_clicks_sldbox
+! https://github.com/AdguardTeam/AdguardFilters/issues/139766
+||n11.com^$removeparam=/pfx|adj/
+! https://home.kingsoft.jp/news/transport/dressup/175273.html?from=content
+||home.kingsoft.jp^$removeparam=from
+! AT Internet
+||bbc.$removeparam=at_link_id
+||bbc.$removeparam=facebook_page
+||bbc.$removeparam=at_ptr_name
+||bbc.$removeparam=at_link_type
+||bbc.$removeparam=at_link_origin
+||bbc.$removeparam=at_campaign_type
+||bbc.$removeparam=at_bbc_team
+! https://github.com/AdguardTeam/AdguardFilters/issues/138614
+||jlcpcb.com^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/138466
+||morhipo.com^$removeparam=srsltid
+! https://event.hoken-mammoth.jp/sp/lps/event_promotion12/?s_mf=0901mamana
+||event.hoken-mammoth.jp^$removeparam=s_mf
+! internal links ex. https://www.cinematoday.jp/page/A0008622?g_clk=top_specials
+||cinematoday.jp^$removeparam=g_clk
+! affiliate links on h7-game.com (nsfw)
+$removeparam=afid,domain=123chat.jp|kanochat.jp
+! https://github.com/AdguardTeam/AdguardFilters/issues/136734
+||investing.com^$cookie=smd
+||investing.com^$cookie=udid
+! https://github.com/AdguardTeam/AdguardFilters/pull/137576
+||basketballking.jp^$removeparam=cx_art
+! https://github.com/AdguardTeam/AdguardFilters/issues/136987
+||japan.cnet.com^$removeparam=tag
+! https://github.com/AdguardTeam/AdguardFilters/issues/136988
+||asahi.com^$removeparam=iref
+||asahi.com^$removeparam=ref
+||asahi.com^$removeparam=cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/136989
+||cnn.co.jp^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/137545
+||jiji.com^$removeparam=m
+! https://github.com/AdguardTeam/AdguardFilters/issues/136991
+||fashion-press.net^$removeparam=media
+! https://github.com/AdguardTeam/AdguardFilters/issues/136853
+||douban.com^$removeparam=_i
+! https://oshiete.goo.ne.jp/ksos/?from=hensyu_i
+||oshiete.goo.ne.jp^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/135493
+||immobilienscout24.de^$removeparam=referrer
+||immobilienscout24.de^$removeparam=navigationServiceUrl
+||immobilienscout24.de^$removeparam=searchId
+||immobilienscout24.de^$removeparam=searchGeoPath
+||immobilienscout24.de^$removeparam=enteredFrom
+||immobilienscout24.de^$removeparam=source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134658
 ||tumblr.com^$removeparam=source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134656
@@ -314,6 +392,9 @@ $removeparam=fb_source
 ||store.udiscovermusic.com^$removeparam=/utm_/
 ! https://github.com/uBlockOrigin/uAssets/issues/14653
 ||hktvmall.com/yuicombo?$script,removeparam=/^\/_ui\/desktop\/common\/js\/uiAnalytics\//
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/analytics\/with-intersection-track.js/
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/InappCommunicationManager.js/
+||hktvmall.com/yuicombo?$script,removeparam=/_ui\/shared\/common\/js\/util\/jquery.analytics-utils.js/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128820
 ||go.xlivrdr.com^$removeparam
 ||stripchat.com^$removeparam=affiliateId
@@ -344,7 +425,8 @@ $removeparam=fb_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/127953
 ||kaspersky.$removeparam=_ga
 ||kaspersky.$removeparam=icid
-! https://github.com/AdguardTeam/AdguardFilters/issues/126438
+! Facebook
+||facebook.com/marketplace/$removeparam=tracking
 ||facebook.com^$removeparam=extid
 ! https://github.com/AdguardTeam/AdGuardSDNSFilter/issues/1024
 ||zenaps.com^$removeparam=cookie
@@ -444,8 +526,8 @@ $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||pulse.mail.ru^$removeparam=/^(udid|DeviceID|ver|appbuild|vendor|model|device_name|device_type|instanceid|device_year|connection_class|appsflyerid)/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120891
 ! Removing "primer", "subset_id" parameters causes that some fonts are displaying incorrectly - https://github.com/AdguardTeam/AdguardFilters/issues/126288
-! another one https://github.com/AdguardTeam/AdguardFilters/issues/126333
-||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/
+! another one https://github.com/AdguardTeam/AdguardFilters/issues/126333, https://github.com/AdguardTeam/AdguardFilters/issues/134475
+||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/,domain=~fonts.adobe.com
 ||p.typekit.net^$stylesheet,removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/118376#issuecomment-1134132202
 ||open.spotify.com^$removeparam=_branch_referrer
@@ -460,7 +542,7 @@ $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123265
 ! https://github.com/AdguardTeam/AdguardFilters/issues/119833
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120322
-$removeparam=ref,domain=jin115.com|bipblog.com|animember.net
+$removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.livedoor.jp
 ! https://www.cinematoday.jp/site/tokyo-vice/?g_clk=topcover
 ||cinematoday.jp^$removeparam=g_clk
 ! https://xxvidsx.com/?vid=87&ad=0&site=
@@ -532,7 +614,9 @@ $removeparam=ref,domain=jin115.com|bipblog.com|animember.net
 ||click.linksynergy.com/fs-bin/click?id=$removeparam=u2
 ! https://forum.adguard.com/index.php?threads/47148/
 ||go.mysku.ru^$removeparam=~r
-! https://github.com/AdguardTeam/AdguardFilters/issues/112128
+! apple.com
+||apple.com^$removeparam=afid
+||apple.com^$removeparam=cid
 ||apple.com^$removeparam=ct
 ||apple.com^$removeparam=pt
 ! https://github.com/AdguardTeam/AdguardFilters/issues/112345
@@ -614,7 +698,7 @@ $removeparam=union_lens,domain=tmall.com|taobao.com
 ||api.cxense.com^$removeparam=/^pickup_list_click/
 ! Rakuten sites self-promo links
 $removeparam=l-id,domain=nikki.ne.jp|rakuten.co.jp|rebates.jp
-||rakuten.co.jp^$removeparam=scid
+$removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||rakuten.co.jp^$removeparam=sc2id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/107266
 ||azby.fmworld.net/cgi-bin/common/rd.cgi?$removeparam=affitest
@@ -852,6 +936,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||digikey.com^$removeparam=/^utm_cid/
 !
 ! NicoNico (nicovideo.jp)
+||nicovideo.jp^$removeparam=news_ref
 ||nicovideo.jp^$removeparam=cmnhd_ref
 ||nicovideo.jp^$removeparam=ref
 ! Naver (naver.com) - tracking parameter
@@ -864,6 +949,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||cc.naver.com/cc?a$removeparam=sy
 ! Yandex
 ! may be merged in regex rule over time
+||yandex.*/promo/$removeparam=utm-term
 ||yandex.*/news/$removeparam=from
 ||yandex.*/news/$removeparam=persistent_id
 ||yandex.*/sport/$removeparam=persistent_id
@@ -895,11 +981,11 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ! Probably a bug
 ! ||www.google.com/url?$removeparam=ved
 ! ||google.*/search$removeparam=ved
+! Breaks codepage in Google Search https://yugioh-wiki.net/index.php
+! ||google.*/search$removeparam=ie
 ||google.*/search$removeparam=oq
 ||google.*/search$removeparam=gs_l
-||google.*/search$removeparam=ie
 ||google.*/search$removeparam=oe
-||google.*/search$removeparam=client
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
 ||google.*/search$removeparam=bih
@@ -930,6 +1016,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ! ||amazon.*$removeparam=s - breaks URLs which includes it to sort
 ! https://github.com/AdguardTeam/AdguardFilters/issues/110571 - disable rule if issue happens again: broke adding article to basket when viewing all offers
 !
+||amazon.*$removeparam=linkId
 ||amazon.*$removeparam=adgrpid
 ||amazon.*$removeparam=hvadid
 ||amazon.*$removeparam=hvbmt
@@ -1172,6 +1259,8 @@ $removeparam=dclid
 !
 !
 !
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-4621746
+@@||carrefourpl.snrpage.com^$removeparam=utm_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134443
 @@||s.click.aliexpress.com/deep_link.htm?aff_short_key=$removeparam=aff_short_key
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134007
