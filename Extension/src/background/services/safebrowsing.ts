@@ -17,12 +17,19 @@
  */
 import browser, { WebRequest } from 'webextension-polyfill';
 import { RequestType } from '@adguard/tsurlfilter';
-import { RequestData, RequestEvents } from '@adguard/tswebextension';
+import {
+    RequestData,
+    RequestEvents,
+    tabsApi as tsWebExtTabsApi,
+} from '@adguard/tswebextension';
 import { SafebrowsingApi, TabsApi } from '../api';
 import { SettingOption } from '../schema';
 import { settingsEvents } from '../events';
 import { messageHandler } from '../message-handler';
 import { MessageType, OpenSafebrowsingTrustedMessage } from '../../common/messages';
+import { UserAgent } from '../../common/user-agent';
+import { Log } from '../../common/log';
+import { getErrorMessage } from '../../common/error';
 
 /**
  * SafebrowsingService adds listeners for correct work of {@link SafebrowsingApi} module.
@@ -67,11 +74,35 @@ export class SafebrowsingService {
             SafebrowsingApi
                 .checkSafebrowsingFilter(requestUrl, referrerUrl)
                 .then((safebrowsingUrl) => {
-                    if (safebrowsingUrl) {
-                        browser.tabs.update(tabId, { url: safebrowsingUrl });
+                    if (!safebrowsingUrl) {
+                        return;
+                    }
+
+                    // Chrome doesn't allow open extension url in incognito mode
+                    if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChrome) {
+                        // Closing tab before opening a new one may lead to browser crash (Chromium)
+                        browser.tabs.create({ url: safebrowsingUrl })
+                            .then(() => {
+                                browser.tabs.remove(tabId);
+                            })
+                            .catch((e) => {
+                                const errorMessage = getErrorMessage(e);
+                                Log.warn(`Can't open info page about blocked domain. Original error: ${errorMessage}`);
+                            });
+                    } else {
+                        browser.tabs.update(tabId, { url: safebrowsingUrl })
+                            .catch((e) => {
+                                const errorMessage = getErrorMessage(e);
+                                Log.warn(`Can't update tab with id ${tabId} to show info page about blocked domain. `
+                                        + `Original error: ${errorMessage}`);
+                            });
                     }
                 })
-                .catch(() => {});
+                .catch((e) => {
+                    const errorMessage = getErrorMessage(e);
+                    Log.warn(`Can't execute safe browsing check for requested url "${requestUrl}".`
+                            + ` Original err: ${errorMessage}`);
+                });
         }
     }
 
