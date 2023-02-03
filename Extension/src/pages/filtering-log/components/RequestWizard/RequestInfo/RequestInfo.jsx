@@ -40,7 +40,6 @@ import {
 } from '../utils';
 import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
-import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { AntiBannerFiltersId, RequestType } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
@@ -242,7 +241,7 @@ const RequestInfo = observer(() => {
 
     const openInNewTabHandler = async () => {
         const url = selectedEvent.requestUrl;
-        await messenger.openTab(url, { inNewWindow: true });
+        await browser.windows.create({ url });
     };
 
     const renderInfoUrlButtons = (event) => {
