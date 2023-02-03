@@ -21,7 +21,7 @@ import { FIREFOX_APP_IDS_MAP } from '../../constants';
 const appId = FIREFOX_APP_IDS_MAP[process.env.BUILD_ENV];
 
 export const firefoxManifest = {
-    'applications': {
+    'browser_specific_settings': {
         'gecko': {
             'id': appId,
             'strict_min_version': '78.0',
