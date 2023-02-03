@@ -65,4 +65,22 @@ export class SchemaPreprocessor {
 
         return value;
     }
+
+    /**
+     * If {@link value} is string, deletes escaped quotes, else returns original value.
+     *
+     * @param value Preprocessed value.
+     * @returns Boolean value, if string passed, else returns original value.
+     */
+    public static castStringToString(value: unknown): string | unknown {
+        if (typeof value === 'string') {
+            try {
+                return String(JSON.parse(value));
+            } catch (e) {
+                return value;
+            }
+        }
+
+        return value;
+    }
 }

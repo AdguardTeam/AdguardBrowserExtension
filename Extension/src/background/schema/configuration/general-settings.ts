@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
+import { SchemaPreprocessor } from '../preprocessor';
 
 // General settings configuration
 
@@ -36,7 +37,11 @@ export const generalSettingsConfigValidator = zod.object({
     [GeneralSettingsOption.AutodetectFilters]: zod.boolean(),
     [GeneralSettingsOption.SafebrowsingEnabled]: zod.boolean(),
     [GeneralSettingsOption.FiltersUpdatePeriod]: zod.number().int(),
-    [GeneralSettingsOption.AppearanceTheme]: zod.enum(['system', 'dark', 'light']).optional(),
+    // TODO: check
+    [GeneralSettingsOption.AppearanceTheme]: zod.preprocess(
+        SchemaPreprocessor.castStringToString,
+        zod.enum(['system', 'dark', 'light']),
+    ).optional(),
 });
 
 export type GeneralSettingsConfig = zod.infer<typeof generalSettingsConfigValidator>;
