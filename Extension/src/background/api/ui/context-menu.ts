@@ -123,7 +123,7 @@ export class ContextMenuApi {
      * Creates menu items for context menu, displayed, when app filtering disabled globally.
      */
     private static async addFilteringDisabledMenuItems(): Promise<void> {
-        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled);
+        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
         await ContextMenuApi.addSeparator();
         await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
         await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
