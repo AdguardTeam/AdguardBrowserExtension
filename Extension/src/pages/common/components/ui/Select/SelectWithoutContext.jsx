@@ -16,4 +16,30 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { SelectWrapper as Select } from './SelectWrapper';
+import React, { useState } from 'react';
+
+import { Select } from './Select';
+
+import './select.pcss';
+
+export const SelectWithoutContext = ({
+    id,
+    handler,
+    options,
+    value,
+    popupModification = false,
+}) => {
+    const [hidden, setHidden] = useState(true);
+
+    return (
+        <Select
+            id={id}
+            handler={handler}
+            options={options}
+            value={value}
+            hidden={hidden}
+            setHidden={setHidden}
+            popupModification={popupModification}
+        />
+    );
+};
