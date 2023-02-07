@@ -16,11 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const browser = window.browser || chrome;
+import browser from 'webextension-polyfill';
 
-// TODO: Try to move it to first cell
-browser.devtools.panels.elements.createSidebarPane('AdGuard',
-    (sidebar) => {
-        sidebar.setHeight('400px');
-        sidebar.setPage('../pages/devtools-elements-sidebar.html');
-    });
+const createSidebarPane = async () => {
+    // TODO: Try to move it to first cell
+    const sidebar = await browser.devtools.panels.elements.createSidebarPane('AdGuard');
+
+    sidebar.setHeight('400px');
+    sidebar.setPage('../pages/devtools-elements-sidebar.html');
+};
+
+createSidebarPane();

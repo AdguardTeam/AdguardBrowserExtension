@@ -11,7 +11,6 @@ module.exports = {
     'globals': {
         'adguard': true,
         'chrome': true,
-        'browser': true,
         'page': true,
         'context': true,
         'jestPuppeteer': true,
