@@ -17,9 +17,10 @@
  */
 
 import React, { useRef, useEffect } from 'react';
+import cn from 'classnames';
+
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import { useOutsideFocus } from '../../../hooks/useOutsideFocus';
-import { useSelect } from './SelectProvider';
 import { Icon } from '../Icon';
 
 import './select.pcss';
@@ -29,11 +30,12 @@ export const Select = ({
     handler,
     options,
     value,
+    hidden,
+    setHidden,
+    popupModification = false,
 }) => {
     const ref = useRef(null);
     const refList = useRef(null);
-
-    const [hidden, setHidden] = useSelect(id);
 
     const renderItems = () => options.map((option) => {
         const { value: currentValue, title } = option;
@@ -80,7 +82,7 @@ export const Select = ({
     const currentTitle = currentValue.title;
 
     return (
-        <div id={id} className="select" ref={ref}>
+        <div id={id} className={cn('select', popupModification ? 'popup-modification' : '')} ref={ref}>
             <button
                 type="button"
                 className="select__value"

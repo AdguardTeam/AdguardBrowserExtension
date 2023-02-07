@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { Select } from './Select';
+export { SelectWrapper as Select } from './SelectWrapper';

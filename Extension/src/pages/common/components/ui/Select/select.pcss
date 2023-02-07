@@ -72,7 +72,7 @@
         color: var(--gray900);
         width: 100%;
         text-align: left;
-        
+
         &:focus-visible {
             outline: none;
             box-shadow: inset 0 0 0 2px var(--outline);
@@ -88,6 +88,32 @@
             @media (prefers-color-scheme: dark) {
                 background-color: var(--gray900);
             }
+        }
+    }
+
+    /* Reverse order of icon, smaller text, using full space of parent element */
+    &.popup-modification {
+        width: 100%;
+        height: 100%;
+        display: flex;
+
+        .select__ico {
+            position: absolute;
+            pointer-events: none;
+            left: 5px;
+            top: calc(50% - 4px);
+        }
+
+        .select__value {
+            width: 100%;
+            font-size: 12px;
+            text-align-last: left;
+            padding-left: 25px;
+        }
+
+        .select__list {
+            left: 0;
+            right: initial;
         }
     }
 }
