@@ -30,6 +30,7 @@ import React, {
 import { observer } from 'mobx-react';
 import identity from 'lodash/identity';
 import cn from 'classnames';
+import browser from 'webextension-polyfill';
 
 import { StealthActions } from '@adguard/tswebextension';
 
@@ -241,7 +242,7 @@ const RequestInfo = observer(() => {
 
     const openInNewTabHandler = async () => {
         const url = selectedEvent.requestUrl;
-        await browser.windows.create({ url });
+        await browser.windows.create({ url, focused: true });
     };
 
     const renderInfoUrlButtons = (event) => {
