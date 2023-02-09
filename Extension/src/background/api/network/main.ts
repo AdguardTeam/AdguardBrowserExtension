@@ -90,6 +90,29 @@ export class Network {
     }
 
     /**
+     * Returns the value of the "Content-Type" header of the provided url.
+     *
+     * @param url Url to get the MIME type.
+     *
+     * @returns The value of the "Content-Type" header with the MIME type of the
+     * content placed on the provided url.
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+     */
+    private static async getUrlMimeType(url: string): Promise<string | null> {
+        let response: ExtensionXMLHttpRequest;
+
+        try {
+            response = await Network.executeRequestAsync(url, 'application/text');
+        } catch (e: unknown) {
+            const exMessage = e instanceof Error ? e.message : 'couldn\'t load MIME type from url';
+            throw Network.createError(exMessage, url);
+        }
+
+        return response.getResponseHeader('Content-Type');
+    }
+
+    /**
      * Downloads filter rules by url.
      *
      * @param url Subscription url.
@@ -102,6 +125,16 @@ export class Network {
         this.loadingSubscriptions[url] = true;
 
         try {
+            const mimeType = await Network.getUrlMimeType(url);
+
+            if (mimeType?.indexOf('text/plain') === -1) {
+                throw Network.createError(
+                    `MIME type of the provided url is ${mimeType} and it is not `
+                    + 'equal to the text MIME type "text/plain".',
+                    url,
+                );
+            }
+
             // TODO: runtime validation
             const lines = await FiltersDownloader.download(url, this.filterCompilerConditionsConstants);
 

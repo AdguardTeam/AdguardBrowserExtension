@@ -122,7 +122,8 @@ export class CustomFilterApi {
     /**
      * Returns Custom filter info for modal window.
      * Checks if custom filter with passed url is exist.
-     * If url is new, downloads filter data from remote source, parse it and create new {@link CustomFilterInfo}.
+     * If url is new, downloads filter data from remote source, parses it
+     * and creates new {@link CustomFilterInfo}.
      *
      * @param url Filter subscription url.
      * @param title User-defined filter title.
