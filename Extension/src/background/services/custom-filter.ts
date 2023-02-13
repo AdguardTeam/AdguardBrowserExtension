@@ -16,20 +16,25 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { WebNavigation } from 'webextension-polyfill';
-import { RequestType } from '@adguard/tsurlfilter';
-import { isHttpOrWsRequest, tabsApi } from '@adguard/tswebextension';
+import {
+    isHttpOrWsRequest,
+    MAIN_FRAME_ID,
+    tabsApi,
+} from '@adguard/tswebextension';
+
+import { SUBSCRIBE_OUTPUT } from '../../../../constants';
+import { BACKGROUND_TAB_ID } from '../../common/constants';
 import {
     MessageType,
     LoadCustomFilterInfoMessage,
     SubscribeToCustomFilterMessage,
     RemoveAntiBannerFilterMessage,
 } from '../../common/messages';
-import { BACKGROUND_TAB_ID } from '../../common/constants';
-import { CustomFilterApi, GetCustomFilterInfoResult } from '../api';
+import { CustomFilterApi, GetCustomFilterInfoResult } from '../api/filters/custom';
 import { messageHandler } from '../message-handler';
 import { Engine } from '../engine';
-import { CustomFilterMetadata } from '../schema';
-import { SUBSCRIBE_OUTPUT } from '../../../../constants';
+
+import type { CustomFilterMetadata } from '../schema';
 
 /**
  * Service for processing events with custom filters.
@@ -104,17 +109,13 @@ export class CustomFilterService {
 
         const frame = tabsApi.getTabFrame(tabId, frameId);
 
-        if (!frame?.requestContext) {
+        if (!frame) {
             return;
         }
 
-        const { requestContext } = frame;
+        const isDocumentFrame = frameId === MAIN_FRAME_ID;
 
-        const { requestType, requestUrl } = requestContext;
-
-        const isDocumentRequest = requestType === RequestType.Document || requestType === RequestType.SubDocument;
-
-        if (!isDocumentRequest || !isHttpOrWsRequest(requestUrl)) {
+        if (!isDocumentFrame || !isHttpOrWsRequest(frame.url)) {
             return;
         }
 

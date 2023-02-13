@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { SettingsConfig } from '@adguard/tswebextension';
+import type { SettingsConfig } from '@adguard/tswebextension';
 import { Log } from '../../../common/log';
 import { AppearanceTheme, defaultSettings } from '../../../common/settings';
 
@@ -63,6 +63,7 @@ import { SettingsMigrations } from './migrations';
 import { Unknown } from '../../../common/unknown';
 import { Prefs } from '../../prefs';
 import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
+import { filteringLogApi } from '../filtering-log';
 
 export type SettingsData = {
     names: typeof SettingOption,
@@ -146,7 +147,7 @@ export class SettingsApi {
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
             documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
-            collectStats: !settingsStorage.get(SettingOption.DisableCollectHits),
+            collectStats: !settingsStorage.get(SettingOption.DisableCollectHits) || filteringLogApi.isOpen(),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),
             stealthModeEnabled: !settingsStorage.get(SettingOption.DisableStealthMode),

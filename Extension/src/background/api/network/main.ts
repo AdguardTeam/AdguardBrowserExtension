@@ -304,7 +304,7 @@ export class Network {
      * More information about ad filters usage stats:
      * http://adguard.com/en/filter-rules-statistics.html.
      *
-     * @param stats {@link HitStats}.
+     * @param stats Sent {@link HitStats}.
      */
     public sendHitStats(stats: string): void {
         const request = new XMLHttpRequest();

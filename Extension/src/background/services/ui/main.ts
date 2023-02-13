@@ -122,7 +122,7 @@ export class UiService {
 
         tsWebExtTabApi.onCreate.subscribe(UiApi.update);
         tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
-        tsWebExtTabApi.onActivated.subscribe(UiApi.update);
+        tsWebExtTabApi.onActivate.subscribe(UiApi.update);
 
         defaultFilteringLog.addEventListener(FilteringEventType.APPLY_BASIC_RULE, UiService.onBasicRuleApply);
     }
@@ -227,7 +227,7 @@ export class UiService {
     /**
      * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter.
      *
-     * @param event {@link ApplyBasicRuleEvent}.
+     * @param event Handled {@link ApplyBasicRuleEvent}.
      * @param event.data Event data.
      */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
