@@ -157,7 +157,7 @@ export class AllowlistApi {
     public static async removeTabUrlFromAllowlist(tabId: number): Promise<void> {
         const mainFrame = tsWebExtTabsApi.getTabMainFrame(tabId);
 
-        if (!mainFrame?.url) {
+        if (!mainFrame) {
             return;
         }
 
@@ -189,7 +189,7 @@ export class AllowlistApi {
     public static async addTabUrlToAllowlist(tabId: number): Promise<void> {
         const mainFrame = tsWebExtTabsApi.getTabMainFrame(tabId);
 
-        if (!mainFrame?.url) {
+        if (!mainFrame) {
             return;
         }
 

@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { BACKGROUND_TAB_ID, TabContext } from '@adguard/tswebextension';
 import { debounce } from 'lodash';
+import type { TabContext } from '@adguard/tswebextension';
+
 import { MessageType, sendMessage } from '../../../common/messages';
 
 import { ContextMenuApi } from './context-menu';
@@ -34,32 +35,33 @@ export class UiApi {
     private static readonly UPDATE_THROTTLE_MS = 100;
 
     /**
+     * Update tab icon and total blocked count with throttle.
+     */
+    private static debouncedUpdate = debounce((tabId: number, frameData: FrameData) => {
+        IconsApi.updateTabIcon(tabId, frameData);
+        UiApi.broadcastTotalBlockedMessage(frameData);
+    }, UiApi.UPDATE_THROTTLE_MS);
+
+    /**
      * Updates the tab icon and the blocked requests counter on the provided tab
-     * with debounce UiApi#UPDATE_THROTTLE_MS.
+     * with debounce {@link UiApi.UPDATE_THROTTLE_MS}.
      *
-     * @param tabContext {@link TabContext}.
+     * @param tabContext Updated {@link TabContext}.
      */
     public static async update(tabContext: TabContext): Promise<void> {
-        const tabId = tabContext?.info?.id;
-
-        if (!tabId || tabId === BACKGROUND_TAB_ID) {
-            return;
-        }
+        const tabId = tabContext.info.id;
 
         const frameData = FramesApi.getMainFrameData(tabContext);
 
         await ContextMenuApi.throttledUpdateMenu(frameData);
 
-        debounce(() => {
-            IconsApi.updateTabIcon(tabId, frameData);
-            UiApi.broadcastTotalBlockedMessage(frameData);
-        }, UiApi.UPDATE_THROTTLE_MS)();
+        UiApi.debouncedUpdate(tabId, frameData);
     }
 
     /**
      * Sends message with updated counters of blocked requests.
      *
-     * @param frameData {@link FrameData}.
+     * @param frameData Broadcasted {@link FrameData}.
      * @param frameData.totalBlocked Total count of blocked requests.
      * @param frameData.totalBlockedTab Number of blocked requests.
      */
