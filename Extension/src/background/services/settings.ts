@@ -94,7 +94,7 @@ export class SettingsService {
         settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookiesTime, Engine.update);
         settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookies, Engine.update);
         settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookiesTime, Engine.update);
-        settingsEvents.addListener(SettingOption.DisableFiltering, SettingsService.onFilteringStateChange);
+        settingsEvents.addListener(SettingOption.DisableFiltering, SettingsService.onDisableFilteringStateChange);
 
         contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsService.enableFiltering);
         contextMenuEvents.addListener(ContextMenuAction.DisableProtection, SettingsService.disableFiltering);
@@ -183,10 +183,12 @@ export class SettingsService {
     }
 
     /**
-     * Called when filtering state changed.
+     * Called when {@link SettingOption.DisableFiltering} setting changed.
+     *
+     * @param isFilteringDisabled Changed {@link SettingOption.DisableFiltering} setting value.
      */
-    static async onFilteringStateChange(): Promise<void> {
-        await Engine.update();
+    static async onDisableFilteringStateChange(isFilteringDisabled: boolean): Promise<void> {
+        Engine.setFilteringEnabled(!isFilteringDisabled);
 
         const activeTab = await TabsApi.getActive();
 
