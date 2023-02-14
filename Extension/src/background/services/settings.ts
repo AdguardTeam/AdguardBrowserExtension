@@ -84,16 +84,16 @@ export class SettingsService {
         messageHandler.addListener(MessageType.ApplySettingsJson, SettingsService.import);
         messageHandler.addListener(MessageType.LoadSettingsJson, SettingsService.export);
 
-        settingsEvents.addListener(SettingOption.DisableStealthMode, Engine.update);
-        settingsEvents.addListener(SettingOption.HideReferrer, Engine.update);
-        settingsEvents.addListener(SettingOption.HideSearchQueries, Engine.update);
-        settingsEvents.addListener(SettingOption.SendDoNotTrack, Engine.update);
-        settingsEvents.addListener(SettingOption.BlockChromeClientData, Engine.update);
-        settingsEvents.addListener(SettingOption.BlockWebRTC, Engine.update);
-        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookies, Engine.update);
-        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookiesTime, Engine.update);
-        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookies, Engine.update);
-        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookiesTime, Engine.update);
+        settingsEvents.addListener(SettingOption.DisableStealthMode, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.HideReferrer, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.HideSearchQueries, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.SendDoNotTrack, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.BlockChromeClientData, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.BlockWebRTC, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookies, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookiesTime, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookies, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookiesTime, Engine.debounceUpdate);
         settingsEvents.addListener(SettingOption.DisableFiltering, SettingsService.onDisableFilteringStateChange);
 
         contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsService.enableFiltering);
@@ -132,10 +132,6 @@ export class SettingsService {
     static async changeUserSettings(message: ChangeUserSettingMessage): Promise<void> {
         const { key, value } = message.data;
         await SettingsApi.setSetting(key, value);
-
-        // TODO: Potential place to optimize: we don't need update engine
-        // for every setting change.
-        await Engine.update();
     }
 
     /**
