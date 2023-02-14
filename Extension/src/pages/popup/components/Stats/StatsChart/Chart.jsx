@@ -17,6 +17,7 @@
  */
 
 import React, { useEffect } from 'react';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 

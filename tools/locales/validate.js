@@ -19,7 +19,6 @@
 import { validator } from '@adguard/translate';
 
 import { cliLog } from '../cli-log';
-
 import { getLocaleTranslations, areArraysEqual } from '../helpers';
 
 import {

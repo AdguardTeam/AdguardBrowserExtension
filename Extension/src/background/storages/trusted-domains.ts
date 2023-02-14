@@ -18,6 +18,7 @@
 import { TRUSTED_DOCUMENTS_CACHE_KEY } from '../../common/constants';
 import { TrustedDomainData } from '../schema';
 import { StringStorage } from '../utils/string-storage';
+
 import { storage } from './main';
 
 /**

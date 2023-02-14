@@ -22,6 +22,7 @@ import {
     observable,
     makeObservable,
 } from 'mobx';
+
 import { NETWORK_RULE_OPTIONS, OPTIONS_DELIMITER } from '@adguard/tsurlfilter';
 
 import { RULE_OPTIONS } from '../components/RequestWizard/constants';

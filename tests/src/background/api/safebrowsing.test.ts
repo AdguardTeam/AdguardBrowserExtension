@@ -1,5 +1,6 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+
 import { UrlUtils } from '../../../../Extension/src/background/utils/url';
 import { SafebrowsingApi } from '../../../../Extension/src/background/api/safebrowsing';
 import { ADGUARD_SETTINGS_KEY, SB_LRU_CACHE_KEY } from '../../../../Extension/src/common/constants';

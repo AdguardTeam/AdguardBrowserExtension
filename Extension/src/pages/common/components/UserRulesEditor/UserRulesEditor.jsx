@@ -23,13 +23,13 @@ import React, {
     useCallback,
 } from 'react';
 import { observer } from 'mobx-react';
+
 import { Range } from 'ace-builds';
 import debounce from 'lodash/debounce';
+
 import { SimpleRegex } from '@adguard/tsurlfilter';
 
-import { userRulesEditorStore } from './UserRulesEditorStore';
 import { Editor } from '../Editor';
-import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Popover } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
@@ -40,8 +40,11 @@ import { NotifierType } from '../../../../common/constants';
 import { HANDLER_DELAY_MS } from '../../constants';
 import { handleFileUpload } from '../../../helpers';
 import { Log } from '../../../../common/log';
-import { ToggleWrapButton } from './ToggleWrapButton';
 import { exportData, ExportTypes } from '../../utils/export';
+
+import { ToggleWrapButton } from './ToggleWrapButton';
+import { UserRulesSavingButton } from './UserRulesSavingButton';
+import { userRulesEditorStore } from './UserRulesEditorStore';
 
 /**
  * This module is placed in the common directory because it is used in the options page

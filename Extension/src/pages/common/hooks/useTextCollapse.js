@@ -17,6 +17,7 @@
  */
 
 import { useState, useLayoutEffect } from 'react';
+
 import { measureTextWidth } from '../../helpers';
 
 export const useTextCollapse = (text, width, lineCountLimit, defaultCollapsed) => {

@@ -26,7 +26,6 @@ import { SettingOption } from '../schema';
 import { messageHandler } from '../message-handler';
 import { UserAgent } from '../../common/user-agent';
 import { AntiBannerFiltersId } from '../../common/constants';
-
 import { Engine } from '../engine';
 import {
     Categories,
@@ -42,6 +41,7 @@ import {
     contextMenuEvents,
     settingsEvents,
 } from '../events';
+
 import { fullscreenUserRulesEditor } from './fullscreen-user-rules-editor';
 
 export type ExportMessageResponse = {

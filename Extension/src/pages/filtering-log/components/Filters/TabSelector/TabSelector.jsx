@@ -20,14 +20,16 @@
 eslint-disable jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-noninteractive-element-interactions
 */
+
 import React, {
     useContext,
     useEffect,
     useState,
     useRef,
 } from 'react';
-import cn from 'classnames';
 import { observer } from 'mobx-react';
+
+import cn from 'classnames';
 
 import { rootStore } from '../../../stores/RootStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
@@ -35,7 +37,6 @@ import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
 import { useOutsideFocus } from '../../../../common/hooks/useOutsideFocus';
 import { useKeyDown } from '../../../../common/hooks/useKeyDown';
 import { WASTE_CHARACTERS } from '../../../../../common/constants';
-
 import { Search } from '../../Search';
 
 import './tab-selector.pcss';

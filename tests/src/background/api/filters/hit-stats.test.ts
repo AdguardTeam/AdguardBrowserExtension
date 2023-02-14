@@ -1,4 +1,5 @@
 import { Storage } from 'webextension-polyfill';
+
 import { HitStatsApi } from '../../../../../Extension/src/background/api/filters/hit-stats';
 import { HitStatsStorageData } from '../../../../../Extension/src/background/schema';
 import {
@@ -6,7 +7,6 @@ import {
     CUSTOM_FILTERS_START_ID,
     HIT_STATISTIC_KEY,
 } from '../../../../../Extension/src/common/constants';
-
 import { mockLocalStorage } from '../../../../helpers';
 
 describe('Hit Stats Api', () => {

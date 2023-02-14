@@ -17,11 +17,14 @@
  */
 
 import React from 'react';
+
 import { Icon } from '../../../common/components/ui/Icon';
-import './status.pcss';
 import { StatusMode } from '../../filteringLogStatus';
+
 import { getStatusTitle } from './statusTitles';
 import { colorMap, getItemClassName } from './statusStyles';
+
+import './status.pcss';
 
 export const FilterStatus = ({ statusCode, method, mode }) => {
     const title = getStatusTitle(mode);

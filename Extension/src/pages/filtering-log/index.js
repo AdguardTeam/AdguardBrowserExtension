@@ -18,8 +18,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { reactTranslator } from '../../common/translators/reactTranslator';
 import { i18n } from '../../common/translators/i18n';
+
 import { FilteringLog } from './components/FilteringLog';
 
 export const filteringLog = {

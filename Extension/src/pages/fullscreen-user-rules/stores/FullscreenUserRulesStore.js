@@ -17,6 +17,7 @@
  */
 
 import { createContext } from 'react';
+
 import {
     action,
     computed,
@@ -24,6 +25,7 @@ import {
     observable,
     runInAction,
 } from 'mobx';
+
 import { messenger } from '../../services/messenger';
 import { MessageType } from '../../../common/messages';
 

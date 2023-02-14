@@ -23,8 +23,9 @@ import {
 } from '@adguard/tsurlfilter';
 
 import { strings } from '../../../../common/strings';
-import { UrlUtils } from './utils';
 import { Log } from '../../../../common/log';
+
+import { UrlUtils } from './utils';
 
 /**
  * Splits request url by backslash to block or allow patterns

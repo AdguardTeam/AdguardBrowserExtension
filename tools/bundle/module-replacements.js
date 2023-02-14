@@ -18,6 +18,7 @@
 
 /* eslint-disable no-console */
 import { NormalModuleReplacementPlugin } from 'webpack';
+
 import { BROWSERS } from '../constants';
 
 /**

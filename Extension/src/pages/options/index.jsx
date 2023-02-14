@@ -18,9 +18,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { SelectProvider } from '../common/components/ui/Select/SelectProvider';
 import { reactTranslator } from '../../common/translators/reactTranslator';
 import { i18n } from '../../common/translators/i18n';
+
 import { Options } from './components/Options';
 
 export const optionsPage = {

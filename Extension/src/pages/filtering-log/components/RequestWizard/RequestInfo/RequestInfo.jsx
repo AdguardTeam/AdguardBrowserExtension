@@ -21,13 +21,15 @@ eslint-disable no-bitwise,
 jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-static-element-interactions
 */
+
+import { observer } from 'mobx-react';
 import React, {
     useState,
     useContext,
     useRef,
     useLayoutEffect,
 } from 'react';
-import { observer } from 'mobx-react';
+
 import identity from 'lodash/identity';
 import cn from 'classnames';
 import browser from 'webextension-polyfill';

@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { Runtime } from 'webextension-polyfill';
+
 import { listeners } from '../notifier';
 import { messageHandler } from '../message-handler';
 import {

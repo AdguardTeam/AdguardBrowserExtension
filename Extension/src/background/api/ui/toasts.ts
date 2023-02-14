@@ -16,13 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+
 import { Log } from '../../../common/log';
 import { BrowserUtils } from '../../utils/browser-utils';
-
 import { translator } from '../../../common/translators/translator';
 import { notificationTextRecordValidator } from '../../schema';
 import { TabsApi } from '../extension';
-import { promoNotificationApi } from './promo-notification';
 import { FilterMetadata } from '../filters';
 import { sendTabMessage, MessageType } from '../../../common/messages';
 import {
@@ -30,6 +29,8 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../../common/forward';
+
+import { promoNotificationApi } from './promo-notification';
 
 enum StylesAssetsPath {
     AlertPopup = '/assets/css/alert-popup.css',

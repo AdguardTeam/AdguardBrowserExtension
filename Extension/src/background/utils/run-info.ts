@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
+
 import {
     ADGUARD_SETTINGS_KEY,
     APP_SCHEMA_VERSION,

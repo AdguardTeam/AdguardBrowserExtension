@@ -18,14 +18,13 @@
 
 /* eslint-disable no-console */
 import { program } from 'commander';
+
 import { downloadAndSave } from './locales/download-locales';
 import { uploadLocales } from './locales/upload-locales';
 import { renewLocales } from './locales/renew-locales';
 import { checkTranslations } from './locales/validate';
 import { checkUnusedMessages } from './locales/unused';
-
 import { cliLog } from './cli-log';
-
 import { LANGUAGES } from './locales/locales-constants';
 
 const LOCALES = Object.keys(LANGUAGES);

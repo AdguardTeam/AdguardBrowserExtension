@@ -1,8 +1,8 @@
 import { SettingsConfig } from '@adguard/tswebextension';
+
 import metadata from '../../Extension/filters/chromium/filters.json';
 import i18nMetadata from '../../Extension/filters/chromium/filters_i18n.json';
 import { GetStatisticsDataResponse } from '../../Extension/src/background/api';
-
 import {
     metadataValidator,
     i18nMetadataValidator,

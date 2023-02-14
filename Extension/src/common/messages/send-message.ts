@@ -17,6 +17,7 @@
  */
 
 import browser from 'webextension-polyfill';
+
 import {
     MessageType,
     ExtractedMessage,

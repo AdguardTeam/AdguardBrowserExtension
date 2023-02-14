@@ -16,8 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
-import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
 import browser from 'webextension-polyfill';
+
+import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
 
 import { Log } from '../../../common/log';
 import { SettingOption } from '../../schema';
@@ -27,7 +28,6 @@ import {
     allowlistDomainsStorage,
     invertedAllowlistDomainsStorage,
 } from '../../storages';
-
 import { Engine } from '../../engine';
 
 /**

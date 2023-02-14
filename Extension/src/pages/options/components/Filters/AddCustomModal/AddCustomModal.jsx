@@ -17,16 +17,19 @@
  */
 
 /* eslint-disable jsx-a11y/no-autofocus */
+
 import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
 import Modal from 'react-modal';
+
+import PropTypes from 'prop-types';
 
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Log } from '../../../../../common/log';
-import { ModalContentWrapper } from './ModalContentWrapper';
 import { rootStore } from '../../../stores/RootStore';
 import { Icon } from '../../../../common/components/ui/Icon';
+
+import { ModalContentWrapper } from './ModalContentWrapper';
 
 Modal.setAppElement('#root');
 

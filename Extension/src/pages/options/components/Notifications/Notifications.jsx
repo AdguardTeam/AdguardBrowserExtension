@@ -20,6 +20,7 @@ import { observer } from 'mobx-react';
 import React, { useContext } from 'react';
 
 import { rootStore } from '../../stores/RootStore';
+
 import { Notification } from './Notification';
 
 import './notifications.pcss';

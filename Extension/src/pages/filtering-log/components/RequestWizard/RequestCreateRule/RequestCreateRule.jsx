@@ -17,8 +17,9 @@
  */
 
 import React, { useContext, useRef } from 'react';
-import cn from 'classnames';
 import { observer } from 'mobx-react';
+
+import cn from 'classnames';
 
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_OPTIONS } from '../constants';
@@ -27,6 +28,7 @@ import { reactTranslator } from '../../../../../common/translators/reactTranslat
 import { Icon } from '../../../../common/components/ui/Icon';
 import { ADDED_RULE_STATES, WIZARD_STATES } from '../../../stores/WizardStore';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
+
 import './request-create-rule.pcss';
 
 const RequestCreateRule = observer(() => {

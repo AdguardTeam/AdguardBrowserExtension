@@ -20,6 +20,13 @@ import zod from 'zod';
 
 import { MessageType, sendMessage } from '../common/messages';
 import { Log } from '../common/log';
+import {
+    Forward,
+    ForwardAction,
+    ForwardFrom,
+} from '../common/forward';
+import { CLIENT_ID_KEY } from '../common/constants';
+
 import { ContentScriptInjector } from './content-script-injector';
 import { messageHandler } from './message-handler';
 import { ConnectionHandler } from './connection-handler';
@@ -39,7 +46,6 @@ import {
     UpdateApi,
     InstallApi,
 } from './api';
-
 import {
     UiService,
     PopupService,
@@ -56,15 +62,8 @@ import {
     PromoNotificationService,
     filterUpdateService,
 } from './services';
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../common/forward';
-
 import { SettingOption } from './schema';
 import { getRunInfo } from './utils';
-import { CLIENT_ID_KEY } from '../common/constants';
 import { contextMenuEvents, settingsEvents } from './events';
 
 /**

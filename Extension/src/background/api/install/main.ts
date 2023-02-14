@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { nanoid } from 'nanoid';
+
 import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,

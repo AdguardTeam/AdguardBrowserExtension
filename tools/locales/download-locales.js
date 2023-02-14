@@ -19,10 +19,12 @@
 /**
  * This task updates locales in repository
  */
-import axios from 'axios';
 import path from 'path';
 import fs from 'fs';
 import querystring from 'querystring';
+
+import axios from 'axios';
+
 import { cliLog } from '../cli-log';
 import { chunkArray, getLocaleTranslations } from '../helpers';
 

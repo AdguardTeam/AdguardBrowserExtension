@@ -16,9 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import type { SettingsConfig } from '@adguard/tswebextension';
+
 import { Log } from '../../../common/log';
 import { AppearanceTheme, defaultSettings } from '../../../common/settings';
-
 import {
     AllowlistConfig,
     AllowlistOption,
@@ -39,14 +39,12 @@ import {
     Settings,
     settingsValidator,
 } from '../../schema';
-
 import {
     filterStateStorage,
     groupStateStorage,
     settingsStorage,
     storage,
 } from '../../storages';
-
 import {
     CommonFilterApi,
     CustomFilterApi,
@@ -55,15 +53,15 @@ import {
     UserRulesApi,
     AllowlistApi,
 } from '../filters';
-
 import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
 import { settingsEvents } from '../../events';
 import { listeners } from '../../notifier';
-import { SettingsMigrations } from './migrations';
 import { Unknown } from '../../../common/unknown';
 import { Prefs } from '../../prefs';
 import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
 import { filteringLogApi } from '../filtering-log';
+
+import { SettingsMigrations } from './migrations';
 
 export type SettingsData = {
     names: typeof SettingOption,

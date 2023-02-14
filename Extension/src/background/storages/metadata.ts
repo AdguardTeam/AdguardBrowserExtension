@@ -30,6 +30,7 @@ import {
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 import { I18n } from '../utils/i18n';
+
 import { settingsStorage } from './settings';
 
 /**

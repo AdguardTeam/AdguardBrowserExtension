@@ -18,6 +18,7 @@
 
 import { MessageType } from '../common/messages';
 import { UserAgent } from '../common/user-agent';
+
 import { messenger } from './services/messenger';
 
 const PageController = (response) => {

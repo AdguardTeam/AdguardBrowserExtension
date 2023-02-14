@@ -18,7 +18,6 @@
 import { Log } from '../../../common/log';
 import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
-
 import {
     filterStateStorage,
     groupStateStorage,
@@ -31,7 +30,6 @@ import {
     FilterVersionStorage,
     FiltersStorage,
 } from '../../storages';
-
 import {
     Metadata,
     RegularFilterMetadata,
@@ -42,8 +40,8 @@ import {
     filterVersionStorageDataValidator,
     groupStateStorageDataValidator,
 } from '../../schema';
-
 import { network } from '../network';
+
 import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
 import { CommonFilterApi } from './common';

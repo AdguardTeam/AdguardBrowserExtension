@@ -30,7 +30,6 @@ import {
     SCHEMA_VERSION_KEY,
     VIEWED_NOTIFICATIONS_KEY,
 } from '../../../common/constants';
-
 import { SettingOption, settingsValidator } from '../../schema';
 import { SafebrowsingApi } from '../safebrowsing';
 import { RunInfo } from '../../utils';

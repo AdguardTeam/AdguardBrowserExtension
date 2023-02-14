@@ -17,6 +17,7 @@
  */
 
 import React from 'react';
+
 import classNames from 'classnames';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';

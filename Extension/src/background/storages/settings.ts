@@ -16,10 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { debounce } from 'lodash';
+
 import { ADGUARD_SETTINGS_KEY } from '../../common/constants';
 import { StorageInterface } from '../../common/storage';
-import { storage } from './main';
 import { Settings, SettingOption } from '../schema';
+
+import { storage } from './main';
 
 /**
  * Storage for app settings.

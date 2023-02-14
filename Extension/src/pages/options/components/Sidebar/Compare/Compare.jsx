@@ -17,8 +17,10 @@
  */
 
 import React from 'react';
+
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { Icon } from '../../../../common/components/ui/Icon';
+
 import './compare.pcss';
 
 export const Compare = ({ click, hide }) => {

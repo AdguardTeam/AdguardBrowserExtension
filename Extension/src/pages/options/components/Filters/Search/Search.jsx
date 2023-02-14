@@ -29,6 +29,7 @@ import { Select } from '../../../../common/components/ui/Select';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../../common/user-agent';
 import { rootStore } from '../../../stores/RootStore';
+
 import { SEARCH_FILTERS, TABLET_SCREEN_WIDTH } from './constants';
 
 import './search.pcss';

@@ -19,7 +19,6 @@ import browser, { Menus } from 'webextension-polyfill';
 import { throttle } from 'lodash';
 
 import { translator } from '../../../common/translators/translator';
-import { FrameData } from './frames';
 import {
     ContextMenuAction,
     contextMenuEvents,
@@ -27,6 +26,8 @@ import {
 } from '../../events';
 import { SettingOption } from '../../schema';
 import { SettingsApi } from '../settings';
+
+import { FrameData } from './frames';
 
 export type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
     messageArgs?: { [key: string]: unknown },

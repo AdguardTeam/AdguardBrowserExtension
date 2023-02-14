@@ -20,6 +20,7 @@ import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import throttle from 'lodash/throttle';
+
 import { Filters } from '../Filters';
 import { messenger } from '../../../services/messenger';
 import { Log } from '../../../../common/log';

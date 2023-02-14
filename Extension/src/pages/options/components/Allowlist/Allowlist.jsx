@@ -31,10 +31,11 @@ import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
 import { Log } from '../../../../common/log';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { exportData, ExportTypes } from '../../../common/utils/export';
+
+import { AllowlistSavingButton } from './AllowlistSavingButton';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);

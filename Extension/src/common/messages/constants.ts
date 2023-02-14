@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Windows } from 'webextension-polyfill';
+
 import { ForwardFrom } from '../forward';
 import { SettingOption, Settings } from '../../background/schema';
 import { NotifierType } from '../constants';

@@ -17,6 +17,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+
 import beautify from 'js-beautify';
 
 import { RequestType } from '../../../../../common/constants';

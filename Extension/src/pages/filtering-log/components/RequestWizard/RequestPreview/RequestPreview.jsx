@@ -22,6 +22,7 @@ import React, {
     useEffect,
 } from 'react';
 import { observer } from 'mobx-react';
+
 import { useMachine } from '@xstate/react';
 
 import { RequestType } from '../../../../../common/constants';
@@ -33,12 +34,13 @@ import {
     FetchStates,
 } from '../../../../common/machines/fetchMachine';
 import { rootStore } from '../../../stores/RootStore';
+
 import { ImageRequest } from './ImageRequest';
 import { TextRequest } from './TextRequest';
 import { fetchText, fetchImage } from './fetchers';
 
-import './request-preview.pcss';
 import '../RequestInfo/request-image.pcss';
+import './request-preview.pcss';
 
 export const RequestPreview = observer(() => {
     const {

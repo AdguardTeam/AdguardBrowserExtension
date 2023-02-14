@@ -23,14 +23,15 @@ import {
     differenceInDays,
     differenceInMonths,
 } from 'date-fns';
-import { PAGE_STATISTIC_KEY } from '../../common/constants';
 
+import { PAGE_STATISTIC_KEY } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
 import {
     PageStats,
     PageStatsData,
     PageStatsDataItem,
 } from '../schema';
+
 import { storage } from './main';
 
 /**

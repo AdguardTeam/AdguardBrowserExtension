@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+
 import {
     TabContext,
     tabsApi,
@@ -46,7 +47,6 @@ import {
 } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
 import { FILTERING_LOG_WINDOW_STATE } from '../../common/constants';
-
 import {
     FiltersApi,
     FilterMetadata,
@@ -57,7 +57,6 @@ import {
     FilteringLogTabInfo,
     HitStatsApi,
 } from '../api';
-
 import { storage } from '../storages';
 import { SettingOption } from '../schema';
 

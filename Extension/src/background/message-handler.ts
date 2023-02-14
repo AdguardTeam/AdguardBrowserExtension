@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Runtime } from 'webextension-polyfill';
-import { Engine, EngineMessage } from './engine';
 
 import {
     Message,
@@ -24,6 +23,8 @@ import {
     MessageHandler,
     MessageListener,
 } from '../common/messages';
+
+import { Engine, EngineMessage } from './engine';
 
 /**
  * Common message handler {@link MessageHandler} specified for background

@@ -17,6 +17,7 @@
  */
 
 import React from 'react';
+
 import cn from 'classnames';
 import { format } from 'date-fns';
 
@@ -24,6 +25,7 @@ import { Icon } from '../../../common/components/ui/Icon';
 import { Popover } from '../../../common/components/ui/Popover';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
+
 import {
     colorMap,
     getItemClassName,

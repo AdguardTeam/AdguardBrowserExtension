@@ -17,13 +17,14 @@
  */
 import { AntiBannerFiltersId } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
-import { settingsStorage } from './settings';
 import {
     SettingOption,
     Metadata,
     FilterStateData,
     FilterStateStorageData,
 } from '../schema';
+
+import { settingsStorage } from './settings';
 
 /**
  * Class for synchronous control {@link FilterStateStorageData},

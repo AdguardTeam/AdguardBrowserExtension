@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18nInterface, translate } from '@adguard/translate';
+
 import { i18n } from './i18n';
 
 /**

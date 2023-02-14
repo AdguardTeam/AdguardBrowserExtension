@@ -21,9 +21,11 @@
  */
 import path from 'path';
 import fs from 'fs';
-import fse from 'fs-extra';
 import crypto from 'crypto';
+
+import fse from 'fs-extra';
 import axios from 'axios';
+
 import { cliLog } from '../cli-log';
 import {
     METADATA_DOWNLOAD_URL_FORMAT,

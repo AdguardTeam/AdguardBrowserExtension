@@ -17,7 +17,9 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
+
 import { Setting, SETTINGS_TYPES } from './Setting';
 import { SettingsSet } from './SettingsSet';
 

@@ -27,6 +27,7 @@
  *  This way filters maintainers can test new rules before including them in the filters.
  */
 import { promises as fs } from 'fs';
+
 import {
     ADGUARD_FILTERS_IDS,
     FILTERS_DEST,

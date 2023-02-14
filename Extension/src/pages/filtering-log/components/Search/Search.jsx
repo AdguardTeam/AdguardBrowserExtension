@@ -21,7 +21,9 @@ import React, {
     forwardRef,
     useEffect,
 } from 'react';
+
 import cn from 'classnames';
+
 import { Icon } from '../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../common/user-agent';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
