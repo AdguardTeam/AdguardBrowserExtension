@@ -18,12 +18,14 @@
 
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+
 import classnames from 'classnames';
 
-import { userRulesEditorStore } from './UserRulesEditorStore';
 import { Popover } from '../ui/Popover';
 import { Icon } from '../ui/Icon';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+
+import { userRulesEditorStore } from './UserRulesEditorStore';
 
 /**
  * This button is extracted in the separate file

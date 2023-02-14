@@ -22,8 +22,6 @@ import {
     groupStateStorage,
     filterVersionStorage,
 } from '../../storages';
-import { CommonFilterApi } from './common';
-import { FilterMetadata, FiltersApi } from './main';
 import {
     GroupMetadata,
     TagMetadata,
@@ -34,6 +32,9 @@ import {
     CustomFilterMetadata,
 } from '../../schema';
 import { Log } from '../../../common/log';
+
+import { CommonFilterApi } from './common';
+import { FilterMetadata, FiltersApi } from './main';
 
 /**
  * Filter data displayed in category section on options page.

@@ -25,8 +25,9 @@ import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { MessageType } from '../../../../common/messages';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { UserRulesSwitcher } from './UserRulesSwitcher';
 import { HOW_TO_CREATE_RULES_URL } from '../../constants';
+
+import { UserRulesSwitcher } from './UserRulesSwitcher';
 
 import './styles.pcss';
 

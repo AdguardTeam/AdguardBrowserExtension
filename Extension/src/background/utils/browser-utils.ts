@@ -17,9 +17,9 @@
  */
 import { Prefs } from '../prefs';
 import { appContext, AppContextKey } from '../storages';
+import { Log } from '../../common/log';
 
 import { Version } from './version';
-import { Log } from '../../common/log';
 
 /**
  * Helper class for working with browser extension context.

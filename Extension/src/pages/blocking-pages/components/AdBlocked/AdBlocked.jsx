@@ -19,13 +19,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useCallback } from 'react';
+
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import {
     Forward,
     ForwardAction,
     ForwardFrom,
 } from '../../../../common/forward';
-
 import { MessageType } from '../../../../common/messages';
 import { getParams } from '../../getParams';
 import { messenger } from '../../../services/messenger';

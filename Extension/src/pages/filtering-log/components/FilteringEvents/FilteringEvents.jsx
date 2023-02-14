@@ -25,22 +25,24 @@ import React, {
     forwardRef,
 } from 'react';
 import { observer } from 'mobx-react';
-import cn from 'classnames';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+
 import throttle from 'lodash/throttle';
+import cn from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AntiBannerFiltersId, SCROLLBAR_WIDTH } from '../../../../common/constants';
-import { FilteringEventsEmpty } from './FilteringEventsEmpty';
-import { optionsStorage } from '../../../options/options-storage';
 import { passiveEventSupported } from '../../../helpers';
+import { optionsStorage } from '../../../options/options-storage';
+import { StatusMode, getStatusMode } from '../../filteringLogStatus';
+import { Status } from '../Status';
+
+import { FilteringEventsEmpty } from './FilteringEventsEmpty';
 
 import './filtering-events.pcss';
-import { Status } from '../Status';
-import { StatusMode, getStatusMode } from '../../filteringLogStatus';
 
 const ITEM_HEIGHT_PX = 30;
 

@@ -19,12 +19,13 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { Tab } from './Tab';
 import { Actions } from '../Actions';
 import { StatsTable } from '../Stats/StatsTable';
 import { VIEW_STATES } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+
+import { Tab } from './Tab';
 
 import './tabs.pcss';
 

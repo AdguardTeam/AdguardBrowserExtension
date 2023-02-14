@@ -21,6 +21,7 @@ import {
     getDomain,
     MAIN_FRAME_ID,
 } from '@adguard/tswebextension';
+
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';

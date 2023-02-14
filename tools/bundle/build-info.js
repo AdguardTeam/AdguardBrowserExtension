@@ -18,6 +18,7 @@
 
 import path from 'path';
 import { promises as fsp } from 'fs';
+
 import { BUILD_PATH } from '../constants';
 import packageJson from '../../package.json';
 import { getEnvConf } from '../helpers';

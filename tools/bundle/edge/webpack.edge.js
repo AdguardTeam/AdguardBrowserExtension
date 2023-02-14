@@ -16,15 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import path from 'path';
+
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { merge } from 'webpack-merge';
-import path from 'path';
 
 import { genCommonConfig } from '../webpack.common';
-import { edgeManifest } from './manifest.edge';
 import { updateManifestBuffer } from '../../helpers';
+
+import { edgeManifest } from './manifest.edge';
 
 export const genEdgeConfig = (browserConfig) => {
     const commonConfig = genCommonConfig(browserConfig);

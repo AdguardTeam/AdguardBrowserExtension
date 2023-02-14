@@ -18,10 +18,9 @@
 import browser, { Runtime } from 'webextension-polyfill';
 
 import { FILTERING_LOG, FULLSCREEN_USER_RULES_EDITOR } from '../common/constants';
-
 import { MessageType } from '../common/messages';
-
 import { Log } from '../common/log';
+
 import { listeners } from './notifier';
 import { filteringLogApi } from './api';
 import { fullscreenUserRulesEditor } from './services';

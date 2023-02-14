@@ -16,15 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import path from 'path';
+
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import path from 'path';
 
 import { BUILD_PATH, ENVS } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
-import { getModuleReplacements } from './module-replacements';
-
 import {
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
     SUBSCRIBE_OUTPUT,
@@ -48,6 +47,8 @@ import {
     TSWEBEXTENSION_VENDOR_OUTPUT,
     LODASH_VENDOR_OUTPUT,
 } from '../../constants';
+
+import { getModuleReplacements } from './module-replacements';
 
 const config = getEnvConf(process.env.BUILD_ENV);
 

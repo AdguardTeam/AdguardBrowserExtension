@@ -17,6 +17,7 @@
  */
 
 import { useState, useCallback } from 'react';
+
 import { useResizeObserver } from './useResizeObserver';
 
 /**

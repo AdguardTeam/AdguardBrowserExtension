@@ -18,6 +18,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { reactTranslator } from '../../common/translators/reactTranslator';
 
 import { AdBlocked } from './components/AdBlocked';

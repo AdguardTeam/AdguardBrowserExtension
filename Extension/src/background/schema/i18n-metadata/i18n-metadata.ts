@@ -17,10 +17,11 @@
  */
 import zod from 'zod';
 
+import { SchemaPreprocessor } from '../preprocessor';
+
 import { regularFilterI18nMetadataValidator } from './filter';
 import { tagI18nMetadataValidator } from './tag';
 import { groupI18nMetadataValidator } from './group';
-import { SchemaPreprocessor } from '../preprocessor';
 
 export const filtersI18nRecordValidator = zod.record(
     SchemaPreprocessor.numberValidator,

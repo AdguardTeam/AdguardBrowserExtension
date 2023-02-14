@@ -16,10 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { merge } from 'webpack-merge';
 import fs from 'fs';
 import path from 'path';
+
+import { merge } from 'webpack-merge';
+
 import { redirects } from '@adguard/scriptlets';
+
+import packageJson from '../package.json';
+
 import {
     ENVS,
     ENV_CONF,
@@ -27,7 +32,6 @@ import {
     BROWSERS_CONF,
 } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
-import packageJson from '../package.json';
 
 const { Redirects } = redirects;
 

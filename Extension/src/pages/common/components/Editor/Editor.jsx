@@ -19,14 +19,16 @@
 import React, { useState, useEffect } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import AceEditor from 'react-ace';
-import cn from 'classnames';
 
-import 'ace-builds/src-noconflict/ext-searchbox';
-import 'ace-builds/src-noconflict/theme-textmate';
-import 'ace-builds/src-noconflict/mode-text';
+import cn from 'classnames';
+// These side effects imports must be placed after the 'react-ace' import
+import 'ace-builds/src-noconflict/ext-searchbox.js';
+import 'ace-builds/src-noconflict/theme-textmate.js';
+import 'ace-builds/src-noconflict/mode-text.js';
 
 import { Log } from '../../../../common/log';
-import './mode-adguard';
+
+import './mode-adguard.js';
 
 import './editor.pcss';
 

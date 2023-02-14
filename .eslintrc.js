@@ -62,6 +62,46 @@ module.exports = {
         'import/prefer-default-export': 'off',
         'import/extensions': 'off',
         'import-newlines/enforce': ['error', 2, 120],
+        'import/order': [
+            'error',
+            {
+                'groups': [
+                    'builtin',
+                    'external',
+                    'internal',
+                    'parent',
+                    'sibling',
+                    'index',
+                    'object',
+                ],
+                'pathGroups': [
+                    // Place all react libraries after external
+                    {
+                        'pattern': '*react*',
+                        'group': 'external',
+                        'position': 'before',
+                    },
+                    // Place all our libraries after react-like
+                    {
+                        'pattern': '@adguard/*',
+                        'group': 'external',
+                        'position': 'after',
+                    },
+                    // Separate group for all .pcss styles
+                    {
+                        'pattern': '*.pcss',
+                        'group': 'object',
+                        'patternOptions': { 'matchBase': true },
+                        'position': 'after',
+                    },
+                ],
+                'pathGroupsExcludedImportTypes': ['builtin', 'react'],
+                'newlines-between': 'always',
+                // To include "side effect imports" in plugin checks
+                // (like "import 'styles.pcss';")
+                'warnOnUnassignedImports': true,
+            },
+        ],
         'strict': 'off',
         'max-len': [
             'error',

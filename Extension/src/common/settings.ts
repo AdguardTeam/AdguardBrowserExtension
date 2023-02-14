@@ -16,8 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { UserAgent } from './user-agent';
 import { SettingOption, Settings } from '../background/schema';
+
+import { UserAgent } from './user-agent';
 
 export const enum AppearanceTheme {
     System = 'system',

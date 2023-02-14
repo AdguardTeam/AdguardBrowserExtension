@@ -17,6 +17,7 @@
  */
 
 import React, { forwardRef } from 'react';
+
 import cn from 'classnames';
 
 import { useTextCollapse } from '../../hooks/useTextCollapse';

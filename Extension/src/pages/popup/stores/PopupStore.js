@@ -17,6 +17,7 @@
  */
 
 import { createContext } from 'react';
+
 import browser from 'webextension-polyfill';
 import {
     action,

@@ -20,17 +20,17 @@ import SHA256 from 'crypto-js/sha256';
 
 import { Log } from '../../common/log';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
-
 import {
     storage,
     settingsStorage,
     sbCache,
     sbRequestCache,
 } from '../storages';
-import { ExtensionXMLHttpRequest, network } from './network';
 import { UrlUtils } from '../utils/url';
 import { SettingOption } from '../schema';
 import { SAFEBROWSING_OUTPUT } from '../../../../constants';
+
+import { ExtensionXMLHttpRequest, network } from './network';
 
 /**
  * The Safe Browsing API checks whether a site is in a database of potentially

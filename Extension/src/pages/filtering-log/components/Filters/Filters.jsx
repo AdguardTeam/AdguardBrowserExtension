@@ -23,11 +23,12 @@ import React, {
 } from 'react';
 
 import { Actions } from '../Actions';
-import { EventsTypeFilter } from './EventsTypeFilter';
-import { MiscellaneousFilters } from './MiscellaneousFilters';
 import { Icon } from '../../../common/components/ui/Icon';
 import { isVerticalScroll } from '../../../helpers';
 import { useResizeObserver } from '../../../common/hooks/useResizeObserver';
+
+import { MiscellaneousFilters } from './MiscellaneousFilters';
+import { EventsTypeFilter } from './EventsTypeFilter';
 
 import './filters.pcss';
 

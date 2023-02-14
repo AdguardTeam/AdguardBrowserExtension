@@ -20,6 +20,7 @@ import Nanobar from 'nanobar';
 
 import { MessageType } from '../common/messages';
 import { Log } from '../common/log';
+
 import { messenger } from './services/messenger';
 
 export class FilterDownload {

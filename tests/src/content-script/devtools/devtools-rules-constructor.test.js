@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { promises as fsp } from 'fs';
 import path from 'path';
+
 import { DevToolsRulesConstructor } from '../../../../Extension/src/content-script/devtools/devtools-rules-constructor';
 
 describe('DevToolsRulesConstructor', () => {

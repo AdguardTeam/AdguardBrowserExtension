@@ -18,16 +18,17 @@
 
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
+
 import cn from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { Popover } from '../../../common/components/ui/Popover';
-
-import './actions.pcss';
 import { EventsSearch } from '../Filters/EventsSearch';
 import { TabSelector } from '../Filters/TabSelector';
+
+import './actions.pcss';
 
 const Actions = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);

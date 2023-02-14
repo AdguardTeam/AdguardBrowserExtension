@@ -17,6 +17,7 @@
  */
 
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+
 import React, {
     useContext,
     useEffect,
@@ -26,6 +27,7 @@ import React, {
 } from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
+
 import cn from 'classnames';
 
 import { rootStore } from '../../../stores/RootStore';

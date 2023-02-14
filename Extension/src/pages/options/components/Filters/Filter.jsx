@@ -21,18 +21,21 @@ eslint-disable jsx-a11y/anchor-is-valid,
 jsx-a11y/click-events-have-key-events,
 jsx-a11y/no-static-element-interactions
 */
+
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
+
 import cn from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
-import { HighlightSearch } from './Search/HighlightSearch';
-import { FilterTags } from './FilterTags';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { TRUSTED_TAG } from '../../../../common/constants';
+
+import { HighlightSearch } from './Search/HighlightSearch';
+import { FilterTags } from './FilterTags';
 
 import './filter.pcss';
 

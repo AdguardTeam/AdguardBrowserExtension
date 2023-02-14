@@ -17,9 +17,11 @@
  */
 
 import React from 'react';
+
+import { useSelect } from '../../../common/components/ui/Select/SelectProvider';
+
 import { SettingsSet } from './SettingsSet';
 import { Setting, SETTINGS_TYPES } from './Setting';
-import { useSelect } from '../../../common/components/ui/Select/SelectProvider';
 
 export const SettingSetSelect = ({
     title,

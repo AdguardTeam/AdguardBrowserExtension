@@ -18,11 +18,9 @@
 
 // replace unsupported fetch API by xhr requests
 import 'whatwg-fetch';
-
 import escape from 'css.escape';
 import mockBrowser from 'sinon-chrome';
 import { DebouncedFunc } from 'lodash';
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';

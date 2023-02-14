@@ -16,12 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { StringStorage } from '../utils/string-storage';
-import { settingsStorage } from './settings';
 import {
     SettingOption,
     CustomFilterMetadata,
     CustomFilterMetadataStorageData,
 } from '../schema';
+
+import { settingsStorage } from './settings';
 
 /**
  * Class for synchronous control {@link CustomFilterMetadataStorageData},

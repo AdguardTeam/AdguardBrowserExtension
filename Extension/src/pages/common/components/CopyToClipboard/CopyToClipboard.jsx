@@ -24,13 +24,15 @@ import React, {
     forwardRef,
 } from 'react';
 import { observer } from 'mobx-react';
+
 import cn from 'classnames';
 import { nanoid } from 'nanoid';
 
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Tooltip } from '../ui/Tooltip';
-import { copyToClipboardStore } from './copyToClipboardStore';
 import { AttachmentPortal } from '../AttachmentPortal';
+
+import { copyToClipboardStore } from './copyToClipboardStore';
 
 import './copy-to-clipboard.pcss';
 

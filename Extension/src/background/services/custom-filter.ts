@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { WebNavigation } from 'webextension-polyfill';
+
 import {
     isHttpOrWsRequest,
     MAIN_FRAME_ID,
@@ -33,7 +34,6 @@ import {
 import { CustomFilterApi, GetCustomFilterInfoResult } from '../api/filters/custom';
 import { messageHandler } from '../message-handler';
 import { Engine } from '../engine';
-
 import type { CustomFilterMetadata } from '../schema';
 
 /**

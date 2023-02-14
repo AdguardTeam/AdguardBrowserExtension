@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+
 import {
     ApplyBasicRuleEvent,
     defaultFilteringLog,
@@ -34,7 +35,6 @@ import { UserAgent } from '../../../common/user-agent';
 import { Engine } from '../../engine';
 import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
 import { listeners } from '../../notifier';
-
 import {
     toasts,
     FiltersApi,

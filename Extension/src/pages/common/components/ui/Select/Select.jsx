@@ -17,6 +17,7 @@
  */
 
 import React, { useRef, useEffect } from 'react';
+
 import cn from 'classnames';
 
 import { useOutsideClick } from '../../../hooks/useOutsideClick';

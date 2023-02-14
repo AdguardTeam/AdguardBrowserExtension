@@ -18,15 +18,17 @@
 
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
+
 import classNames from 'classnames';
 
-import { Nav } from '../Nav';
-import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
+import { rootStore } from '../../stores/RootStore';
+import { Nav } from '../Nav';
+import { messenger } from '../../../services/messenger';
+
+import { Compare } from './Compare';
 
 import './sidebar.pcss';
-import { messenger } from '../../../services/messenger';
-import { Compare } from './Compare';
 
 const Sidebar = observer(() => {
     const { settingsStore } = useContext(rootStore);

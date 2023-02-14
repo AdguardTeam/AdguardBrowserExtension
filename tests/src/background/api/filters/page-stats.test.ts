@@ -1,5 +1,6 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+
 import { PageStatsApi } from '../../../../../Extension/src/background/api/filters/page-stats';
 import { App } from '../../../../../Extension/src/background/app';
 import { PageStatsStorage } from '../../../../../Extension/src/background/storages';
@@ -8,7 +9,6 @@ import {
     AntibannerGroupsId,
     PAGE_STATISTIC_KEY,
 } from '../../../../../Extension/src/common/constants';
-
 import {
     getEmptyPageStatsDataFixture,
     getEmptyStatisticDataFixture,

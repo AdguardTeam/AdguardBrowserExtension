@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Tabs } from 'webextension-polyfill';
+
 import {
     BACKGROUND_TAB_ID,
     ContentType,
@@ -30,11 +31,12 @@ import {
 
 import { AntiBannerFiltersId } from '../../common/constants';
 import { listeners } from '../notifier';
-import { TabsApi } from './extension/tabs';
-import { UserRulesApi } from './filters';
 import { Engine } from '../engine';
 import { settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
+
+import { UserRulesApi } from './filters';
+import { TabsApi } from './extension/tabs';
 
 export type FilteringEventRuleData = {
     filterId: number,

@@ -16,15 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import path from 'path';
+
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
-import path from 'path';
 import { merge } from 'webpack-merge';
 
 import { genCommonConfig } from '../webpack.common';
-import { firefoxManifest } from './manifest.firefox';
 import { updateManifestBuffer } from '../../helpers';
 import { ENVS } from '../../constants';
+
+import { firefoxManifest } from './manifest.firefox';
 
 export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);

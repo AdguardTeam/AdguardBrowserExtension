@@ -22,6 +22,7 @@ import React, {
     useRef,
 } from 'react';
 import { observer } from 'mobx-react';
+
 import cn from 'classnames';
 
 import { popupStore } from '../../stores/PopupStore';
@@ -29,9 +30,9 @@ import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION } from '../../../common/constants';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 import './header.pcss';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 export const Header = observer(() => {
     const store = useContext(popupStore);

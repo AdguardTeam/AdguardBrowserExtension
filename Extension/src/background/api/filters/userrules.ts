@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { RuleSyntaxUtils, RuleConverter } from '@adguard/tsurlfilter';
+
 import { Log } from '../../../common/log';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';

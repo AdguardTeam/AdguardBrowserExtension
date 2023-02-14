@@ -17,7 +17,9 @@
  */
 
 import React from 'react';
+
 import { translate } from '@adguard/translate';
+
 import { i18n } from './i18n';
 
 /**

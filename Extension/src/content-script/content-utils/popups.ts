@@ -15,16 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Alerts, AppendAlertElementProps } from './alerts';
 import {
     ShowAlertPopupMessage,
     ShowVersionUpdatedPopupMessage,
     sendMessage,
     MessageType,
 } from '../../common/messages';
-import { Elements } from './elements';
-// !Important! Direct import to avoid side effects on tree shaking.
 import { SettingOption } from '../../background/schema/settings';
+
+import { Alerts, AppendAlertElementProps } from './alerts';
+import { Elements } from './elements';
+
+// !Important! Direct import to avoid side effects on tree shaking.
 
 // target always is document
 export type AppendAlertPopupProps = Omit<AppendAlertElementProps, 'target'>;

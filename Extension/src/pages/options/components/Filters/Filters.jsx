@@ -25,8 +25,16 @@ import React, {
 } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import sortBy from 'lodash/sortBy';
+
 import classNames from 'classnames';
+import sortBy from 'lodash/sortBy';
+
+import { rootStore } from '../../stores/RootStore';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { SettingsSection } from '../Settings/SettingsSection';
+import { Icon } from '../../../common/components/ui/Icon';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
+import { AntibannerGroupsId } from '../../../../common/constants';
 
 import { Group } from './Group';
 import { SearchGroup } from './Search/SearchGroup';
@@ -34,14 +42,8 @@ import { Filter } from './Filter';
 import { EmptyCustom } from './EmptyCustom';
 import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
-import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AddCustomModal } from './AddCustomModal';
-import { SettingsSection } from '../Settings/SettingsSection';
-import { Icon } from '../../../common/components/ui/Icon';
 import { SEARCH_FILTERS } from './Search/constants';
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { AntibannerGroupsId } from '../../../../common/constants';
 
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',

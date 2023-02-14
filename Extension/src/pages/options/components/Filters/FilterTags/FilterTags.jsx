@@ -17,6 +17,7 @@
  */
 
 import React from 'react';
+
 import { Popover } from '../../../../common/components/ui/Popover';
 
 import { FilterTag } from './FilterTag';

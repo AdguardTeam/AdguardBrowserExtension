@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+
 import { tabsApi as tsWebExtTabsApi } from '@adguard/tswebextension';
 
 import { UserAgent } from '../../../common/user-agent';
@@ -27,9 +28,10 @@ import {
 import { NotificationTextRecord } from '../../schema';
 import { TabsApi } from '../extension';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
-import { UiApi } from './main';
 import { Log } from '../../../common/log';
 import { I18n } from '../../utils';
+
+import { UiApi } from './main';
 
 /**
  * Promo Notification API is needed to work with notifications.

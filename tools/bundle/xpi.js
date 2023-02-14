@@ -18,7 +18,9 @@
 
 import path from 'path';
 import { promises as fs } from 'fs';
+
 import webExt from 'web-ext';
+
 import {
     BUILD_PATH,
     ENVS,

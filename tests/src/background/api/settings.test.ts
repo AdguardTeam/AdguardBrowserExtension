@@ -1,5 +1,6 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+
 import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../constants';
 import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';

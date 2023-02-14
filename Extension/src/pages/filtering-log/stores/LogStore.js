@@ -31,6 +31,7 @@ import { RequestType } from '../../../common/constants';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { messenger } from '../../services/messenger';
 import { getFilterName } from '../components/RequestWizard/utils';
+
 import { matchesSearch } from './helpers';
 
 const MISCELLANEOUS_FILTERS = {

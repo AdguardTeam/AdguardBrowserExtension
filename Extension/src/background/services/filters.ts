@@ -23,7 +23,6 @@ import {
     MessageType,
 } from '../../common/messages';
 import { SettingOption } from '../schema';
-
 import { messageHandler } from '../message-handler';
 import { Engine } from '../engine';
 import {

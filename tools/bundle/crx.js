@@ -18,7 +18,9 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import Crx from 'crx';
+
 import {
     ENVS,
     BROWSERS,
