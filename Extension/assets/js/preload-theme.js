@@ -31,10 +31,8 @@
         case 'light':
             document.body.classList.add('body_light');
             break;
-        /*
-            if theme parameter is missing or a system theme is selected,
-            the desired color is selected using the css media query
-        */
+        // if theme parameter is missing or a system theme is selected,
+        // the desired color is selected using the css media query
         case 'system':
         default:
             break;
