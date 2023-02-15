@@ -16,10 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
-    this script is injected at the top of the page to display
-    the desired color theme before the main bundle is loaded
-*/
+/**
+ * This script is injected at the top of the page
+ * to display the desired color theme before the main bundle is loaded.
+ */
 (function () {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const theme = urlSearchParams.get('theme');
