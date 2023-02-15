@@ -147,10 +147,12 @@ export class UserRulesService {
     }
 
     /**
-     * Updates the tswebextension engine.
+     * Updates the tswebextension engine on {@link SettingOption.UserFilterEnabled} setting change.
+     * This setting can be changed by the switch ui element, so it is important to update the engine config
+     * via debounce function, as this is a heavyweight call.
      */
-    private static async handleEnableStateChange(): Promise<void> {
-        await Engine.update();
+    private static handleEnableStateChange(): void {
+        Engine.debounceUpdate();
     }
 
     /**
