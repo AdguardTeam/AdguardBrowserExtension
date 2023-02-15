@@ -1,12 +1,12 @@
 (function(source, args) {
     function ATInternetSmartTag(source) {
-        var setNoopFuncWrapper = {
+        const setNoopFuncWrapper = {
             set: noopFunc
         };
-        var sendNoopFuncWrapper = {
+        const sendNoopFuncWrapper = {
             send: noopFunc
         };
-        var ecommerceWrapper = {
+        const ecommerceWrapper = {
             displayCart: {
                 products: setNoopFuncWrapper,
                 cart: setNoopFuncWrapper
@@ -27,7 +27,7 @@
                 products: setNoopFuncWrapper
             }
         };
-        var tag = function tag() {};
+        const tag = function tag() {};
         tag.prototype = {
             setConfig: noopFunc,
             setParam: noopFunc,
@@ -65,11 +65,9 @@
                 removeAll: noopFunc
             }
         };
-        var smartTagWrapper = {
+        const smartTagWrapper = {
             Tracker: {
-                Tag: function Tag() {
-                    return new tag;
-                }
+                Tag: tag
             }
         };
         window.ATInternet = smartTagWrapper;
@@ -80,19 +78,19 @@
             return;
         }
         try {
-            var log = console.log.bind(console);
-            var trace = console.trace.bind(console);
-            var prefix = source.ruleText || "";
+            const log = console.log.bind(console);
+            const trace = console.trace.bind(console);
+            let prefix = source.ruleText || "";
             if (source.domainName) {
-                var AG_SCRIPTLET_MARKER = "#%#//";
-                var UBO_SCRIPTLET_MARKER = "##+js";
-                var ruleStartIndex;
+                const AG_SCRIPTLET_MARKER = "#%#//";
+                const UBO_SCRIPTLET_MARKER = "##+js";
+                let ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                var rulePart = source.ruleText.slice(ruleStartIndex);
+                const rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

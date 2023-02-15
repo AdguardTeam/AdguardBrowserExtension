@@ -178,7 +178,7 @@ module.exports = {
         'build',
         'private',
         'Extension/pages/blocking-pages/app.js',
-        'Extension/web-accessible-resources/*',
+        'Extension/web-accessible-resources',
         'tests/src/background/filter/request-filter/test_filter.js',
         'Extension/src/background/settings/validator.js',
     ],
