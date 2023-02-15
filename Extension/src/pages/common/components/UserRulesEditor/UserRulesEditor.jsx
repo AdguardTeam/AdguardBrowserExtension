@@ -25,9 +25,7 @@ import React, {
 import { observer } from 'mobx-react';
 
 import { Range } from 'ace-builds';
-import debounce from 'lodash/debounce';
-
-import { SimpleRegex } from '@adguard/tsurlfilter';
+import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
 import { Editor } from '../Editor';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -37,7 +35,6 @@ import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
 import { MessageType } from '../../../../common/messages';
 import { NotifierType } from '../../../../common/constants';
-import { HANDLER_DELAY_MS } from '../../constants';
 import { handleFileUpload } from '../../../helpers';
 import { Log } from '../../../../common/log';
 import { exportData, ExportTypes } from '../../utils/export';
@@ -344,9 +341,9 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         window.close();
     };
 
-    const handleUserRulesToggle = debounce((e) => {
+    const handleUserRulesToggle = (e) => {
         store.updateSetting(e.id, e.data);
-    }, HANDLER_DELAY_MS);
+    };
 
     const fullscreenTooltipText = fullscreen
         ? reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')
