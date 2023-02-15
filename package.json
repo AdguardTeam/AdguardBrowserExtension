@@ -16,17 +16,12 @@
     "locales:validate": "babel-node tools/locales.js validate",
     "locales:info": "babel-node tools/locales.js info",
     "resources": "babel-node tools/resources.js",
-    "lint": "eslint --cache --ext .jsx,.js,.tsx,.ts .",
+    "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts .",
     "increment": "yarn version --patch --no-git-tag-version",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "check-types": "tsc --project tsconfig.background.json --noEmit",
     "disclaimer": "yarn lint | babel-node tools/insert-disclaimer.js"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts ."
-    ]
   },
   "repository": {
     "type": "git",
@@ -82,7 +77,7 @@
     "husky": "^7.0.1",
     "jest": "^29.3.1",
     "jest-environment-jsdom": "^29.3.1",
-    "lint-staged": "^11.1.2",
+    "lint-staged": "^13.1.2",
     "postcss": "^8.4.12",
     "postcss-loader": "^6.1.1",
     "postcss-nested": "^5.0.6",

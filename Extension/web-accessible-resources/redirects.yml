@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.7.20
+#    Version 1.8.2
 #
 - title: 1x1-transparent.gif
   description: |-
@@ -426,22 +426,22 @@
         'use strict';
 
         function clickToLoad() {
-          var QUESTION_MARK = '?';
-          var AMPERSAND = '&';
-          var SEARCH_PARAMS_DIVIDER = '=';
-          var ORIGIN_URL_PARAM = '__origin';
-          var EXT_UNBLOCK_PARAM = '__unblock';
-          var CL_UNBLOCK_PARAM = '__adg_unblock_token';
-          var CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
-          var BLOCKING_RULE_PARAM = '__adg_blocking_rule';
-          var CLICK_EVENT = 'click';
-          var CL_FORCE_EVENT = 'force';
-          var neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
-          var parseSearchParam = function parseSearchParam(rawQueryStr) {
-            var res = {};
-            var pattern = /([^&=]+)=([^&]*)/g;
-            var matchedData;
-            var queryStr = rawQueryStr.substring(1);
+          const QUESTION_MARK = '?';
+          const AMPERSAND = '&';
+          const SEARCH_PARAMS_DIVIDER = '=';
+          const ORIGIN_URL_PARAM = '__origin';
+          const EXT_UNBLOCK_PARAM = '__unblock';
+          const CL_UNBLOCK_PARAM = '__adg_unblock_token';
+          const CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
+          const BLOCKING_RULE_PARAM = '__adg_blocking_rule';
+          const CLICK_EVENT = 'click';
+          const CL_FORCE_EVENT = 'force';
+          const neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
+          const parseSearchParam = function parseSearchParam(rawQueryStr) {
+            const res = {};
+            const pattern = /([^&=]+)=([^&]*)/g;
+            let matchedData;
+            let queryStr = rawQueryStr.substring(1);
             while (matchedData = pattern.exec(queryStr)) {
               if (neededParams.indexOf(matchedData[1]) > -1) {
                 res[matchedData[1]] = matchedData[2];
@@ -450,23 +450,23 @@
             }
             return res;
           };
-          var paramsData = parseSearchParam(window.location.search);
-          var getParamByKey = function getParamByKey(key) {
+          const paramsData = parseSearchParam(window.location.search);
+          const getParamByKey = function getParamByKey(key) {
             return paramsData[key] || '';
           };
-          var extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
-          var clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
-          var blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
-          var originUrl = clUnblockToken
+          const extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
+          const clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
+          const blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
+          const originUrl = clUnblockToken
           ? window.location.href : decodeURIComponent(getParamByKey(ORIGIN_URL_PARAM));
-          var clickTitleElem = document.getElementById('clickToLoadTitle');
-          var clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
-          var clickButtonElem = document.getElementById('clickToLoadLink');
-          var originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
+          const clickTitleElem = document.getElementById('clickToLoadTitle');
+          const clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
+          const clickButtonElem = document.getElementById('clickToLoadLink');
+          const originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
           clickSubtitleElem.textContent = originUrlToDisplay;
           clickButtonElem.href = originUrlToDisplay;
           clickButtonElem.title = originUrlToDisplay;
-          var translationsData = {
+          const translationsData = {
             en: {
               title: 'Content blocked by AdGuard',
               button: 'Click to load'
@@ -512,13 +512,13 @@
               button: 'Однаково завантажити'
             }
           };
-          var getTranslations = function getTranslations() {
-            var baseLocaleData = translationsData.en;
+          const getTranslations = function getTranslations() {
+            const baseLocaleData = translationsData.en;
             try {
-              var currentLocale = navigator.language.toLowerCase();
-              var localeData = translationsData[currentLocale];
+              const currentLocale = navigator.language.toLowerCase();
+              let localeData = translationsData[currentLocale];
               if (!localeData) {
-                var lang = currentLocale.split('-')[0];
+                const lang = currentLocale.split('-')[0];
                 localeData = translationsData[lang];
               }
               if (!localeData) {
@@ -529,24 +529,24 @@
               return baseLocaleData;
             }
           };
-          var translations = getTranslations();
+          const translations = getTranslations();
           clickTitleElem.textContent = translations.title;
           clickButtonElem.textContent = translations.button;
-          var getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
-            var questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
-            var divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
+          const getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
+            const questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
+            let divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
             if (originUrl.substring(questionMarkIndex).length === 1) {
               divider = '';
             }
             return "".concat(originUrl).concat(divider).concat(unblockTokenName).concat(SEARCH_PARAMS_DIVIDER).concat(unblockTokenValue);
           };
-          var extRun = function extRun() {
-            var replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
+          const extRun = function extRun() {
+            const replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
             window.location.replace(replaceUrl);
           };
-          var clRun = function clRun() {
-            var CL_SPECIFIC_UNBLOCK_VALUE = 1;
-            var replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
+          const clRun = function clRun() {
+            const CL_SPECIFIC_UNBLOCK_VALUE = 1;
+            const replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
             window.location.replace(replaceUrl);
           };
           clickButtonElem.addEventListener(CLICK_EVENT, function (e) {
@@ -564,17 +564,17 @@
           clickButtonElem.addEventListener(CL_FORCE_EVENT, function () {
             clRun();
           });
-          var hasFrameModifier = function hasFrameModifier(rule) {
-            var substringAfter = function substringAfter(str, separator) {
-              var index = str.indexOf(separator);
+          const hasFrameModifier = function hasFrameModifier(rule) {
+            const substringAfter = function substringAfter(str, separator) {
+              const index = str.indexOf(separator);
               return index < 0 ? '' : str.substring(index + separator.length);
             };
-            var FRAME_MARKER = 'frame';
-            var SUBDOCUMENT_MARKER = 'subdocument';
-            var ruleModifiers = substringAfter(rule, '$').split(',');
+            const FRAME_MARKER = 'frame';
+            const SUBDOCUMENT_MARKER = 'subdocument';
+            const ruleModifiers = substringAfter(rule, '$').split(',');
             return ruleModifiers.indexOf(FRAME_MARKER) > -1 || ruleModifiers.indexOf(SUBDOCUMENT_MARKER) > -1;
           };
-          var isInsideFrame = function isInsideFrame() {
+          const isInsideFrame = function isInsideFrame() {
             return window.self !== window.top;
           };
           if (clUnblockToken && blockingRule && hasFrameModifier(blockingRule) && !isInsideFrame()) {
@@ -587,7 +587,7 @@
     </script>
       </body>
     </html>
-  sha: sha256-Bm6SGASuSJ/y5W6tMmcnxeShdKrQ2QtIV2mH1Oh8qho=
+  sha: sha256-/LXEqDmVMWdyPFjNsOl0yp3A6W+5pEv8yN6hmCLoAiE=
 
 - title: amazon-apstag
   comment: Mocks Amazon's apstag.js
@@ -598,8 +598,8 @@
   content: |-
     (function(source, args) {
         function AmazonApstag(source) {
-            var apstagWrapper = {
-                fetchBids: function fetchBids(a, b) {
+            const apstagWrapper = {
+                fetchBids(a, b) {
                     if (typeof b === "function") {
                         b([]);
                     }
@@ -616,19 +616,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -661,13 +661,13 @@
   content: |-
     (function(source, args) {
         function ATInternetSmartTag(source) {
-            var setNoopFuncWrapper = {
+            const setNoopFuncWrapper = {
                 set: noopFunc
             };
-            var sendNoopFuncWrapper = {
+            const sendNoopFuncWrapper = {
                 send: noopFunc
             };
-            var ecommerceWrapper = {
+            const ecommerceWrapper = {
                 displayCart: {
                     products: setNoopFuncWrapper,
                     cart: setNoopFuncWrapper
@@ -688,7 +688,7 @@
                     products: setNoopFuncWrapper
                 }
             };
-            var tag = function tag() {};
+            const tag = function tag() {};
             tag.prototype = {
                 setConfig: noopFunc,
                 setParam: noopFunc,
@@ -726,11 +726,9 @@
                     removeAll: noopFunc
                 }
             };
-            var smartTagWrapper = {
+            const smartTagWrapper = {
                 Tracker: {
-                    Tag: function Tag() {
-                        return new tag;
-                    }
+                    Tag: tag
                 }
             };
             window.ATInternet = smartTagWrapper;
@@ -741,19 +739,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -799,7 +797,7 @@
                 return new UserConsentStatusForVendorSubscribe;
             };
             UserConsentStatusForVendor.prototype.subscribe = noopFunc;
-            var DidomiWrapper = {
+            const DidomiWrapper = {
                 isConsentRequired: falseFunc,
                 getUserConsentStatusForPurpose: trueFunc,
                 getUserConsentStatus: trueFunc,
@@ -817,7 +815,7 @@
                     showDataProcessing: trueFunc
                 },
                 isUserConsentStatusPartial: falseFunc,
-                on: function on() {
+                on() {
                     return {
                         actions: {},
                         emitter: {},
@@ -827,12 +825,12 @@
                 },
                 shouldConsentBeCollected: falseFunc,
                 getUserConsentStatusForAll: noopFunc,
-                getObservableOnUserConsentStatusForVendor: function getObservableOnUserConsentStatusForVendor() {
+                getObservableOnUserConsentStatusForVendor() {
                     return new UserConsentStatusForVendor;
                 }
             };
             window.Didomi = DidomiWrapper;
-            var didomiStateWrapper = {
+            const didomiStateWrapper = {
                 didomiExperimentId: "",
                 didomiExperimentUserGroup: "",
                 didomiGDPRApplies: 1,
@@ -848,7 +846,7 @@
                 didomiVendorsRawConsentUnknown: ""
             };
             window.didomiState = didomiStateWrapper;
-            var tcData = {
+            const tcData = {
                 eventStatus: "tcloaded",
                 gdprApplies: false,
                 listenerId: noopFunc,
@@ -859,21 +857,21 @@
                     consents: []
                 }
             };
-            var __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
+            const __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
                 if (typeof callback !== "function" || command === "removeEventListener") {
                     return;
                 }
                 callback(tcData, true);
             };
             window.__tcfapi = __tcfapiWrapper;
-            var didomiEventListenersWrapper = {
+            const didomiEventListenersWrapper = {
                 stub: true,
                 push: noopFunc
             };
             window.didomiEventListeners = didomiEventListenersWrapper;
-            var didomiOnReadyWrapper = {
+            const didomiOnReadyWrapper = {
                 stub: true,
-                push: function push(arg) {
+                push(arg) {
                     if (typeof arg !== "function") {
                         return;
                     }
@@ -903,19 +901,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -959,11 +957,11 @@
   content: |-
     (function(source, args) {
         function Fingerprintjs2(source) {
-            var browserId = "";
-            for (var i = 0; i < 8; i += 1) {
+            let browserId = "";
+            for (let i = 0; i < 8; i += 1) {
                 browserId += (Math.random() * 65536 + 4096).toString(16).slice(-4);
             }
-            var Fingerprint2 = function Fingerprint2() {};
+            const Fingerprint2 = function Fingerprint2() {};
             Fingerprint2.get = function(options, callback) {
                 if (!callback) {
                     callback = options;
@@ -985,19 +983,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1031,19 +1029,19 @@
   content: |-
     (function(source, args) {
         function Fingerprintjs3(source) {
-            var visitorId = function() {
-                var id = "";
-                for (var i = 0; i < 8; i += 1) {
+            const visitorId = function() {
+                let id = "";
+                for (let i = 0; i < 8; i += 1) {
                     id += (Math.random() * 65536 + 4096).toString(16).slice(-4);
                 }
                 return id;
             }();
-            var FingerprintJS = function FingerprintJS() {};
+            const FingerprintJS = function FingerprintJS() {};
             FingerprintJS.prototype = {
-                load: function load() {
+                load() {
                     return Promise.resolve(new FingerprintJS);
                 },
-                get: function get() {
+                get() {
                     return Promise.resolve({
                         visitorId: visitorId
                     });
@@ -1058,19 +1056,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1105,7 +1103,7 @@
   content: |-
     (function(source, args) {
         function Gemius(source) {
-            var GemiusPlayer = function GemiusPlayer() {};
+            const GemiusPlayer = function GemiusPlayer() {};
             GemiusPlayer.prototype = {
                 setVideoObject: noopFunc,
                 newProgram: noopFunc,
@@ -1121,19 +1119,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1192,8 +1190,8 @@
                     data[2]();
                 }
             };
-            var gaq = new Gaq;
-            var asyncTrackers = window._gaq || [];
+            const gaq = new Gaq;
+            const asyncTrackers = window._gaq || [];
             if (Array.isArray(asyncTrackers)) {
                 while (asyncTrackers[0]) {
                     gaq.push(asyncTrackers.shift());
@@ -1201,8 +1199,8 @@
             }
             window._gaq = gaq.qf = gaq;
             function Gat() {}
-            var api = [ "_addIgnoredOrganic", "_addIgnoredRef", "_addItem", "_addOrganic", "_addTrans", "_clearIgnoredOrganic", "_clearIgnoredRef", "_clearOrganic", "_cookiePathCopy", "_deleteCustomVar", "_getName", "_setAccount", "_getAccount", "_getClientInfo", "_getDetectFlash", "_getDetectTitle", "_getLinkerUrl", "_getLocalGifPath", "_getServiceMode", "_getVersion", "_getVisitorCustomVar", "_initData", "_link", "_linkByPost", "_setAllowAnchor", "_setAllowHash", "_setAllowLinker", "_setCampContentKey", "_setCampMediumKey", "_setCampNameKey", "_setCampNOKey", "_setCampSourceKey", "_setCampTermKey", "_setCampaignCookieTimeout", "_setCampaignTrack", "_setClientInfo", "_setCookiePath", "_setCookiePersistence", "_setCookieTimeout", "_setCustomVar", "_setDetectFlash", "_setDetectTitle", "_setDomainName", "_setLocalGifPath", "_setLocalRemoteServerMode", "_setLocalServerMode", "_setReferrerOverride", "_setRemoteServerMode", "_setSampleRate", "_setSessionTimeout", "_setSiteSpeedSampleRate", "_setSessionCookieTimeout", "_setVar", "_setVisitorCookieTimeout", "_trackEvent", "_trackPageLoadTime", "_trackPageview", "_trackSocial", "_trackTiming", "_trackTrans", "_visitCode" ];
-            var tracker = api.reduce((function(res, funcName) {
+            const api = [ "_addIgnoredOrganic", "_addIgnoredRef", "_addItem", "_addOrganic", "_addTrans", "_clearIgnoredOrganic", "_clearIgnoredRef", "_clearOrganic", "_cookiePathCopy", "_deleteCustomVar", "_getName", "_setAccount", "_getAccount", "_getClientInfo", "_getDetectFlash", "_getDetectTitle", "_getLinkerUrl", "_getLocalGifPath", "_getServiceMode", "_getVersion", "_getVisitorCustomVar", "_initData", "_link", "_linkByPost", "_setAllowAnchor", "_setAllowHash", "_setAllowLinker", "_setCampContentKey", "_setCampMediumKey", "_setCampNameKey", "_setCampNOKey", "_setCampSourceKey", "_setCampTermKey", "_setCampaignCookieTimeout", "_setCampaignTrack", "_setClientInfo", "_setCookiePath", "_setCookiePersistence", "_setCookieTimeout", "_setCustomVar", "_setDetectFlash", "_setDetectTitle", "_setDomainName", "_setLocalGifPath", "_setLocalRemoteServerMode", "_setLocalServerMode", "_setReferrerOverride", "_setRemoteServerMode", "_setSampleRate", "_setSessionTimeout", "_setSiteSpeedSampleRate", "_setSessionCookieTimeout", "_setVar", "_setVisitorCookieTimeout", "_trackEvent", "_trackPageLoadTime", "_trackPageview", "_trackSocial", "_trackTiming", "_trackTrans", "_visitCode" ];
+            const tracker = api.reduce((function(res, funcName) {
                 res[funcName] = noopFunc;
                 return res;
             }), {});
@@ -1237,7 +1235,7 @@
             Gat.prototype.oa = noopFunc;
             Gat.prototype.pa = noopFunc;
             Gat.prototype.u = noopFunc;
-            var gat = new Gat;
+            const gat = new Gat;
             window._gat = gat;
             hit(source);
         }
@@ -1246,19 +1244,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1273,10 +1271,21 @@
         }
         function noopFunc() {}
         function logMessage(source, message) {
-            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            if (forced || source.verbose) {
-                console.log("".concat(source.name, ": ").concat(message));
+            let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+            if (!forced && !verbose) {
+                return;
             }
+            let messageStr = "".concat(name, ": ").concat(message);
+            if (ruleText) {
+                const RULE_MARKER = "#%#//scriptlet";
+                const markerIdx = ruleText.indexOf(RULE_MARKER);
+                if (markerIdx > -1) {
+                    const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
+                    messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
+                }
+            }
+            console.log(messageStr);
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -1302,19 +1311,19 @@
   content: |-
     (function(source, args) {
         function GoogleAnalytics(source) {
-            var Tracker = function Tracker() {};
-            var proto = Tracker.prototype;
+            const Tracker = function Tracker() {};
+            const proto = Tracker.prototype;
             proto.get = noopFunc;
             proto.set = noopFunc;
             proto.send = noopFunc;
-            var googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
+            const googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
             function ga(a) {
-                var len = arguments.length;
+                const len = arguments.length;
                 if (len === 0) {
                     return;
                 }
-                var lastArg = arguments[len - 1];
-                var replacer;
+                const lastArg = arguments[len - 1];
+                let replacer;
                 if (lastArg instanceof Object && lastArg !== null && typeof lastArg.hitCallback === "function") {
                     replacer = lastArg.hitCallback;
                 } else if (typeof lastArg === "function") {
@@ -1338,14 +1347,14 @@
             ga.remove = noopFunc;
             ga.loaded = true;
             window[googleAnalyticsName] = ga;
-            var _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
+            const _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
             if (dataLayer instanceof Object === false) {
                 return;
             }
             if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === "function") {
                 dataLayer.hide.end();
             }
-            var handleCallback = function handleCallback(dataObj, funcName) {
+            const handleCallback = function handleCallback(dataObj, funcName) {
                 if (dataObj && typeof dataObj[funcName] === "function") {
                     setTimeout(dataObj[funcName]);
                 }
@@ -1354,7 +1363,7 @@
                 dataLayer.push = function(data) {
                     if (data instanceof Object) {
                         handleCallback(data, "eventCallback");
-                        for (var key in data) {
+                        for (const key in data) {
                             handleCallback(data[key], "event_callback");
                         }
                         if (!data.hasOwnProperty("eventCallback") && !data.hasOwnProperty("eventCallback")) {
@@ -1370,7 +1379,7 @@
                 };
             }
             if (google_optimize instanceof Object && typeof google_optimize.get === "function") {
-                var googleOptimizeWrapper = {
+                const googleOptimizeWrapper = {
                     get: noopFunc
                 };
                 window.google_optimize = googleOptimizeWrapper;
@@ -1382,19 +1391,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1435,12 +1444,12 @@
   content: |-
     (function(source, args) {
         function GoogleIma3(source) {
-            var VERSION = "3.453.0";
-            var ima = {};
-            var AdDisplayContainer = function AdDisplayContainer() {};
+            const VERSION = "3.453.0";
+            const ima = {};
+            const AdDisplayContainer = function AdDisplayContainer() {};
             AdDisplayContainer.prototype.destroy = noopFunc;
             AdDisplayContainer.prototype.initialize = noopFunc;
-            var ImaSdkSettings = function ImaSdkSettings() {};
+            const ImaSdkSettings = function ImaSdkSettings() {};
             ImaSdkSettings.CompanionBackfillMode = {
                 ALWAYS: "always",
                 ON_MASTER_AD: "on_master_ad"
@@ -1460,75 +1469,75 @@
                 t: "",
                 v: "",
                 getCompanionBackfill: noopFunc,
-                getDisableCustomPlaybackForIOS10Plus: function getDisableCustomPlaybackForIOS10Plus() {
+                getDisableCustomPlaybackForIOS10Plus() {
                     return this.i;
                 },
                 getDisabledFlashAds: function getDisabledFlashAds() {
                     return true;
                 },
-                getFeatureFlags: function getFeatureFlags() {
+                getFeatureFlags() {
                     return this.f;
                 },
-                getLocale: function getLocale() {
+                getLocale() {
                     return this.l;
                 },
-                getNumRedirects: function getNumRedirects() {
+                getNumRedirects() {
                     return this.r;
                 },
-                getPlayerType: function getPlayerType() {
+                getPlayerType() {
                     return this.t;
                 },
-                getPlayerVersion: function getPlayerVersion() {
+                getPlayerVersion() {
                     return this.v;
                 },
-                getPpid: function getPpid() {
+                getPpid() {
                     return this.p;
                 },
-                getVpaidMode: function getVpaidMode() {
+                getVpaidMode() {
                     return this.C;
                 },
-                isCookiesEnabled: function isCookiesEnabled() {
+                isCookiesEnabled() {
                     return this.c;
                 },
-                isVpaidAdapter: function isVpaidAdapter() {
+                isVpaidAdapter() {
                     return this.M;
                 },
                 setCompanionBackfill: noopFunc,
-                setAutoPlayAdBreaks: function setAutoPlayAdBreaks(a) {
+                setAutoPlayAdBreaks(a) {
                     this.K = a;
                 },
-                setCookiesEnabled: function setCookiesEnabled(c) {
+                setCookiesEnabled(c) {
                     this.c = !!c;
                 },
-                setDisableCustomPlaybackForIOS10Plus: function setDisableCustomPlaybackForIOS10Plus(i) {
+                setDisableCustomPlaybackForIOS10Plus(i) {
                     this.i = !!i;
                 },
                 setDisableFlashAds: noopFunc,
-                setFeatureFlags: function setFeatureFlags(f) {
+                setFeatureFlags(f) {
                     this.f = !!f;
                 },
-                setIsVpaidAdapter: function setIsVpaidAdapter(a) {
+                setIsVpaidAdapter(a) {
                     this.M = a;
                 },
-                setLocale: function setLocale(l) {
+                setLocale(l) {
                     this.l = !!l;
                 },
-                setNumRedirects: function setNumRedirects(r) {
+                setNumRedirects(r) {
                     this.r = !!r;
                 },
-                setPageCorrelator: function setPageCorrelator(a) {
+                setPageCorrelator(a) {
                     this.R = a;
                 },
-                setPlayerType: function setPlayerType(t) {
+                setPlayerType(t) {
                     this.t = !!t;
                 },
-                setPlayerVersion: function setPlayerVersion(v) {
+                setPlayerVersion(v) {
                     this.v = !!v;
                 },
-                setPpid: function setPpid(p) {
+                setPpid(p) {
                     this.p = !!p;
                 },
-                setVpaidMode: function setVpaidMode(a) {
+                setVpaidMode(a) {
                     this.C = a;
                 },
                 setSessionId: noopFunc,
@@ -1544,12 +1553,12 @@
                     INSECURE: 2
                 }
             };
-            var EventHandler = function EventHandler() {
+            const EventHandler = function EventHandler() {
                 this.listeners = new Map;
                 this._dispatch = function(e) {
-                    var listeners = this.listeners.get(e.type) || [];
+                    const listeners = this.listeners.get(e.type) || [];
                     for (var _i = 0, _Array$from = Array.from(listeners); _i < _Array$from.length; _i++) {
-                        var listener = _Array$from[_i];
+                        const listener = _Array$from[_i];
                         try {
                             listener(e);
                         } catch (r) {
@@ -1568,7 +1577,7 @@
                     (_this$listeners$get = this.listeners.get(t)) === null || _this$listeners$get === void 0 ? void 0 : _this$listeners$get.delete(c);
                 };
             };
-            var AdsManager = new EventHandler;
+            const AdsManager = new EventHandler;
             AdsManager.volume = 1;
             AdsManager.collapse = noopFunc;
             AdsManager.configureAdsManager = noopFunc;
@@ -1611,7 +1620,7 @@
             AdsManager.skip = noopFunc;
             AdsManager.start = function() {
                 for (var _i2 = 0, _arr = [ AdEvent.Type.ALL_ADS_COMPLETED, AdEvent.Type.CONTENT_RESUME_REQUESTED ]; _i2 < _arr.length; _i2++) {
-                    var type = _arr[_i2];
+                    const type = _arr[_i2];
                     try {
                         this._dispatch(new ima.AdEvent(type));
                     } catch (e) {
@@ -1621,8 +1630,8 @@
             };
             AdsManager.stop = noopFunc;
             AdsManager.updateAdsRenderingSettings = noopFunc;
-            var manager = Object.create(AdsManager);
-            var AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
+            const manager = Object.create(AdsManager);
+            const AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
                 this.type = type;
                 this.adsRequest = adsRequest;
                 this.userRequestContext = userRequestContext;
@@ -1631,7 +1640,7 @@
                 getAdsManager: function getAdsManager() {
                     return manager;
                 },
-                getUserRequestContext: function getUserRequestContext() {
+                getUserRequestContext() {
                     if (this.userRequestContext) {
                         return this.userRequestContext;
                     }
@@ -1641,7 +1650,7 @@
             AdsManagerLoadedEvent.Type = {
                 ADS_MANAGER_LOADED: "adsManagerLoaded"
             };
-            var AdsLoader = EventHandler;
+            const AdsLoader = EventHandler;
             AdsLoader.prototype.settings = new ImaSdkSettings;
             AdsLoader.prototype.contentComplete = noopFunc;
             AdsLoader.prototype.destroy = noopFunc;
@@ -1654,23 +1663,23 @@
             AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
                 var _this = this;
                 requestAnimationFrame((function() {
-                    var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
-                    var event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
+                    const ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                    const event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
                     _this._dispatch(event);
                 }));
-                var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
+                const e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
                 requestAnimationFrame((function() {
                     _this._dispatch(new ima.AdErrorEvent(e));
                 }));
             };
-            var AdsRenderingSettings = noopFunc;
-            var AdsRequest = function AdsRequest() {};
+            const AdsRenderingSettings = noopFunc;
+            const AdsRequest = function AdsRequest() {};
             AdsRequest.prototype = {
                 setAdWillAutoPlay: noopFunc,
                 setAdWillPlayMuted: noopFunc,
                 setContinuousPlayback: noopFunc
             };
-            var AdPodInfo = function AdPodInfo() {};
+            const AdPodInfo = function AdPodInfo() {};
             AdPodInfo.prototype = {
                 getAdPosition: function getAdPosition() {
                     return 1;
@@ -1691,13 +1700,13 @@
                     return 1;
                 }
             };
-            var Ad = function Ad() {};
+            const Ad = function Ad() {};
             Ad.prototype = {
                 pi: new AdPodInfo,
                 getAdId: function getAdId() {
                     return "";
                 },
-                getAdPodInfo: function getAdPodInfo() {
+                getAdPodInfo() {
                     return this.pi;
                 },
                 getAdSystem: function getAdSystem() {
@@ -1784,11 +1793,11 @@
                 isLinear: function isLinear() {
                     return true;
                 },
-                isSkippable: function isSkippable() {
+                isSkippable() {
                     return true;
                 }
             };
-            var CompanionAd = function CompanionAd() {};
+            const CompanionAd = function CompanionAd() {};
             CompanionAd.prototype = {
                 getAdSlotId: function getAdSlotId() {
                     return "";
@@ -1806,7 +1815,7 @@
                     return 1;
                 }
             };
-            var AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
+            const AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
                 this.errorCode = code;
                 this.message = message;
                 this.type = type;
@@ -1831,11 +1840,11 @@
             };
             AdError.ErrorCode = {};
             AdError.Type = {};
-            var isEngadget = function isEngadget() {
+            const isEngadget = function isEngadget() {
                 try {
                     for (var _i3 = 0, _Object$values = Object.values(window.vidible._getContexts()); _i3 < _Object$values.length; _i3++) {
                         var _ctx$getPlayer, _ctx$getPlayer$div;
-                        var ctx = _Object$values[_i3];
+                        const ctx = _Object$values[_i3];
                         if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer$div = _ctx$getPlayer.div) !== null && _ctx$getPlayer$div !== void 0 && _ctx$getPlayer$div.innerHTML.includes("www.engadget.com")) {
                             return true;
                         }
@@ -1843,8 +1852,8 @@
                 } catch (e) {}
                 return false;
             };
-            var currentAd = isEngadget() ? undefined : new Ad;
-            var AdEvent = function AdEvent(type) {
+            const currentAd = isEngadget() ? undefined : new Ad;
+            const AdEvent = function AdEvent(type) {
                 this.type = type;
             };
             AdEvent.prototype = {
@@ -1887,7 +1896,7 @@
                 VOLUME_CHANGED: "volumeChange",
                 VOLUME_MUTED: "mute"
             };
-            var AdErrorEvent = function AdErrorEvent(error) {
+            const AdErrorEvent = function AdErrorEvent(error) {
                 this.error = error;
                 this.type = "adError";
                 this.getError = function() {
@@ -1904,11 +1913,11 @@
             AdErrorEvent.Type = {
                 AD_ERROR: "adError"
             };
-            var CustomContentLoadedEvent = function CustomContentLoadedEvent() {};
+            const CustomContentLoadedEvent = function CustomContentLoadedEvent() {};
             CustomContentLoadedEvent.Type = {
                 CUSTOM_CONTENT_LOADED: "deprecated-event"
             };
-            var CompanionAdSelectionSettings = function CompanionAdSelectionSettings() {};
+            const CompanionAdSelectionSettings = function CompanionAdSelectionSettings() {};
             CompanionAdSelectionSettings.CreativeType = {
                 ALL: "All",
                 FLASH: "Flash",
@@ -1925,7 +1934,7 @@
                 SELECT_EXACT_MATCH: "SelectExactMatch",
                 SELECT_NEAR_MATCH: "SelectNearMatch"
             };
-            var AdCuePoints = function AdCuePoints() {};
+            const AdCuePoints = function AdCuePoints() {};
             AdCuePoints.prototype = {
                 getCuePoints: function getCuePoints() {
                     return [];
@@ -1937,8 +1946,8 @@
                     return "";
                 }
             };
-            var AdProgressData = noopFunc;
-            var UniversalAdIdInfo = function UniversalAdIdInfo() {};
+            const AdProgressData = noopFunc;
+            const UniversalAdIdInfo = function UniversalAdIdInfo() {};
             Object.assign(ima, {
                 AdCuePoints: AdCuePoints,
                 AdDisplayContainer: AdDisplayContainer,
@@ -1985,19 +1994,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2012,10 +2021,21 @@
         }
         function noopFunc() {}
         function logMessage(source, message) {
-            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            if (forced || source.verbose) {
-                console.log("".concat(source.name, ": ").concat(message));
+            let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+            if (!forced && !verbose) {
+                return;
             }
+            let messageStr = "".concat(name, ": ").concat(message);
+            if (ruleText) {
+                const RULE_MARKER = "#%#//scriptlet";
+                const markerIdx = ruleText.indexOf(RULE_MARKER);
+                if (markerIdx > -1) {
+                    const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
+                    messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
+                }
+            }
+            console.log(messageStr);
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -2040,14 +2060,14 @@
         function GoogleSyndicationAdsByGoogle(source) {
             window.adsbygoogle = {
                 loaded: true,
-                push: function push(arg) {
+                push(arg) {
                     if (typeof this.length === "undefined") {
                         this.length = 0;
                         this.length += 1;
                     }
                     if (arg !== null && arg instanceof Object && arg.constructor.name === "Object") {
                         for (var _i = 0, _Object$keys = Object.keys(arg); _i < _Object$keys.length; _i++) {
-                            var key = _Object$keys[_i];
+                            const key = _Object$keys[_i];
                             if (typeof arg[key] === "function") {
                                 try {
                                     arg[key].call(this, {});
@@ -2057,32 +2077,32 @@
                     }
                 }
             };
-            var adElems = document.querySelectorAll(".adsbygoogle");
-            var css = "height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;";
-            var statusAttrName = "data-adsbygoogle-status";
-            var ASWIFT_IFRAME_MARKER = "aswift_";
-            var GOOGLE_ADS_IFRAME_MARKER = "google_ads_iframe_";
-            var executed = false;
-            for (var i = 0; i < adElems.length; i += 1) {
-                var adElemChildNodes = adElems[i].childNodes;
-                var childNodesQuantity = adElemChildNodes.length;
-                var areIframesDefined = false;
+            const adElems = document.querySelectorAll(".adsbygoogle");
+            const css = "height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;";
+            const statusAttrName = "data-adsbygoogle-status";
+            const ASWIFT_IFRAME_MARKER = "aswift_";
+            const GOOGLE_ADS_IFRAME_MARKER = "google_ads_iframe_";
+            let executed = false;
+            for (let i = 0; i < adElems.length; i += 1) {
+                const adElemChildNodes = adElems[i].childNodes;
+                const childNodesQuantity = adElemChildNodes.length;
+                let areIframesDefined = false;
                 if (childNodesQuantity > 0) {
                     areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.indexOf(ASWIFT_IFRAME_MARKER) > -1 && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.indexOf(GOOGLE_ADS_IFRAME_MARKER) > -1;
                 }
                 if (!areIframesDefined) {
                     adElems[i].setAttribute(statusAttrName, "done");
-                    var aswiftIframe = document.createElement("iframe");
+                    const aswiftIframe = document.createElement("iframe");
                     aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
                     aswiftIframe.style = css;
                     adElems[i].appendChild(aswiftIframe);
-                    var innerAswiftIframe = document.createElement("iframe");
+                    const innerAswiftIframe = document.createElement("iframe");
                     aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
-                    var googleadsIframe = document.createElement("iframe");
+                    const googleadsIframe = document.createElement("iframe");
                     googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
                     googleadsIframe.style = css;
                     adElems[i].appendChild(googleadsIframe);
-                    var innerGoogleadsIframe = document.createElement("iframe");
+                    const innerGoogleadsIframe = document.createElement("iframe");
                     googleadsIframe.contentWindow.document.body.appendChild(innerGoogleadsIframe);
                     executed = true;
                 }
@@ -2096,19 +2116,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2142,29 +2162,32 @@
   content: |-
     (function(source, args) {
         function GoogleTagServicesGpt(source) {
-            var slots = new Map;
-            var slotsById = new Map;
-            var eventCallbacks = new Map;
-            var addEventListener = function addEventListener(name, listener) {
+            const slots = new Map;
+            const slotsById = new Map;
+            const slotsPerPath = new Map;
+            const slotCreatives = new Map;
+            const eventCallbacks = new Map;
+            const gTargeting = new Map;
+            const addEventListener = function addEventListener(name, listener) {
                 if (!eventCallbacks.has(name)) {
                     eventCallbacks.set(name, new Set);
                 }
                 eventCallbacks.get(name).add(listener);
                 return this;
             };
-            var removeEventListener = function removeEventListener(name, listener) {
+            const removeEventListener = function removeEventListener(name, listener) {
                 if (eventCallbacks.has(name)) {
                     return eventCallbacks.get(name).delete(listener);
                 }
                 return false;
             };
-            var fireSlotEvent = function fireSlotEvent(name, slot) {
+            const fireSlotEvent = function fireSlotEvent(name, slot) {
                 return new Promise((function(resolve) {
                     requestAnimationFrame((function() {
-                        var size = [ 0, 0 ];
-                        var callbacksSet = eventCallbacks.get(name) || [];
-                        var callbackArray = Array.from(callbacksSet);
-                        for (var i = 0; i < callbackArray.length; i += 1) {
+                        const size = [ 0, 0 ];
+                        const callbacksSet = eventCallbacks.get(name) || [];
+                        const callbackArray = Array.from(callbacksSet);
+                        for (let i = 0; i < callbackArray.length; i += 1) {
                             callbackArray[i]({
                                 isEmpty: true,
                                 size: size,
@@ -2175,32 +2198,58 @@
                     }));
                 }));
             };
-            var displaySlot = function displaySlot(slot) {
+            const emptySlotElement = function emptySlotElement(slot) {
+                const node = document.getElementById(slot.getSlotElementId());
+                while (node !== null && node !== void 0 && node.lastChild) {
+                    node.lastChild.remove();
+                }
+            };
+            const recreateIframeForSlot = function recreateIframeForSlot(slot) {
+                var _document$getElementB;
+                const eid = "google_ads_iframe_".concat(slot.getId());
+                (_document$getElementB = document.getElementById(eid)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.remove();
+                const node = document.getElementById(slot.getSlotElementId());
+                if (node) {
+                    const f = document.createElement("iframe");
+                    f.id = eid;
+                    f.srcdoc = "<body></body>";
+                    f.style = "position:absolute; width:0; height:0; left:0; right:0; z-index:-1; border:0";
+                    f.setAttribute("width", 0);
+                    f.setAttribute("height", 0);
+                    f.setAttribute("data-load-complete", true);
+                    f.setAttribute("data-google-container-id", true);
+                    f.setAttribute("sandbox", true);
+                    node.appendChild(f);
+                }
+            };
+            const displaySlot = function displaySlot(slot) {
                 if (!slot) {
                     return;
                 }
-                var id = slot.getSlotElementId();
+                const id = slot.getSlotElementId();
                 if (!document.getElementById(id)) {
                     return;
                 }
-                var parent = document.getElementById(id);
+                const parent = document.getElementById(id);
                 if (parent) {
                     parent.appendChild(document.createElement("div"));
                 }
+                emptySlotElement(slot);
+                recreateIframeForSlot(slot);
                 fireSlotEvent("slotRenderEnded", slot);
                 fireSlotEvent("slotRequested", slot);
                 fireSlotEvent("slotResponseReceived", slot);
                 fireSlotEvent("slotOnload", slot);
                 fireSlotEvent("impressionViewable", slot);
             };
-            var companionAdsService = {
+            const companionAdsService = {
                 addEventListener: addEventListener,
                 removeEventListener: removeEventListener,
                 enableSyncLoading: noopFunc,
                 setRefreshUnfilledSlots: noopFunc,
                 getSlots: noopArray
             };
-            var contentService = {
+            const contentService = {
                 addEventListener: addEventListener,
                 removeEventListener: removeEventListener,
                 setContent: noopFunc
@@ -2216,54 +2265,193 @@
             function SizeMappingBuilder() {}
             SizeMappingBuilder.prototype.addSize = noopThis;
             SizeMappingBuilder.prototype.build = noopNull;
-            function Slot(adUnitPath, creatives, optDiv) {
-                this.adUnitPath = adUnitPath;
-                this.creatives = creatives;
-                this.optDiv = optDiv;
+            const getTargetingValue = function getTargetingValue(v) {
+                if (typeof v === "string") {
+                    return [ v ];
+                }
+                try {
+                    return [ Array.prototype.flat.call(v)[0] ];
+                } catch (_unused) {}
+                return [];
+            };
+            const updateTargeting = function updateTargeting(targeting, map) {
+                if (typeof map === "object") {
+                    const entries = Object.entries(map || {});
+                    for (var _i = 0, _entries = entries; _i < _entries.length; _i++) {
+                        const _entries$_i = slicedToArray(_entries[_i], 2), k = _entries$_i[0], v = _entries$_i[1];
+                        targeting.set(k, getTargetingValue(v));
+                    }
+                }
+            };
+            const defineSlot = function defineSlot(adUnitPath, creatives, optDiv) {
                 if (slotsById.has(optDiv)) {
-                    var _document$getElementB;
-                    (_document$getElementB = document.getElementById(optDiv)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.remove();
+                    var _document$getElementB2;
+                    (_document$getElementB2 = document.getElementById(optDiv)) === null || _document$getElementB2 === void 0 ? void 0 : _document$getElementB2.remove();
                     return slotsById.get(optDiv);
                 }
-                slotsById.set(optDiv, this);
-            }
-            Slot.prototype.addService = noopThis;
-            Slot.prototype.clearCategoryExclusions = noopThis;
-            Slot.prototype.clearTargeting = noopThis;
-            Slot.prototype.defineSizeMapping = noopThis;
-            Slot.prototype.get = noopNull;
-            Slot.prototype.getAdUnitPath = function() {
-                return this.adUnitPath;
+                const attributes = new Map;
+                const targeting = new Map;
+                const exclusions = new Set;
+                const response = {
+                    advertiserId: undefined,
+                    campaignId: undefined,
+                    creativeId: undefined,
+                    creativeTemplateId: undefined,
+                    lineItemId: undefined
+                };
+                const sizes = [ {
+                    getHeight: function getHeight() {
+                        return 2;
+                    },
+                    getWidth: function getWidth() {
+                        return 2;
+                    }
+                } ];
+                const num = (slotsPerPath.get(adUnitPath) || 0) + 1;
+                slotsPerPath.set(adUnitPath, num);
+                const id = "".concat(adUnitPath, "_").concat(num);
+                let clickUrl = "";
+                let collapseEmptyDiv = null;
+                const services = new Set;
+                const slot = {
+                    addService(e) {
+                        services.add(e);
+                        return slot;
+                    },
+                    clearCategoryExclusions: noopThis,
+                    clearTargeting(k) {
+                        if (k === undefined) {
+                            targeting.clear();
+                        } else {
+                            targeting.delete(k);
+                        }
+                    },
+                    defineSizeMapping(mapping) {
+                        slotCreatives.set(optDiv, mapping);
+                        return this;
+                    },
+                    get: function get(k) {
+                        return attributes.get(k);
+                    },
+                    getAdUnitPath: function getAdUnitPath() {
+                        return adUnitPath;
+                    },
+                    getAttributeKeys: function getAttributeKeys() {
+                        return Array.from(attributes.keys());
+                    },
+                    getCategoryExclusions: function getCategoryExclusions() {
+                        return Array.from(exclusions);
+                    },
+                    getClickUrl: function getClickUrl() {
+                        return clickUrl;
+                    },
+                    getCollapseEmptyDiv: function getCollapseEmptyDiv() {
+                        return collapseEmptyDiv;
+                    },
+                    getContentUrl: function getContentUrl() {
+                        return "";
+                    },
+                    getDivStartsCollapsed: function getDivStartsCollapsed() {
+                        return null;
+                    },
+                    getDomId: function getDomId() {
+                        return optDiv;
+                    },
+                    getEscapedQemQueryId: function getEscapedQemQueryId() {
+                        return "";
+                    },
+                    getFirstLook: function getFirstLook() {
+                        return 0;
+                    },
+                    getId: function getId() {
+                        return id;
+                    },
+                    getHtml: function getHtml() {
+                        return "";
+                    },
+                    getName: function getName() {
+                        return id;
+                    },
+                    getOutOfPage: function getOutOfPage() {
+                        return false;
+                    },
+                    getResponseInformation: function getResponseInformation() {
+                        return response;
+                    },
+                    getServices: function getServices() {
+                        return Array.from(services);
+                    },
+                    getSizes: function getSizes() {
+                        return sizes;
+                    },
+                    getSlotElementId: function getSlotElementId() {
+                        return optDiv;
+                    },
+                    getSlotId: function getSlotId() {
+                        return slot;
+                    },
+                    getTargeting: function getTargeting(k) {
+                        return targeting.get(k) || gTargeting.get(k) || [];
+                    },
+                    getTargetingKeys: function getTargetingKeys() {
+                        return Array.from(new Set(Array.of(...gTargeting.keys(), ...targeting.keys())));
+                    },
+                    getTargetingMap: function getTargetingMap() {
+                        return Object.assign(Object.fromEntries(gTargeting.entries()), Object.fromEntries(targeting.entries()));
+                    },
+                    set(k, v) {
+                        attributes.set(k, v);
+                        return slot;
+                    },
+                    setCategoryExclusion(e) {
+                        exclusions.add(e);
+                        return slot;
+                    },
+                    setClickUrl(u) {
+                        clickUrl = u;
+                        return slot;
+                    },
+                    setCollapseEmptyDiv(v) {
+                        collapseEmptyDiv = !!v;
+                        return slot;
+                    },
+                    setSafeFrameConfig: noopThis,
+                    setTagForChildDirectedTreatment: noopThis,
+                    setTargeting(k, v) {
+                        targeting.set(k, getTargetingValue(v));
+                        return slot;
+                    },
+                    toString: function toString() {
+                        return id;
+                    },
+                    updateTargetingFromMap(map) {
+                        updateTargeting(targeting, map);
+                        return slot;
+                    }
+                };
+                slots.set(adUnitPath, slot);
+                slotsById.set(optDiv, slot);
+                slotCreatives.set(optDiv, creatives);
+                return slot;
             };
-            Slot.prototype.getAttributeKeys = noopArray;
-            Slot.prototype.getCategoryExclusions = noopArray;
-            Slot.prototype.getDomId = function() {
-                return this.optDiv;
-            };
-            Slot.prototype.getSlotElementId = function() {
-                return this.optDiv;
-            };
-            Slot.prototype.getSlotId = noopThis;
-            Slot.prototype.getSizes = noopArray;
-            Slot.prototype.getTargeting = noopArray;
-            Slot.prototype.getTargetingKeys = noopArray;
-            Slot.prototype.set = noopThis;
-            Slot.prototype.setCategoryExclusion = noopThis;
-            Slot.prototype.setClickUrl = noopThis;
-            Slot.prototype.setCollapseEmptyDiv = noopThis;
-            Slot.prototype.setTargeting = noopThis;
-            var pubAdsService = {
+            const pubAdsService = {
                 addEventListener: addEventListener,
                 removeEventListener: removeEventListener,
                 clear: noopFunc,
                 clearCategoryExclusions: noopThis,
                 clearTagForChildDirectedTreatment: noopThis,
-                clearTargeting: noopThis,
+                clearTargeting(k) {
+                    if (k === undefined) {
+                        gTargeting.clear();
+                    } else {
+                        gTargeting.delete(k);
+                    }
+                },
                 collapseEmptyDivs: noopFunc,
-                defineOutOfPagePassback: function defineOutOfPagePassback() {
+                defineOutOfPagePassback() {
                     return new PassbackSlot;
                 },
-                definePassback: function definePassback() {
+                definePassback() {
                     return new PassbackSlot;
                 },
                 disableInitialLoad: noopFunc,
@@ -2294,11 +2482,8 @@
                 setVideoContent: noopThis,
                 updateCorrelator: noopFunc
             };
-            var getNewSlot = function getNewSlot(adUnitPath, creatives, optDiv) {
-                return new Slot(adUnitPath, creatives, optDiv);
-            };
-            var _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
-            var _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+            const _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
+            const _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
             googletag.apiReady = true;
             googletag.cmd = [];
             googletag.cmd.push = function(a) {
@@ -2313,15 +2498,15 @@
             googletag.content = function() {
                 return contentService;
             };
-            googletag.defineOutOfPageSlot = getNewSlot;
-            googletag.defineSlot = getNewSlot;
+            googletag.defineOutOfPageSlot = defineSlot;
+            googletag.defineSlot = defineSlot;
             googletag.destroySlots = function() {
                 slots.clear();
                 slotsById.clear();
             };
             googletag.disablePublisherConsole = noopFunc;
             googletag.display = function(arg) {
-                var id;
+                let id;
                 if (arg !== null && arg !== void 0 && arg.getSlotElementId) {
                     id = arg.getSlotElementId();
                 } else if (arg !== null && arg !== void 0 && arg.nodeType) {
@@ -2352,19 +2537,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2412,20 +2597,16 @@
   content: |-
     (function(source, args) {
         function Matomo(source) {
-            var Tracker = function Tracker() {};
+            const Tracker = function Tracker() {};
             Tracker.prototype.setDoNotTrack = noopFunc;
             Tracker.prototype.setDomains = noopFunc;
             Tracker.prototype.setCustomDimension = noopFunc;
             Tracker.prototype.trackPageView = noopFunc;
-            var AsyncTracker = function AsyncTracker() {};
+            const AsyncTracker = function AsyncTracker() {};
             AsyncTracker.prototype.addListener = noopFunc;
-            var matomoWrapper = {
-                getTracker: function getTracker() {
-                    return new Tracker;
-                },
-                getAsyncTracker: function getAsyncTracker() {
-                    return new AsyncTracker;
-                }
+            const matomoWrapper = {
+                getTracker: Tracker,
+                getAsyncTracker: AsyncTracker
             };
             window.Piwik = matomoWrapper;
             hit(source);
@@ -2435,19 +2616,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2480,10 +2661,10 @@
   content: |-
     (function(source, args) {
         function metrikaYandexTag(source) {
-            var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
-                var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-                var callback = options.callback;
-                var ctx = options.ctx;
+            const asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
+                let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+                let callback = options.callback;
+                const ctx = options.ctx;
                 if (typeof callback === "function") {
                     callback = ctx !== undefined ? callback.bind(ctx) : callback;
                     setTimeout((function() {
@@ -2491,28 +2672,28 @@
                     }));
                 }
             };
-            var addFileExtension = noopFunc;
-            var extLink = asyncCallbackFromOptions;
-            var file = asyncCallbackFromOptions;
-            var getClientID = function getClientID(id, cb) {
+            const addFileExtension = noopFunc;
+            const extLink = asyncCallbackFromOptions;
+            const file = asyncCallbackFromOptions;
+            const getClientID = function getClientID(id, cb) {
                 if (!cb) {
                     return;
                 }
                 setTimeout(cb(null));
             };
-            var hitFunc = asyncCallbackFromOptions;
-            var notBounce = asyncCallbackFromOptions;
-            var params = noopFunc;
-            var reachGoal = function reachGoal(id, target, params, callback, ctx) {
+            const hitFunc = asyncCallbackFromOptions;
+            const notBounce = asyncCallbackFromOptions;
+            const params = noopFunc;
+            const reachGoal = function reachGoal(id, target, params, callback, ctx) {
                 asyncCallbackFromOptions(null, null, {
                     callback: callback,
                     ctx: ctx
                 });
             };
-            var setUserID = noopFunc;
-            var userParams = noopFunc;
-            var destruct = noopFunc;
-            var api = {
+            const setUserID = noopFunc;
+            const userParams = noopFunc;
+            const destruct = noopFunc;
+            const api = {
                 addFileExtension: addFileExtension,
                 extLink: extLink,
                 file: file,
@@ -2529,7 +2710,7 @@
                 for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
                     args[_key - 2] = arguments[_key];
                 }
-                return api[funcName] && api[funcName].apply(api, [ id ].concat(args));
+                return api[funcName] && api[funcName](id, ...args);
             }
             function init(id) {
                 window["yaCounter".concat(id)] = api;
@@ -2542,7 +2723,7 @@
                 ym.a = window.ym.a;
                 window.ym = ym;
                 window.ym.a.forEach((function(params) {
-                    var id = params[0];
+                    const id = params[0];
                     init(id);
                 }));
             }
@@ -2553,19 +2734,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2598,11 +2779,11 @@
   content: |-
     (function(source, args) {
         function metrikaYandexWatch(source) {
-            var cbName = "yandex_metrika_callbacks";
-            var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
-                var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-                var callback = options.callback;
-                var ctx = options.ctx;
+            const cbName = "yandex_metrika_callbacks";
+            const asyncCallbackFromOptions = function asyncCallbackFromOptions() {
+                let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+                let callback = options.callback;
+                const ctx = options.ctx;
                 if (typeof callback === "function") {
                     callback = ctx !== undefined ? callback.bind(ctx) : callback;
                     setTimeout((function() {
@@ -2655,19 +2836,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2715,19 +2896,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2778,19 +2959,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2804,10 +2985,21 @@
             }
         }
         function logMessage(source, message) {
-            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            if (forced || source.verbose) {
-                console.log("".concat(source.name, ": ").concat(message));
+            let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+            if (!forced && !verbose) {
+                return;
             }
+            let messageStr = "".concat(name, ": ").concat(message);
+            if (ruleText) {
+                const RULE_MARKER = "#%#//scriptlet";
+                const markerIdx = ruleText.indexOf(RULE_MARKER);
+                if (markerIdx > -1) {
+                    const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
+                    messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
+                }
+            }
+            console.log(messageStr);
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -2857,19 +3049,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2919,19 +3111,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2963,38 +3155,38 @@
   content: |-
     (function(source, args) {
         function Prebid(source) {
-            var pushFunction = function pushFunction(arg) {
+            const pushFunction = function pushFunction(arg) {
                 if (typeof arg === "function") {
                     try {
                         arg.call();
                     } catch (ex) {}
                 }
             };
-            var pbjsWrapper = {
-                addAdUnits: function addAdUnits() {},
+            const pbjsWrapper = {
+                addAdUnits() {},
                 adServers: {
                     dfp: {
                         buildVideoUrl: noopStr
                     }
                 },
                 adUnits: [],
-                aliasBidder: function aliasBidder() {},
+                aliasBidder() {},
                 cmd: [],
-                enableAnalytics: function enableAnalytics() {},
+                enableAnalytics() {},
                 getHighestCpmBids: noopArray,
                 libLoaded: true,
                 que: [],
-                requestBids: function requestBids(arg) {
+                requestBids(arg) {
                     if (arg instanceof Object && arg.bidsBackHandler) {
                         try {
                             arg.bidsBackHandler.call();
                         } catch (ex) {}
                     }
                 },
-                removeAdUnit: function removeAdUnit() {},
-                setBidderConfig: function setBidderConfig() {},
-                setConfig: function setConfig() {},
-                setTargetingForGPTAsync: function setTargetingForGPTAsync() {}
+                removeAdUnit() {},
+                setBidderConfig() {},
+                setConfig() {},
+                setTargetingForGPTAsync() {}
             };
             pbjsWrapper.cmd.push = pushFunction;
             pbjsWrapper.que.push = pushFunction;
@@ -3006,19 +3198,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3063,29 +3255,29 @@
   content: |-
     (function(source, args) {
         function preventBab$1(source) {
-            var nativeSetTimeout = window.setTimeout;
-            var babRegex = /\.bab_elementid.$/;
-            var timeoutWrapper = function timeoutWrapper(callback) {
+            const nativeSetTimeout = window.setTimeout;
+            const babRegex = /\.bab_elementid.$/;
+            const timeoutWrapper = function timeoutWrapper(callback) {
                 if (typeof callback !== "string" || !babRegex.test(callback)) {
                     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                         args[_key - 1] = arguments[_key];
                     }
-                    return nativeSetTimeout.apply(window, [ callback ].concat(args));
+                    return nativeSetTimeout.apply(window, [ callback, ...args ]);
                 }
                 hit(source);
             };
             window.setTimeout = timeoutWrapper;
-            var signatures = [ [ "blockadblock" ], [ "babasbm" ], [ /getItem\('babn'\)/ ], [ "getElementById", "String.fromCharCode", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "charAt", "DOMContentLoaded", "AdBlock", "addEventListener", "doScroll", "fromCharCode", "<<2|r>>4", "sessionStorage", "clientWidth", "localStorage", "Math", "random" ] ];
-            var check = function check(str) {
+            const signatures = [ [ "blockadblock" ], [ "babasbm" ], [ /getItem\('babn'\)/ ], [ "getElementById", "String.fromCharCode", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "charAt", "DOMContentLoaded", "AdBlock", "addEventListener", "doScroll", "fromCharCode", "<<2|r>>4", "sessionStorage", "clientWidth", "localStorage", "Math", "random" ] ];
+            const check = function check(str) {
                 if (typeof str !== "string") {
                     return false;
                 }
-                for (var i = 0; i < signatures.length; i += 1) {
-                    var tokens = signatures[i];
-                    var match = 0;
-                    for (var j = 0; j < tokens.length; j += 1) {
-                        var token = tokens[j];
-                        var found = token instanceof RegExp ? token.test(str) : str.indexOf(token) > -1;
+                for (let i = 0; i < signatures.length; i += 1) {
+                    const tokens = signatures[i];
+                    let match = 0;
+                    for (let j = 0; j < tokens.length; j += 1) {
+                        const token = tokens[j];
+                        const found = token instanceof RegExp ? token.test(str) : str.indexOf(token) > -1;
                         if (found) {
                             match += 1;
                         }
@@ -3096,17 +3288,17 @@
                 }
                 return false;
             };
-            var nativeEval = window.eval;
-            var evalWrapper = function evalWrapper(str) {
+            const nativeEval = window.eval;
+            const evalWrapper = function evalWrapper(str) {
                 if (!check(str)) {
                     return nativeEval(str);
                 }
                 hit(source);
-                var bodyEl = document.body;
+                const bodyEl = document.body;
                 if (bodyEl) {
                     bodyEl.style.removeProperty("visibility");
                 }
-                var el = document.getElementById("babasbmsgx");
+                const el = document.getElementById("babasbmsgx");
                 if (el) {
                     el.parentNode.removeChild(el);
                 }
@@ -3118,19 +3310,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3163,17 +3355,17 @@
   content: |-
     (function(source, args) {
         function preventBab2(source) {
-            var script = document.currentScript;
+            const script = document.currentScript;
             if (script === null) {
                 return;
             }
-            var url = script.src;
+            const url = script.src;
             if (typeof url !== "string") {
                 return;
             }
-            var domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
-            var matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
-            var domainsRegex = new RegExp(matchStr);
+            const domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
+            const matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
+            const domainsRegex = new RegExp(matchStr);
             if (domainsRegex.test(url) === false) {
                 return;
             }
@@ -3185,19 +3377,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3235,7 +3427,7 @@
     (function(source, args) {
         function preventFab(source) {
             hit(source);
-            var Fab = function Fab() {};
+            const Fab = function Fab() {};
             Fab.prototype.check = noopFunc;
             Fab.prototype.clearEvent = noopFunc;
             Fab.prototype.emitEvent = noopFunc;
@@ -3255,18 +3447,18 @@
                 set: noopFunc,
                 get: noopFunc
             };
-            var fab = new Fab;
-            var getSetFab = {
-                get: function get() {
+            const fab = new Fab;
+            const getSetFab = {
+                get() {
                     return Fab;
                 },
-                set: function set() {}
+                set() {}
             };
-            var getsetfab = {
-                get: function get() {
+            const getsetfab = {
+                get() {
                     return fab;
                 },
-                set: function set() {}
+                set() {}
             };
             if (Object.prototype.hasOwnProperty.call(window, "FuckAdBlock")) {
                 window.FuckAdBlock = Fab;
@@ -3304,19 +3496,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3357,8 +3549,8 @@
   content: |-
     (function(source, args) {
         function preventPopadsNet(source) {
-            var rid = randomId();
-            var throwError = function throwError() {
+            const rid = randomId();
+            const throwError = function throwError() {
                 throw new ReferenceError(rid);
             };
             delete window.PopAds;
@@ -3375,7 +3567,7 @@
             hit(source);
         }
         function createOnErrorHandler(rid) {
-            var nativeOnError = window.onerror;
+            const nativeOnError = window.onerror;
             return function onError(error) {
                 if (typeof error === "string" && error.indexOf(rid) !== -1) {
                     return true;
@@ -3384,7 +3576,7 @@
                     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                         args[_key - 1] = arguments[_key];
                     }
-                    return nativeOnError.apply(this, [ error ].concat(args));
+                    return nativeOnError.apply(this, [ error, ...args ]);
                 }
                 return false;
             };
@@ -3397,19 +3589,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3444,10 +3636,10 @@
     (function(source, args) {
         function ScoreCardResearchBeacon(source) {
             window.COMSCORE = {
-                purge: function purge() {
+                purge() {
                     window._comscore = [];
                 },
-                beacon: function beacon() {}
+                beacon() {}
             };
             hit(source);
         }
@@ -3456,19 +3648,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3527,19 +3719,19 @@
                 return;
             }
             try {
-                var log = console.log.bind(console);
-                var trace = console.trace.bind(console);
-                var prefix = source.ruleText || "";
+                const log = console.log.bind(console);
+                const trace = console.trace.bind(console);
+                let prefix = source.ruleText || "";
                 if (source.domainName) {
-                    var AG_SCRIPTLET_MARKER = "#%#//";
-                    var UBO_SCRIPTLET_MARKER = "##+js";
-                    var ruleStartIndex;
+                    const AG_SCRIPTLET_MARKER = "#%#//";
+                    const UBO_SCRIPTLET_MARKER = "##+js";
+                    let ruleStartIndex;
                     if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    var rulePart = source.ruleText.slice(ruleStartIndex);
+                    const rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));

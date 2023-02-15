@@ -24,8 +24,8 @@
                 data[2]();
             }
         };
-        var gaq = new Gaq;
-        var asyncTrackers = window._gaq || [];
+        const gaq = new Gaq;
+        const asyncTrackers = window._gaq || [];
         if (Array.isArray(asyncTrackers)) {
             while (asyncTrackers[0]) {
                 gaq.push(asyncTrackers.shift());
@@ -33,8 +33,8 @@
         }
         window._gaq = gaq.qf = gaq;
         function Gat() {}
-        var api = [ "_addIgnoredOrganic", "_addIgnoredRef", "_addItem", "_addOrganic", "_addTrans", "_clearIgnoredOrganic", "_clearIgnoredRef", "_clearOrganic", "_cookiePathCopy", "_deleteCustomVar", "_getName", "_setAccount", "_getAccount", "_getClientInfo", "_getDetectFlash", "_getDetectTitle", "_getLinkerUrl", "_getLocalGifPath", "_getServiceMode", "_getVersion", "_getVisitorCustomVar", "_initData", "_link", "_linkByPost", "_setAllowAnchor", "_setAllowHash", "_setAllowLinker", "_setCampContentKey", "_setCampMediumKey", "_setCampNameKey", "_setCampNOKey", "_setCampSourceKey", "_setCampTermKey", "_setCampaignCookieTimeout", "_setCampaignTrack", "_setClientInfo", "_setCookiePath", "_setCookiePersistence", "_setCookieTimeout", "_setCustomVar", "_setDetectFlash", "_setDetectTitle", "_setDomainName", "_setLocalGifPath", "_setLocalRemoteServerMode", "_setLocalServerMode", "_setReferrerOverride", "_setRemoteServerMode", "_setSampleRate", "_setSessionTimeout", "_setSiteSpeedSampleRate", "_setSessionCookieTimeout", "_setVar", "_setVisitorCookieTimeout", "_trackEvent", "_trackPageLoadTime", "_trackPageview", "_trackSocial", "_trackTiming", "_trackTrans", "_visitCode" ];
-        var tracker = api.reduce((function(res, funcName) {
+        const api = [ "_addIgnoredOrganic", "_addIgnoredRef", "_addItem", "_addOrganic", "_addTrans", "_clearIgnoredOrganic", "_clearIgnoredRef", "_clearOrganic", "_cookiePathCopy", "_deleteCustomVar", "_getName", "_setAccount", "_getAccount", "_getClientInfo", "_getDetectFlash", "_getDetectTitle", "_getLinkerUrl", "_getLocalGifPath", "_getServiceMode", "_getVersion", "_getVisitorCustomVar", "_initData", "_link", "_linkByPost", "_setAllowAnchor", "_setAllowHash", "_setAllowLinker", "_setCampContentKey", "_setCampMediumKey", "_setCampNameKey", "_setCampNOKey", "_setCampSourceKey", "_setCampTermKey", "_setCampaignCookieTimeout", "_setCampaignTrack", "_setClientInfo", "_setCookiePath", "_setCookiePersistence", "_setCookieTimeout", "_setCustomVar", "_setDetectFlash", "_setDetectTitle", "_setDomainName", "_setLocalGifPath", "_setLocalRemoteServerMode", "_setLocalServerMode", "_setReferrerOverride", "_setRemoteServerMode", "_setSampleRate", "_setSessionTimeout", "_setSiteSpeedSampleRate", "_setSessionCookieTimeout", "_setVar", "_setVisitorCookieTimeout", "_trackEvent", "_trackPageLoadTime", "_trackPageview", "_trackSocial", "_trackTiming", "_trackTrans", "_visitCode" ];
+        const tracker = api.reduce((function(res, funcName) {
             res[funcName] = noopFunc;
             return res;
         }), {});
@@ -69,7 +69,7 @@
         Gat.prototype.oa = noopFunc;
         Gat.prototype.pa = noopFunc;
         Gat.prototype.u = noopFunc;
-        var gat = new Gat;
+        const gat = new Gat;
         window._gat = gat;
         hit(source);
     }
@@ -78,19 +78,19 @@
             return;
         }
         try {
-            var log = console.log.bind(console);
-            var trace = console.trace.bind(console);
-            var prefix = source.ruleText || "";
+            const log = console.log.bind(console);
+            const trace = console.trace.bind(console);
+            let prefix = source.ruleText || "";
             if (source.domainName) {
-                var AG_SCRIPTLET_MARKER = "#%#//";
-                var UBO_SCRIPTLET_MARKER = "##+js";
-                var ruleStartIndex;
+                const AG_SCRIPTLET_MARKER = "#%#//";
+                const UBO_SCRIPTLET_MARKER = "##+js";
+                let ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                var rulePart = source.ruleText.slice(ruleStartIndex);
+                const rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
@@ -105,10 +105,21 @@
     }
     function noopFunc() {}
     function logMessage(source, message) {
-        var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-        if (forced || source.verbose) {
-            console.log("".concat(source.name, ": ").concat(message));
+        let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+        if (!forced && !verbose) {
+            return;
         }
+        let messageStr = "".concat(name, ": ").concat(message);
+        if (ruleText) {
+            const RULE_MARKER = "#%#//scriptlet";
+            const markerIdx = ruleText.indexOf(RULE_MARKER);
+            if (markerIdx > -1) {
+                const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
+                messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
+            }
+        }
+        console.log(messageStr);
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {

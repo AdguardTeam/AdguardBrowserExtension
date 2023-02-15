@@ -1,18 +1,18 @@
 (function(source, args) {
     function Fingerprintjs3(source) {
-        var visitorId = function() {
-            var id = "";
-            for (var i = 0; i < 8; i += 1) {
+        const visitorId = function() {
+            let id = "";
+            for (let i = 0; i < 8; i += 1) {
                 id += (Math.random() * 65536 + 4096).toString(16).slice(-4);
             }
             return id;
         }();
-        var FingerprintJS = function FingerprintJS() {};
+        const FingerprintJS = function FingerprintJS() {};
         FingerprintJS.prototype = {
-            load: function load() {
+            load() {
                 return Promise.resolve(new FingerprintJS);
             },
-            get: function get() {
+            get() {
                 return Promise.resolve({
                     visitorId: visitorId
                 });
@@ -27,19 +27,19 @@
             return;
         }
         try {
-            var log = console.log.bind(console);
-            var trace = console.trace.bind(console);
-            var prefix = source.ruleText || "";
+            const log = console.log.bind(console);
+            const trace = console.trace.bind(console);
+            let prefix = source.ruleText || "";
             if (source.domainName) {
-                var AG_SCRIPTLET_MARKER = "#%#//";
-                var UBO_SCRIPTLET_MARKER = "##+js";
-                var ruleStartIndex;
+                const AG_SCRIPTLET_MARKER = "#%#//";
+                const UBO_SCRIPTLET_MARKER = "##+js";
+                let ruleStartIndex;
                 if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                var rulePart = source.ruleText.slice(ruleStartIndex);
+                const rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
