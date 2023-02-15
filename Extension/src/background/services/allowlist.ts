@@ -155,16 +155,20 @@ export class AllowlistService {
     }
 
     /**
-     * Triggers engine update on enabling.
+     * Updates the tswebextension engine on {@link SettingOption.AllowlistEnabled} setting change.
+     * This setting can be changed by the switch ui element, so it is important to update the engine config
+     * via debounce function, as this is a heavyweight call.
      */
-    static async onEnableStateChange(): Promise<void> {
-        await Engine.update();
+    static onEnableStateChange(): void {
+        Engine.debounceUpdate();
     }
 
     /**
-     * Triggers engine update on mode switch.
+     * Updates the tswebextension engine on {@link SettingOption.DefaultAllowlistMode} setting change.
+     * This setting can be changed by the switch ui element, so it is important to update the engine config
+     * via debounce function, as this is a heavyweight call.
      */
-    static async onAllowlistModeChange(): Promise<void> {
-        await Engine.update();
+    static onAllowlistModeChange(): void {
+        Engine.debounceUpdate();
     }
 }
