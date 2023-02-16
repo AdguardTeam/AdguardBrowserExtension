@@ -16,11 +16,18 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * IMPORTANT: do not change the values as tds is already configured for that specific strings.
+ */
 export const enum ForwardAction {
     UninstallExtension = 'adguard_uninstal_ext',
     ThankYou = 'thank_you_page',
+    // used for "More information" on the page blocked by Safebrowsing
     SiteReport = 'site_report_page',
-    Report = 'report',
+    // used for "Report an issue" in popup or context menu on the page
+    IssueReport = 'report',
+    // used for "Report a bug" on options page in General section
+    BugReport = 'bug_report',
     Privacy = 'privacy',
     Acknowledgments = 'acknowledgments',
     Github = 'github_options',

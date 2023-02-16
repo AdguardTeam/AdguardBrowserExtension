@@ -181,7 +181,7 @@ export class PagesApi {
         const filterIds = Engine.api.configuration?.filters || [];
 
         const params: ForwardParams = {
-            action: ForwardAction.Report,
+            action: ForwardAction.IssueReport,
             from,
             product_type: 'Ext',
             product_version: encodeURIComponent(browser.runtime.getManifest().version),
