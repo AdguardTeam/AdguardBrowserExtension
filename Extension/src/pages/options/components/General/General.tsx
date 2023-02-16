@@ -34,7 +34,7 @@ import { AppearanceTheme } from '../../../../common/settings';
 import {
     ACCEPTABLE_ADS_LEARN_MORE_URL,
     SAFEBROWSING_LEARN_MORE_URL,
-    GITHUB_URL,
+    BUG_REPORT_URL,
 } from '../../constants';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { UserAgent } from '../../../../common/user-agent';
@@ -299,7 +299,7 @@ const General = observer(() => {
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={GITHUB_URL}
+                    href={BUG_REPORT_URL}
                     className="links-menu__item"
                 >
                     {reactTranslator.getMessage('options_report_bug')}

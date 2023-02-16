@@ -82,6 +82,11 @@ export const SAFEBROWSING_LEARN_MORE_URL = Forward.get({
     from: ForwardFrom.Options,
 });
 
+export const BUG_REPORT_URL = Forward.get({
+    action: ForwardAction.BugReport,
+    from: ForwardFrom.Options,
+});
+
 export const COLLECT_HITS_LEARN_MORE_URL = Forward.get({
     action: ForwardAction.CollectHitsLearnMore,
     from: ForwardFrom.Options,
