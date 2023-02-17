@@ -299,7 +299,7 @@ export class CustomFilterApi {
         await FiltersStorage.remove(filterId);
 
         if (filterState?.enabled) {
-            await Engine.update();
+            Engine.debounceUpdate();
         }
     }
 

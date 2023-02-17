@@ -127,7 +127,7 @@ export class FiltersService {
         try {
             const updatedFilters = await FilterUpdateApi.updateEnabledFilters();
 
-            await Engine.update();
+            Engine.debounceUpdate();
 
             toasts.showFiltersUpdatedAlertMessage(true, updatedFilters);
             listeners.notifyListeners(listeners.FiltersUpdateCheckReady, updatedFilters);
@@ -144,7 +144,7 @@ export class FiltersService {
      */
     private static async onOptimizedFiltersSwitch(): Promise<void> {
         await FiltersApi.reloadEnabledFilters();
-        await Engine.update();
+        Engine.debounceUpdate();
     }
 
     /**

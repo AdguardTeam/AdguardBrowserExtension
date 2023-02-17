@@ -107,7 +107,7 @@ export class UserRulesService {
      */
     private static async addUserRule(rule: string): Promise<void> {
         await UserRulesApi.addUserRule(rule);
-        await Engine.update();
+        Engine.debounceUpdate();
     }
 
     /**
@@ -119,7 +119,7 @@ export class UserRulesService {
         const { value } = message.data;
 
         await UserRulesApi.setUserRules(value.split('\n'));
-        await Engine.update();
+        Engine.debounceUpdate();
     }
 
     /**
@@ -131,7 +131,7 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.addUserRule(ruleText);
-        await Engine.update();
+        Engine.debounceUpdate();
     }
 
     /**
@@ -143,7 +143,7 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.removeUserRule(ruleText);
-        await Engine.update();
+        Engine.debounceUpdate();
     }
 
     /**
