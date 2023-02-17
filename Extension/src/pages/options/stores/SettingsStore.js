@@ -420,6 +420,11 @@ class SettingsStore {
 
         runInAction(() => {
             this.filters.push(newFilter);
+            /**
+             * Optimistically set the enabled property to true.
+             * The verified state of the filter will be emitted after the engine update.
+             */
+            this.setFilterEnabledState(newFilter.filterId, true);
 
             if (this.searchSelect !== SEARCH_FILTERS.ALL) {
                 this.setSearchSelect(SEARCH_FILTERS.ALL);
