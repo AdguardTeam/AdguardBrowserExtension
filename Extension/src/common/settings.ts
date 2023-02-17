@@ -50,7 +50,7 @@ export const defaultSettings: Settings = {
     [SettingOption.HideReferrer]: true,
     [SettingOption.HideSearchQueries]: true,
     [SettingOption.SendDoNotTrack]: true,
-    [SettingOption.BlockChromeClientData]: UserAgent.isChrome,
+    [SettingOption.RemoveXClientData]: UserAgent.isChrome,
     [SettingOption.BlockWebRTC]: false,
     [SettingOption.SelfDestructThirdPartyCookies]: true,
     [SettingOption.SelfDestructThirdPartyCookiesTime]: DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,

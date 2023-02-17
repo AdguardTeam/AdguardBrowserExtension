@@ -85,7 +85,7 @@ const Stealth = observer(() => {
         HideSearchQueries,
         SendDoNotTrack,
         BlockWebRTC,
-        BlockChromeClientData,
+        RemoveXClientData,
     } = settings.names;
 
     const isStealthModeDisabled = settings.values[DisableStealthMode];
@@ -273,12 +273,12 @@ const Stealth = observer(() => {
                         // @ts-ignore
                         title={reactTranslator.getMessage('options_remove_client_data_title')}
                         description={reactTranslator.getMessage('options_remove_client_data_desc')}
-                        disabled={!settings.values[BlockChromeClientData]}
+                        disabled={!settings.values[RemoveXClientData]}
                         sectionDisabled={isStealthModeDisabled}
-                        id={BlockChromeClientData}
+                        id={RemoveXClientData}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={reactTranslator.getMessage('options_remove_client_data_title')}
-                        value={settings.values[BlockChromeClientData]}
+                        value={settings.values[RemoveXClientData]}
                         handler={settingChangeHandler}
                     />
                 )}
