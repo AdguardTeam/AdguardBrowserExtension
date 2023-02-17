@@ -42,3 +42,13 @@ export const XSTATE_VENDOR_OUTPUT = 'vendors/xstate';
 export const LODASH_VENDOR_OUTPUT = 'vendors/lodash';
 export const TSURLFILTER_VENDOR_OUTPUT = 'vendors/tsurlfilter';
 export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
+
+// Placed here to use in the node environment and in the browser
+// Important: extensions '.js' used for correct work of Cloudflare cache, but
+// real format of these files is JSON;
+// See AG-1901 for details.
+export const REMOTE_METADATA_FILE_NAME = 'filters.js';
+export const REMOTE_I18N_METADATA_FILE_NAME = 'filters_i18n.js';
+// But locally we prefer to use '.json' extension.
+export const LOCALE_METADATA_FILE_NAME = 'filters.json';
+export const LOCALE_I18N_METADATA_FILE_NAME = 'filters_i18n.json';
