@@ -70,6 +70,7 @@ const AddCustomModal = ({
         ERROR: 'error',
     };
 
+    const [isLoading, setLoading] = useState(false);
     const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
     const [error, setError] = useState(reactTranslator.getMessage('options_popup_check_false_description'));
@@ -79,6 +80,7 @@ const AddCustomModal = ({
 
     const closeModal = () => {
         closeModalHandler();
+        setLoading(false);
         setCustomUrlToAdd('');
         setStepToRender(STEPS.INPUT);
         setError('');
@@ -164,6 +166,7 @@ const AddCustomModal = ({
     };
 
     const handleApprove = async () => {
+        setLoading(true);
         try {
             if (!filterToAdd.name) {
                 filterToAdd.name = filterToAddName || customUrlToAdd;
@@ -190,6 +193,7 @@ const AddCustomModal = ({
                     <div className="modal__row">
                         <div className="modal__cell modal__cell--title">{reactTranslator.getMessage('options_popup_filter_title')}</div>
                         <input
+                            disabled={isLoading}
                             className="modal__input"
                             type="text"
                             placeholder={reactTranslator.getMessage('options_popup_title_placeholder')}
@@ -222,6 +226,7 @@ const AddCustomModal = ({
                             <input
                                 id="trusted"
                                 type="checkbox"
+                                disabled={isLoading}
                                 onChange={handleTrustedCheckbox}
                             />
                             <div className="custom-checkbox">
@@ -235,6 +240,7 @@ const AddCustomModal = ({
                     {reactTranslator.getMessage('options_popup_trusted_filter_description')}
                 </div>
                 <button
+                    disabled={isLoading}
                     type="button"
                     onClick={handleApprove}
                     className="button button--m button--green modal__btn"
