@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased]
 
-### Added 
-- @adguard/tswebextension MV2 integration 
+### Added
+- `@adguard/tswebextension` MV2 integration
 
 ### Changed
-- moved Adguard API to separate package: https://www.npmjs.com/package/@adguard/api
-
+- moved Adguard API to separate package — [@adguard/api](https://www.npmjs.com/package/@adguard/api)
+- updated `@adguard/extended-css` to [v2.0.51](https://github.com/AdguardTeam/ExtendedCss/blob/master/CHANGELOG.md#v2051)
