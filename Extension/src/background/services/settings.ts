@@ -88,7 +88,7 @@ export class SettingsService {
         settingsEvents.addListener(SettingOption.HideReferrer, Engine.debounceUpdate);
         settingsEvents.addListener(SettingOption.HideSearchQueries, Engine.debounceUpdate);
         settingsEvents.addListener(SettingOption.SendDoNotTrack, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.BlockChromeClientData, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.RemoveXClientData, Engine.debounceUpdate);
         settingsEvents.addListener(SettingOption.BlockWebRTC, Engine.debounceUpdate);
         settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookies, Engine.debounceUpdate);
         settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookiesTime, Engine.debounceUpdate);

@@ -399,7 +399,7 @@ export class PagesApi {
             },
             {
                 queryKey: 'stealth.x_client',
-                settingKey: SettingOption.BlockChromeClientData,
+                settingKey: SettingOption.RemoveXClientData,
             },
             {
                 queryKey: 'stealth.webrtc',
