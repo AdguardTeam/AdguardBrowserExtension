@@ -248,7 +248,7 @@ export class LocaleDetect {
         }
 
         await FiltersApi.loadAndEnableFilters(disabledFiltersIds);
-        await Engine.update();
+        Engine.debounceUpdate();
 
         const filters: RegularFilterMetadata[] = [];
 

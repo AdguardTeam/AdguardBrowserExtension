@@ -79,7 +79,7 @@ export class CustomFilterService {
             enabled: true,
         });
 
-        await Engine.update();
+        Engine.debounceUpdate();
 
         return filterMetadata;
     }

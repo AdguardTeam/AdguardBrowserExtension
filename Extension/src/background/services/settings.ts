@@ -142,7 +142,7 @@ export class SettingsService {
     static async reset(): Promise<boolean> {
         try {
             await SettingsApi.reset();
-            await Engine.update();
+            Engine.debounceUpdate();
 
             return true;
         } catch (e) {
@@ -160,7 +160,7 @@ export class SettingsService {
 
         const isImported = await SettingsApi.import(json);
 
-        await Engine.update();
+        Engine.debounceUpdate();
 
         listeners.notifyListeners(listeners.SettingsUpdated, isImported);
         return isImported;
