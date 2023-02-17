@@ -44,7 +44,7 @@ export class UserRulesApi {
                 await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
             }
         } catch (e) {
-            Log.warn('Can\'t parse user filter list from persisted storage, reset to default');
+            Log.warn('Cannot parse user filter list from persisted storage, reset to default. Origin error: ', e);
             await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
         }
     }
@@ -165,7 +165,7 @@ export class UserRulesApi {
             try {
                 converted = RuleConverter.convertRule(line);
             } catch (e: unknown) {
-                Log.info(`Error converting rule ${line}, due to: ${e instanceof Error ? e.message : e}`);
+                Log.info(`Error converting rule ${line}, due to: `, e);
             }
             result.push(...converted);
 

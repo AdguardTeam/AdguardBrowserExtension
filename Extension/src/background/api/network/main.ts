@@ -140,7 +140,7 @@ export class Network {
         try {
             response = await Network.executeRequestAsync(url, 'application/json');
         } catch (e: unknown) {
-            const exMessage = e instanceof Error ? e.message : 'couldn\'t load local filters metadata';
+            const exMessage = e instanceof Error ? e.message : 'could not load local filters metadata';
             throw Network.createError(exMessage, url);
         }
 
@@ -173,7 +173,7 @@ export class Network {
         try {
             response = await Network.executeRequestAsync(url, 'application/json');
         } catch (e: unknown) {
-            const exMessage = e instanceof Error ? e.message : 'couldn\'t load local filters i18n metadata';
+            const exMessage = e instanceof Error ? e.message : 'could not load local filters i18n metadata';
             throw Network.createError(exMessage, url);
         }
 
@@ -206,7 +206,7 @@ export class Network {
         try {
             response = await Network.executeRequestAsync(url, 'application/json');
         } catch (e: unknown) {
-            const exMessage = e instanceof Error ? e.message : 'couldn\'t load local script rules';
+            const exMessage = e instanceof Error ? e.message : 'could not load local script rules';
             throw Network.createError(exMessage, url);
         }
 

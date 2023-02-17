@@ -26,6 +26,7 @@ import {
     CustomFilterMetadata,
 } from '../../schema';
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
+import { Log } from '../../../common/log';
 
 import { FilterMetadata, FiltersApi } from './main';
 import { CustomFilterApi } from './custom';
@@ -128,7 +129,14 @@ export class FilterUpdateApi {
             }
         });
 
-        await Promise.allSettled(updateTasks);
+        const promises = await Promise.allSettled(updateTasks);
+
+        // Handles errors
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                Log.error('Cannot update filter due to: ', promise.reason);
+            }
+        });
 
         return updatedFiltersMetadata;
     }

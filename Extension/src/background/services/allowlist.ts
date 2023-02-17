@@ -137,7 +137,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.removeTabUrlFromAllowlist(activeTab.id);
         } else {
-            Log.warn('Can`t open site report page for active tab');
+            Log.warn('Cannot open site report page for active tab');
         }
     }
 
@@ -150,7 +150,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.addTabUrlToAllowlist(activeTab.id);
         } else {
-            Log.warn('Can`t open site report page for active tab');
+            Log.warn('Cannot open site report page for active tab');
         }
     }
 

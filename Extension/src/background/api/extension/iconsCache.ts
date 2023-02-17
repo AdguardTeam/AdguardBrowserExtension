@@ -38,7 +38,7 @@ function loadImageData(size: number, url: string): Promise<ImageData> {
             const ctx = canvas.getContext('2d');
 
             if (!ctx) {
-                reject(new Error('Can\'t load image data'));
+                reject(new Error('Cannot load image data'));
                 return;
             }
 

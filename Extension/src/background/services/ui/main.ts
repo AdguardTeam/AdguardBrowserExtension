@@ -148,7 +148,7 @@ export class UiService {
         if (activeTab?.url) {
             await PagesApi.openAbusePage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
-            Log.warn('Can`t open abuse page for active tab');
+            Log.warn('Cannot open abuse page for active tab');
         }
     }
 
@@ -173,7 +173,7 @@ export class UiService {
         if (activeTab?.url) {
             await PagesApi.openSiteReportPage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
-            Log.warn('Can`t open site report page for active tab');
+            Log.warn('Cannot open site report page for active tab');
         }
     }
 
