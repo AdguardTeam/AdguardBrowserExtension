@@ -18,6 +18,7 @@
 import zod from 'zod';
 
 import { Log } from '../../../common/log';
+import { getErrorMessage } from '../../../common/error';
 import { storage } from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
@@ -80,8 +81,8 @@ export class UpdateApi {
                 const schemaMigrationAction = this.schemaMigrationMap[schema];
 
                 if (!schemaMigrationAction) {
-                    throw new Error(`Can't find schema migration action from ${previousSchemaVersion} `
-                        + `to ${currentSchemaVersion}.`);
+                    // eslint-disable-next-line max-len
+                    throw new Error(`Cannot find schema migration action from ${previousSchemaVersion} to ${currentSchemaVersion}.`);
                 }
 
                 // eslint-disable-next-line no-await-in-loop
@@ -109,8 +110,8 @@ export class UpdateApi {
         try {
             await schemaMigrationAction();
         } catch (e: unknown) {
-            const errMessage = `Error while schema migrating from ${previousSchemaVersion} `
-                + `to ${currentSchemaVersion}: ${e instanceof Error ? e.message : e}`;
+            // eslint-disable-next-line max-len
+            const errMessage = `Error while schema migrating from ${previousSchemaVersion} to ${currentSchemaVersion}: ${getErrorMessage(e)}`;
             Log.error(errMessage);
 
             throw new Error(errMessage, { cause: e });

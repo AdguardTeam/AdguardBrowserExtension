@@ -269,7 +269,7 @@ export class App {
         try {
             await browser.runtime.setUninstallURL(App.uninstallUrl);
         } catch (e) {
-            Log.error(`Can't set app uninstall url: ${e instanceof Error ? e.message : e}`);
+            Log.error('Cannot set app uninstall url. Origin error: ', e);
         }
     }
 

@@ -176,7 +176,7 @@ export class SafebrowsingApi {
         }
 
         if (!response) {
-            Log.error('Can`t read response from the server');
+            Log.error('Cannot read response from the server');
             return null;
         }
 

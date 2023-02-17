@@ -115,7 +115,7 @@ export class CustomFilterApi {
                 customFilterMetadataStorage.setData([]);
             }
         } catch (e) {
-            Log.warn('Can`t parse custom filter metadata from persisted storage, reset to default');
+            Log.warn('Cannot parse custom filter metadata from persisted storage, reset to default. Origin error: ', e);
             customFilterMetadataStorage.setData([]);
         }
     }
@@ -240,7 +240,14 @@ export class CustomFilterApi {
     public static async createFilters(filtersData: CustomFilterDTO[]): Promise<void> {
         const tasks = filtersData.map(filterData => CustomFilterApi.createFilter(filterData));
 
-        await Promise.allSettled(tasks);
+        const promises = await Promise.allSettled(tasks);
+
+        // Handles errors
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                Log.error('Cannot create filter due to: ', promise.reason);
+            }
+        });
     }
 
     /**
@@ -262,7 +269,7 @@ export class CustomFilterApi {
         const filterMetadata = customFilterMetadataStorage.getById(filterId);
 
         if (!filterMetadata) {
-            Log.error(`Can't find custom filter ${filterId} metadata`);
+            Log.error(`Cannot find custom filter ${filterId} metadata`);
             return null;
         }
 

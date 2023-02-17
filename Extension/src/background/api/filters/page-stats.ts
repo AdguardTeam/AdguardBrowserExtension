@@ -59,7 +59,7 @@ export class PageStatsApi {
                 pageStatsStorage.setData({});
             }
         } catch (e) {
-            Log.warn(`Can't parse data from ${pageStatsStorage.key} storage, set default states`);
+            Log.warn(`Cannot parse data from "${pageStatsStorage.key}" storage, set default states. Origin err: `, e);
             pageStatsStorage.setData({});
         }
     }

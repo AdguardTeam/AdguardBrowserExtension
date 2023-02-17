@@ -72,7 +72,7 @@ export class ContentScriptInjector {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error(promise.reason);
+                Log.error('Cannot inject script to tab due to: ', promise.reason);
             }
         });
     }
