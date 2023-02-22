@@ -172,10 +172,10 @@ export class LocaleDetect {
         // Vietnamese:
         'vn': 'vi',
         // Thai:
-        'th', 'th',
+        'th': 'th',
         // Swedish:
-        'se', 'sv',
-        'ax', 'sv',
+        'se': 'sv',
+        'ax': 'sv',
     };
 
     private browsingLanguages: BrowsingLanguage[] = [];
