@@ -95,7 +95,7 @@ export class LocaleDetect {
         'br': 'pt',
         'ao': 'pt',
         'mz': 'pt',
-        'cv': 'cv',
+        'cv': 'pt',
         // Polish
         'pl': 'pl',
         // Czech
