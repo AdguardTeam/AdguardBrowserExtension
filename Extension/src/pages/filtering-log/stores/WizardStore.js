@@ -81,6 +81,12 @@ class WizardStore {
     @observable
     addedRuleState = null;
 
+    /**
+     * Whether the rule for the specified request is now applied or deleted
+     */
+    @observable
+    isActionSubmitted = false;
+
     @computed
     get requestModalStateEnum() {
         /* should have only one true value */
@@ -89,6 +95,11 @@ class WizardStore {
             isUnblock: this.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST,
             isView: this.requestModalState === WIZARD_STATES.VIEW_REQUEST,
         };
+    }
+
+    @action
+    setActionSubmitted(value) {
+        this.isActionSubmitted = value;
     }
 
     @action
@@ -119,6 +130,7 @@ class WizardStore {
 
     @action
     closeModal = () => {
+        this.isActionSubmitted = false;
         this.isModalOpen = false;
         this.addedRuleState = null;
         this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
@@ -148,20 +160,17 @@ class WizardStore {
 
     @action
     removeFromAllowlistHandler = async () => {
+        this.setActionSubmitted(true);
         const { selectedTabId } = this.rootStore.logStore;
-        const { frameInfo } = await messenger.getTabFrameInfoById(selectedTabId);
 
-        if (!frameInfo) {
-            return;
-        }
-
-        await messenger.unAllowlistFrame(frameInfo);
+        await messenger.removeAllowlistDomain(selectedTabId, false);
 
         this.closeModal();
     };
 
     @action
     removeFromUserFilterHandler = async (filteringEvent) => {
+        this.setActionSubmitted(true);
         const { requestRule } = filteringEvent;
 
         await messenger.removeUserRule(requestRule.ruleText);
@@ -171,6 +180,7 @@ class WizardStore {
 
     @action
     removeAddedRuleFromUserFilter = async () => {
+        this.setActionSubmitted(true);
         await messenger.removeUserRule(this.rule);
         this.closeModal();
     };

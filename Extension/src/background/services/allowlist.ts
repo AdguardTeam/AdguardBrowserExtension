@@ -51,21 +51,13 @@ export class AllowlistService {
         messageHandler.addListener(MessageType.AddAllowlistDomainPopup, AllowlistService.onAddAllowlistDomain);
         messageHandler.addListener(MessageType.RemoveAllowlistDomain, AllowlistService.onRemoveAllowlistDomain);
 
-        settingsEvents.addListener(
-            SettingOption.AllowlistEnabled,
-            AllowlistService.onEnableStateChange,
-        );
-
-        settingsEvents.addListener(
-            SettingOption.DefaultAllowlistMode,
-            AllowlistService.onAllowlistModeChange,
-        );
+        settingsEvents.addListener(SettingOption.AllowlistEnabled, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, Engine.debounceUpdate);
 
         contextMenuEvents.addListener(
             ContextMenuAction.SiteFilteringOn,
             AllowlistService.enableSiteFilteringFromContextMenu,
         );
-
         contextMenuEvents.addListener(
             ContextMenuAction.SiteFilteringOff,
             AllowlistService.disableSiteFilteringFromContextMenu,
@@ -88,7 +80,7 @@ export class AllowlistService {
     }
 
     /**
-     * The listener for the allowlist domain addition event.
+     * The listener for the allowlist domain addition event from popup.
      *
      * @param message Message of type {@link AddAllowlistDomainPopupMessage}.
      */
@@ -104,9 +96,9 @@ export class AllowlistService {
      * @param message Message of type {@link RemoveAllowlistDomainMessage}.
      */
     private static async onRemoveAllowlistDomain(message: RemoveAllowlistDomainMessage): Promise<void> {
-        const { tabId } = message.data;
+        const { tabId, tabRefresh } = message.data;
 
-        await AllowlistApi.removeTabUrlFromAllowlist(tabId);
+        await AllowlistApi.removeTabUrlFromAllowlist(tabId, tabRefresh);
     }
 
     /**
@@ -135,7 +127,7 @@ export class AllowlistService {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.id) {
-            await AllowlistApi.removeTabUrlFromAllowlist(activeTab.id);
+            await AllowlistApi.removeTabUrlFromAllowlist(activeTab.id, true);
         } else {
             Log.warn('Cannot open site report page for active tab');
         }
@@ -152,23 +144,5 @@ export class AllowlistService {
         } else {
             Log.warn('Cannot open site report page for active tab');
         }
-    }
-
-    /**
-     * Updates the tswebextension engine on {@link SettingOption.AllowlistEnabled} setting change.
-     * This setting can be changed by the switch ui element, so it is important to update the engine config
-     * via debounce function, as this is a heavyweight call.
-     */
-    static onEnableStateChange(): void {
-        Engine.debounceUpdate();
-    }
-
-    /**
-     * Updates the tswebextension engine on {@link SettingOption.DefaultAllowlistMode} setting change.
-     * This setting can be changed by the switch ui element, so it is important to update the engine config
-     * via debounce function, as this is a heavyweight call.
-     */
-    static onAllowlistModeChange(): void {
-        Engine.debounceUpdate();
     }
 }

@@ -65,6 +65,7 @@ const RequestCreateRule = observer(() => {
                     name="rulePattern"
                     className="radio-button-input"
                     value={pattern}
+                    disabled={wizardStore.isActionSubmitted}
                     checked={pattern === wizardStore.rulePattern}
                     onChange={handlePatternChange(pattern)}
                 />
@@ -125,6 +126,7 @@ const RequestCreateRule = observer(() => {
                         type="checkbox"
                         name={id}
                         value={id}
+                        disabled={wizardStore.isActionSubmitted}
                         onChange={handleOptionsChange(id)}
                         checked={wizardStore.ruleOptions[id].checked}
                     />
@@ -159,12 +161,14 @@ const RequestCreateRule = observer(() => {
     };
 
     const handleAddRuleClick = async () => {
+        wizardStore.setActionSubmitted(true);
         await messenger.addUserRule(wizardStore.rule);
         const addedRuleState = wizardStore.requestModalState === WIZARD_STATES.BLOCK_REQUEST
             ? ADDED_RULE_STATES.BLOCK
             : ADDED_RULE_STATES.UNBLOCK;
 
         wizardStore.setAddedRuleState(addedRuleState);
+        wizardStore.setActionSubmitted(false);
     };
 
     const handleRuleChange = (e) => {
@@ -210,6 +214,7 @@ const RequestCreateRule = observer(() => {
                         {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
                     </div>
                     <textarea
+                        disabled={wizardStore.isActionSubmitted}
                         className="request-info__value request-modal__rule-text"
                         onChange={handleRuleChange}
                         value={wizardStore.rule}
@@ -234,6 +239,7 @@ const RequestCreateRule = observer(() => {
             </div>
             <div className={cn('request-modal__controls', { 'request-modal__controls_fixed': contentOverflowed })}>
                 <button
+                    disabled={wizardStore.isActionSubmitted}
                     type="button"
                     className="request-modal__button"
                     onClick={handleAddRuleClick}

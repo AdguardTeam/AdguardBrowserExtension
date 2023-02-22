@@ -134,6 +134,15 @@ select {
             display: block;
         }
     }
+
+    &:disabled {
+        pointer-events: none;
+    }
+
+    &:disabled + .checkbox-label .custom-checkbox {
+        cursor: default;
+        opacity: 0.5;
+    }
 }
 
 /* custom radio-button */
@@ -182,6 +191,15 @@ select {
             border-radius: 100%;
             background-color: var(--mainGreen);
         }
+    }
+
+    &:disabled {
+        pointer-events: none;
+    }
+
+    &:disabled + .radio-button-label .radio-button {
+        cursor: default;
+        opacity: 0.5;
     }
 }
 

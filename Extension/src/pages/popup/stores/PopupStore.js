@@ -213,7 +213,7 @@ class PopupStore {
         let isAllowlisted = this.documentAllowlisted;
 
         if (isAllowlisted) {
-            messenger.removeAllowlistDomain(this.currentTabId);
+            messenger.removeAllowlistDomain(this.currentTabId, true);
             isAllowlisted = false;
         } else {
             messenger.addAllowlistDomain(this.currentTabId);

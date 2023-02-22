@@ -72,9 +72,7 @@ export enum MessageType {
   ClearEventsByTabId = 'clearEventsByTabId',
   RefreshPage = 'refreshPage',
   AddUserRule = 'addUserRule',
-  UnAllowlistFrame = 'unAllowlistFrame',
   RemoveUserRule = 'removeUserRule',
-  GetTabFrameInfoById = 'getTabFrameInfoById',
   EnableFiltersGroup = 'enableFiltersGroup',
   NotifyListeners = 'notifyListeners',
   AddLongLivedConnection = 'addLongLivedConnection',
@@ -282,6 +280,7 @@ export type RemoveAllowlistDomainMessage = {
   type: MessageType.RemoveAllowlistDomain
   data: {
     tabId: number,
+    tabRefresh: boolean,
   }
 };
 

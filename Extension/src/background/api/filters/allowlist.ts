@@ -147,14 +147,17 @@ export class AllowlistApi {
     }
 
     /**
-     * Returns domain from {@link tswebextension.TabContext}.
+     * Enable filtering for specified tab by changing the allowlist.
+     *
      * If default allowlist mode, removes domain from {@link allowlistDomainsStorage}.
      * If inverted allowlist mode, adds domain to {@link invertedAllowlistDomainsStorage}.
-     * Updates tswebextension configuration and reload tab after changes apply.
+     * Updates {@link Engine} and reloads the tab if {@link tabRefresh} is true.
      *
      * @param tabId Tab id.
+     * @param tabRefresh Is tab refresh needed after removing tab url from the allowlist.
+     * We do not refresh the tab after changing the allowlist via the filtering log.
      */
-    public static async removeTabUrlFromAllowlist(tabId: number): Promise<void> {
+    public static async removeTabUrlFromAllowlist(tabId: number, tabRefresh: boolean = false): Promise<void> {
         const mainFrame = tsWebExtTabsApi.getTabMainFrame(tabId);
 
         if (!mainFrame) {
@@ -175,13 +178,16 @@ export class AllowlistApi {
 
         await Engine.update();
 
-        await browser.tabs.reload(tabId);
+        if (tabRefresh) {
+            await browser.tabs.reload(tabId);
+        }
     }
 
     /**
-     * Returns domain from {@link tswebextension.TabContext}.
-     * If default allowlist mode, adds domain to {@link invertedAllowlistDomainsStorage}.
-     * If inverted allowlist mode, removes domain from  {@link allowlistDomainsStorage}.
+     * Disable filtering for specified tab by changing the allowlist.
+     *
+     * If default allowlist mode, adds domain to {@link allowlistDomainsStorage}.
+     * If inverted allowlist mode, removes domain from {@link invertedAllowlistDomainsStorage}.
      * Updates tswebextension configuration and reload tab after changes apply.
      *
      * @param tabId Tab id.

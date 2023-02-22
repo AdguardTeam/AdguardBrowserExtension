@@ -253,8 +253,8 @@ class Messenger {
         );
     }
 
-    async removeAllowlistDomain(tabId) {
-        return this.sendMessage(MessageType.RemoveAllowlistDomain, { tabId });
+    async removeAllowlistDomain(tabId, tabRefresh) {
+        return this.sendMessage(MessageType.RemoveAllowlistDomain, { tabId, tabRefresh });
     }
 
     async addAllowlistDomain(tabId) {
@@ -297,16 +297,8 @@ class Messenger {
         await this.sendMessage(MessageType.AddUserRule, { ruleText });
     }
 
-    async unAllowlistFrame(frameInfo) {
-        await this.sendMessage(MessageType.UnAllowlistFrame, { frameInfo });
-    }
-
     async removeUserRule(ruleText) {
         await this.sendMessage(MessageType.RemoveUserRule, { ruleText });
-    }
-
-    async getTabFrameInfoById(tabId) {
-        return this.sendMessage(MessageType.GetTabFrameInfoById, { tabId });
     }
 
     async setPreserveLogState(state) {
