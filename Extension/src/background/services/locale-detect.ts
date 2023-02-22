@@ -62,7 +62,6 @@ export class LocaleDetect {
         'jp': 'ja',
         // Dutch
         'nl': 'nl',
-        'sr': 'nl',
         // French
         'fr': 'fr',
         'mc': 'fr',
