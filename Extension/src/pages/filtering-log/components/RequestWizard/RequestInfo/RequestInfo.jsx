@@ -352,6 +352,7 @@ const RequestInfo = observer(() => {
 
         return (
             <button
+                disabled={wizardStore.isActionSubmitted}
                 className={buttonClass}
                 type="button"
                 onClick={onClick}
