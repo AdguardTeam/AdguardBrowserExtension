@@ -44,7 +44,7 @@ export const StatsTable = observer(() => {
         return (
             <li className="stats__item" key={stats.groupId}>
                 <span className="stats__name">{stats.groupName}</span>
-                <span className="stats__value">{stats.blocked}</span>
+                <span className="stats__value">{new Intl.NumberFormat().format(stats.blocked)}</span>
             </li>
         );
     });
