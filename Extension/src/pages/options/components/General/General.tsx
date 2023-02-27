@@ -120,7 +120,7 @@ const handlePrivacyPermissionForWebRtc = (content: string): Promise<boolean> => 
     return ensurePermission(blockWebRtc);
 };
 
-const General = observer(() => {
+export const General = observer(() => {
     const {
         settingsStore,
         uiStore,
@@ -266,10 +266,7 @@ const General = observer(() => {
                     handler={settingChangeHandler}
                 />
             </SettingsSection>
-            <div
-                className="links-menu"
-                style={{ marginLeft: '16px' }}
-            >
+            <div className="links-menu links-menu--section">
                 <button
                     type="button"
                     className="links-menu__item"
@@ -316,5 +313,3 @@ const General = observer(() => {
         </>
     );
 });
-
-export { General };
