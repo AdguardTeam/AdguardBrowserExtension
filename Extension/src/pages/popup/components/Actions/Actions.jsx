@@ -61,12 +61,13 @@ export const Actions = observer(() => {
         window.close();
     };
 
-    const resetCustomRulesForPage = async () => {
+    const resetCustomRulesForPage = () => {
         if (!store.applicationAvailable) {
             return;
         }
 
-        await messenger.resetCustomRulesForPage(store.url);
+        // TODO: Wait for response when load indicator will be added
+        messenger.resetCustomRulesForPage(store.url);
         window.close();
     };
 
