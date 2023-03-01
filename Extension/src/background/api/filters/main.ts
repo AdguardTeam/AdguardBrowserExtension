@@ -48,18 +48,24 @@ import { CommonFilterApi } from './common';
 import { CustomFilterApi } from './custom';
 import { PageStatsApi } from './page-stats';
 import { HitStatsApi } from './hit-stats';
+import { FilterUpdateApi } from './update';
 
 export type FilterMetadata = RegularFilterMetadata | CustomFilterMetadata;
 
 /**
- * API for managing filters data.
+ * API for managing filters data. This class is a facade for working with
+ * filters, for example, its methods are called by the handlers of user actions:
+ * enabling or disabling a filter or filter group, updating, etc. It depends on
+ * CommonFilterApi and CustomFilterApi.
  */
 export class FiltersApi {
     /**
      * Initialize filters storages.
      * Called while filters service initialization and app resetting.
+     *
+     * @param isInstall Is this is an installation initialization or not.
      */
-    public static async init(): Promise<void> {
+    public static async init(isInstall: boolean): Promise<void> {
         await FiltersApi.initI18nMetadata();
         await FiltersApi.initMetadata();
 
@@ -67,7 +73,7 @@ export class FiltersApi {
         await HitStatsApi.init();
         CustomFilterApi.init();
         AllowlistApi.init();
-        await UserRulesApi.init();
+        await UserRulesApi.init(isInstall);
 
         FiltersApi.loadFilteringStates();
 
@@ -81,7 +87,8 @@ export class FiltersApi {
      * to be updated in order to, for example, update translations or track
      * the removal/addition of filters.
      *
-     * @param remote Is metadata loaded from backend.
+     * @param remote Whether to download metadata from remote resources or from
+     * local resources.
      */
     public static async loadMetadata(remote: boolean): Promise<void> {
         await FiltersApi.loadI18nMetadataFromBackend(remote);
@@ -137,23 +144,25 @@ export class FiltersApi {
     }
 
     /**
-     * Update metadata from external source and download rules for uploaded filters.
+     * Update metadata from external source and download rules for not installed
+     * (not added to the browser storage) filters.
      *
-     * @param filtersIds Loaded filters ids.
-     * @param remote Is metadata and rules loaded from backend.
+     * @param filtersIds Filter ids to load.
+     * @param remote Whether to download metadata and filter rules from remote
+     * resources or from local resources.
      */
     public static async loadFilters(filtersIds: number[], remote: boolean): Promise<void> {
         // Ignore loaded filters
         // Custom filters always has loaded state, so we don't need additional check
-        const unloadedFilters = filtersIds.filter(id => !FiltersApi.isFilterRulesIsLoaded(id));
+        const unloadedFiltersIds = filtersIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
 
-        if (unloadedFilters.length === 0) {
+        if (unloadedFiltersIds.length === 0) {
             return;
         }
 
         await FiltersApi.loadMetadata(remote);
 
-        const tasks = unloadedFilters.map(id => CommonFilterApi.loadFilterRulesFromBackend(id, remote));
+        const tasks = unloadedFiltersIds.map((id) => CommonFilterApi.loadFilterRulesFromBackend(id, remote));
         const promises = await Promise.allSettled(tasks);
 
         // Handles errors
@@ -169,12 +178,20 @@ export class FiltersApi {
      * Called on filter option switch.
      *
      * @param filtersIds Filters ids.
-     * @param remote Is metadata and rules loaded from backend.
+     * @param remote Whether to download metadata and filter rules from remote
+     * resources or from local resources.
      */
-    public static async loadAndEnableFilters(filtersIds: number[], remote = true): Promise<void> {
+    public static async loadAndEnableFilters(filtersIds: number[], remote = false): Promise<void> {
         await FiltersApi.loadFilters(filtersIds, remote);
 
         filterStateStorage.enableFilters(filtersIds);
+
+        if (!remote) {
+            // Checks for updates to enabled filters, unless it is a load from
+            // remote resources, as in this case the filters are already
+            // up to date.
+            await FilterUpdateApi.checkForFiltersUpdates(filtersIds);
+        }
 
         // we enable filters groups if it was never enabled or disabled early
         FiltersApi.enableGroupsWereNotToggled(filtersIds);
@@ -306,8 +323,7 @@ export class FiltersApi {
     }
 
     /**
-     * Load metadata from remote source,
-     * apply i18n metadata, add custom group
+     * Load metadata from remote source, apply i18n metadata, add custom group
      * and save it.
      *
      * @param remote If true, download data from backend, else load it from local files.
@@ -488,5 +504,42 @@ export class FiltersApi {
                 Log.error('Cannot remove obsoleted filter from storage due to: ', promise.reason);
             }
         });
+    }
+
+    /**
+     * Selects filters ids where filters are installed and enabled and only those
+     * that have their group enabled.
+     *
+     * @returns List of installed and enabled filters and only those
+     * that have their group enabled.
+     */
+    public static getInstalledAndEnabledFiltersIds(): number[] {
+        // Collects filters ids and their states and filters groups ids.
+        const filtersStates = filterStateStorage.getData();
+        const enabledGroupsIds = groupStateStorage.getEnabledGroups();
+        const allFiltersIds = Object.keys(filtersStates).map((id) => Number(id));
+
+        // Selects to check only installed and enabled filters and only those
+        // that have their group enabled.
+        return allFiltersIds
+            .filter((id) => {
+                const filterState = filtersStates[id];
+                if (!filterState) {
+                    return false;
+                }
+
+                const { installed, enabled } = filterState;
+                if (!installed || !enabled) {
+                    return false;
+                }
+
+                const groupMetadata = metadataStorage.getGroupByFilterId(id);
+                if (!groupMetadata) {
+                    return false;
+                }
+
+                const groupEnabled = enabledGroupsIds.includes(groupMetadata.groupId);
+                return groupEnabled;
+            });
     }
 }

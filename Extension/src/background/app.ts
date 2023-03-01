@@ -138,7 +138,7 @@ export class App {
          * - Initializes storages for userrules, allowlist, custom filters metadata and page-stats
          * - Initializes storages for filters state, groups state and filters versions, based on app metadata.
          */
-        await FiltersApi.init();
+        await FiltersApi.init(isInstall);
 
         // Initialize filters updates
         await filterUpdateService.init();

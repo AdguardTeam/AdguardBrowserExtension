@@ -180,7 +180,7 @@ export class SettingsApi {
         });
 
         // Re-init filters
-        await FiltersApi.init();
+        await FiltersApi.init(false);
 
         await CommonFilterApi.initDefaultFilters();
     }
