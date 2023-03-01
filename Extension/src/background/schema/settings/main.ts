@@ -28,7 +28,7 @@ export enum SettingOption {
     // filters metadata
     Metadata = 'filters-metadata',
     I18nMetadata = 'filters-i18n-metadata',
-    CustomFilters = 'custom_filters',
+    CustomFilters = 'custom-filters',
 
     // user settings
     DisableDetectFilters = 'detect-filters-disabled',
@@ -90,9 +90,9 @@ export const settingsValidator = zod.object({
     [SettingOption.RemoveXClientData]: SchemaPreprocessor.booleanValidator,
     [SettingOption.BlockWebRTC]: SchemaPreprocessor.booleanValidator,
     [SettingOption.SelfDestructThirdPartyCookies]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.SelfDestructThirdPartyCookiesTime]: SchemaPreprocessor.numberValidator,
+    [SettingOption.SelfDestructThirdPartyCookiesTime]: zod.number().int(),
     [SettingOption.SelfDestructFirstPartyCookies]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.SelfDestructFirstPartyCookiesTime]: SchemaPreprocessor.numberValidator,
+    [SettingOption.SelfDestructFirstPartyCookiesTime]: zod.number().int(),
     [SettingOption.AppearanceTheme]: zod.enum(['system', 'dark', 'light']),
     [SettingOption.UserFilterEnabled]: SchemaPreprocessor.booleanValidator,
     [SettingOption.HideRateBlock]: SchemaPreprocessor.booleanValidator,

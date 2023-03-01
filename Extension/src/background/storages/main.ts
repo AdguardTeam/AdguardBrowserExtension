@@ -15,45 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
+import { storage } from './implementations/storage.chrome';
 
-import { StorageInterface } from '../../common/storage';
-
-/**
- * Wrapper for browser.storage.local with dev-friendly interface.
- */
-export class Storage implements StorageInterface<string, unknown, 'async'> {
-    // extension storage API
-    private storage = browser.storage.local;
-
-    /**
-     * Sets data to storage.
-     *
-     * @param key Storage key.
-     * @param value Storage value.
-     */
-    public async set(key: string, value: unknown): Promise<void> {
-        await this.storage.set({ [key]: value });
-    }
-
-    /**
-     * Returns data from storage.
-     *
-     * @param key Storage key.
-     * @returns Storage value.
-     */
-    public async get(key: string): Promise<unknown> {
-        return (await this.storage.get(key))?.[key];
-    }
-
-    /**
-     * Removes data from storage.
-     *
-     * @param key Storage key.
-     */
-    public async remove(key: string): Promise<void> {
-        await this.storage.remove(key);
-    }
-}
-
-export const storage = new Storage();
+export { storage };

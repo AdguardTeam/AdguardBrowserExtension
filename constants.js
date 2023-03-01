@@ -45,7 +45,7 @@ export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
 
 // Placed here to use in the node environment and in the browser
 // Important: extensions '.js' used for correct work of Cloudflare cache, but
-// real format of these files is JSON;
+// real format of these files is JSON.
 // See AG-1901 for details.
 export const REMOTE_METADATA_FILE_NAME = 'filters.js';
 export const REMOTE_I18N_METADATA_FILE_NAME = 'filters_i18n.js';

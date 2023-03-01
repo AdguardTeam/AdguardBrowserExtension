@@ -1,10 +1,14 @@
 import sinon from 'sinon';
 
+import { RootOption, FiltersOption } from '../../../Extension/src/background/schema';
+import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../../../constants';
 import {
     getMetadataFixture,
     getI18nMetadataFixture,
     getFilterTextFixture,
-    filterTextFixture,
+    filterTextWithMetadataFixture,
+    getCustomExportFixture,
+    SETTINGS_V_1_0,
 } from '../fixtures';
 
 const metadata = getMetadataFixture();
@@ -23,13 +27,13 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
         respondImmediately: true,
     });
 
-    server.respondWith('GET', /\/filters\.js(on)?/, [
+    server.respondWith('GET', new RegExp(`/${REMOTE_METADATA_FILE_NAME}`), [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(metadata),
     ]);
 
-    server.respondWith('GET', /\/filters_i18n\.js(on)?/, [
+    server.respondWith('GET', new RegExp(`/${REMOTE_I18N_METADATA_FILE_NAME}`), [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(i18nMetadata),
@@ -37,25 +41,25 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
 
     server.respondWith('GET', /\/alert-popup\.css/, [
         200,
-        { 'Content-Type': 'application/text' },
+        { 'Content-Type': 'text/plain' },
         '',
     ]);
 
     server.respondWith('GET', /\/alert-container\.css/, [
         200,
-        { 'Content-Type': 'application/text' },
+        { 'Content-Type': 'text/plain' },
         '',
     ]);
 
     server.respondWith('GET', /\/update-container\.css/, [
         200,
-        { 'Content-Type': 'application/text' },
+        { 'Content-Type': 'text/plain' },
         '',
     ]);
 
     server.respondWith('GET', new RegExp(`/${mockFilterPath}`), [
         200,
-        { 'Content-Type': 'application/text' },
+        { 'Content-Type': 'text/plain' },
         filterText,
     ]);
 
@@ -63,15 +67,39 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
     // with provided enabled filters
     server.respondWith('GET', /\/filter_(mobile_)?\d+\.txt/, [
         200,
-        { 'Content-Type': 'application/text' },
-        filterTextFixture,
+        { 'Content-Type': 'text/plain' },
+        filterTextWithMetadataFixture,
     ]);
 
-    server.respondWith('GET', /\/filters\/\d+(_optimized)?\.txt/, [
+    // Simulate filters bodies for successfully emulate initialization of App
+    // with provided enabled filters
+    server.respondWith('GET', /\/filters\/\d+(_optimized)?.txt/, [
         200,
         { 'Content-Type': 'text/plain' },
-        filterTextFixture,
+        filterTextWithMetadataFixture,
     ]);
+
+    const customFiltersFixture = getCustomExportFixture()[RootOption.Filters][FiltersOption.CustomFilters];
+    const customFiltersFixture2 = SETTINGS_V_1_0['filters']['custom-filters'];
+
+    const customFiltersUrls = [
+        ...customFiltersFixture.map(({ customUrl }) => customUrl),
+        ...customFiltersFixture2.map(({ customUrl }) => customUrl),
+    ];
+
+    // Filter only uniq urls
+    Array.from(new Set(customFiltersUrls))
+        // Dynamically create mocks for each custom filter urls
+        .forEach((customUrl: string) => {
+            // Somehow exact mock with customUrl doesn't work, so create regexp-mask
+            // with url part after last slash.
+            const mockAddr = customUrl.slice(customUrl.lastIndexOf('/'));
+            server.respondWith('GET', new RegExp(mockAddr), [
+                200,
+                { 'Content-Type': 'text/plain' },
+                filterTextWithMetadataFixture,
+            ]);
+        });
 
     return server;
 };

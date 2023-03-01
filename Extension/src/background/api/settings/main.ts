@@ -421,7 +421,7 @@ export class SettingsApi {
     private static async exportUserFilter(): Promise<UserFilterConfig> {
         return {
             [UserFilterOption.Enabled]: settingsStorage.get(SettingOption.UserFilterEnabled),
-            [UserFilterOption.Rules]: (await UserRulesApi.getUserRules()).join('/n'),
+            [UserFilterOption.Rules]: (await UserRulesApi.getUserRules()).join('\n'),
             [UserFilterOption.DisabledRules]: '',
         };
     }

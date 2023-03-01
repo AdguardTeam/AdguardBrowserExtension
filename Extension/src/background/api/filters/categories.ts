@@ -103,7 +103,7 @@ export class Categories {
 
         // If this is the first time the group has been activated - load and
         // enable the recommended filters.
-        if (!group?.toggled) {
+        if (!group?.touched) {
             const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
             await FiltersApi.loadAndEnableFilters(recommendedFiltersIds);
         }

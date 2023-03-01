@@ -194,7 +194,7 @@ export class FiltersApi {
         }
 
         // we enable filters groups if it was never enabled or disabled early
-        FiltersApi.enableGroupsWereNotToggled(filtersIds);
+        FiltersApi.enableGroupsWereNotTouched(filtersIds);
     }
 
     /**
@@ -280,13 +280,13 @@ export class FiltersApi {
     }
 
     /**
-     * Enable filters groups that were not toggled by users.
+     * Enable filters groups that were not touched by users or by code.
      *
      * Called on filter enabling.
      *
      * @param filtersIds Filters ids.
      */
-    private static enableGroupsWereNotToggled(filtersIds: number[]): void {
+    private static enableGroupsWereNotTouched(filtersIds: number[]): void {
         const groupIds: number[] = [];
 
         filtersIds.forEach((filterId) => {
@@ -299,7 +299,7 @@ export class FiltersApi {
             const { groupId } = filterMetadata;
             const group = groupStateStorage.get(groupId);
 
-            if (!group?.toggled) {
+            if (!group?.touched) {
                 groupIds.push(filterMetadata.groupId);
             }
         });
