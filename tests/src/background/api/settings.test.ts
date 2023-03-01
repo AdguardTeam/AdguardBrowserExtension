@@ -4,14 +4,23 @@ import { Storage } from 'webextension-polyfill';
 import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../constants';
 import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
-import { SettingOption } from '../../../../Extension/src/background/schema';
+import {
+    ExtensionSpecificSettingsOption,
+    FiltersOption,
+    RootOption,
+    SettingOption,
+} from '../../../../Extension/src/background/schema';
 import { settingsStorage } from '../../../../Extension/src/background/storages';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 import { defaultSettings } from '../../../../Extension/src/common/settings';
 import {
     getDefaultExportFixture,
     getDefaultSettingsConfigFixture,
+    getCustomExportFixture,
     mockLocalStorage,
+    filterNameFixture,
+    SETTINGS_V_1_0,
+    EXPORTED_SETTINGS_V_2_0,
 } from '../../../helpers';
 
 describe('Settings Api', () => {
@@ -93,17 +102,53 @@ describe('Settings Api', () => {
         it('Import settings', async () => {
             const userConfig = getDefaultExportFixture();
 
-            userConfig['extension-specific-settings']['use-optimized-filters'] = true;
+            // eslint-disable-next-line max-len
+            userConfig[RootOption.ExtensionSpecificSettings][ExtensionSpecificSettingsOption.UseOptimizedFilters] = true;
 
-            await SettingsApi.import(JSON.stringify(userConfig));
+            const importResult = await SettingsApi.import(JSON.stringify(userConfig));
 
+            expect(importResult).toBeTruthy();
             expect(SettingsApi.getSetting(SettingOption.UseOptimizedFilters)).toBe(true);
         });
 
         it('Export settings', async () => {
             const exportedSettings = await SettingsApi.export();
 
-            expect(exportedSettings).toBe(JSON.stringify(getDefaultExportFixture()));
+            expect(exportedSettings).toStrictEqual(JSON.stringify(getDefaultExportFixture()));
+        });
+
+        it('Imports exported settings', async () => {
+            const userConfig = getCustomExportFixture();
+            let importResult = await SettingsApi.import(JSON.stringify(userConfig));
+
+            expect(importResult).toBeTruthy();
+
+            const exportedSettings = await SettingsApi.export();
+            importResult = await SettingsApi.import(exportedSettings);
+
+            expect(importResult).toBeTruthy();
+
+            const importedSettingsString = await SettingsApi.export();
+            // Fill up optional fields
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.trusted = false;
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.enabled = false;
+            expect(importedSettingsString).toStrictEqual(JSON.stringify(userConfig));
+        });
+
+        it('Imports settings from 4.1.X version', async () => {
+            const settings = SETTINGS_V_1_0;
+            let importResult = await SettingsApi.import(JSON.stringify(settings));
+
+            expect(importResult).toBeTruthy();
+
+            const exportedSettings = await SettingsApi.export();
+            importResult = await SettingsApi.import(exportedSettings);
+
+            expect(importResult).toBeTruthy();
+
+            const exportedSettingsString = await SettingsApi.export();
+            expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
         });
 
         it('Reset default settings', async () => {

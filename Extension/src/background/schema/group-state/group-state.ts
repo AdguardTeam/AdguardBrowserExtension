@@ -28,10 +28,10 @@ export const groupStateDataValidator = zod.object({
      */
     enabled: zod.boolean(),
     /**
-     * Whether or not the group has ever been switched.
-     * TODO: Maybe rename to 'touched'?
+     * Whether the group has ever been switched. Can be affected
+     * programmatically, e.g. After importing settings.
      */
-    toggled: zod.boolean(),
+    touched: zod.boolean(),
 });
 
 export type GroupStateData = zod.infer<typeof groupStateDataValidator>;

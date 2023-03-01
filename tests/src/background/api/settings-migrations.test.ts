@@ -6,7 +6,7 @@ describe('Settings Migrations Api', () => {
         it('Apply migration from version 1.0 to 2.0', async () => {
             const updatedSettings = await SettingsMigrations.migrateSettings('1.0', SETTINGS_V_1_0);
 
-            expect(updatedSettings).toStrictEqual(SETTINGS_V_2_0);
+            expect(JSON.stringify(updatedSettings)).toStrictEqual(JSON.stringify(SETTINGS_V_2_0));
         });
     });
 });

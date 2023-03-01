@@ -17,7 +17,14 @@
  */
 import zod from 'zod';
 
-import { storage } from './main';
+/**
+ * !IMPORTANT!
+ * 'storage.__ABSTRACT_BROWSER__' is replaced during webpack
+ * compilation with NormalModuleReplacementPlugin to proper browser
+ * implementation 'implementations/storage.chrome'
+ * or 'implementations/storage.firefox'.
+ */
+import { storage } from './implementations/storage.__ABSTRACT_BROWSER__';
 
 /**
  * Encapsulates interaction with stored filter rules.

@@ -20,7 +20,7 @@ import zod from 'zod';
 // Stealth configuration
 
 export const enum StealthOption {
-    DisableStealthMode = 'stealth_disable_stealth_mode',
+    DisableStealthMode = 'stealth-disable-stealth-mode',
     HideReferrer = 'stealth-hide-referrer',
     HideSearchQueries = 'stealth-hide-search-queries',
     SendDoNotTrack = 'stealth-send-do-not-track',
@@ -42,9 +42,9 @@ export const stealthConfigValidator = zod.object({
     [StealthOption.BlockWebRTC]: zod.boolean(),
     [StealthOption.RemoveXClientData]: zod.boolean(),
     [StealthOption.SelfDestructThirdPartyCookies]: zod.boolean(),
-    [StealthOption.SelfDestructThirdPartyCookiesTime]: zod.number().int().optional(),
+    [StealthOption.SelfDestructThirdPartyCookiesTime]: zod.number().int(),
     [StealthOption.SelfDestructFirstPartyCookies]: zod.boolean(),
-    [StealthOption.SelfDestructFirstPartyCookiesTime]: zod.number().int().optional(),
+    [StealthOption.SelfDestructFirstPartyCookiesTime]: zod.number().int(),
     [StealthOption.BlockKnownTrackers]: zod.boolean().optional(),
     [StealthOption.StripTrackingParams]: zod.boolean(),
 });
