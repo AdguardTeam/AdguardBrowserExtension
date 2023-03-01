@@ -15,11 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import {
-    filterStateStorage,
-    filterVersionStorage,
-    settingsStorage,
-} from '../../storages';
+import { filterVersionStorage, settingsStorage } from '../../storages';
 import {
     SettingOption,
     RegularFilterMetadata,
@@ -33,80 +29,107 @@ import { CustomFilterApi } from './custom';
 import { CommonFilterApi } from './common';
 
 /**
- * API for filter rules updates.
+ * API for manual and automatic (by period) filter rules updates.
  */
 export class FilterUpdateApi {
     /**
-     * Checks enabled filters update.
-     *
-     * Called when user manually run update.
+     * Timeout for recently checked (added, enabled or updated by the scheduler)
+     * filters - 5 minutes.
      */
-    public static async updateEnabledFilters(): Promise<FilterMetadata[]> {
-        const enabledFilters = FiltersApi.getEnabledFilters();
+    private static readonly RECENTLY_CHECKED_FILTER_TIMEOUT_MS = 1000 * 60 * 5;
 
-        const updatedFilters = await FilterUpdateApi.updateFilters(enabledFilters);
+    /**
+     * Filters the provided filter list with {@link selectFiltersIdsToUpdate},
+     * then gets fresh metadata from the remote server for all filters (it
+     * cannot be updated selectively), and, after updating, refreshes
+     * lastCheckTime for each of those selected for checking filters.
+     *
+     * Called:
+     * - by the user's action to enable a filter or a filter group (even when
+     * a filter is enabled from the Stealth menu);
+     * - when the language filter is automatically turned on.
+     *
+     * @param filtersIds List of filters ids to check.
+     *
+     * @returns List of metadata for updated filters.
+     */
+    public static async checkForFiltersUpdates(filtersIds: number[]): Promise<FilterMetadata[]> {
+        const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filtersIds);
 
-        filterVersionStorage.refreshLastCheckTime(enabledFilters);
+        const updatedFilters = await FilterUpdateApi.updateFilters(filtersToCheck);
+
+        filterVersionStorage.refreshLastCheckTime(filtersToCheck);
 
         return updatedFilters;
     }
 
     /**
-     * Checks installed filters update by matching update period via filters
-     * version check and expires timestamps and also update metadata for all
-     * installed filters.
-     * Installed filters are filters whose rules are loaded in browser.storage.local.
+     * If filtering is disabled or there is no selected filter update period in
+     * the settings and if it is not a forced update, it returns an empty array.
+     * Otherwise it checks all installed and enabled filters and only those that
+     * have their group enabled for available updates: if it is a forced
+     * update - it checks for updates for those (described above) filters,
+     * otherwise it additional checks those filters for possible expose by
+     * comparing 'lastTimeCheck' of each filter with updatePeriod from settings
+     * or by checking 'expires' field.
+     *
+     * After that gets fresh metadata from the remote server for all filters (it
+     * cannot be updated selectively).
+     *
+     * 'Installed filters' are filters whose rules are loaded in
+     * browser.storage.local.
+     *
+     * Called when user manually run update:
+     * - on request from context menu;
+     * - on request from popup menu;
+     *
+     * Or from the update scheduler @see FilterUpdateService.
+     *
+     * @param forceUpdate Is it a force manual check by user action or first run
+     * or not.
      */
-    public static async autoUpdateFilters(): Promise<void> {
-        const updatePeriod = settingsStorage.get(SettingOption.FiltersUpdatePeriod);
-
-        // auto update disabled
-        if (updatePeriod === 0) {
-            return;
+    public static async autoUpdateFilters(forceUpdate: boolean = false): Promise<FilterMetadata[]> {
+        // If filtering is disabled and it is not a forced update, it does nothing.
+        const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
+        if (filteringDisabled && !forceUpdate) {
+            return [];
         }
 
-        const filtersVersions = filterVersionStorage.getData();
+        const updatePeriod = settingsStorage.get(SettingOption.FiltersUpdatePeriod);
+        // Auto update disabled.
+        if (updatePeriod === 0 && !forceUpdate) {
+            return [];
+        }
 
-        const filtersStates = filterStateStorage.getData();
+        // Selects to check only installed and enabled filters and only those
+        // that have their group enabled.
+        const installedAndEnabledFilters = FiltersApi.getInstalledAndEnabledFiltersIds();
 
-        const filterVersionEntries = Object.entries(filtersVersions);
+        // If it is a force check - updates all installed and enabled filters.
+        let filtersIdsToUpdate = installedAndEnabledFilters;
 
-        const installedFilterVersionEntries = filterVersionEntries
-            .filter(([id]) => !!filtersStates?.[Number(id)]?.installed);
+        // If not a force check - updates only outdated filters.
+        if (!forceUpdate) {
+            filtersIdsToUpdate = FilterUpdateApi.selectExpiredFilters(updatePeriod, installedAndEnabledFilters);
+        }
 
-        const filtersIdsToUpdate = installedFilterVersionEntries
-            // 'lastCheckTime' is a time of the last check by the sheduler
-            // (every FilterUpdateService.CHECK_PERIOD_MS it is overwritten
-            // by the sheduler or if the user presses check for updates from
-            // the settings).
-            // 'expires' is a data from filter metadata: after how long to check the update.
-            .filter(([, { lastCheckTime, expires }]) => {
-                // By default, check the expires field for each filter.
-                if (updatePeriod === DEFAULT_FILTERS_UPDATE_PERIOD) {
-                    // If it is time to check the update, add it to the array
-                    return lastCheckTime + expires <= Date.now();
-                }
+        const updatedFilters = await FilterUpdateApi.updateFilters(filtersIdsToUpdate);
 
-                // Check, if the renewal period of each filter has passed.
-                // If it is time to check the renewal, add to the array.
-                return lastCheckTime + updatePeriod <= Date.now();
-            })
-            .map(([id]) => Number(id));
+        // Updates last check time of all installed and enabled filters.
+        filterVersionStorage.refreshLastCheckTime(filtersIdsToUpdate);
 
-        await FilterUpdateApi.updateFilters(filtersIdsToUpdate);
-
-        const installedFiltersIds = installedFilterVersionEntries.map(([id]) => Number(id));
-
-        filterVersionStorage.refreshLastCheckTime(installedFiltersIds);
+        return updatedFilters;
     }
 
     /**
-     * Updates the content of filters for the provided list of identifiers and
-     * updates the metadata of all filters.
+     * Updates the metadata of all filters and updates the filter contents from
+     * the provided list of identifiers.
      *
      * @param filtersIds List of filters ids to update.
+     *
+     * @returns Promise with a list of updated {@link FilterMetadata filters' metadata}.
      */
-    public static async updateFilters(filtersIds: number[]): Promise<FilterMetadata[]> {
+    private static async updateFilters(filtersIds: number[]): Promise<FilterMetadata[]> {
         /**
          * Reload common filters metadata from backend for correct
          * version matching on update check.
@@ -139,5 +162,63 @@ export class FilterUpdateApi {
         });
 
         return updatedFiltersMetadata;
+    }
+
+    /**
+     * Selects from the provided list of filters only those that have not been
+     * {@link RECENTLY_CHECKED_FILTER_TIMEOUT_MS recently} updated (added,
+     * enabled or updated by the scheduler) and those that are custom filters.
+     *
+     * @param filtersIds List of filter ids.
+     *
+     * @returns List of filter ids to update.
+     */
+    private static selectFiltersIdsToUpdate(filtersIds: number[]): number[] {
+        const filtersVersions = filterVersionStorage.getData();
+
+        return filtersIds.filter((id: number) => {
+            // Always check for updates for custom filters
+            const isCustom = CustomFilterApi.isCustomFilter(Number(id));
+
+            // Select only not recently checked filters
+            const filterVersion = filtersVersions[Number(id)];
+            const outdated = filterVersion !== undefined
+                ? Date.now() - filterVersion.lastCheckTime > FilterUpdateApi.RECENTLY_CHECKED_FILTER_TIMEOUT_MS
+                : true;
+
+            return isCustom || outdated;
+        });
+    }
+
+    /**
+     * Selects only outdated filters from the provided filter list, based on the
+     * provided filter update period from the settings.
+     *
+     * @param updatePeriod Period of checking updates in ms.
+     * @param filterIds List of filter ids.
+     *
+     * @returns List of outdated filter ids.
+     */
+    private static selectExpiredFilters(updatePeriod: number, filterIds: number[]): number[] {
+        const filtersVersions = filterVersionStorage.getData();
+
+        return filterIds.filter((id: number) => {
+            const filterVersion = filtersVersions[id];
+            if (!filterVersion) {
+                return false;
+            }
+
+            const { lastCheckTime, expires } = filterVersion;
+
+            // By default, checks the expires field for each filter.
+            if (updatePeriod === DEFAULT_FILTERS_UPDATE_PERIOD) {
+                // If it is time to check the update, adds it to the array.
+                return lastCheckTime + expires <= Date.now();
+            }
+
+            // Check, if the renewal period of each filter has passed.
+            // If it is time to check the renewal, add to the array.
+            return lastCheckTime + updatePeriod <= Date.now();
+        });
     }
 }

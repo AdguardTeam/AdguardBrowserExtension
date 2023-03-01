@@ -33,9 +33,12 @@ import {
     METADATA_I18N_DOWNLOAD_URL_FORMAT,
     FILTER_DOWNLOAD_URL_FORMAT,
     OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT,
-    ADGUARD_FILTERS_IDS,
 } from '../constants';
-import { LOCALE_METADATA_FILE_NAME, LOCALE_I18N_METADATA_FILE_NAME } from '../../constants';
+import {
+    ADGUARD_FILTERS_IDS,
+    LOCALE_METADATA_FILE_NAME,
+    LOCALE_I18N_METADATA_FILE_NAME,
+} from '../../constants';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
 

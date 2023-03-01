@@ -52,3 +52,5 @@ export const REMOTE_I18N_METADATA_FILE_NAME = 'filters_i18n.js';
 // But locally we prefer to use '.json' extension.
 export const LOCALE_METADATA_FILE_NAME = 'filters.json';
 export const LOCALE_I18N_METADATA_FILE_NAME = 'filters_i18n.json';
+
+export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 224];

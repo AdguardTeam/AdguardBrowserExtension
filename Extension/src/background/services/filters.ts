@@ -57,10 +57,10 @@ export class FiltersService {
         messageHandler.addListener(MessageType.DisableFilter, FiltersService.onFilterDisable);
         messageHandler.addListener(MessageType.EnableFiltersGroup, FiltersService.onGroupEnable);
         messageHandler.addListener(MessageType.DisableFiltersGroup, FiltersService.onGroupDisable);
-        messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.checkFiltersUpdate);
+        messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.manualCheckFiltersUpdate);
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
 
-        contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.checkFiltersUpdate);
+        contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
 
         settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
         settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
@@ -75,7 +75,7 @@ export class FiltersService {
     private static async onFilterEnable(message: AddAndEnableFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
-        await FiltersApi.loadAndEnableFilters([filterId]);
+        await FiltersApi.loadAndEnableFilters([filterId], true);
 
         Engine.debounceUpdate();
     }
@@ -121,11 +121,11 @@ export class FiltersService {
     }
 
     /**
-     * Called when requesting an update for filters.
+     * Called when requesting an force update for filters.
      */
-    private static async checkFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
+    private static async manualCheckFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
         try {
-            const updatedFilters = await FilterUpdateApi.updateEnabledFilters();
+            const updatedFilters = await FilterUpdateApi.autoUpdateFilters(true);
 
             Engine.debounceUpdate();
 

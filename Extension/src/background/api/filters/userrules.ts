@@ -34,9 +34,12 @@ import {
 export class UserRulesApi {
     /**
      * Parses data from user rules list.
-     * If it's undefined, sets empty user rules list.
+     * If it's undefined or if it's an initialization after installation - sets
+     * empty user rules list.
+     *
+     * @param isInstall Is this is an installation initialization or not.
      */
-    public static async init(): Promise<void> {
+    public static async init(isInstall: boolean): Promise<void> {
         try {
             const userRules = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
 
@@ -44,7 +47,9 @@ export class UserRulesApi {
                 await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
             }
         } catch (e) {
-            Log.warn('Cannot parse user filter list from persisted storage, reset to default. Origin error: ', e);
+            if (!isInstall) {
+                Log.warn('Cannot parse user filter list from persisted storage, reset to default. Origin error: ', e);
+            }
             await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
         }
     }

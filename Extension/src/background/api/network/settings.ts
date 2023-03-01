@@ -15,7 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../../../../../constants';
+import {
+    REMOTE_METADATA_FILE_NAME,
+    REMOTE_I18N_METADATA_FILE_NAME,
+    ADGUARD_FILTERS_IDS,
+} from '../../../../../constants';
 import { UserAgent } from '../../../common/user-agent';
 import { BrowserUtils } from '../../utils/browser-utils';
 
@@ -39,8 +43,8 @@ export class NetworkSettings {
     // Path to the redirect sources
     readonly redirectSourcesFolder = 'assets/libs/scriptlets';
 
-    // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
-    readonly localFilterIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    // Array of filter identifiers, that have local file with rules.
+    readonly localFilterIds = ADGUARD_FILTERS_IDS;
 
     /**
      * Returns the url from which the filters can be loaded.

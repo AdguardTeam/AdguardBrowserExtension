@@ -140,7 +140,7 @@ export class CustomFilterApi {
             return { errorAlreadyExists: true };
         }
 
-        const rules = await network.downloadFilterRulesBySubscriptionUrl(url) as string[];
+        const rules = await network.downloadFilterRulesBySubscriptionUrl(url);
 
         if (!rules) {
             return null;

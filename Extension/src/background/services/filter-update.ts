@@ -18,23 +18,22 @@
 import { FilterUpdateApi } from '../api';
 
 /**
- * Service for scheduling filter update checks.
+ * Service for scheduling filters update checks.
  *
- * It delays update check on initialization on 5 min.
- * After initialization scheduler checks filter updates every 30 minutes.
+ * After initialization scheduler checks filter updates
+ * {@link CHECK_PERIOD_MS every 30 minutes}.
  */
 export class FilterUpdateService {
     /**
-     * Update checking initialization delay.
-     */
-    private static readonly INIT_DELAY_MS = 1000 * 60 * 5; // 5 min
-
-    /**
-     * Checking period.
+     * Checking period - 30 minutes.
      */
     private static readonly CHECK_PERIOD_MS = 1000 * 60 * 30; // 30 min
 
-    private timerId: number | undefined;
+    /**
+     * Stores scheduler timer id for checking update in every
+     * {@link CHECK_PERIOD_MS} time.
+     */
+    private schedulerTimerId: number | undefined;
 
     /**
      * Creates new {@link FilterUpdateService}.
@@ -44,24 +43,24 @@ export class FilterUpdateService {
     }
 
     /**
-     * Run update scheduler after {@link INIT_DELAY_MS} timeout.
+     * Schedules filters update check for every {@link CHECK_PERIOD_MS} period.
      */
     public async init(): Promise<void> {
-        setTimeout(async () => {
+        this.schedulerTimerId = window.setTimeout(async () => {
             await this.update();
-        }, FilterUpdateService.INIT_DELAY_MS);
+        }, FilterUpdateService.CHECK_PERIOD_MS);
     }
 
     /**
      * Checks every {@link CHECK_PERIOD_MS} period whether the enabled filters
-     * should be updated.
+     * should be updated with setTimeout which saved to {@link schedulerTimerId}.
      */
     private async update(): Promise<void> {
-        window.clearTimeout(this.timerId);
+        window.clearTimeout(this.schedulerTimerId);
 
         await FilterUpdateApi.autoUpdateFilters();
 
-        this.timerId = window.setTimeout(async () => {
+        this.schedulerTimerId = window.setTimeout(async () => {
             await this.update();
         }, FilterUpdateService.CHECK_PERIOD_MS);
     }

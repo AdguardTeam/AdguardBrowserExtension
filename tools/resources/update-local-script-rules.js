@@ -28,11 +28,8 @@
  */
 import { promises as fs } from 'fs';
 
-import {
-    ADGUARD_FILTERS_IDS,
-    FILTERS_DEST,
-    LOCAL_SCRIPT_RULES_COMMENT,
-} from '../constants';
+import { FILTERS_DEST, LOCAL_SCRIPT_RULES_COMMENT } from '../constants';
+import { ADGUARD_FILTERS_IDS } from '../../constants';
 
 /**
  * @param arr - array with elements [{domains: '', script: ''}, ...]

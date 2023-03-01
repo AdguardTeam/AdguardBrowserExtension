@@ -98,7 +98,8 @@ export class SafebrowsingService {
                     }
                 })
                 .catch((e) => {
-                    Log.warn(`Cannot execute safe browsing check for requested url "${requestUrl}". Original err: `, e);
+                    // eslint-disable-next-line max-len
+                    Log.warn(`Cannot execute safe browsing check for requested url "${requestUrl}". Original error: `, e);
                 });
         }
     }

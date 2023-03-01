@@ -58,7 +58,7 @@ export const getDefaultExportFixture = (): Config => ({
     },
     [RootOption.Filters]: {
         [FiltersOption.EnabledFilters]: [2, 10],
-        [FiltersOption.EnabledGroups]: [0, 1, 6, 7],
+        [FiltersOption.EnabledGroups]: [1, 6],
         [FiltersOption.CustomFilters]: [],
         [FiltersOption.UserFilter]: {
             [UserFilterOption.Enabled]: true,

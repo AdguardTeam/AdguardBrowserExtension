@@ -23,31 +23,31 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
         respondImmediately: true,
     });
 
-    server.respondWith('GET', /\/filters.json/, [
+    server.respondWith('GET', /\/filters\.js(on)?/, [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(metadata),
     ]);
 
-    server.respondWith('GET', /\/filters_i18n.json/, [
+    server.respondWith('GET', /\/filters_i18n\.js(on)?/, [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(i18nMetadata),
     ]);
 
-    server.respondWith('GET', /\/alert-popup.css/, [
+    server.respondWith('GET', /\/alert-popup\.css/, [
         200,
         { 'Content-Type': 'application/text' },
         '',
     ]);
 
-    server.respondWith('GET', /\/alert-container.css/, [
+    server.respondWith('GET', /\/alert-container\.css/, [
         200,
         { 'Content-Type': 'application/text' },
         '',
     ]);
 
-    server.respondWith('GET', /\/update-container.css/, [
+    server.respondWith('GET', /\/update-container\.css/, [
         200,
         { 'Content-Type': 'application/text' },
         '',
@@ -61,9 +61,15 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
 
     // Simulate filters bodies for successfully emulate initialization of App
     // with provided enabled filters
-    server.respondWith('GET', /\/filter_(mobile_)?\d+.txt/, [
+    server.respondWith('GET', /\/filter_(mobile_)?\d+\.txt/, [
         200,
         { 'Content-Type': 'application/text' },
+        filterTextFixture,
+    ]);
+
+    server.respondWith('GET', /\/filters\/\d+(_optimized)?\.txt/, [
+        200,
+        { 'Content-Type': 'text/plain' },
         filterTextFixture,
     ]);
 

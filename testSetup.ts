@@ -78,4 +78,6 @@ jest.mock('lodash', () => ({
 mockLocalStorage();
 
 // register fake server for xhr requests
-mockXhrRequests();
+const server = mockXhrRequests();
+
+export { server };
