@@ -54,6 +54,8 @@ export class ContentScriptInjector {
             if (typeof tab.id !== 'number'
                 || typeof tab.url !== 'string'
                 || !isHttpRequest(tab.url)
+                || tab.status === 'unloaded'
+                || tab.discarded
             ) {
                 return;
             }
