@@ -26,6 +26,7 @@ import {
     filterStateStorage,
     FiltersStorage,
     filterVersionStorage,
+    groupStateStorage,
 } from '../../../storages';
 import { Engine } from '../../../engine';
 import { network } from '../../network';
@@ -169,6 +170,8 @@ export class CustomFilterApi {
      * Create new {@link FilterVersionData} and save it in {@link filterVersionStorage}.
      * Filters rules is saved in {@link FiltersStorage}.
      *
+     * If the custom filter group has never been enabled, turn it on.
+     *
      * @param filterData Custom filter data transfer object, received from modal window.
      *
      * @returns Created filter metadata.
@@ -228,6 +231,13 @@ export class CustomFilterApi {
         });
 
         await FiltersStorage.set(filterId, rules);
+
+        const group = groupStateStorage.get(filterMetadata.groupId);
+
+        // If group has never been enabled - enables it.
+        if (!group?.touched) {
+            groupStateStorage.enableGroups([filterMetadata.groupId]);
+        }
 
         return filterMetadata;
     }
