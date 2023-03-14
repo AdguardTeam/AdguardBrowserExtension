@@ -45,37 +45,31 @@ export const BROWSERS = {
 export const BROWSERS_CONF = {
     [BROWSERS.CHROME]: {
         browser: BROWSERS.CHROME,
-        remoteScripts: true,
         devtools: true,
         buildDir: BROWSERS.CHROME,
     },
     [BROWSERS.FIREFOX_STANDALONE]: {
         browser: BROWSERS.FIREFOX_STANDALONE,
-        remoteScripts: true,
         devtools: false,
         buildDir: BROWSERS.FIREFOX_STANDALONE,
     },
     [BROWSERS.FIREFOX_AMO]: {
         browser: BROWSERS.FIREFOX_AMO,
-        remoteScripts: false,
         devtools: false,
         buildDir: BROWSERS.FIREFOX_AMO,
     },
     [BROWSERS.OPERA]: {
         browser: BROWSERS.OPERA,
-        remoteScripts: true,
         devtools: true,
         buildDir: BROWSERS.OPERA,
     },
     [BROWSERS.EDGE]: {
         browser: BROWSERS.EDGE,
-        remoteScripts: true,
         devtools: true,
         buildDir: BROWSERS.EDGE,
     },
     [BROWSERS.ADGUARD_API]: {
         browser: BROWSERS.ADGUARD_API,
-        remoteScripts: true,
         devtools: false,
         buildDir: BROWSERS.ADGUARD_API,
     },
