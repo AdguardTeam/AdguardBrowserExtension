@@ -40,6 +40,10 @@ const config: Config = {
     transform: {
         '.+\\.(js|ts|jsx|tsx)': '@swc/jest',
     },
+    globals: {
+        // TODO: (AG-20414) Add tests for Firefox AMO
+        IS_FIREFOX_AMO: false,
+    },
 };
 
 export default config;
