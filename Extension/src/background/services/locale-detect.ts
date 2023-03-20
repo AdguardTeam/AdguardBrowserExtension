@@ -44,11 +44,12 @@ export class LocaleDetect {
     static domainToLanguagesMap: Record<string, string> = {
         // Russian
         'ru': 'ru',
-        'ua': 'ru',
         'by': 'ru',
         'kz': 'ru',
         'uz': 'ru',
         'kg': 'ru',
+        // Ukrainian
+        'ua': 'uk',
         // English
         'com': 'en',
         'au': 'en',

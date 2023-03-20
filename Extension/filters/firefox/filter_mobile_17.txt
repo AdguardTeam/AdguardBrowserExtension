@@ -1,14 +1,20 @@
-! Checksum: hamvQV48rmB1pIwp9DvikA
+! Checksum: MOlkUlCQeH+x3tWEz6R6RQ
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.4.19
-! TimeUpdated: 2023-01-27T10:30:50+00:00
+! Version: 2.0.4.41
+! TimeUpdated: 2023-03-15T11:30:51+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=tduid
+$removeparam=gci
+$removeparam=pk_vid
+$removeparam=mindbox-click-id
 click_id=*_branch_referrer=$removeparam
 $removeparam=famad_xuid
 $removeparam=twclid
 $removeparam=erid
 $removeparam=cx_click
+$removeparam=cx_recsOrder
+$removeparam=cx_recsWidget
 $removeparam=mkt_tok
 $removeparam=mindbox-message-key
 $removeparam=_kx
@@ -152,6 +158,35 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||faphouse.com^$removeparam=/statsUID|wtp|(xh)?UserId|login|signature|valid|ve[bp]/
+||xhamster.com^$removeparam=from
+||lite.qwant.com/redirect/$removeparam=cachekey
+||lite.qwant.com/redirect/$removeparam=serp_position
+||lite.qwant.com/redirect/$removeparam=position
+||lite.qwant.com/redirect/$removeparam=t
+||lite.qwant.com/redirect/$removeparam=tgp
+||lite.qwant.com/redirect/$removeparam=locale
+||lite.qwant.com/redirect/$removeparam=query
+||lite.qwant.com/redirect/$removeparam=ad
+||lite.qwant.com/redirect/$removeparam=uri
+||realestate.yahoo.co.jp^$removeparam=sc_out
+||glami.cz^$removeparam=/ga[ct]id/
+||open.spotify.com^$removeparam=referral
+||skt.sh/common/share/bridge?$removeparam=referer
+||login.afreecatv.com^$removeparam=szFrom
+||moffme.com^$removeparam=source
+||moffme.com^$removeparam=medium
+||moffme.com^$removeparam=campaign
+||click.speee-ad.jp^$removeparam=os
+||click.speee-ad.jp^$removeparam=ref
+||click.speee-ad.jp^$removeparam=sess_id
+||click.speee-ad.jp^$removeparam=slot_index
+||click.speee-ad.jp^$removeparam=v
+||tiktok.com^$removeparam=embed_source
+||tiktok.com^$removeparam=referer_url
+||tiktok.com^$removeparam=refer
+||voicy.jp^$removeparam=share.ref
+||chaturbate.com^$removeparam=/tour|campaign/,~third-party
 ||awaliwa.com^$removeparam=lg
 ||awaliwa.com^$removeparam=s
 ||awaliwa.com^$removeparam=c
@@ -159,7 +194,7 @@ $removeparam=fb_source
 ||awaliwa.com^$removeparam=old
 ||awaliwa.com^$removeparam=bd_vid
 ||awaliwa.com^$removeparam=acr
-||megaknihy.cz^$removeparam=/utm_si|matchtype|device|creative|keyword|placement|adposition|campaignid|adgroupid|feeditemid|targetid|loc_|searchtype|network|search_pos|cat_pos|block|position/
+||megaknihy.cz^$removeparam=/param[0-9]{1}|utm_si|matchtype|device|creative|keyword|placement|adposition|campaignid|adgroupid|feeditemid|targetid|loc_|searchtype|network|search_pos|cat_pos|block|position/
 ||brazzers.com^$removeparam=ats
 ||whale.naver.com^$removeparam=wpid
 ||wemakeprice.com^$removeparam=refer
@@ -244,6 +279,8 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp
 ||politica.com.ua^$removeparam=isUser
 ||shopee.ph^$removeparam=sp_atk
 ||shopee.ph^$removeparam=xptdk
+||shopee.ph^$removeparam=stm_medium
+||shopee.ph^$removeparam=stm_source
 ||adguard.com^$removeparam=clid
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
@@ -304,7 +341,6 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp
 ||shop.hololivepro.com^$removeparam=pr_seq
 ||shop.hololivepro.com^$removeparam=pr_prod_strat
 ||wq.jd.com^$removeparam=pvid
-||redirects.tradedoubler.com^$removeparam=tduid
 ||coolblue.nl^$removeparam=clickref
 ||coolblue.nl^$removeparam=ref
 ||coolblue.nl^$removeparam=PHGref
@@ -363,7 +399,7 @@ $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||giphy.com^$removeparam=cid
 ||giphy.com^$removeparam=ct
 ||giphy.com^$removeparam=rid
-$removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.livedoor.jp
+$removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.livedoor.jp|blog.jp|2chblog.jp
 ||cinematoday.jp^$removeparam=g_clk
 ||xxvidsx.com^$removeparam=ad
 ||xxvidsx.com^$removeparam=site
@@ -419,16 +455,15 @@ $removeparam=ActionID,domain=otto.de|ottoversand.at
 $removeparam=AffiliateID,domain=otto.de|ottoversand.at
 $removeparam=campid,domain=otto.de|ottoversand.at
 ||search.naver.com/p/crd/rd$removeparam=i
-||search.naver.com/p/crd/rd$removeparam=px
-||search.naver.com/p/crd/rd$removeparam=py
-||search.naver.com/p/crd/rd$removeparam=sx
-||search.naver.com/p/crd/rd$removeparam=sy
-||search.naver.com/p/crd/rd$removeparam=p
-||search.naver.com/p/crd/rd$removeparam=s
-||search.naver.com/p/crd/rd$removeparam=time
+||search.naver.com/p/crd/rd$removeparam=px,document,image
+||search.naver.com/p/crd/rd$removeparam=py,document,image
+||search.naver.com/p/crd/rd$removeparam=sx,document,image
+||search.naver.com/p/crd/rd$removeparam=sy,document,image
+||search.naver.com/p/crd/rd$removeparam=p,document,image
+||search.naver.com/p/crd/rd$removeparam=s,document,image
+||search.naver.com/p/crd/rd$removeparam=time,document,image
 ||buzzfeednews.com^$removeparam=ref
 ||goodreads.com^$removeparam=ref
-||journal.tinkoff.ru$removeparam=mindbox-click-id
 ||coconala.com^$removeparam=ref
 ||coconala.com^$removeparam=ref_kind
 ||coconala.com^$removeparam=ref_no
@@ -611,6 +646,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||dailymotion.com/embed/video/*?ads_params=*&origin=$removeparam=ads_params
 ||dailymotion.com/embed/video/*?ads_params=*&origin=$removeparam=origin
 ||wired.co.uk^$removeparam=mbid
+||wired.com^$removeparam=mbid
 ||wikihow.com^$removeparam=?utm_source
 ||kohls.com^$removeparam=CID
 ||instagram.com^$removeparam=ig_rid
@@ -874,6 +910,7 @@ $removeparam=dclid
 ||v.youku.com^$removeparam=spm
 ||theregister.com^$removeparam=td
 ||deezer.com^$removeparam=origin
+@@||tradedoubler.com^$removeparam=tduid
 @@||carrefourpl.snrpage.com^$removeparam=utm_source
 @@||s.click.aliexpress.com/deep_link.htm?aff_short_key=$removeparam=aff_short_key
 @@||transfernow.net/*/dltransfer$removeparam=utm_source
