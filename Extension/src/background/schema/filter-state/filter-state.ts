@@ -42,6 +42,9 @@ export const filterStateDataValidator = zod.object({
     loaded: zod.boolean(),
 });
 
+/**
+ * Contains boolean flags about the filter status: enabled, installed, loaded.
+ */
 export type FilterStateData = zod.infer<typeof filterStateDataValidator>;
 
 /**
@@ -55,4 +58,7 @@ export const filterStateStorageDataValidator = zod.record(
     filterStateDataValidator,
 );
 
+/**
+ * Describes an object with numeric keys and filter states as values.
+ */
 export type FilterStateStorageData = zod.infer<typeof filterStateStorageDataValidator>;

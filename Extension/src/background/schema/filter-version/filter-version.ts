@@ -45,6 +45,10 @@ export const filterVersionDataValidator = zod.object({
     expires: zod.number(),
 });
 
+/**
+ * Describes the filter version and timestamps of the last filter check,
+ * update and expiration.
+ */
 export type FilterVersionData = zod.infer<typeof filterVersionDataValidator>;
 
 /**
@@ -58,4 +62,8 @@ export const filterVersionStorageDataValidator = zod.record(
     filterVersionDataValidator,
 );
 
+/**
+ * Describes an object with numeric keys and {@link FilterVersionData}
+ * as values.
+ */
 export type FilterVersionStorageData = zod.infer<typeof filterVersionStorageDataValidator>;

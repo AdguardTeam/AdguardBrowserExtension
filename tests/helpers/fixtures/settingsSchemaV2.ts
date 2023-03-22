@@ -1,7 +1,15 @@
-import { SETTINGS_V_1_0 } from './settingsSchemaV1';
+import { getSettingsV1 } from './settingsSchemaV1';
 
-// Remove obsoleted properties
-const { whitelist, ...restFiltersOptions } = SETTINGS_V_1_0['filters'];
+const SETTINGS_V_1_0 = getSettingsV1();
+
+const CUSTOM_FILTERS_KEY = 'custom-filters';
+const {
+    // Will add missing properties to custom filters
+    [CUSTOM_FILTERS_KEY]: customFilters,
+    // Remove obsoleted property
+    whitelist,
+    ...restFiltersOptions
+} = SETTINGS_V_1_0['filters'];
 
 // Removes renamed property from stealth
 const OLD_STEALTH_KEY = 'stealth_disable_stealth_mode';
@@ -15,21 +23,30 @@ const APPEARANCE_THEME_KEY = 'appearance-theme';
 const { ...copyGeneralOptions } = SETTINGS_V_1_0['general-settings'];
 copyGeneralOptions[APPEARANCE_THEME_KEY] = copyGeneralOptions[APPEARANCE_THEME_KEY].replaceAll('\"', '');
 
-export const SETTINGS_V_2_0 = {
+export const getSettingsV2 = () => ({
     'protocol-version': '2.0',
     'general-settings': { ...copyGeneralOptions },
     'extension-specific-settings': SETTINGS_V_1_0['extension-specific-settings'],
     'filters': {
         ...restFiltersOptions,
+        'custom-filters': customFilters.map(f => {
+            if (f.trusted === undefined) {
+                Object.assign(f, {
+                    'trusted': false,
+                });
+            }
+
+            return f;
+        }),
         'allowlist': whitelist,
     },
     'stealth': {
         ...restStealthOptions,
         'stealth-disable-stealth-mode': disableStealthMode,
     },
-};
+});
 
-export const EXPORTED_SETTINGS_V_2_0 = {
+export const getExportedSettingsV2 = () => ({
     'protocol-version': '2.0',
     'general-settings': {
         'allow-acceptable-ads': false,
@@ -104,4 +121,4 @@ export const EXPORTED_SETTINGS_V_2_0 = {
         'block-known-trackers': true,
         'strip-tracking-parameters': true,
     },
-};
+});

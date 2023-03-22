@@ -157,8 +157,10 @@ export class Toasts {
 
         let offer = translator.getMessage('options_popup_version_update_offer');
         let offerDesc = '';
-        // eslint-disable-next-line max-len
-        let offerButtonHref = 'https://link.adtidy.org/forward.html?action=learn_about_adguard&from=version_popup&app=browser_extension';
+        let offerButtonHref = Forward.get({
+            action: ForwardAction.LearnAboutAdGuard,
+            from: ForwardFrom.VersionPopup,
+        });
         let offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
 
         if (promoNotification) {

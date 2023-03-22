@@ -19,9 +19,21 @@
 import zod from 'zod';
 
 export const notificationTextRecordValidator = zod.object({
+    /**
+     * Notification title.
+     */
     title: zod.string(),
+    /**
+     * Notification description.
+     */
     desc: zod.string().optional(),
+    /**
+     * Text for the notification button.
+     */
     btn: zod.string(),
 }).strict();
 
+/**
+ * Describes texts for an notification.
+ */
 export type NotificationTextRecord = zod.infer<typeof notificationTextRecordValidator>;

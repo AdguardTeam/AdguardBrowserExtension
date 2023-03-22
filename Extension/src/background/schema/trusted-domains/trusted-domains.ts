@@ -21,8 +21,18 @@ import zod from 'zod';
  * Runtime validator for persistent trusted domains data.
  */
 export const trustedDomainDataValidator = zod.object({
+    /**
+     * String domain which was excluded from filtering.
+     */
     domain: zod.string(),
+    /**
+     * For what time domain was excluded in milliseconds.
+     */
     expires: zod.number(),
 });
 
+/**
+ * Describes the object with the trusted domain that was excluded from the loc
+ * by the $document rules and for how long it was excluded.
+ */
 export type TrustedDomainData = zod.infer<typeof trustedDomainDataValidator>;

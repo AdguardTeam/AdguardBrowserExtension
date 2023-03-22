@@ -31,11 +31,31 @@ export const enum FiltersOption {
 }
 
 export const filtersConfigValidator = zod.object({
+    /**
+     * List of IDs of enabled filter groups.
+     */
     [FiltersOption.EnabledGroups]: zod.array(zod.number().int()),
+    /**
+     * List of IDs of enabled filters.
+     */
     [FiltersOption.EnabledFilters]: zod.array(zod.number().int()),
+    /**
+     * List of objects with information about custom filters.
+     */
     [FiltersOption.CustomFilters]: customFiltersConfigValidator,
+    /**
+     * An object with concatenated user rules and their status - enabled or not.
+     */
     [FiltersOption.UserFilter]: userFilterValidator,
+    /**
+     * Object with the allowlist domains, the inverted allowlist domains and
+     * which one applies.
+     */
     [FiltersOption.Allowlist]: allowlistValidator,
 });
 
+/**
+ * Contains all information about filters: regular, custom, user filter and
+ * allowlist.
+ */
 export type FiltersConfig = zod.infer<typeof filtersConfigValidator>;

@@ -28,7 +28,7 @@ import { SettingSetSelect } from '../Settings/SettingSetSelect';
 import { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { hoursToMs, handleFileUpload } from '../../../helpers';
+import { handleFileUpload } from '../../../helpers';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AppearanceTheme } from '../../../../common/settings';
 import {
@@ -44,34 +44,35 @@ import { SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 import { translator } from '../../../../common/translators/translator';
 import { Unknown } from '../../../../common/unknown';
+import { FiltersUpdateTime } from '../../../../common/constants';
 
 const filtersUpdatePeriodOptions = [
     {
-        value: -1,
+        value: FiltersUpdateTime.Default,
         title: reactTranslator.getMessage('options_select_update_period_default'),
     },
     {
-        value: hoursToMs(48),
+        value: FiltersUpdateTime.FortyEightHours,
         title: reactTranslator.getMessage('options_select_update_period_48h'),
     },
     {
-        value: hoursToMs(24),
+        value: FiltersUpdateTime.TwentyFourHours,
         title: reactTranslator.getMessage('options_select_update_period_24h'),
     },
     {
-        value: hoursToMs(12),
+        value: FiltersUpdateTime.TwelveHours,
         title: reactTranslator.getMessage('options_select_update_period_12h'),
     },
     {
-        value: hoursToMs(6),
+        value: FiltersUpdateTime.SixHours,
         title: reactTranslator.getMessage('options_select_update_period_6h'),
     },
     {
-        value: hoursToMs(1),
+        value: FiltersUpdateTime.OneHour,
         title: reactTranslator.getMessage('options_select_update_period_1h'),
     },
     {
-        value: 0,
+        value: FiltersUpdateTime.Disabled,
         title: reactTranslator.getMessage('options_select_update_period_disabled'),
     },
 ];
