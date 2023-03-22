@@ -17,21 +17,51 @@
  */
 import zod from 'zod';
 
+const filterRulesHitsValidator = zod.record(
+    /**
+     * Text of rule.
+     */
+    zod.string(),
+    /**
+     * The number of matches of this rule.
+     */
+    zod.number(),
+);
+
+const filterHitsValidator = zod.record(
+    /**
+     * Filter's id.
+     */
+    zod.string(),
+    filterRulesHitsValidator.optional(),
+);
+
 export const hitStatsValidator = zod.object({
-    filters: zod.record(
-        zod.string(),
-        zod.record(
-            zod.string(),
-            zod.number(),
-        ).optional(),
-    ).optional(),
+    /**
+     * Contains an object with filter IDs as keys and their
+     * {@link filterRulesHitsValidator} as values.
+     */
+    filters: filterHitsValidator.optional(),
 }).strict();
 
+/**
+ * Contains an object 'filters' with filter IDs as keys and their
+ * {@link filterRulesHitsValidator} as values or undefined.
+ */
 export type HitStats = zod.infer<typeof hitStatsValidator>;
 
 export const hitStatsStorageDataValidator = zod.object({
+    /**
+     * The number of hits in relation to the hit rule.
+     */
     stats: hitStatsValidator.optional(),
+    /**
+     * The total number of hits with no link to the rules.
+     */
     totalHits: zod.number().optional(),
 }).strict();
 
+/**
+ * Contains the number of hits overall and in relation to the hit rule.
+ */
 export type HitStatsStorageData = zod.infer<typeof hitStatsStorageDataValidator>;

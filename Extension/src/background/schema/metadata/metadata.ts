@@ -22,9 +22,21 @@ import { tagMetadataValidator } from './tag';
 import { groupMetadataValidator } from './group';
 
 export const metadataValidator = zod.object({
+    /**
+     * Array of {@link RegularFilterMetadata}.
+     */
     filters: regularFilterMetadataValidator.array(),
+    /**
+     * Array of {@link GroupMetadata}.
+     */
     groups: groupMetadataValidator.array(),
+    /**
+     * Array of {@link TagMetadata}.
+     */
     tags: tagMetadataValidator.array(),
 });
 
+/**
+ * Describes the root object with all filters, groups and tags.
+ */
 export type Metadata = zod.infer<typeof metadataValidator>;

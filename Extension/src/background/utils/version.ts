@@ -29,7 +29,7 @@
  * @throws Error, if passed string cannot be parsed.
  */
 export class Version {
-    private static MAX_LENGTH = 4;
+    private static readonly MAX_LENGTH = 4;
 
     // splitted semver
     public data: number[] = [];

@@ -43,4 +43,7 @@ export const userFilterValidator = zod.object({
     [UserFilterOption.Enabled]: zod.boolean().optional(),
 });
 
+/**
+ * Contains the user rules filter and its status: enabled or disabled.
+ */
 export type UserFilterConfig = zod.infer<typeof userFilterValidator>;

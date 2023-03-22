@@ -1,4 +1,5 @@
-export const SETTINGS_V_1_0 = {
+// FIXME: Make them as functions to make object immutable
+export const getSettingsV1 = () => ({
     'protocol-version': '1.0',
     'general-settings': {
         'app-language': 'en-US',
@@ -73,4 +74,4 @@ export const SETTINGS_V_1_0 = {
         'block-known-trackers': true,
         'strip-tracking-parameters': true,
     },
-};
+});

@@ -14,14 +14,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
- *
- * This config is used for linting of the background directory.
  */
 
+/* eslint-disable jsdoc/require-jsdoc */
 module.exports = {
-    extends: '../../../.eslintrc.js',
+    extends: '../.eslintrc.js',
     parserOptions: {
-        project: '../../../tsconfig.json',
+        project: '../../../../tsconfig.json',
         tsconfigRootDir: __dirname,
         sourceType: 'module',
     },
@@ -41,10 +40,8 @@ module.exports = {
             'error',
             {
                 contexts: [
-                    'ClassDeclaration',
-                    'ClassProperty',
-                    'FunctionDeclaration',
-                    'MethodDefinition',
+                    'Property',
+                    'TSTypeAliasDeclaration',
                 ],
             },
         ],
@@ -52,10 +49,8 @@ module.exports = {
             'error',
             {
                 contexts: [
-                    'ClassDeclaration',
-                    'ClassProperty',
-                    'FunctionDeclaration',
-                    'MethodDefinition',
+                    'Property',
+                    'TSTypeAliasDeclaration',
                 ],
             },
         ],

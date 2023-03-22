@@ -89,18 +89,20 @@ export class SettingsMigrations {
         if (!settings
             || !Unknown.hasProp(settings, 'filters')
             || !Unknown.hasProp(settings.filters, 'whitelist')
+            || !Unknown.hasProp(settings.filters, 'custom-filters')
             || !Unknown.hasProp(settings, 'stealth')
             || !Unknown.hasProp(settings.stealth, 'stealth_disable_stealth_mode')
             || !Unknown.hasProp(settings.stealth, 'stealth-block-first-party-cookies-time')
             || !Unknown.hasProp(settings.stealth, 'stealth-block-third-party-cookies-time')
             || !Unknown.hasProp(settings, 'general-settings')
         ) {
-            throw new Error(`Invalid settings provided: ${settings}`);
+            throw new Error(`Invalid settings provided: ${JSON.stringify(settings)}`);
         }
 
+        const FILTERS = 'filters';
+        const ALLOWLIST = 'whitelist';
         const { filters } = settings;
-
-        const allowlist = filters['whitelist'];
+        const allowlist = filters[ALLOWLIST];
         if (!allowlist) {
             throw new Error('Not found field "filters.whitelist" for migrate to '
                 + `"filters.allowlist" in the settings: ${settings}`);
@@ -109,7 +111,7 @@ export class SettingsMigrations {
         Object.assign(filters, { allowlist });
         Object.assign(settings, { 'protocol-version': '2.0' });
 
-        delete settings['filters']['whitelist'];
+        delete settings[FILTERS][ALLOWLIST];
 
         // Moves the value to the new field key without an underscore.
         const { stealth } = settings;
@@ -146,6 +148,23 @@ export class SettingsMigrations {
             // Removes escaped quotes.
             const parsedValue = JSON.parse(rawValue);
             settings[GENERAL_SETTINGS][APPEARANCE_THEME] = parsedValue;
+        }
+
+        // Sets the missing 'enabled' and 'trusted' fields to custom filters.
+        const CUSTOM_FILTERS = 'custom-filters';
+        const customFilters = filters[CUSTOM_FILTERS];
+        if (Array.isArray(customFilters)) {
+            for (let i = 0; i < customFilters.length; i += 1) {
+                const customFilter = customFilters[i];
+
+                if (customFilter.enabled === undefined) {
+                    customFilter.enabled = false;
+                }
+
+                if (customFilter.trusted === undefined) {
+                    customFilter.trusted = false;
+                }
+            }
         }
 
         return settings;

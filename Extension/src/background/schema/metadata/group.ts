@@ -18,9 +18,21 @@
 import zod from 'zod';
 
 export const groupMetadataValidator = zod.object({
+    /**
+     * Display number is used to arrange the groups in the layout.
+     */
     displayNumber: zod.number(),
+    /**
+     * Id of the group.
+     */
     groupId: zod.number(),
+    /**
+     * Name of the group.
+     */
     groupName: zod.string(),
 });
 
+/**
+ * Describes the group's metadata: ID, name and display number.
+ */
 export type GroupMetadata = zod.infer<typeof groupMetadataValidator>;

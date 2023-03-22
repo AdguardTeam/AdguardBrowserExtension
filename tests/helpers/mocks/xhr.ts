@@ -7,10 +7,12 @@ import {
     getI18nMetadataFixture,
     getFilterTextFixture,
     filterTextWithMetadataFixture,
-    getCustomExportFixture,
-    SETTINGS_V_1_0,
+    getCustomExportFixtureProtocol1,
+    getCustomExportFixtureProtocol2,
+    getSettingsV1,
 } from '../fixtures';
 
+const SETTINGS_V_1_0 = getSettingsV1();
 const metadata = getMetadataFixture();
 const i18nMetadata = getI18nMetadataFixture();
 const filterText = getFilterTextFixture();
@@ -79,12 +81,14 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
         filterTextWithMetadataFixture,
     ]);
 
-    const customFiltersFixture = getCustomExportFixture()[RootOption.Filters][FiltersOption.CustomFilters];
-    const customFiltersFixture2 = SETTINGS_V_1_0['filters']['custom-filters'];
+    const customFiltersFixture1 = getCustomExportFixtureProtocol1()[RootOption.Filters][FiltersOption.CustomFilters];
+    const customFiltersFixture2 = getCustomExportFixtureProtocol2()[RootOption.Filters][FiltersOption.CustomFilters];
+    const customFiltersFixture3 = SETTINGS_V_1_0['filters']['custom-filters'];
 
     const customFiltersUrls = [
-        ...customFiltersFixture.map(({ customUrl }) => customUrl),
+        ...customFiltersFixture1.map(({ customUrl }) => customUrl),
         ...customFiltersFixture2.map(({ customUrl }) => customUrl),
+        ...customFiltersFixture3.map(({ customUrl }) => customUrl),
     ];
 
     // Filter only uniq urls

@@ -39,7 +39,6 @@ describe('Filter Update API should', () => {
         tags: [],
         timeAdded: '2014-06-30T07:56:55+0000',
         timeUpdated: '2023-02-01T00:00:00+00:00',
-        trustLevel: 'full',
         version: '1.0.0.0',
     });
     const filterId3Index = metadata.filters.findIndex(f => f.filterId === 3);

@@ -17,11 +17,27 @@
  */
 import zod from 'zod';
 
+const filterInfoValidator = zod.object({
+    /**
+     * Description of the filter.
+     */
+    description: zod.string(),
+    /**
+     * Name of the filter.
+     */
+    name: zod.string(),
+});
+
 export const regularFilterI18nMetadataValidator = zod.record(
-    zod.string(), zod.object({
-        description: zod.string(),
-        name: zod.string(),
-    }),
+    /**
+     * Two-letter language code.
+     */
+    zod.string(),
+    filterInfoValidator,
 );
 
+/**
+ * Describes an object where the language codes are keys and the description and
+ * filter name are values.
+ */
 export type RegularFilterI18nMetadata = zod.infer<typeof regularFilterI18nMetadataValidator>;

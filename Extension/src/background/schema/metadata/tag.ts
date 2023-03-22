@@ -18,10 +18,25 @@
 import zod from 'zod';
 
 export const tagMetadataValidator = zod.object({
+    /**
+     * Id of the tag.
+     */
     tagId: zod.number(),
+    /**
+     * Tag value, e.g., `lang:en`, `recommended`.
+     */
     keyword: zod.string(),
+    /**
+     * Description of the tag.
+     */
     description: zod.string().optional(),
+    /**
+     * Name of the tag.
+     */
     name: zod.string().optional(),
 });
 
+/**
+ * Describes the tag's metadata: ID, name, keyword and display number.
+ */
 export type TagMetadata = zod.infer<typeof tagMetadataValidator>;

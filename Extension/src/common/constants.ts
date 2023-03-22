@@ -132,3 +132,16 @@ export const enum RequestType {
     Cookie = 'COOKIE',
     Ping = 'PING',
 }
+
+/**
+ *  Time interval between filter updates.
+ */
+export enum FiltersUpdateTime {
+    Disabled = 0,
+    OneHour = 1000 * 60 * 60 * 1,
+    SixHours = 1000 * 60 * 60 * 6,
+    TwelveHours = 1000 * 60 * 60 * 12,
+    TwentyFourHours = 1000 * 60 * 60 * 24,
+    FortyEightHours = 1000 * 60 * 60 * 48,
+    Default = -1,
+}

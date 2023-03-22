@@ -53,11 +53,6 @@ export const handleFileUpload = (file, requiredExtension) => new Promise((resolv
     };
 });
 
-export const hoursToMs = (hours) => {
-    const MS_IN_HOUR = 1000 * 60 * 60;
-    return hours * MS_IN_HOUR;
-};
-
 /**
  * Awaits required period of time
  *

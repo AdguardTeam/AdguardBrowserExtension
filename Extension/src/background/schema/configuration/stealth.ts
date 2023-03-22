@@ -35,18 +35,73 @@ export const enum StealthOption {
 }
 
 export const stealthConfigValidator = zod.object({
+    /**
+     * Whether Stealth mode is disabled or not.
+     */
     [StealthOption.DisableStealthMode]: zod.boolean(),
+    /**
+     * Should the application hide the origin referrer in third-party requests
+     * by replacing the referrer url with the url from the requested url.
+     */
     [StealthOption.HideReferrer]: zod.boolean(),
+    /**
+     * Should the application hide the original referrer from the search page
+     * containing the search query in third-party queries, replacing
+     * the referrer url with the url from the requested url.
+     */
     [StealthOption.HideSearchQueries]: zod.boolean(),
+    /**
+     * Includes HTTP headers 'DNT' and 'Sec-GPC' in all requests.
+     *
+     * @see https://www.wikiwand.com/en/Do_Not_Track
+     * @see https://globalprivacycontrol.org
+     */
     [StealthOption.SendDoNotTrack]: zod.boolean(),
+    /**
+     * Blocks the possibility of leaking your IP address through WebRTC, even if
+     * you use a proxy server or VPN.
+     */
     [StealthOption.BlockWebRTC]: zod.boolean(),
+    /**
+     * For Google Chrome, it removes the 'X-Client-Data' header from
+     * the requests, which contains information about the browser version
+     * and modifications.
+     */
     [StealthOption.RemoveXClientData]: zod.boolean(),
+    /**
+     * Whether or not the application should set a fixed lifetime from
+     * `StealthOption.SelfDestructThirdPartyCookiesTime` for third-party
+     * cookies.
+     */
     [StealthOption.SelfDestructThirdPartyCookies]: zod.boolean(),
+    /**
+     * Time in milliseconds to delete third-party cookies.
+     */
     [StealthOption.SelfDestructThirdPartyCookiesTime]: zod.number().int(),
+    /**
+     * Whether or not the application should set a fixed lifetime from
+     * `StealthOption.SelfDestructFirstPartyCookiesTime` for first-party
+     * cookies.
+     */
     [StealthOption.SelfDestructFirstPartyCookies]: zod.boolean(),
+    /**
+     * Time in milliseconds to delete first-party cookies.
+     */
     [StealthOption.SelfDestructFirstPartyCookiesTime]: zod.number().int(),
+    /**
+     * If true application will enable AdGuard Tracking Protection filter
+     * {@link AntiBannerFiltersId.TrackingFilterId}.
+     */
     [StealthOption.BlockKnownTrackers]: zod.boolean().optional(),
+    /**
+     * If true application will enable AdGuard URL Tracking filter
+     * {@link AntiBannerFiltersId.UrlTrackingFilterId}.
+     */
     [StealthOption.StripTrackingParams]: zod.boolean(),
 });
 
+/**
+ * Contains various secure browsing settings: cookie deletion time, privacy
+ * headers, referrer hiding, and the ability to enable additional filters.
+ */
 export type StealthConfig = zod.infer<typeof stealthConfigValidator>;

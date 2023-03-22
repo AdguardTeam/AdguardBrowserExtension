@@ -18,7 +18,7 @@
 import type { SettingsConfig } from '@adguard/tswebextension';
 
 import { Log } from '../../../common/log';
-import { AppearanceTheme, defaultSettings } from '../../../common/settings';
+import { defaultSettings } from '../../../common/settings';
 import {
     AllowlistConfig,
     AllowlistOption,
@@ -38,6 +38,7 @@ import {
     SettingOption,
     Settings,
     settingsValidator,
+    Config,
 } from '../../schema';
 import {
     filterStateStorage,
@@ -48,7 +49,6 @@ import {
 import {
     CommonFilterApi,
     CustomFilterApi,
-    CustomFilterDTO,
     FiltersApi,
     UserRulesApi,
     AllowlistApi,
@@ -235,13 +235,15 @@ export class SettingsApi {
      * Exports settings to string with JSON format.
      */
     public static async export(): Promise<string> {
-        return JSON.stringify({
+        const config: Config = {
             [RootOption.ProtocolVersion]: PROTOCOL_VERSION,
             [RootOption.GeneralSettings]: SettingsApi.exportGeneralSettings(),
             [RootOption.ExtensionSpecificSettings]: SettingsApi.exportExtensionSpecificSettings(),
             [RootOption.Filters]: await SettingsApi.exportFilters(),
             [RootOption.Stealth]: SettingsApi.exportStealth(),
-        });
+        };
+
+        return JSON.stringify(config);
     }
 
     /**
@@ -263,7 +265,7 @@ export class SettingsApi {
         settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
 
         if (appearanceTheme) {
-            settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme as AppearanceTheme);
+            settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme);
         }
 
         if (allowAcceptableAds) {
@@ -378,7 +380,7 @@ export class SettingsApi {
             }
         });
 
-        await CustomFilterApi.createFilters(customFilters as CustomFilterDTO[]);
+        await CustomFilterApi.createFilters(customFilters);
         groupStateStorage.enableGroups(enabledGroups);
     }
 
@@ -495,14 +497,13 @@ export class SettingsApi {
         settingsStorage.set(SettingOption.HideSearchQueries, hideSearchQueries);
         settingsStorage.set(SettingOption.SendDoNotTrack, sendDoNotTrack);
         settingsStorage.set(SettingOption.RemoveXClientData, removeXClientData);
-        settingsStorage.set(SettingOption.SelfDestructThirdPartyCookies, selfDestructThirdPartyCookies);
 
+        settingsStorage.set(SettingOption.SelfDestructThirdPartyCookies, selfDestructThirdPartyCookies);
         if (selfDestructThirdPartyCookiesTime) {
             settingsStorage.set(SettingOption.SelfDestructThirdPartyCookiesTime, selfDestructThirdPartyCookiesTime);
         }
 
         settingsStorage.set(SettingOption.SelfDestructFirstPartyCookies, selfDestructFirstPartyCookies);
-
         if (selfDestructFirstPartyCookiesTime) {
             settingsStorage.set(SettingOption.SelfDestructFirstPartyCookiesTime, selfDestructFirstPartyCookiesTime);
         }

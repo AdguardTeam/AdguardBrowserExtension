@@ -34,6 +34,10 @@ export const groupStateDataValidator = zod.object({
     touched: zod.boolean(),
 });
 
+/**
+ * Contains boolean flags about the state of the filter group:
+ * enabled and touched.
+ */
 export type GroupStateData = zod.infer<typeof groupStateDataValidator>;
 
 /**
@@ -47,4 +51,7 @@ export const groupStateStorageDataValidator = zod.record(
     groupStateDataValidator,
 );
 
+/**
+ * Describes an object with numeric keys and group states as values.
+ */
 export type GroupStateStorageData = zod.infer<typeof groupStateStorageDataValidator>;

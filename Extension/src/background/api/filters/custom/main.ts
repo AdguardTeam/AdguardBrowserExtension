@@ -40,8 +40,8 @@ import { CustomFilterLoader } from './loader';
 export type CustomFilterDTO = {
     customUrl: string;
     title?: string;
-    trusted?: boolean;
-    enabled?: boolean;
+    trusted: boolean;
+    enabled: boolean;
 };
 
 /**
@@ -177,7 +177,7 @@ export class CustomFilterApi {
      * @returns Created filter metadata.
      */
     public static async createFilter(filterData: CustomFilterDTO): Promise<CustomFilterMetadata> {
-        const { customUrl } = filterData;
+        const { customUrl, trusted, enabled } = filterData;
 
         // download and parse custom filter data
         const { rules, parsed, checksum } = await CustomFilterApi.getRemoteFilterData(customUrl);
@@ -187,8 +187,6 @@ export class CustomFilterApi {
 
         Log.info(`Create new custom filter with id ${filterId}`);
 
-        const trusted = !!filterData.trusted;
-        const enabled = !!filterData.enabled;
         const name = filterData.title ? filterData.title : parsed.name;
 
         const {
@@ -431,11 +429,11 @@ export class CustomFilterApi {
     }
 
     /**
-     * Counts md5 checksum for the filter rules content.
+     * Counts MD5 checksum for the filter rules content.
      *
      * @param rules Array of filter rules lines.
      *
-     * @returns Md5 checksum of filter rules text.
+     * @returns MD5 checksum of filter rules text.
      */
     private static getChecksum(rules: string[]): string {
         const rulesText = rules.join('\n');

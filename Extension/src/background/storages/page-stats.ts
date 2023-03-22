@@ -115,7 +115,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     /**
      * Creates page statistics data for specified filter group.
      *
-     * @param groupId Group id.
+     * @param groupId Filter's group id {@link RegularFilterMetadata.groupId}.
      * @param blocked Number of request blocks.
      *
      * @returns Page statistics data.
@@ -155,7 +155,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     /**
      * Updates page statistics data for specified filter group.
      *
-     * @param groupId Group id.
+     * @param groupId Filter's group id {@link RegularFilterMetadata.groupId}.
      * @param blocked Number of request blocks.
      * @param data Current page statistics data.
      *
@@ -238,7 +238,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     /**
      * Creates page statistics data item for specified filter group.
      *
-     * @param groupId Group id.
+     * @param groupId Filter's group id {@link RegularFilterMetadata.groupId}.
      * @param blocked Number of request blocks.
      *
      * @returns Updated page statistics data item.
@@ -260,7 +260,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
     /**
      * Updates page statistics data item for specified filter group.
      *
-     * @param groupId Group id.
+     * @param groupId Filter's group id {@link RegularFilterMetadata.groupId}.
      * @param blocked Number of request blocks.
      * @param data Current page statistics data item.
      *

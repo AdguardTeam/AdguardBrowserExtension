@@ -28,20 +28,44 @@ export const filtersI18nRecordValidator = zod.record(
     regularFilterI18nMetadataValidator,
 );
 
+/**
+ * Describes an object where the language codes are keys and the description and
+ * filter name are values.
+ */
 export type FiltersI18n = zod.infer<typeof filtersI18nRecordValidator>;
 
 export const groupsI18nRecordValidator = zod.record(SchemaPreprocessor.numberValidator, groupI18nMetadataValidator);
 
+/**
+ * Describes an object in which the language codes are keys and the group name
+ * is the value.
+ */
 export type GroupsI18n = zod.infer<typeof groupsI18nRecordValidator>;
 
 export const tagsI18nRecordValidator = zod.record(SchemaPreprocessor.numberValidator, tagI18nMetadataValidator);
 
+/**
+ * Describes an object where the language codes are keys and the description and
+ * tag name are values.
+ */
 export type TagsI18n = zod.infer<typeof tagsI18nRecordValidator>;
 
 export const i18nMetadataValidator = zod.object({
+    /**
+     * Item of {@link FiltersI18n}.
+     */
     filters: filtersI18nRecordValidator,
+    /**
+     * Item of {@link GroupsI18n}.
+     */
     groups: groupsI18nRecordValidator,
+    /**
+     * Item of {@link TagsI18n}.
+     */
     tags: tagsI18nRecordValidator,
 });
 
+/**
+ * Describes the root object with translations to all filters, groups and tags.
+ */
 export type I18nMetadata = zod.infer<typeof i18nMetadataValidator>;

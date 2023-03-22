@@ -176,7 +176,7 @@ export class PromoNotificationApi {
      * Scans notification locales and returns the one matching navigator.language.
      *
      * @param notification Notification object.
-     * @returns {NotificationTextRecord | undefined} Matching  notification text settings or undefined.
+     * @returns {NotificationTextRecord | undefined} Matching notification text settings or undefined.
      */
     private static getNotificationText(notification: Notification): NotificationTextRecord | undefined {
         const language = I18n.normalizeLanguageCode(browser.i18n.getUILanguage());
