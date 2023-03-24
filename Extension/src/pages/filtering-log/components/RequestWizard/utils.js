@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { ContentType as RequestType } from '@adguard/tswebextension';
 
-import { AntiBannerFiltersId, RequestType } from '../../../../common/constants';
+import { AntiBannerFiltersId } from '../../../../common/constants';
 import { strings } from '../../../../common/strings';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 

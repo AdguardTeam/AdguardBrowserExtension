@@ -114,25 +114,6 @@ export const SCROLLBAR_WIDTH = 12 as const;
 
 export const BACKGROUND_TAB_ID = -1 as const;
 
-export const enum RequestType {
-    Document = 'DOCUMENT',
-    Subdocument = 'SUBDOCUMENT',
-    Script = 'SCRIPT',
-    Stylesheet = 'STYLESHEET',
-    Object = 'OBJECT',
-    Image = 'IMAGE',
-    XmlHttpRequest = 'XMLHTTPREQUEST',
-    Media = 'MEDIA',
-    Font = 'FONT',
-    Websocket = 'WEBSOCKET',
-    WebRTC = 'WEBRTC',
-    Other = 'OTHER',
-    Csp = 'CSP',
-    CspReport = 'CSP_REPORT',
-    Cookie = 'COOKIE',
-    Ping = 'PING',
-}
-
 /**
  *  Time interval between filter updates.
  */

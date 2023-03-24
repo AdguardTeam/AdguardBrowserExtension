@@ -124,7 +124,7 @@ export class UiService {
         tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
         tsWebExtTabApi.onActivate.subscribe(UiApi.update);
 
-        defaultFilteringLog.addEventListener(FilteringEventType.APPLY_BASIC_RULE, UiService.onBasicRuleApply);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
 
     /**
