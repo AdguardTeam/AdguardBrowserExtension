@@ -23,6 +23,7 @@
 type HandlerPayload = {
     data: unknown,
     id: string,
+    event: Event | undefined,
 };
 
 export type SettingHandler = {

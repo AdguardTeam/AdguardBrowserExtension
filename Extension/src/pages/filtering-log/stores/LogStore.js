@@ -367,7 +367,6 @@ class LogStore {
 
     @computed
     get events() {
-        /* eslint-disable max-len */
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
             const show = matchesSearch(filteringEvent, this.eventsSearchValue);
 

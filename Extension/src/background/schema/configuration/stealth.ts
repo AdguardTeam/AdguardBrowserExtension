@@ -77,7 +77,7 @@ export const stealthConfigValidator = zod.object({
     /**
      * Time in milliseconds to delete third-party cookies.
      */
-    [StealthOption.SelfDestructThirdPartyCookiesTime]: zod.number().int(),
+    [StealthOption.SelfDestructThirdPartyCookiesTime]: zod.number(),
     /**
      * Whether or not the application should set a fixed lifetime from
      * `StealthOption.SelfDestructFirstPartyCookiesTime` for first-party
@@ -87,7 +87,7 @@ export const stealthConfigValidator = zod.object({
     /**
      * Time in milliseconds to delete first-party cookies.
      */
-    [StealthOption.SelfDestructFirstPartyCookiesTime]: zod.number().int(),
+    [StealthOption.SelfDestructFirstPartyCookiesTime]: zod.number(),
     /**
      * If true application will enable AdGuard Tracking Protection filter
      * {@link AntiBannerFiltersId.TrackingFilterId}.
