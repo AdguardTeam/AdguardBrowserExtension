@@ -178,7 +178,7 @@ export const settingsValidator = zod.object({
     /**
      * See {@link StealthConfig[StealthOption.SelfDestructThirdPartyCookiesTime]}.
      */
-    [SettingOption.SelfDestructThirdPartyCookiesTime]: zod.number().int(),
+    [SettingOption.SelfDestructThirdPartyCookiesTime]: zod.number(),
     /**
      * See {@link StealthConfig[StealthOption.SelfDestructFirstPartyCookies]}.
      */
@@ -186,7 +186,7 @@ export const settingsValidator = zod.object({
     /**
      * See {@link StealthConfig[StealthOption.SelfDestructFirstPartyCookiesTime]}.
      */
-    [SettingOption.SelfDestructFirstPartyCookiesTime]: zod.number().int(),
+    [SettingOption.SelfDestructFirstPartyCookiesTime]: zod.number(),
     // ----- Stealth section -----
 
     // ----- Statuses section -----

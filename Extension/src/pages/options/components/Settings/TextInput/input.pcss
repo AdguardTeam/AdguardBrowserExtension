@@ -15,6 +15,19 @@
             color: var(--gray300);
         }
 
+        &:invalid {
+            border: 1px solid var(--red-editor);
+
+            &:focus-visible {
+                border: 1px solid var(--gray300);
+                outline: 2px solid var(--red-editor);
+
+                @media (prefers-color-scheme: dark) {
+                    border: 1px solid var(--gray900);
+                }
+            }
+        }
+
         /* Chrome, Edge, Opera */
         &::-webkit-outer-spin-button,
         &::-webkit-inner-spin-button {

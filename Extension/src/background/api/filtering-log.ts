@@ -389,13 +389,13 @@ export class FilteringLogApi {
      * @returns Object of {@link FilteringEventRuleData}.
      */
     public static createNetworkRuleEventData(rule: NetworkRule): FilteringEventRuleData {
-        const data: FilteringEventRuleData = Object.create(null);
-
         const filterId = rule.getFilterListId();
         const ruleText = rule.getText();
 
-        data.filterId = filterId;
-        data.ruleText = ruleText;
+        const data: FilteringEventRuleData = {
+            filterId,
+            ruleText,
+        };
 
         if (rule.isOptionEnabled(NetworkRuleOption.Important)) {
             data.isImportant = true;

@@ -235,9 +235,13 @@ export class FilteringLogService {
         const {
             tabId,
             rule,
+            ...eventData
         } = data;
 
-        filteringLogApi.addEventData(tabId, data);
+        filteringLogApi.addEventData(tabId, {
+            ...eventData,
+            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+        });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
             HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());

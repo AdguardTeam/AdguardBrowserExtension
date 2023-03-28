@@ -24,13 +24,20 @@ import './input.pcss';
 
 const TextInput = (props) => {
     const {
-        id, value, handler, placeholder, disabled,
+        id,
+        value,
+        handler,
+        placeholder,
+        disabled,
+        required,
+        minValue,
+        step,
     } = props;
 
     const changeHandler = (e) => {
         // eslint-disable-next-line no-shadow
         const { target: { name: id, value: data } } = e;
-        handler({ id, data });
+        handler({ id, data, event: e });
     };
 
     return (
@@ -44,6 +51,9 @@ const TextInput = (props) => {
                 id={id}
                 className="input__in"
                 placeholder={placeholder}
+                min={minValue}
+                required={required}
+                step={step}
             />
         </div>
     );

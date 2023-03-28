@@ -83,7 +83,14 @@ export const Setting = (props) => {
         }
         case SETTINGS_TYPES.INPUT: {
             const {
-                id, value, handler, placeholder, disabled,
+                id,
+                value,
+                handler,
+                placeholder,
+                disabled,
+                required = false,
+                minValue,
+                step,
             } = props;
             return (
                 <TextInput
@@ -92,6 +99,9 @@ export const Setting = (props) => {
                     value={value}
                     handler={handler}
                     placeholder={placeholder}
+                    required={required}
+                    minValue={minValue}
+                    step={step}
                 />
             );
         }
