@@ -154,13 +154,29 @@ export class PagesApi {
             return;
         }
 
-        const windowStateString = await storage.get(FILTERING_LOG_WINDOW_STATE) as string | undefined;
+        const windowStateString = await storage.get(FILTERING_LOG_WINDOW_STATE);
 
-        await browser.windows.create({
-            url,
-            type: 'popup',
-            ...(windowStateString ? JSON.parse(windowStateString) : PagesApi.defaultFilteringLogWindowState),
-        });
+        try {
+            const options = typeof windowStateString === 'string'
+                ? JSON.parse(windowStateString)
+                : PagesApi.defaultFilteringLogWindowState;
+
+            await browser.windows.create({
+                url,
+                type: 'popup',
+                ...options,
+            });
+        } catch (e) {
+            // Reopen tab with default pos if it was closed too far beyond the screen
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2100
+            if ((e as Error).message.includes('Invalid value for bounds.')) {
+                await browser.windows.create({
+                    url,
+                    type: 'popup',
+                    ...PagesApi.defaultFilteringLogWindowState,
+                });
+            }
+        }
     }
 
     /**
