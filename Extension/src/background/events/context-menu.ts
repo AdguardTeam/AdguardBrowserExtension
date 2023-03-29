@@ -28,7 +28,7 @@ export const enum ContextMenuAction {
     DisableProtection = 'context_disable_protection',
     OpenSettings = 'context_open_settings',
     OpenLog = 'context_open_log',
-    UpdateFilters = 'context_update_filters',
+    UpdateFilters = 'context_update_antibanner_filters',
 }
 
 export type ContextMenuListener = () => unknown | Promise<unknown>;
