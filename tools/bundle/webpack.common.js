@@ -196,6 +196,7 @@ export const genCommonConfig = (browserConfig) => {
                     type: 'asset/resource',
                 },
             ],
+            strictExportPresence: true, // throw error if used non exported module
         },
 
         plugins: [

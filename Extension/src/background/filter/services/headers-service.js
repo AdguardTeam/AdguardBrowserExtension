@@ -15,7 +15,8 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { HeadersService } from '@adguard/tsurlfilter/dist/es/headers-service';
+
 import { filteringLog } from '../filtering-log';
 import { filteringApi } from '../filtering-api';
 import { RequestTypes } from '../../utils/request-types';
@@ -41,4 +42,4 @@ export const getRemoveHeaderRules = (tab, url, referrer) => {
 /**
  * Headers filtering service
  */
-export const headersService = new TSUrlFilter.HeadersService(filteringLog);
+export const headersService = new HeadersService(filteringLog);

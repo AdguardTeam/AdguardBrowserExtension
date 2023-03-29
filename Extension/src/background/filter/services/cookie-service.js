@@ -16,6 +16,8 @@
  */
 
 import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { CookieFiltering } from '@adguard/tsurlfilter/dist/es/cookie-filtering';
+
 import { filteringLog } from '../filtering-log';
 import { webRequestService } from '../request-blocking';
 import { RequestTypes } from '../../utils/request-types';
@@ -77,4 +79,4 @@ export const getCookieRulesDataForContentScript = (tab, url, referrer) => {
 /**
  * Cookie filtering service
  */
-export const cookieService = new TSUrlFilter.CookieFiltering(filteringLog);
+export const cookieService = new CookieFiltering(filteringLog);
