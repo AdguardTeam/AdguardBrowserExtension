@@ -68,6 +68,7 @@ export const genSampleApiConfig = (browserConfig) => {
                     }],
                 },
             ],
+            strictExportPresence: true, // set to true, to throw error if used non exported modules on build
         },
 
         plugins: [
