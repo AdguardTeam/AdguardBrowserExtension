@@ -22,11 +22,16 @@ import { isHttpRequest, getDomain } from '@adguard/tswebextension';
 
 import { UserAgent } from '../../common/user-agent';
 import { RegularFilterMetadata, SettingOption } from '../schema';
-import { metadataStorage, settingsStorage } from '../storages';
+import {
+    groupStateStorage,
+    metadataStorage,
+    settingsStorage,
+} from '../storages';
 import { Engine } from '../engine';
 import { toasts } from '../api/ui';
 import { FiltersApi } from '../api/filters/main';
 import { CommonFilterApi } from '../api/filters/common';
+import { AntibannerGroupsId } from '../../common/constants';
 
 export type BrowsingLanguage = {
     language: string,
@@ -314,6 +319,9 @@ export class LocaleDetect {
         }
 
         const disabledFiltersIds = filterIds.filter(filterId => !FiltersApi.isFilterEnabled(filterId));
+
+        // Always enable language filters group.
+        groupStateStorage.enableGroups([AntibannerGroupsId.LanguageFiltersGroupId]);
 
         if (disabledFiltersIds.length === 0) {
             return;

@@ -170,8 +170,11 @@ export class SettingsApi {
 
     /**
      * Resets to default settings.
+     *
+     * @param enableUntouchedGroups - Should enable untouched groups related to
+     * the default filters or not.
      */
-    public static async reset(): Promise<void> {
+    public static async reset(enableUntouchedGroups: boolean): Promise<void> {
         await UserRulesApi.setUserRules([]);
 
         // Set settings store to defaults
@@ -182,7 +185,8 @@ export class SettingsApi {
         // Re-init filters
         await FiltersApi.init(false);
 
-        await CommonFilterApi.initDefaultFilters();
+        // On import should enable only groups from imported file.
+        await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
     }
 
     /**
@@ -209,7 +213,8 @@ export class SettingsApi {
 
             const validConfig = configValidator.parse(json);
 
-            await SettingsApi.reset();
+            // Should not enable default groups.
+            await SettingsApi.reset(false);
 
             SettingsApi.importExtensionSpecificSettings(
                 validConfig[RootOption.ExtensionSpecificSettings],
@@ -381,7 +386,20 @@ export class SettingsApi {
         });
 
         await CustomFilterApi.createFilters(customFilters);
+
         groupStateStorage.enableGroups(enabledGroups);
+
+        Log.info(`Import filters: next groups were enabled: ${enabledGroups}`);
+
+        // Disable groups not listed in the imported list.
+        const allGroups = groupStateStorage.getData();
+        const allGroupsIds = Object.keys(allGroups).map(id => Number(id));
+
+        const groupIdsToDisable = allGroupsIds
+            .filter(groupId => !enabledGroups.includes(groupId));
+
+        // Disable all other groups and mark them as untouched.
+        groupStateStorage.disableGroups(groupIdsToDisable, false);
     }
 
     /**

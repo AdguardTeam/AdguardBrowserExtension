@@ -163,8 +163,12 @@ export class CommonFilterApi {
      * common filters.
      *
      * Called on extension installation and reset settings.
+     *
+     * @param enableUntouchedGroups - Should enable untouched groups related to
+     * the default filters or not.
+     *
      */
-    public static async initDefaultFilters(): Promise<void> {
+    public static async initDefaultFilters(enableUntouchedGroups: boolean): Promise<void> {
         const filterIds = [
             AntiBannerFiltersId.EnglishFilterId,
             AntiBannerFiltersId.SearchAndSelfPromoFilterId,
@@ -180,7 +184,14 @@ export class CommonFilterApi {
         // module to reduce the risk of cyclic dependency, since FiltersApi
         // depends on CommonFilterApi and CustomFilterApi.
         // On the first run, we update the common filters from the backend.
-        await FiltersApi.loadAndEnableFilters(filterIds, true);
+        if (enableUntouchedGroups) {
+            // Enable filters and their groups.
+            await FiltersApi.loadAndEnableFilters(filterIds, true);
+        } else {
+            // Enable only filters.
+            await FiltersApi.loadFilters(filterIds, true);
+            filterStateStorage.enableFilters(filterIds);
+        }
     }
 
     /**
