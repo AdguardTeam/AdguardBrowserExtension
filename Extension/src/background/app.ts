@@ -215,7 +215,7 @@ export class App {
             await PagesApi.openFiltersDownloadPage();
 
             // Loads default filters
-            await CommonFilterApi.initDefaultFilters();
+            await CommonFilterApi.initDefaultFilters(true);
         }
 
         // Update additional scenario

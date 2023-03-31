@@ -233,7 +233,7 @@ export class CustomFilterApi {
         const group = groupStateStorage.get(filterMetadata.groupId);
 
         // If group has never been enabled - enables it.
-        if (!group?.touched) {
+        if (group && !group.touched) {
             groupStateStorage.enableGroups([filterMetadata.groupId]);
         }
 
