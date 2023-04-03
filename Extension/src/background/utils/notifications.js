@@ -31,194 +31,194 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const XMAS_PROMO_23_ID = 'xmasPromo23';
+    const EASTER_PROMO_23_ID = 'easterPromo23';
 
-    const xmasPromo23Notification = {
-        id: XMAS_PROMO_23_ID,
+    const easterPromo23Notification = {
+        id: EASTER_PROMO_23_ID,
         locales: {
             en: {
-                title: 'AdGuard X-mas promo!',
-                btn: 'Upgrade protection',
+                title: 'Happy Easter',
+                btn: 'Get up to 40% off',
             },
             ru: {
-                title: 'Новогодняя акция',
-                btn: 'Улучшите защиту',
-            },
-            ja: {
-                title: 'AdGuard Christmas キャンペーン',
-                btn: 'お得にアップグレード',
+                title: 'Весенняя акция',
+                btn: 'Скидки до 40%',
             },
             ko: {
-                title: 'AdGuard 크리스마스 프로모션',
-                btn: '보호 업그레이드',
+                title: '부활절 세일',
+                btn: '최대 40% 할인',
             },
             es: {
-                title: 'Promo de Navidad',
-                btn: 'Aumenta tu protección',
+                title: 'Felices Pascuas',
+                btn: 'Hasta un 40% off',
             },
             de: {
-                title: 'AdGuards Weihnachtsangebot',
-                btn: 'Schutz erweitern',
+                title: 'Frohe Ostern',
+                btn: 'Bis zu 40% Rabatt',
             },
             pt_pt: {
-                title: 'Promo de Natal',
-                btn: 'Aumenta tua proteção',
+                title: 'Feliz Páscoa',
+                btn: 'Até 40% off',
             },
             pt_br: {
-                title: 'Promo de Natal',
-                btn: 'Aumente sua proteção',
+                title: 'Feliz Páscoa',
+                btn: 'Até 40% off',
             },
             zh_tw: {
-                title: 'AdGuard 聖誕節促銷',
-                btn: '升級保護',
+                title: '暖春特惠',
+                btn: '低至6折',
             },
             zh_cn: {
-                title: 'AdGuard 圣诞促销',
-                btn: '升级保护',
+                title: '春季钜惠',
+                btn: '低至6折',
             },
             fr: {
-                title: 'Promo Noël chez AdGuard',
-                btn: 'Augmentez la protection',
+                title: 'Joyeuses Pâques',
+                btn: "Jusqu'à 40% de remise",
             },
             it: {
-                title: 'Promo di Natale ad AdGuard',
-                btn: 'Aumentare protezione',
+                title: 'Buona Pascua',
+                btn: 'Fino al 40% di sconto',
             },
             uk: {
-                title: 'Новорічна акція',
-                btn: 'Покращити захист',
+                title: 'Весняна акція',
+                btn: 'Знижки до 40%',
             },
             ar: {
-                title: 'العام الجديد الترويجي',
-                btn: 'ترقية الحماية',
+                title: 'تعزيز الربيع',
+                btn: 'خصم حتي 40٪',
             },
             be: {
-                title: 'Навагодняя акцыя',
-                btn: 'Палепшыце абарону',
+                title: 'Вясновая акцыя',
+                btn: 'Зніжка да 40%',
             },
             bg: {
-                title: 'Новогодишна промоция',
-                btn: 'Надстройте защитата си',
+                title: 'Пролетна промоция',
+                btn: 'Отстъпка до 40%',
             },
             ca: {
-                title: 'Promoció d\'Any Nou',
-                btn: 'Millora la protecció',
+                title: 'Feliç Pasqua',
+                btn: 'Fins a −40%',
             },
             cs: {
-                title: 'Vánoční promo akce',
-                btn: 'Upgradujte svou ochranu',
+                title: 'Veselé Velikonoce',
+                btn: 'Sleva až 40%',
             },
             da: {
-                title: 'Nytårs promo',
-                btn: 'Beskyttelse mod opgradering',
+                title: 'God påske',
+                btn: 'Rabat op til 40%',
             },
             el: {
-                title: 'Πρωτοχρονιάτικη προσφορά',
-                btn: 'Προστασία αναβάθμισης',
+                title: 'ανοιξιάτικη προώθηση',
+                btn: 'Έκπτωση έως 40%',
+            },
+            es_419: {
+                title: 'Felices Pascuas',
+                btn: 'Hasta un 40% off',
             },
             fa: {
-                title: 'تخفیف های سال نو',
-                btn: 'ارتقاء حفاظت',
+                title: 'تبلیغات بهار',
+                btn: 'تخفیف تا 40%',
             },
             fi: {
-                title: 'Uudenvuoden promo',
-                btn: 'Päivityksen suojaus',
+                title: 'Hyvää pääsiäistä',
+                btn: 'Jopa 40% alennus',
             },
             he: {
-                title: 'פרומו לשנה החדשה',
-                btn: 'הגנת שדרוג',
+                title: 'קידום אביב',
+                btn: 'הנחות עד 40%',
             },
             hr: {
-                title: 'Božićna promocija',
-                btn: 'Zaštita od nadogradnje',
+                title: 'Sretan Uskrs',
+                btn: 'Popusti do 40%',
             },
             hu: {
-                title: 'Újévi promóció',
-                btn: 'A védelem frissítése',
+                title: 'Tavaszi akció',
+                btn: 'Akár 40% kedvezmény',
             },
             hy: {
-                title: 'Ամանորյա պրոմո',
-                btn: 'Բարձրացնել պաշտպանությունը',
+                title: 'գարնանային ակցիա',
+                btn: 'Զեղչեր մինչև 40%',
             },
             id: {
-                title: 'Promo Tahun Baru',
-                btn: 'Tingkatkan perlindungan',
+                title: 'Promosi musim semi',
+                btn: 'Diskon hingga 40%',
             },
             lt: {
-                title: 'Kalėdų reklama',
-                btn: 'Atnaujinkite apsaugą',
+                title: 'linksmų Velykų',
+                btn: 'Nuolaidos iki 40%',
             },
             ms: {
-                title: 'Promosi Tahun Baru',
-                btn: 'Perlindungan naik taraf',
+                title: 'Promosi musim bunga',
+                btn: 'Diskaun sehingga 40%',
             },
             nb: {
-                title: 'Nyttårskampanje',
-                btn: 'Oppgrader beskyttelse',
+                title: 'God påske',
+                btn: 'Opptil 40 % rabatt',
             },
             nl: {
-                title: 'Nieuwjaarspromo',
-                btn: 'Upgrade bescherming',
+                title: 'Vrolijk Pasen',
+                btn: 'Tot 40% korting',
             },
             pl: {
-                title: 'Świąteczna promocja',
-                btn: 'Ochrona przed aktualizacją',
+                title: 'Szczęśliwej Wielkanocy',
+                btn: 'Do 40% zniżki',
             },
             ro: {
-                title: 'Promoția de Anul Nou',
-                btn: 'Protecția upgrade-ului',
+                title: 'Promoție de primăvară',
+                btn: 'Până la 40% reducere',
             },
             sk: {
-                title: 'Novoročné promo',
-                btn: 'Inovujte svoju ochranu',
+                title: 'Šťastnú Veľkú noc',
+                btn: 'Až 40% zľava',
             },
             sl: {
-                title: 'Novoletni promo',
-                btn: 'Nadgradite svojo zaščito',
+                title: 'Srečno veliko noč',
+                btn: 'Do 40% popust',
             },
             sr: {
-                title: 'Novogodišnja promocija',
-                btn: 'Poboljšanje bezbednosti',
+                title: 'Prolećna promocija',
+                btn: 'Popusti do 40%',
             },
             sv: {
-                title: 'Nyårskampanj',
-                btn: 'Uppgradera skydd',
+                title: 'Glad påsk',
+                btn: 'Upp till 40 % rabatt',
             },
             tr: {
-                title: 'Yılbaşı İndirimi',
-                btn: 'Yükseltme koruması',
+                title: 'Bahar promosyonu',
+                btn: "%40'a varan indirim",
             },
             vi: {
-                title: 'Khuyến mãi năm mới',
-                btn: 'Bảo vệ nâng cấp',
+                title: 'Khuyến mãi mùa xuân',
+                btn: 'Giảm giá tới 40%',
             },
             hi: {
-                title: 'नए साल का प्रोमो',
-                btn: 'सुरक्षा का नवीनीकरण करें',
+                title: 'वसंत पदोन्नति',
+                btn: '40% तक की छूट',
             },
             et: {
-                title: 'Uusaasta promo',
-                btn: 'Täienduse kaitse',
+                title: 'Lihavõttepühade reklaam',
+                btn: 'Kuni 40% soodustus',
             },
             th: {
-                title: 'โปรโมชั่นปีใหม่',
-                btn: 'การป้องกันการอัพเกรด',
+                title: 'โปรโมชั่นฤดูใบไม้ผลิ',
+                btn: 'ส่วนลดสูงสุดถึง 40%',
             },
         },
         text: '',
-        url: 'https://link.adtidy.net/forward.html?action=xmas_promo_23&app=browser_extension',
-        from: '22 December 2022 15:00:00',
-        to: '02 January 2023 23:59:00',
+        url: 'https://link.adtidy.net/forward.html?action=easter_promo_23&app=browser_extension',
+        from: '06 April 2023 12:00:00',
+        to: '12 April 2023 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(xmasPromo23Notification, 'icons', () => ({
+            return lazyGet(easterPromo23Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/xmas23-on-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/xmas23-on-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/easter2023-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/easter2023-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/xmas23-off-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/xmas23-off-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/easter2023-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/easter2023-off-38.png'),
                 },
             }));
         },
@@ -240,7 +240,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        xmasPromo23: xmasPromo23Notification,
+        easterPromo23: easterPromo23Notification,
     };
 
     /**
