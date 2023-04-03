@@ -1,11 +1,11 @@
 # AdGuard Browser Extension Changelog
 
-## Unreleased
+## v4.1.54
 
 ### Changed
 
-* Scriptlets to v1.8.2
-* TSUrlFilter to v1.0.72
+* Scriptlets to v1.9.1
+* TSUrlFilter to v1.0.79
 
 ## v4.1.53
 
