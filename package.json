@@ -4,8 +4,8 @@
   "description": "AdGuard Extension",
   "scripts": {
     "dev": "cross-env BUILD_ENV=dev babel-node tools/bundle.js",
-    "dev:watch": "cross-env BUILD_ENV=dev babel-node tools/bundle.js chrome --watch",
-    "dev:watch:ff": "cross-env BUILD_ENV=dev babel-node tools/bundle.js firefox --watch",
+    "dev:watch": "cross-env BUILD_ENV=dev babel-node -- tools/bundle.js chrome --watch",
+    "dev:watch:ff": "cross-env BUILD_ENV=dev babel-node -- tools/bundle.js firefox --watch",
     "beta": "cross-env BUILD_ENV=beta babel-node tools/bundle.js",
     "release": "cross-env BUILD_ENV=release babel-node tools/bundle.js",
     "adguard-api": "cross-env BUILD_ENV=dev babel-node tools/bundle.js adguard-api",
