@@ -90,3 +90,10 @@ export const CHROME_CODEBASE_URL = 'https://static.adtidy.org/extensions/adguard
 export const FIREFOX_CREDENTIALS = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
 export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.json';
+
+// Separated chunks to reduce final pages/background.js size.
+export const REACT_VENDOR_OUTPUT = 'vendors/react';
+export const MOBX_VENDOR_OUTPUT = 'vendors/mobx';
+export const XSTATE_VENDOR_OUTPUT = 'vendors/xstate';
+export const LODASH_VENDOR_OUTPUT = 'vendors/lodash';
+export const TSURLFILTER_VENDOR_OUTPUT = 'vendors/tsurlfilter';

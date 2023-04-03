@@ -16,7 +16,8 @@
  * along with Adguard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as TSUrlFilter from '@adguard/tsurlfilter/dist/tsurlfilter.browser';
+import * as TSUrlFilter from '@adguard/tsurlfilter';
+import { StealthService } from '@adguard/tsurlfilter/dist/es/stealth-service';
 import { settings } from '../../settings/user-settings';
 import { log } from '../../../common/log';
 import { requestContextStorage } from '../request-context-storage';
@@ -329,7 +330,7 @@ export const stealthService = (() => {
      * Initializes service
      */
     const init = () => {
-        engine = new TSUrlFilter.StealthService(getConfig());
+        engine = new StealthService(getConfig());
     };
 
     /**
@@ -371,12 +372,12 @@ export const stealthService = (() => {
         settings.BLOCK_WEBRTC,
     ];
 
-    let engine = new TSUrlFilter.StealthService(getConfig());
+    let engine = new StealthService(getConfig());
 
     settings.onUpdated.addListener((setting) => {
         if (STEALTH_SETTINGS.includes(setting)) {
             // Rebuild engine on settings update
-            engine = new TSUrlFilter.StealthService(getConfig());
+            engine = new StealthService(getConfig());
             listeners.notifyListeners(listeners.UPDATE_FILTER_RULES);
         }
     });

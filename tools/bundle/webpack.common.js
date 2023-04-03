@@ -4,7 +4,15 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import path from 'path';
 
-import { BUILD_PATH, ENVS } from '../constants';
+import {
+    BUILD_PATH,
+    ENVS,
+    REACT_VENDOR_OUTPUT,
+    MOBX_VENDOR_OUTPUT,
+    XSTATE_VENDOR_OUTPUT,
+    LODASH_VENDOR_OUTPUT,
+    TSURLFILTER_VENDOR_OUTPUT,
+} from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import { getModuleReplacements } from './module-replacements';
 
@@ -44,30 +52,34 @@ export const genCommonConfig = (browserConfig) => {
         entry: {
             'pages/background': {
                 import: BACKGROUND_PATH,
-                runtime: false,
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                ],
             },
             'pages/options': {
                 import: OPTIONS_PATH,
                 dependOn: [
-                    'vendors/react',
-                    'vendors/mobx',
-                    'vendors/xstate',
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    LODASH_VENDOR_OUTPUT,
                     'shared/editor',
                 ],
             },
             'pages/popup': {
                 import: POPUP_PATH,
                 dependOn: [
-                    'vendors/react',
-                    'vendors/mobx',
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
                 ],
             },
             'pages/filtering-log': {
                 import: FILTERING_LOG_PATH,
                 dependOn: [
-                    'vendors/react',
-                    'vendors/mobx',
-                    'vendors/xstate',
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    LODASH_VENDOR_OUTPUT,
                 ],
             },
             'pages/filter-download': {
@@ -93,33 +105,42 @@ export const genCommonConfig = (browserConfig) => {
             'pages/fullscreen-user-rules': {
                 import: FULLSCREEN_USER_RULES_PATH,
                 dependOn: [
-                    'vendors/react',
-                    'vendors/mobx',
-                    'vendors/xstate',
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
                     'shared/editor',
                 ],
             },
             'pages/safebrowsing': {
                 import: SAFEBROWSING_PATH,
                 dependOn: [
-                    'vendors/react',
+                    REACT_VENDOR_OUTPUT,
                 ],
             },
             'pages/ad-blocked': {
                 import: AD_BLOCKED_PATH,
                 dependOn: [
-                    'vendors/react',
+                    REACT_VENDOR_OUTPUT,
                 ],
             },
             'shared/editor': {
                 import: EDITOR_PATH,
                 dependOn: [
-                    'vendors/react',
+                    REACT_VENDOR_OUTPUT,
                 ],
             },
-            'vendors/react': ['react', 'react-dom'],
-            'vendors/mobx': ['mobx'],
-            'vendors/xstate': ['xstate'],
+            [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
+            [MOBX_VENDOR_OUTPUT]: ['mobx'],
+            [XSTATE_VENDOR_OUTPUT]: ['xstate'],
+            [LODASH_VENDOR_OUTPUT]: [
+                'lodash/debounce',
+                'lodash/throttle',
+                'lodash/identity',
+                'lodash/find',
+                'lodash/truncate',
+                'lodash/sortBy',
+            ],
+            [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
@@ -209,25 +230,45 @@ export const genCommonConfig = (browserConfig) => {
                     browser: process.env.BROWSER,
                 },
                 filename: 'pages/background.html',
-                chunks: ['pages/background'],
+                chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    'pages/background',
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: 'pages/options.html',
-                chunks: ['vendors/react', 'vendors/mobx', 'vendors/xstate', 'shared/editor', 'pages/options'],
+                chunks: [
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    LODASH_VENDOR_OUTPUT,
+                    'shared/editor',
+                    'pages/options',
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(POPUP_PATH, 'index.html'),
                 filename: 'pages/popup.html',
-                chunks: ['vendors/react', 'vendors/mobx', 'pages/popup'],
+                chunks: [
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    'pages/popup',
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(FILTERING_LOG_PATH, 'index.html'),
                 filename: 'pages/filtering-log.html',
-                chunks: ['vendors/react', 'vendors/mobx', 'vendors/xstate', 'pages/filtering-log'],
+                chunks: [
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    LODASH_VENDOR_OUTPUT,
+                    'pages/filtering-log',
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
@@ -239,19 +280,25 @@ export const genCommonConfig = (browserConfig) => {
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: 'pages/fullscreen-user-rules.html',
-                chunks: ['vendors/react', 'vendors/mobx', 'vendors/xstate', 'shared/editor', 'pages/fullscreen-user-rules'],
+                chunks: [
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    'shared/editor',
+                    'pages/fullscreen-user-rules',
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(AD_BLOCKED_PATH, 'index.html'),
                 filename: 'pages/ad-blocked.html',
-                chunks: ['vendors/react', 'pages/ad-blocked'],
+                chunks: [REACT_VENDOR_OUTPUT, 'pages/ad-blocked'],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(SAFEBROWSING_PATH, 'index.html'),
                 filename: 'pages/safebrowsing.html',
-                chunks: ['vendors/react', 'pages/safebrowsing'],
+                chunks: [REACT_VENDOR_OUTPUT, 'pages/safebrowsing'],
             }),
             new CopyWebpackPlugin({
                 patterns: [
