@@ -1,8 +1,8 @@
-! Checksum: +xQKkXJu9qcSFk2jjwCusw
+! Checksum: KqYMV7n3VWtRxfWlgFa0mg
 ! Title: AdGuard Experimental filter (Optimized)
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.3
-! TimeUpdated: 2022-08-24T07:31:42+00:00
+! Version: 2.0.1.6
+! TimeUpdated: 2023-03-20T15:32:08+00:00
 ! Expires: 4 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -19,8 +19,10 @@ www.youtube.com#$?##contents ytd-rich-grid-row:-abp-has(> div[id="contents"] > y
 www.youtube.com#$?##contents ytd-rich-grid-row:-abp-has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
 www.youtube.com#$?##contents ytd-rich-grid-row:-abp-has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) { --ytd-rich-grid-items-per-row: 1 !important; }
 developer.android.com,adssettings.google.com##sc-survey-survey-manager
-ozerki.ru#?#header > div.popup:-abp-has(> div.popup__container div.rkf_popup_button > a[href="https://express.superapteka.ru/"])
+mail.yandex.ru#?#.modal:-abp-has(> div[data-lego] div[class^="mail-SubscriptionsPopup"])
 ||chrome.test.filter.com^$third-party
+imdb.com#?#div[data-testid="promptable"]:-abp-has(.ipc-rating-display-with-poster__image)
+imdb.com#$?#body:-abp-has(div[data-testid="promptable"] .ipc-rating-display-with-poster__image) { overflow: auto !important; }
 !#######################################################
 !######### The list of dangerous rules #################
 !#######################################################
