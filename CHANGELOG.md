@@ -5,7 +5,7 @@
 ### Changed
 
 * Scriptlets to v1.9.1
-* TSUrlFilter to v1.0.79
+* TSUrlFilter to v1.0.80  with ExtendedCss v2.0.51
 
 ## v4.1.53
 
