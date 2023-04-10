@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import cn from 'classnames';
@@ -26,11 +26,28 @@ import { popupStore } from '../../stores/PopupStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { ForwardFrom } from '../../../../common/forward';
+import { addMinDurationTime } from '../../../../common/common-script';
+import { MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS } from '../../../common/constants';
 
 import './actions.pcss';
 
 export const Actions = observer(() => {
     const store = useContext(popupStore);
+    const [removingUserRules, clearingUserRules] = useState(false);
+
+    const removeUserRulesWithMinDuration = addMinDurationTime(
+        messenger.resetCustomRulesForPage,
+        MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS,
+    );
+
+    const resetCustomRulesForPage = async () => {
+        if (!store.applicationAvailable) {
+            return;
+        }
+        clearingUserRules(true);
+        await removeUserRulesWithMinDuration(store.url);
+        window.close();
+    };
 
     const handleBlockAds = () => {
         if (!store.applicationAvailable) {
@@ -61,17 +78,9 @@ export const Actions = observer(() => {
         window.close();
     };
 
-    const resetCustomRulesForPage = () => {
-        if (!store.applicationAvailable) {
-            return;
-        }
-
-        // TODO: Wait for response when load indicator will be added
-        messenger.resetCustomRulesForPage(store.url);
-        window.close();
-    };
-
     const actionChangingClassname = cn('action', { action_disabled: !store.applicationAvailable });
+
+    const removeUserRulesIconId = removingUserRules ? '#removing-user-rules' : '#small-cross';
 
     return (
         <div className="actions">
@@ -133,10 +142,13 @@ export const Actions = observer(() => {
                     type="button"
                     className={actionChangingClassname}
                     onClick={resetCustomRulesForPage}
+                    disabled={removingUserRules}
                 >
                     <Icon
-                        id="#small-cross"
+                        id={removeUserRulesIconId}
                         classname="icon--action"
+                        animationCondition={removingUserRules}
+                        animationClassname="icon--loading"
                     />
                     <div
                         className="action-title"
