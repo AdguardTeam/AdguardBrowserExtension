@@ -25,6 +25,11 @@ import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../../common/messages';
 class Messenger {
     onMessage = browser.runtime.onMessage;
 
+    constructor() {
+        this.resetCustomRulesForPage = this.resetCustomRulesForPage.bind(this);
+        this.updateFilters = this.updateFilters.bind(this);
+    }
+
     // eslint-disable-next-line class-methods-use-this
     async sendMessage(type, data) {
         Log.debug('Request type:', type);

@@ -3,6 +3,12 @@
     vertical-align: middle;
     flex-shrink: 0;
 
+    &--loading {
+        pointer-events: none;
+        animation: loader-spin 1.7s infinite linear;
+        animation-fill-mode: forwards;
+    }
+
     &--button {
         width: 24px;
         height: 24px;
@@ -82,5 +88,14 @@
         &--logo {
             color: var(--gray300);
         }
+    }
+}
+
+@keyframes loader-spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    } 
+    to {
+        -webkit-transform: rotate(360deg);
     }
 }

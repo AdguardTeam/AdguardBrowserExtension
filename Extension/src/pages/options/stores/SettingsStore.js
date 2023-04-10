@@ -31,7 +31,7 @@ import {
     EVENTS as SAVING_FSM_EVENTS,
     STATES,
 } from '../../common/components/Editor/savingFSM';
-import { MIN_FILTERS_UPDATE_DISPLAY_DURATION } from '../../common/constants';
+import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../common/constants';
 import { sleep } from '../../helpers';
 import { messenger } from '../../services/messenger';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
@@ -410,7 +410,7 @@ class SettingsStore {
             this.refreshFilters(filtersUpdates);
             setTimeout(() => {
                 this.setFiltersUpdating(false);
-            }, MIN_FILTERS_UPDATE_DISPLAY_DURATION);
+            }, MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS);
             return filtersUpdates;
         } catch (error) {
             this.setFiltersUpdating(false);
