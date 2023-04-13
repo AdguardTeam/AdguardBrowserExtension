@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// @ts-ignore
 import Nanobar from 'nanobar';
 
 import { MessageType } from '../common/messages';

@@ -201,7 +201,7 @@ describe('Settings Api', () => {
         it('Reset default settings', async () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
 
-            await SettingsApi.reset();
+            await SettingsApi.reset(true);
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
         });
