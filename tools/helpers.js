@@ -51,6 +51,20 @@ export const getBrowserConf = (browser) => {
     return browserConf;
 };
 
+/**
+ * Retrieves the sha value for the click2load.html redirects resource.
+ * This value is needed to ensure that the extension's Content Security Policy (CSP)
+ * includes the correct sha value, which is used to verify
+ * that scripts loaded via the redirect are legitimate and have not been tampered with.
+ *
+ * This hash is not for a remote script, but for an inline script inside the local resource:
+ * web-accessible-resources/redirects/click2load.html.
+ * This web resource is used for replacing iframe content,
+ * i.e. it inherits the CSP of the parent page.
+ * It may disable the inline script inside unless an exclusion is specified in the manifest.
+ *
+ * @returns Hash of click2load.html redirect resource.
+ */
 const getClickToLoadSha = () => {
     const redirectsYamlPath = path.resolve(__dirname, '../Extension/assets/libs/scriptlets/redirects.yml');
     const rawYaml = fs.readFileSync(redirectsYamlPath);
