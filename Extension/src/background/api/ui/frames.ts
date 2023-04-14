@@ -93,7 +93,7 @@ export class FramesApi {
         const applicationFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
 
         if (applicationAvailable) {
-            documentAllowlisted = !!mainFrameRule && mainFrameRule.isAllowlist();
+            documentAllowlisted = !!mainFrameRule && mainFrameRule.isDocumentAllowlistRule();
             if (documentAllowlisted && mainFrameRule) {
                 const rule = mainFrameRule;
 
@@ -101,7 +101,6 @@ export class FramesApi {
 
                 userAllowlisted = filterId === AntiBannerFiltersId.UserFilterId
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
-
                 frameRule = {
                     filterId,
                     ruleText: rule.getText(),
