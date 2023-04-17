@@ -23,7 +23,6 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-import { debounce } from 'lodash';
 
 import { Log } from '../../../common/log';
 import {
@@ -117,12 +116,6 @@ class SettingsStore {
 
     @observable allowlistSizeReset = false;
 
-    static UPDATE_SETTINGS_DEBOUNCE_MS = 1000;
-
-    debounceChangeUserSetting = debounce((settingId, value) => {
-        messenger.changeUserSetting(settingId, value);
-    }, SettingsStore.UPDATE_SETTINGS_DEBOUNCE_MS);
-
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -194,7 +187,7 @@ class SettingsStore {
         this.settings.values[settingId] = value;
 
         if (!ignoreBackground) {
-            this.debounceChangeUserSetting(settingId, value);
+            messenger.changeUserSetting(settingId, value);
         }
     }
 
