@@ -7,8 +7,8 @@ import {
     getI18nMetadataFixture,
     getFilterTextFixture,
     filterTextWithMetadataFixture,
-    getCustomExportFixtureProtocol1,
-    getCustomExportFixtureProtocol2,
+    getExportedSettingsProtocolV1Fixture,
+    getExportedSettingsProtocolV2Fixture,
     getSettingsV1,
 } from '../fixtures';
 
@@ -81,8 +81,10 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
         filterTextWithMetadataFixture,
     ]);
 
-    const customFiltersFixture1 = getCustomExportFixtureProtocol1()[RootOption.Filters][FiltersOption.CustomFilters];
-    const customFiltersFixture2 = getCustomExportFixtureProtocol2()[RootOption.Filters][FiltersOption.CustomFilters];
+    // eslint-disable-next-line max-len
+    const customFiltersFixture1 = getExportedSettingsProtocolV1Fixture()[RootOption.Filters][FiltersOption.CustomFilters];
+    // eslint-disable-next-line max-len
+    const customFiltersFixture2 = getExportedSettingsProtocolV2Fixture()[RootOption.Filters][FiltersOption.CustomFilters];
     const customFiltersFixture3 = SETTINGS_V_1_0['filters']['custom-filters'];
 
     const customFiltersUrls = [

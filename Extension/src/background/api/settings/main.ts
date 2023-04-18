@@ -157,13 +157,9 @@ export class SettingsApi {
                 sendDoNotTrack: settingsStorage.get(SettingOption.SendDoNotTrack),
                 blockWebRTC: settingsStorage.get(SettingOption.BlockWebRTC),
                 selfDestructThirdPartyCookies: settingsStorage.get(SettingOption.SelfDestructThirdPartyCookies),
-                selfDestructThirdPartyCookiesTime: (
-                    settingsStorage.get(SettingOption.SelfDestructThirdPartyCookiesTime)
-                ),
+                selfDestructThirdPartyCookiesTime: settingsStorage.get(SettingOption.SelfDestructThirdPartyCookiesTime),
                 selfDestructFirstPartyCookies: settingsStorage.get(SettingOption.SelfDestructFirstPartyCookies),
-                selfDestructFirstPartyCookiesTime: (
-                    settingsStorage.get(SettingOption.SelfDestructFirstPartyCookiesTime)
-                ),
+                selfDestructFirstPartyCookiesTime: settingsStorage.get(SettingOption.SelfDestructFirstPartyCookiesTime),
             },
         };
     }

@@ -11,16 +11,19 @@ import {
     CustomFilterOption,
 } from '../../../Extension/src/background/schema';
 
+import { filterNameFixture } from './filterWithMetadata';
+
 // IMPORTANT: for all these objects with different protocol versions, the custom
 // filters urls must be unique in order to properly emulate receiving them from
 // the remote url.
 
-// Separate fixture for old versions of protocol
-// The keys here are strings, because in recent versions of the protocol
+// Separate fixture for old versions of protocol.
+// The keys here are strings, because in newest versions of the protocol
 // the keys may have been renamed.
-export const getCustomExportFixtureProtocol1 = () => ({
+export const getExportedSettingsProtocolV1Fixture = () => ({
     'protocol-version': '1.0',
     'general-settings': {
+        'app-language': 'en-US',
         'allow-acceptable-ads': false,
         'show-blocked-ads-count': false,
         'autodetect-filters': false,
@@ -78,7 +81,46 @@ export const getCustomExportFixtureProtocol1 = () => ({
     },
 });
 
-export const getCustomExportFixtureProtocol2 = (): Config => ({
+export const getImportedSettingsFromV1Fixture = () => {
+    const configV1 = getExportedSettingsProtocolV1Fixture();
+
+    // Set fields according to the latest protocol version
+    configV1[RootOption.ProtocolVersion] = PROTOCOL_VERSION;
+    // eslint-disable-next-line max-len
+    configV1[RootOption.GeneralSettings][GeneralSettingsOption.AppearanceTheme] = JSON.parse(configV1['general-settings']['appearance-theme']);
+    // eslint-disable-next-line max-len
+    configV1[RootOption.Stealth][StealthOption.SelfDestructThirdPartyCookiesTime] = JSON.parse(configV1['stealth']['stealth-block-third-party-cookies-time']);
+    // Fill up optional fields
+    configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+    configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.trusted = false;
+    configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.enabled = false;
+    Object.assign(
+        configV1[RootOption.Filters],
+        {
+            ...configV1[RootOption.Filters],
+            [FiltersOption.Allowlist]: configV1[RootOption.Filters]['whitelist'],
+        },
+    );
+    // @ts-ignore
+    delete configV1[RootOption.Filters]['whitelist'];
+    // eslint-disable-next-line max-len
+    Object.assign(
+        configV1[RootOption.Stealth],
+        {
+            [StealthOption.DisableStealthMode]: configV1[RootOption.Stealth]['stealth_disable_stealth_mode'],
+            ...configV1[RootOption.Stealth],
+        },
+    );
+    // @ts-ignore
+    delete configV1[RootOption.Stealth]['stealth_disable_stealth_mode'];
+
+    // @ts-ignore
+    delete configV1[RootOption.GeneralSettings][GeneralSettingsOption.AppLanguage];
+
+    return configV1;
+};
+
+export const getExportedSettingsProtocolV2Fixture = (): Config => ({
     [RootOption.ProtocolVersion]: PROTOCOL_VERSION,
     [RootOption.GeneralSettings]: {
         [GeneralSettingsOption.AllowAcceptableAds]: false,

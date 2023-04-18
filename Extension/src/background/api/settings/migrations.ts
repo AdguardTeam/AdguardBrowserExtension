@@ -164,6 +164,11 @@ export class SettingsMigrations {
                 if (customFilter.trusted === undefined) {
                     customFilter.trusted = false;
                 }
+
+                // Remove deprecated field.
+                if (customFilter.languages !== undefined) {
+                    delete customFilter.languages;
+                }
             }
         }
 

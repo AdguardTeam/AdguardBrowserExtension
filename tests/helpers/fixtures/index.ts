@@ -1,4 +1,8 @@
-export { getCustomExportFixtureProtocol1, getCustomExportFixtureProtocol2 } from './getCustomExportFixture';
+export {
+    getExportedSettingsProtocolV1Fixture,
+    getExportedSettingsProtocolV2Fixture,
+    getImportedSettingsFromV1Fixture,
+} from './getCustomExportFixture';
 export { getDefaultExportFixture } from './getDefaultExportFixture';
 export { filterNameFixture, filterTextWithMetadataFixture } from './filterWithMetadata';
 export { getDefaultSettingsConfigFixture } from './getDefaultSettingsConfigFixture';
@@ -9,3 +13,4 @@ export { getSettingsV1 } from './settingsSchemaV1';
 export { getSettingsV2, getExportedSettingsV2 } from './settingsSchemaV2';
 export { getMetadataFixture } from './getMetadataFixture';
 export { getI18nMetadataFixture } from './getI18nMetadataFixture';
+export { getStorageSettingsFixtureV1, getUpdatedStorageSettingsV1 } from './getStorageSettingsFixture';

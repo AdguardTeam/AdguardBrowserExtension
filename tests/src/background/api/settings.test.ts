@@ -7,11 +7,8 @@ import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,
     FiltersOption,
-    GeneralSettingsOption,
-    PROTOCOL_VERSION,
     RootOption,
     SettingOption,
-    StealthOption,
 } from '../../../../Extension/src/background/schema';
 import { settingsStorage } from '../../../../Extension/src/background/storages';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
@@ -19,8 +16,9 @@ import { defaultSettings } from '../../../../Extension/src/common/settings';
 import {
     getDefaultExportFixture,
     getDefaultSettingsConfigFixture,
-    getCustomExportFixtureProtocol1,
-    getCustomExportFixtureProtocol2,
+    getExportedSettingsProtocolV1Fixture,
+    getExportedSettingsProtocolV2Fixture,
+    getImportedSettingsFromV1Fixture,
     mockLocalStorage,
     filterNameFixture,
     getSettingsV1,
@@ -122,7 +120,7 @@ describe('Settings Api', () => {
         });
 
         it('Imports exported settings for protocol v1', async () => {
-            const userConfig = getCustomExportFixtureProtocol1();
+            const userConfig = getExportedSettingsProtocolV1Fixture();
             let importResult = await SettingsApi.import(JSON.stringify(userConfig));
 
             expect(importResult).toBeTruthy();
@@ -133,40 +131,14 @@ describe('Settings Api', () => {
             expect(importResult).toBeTruthy();
 
             const importedSettingsString = await SettingsApi.export();
-            // Set fields according to the latest protocol version
-            userConfig[RootOption.ProtocolVersion] = PROTOCOL_VERSION;
-            // eslint-disable-next-line max-len
-            userConfig[RootOption.GeneralSettings][GeneralSettingsOption.AppearanceTheme] = JSON.parse(userConfig['general-settings']['appearance-theme']);
-            // eslint-disable-next-line max-len
-            userConfig[RootOption.Stealth][StealthOption.SelfDestructThirdPartyCookiesTime] = JSON.parse(userConfig['stealth']['stealth-block-third-party-cookies-time']);
-            // Fill up optional fields
-            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
-            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.trusted = false;
-            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.enabled = false;
-            Object.assign(
-                userConfig[RootOption.Filters],
-                {
-                    ...userConfig[RootOption.Filters],
-                    [FiltersOption.Allowlist]: userConfig[RootOption.Filters]['whitelist'],
-                },
-            );
-            // @ts-ignore
-            delete userConfig[RootOption.Filters]['whitelist'];
-            // eslint-disable-next-line max-len
-            Object.assign(
-                userConfig[RootOption.Stealth],
-                {
-                    [StealthOption.DisableStealthMode]: userConfig[RootOption.Stealth]['stealth_disable_stealth_mode'],
-                    ...userConfig[RootOption.Stealth],
-                },
-            );
-            // @ts-ignore
-            delete userConfig[RootOption.Stealth]['stealth_disable_stealth_mode'];
-            expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
+
+            const importedSettings = getImportedSettingsFromV1Fixture();
+
+            expect(JSON.parse(importedSettingsString)).toStrictEqual(importedSettings);
         });
 
         it('Imports exported settings for protocol v2', async () => {
-            const userConfig = getCustomExportFixtureProtocol2();
+            const userConfig = getExportedSettingsProtocolV2Fixture();
             let importResult = await SettingsApi.import(JSON.stringify(userConfig));
 
             expect(importResult).toBeTruthy();

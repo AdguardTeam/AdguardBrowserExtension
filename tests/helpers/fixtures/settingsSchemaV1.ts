@@ -1,4 +1,3 @@
-// FIXME: Make them as functions to make object immutable
 export const getSettingsV1 = () => ({
     'protocol-version': '1.0',
     'general-settings': {
