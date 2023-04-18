@@ -42,12 +42,6 @@ export const customFilterMetadataValidator = baseMetadataValidator.merge(
          * Contains MD5 checksum for the filter content.
          */
         checksum: zod.string().or(zod.null()),
-        /**
-         * Two-letter language codes that are associated with the filter.
-         *
-         * @deprecated
-         */
-        languages: zod.string().array().optional(),
     }),
 );
 

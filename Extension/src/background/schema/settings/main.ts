@@ -75,7 +75,7 @@ export enum SettingOption {
 export const settingsValidator = zod.object({
     // ----- General settings section -----
     /**
-     * See {@link GeneralSettingsConfig[GeneralSettingsOption.AppLanguage]}.
+     * See {@link GeneralSettingsConfig[GeneralSettingsOption.AppearanceTheme]}.
      */
     [SettingOption.AppearanceTheme]: zod.enum(['system', 'dark', 'light']),
     /**

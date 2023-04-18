@@ -75,6 +75,20 @@ export class UpdateApi {
         // clear persisted caches
         await UpdateApi.clearCache();
 
+        // run migrations, if they needed.
+        await this.runMigrations(currentSchemaVersion, previousSchemaVersion);
+    }
+
+    /**
+     * Checks previousSchemaVersion and if it is outdated - runs migrations.
+     *
+     * @param currentSchemaVersion Current data schema version.
+     * @param previousSchemaVersion Previous data schema version.
+     */
+    private static async runMigrations(
+        currentSchemaVersion: number,
+        previousSchemaVersion: number,
+    ): Promise<void> {
         try {
             // if schema version changes, process migration
             for (let schema = previousSchemaVersion; schema < currentSchemaVersion; schema += 1) {
@@ -235,6 +249,11 @@ export class UpdateApi {
 
                     if (!customFilterMetadata.timeUpdated) {
                         customFilterMetadata.timeUpdated = 0;
+                    }
+
+                    // Remove deprecated field.
+                    if (customFilterMetadata.languages !== undefined) {
+                        delete customFilterMetadata.languages;
                     }
                 }
             }

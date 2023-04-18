@@ -42,6 +42,8 @@ import { FilterUpdateApi } from './update';
  */
 export type CategoriesFilterData = (
     (RegularFilterMetadata | CustomFilterMetadata) &
+    // Optional because there is no field 'languages' in CustomFilterMetadata.
+    { languages?: string[] } &
     FilterStateData &
     FilterVersionData &
     { tagsDetails: TagMetadata[] }

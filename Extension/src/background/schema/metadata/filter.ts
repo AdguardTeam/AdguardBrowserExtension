@@ -45,10 +45,6 @@ export const baseMetadataValidator = zod.object({
      */
     homepage: zod.string(),
     /**
-     * Two-letter language codes that are associated with the filter.
-     */
-    languages: zod.string().array(),
-    /**
      * Name of the filter.
      */
     name: zod.string(),
@@ -66,6 +62,10 @@ export const baseMetadataValidator = zod.object({
 
 export const regularFilterMetadataValidator = baseMetadataValidator.merge(
     zod.object({
+        /**
+         * Two-letter language codes that are associated with the filter.
+         */
+        languages: zod.string().array(),
         /**
          * Timestamp of adding filters in MS.
          * String format, since these values are retrieved from the backend.
