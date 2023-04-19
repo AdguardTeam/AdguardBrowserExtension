@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.9.1
+#    Version 1.9.7
 #
 - title: 1x1-transparent.gif
   description: |-
@@ -588,6 +588,10 @@
     </script>
       </body>
     </html>
+  # To enable the redirect functionality to work within the extension
+  # the sha256 value of the file is calculated and included in the yaml file
+  # as the redirect is being used as a single file.
+  # This will allow the extension to retrieve the value and add it to its CSP.
   sha: sha256-/LXEqDmVMWdyPFjNsOl0yp3A6W+5pEv8yN6hmCLoAiE=
 
 - title: amazon-apstag
