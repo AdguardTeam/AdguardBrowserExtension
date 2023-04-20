@@ -33,6 +33,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { Icon } from '../../../common/components/ui/Icon';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { TRUSTED_TAG } from '../../../../common/constants';
+import { Popover } from '../../../common/components/ui/Popover';
 
 import { HighlightSearch } from './Search/HighlightSearch';
 import { FilterTags } from './FilterTags';
@@ -156,13 +157,18 @@ const Filter = observer(({ filter }) => {
                     <div className="setting__container setting__container--horizontal">
                         <div className="setting__inner">
                             <div className="filter__title">
-                                <span className="filter__title-in">
-                                    <HighlightSearch string={name} />
-                                </span>
+                                <Popover text={name}>
+                                    <div className="filter__title-constraint">
+                                        <span className="filter__title-in">
+                                            <HighlightSearch string={name} />
+                                        </span>
+                                    </div>
+                                </Popover>
                                 <span className="filter__controls">
                                     {renderRemoveButton()}
                                 </span>
                             </div>
+
                             <div className="filter__desc">
                                 <div className="filter__desc-item">
                                     {description}

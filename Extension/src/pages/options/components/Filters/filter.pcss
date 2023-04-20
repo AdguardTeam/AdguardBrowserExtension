@@ -7,19 +7,29 @@
 
     &__title {
         display: inline-block;
-        word-break: break-word;
+
         font-weight: 500;
         font-size: 16px;
         margin-bottom: 4px;
     }
 
+    &__title-in {
+        margin-right: 12px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    &__title-constraint {
+        display: flex;
+        max-width: 420px;
+    }
+
+
     &__search {
         background-color: var(--orange400);
     }
 
-    &__title-in {
-        margin-right: 12px;
-    }
 
     &:last-child {
         box-shadow: none;
