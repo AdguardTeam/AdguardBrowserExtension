@@ -49,6 +49,7 @@ export type FilteringEventRuleData = {
     modifierValue?: string,
     cookieRule?: boolean,
     contentRule?: boolean,
+    allRule?: boolean,
     cssRule?: boolean,
     scriptRule?: boolean,
     appliedRuleText?: string,
@@ -410,6 +411,7 @@ export class FilteringLogApi {
         }
 
         data.allowlistRule = rule.isAllowlist();
+        data.allRule = rule.isOptionEnabled(NetworkRuleOption.All);
         data.cspRule = rule.isOptionEnabled(NetworkRuleOption.Csp);
         data.cookieRule = rule.isOptionEnabled(NetworkRuleOption.Cookie);
 

@@ -297,7 +297,7 @@ class WizardStore {
 
         // Deal with csp rule
         const { requestRule } = selectedEvent;
-        if (requestRule && requestRule.cspRule) {
+        if (requestRule && requestRule.cspRule && !requestRule.allRule) {
             mandatoryOptions = [NETWORK_RULE_OPTIONS.CSP];
         }
 
