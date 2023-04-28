@@ -226,6 +226,7 @@ export class CustomFilterApi {
             loaded: true,
             installed: true,
             enabled,
+            disabledByUser: false,
         });
 
         await FiltersStorage.set(filterId, rules);

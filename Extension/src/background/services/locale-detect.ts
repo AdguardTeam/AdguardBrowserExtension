@@ -318,7 +318,10 @@ export class LocaleDetect {
             return;
         }
 
-        const disabledFiltersIds = filterIds.filter(filterId => !FiltersApi.isFilterEnabled(filterId));
+        const disabledFiltersIds = filterIds.filter(filterId => {
+            return !FiltersApi.isFilterEnabled(filterId)
+                && !FiltersApi.isFilterDisabledByUser(filterId);
+        });
 
         // Always enable language filters group.
         groupStateStorage.enableGroups([AntibannerGroupsId.LanguageFiltersGroupId]);

@@ -127,6 +127,19 @@ export class FiltersApi {
     }
 
     /**
+     * Checks if filter is disabled by user.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns True, if filter is disabled by user, else returns false.
+     */
+    public static isFilterDisabledByUser(filterId: number): boolean {
+        const filterState = filterStateStorage.get(filterId);
+
+        return !!filterState?.disabledByUser;
+    }
+
+    /**
      * Checks if filter is trusted.
      *
      * @param filterId Filter id.

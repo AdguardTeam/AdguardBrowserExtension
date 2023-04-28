@@ -40,10 +40,15 @@ export const filterStateDataValidator = zod.object({
      * TODO: Check if it can be deleted.
      */
     loaded: zod.boolean(),
+    /**
+     * Is filter disabled by user
+     */
+    disabledByUser: zod.boolean(),
 });
 
 /**
- * Contains boolean flags about the filter status: enabled, installed, loaded.
+ * Contains boolean flags about the filter status: enabled, installed,
+ * loaded, disabledByUser.
  */
 export type FilterStateData = zod.infer<typeof filterStateDataValidator>;
 

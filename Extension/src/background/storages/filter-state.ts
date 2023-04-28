@@ -48,6 +48,7 @@ export class FilterStateStorage extends StringStorage<
         enabled: false,
         installed: false,
         loaded: false,
+        disabledByUser: false,
     };
 
     /**
@@ -154,6 +155,7 @@ export class FilterStateStorage extends StringStorage<
 
             if (data) {
                 data.enabled = true;
+                data.disabledByUser = false;
             }
         }
 
@@ -181,6 +183,7 @@ export class FilterStateStorage extends StringStorage<
 
             if (data) {
                 data.enabled = false;
+                data.disabledByUser = true;
             }
         }
 

@@ -129,6 +129,7 @@ export class CommonFilterApi {
             installed: true,
             loaded: true,
             enabled: !!currentFilterState?.enabled,
+            disabledByUser: !!currentFilterState?.disabledByUser,
         });
 
         // TODO: We should retrieve metadata from the actual rules loaded, but
