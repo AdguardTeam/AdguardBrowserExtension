@@ -117,7 +117,7 @@ export class UserRulesService {
         const { value } = message.data;
 
         await UserRulesApi.setUserRules(value.split('\n'));
-        Engine.debounceUpdate();
+        await Engine.update();
     }
 
     /**
