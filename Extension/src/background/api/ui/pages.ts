@@ -62,11 +62,11 @@ export class PagesApi {
     public static readonly fullscreenUserRulesPageUrl = PagesApi.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
 
     /**
-     * Default state of filtering log window.
+     * Default state of popup window.
      */
-    public static defaultFilteringLogWindowState: Windows.CreateCreateDataType = {
-        width: 1000,
-        height: 650,
+    public static readonly defaultPopupWindowState: Windows.CreateCreateDataType = {
+        width: 1280,
+        height: 720,
         top: 0,
         left: 0,
     };
@@ -130,7 +130,7 @@ export class PagesApi {
             url,
             type: 'popup',
             focused: true,
-            state: 'fullscreen',
+            ...PagesApi.defaultPopupWindowState,
         });
     }
 
@@ -159,7 +159,7 @@ export class PagesApi {
         try {
             const options = typeof windowStateString === 'string'
                 ? JSON.parse(windowStateString)
-                : PagesApi.defaultFilteringLogWindowState;
+                : PagesApi.defaultPopupWindowState;
 
             await browser.windows.create({
                 url,
@@ -173,7 +173,7 @@ export class PagesApi {
                 await browser.windows.create({
                     url,
                     type: 'popup',
-                    ...PagesApi.defaultFilteringLogWindowState,
+                    ...PagesApi.defaultPopupWindowState,
                 });
             }
         }
