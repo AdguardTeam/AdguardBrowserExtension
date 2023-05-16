@@ -27,10 +27,33 @@ export const enum AllowlistOption {
 }
 
 export const allowlistValidator = zod.object({
+    /**
+     * If `AllowlistOption.Inverted` === false (the default state),
+     * the extension will use this list of domains to disable ad blocking on
+     * them. In other words, the extension will apply ad blocking everywhere,
+     * EXCEPT the domains on this list.
+     */
     [AllowlistOption.Domains]: zod.array(zod.string()),
+    /**
+     * If `AllowlistOption.Inverted` === true, the extension will use this list
+     * to disable ad blocking for all sites but not these sites. In other words,
+     * the extension will work ONLY on domains from this list.
+     */
     [AllowlistOption.InvertedDomains]: zod.array(zod.string()),
+    /**
+     * Is allowlist list enabled or not.
+     */
     [AllowlistOption.Enabled]: zod.boolean().optional(),
+    /**
+     * If this flag is true, the application will work ONLY with domains from
+     * the 'domains' list, otherwise it will work everywhere EXCLUDING domains
+     * from the list.
+     */
     [AllowlistOption.Inverted]: zod.boolean().optional(),
 });
 
+/**
+ * Describes a special list of domains on which the extension should work or
+ * should exclude them from filtering.
+ */
 export type AllowlistConfig = zod.infer<typeof allowlistValidator>;

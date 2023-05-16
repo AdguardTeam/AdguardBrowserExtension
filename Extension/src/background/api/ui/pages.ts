@@ -62,11 +62,11 @@ export class PagesApi {
     public static readonly fullscreenUserRulesPageUrl = PagesApi.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
 
     /**
-     * Default state of filtering log window.
+     * Default state of popup window.
      */
-    public static defaultFilteringLogWindowState: Windows.CreateCreateDataType = {
-        width: 1000,
-        height: 650,
+    public static readonly defaultPopupWindowState: Windows.CreateCreateDataType = {
+        width: 1280,
+        height: 720,
         top: 0,
         left: 0,
     };
@@ -130,7 +130,7 @@ export class PagesApi {
             url,
             type: 'popup',
             focused: true,
-            state: 'fullscreen',
+            ...PagesApi.defaultPopupWindowState,
         });
     }
 
@@ -154,13 +154,29 @@ export class PagesApi {
             return;
         }
 
-        const windowStateString = await storage.get(FILTERING_LOG_WINDOW_STATE) as string | undefined;
+        const windowStateString = await storage.get(FILTERING_LOG_WINDOW_STATE);
 
-        await browser.windows.create({
-            url,
-            type: 'popup',
-            ...(windowStateString ? JSON.parse(windowStateString) : PagesApi.defaultFilteringLogWindowState),
-        });
+        try {
+            const options = typeof windowStateString === 'string'
+                ? JSON.parse(windowStateString)
+                : PagesApi.defaultPopupWindowState;
+
+            await browser.windows.create({
+                url,
+                type: 'popup',
+                ...options,
+            });
+        } catch (e) {
+            // Reopen tab with default pos if it was closed too far beyond the screen
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2100
+            if ((e as Error).message.includes('Invalid value for bounds.')) {
+                await browser.windows.create({
+                    url,
+                    type: 'popup',
+                    ...PagesApi.defaultPopupWindowState,
+                });
+            }
+        }
     }
 
     /**

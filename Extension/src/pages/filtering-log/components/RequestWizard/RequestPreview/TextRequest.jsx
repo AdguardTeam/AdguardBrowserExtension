@@ -20,7 +20,7 @@ import React, { useEffect, useState } from 'react';
 
 import beautify from 'js-beautify';
 
-import { RequestType } from '../../../../../common/constants';
+import { ContentType as RequestType } from '@adguard/tswebextension';
 
 const getBeautifier = (type) => {
     switch (type) {

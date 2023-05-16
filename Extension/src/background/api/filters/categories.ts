@@ -35,12 +35,15 @@ import { Log } from '../../../common/log';
 
 import { CommonFilterApi } from './common';
 import { FilterMetadata, FiltersApi } from './main';
+import { FilterUpdateApi } from './update';
 
 /**
  * Filter data displayed in category section on options page.
  */
 export type CategoriesFilterData = (
     (RegularFilterMetadata | CustomFilterMetadata) &
+    // Optional because there is no field 'languages' in CustomFilterMetadata.
+    { languages?: string[] } &
     FilterStateData &
     FilterVersionData &
     { tagsDetails: TagMetadata[] }
@@ -100,10 +103,16 @@ export class Categories {
     public static async enableGroup(groupId: number): Promise<void> {
         const group = groupStateStorage.get(groupId);
 
-        if (!group?.toggled) {
+        // If this is the first time the group has been activated - load and
+        // enable the recommended filters.
+        if (!group?.touched) {
             const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
             await FiltersApi.loadAndEnableFilters(recommendedFiltersIds);
         }
+
+        // Always checks updates for enabled filters of the group.
+        const enabledFiltersIds = this.getEnabledFiltersIdsByGroupId(groupId);
+        await FilterUpdateApi.checkForFiltersUpdates(enabledFiltersIds);
 
         groupStateStorage.enableGroups([groupId]);
     }
@@ -231,7 +240,7 @@ export class Categories {
     }
 
     /**
-     * Returns filters data from {@link metadataStorage},
+     * Returns filters merged data from {@link metadataStorage},
      * {@link customFilterMetadataStorage}, {@link filterStateStorage} and
      * {@link filterVersionStorage}.
      *
@@ -305,6 +314,26 @@ export class Categories {
      * @returns Aggregated filters data for specified group.
      */
     private static selectFiltersByGroupId(groupId: number, filters: CategoriesFilterData[]): CategoriesFilterData[] {
-        return filters.filter(filter => filter.groupId === groupId);
+        return filters.filter((filter: CategoriesFilterData) => filter.groupId === groupId);
+    }
+
+    /**
+     * Returns ids of enabled filters for specified group id.
+     *
+     * @param groupId Group id.
+     *
+     * @returns List of filters ids.
+     */
+    private static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
+        const filtersMetadata = FiltersApi.getFiltersMetadata();
+
+        return filtersMetadata
+            .filter((filter: FilterMetadata) => filter.groupId === groupId)
+            .filter(({ filterId }) => {
+                const filterState = filterStateStorage.get(filterId);
+
+                return filterState?.enabled;
+            })
+            .map(({ filterId }) => filterId);
     }
 }

@@ -19,10 +19,12 @@
 // TODO remove when types can be placed in the corresponding places.
 // This file is temporary storage for common types. We use it until not all modules moved to
 // typescript
+import type { ChangeEvent } from 'react';
 
 type HandlerPayload = {
     data: unknown,
     id: string,
+    event: ChangeEvent | undefined,
 };
 
 export type SettingHandler = {

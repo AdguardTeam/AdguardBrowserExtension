@@ -43,6 +43,7 @@ export const getStatusMode = (event) => {
         requestRule,
         removeParam,
         removeHeader,
+        isModifyingCookieRule,
     } = event;
 
     let mode = StatusMode.REGULAR;
@@ -57,18 +58,26 @@ export const getStatusMode = (event) => {
     }
 
     if (requestRule && !replaceRules) {
-        if (requestRule.allowlistRule) {
+        /**
+         * All of these fields are fields that are "synthetically" added to the
+         * `FilteringLogEvent` of the tswebextension on the side of the extension
+         * {@link FilteringLogApi.createCosmeticRuleEventData}.
+         */
+        const {
+            allowlistRule, cssRule, scriptRule, cookieRule, cspRule,
+        } = requestRule;
+
+        if (allowlistRule) {
             mode = StatusMode.ALLOWED;
-            // eslint-disable-next-line max-len
-        } else if (requestRule.cssRule || requestRule.scriptRule || removeParam || removeHeader) {
+        } else if (cssRule || scriptRule || removeParam || removeHeader) {
             mode = StatusMode.MODIFIED;
-        } else if (requestRule.cookieRule) {
-            if (requestRule.isModifyingCookieRule) {
+        } else if (cookieRule) {
+            if (isModifyingCookieRule) {
                 mode = StatusMode.MODIFIED;
             } else {
                 mode = StatusMode.BLOCKED;
             }
-        } else if (requestRule.cspRule) {
+        } else if (cspRule) {
             mode = StatusMode.MODIFIED;
         } else {
             mode = StatusMode.BLOCKED;

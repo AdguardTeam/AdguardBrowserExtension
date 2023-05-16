@@ -17,21 +17,78 @@
  */
 import zod from 'zod';
 
-export const regularFilterMetadataValidator = zod.object({
+export const baseMetadataValidator = zod.object({
+    /**
+     * Description of the filter.
+     */
     description: zod.string(),
+    /**
+     * Display number is used to arrange the filters in the layout.
+     */
     displayNumber: zod.number(),
+    /**
+     * The time in milliseconds during which the filter content remains fresh
+     * and does not need to be updated. Used to auto-renew filters if the user
+     * has not selected a custom update period for filters.
+     */
     expires: zod.number(),
+    /**
+     * Id of the filter.
+     */
     filterId: zod.number(),
+    /**
+     * Id of the filter's group.
+     */
     groupId: zod.number(),
+    /**
+     * URL address of the filter's homepage.
+     */
     homepage: zod.string(),
-    languages: zod.string().array(),
+    /**
+     * Name of the filter.
+     */
     name: zod.string(),
-    subscriptionUrl: zod.string(),
+    /**
+     * Filter tags are used to group filters by different characteristics:
+     * language, target, platform, etc.
+     */
     tags: zod.number().array(),
-    timeAdded: zod.string(),
-    timeUpdated: zod.string(),
-    trustLevel: zod.string(),
+    /**
+     * Version filter. Supports up to {@link Version.MAX_LENGTH} parts per
+     * version.
+     */
     version: zod.string(),
 });
 
+export const regularFilterMetadataValidator = baseMetadataValidator.merge(
+    zod.object({
+        /**
+         * Two-letter language codes that are associated with the filter.
+         */
+        languages: zod.string().array(),
+        /**
+         * Timestamp of adding filters in MS.
+         * String format, since these values are retrieved from the backend.
+         */
+        timeAdded: zod.string(),
+        /**
+         * When the filter was last updated in milliseconds since the start of
+         * the UNIX epoch.
+         * String format, since these values are retrieved from the backend.
+         */
+        timeUpdated: zod.string(),
+        /**
+         * The filter subscription URL from which the application retrieved
+         * the rules when adding the filter and should retrieve the rules when
+         * updating it.
+         */
+        subscriptionUrl: zod.string(),
+    }),
+);
+
+/**
+ * Filter metadata describes all the metadata (except its contents) of a filter
+ * from {@link https://github.com/AdguardTeam/FiltersRegistry the AdGuard filter registry}
+ * to work with it.
+ */
 export type RegularFilterMetadata = zod.infer<typeof regularFilterMetadataValidator>;

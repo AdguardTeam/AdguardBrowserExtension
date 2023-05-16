@@ -23,11 +23,28 @@ import { SchemaPreprocessor } from '../preprocessor';
  * Runtime validator for persistent filter state data.
  */
 export const filterStateDataValidator = zod.object({
+    /**
+     * Is filter enabled or not.
+     */
     enabled: zod.boolean(),
+    /**
+     * Is filter rules loaded into browser storage or not.
+     *
+     * TODO: Check if it can be deleted, because we add all filters to
+     * the browser storage and this field is always true.
+     */
     installed: zod.boolean(),
+    /**
+     * Is filter loaded.
+     *
+     * TODO: Check if it can be deleted.
+     */
     loaded: zod.boolean(),
 });
 
+/**
+ * Contains boolean flags about the filter status: enabled, installed, loaded.
+ */
 export type FilterStateData = zod.infer<typeof filterStateDataValidator>;
 
 /**
@@ -41,4 +58,7 @@ export const filterStateStorageDataValidator = zod.record(
     filterStateDataValidator,
 );
 
+/**
+ * Describes an object with numeric keys and filter states as values.
+ */
 export type FilterStateStorageData = zod.infer<typeof filterStateStorageDataValidator>;

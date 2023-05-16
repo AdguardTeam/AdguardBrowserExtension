@@ -18,11 +18,28 @@
 import zod from 'zod';
 
 export const localScriptRulesValidator = zod.object({
+    /**
+     * Contains a comment describing the purpose of the local script rules file.
+     */
     comment: zod.string(),
+    /**
+     * JS rules from all of our filters are pre-assembled into this object to be
+     * checked in Firefox AMO to see if they can be executed.
+     */
     rules: zod.object({
+        /**
+         * Domains in which the rule should be applied.
+         */
         domains: zod.string(),
+        /**
+         * The text of the script rule.
+         */
         script: zod.string(),
     }).array(),
 }).strict();
 
+/**
+ * Describes the structure of the local script rules file, which is necessary
+ * for Firefox AMO to check if JS rules can be executed.
+ */
 export type LocalScriptRules = zod.infer<typeof localScriptRulesValidator>;

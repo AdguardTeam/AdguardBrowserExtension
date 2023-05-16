@@ -45,37 +45,31 @@ export const BROWSERS = {
 export const BROWSERS_CONF = {
     [BROWSERS.CHROME]: {
         browser: BROWSERS.CHROME,
-        remoteScripts: true,
         devtools: true,
         buildDir: BROWSERS.CHROME,
     },
     [BROWSERS.FIREFOX_STANDALONE]: {
         browser: BROWSERS.FIREFOX_STANDALONE,
-        remoteScripts: true,
         devtools: false,
         buildDir: BROWSERS.FIREFOX_STANDALONE,
     },
     [BROWSERS.FIREFOX_AMO]: {
         browser: BROWSERS.FIREFOX_AMO,
-        remoteScripts: false,
         devtools: false,
         buildDir: BROWSERS.FIREFOX_AMO,
     },
     [BROWSERS.OPERA]: {
         browser: BROWSERS.OPERA,
-        remoteScripts: true,
         devtools: true,
         buildDir: BROWSERS.OPERA,
     },
     [BROWSERS.EDGE]: {
         browser: BROWSERS.EDGE,
-        remoteScripts: true,
         devtools: true,
         buildDir: BROWSERS.EDGE,
     },
     [BROWSERS.ADGUARD_API]: {
         browser: BROWSERS.ADGUARD_API,
-        remoteScripts: true,
         devtools: false,
         buildDir: BROWSERS.ADGUARD_API,
     },
@@ -94,7 +88,6 @@ export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/e
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_METADATA_FILE_NAME}`;
 export const FILTERS_DEST = 'Extension/filters/%browser';
 export const METADATA_I18N_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_I18N_METADATA_FILE_NAME}`;
-export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 224];
 export const FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%filter.txt`;
 export const OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%s_optimized.txt`;
 export const LOCAL_SCRIPT_RULES_COMMENT = `By the rules of AMO we cannot use remote scripts (and our JS rules can be counted as such). Because of that we use the following approach (that was accepted by AMO reviewers):

@@ -49,7 +49,7 @@ export const xpi = async (browser) => {
 
     const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8'));
     const updatedManifest = { ...manifest };
-    updatedManifest.applications.gecko.update_url = FIREFOX_WEBEXT_UPDATE_URL;
+    updatedManifest.browser_specific_settings.gecko.update_url = FIREFOX_WEBEXT_UPDATE_URL;
     await fs.writeFile(manifestPath, JSON.stringify(updatedManifest, null, 4));
 
     // require called here in order to escape errors, until this module is really necessary

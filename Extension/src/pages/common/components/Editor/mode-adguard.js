@@ -961,7 +961,9 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
             next: 'start',
         }, {
             token: 'invalid',
-            regex: '{',
+            // pseudo-class regexp arg may contain left curly brace
+            // #?#div:contains(/^\s{8} $/)
+            regex: '/(?<=\(.+?\/)){/',
             next: 'invalid',
         }]);
         this.embedRules(CssHighlightRules, 'html-filtering-', [{

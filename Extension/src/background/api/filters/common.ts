@@ -21,11 +21,10 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import { Log } from '../../../common/log';
 import { UserAgent } from '../../../common/user-agent';
 import { SettingOption, RegularFilterMetadata } from '../../schema';
-import { AntiBannerFiltersId, AntibannerGroupsId } from '../../../common/constants';
+import { AntiBannerFiltersId } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
-    groupStateStorage,
     settingsStorage,
     FiltersStorage,
     filterVersionStorage,
@@ -33,9 +32,10 @@ import {
 import { network } from '../network';
 
 import { CustomFilterApi } from './custom';
+import { FiltersApi } from './main';
 
 /**
- * API for managing common filter data.
+ * API for managing AdGuard's filters data.
  *
  * This class provides methods for reading common filter metadata from {@link metadataStorage.data.filters},
  * installation and updating common filters data, stored in next storages:
@@ -99,6 +99,8 @@ export class CommonFilterApi {
             return null;
         }
 
+        Log.info(`Filter ${filterId} is need to updated`);
+
         try {
             await CommonFilterApi.loadFilterRulesFromBackend(filterId, true);
             Log.info(`Successfully update filter ${filterId}`);
@@ -113,25 +115,31 @@ export class CommonFilterApi {
      * Download filter rules from backend and update filter state and metadata.
      *
      * @param filterId Filter id.
-     * @param remote Is filter rules loaded from backend.
+     * @param remote Whether to download filter rules from remote resources or
+     * from local resources.
      */
     public static async loadFilterRulesFromBackend(filterId: number, remote: boolean): Promise<void> {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
 
-        const rules = await network.downloadFilterRules(filterId, remote, isOptimized) as string[];
-
+        const rules = await network.downloadFilterRules(filterId, remote, isOptimized);
         await FiltersStorage.set(filterId, rules);
 
         const currentFilterState = filterStateStorage.get(filterId);
-
         filterStateStorage.set(filterId, {
             installed: true,
             loaded: true,
             enabled: !!currentFilterState?.enabled,
         });
 
+        // TODO: We should retrieve metadata from the actual rules loaded, but
+        // not from the metadata repository, because the metadata may be
+        // the newest (loaded from a remote source) and the filter may be loaded
+        // from local resources and have an expired version. But in the current
+        // flow, we will think that the filter is the newest and doesn't need to
+        // be updated.
+        // We need to use something like this:
+        // const filterMetadata = CustomFilterParser.parseFilterDataFromHeader(rules);
         const filterMetadata = CommonFilterApi.getFilterMetadata(filterId);
-
         if (!filterMetadata) {
             throw new Error(`Not found metadata for filter id ${filterId}`);
         }
@@ -144,25 +152,23 @@ export class CommonFilterApi {
 
         filterVersionStorage.set(filterId, {
             version,
-            expires,
+            expires: Number(expires),
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: Date.now(),
         });
     }
 
     /**
-     * Load and enable default common filters.
+     * Updates metadata for filters and after that loads and enables default
+     * common filters.
      *
-     * Called on extension installation.
+     * Called on extension installation and reset settings.
+     *
+     * @param enableUntouchedGroups - Should enable untouched groups related to
+     * the default filters or not.
+     *
      */
-    public static async initDefaultFilters(): Promise<void> {
-        groupStateStorage.enableGroups([
-            AntibannerGroupsId.AdBlockingGroupId,
-            AntibannerGroupsId.LanguageFiltersGroupId,
-            AntibannerGroupsId.OtherFiltersGroupId,
-            AntibannerGroupsId.CustomFilterGroupId,
-        ]);
-
+    public static async initDefaultFilters(enableUntouchedGroups: boolean): Promise<void> {
         const filterIds = [
             AntiBannerFiltersId.EnglishFilterId,
             AntiBannerFiltersId.SearchAndSelfPromoFilterId,
@@ -174,17 +180,18 @@ export class CommonFilterApi {
 
         filterIds.push(...CommonFilterApi.getLangSuitableFilters());
 
-        const tasks = filterIds.map(id => CommonFilterApi.loadFilterRulesFromBackend(id, false));
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                Log.error('Cant load filter rules from backed due to: ', promise.reason);
-            }
-        });
-
-        filterStateStorage.enableFilters(filterIds);
+        // TODO: Move the use of FiltersApi.loadAndEnableFilters into a separate
+        // module to reduce the risk of cyclic dependency, since FiltersApi
+        // depends on CommonFilterApi and CustomFilterApi.
+        // On the first run, we update the common filters from the backend.
+        if (enableUntouchedGroups) {
+            // Enable filters and their groups.
+            await FiltersApi.loadAndEnableFilters(filterIds, true);
+        } else {
+            // Enable only filters.
+            await FiltersApi.loadFilters(filterIds, true);
+            filterStateStorage.enableFilters(filterIds);
+        }
     }
 
     /**

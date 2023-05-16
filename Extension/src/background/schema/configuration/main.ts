@@ -35,11 +35,34 @@ export const enum RootOption {
 }
 
 export const configValidator = zod.object({
+    /**
+     * Describes the current version of the object. This is necessary to check
+     * if we need to migrate from the old settings.
+     */
     [RootOption.ProtocolVersion]: zod.literal(PROTOCOL_VERSION),
+    /**
+     * Contains general application settings: appearance theme, language, time
+     * to check for updates to filters and some filtering options.
+     */
     [RootOption.GeneralSettings]: generalSettingsConfigValidator,
+    /**
+     * Contains some additional extension settings and UI settings.
+     */
     [RootOption.ExtensionSpecificSettings]: extensionSpecificSettingsConfigValidator,
+    /**
+     * Contains all information about filters: regular, custom, user filter and
+     * allowlist.
+     */
     [RootOption.Filters]: filtersConfigValidator,
+    /**
+     * Contains various secure browsing settings: cookie deletion time, privacy
+     * headers, referrer hiding, and the ability to enable additional filters.
+     */
     [RootOption.Stealth]: stealthConfigValidator.optional(),
 });
 
+/**
+ * This is the root object for exported/imported settings, which contains all
+ * the information needed to start the application.
+ */
 export type Config = zod.infer<typeof configValidator>;

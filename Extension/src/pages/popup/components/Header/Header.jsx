@@ -29,7 +29,7 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
-import { MIN_FILTERS_UPDATE_DISPLAY_DURATION } from '../../../common/constants';
+import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../common/constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 import './header.pcss';
@@ -41,8 +41,8 @@ export const Header = observer(() => {
     const { applicationFilteringDisabled } = store;
 
     const updateFiltersWithMinDuration = addMinDurationTime(
-        messenger.updateFilters.bind(messenger),
-        MIN_FILTERS_UPDATE_DISPLAY_DURATION,
+        messenger.updateFilters,
+        MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS,
     );
 
     const refUpdatingBtn = useRef(null);
@@ -81,7 +81,6 @@ export const Header = observer(() => {
                     className={cn(
                         'button',
                         'popup-header__button',
-                        { 'updating-filters': filtersUpdating },
                     )}
                     ref={refUpdatingBtn}
                     disabled={filtersUpdating}
@@ -92,6 +91,8 @@ export const Header = observer(() => {
                     <Icon
                         id="#update-filters"
                         classname="icon--update-filters"
+                        animationCondition={filtersUpdating}
+                        animationClassname="icon--loading"
                     />
                 </button>
                 {!applicationFilteringDisabled

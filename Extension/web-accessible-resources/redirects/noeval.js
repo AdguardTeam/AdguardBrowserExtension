@@ -37,8 +37,14 @@
     }
     function logMessage(source, message) {
         let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
         const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
         if (!forced && !verbose) {
+            return;
+        }
+        const nativeConsole = console.log;
+        if (!convertMessageToString) {
+            nativeConsole("".concat(name, ":"), message);
             return;
         }
         let messageStr = "".concat(name, ": ").concat(message);
@@ -50,7 +56,7 @@
                 messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
             }
         }
-        console.log(messageStr);
+        nativeConsole(messageStr);
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {

@@ -49,6 +49,8 @@ export const enum ForwardAction {
     IOS = 'ios_about',
     Android = 'android_about',
     GithubVersion = 'github_version_popup',
+    LearnAboutAdGuard = 'learn_about_adguard',
+    BackToSchool = 'back_to_school',
 }
 
 export const enum ForwardFrom {

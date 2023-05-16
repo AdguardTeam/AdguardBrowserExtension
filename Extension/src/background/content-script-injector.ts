@@ -32,6 +32,8 @@ import { TabsApi } from './api/extension/tabs';
  * Helper class for injecting content script into tabs, opened before extension initialization.
  */
 export class ContentScriptInjector {
+    private static INJECTION_LIMIT_MS = 1000;
+
     /**
      * Content-scripts src relative paths.
      */
@@ -51,9 +53,12 @@ export class ContentScriptInjector {
 
         tabs.forEach((tab) => {
             // Do not inject scripts into extension pages, browser internals and tabs without id
+            // Tabs with both 'unloaded' and 'loading' statuses can be freezed and thus should be skipped
             if (typeof tab.id !== 'number'
                 || typeof tab.url !== 'string'
                 || !isHttpRequest(tab.url)
+                || tab.status !== 'complete'
+                || tab.discarded
             ) {
                 return;
             }
@@ -80,18 +85,30 @@ export class ContentScriptInjector {
     /**
      * Inject content-script into specified tab.
      *
-     * @param tabId Tab id.
+     * @param tabId The ID of the tab to inject the content script into.
      * @param src Path to content-script src.
+     * @throws Error if the content script injection times out or fails for another reason.
      */
     private static async inject(
         tabId: number,
         src: string,
     ): Promise<void> {
         try {
-            await browser.tabs.executeScript(tabId, {
-                allFrames: true,
-                file: src,
-            });
+            /**
+             * This implementation uses Promise.race() to prevent content script injection
+             * from freezing the application when Chrome drops tabs.
+             */
+            await Promise.race([
+                browser.tabs.executeScript(tabId, {
+                    allFrames: true,
+                    file: src,
+                }),
+                new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        reject(new Error(`Content script inject timeout: tab #${tabId} doesn't respond.`));
+                    }, ContentScriptInjector.INJECTION_LIMIT_MS);
+                }),
+            ]);
         } catch (error: unknown) {
             // re-throw error with custom message
             const message = error instanceof Error ? error.message : String(error);

@@ -27,7 +27,8 @@ import {
 import find from 'lodash/find';
 import truncate from 'lodash/truncate';
 
-import { RequestType } from '../../../common/constants';
+import { ContentType as RequestType } from '@adguard/tswebextension';
+
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { messenger } from '../../services/messenger';
 import { getFilterName } from '../components/RequestWizard/utils';
@@ -366,7 +367,6 @@ class LogStore {
 
     @computed
     get events() {
-        /* eslint-disable max-len */
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
             const show = matchesSearch(filteringEvent, this.eventsSearchValue);
 

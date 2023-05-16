@@ -117,7 +117,7 @@ export class AllowlistService {
             AllowlistApi.setAllowlistDomains(domains);
         }
 
-        Engine.debounceUpdate();
+        await Engine.update();
     }
 
     /**

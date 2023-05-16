@@ -23,12 +23,32 @@ import { SchemaPreprocessor } from '../preprocessor';
  * Runtime validator for persistent filter version data.
  */
 export const filterVersionDataValidator = zod.object({
+    /**
+     * Version of filter. Usually consists of 4 parts: 1.2.3.4.
+     */
     version: zod.string(),
+    /**
+     * Time of the last check by the scheduler: every
+     * {@link FilterUpdateService.CHECK_PERIOD_MS period} the time of the last
+     * check will be overwritten by the scheduler or if the user clicks
+     * the forced update check from the user interface or if the user enabled
+     * the filter or group.
+     */
     lastCheckTime: zod.number(),
+    /**
+     * Time of the last update filter from remote resources.
+     */
     lastUpdateTime: zod.number(),
+    /**
+     * Property from filter metadata: after how long to check the update.
+     */
     expires: zod.number(),
 });
 
+/**
+ * Describes the filter version and timestamps of the last filter check,
+ * update and expiration.
+ */
 export type FilterVersionData = zod.infer<typeof filterVersionDataValidator>;
 
 /**
@@ -42,4 +62,8 @@ export const filterVersionStorageDataValidator = zod.record(
     filterVersionDataValidator,
 );
 
+/**
+ * Describes an object with numeric keys and {@link FilterVersionData}
+ * as values.
+ */
 export type FilterVersionStorageData = zod.infer<typeof filterVersionStorageDataValidator>;

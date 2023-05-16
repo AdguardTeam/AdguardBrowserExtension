@@ -20,42 +20,30 @@ import zod from 'zod';
 import { SchemaPreprocessor } from '../preprocessor';
 
 export enum SettingOption {
-    // filters states
-    FiltersState = 'filters-state',
-    FiltersVersion = 'filters-version',
-    GroupsState = 'groups-state',
-
-    // filters metadata
-    Metadata = 'filters-metadata',
-    I18nMetadata = 'filters-i18n-metadata',
-    CustomFilters = 'custom_filters',
-
-    // user settings
-    DisableDetectFilters = 'detect-filters-disabled',
+    // General settings.
+    AppearanceTheme = 'appearance-theme',
     DisableShowPageStats = 'disable-show-page-statistic',
-
-    // allowlist domains
-    AllowlistDomains = 'allowlist-domains',
-    InvertedAllowlistDomains = 'block-list-domains',
-
-    // flag used to show link to comparison of desktop and browser adblocker versions
-    DisableShowAdguardPromoInfo = 'show-info-about-adguard-disabled',
-
+    DisableDetectFilters = 'detect-filters-disabled',
     DisableSafebrowsing = 'safebrowsing-disabled',
-    DisableFiltering = 'adguard-disabled',
+    FiltersUpdatePeriod = 'filters-update-period',
+
+    // Extension specific settings.
+    UseOptimizedFilters = 'use-optimized-filters',
     DisableCollectHits = 'hits-count-disabled',
     DisableShowContextMenu = 'context-menu-disabled',
-    UseOptimizedFilters = 'use-optimized-filters',
-    DefaultAllowlistMode = 'default-allowlist-mode',
-    AllowlistEnabled = 'allowlist-enabled',
+    // Flag used to show link to comparison of desktop and browser extension versions.
+    DisableShowAdguardPromoInfo = 'show-info-about-adguard-disabled',
     DisableShowAppUpdatedNotification = 'show-app-updated-disabled',
-    FiltersUpdatePeriod = 'filters-update-period',
-    AppearanceTheme = 'appearance-theme',
+    HideRateBlock = 'hide-rate-block',
+    UserRulesEditorWrap = 'user-rules-editor-wrap',
 
-    // User filter
-    UserFilterEnabled = 'user-filter-enabled',
+    // Allowlist section.
+    AllowlistDomains = 'allowlist-domains',
+    InvertedAllowlistDomains = 'block-list-domains',
+    AllowlistEnabled = 'allowlist-enabled',
+    DefaultAllowlistMode = 'default-allowlist-mode',
 
-    // stealth mode
+    // Stealth mode.
     DisableStealthMode = 'stealth-disable-stealth-mode',
     HideReferrer = 'stealth-hide-referrer',
     HideSearchQueries = 'stealth-hide-search-queries',
@@ -67,50 +55,183 @@ export enum SettingOption {
     SelfDestructFirstPartyCookies = 'stealth-block-first-party-cookies',
     SelfDestructFirstPartyCookiesTime = 'stealth-block-first-party-cookies-time',
 
-    // UI misc
-    HideRateBlock = 'hide-rate-block',
-    UserRulesEditorWrap = 'user-rules-editor-wrap',
+    // Filters' statuses and states.
+    FiltersState = 'filters-state',
+    FiltersVersion = 'filters-version',
+    GroupsState = 'groups-state',
+    UserFilterEnabled = 'user-filter-enabled',
+
+    // Filters metadata.
+    Metadata = 'filters-metadata',
+    I18nMetadata = 'filters-i18n-metadata',
+    CustomFilters = 'custom-filters',
+
+    // Allowlist domains.
+    DisableFiltering = 'adguard-disabled',
 }
 
 // Setting options may be stringified, use preprocessors for correct type casting
+
 export const settingsValidator = zod.object({
-    [SettingOption.DisableShowAdguardPromoInfo]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.DisableSafebrowsing]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.DisableCollectHits]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.DefaultAllowlistMode]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.AllowlistEnabled]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.UseOptimizedFilters]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.DisableDetectFilters]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.DisableShowAppUpdatedNotification]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.FiltersUpdatePeriod]: SchemaPreprocessor.numberValidator,
-    [SettingOption.DisableStealthMode]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.HideReferrer]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.HideSearchQueries]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.SendDoNotTrack]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.RemoveXClientData]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.BlockWebRTC]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.SelfDestructThirdPartyCookies]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.SelfDestructThirdPartyCookiesTime]: SchemaPreprocessor.numberValidator,
-    [SettingOption.SelfDestructFirstPartyCookies]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.SelfDestructFirstPartyCookiesTime]: SchemaPreprocessor.numberValidator,
+    // ----- General settings section -----
+    /**
+     * See {@link GeneralSettingsConfig[GeneralSettingsOption.AppearanceTheme]}.
+     */
     [SettingOption.AppearanceTheme]: zod.enum(['system', 'dark', 'light']),
-    [SettingOption.UserFilterEnabled]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.HideRateBlock]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.UserRulesEditorWrap]: SchemaPreprocessor.booleanValidator,
-    [SettingOption.DisableFiltering]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link GeneralSettingsConfig[GeneralSettingsOption.ShowBlockedAdsCount]}.
+     */
     [SettingOption.DisableShowPageStats]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link GeneralSettingsConfig[GeneralSettingsOption.AutodetectFilters]}.
+     */
+    [SettingOption.DisableDetectFilters]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link GeneralSettingsConfig[GeneralSettingsOption.SafebrowsingEnabled]}.
+     */
+    [SettingOption.DisableSafebrowsing]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link GeneralSettingsConfig[GeneralSettingsOption.FiltersUpdatePeriod]}.
+     */
+    [SettingOption.FiltersUpdatePeriod]: SchemaPreprocessor.numberValidator,
+    // ----- General settings section -----
+
+    // ----- Extension specific settings section -----
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.UseOptimizedFilters]}.
+     */
+    [SettingOption.UseOptimizedFilters]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.CollectHitsCount]}.
+     */
+    [SettingOption.DisableCollectHits]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.ShowContextMenu]}.
+     */
     [SettingOption.DisableShowContextMenu]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.ShowInfoAboutAdguard]}.
+     */
+    [SettingOption.DisableShowAdguardPromoInfo]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.ShowAppUpdatedInfo]}.
+     */
+    [SettingOption.DisableShowAppUpdatedNotification]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.HideRateAdguard]}.
+     */
+    [SettingOption.HideRateBlock]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.UserRulesEditorWrap]}.
+     */
+    [SettingOption.UserRulesEditorWrap]: SchemaPreprocessor.booleanValidator,
+    // ----- Extension specific settings section -----
+
+    // ----- Allowlist section -----
+    /**
+     * See {@link AllowlistConfig[AllowlistOption.Domains]}.
+     */
     [SettingOption.AllowlistDomains]: zod.string(),
+    /**
+     * See {@link AllowlistConfig[AllowlistOption.InvertedDomains]}.
+     */
     [SettingOption.InvertedAllowlistDomains]: zod.string(),
+    /**
+     * See {@link AllowlistConfig[AllowlistOption.Enabled]}.
+     */
+    [SettingOption.AllowlistEnabled]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link AllowlistConfig[AllowlistOption.Inverted]}.
+     */
+    [SettingOption.DefaultAllowlistMode]: SchemaPreprocessor.booleanValidator,
+    // ----- Allowlist section -----
 
+    // ----- Stealth section -----
+    /**
+     * See {@link StealthConfig[StealthOption.DisableStealthMode]}.
+     */
+    [SettingOption.DisableStealthMode]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.HideReferrer]}.
+     */
+    [SettingOption.HideReferrer]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.HideSearchQueries]}.
+     */
+    [SettingOption.HideSearchQueries]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.SendDoNotTrack]}.
+     */
+    [SettingOption.SendDoNotTrack]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.BlockWebRTC]}.
+     */
+    [SettingOption.BlockWebRTC]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.RemoveXClientData]}.
+     */
+    [SettingOption.RemoveXClientData]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.SelfDestructThirdPartyCookies]}.
+     */
+    [SettingOption.SelfDestructThirdPartyCookies]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.SelfDestructThirdPartyCookiesTime]}.
+     */
+    [SettingOption.SelfDestructThirdPartyCookiesTime]: zod.number(),
+    /**
+     * See {@link StealthConfig[StealthOption.SelfDestructFirstPartyCookies]}.
+     */
+    [SettingOption.SelfDestructFirstPartyCookies]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link StealthConfig[StealthOption.SelfDestructFirstPartyCookiesTime]}.
+     */
+    [SettingOption.SelfDestructFirstPartyCookiesTime]: zod.number(),
+    // ----- Stealth section -----
+
+    // ----- Statuses section -----
+    /**
+     * See {@link UserFilterConfig[UserFilterOption.Enabled]}.
+     */
+    [SettingOption.UserFilterEnabled]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link FilterStateStorageData}.
+     */
     [SettingOption.FiltersState]: zod.string().optional(),
+    /**
+     * See {@link FilterVersionStorageData}.
+     */
     [SettingOption.FiltersVersion]: zod.string().optional(),
+    /**
+     * See {@link GroupStateStorageData}.
+     */
     [SettingOption.GroupsState]: zod.string().optional(),
+    // ----- Statuses section -----
 
+    // ----- Metadata section -----
+    /**
+     * See {@link Metadata}.
+     */
     [SettingOption.Metadata]: zod.string().optional(),
+    /**
+     * See {@link I18nMetadata}.
+     */
     [SettingOption.I18nMetadata]: zod.string().optional(),
-
+    /**
+     * See {@link CustomFilterMetadataStorageData}.
+     */
     [SettingOption.CustomFilters]: zod.string().optional(),
+    // ----- Metadata section -----
+
+    /**
+     * Is filtering enabled or not. Is needed for fast toggling filtering
+     * without reload entire extension.
+     */
+    [SettingOption.DisableFiltering]: SchemaPreprocessor.booleanValidator,
 });
 
+/**
+ * Describes the root flat object with all the settings that are necessary for
+ * the application to work and that are stored in the storage.
+ */
 export type Settings = zod.infer<typeof settingsValidator>;

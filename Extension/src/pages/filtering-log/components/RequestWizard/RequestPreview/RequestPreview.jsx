@@ -25,7 +25,8 @@ import { observer } from 'mobx-react';
 
 import { useMachine } from '@xstate/react';
 
-import { RequestType } from '../../../../../common/constants';
+import { ContentType as RequestType } from '@adguard/tswebextension';
+
 import { Icon } from '../../../../common/components/ui/Icon';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import {

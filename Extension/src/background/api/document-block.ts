@@ -19,7 +19,8 @@ import { trustedDomainsStorage } from '../storages';
 
 /**
  * Provides an API for working with trusted domains (domains that have been
- * excluded from blocking by $document rules for some time).
+ * excluded from blocking by $document rules for
+ * {@link DocumentBlockApi.TRUSTED_TTL_MS} time).
  */
 export class DocumentBlockApi {
     /**
