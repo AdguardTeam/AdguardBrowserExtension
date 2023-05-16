@@ -54,8 +54,6 @@ export class UserRulesService {
      * Initializes UserRulesService: creates handlers for operations on user rules.
      */
     public static async init(): Promise<void> {
-        await UserRulesApi.init();
-
         messageHandler.addListener(MessageType.GetUserRules, UserRulesService.getUserRules);
         messageHandler.addListener(MessageType.GetUserRulesEditorData, UserRulesService.getUserRulesEditorData);
         messageHandler.addListener(MessageType.SaveUserRules, UserRulesService.handleUserRulesSave);
@@ -119,7 +117,7 @@ export class UserRulesService {
         const { value } = message.data;
 
         await UserRulesApi.setUserRules(value.split('\n'));
-        Engine.debounceUpdate();
+        await Engine.update();
     }
 
     /**

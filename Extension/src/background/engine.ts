@@ -24,7 +24,6 @@ import {
 } from '@adguard/tswebextension';
 
 import { Log } from '../common/log';
-import { UserAgent } from '../common/user-agent';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
 
 import { listeners } from './notifier';
@@ -39,6 +38,9 @@ import {
 } from './api';
 
 export type { Message as EngineMessage } from '@adguard/tswebextension';
+
+// Variable passed from webpack that will be primitive at runtime.
+declare const IS_FIREFOX_AMO: boolean;
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -72,7 +74,7 @@ export class Engine {
          * 3. We also allow "User rules" to work since those rules are added manually by the user.
          *  This way filters maintainers can test new rules before including them in the filters.
          */
-        if (UserAgent.isFirefox) {
+        if (IS_FIREFOX_AMO) {
             const localScriptRules = await network.getLocalScriptRules();
 
             Engine.api.setLocalScriptRules(localScriptRules);

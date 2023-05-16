@@ -17,25 +17,42 @@
  */
 import zod from 'zod';
 
-export const customFilterMetadataValidator = zod.object({
-    filterId: zod.number(),
-    displayNumber: zod.number(),
-    groupId: zod.number(),
-    name: zod.string(),
-    description: zod.string(),
-    homepage: zod.string(),
-    tags: zod.number().array(),
-    customUrl: zod.string(),
-    trusted: zod.boolean(),
-    checksum: zod.string().or(zod.null()),
-    version: zod.string(),
-    expires: zod.number(),
-    timeUpdated: zod.number(),
-    languages: zod.string().array().optional(),
-});
+import { baseMetadataValidator } from '../metadata/filter';
 
+export const customFilterMetadataValidator = baseMetadataValidator.merge(
+    zod.object({
+        /**
+         * The filter subscription URL from which the application retrieved
+         * the rules when adding the filter and should retrieve the rules when
+         * updating it.
+         */
+        customUrl: zod.string(),
+        /**
+         * If this filter is not trusted - tsurlfilter will not execute JS rules
+         * and will not apply header removal rules from this filter.
+         * Otherwise, no restrictions.
+         */
+        trusted: zod.boolean(),
+        /**
+         * When the filter was last updated in milliseconds since the start of
+         * the UNIX epoch.
+         */
+        timeUpdated: zod.number(),
+        /**
+         * Contains MD5 checksum for the filter content.
+         */
+        checksum: zod.string().or(zod.null()),
+    }),
+);
+
+/**
+ * Contains all information about the custom filter except its contents.
+ */
 export type CustomFilterMetadata = zod.infer<typeof customFilterMetadataValidator>;
 
 export const customFilterMetadataStorageDataValidator = customFilterMetadataValidator.array();
 
+/**
+ * Contains a list of custom filter metadata.
+ */
 export type CustomFilterMetadataStorageData = zod.infer<typeof customFilterMetadataStorageDataValidator>;

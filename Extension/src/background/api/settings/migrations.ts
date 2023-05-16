@@ -17,6 +17,7 @@
  */
 
 import { Unknown } from '../../../common/unknown';
+import { StealthOption } from '../../schema';
 
 /**
  * Migration type describes which action should apply to settings
@@ -29,8 +30,8 @@ type Migration = {
 };
 
 /**
- * SettingsMigrations stores migrations to apply them for example when
- * import settings with outdated protocol version.
+ * SettingsMigrations stores migrations to apply to an outdated flat settings
+ * object when imported settings from JSON.
  */
 export class SettingsMigrations {
     /**
@@ -87,13 +88,21 @@ export class SettingsMigrations {
     private static async migrateFromV1_0toV2_0(settings: unknown): Promise<unknown> {
         if (!settings
             || !Unknown.hasProp(settings, 'filters')
-            || !Unknown.hasProp(settings.filters, 'whitelist')) {
-            throw new Error(`Invalid settings provided : ${settings}`);
+            || !Unknown.hasProp(settings.filters, 'whitelist')
+            || !Unknown.hasProp(settings.filters, 'custom-filters')
+            || !Unknown.hasProp(settings, 'stealth')
+            || !Unknown.hasProp(settings.stealth, 'stealth_disable_stealth_mode')
+            || !Unknown.hasProp(settings.stealth, 'stealth-block-first-party-cookies-time')
+            || !Unknown.hasProp(settings.stealth, 'stealth-block-third-party-cookies-time')
+            || !Unknown.hasProp(settings, 'general-settings')
+        ) {
+            throw new Error(`Invalid settings provided: ${JSON.stringify(settings)}`);
         }
 
+        const FILTERS = 'filters';
+        const ALLOWLIST = 'whitelist';
         const { filters } = settings;
-
-        const allowlist = filters['whitelist'];
+        const allowlist = filters[ALLOWLIST];
         if (!allowlist) {
             throw new Error('Not found field "filters.whitelist" for migrate to '
                 + `"filters.allowlist" in the settings: ${settings}`);
@@ -102,7 +111,66 @@ export class SettingsMigrations {
         Object.assign(filters, { allowlist });
         Object.assign(settings, { 'protocol-version': '2.0' });
 
-        delete settings['filters']['whitelist'];
+        delete settings[FILTERS][ALLOWLIST];
+
+        // Moves the value to the new field key without an underscore.
+        const { stealth } = settings;
+        const OLD_STEALTH_KEY = 'stealth_disable_stealth_mode';
+        const disableStealthMode = stealth[OLD_STEALTH_KEY];
+        Object.assign(stealth, { [StealthOption.DisableStealthMode]: disableStealthMode });
+        delete settings['stealth'][OLD_STEALTH_KEY];
+
+        // Parsing stealth cookie time values from string values (with possible
+        // escaped quotes) to numeric values.
+        const FIRST_PARTY_COOKIES_TIME = 'stealth-block-first-party-cookies-time';
+        if (typeof stealth[FIRST_PARTY_COOKIES_TIME] === 'string') {
+            const rawValue = stealth[FIRST_PARTY_COOKIES_TIME];
+            const parsedValue = Number(JSON.parse(rawValue));
+            stealth[FIRST_PARTY_COOKIES_TIME] = parsedValue;
+        }
+
+        const THIRD_PARTY_COOKIES_TIME = 'stealth-block-third-party-cookies-time';
+        if (typeof stealth[THIRD_PARTY_COOKIES_TIME] === 'string') {
+            const rawValue = stealth[THIRD_PARTY_COOKIES_TIME];
+            const parsedValue = Number(JSON.parse(rawValue));
+            stealth[THIRD_PARTY_COOKIES_TIME] = parsedValue;
+        }
+
+        // Parsing appearance theme with escaped quotes.
+        const APPEARANCE_THEME = 'appearance-theme';
+        const GENERAL_SETTINGS = 'general-settings';
+        // Check optional field.
+        if (Unknown.hasProp(settings[GENERAL_SETTINGS], APPEARANCE_THEME)
+            && typeof settings[GENERAL_SETTINGS][APPEARANCE_THEME] === 'string'
+            && settings[GENERAL_SETTINGS][APPEARANCE_THEME].includes('\"')
+        ) {
+            const rawValue = settings[GENERAL_SETTINGS][APPEARANCE_THEME];
+            // Removes escaped quotes.
+            const parsedValue = JSON.parse(rawValue);
+            settings[GENERAL_SETTINGS][APPEARANCE_THEME] = parsedValue;
+        }
+
+        // Sets the missing 'enabled' and 'trusted' fields to custom filters.
+        const CUSTOM_FILTERS = 'custom-filters';
+        const customFilters = filters[CUSTOM_FILTERS];
+        if (Array.isArray(customFilters)) {
+            for (let i = 0; i < customFilters.length; i += 1) {
+                const customFilter = customFilters[i];
+
+                if (customFilter.enabled === undefined) {
+                    customFilter.enabled = false;
+                }
+
+                if (customFilter.trusted === undefined) {
+                    customFilter.trusted = false;
+                }
+
+                // Remove deprecated field.
+                if (customFilter.languages !== undefined) {
+                    delete customFilter.languages;
+                }
+            }
+        }
 
         return settings;
     }

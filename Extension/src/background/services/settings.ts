@@ -141,7 +141,8 @@ export class SettingsService {
      */
     static async reset(): Promise<boolean> {
         try {
-            await SettingsApi.reset();
+            // Should enable default filters and their groups.
+            await SettingsApi.reset(true);
             Engine.debounceUpdate();
 
             return true;

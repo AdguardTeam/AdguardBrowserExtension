@@ -55,9 +55,26 @@ const Stealth = observer(() => {
         await settingsStore.setStripTrackingParametersState(data);
     };
 
-    const settingChangeHandler: SettingHandler = async ({ id, data }) => {
-        Log.info(`Setting ${id} set to ${data}`);
-        await settingsStore.updateSetting(id, data);
+    const settingChangeHandler: SettingHandler = async ({ id, data, event }) => {
+        let ignoreBackground = false;
+        let value = data;
+
+        // Tries to extract and check validity state from event target.
+        if (event) {
+            const target = event.target as HTMLInputElement;
+            const { valid } = target.validity;
+
+            if (!valid) {
+                // Prevent pass bad value to background.
+                ignoreBackground = true;
+            } else {
+                // Otherwise convert string to number.
+                value = Number(data);
+            }
+        }
+
+        Log.info(`Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
+        await settingsStore.updateSetting(id, value, ignoreBackground);
     };
 
     const webRtcHandler: SettingHandler = async (payload) => {
@@ -221,6 +238,9 @@ const Stealth = observer(() => {
                         value={settings.values[SelfDestructThirdPartyCookiesTime]}
                         handler={settingChangeHandler}
                         placeholder={DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN}
+                        required={isThirdPartyCookiesEnabled}
+                        minValue="0"
+                        step="0.1"
                     />
                 </SettingsSetCheckbox>
 
@@ -244,6 +264,9 @@ const Stealth = observer(() => {
                         value={settings.values[SelfDestructFirstPartyCookiesTime]}
                         handler={settingChangeHandler}
                         placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
+                        required={isFirstPartyCookiesEnabled}
+                        minValue="0"
+                        step="0.1"
                     />
                 </SettingsSetCheckbox>
             </SettingsSection>

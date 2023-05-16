@@ -39,7 +39,7 @@ export class GroupStateStorage extends StringStorage<
     // default group state
     private static defaultState = {
         enabled: false,
-        toggled: false,
+        touched: false,
     };
 
     /**
@@ -111,10 +111,10 @@ export class GroupStateStorage extends StringStorage<
      * Enables specified groups.
      *
      * @param groupIds List of groups to enable.
-     * @param toggled Mark groups as toggled on enabling.
+     * @param touched Mark groups as touched on enabling.
      * @throws Error if group state data is not initialized.
      */
-    public enableGroups(groupIds: number[], toggled = true): void {
+    public enableGroups(groupIds: number[], touched = true): void {
         if (!this.data) {
             throw GroupStateStorage.createNotInitializedError();
         }
@@ -125,7 +125,7 @@ export class GroupStateStorage extends StringStorage<
             if (groupId !== undefined) {
                 this.data[groupId] = {
                     enabled: true,
-                    toggled,
+                    touched,
                 };
             }
         }
@@ -137,10 +137,10 @@ export class GroupStateStorage extends StringStorage<
      * Disables specified groups.
      *
      * @param groupIds List of groups to disable.
-     * @param toggled Mark groups as toggled on disabling.
+     * @param touched Mark groups as touched on disabling.
      * @throws Error if group state data is not initialized.
      */
-    public disableGroups(groupIds: number[], toggled = true): void {
+    public disableGroups(groupIds: number[], touched = true): void {
         if (!this.data) {
             throw GroupStateStorage.createNotInitializedError();
         }
@@ -151,7 +151,7 @@ export class GroupStateStorage extends StringStorage<
             if (groupId !== undefined) {
                 this.data[groupId] = {
                     enabled: false,
-                    toggled,
+                    touched,
                 };
             }
         }

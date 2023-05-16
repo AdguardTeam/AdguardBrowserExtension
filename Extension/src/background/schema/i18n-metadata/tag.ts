@@ -17,11 +17,27 @@
  */
 import zod from 'zod';
 
+const tagInfoValidator = zod.object({
+    /**
+     * Description of the tag.
+     */
+    description: zod.string(),
+    /**
+     * Name of the tag.
+     */
+    name: zod.string(),
+});
+
 export const tagI18nMetadataValidator = zod.record(
-    zod.string(), zod.object({
-        description: zod.string(),
-        name: zod.string(),
-    }),
+    /**
+     * Two-letter language code.
+     */
+    zod.string(),
+    tagInfoValidator,
 );
 
+/**
+ * Describes an object where the language codes are keys and the description and
+ * tag name are values.
+ */
 export type TagI18nMetadata = zod.infer<typeof tagI18nMetadataValidator>;

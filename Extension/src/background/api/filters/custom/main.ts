@@ -26,6 +26,7 @@ import {
     filterStateStorage,
     FiltersStorage,
     filterVersionStorage,
+    groupStateStorage,
 } from '../../../storages';
 import { Engine } from '../../../engine';
 import { network } from '../../network';
@@ -39,8 +40,8 @@ import { CustomFilterLoader } from './loader';
 export type CustomFilterDTO = {
     customUrl: string;
     title?: string;
-    trusted?: boolean;
-    enabled?: boolean;
+    trusted: boolean;
+    enabled: boolean;
 };
 
 /**
@@ -140,7 +141,7 @@ export class CustomFilterApi {
             return { errorAlreadyExists: true };
         }
 
-        const rules = await network.downloadFilterRulesBySubscriptionUrl(url) as string[];
+        const rules = await network.downloadFilterRulesBySubscriptionUrl(url);
 
         if (!rules) {
             return null;
@@ -169,12 +170,14 @@ export class CustomFilterApi {
      * Create new {@link FilterVersionData} and save it in {@link filterVersionStorage}.
      * Filters rules is saved in {@link FiltersStorage}.
      *
+     * If the custom filter group has never been enabled, turn it on.
+     *
      * @param filterData Custom filter data transfer object, received from modal window.
      *
      * @returns Created filter metadata.
      */
     public static async createFilter(filterData: CustomFilterDTO): Promise<CustomFilterMetadata> {
-        const { customUrl } = filterData;
+        const { customUrl, trusted, enabled } = filterData;
 
         // download and parse custom filter data
         const { rules, parsed, checksum } = await CustomFilterApi.getRemoteFilterData(customUrl);
@@ -184,8 +187,6 @@ export class CustomFilterApi {
 
         Log.info(`Create new custom filter with id ${filterId}`);
 
-        const trusted = !!filterData.trusted;
-        const enabled = !!filterData.enabled;
         const name = filterData.title ? filterData.title : parsed.name;
 
         const {
@@ -228,6 +229,13 @@ export class CustomFilterApi {
         });
 
         await FiltersStorage.set(filterId, rules);
+
+        const group = groupStateStorage.get(filterMetadata.groupId);
+
+        // If group has never been enabled - enables it.
+        if (group && !group.touched) {
+            groupStateStorage.enableGroups([filterMetadata.groupId]);
+        }
 
         return filterMetadata;
     }
@@ -421,11 +429,11 @@ export class CustomFilterApi {
     }
 
     /**
-     * Counts md5 checksum for the filter rules content.
+     * Counts MD5 checksum for the filter rules content.
      *
      * @param rules Array of filter rules lines.
      *
-     * @returns Md5 checksum of filter rules text.
+     * @returns MD5 checksum of filter rules text.
      */
     private static getChecksum(rules: string[]): string {
         const rulesText = rules.join('\n');

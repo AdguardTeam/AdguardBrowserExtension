@@ -95,38 +95,38 @@ export class FilteringLogService {
         tabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
         tabsApi.onDelete.subscribe(FilteringLogService.onTabRemove);
 
-        defaultFilteringLog.addEventListener(FilteringEventType.SEND_REQUEST, FilteringLogService.onSendRequest);
-        defaultFilteringLog.addEventListener(FilteringEventType.TAB_RELOAD, FilteringLogService.onTabReload);
+        defaultFilteringLog.addEventListener(FilteringEventType.SendRequest, FilteringLogService.onSendRequest);
+        defaultFilteringLog.addEventListener(FilteringEventType.TabReload, FilteringLogService.onTabReload);
         defaultFilteringLog.addEventListener(
-            FilteringEventType.RECEIVE_RESPONSE,
+            FilteringEventType.ReceiveResponse,
             FilteringLogService.onReceiveResponse,
         );
         defaultFilteringLog.addEventListener(
-            FilteringEventType.APPLY_BASIC_RULE,
+            FilteringEventType.ApplyBasicRule,
             FilteringLogService.onApplyBasicRule,
         );
 
         defaultFilteringLog.addEventListener(
-            FilteringEventType.APPLY_CSP_RULE,
+            FilteringEventType.ApplyCspRule,
             FilteringLogService.onApplyCspRule,
         );
 
         defaultFilteringLog.addEventListener(
-            FilteringEventType.APPLY_COSMETIC_RULE,
+            FilteringEventType.ApplyCosmeticRule,
             FilteringLogService.onApplyCosmeticRule,
         );
-        defaultFilteringLog.addEventListener(FilteringEventType.REMOVE_PARAM, FilteringLogService.onRemoveParam);
-        defaultFilteringLog.addEventListener(FilteringEventType.REMOVE_HEADER, FilteringLogService.onRemoveheader);
+        defaultFilteringLog.addEventListener(FilteringEventType.RemoveParam, FilteringLogService.onRemoveParam);
+        defaultFilteringLog.addEventListener(FilteringEventType.RemoveHeader, FilteringLogService.onRemoveheader);
 
-        defaultFilteringLog.addEventListener(FilteringEventType.COOKIE, FilteringLogService.onCookie);
+        defaultFilteringLog.addEventListener(FilteringEventType.Cookie, FilteringLogService.onCookie);
 
-        defaultFilteringLog.addEventListener(FilteringEventType.JS_INJECT, FilteringLogService.onScriptInjection);
+        defaultFilteringLog.addEventListener(FilteringEventType.JsInject, FilteringLogService.onScriptInjection);
 
-        defaultFilteringLog.addEventListener(FilteringEventType.STEALTH_ACTION, FilteringLogService.onStealthAction);
+        defaultFilteringLog.addEventListener(FilteringEventType.StealthAction, FilteringLogService.onStealthAction);
 
         if (UserAgent.isFirefox) {
             defaultFilteringLog.addEventListener(
-                FilteringEventType.REPLACE_RULE_APPLY,
+                FilteringEventType.ReplaceRuleApply,
                 FilteringLogService.onReplaceRuleApply,
             );
         }
@@ -235,9 +235,13 @@ export class FilteringLogService {
         const {
             tabId,
             rule,
+            ...eventData
         } = data;
 
-        filteringLogApi.addEventData(tabId, data);
+        filteringLogApi.addEventData(tabId, {
+            ...eventData,
+            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+        });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
             HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());

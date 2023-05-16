@@ -38,6 +38,8 @@ export const ToggleWrapButton = observer(({ onClick }) => {
         'actions__btn--active': store.userRulesEditorWrapState,
     });
 
+    const iconId = store.userRulesEditorWrapState ? '#line-break-on' : '#line-break-off';
+
     const tooltipText = store.userRulesEditorWrapState
         ? reactTranslator.getMessage('options_userfilter_line_break_on')
         : reactTranslator.getMessage('options_userfilter_line_break_off');
@@ -50,7 +52,10 @@ export const ToggleWrapButton = observer(({ onClick }) => {
                 onClick={onClick}
                 aria-label={tooltipText}
             >
-                <Icon classname="icon--extend" id="#line-break" />
+                <Icon
+                    classname="icon--extend"
+                    id={iconId}
+                />
             </button>
         </Popover>
     );

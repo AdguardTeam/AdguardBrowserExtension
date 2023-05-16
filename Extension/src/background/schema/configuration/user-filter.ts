@@ -26,9 +26,24 @@ export const enum UserFilterOption {
 }
 
 export const userFilterValidator = zod.object({
+    /**
+     * User rules concatenated with '\n'.
+     */
     [UserFilterOption.Rules]: zod.string(),
+    /**
+     * In previous versions, rules could be marked as disabled.
+     * Currently not in use.
+     *
+     * @deprecated
+     */
     [UserFilterOption.DisabledRules]: zod.string(),
+    /**
+     * Is enabled user rules or not.
+     */
     [UserFilterOption.Enabled]: zod.boolean().optional(),
 });
 
+/**
+ * Contains the user rules filter and its status: enabled or disabled.
+ */
 export type UserFilterConfig = zod.infer<typeof userFilterValidator>;

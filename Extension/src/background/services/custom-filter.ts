@@ -72,6 +72,7 @@ export class CustomFilterService {
 
         const { customUrl, name, trusted } = filter;
 
+        // Creates a filter and enables the group if necessary.
         const filterMetadata = await CustomFilterApi.createFilter({
             customUrl,
             title: name,

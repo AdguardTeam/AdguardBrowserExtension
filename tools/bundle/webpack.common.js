@@ -21,8 +21,13 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { DefinePlugin } from 'webpack';
 
-import { BUILD_PATH, ENVS } from '../constants';
+import {
+    BUILD_PATH,
+    ENVS,
+    BROWSERS,
+} from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import {
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
@@ -204,7 +209,6 @@ export const genCommonConfig = (browserConfig) => {
                     use: [{
                         loader: 'preprocess-loader',
                         options: {
-                            remoteScripts: browserConfig.remoteScripts,
                             devtools: browserConfig.devtools,
                             ppOptions: {
                                 type: 'js',
@@ -359,6 +363,11 @@ export const genCommonConfig = (browserConfig) => {
                         to: WEB_ACCESSIBLE_RESOURCES_OUTPUT,
                     },
                 ],
+            }),
+            // We are doing stricter JS rule checking for Firefox AMO, so we
+            // need to determine if the Firefox browser is AMO or not.
+            new DefinePlugin({
+                IS_FIREFOX_AMO: browserConfig.browser === BROWSERS.FIREFOX_AMO,
             }),
         ],
     };

@@ -38,8 +38,8 @@ import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 
 /**
- * Update API is a facade for migrations to make sure that the application
- * runs on the latest schema.
+ * Update API is a facade for handling migrations for the settings object from
+ * browser.storage, to make sure that the application runs on the latest schema.
  */
 export class UpdateApi {
     private static schemaMigrationMap: Record<string, () => Promise<void>> = {
@@ -75,6 +75,20 @@ export class UpdateApi {
         // clear persisted caches
         await UpdateApi.clearCache();
 
+        // run migrations, if they needed.
+        await this.runMigrations(currentSchemaVersion, previousSchemaVersion);
+    }
+
+    /**
+     * Checks previousSchemaVersion and if it is outdated - runs migrations.
+     *
+     * @param currentSchemaVersion Current data schema version.
+     * @param previousSchemaVersion Previous data schema version.
+     */
+    private static async runMigrations(
+        currentSchemaVersion: number,
+        previousSchemaVersion: number,
+    ): Promise<void> {
         try {
             // if schema version changes, process migration
             for (let schema = previousSchemaVersion; schema < currentSchemaVersion; schema += 1) {
@@ -120,6 +134,10 @@ export class UpdateApi {
 
     /**
      * Run data migration from schema v0 to schema v1.
+     *
+     * TODO: Use string values when access to the old settings instead of
+     * constants and enum values to minimize the risks when we might decide to
+     * rename a field in an enumeration.
      */
     private static async migrateFromV0toV1(): Promise<void> {
         // In the v4.0.171 we have littered window.localStorage with proms used in the promo notifications module,
@@ -150,18 +168,32 @@ export class UpdateApi {
             delete currentSettings[SettingOption.Metadata];
         }
 
-        // move them to new fields
-        if (currentSettings?.['default-whitelist-mode'] !== undefined) {
-            currentSettings[SettingOption.DefaultAllowlistMode] = currentSettings['default-whitelist-mode'];
-            delete currentSettings['default-whitelist-mode'];
+        // rename fields
+        let keyToCheck = 'default-whitelist-mode';
+        if (currentSettings?.[keyToCheck] !== undefined) {
+            currentSettings[SettingOption.DefaultAllowlistMode] = currentSettings[keyToCheck];
+            delete currentSettings[keyToCheck];
         }
 
-        if (currentSettings?.['white-list-domains'] !== undefined) {
-            currentSettings[SettingOption.AllowlistDomains] = currentSettings['white-list-domains'];
-            delete currentSettings['white-list-domains'];
+        keyToCheck = 'white-list-domains';
+        if (currentSettings?.[keyToCheck] !== undefined) {
+            currentSettings[SettingOption.AllowlistDomains] = currentSettings[keyToCheck];
+            delete currentSettings[keyToCheck];
         }
 
-        // New group state 'toggled' field added in 4.2
+        keyToCheck = 'stealth_disable_stealth_mode';
+        if (currentSettings?.[keyToCheck] !== undefined) {
+            currentSettings[SettingOption.DisableStealthMode] = currentSettings[keyToCheck];
+            delete currentSettings[keyToCheck];
+        }
+
+        keyToCheck = 'custom_filters';
+        if (currentSettings?.[keyToCheck] !== undefined) {
+            currentSettings[SettingOption.CustomFilters] = currentSettings[keyToCheck];
+            delete currentSettings[keyToCheck];
+        }
+
+        // New group state 'touched' field added in 4.2
         // zod 'parse then transform' approach is used to transform data to actual schema
         if (typeof currentSettings?.[SettingOption.GroupsState] === 'string') {
             // create data transformer
@@ -170,7 +202,7 @@ export class UpdateApi {
                     enabled: zod.boolean(),
                 }).transform(({ enabled }) => ({
                     enabled,
-                    toggled: enabled,
+                    touched: enabled,
                 })),
             );
 
@@ -178,6 +210,102 @@ export class UpdateApi {
             currentSettings[SettingOption.GroupsState] = JSON.stringify(
                 groupsStateTransformer.parse(currentGroupsStateData),
             );
+        }
+
+        // Check non exists fields in filters-state
+        if (currentSettings?.['filters-state']) {
+            const stringFiltersState = currentSettings['filters-state'] as string;
+            const filtersState = JSON.parse(stringFiltersState);
+            const keys = Object.keys(filtersState);
+            for (let i = 0; i < keys.length; i += 1) {
+                const key = keys[i];
+                if (!key) {
+                    continue;
+                }
+
+                if (filtersState[key]['installed'] === undefined) {
+                    filtersState[key]['installed'] = false;
+                }
+
+                if (filtersState[key]['enabled'] === undefined) {
+                    filtersState[key]['enabled'] = false;
+                }
+            }
+
+            currentSettings['filters-state'] = JSON.stringify(filtersState);
+        }
+
+        // Check not exists fields in custom filters
+        if (currentSettings?.['custom-filters']) {
+            const stringCustomFiltersMetadata = currentSettings['custom-filters'] as string;
+            const customFiltersMetadata = JSON.parse(stringCustomFiltersMetadata);
+            if (Array.isArray(customFiltersMetadata)) {
+                for (let i = 0; i < customFiltersMetadata.length; i += 1) {
+                    const customFilterMetadata = customFiltersMetadata[i];
+
+                    if (customFilterMetadata.trusted === undefined) {
+                        customFilterMetadata.trusted = false;
+                    }
+
+                    if (!customFilterMetadata.timeUpdated) {
+                        customFilterMetadata.timeUpdated = 0;
+                    }
+
+                    // Remove deprecated field.
+                    if (customFilterMetadata.languages !== undefined) {
+                        delete customFilterMetadata.languages;
+                    }
+                }
+            }
+
+            currentSettings['custom-filters'] = JSON.stringify(customFiltersMetadata);
+        }
+
+        // Check not exists fields in filters version for custom filters
+        if (currentSettings?.['filters-version']) {
+            const stringFiltersVersion = currentSettings['filters-version'] as string;
+            const filtersVersion = JSON.parse(stringFiltersVersion);
+            const keys = Object.keys(filtersVersion);
+            for (let i = 0; i < keys.length; i += 1) {
+                const key = keys[i];
+                if (!key) {
+                    continue;
+                }
+
+                if (filtersVersion[key]['lastUpdateTime'] === undefined) {
+                    filtersVersion[key]['lastUpdateTime'] = 0;
+                }
+            }
+
+            currentSettings['filters-version'] = JSON.stringify(filtersVersion);
+        }
+
+        // Parsing stealth cookie time values from string values (with possible
+        // escaped quotes) to numeric values.
+        const firstPartyCookiesTime = 'stealth-block-first-party-cookies-time';
+        if (currentSettings?.[firstPartyCookiesTime] && typeof currentSettings[firstPartyCookiesTime] === 'string') {
+            const rawValue = currentSettings[firstPartyCookiesTime];
+            const parsedValue = Number(JSON.parse(rawValue));
+            currentSettings[firstPartyCookiesTime] = parsedValue;
+        }
+
+        const thirdPartyCookiesTime = 'stealth-block-third-party-cookies-time';
+        if (currentSettings?.[thirdPartyCookiesTime] && typeof currentSettings[thirdPartyCookiesTime] === 'string') {
+            const rawValue = currentSettings[thirdPartyCookiesTime];
+            const parsedValue = Number(JSON.parse(rawValue));
+            currentSettings[thirdPartyCookiesTime] = parsedValue;
+        }
+
+        // Parsing appearance theme with escaped quotes.
+        const appearanceTheme = 'appearance-theme';
+        if (currentSettings?.[appearanceTheme]
+            && typeof currentSettings[appearanceTheme] === 'string'
+            && currentSettings[appearanceTheme].includes('\"')
+        ) {
+            const rawValue = currentSettings[appearanceTheme];
+            // Removes escaped quotes.
+            const parsedValue = JSON.parse(rawValue);
+            currentSettings[appearanceTheme] = parsedValue;
         }
 
         // mode notification data from settings to root storage

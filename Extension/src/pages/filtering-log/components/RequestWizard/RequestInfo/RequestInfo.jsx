@@ -34,7 +34,7 @@ import identity from 'lodash/identity';
 import cn from 'classnames';
 import browser from 'webextension-polyfill';
 
-import { StealthActions } from '@adguard/tswebextension';
+import { StealthActions, ContentType as RequestType } from '@adguard/tswebextension';
 
 import {
     getFilterName,
@@ -44,7 +44,7 @@ import {
 import { rootStore } from '../../../stores/RootStore';
 import { ADDED_RULE_STATES } from '../../../stores/WizardStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { AntiBannerFiltersId, RequestType } from '../../../../../common/constants';
+import { AntiBannerFiltersId } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';

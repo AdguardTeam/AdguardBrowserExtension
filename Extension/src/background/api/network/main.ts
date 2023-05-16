@@ -193,6 +193,7 @@ export class Network {
 
     /**
      * Loads script rules from local file.
+     * This method should be called only in the Firefox AMO.
      *
      * @throws Error if metadata is invalid.
      *

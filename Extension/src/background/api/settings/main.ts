@@ -18,7 +18,7 @@
 import type { SettingsConfig } from '@adguard/tswebextension';
 
 import { Log } from '../../../common/log';
-import { AppearanceTheme, defaultSettings } from '../../../common/settings';
+import { defaultSettings } from '../../../common/settings';
 import {
     AllowlistConfig,
     AllowlistOption,
@@ -38,6 +38,7 @@ import {
     SettingOption,
     Settings,
     settingsValidator,
+    Config,
 } from '../../schema';
 import {
     filterStateStorage,
@@ -48,7 +49,6 @@ import {
 import {
     CommonFilterApi,
     CustomFilterApi,
-    CustomFilterDTO,
     FiltersApi,
     UserRulesApi,
     AllowlistApi,
@@ -157,21 +157,20 @@ export class SettingsApi {
                 sendDoNotTrack: settingsStorage.get(SettingOption.SendDoNotTrack),
                 blockWebRTC: settingsStorage.get(SettingOption.BlockWebRTC),
                 selfDestructThirdPartyCookies: settingsStorage.get(SettingOption.SelfDestructThirdPartyCookies),
-                selfDestructThirdPartyCookiesTime: (
-                    settingsStorage.get(SettingOption.SelfDestructThirdPartyCookiesTime)
-                ),
+                selfDestructThirdPartyCookiesTime: settingsStorage.get(SettingOption.SelfDestructThirdPartyCookiesTime),
                 selfDestructFirstPartyCookies: settingsStorage.get(SettingOption.SelfDestructFirstPartyCookies),
-                selfDestructFirstPartyCookiesTime: (
-                    settingsStorage.get(SettingOption.SelfDestructFirstPartyCookiesTime)
-                ),
+                selfDestructFirstPartyCookiesTime: settingsStorage.get(SettingOption.SelfDestructFirstPartyCookiesTime),
             },
         };
     }
 
     /**
      * Resets to default settings.
+     *
+     * @param enableUntouchedGroups - Should enable untouched groups related to
+     * the default filters or not.
      */
-    public static async reset(): Promise<void> {
+    public static async reset(enableUntouchedGroups: boolean): Promise<void> {
         await UserRulesApi.setUserRules([]);
 
         // Set settings store to defaults
@@ -180,9 +179,10 @@ export class SettingsApi {
         });
 
         // Re-init filters
-        await FiltersApi.init();
+        await FiltersApi.init(false);
 
-        await CommonFilterApi.initDefaultFilters();
+        // On import should enable only groups from imported file.
+        await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
     }
 
     /**
@@ -209,7 +209,8 @@ export class SettingsApi {
 
             const validConfig = configValidator.parse(json);
 
-            await SettingsApi.reset();
+            // Should not enable default groups.
+            await SettingsApi.reset(false);
 
             SettingsApi.importExtensionSpecificSettings(
                 validConfig[RootOption.ExtensionSpecificSettings],
@@ -235,13 +236,15 @@ export class SettingsApi {
      * Exports settings to string with JSON format.
      */
     public static async export(): Promise<string> {
-        return JSON.stringify({
+        const config: Config = {
             [RootOption.ProtocolVersion]: PROTOCOL_VERSION,
             [RootOption.GeneralSettings]: SettingsApi.exportGeneralSettings(),
             [RootOption.ExtensionSpecificSettings]: SettingsApi.exportExtensionSpecificSettings(),
             [RootOption.Filters]: await SettingsApi.exportFilters(),
             [RootOption.Stealth]: SettingsApi.exportStealth(),
-        });
+        };
+
+        return JSON.stringify(config);
     }
 
     /**
@@ -263,7 +266,7 @@ export class SettingsApi {
         settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
 
         if (appearanceTheme) {
-            settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme as AppearanceTheme);
+            settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme);
         }
 
         if (allowAcceptableAds) {
@@ -378,8 +381,21 @@ export class SettingsApi {
             }
         });
 
-        await CustomFilterApi.createFilters(customFilters as CustomFilterDTO[]);
+        await CustomFilterApi.createFilters(customFilters);
+
         groupStateStorage.enableGroups(enabledGroups);
+
+        Log.info(`Import filters: next groups were enabled: ${enabledGroups}`);
+
+        // Disable groups not listed in the imported list.
+        const allGroups = groupStateStorage.getData();
+        const allGroupsIds = Object.keys(allGroups).map(id => Number(id));
+
+        const groupIdsToDisable = allGroupsIds
+            .filter(groupId => !enabledGroups.includes(groupId));
+
+        // Disable all other groups and mark them as untouched.
+        groupStateStorage.disableGroups(groupIdsToDisable, false);
     }
 
     /**
@@ -421,7 +437,7 @@ export class SettingsApi {
     private static async exportUserFilter(): Promise<UserFilterConfig> {
         return {
             [UserFilterOption.Enabled]: settingsStorage.get(SettingOption.UserFilterEnabled),
-            [UserFilterOption.Rules]: (await UserRulesApi.getUserRules()).join('/n'),
+            [UserFilterOption.Rules]: (await UserRulesApi.getUserRules()).join('\n'),
             [UserFilterOption.DisabledRules]: '',
         };
     }
@@ -495,14 +511,13 @@ export class SettingsApi {
         settingsStorage.set(SettingOption.HideSearchQueries, hideSearchQueries);
         settingsStorage.set(SettingOption.SendDoNotTrack, sendDoNotTrack);
         settingsStorage.set(SettingOption.RemoveXClientData, removeXClientData);
-        settingsStorage.set(SettingOption.SelfDestructThirdPartyCookies, selfDestructThirdPartyCookies);
 
+        settingsStorage.set(SettingOption.SelfDestructThirdPartyCookies, selfDestructThirdPartyCookies);
         if (selfDestructThirdPartyCookiesTime) {
             settingsStorage.set(SettingOption.SelfDestructThirdPartyCookiesTime, selfDestructThirdPartyCookiesTime);
         }
 
         settingsStorage.set(SettingOption.SelfDestructFirstPartyCookies, selfDestructFirstPartyCookies);
-
         if (selfDestructFirstPartyCookiesTime) {
             settingsStorage.set(SettingOption.SelfDestructFirstPartyCookiesTime, selfDestructFirstPartyCookiesTime);
         }
