@@ -35,112 +35,193 @@ export type Notification = {
      icons?: Record<string, Record<string, string>>,
  };
 
-export const BACK_TO_SCHOOL_22_ID = 'backToSchool22';
+export const BIRTHDAY_14_PROMO_ID = 'birthday14Promo';
 
-export const backToSchool22Notification: Notification = {
-    id: BACK_TO_SCHOOL_22_ID,
+export const birthday14Notification: Notification = {
+    id: BIRTHDAY_14_PROMO_ID,
     locales: {
         en: {
-            title: 'Back',
-            desc: 'to school',
-            btn: 'Get 40% off',
+            title: 'What does AI say?',
+            btn: 'Guess',
         },
         ru: {
-            title: 'Снова в',
-            desc: 'школу',
-            btn: '-40% на всё',
-        },
-        es: {
-            title: 'Vuelta al',
-            desc: 'cole',
-            btn: 'Obtén un 40% off',
-        },
-        de: {
-            title: 'Zurück zur',
-            desc: 'Schule',
-            btn: '40% Rabatt',
-        },
-        fr: {
-            title: 'La rentrée',
-            desc: 'scolaire',
-            btn: '40% de remise',
-        },
-        it: {
-            title: 'Ritorno a',
-            desc: 'scuola',
-            btn: '40% di sconto',
+            title: 'Пойми ИИ',
+            btn: 'Играть',
         },
         ko: {
-            title: '백 투 스쿨',
-            desc: '세일',
-            btn: '40% 할인',
+            title: '인공지능은 무엇을 말하나요?',
+            btn: '퀴즈 시작',
         },
-        zh_cn: {
-            title: '开学啦',
-            btn: '一律享受40%折扣',
+        es: {
+            title: 'Quiz: piensa como una IA',
+            btn: 'Comenzar',
         },
-        zh_tw: {
-            title: '開學啦',
-            btn: '獲得40%的折扣',
-        },
-        uk: {
-            title: 'Знову до',
-            desc: 'школи',
-            btn: 'Знижка 40%',
+        de: {
+            title: 'Was sagt KI?',
+            btn: 'Spielen',
         },
         pt_pt: {
-            title: 'De volta à',
-            desc: 'escola',
-            btn: 'Obter 40% de desconto',
+            title: 'Quiz: pensa como uma IA',
+            btn: 'Começar',
         },
         pt_br: {
-            title: 'De volta à',
-            desc: 'escola',
-            btn: 'Obtenha 40% de desconto',
+            title: 'Quiz: pense como uma IA',
+            btn: 'Começar',
+        },
+        zh_tw: {
+            title: '成為一個“更懂” AI 的人',
+            btn: '進行遊戲！',
+        },
+        zh_cn: {
+            title: '成为一个“更懂” AI 的人',
+            btn: '玩儿游戏！',
+        },
+        fr: {
+            title: 'L\'IA dit quoi?',
+            btn: 'Devinez!',
+        },
+        it: {
+            title: 'Cosa dice l\'IA?',
+            btn: 'Indovinarlo',
+        },
+        uk: {
+            title: 'Що говорить штучний інтелект?',
+            btn: 'Грати',
         },
         ar: {
-            title: 'العودة',
-            desc: 'إلى المدرسة',
-            btn: '%احصل على خصم 40',
+            title: 'ماذا يقول الذكاء الاصطناعي؟',
+            btn: 'لعب',
         },
         be: {
-            title: 'Назад у',
-            desc: 'школу',
-            btn: 'Атрымайце скідку 40%',
+            title: 'Што кажа штучны інтэлект?',
+            btn: 'Гуляць',
+        },
+        bg: {
+            title: 'Какво казва ИИ?',
+            btn: 'Играя',
+        },
+        ca: {
+            title: 'Què diu la IA?',
+            btn: 'Jugar',
+        },
+        cs: {
+            title: 'Co říká umělá inteligence?',
+            btn: 'Přehrát',
+        },
+        da: {
+            title: 'Hvad siger den kunstige intelligens?',
+            btn: 'Spil',
+        },
+        el: {
+            title: 'Τι λέει η Τεχνητή Νοημοσύνη;',
+            btn: 'Παίζω',
+        },
+        es_419: {
+            title: 'Quiz: piensa como una IA',
+            btn: 'Comenzar',
+        },
+        fa: {
+            title: 'هوش مصنوعی چه می گوید؟',
+            btn: 'بازی',
+        },
+        fi: {
+            title: 'Mitä tekoäly sanoo?',
+            btn: 'Leikkiä',
+        },
+        he: {
+            title: 'מה אומרת בינה מלאכותית?',
+            btn: 'משחק',
+        },
+        hr: {
+            title: 'Što kaže umjetna inteligencija?',
+            btn: 'Igrati',
+        },
+        hu: {
+            title: 'Mit mond az MI?',
+            btn: 'Játszik',
+        },
+        hy: {
+            title: 'Ի՞նչ է ասում ԱԻ-ն:',
+            btn: 'Խաղալ',
         },
         id: {
-            title: 'Kembali ke',
-            desc: 'sekolah',
-            btn: 'Dapatkan diskon 40%',
+            title: 'Apa yang dikatakan AI?',
+            btn: 'Bermain',
+        },
+        lt: {
+            title: 'Ką sako dirbtinis intelektas?',
+            btn: 'Žaisti',
+        },
+        ms: {
+            title: 'Apa kata Kecerdasan Buatan?',
+            btn: 'Bermain',
+        },
+        nb: {
+            title: 'Hva sier kunstig intelligens?',
+            btn: 'Skuespill',
+        },
+        nl: {
+            title: 'Wat zegt KI?',
+            btn: 'Spelen',
         },
         pl: {
-            title: 'Powrót do',
-            desc: 'szkoły',
-            btn: 'Zyskaj 40% zniżki',
+            title: 'Co mówi sztuczna inteligencja?',
+            btn: 'Grać',
+        },
+        ro: {
+            title: 'Ce spune inteligența artificială?',
+            btn: 'Juca',
+        },
+        sk: {
+            title: 'Čo hovorí umelá inteligencia?',
+            btn: 'Hrať',
+        },
+        sl: {
+            title: 'Kaj pravi umetna inteligenca?',
+            btn: 'Igrati',
+        },
+        sr: {
+            title: 'Šta kaže veštačka inteligencija?',
+            btn: 'Igra',
+        },
+        sv: {
+            title: 'Vad säger artificiell intelligens?',
+            btn: 'Leka',
         },
         tr: {
-            title: 'Okula dönüş',
-            btn: '40 indirim kazanın',
+            title: 'Yapay zeka ne diyor?',
+            btn: 'Oyun',
         },
         vi: {
-            title: 'Trở lại',
-            desc: 'trường học',
-            btn: 'Được GIẢM GIÁ 40%',
+            title: 'AI nói gì?',
+            btn: 'Chơi',
+        },
+        hi: {
+            title: 'आर्टिफिशियल इंटेलिजेंस क्या कहता है?',
+            btn: 'खेल',
+        },
+        et: {
+            title: 'Mida ütleb tehisintellekt?',
+            btn: 'Mängima',
+        },
+        th: {
+            title: 'ปัญญาประดิษฐ์พูดว่าอย่างไร?',
+            btn: 'เล่น',
         },
     },
     text: '',
     url: Forward.get({ action: ForwardAction.BackToSchool }),
-    from: '30 August 2022 12:00:00',
-    to: '4 September 2022 23:59:00',
+    from: '01 June 2023 12:00:00',
+    to: '07 June 2023 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/promo-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/promo-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/bd14-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/bd14-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/promo-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/promo-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/bd14-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/bd14-off-38.png'),
         },
     },
 };
@@ -149,5 +230,5 @@ export const backToSchool22Notification: Notification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [BACK_TO_SCHOOL_22_ID, backToSchool22Notification],
+    [BIRTHDAY_14_PROMO_ID, birthday14Notification],
 ]);
