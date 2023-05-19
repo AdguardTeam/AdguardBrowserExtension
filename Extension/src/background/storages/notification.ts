@@ -210,7 +210,7 @@ export const birthday14Notification: Notification = {
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BackToSchool }),
+    url: Forward.get({ action: ForwardAction.Birthday14Promo }),
     from: '01 June 2023 12:00:00',
     to: '07 June 2023 23:59:00',
     type: 'animated',
