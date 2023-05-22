@@ -31,194 +31,198 @@ export const notifications = (function () {
     const VIEWED_NOTIFICATIONS = 'viewed-notifications';
     const LAST_NOTIFICATION_TIME = 'viewed-notification-time';
 
-    const EASTER_PROMO_23_ID = 'easterPromo23';
+    const BIRTHDAY_14_PROMO_ID = 'birthday14Promo';
 
-    const easterPromo23Notification = {
-        id: EASTER_PROMO_23_ID,
+    const birthday14Notification = {
+        id: BIRTHDAY_14_PROMO_ID,
         locales: {
             en: {
-                title: 'Happy Easter',
-                btn: 'Get up to 40% off',
+                title: 'What does AI say?',
+                btn: 'Guess',
             },
             ru: {
-                title: 'Весенняя акция',
-                btn: 'Скидки до 40%',
+                title: 'Пойми ИИ',
+                btn: 'Играть',
             },
             ko: {
-                title: '부활절 세일',
-                btn: '최대 40% 할인',
+                title: '인공지능은 뭐라고 말하나요?',
+                btn: '게임 시작',
             },
             es: {
-                title: 'Felices Pascuas',
-                btn: 'Hasta un 40% off',
+                title: 'Quiz: piensa como una IA',
+                btn: 'Comenzar',
             },
             de: {
-                title: 'Frohe Ostern',
-                btn: 'Bis zu 40% Rabatt',
+                title: 'Was sagt KI?',
+                btn: 'Spielen',
             },
             pt_pt: {
-                title: 'Feliz Páscoa',
-                btn: 'Até 40% off',
+                title: 'Quiz: pensa como uma IA',
+                btn: 'Começar',
             },
             pt_br: {
-                title: 'Feliz Páscoa',
-                btn: 'Até 40% off',
+                title: 'Quiz: pense como uma IA',
+                btn: 'Começar',
             },
             zh_tw: {
-                title: '暖春特惠',
-                btn: '低至6折',
+                title: '成為一個“更懂” AI 的人',
+                btn: '進行遊戲！',
             },
             zh_cn: {
-                title: '春季钜惠',
-                btn: '低至6折',
+                title: '成为一个“更懂” AI 的人',
+                btn: '玩儿游戏！',
+            },
+            ja: {
+                title: 'AI（人工知能）を 理解してみよう',
+                btn: '玩儿游戏！',
             },
             fr: {
-                title: 'Joyeuses Pâques',
-                btn: "Jusqu'à 40% de remise",
+                title: 'L\'IA dit quoi?',
+                btn: 'Devinez!',
             },
             it: {
-                title: 'Buona Pascua',
-                btn: 'Fino al 40% di sconto',
+                title: 'Cosa dice l\'IA?',
+                btn: 'Indovinarlo',
             },
             uk: {
-                title: 'Весняна акція',
-                btn: 'Знижки до 40%',
+                title: 'Що говорить штучний інтелект?',
+                btn: 'Грати',
             },
             ar: {
-                title: 'تعزيز الربيع',
-                btn: 'خصم حتي 40٪',
+                title: 'ماذا يقول الذكاء الاصطناعي؟',
+                btn: 'لعب',
             },
             be: {
-                title: 'Вясновая акцыя',
-                btn: 'Зніжка да 40%',
+                title: 'Што кажа штучны інтэлект?',
+                btn: 'Гуляць',
             },
             bg: {
-                title: 'Пролетна промоция',
-                btn: 'Отстъпка до 40%',
+                title: 'Какво казва ИИ?',
+                btn: 'Играя',
             },
             ca: {
-                title: 'Feliç Pasqua',
-                btn: 'Fins a −40%',
+                title: 'Què diu la IA?',
+                btn: 'Jugar',
             },
             cs: {
-                title: 'Veselé Velikonoce',
-                btn: 'Sleva až 40%',
+                title: 'Co říká umělá inteligence?',
+                btn: 'Přehrát',
             },
             da: {
-                title: 'God påske',
-                btn: 'Rabat op til 40%',
+                title: 'Hvad siger den kunstige intelligens?',
+                btn: 'Spil',
             },
             el: {
-                title: 'ανοιξιάτικη προώθηση',
-                btn: 'Έκπτωση έως 40%',
+                title: 'Τι λέει η Τεχνητή Νοημοσύνη;',
+                btn: 'Παίζω',
             },
             es_419: {
-                title: 'Felices Pascuas',
-                btn: 'Hasta un 40% off',
+                title: 'Quiz: piensa como una IA',
+                btn: 'Comenzar',
             },
             fa: {
-                title: 'تبلیغات بهار',
-                btn: 'تخفیف تا 40%',
+                title: 'هوش مصنوعی چه می گوید؟',
+                btn: 'بازی',
             },
             fi: {
-                title: 'Hyvää pääsiäistä',
-                btn: 'Jopa 40% alennus',
+                title: 'Mitä tekoäly sanoo?',
+                btn: 'Leikkiä',
             },
             he: {
-                title: 'קידום אביב',
-                btn: 'הנחות עד 40%',
+                title: '?מה אומרת בינה מלאכותית',
+                btn: 'משחק',
             },
             hr: {
-                title: 'Sretan Uskrs',
-                btn: 'Popusti do 40%',
+                title: 'Što kaže umjetna inteligencija?',
+                btn: 'Igrati',
             },
             hu: {
-                title: 'Tavaszi akció',
-                btn: 'Akár 40% kedvezmény',
+                title: 'Mit mond az MI?',
+                btn: 'Játszik',
             },
             hy: {
-                title: 'գարնանային ակցիա',
-                btn: 'Զեղչեր մինչև 40%',
+                title: 'Ի՞նչ է ասում ԱԻ-ն:',
+                btn: 'Խաղալ',
             },
             id: {
-                title: 'Promosi musim semi',
-                btn: 'Diskon hingga 40%',
+                title: 'Apa yang dikatakan AI?',
+                btn: 'Bermain',
             },
             lt: {
-                title: 'linksmų Velykų',
-                btn: 'Nuolaidos iki 40%',
+                title: 'Ką sako dirbtinis intelektas?',
+                btn: 'Žaisti',
             },
             ms: {
-                title: 'Promosi musim bunga',
-                btn: 'Diskaun sehingga 40%',
+                title: 'Apa kata Kecerdasan Buatan?',
+                btn: 'Bermain',
             },
             nb: {
-                title: 'God påske',
-                btn: 'Opptil 40 % rabatt',
+                title: 'Hva sier kunstig intelligens?',
+                btn: 'Skuespill',
             },
             nl: {
-                title: 'Vrolijk Pasen',
-                btn: 'Tot 40% korting',
+                title: 'Wat zegt KI?',
+                btn: 'Spelen',
             },
             pl: {
-                title: 'Szczęśliwej Wielkanocy',
-                btn: 'Do 40% zniżki',
+                title: 'Co mówi sztuczna inteligencja?',
+                btn: 'Grać',
             },
             ro: {
-                title: 'Promoție de primăvară',
-                btn: 'Până la 40% reducere',
+                title: 'Ce spune inteligența artificială?',
+                btn: 'Juca',
             },
             sk: {
-                title: 'Šťastnú Veľkú noc',
-                btn: 'Až 40% zľava',
+                title: 'Čo hovorí umelá inteligencia?',
+                btn: 'Hrať',
             },
             sl: {
-                title: 'Srečno veliko noč',
-                btn: 'Do 40% popust',
+                title: 'Kaj pravi umetna inteligenca?',
+                btn: 'Igrati',
             },
             sr: {
-                title: 'Prolećna promocija',
-                btn: 'Popusti do 40%',
+                title: 'Šta kaže veštačka inteligencija?',
+                btn: 'Igra',
             },
             sv: {
-                title: 'Glad påsk',
-                btn: 'Upp till 40 % rabatt',
+                title: 'Vad säger artificiell intelligens?',
+                btn: 'Leka',
             },
             tr: {
-                title: 'Bahar promosyonu',
-                btn: "%40'a varan indirim",
+                title: 'Yapay zeka ne diyor?',
+                btn: 'Oyun',
             },
             vi: {
-                title: 'Khuyến mãi mùa xuân',
-                btn: 'Giảm giá tới 40%',
+                title: 'AI nói gì?',
+                btn: 'Chơi',
             },
             hi: {
-                title: 'वसंत पदोन्नति',
-                btn: '40% तक की छूट',
+                title: 'आर्टिफिशियल इंटेलिजेंस क्या कहता है?',
+                btn: 'खेल',
             },
             et: {
-                title: 'Lihavõttepühade reklaam',
-                btn: 'Kuni 40% soodustus',
+                title: 'Mida ütleb tehisintellekt?',
+                btn: 'Mängima',
             },
             th: {
-                title: 'โปรโมชั่นฤดูใบไม้ผลิ',
-                btn: 'ส่วนลดสูงสุดถึง 40%',
+                title: 'ปัญญาประดิษฐ์พูดว่าอย่างไร?',
+                btn: 'เล่น',
             },
         },
         text: '',
-        url: 'https://link.adtidy.net/forward.html?action=easter_promo_23&app=browser_extension',
-        from: '06 April 2023 12:00:00',
-        to: '12 April 2023 23:59:00',
+        url: 'https://link.adtidy.net/forward.html?action=birthday_14_promo&app=browser_extension',
+        from: '01 June 2023 12:00:00',
+        to: '07 June 2023 23:59:00',
         type: 'animated',
         get icons() {
-            return lazyGet(easterPromo23Notification, 'icons', () => ({
+            return lazyGet(birthday14Notification, 'icons', () => ({
                 ICON_GREEN: {
-                    '19': backgroundPage.getURL('assets/icons/easter2023-on-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/easter2023-on-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/bd14-on-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/bd14-on-38.png'),
                 },
                 ICON_GRAY: {
-                    '19': backgroundPage.getURL('assets/icons/easter2023-off-19.png'),
-                    '38': backgroundPage.getURL('assets/icons/easter2023-off-38.png'),
+                    '19': backgroundPage.getURL('assets/icons/bd14-off-19.png'),
+                    '38': backgroundPage.getURL('assets/icons/bd14-off-38.png'),
                 },
             }));
         },
@@ -240,7 +244,7 @@ export const notifications = (function () {
      * @property {string} type;
      */
     const notifications = {
-        easterPromo23: easterPromo23Notification,
+        birthday14Promo: birthday14Notification,
     };
 
     /**
