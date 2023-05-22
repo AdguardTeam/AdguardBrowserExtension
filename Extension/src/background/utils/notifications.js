@@ -45,8 +45,8 @@ export const notifications = (function () {
                 btn: 'Играть',
             },
             ko: {
-                title: '인공지능은 무엇을 말하나요?',
-                btn: '퀴즈 시작',
+                title: '인공지능은 뭐라고 말하나요?',
+                btn: '게임 시작',
             },
             es: {
                 title: 'Quiz: piensa como una IA',
@@ -70,6 +70,10 @@ export const notifications = (function () {
             },
             zh_cn: {
                 title: '成为一个“更懂” AI 的人',
+                btn: '玩儿游戏！',
+            },
+            ja: {
+                title: 'AI（人工知能）を 理解してみよう',
                 btn: '玩儿游戏！',
             },
             fr: {
@@ -125,7 +129,7 @@ export const notifications = (function () {
                 btn: 'Leikkiä',
             },
             he: {
-                title: 'מה אומרת בינה מלאכותית?',
+                title: '?מה אומרת בינה מלאכותית',
                 btn: 'משחק',
             },
             hr: {

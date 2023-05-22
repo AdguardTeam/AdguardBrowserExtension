@@ -265,6 +265,11 @@ export const contentUtils = (function () {
                                 type: 'setNotificationViewed',
                                 withDelay: false,
                             });
+                            const promoNotification = iframeDocument.querySelector('.adguard-update-popup__offer');
+                            if (promoNotification) {
+                                promoNotification.parentNode.removeChild(promoNotification);
+                            }
+                            return;
                         }
                         // Remove iframe after click event fire on link
                         // NOTICE: if here is used value equal to 0,
