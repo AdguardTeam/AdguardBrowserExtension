@@ -22,6 +22,7 @@ import {
     ChangeUserSettingMessage,
     ApplySettingsJsonMessage,
 } from '../../common/messages';
+import { Log } from '../../common/log';
 import { SettingOption } from '../schema';
 import { messageHandler } from '../message-handler';
 import { UserAgent } from '../../common/user-agent';
@@ -84,17 +85,32 @@ export class SettingsService {
         messageHandler.addListener(MessageType.ApplySettingsJson, SettingsService.import);
         messageHandler.addListener(MessageType.LoadSettingsJson, SettingsService.export);
 
-        settingsEvents.addListener(SettingOption.DisableStealthMode, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.HideReferrer, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.HideSearchQueries, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.SendDoNotTrack, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.RemoveXClientData, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.BlockWebRTC, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookies, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.SelfDestructThirdPartyCookiesTime, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookies, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.SelfDestructFirstPartyCookiesTime, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.DisableFiltering, SettingsService.onDisableFilteringStateChange);
+        settingsEvents.addListener(SettingOption.DisableStealthMode, SettingsService.onDisableStealthModeStateChange);
+        settingsEvents.addListener(SettingOption.HideReferrer, SettingsService.onHideReferrerStateChange);
+        settingsEvents.addListener(SettingOption.HideSearchQueries, SettingsService.onHideSearchQueriesStateChange);
+        settingsEvents.addListener(SettingOption.SendDoNotTrack, SettingsService.onSendDoNotTrackStateChange);
+        settingsEvents.addListener(SettingOption.RemoveXClientData, SettingsService.onRemoveXClientDataStateChange);
+        settingsEvents.addListener(SettingOption.BlockWebRTC, SettingsService.onBlockWebRTCStateChange);
+        settingsEvents.addListener(
+            SettingOption.SelfDestructThirdPartyCookies,
+            SettingsService.onSelfDestructThirdPartyCookiesStateChange,
+        );
+        settingsEvents.addListener(
+            SettingOption.SelfDestructThirdPartyCookiesTime,
+            SettingsService.onSelfDestructThirdPartyCookiesTimeStateChange,
+        );
+        settingsEvents.addListener(
+            SettingOption.SelfDestructFirstPartyCookies,
+            SettingsService.onSelfDestructFirstPartyCookiesStateChange,
+        );
+        settingsEvents.addListener(
+            SettingOption.SelfDestructFirstPartyCookiesTime,
+            SettingsService.onSelfDestructFirstPartyCookiesTimeStateChange,
+        );
+        settingsEvents.addListener(
+            SettingOption.DisableFiltering,
+            SettingsService.onDisableFilteringStateChange,
+        );
 
         contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsService.enableFiltering);
         contextMenuEvents.addListener(ContextMenuAction.DisableProtection, SettingsService.disableFiltering);
@@ -185,12 +201,150 @@ export class SettingsService {
      * @param isFilteringDisabled Changed {@link SettingOption.DisableFiltering} setting value.
      */
     static async onDisableFilteringStateChange(isFilteringDisabled: boolean): Promise<void> {
-        Engine.setFilteringEnabled(!isFilteringDisabled);
+        try {
+            Engine.api.setFilteringEnabled(!isFilteringDisabled);
+        } catch (e) {
+            Log.error('Failed to change filtering state', e);
+        }
 
         const activeTab = await TabsApi.getActive();
 
         if (activeTab) {
             await browser.tabs.reload(activeTab.id);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.DisableStealthMode} setting changed.
+     *
+     * @param isStealthModeDisabled Changed {@link SettingOption.DisableStealthMode} setting value.
+     */
+    static onDisableStealthModeStateChange(isStealthModeDisabled: boolean): void {
+        try {
+            Engine.api.setStealthModeEnabled(!isStealthModeDisabled);
+        } catch (e) {
+            Log.error('Failed to change stealth mode state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.HideSearchQueries} setting changed.
+     *
+     * @param isHideReferrerEnabled Changed {@link SettingOption.HideReferrer} setting value.
+     */
+    static onHideReferrerStateChange(isHideReferrerEnabled: boolean): void {
+        try {
+            Engine.api.setHideReferrer(isHideReferrerEnabled);
+        } catch (e) {
+            Log.error('Failed to change `hide referrer` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.HideSearchQueries} setting changed.
+     *
+     * @param isHideSearchQueriesEnabled Changed {@link SettingOption.HideSearchQueries} setting value.
+     */
+    static onHideSearchQueriesStateChange(isHideSearchQueriesEnabled: boolean): void {
+        try {
+            Engine.api.setHideSearchQueries(isHideSearchQueriesEnabled);
+        } catch (e) {
+            Log.error('Failed to change `hide search queries` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.RemoveXClientData} setting changed.
+     *
+     * @param isSendDoNotTrackEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
+     */
+    static onSendDoNotTrackStateChange(isSendDoNotTrackEnabled: boolean): void {
+        try {
+            Engine.api.setSendDoNotTrack(isSendDoNotTrackEnabled);
+        } catch (e) {
+            Log.error('Failed to change `send do not track` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.RemoveXClientData} setting changed.
+     *
+     * @param isRemoveXClientDataEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
+     */
+    static onRemoveXClientDataStateChange(isRemoveXClientDataEnabled: boolean): void {
+        try {
+            Engine.api.setBlockChromeClientData(isRemoveXClientDataEnabled);
+        } catch (e) {
+            Log.error('Failed to change `remove x-client-data` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.BlockWebRTC} setting changed.
+     *
+     * @param isBlockWebRTCEnabled Changed {@link SettingOption.BlockWebRTC} setting value.
+     */
+    static async onBlockWebRTCStateChange(isBlockWebRTCEnabled: boolean): Promise<void> {
+        try {
+            await Engine.api.setBlockWebRTC(isBlockWebRTCEnabled);
+        } catch (e) {
+            Log.error('Failed to change `block WebRTC` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.SelfDestructThirdPartyCookies} setting changed.
+     *
+     * @param isSelfDestructThirdPartyCookiesEnabled Changed
+     * {@link SettingOption.SelfDestructThirdPartyCookies} setting value.
+     */
+    static onSelfDestructThirdPartyCookiesStateChange(isSelfDestructThirdPartyCookiesEnabled: boolean): void {
+        try {
+            Engine.api.setSelfDestructThirdPartyCookies(isSelfDestructThirdPartyCookiesEnabled);
+        } catch (e) {
+            Log.error('Failed to change `self destruct third party cookies` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting changed.
+     *
+     * @param selfDestructThirdPartyCookiesTime Changed
+     * {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting value.
+     */
+    static onSelfDestructThirdPartyCookiesTimeStateChange(selfDestructThirdPartyCookiesTime: number): void {
+        try {
+            Engine.api.setSelfDestructThirdPartyCookiesTime(selfDestructThirdPartyCookiesTime);
+        } catch (e) {
+            Log.error('Failed to change `self destruct third party cookies time` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.SelfDestructFirstPartyCookies} setting changed.
+     *
+     * @param isSelfDestructFirstPartyCookiesEnabled Changed
+     * {@link SettingOption.SelfDestructFirstPartyCookies} setting value.
+     */
+    static onSelfDestructFirstPartyCookiesStateChange(isSelfDestructFirstPartyCookiesEnabled: boolean): void {
+        try {
+            Engine.api.setSelfDestructFirstPartyCookies(isSelfDestructFirstPartyCookiesEnabled);
+        } catch (e) {
+            Log.error('Failed to change `self destruct first party cookies` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting changed.
+     *
+     * @param selfDestructFirstPartyCookiesTime Changed
+     * {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting value.
+     */
+    static onSelfDestructFirstPartyCookiesTimeStateChange(selfDestructFirstPartyCookiesTime: number): void {
+        try {
+            Engine.api.setSelfDestructFirstPartyCookiesTime(selfDestructFirstPartyCookiesTime);
+        } catch (e) {
+            Log.error('Failed to change `self destruct first party cookies time` option state', e);
         }
     }
 

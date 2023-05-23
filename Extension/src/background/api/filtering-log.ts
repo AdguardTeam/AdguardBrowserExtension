@@ -30,6 +30,7 @@ import {
 } from '@adguard/tswebextension';
 
 import { AntiBannerFiltersId } from '../../common/constants';
+import { Log } from '../../common/log';
 import { listeners } from '../notifier';
 import { Engine } from '../engine';
 import { settingsStorage } from '../storages';
@@ -130,7 +131,11 @@ export class FilteringLogApi {
     public onOpenFilteringLogPage(): void {
         this.openedFilteringLogsPages += 1;
 
-        Engine.setCollectHitStats(true);
+        try {
+            Engine.api.setCollectHitStats(true);
+        } catch (e) {
+            Log.error('Failed to enable `collect hit stats` option', e);
+        }
     }
 
     /**
@@ -145,7 +150,11 @@ export class FilteringLogApi {
             });
 
             if (settingsStorage.get(SettingOption.DisableCollectHits)) {
-                Engine.setCollectHitStats(false);
+                try {
+                    Engine.api.setCollectHitStats(false);
+                } catch (e) {
+                    Log.error('Failed to disable `collect hit stats` option', e);
+                }
             }
         }
     }

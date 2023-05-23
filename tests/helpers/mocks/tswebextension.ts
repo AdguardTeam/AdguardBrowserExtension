@@ -10,7 +10,7 @@ import { MockedEventCannel } from './event-channel';
 export class MockedTsWebExtension implements TsWebExtension {
     public isStarted = false;
 
-    public configuration: ConfigurationMV2Context | undefined;
+    public configuration = {} as ConfigurationMV2Context;
 
     public start = jest.fn(async () => {
         this.isStarted = true;
@@ -36,11 +36,35 @@ export class MockedTsWebExtension implements TsWebExtension {
 
     public getRulesCount = jest.fn(() => 0);
 
-    public setLocalScriptRules = jest.fn(() => {});
+    public setLocalScriptRules = jest.fn();
 
     public getMessageHandler = jest.fn(() => jest.fn());
 
     public onFilteringLogEvent = new MockedEventCannel() as unknown as EventChannel<FilteringLogEvent>;
 
     public onAssistantCreateRule = new MockedEventCannel() as unknown as EventChannel<string>;
+
+    public setFilteringEnabled = jest.fn();
+
+    public setCollectHitStats = jest.fn();
+
+    public setStealthModeEnabled = jest.fn();
+
+    public setSelfDestructFirstPartyCookies = jest.fn();
+
+    public setSelfDestructThirdPartyCookies = jest.fn();
+
+    public setSelfDestructFirstPartyCookiesTime = jest.fn();
+
+    public setSelfDestructThirdPartyCookiesTime = jest.fn();
+
+    public setHideReferrer = jest.fn();
+
+    public setHideSearchQueries = jest.fn();
+
+    public setBlockChromeClientData = jest.fn();
+
+    public setSendDoNotTrack = jest.fn();
+
+    public setBlockWebRTC = jest.fn();
 }
