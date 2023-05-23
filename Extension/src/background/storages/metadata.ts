@@ -99,23 +99,6 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
     }
 
     /**
-     * Returns specified group metadata by filter id.
-     *
-     * @param filterId Filter id.
-     * @returns {GroupMetadata | undefined} Specified {@link GroupMetadata | group metadata }
-     * or undefined.
-     */
-    public getGroupByFilterId(filterId: number): GroupMetadata | undefined {
-        const filter = this.getFilter(filterId);
-
-        if (!filter) {
-            return;
-        }
-
-        return this.getGroup(filter.groupId);
-    }
-
-    /**
      * Returns tags metadata.
      *
      * @returns Tags metadata.

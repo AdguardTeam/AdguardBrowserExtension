@@ -49,6 +49,7 @@ import { CustomFilterApi } from './custom';
 import { PageStatsApi } from './page-stats';
 import { HitStatsApi } from './hit-stats';
 import { FilterUpdateApi } from './update';
+import { Categories } from './categories';
 
 export type FilterMetadata = RegularFilterMetadata | CustomFilterMetadata;
 
@@ -533,7 +534,7 @@ export class FiltersApi {
                     return false;
                 }
 
-                const groupMetadata = metadataStorage.getGroupByFilterId(id);
+                const groupMetadata = Categories.getGroupByFilterId(id);
                 if (!groupMetadata) {
                     return false;
                 }
