@@ -112,30 +112,6 @@ export class Engine {
     }
 
     /**
-     * TODO: improve {@link TsWebExtension#configure} method instead using this one.
-     * Update `filteringEnabled` configuration value without re-initialization of engine.
-     *
-     * @param value `filteringEnabled` config value.
-     */
-    static setFilteringEnabled(value: boolean): void {
-        if (Engine.api.configuration) {
-            Engine.api.configuration.settings.filteringEnabled = value;
-        }
-    }
-
-    /**
-     * TODO: improve {@link TsWebExtension#configure} method instead using this one.
-     * Update `collectHitStats` configuration value without re-initialization of engine.
-     *
-     * @param value `collectHitStats` config value.
-     */
-    static setCollectHitStats(value: boolean): void {
-        if (Engine.api.configuration) {
-            Engine.api.configuration.settings.collectStats = value;
-        }
-    }
-
-    /**
      * Creates tswebextension configuration based on current app state.
      */
     private static async getConfiguration(): Promise<ConfigurationMV2> {
