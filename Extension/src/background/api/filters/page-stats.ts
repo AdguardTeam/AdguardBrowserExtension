@@ -28,6 +28,8 @@ import {
     pageStatsValidator,
 } from '../../schema';
 
+import { Categories } from './categories';
+
 export type GetStatisticsDataResponse = {
     today: PageStatsDataItem[],
     lastWeek: PageStatsDataItem[],
@@ -108,7 +110,7 @@ export class PageStatsApi {
         filterId: number,
         blocked: number,
     ): Promise<void> {
-        const blockedGroup = metadataStorage.getGroupByFilterId(filterId);
+        const blockedGroup = Categories.getGroupByFilterId(filterId);
 
         if (!blockedGroup) {
             return;

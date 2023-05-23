@@ -21,6 +21,7 @@ import {
     filterStateStorage,
     groupStateStorage,
     filterVersionStorage,
+    customFilterMetadataStorage,
 } from '../../storages';
 import {
     GroupMetadata,
@@ -124,6 +125,25 @@ export class Categories {
      */
     public static disableGroup(groupId: number): void {
         groupStateStorage.disableGroups([groupId]);
+    }
+
+    /**
+     * Returns specified group metadata by filter id.
+     *
+     * @param filterId Filter id.
+     * @returns {GroupMetadata | undefined} Specified {@link GroupMetadata | group metadata }
+     * or undefined.
+     */
+    public static getGroupByFilterId(filterId: number): GroupMetadata | undefined {
+        const filter = metadataStorage.getFilter(filterId)
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2356
+            || customFilterMetadataStorage.getById(filterId);
+
+        if (!filter) {
+            return;
+        }
+
+        return metadataStorage.getGroup(filter.groupId);
     }
 
     /**
