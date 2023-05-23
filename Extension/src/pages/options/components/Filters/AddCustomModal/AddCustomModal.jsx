@@ -114,8 +114,10 @@ const AddCustomModal = ({
 
         try {
             const result = await messenger.checkCustomUrl(customUrlToAdd);
-            if (result.error) {
-                setError(result.error);
+            if (result === null) {
+                setStepToRender(STEPS.ERROR);
+            } else if (result.errorAlreadyExists) {
+                setError(reactTranslator.getMessage('options_antibanner_custom_filter_already_exists'));
                 setStepToRender(STEPS.ERROR);
             } else if (!result.filter) {
                 setStepToRender(STEPS.ERROR);
