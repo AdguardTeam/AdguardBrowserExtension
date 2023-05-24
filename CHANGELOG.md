@@ -1,6 +1,6 @@
 # AdGuard Browser Extension Changelog
 
-## Unreleased
+## v4.1.56
 
 ### Changed
 
