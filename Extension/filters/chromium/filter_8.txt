@@ -1,8 +1,8 @@
-! Checksum: dDt3WtNWWGG0Rf8I+CjChA
+! Checksum: QkQuXQJsVQy5nOTHrxVWEA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.4.57
-! TimeUpdated: 2023-03-29T10:32:10+00:00
+! Version: 2.0.5.74
+! TimeUpdated: 2023-05-22T13:32:18+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -465,6 +465,7 @@ _advertentieleaderboardhome.
 ||zilverengoudkopen.nl/banners/
 ||zoekhulp.nl/img/bnr-
 ||zwartewaterfm.nl/images/SponsorenZwarteWaterFM.jpg
+/^https?:\/\/.*\/[a-z0-9A-Z_]{2,15}\.(php|jx|jsx|1ph|jsf|jz|jsm|j$)/$image,script,subdocument,domain=hetepornoclips.com|pornwereld.com
 @@||2mdn.net/instream/html5/ima3.js$script,domain=omroepbrabant.nl
 @@||advertising-module.api.dpgmedia.cloud/video/$xmlhttprequest,domain=sportnieuws.nl
 @@||aka.spotxcdn.com/integration/ados/v1/ados.js$script,domain=radioluisteren.fm
@@ -495,7 +496,6 @@ _advertentieleaderboardhome.
 ##.advertentie-2-container
 ##.advertentie_226
 ##.advertentie_links
-##.advrow
 ##.content-rechts-ad
 ##.gamereel_featured-ad
 ##.gesponsord_blokje
@@ -707,6 +707,7 @@ ajaxreport.nl###text-88
 ajaxreport.nl###text-91
 sexpower.nl###top-banner
 marktplaats.nl###top-banner-wrapper
+escort46.nl###top_image_div
 hollandskroonnieuws.nl,radio-minerva.be,wieringernieuws.nl###topbanner
 voetbal-vandaag.nl###topbox
 hotradiohits.nl###tpl_banners
@@ -737,7 +738,7 @@ buzzbie.nl##.TS_Banner_Spot
 telegraaf.nl##.TextArticlePage__bannerWrapper
 telegraaf.nl##.VideoArticlePage__banner
 telegraaf.nl##.VideoPage__banner
-dartfreakz.nl,thehike.nl##.a-single
+dartfreakz.nl,thehike.nl,zozwanger.nl##.a-single
 rtveen.nl##.aas_zone
 autozine.nl,beleggersbelangen.nl,besteproduct.nl,hetnieuwsvandaag.be,indebuurt.nl,koopplein.nl,letsgodigital.org,limburger.nl,persinfo.org,sport.be,tellows.nl,tradeidee.nl,tripadvisor.nl,voetbalnieuws.nl,voetbalprimeur.nl,wijlimburg.nl,xgn.nl##.ad
 filmtotaal.nl##.ad-centering
@@ -759,6 +760,7 @@ juf-milou.nl##.adverteerdersblok
 autoweek.nl##.advertise
 1twente.nl,bnnvara.nl,elektormagazine.nl,fonkmagazine.nl,hpdetijd.nl,kieskeurig.nl,tvgids.tv,zijaanzij.nl##.advertisement
 goodbye.be,sporza.be##.advertising
+albrandswaardsdagblad.nl,barendrechtsdagblad.nl,dagblad010.nl,dagblad070.nl,goudsdagblad.nl,ridderkerksdagblad.nl,rijswijksdagblad.nl,voorburgsdagblad.nl,zoetermeersdagblad.nl##.advrow
 wielerflits.be,wielerflits.nl##.affiliate_links
 gfcnieuws.com,historiek.net##.ai-viewport-1
 rtvkrimpenerwaard.nl##.art-positioncontrol
@@ -779,6 +781,7 @@ deliciousmagazine.nl,fiets.nl,fietsactief.nl,knipmode.nl,rootsmagazine.nl,season
 tvblik.nl##.banner-fluid
 prewarcar.nl##.banner-holder
 ewmagazine.nl##.banner-leaderboard
+freeones.nl##.banner-placeholder
 marktplaats.nl##.banner-row
 maarkelsnieuws.nl##.banner-secondary-sidebar
 nnieuws.be##.banner-silver
@@ -852,6 +855,7 @@ voetbaluitslagen.com##.cta
 menttv.be##.cta-container
 voetbaluitslagen.com##.cta__toplist
 kekmama.nl##.cts-row-wrapper
+albrandswaardsdagblad.nl,barendrechtsdagblad.nl,dagblad010.nl,dagblad070.nl,goudsdagblad.nl,ridderkerksdagblad.nl,rijswijksdagblad.nl,voorburgsdagblad.nl,zoetermeersdagblad.nl##.ddbad_wrapper
 radionl.fm##.desktop_mobile
 touretappe.nl##.desktopad
 flashscore.nl##.detailLeaderboard
@@ -893,6 +897,7 @@ kanaalxxx.nl##.fpbnr
 motorrijdenexpert.nl##.full-row.relative-row.no-padding-bottom.title-txt-btn.flat-theme.flat-theme-content
 unitednews.sr##.fullwidthbanner-container
 binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl,dbsuriname.com,despirituelewereld.be,dewereldmorgen.be,regioinbedrijf.nl,shespot.nl,sleutelstad.nl,westerwoldeactueel.nl##.g
+zozwanger.nl##.g-single
 zeelandnet.nl##.g_banner
 radiovisie.eu##.gmollik
 srherald.com##.gsrhera
@@ -1261,6 +1266,7 @@ vakantieplaats.nl#@#.topAds
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||cdn.optoutadvertising.com^
 ||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
 !
@@ -1300,8 +1306,13 @@ webcams-texel.nl#%#//scriptlet('abort-current-inline-script', 'document.createEl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142982
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120455
 tweakers.net#%#(function(){const a=Function.prototype.toString;window.EventTarget.prototype.addEventListener=new Proxy(window.EventTarget.prototype.addEventListener,{apply:(b,c,d)=>{const e=d[1],f=/detail.adblockDetected|handleAdblockDetect|Flags.autoRecov/;return e&&"function"==typeof e&&(f.test(a.call(e))||f.test(e.toString()))&&(d[1]=function(){}),Reflect.apply(b,c,d)}});Function.prototype.bind=new Proxy(Function.prototype.bind,{apply:(b,c,d)=>{const e=a.call(c),f=Reflect.apply(b,c,d);return f.toString=function(){return e},f}})})();
-tweakers.net#%#//scriptlet('prevent-fetch', 'ab.tweakers.nl')
+tweakers.net#@#.widebnr
+tweakers.net#$##b_re { display: block !important; min-height: 2px !important; }
+tweakers.net#$#.widebnr { display: block !important; min-height: 2px !important; }
+tweakers.net#%#//scriptlet('prevent-fetch', '/a[ab]\.tweakers\.nl/')
+tweakers.net#%#//scriptlet('set-constant', 'BannerManager.enableTags', 'noopFunc')
 tweakers.net#%#//scriptlet('set-constant', 'BannerManager.bannersBlocked', 'false')
+tweakers.net#%#//scriptlet('set-constant', 'BannerManager.sendAdRequest', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/99141
 @@/prebid/ad.gif?user=*&adId=$domain=kijk.nl
 @@||ads-talpa.adhese.com/json/$domain=kijk.nl
@@ -1350,8 +1361,6 @@ player.medialaancdn.be,vtm.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd
 voetbalwedstrijdenvandaag.nl#@##sponsorText
 ! https://forum.adguard.com/index.php?threads/25361/
 icttipsandtricks.nl##body #adblock_screen
-! https://forum.adguard.com/index.php?threads/24081/
-@@||gamekings.tv/wp-content/themes/*/js/ads.js
 ! https://forum.adguard.com/index.php?threads/telegraaf-nl-antiadblock-warning.21364/
 @@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
 telegraaf.nl#%#window.canRunAds = true;
@@ -1366,23 +1375,24 @@ telegraaf.nl#%#window.canRunAds = true;
 ! This section contains the list of extended CSS rules against ads.
 ! Note, that rules should be domain-specific and you have to use special syntax `#?#` instead of `##`.
 !
-! Good: example.org#?#main > div.row:-abp-has(> div.ad)
+! Good: example.org#?#main > div.row:has(> div.ad)
 ! Bad: example.org##main > div.ad (should be in specific.txt)
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/48649
-marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):-abp-has(> .mp-Listings__admarktTitle)
-marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:-abp-has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
+marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
+marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/35383
-turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:-abp-has(> a > img[width="276"]) { remove: true; }
+turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/16658
-androidplanet.nl#?#.sidebar > .widget_static_device_widget:-abp-has(.device-ad)
-androidplanet.nl#?#.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:-abp-has(> .pd-advisor-offer > .result-badge:contains(Adv.))
+androidplanet.nl#?#.sidebar > .widget_static_device_widget:has(.device-ad)
+androidplanet.nl#?#.pd-results-container > .results-inner > .pd-advisor-offer-container:first-child:has(> .pd-advisor-offer > .result-badge:contains(Adv.))
 !
-rtlnieuws.nl#?#.off-canvas-content > div:-abp-has(> div.dfp-rectangle-wrapper)
-ad.nl#?#ol > li.tile:-abp-has(> article.ankeiler--advertisement)
-knack.be#?##below_para_1:-abp-has(> a[href^="https://e093.knack.be/"])
+gpblog.com#?#.articles > li.injection:has(> aside.betting)
+rtlnieuws.nl#?#.off-canvas-content > div:has(> div.dfp-rectangle-wrapper)
+ad.nl#?#ol > li.tile:has(> article.ankeiler--advertisement)
+knack.be#?##below_para_1:has(> a[href^="https://e093.knack.be/"])
 bnnvara.nl#?#div[id^="ster-ad-bnnvara-"]:upward(1)
-gfcnieuws.com#?#.entry-content div[class]:-abp-has(> ins.adsbygoogle)
+gfcnieuws.com#?#.entry-content div[class]:has(> ins.adsbygoogle)
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -1460,6 +1470,11 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#$##rek { display: none !important; } (for instance, should be in general_extensions.txt)
 !
+looopings.nl###contentBillboard
+looopings.nl##div[style="min-height:250px;"]
+gpblog.com##.betting-insert
+tameteo.nl###bannerDerPC
+tameteo.nl##.megabanner
 rtlnieuws.nl##.article-sidebar__ad
 ||e*.knack.be/rest/dialogues/files/*/Banner_Notificaties_AppInstall
 knack.be##.js-partner-content
@@ -1468,8 +1483,6 @@ hardware.info##div[class^="bnr-"]
 security.nl##.banner_leaderboard
 iculture.nl##.ad-top-desktop
 iculture.nl##.feed-ad-wrapper
-tweakers.net###b_re
-tweakers.net##.widebnr
 ||tweakers.net/*/build/banners.*.js
 vandaaginside.nl##div[class^="a-bannerWrapper-"]
 vandaaginside.nl##div[class^="Component-bannerTopWrapper-"]
@@ -1572,7 +1585,7 @@ iphoned.nl###featured-header
 tvgids.nl###ligatus_under_content
 afkortingen.nu###link_unit
 fok.nl###mainContent > div.ad
-gelderlander.nl##.ad
+gezondheidsplein.nl,gelderlander.nl##.ad
 iphoned.nl##.advert-sidebar
 nrc.nl,afkortingen.nu##.banner
 marktplaats.nl##.banner-vipbottom
@@ -1601,6 +1614,14 @@ klusidee.nl##td.td-ad
 !
 ! NOTE: Dutch - specific - HINTS
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10738
+!
+! Special rules for AdGuard websites' test pages. The only purpose of these
+! rules is to make test pages work so that users could verify that AdGuard
+! is properly working.
+!
+!+ NOT_OPTIMIZED
+adguard.com,adguard.app##.hello_from_adguard_dutch
+!
 !---------------------------------------------------------------------------!
 !-------------- Fixing filtration errors (false-positive) ------------------!
 !---------------------------------------------------------------------------!
@@ -1609,7 +1630,6 @@ klusidee.nl##td.td-ad
 !
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
-!
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142788
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131712
@@ -1637,8 +1657,5 @@ frontpage.fok.nl#@#.advertentie
 klusidee.nl#@#.header-ad
 ! https://forum.adguard.com/index.php?threads/12438/
 @@||media.boomads.com/images^$domain=telegraaf.nl
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/534
-@@||cdn-static.liverail.com/swf/$domain=dumpert.nl
-@@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl
 ! http://forum.adguard.com/showthread.php?4571
 @@||publiekeomroep.nl^$stylesheet,script,domain=cinema.nl

@@ -79,7 +79,7 @@ const downloadLocales = async (locales) => {
 
     // Decrease this value if you encounter error:
     // "Maximum number of concurrent requests for this endpoint is reached"
-    const LOCALES_DOWNLOAD_BATCH_SIZE = 2;
+    const LOCALES_DOWNLOAD_BATCH_SIZE = 1;
 
     return promiseBatchMap(localeUrlPairs, LOCALES_DOWNLOAD_BATCH_SIZE, async (localeUrlPair) => {
         const { locale, url } = localeUrlPair;

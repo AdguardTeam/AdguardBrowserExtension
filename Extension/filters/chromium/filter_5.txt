@@ -1,8 +1,8 @@
-! Checksum: 0VPNlg5WbsIFbwM7GU+rfA
+! Checksum: MVhbqBCJkeC1Mo6QX2WBYQ
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.6
-! TimeUpdated: 2023-03-20T15:32:08+00:00
+! Version: 2.0.1.18
+! TimeUpdated: 2023-05-17T06:31:54+00:00
 ! Expires: 4 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -137,19 +137,14 @@
 ! !#if (!adguard_app_ios && !adguard_ext_android_cb)
 ! @@||youtube.com/get_video_info
 ! !#endif
-! This one handles an XHR request for YT player data
-! smart JSON override: https://gist.github.com/ameshkov/0c5148f243ffe9d8e40fd9ee11f142f4
-! smartJSONParseOverride('adPlacements', [], /.*/);
-! smartJSONParseOverride('playerAds', [], /.*/);
-! youtube-nocookie.com,youtube.com#%#(function(){var overrideObject=function(obj,propertyName,overrideValue){var overriden=false;for(var key in obj)if(obj.hasOwnProperty(key)&&key===propertyName){obj[key]=overrideValue;overriden=true}else if(obj.hasOwnProperty(key)&&typeof obj[key]==="object")if(overrideObject(obj[key],propertyName,overrideValue))overriden=true;return overriden};var smartJSONParseOverride=function(propertyName,overrideValue,reStack){var realParse=JSON.parse;JSON.parse=function(text,reviver){var obj=realParse(text,reviver);if(!obj)return obj;var stackTrace=(new Error).stack;if(reStack.test(stackTrace))if(overrideObject(obj,propertyName,overrideValue));return obj}};smartJSONParseOverride("adPlacements",[],/.*/);smartJSONParseOverride("playerAds",[],/.*/)})();
 !
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
 ! main youtube page - changing view for the first row of elements
-www.youtube.com#$?##contents ytd-rich-grid-row:-abp-has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
-www.youtube.com#$?##contents ytd-rich-grid-row:-abp-has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
-www.youtube.com#$?##contents ytd-rich-grid-row:-abp-has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) { --ytd-rich-grid-items-per-row: 1 !important; }
+www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
+www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
+www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) { --ytd-rich-grid-items-per-row: 1 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96262
 developer.android.com,adssettings.google.com##sc-survey-survey-manager
 !
@@ -237,7 +232,7 @@ developer.android.com,adssettings.google.com##sc-survey-survey-manager
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-mail.yandex.ru#?#.modal:-abp-has(> div[data-lego] div[class^="mail-SubscriptionsPopup"])
+mail.yandex.ru#?#.modal:has(> div[data-lego] div[class^="mail-SubscriptionsPopup"])
 !
 ! Allowlist
 !
@@ -256,8 +251,16 @@ mail.yandex.ru#?#.modal:-abp-has(> div[data-lego] div[class^="mail-Subscriptions
 ||chrome.test.filter.com^$third-party
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142875
-imdb.com#?#div[data-testid="promptable"]:-abp-has(.ipc-rating-display-with-poster__image)
-imdb.com#$?#body:-abp-has(div[data-testid="promptable"] .ipc-rating-display-with-poster__image) { overflow: auto !important; }
+imdb.com#?#div[data-testid="promptable"]:has(.ipc-rating-display-with-poster__image)
+imdb.com#$?#body:has(div[data-testid="promptable"] .ipc-rating-display-with-poster__image) { overflow: auto !important; }
+!
+! Special rules for AdGuard websites' test pages. The only purpose of these
+! rules is to make test pages work so that users could verify that AdGuard
+! is properly working.
+!
+!+ NOT_OPTIMIZED
+adguard.com,adguard.app##.hello_from_adguard_experimental
+!
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!
 !-------------------------------------------------------------------!
