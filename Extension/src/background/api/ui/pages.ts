@@ -186,7 +186,7 @@ export class PagesApi {
      * @param from UI which user is forwarded from.
      */
     public static async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
-        let { browserName } = UserAgent;
+        let browserName = UserAgent.browserName;
         let browserDetails: string | undefined;
 
         if (!UserAgent.isSupportedBrowser) {
