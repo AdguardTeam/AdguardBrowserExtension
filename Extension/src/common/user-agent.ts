@@ -32,17 +32,17 @@ export class UserAgent {
      * @returns user agent browser name
      */
     static getBrowserName(): string | undefined {
-        return this.parser.getBrowser().name;
+        return UserAgent.parser.getBrowser().name;
     }
 
     /**
-     * Check if current browser is as given.
+     * Check if the current browser is as given.
      *
      * @param browserName - Browser Name
      * @returns true, if current browser has specified name
      */
     static isTargetBrowser(browserName: string): boolean {
-        return this.parser.getBrowser().name === browserName;
+        return UserAgent.parser.getBrowser().name === browserName;
     }
 
     /**
@@ -52,20 +52,21 @@ export class UserAgent {
      * @returns true, if current browser has specified name
      */
     static isTargetPlatform(platformName: string): boolean {
-        return this.parser.getOS().name === platformName;
+        return UserAgent.parser.getOS().name === platformName;
     }
 
     /**
-     * Returns browser version by name.
+     * Returns a major browser version
      *
-     * @param browserName - Browser Name
      * @returns browser version number or undefined
      */
-    static getBrowserVersion(browserName: string): number | undefined {
+    static getVersion(): number | undefined {
         const browser = this.parser.getBrowser();
-
-        return browser.name === browserName ? Number(browser.version) : undefined;
+        const versionNumber = Number(browser.version?.split('.')[0]);
+        return Number.isNaN(versionNumber) ? undefined : versionNumber;
     }
+
+    static version = UserAgent.getVersion();
 
     static isChrome = UserAgent.isTargetBrowser('Chrome');
 
@@ -77,13 +78,7 @@ export class UserAgent {
 
     static isEdge = UserAgent.isTargetBrowser('Edge');
 
-    static isEdgeChromium = Number(UserAgent.getBrowserVersion('Edge')) >= 79;
-
-    static chromeVersion = UserAgent.getBrowserVersion('Chrome');
-
-    static firefoxVersion = UserAgent.getBrowserVersion('Firefox');
-
-    static operaVersion = UserAgent.getBrowserVersion('Opera');
+    static isEdgeChromium = UserAgent.isEdge && !!(UserAgent.version && UserAgent.version >= 79);
 
     static isMacOs = UserAgent.isTargetPlatform('Mac OS');
 
@@ -92,9 +87,10 @@ export class UserAgent {
     static isAndroid = UserAgent.isTargetPlatform('Android');
 
     static isSupportedBrowser =
-        (UserAgent.isChrome && Number(UserAgent.chromeVersion) >= 79)
-        || (UserAgent.isFirefox && Number(UserAgent.firefoxVersion) >= 78)
-        || (UserAgent.isOpera && Number(UserAgent.operaVersion) >= 66);
+        (UserAgent.isChrome && Number(UserAgent.version) >= 79)
+        || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= 79)
+        || (UserAgent.isFirefox && Number(UserAgent.version) >= 78)
+        || (UserAgent.isOpera && Number(UserAgent.version) >= 66);
 
     static browserName = UserAgent.getBrowserName();
 }

@@ -119,22 +119,7 @@ module.exports = {
         ],
         'wrap-iife': 'off',
         'func-names': 'off',
-        'prefer-destructuring': [
-            'error',
-            {
-                'VariableDeclarator': {
-                    'array': false,
-                    'object': true,
-                },
-                'AssignmentExpression': {
-                    'array': true,
-                    'object': false,
-                },
-            },
-            {
-                'enforceForRenamedProperties': false,
-            },
-        ],
+        'prefer-destructuring': 'off',
         'consistent-return': 'off',
         'dot-notation': 'off',
         'quote-props': 'off',
