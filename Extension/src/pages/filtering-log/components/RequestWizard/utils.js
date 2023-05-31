@@ -130,35 +130,35 @@ export const getRequestEventType = (event) => {
     }
 
     switch (requestEventType) {
-        case 'DOCUMENT':
-        case 'SUBDOCUMENT':
+        case RequestType.Document:
+        case RequestType.Subdocument:
             return 'HTML';
-        case 'STYLESHEET':
+        case RequestType.Stylesheet:
             return 'CSS';
-        case 'SCRIPT':
+        case RequestType.Script:
             return 'JavaScript';
-        case 'XMLHTTPREQUEST':
+        case RequestType.XmlHttpRequest:
             return 'XHR';
-        case 'IMAGE':
+        case RequestType.Image:
             return 'Image';
-        case 'OBJECT':
-        case 'MEDIA':
+        case RequestType.Object:
+        case RequestType.Media:
             return 'Media';
-        case 'FONT':
+        case RequestType.Font:
             return 'Font';
-        case 'WEBSOCKET':
+        case RequestType.Websocket:
             return 'WebSocket';
-        case 'WEBRTC':
+        case RequestType.WebRtc:
             return 'WebRTC';
-        case 'CSP':
+        case RequestType.Csp:
             return 'CSP';
-        case 'CSP_REPORT':
+        case RequestType.CspReport:
             return 'CSP report';
-        case 'COOKIE':
+        case RequestType.Cookie:
             return 'Cookie';
-        case 'PING':
+        case RequestType.Ping:
             return 'Ping';
-        case 'OTHER':
+        case RequestType.Other:
             return 'Other';
         default:
             return '';
