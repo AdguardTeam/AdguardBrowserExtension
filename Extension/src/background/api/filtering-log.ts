@@ -290,7 +290,7 @@ export class FilteringLogApi {
             }
         }
 
-        return Object.values(this.tabsInfoMap);
+        return Array.from(this.tabsInfoMap.values());
     }
 
     /**
