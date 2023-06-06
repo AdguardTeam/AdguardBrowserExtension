@@ -78,6 +78,7 @@ export const Setting = (props) => {
                     handler={changeHandler}
                     options={options}
                     value={value}
+                    withContext
                 />
             );
         }
