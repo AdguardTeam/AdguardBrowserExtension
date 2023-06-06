@@ -286,12 +286,6 @@ export const General = observer(() => {
                     htmlFor="inputEl"
                     className="links-menu__item"
                 >
-                    <input
-                        type="file"
-                        accept="application/json"
-                        onChange={inputChangeHandler}
-                        className="actions__input-file"
-                    />
                     {reactTranslator.getMessage('options_import_settings')}
                 </label>
                 <a
