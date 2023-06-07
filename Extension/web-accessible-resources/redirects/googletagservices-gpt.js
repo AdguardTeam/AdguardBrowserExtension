@@ -56,7 +56,7 @@
                 f.setAttribute("height", 0);
                 f.setAttribute("data-load-complete", true);
                 f.setAttribute("data-google-container-id", true);
-                f.setAttribute("sandbox", true);
+                f.setAttribute("sandbox", "");
                 node.appendChild(f);
             }
         };
@@ -108,16 +108,16 @@
                 return [ v ];
             }
             try {
-                return [ Array.prototype.flat.call(v)[0] ];
+                return Array.prototype.flat.call(v);
             } catch (_unused) {}
             return [];
         };
         const updateTargeting = function updateTargeting(targeting, map) {
             if (typeof map === "object") {
-                const entries = Object.entries(map || {});
-                for (var _i = 0, _entries = entries; _i < _entries.length; _i++) {
-                    const _entries$_i = slicedToArray(_entries[_i], 2), k = _entries$_i[0], v = _entries$_i[1];
-                    targeting.set(k, getTargetingValue(v));
+                for (const key in map) {
+                    if (Object.prototype.hasOwnProperty.call(map, key)) {
+                        targeting.set(key, getTargetingValue(map[key]));
+                    }
                 }
             }
         };
@@ -382,9 +382,9 @@
                 const AG_SCRIPTLET_MARKER = "#%#//";
                 const UBO_SCRIPTLET_MARKER = "##+js";
                 let ruleStartIndex;
-                if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
                 const rulePart = source.ruleText.slice(ruleStartIndex);

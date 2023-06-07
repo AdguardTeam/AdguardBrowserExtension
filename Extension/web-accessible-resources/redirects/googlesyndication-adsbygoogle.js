@@ -30,7 +30,7 @@
             const childNodesQuantity = adElemChildNodes.length;
             let areIframesDefined = false;
             if (childNodesQuantity > 0) {
-                areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.indexOf(ASWIFT_IFRAME_MARKER) > -1 && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.indexOf(GOOGLE_ADS_IFRAME_MARKER) > -1;
+                areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.includes(ASWIFT_IFRAME_MARKER) && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.includes(GOOGLE_ADS_IFRAME_MARKER);
             }
             if (!areIframesDefined) {
                 adElems[i].setAttribute(statusAttrName, "done");
@@ -65,9 +65,9 @@
                 const AG_SCRIPTLET_MARKER = "#%#//";
                 const UBO_SCRIPTLET_MARKER = "##+js";
                 let ruleStartIndex;
-                if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
                 const rulePart = source.ruleText.slice(ruleStartIndex);

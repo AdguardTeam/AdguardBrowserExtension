@@ -22,7 +22,7 @@
                 let match = 0;
                 for (let j = 0; j < tokens.length; j += 1) {
                     const token = tokens[j];
-                    const found = token instanceof RegExp ? token.test(str) : str.indexOf(token) > -1;
+                    const found = token instanceof RegExp ? token.test(str) : str.includes(token);
                     if (found) {
                         match += 1;
                     }
@@ -62,9 +62,9 @@
                 const AG_SCRIPTLET_MARKER = "#%#//";
                 const UBO_SCRIPTLET_MARKER = "##+js";
                 let ruleStartIndex;
-                if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
                 const rulePart = source.ruleText.slice(ruleStartIndex);

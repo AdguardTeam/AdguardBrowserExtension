@@ -557,9 +557,9 @@
                 const AG_SCRIPTLET_MARKER = "#%#//";
                 const UBO_SCRIPTLET_MARKER = "##+js";
                 let ruleStartIndex;
-                if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
                 const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -579,7 +579,7 @@
     function logMessage(source, message) {
         let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
         let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-        const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+        const name = source.name, verbose = source.verbose;
         if (!forced && !verbose) {
             return;
         }
@@ -588,16 +588,7 @@
             nativeConsole("".concat(name, ":"), message);
             return;
         }
-        let messageStr = "".concat(name, ": ").concat(message);
-        if (ruleText) {
-            const RULE_MARKER = "#%#//scriptlet";
-            const markerIdx = ruleText.indexOf(RULE_MARKER);
-            if (markerIdx > -1) {
-                const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
-                messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
-            }
-        }
-        nativeConsole(messageStr);
+        nativeConsole("".concat(name, ": ").concat(message));
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
