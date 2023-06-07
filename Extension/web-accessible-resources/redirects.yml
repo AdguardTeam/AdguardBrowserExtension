@@ -1,11 +1,13 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.9.7
+#    Version 1.9.37
 #
 - title: 1x1-transparent.gif
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org^$image,redirect=1x1-transparent.gif
     ```
   aliases:
@@ -17,9 +19,11 @@
   content: R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 
 - title: 2x2-transparent.png
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org^$image,redirect=2x2-transparent.png
     ```
   aliases:
@@ -32,9 +36,11 @@
     SUVORK5CYII=
 
 - title: 3x2-transparent.png
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org^$image,redirect=3x2-transparent.png
     ```
   aliases:
@@ -47,9 +53,11 @@
     SUVORK5CYII=
 
 - title: 32x32-transparent.png
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org^$image,redirect=32x32-transparent.png
     ```
   aliases:
@@ -62,9 +70,11 @@
     AO8GECAAAZf3V9cAAAAASUVORK5CYII=
 
 - title: noopframe
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.com^$subdocument,redirect=noopframe,domain=example.org
     ```
   aliases:
@@ -80,9 +90,11 @@
     </html>
 
 - title: noopcss
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/style.css$stylesheet,redirect=noopcss
     ```
   aliases:
@@ -93,9 +105,11 @@
   content: ''
 
 - title: noopjs
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/advert.js$script,redirect=noopjs
     ```
   aliases:
@@ -106,9 +120,11 @@
   content: '(function() {})()'
 
 - title: noopjson
+  added: v1.6.2
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/geo/location$xmlhttprequest,redirect=noopjson
     ```
   file: noopjson.json
@@ -116,9 +132,11 @@
   content: '{}'
 
 - title: nooptext
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/advert.js$xmlhttprequest,redirect=nooptext
     ```
   aliases:
@@ -129,17 +147,15 @@
   content: ''
 
 - title: empty
-  description: >-
+  added: v1.3.9
+  description: |-
     Pretty much the same as `nooptext`. Used for conversion of modifier `empty`
-    so better avoid its using in production filter lists.
+    so better avoid its using in prod versions of filter lists.
 
+    ### Examples
 
-    **Example**
-
-    ```
-
+    ```adblock
     ||example.org/log$redirect=empty
-
     ```
   aliases:
     - empty
@@ -148,11 +164,13 @@
   content: ''
 
 - title: noopvmap-1.0
+  added: v1.1.5
   description: |-
     Redirects request to an empty VMAP response.
 
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/vmap01.xml$xmlhttprequest,redirect=noopvmap-1.0
     ```
   aliases:
@@ -164,11 +182,13 @@
     version="1.0"></vmap:VMAP>
 
 - title: noopvast-2.0
+  added: v1.0.10
   description: |-
     Redirects request to an empty VAST 2.0 response.
 
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/vast02.xml^$xmlhttprequest,redirect=noopvast-2.0
     ```
   file: noopvast02.xml
@@ -176,11 +196,13 @@
   content: <VAST version="2.0"></VAST>
 
 - title: noopvast-3.0
+  added: v1.0.10
   description: |-
     Redirects request to an empty VAST 3.0 response.
 
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/vast03.xml^$xmlhttprequest,redirect=noopvast-3.0
     ```
   file: noopvast03.xml
@@ -188,11 +210,13 @@
   content: <VAST version="3.0"></VAST>
 
 - title: noopvast-4.0
+  added: v1.4.3
   description: |-
     Redirects request to an empty VAST 4.0 response.
 
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/vast04.xml^$xmlhttprequest,redirect=noopvast-4.0
     ```
   file: noopvast04.xml
@@ -200,9 +224,11 @@
   content: <VAST version="4.0"></VAST>
 
 - title: noopmp3-0.1s
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/advert.mp3$media,redirect=noopmp3-0.1s
     ```
   aliases:
@@ -232,9 +258,11 @@
     VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 
 - title: noopmp4-1s
+  added: v1.0.4
   description: |-
-    **Example**
-    ```
+    ### Examples
+
+    ```adblock
     ||example.org/advert.mp4$media,redirect=noopmp4-1s
     ```
   aliases:
@@ -310,6 +338,7 @@
     qXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNTUuMzMuMTAw
 
 - title: click2load.html
+  added: v1.5.0
   description: >-
     Redirects resource and replaces supposed content by decoy frame with button
     for original content recovering
@@ -320,9 +349,10 @@
     https://github.com/gorhill/uBlock/blob/1.31.0/src/web_accessible_resources/click2load.html
 
 
-    **Example**
+    ### Example
 
-    ```
+
+    ```adblock
 
     ||youtube.com/embed/$frame,third-party,redirect=click2load.html
 
@@ -444,7 +474,7 @@
             let matchedData;
             let queryStr = rawQueryStr.substring(1);
             while (matchedData = pattern.exec(queryStr)) {
-              if (neededParams.indexOf(matchedData[1]) > -1) {
+              if (neededParams.includes(matchedData[1])) {
                 res[matchedData[1]] = matchedData[2];
               }
               queryStr = queryStr.substring(matchedData[0]);
@@ -573,7 +603,7 @@
             const FRAME_MARKER = 'frame';
             const SUBDOCUMENT_MARKER = 'subdocument';
             const ruleModifiers = substringAfter(rule, '$').split(',');
-            return ruleModifiers.indexOf(FRAME_MARKER) > -1 || ruleModifiers.indexOf(SUBDOCUMENT_MARKER) > -1;
+            return ruleModifiers.includes(FRAME_MARKER) || ruleModifiers.includes(SUBDOCUMENT_MARKER);
           };
           const isInsideFrame = function isInsideFrame() {
             return window.self !== window.top;
@@ -592,7 +622,7 @@
   # the sha256 value of the file is calculated and included in the yaml file
   # as the redirect is being used as a single file.
   # This will allow the extension to retrieve the value and add it to its CSP.
-  sha: sha256-/LXEqDmVMWdyPFjNsOl0yp3A6W+5pEv8yN6hmCLoAiE=
+  sha: sha256-z331S7r9QeAmJT220RjpDwtC78FnQBjMjyhLlx8CUd8=
 
 - title: amazon-apstag
   comment: Mocks Amazon's apstag.js
@@ -628,9 +658,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -751,9 +781,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -913,9 +943,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -995,9 +1025,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -1068,9 +1098,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -1131,9 +1161,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -1256,9 +1286,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -1278,7 +1308,7 @@
         function logMessage(source, message) {
             let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+            const name = source.name, verbose = source.verbose;
             if (!forced && !verbose) {
                 return;
             }
@@ -1287,16 +1317,7 @@
                 nativeConsole("".concat(name, ":"), message);
                 return;
             }
-            let messageStr = "".concat(name, ": ").concat(message);
-            if (ruleText) {
-                const RULE_MARKER = "#%#//scriptlet";
-                const markerIdx = ruleText.indexOf(RULE_MARKER);
-                if (markerIdx > -1) {
-                    const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
-                    messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
-                }
-            }
-            nativeConsole(messageStr);
+            nativeConsole("".concat(name, ": ").concat(message));
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -1409,9 +1430,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2012,9 +2033,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2034,7 +2055,7 @@
         function logMessage(source, message) {
             let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+            const name = source.name, verbose = source.verbose;
             if (!forced && !verbose) {
                 return;
             }
@@ -2043,16 +2064,7 @@
                 nativeConsole("".concat(name, ":"), message);
                 return;
             }
-            let messageStr = "".concat(name, ": ").concat(message);
-            if (ruleText) {
-                const RULE_MARKER = "#%#//scriptlet";
-                const markerIdx = ruleText.indexOf(RULE_MARKER);
-                if (markerIdx > -1) {
-                    const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
-                    messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
-                }
-            }
-            nativeConsole(messageStr);
+            nativeConsole("".concat(name, ": ").concat(message));
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -2105,7 +2117,7 @@
                 const childNodesQuantity = adElemChildNodes.length;
                 let areIframesDefined = false;
                 if (childNodesQuantity > 0) {
-                    areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.indexOf(ASWIFT_IFRAME_MARKER) > -1 && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.indexOf(GOOGLE_ADS_IFRAME_MARKER) > -1;
+                    areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.includes(ASWIFT_IFRAME_MARKER) && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.includes(GOOGLE_ADS_IFRAME_MARKER);
                 }
                 if (!areIframesDefined) {
                     adElems[i].setAttribute(statusAttrName, "done");
@@ -2140,9 +2152,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2235,7 +2247,7 @@
                     f.setAttribute("height", 0);
                     f.setAttribute("data-load-complete", true);
                     f.setAttribute("data-google-container-id", true);
-                    f.setAttribute("sandbox", true);
+                    f.setAttribute("sandbox", "");
                     node.appendChild(f);
                 }
             };
@@ -2287,16 +2299,16 @@
                     return [ v ];
                 }
                 try {
-                    return [ Array.prototype.flat.call(v)[0] ];
+                    return Array.prototype.flat.call(v);
                 } catch (_unused) {}
                 return [];
             };
             const updateTargeting = function updateTargeting(targeting, map) {
                 if (typeof map === "object") {
-                    const entries = Object.entries(map || {});
-                    for (var _i = 0, _entries = entries; _i < _entries.length; _i++) {
-                        const _entries$_i = slicedToArray(_entries[_i], 2), k = _entries$_i[0], v = _entries$_i[1];
-                        targeting.set(k, getTargetingValue(v));
+                    for (const key in map) {
+                        if (Object.prototype.hasOwnProperty.call(map, key)) {
+                            targeting.set(key, getTargetingValue(map[key]));
+                        }
                     }
                 }
             };
@@ -2561,9 +2573,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2640,9 +2652,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2758,9 +2770,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2860,9 +2872,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2920,9 +2932,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -2983,9 +2995,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3004,7 +3016,7 @@
         function logMessage(source, message) {
             let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            const name = source.name, ruleText = source.ruleText, verbose = source.verbose;
+            const name = source.name, verbose = source.verbose;
             if (!forced && !verbose) {
                 return;
             }
@@ -3013,16 +3025,7 @@
                 nativeConsole("".concat(name, ":"), message);
                 return;
             }
-            let messageStr = "".concat(name, ": ").concat(message);
-            if (ruleText) {
-                const RULE_MARKER = "#%#//scriptlet";
-                const markerIdx = ruleText.indexOf(RULE_MARKER);
-                if (markerIdx > -1) {
-                    const ruleWithoutDomains = ruleText.slice(markerIdx, ruleText.length);
-                    messageStr += "; cannot apply rule: ".concat(ruleWithoutDomains);
-                }
-            }
-            nativeConsole(messageStr);
+            nativeConsole("".concat(name, ": ").concat(message));
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -3079,9 +3082,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3141,9 +3144,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3228,9 +3231,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3300,7 +3303,7 @@
                     let match = 0;
                     for (let j = 0; j < tokens.length; j += 1) {
                         const token = tokens[j];
-                        const found = token instanceof RegExp ? token.test(str) : str.indexOf(token) > -1;
+                        const found = token instanceof RegExp ? token.test(str) : str.includes(token);
                         if (found) {
                             match += 1;
                         }
@@ -3340,9 +3343,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3407,9 +3410,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3526,9 +3529,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3592,7 +3595,7 @@
         function createOnErrorHandler(rid) {
             const nativeOnError = window.onerror;
             return function onError(error) {
-                if (typeof error === "string" && error.indexOf(rid) !== -1) {
+                if (typeof error === "string" && error.includes(rid)) {
                     return true;
                 }
                 if (nativeOnError instanceof Function) {
@@ -3619,9 +3622,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3678,9 +3681,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);
@@ -3749,9 +3752,9 @@
                     const AG_SCRIPTLET_MARKER = "#%#//";
                     const UBO_SCRIPTLET_MARKER = "##+js";
                     let ruleStartIndex;
-                    if (source.ruleText.indexOf(AG_SCRIPTLET_MARKER) > -1) {
+                    if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
-                    } else if (source.ruleText.indexOf(UBO_SCRIPTLET_MARKER) > -1) {
+                    } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
                     const rulePart = source.ruleText.slice(ruleStartIndex);

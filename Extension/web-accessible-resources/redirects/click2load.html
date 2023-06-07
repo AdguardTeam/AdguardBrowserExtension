@@ -107,7 +107,7 @@
         let matchedData;
         let queryStr = rawQueryStr.substring(1);
         while (matchedData = pattern.exec(queryStr)) {
-          if (neededParams.indexOf(matchedData[1]) > -1) {
+          if (neededParams.includes(matchedData[1])) {
             res[matchedData[1]] = matchedData[2];
           }
           queryStr = queryStr.substring(matchedData[0]);
@@ -236,7 +236,7 @@
         const FRAME_MARKER = 'frame';
         const SUBDOCUMENT_MARKER = 'subdocument';
         const ruleModifiers = substringAfter(rule, '$').split(',');
-        return ruleModifiers.indexOf(FRAME_MARKER) > -1 || ruleModifiers.indexOf(SUBDOCUMENT_MARKER) > -1;
+        return ruleModifiers.includes(FRAME_MARKER) || ruleModifiers.includes(SUBDOCUMENT_MARKER);
       };
       const isInsideFrame = function isInsideFrame() {
         return window.self !== window.top;
