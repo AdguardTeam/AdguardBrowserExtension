@@ -4,6 +4,7 @@ import {
     TabContext,
     NetworkRule,
     TabInfo,
+    documentApi,
 } from '@adguard/tswebextension';
 
 import {
@@ -13,6 +14,7 @@ import {
 } from '../../../../helpers';
 import { appContext, AppContextKey } from '../../../../../Extension/src/background/storages/app';
 import { FramesApi } from '../../../../../Extension/src/background/api/ui/frames';
+import { AntiBannerFiltersId } from '../../../../../Extension/src/common/constants';
 
 jest.mock('../../../../../Extension/src/background/api/filters/page-stats', () => ({
     ...(jest.requireActual('../../../../../Extension/src/background/api/filters/page-stats')),
@@ -43,7 +45,7 @@ describe('Frames Api', () => {
     });
 
     it('getMainFrameData calculates documentAllowlisted and canAddRemoveRule', () => {
-        const rule = '@@||testcases.agrd.dev$urlblock';
+        const rule = '@@||testcases.agrd.dev$document';
         const url = 'https://testcases.agrd.dev/test-important-vs-urlblock.html';
 
         const info: TabInfo = {
@@ -55,14 +57,14 @@ describe('Frames Api', () => {
             pinned: true,
             incognito: false,
         };
-        const tabContext = new TabContext(info);
-        tabContext.mainFrameRule = new NetworkRule(rule, 1000);
+        const tabContext = new TabContext(info, documentApi);
+        tabContext.mainFrameRule = new NetworkRule(rule, AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
         const frameData = FramesApi.getMainFrameData(tabContext);
         const { documentAllowlisted, canAddRemoveRule } = frameData;
 
-        expect(documentAllowlisted).toBe(false);
+        expect(documentAllowlisted).toBe(true);
 
         expect(canAddRemoveRule).toBe(true);
     });
