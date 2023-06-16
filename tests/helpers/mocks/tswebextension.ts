@@ -1,5 +1,4 @@
-import type {
-    TsWebExtension,
+import {
     EventChannel,
     FilteringLogEvent,
     ConfigurationMV2Context,
@@ -7,7 +6,8 @@ import type {
 
 import { MockedEventCannel } from './event-channel';
 
-export class MockedTsWebExtension implements TsWebExtension {
+// TODO: restore inherit from TsWebExtension after lib module resolves update if needed.
+export class MockedTsWebExtension {
     public isStarted = false;
 
     public configuration = {} as ConfigurationMV2Context;
