@@ -15,11 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { RequestType } from '@adguard/tsurlfilter/es/request-type';
 
 import {
     type TabContext,
-    type NetworkRule,
     isHttpRequest,
     getDomain,
     MAIN_FRAME_ID,
@@ -96,7 +94,7 @@ export class FramesApi {
         const applicationFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
 
         if (applicationAvailable) {
-            documentAllowlisted = !!mainFrameRule && FramesApi.isDocumentAllowlistRule(mainFrameRule);
+            documentAllowlisted = !!mainFrameRule && mainFrameRule.isFilteringDisabled();
             if (documentAllowlisted && mainFrameRule) {
                 const rule = mainFrameRule;
 
@@ -126,17 +124,5 @@ export class FramesApi {
             totalBlockedTab,
             totalBlocked,
         };
-    }
-
-    /**
-     * Checks if the provided rule is a document allowlist rule.
-     *
-     * @param rule Frame network Rule.
-     * @returns True if the rule is a document allowlist rule.
-     */
-    // TODO: Move this method to tsurlfilter or tswebextension.
-    private static isDocumentAllowlistRule(rule: NetworkRule): boolean {
-        return rule.isAllowlist()
-            && ((rule.getPermittedRequestTypes() & RequestType.Document) === RequestType.Document);
     }
 }

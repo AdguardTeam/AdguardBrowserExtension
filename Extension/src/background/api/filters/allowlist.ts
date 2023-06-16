@@ -18,7 +18,11 @@
 import zod from 'zod';
 import browser from 'webextension-polyfill';
 
-import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
+import {
+    tabsApi as tsWebExtTabsApi,
+    getDomain,
+    MAIN_FRAME_ID,
+} from '@adguard/tswebextension';
 
 import { Log } from '../../../common/log';
 import { SettingOption } from '../../schema';
@@ -29,6 +33,9 @@ import {
     invertedAllowlistDomainsStorage,
 } from '../../storages';
 import { Engine } from '../../engine';
+import { AntiBannerFiltersId } from '../../../common/constants';
+
+import { UserRulesApi } from './userrules';
 
 /**
  * Allowlist and Inverted Allowlist storages have same api.
@@ -147,24 +154,76 @@ export class AllowlistApi {
     }
 
     /**
-     * Enable filtering for specified tab by changing the allowlist.
-     *
-     * If default allowlist mode, removes domain from {@link allowlistDomainsStorage}.
-     * If inverted allowlist mode, adds domain to {@link invertedAllowlistDomainsStorage}.
-     * Updates {@link Engine} and reloads the tab if {@link tabRefresh} is true.
+     * Enable filtering for specified tab by changing the allowlist or deleting allowlist rule from user list.
      *
      * @param tabId Tab id.
-     * @param tabRefresh Is tab refresh needed after removing tab url from the allowlist.
-     * We do not refresh the tab after changing the allowlist via the filtering log.
+     * @param tabRefresh Tab refresh flag.
      */
-    public static async removeTabUrlFromAllowlist(tabId: number, tabRefresh: boolean = false): Promise<void> {
+    public static async enableTabFiltering(tabId: number, tabRefresh: boolean = false): Promise<void> {
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
+
+        if (!tabContext) {
+            return;
+        }
+
+        const { mainFrameRule, frames } = tabContext;
+
+        if (!mainFrameRule) {
+            return;
+        }
+
+        const filterId = mainFrameRule.getFilterListId();
+
+        if (filterId === AntiBannerFiltersId.UserFilterId) {
+            const ruleText = mainFrameRule.getText();
+            await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
+            return;
+        }
+
+        if (filterId === AntiBannerFiltersId.AllowlistFilterId) {
+            const mainFrame = frames.get(MAIN_FRAME_ID);
+
+            if (!mainFrame) {
+                return;
+            }
+
+            await AllowlistApi.enableTabUrlFiltering(mainFrame.url, tabId, tabRefresh);
+        }
+    }
+
+    /**
+     * Disable filtering for specified tab by adding url to the allowlist.
+     *
+     * @param tabId Tab id.
+     */
+    public static async disableTabFiltering(tabId: number): Promise<void> {
         const mainFrame = tsWebExtTabsApi.getTabMainFrame(tabId);
 
         if (!mainFrame) {
             return;
         }
 
-        const domain = getDomain(mainFrame.url);
+        await AllowlistApi.disableTabUrlFiltering(mainFrame.url, tabId);
+    }
+
+    /**
+     * Enable filtering for specified tab by changing the allowlist.
+     *
+     * If default allowlist mode, removes domain from {@link allowlistDomainsStorage}.
+     * If inverted allowlist mode, adds domain to {@link invertedAllowlistDomainsStorage}.
+     * Updates {@link Engine} and reloads the tab if {@link tabRefresh} is true.
+     *
+     * @param url Tab document url.
+     * @param tabId Tab id.
+     * @param tabRefresh Is tab refresh needed after removing tab url from the allowlist.
+     * We do not refresh the tab after changing the allowlist via the filtering log.
+     */
+    private static async enableTabUrlFiltering(
+        url: string,
+        tabId: number,
+        tabRefresh: boolean = false,
+    ): Promise<void> {
+        const domain = getDomain(url);
 
         if (!domain) {
             return;
@@ -190,16 +249,14 @@ export class AllowlistApi {
      * If inverted allowlist mode, removes domain from {@link invertedAllowlistDomainsStorage}.
      * Updates tswebextension configuration and reload tab after changes apply.
      *
+     * @param url Tab document url.
      * @param tabId Tab id.
      */
-    public static async addTabUrlToAllowlist(tabId: number): Promise<void> {
-        const mainFrame = tsWebExtTabsApi.getTabMainFrame(tabId);
-
-        if (!mainFrame) {
-            return;
-        }
-
-        const domain = getDomain(mainFrame.url);
+    private static async disableTabUrlFiltering(
+        url: string,
+        tabId: number,
+    ): Promise<void> {
+        const domain = getDomain(url);
 
         if (!domain) {
             return;
@@ -214,6 +271,30 @@ export class AllowlistApi {
         await Engine.update();
 
         await browser.tabs.reload(tabId);
+    }
+
+    /**
+     * Enable filtering for specified tab by deleting allowlist rule from user list.
+     *
+     * Updates {@link Engine} and reloads the tab if {@link tabRefresh} is true.
+     *
+     * @param ruleText Tab document rule text.
+     * @param tabId Tab id.
+     * @param tabRefresh Is tab refresh needed after removing rule from the user list.
+     * We do not refresh the tab after rule deletion via the filtering log.
+     */
+    private static async removeAllowlistRuleFromUserList(
+        ruleText: string,
+        tabId: number,
+        tabRefresh: boolean = false,
+    ): Promise<void> {
+        await UserRulesApi.removeUserRule(ruleText);
+
+        await Engine.update();
+
+        if (tabRefresh) {
+            await browser.tabs.reload(tabId);
+        }
     }
 
     /**
