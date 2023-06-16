@@ -42,7 +42,7 @@ export const enum LogMethod {
 /**
  * String presentation of log levels, for convenient users usage.
  */
-enum LogLevelString {
+export enum LogLevelString {
     Error = 'error',
     Warn = 'warn',
     Info = 'info',
