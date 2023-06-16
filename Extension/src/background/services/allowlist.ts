@@ -87,7 +87,7 @@ export class AllowlistService {
     private static async onAddAllowlistDomain(message: AddAllowlistDomainPopupMessage): Promise<void> {
         const { tabId } = message.data;
 
-        await AllowlistApi.addTabUrlToAllowlist(tabId);
+        await AllowlistApi.disableTabFiltering(tabId);
     }
 
     /**
@@ -98,7 +98,7 @@ export class AllowlistService {
     private static async onRemoveAllowlistDomain(message: RemoveAllowlistDomainMessage): Promise<void> {
         const { tabId, tabRefresh } = message.data;
 
-        await AllowlistApi.removeTabUrlFromAllowlist(tabId, tabRefresh);
+        await AllowlistApi.enableTabFiltering(tabId, tabRefresh);
     }
 
     /**
@@ -127,7 +127,7 @@ export class AllowlistService {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.id) {
-            await AllowlistApi.removeTabUrlFromAllowlist(activeTab.id, true);
+            await AllowlistApi.enableTabFiltering(activeTab.id, true);
         } else {
             Log.warn('Cannot open site report page for active tab');
         }
@@ -140,7 +140,7 @@ export class AllowlistService {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.id) {
-            await AllowlistApi.addTabUrlToAllowlist(activeTab.id);
+            await AllowlistApi.disableTabFiltering(activeTab.id);
         } else {
             Log.warn('Cannot open site report page for active tab');
         }
