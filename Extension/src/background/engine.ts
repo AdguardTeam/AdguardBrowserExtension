@@ -23,7 +23,7 @@ import {
     MESSAGE_HANDLER_NAME,
 } from '@adguard/tswebextension';
 
-import { Log } from '../common/log';
+import { Log, LogLevelString } from '../common/log';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
 
 import { listeners } from './notifier';
@@ -166,6 +166,7 @@ export class Engine {
 
         return {
             verbose: false,
+            logLevel: LogLevelString.Info,
             filters,
             userrules,
             allowlist,
