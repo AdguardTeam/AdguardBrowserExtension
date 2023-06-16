@@ -50,7 +50,10 @@ const FilteringLog = observer(() => {
     }, [logStore]);
 
     useEffect(() => {
-        const FETCH_EVENTS_TIMEOUT_MS = 1500;
+        const FETCH_EVENTS_TIMEOUT_MS = 300;
+
+        logStore.getFilteringLogEvents();
+
         const intervalId = setInterval(async () => {
             await logStore.getFilteringLogEvents();
         }, FETCH_EVENTS_TIMEOUT_MS);
