@@ -295,57 +295,37 @@ export class SettingsService {
     /**
      * Called when {@link SettingOption.SelfDestructThirdPartyCookies} setting changed.
      *
-     * @param isSelfDestructThirdPartyCookiesEnabled Changed
-     * {@link SettingOption.SelfDestructThirdPartyCookies} setting value.
+     * {@link SettingOption.SelfDestructThirdPartyCookies} Setting value.
      */
-    static onSelfDestructThirdPartyCookiesStateChange(isSelfDestructThirdPartyCookiesEnabled: boolean): void {
-        try {
-            Engine.api.setSelfDestructThirdPartyCookies(isSelfDestructThirdPartyCookiesEnabled);
-        } catch (e) {
-            Log.error('Failed to change `self destruct third party cookies` option state', e);
-        }
+    static onSelfDestructThirdPartyCookiesStateChange(): void {
+        Engine.debounceUpdate();
     }
 
     /**
      * Called when {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting changed.
      *
-     * @param selfDestructThirdPartyCookiesTime Changed
-     * {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting value.
+     * {@link SettingOption.SelfDestructThirdPartyCookiesTime} Setting value.
      */
-    static onSelfDestructThirdPartyCookiesTimeStateChange(selfDestructThirdPartyCookiesTime: number): void {
-        try {
-            Engine.api.setSelfDestructThirdPartyCookiesTime(selfDestructThirdPartyCookiesTime);
-        } catch (e) {
-            Log.error('Failed to change `self destruct third party cookies time` option state', e);
-        }
+    static onSelfDestructThirdPartyCookiesTimeStateChange(): void {
+        Engine.debounceUpdate();
     }
 
     /**
      * Called when {@link SettingOption.SelfDestructFirstPartyCookies} setting changed.
      *
-     * @param isSelfDestructFirstPartyCookiesEnabled Changed
-     * {@link SettingOption.SelfDestructFirstPartyCookies} setting value.
+     * {@link SettingOption.SelfDestructFirstPartyCookies} Setting value.
      */
-    static onSelfDestructFirstPartyCookiesStateChange(isSelfDestructFirstPartyCookiesEnabled: boolean): void {
-        try {
-            Engine.api.setSelfDestructFirstPartyCookies(isSelfDestructFirstPartyCookiesEnabled);
-        } catch (e) {
-            Log.error('Failed to change `self destruct first party cookies` option state', e);
-        }
+    static onSelfDestructFirstPartyCookiesStateChange(): void {
+        Engine.debounceUpdate();
     }
 
     /**
      * Called when {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting changed.
      *
-     * @param selfDestructFirstPartyCookiesTime Changed
-     * {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting value.
+     * {@link SettingOption.SelfDestructFirstPartyCookiesTime} Setting value.
      */
-    static onSelfDestructFirstPartyCookiesTimeStateChange(selfDestructFirstPartyCookiesTime: number): void {
-        try {
-            Engine.api.setSelfDestructFirstPartyCookiesTime(selfDestructFirstPartyCookiesTime);
-        } catch (e) {
-            Log.error('Failed to change `self destruct first party cookies time` option state', e);
-        }
+    static onSelfDestructFirstPartyCookiesTimeStateChange(): void {
+        Engine.debounceUpdate();
     }
 
     /**
