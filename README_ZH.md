@@ -198,7 +198,7 @@ build/dev/adguard-api
 
 <a id="minimum-supported-browser-versions"></a>
 
-## Minimum supported browser versions
+## 最低支持浏览器版本
 | 浏览器                 	| 版本 	 |
 |-------------------------	|:---------:|
 | Chromium内核浏览器 	|  79   	   |
