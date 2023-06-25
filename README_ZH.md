@@ -40,65 +40,65 @@ AdGuard 是一款快速且轻量级的广告拦截浏览器扩展程序，可有
 * [构建](#contribution)
   * [翻译AdGuard](#contribution-translating)
   * [测试AdGuard](#contribution-testing)
-  * [报告问题](#contribution-reporting)
+  * [提交反馈](#contribution-reporting)
   * [其他](#contribution-other)
 * [开发](#dev)
   * [Requirements](#dev-requirements)
   * [如何构建](#dev-build)
   * [Linter](#dev-linter)
   * [更新本地化](#dev-localizations)
-* [Minimum supported browser versions](#minimum-supported-browser-versions)
+* [支持的最低浏览器版本](#minimum-supported-browser-versions)
 
 <a id="installation"></a>
-## Installation
+## 安装
 
 <a id="installation-chrome"></a>
-### Chrome and Chromium-based browsers
-You can get the latest available AdGuard Extension version from the [Chrome Web Store](https://agrd.io/extension_chrome)。
+### Chrome 以及 Chromium内核浏览器
+最新版本可在[Chrome Web Store](https://agrd.io/extension_chrome)获取。
 
 <a id="installation-firefox"></a>
 ### Firefox
-You can get the latest version of AdGuard Extension from the [Mozilla Add-ons website](https://agrd.io/extension_firefox)。
+最新版本可在[Mozilla Add-ons website](https://agrd.io/extension_firefox)获取。
 
 <a id="installation-opera"></a>
 ### Opera
-Opera is basically a Chromium browser, but it maintains its own add-ons store. You can get AdGuard Extension [from there](https://agrd.io/extension_opera)。
+Opera是基于Chromium的浏览器，但它有自己的扩展商店。 点击[此处](https://agrd.io/extension_opera)获取。
 
 <a id="installation-edge"></a>
 ### Microsoft Edge
-The latest stable version of AdGuard browser extension is available in [Microsoft Store](https://agrd.io/extension_edge)。
+最新版本可在[Microsoft Store](https://agrd.io/extension_edge)获取。
 
 <a id="contribution"></a>
-## Contribution
+## 构建
 
-We are blessed to have a community that does not only love AdGuard, but also gives back. A lot of people volunteer in various ways to make other users' experience with AdGuard better, and you can join them!
+我们很幸运拥有一个不仅热爱 AdGuard 而且还回馈社会的社区。 许多人以各种方式自愿提供帮助，以改善其他用户的 AdGuard 体验，您可以加入他们！
 
-We, on our part, can only be happy to reward the most active members of the community. So, what can you do?
+就我们而言，我们非常乐意奖励社区中最活跃的成员。 所以，你可以做贡献！
 
 <a id="contribution-translating"></a>
-### Translating AdGuard
+### 翻译 AdGuard
 
-If you want to help with AdGuard translations, please learn more about translating our products here: https://kb.adguard.com/en/general/adguard-translations
+如果您想帮助 AdGuard 翻译，请在此处了解有关翻译我们产品的更多信息: https://kb.adguard.com/en/general/adguard-translations
 
 <a id="contribution-testing"></a>
-### Testing AdGuard
+### 测试 AdGuard
 
-You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found on a [dedicated page on our website](https://adguard.com/beta.html)。
+您可以获得适用于任何浏览器的 AdGuard 浏览器扩展测试版。 有关此主题的所有必要信息都可以在[专用页面](https://adguard.com/beta.html)获取。
 
 <a id="contribution-reporting"></a>
-### Reporting issues
+### 提交反馈
 
-GitHub can be used to report a bug or to submit a feature request. To do so, go to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues) and click the *新建议题* button.
+GitHub 可用于报告错误或提交功能请求。 为此，请转至[这个页面](https://github.com/AdguardTeam/AdguardBrowserExtension/issues) 然后点击 *新建议题* 。
 
->**Note:** for the filter-related issues (missed ads, false positives etc.) use the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters)。
+>**注:** 对于与过滤器相关的问题（错拦广告、误报等），请使用 [专用存储库](https://github.com/AdguardTeam/AdguardFilters)。
 
 <a id="contribution-other"></a>
-### Other options
+### 其他
 
-Here is a [dedicated page](https://adguard.com/contribute.html) for those who are willing to contribute.
+[此页面](https://adguard.com/contribute.html) 供那些愿意贡献的人使用。
 
 <a id="dev"></a>
-## Development
+## 开发
 
 > Since version 4.0, Adguard browser extension uses opensource [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) library for implementing content blocking rules.
 
