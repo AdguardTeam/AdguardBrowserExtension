@@ -23,7 +23,7 @@
 <br />
 
 <p align="center">
-    <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_4_settings.png" width="800" />
+    <img src="https://github.com/TC999/AdguardBrowserExtension/blob/master/screen_Chinese.PNG" width="800" />
 </p>
 
 <hr />
