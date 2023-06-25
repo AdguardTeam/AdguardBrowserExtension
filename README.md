@@ -12,7 +12,8 @@
     <a href="https://adguard.com/">AdGuard.com</a> |
     <a href="https://reddit.com/r/Adguard">Reddit</a> |
     <a href="https://twitter.com/AdGuard">Twitter</a> |
-    <a href="https://t.me/adguard_en">Telegram</a>
+    <a href="https://t.me/adguard_en">Telegram</a> |
+    <a href="https://github.com/TC999/AdguardBrowserExtension/blob/master/README_ZH.md">中文说明</a>
     <br /><br />
     </a>
     <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
@@ -54,11 +55,11 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 
 <a id="installation-chrome"></a>
 ### Chrome and Chromium-based browsers
-You can get the latest available AdGuard Extension version from the [Chrome Web Store](https://agrd.io/extension_chrome).
+You can get the latest available AdGuard Extension version from the [Chrome Web Store](https://agrd.io/extension_chrome)。
 
 <a id="installation-firefox"></a>
 ### Firefox
-You can get the latest version of AdGuard Extension from the [Mozilla Add-ons website](https://agrd.io/extension_firefox).
+You can get the latest version of AdGuard Extension from the [Mozilla Add-ons website](https://agrd.io/extension_firefox)。
 
 <a id="installation-opera"></a>
 ### Opera
