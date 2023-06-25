@@ -43,9 +43,9 @@ AdGuard 是一款快速且轻量级的广告拦截浏览器扩展程序，可有
   * [提交反馈](#contribution-reporting)
   * [其他](#contribution-other)
 * [开发](#dev)
-  * [Requirements](#dev-requirements)
+  * [开发环境](#dev-requirements)
   * [如何构建](#dev-build)
-  * [Linter](#dev-linter)
+  * [错误检查工具](#dev-linter)
   * [更新本地化](#dev-localizations)
 * [支持的最低浏览器版本](#minimum-supported-browser-versions)
 
@@ -100,36 +100,36 @@ GitHub 可用于报告错误或提交功能请求。 为此，请转至[这个�
 <a id="dev"></a>
 ## 开发
 
-> Since version 4.0, Adguard browser extension uses opensource [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) library for implementing content blocking rules.
+> 从 4.0 版本开始，Adguard 浏览器扩展使用开源 [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) 库来实现内容阻止规则。
 
 <a id="dev-requirements"></a>
-### Requirements
+### 构建开发环境
 
 - [node.js LTS](https://nodejs.org/en/download/)
 - NPM v8
 - [yarn v1.22](https://yarnpkg.com/en/docs/install/)
 
-Install local dependencies by running:
+安装本地依赖项:
 ```
   yarn install
 ```
 
 <a id="dev-build"></a>
-### How to build
+### 如何构建
 
-**How to run tests**
+**如何测试**
 ```
   yarn test
 ```
 
-**Building the dev version**
+**构建开发版本**
 
-Run the following command:
+运行以下命令:
 ```
   yarn dev
 ```
 
-This will create a build directory with unpacked extensions for all browsers:
+这将为所有浏览器创建一个包含解压扩展的构建目录：
 ```
   build/dev/chrome
   build/dev/edge
@@ -138,9 +138,9 @@ This will create a build directory with unpacked extensions for all browsers:
   build/dev/opera
 ```
 
-**Building the beta and release versions**
+**构建测试版和发布版**
 
-Before building the release version, you should manually download necessary resources: filters and public suffix list.
+在构建发布版本之前，您应该手动下载必要的资源：过滤器和公共后缀列表。
 
 ```
   yarn resources
@@ -150,49 +150,48 @@ Before building the release version, you should manually download necessary reso
   CREDENTIALS_PASSWORD=<password> yarn beta
   CREDENTIALS_PASSWORD=<password> yarn release
 ```
-You will need to put certificate.pem and mozilla_credentials.json files to the `./private` directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
+您需要将certificate.pem 和mozilla_credentials.json 文件放入`./private` 目录中。 此版本将创建未打包的扩展，然后打包它们（Chrome 为 crx，Firefox 为 xpi）。
 
-**Building the sample extension with API**
+**使用API构建示例扩展**
 
-Run the following command:
+运行以下命令:
 ```
 yarn adguard-api
 ```
-This will create a build directory with unpacked sample extension for chromium browsers:
+这将为 chromium 浏览器创建一个包含解压示例扩展的构建目录：
 
 ```
 build/dev/adguard-api
 ```
 
 <a id="dev-linter"></a>
-### Linter
-Despite our code may not currently comply with new style configuration,
-please, setup `eslint` in your editor to follow up with it `.eslintrc`
-
+### 错误检查工具
+尽管我们的代码当前可能不符合新样式配置，
+请在您的编辑器中设置 `eslint` 以跟进 `.eslintrc`
 <a id="dev-localizations"></a>
-### Update localizations
+### 更新本地文件
 
-To download and append localizations run:
+要下载并附加本地版本，请运行：
 ```
   yarn locales:download
 ```
 
-To upload new phrases to crowdin you need the file with phrases `./Extension/_locales/en/messages.json`. Then run:
+要将新短语上传到crowdin，您需要"./Extension/_locales/en/messages.json"文件。 然后运行：
 ```
   yarn locales:upload
 ```
 
-To remove old messages from locale messages run:
+删除旧信息
 ```
   yarn locales:renew
 ```
 
-To validate translations run:
+验证翻译
 ```
   yarn locales:validate
 ```
 
-To show locales info run:
+显示本地信息
 ```
   yarn locales:info
 ```
@@ -200,9 +199,9 @@ To show locales info run:
 <a id="minimum-supported-browser-versions"></a>
 
 ## Minimum supported browser versions
-| Browser                 	| Version 	 |
+| 浏览器                 	| 版本 	 |
 |-------------------------	|:---------:|
-| Chromium Based Browsers 	|  79   	   |
+| Chromium内核浏览器 	|  79   	   |
 | Firefox                 	|  78   	   |
 | Opera                   	|  66   	   |
 | Edge                    	|  79   	   |
