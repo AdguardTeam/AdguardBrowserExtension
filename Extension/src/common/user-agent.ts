@@ -19,7 +19,7 @@
 import UAParser from 'ua-parser-js';
 
 /**
- * Helper class for user agent data
+ * Helper class for user agent data.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/User-Agent_Client_Hints_API#browser_compatibility
  */
@@ -29,7 +29,7 @@ export class UserAgent {
     /**
      * Returns current browser name.
      *
-     * @returns user agent browser name
+     * @returns user agent browser name.
      */
     static getBrowserName(): string | undefined {
         return UserAgent.parser.getBrowser().name;
@@ -38,8 +38,8 @@ export class UserAgent {
     /**
      * Check if the current browser is as given.
      *
-     * @param browserName - Browser Name
-     * @returns true, if current browser has specified name
+     * @param browserName Browser Name.
+     * @returns true, if current browser has specified name.
      */
     static isTargetBrowser(browserName: string): boolean {
         return UserAgent.parser.getBrowser().name === browserName;
@@ -48,17 +48,27 @@ export class UserAgent {
     /**
      * Check if current platform is as given.
      *
-     * @param platformName - Platform name
-     * @returns true, if current browser has specified name
+     * @param platformName Platform name.
+     * @returns true, if current browser has specified name.
      */
     static isTargetPlatform(platformName: string): boolean {
         return UserAgent.parser.getOS().name === platformName;
     }
 
     /**
-     * Returns a major browser version
+     * Check if current engine is as given.
      *
-     * @returns browser version number or undefined
+     * @param engineName Engine name.
+     * @returns true, if current engine has specified name.
+     */
+    static isTargetEngine(engineName: string): boolean {
+        return UserAgent.parser.getEngine().name === engineName;
+    }
+
+    /**
+     * Returns a major browser version.
+     *
+     * @returns browser version number or undefined.
      */
     static getVersion(): number | undefined {
         const browser = this.parser.getBrowser();
@@ -85,6 +95,8 @@ export class UserAgent {
     static isWindows = UserAgent.isTargetPlatform('Windows');
 
     static isAndroid = UserAgent.isTargetPlatform('Android');
+
+    static isChromium = UserAgent.isTargetEngine('Blink');
 
     static isSupportedBrowser =
         (UserAgent.isChrome && Number(UserAgent.version) >= 79)

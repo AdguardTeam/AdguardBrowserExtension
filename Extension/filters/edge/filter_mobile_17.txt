@@ -1,9 +1,16 @@
-! Checksum: TlqUrhYE6efmr4Syah3oyQ
+! Checksum: D5O//DiJdYBaWI2pHbH07g
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.4.69
-! TimeUpdated: 2023-04-18T13:02:45+00:00
+! Version: 2.0.6.29
+! TimeUpdated: 2023-06-23T14:30:49+00:00
 ! Expires: 4 days (update frequency)
+$removeparam=cuid
+$removeparam=ir_campaignid
+$removeparam=ir_adid
+$removeparam=irclickid
+$removeparam=ir_partnerid
+$removeparam=__io_lv
+$removeparam=_io_session_id
 $removeparam=asgtbndr
 $removeparam=ymid
 ^z=*&var=$removeparam=var
@@ -79,6 +86,7 @@ $removeparam=utm_creative
 $removeparam=utm_emcid
 $removeparam=utm_emmid
 $removeparam=utm_id
+$removeparam=utm_id_
 $removeparam=utm_keyword
 $removeparam=utm_medium
 $removeparam=utm_name
@@ -116,6 +124,8 @@ $removeparam=adjust_tracker_limit
 $removeparam=adjust_tracker
 $removeparam=adjust_adgroup
 $removeparam=adjust_campaign
+$removeparam=adjust_referrer
+$removeparam=external_click_id
 $removeparam=bsft_clkid
 $removeparam=bsft_eid
 $removeparam=bsft_mid
@@ -161,6 +171,87 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||github.com^$removeparam=reference_location
+||column.sp.baseball.findfriends.jp^$removeparam=from
+||fon.bet^$removeparam=affijet-click
+||fon.bet^$removeparam=partner_id
+||fon.bet^$removeparam=sub_1
+||you.163.com^$removeparam=from
+||jetbrains.com^$removeparam=from
+||middleware.p7s1.io/galileo/v1/tracking?device=*&country=*&path=$removeparam=/^(device|country|path)=/,xmlhttprequest
+||theathletic.com^$removeparam=login_source
+||theathletic.com^$removeparam=ref_page
+||productcatalog.channeladvisor.com^$document,removeparam=InteractionSessionId
+||productcatalog.channeladvisor.com^$document,removeparam=UniqueUserId
+||productcatalog.channeladvisor.com^$document,removeparam=DeviceTypeId
+||productcatalog.channeladvisor.com^$document,removeparam=PCAT_vNextTracking_LocalWidget
+||productcatalog.channeladvisor.com^$document,removeparam=PCAT_vNextTracking_OnlinePlrss
+||productcatalog.channeladvisor.com^$document,removeparam=PCAT_vNextTracking_OnlineItrack
+||productcatalog.channeladvisor.com^$document,removeparam=PCAT_vNextTracking_RetailerScoring
+||productcatalog.channeladvisor.com^$document,removeparam=profileId
+||go.skimresources.com^$document,removeparam=id
+||go.skimresources.com^$document,removeparam=xcust
+||chemistwarehouse.com.au^$removeparam=ranMID
+||chemistwarehouse.com.au^$removeparam=ranEAID
+||chemistwarehouse.com.au^$removeparam=ranSiteID
+||playstation.com$removeparam=emcid
+||epicgames.com^$removeparam=epic_affiliate
+||gamersgate.com^$removeparam=caff
+||humblebundle.com^$removeparam=partner
+||minfin.com.ua^$removeparam=mpr
+||minfin.com.ua^$removeparam=mpl
+||minfin.com.ua^$removeparam=mcr
+||cnbc.com^$removeparam=__source
+||cnbc.com^$removeparam=par
+$removeparam=utm_campaign,domain=joongang.co.kr|donga.com|hankyung.com|khan.co.kr|asiae.co.kr|fnnews.com|chosun.com
+$removeparam=plink,domain=sbs.co.kr
+$removeparam=cooper,domain=sbs.co.kr
+$removeparam=nv,domain=khan.co.kr
+$removeparam=naver,domain=dt.co.kr
+$removeparam=pg,domain=fnnews.com
+$removeparam=sc,domain=dailian.co.kr
+$removeparam=OutLink,domain=sedaily.com
+$removeparam=newsstand,domain=sportalkorea.com
+||theathletic.com^$removeparam=source
+||deepl.com^$removeparam=cta
+||espn.com^$removeparam=appsrc
+||sciencedirect.com/*?via%3D$removeparam=/^via%3D/
+||similarweb.com^$removeparam=from_ext
+||bild.de^$removeparam=t_ref
+||simplelogin.io^$removeparam=slref
+||applesfera.com^$cookie=NID
+||pravda.com.ua^$removeparam=pageviewCount
+||belta.co.jp^$removeparam=cid
+$removeparam=urrad,domain=u-s-s.jp|belta.co.jp
+||7net.omni7.jp^$removeparam=intpr
+||7net.omni7.jp^$removeparam=intpr2
+||dietpartner.jp^$removeparam=from
+||mailtrack.io/trace/link/$removeparam=userId
+||trendyol.com^$removeparam=adjust_t
+||kitizawa.com^$removeparam=ref
+||smart-flash.jp^$removeparam=rf
+||chunichi.co.jp^$removeparam=rct
+||chunichi.co.jp^$removeparam=ref
+$removeparam=ref_type,domain=backit.me|epn.bz
+||homedepot.com^$removeparam=fromReminder
+||boards.greenhouse.io^$removeparam=ref
+||headlines.peta.org^$removeparam=en_txn7
+||tokyo-calendar.jp^$removeparam=ref
+||mofos.com$removeparam=ats
+||quizangel.com^$removeparam=utm_site_source
+||quizangel.com^$removeparam=utm_site_medium
+||quizangel.com^$removeparam=utm_site_campaign
+||media.joj.sk/outstream/embed$removeparam=ad_params
+||media.joj.sk/outstream/embed$removeparam=gemius_identifier
+||media.joj.sk/outstream/embed$removeparam=tracking_params
+||media.joj.sk/outstream/embed$removeparam=ga_account
+||klook.com^$removeparam=aid
+||klook.com^$removeparam=clickId
+||klook.com^$removeparam=spm
+||go.redirectingat.com^$removeparam=xcust
+||go.redirectingat.com^$removeparam=sref
+||go.redirectingat.com^$removeparam=id
+||kmkk78.com^$removeparam=agentId
 $removeparam=ref,domain=shein.co.uk|shein.com
 $removeparam=from_country,domain=shein.co.uk|shein.com
 $removeparam=mallCode,domain=shein.co.uk|shein.com
@@ -331,7 +422,7 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||shopee.ph^$removeparam=xptdk
 ||shopee.ph^$removeparam=stm_medium
 ||shopee.ph^$removeparam=stm_source
-||adguard.com^$removeparam=clid
+||adguard.$removeparam=clid
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=exc_ads
@@ -456,6 +547,7 @@ $removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.lived
 ||rapidgator.net^$removeparam=Referer
 ||atlassian.net^$removeparam=atlOrigin
 ||so-net.ne.jp^$removeparam=SmRcid
+||ameblo.jp^$removeparam=adxarea
 ||ameblo.jp^$removeparam=frm_id
 ||popin.cc/popin_discovery/$script,removeparam=info
 ||popin.cc/popin_discovery/$script,removeparam=uid
@@ -639,7 +731,7 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||hepsiburada.com^$removeparam=c
 ||hepsiburada.com^$removeparam=is_retargeting
 ||hepsiburada.com^$removeparam=shortlink
-||play.google.com/store/$removeparam=pcampaignid
+||play.google.com^$removeparam=pcampaignid
 ||cyber-ad01.cc^$removeparam=ip
 ||d-markets.net^$removeparam=ref
 ||coupang.com/*/products/$removeparam=q
@@ -724,6 +816,8 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||cc.naver.com/cc?a$removeparam=py
 ||cc.naver.com/cc?a$removeparam=sx
 ||cc.naver.com/cc?a$removeparam=sy
+||yandex.*/search/$removeparam=suggest_reqid
+||yandex.*/search/$removeparam=did
 ||yandex.*/promo/$removeparam=utm-term
 ||yandex.*/news/$removeparam=from
 ||yandex.*/news/$removeparam=persistent_id
@@ -735,6 +829,9 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||yandex.*/news/$removeparam=stid
 ||yandex.*/sport/$removeparam=stid
 ||yandex.*/images/$removeparam=source-serpid
+||market.yandex.$removeparam=vid
+||market.yandex.$removeparam=mclid
+||market.yandex.$removeparam=clid
 ||www.yandex.$removeparam=clid
 ://yandex.$removeparam=clid
 ://yandex.$removeparam=source
@@ -762,6 +859,9 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
+$removeparam=asc_campaign,domain=aboutamazon.com|amazon.*|amzn.to
+$removeparam=asc_refurl,domain=aboutamazon.com|amazon.*|amzn.to
+$removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||amazon.*$removeparam=linkId
 ||amazon.*$removeparam=adgrpid
 ||amazon.*$removeparam=hvadid
@@ -798,8 +898,6 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com
 ||amazon.*$removeparam=qid
 ||amazon.*$removeparam=rdc
 ||amazon.*$removeparam=refRID
-||amazon.*$removeparam=smid
-||amazon.*$removeparam=tag
 ||amazon.*$removeparam=ts_id
 ||amazon.*$removeparam=visitId
 ||amazon.*$removeparam=vtr
@@ -861,6 +959,7 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 $removeparam=dclid
 ||trendyol.com^$removeparam=_ga
 ||trendyol.com^$removeparam=utm_subaff
+||realitykings.com^$removeparam=ats
 ||duda.co^$removeparam=irclickid
 ||marktjagd.de^$removeparam=client
 ||kaspersky.com^$removeparam=icid
@@ -960,6 +1059,12 @@ $removeparam=dclid
 ||v.youku.com^$removeparam=spm
 ||theregister.com^$removeparam=td
 ||deezer.com^$removeparam=origin
+||gamesplanet.com^$removeparam=ref
+!+ NOT_OPTIMIZED
+adguard.com,adguard.app##.hello_from_adguard_tracking_params
+@@||kommersant.ru^$removeparam=erid
+@@||redirects.tradedoubler.com^$removeparam=utm_content
+@@||redirects.tradedoubler.com^$removeparam=utm_campaign
 @@||tradedoubler.com^$removeparam=tduid
 @@||carrefourpl.snrpage.com^$removeparam=utm_source
 @@||s.click.aliexpress.com/deep_link.htm?aff_short_key=$removeparam=aff_short_key
