@@ -31,6 +31,7 @@ import {
 
 import { AntiBannerFiltersId } from '../../common/constants';
 import { Log } from '../../common/log';
+import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
 import { Engine } from '../engine';
 import { settingsStorage } from '../storages';
@@ -96,7 +97,14 @@ export class FilteringLogApi {
 
     private openedFilteringLogsPages = 0;
 
-    private tabsInfoMap = new Map<number, FilteringLogTabInfo>();
+    private tabsInfoMap = new Map<number, FilteringLogTabInfo>([
+        [BACKGROUND_TAB_ID, {
+            tabId: BACKGROUND_TAB_ID,
+            title: translator.getMessage('background_tab_title'),
+            isExtensionTab: false,
+            filteringEvents: [],
+        }],
+    ]);
 
     /**
      * Checks if filtering log page is opened.
