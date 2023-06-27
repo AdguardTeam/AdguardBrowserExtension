@@ -53,7 +53,7 @@ export class Network {
      */
     private filterCompilerConditionsConstants = {
         adguard: true,
-        adguard_ext_chromium: UserAgent.isChrome,
+        adguard_ext_chromium: UserAgent.isChromium,
         adguard_ext_firefox: UserAgent.isFirefox,
         adguard_ext_edge: UserAgent.isEdge,
         adguard_ext_safari: false,
