@@ -16,15 +16,19 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { WebRequest } from 'webextension-polyfill';
+import { RequestType } from '@adguard/tsurlfilter/es/request-type';
 
-import { RequestType } from '@adguard/tsurlfilter';
 import {
     RequestData,
     RequestEvents,
     tabsApi as tsWebExtTabsApi,
 } from '@adguard/tswebextension';
 
-import { SafebrowsingApi, TabsApi } from '../api';
+import {
+    SafebrowsingApi,
+    SettingsApi,
+    TabsApi,
+} from '../api';
 import { SettingOption } from '../schema';
 import { settingsEvents } from '../events';
 import { messageHandler } from '../message-handler';
@@ -59,7 +63,12 @@ export class SafebrowsingService {
      * @param event.context Context of the request: status code, request url, tab id, etc.
      */
     private static onHeadersReceived({ context }: RequestData<WebRequest.OnHeadersReceivedDetailsType>): void {
-        if (!context) {
+        const isSafebrowsingDisabled = SettingsApi.getSetting(SettingOption.DisableSafebrowsing);
+        const isFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
+
+        if (!context
+            || isSafebrowsingDisabled
+            || isFilteringDisabled) {
             return;
         }
 
