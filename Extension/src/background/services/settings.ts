@@ -31,6 +31,7 @@ import { Engine } from '../engine';
 import {
     Categories,
     CategoriesData,
+    SafebrowsingApi,
     SettingsApi,
     SettingsData,
     TabsApi,
@@ -202,15 +203,19 @@ export class SettingsService {
      */
     static async onDisableFilteringStateChange(isFilteringDisabled: boolean): Promise<void> {
         try {
-            Engine.api.setFilteringEnabled(!isFilteringDisabled);
+            await Engine.api.setFilteringEnabled(!isFilteringDisabled);
+
+            if (isFilteringDisabled) {
+                await SafebrowsingApi.clearCache();
+            }
+
+            const activeTab = await TabsApi.getActive();
+
+            if (activeTab) {
+                await browser.tabs.reload(activeTab.id);
+            }
         } catch (e) {
-            Log.error('Failed to change filtering state', e);
-        }
-
-        const activeTab = await TabsApi.getActive();
-
-        if (activeTab) {
-            await browser.tabs.reload(activeTab.id);
+            Log.error('Error while updating filtering state', e);
         }
     }
 
@@ -219,9 +224,9 @@ export class SettingsService {
      *
      * @param isStealthModeDisabled Changed {@link SettingOption.DisableStealthMode} setting value.
      */
-    static onDisableStealthModeStateChange(isStealthModeDisabled: boolean): void {
+    static async onDisableStealthModeStateChange(isStealthModeDisabled: boolean): Promise<void> {
         try {
-            Engine.api.setStealthModeEnabled(!isStealthModeDisabled);
+            await Engine.api.setStealthModeEnabled(!isStealthModeDisabled);
         } catch (e) {
             Log.error('Failed to change stealth mode state', e);
         }

@@ -22,12 +22,10 @@ import { Log } from '../../common/log';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
 import {
     storage,
-    settingsStorage,
     sbCache,
     sbRequestCache,
 } from '../storages';
 import { UrlUtils } from '../utils/url';
-import { SettingOption } from '../schema';
 import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 
 import { ExtensionXMLHttpRequest, network } from './network';
@@ -94,12 +92,6 @@ export class SafebrowsingApi {
      * @param referrerUrl Referrer URL.
      */
     public static async checkSafebrowsingFilter(requestUrl: string, referrerUrl: string): Promise<string | undefined> {
-        const safebrowsingDisabled = settingsStorage.get(SettingOption.DisableSafebrowsing);
-
-        if (safebrowsingDisabled) {
-            return;
-        }
-
         Log.debug('Checking safebrowsing filter for', requestUrl);
 
         const sbList = await SafebrowsingApi.lookupUrl(requestUrl);
