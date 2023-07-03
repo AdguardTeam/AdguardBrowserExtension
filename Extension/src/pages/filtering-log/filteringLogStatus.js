@@ -64,7 +64,12 @@ export const getStatusMode = (event) => {
          * {@link FilteringLogApi.createCosmeticRuleEventData}.
          */
         const {
-            allowlistRule, cssRule, scriptRule, cookieRule, cspRule,
+            allowlistRule,
+            cssRule,
+            scriptRule,
+            cookieRule,
+            cspRule,
+            permissionsRule,
         } = requestRule;
 
         if (allowlistRule) {
@@ -77,7 +82,7 @@ export const getStatusMode = (event) => {
             } else {
                 mode = StatusMode.BLOCKED;
             }
-        } else if (cspRule) {
+        } else if (cspRule || permissionsRule) {
             mode = StatusMode.MODIFIED;
         } else {
             mode = StatusMode.BLOCKED;

@@ -48,6 +48,7 @@ export type FilteringEventRuleData = {
     isStealthModeRule?: boolean,
     allowlistRule?: boolean,
     cspRule?: boolean,
+    permissionsRule?: boolean,
     modifierValue?: string,
     cookieRule?: boolean,
     contentRule?: boolean,
@@ -428,6 +429,7 @@ export class FilteringLogApi {
 
         data.allowlistRule = rule.isAllowlist();
         data.cspRule = rule.isOptionEnabled(NetworkRuleOption.Csp);
+        data.permissionsRule = rule.isOptionEnabled(NetworkRuleOption.Permissions);
         data.cookieRule = rule.isOptionEnabled(NetworkRuleOption.Cookie);
 
         const advancedModifiedValue = rule.getAdvancedModifierValue();

@@ -30,6 +30,7 @@ import {
     ApplyCosmeticRuleEvent,
     ApplyBasicRuleEvent,
     ApplyCspRuleEvent,
+    ApplyPermissionsRuleEvent,
     CookieEvent,
     JsInjectEvent,
     ReplaceRuleApplyEvent,
@@ -109,6 +110,11 @@ export class FilteringLogService {
         defaultFilteringLog.addEventListener(
             FilteringEventType.ApplyCspRule,
             FilteringLogService.onApplyCspRule,
+        );
+
+        defaultFilteringLog.addEventListener(
+            FilteringEventType.ApplyPermissionsRule,
+            FilteringLogService.onApplyPermissionsRule,
         );
 
         defaultFilteringLog.addEventListener(
@@ -209,6 +215,29 @@ export class FilteringLogService {
      * @param ruleEvent.data Data for this event.
      */
     private static onApplyCspRule({ data }: ApplyCspRuleEvent): void {
+        const {
+            tabId,
+            rule,
+            ...eventData
+        } = data;
+
+        filteringLogApi.addEventData(tabId, {
+            ...eventData,
+            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+        });
+
+        if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+        }
+    }
+
+    /**
+     * Records the application of the rule with $permissions modifier.
+     *
+     * @param ruleEvent Item of {@link ApplyPermissionsRuleEvent}.
+     * @param ruleEvent.data Data for this event.
+     */
+    private static onApplyPermissionsRule({ data }: ApplyPermissionsRuleEvent): void {
         const {
             tabId,
             rule,

@@ -301,6 +301,10 @@ class WizardStore {
             mandatoryOptions = [NETWORK_RULE_OPTIONS.CSP];
         }
 
+        if (requestRule && requestRule.permissionsRule) {
+            mandatoryOptions = [NETWORK_RULE_OPTIONS.PERMISSIONS];
+        }
+
         if (selectedEvent.replaceRules) {
             mandatoryOptions = [NETWORK_RULE_OPTIONS.REPLACE];
         }
