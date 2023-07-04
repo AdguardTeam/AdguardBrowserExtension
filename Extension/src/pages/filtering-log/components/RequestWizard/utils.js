@@ -153,7 +153,7 @@ export const getRequestEventType = (event) => {
         case RequestType.Csp:
             return 'CSP';
         case RequestType.PermissionsPolicy:
-            return 'PermissionsPolicy';
+            return 'PERMISSIONS';
         case RequestType.CspReport:
             return 'CSP report';
         case RequestType.Cookie:
