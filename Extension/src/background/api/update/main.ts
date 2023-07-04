@@ -19,7 +19,7 @@ import zod from 'zod';
 
 import { Log } from '../../../common/log';
 import { getErrorMessage } from '../../../common/error';
-import { storage } from '../../storages';
+import { SbCache, storage } from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,
@@ -31,9 +31,13 @@ import {
     SCHEMA_VERSION_KEY,
     VIEWED_NOTIFICATIONS_KEY,
 } from '../../../common/constants';
-import { SettingOption, settingsValidator } from '../../schema';
-import { SafebrowsingApi } from '../safebrowsing';
-import { RunInfo } from '../../utils';
+import {
+    type SafebrowsingCacheData,
+    type SafebrowsingStorageData,
+    SettingOption,
+    settingsValidator,
+} from '../../schema';
+import type { RunInfo } from '../../utils';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 
@@ -42,8 +46,9 @@ import { InstallApi } from '../install';
  * browser.storage, to make sure that the application runs on the latest schema.
  */
 export class UpdateApi {
-    private static schemaMigrationMap: Record<string, () => Promise<void>> = {
+    private static readonly schemaMigrationMap: Record<string, () => Promise<void>> = {
         '0': UpdateApi.migrateFromV0toV1,
+        '1': UpdateApi.migrateFromV1toV2,
     };
 
     /**
@@ -72,11 +77,8 @@ export class UpdateApi {
         await storage.set(SCHEMA_VERSION_KEY, currentSchemaVersion);
         await storage.set(APP_VERSION_KEY, currentAppVersion);
 
-        // clear persisted caches
-        await UpdateApi.clearCache();
-
         // run migrations, if they needed.
-        await this.runMigrations(currentSchemaVersion, previousSchemaVersion);
+        await UpdateApi.runMigrations(currentSchemaVersion, previousSchemaVersion);
     }
 
     /**
@@ -92,7 +94,7 @@ export class UpdateApi {
         try {
             // if schema version changes, process migration
             for (let schema = previousSchemaVersion; schema < currentSchemaVersion; schema += 1) {
-                const schemaMigrationAction = this.schemaMigrationMap[schema];
+                const schemaMigrationAction = UpdateApi.schemaMigrationMap[schema];
 
                 if (!schemaMigrationAction) {
                     // eslint-disable-next-line max-len
@@ -130,6 +132,42 @@ export class UpdateApi {
 
             throw new Error(errMessage, { cause: e });
         }
+    }
+
+    /**
+     * Run data migration from schema v1 to schema v2.
+     */
+    private static async migrateFromV1toV2(): Promise<void> {
+        // From v4.2.135 we store timestamp of expiration time for safebrowsing cache records.
+        const storageData = await storage.get(SB_LRU_CACHE_KEY);
+
+        if (typeof storageData !== 'string') {
+            return;
+        }
+
+        // parse v1 safebrowsing cache data
+        const sbStorageDataV1 = zod.object({
+            key: zod.string(),
+            value: zod.string(),
+        }).strict().array().parse(JSON.parse(storageData));
+
+        const now = Date.now();
+
+        // transform v1 safebrowsing storage data to v2
+        const sbStorageDataV2: SafebrowsingStorageData = sbStorageDataV1.map(({ key, value }) => {
+            const safebrowsingCacheRecord: SafebrowsingCacheData = { list: value };
+
+            if (safebrowsingCacheRecord.list !== SbCache.SB_ALLOW_LIST) {
+                safebrowsingCacheRecord.expires = now + SbCache.CACHE_TTL_MS;
+            }
+
+            return {
+                key,
+                value: safebrowsingCacheRecord,
+            };
+        });
+
+        await storage.set(SB_LRU_CACHE_KEY, JSON.stringify(sbStorageDataV2));
     }
 
     /**
@@ -199,11 +237,14 @@ export class UpdateApi {
             // create data transformer
             const groupsStateTransformer = zod.record(
                 zod.object({
-                    enabled: zod.boolean(),
-                }).transform(({ enabled }) => ({
-                    enabled,
-                    touched: enabled,
-                })),
+                    enabled: zod.boolean().optional(),
+                }).transform((data) => {
+                    const enabled = Boolean(data.enabled);
+                    return {
+                        enabled,
+                        touched: enabled,
+                    };
+                }),
             );
 
             const currentGroupsStateData = JSON.parse(currentSettings[SettingOption.GroupsState]);
@@ -345,12 +386,5 @@ export class UpdateApi {
             delete currentSettings[key];
             await storage.set(key, data);
         }
-    }
-
-    /**
-     * Purge data, which don't need to save while app updating.
-     */
-    private static async clearCache(): Promise<void> {
-        await SafebrowsingApi.clearCache();
     }
 }

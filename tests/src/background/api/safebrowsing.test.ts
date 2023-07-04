@@ -3,154 +3,170 @@ import { Storage } from 'webextension-polyfill';
 
 import { UrlUtils } from '../../../../Extension/src/background/utils/url';
 import { SafebrowsingApi } from '../../../../Extension/src/background/api/safebrowsing';
-import { ADGUARD_SETTINGS_KEY, SB_LRU_CACHE_KEY } from '../../../../Extension/src/common/constants';
-import { sbCache } from '../../../../Extension/src/background/storages';
+import { SB_LRU_CACHE_KEY } from '../../../../Extension/src/common/constants';
+import { SbCache, sbCache } from '../../../../Extension/src/background/storages';
 import { SettingsApi } from '../../../../Extension/src/background/api';
-import { defaultSettings } from '../../../../Extension/src/common/settings';
-import { SettingOption } from '../../../../Extension/src/background/schema';
+import { type SafebrowsingStorageData } from '../../../../Extension/src/background/schema';
 import { mockLocalStorage } from '../../../helpers';
 
-describe('safebrowsing', () => {
+describe('Safebrowsing API', () => {
     let storage: Storage.StorageArea;
 
     beforeEach(() => {
         storage = mockLocalStorage();
     });
 
-    it('Inits cache', async () => {
-        const urlHash = 'CBD6FBF8EB019EBF5865D2A9120D27AC9FC44323A07AED8879E6CD9D28276669';
-        const sbList = 'adguard-malware-shavar';
-
+    const setCache = async (data: SafebrowsingStorageData) => {
         await storage.set({
-            [SB_LRU_CACHE_KEY]: JSON.stringify([
-                {
-                    key: urlHash,
-                    value: sbList,
-                },
-            ]),
+            [SB_LRU_CACHE_KEY]: JSON.stringify(data),
+        });
+    };
+
+    describe('initCache static method', () => {
+        it('should init cache', async () => {
+            const urlHash = 'CBD6FBF8EB019EBF5865D2A9120D27AC9FC44323A07AED8879E6CD9D28276669';
+            const sbRecord = {
+                list: 'adguard-malware-shavar',
+                expires: Date.now() + SbCache.CACHE_TTL_MS,
+            };
+
+            await setCache([{
+                key: urlHash,
+                value: sbRecord,
+            }]);
+
+            await SafebrowsingApi.initCache();
+
+            expect(browser.storage.local.get.calledOnceWith(SB_LRU_CACHE_KEY)).toBe(true);
+            expect(sbCache.get(urlHash)).toEqual(sbRecord.list);
+        });
+    });
+
+    describe('clearCache static method', () => {
+        it('should clear cache', async () => {
+            const urlHash = 'CBD6FBF8EB019EBF5865D2A9120D27AC9FC44323A07AED8879E6CD9D28276669';
+            const sbRecord = {
+                list: 'adguard-malware-shavar',
+                expires: Date.now() + SbCache.CACHE_TTL_MS,
+            };
+
+            await setCache([{
+                key: urlHash,
+                value: sbRecord,
+            }]);
+
+            await SafebrowsingApi.clearCache();
+
+            expect(browser.storage.local.set.calledOnceWith({ [SB_LRU_CACHE_KEY]: JSON.stringify([]) })).toBe(true);
+            expect(sbCache.get(urlHash)).toBe(undefined);
+        });
+    });
+
+    describe('addToSafebrowsingTrusted static method', () => {
+        it('should add url to safebrowsing trusted', async () => {
+            const url = 'https://example.com';
+
+            await SafebrowsingApi.initCache();
+
+            const host = UrlUtils.getHost(url)!;
+
+            const hostHash = SafebrowsingApi.createHash(host);
+
+            await SafebrowsingApi.addToSafebrowsingTrusted(url);
+
+            expect(sbCache.get(hostHash)).toEqual(SbCache.SB_ALLOW_LIST);
+        });
+    });
+
+    describe('checkSafebrowsingFilter static method', () => {
+        it('should bypass safe domain', async () => {
+            const url = 'https://example.com';
+
+            await setCache([]);
+
+            await SettingsApi.init();
+            await SafebrowsingApi.initCache();
+
+            const redirectUrl = await SafebrowsingApi.checkSafebrowsingFilter(url, url);
+
+            expect(redirectUrl).toBe(undefined);
         });
 
-        await SafebrowsingApi.initCache();
+        it('should block unsafe domain', async () => {
+            const url = 'https://example.com';
+            const sbRecord = {
+                list: 'adguard-malware-shavar',
+                expires: Date.now() + SbCache.CACHE_TTL_MS,
+            };
 
-        expect(browser.storage.local.get.calledOnceWith(SB_LRU_CACHE_KEY)).toBe(true);
-        expect(sbCache.get(urlHash)).toBe(sbList);
-    });
-
-    it('Clears cache', async () => {
-        const urlHash = 'CBD6FBF8EB019EBF5865D2A9120D27AC9FC44323A07AED8879E6CD9D28276669';
-        const sbList = 'adguard-malware-shavar';
-
-        await storage.set({
-            [SB_LRU_CACHE_KEY]: JSON.stringify([
-                {
-                    key: urlHash,
-                    value: sbList,
-                },
-            ]),
-        });
-
-        await SafebrowsingApi.clearCache();
-
-        expect(browser.storage.local.set.calledOnceWith({ [SB_LRU_CACHE_KEY]: JSON.stringify([]) })).toBe(true);
-        expect(sbCache.get(urlHash)).toBe(undefined);
-    });
-
-    it('Adds url to safebrowsing trusted', async () => {
-        const url = 'https://example.com';
-        const expectedSbList = 'allowlist';
-
-        await SafebrowsingApi.initCache();
-
-        const host = UrlUtils.getHost(url)!;
-
-        const hostHash = SafebrowsingApi.createHash(host);
-
-        await SafebrowsingApi.addToSafebrowsingTrusted(url);
-
-        expect(sbCache.get(hostHash)).toBe(expectedSbList);
-    });
-
-    it('Bypass safe domain', async () => {
-        const url = 'https://example.com';
-
-        await storage.set({
-            [ADGUARD_SETTINGS_KEY]: {
-                ...defaultSettings,
-                [SettingOption.DisableSafebrowsing]: false,
-            },
-        });
-
-        await SettingsApi.init();
-        await SafebrowsingApi.initCache();
-
-        const redirectUrl = await SafebrowsingApi.checkSafebrowsingFilter(url, url);
-
-        expect(redirectUrl).toBe(undefined);
-    });
-
-    it('Block unsafe domain', async () => {
-        const url = 'https://example.com';
-        const sbList = 'adguard-malware-shavar';
-
-        const expectedRedirectUrl = browser.runtime.getURL(
-            'pages/safebrowsing.html'
+            const expectedRedirectUrl = browser.runtime.getURL(
+                'pages/safebrowsing.html'
             + '?malware=true'
             + '&host=example.com'
             + '&url=https%3A%2F%2Fexample.com'
             + '&ref=https%3A%2F%2Fexample.com',
-        );
+            );
 
-        const host = UrlUtils.getHost(url)!;
+            const host = UrlUtils.getHost(url)!;
 
-        const hostHash = SafebrowsingApi.createHash(host);
+            const hostHash = SafebrowsingApi.createHash(host);
 
-        await storage.set({
-            [ADGUARD_SETTINGS_KEY]: {
-                ...defaultSettings,
-                [SettingOption.DisableSafebrowsing]: false,
-            },
-            [SB_LRU_CACHE_KEY]: JSON.stringify([
-                {
-                    key: hostHash,
-                    value: sbList,
-                },
-            ]),
+            await setCache([{
+                key: hostHash,
+                value: sbRecord,
+            }]);
+
+            await SettingsApi.init();
+            await SafebrowsingApi.initCache();
+
+            const redirectUrl = await SafebrowsingApi.checkSafebrowsingFilter(url, url);
+
+            expect(redirectUrl).toBe(expectedRedirectUrl);
         });
 
-        await SettingsApi.init();
-        await SafebrowsingApi.initCache();
+        it('should bypass allowlisted domain', async () => {
+            const url = 'https://example.com';
+            const sbRecord = { list: SbCache.SB_ALLOW_LIST };
 
-        const redirectUrl = await SafebrowsingApi.checkSafebrowsingFilter(url, url);
+            const host = UrlUtils.getHost(url)!;
 
-        expect(redirectUrl).toBe(expectedRedirectUrl);
-    });
+            const hostHash = SafebrowsingApi.createHash(host);
 
-    it('Bypass allowlisted domain', async () => {
-        const url = 'https://example.com';
-        const sbList = 'allowlist';
+            await setCache([{
+                key: hostHash,
+                value: sbRecord,
+            }]);
 
-        const host = UrlUtils.getHost(url)!;
+            await SettingsApi.init();
+            await SafebrowsingApi.initCache();
 
-        const hostHash = SafebrowsingApi.createHash(host);
+            const redirectUrl = await SafebrowsingApi.checkSafebrowsingFilter(url, url);
 
-        await storage.set({
-            [ADGUARD_SETTINGS_KEY]: {
-                ...defaultSettings,
-                [SettingOption.DisableSafebrowsing]: false,
-            },
-            [SB_LRU_CACHE_KEY]: JSON.stringify([
-                {
-                    key: hostHash,
-                    value: sbList,
-                },
-            ]),
+            expect(redirectUrl).toBe(undefined);
         });
 
-        await SettingsApi.init();
-        await SafebrowsingApi.initCache();
+        it('should ignore expired domain', async () => {
+            const url = 'https://example.com';
+            const sbRecord = {
+                list: 'adguard-malware-shavar',
+                expires: Date.now(),
+            };
 
-        const redirectUrl = await SafebrowsingApi.checkSafebrowsingFilter(url, url);
+            const host = UrlUtils.getHost(url)!;
 
-        expect(redirectUrl).toBe(undefined);
+            const hostHash = SafebrowsingApi.createHash(host);
+
+            await setCache([{
+                key: hostHash,
+                value: sbRecord,
+            }]);
+
+            await SettingsApi.init();
+            await SafebrowsingApi.initCache();
+
+            const redirectUrl = await SafebrowsingApi.checkSafebrowsingFilter(url, url);
+
+            expect(redirectUrl).toBe(undefined);
+        });
     });
 });

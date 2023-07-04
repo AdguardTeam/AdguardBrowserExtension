@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import zod from 'zod';
 import { LRUMap } from 'lru_map';
 
+import { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from '../schema';
 import { SB_LRU_CACHE_KEY } from '../../common/constants';
 import { Log } from '../../common/log';
 
@@ -27,7 +27,18 @@ import { storage } from './main';
  * Class for control persisted {@link LRUMap} safebrowsing cache.
  */
 export class SbCache {
-    private cache = new LRUMap<string, string>(1000);
+    /**
+     * A key that indicates that the domain is in the allow list.
+     */
+    public static readonly SB_ALLOW_LIST = 'allowlist';
+
+    /**
+     * Time to live of cache record.
+     * This time: 40 minutes.
+     */
+    public static readonly CACHE_TTL_MS = 40 * 60 * 1000;
+
+    private cache = new LRUMap<string, SafebrowsingCacheData>(1000);
 
     /**
      * Reads safebrowsing {@link LRUMap} stringified entries from {@link storage},
@@ -42,13 +53,15 @@ export class SbCache {
             return;
         }
 
-        try {
-            const data = zod.object({
-                key: zod.string(),
-                value: zod.string(),
-            }).array().parse(JSON.parse(storageData));
+        const now = Date.now();
 
-            this.cache.assign(data.map<[string, string]>(({ key, value }) => [key, value]));
+        try {
+            const data = safebrowsingStorageDataValidator
+                .parse(JSON.parse(storageData))
+                // filter expired records
+                .filter(({ value }) => typeof value.expires === 'undefined' || now < value.expires);
+
+            this.cache.assign(data.map(({ key, value }) => [key, value]));
         } catch (e: unknown) {
             Log.error(e);
         }
@@ -68,18 +81,31 @@ export class SbCache {
      * @returns Cache value.
      */
     public get(key: string): string | undefined {
-        return this.cache.get(key);
+        const data = this.cache.get(key);
+
+        if (typeof data?.expires === 'number' && data.expires < Date.now()) {
+            this.cache.delete(key);
+            return undefined;
+        }
+
+        return data?.list;
     }
 
     /**
      * Sets value to {@link cache}.
      *
      * @param key Cache key.
-     * @param value Cache value.
+     * @param list Cache list value.
      * @returns Updated {@link cache} instance.
      */
-    public async set(key: string, value: string): Promise<SbCache> {
-        this.cache.set(key, value);
+    public async set(key: string, list: string): Promise<SbCache> {
+        const data: SafebrowsingCacheData = { list };
+
+        if (list !== SbCache.SB_ALLOW_LIST) {
+            data.expires = Date.now() + SbCache.CACHE_TTL_MS;
+        }
+
+        this.cache.set(key, data);
 
         if (this.cache.size % 20 === 0) {
             await this.save();
