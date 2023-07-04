@@ -1,44 +1,51 @@
-import { Storage } from 'webextension-polyfill';
-
 import { UpdateApi } from '../../../../Extension/src/background/api';
 import {
     mockLocalStorage,
-    getStorageSettingsFixtureV1,
-    getUpdatedStorageSettingsV1,
+    getStorageFixturesV0,
+    getStorageFixturesV1,
+    getStorageFixturesV2,
+    type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
+import { SbCache } from '../../../../Extension/src/background/storages';
 
 describe('Update Api', () => {
-    let storage: Storage.StorageArea;
+    describe('update method', () => {
+        const timestamp = 12345;
 
-    afterEach(() => {
-        storage.clear();
-    });
+        const v0 = getStorageFixturesV0();
+        const v1 = getStorageFixturesV1();
+        const v2 = getStorageFixturesV2(timestamp + SbCache.CACHE_TTL_MS);
 
-    const testStorages = [];
-    const settingsV1 = getStorageSettingsFixtureV1();
-    const updatedSettingsV1 = getUpdatedStorageSettingsV1();
-    if (settingsV1.length !== updatedSettingsV1.length) {
-        throw new Error('Number of expected storages settings is not equal to number of testing outdated settings');
-    }
-    for (let i = 0; i < settingsV1.length; i += 1) {
-        testStorages.push({
-            storageSettingsV1: settingsV1[i],
-            expectedUpdatedSettings: updatedSettingsV1[i],
+        beforeAll(() => {
+            jest.spyOn(Date, 'now').mockReturnValue(timestamp);
         });
-    }
 
-    it.each(testStorages)('Updates from schema V1: ', async ({
-        storageSettingsV1,
-        expectedUpdatedSettings,
-    }) => {
-        storage = mockLocalStorage(JSON.parse(JSON.stringify(storageSettingsV1)));
+        const getCases = (from: StorageData[], to: StorageData[]) => {
+            const cases = [];
 
-        const runInfo = await getRunInfo();
+            for (let i = 0; i < Math.min(from.length, to.length); i += 1) {
+                cases.push({ from: from[i] as StorageData, to: to[i] as StorageData });
+            }
 
-        await UpdateApi.update(runInfo);
+            return cases;
+        };
 
-        const settings = await storage.get();
-        expect(settings).toStrictEqual(expectedUpdatedSettings);
+        const runCase = async (data: {
+            from: StorageData,
+            to: StorageData,
+        }) => {
+            const storage = mockLocalStorage(data.from);
+
+            const runInfo = await getRunInfo();
+
+            await UpdateApi.update(runInfo);
+
+            const settings = await storage.get();
+            expect(settings).toStrictEqual(data.to);
+        };
+
+        it.each(getCases(v0, v2))('should update from v0 to v2', runCase);
+        it.each(getCases(v1, v2))('should update from v1 to v2', runCase);
     });
 });

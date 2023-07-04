@@ -24,11 +24,12 @@ import {
     storage,
     sbCache,
     sbRequestCache,
+    SbCache,
 } from '../storages';
 import { UrlUtils } from '../utils/url';
 import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 
-import { ExtensionXMLHttpRequest, network } from './network';
+import { type ExtensionXMLHttpRequest, network } from './network';
 
 /**
  * The Safe Browsing API checks whether a site is in a database of potentially
@@ -46,11 +47,6 @@ export class SafebrowsingApi {
      * Domain hash length.
      */
     private static readonly DOMAIN_HASH_LENGTH = 4;
-
-    /**
-     * A key that indicates that the domain is in the allow list.
-     */
-    private static readonly SB_ALLOW_LIST = 'allowlist';
 
     /**
      * Initialize new safebrowsing cache from {@link Storage}.
@@ -80,7 +76,7 @@ export class SafebrowsingApi {
             return;
         }
 
-        await sbCache.set(SafebrowsingApi.createHash(host), SafebrowsingApi.SB_ALLOW_LIST);
+        await sbCache.set(SafebrowsingApi.createHash(host), SbCache.SB_ALLOW_LIST);
     }
 
     /**
@@ -146,8 +142,8 @@ export class SafebrowsingApi {
         if (shortHashes.length === 0) {
             // In case we have not found anything in safebrowsingCache and all short hashes have been checked in
             // safebrowsingRequestsCache - means that there is no need to request backend again
-            await sbCache.set(SafebrowsingApi.createHash(host), SafebrowsingApi.SB_ALLOW_LIST);
-            return SafebrowsingApi.createResponse(SafebrowsingApi.SB_ALLOW_LIST);
+            await sbCache.set(SafebrowsingApi.createHash(host), SbCache.SB_ALLOW_LIST);
+            return SafebrowsingApi.createResponse(SbCache.SB_ALLOW_LIST);
         }
 
         let response: ExtensionXMLHttpRequest;
@@ -178,11 +174,11 @@ export class SafebrowsingApi {
             sbRequestCache.set(x, true);
         });
 
-        sbList = SafebrowsingApi.SB_ALLOW_LIST;
+        sbList = SbCache.SB_ALLOW_LIST;
 
         if (response.status !== 204) {
             sbList = await SafebrowsingApi.processSbResponse(response.responseText, hashesMap)
-            || SafebrowsingApi.SB_ALLOW_LIST;
+            || SbCache.SB_ALLOW_LIST;
         }
 
         await sbCache.set(SafebrowsingApi.createHash(host), sbList);
@@ -288,7 +284,7 @@ export class SafebrowsingApi {
      * @returns Safebrowsing list or null if this list is SB_ALLOW_LIST (means that site was allowlisted).
      */
     private static createResponse(sbList: string): string | null {
-        return (sbList === SafebrowsingApi.SB_ALLOW_LIST) ? null : sbList;
+        return (sbList === SbCache.SB_ALLOW_LIST) ? null : sbList;
     }
 
     /**
