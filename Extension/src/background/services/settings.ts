@@ -212,7 +212,7 @@ export class SettingsService {
             const activeTab = await TabsApi.getActive();
 
             if (activeTab) {
-                await browser.tabs.reload(activeTab.id);
+                await TabsApi.reload(activeTab.id);
             }
         } catch (e) {
             Log.error('Error while updating filtering state', e);
