@@ -126,9 +126,10 @@ export class PagesApi {
             return;
         }
 
+        // Open a new tab without type to get it as a new tab in a new window
+        // with the ability to move and attach it to the current browser window.
         await browser.windows.create({
             url,
-            type: 'popup',
             focused: true,
             ...PagesApi.defaultPopupWindowState,
         });
