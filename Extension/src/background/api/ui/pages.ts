@@ -334,7 +334,7 @@ export class PagesApi {
         await browser.tabs.update(tab.id, { url: path });
         // Reload option page for force modal window rerender
         // TODO: track url update in frontend and remove force reloading via webextension API
-        await browser.tabs.reload(tab.id);
+        await TabsApi.reload(tab.id);
         await TabsApi.focus(tab);
     }
 

@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
-import browser from 'webextension-polyfill';
 
 import {
     tabsApi as tsWebExtTabsApi,
@@ -33,6 +32,7 @@ import {
     invertedAllowlistDomainsStorage,
 } from '../../storages';
 import { Engine } from '../../engine';
+import { TabsApi } from '../extension';
 import { AntiBannerFiltersId } from '../../../common/constants';
 
 import { UserRulesApi } from './userrules';
@@ -238,7 +238,7 @@ export class AllowlistApi {
         await Engine.update();
 
         if (tabRefresh) {
-            await browser.tabs.reload(tabId);
+            await TabsApi.reload(tabId);
         }
     }
 
@@ -270,7 +270,7 @@ export class AllowlistApi {
 
         await Engine.update();
 
-        await browser.tabs.reload(tabId);
+        await TabsApi.reload(tabId);
     }
 
     /**
@@ -293,7 +293,7 @@ export class AllowlistApi {
         await Engine.update();
 
         if (tabRefresh) {
-            await browser.tabs.reload(tabId);
+            await TabsApi.reload(tabId);
         }
     }
 

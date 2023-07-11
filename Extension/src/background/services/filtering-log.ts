@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
 
 import {
     TabContext,
-    tabsApi,
+    tabsApi as tsWebExtTabsApi,
     defaultFilteringLog,
     FilteringEventType,
     SendRequestEvent,
@@ -56,6 +55,7 @@ import {
     SettingsData,
     FilteringLogTabInfo,
     HitStatsApi,
+    TabsApi,
 } from '../api';
 import { storage } from '../storages';
 import { SettingOption } from '../schema';
@@ -91,9 +91,9 @@ export class FilteringLogService {
             FilteringLogService.onSetFilteringLogWindowState,
         );
 
-        tabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
-        tabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
-        tabsApi.onDelete.subscribe(FilteringLogService.onTabRemove);
+        tsWebExtTabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
+        tsWebExtTabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
+        tsWebExtTabsApi.onDelete.subscribe(FilteringLogService.onTabRemove);
 
         defaultFilteringLog.addEventListener(FilteringEventType.SendRequest, FilteringLogService.onSendRequest);
         defaultFilteringLog.addEventListener(FilteringEventType.TabReload, FilteringLogService.onTabReload);
@@ -422,7 +422,7 @@ export class FilteringLogService {
      */
     private static async onRefreshPage({ data }: PageRefreshMessage): Promise<void> {
         const { tabId } = data;
-        await browser.tabs.reload(tabId);
+        await TabsApi.reload(tabId);
     }
 
     /**

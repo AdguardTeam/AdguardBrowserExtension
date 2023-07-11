@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
-
 import {
     AddUserRuleMessage,
     MessageType,
@@ -32,6 +30,7 @@ import {
     SettingsApi,
     SettingsData,
     UserRulesApi,
+    TabsApi,
 } from '../api';
 import { settingsEvents } from '../events';
 import { Prefs } from '../prefs';
@@ -163,8 +162,7 @@ export class UserRulesService {
 
         await UserRulesApi.removeRulesByUrl(url);
         await Engine.update();
-
-        await browser.tabs.reload(tabId);
+        await TabsApi.reload(tabId);
     }
 
     /**
