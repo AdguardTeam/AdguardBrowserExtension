@@ -1,5 +1,11 @@
 # AdGuard Browser Extension Changelog
 
+## v4.1.57
+
+### Added
+
+* New urls matching patterns for thank you page.
+
 ## v4.1.56
 
 ### Changed
