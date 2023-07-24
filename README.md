@@ -32,22 +32,22 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 
 > AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
-* [Installation](#installation)
-  * [Chrome and Chromium-based browsers](#installation-chrome)
-  * [Firefox](#installation-firefox)
-  * [Opera](#installation-opera)
-  * [Microsoft Edge](#installation-edge)
-* [Contribution](#contribution)
-  * [Translating AdGuard](#contribution-translating)
-  * [Testing AdGuard](#contribution-testing)
-  * [Reporting issues](#contribution-reporting)
-  * [Other options](#contribution-other)
-* [Development](#dev)
-  * [Requirements](#dev-requirements)
-  * [How to build](#dev-build)
-  * [Linter](#dev-linter)
-  * [Update localizations](#dev-localizations)
-* [Minimum supported browser versions](#minimum-supported-browser-versions)
+- [Installation](#installation)
+  - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
+  - [Firefox](#firefox)
+  - [Opera](#opera)
+  - [Microsoft Edge](#microsoft-edge)
+- [Contribution](#contribution)
+  - [Translating AdGuard](#translating-adguard)
+  - [Testing AdGuard](#testing-adguard)
+  - [Reporting issues](#reporting-issues)
+  - [Other options](#other-options)
+- [Development](#development)
+  - [Requirements](#requirements)
+  - [How to build](#how-to-build)
+  - [Linter](#linter)
+  - [Update localizations](#update-localizations)
+- [Minimum supported browser versions](#minimum-supported-browser-versions)
 
 <a id="installation"></a>
 ## Installation

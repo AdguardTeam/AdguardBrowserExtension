@@ -1,12 +1,12 @@
 (function(source, args) {
     function ATInternetSmartTag(source) {
-        const setNoopFuncWrapper = {
+        var setNoopFuncWrapper = {
             set: noopFunc
         };
-        const sendNoopFuncWrapper = {
+        var sendNoopFuncWrapper = {
             send: noopFunc
         };
-        const ecommerceWrapper = {
+        var ecommerceWrapper = {
             displayCart: {
                 products: setNoopFuncWrapper,
                 cart: setNoopFuncWrapper
@@ -27,7 +27,7 @@
                 products: setNoopFuncWrapper
             }
         };
-        const tag = function tag() {};
+        var tag = function tag() {};
         tag.prototype = {
             setConfig: noopFunc,
             setParam: noopFunc,
@@ -65,7 +65,7 @@
                 removeAll: noopFunc
             }
         };
-        const smartTagWrapper = {
+        var smartTagWrapper = {
             Tracker: {
                 Tag: tag
             }
@@ -78,19 +78,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
