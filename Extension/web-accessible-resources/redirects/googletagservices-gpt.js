@@ -1,31 +1,31 @@
 (function(source, args) {
     function GoogleTagServicesGpt(source) {
-        const slots = new Map;
-        const slotsById = new Map;
-        const slotsPerPath = new Map;
-        const slotCreatives = new Map;
-        const eventCallbacks = new Map;
-        const gTargeting = new Map;
-        const addEventListener = function addEventListener(name, listener) {
+        var slots = new Map;
+        var slotsById = new Map;
+        var slotsPerPath = new Map;
+        var slotCreatives = new Map;
+        var eventCallbacks = new Map;
+        var gTargeting = new Map;
+        var addEventListener = function addEventListener(name, listener) {
             if (!eventCallbacks.has(name)) {
                 eventCallbacks.set(name, new Set);
             }
             eventCallbacks.get(name).add(listener);
             return this;
         };
-        const removeEventListener = function removeEventListener(name, listener) {
+        var removeEventListener = function removeEventListener(name, listener) {
             if (eventCallbacks.has(name)) {
                 return eventCallbacks.get(name).delete(listener);
             }
             return false;
         };
-        const fireSlotEvent = function fireSlotEvent(name, slot) {
+        var fireSlotEvent = function fireSlotEvent(name, slot) {
             return new Promise((function(resolve) {
                 requestAnimationFrame((function() {
-                    const size = [ 0, 0 ];
-                    const callbacksSet = eventCallbacks.get(name) || [];
-                    const callbackArray = Array.from(callbacksSet);
-                    for (let i = 0; i < callbackArray.length; i += 1) {
+                    var size = [ 0, 0 ];
+                    var callbacksSet = eventCallbacks.get(name) || [];
+                    var callbackArray = Array.from(callbacksSet);
+                    for (var i = 0; i < callbackArray.length; i += 1) {
                         callbackArray[i]({
                             isEmpty: true,
                             size: size,
@@ -36,19 +36,19 @@
                 }));
             }));
         };
-        const emptySlotElement = function emptySlotElement(slot) {
-            const node = document.getElementById(slot.getSlotElementId());
+        var emptySlotElement = function emptySlotElement(slot) {
+            var node = document.getElementById(slot.getSlotElementId());
             while (node !== null && node !== void 0 && node.lastChild) {
                 node.lastChild.remove();
             }
         };
-        const recreateIframeForSlot = function recreateIframeForSlot(slot) {
+        var recreateIframeForSlot = function recreateIframeForSlot(slot) {
             var _document$getElementB;
-            const eid = "google_ads_iframe_".concat(slot.getId());
+            var eid = "google_ads_iframe_".concat(slot.getId());
             (_document$getElementB = document.getElementById(eid)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.remove();
-            const node = document.getElementById(slot.getSlotElementId());
+            var node = document.getElementById(slot.getSlotElementId());
             if (node) {
-                const f = document.createElement("iframe");
+                var f = document.createElement("iframe");
                 f.id = eid;
                 f.srcdoc = "<body></body>";
                 f.style = "position:absolute; width:0; height:0; left:0; right:0; z-index:-1; border:0";
@@ -60,15 +60,15 @@
                 node.appendChild(f);
             }
         };
-        const displaySlot = function displaySlot(slot) {
+        var displaySlot = function displaySlot(slot) {
             if (!slot) {
                 return;
             }
-            const id = slot.getSlotElementId();
+            var id = slot.getSlotElementId();
             if (!document.getElementById(id)) {
                 return;
             }
-            const parent = document.getElementById(id);
+            var parent = document.getElementById(id);
             if (parent) {
                 parent.appendChild(document.createElement("div"));
             }
@@ -80,14 +80,14 @@
             fireSlotEvent("slotOnload", slot);
             fireSlotEvent("impressionViewable", slot);
         };
-        const companionAdsService = {
+        var companionAdsService = {
             addEventListener: addEventListener,
             removeEventListener: removeEventListener,
             enableSyncLoading: noopFunc,
             setRefreshUnfilledSlots: noopFunc,
             getSlots: noopArray
         };
-        const contentService = {
+        var contentService = {
             addEventListener: addEventListener,
             removeEventListener: removeEventListener,
             setContent: noopFunc
@@ -103,7 +103,7 @@
         function SizeMappingBuilder() {}
         SizeMappingBuilder.prototype.addSize = noopThis;
         SizeMappingBuilder.prototype.build = noopNull;
-        const getTargetingValue = function getTargetingValue(v) {
+        var getTargetingValue = function getTargetingValue(v) {
             if (typeof v === "string") {
                 return [ v ];
             }
@@ -112,32 +112,32 @@
             } catch (_unused) {}
             return [];
         };
-        const updateTargeting = function updateTargeting(targeting, map) {
+        var updateTargeting = function updateTargeting(targeting, map) {
             if (typeof map === "object") {
-                for (const key in map) {
+                for (var key in map) {
                     if (Object.prototype.hasOwnProperty.call(map, key)) {
                         targeting.set(key, getTargetingValue(map[key]));
                     }
                 }
             }
         };
-        const defineSlot = function defineSlot(adUnitPath, creatives, optDiv) {
+        var defineSlot = function defineSlot(adUnitPath, creatives, optDiv) {
             if (slotsById.has(optDiv)) {
                 var _document$getElementB2;
                 (_document$getElementB2 = document.getElementById(optDiv)) === null || _document$getElementB2 === void 0 ? void 0 : _document$getElementB2.remove();
                 return slotsById.get(optDiv);
             }
-            const attributes = new Map;
-            const targeting = new Map;
-            const exclusions = new Set;
-            const response = {
+            var attributes = new Map;
+            var targeting = new Map;
+            var exclusions = new Set;
+            var response = {
                 advertiserId: undefined,
                 campaignId: undefined,
                 creativeId: undefined,
                 creativeTemplateId: undefined,
                 lineItemId: undefined
             };
-            const sizes = [ {
+            var sizes = [ {
                 getHeight: function getHeight() {
                     return 2;
                 },
@@ -145,13 +145,13 @@
                     return 2;
                 }
             } ];
-            const num = (slotsPerPath.get(adUnitPath) || 0) + 1;
+            var num = (slotsPerPath.get(adUnitPath) || 0) + 1;
             slotsPerPath.set(adUnitPath, num);
-            const id = "".concat(adUnitPath, "_").concat(num);
-            let clickUrl = "";
-            let collapseEmptyDiv = null;
-            const services = new Set;
-            const slot = {
+            var id = "".concat(adUnitPath, "_").concat(num);
+            var clickUrl = "";
+            var collapseEmptyDiv = null;
+            var services = new Set;
+            var slot = {
                 addService(e) {
                     services.add(e);
                     return slot;
@@ -272,7 +272,7 @@
             slotCreatives.set(optDiv, creatives);
             return slot;
         };
-        const pubAdsService = {
+        var pubAdsService = {
             addEventListener: addEventListener,
             removeEventListener: removeEventListener,
             clear: noopFunc,
@@ -320,8 +320,8 @@
             setVideoContent: noopThis,
             updateCorrelator: noopFunc
         };
-        const _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
-        const _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+        var _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
+        var _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
         googletag.apiReady = true;
         googletag.cmd = [];
         googletag.cmd.push = function(a) {
@@ -344,7 +344,7 @@
         };
         googletag.disablePublisherConsole = noopFunc;
         googletag.display = function(arg) {
-            let id;
+            var id;
             if (arg !== null && arg !== void 0 && arg.getSlotElementId) {
                 id = arg.getSlotElementId();
             } else if (arg !== null && arg !== void 0 && arg.nodeType) {
@@ -375,19 +375,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

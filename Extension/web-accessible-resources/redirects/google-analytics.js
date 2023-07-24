@@ -1,18 +1,18 @@
 (function(source, args) {
     function GoogleAnalytics(source) {
-        const Tracker = function Tracker() {};
-        const proto = Tracker.prototype;
+        var Tracker = function Tracker() {};
+        var proto = Tracker.prototype;
         proto.get = noopFunc;
         proto.set = noopFunc;
         proto.send = noopFunc;
-        const googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
+        var googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
         function ga(a) {
-            const len = arguments.length;
+            var len = arguments.length;
             if (len === 0) {
                 return;
             }
-            const lastArg = arguments[len - 1];
-            let replacer;
+            var lastArg = arguments[len - 1];
+            var replacer;
             if (lastArg instanceof Object && lastArg !== null && typeof lastArg.hitCallback === "function") {
                 replacer = lastArg.hitCallback;
             } else if (typeof lastArg === "function") {
@@ -36,14 +36,14 @@
         ga.remove = noopFunc;
         ga.loaded = true;
         window[googleAnalyticsName] = ga;
-        const _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
+        var _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
         if (dataLayer instanceof Object === false) {
             return;
         }
         if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === "function") {
             dataLayer.hide.end();
         }
-        const handleCallback = function handleCallback(dataObj, funcName) {
+        var handleCallback = function handleCallback(dataObj, funcName) {
             if (dataObj && typeof dataObj[funcName] === "function") {
                 setTimeout(dataObj[funcName]);
             }
@@ -52,7 +52,7 @@
             dataLayer.push = function(data) {
                 if (data instanceof Object) {
                     handleCallback(data, "eventCallback");
-                    for (const key in data) {
+                    for (var key in data) {
                         handleCallback(data[key], "event_callback");
                     }
                     if (!data.hasOwnProperty("eventCallback") && !data.hasOwnProperty("eventCallback")) {
@@ -68,7 +68,7 @@
             };
         }
         if (google_optimize instanceof Object && typeof google_optimize.get === "function") {
-            const googleOptimizeWrapper = {
+            var googleOptimizeWrapper = {
                 get: noopFunc
             };
             window.google_optimize = googleOptimizeWrapper;
@@ -80,19 +80,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

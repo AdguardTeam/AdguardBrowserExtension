@@ -9,7 +9,7 @@
                 }
                 if (arg !== null && arg instanceof Object && arg.constructor.name === "Object") {
                     for (var _i = 0, _Object$keys = Object.keys(arg); _i < _Object$keys.length; _i++) {
-                        const key = _Object$keys[_i];
+                        var key = _Object$keys[_i];
                         if (typeof arg[key] === "function") {
                             try {
                                 arg[key].call(this, {});
@@ -19,32 +19,32 @@
                 }
             }
         };
-        const adElems = document.querySelectorAll(".adsbygoogle");
-        const css = "height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;";
-        const statusAttrName = "data-adsbygoogle-status";
-        const ASWIFT_IFRAME_MARKER = "aswift_";
-        const GOOGLE_ADS_IFRAME_MARKER = "google_ads_iframe_";
-        let executed = false;
-        for (let i = 0; i < adElems.length; i += 1) {
-            const adElemChildNodes = adElems[i].childNodes;
-            const childNodesQuantity = adElemChildNodes.length;
-            let areIframesDefined = false;
+        var adElems = document.querySelectorAll(".adsbygoogle");
+        var css = "height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;";
+        var statusAttrName = "data-adsbygoogle-status";
+        var ASWIFT_IFRAME_MARKER = "aswift_";
+        var GOOGLE_ADS_IFRAME_MARKER = "google_ads_iframe_";
+        var executed = false;
+        for (var i = 0; i < adElems.length; i += 1) {
+            var adElemChildNodes = adElems[i].childNodes;
+            var childNodesQuantity = adElemChildNodes.length;
+            var areIframesDefined = false;
             if (childNodesQuantity > 0) {
                 areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.includes(ASWIFT_IFRAME_MARKER) && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.includes(GOOGLE_ADS_IFRAME_MARKER);
             }
             if (!areIframesDefined) {
                 adElems[i].setAttribute(statusAttrName, "done");
-                const aswiftIframe = document.createElement("iframe");
+                var aswiftIframe = document.createElement("iframe");
                 aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
                 aswiftIframe.style = css;
                 adElems[i].appendChild(aswiftIframe);
-                const innerAswiftIframe = document.createElement("iframe");
+                var innerAswiftIframe = document.createElement("iframe");
                 aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
-                const googleadsIframe = document.createElement("iframe");
+                var googleadsIframe = document.createElement("iframe");
                 googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
                 googleadsIframe.style = css;
                 adElems[i].appendChild(googleadsIframe);
-                const innerGoogleadsIframe = document.createElement("iframe");
+                var innerGoogleadsIframe = document.createElement("iframe");
                 googleadsIframe.contentWindow.document.body.appendChild(innerGoogleadsIframe);
                 executed = true;
             }
@@ -58,19 +58,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

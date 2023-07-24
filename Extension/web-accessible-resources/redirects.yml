@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.9.37
+#    Version 1.9.57
 #
 - title: 1x1-transparent.gif
   added: v1.0.4
@@ -457,22 +457,22 @@
         'use strict';
 
         function clickToLoad() {
-          const QUESTION_MARK = '?';
-          const AMPERSAND = '&';
-          const SEARCH_PARAMS_DIVIDER = '=';
-          const ORIGIN_URL_PARAM = '__origin';
-          const EXT_UNBLOCK_PARAM = '__unblock';
-          const CL_UNBLOCK_PARAM = '__adg_unblock_token';
-          const CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
-          const BLOCKING_RULE_PARAM = '__adg_blocking_rule';
-          const CLICK_EVENT = 'click';
-          const CL_FORCE_EVENT = 'force';
-          const neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
-          const parseSearchParam = function parseSearchParam(rawQueryStr) {
-            const res = {};
-            const pattern = /([^&=]+)=([^&]*)/g;
-            let matchedData;
-            let queryStr = rawQueryStr.substring(1);
+          var QUESTION_MARK = '?';
+          var AMPERSAND = '&';
+          var SEARCH_PARAMS_DIVIDER = '=';
+          var ORIGIN_URL_PARAM = '__origin';
+          var EXT_UNBLOCK_PARAM = '__unblock';
+          var CL_UNBLOCK_PARAM = '__adg_unblock_token';
+          var CL_SPECIFIC_UNBLOCK_PARAM = '__adg_unblock';
+          var BLOCKING_RULE_PARAM = '__adg_blocking_rule';
+          var CLICK_EVENT = 'click';
+          var CL_FORCE_EVENT = 'force';
+          var neededParams = [ORIGIN_URL_PARAM, EXT_UNBLOCK_PARAM, CL_UNBLOCK_PARAM, BLOCKING_RULE_PARAM];
+          var parseSearchParam = function parseSearchParam(rawQueryStr) {
+            var res = {};
+            var pattern = /([^&=]+)=([^&]*)/g;
+            var matchedData;
+            var queryStr = rawQueryStr.substring(1);
             while (matchedData = pattern.exec(queryStr)) {
               if (neededParams.includes(matchedData[1])) {
                 res[matchedData[1]] = matchedData[2];
@@ -481,23 +481,23 @@
             }
             return res;
           };
-          const paramsData = parseSearchParam(window.location.search);
-          const getParamByKey = function getParamByKey(key) {
+          var paramsData = parseSearchParam(window.location.search);
+          var getParamByKey = function getParamByKey(key) {
             return paramsData[key] || '';
           };
-          const extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
-          const clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
-          const blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
-          const originUrl = clUnblockToken
+          var extUnblockToken = getParamByKey(EXT_UNBLOCK_PARAM);
+          var clUnblockToken = getParamByKey(CL_UNBLOCK_PARAM);
+          var blockingRule = getParamByKey(BLOCKING_RULE_PARAM);
+          var originUrl = clUnblockToken
           ? window.location.href : decodeURIComponent(getParamByKey(ORIGIN_URL_PARAM));
-          const clickTitleElem = document.getElementById('clickToLoadTitle');
-          const clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
-          const clickButtonElem = document.getElementById('clickToLoadLink');
-          const originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
+          var clickTitleElem = document.getElementById('clickToLoadTitle');
+          var clickSubtitleElem = document.getElementById('clickToLoadSubtitle');
+          var clickButtonElem = document.getElementById('clickToLoadLink');
+          var originUrlToDisplay = clUnblockToken ? originUrl.replace(/[&?]__adg_unblock_token=.*/, '') : originUrl;
           clickSubtitleElem.textContent = originUrlToDisplay;
           clickButtonElem.href = originUrlToDisplay;
           clickButtonElem.title = originUrlToDisplay;
-          const translationsData = {
+          var translationsData = {
             en: {
               title: 'Content blocked by AdGuard',
               button: 'Click to load'
@@ -543,13 +543,13 @@
               button: 'Однаково завантажити'
             }
           };
-          const getTranslations = function getTranslations() {
-            const baseLocaleData = translationsData.en;
+          var getTranslations = function getTranslations() {
+            var baseLocaleData = translationsData.en;
             try {
-              const currentLocale = navigator.language.toLowerCase();
-              let localeData = translationsData[currentLocale];
+              var currentLocale = navigator.language.toLowerCase();
+              var localeData = translationsData[currentLocale];
               if (!localeData) {
-                const lang = currentLocale.split('-')[0];
+                var lang = currentLocale.split('-')[0];
                 localeData = translationsData[lang];
               }
               if (!localeData) {
@@ -560,24 +560,24 @@
               return baseLocaleData;
             }
           };
-          const translations = getTranslations();
+          var translations = getTranslations();
           clickTitleElem.textContent = translations.title;
           clickButtonElem.textContent = translations.button;
-          const getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
-            const questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
-            let divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
+          var getReplaceUrl = function getReplaceUrl(originUrl, unblockTokenName, unblockTokenValue) {
+            var questionMarkIndex = originUrl.indexOf(QUESTION_MARK);
+            var divider = questionMarkIndex > -1 ? AMPERSAND : QUESTION_MARK;
             if (originUrl.substring(questionMarkIndex).length === 1) {
               divider = '';
             }
             return "".concat(originUrl).concat(divider).concat(unblockTokenName).concat(SEARCH_PARAMS_DIVIDER).concat(unblockTokenValue);
           };
-          const extRun = function extRun() {
-            const replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
+          var extRun = function extRun() {
+            var replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
             window.location.replace(replaceUrl);
           };
-          const clRun = function clRun() {
-            const CL_SPECIFIC_UNBLOCK_VALUE = 1;
-            const replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
+          var clRun = function clRun() {
+            var CL_SPECIFIC_UNBLOCK_VALUE = 1;
+            var replaceUrl = getReplaceUrl(originUrl, CL_SPECIFIC_UNBLOCK_PARAM, CL_SPECIFIC_UNBLOCK_VALUE);
             window.location.replace(replaceUrl);
           };
           clickButtonElem.addEventListener(CLICK_EVENT, function (e) {
@@ -595,17 +595,17 @@
           clickButtonElem.addEventListener(CL_FORCE_EVENT, function () {
             clRun();
           });
-          const hasFrameModifier = function hasFrameModifier(rule) {
-            const substringAfter = function substringAfter(str, separator) {
-              const index = str.indexOf(separator);
+          var hasFrameModifier = function hasFrameModifier(rule) {
+            var substringAfter = function substringAfter(str, separator) {
+              var index = str.indexOf(separator);
               return index < 0 ? '' : str.substring(index + separator.length);
             };
-            const FRAME_MARKER = 'frame';
-            const SUBDOCUMENT_MARKER = 'subdocument';
-            const ruleModifiers = substringAfter(rule, '$').split(',');
+            var FRAME_MARKER = 'frame';
+            var SUBDOCUMENT_MARKER = 'subdocument';
+            var ruleModifiers = substringAfter(rule, '$').split(',');
             return ruleModifiers.includes(FRAME_MARKER) || ruleModifiers.includes(SUBDOCUMENT_MARKER);
           };
-          const isInsideFrame = function isInsideFrame() {
+          var isInsideFrame = function isInsideFrame() {
             return window.self !== window.top;
           };
           if (clUnblockToken && blockingRule && hasFrameModifier(blockingRule) && !isInsideFrame()) {
@@ -622,7 +622,7 @@
   # the sha256 value of the file is calculated and included in the yaml file
   # as the redirect is being used as a single file.
   # This will allow the extension to retrieve the value and add it to its CSP.
-  sha: sha256-z331S7r9QeAmJT220RjpDwtC78FnQBjMjyhLlx8CUd8=
+  sha: sha256-V6YlOE9bOyY+M4IK09aRyFU+JOd1CoVBonoSL1qufBs=
 
 - title: amazon-apstag
   comment: Mocks Amazon's apstag.js
@@ -633,7 +633,7 @@
   content: |-
     (function(source, args) {
         function AmazonApstag(source) {
-            const apstagWrapper = {
+            var apstagWrapper = {
                 fetchBids(a, b) {
                     if (typeof b === "function") {
                         b([]);
@@ -651,19 +651,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -696,13 +696,13 @@
   content: |-
     (function(source, args) {
         function ATInternetSmartTag(source) {
-            const setNoopFuncWrapper = {
+            var setNoopFuncWrapper = {
                 set: noopFunc
             };
-            const sendNoopFuncWrapper = {
+            var sendNoopFuncWrapper = {
                 send: noopFunc
             };
-            const ecommerceWrapper = {
+            var ecommerceWrapper = {
                 displayCart: {
                     products: setNoopFuncWrapper,
                     cart: setNoopFuncWrapper
@@ -723,7 +723,7 @@
                     products: setNoopFuncWrapper
                 }
             };
-            const tag = function tag() {};
+            var tag = function tag() {};
             tag.prototype = {
                 setConfig: noopFunc,
                 setParam: noopFunc,
@@ -761,7 +761,7 @@
                     removeAll: noopFunc
                 }
             };
-            const smartTagWrapper = {
+            var smartTagWrapper = {
                 Tracker: {
                     Tag: tag
                 }
@@ -774,19 +774,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -832,7 +832,7 @@
                 return new UserConsentStatusForVendorSubscribe;
             };
             UserConsentStatusForVendor.prototype.subscribe = noopFunc;
-            const DidomiWrapper = {
+            var DidomiWrapper = {
                 isConsentRequired: falseFunc,
                 getUserConsentStatusForPurpose: trueFunc,
                 getUserConsentStatus: trueFunc,
@@ -865,7 +865,7 @@
                 }
             };
             window.Didomi = DidomiWrapper;
-            const didomiStateWrapper = {
+            var didomiStateWrapper = {
                 didomiExperimentId: "",
                 didomiExperimentUserGroup: "",
                 didomiGDPRApplies: 1,
@@ -881,7 +881,7 @@
                 didomiVendorsRawConsentUnknown: ""
             };
             window.didomiState = didomiStateWrapper;
-            const tcData = {
+            var tcData = {
                 eventStatus: "tcloaded",
                 gdprApplies: false,
                 listenerId: noopFunc,
@@ -892,19 +892,19 @@
                     consents: []
                 }
             };
-            const __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
+            var __tcfapiWrapper = function __tcfapiWrapper(command, version, callback) {
                 if (typeof callback !== "function" || command === "removeEventListener") {
                     return;
                 }
                 callback(tcData, true);
             };
             window.__tcfapi = __tcfapiWrapper;
-            const didomiEventListenersWrapper = {
+            var didomiEventListenersWrapper = {
                 stub: true,
                 push: noopFunc
             };
             window.didomiEventListeners = didomiEventListenersWrapper;
-            const didomiOnReadyWrapper = {
+            var didomiOnReadyWrapper = {
                 stub: true,
                 push(arg) {
                     if (typeof arg !== "function") {
@@ -936,19 +936,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -992,11 +992,11 @@
   content: |-
     (function(source, args) {
         function Fingerprintjs2(source) {
-            let browserId = "";
-            for (let i = 0; i < 8; i += 1) {
+            var browserId = "";
+            for (var i = 0; i < 8; i += 1) {
                 browserId += (Math.random() * 65536 + 4096).toString(16).slice(-4);
             }
-            const Fingerprint2 = function Fingerprint2() {};
+            var Fingerprint2 = function Fingerprint2() {};
             Fingerprint2.get = function(options, callback) {
                 if (!callback) {
                     callback = options;
@@ -1018,19 +1018,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1064,14 +1064,14 @@
   content: |-
     (function(source, args) {
         function Fingerprintjs3(source) {
-            const visitorId = function() {
-                let id = "";
-                for (let i = 0; i < 8; i += 1) {
+            var visitorId = function() {
+                var id = "";
+                for (var i = 0; i < 8; i += 1) {
                     id += (Math.random() * 65536 + 4096).toString(16).slice(-4);
                 }
                 return id;
             }();
-            const FingerprintJS = function FingerprintJS() {};
+            var FingerprintJS = function FingerprintJS() {};
             FingerprintJS.prototype = {
                 load() {
                     return Promise.resolve(new FingerprintJS);
@@ -1091,19 +1091,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1138,7 +1138,7 @@
   content: |-
     (function(source, args) {
         function Gemius(source) {
-            const GemiusPlayer = function GemiusPlayer() {};
+            var GemiusPlayer = function GemiusPlayer() {};
             GemiusPlayer.prototype = {
                 setVideoObject: noopFunc,
                 newProgram: noopFunc,
@@ -1154,19 +1154,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1225,8 +1225,8 @@
                     data[2]();
                 }
             };
-            const gaq = new Gaq;
-            const asyncTrackers = window._gaq || [];
+            var gaq = new Gaq;
+            var asyncTrackers = window._gaq || [];
             if (Array.isArray(asyncTrackers)) {
                 while (asyncTrackers[0]) {
                     gaq.push(asyncTrackers.shift());
@@ -1234,8 +1234,8 @@
             }
             window._gaq = gaq.qf = gaq;
             function Gat() {}
-            const api = [ "_addIgnoredOrganic", "_addIgnoredRef", "_addItem", "_addOrganic", "_addTrans", "_clearIgnoredOrganic", "_clearIgnoredRef", "_clearOrganic", "_cookiePathCopy", "_deleteCustomVar", "_getName", "_setAccount", "_getAccount", "_getClientInfo", "_getDetectFlash", "_getDetectTitle", "_getLinkerUrl", "_getLocalGifPath", "_getServiceMode", "_getVersion", "_getVisitorCustomVar", "_initData", "_link", "_linkByPost", "_setAllowAnchor", "_setAllowHash", "_setAllowLinker", "_setCampContentKey", "_setCampMediumKey", "_setCampNameKey", "_setCampNOKey", "_setCampSourceKey", "_setCampTermKey", "_setCampaignCookieTimeout", "_setCampaignTrack", "_setClientInfo", "_setCookiePath", "_setCookiePersistence", "_setCookieTimeout", "_setCustomVar", "_setDetectFlash", "_setDetectTitle", "_setDomainName", "_setLocalGifPath", "_setLocalRemoteServerMode", "_setLocalServerMode", "_setReferrerOverride", "_setRemoteServerMode", "_setSampleRate", "_setSessionTimeout", "_setSiteSpeedSampleRate", "_setSessionCookieTimeout", "_setVar", "_setVisitorCookieTimeout", "_trackEvent", "_trackPageLoadTime", "_trackPageview", "_trackSocial", "_trackTiming", "_trackTrans", "_visitCode" ];
-            const tracker = api.reduce((function(res, funcName) {
+            var api = [ "_addIgnoredOrganic", "_addIgnoredRef", "_addItem", "_addOrganic", "_addTrans", "_clearIgnoredOrganic", "_clearIgnoredRef", "_clearOrganic", "_cookiePathCopy", "_deleteCustomVar", "_getName", "_setAccount", "_getAccount", "_getClientInfo", "_getDetectFlash", "_getDetectTitle", "_getLinkerUrl", "_getLocalGifPath", "_getServiceMode", "_getVersion", "_getVisitorCustomVar", "_initData", "_link", "_linkByPost", "_setAllowAnchor", "_setAllowHash", "_setAllowLinker", "_setCampContentKey", "_setCampMediumKey", "_setCampNameKey", "_setCampNOKey", "_setCampSourceKey", "_setCampTermKey", "_setCampaignCookieTimeout", "_setCampaignTrack", "_setClientInfo", "_setCookiePath", "_setCookiePersistence", "_setCookieTimeout", "_setCustomVar", "_setDetectFlash", "_setDetectTitle", "_setDomainName", "_setLocalGifPath", "_setLocalRemoteServerMode", "_setLocalServerMode", "_setReferrerOverride", "_setRemoteServerMode", "_setSampleRate", "_setSessionTimeout", "_setSiteSpeedSampleRate", "_setSessionCookieTimeout", "_setVar", "_setVisitorCookieTimeout", "_trackEvent", "_trackPageLoadTime", "_trackPageview", "_trackSocial", "_trackTiming", "_trackTrans", "_visitCode" ];
+            var tracker = api.reduce((function(res, funcName) {
                 res[funcName] = noopFunc;
                 return res;
             }), {});
@@ -1270,7 +1270,7 @@
             Gat.prototype.oa = noopFunc;
             Gat.prototype.pa = noopFunc;
             Gat.prototype.u = noopFunc;
-            const gat = new Gat;
+            var gat = new Gat;
             window._gat = gat;
             hit(source);
         }
@@ -1279,19 +1279,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1306,13 +1306,13 @@
         }
         function noopFunc() {}
         function logMessage(source, message) {
-            let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            const name = source.name, verbose = source.verbose;
+            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+            var name = source.name, verbose = source.verbose;
             if (!forced && !verbose) {
                 return;
             }
-            const nativeConsole = console.log;
+            var nativeConsole = console.log;
             if (!convertMessageToString) {
                 nativeConsole("".concat(name, ":"), message);
                 return;
@@ -1343,19 +1343,19 @@
   content: |-
     (function(source, args) {
         function GoogleAnalytics(source) {
-            const Tracker = function Tracker() {};
-            const proto = Tracker.prototype;
+            var Tracker = function Tracker() {};
+            var proto = Tracker.prototype;
             proto.get = noopFunc;
             proto.set = noopFunc;
             proto.send = noopFunc;
-            const googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
+            var googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
             function ga(a) {
-                const len = arguments.length;
+                var len = arguments.length;
                 if (len === 0) {
                     return;
                 }
-                const lastArg = arguments[len - 1];
-                let replacer;
+                var lastArg = arguments[len - 1];
+                var replacer;
                 if (lastArg instanceof Object && lastArg !== null && typeof lastArg.hitCallback === "function") {
                     replacer = lastArg.hitCallback;
                 } else if (typeof lastArg === "function") {
@@ -1379,14 +1379,14 @@
             ga.remove = noopFunc;
             ga.loaded = true;
             window[googleAnalyticsName] = ga;
-            const _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
+            var _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
             if (dataLayer instanceof Object === false) {
                 return;
             }
             if (dataLayer.hide instanceof Object && typeof dataLayer.hide.end === "function") {
                 dataLayer.hide.end();
             }
-            const handleCallback = function handleCallback(dataObj, funcName) {
+            var handleCallback = function handleCallback(dataObj, funcName) {
                 if (dataObj && typeof dataObj[funcName] === "function") {
                     setTimeout(dataObj[funcName]);
                 }
@@ -1395,7 +1395,7 @@
                 dataLayer.push = function(data) {
                     if (data instanceof Object) {
                         handleCallback(data, "eventCallback");
-                        for (const key in data) {
+                        for (var key in data) {
                             handleCallback(data[key], "event_callback");
                         }
                         if (!data.hasOwnProperty("eventCallback") && !data.hasOwnProperty("eventCallback")) {
@@ -1411,7 +1411,7 @@
                 };
             }
             if (google_optimize instanceof Object && typeof google_optimize.get === "function") {
-                const googleOptimizeWrapper = {
+                var googleOptimizeWrapper = {
                     get: noopFunc
                 };
                 window.google_optimize = googleOptimizeWrapper;
@@ -1423,19 +1423,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -1476,12 +1476,13 @@
   content: |-
     (function(source, args) {
         function GoogleIma3(source) {
-            const VERSION = "3.453.0";
-            const ima = {};
-            const AdDisplayContainer = function AdDisplayContainer() {};
+            var _window$google$ima;
+            var VERSION = "3.453.0";
+            var ima = {};
+            var AdDisplayContainer = function AdDisplayContainer() {};
             AdDisplayContainer.prototype.destroy = noopFunc;
             AdDisplayContainer.prototype.initialize = noopFunc;
-            const ImaSdkSettings = function ImaSdkSettings() {};
+            var ImaSdkSettings = function ImaSdkSettings() {};
             ImaSdkSettings.CompanionBackfillMode = {
                 ALWAYS: "always",
                 ON_MASTER_AD: "on_master_ad"
@@ -1585,12 +1586,12 @@
                     INSECURE: 2
                 }
             };
-            const EventHandler = function EventHandler() {
+            var EventHandler = function EventHandler() {
                 this.listeners = new Map;
                 this._dispatch = function(e) {
-                    const listeners = this.listeners.get(e.type) || [];
+                    var listeners = this.listeners.get(e.type) || [];
                     for (var _i = 0, _Array$from = Array.from(listeners); _i < _Array$from.length; _i++) {
-                        const listener = _Array$from[_i];
+                        var listener = _Array$from[_i];
                         try {
                             listener(e);
                         } catch (r) {
@@ -1609,7 +1610,7 @@
                     (_this$listeners$get = this.listeners.get(t)) === null || _this$listeners$get === void 0 ? void 0 : _this$listeners$get.delete(c);
                 };
             };
-            const AdsManager = new EventHandler;
+            var AdsManager = new EventHandler;
             AdsManager.volume = 1;
             AdsManager.collapse = noopFunc;
             AdsManager.configureAdsManager = noopFunc;
@@ -1652,7 +1653,7 @@
             AdsManager.skip = noopFunc;
             AdsManager.start = function() {
                 for (var _i2 = 0, _arr = [ AdEvent.Type.ALL_ADS_COMPLETED, AdEvent.Type.CONTENT_RESUME_REQUESTED ]; _i2 < _arr.length; _i2++) {
-                    const type = _arr[_i2];
+                    var type = _arr[_i2];
                     try {
                         this._dispatch(new ima.AdEvent(type));
                     } catch (e) {
@@ -1662,8 +1663,8 @@
             };
             AdsManager.stop = noopFunc;
             AdsManager.updateAdsRenderingSettings = noopFunc;
-            const manager = Object.create(AdsManager);
-            const AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
+            var manager = Object.create(AdsManager);
+            var AdsManagerLoadedEvent = function AdsManagerLoadedEvent(type, adsRequest, userRequestContext) {
                 this.type = type;
                 this.adsRequest = adsRequest;
                 this.userRequestContext = userRequestContext;
@@ -1682,7 +1683,7 @@
             AdsManagerLoadedEvent.Type = {
                 ADS_MANAGER_LOADED: "adsManagerLoaded"
             };
-            const AdsLoader = EventHandler;
+            var AdsLoader = EventHandler;
             AdsLoader.prototype.settings = new ImaSdkSettings;
             AdsLoader.prototype.contentComplete = noopFunc;
             AdsLoader.prototype.destroy = noopFunc;
@@ -1695,23 +1696,23 @@
             AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
                 var _this = this;
                 requestAnimationFrame((function() {
-                    const ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
-                    const event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
+                    var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                    var event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
                     _this._dispatch(event);
                 }));
-                const e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
+                var e = new ima.AdError("adPlayError", 1205, 1205, "The browser prevented playback initiated without user interaction.", adsRequest, userRequestContext);
                 requestAnimationFrame((function() {
                     _this._dispatch(new ima.AdErrorEvent(e));
                 }));
             };
-            const AdsRenderingSettings = noopFunc;
-            const AdsRequest = function AdsRequest() {};
+            var AdsRenderingSettings = noopFunc;
+            var AdsRequest = function AdsRequest() {};
             AdsRequest.prototype = {
                 setAdWillAutoPlay: noopFunc,
                 setAdWillPlayMuted: noopFunc,
                 setContinuousPlayback: noopFunc
             };
-            const AdPodInfo = function AdPodInfo() {};
+            var AdPodInfo = function AdPodInfo() {};
             AdPodInfo.prototype = {
                 getAdPosition: function getAdPosition() {
                     return 1;
@@ -1732,7 +1733,7 @@
                     return 1;
                 }
             };
-            const Ad = function Ad() {};
+            var Ad = function Ad() {};
             Ad.prototype = {
                 pi: new AdPodInfo,
                 getAdId: function getAdId() {
@@ -1829,7 +1830,7 @@
                     return true;
                 }
             };
-            const CompanionAd = function CompanionAd() {};
+            var CompanionAd = function CompanionAd() {};
             CompanionAd.prototype = {
                 getAdSlotId: function getAdSlotId() {
                     return "";
@@ -1847,7 +1848,7 @@
                     return 1;
                 }
             };
-            const AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
+            var AdError = function AdError(type, code, vast, message, adsRequest, userRequestContext) {
                 this.errorCode = code;
                 this.message = message;
                 this.type = type;
@@ -1872,11 +1873,11 @@
             };
             AdError.ErrorCode = {};
             AdError.Type = {};
-            const isEngadget = function isEngadget() {
+            var isEngadget = function isEngadget() {
                 try {
                     for (var _i3 = 0, _Object$values = Object.values(window.vidible._getContexts()); _i3 < _Object$values.length; _i3++) {
                         var _ctx$getPlayer, _ctx$getPlayer$div;
-                        const ctx = _Object$values[_i3];
+                        var ctx = _Object$values[_i3];
                         if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer$div = _ctx$getPlayer.div) !== null && _ctx$getPlayer$div !== void 0 && _ctx$getPlayer$div.innerHTML.includes("www.engadget.com")) {
                             return true;
                         }
@@ -1884,8 +1885,8 @@
                 } catch (e) {}
                 return false;
             };
-            const currentAd = isEngadget() ? undefined : new Ad;
-            const AdEvent = function AdEvent(type) {
+            var currentAd = isEngadget() ? undefined : new Ad;
+            var AdEvent = function AdEvent(type) {
                 this.type = type;
             };
             AdEvent.prototype = {
@@ -1928,7 +1929,7 @@
                 VOLUME_CHANGED: "volumeChange",
                 VOLUME_MUTED: "mute"
             };
-            const AdErrorEvent = function AdErrorEvent(error) {
+            var AdErrorEvent = function AdErrorEvent(error) {
                 this.error = error;
                 this.type = "adError";
                 this.getError = function() {
@@ -1945,11 +1946,11 @@
             AdErrorEvent.Type = {
                 AD_ERROR: "adError"
             };
-            const CustomContentLoadedEvent = function CustomContentLoadedEvent() {};
+            var CustomContentLoadedEvent = function CustomContentLoadedEvent() {};
             CustomContentLoadedEvent.Type = {
                 CUSTOM_CONTENT_LOADED: "deprecated-event"
             };
-            const CompanionAdSelectionSettings = function CompanionAdSelectionSettings() {};
+            var CompanionAdSelectionSettings = function CompanionAdSelectionSettings() {};
             CompanionAdSelectionSettings.CreativeType = {
                 ALL: "All",
                 FLASH: "Flash",
@@ -1966,7 +1967,7 @@
                 SELECT_EXACT_MATCH: "SelectExactMatch",
                 SELECT_NEAR_MATCH: "SelectNearMatch"
             };
-            const AdCuePoints = function AdCuePoints() {};
+            var AdCuePoints = function AdCuePoints() {};
             AdCuePoints.prototype = {
                 getCuePoints: function getCuePoints() {
                     return [];
@@ -1978,8 +1979,8 @@
                     return "";
                 }
             };
-            const AdProgressData = noopFunc;
-            const UniversalAdIdInfo = function UniversalAdIdInfo() {};
+            var AdProgressData = noopFunc;
+            var UniversalAdIdInfo = function UniversalAdIdInfo() {};
             Object.assign(ima, {
                 AdCuePoints: AdCuePoints,
                 AdDisplayContainer: AdDisplayContainer,
@@ -2018,6 +2019,9 @@
             if (!window.google) {
                 window.google = {};
             }
+            if ((_window$google$ima = window.google.ima) !== null && _window$google$ima !== void 0 && _window$google$ima.dai) {
+                ima.dai = window.google.ima.dai;
+            }
             window.google.ima = ima;
             hit(source);
         }
@@ -2026,19 +2030,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2053,13 +2057,13 @@
         }
         function noopFunc() {}
         function logMessage(source, message) {
-            let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            const name = source.name, verbose = source.verbose;
+            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+            var name = source.name, verbose = source.verbose;
             if (!forced && !verbose) {
                 return;
             }
-            const nativeConsole = console.log;
+            var nativeConsole = console.log;
             if (!convertMessageToString) {
                 nativeConsole("".concat(name, ":"), message);
                 return;
@@ -2096,7 +2100,7 @@
                     }
                     if (arg !== null && arg instanceof Object && arg.constructor.name === "Object") {
                         for (var _i = 0, _Object$keys = Object.keys(arg); _i < _Object$keys.length; _i++) {
-                            const key = _Object$keys[_i];
+                            var key = _Object$keys[_i];
                             if (typeof arg[key] === "function") {
                                 try {
                                     arg[key].call(this, {});
@@ -2106,32 +2110,32 @@
                     }
                 }
             };
-            const adElems = document.querySelectorAll(".adsbygoogle");
-            const css = "height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;";
-            const statusAttrName = "data-adsbygoogle-status";
-            const ASWIFT_IFRAME_MARKER = "aswift_";
-            const GOOGLE_ADS_IFRAME_MARKER = "google_ads_iframe_";
-            let executed = false;
-            for (let i = 0; i < adElems.length; i += 1) {
-                const adElemChildNodes = adElems[i].childNodes;
-                const childNodesQuantity = adElemChildNodes.length;
-                let areIframesDefined = false;
+            var adElems = document.querySelectorAll(".adsbygoogle");
+            var css = "height:1px!important;max-height:1px!important;max-width:1px!important;width:1px!important;";
+            var statusAttrName = "data-adsbygoogle-status";
+            var ASWIFT_IFRAME_MARKER = "aswift_";
+            var GOOGLE_ADS_IFRAME_MARKER = "google_ads_iframe_";
+            var executed = false;
+            for (var i = 0; i < adElems.length; i += 1) {
+                var adElemChildNodes = adElems[i].childNodes;
+                var childNodesQuantity = adElemChildNodes.length;
+                var areIframesDefined = false;
                 if (childNodesQuantity > 0) {
                     areIframesDefined = childNodesQuantity === 2 && adElemChildNodes[0].nodeName.toLowerCase() === "iframe" && adElemChildNodes[0].id.includes(ASWIFT_IFRAME_MARKER) && adElemChildNodes[1].nodeName.toLowerCase() === "iframe" && adElemChildNodes[1].id.includes(GOOGLE_ADS_IFRAME_MARKER);
                 }
                 if (!areIframesDefined) {
                     adElems[i].setAttribute(statusAttrName, "done");
-                    const aswiftIframe = document.createElement("iframe");
+                    var aswiftIframe = document.createElement("iframe");
                     aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
                     aswiftIframe.style = css;
                     adElems[i].appendChild(aswiftIframe);
-                    const innerAswiftIframe = document.createElement("iframe");
+                    var innerAswiftIframe = document.createElement("iframe");
                     aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
-                    const googleadsIframe = document.createElement("iframe");
+                    var googleadsIframe = document.createElement("iframe");
                     googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
                     googleadsIframe.style = css;
                     adElems[i].appendChild(googleadsIframe);
-                    const innerGoogleadsIframe = document.createElement("iframe");
+                    var innerGoogleadsIframe = document.createElement("iframe");
                     googleadsIframe.contentWindow.document.body.appendChild(innerGoogleadsIframe);
                     executed = true;
                 }
@@ -2145,19 +2149,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2191,32 +2195,32 @@
   content: |-
     (function(source, args) {
         function GoogleTagServicesGpt(source) {
-            const slots = new Map;
-            const slotsById = new Map;
-            const slotsPerPath = new Map;
-            const slotCreatives = new Map;
-            const eventCallbacks = new Map;
-            const gTargeting = new Map;
-            const addEventListener = function addEventListener(name, listener) {
+            var slots = new Map;
+            var slotsById = new Map;
+            var slotsPerPath = new Map;
+            var slotCreatives = new Map;
+            var eventCallbacks = new Map;
+            var gTargeting = new Map;
+            var addEventListener = function addEventListener(name, listener) {
                 if (!eventCallbacks.has(name)) {
                     eventCallbacks.set(name, new Set);
                 }
                 eventCallbacks.get(name).add(listener);
                 return this;
             };
-            const removeEventListener = function removeEventListener(name, listener) {
+            var removeEventListener = function removeEventListener(name, listener) {
                 if (eventCallbacks.has(name)) {
                     return eventCallbacks.get(name).delete(listener);
                 }
                 return false;
             };
-            const fireSlotEvent = function fireSlotEvent(name, slot) {
+            var fireSlotEvent = function fireSlotEvent(name, slot) {
                 return new Promise((function(resolve) {
                     requestAnimationFrame((function() {
-                        const size = [ 0, 0 ];
-                        const callbacksSet = eventCallbacks.get(name) || [];
-                        const callbackArray = Array.from(callbacksSet);
-                        for (let i = 0; i < callbackArray.length; i += 1) {
+                        var size = [ 0, 0 ];
+                        var callbacksSet = eventCallbacks.get(name) || [];
+                        var callbackArray = Array.from(callbacksSet);
+                        for (var i = 0; i < callbackArray.length; i += 1) {
                             callbackArray[i]({
                                 isEmpty: true,
                                 size: size,
@@ -2227,19 +2231,19 @@
                     }));
                 }));
             };
-            const emptySlotElement = function emptySlotElement(slot) {
-                const node = document.getElementById(slot.getSlotElementId());
+            var emptySlotElement = function emptySlotElement(slot) {
+                var node = document.getElementById(slot.getSlotElementId());
                 while (node !== null && node !== void 0 && node.lastChild) {
                     node.lastChild.remove();
                 }
             };
-            const recreateIframeForSlot = function recreateIframeForSlot(slot) {
+            var recreateIframeForSlot = function recreateIframeForSlot(slot) {
                 var _document$getElementB;
-                const eid = "google_ads_iframe_".concat(slot.getId());
+                var eid = "google_ads_iframe_".concat(slot.getId());
                 (_document$getElementB = document.getElementById(eid)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.remove();
-                const node = document.getElementById(slot.getSlotElementId());
+                var node = document.getElementById(slot.getSlotElementId());
                 if (node) {
-                    const f = document.createElement("iframe");
+                    var f = document.createElement("iframe");
                     f.id = eid;
                     f.srcdoc = "<body></body>";
                     f.style = "position:absolute; width:0; height:0; left:0; right:0; z-index:-1; border:0";
@@ -2251,15 +2255,15 @@
                     node.appendChild(f);
                 }
             };
-            const displaySlot = function displaySlot(slot) {
+            var displaySlot = function displaySlot(slot) {
                 if (!slot) {
                     return;
                 }
-                const id = slot.getSlotElementId();
+                var id = slot.getSlotElementId();
                 if (!document.getElementById(id)) {
                     return;
                 }
-                const parent = document.getElementById(id);
+                var parent = document.getElementById(id);
                 if (parent) {
                     parent.appendChild(document.createElement("div"));
                 }
@@ -2271,14 +2275,14 @@
                 fireSlotEvent("slotOnload", slot);
                 fireSlotEvent("impressionViewable", slot);
             };
-            const companionAdsService = {
+            var companionAdsService = {
                 addEventListener: addEventListener,
                 removeEventListener: removeEventListener,
                 enableSyncLoading: noopFunc,
                 setRefreshUnfilledSlots: noopFunc,
                 getSlots: noopArray
             };
-            const contentService = {
+            var contentService = {
                 addEventListener: addEventListener,
                 removeEventListener: removeEventListener,
                 setContent: noopFunc
@@ -2294,7 +2298,7 @@
             function SizeMappingBuilder() {}
             SizeMappingBuilder.prototype.addSize = noopThis;
             SizeMappingBuilder.prototype.build = noopNull;
-            const getTargetingValue = function getTargetingValue(v) {
+            var getTargetingValue = function getTargetingValue(v) {
                 if (typeof v === "string") {
                     return [ v ];
                 }
@@ -2303,32 +2307,32 @@
                 } catch (_unused) {}
                 return [];
             };
-            const updateTargeting = function updateTargeting(targeting, map) {
+            var updateTargeting = function updateTargeting(targeting, map) {
                 if (typeof map === "object") {
-                    for (const key in map) {
+                    for (var key in map) {
                         if (Object.prototype.hasOwnProperty.call(map, key)) {
                             targeting.set(key, getTargetingValue(map[key]));
                         }
                     }
                 }
             };
-            const defineSlot = function defineSlot(adUnitPath, creatives, optDiv) {
+            var defineSlot = function defineSlot(adUnitPath, creatives, optDiv) {
                 if (slotsById.has(optDiv)) {
                     var _document$getElementB2;
                     (_document$getElementB2 = document.getElementById(optDiv)) === null || _document$getElementB2 === void 0 ? void 0 : _document$getElementB2.remove();
                     return slotsById.get(optDiv);
                 }
-                const attributes = new Map;
-                const targeting = new Map;
-                const exclusions = new Set;
-                const response = {
+                var attributes = new Map;
+                var targeting = new Map;
+                var exclusions = new Set;
+                var response = {
                     advertiserId: undefined,
                     campaignId: undefined,
                     creativeId: undefined,
                     creativeTemplateId: undefined,
                     lineItemId: undefined
                 };
-                const sizes = [ {
+                var sizes = [ {
                     getHeight: function getHeight() {
                         return 2;
                     },
@@ -2336,13 +2340,13 @@
                         return 2;
                     }
                 } ];
-                const num = (slotsPerPath.get(adUnitPath) || 0) + 1;
+                var num = (slotsPerPath.get(adUnitPath) || 0) + 1;
                 slotsPerPath.set(adUnitPath, num);
-                const id = "".concat(adUnitPath, "_").concat(num);
-                let clickUrl = "";
-                let collapseEmptyDiv = null;
-                const services = new Set;
-                const slot = {
+                var id = "".concat(adUnitPath, "_").concat(num);
+                var clickUrl = "";
+                var collapseEmptyDiv = null;
+                var services = new Set;
+                var slot = {
                     addService(e) {
                         services.add(e);
                         return slot;
@@ -2463,7 +2467,7 @@
                 slotCreatives.set(optDiv, creatives);
                 return slot;
             };
-            const pubAdsService = {
+            var pubAdsService = {
                 addEventListener: addEventListener,
                 removeEventListener: removeEventListener,
                 clear: noopFunc,
@@ -2511,8 +2515,8 @@
                 setVideoContent: noopThis,
                 updateCorrelator: noopFunc
             };
-            const _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
-            const _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+            var _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
+            var _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
             googletag.apiReady = true;
             googletag.cmd = [];
             googletag.cmd.push = function(a) {
@@ -2535,7 +2539,7 @@
             };
             googletag.disablePublisherConsole = noopFunc;
             googletag.display = function(arg) {
-                let id;
+                var id;
                 if (arg !== null && arg !== void 0 && arg.getSlotElementId) {
                     id = arg.getSlotElementId();
                 } else if (arg !== null && arg !== void 0 && arg.nodeType) {
@@ -2566,19 +2570,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2626,14 +2630,14 @@
   content: |-
     (function(source, args) {
         function Matomo(source) {
-            const Tracker = function Tracker() {};
+            var Tracker = function Tracker() {};
             Tracker.prototype.setDoNotTrack = noopFunc;
             Tracker.prototype.setDomains = noopFunc;
             Tracker.prototype.setCustomDimension = noopFunc;
             Tracker.prototype.trackPageView = noopFunc;
-            const AsyncTracker = function AsyncTracker() {};
+            var AsyncTracker = function AsyncTracker() {};
             AsyncTracker.prototype.addListener = noopFunc;
-            const matomoWrapper = {
+            var matomoWrapper = {
                 getTracker: Tracker,
                 getAsyncTracker: AsyncTracker
             };
@@ -2645,19 +2649,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2690,10 +2694,10 @@
   content: |-
     (function(source, args) {
         function metrikaYandexTag(source) {
-            const asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
-                let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-                let callback = options.callback;
-                const ctx = options.ctx;
+            var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
+                var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+                var callback = options.callback;
+                var ctx = options.ctx;
                 if (typeof callback === "function") {
                     callback = ctx !== undefined ? callback.bind(ctx) : callback;
                     setTimeout((function() {
@@ -2701,28 +2705,28 @@
                     }));
                 }
             };
-            const addFileExtension = noopFunc;
-            const extLink = asyncCallbackFromOptions;
-            const file = asyncCallbackFromOptions;
-            const getClientID = function getClientID(id, cb) {
+            var addFileExtension = noopFunc;
+            var extLink = asyncCallbackFromOptions;
+            var file = asyncCallbackFromOptions;
+            var getClientID = function getClientID(id, cb) {
                 if (!cb) {
                     return;
                 }
                 setTimeout(cb(null));
             };
-            const hitFunc = asyncCallbackFromOptions;
-            const notBounce = asyncCallbackFromOptions;
-            const params = noopFunc;
-            const reachGoal = function reachGoal(id, target, params, callback, ctx) {
+            var hitFunc = asyncCallbackFromOptions;
+            var notBounce = asyncCallbackFromOptions;
+            var params = noopFunc;
+            var reachGoal = function reachGoal(id, target, params, callback, ctx) {
                 asyncCallbackFromOptions(null, null, {
                     callback: callback,
                     ctx: ctx
                 });
             };
-            const setUserID = noopFunc;
-            const userParams = noopFunc;
-            const destruct = noopFunc;
-            const api = {
+            var setUserID = noopFunc;
+            var userParams = noopFunc;
+            var destruct = noopFunc;
+            var api = {
                 addFileExtension: addFileExtension,
                 extLink: extLink,
                 file: file,
@@ -2752,7 +2756,7 @@
                 ym.a = window.ym.a;
                 window.ym = ym;
                 window.ym.a.forEach((function(params) {
-                    const id = params[0];
+                    var id = params[0];
                     init(id);
                 }));
             }
@@ -2763,19 +2767,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2808,11 +2812,11 @@
   content: |-
     (function(source, args) {
         function metrikaYandexWatch(source) {
-            const cbName = "yandex_metrika_callbacks";
-            const asyncCallbackFromOptions = function asyncCallbackFromOptions() {
-                let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-                let callback = options.callback;
-                const ctx = options.ctx;
+            var cbName = "yandex_metrika_callbacks";
+            var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
+                var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+                var callback = options.callback;
+                var ctx = options.ctx;
                 if (typeof callback === "function") {
                     callback = ctx !== undefined ? callback.bind(ctx) : callback;
                     setTimeout((function() {
@@ -2865,19 +2869,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2925,19 +2929,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -2988,19 +2992,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3014,13 +3018,13 @@
             }
         }
         function logMessage(source, message) {
-            let forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            let convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            const name = source.name, verbose = source.verbose;
+            var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+            var name = source.name, verbose = source.verbose;
             if (!forced && !verbose) {
                 return;
             }
-            const nativeConsole = console.log;
+            var nativeConsole = console.log;
             if (!convertMessageToString) {
                 nativeConsole("".concat(name, ":"), message);
                 return;
@@ -3075,19 +3079,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3137,19 +3141,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3181,14 +3185,14 @@
   content: |-
     (function(source, args) {
         function Prebid(source) {
-            const pushFunction = function pushFunction(arg) {
+            var pushFunction = function pushFunction(arg) {
                 if (typeof arg === "function") {
                     try {
                         arg.call();
                     } catch (ex) {}
                 }
             };
-            const pbjsWrapper = {
+            var pbjsWrapper = {
                 addAdUnits() {},
                 adServers: {
                     dfp: {
@@ -3224,19 +3228,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3281,9 +3285,9 @@
   content: |-
     (function(source, args) {
         function preventBab$1(source) {
-            const nativeSetTimeout = window.setTimeout;
-            const babRegex = /\.bab_elementid.$/;
-            const timeoutWrapper = function timeoutWrapper(callback) {
+            var nativeSetTimeout = window.setTimeout;
+            var babRegex = /\.bab_elementid.$/;
+            var timeoutWrapper = function timeoutWrapper(callback) {
                 if (typeof callback !== "string" || !babRegex.test(callback)) {
                     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                         args[_key - 1] = arguments[_key];
@@ -3293,17 +3297,17 @@
                 hit(source);
             };
             window.setTimeout = timeoutWrapper;
-            const signatures = [ [ "blockadblock" ], [ "babasbm" ], [ /getItem\('babn'\)/ ], [ "getElementById", "String.fromCharCode", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "charAt", "DOMContentLoaded", "AdBlock", "addEventListener", "doScroll", "fromCharCode", "<<2|r>>4", "sessionStorage", "clientWidth", "localStorage", "Math", "random" ] ];
-            const check = function check(str) {
+            var signatures = [ [ "blockadblock" ], [ "babasbm" ], [ /getItem\('babn'\)/ ], [ "getElementById", "String.fromCharCode", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "charAt", "DOMContentLoaded", "AdBlock", "addEventListener", "doScroll", "fromCharCode", "<<2|r>>4", "sessionStorage", "clientWidth", "localStorage", "Math", "random" ] ];
+            var check = function check(str) {
                 if (typeof str !== "string") {
                     return false;
                 }
-                for (let i = 0; i < signatures.length; i += 1) {
-                    const tokens = signatures[i];
-                    let match = 0;
-                    for (let j = 0; j < tokens.length; j += 1) {
-                        const token = tokens[j];
-                        const found = token instanceof RegExp ? token.test(str) : str.includes(token);
+                for (var i = 0; i < signatures.length; i += 1) {
+                    var tokens = signatures[i];
+                    var match = 0;
+                    for (var j = 0; j < tokens.length; j += 1) {
+                        var token = tokens[j];
+                        var found = token instanceof RegExp ? token.test(str) : str.includes(token);
                         if (found) {
                             match += 1;
                         }
@@ -3314,17 +3318,17 @@
                 }
                 return false;
             };
-            const nativeEval = window.eval;
-            const evalWrapper = function evalWrapper(str) {
+            var nativeEval = window.eval;
+            var evalWrapper = function evalWrapper(str) {
                 if (!check(str)) {
                     return nativeEval(str);
                 }
                 hit(source);
-                const bodyEl = document.body;
+                var bodyEl = document.body;
                 if (bodyEl) {
                     bodyEl.style.removeProperty("visibility");
                 }
-                const el = document.getElementById("babasbmsgx");
+                var el = document.getElementById("babasbmsgx");
                 if (el) {
                     el.parentNode.removeChild(el);
                 }
@@ -3336,19 +3340,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3381,17 +3385,17 @@
   content: |-
     (function(source, args) {
         function preventBab2(source) {
-            const script = document.currentScript;
+            var script = document.currentScript;
             if (script === null) {
                 return;
             }
-            const url = script.src;
+            var url = script.src;
             if (typeof url !== "string") {
                 return;
             }
-            const domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
-            const matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
-            const domainsRegex = new RegExp(matchStr);
+            var domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
+            var matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
+            var domainsRegex = new RegExp(matchStr);
             if (domainsRegex.test(url) === false) {
                 return;
             }
@@ -3403,19 +3407,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3453,7 +3457,7 @@
     (function(source, args) {
         function preventFab(source) {
             hit(source);
-            const Fab = function Fab() {};
+            var Fab = function Fab() {};
             Fab.prototype.check = noopFunc;
             Fab.prototype.clearEvent = noopFunc;
             Fab.prototype.emitEvent = noopFunc;
@@ -3473,14 +3477,14 @@
                 set: noopFunc,
                 get: noopFunc
             };
-            const fab = new Fab;
-            const getSetFab = {
+            var fab = new Fab;
+            var getSetFab = {
                 get() {
                     return Fab;
                 },
                 set() {}
             };
-            const getsetfab = {
+            var getsetfab = {
                 get() {
                     return fab;
                 },
@@ -3522,19 +3526,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3575,8 +3579,8 @@
   content: |-
     (function(source, args) {
         function preventPopadsNet(source) {
-            const rid = randomId();
-            const throwError = function throwError() {
+            var rid = randomId();
+            var throwError = function throwError() {
                 throw new ReferenceError(rid);
             };
             delete window.PopAds;
@@ -3593,7 +3597,7 @@
             hit(source);
         }
         function createOnErrorHandler(rid) {
-            const nativeOnError = window.onerror;
+            var nativeOnError = window.onerror;
             return function onError(error) {
                 if (typeof error === "string" && error.includes(rid)) {
                     return true;
@@ -3602,7 +3606,7 @@
                     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
                         args[_key - 1] = arguments[_key];
                     }
-                    return nativeOnError.apply(this, [ error, ...args ]);
+                    return nativeOnError.apply(window, [ error, ...args ]);
                 }
                 return false;
             };
@@ -3615,19 +3619,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3674,19 +3678,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));
@@ -3745,19 +3749,19 @@
                 return;
             }
             try {
-                const log = console.log.bind(console);
-                const trace = console.trace.bind(console);
-                let prefix = source.ruleText || "";
+                var log = console.log.bind(console);
+                var trace = console.trace.bind(console);
+                var prefix = source.ruleText || "";
                 if (source.domainName) {
-                    const AG_SCRIPTLET_MARKER = "#%#//";
-                    const UBO_SCRIPTLET_MARKER = "##+js";
-                    let ruleStartIndex;
+                    var AG_SCRIPTLET_MARKER = "#%#//";
+                    var UBO_SCRIPTLET_MARKER = "##+js";
+                    var ruleStartIndex;
                     if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                     } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                         ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                     }
-                    const rulePart = source.ruleText.slice(ruleStartIndex);
+                    var rulePart = source.ruleText.slice(ruleStartIndex);
                     prefix = "".concat(source.domainName).concat(rulePart);
                 }
                 log("".concat(prefix, " trace start"));

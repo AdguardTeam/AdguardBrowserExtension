@@ -1,10 +1,10 @@
 (function(source, args) {
     function Fingerprintjs2(source) {
-        let browserId = "";
-        for (let i = 0; i < 8; i += 1) {
+        var browserId = "";
+        for (var i = 0; i < 8; i += 1) {
             browserId += (Math.random() * 65536 + 4096).toString(16).slice(-4);
         }
-        const Fingerprint2 = function Fingerprint2() {};
+        var Fingerprint2 = function Fingerprint2() {};
         Fingerprint2.get = function(options, callback) {
             if (!callback) {
                 callback = options;
@@ -26,19 +26,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));
