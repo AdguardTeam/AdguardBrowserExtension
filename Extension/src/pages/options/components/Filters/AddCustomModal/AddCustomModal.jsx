@@ -173,6 +173,11 @@ const AddCustomModal = ({
             if (!filterToAdd.name) {
                 filterToAdd.name = filterToAddName || customUrlToAdd;
             }
+
+            if (!filterToAdd.trusted) {
+                filterToAdd.trusted = false;
+            }
+
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
             setStepToRender(STEPS.ERROR);

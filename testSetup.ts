@@ -69,12 +69,6 @@ jest.mock('@adguard/tswebextension', () => ({
     TsWebExtension: MockedTsWebExtension,
 }));
 
-// TODO: Add tests for firefox storage
-jest.mock(
-    './Extension/src/background/storages/implementations/storage.__ABSTRACT_BROWSER__.ts',
-    () => jest.requireActual('./Extension/src/background/storages/implementations/storage.chrome.ts'),
-);
-
 jest.mock('lodash', () => ({
     ...jest.requireActual('lodash'),
     debounce: ((func: (...args: unknown[]) => unknown) => func as DebouncedFunc<(...args: unknown[]) => unknown>),

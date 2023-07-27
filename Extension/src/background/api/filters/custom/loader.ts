@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { network } from '../../network';
+import { createPromiseWithTimeout } from '../../../utils/timers';
 
 /**
  * Helper class for custom filters downloading with specified request time limitation.
@@ -34,11 +35,10 @@ export class CustomFilterLoader {
      * @returns Downloaded custom filter rules.
      */
     public static async downloadRulesWithTimeout(url: string): Promise<string[]> {
-        return Promise.race([
-            network.downloadFilterRulesBySubscriptionUrl(url),
-            new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Fetch timeout is over')), CustomFilterLoader.DOWNLOAD_LIMIT_MS);
-            }),
-        ]) as Promise<string[]>;
+        return createPromiseWithTimeout(
+            network.downloadFilterRulesBySubscriptionUrl(url) as Promise<string[]>,
+            CustomFilterLoader.DOWNLOAD_LIMIT_MS,
+            'Fetch timeout is over',
+        );
     }
 }

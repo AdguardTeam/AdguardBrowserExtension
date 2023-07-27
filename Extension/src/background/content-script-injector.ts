@@ -27,6 +27,7 @@ import {
 } from '../../../constants';
 
 import { TabsApi } from './api/extension/tabs';
+import { createPromiseWithTimeout } from './utils/timers';
 
 /**
  * Helper class for injecting content script into tabs, opened before extension initialization.
@@ -98,17 +99,14 @@ export class ContentScriptInjector {
              * This implementation uses Promise.race() to prevent content script injection
              * from freezing the application when Chrome drops tabs.
              */
-            await Promise.race([
+            await createPromiseWithTimeout(
                 browser.tabs.executeScript(tabId, {
                     allFrames: true,
                     file: src,
                 }),
-                new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        reject(new Error(`Content script inject timeout: tab #${tabId} doesn't respond.`));
-                    }, ContentScriptInjector.INJECTION_LIMIT_MS);
-                }),
-            ]);
+                ContentScriptInjector.INJECTION_LIMIT_MS,
+                `Content script inject timeout: tab #${tabId} doesn't respond.`,
+            );
         } catch (error: unknown) {
             // re-throw error with custom message
             const message = error instanceof Error ? error.message : String(error);

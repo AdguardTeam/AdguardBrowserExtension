@@ -42,7 +42,7 @@ export class SchemaPreprocessor {
      */
     private static castStringToNumber(value: unknown): number | unknown {
         if (typeof value === 'string') {
-            return Number(value);
+            return Number(JSON.parse(value));
         }
 
         return value;
