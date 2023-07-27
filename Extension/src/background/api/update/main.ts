@@ -24,20 +24,15 @@ import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,
     CLIENT_ID_KEY,
-    LAST_NOTIFICATION_TIME_KEY,
-    PAGE_STATISTIC_KEY,
-    SB_LRU_CACHE_KEY,
-    SB_SUSPENDED_CACHE_KEY,
     SCHEMA_VERSION_KEY,
-    VIEWED_NOTIFICATIONS_KEY,
 } from '../../../common/constants';
 import {
     type SafebrowsingCacheData,
     type SafebrowsingStorageData,
-    SettingOption,
-    settingsValidator,
+    SchemaPreprocessor,
 } from '../../schema';
-import type { RunInfo } from '../../utils';
+import type { RunInfo } from '../../utils/run-info';
+import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 
@@ -49,6 +44,7 @@ export class UpdateApi {
     private static readonly schemaMigrationMap: Record<string, () => Promise<void>> = {
         '0': UpdateApi.migrateFromV0toV1,
         '1': UpdateApi.migrateFromV1toV2,
+        '2': UpdateApi.migrateFromV2toV3,
     };
 
     /**
@@ -135,21 +131,91 @@ export class UpdateApi {
     }
 
     /**
+     * Run data migration from schema v2 to schema v3.
+     */
+    private static async migrateFromV2toV3(): Promise<void> {
+        /**
+         * From v4.2.144 we don't store filter rules in indexed DB, die to bug
+         * https://bugzilla.mozilla.org/show_bug.cgi?id=1841806.
+         */
+
+        let db: IDBDatabase | null = null;
+
+        try {
+            db = await IDBUtils.connect('AdguardRulesStorage');
+            const data = await IDBUtils.getAll(db, 'AdguardRulesStorage');
+
+            const lists = zod
+                .object({
+                    key: zod.string(),
+                    value: zod.string(),
+                })
+                .array()
+                .parse(data);
+
+            const results = await Promise.allSettled(
+                lists.map(async ({ key, value }) => storage.set(key, value.split(/\r?\n/))),
+            );
+
+            results.forEach((result) => {
+                if (result.status === 'rejected') {
+                    Log.info(getErrorMessage(result.reason));
+                }
+            });
+        } catch (e: unknown) {
+            Log.info('Error while migrate user rules', getErrorMessage(e));
+        } finally {
+            if (db) {
+                db.close();
+            }
+        }
+
+        /**
+         * Add missed trusted flags for custom filters.
+         */
+        const storageData = await storage.get('adguard-settings');
+        const settings = zod.record(zod.unknown()).parse(storageData);
+        const customFilters = settings['custom-filters'];
+
+        if (typeof customFilters === 'string') {
+            const customFiltersDataTransformer = zod
+                .object({
+                    trusted: zod.boolean().optional(),
+                })
+                .passthrough()
+                .transform(({ trusted, ...rest }) => ({
+                    ...rest,
+                    trusted: Boolean(trusted),
+                }))
+                .array();
+
+            const customFiltersData = JSON.parse(customFilters);
+            settings['custom-filters'] = JSON.stringify(customFiltersDataTransformer.parse(customFiltersData));
+
+            await storage.set('adguard-settings', settings);
+        }
+    }
+
+    /**
      * Run data migration from schema v1 to schema v2.
      */
     private static async migrateFromV1toV2(): Promise<void> {
         // From v4.2.135 we store timestamp of expiration time for safebrowsing cache records.
-        const storageData = await storage.get(SB_LRU_CACHE_KEY);
+        const storageData = await storage.get('sb-lru-cache');
 
         if (typeof storageData !== 'string') {
             return;
         }
 
         // parse v1 safebrowsing cache data
-        const sbStorageDataV1 = zod.object({
-            key: zod.string(),
-            value: zod.string(),
-        }).strict().array().parse(JSON.parse(storageData));
+        const sbStorageDataV1 = zod
+            .object({
+                key: zod.string(),
+                value: zod.string(),
+            })
+            .strict()
+            .array()
+            .parse(JSON.parse(storageData));
 
         const now = Date.now();
 
@@ -157,7 +223,7 @@ export class UpdateApi {
         const sbStorageDataV2: SafebrowsingStorageData = sbStorageDataV1.map(({ key, value }) => {
             const safebrowsingCacheRecord: SafebrowsingCacheData = { list: value };
 
-            if (safebrowsingCacheRecord.list !== SbCache.SB_ALLOW_LIST) {
+            if (safebrowsingCacheRecord.list !== 'allowlist') {
                 safebrowsingCacheRecord.expires = now + SbCache.CACHE_TTL_MS;
             }
 
@@ -167,207 +233,214 @@ export class UpdateApi {
             };
         });
 
-        await storage.set(SB_LRU_CACHE_KEY, JSON.stringify(sbStorageDataV2));
+        await storage.set('sb-lru-cache', JSON.stringify(sbStorageDataV2));
     }
 
     /**
      * Run data migration from schema v0 to schema v1.
-     *
-     * TODO: Use string values when access to the old settings instead of
-     * constants and enum values to minimize the risks when we might decide to
-     * rename a field in an enumeration.
      */
     private static async migrateFromV0toV1(): Promise<void> {
         // In the v4.0.171 we have littered window.localStorage with proms used in the promo notifications module,
         // now we are clearing them
 
-        window.localStorage.removeItem(VIEWED_NOTIFICATIONS_KEY);
-        window.localStorage.removeItem(LAST_NOTIFICATION_TIME_KEY);
+        window.localStorage.removeItem('viewed-notifications');
+        window.localStorage.removeItem('viewed-notification-time');
 
         // In the v4.2.0 we are refactoring storage data structure
 
         // get current settings
-        const storageData = await storage.get(ADGUARD_SETTINGS_KEY);
+        const storageData = await storage.get('adguard-settings');
 
         // check if current settings is record
-        const currentSettings = zod.record(zod.unknown()).parse(storageData);
+        const currentSettings = zod
+            .record(zod.unknown())
+            .parse(storageData);
 
         // delete app version from settings
-        if (currentSettings?.[APP_VERSION_KEY]) {
-            delete currentSettings[APP_VERSION_KEY];
+        if (currentSettings['app-version']) {
+            delete currentSettings['app-version'];
         }
 
         // delete metadata from settings (new one will be loaded while filter initialization)
-        if (currentSettings?.[SettingOption.I18nMetadata]) {
-            delete currentSettings[SettingOption.I18nMetadata];
+        if (currentSettings['filters-i18n-metadata']) {
+            delete currentSettings['filters-i18n-metadata'];
         }
 
-        if (currentSettings?.[SettingOption.Metadata]) {
-            delete currentSettings[SettingOption.Metadata];
+        if (currentSettings['filters-metadata']) {
+            delete currentSettings['filters-metadata'];
         }
+
+        // TODO: use zod preprocessors instead direct remapping and data transformation
 
         // rename fields
         let keyToCheck = 'default-whitelist-mode';
-        if (currentSettings?.[keyToCheck] !== undefined) {
-            currentSettings[SettingOption.DefaultAllowlistMode] = currentSettings[keyToCheck];
+        if (currentSettings[keyToCheck] !== undefined) {
+            currentSettings['default-allowlist-mode'] = currentSettings[keyToCheck];
             delete currentSettings[keyToCheck];
         }
 
         keyToCheck = 'white-list-domains';
-        if (currentSettings?.[keyToCheck] !== undefined) {
-            currentSettings[SettingOption.AllowlistDomains] = currentSettings[keyToCheck];
+        if (currentSettings[keyToCheck] !== undefined) {
+            currentSettings['allowlist-domains'] = currentSettings[keyToCheck];
             delete currentSettings[keyToCheck];
         }
 
         keyToCheck = 'stealth_disable_stealth_mode';
-        if (currentSettings?.[keyToCheck] !== undefined) {
-            currentSettings[SettingOption.DisableStealthMode] = currentSettings[keyToCheck];
+        if (currentSettings[keyToCheck] !== undefined) {
+            currentSettings['stealth-disable-stealth-mode'] = currentSettings[keyToCheck];
             delete currentSettings[keyToCheck];
         }
 
         keyToCheck = 'custom_filters';
-        if (currentSettings?.[keyToCheck] !== undefined) {
-            currentSettings[SettingOption.CustomFilters] = currentSettings[keyToCheck];
+        if (currentSettings[keyToCheck] !== undefined) {
+            currentSettings['custom-filters'] = currentSettings[keyToCheck];
             delete currentSettings[keyToCheck];
         }
 
         // New group state 'touched' field added in 4.2
         // zod 'parse then transform' approach is used to transform data to actual schema
-        if (typeof currentSettings?.[SettingOption.GroupsState] === 'string') {
+        if (typeof currentSettings['groups-state'] === 'string') {
             // create data transformer
             const groupsStateTransformer = zod.record(
                 zod.object({
                     enabled: zod.boolean().optional(),
-                }).transform((data) => {
+                }).passthrough().transform((data) => {
                     const enabled = Boolean(data.enabled);
                     return {
+                        ...data,
                         enabled,
                         touched: enabled,
                     };
                 }),
             );
 
-            const currentGroupsStateData = JSON.parse(currentSettings[SettingOption.GroupsState]);
-            currentSettings[SettingOption.GroupsState] = JSON.stringify(
+            const currentGroupsStateData = JSON.parse(currentSettings['groups-state']);
+            currentSettings['groups-state'] = JSON.stringify(
                 groupsStateTransformer.parse(currentGroupsStateData),
             );
         }
 
         // Check non exists fields in filters-state
-        if (currentSettings?.['filters-state']) {
-            const stringFiltersState = currentSettings['filters-state'] as string;
-            const filtersState = JSON.parse(stringFiltersState);
-            const keys = Object.keys(filtersState);
-            for (let i = 0; i < keys.length; i += 1) {
-                const key = keys[i];
-                if (!key) {
-                    continue;
-                }
+        if (typeof currentSettings['filters-state'] === 'string') {
+            const filtersStateTransformer = zod.record(
+                zod.object({
+                    enabled: zod.boolean().optional(),
+                    installed: zod.boolean().optional(),
+                }).passthrough().transform(({ installed, enabled, ...rest }) => ({
+                    ...rest,
+                    enabled: Boolean(enabled),
+                    installed: Boolean(installed),
+                })),
+            );
 
-                if (filtersState[key]['installed'] === undefined) {
-                    filtersState[key]['installed'] = false;
-                }
+            const filtersState = JSON.parse(currentSettings['filters-state']);
 
-                if (filtersState[key]['enabled'] === undefined) {
-                    filtersState[key]['enabled'] = false;
-                }
-            }
-
-            currentSettings['filters-state'] = JSON.stringify(filtersState);
+            currentSettings['filters-state'] = JSON.stringify(filtersStateTransformer.parse(filtersState));
         }
 
         // Check not exists fields in custom filters
-        if (currentSettings?.['custom-filters']) {
-            const stringCustomFiltersMetadata = currentSettings['custom-filters'] as string;
-            const customFiltersMetadata = JSON.parse(stringCustomFiltersMetadata);
-            if (Array.isArray(customFiltersMetadata)) {
-                for (let i = 0; i < customFiltersMetadata.length; i += 1) {
-                    const customFilterMetadata = customFiltersMetadata[i];
-
-                    if (customFilterMetadata.trusted === undefined) {
-                        customFilterMetadata.trusted = false;
-                    }
-
-                    if (!customFilterMetadata.timeUpdated) {
-                        customFilterMetadata.timeUpdated = 0;
-                    }
+        if (typeof currentSettings['custom-filters'] === 'string') {
+            const customFiltersDataTransformer = zod
+                .object({
+                    trusted: zod.boolean().optional(),
+                    timeUpdated: zod.number().or(zod.string()).optional(),
+                })
+                .passthrough()
+                .transform((data) => {
+                    const trusted = Boolean(data.trusted);
+                    const timeUpdated = typeof data.timeUpdated === 'undefined' ? 0 : Number(data.timeUpdated);
 
                     // Remove deprecated field.
-                    if (customFilterMetadata.languages !== undefined) {
-                        delete customFilterMetadata.languages;
+                    if (data.languages !== undefined) {
+                        delete data.languages;
                     }
-                }
-            }
 
-            currentSettings['custom-filters'] = JSON.stringify(customFiltersMetadata);
+                    return {
+                        ...data,
+                        trusted,
+                        timeUpdated,
+                    };
+                })
+                .array();
+
+            const customFilters = JSON.parse(currentSettings['custom-filters']);
+
+            currentSettings['custom-filters'] = JSON.stringify(customFiltersDataTransformer.parse(customFilters));
         }
 
         // Check not exists fields in filters version for custom filters
-        if (currentSettings?.['filters-version']) {
-            const stringFiltersVersion = currentSettings['filters-version'] as string;
-            const filtersVersion = JSON.parse(stringFiltersVersion);
-            const keys = Object.keys(filtersVersion);
-            for (let i = 0; i < keys.length; i += 1) {
-                const key = keys[i];
-                if (!key) {
-                    continue;
-                }
+        if (typeof currentSettings['filters-version'] === 'string') {
+            const filtersVersionsTransformer = zod.record(zod.object({
+                lastUpdateTime: zod.number().optional(),
+            }).passthrough().transform(({ lastUpdateTime, ...rest }) => ({
+                ...rest,
+                lastUpdateTime: lastUpdateTime ?? 0,
+            })));
 
-                if (filtersVersion[key]['lastUpdateTime'] === undefined) {
-                    filtersVersion[key]['lastUpdateTime'] = 0;
-                }
-            }
+            const filtersVersion = JSON.parse(currentSettings['filters-version']);
 
-            currentSettings['filters-version'] = JSON.stringify(filtersVersion);
-        }
-
-        // Parsing stealth cookie time values from string values (with possible
-        // escaped quotes) to numeric values.
-        const firstPartyCookiesTime = 'stealth-block-first-party-cookies-time';
-        if (currentSettings?.[firstPartyCookiesTime] && typeof currentSettings[firstPartyCookiesTime] === 'string') {
-            const rawValue = currentSettings[firstPartyCookiesTime];
-            const parsedValue = Number(JSON.parse(rawValue));
-            currentSettings[firstPartyCookiesTime] = parsedValue;
-        }
-
-        const thirdPartyCookiesTime = 'stealth-block-third-party-cookies-time';
-        if (currentSettings?.[thirdPartyCookiesTime] && typeof currentSettings[thirdPartyCookiesTime] === 'string') {
-            const rawValue = currentSettings[thirdPartyCookiesTime];
-            const parsedValue = Number(JSON.parse(rawValue));
-            currentSettings[thirdPartyCookiesTime] = parsedValue;
-        }
-
-        // Parsing appearance theme with escaped quotes.
-        const appearanceTheme = 'appearance-theme';
-        if (currentSettings?.[appearanceTheme]
-            && typeof currentSettings[appearanceTheme] === 'string'
-            && currentSettings[appearanceTheme].includes('\"')
-        ) {
-            const rawValue = currentSettings[appearanceTheme];
-            // Removes escaped quotes.
-            const parsedValue = JSON.parse(rawValue);
-            currentSettings[appearanceTheme] = parsedValue;
+            currentSettings['filters-version'] = JSON.stringify(filtersVersionsTransformer.parse(filtersVersion));
         }
 
         // mode notification data from settings to root storage
-        await UpdateApi.moveStorageData(VIEWED_NOTIFICATIONS_KEY, currentSettings);
-        await UpdateApi.moveStorageData(LAST_NOTIFICATION_TIME_KEY, currentSettings);
+        await UpdateApi.moveStorageData('viewed-notifications', currentSettings);
+        await UpdateApi.moveStorageData('viewed-notification-time', currentSettings);
 
         // move client id from settings to root storage
-        await UpdateApi.moveStorageData(CLIENT_ID_KEY, currentSettings);
+        await UpdateApi.moveStorageData('client-id', currentSettings);
 
         // move page stats to root storage
-        await UpdateApi.moveStorageData(PAGE_STATISTIC_KEY, currentSettings);
+        await UpdateApi.moveStorageData('page-statistic', currentSettings);
 
         // move safebrowsing from settings data to root storage
-        await UpdateApi.moveStorageData(SB_SUSPENDED_CACHE_KEY, currentSettings);
-        await UpdateApi.moveStorageData(SB_LRU_CACHE_KEY, currentSettings);
+        await UpdateApi.moveStorageData('safebrowsing-suspended-from', currentSettings);
+        await UpdateApi.moveStorageData('sb-lru-cache', currentSettings);
+
+        const settingsValidator = zod.object({
+            'appearance-theme': zod.preprocess((value: unknown) => {
+                if (typeof value === 'string' && value.includes('\"')) {
+                    return JSON.parse(value);
+                }
+                return value;
+            }, zod.enum(['system', 'dark', 'light'])),
+            'disable-show-page-statistic': SchemaPreprocessor.booleanValidator,
+            'detect-filters-disabled': SchemaPreprocessor.booleanValidator,
+            'safebrowsing-disabled': SchemaPreprocessor.booleanValidator,
+            'filters-update-period': SchemaPreprocessor.numberValidator,
+            'use-optimized-filters': SchemaPreprocessor.booleanValidator,
+            'hits-count-disabled': SchemaPreprocessor.booleanValidator,
+            'context-menu-disabled': SchemaPreprocessor.booleanValidator,
+            'show-info-about-adguard-disabled': SchemaPreprocessor.booleanValidator,
+            'show-app-updated-disabled': SchemaPreprocessor.booleanValidator,
+            'hide-rate-block': SchemaPreprocessor.booleanValidator,
+            'user-rules-editor-wrap': SchemaPreprocessor.booleanValidator,
+            'allowlist-domains': zod.string(),
+            'block-list-domains': zod.string(),
+            'allowlist-enabled': SchemaPreprocessor.booleanValidator,
+            'default-allowlist-mode': SchemaPreprocessor.booleanValidator,
+            'stealth-disable-stealth-mode': SchemaPreprocessor.booleanValidator,
+            'stealth-hide-referrer': SchemaPreprocessor.booleanValidator,
+            'stealth-hide-search-queries': SchemaPreprocessor.booleanValidator,
+            'stealth-send-do-not-track': SchemaPreprocessor.booleanValidator,
+            'stealth-block-webrtc': SchemaPreprocessor.booleanValidator,
+            'stealth-remove-x-client': SchemaPreprocessor.booleanValidator,
+            'stealth-block-third-party-cookies': SchemaPreprocessor.booleanValidator,
+            'stealth-block-third-party-cookies-time': SchemaPreprocessor.numberValidator,
+            'stealth-block-first-party-cookies': SchemaPreprocessor.booleanValidator,
+            'stealth-block-first-party-cookies-time': SchemaPreprocessor.numberValidator,
+            'user-filter-enabled': SchemaPreprocessor.booleanValidator,
+            'filters-state': zod.string().optional(),
+            'filters-version': zod.string().optional(),
+            'groups-state': zod.string().optional(),
+            'custom-filters': zod.string().optional(),
+            'adguard-disabled': SchemaPreprocessor.booleanValidator,
+        });
 
         // merge current with default settings and validate
         const settings = settingsValidator.parse({ ...defaultSettings, ...currentSettings });
 
         // set new settings to storage
-        await storage.set(ADGUARD_SETTINGS_KEY, settings);
+        await storage.set('adguard-settings', settings);
     }
 
     /**

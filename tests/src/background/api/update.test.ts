@@ -4,6 +4,7 @@ import {
     getStorageFixturesV0,
     getStorageFixturesV1,
     getStorageFixturesV2,
+    getStorageFixturesV3,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -13,9 +14,12 @@ describe('Update Api', () => {
     describe('update method', () => {
         const timestamp = 12345;
 
+        const expires = timestamp + SbCache.CACHE_TTL_MS;
+
         const v0 = getStorageFixturesV0();
         const v1 = getStorageFixturesV1();
-        const v2 = getStorageFixturesV2(timestamp + SbCache.CACHE_TTL_MS);
+        const v2 = getStorageFixturesV2(expires);
+        const v3 = getStorageFixturesV3(expires);
 
         beforeAll(() => {
             jest.spyOn(Date, 'now').mockReturnValue(timestamp);
@@ -41,11 +45,13 @@ describe('Update Api', () => {
 
             await UpdateApi.update(runInfo);
 
+            // TDDO: check equality of parsed data instead of strings
             const settings = await storage.get();
             expect(settings).toStrictEqual(data.to);
         };
 
-        it.each(getCases(v0, v2))('should update from v0 to v2', runCase);
-        it.each(getCases(v1, v2))('should update from v1 to v2', runCase);
+        it.each(getCases(v0, v3))('should update from v0 to v3', runCase);
+        it.each(getCases(v1, v3))('should update from v1 to v3', runCase);
+        it.each(getCases(v2, v3))('should update from v2 to v3', runCase);
     });
 });

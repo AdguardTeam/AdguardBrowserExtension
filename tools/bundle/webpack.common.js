@@ -53,8 +53,6 @@ import {
     LODASH_VENDOR_OUTPUT,
 } from '../../constants';
 
-import { getModuleReplacements } from './module-replacements';
-
 const config = getEnvConf(process.env.BUILD_ENV);
 
 const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
@@ -263,7 +261,6 @@ export const genCommonConfig = (browserConfig) => {
 
         plugins: [
             new CleanWebpackPlugin(),
-            ...getModuleReplacements(browserConfig),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(BACKGROUND_PATH, 'index.html'),
