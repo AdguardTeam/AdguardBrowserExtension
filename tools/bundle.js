@@ -74,9 +74,14 @@ const betaPlan = [
     copyExternals,
     bundleChrome,
     bundleChromeCrx,
+    bundleEdge,
+    buildInfo,
+];
+
+const firefoxStandalonePlan = [
+    copyExternals,
     bundleFirefoxStandalone,
     bundleFirefoxXpi,
-    bundleEdge,
     buildInfo,
 ];
 
@@ -141,6 +146,15 @@ const firefox = async (watch) => {
     }
 };
 
+const firefoxStandalone = async () => {
+    try {
+        await runBuild(firefoxStandalonePlan);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
 program
     .option('--watch', 'Builds in watch mode', false);
 
@@ -156,6 +170,13 @@ program
     .description('Builds extension for firefox browser')
     .action(() => {
         firefox(program.watch);
+    });
+
+program
+    .command('firefox-standalone')
+    .description('Builds signed extension for firefox browser')
+    .action(() => {
+        firefoxStandalone();
     });
 
 program

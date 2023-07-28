@@ -2,8 +2,8 @@
 version: 2
 plan:
   project-key: ADGEXT
-  key: BEBETASPECS
-  name: browser extension - build beta
+  key: BEFIREFOXBETASPECS
+  name: browser extension - build firefox beta
 variables:
   dockerNode: adguard/node-ssh:18.13--0
 stages:
@@ -21,6 +21,8 @@ Build:
     image: ${bamboo.dockerNode}
     volumes:
       ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+    # we use dns to avoid etimedout error when AMO is validating extension
+    docker-run-arguments: ['--dns', '8.8.8.8']
   tasks:
     - checkout:
         force-clean-build: 'true'
@@ -41,7 +43,10 @@ Build:
             ls -la
 
             yarn install ${bamboo.varsYarn}
-            CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn beta
+            CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn beta firefox-standalone
+
+            # zip source files for publishing on AMO
+            git ls-files | zip -@ build/beta/source.zip
 
             rm -rf node_modules
     - inject-variables:
@@ -59,24 +64,24 @@ Build:
       pattern: build.txt
       shared: true
       required: true
-    - name: chrome.zip
+    - name: firefox.zip
       location: build/beta
-      pattern: chrome.zip
+      pattern: firefox.zip
       shared: true
       required: true
-    - name: edge.zip
+    - name: firefox.xpi
       location: build/beta
-      pattern: edge.zip
+      pattern: firefox.xpi
       shared: true
       required: true
-    - name: chrome.crx
+    - name: update.json
       location: build/beta
-      pattern: chrome.crx
+      pattern: update.json
       shared: true
       required: true
-    - name: update.xml
+    - name: source.zip
       location: build/beta
-      pattern: update.xml
+      pattern: source.zip
       shared: true
       required: true
   requirements:
