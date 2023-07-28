@@ -19,12 +19,9 @@ static.adtidy.org:
         artifacts:
           - name: edge.zip
           - name: chrome.zip
-          - name: firefox.zip
           - name: build.txt
           - name: chrome.crx
           - name: update.xml
-          - name: firefox.xpi
-          - name: update.json
     - script:
         interpreter: SHELL
         scripts:
@@ -37,7 +34,7 @@ static.adtidy.org:
 
             ls -la
 
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-beta
+            ./bamboo-deploy-publisher/deploy.sh chrome-extension-beta
   final-tasks: []
   variables: {}
   requirements:
@@ -62,7 +59,6 @@ Chrome WebStore:
         artifacts:
           - name: edge.zip
           - name: chrome.zip
-          - name: firefox.zip
           - name: build.txt
           - name: chrome.crx
           - name: update.xml
