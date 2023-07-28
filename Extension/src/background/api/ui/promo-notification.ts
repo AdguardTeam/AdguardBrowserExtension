@@ -157,7 +157,8 @@ export class PromoNotificationApi {
 
             const from = new Date(notification.from).getTime();
             const to = new Date(notification.to).getTime();
-            if (from < currentTime
+            if (
+                from < currentTime
                 && to > currentTime
                 && Array.isArray(viewedNotifications)
                 && !viewedNotifications.includes(notification.id)

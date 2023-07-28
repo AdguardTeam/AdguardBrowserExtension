@@ -20,16 +20,21 @@
 
 .promo-notification {
     position: fixed;
+    font-family: 'Roboto Flex', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ubuntu, Arial, sans-serif;
     left: 0;
     right: 0;
     bottom: 0;
     width: 100%;
-    height: 148px;
+    height: 194px;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url(../../../../../assets/images/black-friday-22.svg);
+    background-image: url(../../../../../assets/images/compare-light-23.svg);
     animation: notify-show 0.3s ease-in;
     transition: 0.3s ease transform;
+
+    @media (prefers-color-scheme: dark) {
+        background-image: url(../../../../../assets/images/compare-dark-23.svg);
+    }
 
     &__close {
         position: absolute;
@@ -45,29 +50,52 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 0 20px;
+        padding: 0 5px 0 75px;
     }
 
     &__title {
         white-space: pre-wrap;
         text-align: center;
         font-weight: 700;
-        line-height: 24px;
-        font-size: 22px;
-        color: #fff;
+        line-height: 29px;
+        font-size: 24px;
+        color: #4d4d4d;
+
+        @media (prefers-color-scheme: dark) {
+            color: #fff;
+        }
     }
 
     &__btn {
-        color: #4d995f;
-        font-weight: 600;
+        color: #fff;
+        font-weight: 400;
         font-size: 16px;
-        line-height: 36px;
-        background-color: #fff;
-        padding: 2px 32px;
-        min-width: 128px;
+        line-height: 24px;
+        background-color: #67b279;
+        padding: 12px 24px 12px 24px;
+        min-width: 168px;
         border: 0;
-        border-radius: 40px;
-        margin-top: 15px;
-        box-shadow: 0 4px 50px 4px #3ab92f;
+        border-radius: 8px;
+        margin-top: 14px;
+    }
+}
+
+.light-mode {
+    .promo-notification {
+        background-image: url(../../../../../assets/images/compare-light-23.svg);
+
+        &__title {
+            color: #4d4d4d;
+        }
+    }
+}
+
+.dark-mode {
+    .promo-notification {
+        background-image: url(../../../../../assets/images/compare-dark-23.svg);
+
+        &__title {
+            color: #fff;
+        }
     }
 }
