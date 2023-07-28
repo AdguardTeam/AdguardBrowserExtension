@@ -303,6 +303,18 @@ export class Popups {
                                 withDelay: false,
                             },
                         });
+                        // close only promo notification, not whole iframe
+                        const promoNotification = iframeDocument.querySelector('.adguard-update-popup__offer');
+                        if (promoNotification) {
+                            promoNotification.parentNode?.removeChild(promoNotification);
+                            // eslint-disable-next-line max-len
+                            const versionPopup: HTMLElement | null = iframeDocument.getElementById('adguard-new-version-popup');
+                            if (versionPopup) {
+                                // fix height of the frame
+                                versionPopup.style.minHeight = '300px';
+                            }
+                        }
+                        return;
                     }
 
                     setTimeout(() => {

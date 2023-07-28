@@ -113,6 +113,11 @@ export const Icons = () => {
                 <path d="M6.42871 18.5755L17.6045 6.76111" stroke="#F3F3F3" strokeWidth="1.5" strokeLinecap="round" />
             </symbol>
 
+            <symbol id="cross-gray" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M6.42857 6.79596L17.6043 18.6103" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M6.42871 18.5755L17.6045 6.76111" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" />
+            </symbol>
+
             <symbol id="play" viewBox="0 0 24 24">
                 <path fillRule="evenodd" clipRule="evenodd" d="M19 12L7 20L7 4L19 12Z" stroke="#a4a4a4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="#fff" />
             </symbol>

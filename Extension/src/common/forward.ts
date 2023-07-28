@@ -34,6 +34,7 @@ export const enum ForwardAction {
     Website = 'adguard_site',
     Discuss = 'discuss',
     Compare = 'compare',
+    ComparePromo = 'compare_promo',
     Changelog = 'github_version_popup',
     GlobalPrivacyControl = 'global_privacy_control',
     DoNotTrack = 'do_not_track',

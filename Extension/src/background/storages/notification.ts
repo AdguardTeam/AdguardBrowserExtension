@@ -21,126 +21,211 @@ import { Forward, ForwardAction } from '../../common/forward';
 import { NotificationTextRecord } from '../schema';
 
 export type Notification = {
-     id: string,
-     locales: Record<string, NotificationTextRecord>
-     url: string,
-     text: string | NotificationTextRecord | null,
-     from: string,
-     to: string,
-     type: string,
-     bgColor?: string,
-     textColor?: string,
-     badgeBgColor?: string,
-     badgeText?: string,
-     icons?: Record<string, Record<string, string>>,
- };
+    id: string,
+    locales: Record<string, NotificationTextRecord>
+    url: string,
+    text: string | NotificationTextRecord | null,
+    from: string,
+    to: string,
+    type: string,
+    bgColor?: string,
+    textColor?: string,
+    badgeBgColor?: string,
+    badgeText?: string,
+    icons?: Record<string, Record<string, string>>,
+};
 
-export const BACK_TO_SCHOOL_22_ID = 'backToSchool22';
+export const DESKTOP_COMPARE_23_ID = 'desktopCompare23';
 
-export const backToSchool22Notification: Notification = {
-    id: BACK_TO_SCHOOL_22_ID,
+export const desktopCompare23Notification: Notification = {
+    id: DESKTOP_COMPARE_23_ID,
     locales: {
         en: {
-            title: 'Back',
-            desc: 'to school',
-            btn: 'Get 40% off',
+            title: "App vs extension: what's better?",
+            btn: 'Compare',
         },
         ru: {
-            title: 'Снова в',
-            desc: 'школу',
-            btn: '-40% на всё',
+            title: 'Приложение или расширение: что лучше?',
+            btn: 'Сравнить',
         },
         es: {
-            title: 'Vuelta al',
-            desc: 'cole',
-            btn: 'Obtén un 40% off',
+            title: 'App vs. extensión: ¿cuál es la mejor?',
+            btn: 'Comparar',
         },
         de: {
-            title: 'Zurück zur',
-            desc: 'Schule',
-            btn: '40% Rabatt',
+            title: 'App oder Browsererweiterung: Was ist besser?',
+            btn: 'Vergleichen',
         },
         fr: {
-            title: 'La rentrée',
-            desc: 'scolaire',
-            btn: '40% de remise',
+            title: "Application ou extension : qu'est-ce qui est mieux ?",
+            btn: 'Comparer',
         },
         it: {
-            title: 'Ritorno a',
-            desc: 'scuola',
-            btn: '40% di sconto',
+            title: 'App vs. estensione: cosa è meglio?',
+            btn: 'Confronto',
         },
         ko: {
-            title: '백 투 스쿨',
-            desc: '세일',
-            btn: '40% 할인',
+            title: 'AdGuard 확장 프로그램과 앱의 차이점',
+            btn: '비교해보기',
+        },
+        ja: {
+            title: 'AdGuard拡張機能版とアプリ版の違い',
+            btn: '比較を見る',
         },
         zh_cn: {
-            title: '开学啦',
-            btn: '一律享受40%折扣',
+            title: '应用程序还是浏览器扩展：要选择哪一个？',
+            btn: '比较',
         },
         zh_tw: {
-            title: '開學啦',
-            btn: '獲得40%的折扣',
+            title: '應用程式還是瀏覽器擴充功能：要選擇哪一個？',
+            btn: '比較',
         },
         uk: {
-            title: 'Знову до',
-            desc: 'школи',
-            btn: 'Знижка 40%',
-        },
-        pt_pt: {
-            title: 'De volta à',
-            desc: 'escola',
-            btn: 'Obter 40% de desconto',
+            title: 'Програма чи розширення: що краще?',
+            btn: 'Порівняти',
         },
         pt_br: {
-            title: 'De volta à',
-            desc: 'escola',
-            btn: 'Obtenha 40% de desconto',
+            title: 'App x extensão: qual é melhor?',
+            btn: 'Comparar',
+        },
+        pt_pt: {
+            title: 'App x extensão: qual é melhor?',
+            btn: 'Comparar',
         },
         ar: {
-            title: 'العودة',
-            desc: 'إلى المدرسة',
-            btn: '%احصل على خصم 40',
+            title: 'التطبيق مقابل الامتداد: أيهما أفضل؟',
+            btn: 'يقارن',
         },
         be: {
-            title: 'Назад у',
-            desc: 'школу',
-            btn: 'Атрымайце скідку 40%',
+            title: 'Праграма супраць пашырэння: што лепш?',
+            btn: 'Параўнайце',
+        },
+        bg: {
+            title: 'Приложение срещу разширение: кое е по-добро?',
+            btn: 'Сравни',
+        },
+        ca: {
+            title: 'Aplicació versus extensió: què és millor?',
+            btn: 'Compara',
+        },
+        cs: {
+            title: 'Aplikace vs. rozšíření: co je lepší?',
+            btn: 'Porovnat',
+        },
+        da: {
+            title: 'App vs. udvidelse: Hvad er bedst?',
+            btn: 'Sammenlign',
+        },
+        el: {
+            title: 'Εφαρμογή vs. επέκταση: τι είναι καλύτερο;',
+            btn: 'Σύγκριση',
+        },
+        es_419: {
+            title: 'App vs. extensión: ¿cuál es la mejor?',
+            btn: 'Comparar',
+        },
+        et: {
+            title: 'Rakendus vs. laiendus: mis on parem?',
+            btn: 'Võrdle',
+        },
+        fa: {
+            title: 'برنامه در مقابل برنامه افزودنی: چه چیزی بهتر است؟',
+            btn: 'مقایسه کنید',
+        },
+        fi: {
+            title: 'Sovellus vs. laajennus: mikä on parempi?',
+            btn: 'Vertaa',
+        },
+        he: {
+            title: 'אפליקציה לעומת הרחבה: מה עדיף?',
+            btn: 'לְהַשְׁווֹת',
+        },
+        hr: {
+            title: 'Aplikacija protiv proširenja: što je bolje?',
+            btn: 'Usporedi',
+        },
+        hi: {
+            title: 'ऐप बनाम एक्सटेंशन: क्या बेहतर है?',
+            btn: 'तुलना करना',
+        },
+        hu: {
+            title: 'Alkalmazás vs. bővítmény: melyik a jobb?',
+            btn: 'Összehasonlítás',
+        },
+        hy: {
+            title: 'Հավելվածն ընդդեմ ընդլայնման. ո՞րն է ավելի լավ:',
+            btn: 'Համեմատեք',
         },
         id: {
-            title: 'Kembali ke',
-            desc: 'sekolah',
-            btn: 'Dapatkan diskon 40%',
+            title: 'Aplikasi vs. ekstensi: apa yang lebih baik?',
+            btn: 'Bandingkan',
+        },
+        lt: {
+            title: 'Programėlė ir plėtinys: kas geriau?',
+            btn: 'Palyginkite',
+        },
+        ms: {
+            title: 'Apl lwn sambungan: apakah yang lebih baik?',
+            btn: 'Bandingkan',
+        },
+        nb: {
+            title: 'App vs. utvidelse: hva er best?',
+            btn: 'Sammenlign',
+        },
+        nl: {
+            title: 'App vs. extensie: wat is beter?',
+            btn: 'Vergelijk',
         },
         pl: {
-            title: 'Powrót do',
-            desc: 'szkoły',
-            btn: 'Zyskaj 40% zniżki',
+            title: 'Aplikacja vs. rozszerzenie: co jest lepsze?',
+            btn: 'Porównaj',
+        },
+        ro: {
+            title: 'Aplicație vs. extensie: ce este mai bine?',
+            btn: 'Comparați',
+        },
+        sk: {
+            title: 'Aplikácia vs. rozšírenie: čo je lepšie?',
+            btn: 'Porovnaj',
+        },
+        sl: {
+            title: 'Aplikacija proti razširitvi: kaj je bolje?',
+            btn: 'Primerjaj',
+        },
+        'sr-Latn': {
+            title: 'Aplikacija vs. ekstenzija: šta je bolje?',
+            btn: 'Uporedite',
+        },
+        sv: {
+            title: 'App vs. tillägg: vad är bäst?',
+            btn: 'Jämför',
+        },
+        th: {
+            title: 'แอปเทียบกับส่วนขยาย: อะไรดีกว่ากัน',
+            btn: 'เปรียบเทียบ',
         },
         tr: {
-            title: 'Okula dönüş',
-            btn: '40 indirim kazanın',
+            title: 'Uygulama vs. uzantı: hangisi daha iyi?',
+            btn: 'Karşılaştır',
         },
         vi: {
-            title: 'Trở lại',
-            desc: 'trường học',
-            btn: 'Được GIẢM GIÁ 40%',
+            title: 'Ứng dụng so với tiện ích mở rộng: cái nào tốt hơn?',
+            btn: 'So sánh',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BackToSchool }),
-    from: '30 August 2022 12:00:00',
-    to: '4 September 2022 23:59:00',
+    url: Forward.get({ action: ForwardAction.ComparePromo }),
+    from: '20 July 2023 12:00:00',
+    to: '1 September 2023 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/promo-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/promo-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/compare-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/compare-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/promo-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/promo-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/compare-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/compare-off-38.png'),
         },
     },
 };
@@ -149,5 +234,5 @@ export const backToSchool22Notification: Notification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [BACK_TO_SCHOOL_22_ID, backToSchool22Notification],
+    [DESKTOP_COMPARE_23_ID, desktopCompare23Notification],
 ]);
