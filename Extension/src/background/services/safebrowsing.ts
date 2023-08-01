@@ -88,8 +88,8 @@ export class SafebrowsingService {
                         return;
                     }
 
-                    // Chrome doesn't allow open extension url in incognito mode
-                    if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChrome) {
+                    // Chromium doesn't allow open extension url in incognito mode
+                    if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
                         // Closing tab before opening a new one may lead to browser crash (Chromium)
                         browser.tabs.create({ url: safebrowsingUrl })
                             .then(() => {
