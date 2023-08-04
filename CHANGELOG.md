@@ -13,5 +13,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Moved Adguard API to separate package — [@adguard/api](https://www.npmjs.com/package/@adguard/api)
-- Updated `@adguard/tsurlfilter` to [v2.1.5](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#215---2023-07-21)
-- Updated `@adguard/scriptlets` to [v1.9.57](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md#v1957---2023-07-21)
+- Updated `@adguard/tsurlfilter` to [v2.1.6](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#216---2023-08-04)
+- Updated `@adguard/scriptlets` to [v1.9.62](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)

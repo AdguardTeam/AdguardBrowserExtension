@@ -21,7 +21,7 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import { DefinePlugin } from 'webpack';
+import { DefinePlugin, ProvidePlugin } from 'webpack';
 
 import {
     BUILD_PATH,
@@ -181,7 +181,12 @@ export const genCommonConfig = (browserConfig) => {
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
             [LODASH_VENDOR_OUTPUT]: ['lodash'],
             [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
-            [TSWEBEXTENSION_VENDOR_OUTPUT]: ['@adguard/tswebextension'],
+            [TSWEBEXTENSION_VENDOR_OUTPUT]: {
+                import: '@adguard/tswebextension',
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                ],
+            },
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
@@ -192,7 +197,10 @@ export const genCommonConfig = (browserConfig) => {
             symlinks: false,
             // Node modules polyfills
             fallback: {
+                assert: require.resolve('assert'),
+                buffer: require.resolve('buffer'),
                 url: require.resolve('url'),
+                util: require.resolve('util'),
                 crypto: require.resolve('crypto-browserify'),
                 stream: require.resolve('stream-browserify'),
             },
@@ -261,6 +269,12 @@ export const genCommonConfig = (browserConfig) => {
 
         plugins: [
             new CleanWebpackPlugin(),
+            new ProvidePlugin({
+                Buffer: ['buffer', 'Buffer'],
+            }),
+            new ProvidePlugin({
+                process: 'process/browser',
+            }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(BACKGROUND_PATH, 'index.html'),
