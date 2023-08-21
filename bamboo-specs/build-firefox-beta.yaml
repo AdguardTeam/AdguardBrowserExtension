@@ -42,7 +42,8 @@ Build:
 
             ls -la
 
-            yarn install ${bamboo.varsYarn}
+            # don't use --ignore-optional flag, because swc requires optional deps 
+            yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
             CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn beta firefox-standalone
 
             # zip source files for publishing on AMO
