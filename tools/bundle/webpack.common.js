@@ -181,7 +181,12 @@ export const genCommonConfig = (browserConfig) => {
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
             [LODASH_VENDOR_OUTPUT]: ['lodash'],
             [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
-            [TSWEBEXTENSION_VENDOR_OUTPUT]: ['@adguard/tswebextension'],
+            [TSWEBEXTENSION_VENDOR_OUTPUT]: {
+                import: '@adguard/tswebextension',
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                ],
+            },
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
@@ -190,12 +195,6 @@ export const genCommonConfig = (browserConfig) => {
         resolve: {
             extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
-            // Node modules polyfills
-            fallback: {
-                url: require.resolve('url'),
-                crypto: require.resolve('crypto-browserify'),
-                stream: require.resolve('stream-browserify'),
-            },
         },
         module: {
             rules: [
@@ -233,10 +232,32 @@ export const genCommonConfig = (browserConfig) => {
                 {
                     test: /\.(js|ts)x?$/,
                     exclude: /node_modules/,
-                    use: [{
-                        loader: 'babel-loader',
-                        options: { babelrc: true },
-                    }],
+                    use: [
+                        {
+                            loader: 'swc-loader',
+                            options: {
+                                jsc: {
+                                    parser: {
+                                        syntax: 'typescript',
+                                        tsx: true,
+                                        decorators: true,
+                                    },
+                                    transform: {
+                                        useDefineForClassFields: true,
+                                    },
+                                },
+                                env: {
+                                    targets: {
+                                        chrome: 79,
+                                        firefox: 78,
+                                        opera: 66,
+                                    },
+                                    mode: 'usage',
+                                    coreJs: '3.32',
+                                },
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.(css|pcss)$/,
