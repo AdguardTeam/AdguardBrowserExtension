@@ -370,9 +370,11 @@ export class FilteringLogService {
      * tab id, event id and cspReportBlocked - last one is a boolean flag.
      */
     private static onCspReportBlocked({ data }: CspReportBlockedEvent): void {
-        const { tabId, ...eventData } = data;
+        const { tabId, eventId, cspReportBlocked } = data;
 
-        filteringLogApi.addEventData(tabId, { ...eventData });
+        filteringLogApi.updateEventData(tabId, eventId, {
+            cspReportBlocked,
+        });
     }
 
     /**
