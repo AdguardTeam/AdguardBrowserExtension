@@ -1,0 +1,17 @@
+---
+version: 2
+deployment:
+  name: browser extension - deploy firefox beta
+deployment-permissions:
+  - groups:
+      - extensions-developers
+      - adguard-qa
+    permissions:
+      - view
+environment-permissions:
+  - static.adtidy.org:
+      - groups:
+          - extensions-developers
+        permissions:
+          - view
+          - deploy
