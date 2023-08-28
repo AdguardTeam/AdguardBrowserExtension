@@ -35,197 +35,197 @@ export type Notification = {
     icons?: Record<string, Record<string, string>>,
 };
 
-export const DESKTOP_COMPARE_23_ID = 'desktopCompare23';
+export const BACK_TO_SCHOOL_23_ID = 'backToSchool23';
 
-export const desktopCompare23Notification: Notification = {
-    id: DESKTOP_COMPARE_23_ID,
+export const backToSchool23Notification: Notification = {
+    id: BACK_TO_SCHOOL_23_ID,
     locales: {
         en: {
-            title: "App vs extension: what's better?",
-            btn: 'Compare',
+            title: 'Back to school: Quiz and prize',
+            btn: 'Test yourself',
         },
         ru: {
-            title: 'Приложение или расширение: что лучше?',
-            btn: 'Сравнить',
+            title: 'Снова в школу: квиз и приз',
+            btn: 'Пройти',
         },
         es: {
-            title: 'App vs. extensión: ¿cuál es la mejor?',
-            btn: 'Comparar',
+            title: 'Vuelta al cole: quiz y recompensa',
+            btn: 'Hacer el quiz',
         },
         de: {
-            title: 'App oder Browsererweiterung: Was ist besser?',
-            btn: 'Vergleichen',
+            title: 'Back to School: Quiz und Preis',
+            btn: 'Quiz los',
         },
         fr: {
-            title: "Application ou extension : qu'est-ce qui est mieux ?",
-            btn: 'Comparer',
+            title: 'La rentrée avec AdGuard : Quiz et cadeaux',
+            btn: 'Passez le Quiz',
         },
         it: {
-            title: 'App vs. estensione: cosa è meglio?',
-            btn: 'Confronto',
+            title: 'A Scuola con AdGuard: un quiz e un regalo',
+            btn: 'Supera il Quiz',
         },
         ko: {
-            title: 'AdGuard 확장 프로그램과 앱의 차이점',
-            btn: '비교해보기',
+            title: '백 투 스쿨: 퀴즈 및 할인',
+            btn: '퀴즈게임 시작',
         },
         ja: {
-            title: 'AdGuard拡張機能版とアプリ版の違い',
-            btn: '比較を見る',
+            title: 'Back to School セールとクイズ',
+            btn: 'クイズに挑戦！',
         },
         zh_cn: {
-            title: '应用程序还是浏览器扩展：要选择哪一个？',
-            btn: '比较',
+            title: '开学特惠：小测验大惊喜',
+            btn: '测试自己',
         },
         zh_tw: {
-            title: '應用程式還是瀏覽器擴充功能：要選擇哪一個？',
-            btn: '比較',
+            title: '開學特惠：小測驗大驚喜',
+            btn: '測試自己',
         },
         uk: {
-            title: 'Програма чи розширення: що краще?',
-            btn: 'Порівняти',
+            title: 'Знову до школи: іспит і приз',
+            btn: 'Скласти',
         },
         pt_br: {
-            title: 'App x extensão: qual é melhor?',
-            btn: 'Comparar',
+            title: 'Volta às aulas: quiz e prêmio',
+            btn: 'Fazer o quiz',
         },
         pt_pt: {
-            title: 'App x extensão: qual é melhor?',
-            btn: 'Comparar',
+            title: 'Volta às aulas: quiz e prémio',
+            btn: 'Fazer o quiz',
         },
         ar: {
-            title: 'التطبيق مقابل الامتداد: أيهما أفضل؟',
-            btn: 'يقارن',
+            title: 'العودة إلى المدرسة: مسابقة وجائزة',
+            btn: 'حل الاختبار',
         },
         be: {
-            title: 'Праграма супраць пашырэння: што лепш?',
-            btn: 'Параўнайце',
+            title: 'Зноў у школу: віктарына і прызы',
+            btn: 'Прайсці',
         },
         bg: {
-            title: 'Приложение срещу разширение: кое е по-добро?',
-            btn: 'Сравни',
+            title: 'Обратно на училище: тест и награда',
+            btn: 'Преминете',
         },
         ca: {
-            title: 'Aplicació versus extensió: què és millor?',
-            btn: 'Compara',
+            title: "Tornada a l'escola",
+            btn: 'Passar',
         },
         cs: {
-            title: 'Aplikace vs. rozšíření: co je lepší?',
-            btn: 'Porovnat',
+            title: 'Zpátky do školy: kvíz a cena',
+            btn: 'Projít',
         },
         da: {
-            title: 'App vs. udvidelse: Hvad er bedst?',
-            btn: 'Sammenlign',
+            title: 'Tilbage til skolen: quiz og præmie',
+            btn: 'Test deg selv',
         },
         el: {
-            title: 'Εφαρμογή vs. επέκταση: τι είναι καλύτερο;',
-            btn: 'Σύγκριση',
+            title: 'Επιστροφή στο σχολείο',
+            btn: 'Περάστε',
         },
         es_419: {
-            title: 'App vs. extensión: ¿cuál es la mejor?',
-            btn: 'Comparar',
-        },
-        et: {
-            title: 'Rakendus vs. laiendus: mis on parem?',
-            btn: 'Võrdle',
+            title: 'Vuelta al cole: quiz y recompensa',
+            btn: 'Hacer el quiz',
         },
         fa: {
-            title: 'برنامه در مقابل برنامه افزودنی: چه چیزی بهتر است؟',
-            btn: 'مقایسه کنید',
+            title: 'بازگشت به مدرسه: مسابقه و جایزه',
+            btn: 'امتحان را پاس کنید',
         },
         fi: {
-            title: 'Sovellus vs. laajennus: mikä on parempi?',
-            btn: 'Vertaa',
+            title: 'Takaisin kouluun',
+            btn: 'Läpäise',
         },
         he: {
-            title: 'אפליקציה לעומת הרחבה: מה עדיף?',
-            btn: 'לְהַשְׁווֹת',
+            title: 'חזרה לבית הספר: חידון ופרס',
+            btn: 'לעבור',
         },
         hr: {
-            title: 'Aplikacija protiv proširenja: što je bolje?',
-            btn: 'Usporedi',
-        },
-        hi: {
-            title: 'ऐप बनाम एक्सटेंशन: क्या बेहतर है?',
-            btn: 'तुलना करना',
+            title: 'Natrag u školu: kviz i nagrada',
+            btn: 'Provjerite se',
         },
         hu: {
-            title: 'Alkalmazás vs. bővítmény: melyik a jobb?',
-            btn: 'Összehasonlítás',
+            title: 'Vissza az iskolába: egy kvíz és egy díj',
+            btn: 'Teszteld magad',
         },
         hy: {
-            title: 'Հավելվածն ընդդեմ ընդլայնման. ո՞րն է ավելի լավ:',
-            btn: 'Համեմատեք',
+            title: 'Վերադառնալ դպրոց',
+            btn: 'Ստուգեք ինքներդ',
         },
         id: {
-            title: 'Aplikasi vs. ekstensi: apa yang lebih baik?',
-            btn: 'Bandingkan',
+            title: 'Kembali ke Sekolah: kuis dan Hadiah',
+            btn: 'Uji dirimu',
         },
         lt: {
-            title: 'Programėlė ir plėtinys: kas geriau?',
-            btn: 'Palyginkite',
+            title: 'Atgal į mokyklą: viktorina ir prizas',
+            btn: 'Išbandyk save',
         },
         ms: {
-            title: 'Apl lwn sambungan: apakah yang lebih baik?',
-            btn: 'Bandingkan',
+            title: 'Kembali ke Sekolah: kuiz dan Hadiah',
+            btn: 'Uji diri sendiri',
         },
         nb: {
-            title: 'App vs. utvidelse: hva er best?',
-            btn: 'Sammenlign',
+            title: 'Tilbake til skolen: quiz og premie',
+            btn: 'Test deg selv',
         },
         nl: {
-            title: 'App vs. extensie: wat is beter?',
-            btn: 'Vergelijk',
+            title: 'Terug naar school: quiz en prijs',
+            btn: 'Test jezelf',
         },
         pl: {
-            title: 'Aplikacja vs. rozszerzenie: co jest lepsze?',
-            btn: 'Porównaj',
+            title: 'Powrót do szkoły: quiz i nagroda',
+            btn: 'Sprawdź się',
         },
         ro: {
-            title: 'Aplicație vs. extensie: ce este mai bine?',
-            btn: 'Comparați',
+            title: 'Înapoi la școală: test și premiu',
+            btn: 'Testați-vă',
         },
         sk: {
-            title: 'Aplikácia vs. rozšírenie: čo je lepšie?',
-            btn: 'Porovnaj',
+            title: 'Späť do školy: kvíz a cena',
+            btn: 'Otestujte sa',
         },
         sl: {
-            title: 'Aplikacija proti razširitvi: kaj je bolje?',
-            btn: 'Primerjaj',
+            title: 'Nazaj v šolo: kviz in nagrada',
+            btn: 'Preizkusite se',
         },
         'sr-Latn': {
-            title: 'Aplikacija vs. ekstenzija: šta je bolje?',
-            btn: 'Uporedite',
+            title: 'Povratak u školu: kviz i nagrada',
+            btn: 'Proverite sami',
         },
         sv: {
-            title: 'App vs. tillägg: vad är bäst?',
-            btn: 'Jämför',
-        },
-        th: {
-            title: 'แอปเทียบกับส่วนขยาย: อะไรดีกว่ากัน',
-            btn: 'เปรียบเทียบ',
+            title: 'Tillbaka till skolan: quiz och pris',
+            btn: 'Testa dig själv',
         },
         tr: {
-            title: 'Uygulama vs. uzantı: hangisi daha iyi?',
-            btn: 'Karşılaştır',
+            title: 'Okula Dönüş: Sınav ve Ödül',
+            btn: 'Kendinizi test edin',
         },
         vi: {
-            title: 'Ứng dụng so với tiện ích mở rộng: cái nào tốt hơn?',
-            btn: 'So sánh',
+            title: 'Back to School: câu đố và giải thưởng',
+            btn: 'Tự kiểm tra',
+        },
+        hi: {
+            title: 'स्कूल में वापसी: प्रश्नोत्तरी और पुरस्कार',
+            btn: 'स्वयं की जांच करो',
+        },
+        et: {
+            title: 'Tagasi kooli: viktoriin ja auhind',
+            btn: 'Testige ennast',
+        },
+        th: {
+            title: 'Back to School: แบบทดสอบและรางวัล',
+            btn: 'ทดสอบตัวเอง',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.ComparePromo }),
-    from: '20 July 2023 12:00:00',
-    to: '1 September 2023 23:59:00',
+    url: Forward.get({ action: ForwardAction.BackToSchool }),
+    from: '28 August 2023 12:00:00',
+    to: '3 September 2023 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/compare-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/compare-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/back-to-school-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/back-to-school-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/compare-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/compare-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/back-to-school-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/back-to-school-off-38.png'),
         },
     },
 };
@@ -234,5 +234,5 @@ export const desktopCompare23Notification: Notification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [DESKTOP_COMPARE_23_ID, desktopCompare23Notification],
+    [BACK_TO_SCHOOL_23_ID, backToSchool23Notification],
 ]);

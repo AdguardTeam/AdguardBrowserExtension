@@ -34,7 +34,6 @@ export const enum ForwardAction {
     Website = 'adguard_site',
     Discuss = 'discuss',
     Compare = 'compare',
-    ComparePromo = 'compare_promo',
     Changelog = 'github_version_popup',
     GlobalPrivacyControl = 'global_privacy_control',
     DoNotTrack = 'do_not_track',
@@ -51,7 +50,7 @@ export const enum ForwardAction {
     Android = 'android_about',
     GithubVersion = 'github_version_popup',
     LearnAboutAdGuard = 'learn_about_adguard',
-    BackToSchool = 'back_to_school',
+    BackToSchool = 'back_to_school_23',
 }
 
 export const enum ForwardFrom {

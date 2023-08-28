@@ -28,13 +28,9 @@
     height: 194px;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url('../assets/images/compare-light-23.svg');
+    background-image: url('../assets/images/back-to-school-2023.svg');
     animation: notify-show 0.3s ease-in;
     transition: 0.3s ease transform;
-
-    @media (prefers-color-scheme: dark) {
-        background-image: url('../assets/images/compare-dark-23.svg');
-    }
 
     &__close {
         position: absolute;
@@ -46,11 +42,8 @@
 
     &__content {
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 0 5px 0 75px;
+        padding: 32px 24px 32px 80px;
+        text-align: center;
     }
 
     &__title {
@@ -59,43 +52,20 @@
         font-weight: 700;
         line-height: 29px;
         font-size: 24px;
-        color: #4d4d4d;
-
-        @media (prefers-color-scheme: dark) {
-            color: #fff;
-        }
+        color: #fff;
+        word-break: keep-all;
     }
 
     &__btn {
-        color: #fff;
+        color: #000;
         font-weight: 400;
         font-size: 16px;
         line-height: 24px;
-        background-color: #67b279;
+        background-color: #fff;
         padding: 12px 24px 12px 24px;
         min-width: 168px;
         border: 0;
         border-radius: 8px;
-        margin-top: 14px;
-    }
-}
-
-.light-mode {
-    .promo-notification {
-        background-image: url(../../../../../assets/images/compare-light-23.svg);
-
-        &__title {
-            color: #4d4d4d;
-        }
-    }
-}
-
-.dark-mode {
-    .promo-notification {
-        background-image: url(../../../../../assets/images/compare-dark-23.svg);
-
-        &__title {
-            color: #fff;
-        }
+        margin-top: 8px;
     }
 }
