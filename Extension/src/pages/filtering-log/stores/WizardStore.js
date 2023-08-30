@@ -369,6 +369,10 @@ class WizardStore {
                 patterns = createExceptionRemoveHeaderRules(selectedEvent);
             }
 
+            if (selectedEvent.csp) {
+                patterns = createExceptionRemoveHeaderRules(selectedEvent);
+            }
+
             this.setRulePattern(patterns[0]);
 
             return patterns;

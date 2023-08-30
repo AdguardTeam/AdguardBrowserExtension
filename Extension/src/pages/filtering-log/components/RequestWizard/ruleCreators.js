@@ -246,6 +246,15 @@ export const createExceptionRemoveHeaderRules = (event) => {
     ];
 };
 
+export const createExceptionCspRules = (event) => {
+    const { frameDomain, requestRule } = event;
+
+    return [
+        getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.CSP}=${requestRule.modifierValue}`),
+        getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.CSP),
+    ];
+};
+
 /**
  * Creates blocking rule for cookie event
  *
