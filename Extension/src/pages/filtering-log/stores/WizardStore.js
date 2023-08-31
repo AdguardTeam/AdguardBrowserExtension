@@ -234,7 +234,6 @@ class WizardStore {
             options = options.concat(mandatoryOptions);
         }
         if (options.length > 0) {
-            // FIXME improve determining condition of prefix
             // Pick correct symbol to append options with
             const hasOptions = ruleText.includes(OPTIONS_DELIMITER);
             const prefix = hasOptions
