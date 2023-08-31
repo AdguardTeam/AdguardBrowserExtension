@@ -32,6 +32,7 @@ import {
     createExceptionCssRule,
     createExceptionRemoveParamRules,
     createExceptionRemoveHeaderRules,
+    createExceptionCspRules,
     createExceptionScriptRule,
     createBlockingCookieRule,
     splitToPatterns,
@@ -370,7 +371,7 @@ class WizardStore {
             }
 
             if (selectedEvent.csp) {
-                patterns = createExceptionRemoveHeaderRules(selectedEvent);
+                patterns = createExceptionCspRules(selectedEvent);
             }
 
             this.setRulePattern(patterns[0]);
