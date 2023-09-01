@@ -82,6 +82,8 @@ const FilteringLog = observer(() => {
 
     // append message listeners
     useEffect(() => {
+        // TODO this logic should be moved (prob to the logStore),
+        // as it is not related to the view
         let removeListenerCallback = async () => { };
 
         (async () => {
@@ -91,6 +93,7 @@ const FilteringLog = observer(() => {
                 NotifierType.TabClose,
                 NotifierType.TabReset,
                 NotifierType.SettingUpdated,
+                NotifierType.CustomFilterAdded,
             ];
 
             removeListenerCallback = messenger.createLongLivedConnection(
@@ -120,6 +123,10 @@ const FilteringLog = observer(() => {
                         case NotifierType.SettingUpdated: {
                             const [{ propertyName, propertyValue }] = data;
                             logStore.onSettingUpdated(propertyName, propertyValue);
+                            break;
+                        }
+                        case NotifierType.CustomFilterAdded: {
+                            await logStore.getFilteringLogData();
                             break;
                         }
                         default: {
