@@ -82,8 +82,6 @@ const FilteringLog = observer(() => {
 
     // append message listeners
     useEffect(() => {
-        // TODO this logic should be moved (prob to the logStore),
-        // as it is not related to the view
         let removeListenerCallback = async () => { };
 
         (async () => {
