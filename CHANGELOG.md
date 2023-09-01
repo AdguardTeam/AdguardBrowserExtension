@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/scriptlets` to [v1.9.70](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
 ### Fixed
-- Do not inject content scripts to the chrome web store pages on extension initialization
+- Custom filters names not displaying if added while filtering log is open.
+- Do not inject content scripts to the chrome web store pages on extension initialization.
 
 ## [4.2.151] - 2023-08-11
 
