@@ -65,7 +65,7 @@ export const enum AntibannerGroupsId {
 
 export enum NotifierType {
     RequestFilterUpdated = 'event.request.filter.updated',
-    userFilterUpdated = 'event.user.filter.updated',
+    UserFilterUpdated = 'event.user.filter.updated',
     CustomFilterAdded = 'event.custom.filter.added',
     UpdateAllowlistFilterRules = 'event.update.allowlist.filter.rules',
     SettingUpdated = 'event.update.setting.value',
