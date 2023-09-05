@@ -159,7 +159,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             // Subscribe to events of request filter update
             // to have actual user rules in the editor
             const events = [
-                NotifierType.userFilterUpdated,
+                NotifierType.UserFilterUpdated,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -168,7 +168,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                     const { type } = message;
 
                     switch (type) {
-                        case NotifierType.userFilterUpdated: {
+                        case NotifierType.UserFilterUpdated: {
                             await handleUserFilterUpdated();
                             break;
                         }
