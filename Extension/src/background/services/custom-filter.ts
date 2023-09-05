@@ -24,7 +24,7 @@ import {
 } from '@adguard/tswebextension';
 
 import { SUBSCRIBE_OUTPUT } from '../../../../constants';
-import { BACKGROUND_TAB_ID } from '../../common/constants';
+import { NotifierType, BACKGROUND_TAB_ID } from '../../common/constants';
 import {
     MessageType,
     LoadCustomFilterInfoMessage,
@@ -33,6 +33,7 @@ import {
 } from '../../common/messages';
 import { CustomFilterApi, GetCustomFilterInfoResult } from '../api/filters/custom';
 import { messageHandler } from '../message-handler';
+import { listeners } from '../notifier';
 import { Engine } from '../engine';
 import type { CustomFilterMetadata } from '../schema';
 
@@ -82,6 +83,7 @@ export class CustomFilterService {
 
         Engine.debounceUpdate();
 
+        listeners.notifyListeners(NotifierType.CustomFilterAdded);
         return filterMetadata;
     }
 
