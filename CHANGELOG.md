@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Rule wizard bug with advanced modifier rules.
 
 ## [4.2.167] - 2023-09-05
 
@@ -29,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/scriptlets` to [v1.9.70](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
 ### Fixed
-- Rule wizard bug with advanced modifier rules.
 - Custom filters names not being displayed if added while filtering log is open.
 - Do not inject content scripts to the chrome web store pages on extension initialization.
 
