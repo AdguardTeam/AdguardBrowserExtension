@@ -133,8 +133,11 @@ export class FilterUpdateApi {
         /**
          * Reload common filters metadata from backend for correct
          * version matching on update check.
+         * We do not update metadata on each check if there are no filters or only custom filters.
          */
-        await FiltersApi.loadMetadata(true);
+        if (filtersIds.some((id) => CommonFilterApi.isCommonFilter(id))) {
+            await FiltersApi.loadMetadata(true);
+        }
 
         const updatedFiltersMetadata: FilterMetadata[] = [];
 
@@ -213,7 +216,8 @@ export class FilterUpdateApi {
             // By default, checks the expires field for each filter.
             if (updatePeriod === DEFAULT_FILTERS_UPDATE_PERIOD) {
                 // If it is time to check the update, adds it to the array.
-                return lastCheckTime + expires <= Date.now();
+                // NOTE: expires in seconds.
+                return lastCheckTime + expires * 1000 <= Date.now();
             }
 
             // Check, if the renewal period of each filter has passed.

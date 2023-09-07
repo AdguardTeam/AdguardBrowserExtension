@@ -27,7 +27,7 @@ export const baseMetadataValidator = zod.object({
      */
     displayNumber: zod.number(),
     /**
-     * The time in milliseconds during which the filter content remains fresh
+     * The time in seconds during which the filter content remains fresh
      * and does not need to be updated. Used to auto-renew filters if the user
      * has not selected a custom update period for filters.
      */
