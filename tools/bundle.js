@@ -137,6 +137,15 @@ const chrome = async (watch) => {
     }
 };
 
+const edge = async (watch) => {
+    try {
+        await bundleEdge(watch);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
 const firefox = async (watch) => {
     try {
         await bundleFirefoxAmo(watch);
@@ -163,6 +172,13 @@ program
     .description('Builds extension for chrome browser')
     .action(() => {
         chrome(program.watch);
+    });
+
+program
+    .command('edge')
+    .description('Builds extension for edge browser')
+    .action(() => {
+        edge(program.watch);
     });
 
 program
