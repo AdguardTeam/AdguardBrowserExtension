@@ -34,10 +34,9 @@ import { Log } from '../../common/log';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
 import { Engine } from '../engine';
-import { settingsStorage } from '../storages';
+import { FiltersStorage, settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 
-import { UserRulesApi } from './filters';
 import { TabsApi } from './extension/tabs';
 
 export type FilteringEventRuleData = {
@@ -86,6 +85,11 @@ export type FilteringLogTabInfo = {
     isExtensionTab: boolean,
     filteringEvents: FilteringLogEvent[],
 };
+
+interface RuleTexts {
+    ruleText: string;
+    appliedRuleText?: string;
+}
 
 /**
  * The filtering log collects all available information about requests
@@ -401,18 +405,38 @@ export class FilteringLogApi {
     }
 
     /**
+     * Helper method to get original rule text from {@link FiltersStorage}.
+     * Applied filter rule may be converted, but we need to store original rule text in the filtering log.
+     *
+     * @param filterId Filter id.
+     * @param ruleText Applied rule text.
+     * @returns Rule text and applied rule text (if rule was converted, otherwise `undefined`).
+     */
+    private static async getAppliedAndOriginalRuleTexts(filterId: number, ruleText: string): Promise<RuleTexts> {
+        const originalRuleText = await FiltersStorage.getOriginalRuleText(filterId, ruleText);
+        let appliedRuleText: string | undefined;
+
+        if (originalRuleText) {
+            appliedRuleText = ruleText;
+            ruleText = originalRuleText;
+        }
+
+        return { ruleText, appliedRuleText };
+    }
+
+    /**
      * Creates {@link FilteringEventRuleData} from {@link NetworkRule}.
      *
      * @param rule Network rule.
      * @returns Object of {@link FilteringEventRuleData}.
      */
-    public static createNetworkRuleEventData(rule: NetworkRule): FilteringEventRuleData {
+    public static async createNetworkRuleEventData(rule: NetworkRule): Promise<FilteringEventRuleData> {
         const filterId = rule.getFilterListId();
         const ruleText = rule.getText();
 
         const data: FilteringEventRuleData = {
             filterId,
-            ruleText,
+            ...(await FilteringLogApi.getAppliedAndOriginalRuleTexts(filterId, ruleText)),
         };
 
         if (rule.isOptionEnabled(NetworkRuleOption.Important)) {
@@ -436,14 +460,6 @@ export class FilteringLogApi {
             data.modifierValue = advancedModifiedValue;
         }
 
-        if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const originalRule = UserRulesApi.getSourceRule(rule.getText());
-            if (originalRule) {
-                data.ruleText = originalRule;
-                data.appliedRuleText = rule.getText();
-            }
-        }
-
         return data;
     }
 
@@ -453,14 +469,15 @@ export class FilteringLogApi {
      * @param rule Cosmetic rule.
      * @returns Object of {@link FilteringEventRuleData}.
      */
-    public static createCosmeticRuleEventData(rule: CosmeticRule): FilteringEventRuleData {
+    public static async createCosmeticRuleEventData(rule: CosmeticRule): Promise<FilteringEventRuleData> {
         const data: FilteringEventRuleData = Object.create(null);
 
         const filterId = rule.getFilterListId();
         const ruleText = rule.getText();
 
         data.filterId = filterId;
-        data.ruleText = ruleText;
+
+        Object.assign(data, await FilteringLogApi.getAppliedAndOriginalRuleTexts(filterId, ruleText));
 
         const ruleType = rule.getType();
 
@@ -471,14 +488,6 @@ export class FilteringLogApi {
             data.cssRule = true;
         } else if (ruleType === CosmeticRuleType.Js) {
             data.scriptRule = true;
-        }
-
-        if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const originalRule = UserRulesApi.getSourceRule(rule.getText());
-            if (originalRule) {
-                data.ruleText = originalRule;
-                data.appliedRuleText = rule.getText();
-            }
         }
 
         return data;

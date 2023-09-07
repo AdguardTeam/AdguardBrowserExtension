@@ -169,7 +169,7 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link ApplyBasicRuleEvent}.
      * @param ruleEvent.data Data for this event: tabId, eventId and applied rule.
      */
-    private static onApplyBasicRule({ data }: ApplyBasicRuleEvent): void {
+    private static async onApplyBasicRule({ data }: ApplyBasicRuleEvent): Promise<void> {
         const {
             tabId,
             eventId,
@@ -177,7 +177,7 @@ export class FilteringLogService {
         } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: await FilteringLogApi.createNetworkRuleEventData(rule),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -191,7 +191,7 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link ApplyCosmeticRuleEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onApplyCosmeticRule({ data }: ApplyCosmeticRuleEvent): void {
+    private static async onApplyCosmeticRule({ data }: ApplyCosmeticRuleEvent): Promise<void> {
         const {
             tabId,
             rule,
@@ -200,7 +200,7 @@ export class FilteringLogService {
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createCosmeticRuleEventData(rule),
+            requestRule: await FilteringLogApi.createCosmeticRuleEventData(rule),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -214,7 +214,7 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link ApplyCspRuleEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onApplyCspRule({ data }: ApplyCspRuleEvent): void {
+    private static async onApplyCspRule({ data }: ApplyCspRuleEvent): Promise<void> {
         const {
             tabId,
             rule,
@@ -223,7 +223,7 @@ export class FilteringLogService {
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: await FilteringLogApi.createNetworkRuleEventData(rule),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -237,7 +237,7 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link RemoveParamEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onRemoveParam({ data }: RemoveParamEvent): void {
+    private static async onRemoveParam({ data }: RemoveParamEvent): Promise<void> {
         const {
             tabId,
             rule,
@@ -246,7 +246,7 @@ export class FilteringLogService {
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: await FilteringLogApi.createNetworkRuleEventData(rule),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -260,12 +260,12 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link RemoveHeaderEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onRemoveheader({ data }: RemoveHeaderEvent): void {
+    private static async onRemoveheader({ data }: RemoveHeaderEvent): Promise<void> {
         const { tabId, rule, ...eventData } = data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: await FilteringLogApi.createNetworkRuleEventData(rule),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -292,7 +292,7 @@ export class FilteringLogService {
      *
      * @param event Event with type {@link CookieEvent}.
      */
-    private static onCookie(event: CookieEvent): void {
+    private static async onCookie(event: CookieEvent): Promise<void> {
         if (filteringLogApi.isExistingCookieEvent(event)) {
             return;
         }
@@ -301,7 +301,7 @@ export class FilteringLogService {
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: await FilteringLogApi.createNetworkRuleEventData(rule),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -315,12 +315,12 @@ export class FilteringLogService {
      * @param event Event with type {@link JsInjectEvent}.
      * @param event.data Destructed data from {@link JsInjectEvent}.
      */
-    private static onScriptInjection({ data }: JsInjectEvent): void {
+    private static async onScriptInjection({ data }: JsInjectEvent): Promise<void> {
         const { tabId, rule, ...eventData } = data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createCosmeticRuleEventData(rule),
+            requestRule: await FilteringLogApi.createCosmeticRuleEventData(rule),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -334,11 +334,11 @@ export class FilteringLogService {
      * @param event Event with type {@link ReplaceRuleApplyEvent}.
      * @param event.data Destructed data from {@link ReplaceRuleApplyEvent}.
      */
-    private static onReplaceRuleApply({ data }: ReplaceRuleApplyEvent): void {
+    private static async onReplaceRuleApply({ data }: ReplaceRuleApplyEvent): Promise<void> {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            replaceRules: rules.map(rule => FilteringLogApi.createNetworkRuleEventData(rule)),
+            replaceRules: await Promise.all(rules.map(rule => FilteringLogApi.createNetworkRuleEventData(rule))),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
