@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Rule wizard bug with advanced modifier rules.
+- Rule wizard bug with advanced modifier rules[#2456](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2456).
 
 ## [4.2.167] - 2023-09-05
 
