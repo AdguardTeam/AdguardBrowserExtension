@@ -51,6 +51,7 @@ import {
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
     LODASH_VENDOR_OUTPUT,
+    AGTREE_VENDOR_OUTPUT,
 } from '../../constants';
 
 const config = getEnvConf(process.env.BUILD_ENV);
@@ -94,6 +95,7 @@ export const genCommonConfig = (browserConfig) => {
                 dependOn: [
                     LODASH_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                 ],
             },
@@ -118,6 +120,7 @@ export const genCommonConfig = (browserConfig) => {
                 import: FILTERING_LOG_PATH,
                 dependOn: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
@@ -181,6 +184,7 @@ export const genCommonConfig = (browserConfig) => {
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
             [LODASH_VENDOR_OUTPUT]: ['lodash'],
             [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
+            [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
                 dependOn: [
@@ -292,6 +296,7 @@ export const genCommonConfig = (browserConfig) => {
                 chunks: [
                     LODASH_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                     BACKGROUND_OUTPUT,
                 ],
@@ -303,6 +308,7 @@ export const genCommonConfig = (browserConfig) => {
                 chunks: [
                     LODASH_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -322,6 +328,7 @@ export const genCommonConfig = (browserConfig) => {
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
@@ -341,6 +348,7 @@ export const genCommonConfig = (browserConfig) => {
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,

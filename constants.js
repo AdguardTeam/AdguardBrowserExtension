@@ -41,6 +41,7 @@ export const MOBX_VENDOR_OUTPUT = 'vendors/mobx';
 export const XSTATE_VENDOR_OUTPUT = 'vendors/xstate';
 export const LODASH_VENDOR_OUTPUT = 'vendors/lodash';
 export const TSURLFILTER_VENDOR_OUTPUT = 'vendors/tsurlfilter';
+export const AGTREE_VENDOR_OUTPUT = 'vendors/agtree';
 export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
 
 // Placed here to use in the node environment and in the browser
