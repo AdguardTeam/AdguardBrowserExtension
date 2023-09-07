@@ -17,7 +17,14 @@
  */
 import zod from 'zod';
 
+import { FilterConverter } from '../utils/rule-converter';
+import { Log } from '../../common/log';
+
 import { storage } from './main';
+
+const FILTER_KEY_PREFIX = 'filterrules_';
+const CONVERSION_MAP_PREFIX = 'conversionmap_';
+const FILTER_LIST_EXTENSION = '.txt';
 
 /**
  * Encapsulates interaction with stored filter rules.
@@ -30,9 +37,24 @@ export class FiltersStorage {
      * @param filter Filter rules strings.
      */
     static async set(filterId: number, filter: string[]): Promise<void> {
-        const key = FiltersStorage.getFilterKey(filterId);
+        const filterKey = FiltersStorage.getFilterKey(filterId);
+        const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
 
-        await storage.set(key, filter);
+        // FIXME: This process is may heavy, we should consider to move it to
+        // a web worker, if possible.
+        // We can use web workers if the following conditions are met:
+        //   1. MV3 service worker supports web workers.
+        //   2. Firefox event page supports web workers.
+
+        // FIXME: We also should optimize the conversion process itself,
+        // especially the cloning issues.
+
+        // Convert filter rules to AdGuard format where it's possible
+        // We only need conversion map to show original rule text in the filtering log
+        const { filter: convertedFilter, conversionMap } = FilterConverter.convertFilter(filter);
+
+        await storage.set(filterKey, convertedFilter);
+        await storage.set(conversionMapKey, conversionMap);
     }
 
     /**
@@ -44,9 +66,9 @@ export class FiltersStorage {
      * @throws Error, if filter list data is not valid.
      */
     static async get(filterId: number): Promise<string[]> {
-        const key = FiltersStorage.getFilterKey(filterId);
+        const filterKey = FiltersStorage.getFilterKey(filterId);
 
-        const data = await storage.get(key);
+        const data = await storage.get(filterKey);
 
         return zod.string().array().parse(data);
     }
@@ -57,8 +79,8 @@ export class FiltersStorage {
      * @param filterId Filter id.
      */
     static async remove(filterId: number): Promise<void> {
-        const key = FiltersStorage.getFilterKey(filterId);
-        return storage.remove(key);
+        const filterKey = FiltersStorage.getFilterKey(filterId);
+        return storage.remove(filterKey);
     }
 
     /**
@@ -68,6 +90,44 @@ export class FiltersStorage {
      * @returns Storage key from specified filter list.
      */
     private static getFilterKey(filterId: number): string {
-        return `filterrules_${filterId}.txt`;
+        return `${FILTER_KEY_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    }
+
+    /**
+     * Returns {@link storage} key to conversion map from specified filter list.
+     *
+     * @param filterId Filter id.
+     * @returns Storage key to conversion map from specified filter list.
+     */
+    private static getConversionMapKey(filterId: number): string {
+        return `${CONVERSION_MAP_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    }
+
+    /**
+     * Returns original rule text from the specified filter list and converted rule text.
+     *
+     * @param filterId Filter id.
+     * @param convertedRuleText Converted rule text.
+     * @returns Promise, resolved with the original rule text or `undefined` if the original rule text cannot be found.
+     */
+    static async getOriginalRuleText(filterId: number, convertedRuleText: string): Promise<string | undefined> {
+        // FIXME: Remove debug logging
+        Log.debug(`Getting original rule text for ${convertedRuleText}`);
+
+        const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
+
+        const data = await storage.get(conversionMapKey);
+
+        try {
+            const conversionMap = zod.record(zod.string(), zod.string()).parse(data);
+
+            Log.debug(`Conversion map for ${FiltersStorage.getFilterKey(filterId)}: ${JSON.stringify(conversionMap)}`);
+
+            return conversionMap[convertedRuleText];
+        } catch (error: unknown) {
+            Log.debug(`Failed to get original rule text for ${convertedRuleText}`, (error as Error).message);
+
+            return undefined;
+        }
     }
 }
