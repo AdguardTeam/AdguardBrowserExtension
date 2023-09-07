@@ -204,6 +204,7 @@ const RequestInfo = observer(() => {
             title: reactTranslator.getMessage('filtering_modal_source'),
             data: selectedEvent.frameDomain,
         },
+        // TODO: Separate original rule and converted rule, if the applied rule is a converted one
         [PARTS.RULE]: {
             title: getRuleFieldTitle(selectedEvent),
             data: getRule(selectedEvent),
