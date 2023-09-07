@@ -50,7 +50,9 @@ export class FiltersStorage {
         // especially the cloning issues.
 
         // Convert filter rules to AdGuard format where it's possible
-        // We only need conversion map to show original rule text in the filtering log
+        // We need conversion map to show original
+        //  - rule text in the filtering log
+        //  - user rules in the editor UI
         const { filter: convertedFilter, conversionMap } = FilterConverter.convertFilter(filter);
 
         await storage.set(filterKey, convertedFilter);
