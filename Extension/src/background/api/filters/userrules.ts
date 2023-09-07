@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { RuleSyntaxUtils, RuleConverter } from '@adguard/tsurlfilter';
+import { RuleSyntaxUtils } from '@adguard/tsurlfilter';
 
 import { Log } from '../../../common/log';
 import { AntiBannerFiltersId } from '../../../common/constants';
@@ -25,7 +25,6 @@ import {
     FiltersStorage,
     settingsStorage,
     editorStorage,
-    ruleConversionStorage,
 } from '../../storages';
 
 /**
@@ -90,6 +89,23 @@ export class UserRulesApi {
     }
 
     /**
+     * Returns original rules from user list.
+     */
+    // FIXME: Move this logic to FiltersStorage?
+    public static async getOriginalUserRules(): Promise<string[]> {
+        const userRules = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+
+        // Get original rule text for each rule
+        return Promise.all(
+            userRules.map(rule => FiltersStorage.getOriginalRuleText(AntiBannerFiltersId.UserFilterId, rule).then(
+                // Original rule text may be undefined if the rule was not converted,
+                // in this case we return the rule itself
+                originalRuleText => originalRuleText || rule,
+            )),
+        );
+    }
+
+    /**
      * Adds rule to user list.
      *
      * @param rule Rule text.
@@ -151,51 +167,5 @@ export class UserRulesApi {
      */
     public static setEditorStorageData(data: string): void {
         editorStorage.set(data);
-    }
-
-    /**
-     * Converts rules text lines with conversion map.
-     *
-     * @param rules List of rule strings.
-     *
-     * @returns List of converted rule strings.
-     */
-    public static convertRules(rules: string[]): string[] {
-        ruleConversionStorage.clear();
-
-        const result: string[] = [];
-
-        rules.forEach((line) => {
-            let converted: string[] = [];
-            try {
-                converted = RuleConverter.convertRule(line);
-            } catch (e: unknown) {
-                Log.info(`Error converting rule ${line}, due to: `, e);
-            }
-            result.push(...converted);
-
-            if (converted.length > 0) {
-                if (converted.length > 1 || converted[0] !== line) {
-                    // Fill the map only for converted rules
-                    converted.forEach((x) => {
-                        ruleConversionStorage.set(x, line);
-                    });
-                }
-            }
-        });
-
-        Log.debug(`Converted ${rules.length} rules to ${result.length} for user filter`);
-
-        return result;
-    }
-
-    /**
-     * Returns source rule text if the rule has been converted.
-     *
-     * @param rule Converted rule text.
-     * @returns Source rule text, if exist, else undefined.
-     */
-    public static getSourceRule(rule: string): string | undefined {
-        return ruleConversionStorage.get(rule);
     }
 }
