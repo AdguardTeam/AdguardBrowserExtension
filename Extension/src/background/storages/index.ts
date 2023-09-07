@@ -32,7 +32,6 @@ export * from './inverted-allowlist';
 export * from './main';
 export * from './metadata';
 export * from './settings';
-export * from './rule-conversion';
 export * from './safebrowsing';
 export * from './page-stats';
 export * from './notification';
