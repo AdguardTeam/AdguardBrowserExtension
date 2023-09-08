@@ -231,6 +231,7 @@ export const createExceptionCookieRules = (event) => {
     return patterns;
 };
 
+// TODO: these could be refactored into one createExceptionAdvancedModifierRules
 export const createExceptionRemoveParamRules = (event) => {
     const { frameDomain, requestRule } = event;
 
