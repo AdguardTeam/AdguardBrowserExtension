@@ -51,19 +51,19 @@ export class FiltersStorage {
         // FIXME: We also should optimize the conversion process itself,
         // especially the cloning issues.
 
-        // Convert filter rules to AdGuard format where it's possible
-        // We need conversion map to show original
-        //  - rule text in the filtering log
-        //  - user rules in the editor UI
+        // Convert filter rules to AdGuard format where it's possible.
+        // We need conversion map to show original rule text in the filtering log if a converted rule is applied.
         const { filter: convertedFilter, conversionMap } = FilterConverter.convertFilter(filter);
 
         await storage.set(filterKey, convertedFilter);
         await storage.set(conversionMapKey, conversionMap);
 
-        // Special case: user rules - we need to store original rules as well.
+        // Special case: user rules — we need to store original rules as well.
         // This is needed for the editor UI and for exporting user rules.
         // Conversion map is not enough because it can't convert back multiple
         // rules to the same single rule easily.
+        // Think about the following example:
+        //  example.com#$#abp-snippet1; abp-snippet2; abp-snippet3
         if (filterId === AntiBannerFiltersId.UserFilterId) {
             const originalFilterKey = FiltersStorage.getFilterKey(filterId, true);
             await storage.set(originalFilterKey, filter);
@@ -100,7 +100,8 @@ export class FiltersStorage {
      * Returns {@link storage} key from specified filter list.
      *
      * @param filterId Filter id.
-     * @param original If `true`, returns key for original filter list.
+     * @param original If `true`, returns key for original filter list. Especially needed for user rules.
+     * Defaults to `false`.
      * @returns Storage key from specified filter list.
      */
     private static getFilterKey(filterId: number, original = false): string {
