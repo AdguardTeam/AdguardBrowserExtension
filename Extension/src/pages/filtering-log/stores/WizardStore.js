@@ -23,8 +23,6 @@ import {
     makeObservable,
 } from 'mobx';
 
-import { NETWORK_RULE_OPTIONS } from '@adguard/tsurlfilter';
-
 import { RULE_OPTIONS } from '../components/RequestWizard/constants';
 import {
     createRuleFromParams,
@@ -225,18 +223,6 @@ class WizardStore {
 
         const domain = permitDomain ? selectedEvent.frameDomain : null;
 
-        let mandatoryOptions = null;
-
-        // Deal with csp rule
-        const { requestRule } = selectedEvent;
-        if (requestRule && requestRule.cspRule) {
-            mandatoryOptions = [NETWORK_RULE_OPTIONS.CSP];
-        }
-
-        if (selectedEvent.replaceRules) {
-            mandatoryOptions = [NETWORK_RULE_OPTIONS.REPLACE];
-        }
-
         let ruleText;
         if (selectedEvent.element) {
             ruleText = createCssRuleFromParams(rulePattern, permitDomain);
@@ -254,7 +240,6 @@ class WizardStore {
                 urlDomain: domain,
                 thirdParty,
                 important,
-                mandatoryOptions,
                 removeParam,
             });
         }

@@ -287,12 +287,11 @@ export const createRuleFromParams = ({
     urlDomain,
     thirdParty,
     important,
-    mandatoryOptions,
     removeParam,
 }) => {
     let ruleText = urlPattern;
 
-    let options = [];
+    const options = [];
 
     // add domain option
     if (urlDomain) {
@@ -310,9 +309,7 @@ export const createRuleFromParams = ({
     if (removeParam) {
         options.push(NETWORK_RULE_OPTIONS.REMOVEPARAM);
     }
-    if (mandatoryOptions) {
-        options = options.concat(mandatoryOptions);
-    }
+
     if (options.length > 0) {
         // Pick correct symbol to append options with
         const hasOptions = ruleText.includes(OPTIONS_DELIMITER);
