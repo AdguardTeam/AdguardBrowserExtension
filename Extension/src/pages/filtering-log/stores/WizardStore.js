@@ -23,10 +23,13 @@ import {
     makeObservable,
 } from 'mobx';
 
-import { NETWORK_RULE_OPTIONS, OPTIONS_DELIMITER } from '@adguard/tsurlfilter';
+import { NETWORK_RULE_OPTIONS } from '@adguard/tsurlfilter';
 
 import { RULE_OPTIONS } from '../components/RequestWizard/constants';
 import {
+    createRuleFromParams,
+    createCssRuleFromParams,
+    createCookieRuleFromParams,
     createDocumentLevelBlockRule,
     createExceptionCookieRules,
     createExceptionCssRule,
@@ -51,13 +54,12 @@ export const ADDED_RULE_STATES = {
     UNBLOCK: 'unblock',
 };
 
-const MODIFIERS_DELIMITER = ',';
-
 const defaultRuleOptions = {
     [RULE_OPTIONS.RULE_DOMAIN]: { checked: false },
     [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
     [RULE_OPTIONS.RULE_IMPORTANT]: { checked: false },
 };
+
 class WizardStore {
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -203,77 +205,6 @@ class WizardStore {
         this.ruleText = ruleText;
     }
 
-    createRuleFromParams = ({
-        urlPattern,
-        urlDomain,
-        thirdParty,
-        important,
-        mandatoryOptions,
-        removeParam,
-    }) => {
-        let ruleText = urlPattern;
-
-        let options = [];
-
-        // add domain option
-        if (urlDomain) {
-            options.push(`${NETWORK_RULE_OPTIONS.DOMAIN}=${urlDomain}`);
-        }
-        // add important option
-        if (important) {
-            options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
-        }
-        // add third party option
-        if (thirdParty) {
-            options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
-        }
-        // add removeparam option
-        if (removeParam) {
-            options.push(NETWORK_RULE_OPTIONS.REMOVEPARAM);
-        }
-        if (mandatoryOptions) {
-            options = options.concat(mandatoryOptions);
-        }
-        if (options.length > 0) {
-            ruleText += OPTIONS_DELIMITER + options.join(MODIFIERS_DELIMITER);
-        }
-
-        return ruleText;
-    };
-
-    createCssRuleFromParams = (urlPattern, permitDomain) => {
-        let ruleText = urlPattern;
-        if (!permitDomain) {
-            ruleText = ruleText.slice(ruleText.indexOf('#'));
-        }
-
-        return ruleText;
-    };
-
-    createCookieRuleFromParams = ({
-        rulePattern,
-        thirdParty,
-        important,
-    }) => {
-        let ruleText = rulePattern;
-
-        const options = [];
-
-        // add important option
-        if (important) {
-            options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
-        }
-        // add third party option
-        if (thirdParty) {
-            options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
-        }
-        if (options.length > 0) {
-            ruleText += MODIFIERS_DELIMITER + options.join(MODIFIERS_DELIMITER);
-        }
-
-        return ruleText;
-    };
-
     getRuleText(selectedEvent, rulePattern, ruleOptions) {
         // if rule was edited by user return it as is
         if (this.ruleText !== null) {
@@ -308,17 +239,17 @@ class WizardStore {
 
         let ruleText;
         if (selectedEvent.element) {
-            ruleText = this.createCssRuleFromParams(rulePattern, permitDomain);
+            ruleText = createCssRuleFromParams(rulePattern, permitDomain);
         } else if (selectedEvent.cookieName) {
-            ruleText = this.createCookieRuleFromParams({
+            ruleText = createCookieRuleFromParams({
                 rulePattern,
                 thirdParty,
                 important,
             });
         } else if (selectedEvent.script || selectedEvent?.requestRule?.documentLevelRule) {
-            ruleText = this.createRuleFromParams({ urlPattern: rulePattern });
+            ruleText = createRuleFromParams({ urlPattern: rulePattern });
         } else {
-            ruleText = this.createRuleFromParams({
+            ruleText = createRuleFromParams({
                 urlPattern: rulePattern,
                 urlDomain: domain,
                 thirdParty,

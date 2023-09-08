@@ -132,7 +132,7 @@ export class UserRulesApi {
     public static async setUserRules(rules: string[]): Promise<void> {
         await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rules);
 
-        listeners.notifyListeners(listeners.userFilterUpdated);
+        listeners.notifyListeners(listeners.UserFilterUpdated);
     }
 
     /**

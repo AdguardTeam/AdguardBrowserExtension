@@ -91,6 +91,7 @@ const FilteringLog = observer(() => {
                 NotifierType.TabClose,
                 NotifierType.TabReset,
                 NotifierType.SettingUpdated,
+                NotifierType.CustomFilterAdded,
             ];
 
             removeListenerCallback = messenger.createLongLivedConnection(
@@ -120,6 +121,10 @@ const FilteringLog = observer(() => {
                         case NotifierType.SettingUpdated: {
                             const [{ propertyName, propertyValue }] = data;
                             logStore.onSettingUpdated(propertyName, propertyValue);
+                            break;
+                        }
+                        case NotifierType.CustomFilterAdded: {
+                            await logStore.getFilteringLogData();
                             break;
                         }
                         default: {

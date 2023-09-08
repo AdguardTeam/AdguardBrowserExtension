@@ -20,11 +20,14 @@ import {
     SimpleRegex,
     CosmeticRuleMarker,
     NetworkRule,
+    NETWORK_RULE_OPTIONS,
+    OPTIONS_DELIMITER,
 } from '@adguard/tsurlfilter';
 
 import { strings } from '../../../../common/strings';
 import { Log } from '../../../../common/log';
 
+import { COMMA_DELIMITER } from './constants';
 import { UrlUtils } from './utils';
 
 /**
@@ -276,4 +279,80 @@ export const createBlockingCookieRule = (event) => {
     patterns.push(blockingRule);
 
     return patterns;
+};
+
+export const createRuleFromParams = ({
+    urlPattern,
+    urlDomain,
+    thirdParty,
+    important,
+    mandatoryOptions,
+    removeParam,
+}) => {
+    let ruleText = urlPattern;
+
+    let options = [];
+
+    // add domain option
+    if (urlDomain) {
+        options.push(`${NETWORK_RULE_OPTIONS.DOMAIN}=${urlDomain}`);
+    }
+    // add important option
+    if (important) {
+        options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
+    }
+    // add third party option
+    if (thirdParty) {
+        options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
+    }
+    // add removeparam option
+    if (removeParam) {
+        options.push(NETWORK_RULE_OPTIONS.REMOVEPARAM);
+    }
+    if (mandatoryOptions) {
+        options = options.concat(mandatoryOptions);
+    }
+    if (options.length > 0) {
+        // Pick correct symbol to append options with
+        const hasOptions = ruleText.includes(OPTIONS_DELIMITER);
+        const prefix = hasOptions
+            ? COMMA_DELIMITER
+            : OPTIONS_DELIMITER;
+        ruleText += prefix + options.join(COMMA_DELIMITER);
+    }
+
+    return ruleText;
+};
+
+export const createCssRuleFromParams = (urlPattern, permitDomain) => {
+    let ruleText = urlPattern;
+    if (!permitDomain) {
+        ruleText = ruleText.slice(ruleText.indexOf('#'));
+    }
+
+    return ruleText;
+};
+
+export const createCookieRuleFromParams = ({
+    rulePattern,
+    thirdParty,
+    important,
+}) => {
+    let ruleText = rulePattern;
+
+    const options = [];
+
+    // add important option
+    if (important) {
+        options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
+    }
+    // add third party option
+    if (thirdParty) {
+        options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
+    }
+    if (options.length > 0) {
+        ruleText += COMMA_DELIMITER + options.join(COMMA_DELIMITER);
+    }
+
+    return ruleText;
 };
