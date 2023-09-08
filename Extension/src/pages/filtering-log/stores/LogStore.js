@@ -333,6 +333,13 @@ class LogStore {
     setSelectedTabId = async (tabId) => {
         this.selectedTabId = Number.parseInt(tabId, 10);
         await this.getEventsByTabId(tabId);
+        /**
+         * Hash of filtering log window should be updated to focus on the active browser tab.
+         * Because after manual changing of TabSelector's tab,
+         * location.hash of the filtering log window does not change.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482
+         */
+        document.location.hash = tabId;
     };
 
     @action
