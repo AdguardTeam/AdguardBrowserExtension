@@ -91,18 +91,8 @@ export class UserRulesApi {
     /**
      * Returns original rules from user list.
      */
-    // FIXME: Move this logic to FiltersStorage?
     public static async getOriginalUserRules(): Promise<string[]> {
-        const userRules = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
-
-        // Get original rule text for each rule
-        return Promise.all(
-            userRules.map(rule => FiltersStorage.getOriginalRuleText(AntiBannerFiltersId.UserFilterId, rule).then(
-                // Original rule text may be undefined if the rule was not converted,
-                // in this case we return the rule itself
-                originalRuleText => originalRuleText || rule,
-            )),
-        );
+        return FiltersStorage.getOriginalUserRules();
     }
 
     /**

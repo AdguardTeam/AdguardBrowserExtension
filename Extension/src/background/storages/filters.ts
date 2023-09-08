@@ -19,10 +19,12 @@ import zod from 'zod';
 
 import { FilterConverter } from '../utils/rule-converter';
 import { Log } from '../../common/log';
+import { AntiBannerFiltersId } from '../../common/constants';
 
 import { storage } from './main';
 
 const FILTER_KEY_PREFIX = 'filterrules_';
+const ORIGINAL_FILTER_KEY_PREFIX = 'originalfilterrules_'; // needed for user rules
 const CONVERSION_MAP_PREFIX = 'conversionmap_';
 const FILTER_LIST_EXTENSION = '.txt';
 
@@ -57,6 +59,15 @@ export class FiltersStorage {
 
         await storage.set(filterKey, convertedFilter);
         await storage.set(conversionMapKey, conversionMap);
+
+        // Special case: user rules - we need to store original rules as well.
+        // This is needed for the editor UI and for exporting user rules.
+        // Conversion map is not enough because it can't convert back multiple
+        // rules to the same single rule easily.
+        if (filterId === AntiBannerFiltersId.UserFilterId) {
+            const originalFilterKey = FiltersStorage.getFilterKey(filterId, true);
+            await storage.set(originalFilterKey, filter);
+        }
     }
 
     /**
@@ -89,10 +100,11 @@ export class FiltersStorage {
      * Returns {@link storage} key from specified filter list.
      *
      * @param filterId Filter id.
+     * @param original If `true`, returns key for original filter list.
      * @returns Storage key from specified filter list.
      */
-    private static getFilterKey(filterId: number): string {
-        return `${FILTER_KEY_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    private static getFilterKey(filterId: number, original = false): string {
+        return `${original ? ORIGINAL_FILTER_KEY_PREFIX : FILTER_KEY_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
     }
 
     /**
@@ -103,6 +115,26 @@ export class FiltersStorage {
      */
     private static getConversionMapKey(filterId: number): string {
         return `${CONVERSION_MAP_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    }
+
+    /**
+     * Returns original user rules from {@link storage}.
+     *
+     * @returns Promise, resolved with original user rules strings.
+     * @throws Error, if filter list data is not valid.
+     */
+    static async getOriginalUserRules(): Promise<string[]> {
+        // Special case: user rules have original rules stored separately
+        const originalFilterKey = FiltersStorage.getFilterKey(AntiBannerFiltersId.UserFilterId, true);
+
+        const data = await storage.get(originalFilterKey);
+
+        // Error tolerance: if we can't read original rules, we just return empty array
+        try {
+            return zod.string().array().parse(data);
+        } catch (error: unknown) {
+            return [];
+        }
     }
 
     /**
