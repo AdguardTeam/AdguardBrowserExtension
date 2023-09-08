@@ -138,7 +138,6 @@ describe('ruleCreators', () => {
             // Creates rule with default params on startup
             ruleParams = {
                 important: false,
-                mandatoryOptions: null,
                 removeParam: false,
                 thirdParty: false,
                 urlDomain: 'forbes.com',
@@ -150,7 +149,6 @@ describe('ruleCreators', () => {
             // Handles input with additional options
             ruleParams = {
                 important: true,
-                mandatoryOptions: null,
                 removeParam: true,
                 thirdParty: false,
                 urlDomain: 'example.com',
@@ -161,7 +159,6 @@ describe('ruleCreators', () => {
 
             ruleParams = {
                 important: true,
-                mandatoryOptions: null,
                 removeParam: false,
                 thirdParty: false,
                 urlDomain: null,
@@ -173,7 +170,6 @@ describe('ruleCreators', () => {
             // Handles input with existing modifier: joins modifiers correctly
             ruleParams = {
                 important: false,
-                mandatoryOptions: null,
                 removeParam: false,
                 thirdParty: false,
                 urlDomain: 'contextual.media.net',
@@ -181,6 +177,16 @@ describe('ruleCreators', () => {
             };
             expectedRule = '@@||contextual.media.net$removeparam=cs,domain=contextual.media.net';
             expect(createRuleFromParams(ruleParams)).toBe(expectedRule);
+
+            // ruleParams = {
+            //     important: false,
+            //     removeParam: false,
+            //     thirdParty: false,
+            //     urlDomain: 'example.com',
+            //     urlPattern: '@@||example.com^$csp=style-src *',
+            // };
+            // expectedRule = '@@||example.com^$csp=style-src *'; FIXME
+            // expect(createRuleFromParams(ruleParams)).toBe(expectedRule);
         });
     });
 });
