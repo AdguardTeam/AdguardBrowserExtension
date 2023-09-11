@@ -36,8 +36,8 @@ import { messenger } from '../../../services/messenger';
 import { MessageType } from '../../../../common/messages';
 import {
     NotifierType,
-    CRLF_CHAR,
-    NEWLINE_CHAR,
+    NEWLINE_CHAR_UNIX,
+    NEWLINE_CHAR_REGEX,
 } from '../../../../common/constants';
 import { handleFileUpload } from '../../../helpers';
 import { Log } from '../../../../common/log';
@@ -231,10 +231,9 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             }
 
             const oldRulesString = editorRef.current.editor.getValue();
-            const oldRules = oldRulesString.split(NEWLINE_CHAR);
+            const oldRules = oldRulesString.split(NEWLINE_CHAR_UNIX);
 
-            const newlineChar = trimmedNewRules.includes(CRLF_CHAR) ? CRLF_CHAR : NEWLINE_CHAR;
-            const newRules = trimmedNewRules.split(newlineChar);
+            const newRules = trimmedNewRules.split(NEWLINE_CHAR_REGEX);
             const uniqNewRules = newRules.filter((newRule) => {
                 const trimmedNewRule = newRule.trim();
                 if (trimmedNewRule.length === 0) {
@@ -246,7 +245,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             });
 
             const rulesUnion = [...oldRules, ...uniqNewRules];
-            const rulesUnionString = rulesUnion.join(NEWLINE_CHAR).trim();
+            const rulesUnionString = rulesUnion.join(NEWLINE_CHAR_UNIX).trim();
 
             if (oldRulesString !== rulesUnionString) {
                 editorRef.current.editor.setValue(rulesUnionString, 1);

@@ -128,5 +128,5 @@ export enum FiltersUpdateTime {
     Default = -1,
 }
 
-export const NEWLINE_CHAR = '\n';
-export const CRLF_CHAR = '\r\n';
+export const NEWLINE_CHAR_UNIX = '\n';
+export const NEWLINE_CHAR_REGEX = /\r?\n/;
