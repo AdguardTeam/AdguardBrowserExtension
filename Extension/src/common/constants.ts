@@ -127,3 +127,6 @@ export enum FiltersUpdateTime {
     FortyEightHours = 1000 * 60 * 60 * 48,
     Default = -1,
 }
+
+export const NEWLINE_CHAR = '\n';
+export const CRLF_CHAR = '\r\n';
