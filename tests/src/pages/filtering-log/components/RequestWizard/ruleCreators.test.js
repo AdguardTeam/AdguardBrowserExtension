@@ -177,16 +177,6 @@ describe('ruleCreators', () => {
             };
             expectedRule = '@@||contextual.media.net$removeparam=cs,domain=contextual.media.net';
             expect(createRuleFromParams(ruleParams)).toBe(expectedRule);
-
-            // ruleParams = {
-            //     important: false,
-            //     removeParam: false,
-            //     thirdParty: false,
-            //     urlDomain: 'example.com',
-            //     urlPattern: '@@||example.com^$csp=style-src *',
-            // };
-            // expectedRule = '@@||example.com^$csp=style-src *'; FIXME
-            // expect(createRuleFromParams(ruleParams)).toBe(expectedRule);
         });
     });
 });
