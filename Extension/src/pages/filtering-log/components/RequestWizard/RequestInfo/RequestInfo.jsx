@@ -56,14 +56,12 @@ import { TextCollapser } from '../../../../common/components/TextCollapser/TextC
 import './request-info.pcss';
 
 const StealthActionNames = {
-    [StealthActions.HIDE_REFERRER]: reactTranslator.getMessage('filtering_log_hide_referrer'),
-    [StealthActions.SEND_DO_NOT_TRACK]: reactTranslator.getMessage('filtering_log_send_not_track'),
-    [StealthActions.HIDE_SEARCH_QUERIES]: reactTranslator.getMessage('filtering_log_hide_search_queries'),
-    [StealthActions.FIRST_PARTY_COOKIES]: reactTranslator.getMessage('options_modified_first_party_cookie'),
-    [StealthActions.THIRD_PARTY_COOKIES]: reactTranslator.getMessage('options_modified_third_party_cookie'),
-    [StealthActions.BLOCK_CHROME_CLIENT_DATA]: reactTranslator.getMessage('filtering_log_remove_client_data'),
-    // TODO: Obsoleted, remove
-    StrippedTrackingUrl: reactTranslator.getMessage('options_stripped_tracking_parameters'),
+    [StealthActions.HideReferrer]: reactTranslator.getMessage('filtering_log_hide_referrer'),
+    [StealthActions.SendDoNotTrack]: reactTranslator.getMessage('filtering_log_send_not_track'),
+    [StealthActions.HideSearchQueries]: reactTranslator.getMessage('filtering_log_hide_search_queries'),
+    [StealthActions.FirstPartyCookies]: reactTranslator.getMessage('options_modified_first_party_cookie'),
+    [StealthActions.ThirdPartyCookies]: reactTranslator.getMessage('options_modified_third_party_cookie'),
+    [StealthActions.BlockChromeClientData]: reactTranslator.getMessage('filtering_log_remove_client_data'),
 };
 
 /**
