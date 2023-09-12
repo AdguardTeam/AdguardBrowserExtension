@@ -23,6 +23,8 @@ import {
     makeObservable,
 } from 'mobx';
 
+import { ContentType } from '@adguard/tswebextension';
+
 import { RULE_OPTIONS } from '../components/RequestWizard/constants';
 import {
     createRuleFromParams,
@@ -286,7 +288,7 @@ class WizardStore {
                 patterns = createExceptionRemoveHeaderRules(selectedEvent);
             }
 
-            if (selectedEvent.csp) {
+            if (selectedEvent.requestType === ContentType.Csp) {
                 patterns = createExceptionCspRules(selectedEvent);
             }
 
