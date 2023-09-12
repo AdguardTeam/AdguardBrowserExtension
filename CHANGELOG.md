@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Slow enabling of recommended filters on first group activation.
 - Rule wizard bug with advanced modifier rules
   [#2456](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2456).
 - Filtering log focus on the active tab
