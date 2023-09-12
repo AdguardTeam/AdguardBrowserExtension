@@ -141,6 +141,15 @@ class SettingsStore {
                 this.setFilters(sortFilters(data.filtersMetadata.filters));
             } else {
                 // on the next filters updates, we update filters keeping order
+                /**
+                 * TODO (v.zhelvis): Updating filters on background service response can cause filter enable state mismatch,
+                 * because we toggle switches on frontend side first, but cannot determine when action
+                 * in background service is completed and final result of user action.
+                 * It seems that we need to use a new approach with atomic updates instead of global state synchronisation
+                 * to avoid this kind of problems. This task can be split into two parts:
+                 * - Moving specific logic from the background to the settings page.
+                 * - Integrate a transparent transaction model with simple collision resolution to prevent race conditions.
+                 */
                 this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
             }
             // do not rerender groups on its turning on/off while searching
@@ -303,7 +312,8 @@ class SettingsStore {
 
     @action
     async updateGroupSetting(id, enabled) {
-        await messenger.updateGroupStatus(id, enabled);
+        const recommendedFiltersIds = await messenger.updateGroupStatus(id, enabled);
+
         runInAction(() => {
             const groupId = parseInt(id, 10);
             if (groupId === AntibannerGroupsId.OtherFiltersGroupId
@@ -328,6 +338,12 @@ class SettingsStore {
                     }
                 }
             });
+
+            if (Array.isArray(recommendedFiltersIds)) {
+                recommendedFiltersIds.forEach((id) => {
+                    this.setFilterEnabledState(id, true);
+                });
+            }
         });
     }
 
@@ -374,8 +390,7 @@ class SettingsStore {
         const filterId = Number.parseInt(rawFilterId, 10);
         this.setFilterEnabledState(filterId, enabled);
         try {
-            const filters = await messenger.updateFilterStatus(filterId, enabled);
-            this.refreshFilters(filters);
+            const groupId = await messenger.updateFilterStatus(filterId, enabled);
             // update allow acceptable ads setting
             if (filterId === this.constants.AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
                 this.allowAcceptableAds = enabled;
@@ -383,6 +398,14 @@ class SettingsStore {
                 this.blockKnownTrackers = enabled;
             } else if (filterId === this.constants.AntiBannerFiltersId.UrlTrackingFilterId) {
                 this.stripTrackingParameters = enabled;
+            }
+
+            if (groupId) {
+                const group = this.categories.find((group) => group.groupId === groupId);
+
+                if (group) {
+                    group.enabled = true;
+                }
             }
         } catch (e) {
             Log.error(e);

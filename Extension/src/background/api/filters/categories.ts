@@ -96,23 +96,31 @@ export class Categories {
     }
 
     /**
-     * On first group enable enables recommended filters by groupId.
-     * On the next calls just enables group.
+     * Gets group state data from storage.
      *
-     * @param groupId GroupId.
+     * @param groupId Id of group of filters.
+     * @returns Group state data if group is found, else returns undefined.
      */
-    public static async enableGroup(groupId: number): Promise<void> {
-        const group = groupStateStorage.get(groupId);
+    public static getGroupState(groupId: number): GroupStateData | undefined {
+        return groupStateStorage.get(groupId);
+    }
 
-        // If this is the first time the group has been activated - load and
-        // enable the recommended filters.
-        if (!group?.touched) {
-            const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
+    /**
+     * Enables specified group of filters and check updates for enabled filters.
+     *
+     * On first group activation we provide recommended filters,
+     * that will be loaded end enabled before update checking.
+     *
+     * @param groupId Id of group of filters.
+     * @param recommendedFiltersIds Array of filters ids to enable on first time the group has been activated.
+     */
+    public static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
+        if (recommendedFiltersIds.length > 0) {
             await FiltersApi.loadAndEnableFilters(recommendedFiltersIds);
         }
 
         // Always checks updates for enabled filters of the group.
-        const enabledFiltersIds = this.getEnabledFiltersIdsByGroupId(groupId);
+        const enabledFiltersIds = Categories.getEnabledFiltersIdsByGroupId(groupId);
         await FilterUpdateApi.checkForFiltersUpdates(enabledFiltersIds);
 
         groupStateStorage.enableGroups([groupId]);
@@ -192,7 +200,7 @@ export class Categories {
      *
      * @returns Recommended filters by groupId.
      */
-    private static getRecommendedFilterIdsByGroupId(groupId: number): number[] {
+    public static getRecommendedFilterIdsByGroupId(groupId: number): number[] {
         const { categories } = Categories.getCategories();
 
         const langSuitableFilters = CommonFilterApi.getLangSuitableFilters();
