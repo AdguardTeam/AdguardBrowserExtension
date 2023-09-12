@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slow enabling of recommended filters on first group activation.
 - Rule wizard bug with advanced modifier rules
   [#2456](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2456).
+- Translation language detection for Filter download page
+  [#2430](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2430)
 - Filtering log focus on the active tab
   [#2482](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482).
 - Displaying of applied stealth mode options in filtering log request details
