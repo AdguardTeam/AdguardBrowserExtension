@@ -9,16 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Slow enabling of recommended filters on first group activation.
-- User rules not filtering duplicates on importing[#2446](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2446)
+- Slow enabling of recommended filters on first group activation
+  [#2431](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2431).
+- User rules not filtering duplicates on importing
+  [#2446](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2446).
 - Rule wizard bug with advanced modifier rules
   [#2456](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2456).
 - Translation language detection for Filter download page
   [#2430](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2430)
 - Filtering log focus on the active tab
   [#2482](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482).
-- Displaying of applied stealth mode options in filtering log request details
+- Displaying of applied Stealth Mode options in filtering log request details
   [#2455](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2455).
+- Updating of tab title in Filtering log's Tab selector
+  [#2428](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2428).
+- Displaying of Stealth Mode cookie filtering log events as applied by Stealth Mode
+  [#2487](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2487).
 
 
 ## [4.2.168] - 2023-09-07
