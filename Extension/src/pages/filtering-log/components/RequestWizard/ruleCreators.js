@@ -356,7 +356,6 @@ export const createCookieRuleFromParams = ({
 };
 
 export const getRuleText = (currentRule, selectedEvent, rulePattern, ruleOptions) => {
-    // if rule was edited by user return it as is
     if (currentRule !== null) {
         return currentRule;
     }
