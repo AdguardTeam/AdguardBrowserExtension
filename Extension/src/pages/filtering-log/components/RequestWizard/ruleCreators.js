@@ -354,3 +354,47 @@ export const createCookieRuleFromParams = ({
 
     return ruleText;
 };
+
+export const getRuleText = (currentRule, selectedEvent, rulePattern, ruleOptions) => {
+    // if rule was edited by user return it as is
+    if (currentRule !== null) {
+        return currentRule;
+    }
+
+    const {
+        ruleDomain,
+        ruleImportant,
+        ruleThirdParty,
+        ruleRemoveParam,
+    } = ruleOptions;
+
+    const permitDomain = !ruleDomain.checked;
+    const important = !!ruleImportant.checked;
+    const thirdParty = !!ruleThirdParty.checked;
+    const removeParam = !!ruleRemoveParam.checked;
+
+    const domain = permitDomain ? selectedEvent.frameDomain : null;
+
+    let ruleText;
+    if (selectedEvent.element) {
+        ruleText = createCssRuleFromParams(rulePattern, permitDomain);
+    } else if (selectedEvent.cookieName) {
+        ruleText = createCookieRuleFromParams({
+            rulePattern,
+            thirdParty,
+            important,
+        });
+    } else if (selectedEvent.script || selectedEvent?.requestRule?.documentLevelRule) {
+        ruleText = createRuleFromParams({ urlPattern: rulePattern });
+    } else {
+        ruleText = createRuleFromParams({
+            urlPattern: rulePattern,
+            urlDomain: domain,
+            thirdParty,
+            important,
+            removeParam,
+        });
+    }
+
+    return ruleText;
+};

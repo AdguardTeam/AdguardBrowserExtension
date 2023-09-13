@@ -26,7 +26,7 @@ import { WizardStore } from './WizardStore';
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
-export class RootStore {
+class RootStore {
     constructor() {
         this.logStore = new LogStore(this);
         this.wizardStore = new WizardStore(this);
