@@ -355,11 +355,7 @@ export const createCookieRuleFromParams = ({
     return ruleText;
 };
 
-export const getRuleText = (currentRule, selectedEvent, rulePattern, ruleOptions) => {
-    if (currentRule !== null) {
-        return currentRule;
-    }
-
+export const getRuleText = (selectedEvent, rulePattern, ruleOptions) => {
     const {
         ruleDomain,
         ruleImportant,

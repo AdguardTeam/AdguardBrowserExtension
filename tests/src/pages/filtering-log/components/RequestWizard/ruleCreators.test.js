@@ -220,9 +220,7 @@ describe('ruleCreators', () => {
                     checked: false,
                 },
             };
-            // current rule is null for the first rule creation
-            const currentRule = null;
-            const result = getRuleText(currentRule, selectedEvent, rulePattern, ruleOptions);
+            const result = getRuleText(selectedEvent, rulePattern, ruleOptions);
             const expected = '@@||example.com^$csp=style-src *,domain=example.com';
             expect(result).toBe(expected);
         });

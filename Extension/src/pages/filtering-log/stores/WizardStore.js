@@ -207,7 +207,9 @@ class WizardStore {
     get rule() {
         const { logStore } = this.rootStore;
         // If the rule was edited by the user, it will be returned as is
-        return getRuleText(this.ruleText, logStore.selectedEvent, this.rulePattern, this.ruleOptions);
+        return this.ruleText === null
+            ? getRuleText(this.ruleText, logStore.selectedEvent, this.rulePattern, this.ruleOptions)
+            : this.ruleText;
     }
 
     @computed
