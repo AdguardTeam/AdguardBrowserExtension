@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Update `@adguard/tswebextension` to [v0.3.18](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0318---2023-09-13)
+
 ### Fixed
 - Slow enabling of recommended filters on first group activation
   [#2431](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2431).
@@ -17,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2456](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2456).
 - Translation language detection for Filter download page
   [#2430](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2430)
+- Do not block a tab loading by `$popup` modifier rule on direct url navigation
+  [#2449](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2449).
 - Filtering log focus on the active tab
   [#2482](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482).
 - Displaying of applied Stealth Mode options in filtering log request details
