@@ -231,6 +231,7 @@ export const createExceptionCookieRules = (event) => {
     return patterns;
 };
 
+// TODO: these could be refactored into one createExceptionAdvancedModifierRules
 export const createExceptionRemoveParamRules = (event) => {
     const { frameDomain, requestRule } = event;
 
@@ -246,6 +247,15 @@ export const createExceptionRemoveHeaderRules = (event) => {
     return [
         getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.REMOVEHEADER}=${requestRule.modifierValue}`),
         getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.REMOVEHEADER),
+    ];
+};
+
+export const createExceptionCspRules = (event) => {
+    const { frameDomain, requestRule } = event;
+
+    return [
+        getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.CSP}=${requestRule.modifierValue}`),
+        getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.CSP),
     ];
 };
 
@@ -277,12 +287,11 @@ export const createRuleFromParams = ({
     urlDomain,
     thirdParty,
     important,
-    mandatoryOptions,
     removeParam,
 }) => {
     let ruleText = urlPattern;
 
-    let options = [];
+    const options = [];
 
     // add domain option
     if (urlDomain) {
@@ -300,9 +309,7 @@ export const createRuleFromParams = ({
     if (removeParam) {
         options.push(NETWORK_RULE_OPTIONS.REMOVEPARAM);
     }
-    if (mandatoryOptions) {
-        options = options.concat(mandatoryOptions);
-    }
+
     if (options.length > 0) {
         // Pick correct symbol to append options with
         const hasOptions = ruleText.includes(OPTIONS_DELIMITER);
@@ -343,6 +350,45 @@ export const createCookieRuleFromParams = ({
     }
     if (options.length > 0) {
         ruleText += COMMA_DELIMITER + options.join(COMMA_DELIMITER);
+    }
+
+    return ruleText;
+};
+
+export const getRuleText = (selectedEvent, rulePattern, ruleOptions) => {
+    const {
+        ruleDomain,
+        ruleImportant,
+        ruleThirdParty,
+        ruleRemoveParam,
+    } = ruleOptions;
+
+    const permitDomain = !ruleDomain.checked;
+    const important = !!ruleImportant.checked;
+    const thirdParty = !!ruleThirdParty.checked;
+    const removeParam = !!ruleRemoveParam.checked;
+
+    const domain = permitDomain ? selectedEvent.frameDomain : null;
+
+    let ruleText;
+    if (selectedEvent.element) {
+        ruleText = createCssRuleFromParams(rulePattern, permitDomain);
+    } else if (selectedEvent.cookieName) {
+        ruleText = createCookieRuleFromParams({
+            rulePattern,
+            thirdParty,
+            important,
+        });
+    } else if (selectedEvent.script || selectedEvent?.requestRule?.documentLevelRule) {
+        ruleText = createRuleFromParams({ urlPattern: rulePattern });
+    } else {
+        ruleText = createRuleFromParams({
+            urlPattern: rulePattern,
+            urlDomain: domain,
+            thirdParty,
+            important,
+            removeParam,
+        });
     }
 
     return ruleText;

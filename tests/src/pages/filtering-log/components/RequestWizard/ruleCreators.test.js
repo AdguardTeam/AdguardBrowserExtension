@@ -6,6 +6,7 @@ import {
     createExceptionScriptRule,
     splitToPatterns,
     createRuleFromParams,
+    getRuleText,
 } from '../../../../../../Extension/src/pages/filtering-log/components/RequestWizard/ruleCreators';
 
 describe('ruleCreators', () => {
@@ -138,7 +139,6 @@ describe('ruleCreators', () => {
             // Creates rule with default params on startup
             ruleParams = {
                 important: false,
-                mandatoryOptions: null,
                 removeParam: false,
                 thirdParty: false,
                 urlDomain: 'forbes.com',
@@ -150,7 +150,6 @@ describe('ruleCreators', () => {
             // Handles input with additional options
             ruleParams = {
                 important: true,
-                mandatoryOptions: null,
                 removeParam: true,
                 thirdParty: false,
                 urlDomain: 'example.com',
@@ -161,7 +160,6 @@ describe('ruleCreators', () => {
 
             ruleParams = {
                 important: true,
-                mandatoryOptions: null,
                 removeParam: false,
                 thirdParty: false,
                 urlDomain: null,
@@ -173,7 +171,6 @@ describe('ruleCreators', () => {
             // Handles input with existing modifier: joins modifiers correctly
             ruleParams = {
                 important: false,
-                mandatoryOptions: null,
                 removeParam: false,
                 thirdParty: false,
                 urlDomain: 'contextual.media.net',
@@ -181,6 +178,51 @@ describe('ruleCreators', () => {
             };
             expectedRule = '@@||contextual.media.net$removeparam=cs,domain=contextual.media.net';
             expect(createRuleFromParams(ruleParams)).toBe(expectedRule);
+        });
+    });
+
+    describe('getRuleText', () => {
+        it('creates rule text with getRuleText', () => {
+            const eventBase = {
+                eventId: 'id',
+                filterName: 'filterName',
+            };
+
+            // Rule with csp modifier must be whitelisted correctly
+            const rulePattern = '@@||example.com^$csp=style-src *';
+            const selectedEvent = {
+                ...eventBase,
+                csp: true,
+                requestUrl: 'https://example.com/',
+                frameUrl: 'https://example.com/',
+                frameDomain: 'example.com',
+                requestType: 'csp',
+                timestamp: 1694175957526,
+                requestRule: {
+                    filterId: 1000,
+                    ruleText: '||example.com$csp=style-src *',
+                    allowlistRule: false,
+                    cspRule: true,
+                    cookieRule: false,
+                    modifierValue: 'style-src *',
+                },
+                ruleText: '||example.com$csp=style-src *',
+            };
+            const ruleOptions = {
+                ruleDomain: {
+                    checked: false,
+                },
+                ruleThirdParty: {
+                    checked: false,
+                },
+                ruleImportant: {},
+                ruleRemoveParam: {
+                    checked: false,
+                },
+            };
+            const result = getRuleText(selectedEvent, rulePattern, ruleOptions);
+            const expected = '@@||example.com^$csp=style-src *,domain=example.com';
+            expect(result).toBe(expected);
         });
     });
 });
