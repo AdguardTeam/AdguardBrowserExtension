@@ -23,21 +23,20 @@ import {
     makeObservable,
 } from 'mobx';
 
-import { NETWORK_RULE_OPTIONS } from '@adguard/tsurlfilter';
+import { ContentType } from '@adguard/tswebextension';
 
 import { RULE_OPTIONS } from '../components/RequestWizard/constants';
 import {
-    createRuleFromParams,
-    createCssRuleFromParams,
-    createCookieRuleFromParams,
     createDocumentLevelBlockRule,
     createExceptionCookieRules,
     createExceptionCssRule,
     createExceptionRemoveParamRules,
     createExceptionRemoveHeaderRules,
+    createExceptionCspRules,
     createExceptionScriptRule,
     createBlockingCookieRule,
     splitToPatterns,
+    getRuleText,
 } from '../components/RequestWizard/ruleCreators';
 import { messenger } from '../../services/messenger';
 
@@ -204,67 +203,13 @@ class WizardStore {
         this.ruleText = ruleText;
     }
 
-    getRuleText(selectedEvent, rulePattern, ruleOptions) {
-        // if rule was edited by user return it as is
-        if (this.ruleText !== null) {
-            return this.ruleText;
-        }
-
-        const {
-            ruleDomain,
-            ruleImportant,
-            ruleThirdParty,
-            ruleRemoveParam,
-        } = ruleOptions;
-
-        const permitDomain = !ruleDomain.checked;
-        const important = !!ruleImportant.checked;
-        const thirdParty = !!ruleThirdParty.checked;
-        const removeParam = !!ruleRemoveParam.checked;
-
-        const domain = permitDomain ? selectedEvent.frameDomain : null;
-
-        let mandatoryOptions = null;
-
-        // Deal with csp rule
-        const { requestRule } = selectedEvent;
-        if (requestRule && requestRule.cspRule) {
-            mandatoryOptions = [NETWORK_RULE_OPTIONS.CSP];
-        }
-
-        if (selectedEvent.replaceRules) {
-            mandatoryOptions = [NETWORK_RULE_OPTIONS.REPLACE];
-        }
-
-        let ruleText;
-        if (selectedEvent.element) {
-            ruleText = createCssRuleFromParams(rulePattern, permitDomain);
-        } else if (selectedEvent.cookieName) {
-            ruleText = createCookieRuleFromParams({
-                rulePattern,
-                thirdParty,
-                important,
-            });
-        } else if (selectedEvent.script || selectedEvent?.requestRule?.documentLevelRule) {
-            ruleText = createRuleFromParams({ urlPattern: rulePattern });
-        } else {
-            ruleText = createRuleFromParams({
-                urlPattern: rulePattern,
-                urlDomain: domain,
-                thirdParty,
-                important,
-                mandatoryOptions,
-                removeParam,
-            });
-        }
-
-        return ruleText;
-    }
-
     @computed
     get rule() {
         const { logStore } = this.rootStore;
-        return this.getRuleText(logStore.selectedEvent, this.rulePattern, this.ruleOptions);
+        // If the rule was edited by the user, it will be returned as is
+        return this.ruleText === null
+            ? getRuleText(this.ruleText, logStore.selectedEvent, this.rulePattern, this.ruleOptions)
+            : this.ruleText;
     }
 
     @computed
@@ -298,6 +243,10 @@ class WizardStore {
 
             if (selectedEvent.removeHeader) {
                 patterns = createExceptionRemoveHeaderRules(selectedEvent);
+            }
+
+            if (selectedEvent.requestType === ContentType.Csp) {
+                patterns = createExceptionCspRules(selectedEvent);
             }
 
             this.setRulePattern(patterns[0]);

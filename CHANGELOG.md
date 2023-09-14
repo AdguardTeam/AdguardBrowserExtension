@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2428](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2428).
 - Displaying of Stealth Mode cookie filtering log events as applied by Stealth Mode
   [#2487](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2487).
+- Csp rules breaking rule wizard on unblocking. [#2448](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2448)
 
 
 ## [4.2.168] - 2023-09-07
