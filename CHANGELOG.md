@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Update `@adguard/tswebextension` to [v0.3.18](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0318---2023-09-13)
+- Update `@adguard/tswebextension` to [v0.3.19](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0319---2023-09-18)
 
 ### Fixed
 - Slow enabling of recommended filters on first group activation
