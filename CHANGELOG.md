@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- CSP `trusted-types` directive modifying for response headers
+  [#2068](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2068).
+
 ### Changed
-- Update `@adguard/tswebextension` to [v0.3.19](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0319---2023-09-18)
+- Update `@adguard/tswebextension` to [v0.3.20](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0320---2023-09-19).
 
 ### Fixed
 - Slow enabling of recommended filters on first group activation
@@ -30,7 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2428](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2428).
 - Displaying of Stealth Mode cookie filtering log events as applied by Stealth Mode
   [#2487](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2487).
-- Csp rules breaking rule wizard on unblocking. [#2448](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2448)
+- Csp rules breaking rule wizard on unblocking
+  [#2448](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2448).
 
 
 ## [4.2.168] - 2023-09-07
