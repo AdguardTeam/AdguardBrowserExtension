@@ -17,7 +17,7 @@
  */
 
 /* eslint-disable no-restricted-syntax */
-import { RuleParser, RuleConverter } from '@adguard/agtree';
+import { RawRuleConverter } from '@adguard/agtree';
 
 import { Log } from '../../common/log';
 
@@ -69,20 +69,23 @@ export class FilterConverter {
 
                 // Parse the rule and convert it to AdGuard format
                 // Please note that one rule can be converted to multiple rules
-                const ruleNode = RuleParser.parse(ruleText);
-                const convertedRuleNodes = RuleConverter.convertToAdg(ruleNode);
-                const convertedRuleTexts = convertedRuleNodes.map(RuleParser.generate);
+                const conversionResult = RawRuleConverter.convertToAdg(ruleText);
 
-                // FIXME: Don't store unconverted rules -> improve AGTree's converter
+                if (conversionResult.isConverted) {
+                    // Store the converted rules and the mapping between the original and converted rules
+                    for (const convertedRuleText of conversionResult.result) {
+                        // result.conversionMap.set(convertedRuleText, ruleText);
+                        result.conversionMap[convertedRuleText] = ruleText;
 
-                // Store the converted rules and the mapping between the original and converted rules
-                for (const convertedRuleText of convertedRuleTexts) {
-                    // result.conversionMap.set(convertedRuleText, ruleText);
-                    result.conversionMap[convertedRuleText] = ruleText;
-                    result.filter.push(convertedRuleText);
+                        // Store the converted rule in the filter list
+                        result.filter.push(convertedRuleText);
+                    }
+
+                    Log.debug(`Converted rule: ${ruleText} -> ${conversionResult.result.join(', ')}`);
+                } else {
+                    // Store the original rule in the filter list
+                    result.filter.push(ruleText);
                 }
-
-                Log.debug(`Converted rule: ${ruleText} -> ${convertedRuleTexts.join(', ')}`);
             } catch (error: unknown) {
                 Log.error(`Failed to convert rule: ${ruleText}`, error);
 
