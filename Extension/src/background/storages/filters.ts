@@ -42,15 +42,6 @@ export class FiltersStorage {
         const filterKey = FiltersStorage.getFilterKey(filterId);
         const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
 
-        // FIXME: This process is may heavy, we should consider to move it to
-        // a web worker, if possible.
-        // We can use web workers if the following conditions are met:
-        //   1. MV3 service worker supports web workers.
-        //   2. Firefox event page supports web workers.
-
-        // FIXME: We also should optimize the conversion process itself,
-        // especially the cloning issues.
-
         // Convert filter rules to AdGuard format where it's possible.
         // We need conversion map to show original rule text in the filtering log if a converted rule is applied.
         const { filter: convertedFilter, conversionMap } = FilterConverter.convertFilter(filter);
@@ -146,7 +137,6 @@ export class FiltersStorage {
      * @returns Promise, resolved with the original rule text or `undefined` if the original rule text cannot be found.
      */
     static async getOriginalRuleText(filterId: number, convertedRuleText: string): Promise<string | undefined> {
-        // FIXME: Remove debug logging
         Log.debug(`Getting original rule text for ${convertedRuleText}`);
 
         const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
