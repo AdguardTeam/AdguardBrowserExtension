@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Fixed stealth mode toggle not triggering configuration reload.
 - CSP `trusted-types` directive modifying for response headers
   [#2068](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2068).
 
