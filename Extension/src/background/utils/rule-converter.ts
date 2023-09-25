@@ -31,18 +31,15 @@ export interface ConvertedFilter {
     filter: string[];
 
     /**
-     * Map of converted rules to original rules.
+     * Map of converted rules to original rules. We use a simple object here, because extension storage
+     * doesn't support Map.
      */
-    // conversionMap: Map<string, string>;
     conversionMap: { [key: string]: string };
 }
 
 /**
  * Utility class for converting rules to AdGuard format.
  */
-// FIXME: Consider using map or remove commented map-related code
-// FIXME: Keep in mind that browser storage is unable to store Maps directly
-// FIXME: Remove debug logging
 export class FilterConverter {
     /**
      * Converts a list of rules to AdGuard format where it's possible
@@ -55,7 +52,6 @@ export class FilterConverter {
     public static convertFilter(filter: string[]): ConvertedFilter {
         const result: ConvertedFilter = {
             filter: [],
-            // conversionMap: new Map<string, string>(),
             conversionMap: {},
         };
 
@@ -72,9 +68,8 @@ export class FilterConverter {
                 const conversionResult = RawRuleConverter.convertToAdg(ruleText);
 
                 if (conversionResult.isConverted) {
-                    // Store the converted rules and the mapping between the original and converted rules
                     for (const convertedRuleText of conversionResult.result) {
-                        // result.conversionMap.set(convertedRuleText, ruleText);
+                        // Store the converted rules and the mapping between the original and converted rules
                         result.conversionMap[convertedRuleText] = ruleText;
 
                         // Store the converted rule in the filter list
