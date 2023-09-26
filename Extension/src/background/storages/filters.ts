@@ -122,12 +122,10 @@ export class FiltersStorage {
 
         const data = await storage.get(originalFilterKey);
 
-        // Error tolerance: if we can't read original rules, we just return empty array
-        try {
-            return zod.string().array().parse(data);
-        } catch (error: unknown) {
-            return [];
-        }
+        // If there are no rules in the storage, fallback to empty array
+        const schema = zod.array(zod.string()).optional().default([]);
+
+        return schema.parse(data);
     }
 
     /**
