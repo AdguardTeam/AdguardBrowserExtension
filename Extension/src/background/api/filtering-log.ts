@@ -86,8 +86,20 @@ export type FilteringLogTabInfo = {
     filteringEvents: FilteringLogEvent[],
 };
 
+/**
+ * Interface for representing rule text and applied rule text. Sometimes rules are converted, but we also need to show
+ * original rule text in the filtering log.
+ */
 interface RuleText {
+    /**
+     * Original rule text, always present. If rule wasn't converted, only rule text is present.
+     */
     ruleText: string;
+
+    /**
+     * Applied rule text. If rule was converted, applied rule text is the converted rule text and rule text is the
+     * original rule text.
+     */
     appliedRuleText?: string;
 }
 
