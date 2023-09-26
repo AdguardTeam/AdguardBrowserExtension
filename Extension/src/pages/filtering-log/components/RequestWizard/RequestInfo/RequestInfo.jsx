@@ -242,7 +242,7 @@ const RequestInfo = observer(() => {
     const rule = getRule(selectedEvent);
 
     eventPartsMap[PARTS.APPLIED_RULE] = {
-        title: reactTranslator.getPlural('filtering_modal_applied_rules', Math.min(rule.appliedRuleTexts.length, 1)),
+        title: reactTranslator.getPlural('filtering_modal_applied_rules', Math.max(rule.appliedRuleTexts.length, 1)),
         data: rule.appliedRuleTexts.length > 0
             ? rule.appliedRuleTexts.join('\n')
             : null,
@@ -251,7 +251,7 @@ const RequestInfo = observer(() => {
     // Original rule texts contains elements only if the rule was converted
     if (rule.originalRuleTexts.length > 0) {
         eventPartsMap[PARTS.ORIGINAL_RULE] = {
-            title: reactTranslator.getPlural('filtering_modal_original_rules', Math.min(rule.originalRuleTexts.length, 1)),
+            title: reactTranslator.getPlural('filtering_modal_original_rules', Math.max(rule.originalRuleTexts.length, 1)),
             data: rule.originalRuleTexts.join('\n'),
         };
     }
