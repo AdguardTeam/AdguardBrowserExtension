@@ -76,13 +76,14 @@ export class FilterConverter {
                         result.filter.push(convertedRuleText);
                     }
 
-                    Log.debug(`Converted rule: ${ruleText} -> ${conversionResult.result.join(', ')}`);
+                    // eslint-disable-next-line max-len
+                    Log.debug(`Converted rule: '${ruleText}' -> ${conversionResult.result.map(rule => `'${rule}'`).join(', ')}`);
                 } else {
                     // Store the original rule in the filter list
                     result.filter.push(ruleText);
                 }
             } catch (error: unknown) {
-                Log.error(`Failed to convert rule: ${ruleText}`, error);
+                Log.error(`Failed to convert rule: '${ruleText}' due to`, error);
 
                 // Store the rule as is, we'll handle it later
                 result.filter.push(ruleText);

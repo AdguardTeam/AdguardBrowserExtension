@@ -137,7 +137,7 @@ export class FiltersStorage {
      * @returns Promise, resolved with the original rule text or `undefined` if the original rule text cannot be found.
      */
     static async getOriginalRuleText(filterId: number, convertedRuleText: string): Promise<string | undefined> {
-        Log.debug(`Getting original rule text for ${convertedRuleText}`);
+        Log.debug(`Getting original rule text for '${convertedRuleText}'`);
 
         const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
 
@@ -150,7 +150,7 @@ export class FiltersStorage {
 
             return conversionMap[convertedRuleText];
         } catch (error: unknown) {
-            Log.debug(`Failed to get original rule text for ${convertedRuleText}`, (error as Error).message);
+            Log.debug(`Failed to get original rule text for '${convertedRuleText}' due to`, error);
 
             return undefined;
         }
