@@ -29,3 +29,5 @@ export const LINE_COUNT_LIMIT = {
 };
 
 export const DEFAULT_MODAL_WIDTH_PX = 460;
+
+export const COMMA_DELIMITER = ',';

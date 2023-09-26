@@ -240,16 +240,6 @@ export const genCommonConfig = (browserConfig) => {
                         {
                             loader: 'swc-loader',
                             options: {
-                                jsc: {
-                                    parser: {
-                                        syntax: 'typescript',
-                                        tsx: true,
-                                        decorators: true,
-                                    },
-                                    transform: {
-                                        useDefineForClassFields: true,
-                                    },
-                                },
                                 env: {
                                     targets: {
                                         chrome: 79,

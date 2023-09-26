@@ -204,14 +204,14 @@ class Messenger {
             ? MessageType.EnableFiltersGroup
             : MessageType.DisableFiltersGroup;
         const groupId = id - 0;
-        await this.sendMessage(type, { groupId });
+        return this.sendMessage(type, { groupId });
     }
 
     async updateFilterStatus(filterId, data) {
         const type = data
             ? MessageType.AddAndEnableFilter
             : MessageType.DisableFilter;
-        await this.sendMessage(type, { filterId });
+        return this.sendMessage(type, { filterId });
     }
 
     async checkCustomUrl(url) {

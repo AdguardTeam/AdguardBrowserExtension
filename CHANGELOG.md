@@ -5,13 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased]
 
+### Added
+- Fixed stealth mode toggle not triggering configuration reload.
+- CSP `trusted-types` directive modifying for response headers
+  [#2068](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2068).
+
+### Changed
+- Update `@adguard/tswebextension` to [v0.3.20](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0320---2023-09-19).
+
 ### Fixed
-- Extension started downloading filters too often
+- Slow enabling of recommended filters on first group activation
+  [#2431](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2431).
+- User rules not filtering duplicates on importing
+  [#2446](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2446).
+- Rule wizard bug with advanced modifier rules
+  [#2456](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2456).
+- Translation language detection for Filter download page
+  [#2430](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2430)
+- Do not block a tab loading by `$popup` modifier rule on direct url navigation
+  [#2449](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2449).
+- Filtering log focus on the active tab
+  [#2482](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482).
+- Displaying of applied Stealth Mode options in filtering log request details
+  [#2455](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2455).
+- Updating of tab title in Filtering log's Tab selector
+  [#2428](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2428).
+- Displaying of Stealth Mode cookie filtering log events as applied by Stealth Mode
+  [#2487](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2487).
+- Csp rules breaking rule wizard on unblocking
+  [#2448](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2448).
 
 
-## [4.2.167] - 2023-09-05
+## [4.2.168] - 2023-09-07
 
 ### Changed
 - Update `@adguard/tsurlfilter` to [v2.1.11](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#2111---2023-08-25)
@@ -19,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/scriptlets` to [v1.9.72](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md#v1972---2023-08-25)
 
 ### Fixed
+- Extension started downloading filters too often
 - Custom filters names not displaying if added while filtering log is open.
 - Do not inject content scripts to the chrome web store pages on extension initialization.
 - Blocked CSP reports are not filtered by "Blocked" in the filtering log.
@@ -34,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/scriptlets` to [v1.9.70](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
 ### Fixed
-- Custom filters names not displaying if added while filtering log is open.
+- Custom filters names not being displayed if added while filtering log is open.
 - Do not inject content scripts to the chrome web store pages on extension initialization.
 
 
@@ -48,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/tsurlfilter` to [v2.1.7](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#217---2023-08-10)
 - Updated `@adguard/scriptlets` to [v1.9.62](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.167...HEAD
-[4.2.167]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.162...v4.2.167
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.168...HEAD
+[4.2.168]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.162...v4.2.168
 [4.2.162]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.151...v4.2.162
 [4.2.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.1.57...v4.2.151

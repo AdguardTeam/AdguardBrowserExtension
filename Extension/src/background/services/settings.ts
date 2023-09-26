@@ -222,11 +222,10 @@ export class SettingsService {
     /**
      * Called when {@link SettingOption.DisableStealthMode} setting changed.
      *
-     * @param isStealthModeDisabled Changed {@link SettingOption.DisableStealthMode} setting value.
      */
-    static async onDisableStealthModeStateChange(isStealthModeDisabled: boolean): Promise<void> {
+    static async onDisableStealthModeStateChange(): Promise<void> {
         try {
-            await Engine.api.setStealthModeEnabled(!isStealthModeDisabled);
+            Engine.debounceUpdate();
         } catch (e) {
             Log.error('Failed to change stealth mode state', e);
         }
