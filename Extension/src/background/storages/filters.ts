@@ -96,7 +96,8 @@ export class FiltersStorage {
      * @returns Storage key from specified filter list.
      */
     private static getFilterKey(filterId: number, original = false): string {
-        return `${original ? ORIGINAL_FILTER_KEY_PREFIX : FILTER_KEY_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+        const prefix = original ? ORIGINAL_FILTER_KEY_PREFIX : FILTER_KEY_PREFIX;
+        return `${prefix}${filterId}${FILTER_LIST_EXTENSION}`;
     }
 
     /**
