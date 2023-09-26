@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update `@adguard/tswebextension` to [v0.3.21](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0321---2023-09-25).
 - Update `@adguard/tsurlfilter` to [v2.1.12](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#2112---2023-09-25)
 - Convert filter lists and user rules automatically with `@adguard/agtree`
+- Separate applied rules and original rules in the filtering log page, if the rule was converted
 
 ### Fixed
 - Slow enabling of recommended filters on first group activation
