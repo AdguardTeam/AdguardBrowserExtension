@@ -86,7 +86,7 @@ export type FilteringLogTabInfo = {
     filteringEvents: FilteringLogEvent[],
 };
 
-interface RuleTexts {
+interface RuleText {
     ruleText: string;
     appliedRuleText?: string;
 }
@@ -412,7 +412,7 @@ export class FilteringLogApi {
      * @param ruleText Applied rule text.
      * @returns Rule text and applied rule text (if rule was converted, otherwise `undefined`).
      */
-    private static async getAppliedAndOriginalRuleTexts(filterId: number, ruleText: string): Promise<RuleTexts> {
+    private static async getAppliedAndOriginalRuleTexts(filterId: number, ruleText: string): Promise<RuleText> {
         const originalRuleText = await FiltersStorage.getOriginalRuleText(filterId, ruleText);
         let appliedRuleText: string | undefined;
 
