@@ -477,6 +477,7 @@ export class FilteringLogApi {
 
         data.filterId = filterId;
 
+        // add `ruleText` and `appliedRuleText` properties to data for original and applied rule texts respectively
         Object.assign(data, await FilteringLogApi.getAppliedAndOriginalRuleTexts(filterId, ruleText));
 
         const ruleType = rule.getType();
