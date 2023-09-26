@@ -17,9 +17,15 @@
  */
 import browser from 'webextension-polyfill';
 
+const uiLanguage = browser.i18n.getUILanguage();
+
+// eslint-disable-next-line max-len
+// TODO: Do something similar to https://github.com/AdguardTeam/AdGuardVPNExtension/blob/57bd6b2d33ff3400d51ac23b6b0aaf6966e8082c/src/common/i18n.ts
 export const i18n = {
     getMessage: browser.i18n.getMessage,
-    getUILanguage: browser.i18n.getUILanguage,
+    getUILanguage: () => {
+        return uiLanguage.substring(0, 2);
+    },
     getBaseMessage: (key: string): string => key,
     // TODO: export 'Locales' type from '@adguard/translate'
     getBaseUILanguage: (): string => 'en',
