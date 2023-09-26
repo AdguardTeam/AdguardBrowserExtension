@@ -425,15 +425,14 @@ export class FilteringLogApi {
      * @returns Rule text and applied rule text (if rule was converted, otherwise `undefined`).
      */
     private static async getAppliedAndOriginalRuleTexts(filterId: number, ruleText: string): Promise<RuleText> {
+        // Get original rule text from storage. If rule wasn't converted, original rule text is `undefined`.
         const originalRuleText = await FiltersStorage.getOriginalRuleText(filterId, ruleText);
-        let appliedRuleText: string | undefined;
 
-        if (originalRuleText) {
-            appliedRuleText = ruleText;
-            ruleText = originalRuleText;
+        if (!originalRuleText) {
+            return { ruleText };
         }
 
-        return { ruleText, appliedRuleText };
+        return { ruleText: originalRuleText, appliedRuleText: ruleText };
     }
 
     /**
