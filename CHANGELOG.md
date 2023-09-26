@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2068](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2068).
 
 ### Changed
-- Update `@adguard/tswebextension` to [v0.3.20](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0320---2023-09-19).
+- Update `@adguard/tswebextension` to [v0.3.21](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0321---2023-09-25).
+- Update `@adguard/tsurlfilter` to [v2.1.12](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#2112---2023-09-25)
 
 ### Fixed
 - Slow enabling of recommended filters on first group activation
