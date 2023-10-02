@@ -68,6 +68,12 @@ export class ContextMenuApi {
         userAllowlisted,
         canAddRemoveRule,
     }: FrameData): Promise<void> {
+        // TODO add better handling for AdGuard for Firefox
+        // There is nothing to do if context menu is not supported
+        if (!browser.contextMenus) {
+            return;
+        }
+
         // Clean up context menu just in case.
         await ContextMenuApi.removeAll();
 
