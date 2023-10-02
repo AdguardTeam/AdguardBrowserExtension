@@ -37,9 +37,9 @@ Build:
 
             ls -la
 
-            # don't use --ignore-optional flag, because swc requires optional deps 
+            # don't use --ignore-optional flag, because swc requires optional deps
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
-            yarn locales:validate --min
+            yarn locales validate --min
             yarn release
 
             # zip source files for publishing on AMO

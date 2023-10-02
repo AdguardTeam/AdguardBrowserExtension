@@ -173,36 +173,43 @@ Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
 <a id="dev-localizations"></a>
+
 ### Update localizations
 
 To download and append localizations run:
-```
-  yarn locales:download
+
+```bash
+    yarn locales download
 ```
 
 To upload new phrases to crowdin you need the file with phrases `./Extension/_locales/en/messages.json`. Then run:
-```
-  yarn locales:upload
+
+```bash
+    yarn locales upload
 ```
 
 To remove old messages from locale messages run:
-```
-  yarn locales:renew
+
+```bash
+  yarn locales renew
 ```
 
 To validate translations run:
-```
-  yarn locales:validate
+
+```bash
+  yarn locales validate
 ```
 
 To show locales info run:
-```
-  yarn locales:info
+
+```bash
+  yarn locales info
 ```
 
 <a id="minimum-supported-browser-versions"></a>
 
 ## Minimum supported browser versions
+
 | Browser                 	| Version 	 |
 |-------------------------	|:---------:|
 | Chromium Based Browsers 	|  79   	   |
