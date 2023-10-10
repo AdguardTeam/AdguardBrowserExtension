@@ -51,6 +51,7 @@ import {
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
     LODASH_VENDOR_OUTPUT,
+    PERMISSIONS_OUTPUT,
 } from '../../constants';
 
 const config = getEnvConf(process.env.BUILD_ENV);
@@ -65,6 +66,7 @@ const ASSISTANT_INJECT_PATH = path.resolve(__dirname, '../../Extension/pages/ass
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
 const SUBSCRIBE_PATH = path.resolve(__dirname, '../../Extension/pages/subscribe');
 const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
+const PERMISSIONS_PATH = path.resolve(__dirname, '../../Extension/pages/permissions');
 const FULLSCREEN_USER_RULES_PATH = path.resolve(__dirname, '../../Extension/pages/fullscreen-user-rules');
 const SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/safebrowsing');
 const AD_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/ad-blocked');
@@ -146,6 +148,10 @@ export const genCommonConfig = (browserConfig) => {
             },
             [THANKYOU_OUTPUT]: {
                 import: THANKYOU_PATH,
+                runtime: false,
+            },
+            [PERMISSIONS_OUTPUT]: {
+                import: PERMISSIONS_PATH,
                 runtime: false,
             },
             [FULLSCREEN_USER_RULES_OUTPUT]: {
@@ -324,6 +330,12 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FILTER_DOWNLOAD_PATH, 'index.html'),
                 filename: `${FILTER_DOWNLOAD_OUTPUT}.html`,
                 chunks: [FILTER_DOWNLOAD_OUTPUT],
+            }),
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
+                template: path.join(PERMISSIONS_PATH, 'index.html'),
+                filename: `${PERMISSIONS_OUTPUT}.html`,
+                chunks: [PERMISSIONS_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,

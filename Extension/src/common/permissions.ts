@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -19,62 +20,56 @@ import browser from 'webextension-polyfill';
 
 import { getErrorMessage } from './error';
 
-type OptionalPermission = browser.Manifest.OptionalPermission;
-
 /**
  * This class manages browser permissions. It can be called as from background page as from other
  * pages: e.g. options, popup.
  */
 export class Permissions implements Permissions {
     /**
-     * Checks if browser has permission.
-     *
-     * @param permission One of optional permissions.
-     * @returns Boolean flag
-     * @throws Error failed to check
+     * Privacy permission request.
      */
-    static async hasPermission(permission: OptionalPermission): Promise<boolean> {
-        const permissionsRequest = {
-            permissions: [permission],
-        };
-
-        try {
-            return await browser.permissions.contains(permissionsRequest);
-        } catch (e) {
-            const errorMessage = getErrorMessage(e);
-            throw new Error(
-                `Was not able to check if browser contains permission: "${permission}", error: "${errorMessage}"`,
-            );
-        }
-    }
+    private static readonly PRIVACY_PERMISSIONS: browser.Permissions.Permissions = {
+        permissions: ['privacy'],
+    };
 
     /**
-     * Requests optional permissions from user.
+     * Host permission request.
+     * Used to bypass CORS restrictions in Firefox.
      *
-     * @param permission One of optional permissions.
-     * @returns True if permission granted, otherwise false.
-     * @throws Error if failed to request permission, due to browser error or user
+     * @see https://discourse.mozilla.org/t/can-not-use-cross-origin-requests-from-an-mv3-addon-background-script-on-nightly-v102/97603
      */
-    static async addPermission(permission: OptionalPermission): Promise<boolean> {
-        const permissionsRequest = {
-            permissions: [permission],
-        };
-
-        try {
-            return await browser.permissions.request(permissionsRequest);
-        } catch (e) {
-            const errorMessage = getErrorMessage(e);
-            throw new Error(`Was not able to add permission: "${permission}", error: "${errorMessage}"`);
-        }
-    }
+    private static readonly HOST_PERMISSIONS: browser.Permissions.Permissions = {
+        origins: ['<all_urls>'],
+    };
 
     /**
      * Requests "privacy" permission.
      *
      * @returns True if permission was granted.
      */
-    static async addPrivacy(): Promise<boolean> {
-        return Permissions.addPermission('privacy');
+    public static async addPrivacy(): Promise<boolean> {
+        return Permissions.addPermission(Permissions.PRIVACY_PERMISSIONS);
+    }
+
+    /**
+     * Requests host permission.
+     * Used to bypass CORS restrictions in Firefox.
+     *
+     * @see https://discourse.mozilla.org/t/can-not-use-cross-origin-requests-from-an-mv3-addon-background-script-on-nightly-v102/97603
+     *
+     * @returns True if permission was granted.
+     */
+    public static async addHostPermission(): Promise<boolean> {
+        return Permissions.addPermission(Permissions.HOST_PERMISSIONS);
+    }
+
+    /**
+     * Checks if host permission was granted by user.
+     *
+     * @returns True if extension already has host permission.
+     */
+    public static async hasHostPermission(): Promise<boolean> {
+        return Permissions.hasPermission(Permissions.HOST_PERMISSIONS);
     }
 
     /**
@@ -82,7 +77,42 @@ export class Permissions implements Permissions {
      *
      * @returns True if extension already has privacy permission.
      */
-    static async hasPrivacy(): Promise<boolean> {
-        return Permissions.hasPermission('privacy');
+    public static async hasPrivacy(): Promise<boolean> {
+        return Permissions.hasPermission(Permissions.PRIVACY_PERMISSIONS);
+    }
+
+    /**
+     * Checks if browser has permissions.
+     *
+     * @param permissions Permissions request.
+     * @returns Boolean flag
+     * @throws Error failed to check
+     */
+    private static async hasPermission(permissions: browser.Permissions.AnyPermissions): Promise<boolean> {
+        try {
+            return await browser.permissions.contains(permissions);
+        } catch (e) {
+            const errorMessage = getErrorMessage(e);
+            throw new Error(
+                `Was not able to check if browser contains permission: "${permissions}", error: "${errorMessage}"`,
+            );
+        }
+    }
+
+    /**
+     * Requests permissions from user.
+     *
+     * @param permissions Permissions request.
+     *
+     * @returns True if permission granted, otherwise false.
+     * @throws Error if failed to request permission, due to browser error or user
+     */
+    private static async addPermission(permissions: browser.Permissions.Permissions): Promise<boolean> {
+        try {
+            return await browser.permissions.request(permissions);
+        } catch (e) {
+            const errorMessage = getErrorMessage(e);
+            throw new Error(`Was not able to add permission: "${permissions}", error: "${errorMessage}"`);
+        }
     }
 }

@@ -103,6 +103,8 @@ export enum MessageType {
   ScriptletCloseWindow = 'scriptletCloseWindow',
   ShowAlertPopup = 'showAlertPopup',
   ShowVersionUpdatedPopup = 'showVersionUpdatedPopup',
+  // Firefox MV3 specific message called after user manually grants access to our API
+  PermissionsGranted = 'permissionsGranted',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -440,6 +442,10 @@ export type ShowVersionUpdatedPopupMessage = {
   }
 };
 
+export type PermissionsGrantedMessage = {
+  tye: MessageType.PermissionsGranted,
+};
+
 export type Message = (
   | ApplySettingsJsonMessage
   | AddFilteringSubscriptionMessage
@@ -488,6 +494,7 @@ export type Message = (
   | ScriptletCloseWindowMessage
   | ShowAlertPopupMessage
   | ShowVersionUpdatedPopupMessage
+  | PermissionsGrantedMessage
 ) &
   MessageCommonProps;
 

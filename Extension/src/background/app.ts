@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -20,12 +21,14 @@ import zod from 'zod';
 
 import { MessageType, sendMessage } from '../common/messages';
 import { Log } from '../common/log';
+import { UserAgent } from '../common/user-agent';
 import {
     Forward,
     ForwardAction,
     ForwardFrom,
 } from '../common/forward';
 import { CLIENT_ID_KEY } from '../common/constants';
+import { Permissions } from '../common/permissions';
 
 import { ContentScriptInjector } from './content-script-injector';
 import { messageHandler } from './message-handler';
@@ -82,7 +85,7 @@ export class App {
      * Initializes all app services
      * and handle webextension API events for first install and update scenario.
      */
-    public static async init(): Promise<void> {
+    public static async start(): Promise<void> {
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 
@@ -91,6 +94,30 @@ export class App {
         ConnectionHandler.init();
         messageHandler.init();
 
+        /**
+         * Firefox requires user manual action to grant host permissions for bypass CORS restrictions.
+         *
+         * @see https://discourse.mozilla.org/t/can-not-use-cross-origin-requests-from-an-mv3-addon-background-script-on-nightly-v102/97603
+         */
+        if (UserAgent.isFirefox && !(await Permissions.hasHostPermission())) {
+            messageHandler.addListener(MessageType.PermissionsGranted, () => {
+                messageHandler.removeListener(MessageType.PermissionsGranted);
+                App.init();
+            });
+
+            PagesApi.openPermissionsPage();
+
+            return;
+        }
+
+        App.init();
+    }
+
+    /**
+     * Initializes all app services
+     * and handle webextension API events for first install and update scenario.
+     */
+    private static async init(): Promise<void> {
         // get application run info
         const runInfo = await getRunInfo();
 

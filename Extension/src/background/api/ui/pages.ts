@@ -38,6 +38,7 @@ import {
     FILTER_DOWNLOAD_OUTPUT,
     FULLSCREEN_USER_RULES_OUTPUT,
     OPTIONS_OUTPUT,
+    PERMISSIONS_OUTPUT,
 } from '../../../../../constants';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
@@ -60,6 +61,11 @@ export class PagesApi {
      * Fullscreen user rule editor page url.
      */
     public static readonly fullscreenUserRulesPageUrl = PagesApi.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
+
+    /**
+     * Firefox permissions page url.
+     */
+    public static readonly permissionsPageUrl = PagesApi.getExtensionPageUrl(PERMISSIONS_OUTPUT);
 
     /**
      * Default state of popup window.
@@ -274,6 +280,13 @@ export class PagesApi {
      */
     public static async openFiltersDownloadPage(): Promise<void> {
         await browser.tabs.create({ url: PagesApi.filtersDownloadPageUrl });
+    }
+
+    /**
+     * Opens permissions page.
+     */
+    public static async openPermissionsPage(): Promise<void> {
+        await browser.tabs.create({ url: PagesApi.permissionsPageUrl });
     }
 
     /**

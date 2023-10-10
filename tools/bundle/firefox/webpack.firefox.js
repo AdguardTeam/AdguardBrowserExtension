@@ -23,10 +23,9 @@ import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { merge } from 'webpack-merge';
 
 import { genCommonConfig } from '../webpack.common';
-import { updateManifestBuffer } from '../../helpers';
 import { ENVS } from '../../constants';
 
-import { firefoxManifest } from './manifest.firefox';
+const MANIFEST_PATH = path.resolve(__dirname, './manifest.firefox.json');
 
 export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);
@@ -42,9 +41,8 @@ export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, '../manifest.common.json'),
+                    from: MANIFEST_PATH,
                     to: 'manifest.json',
-                    transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, firefoxManifest),
                 },
                 {
                     context: 'Extension',
