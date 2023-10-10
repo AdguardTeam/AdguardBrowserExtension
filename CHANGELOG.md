@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- AdGuard v4.2.168 is not working in the Firefox after update [#2501](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2501)
+### Changed
+- Update `@adguard/filters-downloader` to [v1.1.20](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
 
 
 <!-- TODO: update the date after release -->
-## [4.2.187] - 2023-10-xx
+## [4.2.189] - 2023-10-xx
 
 ### Added
 - Fixed stealth mode toggle not triggering configuration reload.
@@ -44,6 +44,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2487](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2487).
 - Csp rules breaking rule wizard on unblocking
   [#2448](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2448).
+- AdGuard v4.2.168 is not working in the Firefox after update
+  [#2501](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2501).
 
 
 ## [4.2.168] - 2023-09-07
