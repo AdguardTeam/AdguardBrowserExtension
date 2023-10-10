@@ -150,10 +150,10 @@ Before building the release version, you should manually download necessary reso
 ```
 
 ```
-  CREDENTIALS_PASSWORD=<password> yarn beta
-  CREDENTIALS_PASSWORD=<password> yarn release
+  yarn beta
+  yarn release
 ```
-You will need to put certificate.pem and mozilla_credentials.json files to the `./private` directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
+You will need to put certificate.pem file to the `./private` directory. This build will create unpacked extensions and then pack them (crx for Chrome).
 
 **Building the sample extension with API**
 

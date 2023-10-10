@@ -5,7 +5,7 @@ plan:
   key: BEBETASPECS
   name: browser extension - build beta
 variables:
-  dockerNode: adguard/node-ssh:18.13--0
+  dockerNode: adguard/extension-builder:18.17.1--0.1.1
 stages:
   - Build:
       manual: 'false'
@@ -42,7 +42,7 @@ Build:
 
             # don't use --ignore-optional flag, because swc requires optional deps 
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
-            CREDENTIALS_PASSWORD="${bamboo.extensionsPassphrase}" yarn beta
+            yarn beta
 
             rm -rf node_modules
     - inject-variables:

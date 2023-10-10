@@ -16,30 +16,22 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FIREFOX_APP_IDS_MAP } from '../../constants';
+import fs from 'fs/promises';
+import path from 'path';
 
-const appId = FIREFOX_APP_IDS_MAP[process.env.BUILD_ENV];
+import { BUILD_PATH, FIREFOX_UPDATE_TEMPLATE } from '../../constants';
+import { version } from '../../../package.json';
+import { getEnvConf } from '../../helpers';
 
-export const firefoxManifest = {
-    'browser_specific_settings': {
-        'gecko': {
-            'id': appId,
-            'strict_min_version': '78.0',
-        },
-    },
-    'options_ui': {
-        'page': 'pages/options.html',
-        'open_in_tab': true,
-    },
-    'permissions': [
-        'tabs',
-        '<all_urls>',
-        'webRequest',
-        'webRequestBlocking',
-        'webNavigation',
-        'storage',
-        'contextMenus',
-        'cookies',
-        'privacy',
-    ],
+export const buildUpdateJson = async () => {
+    const buildEnv = process.env.BUILD_ENV;
+
+    const envConf = getEnvConf(buildEnv);
+
+    const buildDir = path.join(BUILD_PATH, envConf.outputPath);
+
+    // create update.json
+    let updateJsonTemplate = (await fs.readFile(FIREFOX_UPDATE_TEMPLATE)).toString();
+    updateJsonTemplate = updateJsonTemplate.replace(/\%VERSION\%/g, version);
+    await fs.writeFile(path.join(buildDir, 'update.json'), updateJsonTemplate);
 };

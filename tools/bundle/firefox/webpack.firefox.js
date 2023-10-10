@@ -24,15 +24,14 @@ import { merge } from 'webpack-merge';
 
 import { genCommonConfig } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { ENVS } from '../../constants';
+import { BROWSERS, ENVS } from '../../constants';
 
-import { firefoxManifest } from './manifest.firefox';
+import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
 
 export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);
 
     let zipFilename = `${browserConfig.browser}.zip`;
-
     if (process.env.BUILD_ENV === ENVS.BETA
         || process.env.BUILD_ENV === ENVS.RELEASE) {
         zipFilename = 'firefox.zip';
@@ -44,7 +43,13 @@ export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
                 {
                     from: path.resolve(__dirname, '../manifest.common.json'),
                     to: 'manifest.json',
-                    transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, firefoxManifest),
+                    transform: (content) => {
+                        content = updateManifestBuffer(process.env.BUILD_ENV, content, firefoxManifest);
+                        if (browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
+                            content = updateManifestBuffer(process.env.BUILD_ENV, content, firefoxManifestStandalone);
+                        }
+                        return content;
+                    },
                 },
                 {
                     context: 'Extension',

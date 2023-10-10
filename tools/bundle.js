@@ -24,8 +24,8 @@ import { copyExternals } from './bundle/copy-external';
 import { BROWSERS, ENVS } from './constants';
 import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
-import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
+import { buildUpdateJson } from './bundle/firefox/updateJson';
 
 const bundleChrome = (watch) => {
     const webpackConfig = getWebpackConfig(BROWSERS.CHROME, watch);
@@ -37,8 +37,9 @@ const bundleFirefoxAmo = (watch) => {
     return bundleRunner(webpackConfig, watch);
 };
 
-const bundleFirefoxStandalone = () => {
+const bundleFirefoxStandalone = async () => {
     const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_STANDALONE);
+    await buildUpdateJson();
     return bundleRunner(webpackConfig);
 };
 
@@ -54,10 +55,6 @@ const bundleOpera = () => {
 
 const bundleChromeCrx = async () => {
     await crx(BROWSERS.CHROME);
-};
-
-const bundleFirefoxXpi = async () => {
-    await xpi(BROWSERS.FIREFOX_STANDALONE);
 };
 
 const devPlan = [
@@ -81,7 +78,6 @@ const betaPlan = [
 const firefoxStandalonePlan = [
     copyExternals,
     bundleFirefoxStandalone,
-    bundleFirefoxXpi,
     buildInfo,
 ];
 
