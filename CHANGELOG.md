@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update `@adguard/filters-downloader` to [v1.1.20](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
 
+### Fixed
+- Rule patterns and options not being clickable in rule wizard of filtering log [#2204](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2204)
+- AdGuard v4.2.168 is not working in the Firefox after update [#2501](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2501).
+
 
 <!-- TODO: update the date after release -->
 ## [4.2.189] - 2023-10-09
@@ -21,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update `@adguard/tswebextension` to [v0.3.21](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md#0321---2023-09-25).
-- Update `@adguard/tsurlfilter` to [v2.1.12](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#2112---2023-09-25)
+- Update `@adguard/tsurlfilter` to [v2.1.12](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#2112---2023-09-25).
 
 ### Fixed
 - Slow enabling of recommended filters on first group activation
