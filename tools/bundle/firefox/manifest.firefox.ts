@@ -36,6 +36,9 @@ export const firefoxManifest = {
             'id': appId,
             'strict_min_version': '78.0',
         },
+        'gecko_android': {
+            'strict_min_version': '113.0',
+        },
     },
     'options_ui': {
         'page': 'pages/options.html',
