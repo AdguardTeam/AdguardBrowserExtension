@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-jsdoc */
+/* eslint-disable jsdoc/require-returns */
 /**
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -15,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Tabs } from 'webextension-polyfill';
+import browser, { type Tabs } from 'webextension-polyfill';
 
 import {
     BACKGROUND_TAB_ID,
@@ -27,6 +29,8 @@ import {
     CosmeticRuleType,
     NetworkRuleOption,
     StealthActionEvent,
+    PersistentMap,
+    PersistentValue,
 } from '@adguard/tswebextension';
 
 import { AntiBannerFiltersId } from '../../common/constants';
@@ -94,18 +98,55 @@ export type FilteringLogTabInfo = {
 export class FilteringLogApi {
     private static readonly REQUESTS_SIZE_PER_TAB = 1000;
 
-    private preserveLogEnabled = false;
+    private persistentPreserveLogEnabled = new PersistentValue<boolean>(
+        browser.storage.session,
+        'preserveLogEnabled',
+        1000,
+        false,
+    );
 
-    private openedFilteringLogsPages = 0;
+    /**
+     * Is preserve log enabled.
+     */
+    private get preserveLogEnabled(): boolean {
+        return this.persistentPreserveLogEnabled.get() ?? false;
+    }
 
-    private tabsInfoMap = new Map<number, FilteringLogTabInfo>([
-        [BACKGROUND_TAB_ID, {
-            tabId: BACKGROUND_TAB_ID,
-            title: translator.getMessage('background_tab_title'),
-            isExtensionTab: false,
-            filteringEvents: [],
-        }],
-    ]);
+    private set preserveLogEnabled(value: boolean) {
+        this.persistentPreserveLogEnabled.set(value);
+    }
+
+    private persistentOpenedFilteringLogsPages = new PersistentValue<number>(
+        browser.storage.session,
+        'openedFilteringLogsPages',
+        1000,
+        0,
+    );
+
+    /**
+     * Count of opened filtering log pages.
+     */
+    private get openedFilteringLogsPages(): number {
+        return this.persistentOpenedFilteringLogsPages.get() ?? 0;
+    }
+
+    private set openedFilteringLogsPages(value: number) {
+        this.persistentOpenedFilteringLogsPages.set(value);
+    }
+
+    private tabsInfoMap = new PersistentMap<number, FilteringLogTabInfo>(
+        browser.storage.session,
+        'filteringLog',
+        1000,
+        [
+            [BACKGROUND_TAB_ID, {
+                tabId: BACKGROUND_TAB_ID,
+                title: translator.getMessage('background_tab_title'),
+                isExtensionTab: false,
+                filteringEvents: [],
+            }],
+        ],
+    );
 
     /**
      * Checks if filtering log page is opened.

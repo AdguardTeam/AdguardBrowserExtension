@@ -55,6 +55,9 @@ export const firefoxManifest = {
         'cookies',
         'privacy',
     ],
+    'background': {
+        'persistent': false,
+    },
 };
 
 export const firefoxManifestStandalone = {
