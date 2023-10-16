@@ -65,6 +65,7 @@ import {
 import { SettingOption } from './schema';
 import { getRunInfo } from './utils';
 import { contextMenuEvents, settingsEvents } from './events';
+import { keepAlive } from './keep-alive';
 
 /**
  * This class is app entry point.
@@ -83,6 +84,10 @@ export class App {
      * and handle webextension API events for first install and update scenario.
      */
     public static async init(): Promise<void> {
+        // TODO remove after migration to MV3
+        // This is temporary call for keeping alive event pages in firefox
+        keepAlive();
+
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 
