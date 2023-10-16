@@ -31,6 +31,10 @@ if (appId === undefined) {
 }
 
 export const firefoxManifest = {
+    'background': {
+        'page': 'pages/background.html',
+        'persistent': false,
+    },
     'browser_specific_settings': {
         'gecko': {
             'id': appId,
