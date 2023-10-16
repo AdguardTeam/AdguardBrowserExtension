@@ -17,7 +17,7 @@
  */
 
 /**
- * This task updates locales in repository
+ * This task downloads locales from Crowdin and saves them to the locales directory.
  */
 import path from 'path';
 import fs from 'fs';
@@ -45,25 +45,6 @@ const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
 
 const locales = Object.keys(LANGUAGES);
 
-const downloadMessagesByUrl = async (url) => {
-    let response;
-    try {
-        cliLog.info(`Downloading url: ${url}...`);
-        response = await axios.get(url, { responseType: 'arraybuffer' });
-        cliLog.info(`Downloaded: ${url}`);
-    } catch (e) {
-        let errorMessage;
-        if (e.response && e.response.data) {
-            const decoder = new TextDecoder();
-            errorMessage = decoder.decode(e.response.data);
-        } else {
-            errorMessage = e.message;
-        }
-        cliLog.error(`Error occurred: ${errorMessage}, while downloading: ${url}`);
-    }
-    return response.data;
-};
-
 const getQueryString = (lang) => {
     const options = {
         project: PROJECT_ID,
@@ -90,6 +71,96 @@ const promiseBatchMap = async (arr, batchSize, handler) => {
     return result.flat(Infinity);
 };
 
+/**
+ * Extracts the error message from the error object.
+ *
+ * @param {Error} error - The error object.
+ * @returns {object} An object containing the extracted error message.
+ */
+const extractErrorMessage = (error) => {
+    if (error.response && error.response.data) {
+        const decoder = new TextDecoder();
+        return JSON.parse(decoder.decode(error.response.data));
+    }
+    return { message: error.message };
+};
+
+/**
+ * Downloads messages from a given URL.
+ *
+ * @async
+ * @param {string} url - The URL to download the messages from.
+ * @returns {Promise<Buffer>} The downloaded data as an array buffer.
+ * @throws {Error} When the download fails.
+ */
+const downloadMessagesByUrl = async (url) => {
+    let response;
+    try {
+        cliLog.info(`Downloading url: ${url}...`);
+        response = await axios.get(url, { responseType: 'arraybuffer' });
+        cliLog.info(`Downloaded: ${url}`);
+    } catch (e) {
+        const errorMessage = extractErrorMessage(e);
+        throw new Error(JSON.stringify(errorMessage));
+    }
+    return response.data;
+};
+
+/**
+ * Determines if a download attempt should be retried based on the error details.
+ *
+ * @param {string} errorMessage - The details of the error.
+ * @returns {boolean} True if the download should be retried, false otherwise.
+ */
+const shouldRetry = (errorMessage) => {
+    const errorDetails = JSON.parse(errorMessage);
+    return (
+        (errorDetails.details && errorDetails.details.code === '55')
+        || (errorDetails.message && errorDetails.message.includes('getaddrinfo ENOTFOUND'))
+    );
+};
+
+/**
+ * Delays the execution for a specific time.
+ *
+ * @param {number} delay - Time in milliseconds to delay.
+ * @returns {Promise<void>} Resolves after the specified delay.
+ */
+const delayExecution = (delay) => {
+    return new Promise((resolve) => setTimeout(resolve, delay));
+};
+
+/**
+ * Downloads a URL with retries and exponentially increasing delays in case of errors.
+ *
+ * @async
+ * @param {string} url - The URL to download from.
+ * @param {number} [retries=100] - The number of times to retry the download.
+ * @param {number} [initialDelay=2000] - The initial delay in milliseconds between retries.
+ * @param {number} [factor=1.5] - The multiplier to increase the delay between retries.
+ * @returns {Promise<Buffer|null>} The downloaded data as an array buffer, or null if retries exhausted.
+ * @throws {Error} When max retries are reached or a non-retryable error occurs.
+ */
+const downloadUrlWithRetry = async (url, retries = 100, initialDelay = 2000, factor = 1.5) => {
+    let delay = initialDelay;
+    for (let i = 0; i < retries; i += 1) {
+        try {
+            // eslint-disable-next-line no-await-in-loop
+            return await downloadMessagesByUrl(url);
+        } catch (error) {
+            if (shouldRetry(error.message)) {
+                cliLog.info(`Attempt ${i + 1} failed due to rate limiting. Retrying in ${delay} ms...`);
+                // eslint-disable-next-line no-await-in-loop
+                await delayExecution(delay);
+                delay *= factor;
+            } else {
+                throw new Error(`Failed with non-retryable error: ${error.message}`);
+            }
+        }
+    }
+    throw new Error(`Max retries reached for ${url}`);
+};
+
 const downloadLocales = async (locales) => {
     const localeUrlPairs = locales.map((locale) => {
         const crowdinLocale = LOCALE_PAIRS[locale] || locale;
@@ -99,11 +170,11 @@ const downloadLocales = async (locales) => {
 
     // Decrease this value if you encounter error:
     // "Maximum number of concurrent requests for this endpoint is reached"
-    const LOCALES_DOWNLOAD_BATCH_SIZE = 2;
+    const LOCALES_DOWNLOAD_BATCH_SIZE = 1;
 
     return promiseBatchMap(localeUrlPairs, LOCALES_DOWNLOAD_BATCH_SIZE, async (localeUrlPair) => {
         const { locale, url } = localeUrlPair;
-        const data = await downloadMessagesByUrl(url);
+        const data = await downloadUrlWithRetry(url);
         return { locale, data };
     });
 };
