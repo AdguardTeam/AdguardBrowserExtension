@@ -205,6 +205,11 @@ export class PagesApi {
             url: encodeURIComponent(siteUrl),
         };
 
+        const systemInfo = await UserAgent.getSystemInfo();
+        if (systemInfo) {
+            params.system_version = encodeURIComponent(systemInfo);
+        }
+
         if (browserName) {
             params.browser = encodeURIComponent(browserName);
         }
