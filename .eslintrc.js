@@ -103,12 +103,14 @@ module.exports = {
             },
         ],
         'strict': 'off',
-        'max-len': [
-            'error',
-            {
-                'code': 120,
-            },
-        ],
+        'max-len': ['error', {
+            'code': 120,
+            'comments': 120,
+            'tabWidth': 4,
+            'ignoreUrls': true,
+            'ignoreTrailingComments': false,
+            'ignoreComments': false,
+        }],
         'indent': [
             'error',
             4,

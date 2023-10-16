@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Send `system_version` during issues reporting
+  (#2535)[https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2535].
+
 ### Changed
 - Updated `@adguard/filters-downloader` to [v1.1.20](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
 - Updated `@adguard/tswebextension` to [v0.4.1](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
