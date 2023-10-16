@@ -46,7 +46,7 @@ Build:
             git ls-files | zip -@ build/beta/source.zip
 
             # Move to the build/beta directory and sign the Firefox extension
-            pushd ./build/beta
+            cd ./build/beta
 
             # Set environment variables and run go-webext to sign the Firefox extension
             FIREFOX_CLIENT_ID="${bamboo_firefoxAmoClientId}" \
@@ -54,7 +54,7 @@ Build:
             go-webext -v sign firefox -f 'firefox.zip' -s 'source.zip' -o 'firefox.xpi'
 
             # Return to the previous directory
-            popd
+            cd -
 
             rm -rf node_modules
     - inject-variables:
