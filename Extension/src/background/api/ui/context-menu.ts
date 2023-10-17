@@ -17,6 +17,7 @@
  */
 import browser, { Menus } from 'webextension-polyfill';
 import { throttle } from 'lodash';
+import { nanoid } from 'nanoid';
 
 import { translator } from '../../../common/translators/translator';
 import {
@@ -34,7 +35,7 @@ export type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
 };
 
 /**
- * API for creating and updating browser context menu.
+ * API for creating and updating browser context menus.
  */
 export class ContextMenuApi {
     /**
@@ -42,6 +43,9 @@ export class ContextMenuApi {
      */
     public static init(): void {
         settingsEvents.addListener(SettingOption.DisableShowContextMenu, ContextMenuApi.handleDisableShowContextMenu);
+        browser.contextMenus.onClicked.addListener(async (onClickData: browser.Menus.OnClickData) => {
+            await contextMenuEvents.publishEvent(onClickData.menuItemId as ContextMenuAction);
+        });
     }
 
     /**
@@ -158,11 +162,9 @@ export class ContextMenuApi {
         const { messageArgs, ...rest } = options;
 
         await browser.contextMenus.create({
+            id: action,
             contexts: ['all'],
             title: translator.getMessage(action, messageArgs),
-            onclick: () => {
-                contextMenuEvents.publishEvent(action);
-            },
             ...rest,
         });
     }
@@ -172,6 +174,7 @@ export class ContextMenuApi {
      */
     private static async addSeparator(): Promise<void> {
         await browser.contextMenus.create({
+            id: nanoid(), // required for Firefox
             type: 'separator',
             contexts: ['all'],
         });
