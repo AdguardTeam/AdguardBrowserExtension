@@ -50,7 +50,7 @@ export const enum ForwardAction {
     Android = 'android_about',
     GithubVersion = 'github_version_popup',
     LearnAboutAdGuard = 'learn_about_adguard',
-    BackToSchool = 'back_to_school_23',
+    Halloween = 'halloween_23',
 }
 
 export const enum ForwardFrom {
