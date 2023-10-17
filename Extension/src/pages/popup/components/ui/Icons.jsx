@@ -108,9 +108,12 @@ export const Icons = () => {
                 <path d="m8.882 7.821 6.541-6.541c.293-.293.293-.768 0-1.061s-.768-.293-1.061 0l-6.541 6.541-6.541-6.54c-.293-.293-.768-.293-1.061 0s-.293.768 0 1.061l6.541 6.541-6.54 6.54c-.293.293-.293.768 0 1.061.147.146.338.22.53.22s.384-.073.53-.22l6.541-6.541 6.541 6.541c.147.146.338.22.53.22s.384-.073.53-.22c.293-.293.293-.768 0-1.061z" fill="currentColor" fillRule="evenodd" />
             </symbol>
 
-            <symbol id="cross-gray" width="24" height="24" viewBox="0 0 24 24">
-                <path d="M6.42857 6.79596L17.6043 18.6103" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M6.42871 18.5755L17.6045 6.76111" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" />
+            <symbol id="cross-gray" width="24" height="24">
+                <path stroke="#888" d="M6.429 6.796 17.604 18.61M6.429 18.576 17.605 6.76" />
+            </symbol>
+
+            <symbol id="cross-white" width="24" height="24">
+                <path stroke="#f3f3f3" strokeLinecap="round" strokeWidth="1.5" d="m6.429 6.429 11.175 11.175M6.429 17.571 17.605 6.396" />
             </symbol>
 
             <symbol id="play" viewBox="0 0 24 24">
