@@ -84,6 +84,7 @@ export enum NotifierType {
 
 export const FULLSCREEN_USER_RULES_EDITOR = 'fullscreen_user_rules_editor' as const;
 export const FILTERING_LOG = 'filtering-log' as const;
+export const KEEP_ALIVE_PORT_NAME = 'keep-alive' as const;
 
 export const enum NavigationTag {
     Regular = 'regular',
