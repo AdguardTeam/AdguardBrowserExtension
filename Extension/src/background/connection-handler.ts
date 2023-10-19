@@ -17,13 +17,18 @@
  */
 import browser, { Runtime } from 'webextension-polyfill';
 
-import { FILTERING_LOG, FULLSCREEN_USER_RULES_EDITOR } from '../common/constants';
+import {
+    FILTERING_LOG,
+    FULLSCREEN_USER_RULES_EDITOR,
+    KEEP_ALIVE_PORT_NAME,
+} from '../common/constants';
 import { MessageType } from '../common/messages';
 import { Log } from '../common/log';
 
 import { listeners } from './notifier';
 import { filteringLogApi } from './api';
 import { fullscreenUserRulesEditor } from './services';
+import { KeepAlive } from './keep-alive';
 
 /**
  * ConnectionHandler manages long-lived connections to the {@link Runtime.Port}.
@@ -90,6 +95,12 @@ export class ConnectionHandler {
                 break;
             }
 
+            case port.name === KEEP_ALIVE_PORT_NAME: {
+                // This handler exists solely to prevent errors from the default case.
+                Log.debug('Connected to the port');
+                break;
+            }
+
             default: {
                 throw new Error(`There is no such pages ${port.name}`);
             }
@@ -113,6 +124,12 @@ export class ConnectionHandler {
 
             case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
                 fullscreenUserRulesEditor.onClosePage();
+                break;
+            }
+
+            case port.name === KEEP_ALIVE_PORT_NAME: {
+                // when the port disconnects, we try to find a new tab to inject the content script
+                KeepAlive.executeScriptOnTab();
                 break;
             }
 
