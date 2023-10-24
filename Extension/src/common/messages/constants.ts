@@ -103,6 +103,7 @@ export enum MessageType {
   ScriptletCloseWindow = 'scriptletCloseWindow',
   ShowAlertPopup = 'showAlertPopup',
   ShowVersionUpdatedPopup = 'showVersionUpdatedPopup',
+  UpdateListeners = 'updateListeners',
 }
 
 export type ApplySettingsJsonMessage = {
