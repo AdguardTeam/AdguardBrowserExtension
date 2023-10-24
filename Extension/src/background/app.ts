@@ -194,6 +194,11 @@ export class App {
         eventService.init();
 
         /**
+         * Called after eventService init, otherwise it won't handle messages.
+         */
+        await KeepAlive.resyncEventSubscriptions();
+
+        /**
          * Initializes Safebrowsing module
          * - Initializes persisted lru cache for hashes
          * - Adds listener for filtering web requests

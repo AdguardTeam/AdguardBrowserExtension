@@ -52,9 +52,7 @@ const Options = observer(() => {
     useEffect(() => {
         let removeListenerCallback = () => {};
 
-        (async () => {
-            await settingsStore.requestOptionsData(true);
-
+        const subscribeToMessages = async () => {
             const events = [
                 NotifierType.RequestFilterUpdated,
                 NotifierType.UpdateAllowlistFilterRules,
@@ -99,6 +97,12 @@ const Options = observer(() => {
                     }
                 },
             );
+        };
+
+        (async () => {
+            await settingsStore.requestOptionsData(true);
+
+            await subscribeToMessages();
         })();
 
         return () => {

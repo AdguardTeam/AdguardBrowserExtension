@@ -22,6 +22,8 @@ import { isHttpRequest } from '@adguard/tswebextension';
 import { Log } from '../common/log';
 import { UserAgent } from '../common/user-agent';
 import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
+import { messenger } from '../pages/services/messenger';
+import { MessageType } from '../common/messages';
 
 /**
  * Code which is injected into the page as content-script to keep the connection alive.
@@ -65,6 +67,23 @@ export class KeepAlive {
             browser.tabs.onUpdated.addListener(KeepAlive.onUpdate);
 
             KeepAlive.executeScriptOnTab();
+        }
+    }
+
+    /**
+     * Called after the background page has reloaded.
+     * It is necessary for event page, which can reload,
+     * but options page subscribes to events only once.
+     * This function notifies all listeners to update by sending an UpdateListeners message.
+     * TODO: can be removed after all pages connected via long living messages.
+     */
+    static async resyncEventSubscriptions(): Promise<void> {
+        try {
+            await messenger.sendMessage(MessageType.UpdateListeners);
+        } catch (e) {
+            // This error occurs if there is no pages able to handle this listener.
+            // It could happen if background page reloaded, when option page was not open.
+            Log.debug(e);
         }
     }
 
