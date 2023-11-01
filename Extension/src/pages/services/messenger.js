@@ -64,24 +64,38 @@ class Messenger {
             callback(...args);
         };
 
-        const port = browser.runtime.connect({ name: `${page}_${nanoid()}` });
-        port.postMessage({ type: MessageType.AddLongLivedConnection, data: { events } });
+        let port;
+        let forceDisconnected = false;
 
-        port.onMessage.addListener((message) => {
-            if (message.type === MessageType.NotifyListeners) {
-                const [type, ...data] = message.data;
-                eventListener({ type, data });
-            }
-        });
+        const connect = () => {
+            port = browser.runtime.connect({ name: `${page}_${nanoid()}` });
+            port.postMessage({ type: MessageType.AddLongLivedConnection, data: { events } });
 
-        port.onDisconnect.addListener(() => {
-            if (browser.runtime.lastError) {
-                Log.error(browser.runtime.lastError.message);
-            }
-        });
+            port.onMessage.addListener((message) => {
+                if (message.type === MessageType.NotifyListeners) {
+                    const [type, ...data] = message.data;
+                    eventListener({ type, data });
+                }
+            });
+
+            port.onDisconnect.addListener(() => {
+                if (browser.runtime.lastError) {
+                    Log.error(browser.runtime.lastError.message);
+                }
+                // we try to connect again if the background page was terminated
+                if (!forceDisconnected) {
+                    connect();
+                }
+            });
+        };
+
+        connect();
 
         const onUnload = () => {
-            port.disconnect();
+            if (port) {
+                forceDisconnected = true;
+                port.disconnect();
+            }
         };
 
         window.addEventListener('beforeunload', onUnload);
@@ -107,10 +121,20 @@ class Messenger {
             MessageType.CreateEventListener, { events },
         );
 
+        const onUpdateListeners = async () => {
+            const response = await this.sendMessage(
+                MessageType.CreateEventListener, { events },
+            );
+            listenerId = response.listenerId;
+        };
+
         browser.runtime.onMessage.addListener((message) => {
             if (message.type === MessageType.NotifyListeners) {
                 const [type, ...data] = message.data;
                 eventListener({ type, data });
+            }
+            if (message.type === MessageType.UpdateListeners) {
+                onUpdateListeners();
             }
         });
 
@@ -204,14 +228,14 @@ class Messenger {
             ? MessageType.EnableFiltersGroup
             : MessageType.DisableFiltersGroup;
         const groupId = id - 0;
-        await this.sendMessage(type, { groupId });
+        return this.sendMessage(type, { groupId });
     }
 
     async updateFilterStatus(filterId, data) {
         const type = data
             ? MessageType.AddAndEnableFilter
             : MessageType.DisableFilter;
-        await this.sendMessage(type, { filterId });
+        return this.sendMessage(type, { filterId });
     }
 
     async checkCustomUrl(url) {

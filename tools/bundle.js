@@ -24,8 +24,8 @@ import { copyExternals } from './bundle/copy-external';
 import { BROWSERS, ENVS } from './constants';
 import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
-import { xpi } from './bundle/xpi';
 import { buildInfo } from './bundle/build-info';
+import { buildUpdateJson } from './bundle/firefox/updateJson';
 
 const bundleChrome = (watch) => {
     const webpackConfig = getWebpackConfig(BROWSERS.CHROME, watch);
@@ -37,8 +37,9 @@ const bundleFirefoxAmo = (watch) => {
     return bundleRunner(webpackConfig, watch);
 };
 
-const bundleFirefoxStandalone = () => {
+const bundleFirefoxStandalone = async () => {
     const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_STANDALONE);
+    await buildUpdateJson();
     return bundleRunner(webpackConfig);
 };
 
@@ -56,10 +57,6 @@ const bundleChromeCrx = async () => {
     await crx(BROWSERS.CHROME);
 };
 
-const bundleFirefoxXpi = async () => {
-    await xpi(BROWSERS.FIREFOX_STANDALONE);
-};
-
 const devPlan = [
     copyExternals,
     bundleChrome,
@@ -74,9 +71,13 @@ const betaPlan = [
     copyExternals,
     bundleChrome,
     bundleChromeCrx,
-    bundleFirefoxStandalone,
-    bundleFirefoxXpi,
     bundleEdge,
+    buildInfo,
+];
+
+const firefoxStandalonePlan = [
+    copyExternals,
+    bundleFirefoxStandalone,
     buildInfo,
 ];
 
@@ -141,6 +142,15 @@ const firefox = async (watch) => {
     }
 };
 
+const firefoxStandalone = async () => {
+    try {
+        await runBuild(firefoxStandalonePlan);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
 program
     .option('--watch', 'Builds in watch mode', false);
 
@@ -156,6 +166,13 @@ program
     .description('Builds extension for firefox browser')
     .action(() => {
         firefox(program.watch);
+    });
+
+program
+    .command('firefox-standalone')
+    .description('Builds signed extension for firefox browser')
+    .action(() => {
+        firefoxStandalone();
     });
 
 program

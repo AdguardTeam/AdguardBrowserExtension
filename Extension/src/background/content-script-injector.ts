@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
+import { getHostname } from 'tldts';
+import browser, { type Tabs } from 'webextension-polyfill';
 
 import { isHttpRequest } from '@adguard/tswebextension';
 
+import { UserAgent } from '../common/user-agent';
 import { Log } from '../common/log';
 import {
     CONTENT_SCRIPT_START_OUTPUT,
@@ -27,6 +29,7 @@ import {
 } from '../../../constants';
 
 import { TabsApi } from './api/extension/tabs';
+import { createPromiseWithTimeout } from './utils/timers';
 
 /**
  * Helper class for injecting content script into tabs, opened before extension initialization.
@@ -44,6 +47,36 @@ export class ContentScriptInjector {
     ];
 
     /**
+     * Content scripts are blocked from executing on some websites by browsers
+     * to protect users from extension escalating privileges.
+     */
+    private static jsInjectRestrictedHostnames = {
+        chromium: [
+            'chrome.google.com',
+        ],
+        firefox: [
+            'accounts-static.cdn.mozilla.net',
+            'accounts.firefox.com',
+            'addons.cdn.mozilla.net',
+            'addons.mozilla.org',
+            'api.accounts.firefox.com',
+            'content.cdn.mozilla.net',
+            'discovery.addons.mozilla.org',
+            'install.mozilla.org',
+            'oauth.accounts.firefox.com',
+            'profile.accounts.firefox.com',
+            'support.mozilla.org',
+            'sync.services.mozilla.com',
+        ],
+        opera: [
+            'addons.opera.com',
+        ],
+        edge: [
+            'microsoftedge.microsoft.com',
+        ],
+    };
+
+    /**
      * Returns open tabs and injects content scripts into tab contexts.
      */
     public static async init(): Promise<void> {
@@ -53,13 +86,8 @@ export class ContentScriptInjector {
 
         tabs.forEach((tab) => {
             // Do not inject scripts into extension pages, browser internals and tabs without id
-            // Tabs with both 'unloaded' and 'loading' statuses can be freezed and thus should be skipped
             if (typeof tab.id !== 'number'
-                || typeof tab.url !== 'string'
-                || !isHttpRequest(tab.url)
-                || tab.status !== 'complete'
-                || tab.discarded
-            ) {
+                || !ContentScriptInjector.canInjectJs(tab)) {
                 return;
             }
 
@@ -98,17 +126,14 @@ export class ContentScriptInjector {
              * This implementation uses Promise.race() to prevent content script injection
              * from freezing the application when Chrome drops tabs.
              */
-            await Promise.race([
+            await createPromiseWithTimeout(
                 browser.tabs.executeScript(tabId, {
                     allFrames: true,
                     file: src,
                 }),
-                new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        reject(new Error(`Content script inject timeout: tab #${tabId} doesn't respond.`));
-                    }, ContentScriptInjector.INJECTION_LIMIT_MS);
-                }),
-            ]);
+                ContentScriptInjector.INJECTION_LIMIT_MS,
+                `Content script inject timeout: tab #${tabId} doesn't respond.`,
+            );
         } catch (error: unknown) {
             // re-throw error with custom message
             const message = error instanceof Error ? error.message : String(error);
@@ -124,5 +149,52 @@ export class ContentScriptInjector {
      */
     private static createContentScriptUrl(output: string): string {
         return `/${output}.js`;
+    }
+
+    /**
+     * Checks, if content script can be injected to specified tab.
+     *
+     * @param tab Tab browser details.
+     *
+     * @returns True, if content script can be injected, else returns false.
+     */
+    private static canInjectJs(tab: Tabs.Tab): boolean {
+        if (typeof tab.url !== 'string'
+                || !isHttpRequest(tab.url)
+                // Tabs with both 'unloaded' and 'loading' statuses can be frozen and thus should be skipped
+                || tab.status !== 'complete'
+                || tab.discarded) {
+            return false;
+        }
+
+        const hostname = getHostname(tab.url);
+
+        if (!hostname) {
+            return false;
+        }
+
+        const { jsInjectRestrictedHostnames } = ContentScriptInjector;
+
+        if (UserAgent.isChromium
+            && jsInjectRestrictedHostnames.chromium.includes(hostname)) {
+            return false;
+        }
+
+        if (UserAgent.isFirefox
+           && jsInjectRestrictedHostnames.firefox.includes(hostname)) {
+            return false;
+        }
+
+        if (UserAgent.isOpera
+           && jsInjectRestrictedHostnames.opera.includes(hostname)) {
+            return false;
+        }
+
+        if (UserAgent.isEdge
+            && jsInjectRestrictedHostnames.edge.includes(hostname)) {
+            return false;
+        }
+
+        return true;
     }
 }

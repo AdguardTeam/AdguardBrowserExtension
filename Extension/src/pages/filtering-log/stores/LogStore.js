@@ -334,6 +334,13 @@ class LogStore {
     setSelectedTabId = async (tabId) => {
         this.selectedTabId = Number.parseInt(tabId, 10);
         await this.getEventsByTabId(tabId);
+        /**
+         * Hash of filtering log window should be updated to focus on the active browser tab.
+         * Because after manual changing of TabSelector's tab,
+         * location.hash of the filtering log window does not change.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482
+         */
+        document.location.hash = tabId;
     };
 
     @action
@@ -391,15 +398,17 @@ class LogStore {
             }
 
             const isAllowlisted = filteringEvent.requestRule?.allowlistRule;
-            const isBlocked = filteringEvent.requestRule
-                && !filteringEvent.requestRule.allowlistRule
-                && !filteringEvent.requestRule.cssRule
-                && !filteringEvent.requestRule.scriptRule
-                && !filteringEvent.requestRule.cspRule
-                && !filteringEvent.requestRule.permissionsRule
-                && !filteringEvent.replaceRules
-                && !filteringEvent.removeParam
-                && !filteringEvent.removeHeader;
+            // blocked CSP reports should be filtered as blocked requests in the filtering log. AG-24613
+            const isBlocked = filteringEvent.cspReportBlocked
+                || (filteringEvent.requestRule
+                    && !filteringEvent.requestRule.allowlistRule
+                    && !filteringEvent.requestRule.cssRule
+                    && !filteringEvent.requestRule.scriptRule
+                    && !filteringEvent.requestRule.cspRule
+                    && !filteringEvent.requestRule.permissionsRule
+                    && !filteringEvent.replaceRules
+                    && !filteringEvent.removeParam
+                    && !filteringEvent.removeHeader);
             const isModified = !isAllowlisted
                 && (filteringEvent.requestRule?.isModifyingCookieRule
                     || filteringEvent.requestRule?.cssRule

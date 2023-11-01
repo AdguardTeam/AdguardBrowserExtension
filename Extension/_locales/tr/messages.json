@@ -132,7 +132,7 @@
         "message": "Siteye izin verildi"
     },
     "filtering_log_hide_referrer": {
-        "message": "Referrer üçüncü taraflardan gizlendi"
+        "message": "Referer üçüncü taraflardan gizlendi"
     },
     "filtering_log_hide_search_queries": {
         "message": "Arama sorgularınız gizlendi"
@@ -200,6 +200,9 @@
     "options_editor_indicator_saved": {
         "message": "Kaydedildi"
     },
+    "options_popup_import_error_required_privacy_permission": {
+        "message": "Bu ayarlar dosyasını içe aktarmak için AdGuard'ın gizlilikle ilgili ayarlarınızı değiştirmesine izin verin."
+    },
     "options_popup_import_success_title": {
         "message": "Ayarlar başarıyla içe aktarıldı"
     },
@@ -215,9 +218,6 @@
     "options_popup_trusted_filter_description": {
         "message": "Güvenilir filtreler, yanlış ellerde tehlikeli olabilecek güçlü filtreleme kuralları değiştiricileri kullanabilir. Tamamen güvenmediğiniz sürece bu kutuyu işaretlemeyin."
     },
-    "popup_site_filtering_state": {
-        "message": "Bu sitedeki koruma"
-    },
     "popup_site_filtering_state_secure_page": {
         "message": "Güvenli sayfa"
     },
@@ -231,7 +231,7 @@
         "message": "Koruma duraklatıldı"
     },
     "popup_site_exception_information": {
-        "message": "Filtreleme devre dışı bırakıldı çünkü filtrelemek bu sitenin çalışmasını bozabilir."
+        "message": "Filtreleme, bu sitenin çalışmasını bozabileceğinden devre dışı bırakıldı."
     },
     "popup_tab_blocked_count": {
         "message": "Engellenen: %num%"
@@ -341,29 +341,8 @@
     "popup_reset_custom_rules": {
         "message": "Bu sayfa için tüm kullanıcı kurallarını kaldır"
     },
-    "popup_open_settings": {
-        "message": "AdGuard ayarları"
-    },
-    "popup_block_site_ads_android": {
-        "message": "Bu sitede reklam engelle"
-    },
-    "popup_security_report_android": {
-        "message": "Güvenlik raporu"
-    },
-    "popup_in_allowlist_android": {
-        "message": "İzin listesinde"
-    },
-    "popup_site_protection_disabled_android": {
-        "message": "Koruma duraklatıldı"
-    },
-    "popup_open_log_android": {
-        "message": "Filtreleme günlüğü"
-    },
     "context_block_site_ads": {
         "message": "Bu sitede reklam engelle..."
-    },
-    "context_block_site_element": {
-        "message": "Bir öğeyi engelle..."
     },
     "context_security_report": {
         "message": "Site güvenliğini kontrol et..."
@@ -465,7 +444,7 @@
         "message": "Filtre"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Olay günlüklerini filtrelemeyi görmek için <reset>filtreleri devre dışı bırakın<\/reset> veya <refresh>sayfayı yenileyin<\/refresh>."
+        "message": "Filtrelenen olay günlüklerini görmek için <reset>filtreleri devre dışı bırakın<\/reset> veya <refresh>sayfayı yenileyin<\/refresh>."
     },
     "filtering_modal_info_title": {
         "message": "İstek ayrıntıları"
@@ -693,7 +672,7 @@
         "message": "Kimlik avı ve kötü amaçlı yazılım koruması"
     },
     "options_safebrowsing_enabled_desc": {
-        "message": "Potansiyel olarak kötü amaçlı ve kimlik avı sitelerini çevrimiçi bir veritabanına karşı kontrol ederek algılayan AdGuard Tarama Güvenliği modülünü etkinleştirin. <a>Devamını okuyun<\/a>"
+        "message": "Potansiyel olarak kötü amaçlı ve kimlik avı sitelerini çevrimiçi bir veri tabanına karşı kontrol ederek tespit eden AdGuard Gezinti Koruması modülünü etkinleştirin. <a>Devamını okuyun<\/a>"
     },
     "options_site": {
         "message": "Resmi Site"
@@ -702,7 +681,7 @@
         "message": "AdGuard'ı Tartışın"
     },
     "options_do_you_like_question": {
-        "message": "AdGuard'ı beğendiniz mi?"
+        "message": "AdGuard'ı sevdiniz mi?"
     },
     "options_footer_like_us_cta": {
         "message": "Değerlendirin!"
@@ -747,7 +726,7 @@
         "message": "İyileştirilmiş filtreleri kullan"
     },
     "options_use_optimized_filters_desc": {
-        "message": "Mobil cihazlar için iyileştirilmiş filtre listeleri."
+        "message": "Veri tasarrufu için yalnızca en popüler kurallara sahip filtrelerin daha kısa sürümlerini kullanır. Mobil tarayıcılar için daha uygundur"
     },
     "options_privacy_title": {
         "message": "Gizlilik Modu"
@@ -756,7 +735,7 @@
         "message": "En popüler izleme yöntemlerini engelleyerek kimliğinizi ve hassas kişisel bilgilerinizi binlerce çevrimiçi izleyicilerden koruyun."
     },
     "options_hide_referrer_title": {
-        "message": "Referrer'i üçüncü taraflardan gizle"
+        "message": "Referer'i üçüncü taraflardan gizle"
     },
     "options_hide_referrer_desc": {
         "message": "Üçüncü tarafların hangi siteyi ziyaret ettiğinizi bilmelerini engelleyin."
@@ -768,10 +747,7 @@
         "message": "Arama motorlarında çıkan sonuçlarla ziyaret ettiğiniz sitelerden arama sorgularını gizleyin."
     },
     "options_send_not_track_title": {
-        "message": "Sizi izlememeleri için sitelere sinyaller gönder"
-    },
-    "options_send_not_track_desc": {
-        "message": "Ziyaret ettiğiniz sitelere <gpc>Global Privacy Control<\/gpc> ve <dnt>Do Not Track<\/dnt> sinyalleri gönderin."
+        "message": "Sitelerden sizi izlememelerini iste"
     },
     "options_stripped_tracking_parameters": {
         "message": "İzleme parametreleri kaldırıldı"

@@ -16,15 +16,32 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FIREFOX_APP_IDS_MAP } from '../../constants';
+import { FIREFOX_APP_IDS_MAP, FIREFOX_WEBEXT_UPDATE_URL } from '../../constants';
 
-const appId = FIREFOX_APP_IDS_MAP[process.env.BUILD_ENV];
+const buildEnv = process.env.BUILD_ENV;
+
+if (buildEnv === undefined) {
+    throw new Error('BUILD_ENV is not set in the environment variables.');
+}
+
+const appId = FIREFOX_APP_IDS_MAP[buildEnv];
+
+if (appId === undefined) {
+    throw new Error(`App ID not found for BUILD_ENV: ${buildEnv}`);
+}
 
 export const firefoxManifest = {
+    'background': {
+        'page': 'pages/background.html',
+        'persistent': false,
+    },
     'browser_specific_settings': {
         'gecko': {
             'id': appId,
             'strict_min_version': '78.0',
+        },
+        'gecko_android': {
+            'strict_min_version': '113.0',
         },
     },
     'options_ui': {
@@ -42,4 +59,12 @@ export const firefoxManifest = {
         'cookies',
         'privacy',
     ],
+};
+
+export const firefoxManifestStandalone = {
+    'browser_specific_settings': {
+        'gecko': {
+            'update_url': FIREFOX_WEBEXT_UPDATE_URL,
+        },
+    },
 };

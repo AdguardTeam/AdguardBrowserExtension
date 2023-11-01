@@ -1,16 +1,16 @@
 (function(source, args) {
     function preventBab2(source) {
-        const script = document.currentScript;
+        var script = document.currentScript;
         if (script === null) {
             return;
         }
-        const url = script.src;
+        var url = script.src;
         if (typeof url !== "string") {
             return;
         }
-        const domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
-        const matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
-        const domainsRegex = new RegExp(matchStr);
+        var domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
+        var matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
+        var domainsRegex = new RegExp(matchStr);
         if (domainsRegex.test(url) === false) {
             return;
         }
@@ -22,19 +22,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

@@ -126,9 +126,10 @@ export class PagesApi {
             return;
         }
 
+        // Open a new tab without type to get it as a new tab in a new window
+        // with the ability to move and attach it to the current browser window.
         await browser.windows.create({
             url,
-            type: 'popup',
             focused: true,
             ...PagesApi.defaultPopupWindowState,
         });
@@ -203,6 +204,11 @@ export class PagesApi {
             product_version: encodeURIComponent(browser.runtime.getManifest().version),
             url: encodeURIComponent(siteUrl),
         };
+
+        const systemInfo = await UserAgent.getSystemInfo();
+        if (systemInfo) {
+            params.system_version = encodeURIComponent(systemInfo);
+        }
 
         if (browserName) {
             params.browser = encodeURIComponent(browserName);
@@ -333,7 +339,7 @@ export class PagesApi {
         await browser.tabs.update(tab.id, { url: path });
         // Reload option page for force modal window rerender
         // TODO: track url update in frontend and remove force reloading via webextension API
-        await browser.tabs.reload(tab.id);
+        await TabsApi.reload(tab.id);
         await TabsApi.focus(tab);
     }
 

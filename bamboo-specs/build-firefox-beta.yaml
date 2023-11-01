@@ -1,0 +1,109 @@
+---
+version: 2
+plan:
+  project-key: ADGEXT
+  key: BEFIREFOXBETASPECS
+  name: browser extension - build firefox beta
+variables:
+  dockerNode: adguard/extension-builder:18.17.1--0.1.2
+stages:
+  - Build:
+      manual: 'false'
+      final: 'false'
+      jobs:
+        - Build
+
+Build:
+  key: BUILD
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+    # we use dns to avoid etimedout error when AMO is validating extension
+    docker-run-arguments: ['--dns', '8.8.8.8']
+  tasks:
+    - checkout:
+        force-clean-build: 'true'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            # don't use --ignore-optional flag, because swc requires optional deps 
+            yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
+            yarn beta firefox-standalone
+
+            # zip source files for publishing on AMO
+            git ls-files | zip -@ build/beta/source.zip
+
+            # Move to the build/beta directory and sign the Firefox extension
+            cd ./build/beta
+
+            # Set environment variables and run go-webext to sign the Firefox extension
+            FIREFOX_CLIENT_ID="${bamboo_firefoxAmoClientId}" \
+            FIREFOX_CLIENT_SECRET="${bamboo_firefoxAmoClientSecret}" \
+            go-webext -v sign firefox -f 'firefox.zip' -s 'source.zip' -o 'firefox.xpi'
+
+            # Return to the previous directory
+            cd -
+
+            rm -rf node_modules
+    - inject-variables:
+        file: build/beta/build.txt
+        scope: RESULT
+        namespace: inject
+  artifacts:
+    - name: build.txt
+      location: build/beta
+      pattern: build.txt
+      shared: true
+      required: true
+    - name: firefox.zip
+      location: build/beta
+      pattern: firefox.zip
+      shared: true
+      required: true
+    - name: firefox.xpi
+      location: build/beta
+      pattern: firefox.xpi
+      shared: true
+      required: true
+    - name: update.json
+      location: build/beta
+      pattern: update.json
+      shared: true
+      required: true
+    - name: source.zip
+      location: build/beta
+      pattern: source.zip
+      shared: true
+      required: true
+  requirements:
+    - adg-docker: 'true'
+
+triggers: []
+
+branches:
+  create: manually
+  delete: never
+  link-to-jira: 'true'
+
+notifications:
+  - events:
+      - plan-status-changed
+    recipients:
+      - webhook:
+          name: Build webhook
+          url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo
+labels: []
+other:
+  concurrent-build-plugin: system-default

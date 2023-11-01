@@ -200,6 +200,9 @@
     "options_editor_indicator_saved": {
         "message": "Uložené"
     },
+    "options_popup_import_error_required_privacy_permission": {
+        "message": "Ak chcete importovať tento súbor nastavení, povoľte AdGuardu zmeniť Vaše nastavenia týkajúce sa ochrany osobných údajov."
+    },
     "options_popup_import_success_title": {
         "message": "Nastavenie importované úspešne"
     },
@@ -214,9 +217,6 @@
     },
     "options_popup_trusted_filter_description": {
         "message": "Dôveryhodné filtre môžu používať silné modifikátory pravidiel filtrovania, ktoré môžu byť nebezpečné v nesprávnych rukách. Toto políčko nezačiarknite, ak mu nedôverujete."
-    },
-    "popup_site_filtering_state": {
-        "message": "Ochrana na tejto stránke"
     },
     "popup_site_filtering_state_secure_page": {
         "message": "Bezpečná stránka"
@@ -341,29 +341,8 @@
     "popup_reset_custom_rules": {
         "message": "Vymazať všetky používateľské pravidlá pre túto stránku"
     },
-    "popup_open_settings": {
-        "message": "Nastavenia AdGuard"
-    },
-    "popup_block_site_ads_android": {
-        "message": "Blokovať reklamu na stránke"
-    },
-    "popup_security_report_android": {
-        "message": "Bezpečnostná správa"
-    },
-    "popup_in_allowlist_android": {
-        "message": "V zozname povolení"
-    },
-    "popup_site_protection_disabled_android": {
-        "message": "Ochrana je pozastavená"
-    },
-    "popup_open_log_android": {
-        "message": "Denník filtrácie"
-    },
     "context_block_site_ads": {
         "message": "Blokovať reklamy na tejto stránke..."
-    },
-    "context_block_site_element": {
-        "message": "Blokovanie prvku..."
     },
     "context_security_report": {
         "message": "Skontrolovať bezpečnosť stránky..."
@@ -499,6 +478,9 @@
     },
     "filtering_modal_unblock": {
         "message": "Odblokovať"
+    },
+    "filtering_modal_remove_user": {
+        "message": "Odstrániť pravidlo"
     },
     "filtering_modal_preview_request_button": {
         "message": "Náhľad"
@@ -744,7 +726,7 @@
         "message": "Použiť optimalizované filtre"
     },
     "options_use_optimized_filters_desc": {
-        "message": "Zoznam filtrov optimalizovaných pre mobilné zariadenia"
+        "message": "Používa kratšie verzie filtrov iba s najpopulárnejšími pravidlami na obmedzenie komunikácie. Vhodnejšie pre mobilné prehliadače"
     },
     "options_privacy_title": {
         "message": "Súkromie"
@@ -765,10 +747,7 @@
         "message": "Skrýva dopyty na webové stránky navštívené z vyhľadávača."
     },
     "options_send_not_track_title": {
-        "message": "Odosiela stránkam požiadavku, aby ste neboli sledovaný"
-    },
-    "options_send_not_track_desc": {
-        "message": "Pošlite signály <gpc>Globálna kontrola súkromia<\/gpc> a <dnt>Nesledovať<\/dnt> webovým stránkam, ktoré navštevujete."
+        "message": "Požiadajte webové stránky, aby vás nesledovali"
     },
     "options_stripped_tracking_parameters": {
         "message": "Parametre sledovania boli odstránené"
@@ -793,6 +772,15 @@
     },
     "options_strip_tracking_params_title": {
         "message": "Odstrániť parametre sledovania"
+    },
+    "options_strip_tracking_params_description": {
+        "message": "Odstránenie parametrov z webových dopytov pomocou filtra AdGuard URL Tracking."
+    },
+    "options_block_known_trackers_title": {
+        "message": "Blokuje známe sledovače"
+    },
+    "options_block_known_trackers_description": {
+        "message": "Blokujte sledovače a nástroje na webovú analýzu pomocou filtra AdGuard Tracking Protection."
     },
     "options_third_party_title": {
         "message": "Automatická deštrukcia cookie súborov tretích strán"
@@ -860,6 +848,12 @@
     "options_remove_filter_confirm_modal_ok_button": {
         "message": "Odstrániť"
     },
+    "options_nav_better_than_extension": {
+        "message": "Prečo je aplikácia AdGuard lepšia ako rozšírenie?"
+    },
+    "options_nav_compare": {
+        "message": "Porovnanie"
+    },
     "options_filters_search": {
         "message": "Hľadať"
     },
@@ -878,11 +872,14 @@
     "group_description_annoyances": {
         "message": "Odstráňte kontextové okná a ďalšie nepríjemné upozornenia, ako sú oznámenia o súboroch cookie."
     },
+    "group_description_security": {
+        "message": "Chráňte sa pred malvérom, phishingom a inými online hrozbami."
+    },
     "group_description_miscellaneous": {
         "message": "Ďalšie nastavenia na konfiguráciu Vášho surfovania na webe s AdGuardom ešte ďalej."
     },
     "group_description_custom": {
-        "message": "Vytvorte si vlastné filtre, ktoré doladia filtrovanie webu podľa Vašich preferencií."
+        "message": "Vytvorte si vlastné filtre, ktoré doladia filtráciu webu podľa Vašich preferencií."
     },
     "group_description_lang": {
         "message": "Neobmedzujte sa - blokujte reklamy na webových stránkach v akýchkoľvek jazykoch."
@@ -936,7 +933,7 @@
         "message": "Iba dopyty spracované bez filtrácie"
     },
     "filtering_log_tag_tooltip_allowed": {
-        "message": "Len pobolené a neblokované dopyty"
+        "message": "Len povolené a neblokované dopyty"
     },
     "filtering_log_tag_tooltip_blocked": {
         "message": "Len zablokované dopyty"
@@ -1005,7 +1002,7 @@
         "message": "AdGuard zablokoval prístup k tejto stránke"
     },
     "blocking_pages_rule_header_title": {
-        "message": "Blokované AdGuardom"
+        "message": "Zablokované AdGuardom"
     },
     "blocking_pages_rule_content_title": {
         "message": "AdGuard zabránil načítaniu tejto stránky kvôli nasledujúcemu filtračnému pravidlu"
@@ -1023,6 +1020,6 @@
         "message": "Skryť celý text"
     },
     "close_button_title": {
-        "message": "Ukončiť"
+        "message": "Zavrieť"
     }
 }

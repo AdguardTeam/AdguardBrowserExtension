@@ -21,126 +21,211 @@ import { Forward, ForwardAction } from '../../common/forward';
 import { NotificationTextRecord } from '../schema';
 
 export type Notification = {
-     id: string,
-     locales: Record<string, NotificationTextRecord>
-     url: string,
-     text: string | NotificationTextRecord | null,
-     from: string,
-     to: string,
-     type: string,
-     bgColor?: string,
-     textColor?: string,
-     badgeBgColor?: string,
-     badgeText?: string,
-     icons?: Record<string, Record<string, string>>,
- };
+    id: string,
+    locales: Record<string, NotificationTextRecord>
+    url: string,
+    text: string | NotificationTextRecord | null,
+    from: string,
+    to: string,
+    type: string,
+    bgColor?: string,
+    textColor?: string,
+    badgeBgColor?: string,
+    badgeText?: string,
+    icons?: Record<string, Record<string, string>>,
+};
 
-export const BACK_TO_SCHOOL_22_ID = 'backToSchool22';
+export const HALLOWEEN_23_ID = 'halloween23';
 
-export const backToSchool22Notification: Notification = {
-    id: BACK_TO_SCHOOL_22_ID,
+export const halloween23Notification: Notification = {
+    id: HALLOWEEN_23_ID,
     locales: {
         en: {
-            title: 'Back',
-            desc: 'to school',
-            btn: 'Get 40% off',
+            title: 'Fact or fiction?',
+            btn: 'Investigate',
         },
         ru: {
-            title: 'Снова в',
-            desc: 'школу',
-            btn: '-40% на всё',
+            title: 'Верю не верю',
+            btn: 'Давайте проверим',
         },
         es: {
-            title: 'Vuelta al',
-            desc: 'cole',
-            btn: 'Obtén un 40% off',
+            title: '¿Realidad o ficción?',
+            btn: '¡Adivinar!',
         },
         de: {
-            title: 'Zurück zur',
-            desc: 'Schule',
-            btn: '40% Rabatt',
+            title: 'Falsch oder wahr?',
+            btn: 'Kommen Sie klar',
         },
         fr: {
-            title: 'La rentrée',
-            desc: 'scolaire',
-            btn: '40% de remise',
+            title: 'Fait ou fiction ?',
+            btn: 'Examinons',
         },
         it: {
-            title: 'Ritorno a',
-            desc: 'scuola',
-            btn: '40% di sconto',
+            title: 'Fatto o finzione?',
+            btn: 'Esaminiamo',
         },
         ko: {
-            title: '백 투 스쿨',
-            desc: '세일',
-            btn: '40% 할인',
+            title: '사실일까, 괴담일까?',
+            btn: '퀴즈 시작',
+        },
+        ja: {
+            title: '事実か怪談か？',
+            btn: 'クイズに挑戦する',
         },
         zh_cn: {
-            title: '开学啦',
-            btn: '一律享受40%折扣',
+            title: '万圣节答题小游戏',
+            btn: '开始玩儿',
         },
         zh_tw: {
-            title: '開學啦',
-            btn: '獲得40%的折扣',
+            title: '萬聖節答題小遊戲',
+            btn: '開始玩',
         },
         uk: {
-            title: 'Знову до',
-            desc: 'школи',
-            btn: 'Знижка 40%',
-        },
-        pt_pt: {
-            title: 'De volta à',
-            desc: 'escola',
-            btn: 'Obter 40% de desconto',
+            title: 'Факт чи вигадка?',
+            btn: 'Вгадай!',
         },
         pt_br: {
-            title: 'De volta à',
-            desc: 'escola',
-            btn: 'Obtenha 40% de desconto',
+            title: 'Realidade ou ficção?',
+            btn: 'Adivinhar',
+        },
+        pt_pt: {
+            title: 'Realidade ou ficção?',
+            btn: 'Adivinhar',
         },
         ar: {
-            title: 'العودة',
-            desc: 'إلى المدرسة',
-            btn: '%احصل على خصم 40',
+            title: 'حقيقة أم خيال؟',
+            btn: '!يخمن',
         },
         be: {
-            title: 'Назад у',
-            desc: 'школу',
-            btn: 'Атрымайце скідку 40%',
+            title: 'Факт ці выдумка?',
+            btn: 'Адгадайце!',
+        },
+        bg: {
+            title: 'Факт или измислица?',
+            btn: 'Познайте!',
+        },
+        ca: {
+            title: 'Realitat o ficció?',
+            btn: 'Endevina!',
+        },
+        cs: {
+            title: 'Pravda nebo fikce?',
+            btn: 'Tipni si!',
+        },
+        da: {
+            title: 'Fakta eller fiktion?',
+            btn: 'Gætte!',
+        },
+        el: {
+            title: 'Σωστό ή λάθος?',
+            btn: 'Εικασία!',
+        },
+        es_419: {
+            title: '¿Realidad o ficción?',
+            btn: '¡Adivinar!',
+        },
+        fa: {
+            title: 'واقعیت یا تخیل؟',
+            btn: '!حدس بزن',
+        },
+        fi: {
+            title: 'Totta vai tarua?',
+            btn: 'Arvaus!',
+        },
+        he: {
+            title: '?עובדה או בדיה',
+            btn: '!לְנַחֵשׁ',
+        },
+        hr: {
+            title: 'Činjenica ili fikcija?',
+            btn: 'Pogodite!',
+        },
+        hu: {
+            title: 'Tény vagy fikció?',
+            btn: 'Találd ki!',
+        },
+        hy: {
+            title: 'Փաստ, թե հորինված.',
+            btn: 'Գուշակիր',
         },
         id: {
-            title: 'Kembali ke',
-            desc: 'sekolah',
-            btn: 'Dapatkan diskon 40%',
+            title: 'Fakta atau Fiksi?',
+            btn: 'Tebakan!',
+        },
+        lt: {
+            title: 'Faktas ar fikcija?',
+            btn: 'Atspėk!',
+        },
+        ms: {
+            title: 'Fakta atau fiksyen?',
+            btn: 'Teka!',
+        },
+        nb: {
+            title: 'Fakta eller fiksjon?',
+            btn: 'Gjett!',
+        },
+        nl: {
+            title: 'Feit of Fictie?',
+            btn: 'Gok!',
         },
         pl: {
-            title: 'Powrót do',
-            desc: 'szkoły',
-            btn: 'Zyskaj 40% zniżki',
+            title: 'Fakt czy fikcja?',
+            btn: 'Zgadywać!',
+        },
+        ro: {
+            title: 'Realitate sau fictiune?',
+            btn: 'Ghici!',
+        },
+        sk: {
+            title: 'Skutočnosť alebo fikcia?',
+            btn: 'Hádaj!',
+        },
+        sl: {
+            title: 'Dejstvo ali fikcija?',
+            btn: 'Ugani!',
+        },
+        'sr-Latn': {
+            title: 'Tačno ili netačno?',
+            btn: 'Izgleda!',
+        },
+        sv: {
+            title: 'Fakta eller påhitt?',
+            btn: 'Gissa!',
         },
         tr: {
-            title: 'Okula dönüş',
-            btn: '40 indirim kazanın',
+            title: 'Gerçek mi kurgu mu?',
+            btn: 'Tahmin etmek!',
         },
         vi: {
-            title: 'Trở lại',
-            desc: 'trường học',
-            btn: 'Được GIẢM GIÁ 40%',
+            title: 'Sự thật hay hư cấu?',
+            btn: 'Đoán!',
+        },
+        hi: {
+            title: 'तथ्य या कल्पना?',
+            btn: 'अनुमान लगाना!',
+        },
+        et: {
+            title: 'Fakt või väljamõeldis?',
+            btn: 'Arva ära!',
+        },
+        th: {
+            title: 'เรื่องจริงหรือนิยาย?',
+            btn: 'เดา!',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BackToSchool }),
-    from: '30 August 2022 12:00:00',
-    to: '4 September 2022 23:59:00',
+    url: Forward.get({ action: ForwardAction.Halloween }),
+    from: '25 October 2023 12:00:00',
+    to: '1 November 2023 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/promo-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/promo-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween23-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween23-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/promo-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/promo-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween23-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween23-off-38.png'),
         },
     },
 };
@@ -149,5 +234,5 @@ export const backToSchool22Notification: Notification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [BACK_TO_SCHOOL_22_ID, backToSchool22Notification],
+    [HALLOWEEN_23_ID, halloween23Notification],
 ]);

@@ -34,7 +34,11 @@ import { Checkbox } from '../ui/Checkbox';
 import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
 import { MessageType } from '../../../../common/messages';
-import { NotifierType } from '../../../../common/constants';
+import {
+    NotifierType,
+    NEWLINE_CHAR_UNIX,
+    NEWLINE_CHAR_REGEX,
+} from '../../../../common/constants';
 import { handleFileUpload } from '../../../helpers';
 import { Log } from '../../../../common/log';
 import { exportData, ExportTypes } from '../../utils/export';
@@ -159,7 +163,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             // Subscribe to events of request filter update
             // to have actual user rules in the editor
             const events = [
-                NotifierType.userFilterUpdated,
+                NotifierType.UserFilterUpdated,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -168,7 +172,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                     const { type } = message;
 
                     switch (type) {
-                        case NotifierType.userFilterUpdated: {
+                        case NotifierType.UserFilterUpdated: {
                             await handleUserFilterUpdated();
                             break;
                         }
@@ -227,8 +231,9 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             }
 
             const oldRulesString = editorRef.current.editor.getValue();
-            const oldRules = oldRulesString.split('\n');
-            const newRules = trimmedNewRules.split('\n');
+            const oldRules = oldRulesString.split(NEWLINE_CHAR_UNIX);
+
+            const newRules = trimmedNewRules.split(NEWLINE_CHAR_REGEX);
             const uniqNewRules = newRules.filter((newRule) => {
                 const trimmedNewRule = newRule.trim();
                 if (trimmedNewRule.length === 0) {
@@ -240,7 +245,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             });
 
             const rulesUnion = [...oldRules, ...uniqNewRules];
-            const rulesUnionString = rulesUnion.join('\n').trim();
+            const rulesUnionString = rulesUnion.join(NEWLINE_CHAR_UNIX).trim();
 
             if (oldRulesString !== rulesUnionString) {
                 editorRef.current.editor.setValue(rulesUnionString, 1);

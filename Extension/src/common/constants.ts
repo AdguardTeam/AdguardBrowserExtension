@@ -23,7 +23,7 @@
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 1;
+export const APP_SCHEMA_VERSION = 3;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -65,7 +65,8 @@ export const enum AntibannerGroupsId {
 
 export enum NotifierType {
     RequestFilterUpdated = 'event.request.filter.updated',
-    userFilterUpdated = 'event.user.filter.updated',
+    UserFilterUpdated = 'event.user.filter.updated',
+    CustomFilterAdded = 'event.custom.filter.added',
     UpdateAllowlistFilterRules = 'event.update.allowlist.filter.rules',
     SettingUpdated = 'event.update.setting.value',
     FiltersUpdateCheckReady = 'event.update.filters.check',
@@ -83,6 +84,7 @@ export enum NotifierType {
 
 export const FULLSCREEN_USER_RULES_EDITOR = 'fullscreen_user_rules_editor' as const;
 export const FILTERING_LOG = 'filtering-log' as const;
+export const KEEP_ALIVE_PORT_NAME = 'keep-alive' as const;
 
 export const enum NavigationTag {
     Regular = 'regular',
@@ -126,3 +128,6 @@ export enum FiltersUpdateTime {
     FortyEightHours = 1000 * 60 * 60 * 48,
     Default = -1,
 }
+
+export const NEWLINE_CHAR_UNIX = '\n';
+export const NEWLINE_CHAR_REGEX = /\r?\n/;

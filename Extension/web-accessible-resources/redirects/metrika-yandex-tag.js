@@ -1,9 +1,9 @@
 (function(source, args) {
     function metrikaYandexTag(source) {
-        const asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
-            let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-            let callback = options.callback;
-            const ctx = options.ctx;
+        var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
+            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+            var callback = options.callback;
+            var ctx = options.ctx;
             if (typeof callback === "function") {
                 callback = ctx !== undefined ? callback.bind(ctx) : callback;
                 setTimeout((function() {
@@ -11,28 +11,28 @@
                 }));
             }
         };
-        const addFileExtension = noopFunc;
-        const extLink = asyncCallbackFromOptions;
-        const file = asyncCallbackFromOptions;
-        const getClientID = function getClientID(id, cb) {
+        var addFileExtension = noopFunc;
+        var extLink = asyncCallbackFromOptions;
+        var file = asyncCallbackFromOptions;
+        var getClientID = function getClientID(id, cb) {
             if (!cb) {
                 return;
             }
             setTimeout(cb(null));
         };
-        const hitFunc = asyncCallbackFromOptions;
-        const notBounce = asyncCallbackFromOptions;
-        const params = noopFunc;
-        const reachGoal = function reachGoal(id, target, params, callback, ctx) {
+        var hitFunc = asyncCallbackFromOptions;
+        var notBounce = asyncCallbackFromOptions;
+        var params = noopFunc;
+        var reachGoal = function reachGoal(id, target, params, callback, ctx) {
             asyncCallbackFromOptions(null, null, {
                 callback: callback,
                 ctx: ctx
             });
         };
-        const setUserID = noopFunc;
-        const userParams = noopFunc;
-        const destruct = noopFunc;
-        const api = {
+        var setUserID = noopFunc;
+        var userParams = noopFunc;
+        var destruct = noopFunc;
+        var api = {
             addFileExtension: addFileExtension,
             extLink: extLink,
             file: file,
@@ -62,7 +62,7 @@
             ym.a = window.ym.a;
             window.ym = ym;
             window.ym.a.forEach((function(params) {
-                const id = params[0];
+                var id = params[0];
                 init(id);
             }));
         }
@@ -73,19 +73,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

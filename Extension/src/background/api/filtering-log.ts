@@ -76,6 +76,7 @@ export type FilteringLogEvent = {
     cookieName?: string,
     cookieValue?: string,
     isModifyingCookieRule?: boolean,
+    cspReportBlocked?: boolean,
     replaceRules?: FilteringEventRuleData[],
     stealthActions?: StealthActionEvent['data']['stealthActions'],
 };

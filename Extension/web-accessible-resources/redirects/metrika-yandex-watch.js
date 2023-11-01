@@ -1,10 +1,10 @@
 (function(source, args) {
     function metrikaYandexWatch(source) {
-        const cbName = "yandex_metrika_callbacks";
-        const asyncCallbackFromOptions = function asyncCallbackFromOptions() {
-            let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            let callback = options.callback;
-            const ctx = options.ctx;
+        var cbName = "yandex_metrika_callbacks";
+        var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
+            var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+            var callback = options.callback;
+            var ctx = options.ctx;
             if (typeof callback === "function") {
                 callback = ctx !== undefined ? callback.bind(ctx) : callback;
                 setTimeout((function() {
@@ -57,19 +57,19 @@
             return;
         }
         try {
-            const log = console.log.bind(console);
-            const trace = console.trace.bind(console);
-            let prefix = source.ruleText || "";
+            var log = console.log.bind(console);
+            var trace = console.trace.bind(console);
+            var prefix = source.ruleText || "";
             if (source.domainName) {
-                const AG_SCRIPTLET_MARKER = "#%#//";
-                const UBO_SCRIPTLET_MARKER = "##+js";
-                let ruleStartIndex;
+                var AG_SCRIPTLET_MARKER = "#%#//";
+                var UBO_SCRIPTLET_MARKER = "##+js";
+                var ruleStartIndex;
                 if (source.ruleText.includes(AG_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(AG_SCRIPTLET_MARKER);
                 } else if (source.ruleText.includes(UBO_SCRIPTLET_MARKER)) {
                     ruleStartIndex = source.ruleText.indexOf(UBO_SCRIPTLET_MARKER);
                 }
-                const rulePart = source.ruleText.slice(ruleStartIndex);
+                var rulePart = source.ruleText.slice(ruleStartIndex);
                 prefix = "".concat(source.domainName).concat(rulePart);
             }
             log("".concat(prefix, " trace start"));

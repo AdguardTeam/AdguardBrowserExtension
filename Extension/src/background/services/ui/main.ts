@@ -91,7 +91,12 @@ export class UiService {
      */
     public static async init(): Promise<void> {
         await toasts.init();
-        ContextMenuApi.init();
+
+        // TODO add better handling for AdGuard for Firefox
+        // Do not init context menu for mobile browsers
+        if (browser.contextMenus) {
+            ContextMenuApi.init();
+        }
 
         messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
         contextMenuEvents.addListener(ContextMenuAction.OpenSettings, PagesApi.openSettingsPage);

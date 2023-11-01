@@ -85,17 +85,33 @@ const printCriticalResults = (criticals) => {
     });
 };
 
-const validateMessage = (baseKey, baseLocaleTranslations, localeTranslations) => {
+/**
+ * Validates that localized string correspond by structure to base locale string.
+ *
+ * @param {string} baseKey Key of the base locale string.
+ * @param {object} baseLocaleTranslations Translations of the base locale.
+ * @param {string} locale Locale to validate.
+ * @param {object} localeTranslations Translations of the locale to validate.
+ *
+ * @returns {object} Validation result if error occurred, otherwise undefined.
+ */
+const validateMessage = (baseKey, baseLocaleTranslations, locale, localeTranslations) => {
     const baseMessageValue = baseLocaleTranslations[baseKey].message;
     const localeMessageValue = localeTranslations[baseKey].message;
+    let validation;
     try {
-        const isTranslationValid = validator.isTranslationValid(baseMessageValue, localeMessageValue);
-        if (!isTranslationValid) {
-            throw new Error('Invalid translated string');
+        if (!validator.isTranslationValid(
+            baseMessageValue,
+            localeMessageValue,
+            // locale should be lowercase, e.g. 'pt_br', not 'pt_BR'
+            locale.toLowerCase(),
+        )) {
+            throw new Error('Invalid translation');
         }
     } catch (error) {
-        return { key: baseKey, error };
+        validation = { key: baseKey, error };
     }
+    return validation;
 };
 
 /**
@@ -130,7 +146,7 @@ export const checkTranslations = async (locales, flags) => {
             if (!localeMessages.includes(baseKey)) {
                 untranslatedStrings.push(baseKey);
             } else {
-                const validationError = validateMessage(baseKey, baseLocaleTranslations, localeTranslations);
+                const validationError = validateMessage(baseKey, baseLocaleTranslations, locale, localeTranslations);
                 if (validationError) {
                     invalidTranslations.push(validationError);
                 }

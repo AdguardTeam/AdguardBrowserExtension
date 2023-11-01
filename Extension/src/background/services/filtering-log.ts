@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
 
 import {
     TabContext,
-    tabsApi,
+    tabsApi as tsWebExtTabsApi,
     defaultFilteringLog,
     FilteringEventType,
     SendRequestEvent,
@@ -35,6 +34,7 @@ import {
     JsInjectEvent,
     ReplaceRuleApplyEvent,
     StealthActionEvent,
+    CspReportBlockedEvent,
 } from '@adguard/tswebextension';
 
 import { messageHandler } from '../message-handler';
@@ -57,6 +57,7 @@ import {
     SettingsData,
     FilteringLogTabInfo,
     HitStatsApi,
+    TabsApi,
 } from '../api';
 import { storage } from '../storages';
 import { SettingOption } from '../schema';
@@ -92,9 +93,9 @@ export class FilteringLogService {
             FilteringLogService.onSetFilteringLogWindowState,
         );
 
-        tabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
-        tabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
-        tabsApi.onDelete.subscribe(FilteringLogService.onTabRemove);
+        tsWebExtTabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
+        tsWebExtTabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
+        tsWebExtTabsApi.onDelete.subscribe(FilteringLogService.onTabRemove);
 
         defaultFilteringLog.addEventListener(FilteringEventType.SendRequest, FilteringLogService.onSendRequest);
         defaultFilteringLog.addEventListener(FilteringEventType.TabReload, FilteringLogService.onTabReload);
@@ -129,6 +130,11 @@ export class FilteringLogService {
         defaultFilteringLog.addEventListener(FilteringEventType.JsInject, FilteringLogService.onScriptInjection);
 
         defaultFilteringLog.addEventListener(FilteringEventType.StealthAction, FilteringLogService.onStealthAction);
+
+        defaultFilteringLog.addEventListener(
+            FilteringEventType.CspReportBlocked,
+            FilteringLogService.onCspReportBlocked,
+        );
 
         if (UserAgent.isFirefox) {
             defaultFilteringLog.addEventListener(
@@ -377,12 +383,27 @@ export class FilteringLogService {
      * @param event Event with type {@link ReplaceRuleApplyEvent}.
      * @param event.data Destructed data from {@link ReplaceRuleApplyEvent}:
      * tab id, event id and stealthActions - last one is the bit-mask
-     * of applied {@link StealthActions} from webextension.
+     * of applied {@link StealthActions} from tswebextension.
      */
     private static onStealthAction({ data }: StealthActionEvent): void {
         const { tabId, eventId, stealthActions } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, { stealthActions });
+    }
+
+    /**
+     * Records the blocked csp report.
+     *
+     * @param event Event with type {@link CspReportBlocked}.
+     * @param event.data Destructed data from {@link CspReportBlocked}:
+     * tab id, event id and cspReportBlocked - last one is a boolean flag.
+     */
+    private static onCspReportBlocked({ data }: CspReportBlockedEvent): void {
+        const { tabId, eventId, cspReportBlocked } = data;
+
+        filteringLogApi.updateEventData(tabId, eventId, {
+            cspReportBlocked,
+        });
     }
 
     /**
@@ -451,7 +472,7 @@ export class FilteringLogService {
      */
     private static async onRefreshPage({ data }: PageRefreshMessage): Promise<void> {
         const { tabId } = data;
-        await browser.tabs.reload(tabId);
+        await TabsApi.reload(tabId);
     }
 
     /**
