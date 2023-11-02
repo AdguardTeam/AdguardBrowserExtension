@@ -30,7 +30,7 @@ const filterInfoValidator = zod.object({
 
 export const regularFilterI18nMetadataValidator = zod.record(
     /**
-     * Two-letter language code.
+     * Locale code.
      */
     zod.string(),
     filterInfoValidator,

@@ -19,14 +19,17 @@ import browser from 'webextension-polyfill';
 
 import {
     SettingOption,
-    Metadata,
-    TagMetadata,
-    RegularFilterMetadata,
-    GroupMetadata,
-    FiltersI18n,
-    GroupsI18n,
-    I18nMetadata,
-    TagsI18n,
+    type Metadata,
+    type RegularFilterMetadata,
+    type GroupMetadata,
+    type TagMetadata,
+    type I18nMetadata,
+    type FiltersI18n,
+    type GroupsI18n,
+    type TagsI18n,
+    type RegularFilterI18nMetadata,
+    type GroupI18nMetadata,
+    type TagI18nMetadata,
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 import { I18n } from '../utils/i18n';
@@ -161,9 +164,11 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
 
         const { tags, groups, filters } = metadata;
 
-        tags.forEach((tag) => MetadataStorage.applyFilterTagLocalization(tag, tagsI18n));
-        filters.forEach((filter) => MetadataStorage.applyFilterLocalization(filter, filtersI18n));
-        groups.forEach((group) => MetadataStorage.applyGroupLocalization(group, groupsI18n));
+        const uiLanguage: string = browser.i18n.getUILanguage();
+
+        tags.forEach((tag) => MetadataStorage.applyFilterTagLocalization(tag, tagsI18n, uiLanguage));
+        filters.forEach((filter) => MetadataStorage.applyFilterLocalization(filter, filtersI18n, uiLanguage));
+        groups.forEach((group) => MetadataStorage.applyGroupLocalization(group, groupsI18n, uiLanguage));
 
         return metadata;
     }
@@ -173,26 +178,31 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      *
      * @param tag Tag metadata.
      * @param tagsI18n Tag i18n metadata.
+     * @param uiLanguage UI language.
      */
     private static applyFilterTagLocalization(
         tag: TagMetadata,
         tagsI18n: TagsI18n,
+        uiLanguage: string,
     ): void {
         const { tagId } = tag;
-        const localizations = tagsI18n[tagId];
-        if (localizations) {
-            const locale = I18n.find(localizations, browser.i18n.getUILanguage());
+        const rawLocalizations = tagsI18n[tagId];
+        if (!rawLocalizations) {
+            return;
+        }
+        const localizations = MetadataStorage.normalizeLocalization(rawLocalizations);
 
-            if (!locale) {
-                return;
-            }
+        const locale = I18n.find(Object.keys(localizations), uiLanguage);
 
-            const localization = localizations[locale];
+        if (!locale) {
+            return;
+        }
 
-            if (localization) {
-                tag.name = localization.name;
-                tag.description = localization.description;
-            }
+        const localization = localizations[locale];
+
+        if (localization) {
+            tag.name = localization.name;
+            tag.description = localization.description;
         }
     }
 
@@ -201,26 +211,32 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      *
      * @param filter Regular filter metadata.
      * @param filtersI18n Regular filter i18n metadata.
+     * @param uiLanguage UI language.
      */
     private static applyFilterLocalization(
         filter: RegularFilterMetadata,
         filtersI18n: FiltersI18n,
+        uiLanguage: string,
     ): void {
         const { filterId } = filter;
-        const localizations = filtersI18n[filterId];
-        if (localizations) {
-            const locale = I18n.find(localizations, browser.i18n.getUILanguage());
+        const rawLocalizations = filtersI18n[filterId];
+        if (!rawLocalizations) {
+            return;
+        }
 
-            if (!locale) {
-                return;
-            }
+        const localizations = MetadataStorage.normalizeLocalization(rawLocalizations);
 
-            const localization = localizations[locale];
+        const locale = I18n.find(Object.keys(localizations), uiLanguage);
 
-            if (localization) {
-                filter.name = localization.name;
-                filter.description = localization.description;
-            }
+        if (!locale) {
+            return;
+        }
+
+        const localization = localizations[locale];
+
+        if (localization) {
+            filter.name = localization.name;
+            filter.description = localization.description;
         }
     }
 
@@ -229,25 +245,49 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      *
      * @param group Group metadata.
      * @param groupsI18n Group i18n metadata.
+     * @param uiLanguage UI language.
      */
     private static applyGroupLocalization(
         group: GroupMetadata,
         groupsI18n: GroupsI18n,
+        uiLanguage: string,
     ): void {
         const { groupId } = group;
-        const localizations = groupsI18n[groupId];
-        if (localizations) {
-            const locale = I18n.find(localizations, browser.i18n.getUILanguage());
-
-            if (!locale) {
-                return;
-            }
-
-            const localization = localizations[locale];
-            if (localization) {
-                group.groupName = localization.name;
-            }
+        const rawLocalizations = groupsI18n[groupId];
+        if (!rawLocalizations) {
+            return;
         }
+
+        const localizations = MetadataStorage.normalizeLocalization(rawLocalizations);
+
+        const locale = I18n.find(Object.keys(localizations), uiLanguage);
+
+        if (!locale) {
+            return;
+        }
+
+        const localization = localizations[locale];
+        if (localization) {
+            group.groupName = localization.name;
+        }
+    }
+
+    /**
+     * Normalizes localization object.
+     *
+     * @param localization Input localization object.
+     * @returns Normalized localization object.
+     */
+    private static normalizeLocalization<T extends RegularFilterI18nMetadata | GroupI18nMetadata | TagI18nMetadata>(
+        localization: T,
+    ): T {
+        const normalizedLocalization = {} as T;
+
+        Object.entries(localization).forEach(([key, value]) => {
+            normalizedLocalization[I18n.normalizeLanguageCode(key)] = value;
+        });
+
+        return normalizedLocalization;
     }
 
     /**

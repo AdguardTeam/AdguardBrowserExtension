@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Do not use `zh-CN` localized metadata for `zh-TW` browser language
+  [#2504](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2504)
+
+
+## [4.2.209] - 2023-11-01
+
+### Fixed
+- Resync event listeners after background page wakes up
+
+
+## [4.2.208] - 2023-10-23
+
 ### Added
 - Send `system_version` during issues reporting
   (#2535)[https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2535].
@@ -22,7 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rule patterns and options not being clickable in rule wizard of filtering log [#2204](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2204).
 
 
-<!-- TODO: update the date after release -->
 ## [4.2.189] - 2023-10-09
 
 ### Added
@@ -97,7 +109,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/tsurlfilter` to [v2.1.7](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#217---2023-08-10)
 - Updated `@adguard/scriptlets` to [v1.9.62](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
-[4.2.189]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.168...4.2.189
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.209...HEAD
+[4.2.209]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/561737249b2c50c39b8e0ee6eefa5d19726c97b3...v4.2.209
+[4.2.208]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.189...561737249b2c50c39b8e0ee6eefa5d19726c97b3
+[4.2.189]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.168...v4.2.189
 [4.2.168]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.162...v4.2.168
 [4.2.162]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.151...v4.2.162
 [4.2.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.1.57...v4.2.151
