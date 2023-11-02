@@ -26,7 +26,7 @@ const groupName = zod.object({
 
 export const groupI18nMetadataValidator = zod.record(
     /**
-     * Two-letter language code.
+     * Locale code.
      */
     zod.string(),
     groupName,

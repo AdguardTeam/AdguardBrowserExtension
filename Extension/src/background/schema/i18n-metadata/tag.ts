@@ -30,7 +30,7 @@ const tagInfoValidator = zod.object({
 
 export const tagI18nMetadataValidator = zod.record(
     /**
-     * Two-letter language code.
+     * Locale code.
      */
     zod.string(),
     tagInfoValidator,

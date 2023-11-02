@@ -31,9 +31,10 @@ import {
     FiltersStorage,
 } from '../../storages';
 import {
-    Metadata,
-    RegularFilterMetadata,
-    CustomFilterMetadata,
+    type Metadata,
+    type I18nMetadata,
+    type RegularFilterMetadata,
+    type CustomFilterMetadata,
     i18nMetadataValidator,
     metadataValidator,
     filterStateStorageDataValidator,
@@ -311,6 +312,25 @@ export class FiltersApi {
     }
 
     /**
+     * Updates `metadata` with `i18nMetadata`, handles custom group name as well,
+     * and saves it.
+     *
+     * @param metadata Filters, groups and tags metadata.
+     * @param i18nMetadata Filters, groups and tags i18n metadata.
+     */
+    private static updateMetadataWithI18nMetadata(metadata: Metadata, i18nMetadata: I18nMetadata): void {
+        const localizedMetadata = MetadataStorage.applyI18nMetadata(metadata, i18nMetadata);
+
+        localizedMetadata.groups.push({
+            groupId: AntibannerGroupsId.CustomFilterGroupId,
+            displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
+            groupName: translator.getMessage('options_antibanner_custom_group'),
+        });
+
+        metadataStorage.setData(localizedMetadata);
+    }
+
+    /**
      * Load i18n metadata from remote source and save it.
      *
      * @param remote If true, download data from backend, else load it from local files.
@@ -334,18 +354,9 @@ export class FiltersApi {
             ? await network.downloadMetadataFromBackend()
             : await network.getLocalFiltersMetadata();
 
-        const localizedMetadata = MetadataStorage.applyI18nMetadata(
-            metadata,
-            i18nMetadataStorage.getData(),
-        );
+        const i18nMetadata = i18nMetadataStorage.getData();
 
-        localizedMetadata.groups.push({
-            groupId: AntibannerGroupsId.CustomFilterGroupId,
-            displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
-            groupName: translator.getMessage('options_antibanner_custom_group'),
-        });
-
-        metadataStorage.setData(localizedMetadata);
+        FiltersApi.updateMetadataWithI18nMetadata(metadata, i18nMetadata);
     }
 
     /**
