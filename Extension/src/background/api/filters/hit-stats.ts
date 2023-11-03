@@ -122,6 +122,7 @@ export class HitStatsApi {
     private static shouldCollectHitStats(filterId: number): boolean {
         return filterId < CUSTOM_FILTERS_START_ID
             && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId
+            && filterId !== AntiBannerFiltersId.StealthModeFilterId;
     }
 }
