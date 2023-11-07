@@ -328,7 +328,7 @@ export class FilteringLogApi {
      */
     public addEventData(tabId: number, data: FilteringLogEvent): void {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
-        if (!tabInfo || !this.isOpen) {
+        if (!tabInfo || !this.isOpen()) {
             return;
         }
 
@@ -355,7 +355,7 @@ export class FilteringLogApi {
         data: Partial<FilteringLogEvent>,
     ): void {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
-        if (!tabInfo || !this.isOpen) {
+        if (!tabInfo || !this.isOpen()) {
             return;
         }
 

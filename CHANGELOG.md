@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Remove "AdGuard settings..." from context menu on options.html [#2258](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258)
+
 ### Fixed
 - Do not use `zh-CN` localized metadata for `zh-TW` browser language
   [#2504](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2504)
+- Collect logs only when filtering log is open [#2544](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2544)
 
 
 ## [4.2.209] - 2023-11-01
@@ -22,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Send `system_version` during issues reporting
-  (#2535)[https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2535].
+  [#2535](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2535).
 
 ### Changed
 - Updated `@adguard/filters-downloader` to [v1.1.20](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
