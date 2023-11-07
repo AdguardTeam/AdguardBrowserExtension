@@ -27,11 +27,30 @@ import {
 } from '../../events';
 import { SettingOption } from '../../schema';
 import { SettingsApi } from '../settings';
+import { OPTIONS_PAGE } from '../../../common/constants';
 
 import { FrameData } from './frames';
 
 export type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
     messageArgs?: { [key: string]: unknown },
+};
+
+/**
+ * Wrapper around context menus create method.
+ * It helps to handle errors thrown by contextMenus.
+ *
+ * @param props Options for creating menu.
+ */
+const createMenu = (props: browser.Menus.CreateCreatePropertiesType): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        browser.contextMenus.create(props, () => {
+            if (browser.runtime.lastError) {
+                reject(browser.runtime.lastError);
+                return;
+            }
+            resolve();
+        });
+    });
 };
 
 /**
@@ -64,6 +83,7 @@ export class ContextMenuApi {
      * @param frameData.documentAllowlisted Is website allowlisted.
      * @param frameData.userAllowlisted Is current website allowlisted by user rule.
      * @param frameData.canAddRemoveRule Is user rules was applied on current website.
+     * @param frameData.url Current tab url.
      */
     private static async updateMenu({
         applicationFilteringDisabled,
@@ -71,6 +91,7 @@ export class ContextMenuApi {
         documentAllowlisted,
         userAllowlisted,
         canAddRemoveRule,
+        url,
     }: FrameData): Promise<void> {
         // TODO add better handling for AdGuard for Firefox
         // There is nothing to do if context menu is not supported
@@ -86,11 +107,15 @@ export class ContextMenuApi {
             return;
         }
 
+        // Used no to show settings menu item on the options page
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258
+        const isOptionsPage = !!(url?.startsWith(browser.runtime.getURL(OPTIONS_PAGE)));
+
         try {
             if (applicationFilteringDisabled) {
-                await ContextMenuApi.addFilteringDisabledMenuItems();
+                await ContextMenuApi.addFilteringDisabledMenuItems(isOptionsPage);
             } else if (urlFilteringDisabled) {
-                await ContextMenuApi.addUrlFilteringDisabledContextMenuAction();
+                await ContextMenuApi.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
             } else {
                 if (documentAllowlisted && !userAllowlisted) {
                     await ContextMenuApi.addMenuItem(ContextMenuAction.SiteException);
@@ -112,7 +137,9 @@ export class ContextMenuApi {
                 await ContextMenuApi.addSeparator();
                 await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
                 await ContextMenuApi.addSeparator();
-                await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+                if (!isOptionsPage) {
+                    await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+                }
                 await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
                 await ContextMenuApi.addMenuItem(ContextMenuAction.DisableProtection);
             }
@@ -131,24 +158,32 @@ export class ContextMenuApi {
     }
 
     /**
-     * Creates menu items for context menu, displayed, when app filtering disabled globally.
+     * Creates menu items for the context menu, displayed, when app filtering disabled globally.
+     *
+     * @param isOptionsPage Is current page options page.
      */
-    private static async addFilteringDisabledMenuItems(): Promise<void> {
+    private static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
         await ContextMenuApi.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
         await ContextMenuApi.addSeparator();
         await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+        if (!isOptionsPage) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+        }
         await ContextMenuApi.addMenuItem(ContextMenuAction.EnableProtection);
     }
 
     /**
-     * Creates menu items for context menu, displayed, when app filtering disabled for current tab.
+     * Creates menu items for the context menu, displayed, when app filtering disabled for current tab.
+     *
+     * @param isOptionsPage Is current page options page.
      */
-    private static async addUrlFilteringDisabledContextMenuAction(): Promise<void> {
+    private static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
         await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled);
         await ContextMenuApi.addSeparator();
         await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+        if (!isOptionsPage) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+        }
         await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
     }
 
@@ -161,7 +196,7 @@ export class ContextMenuApi {
     private static async addMenuItem(action: ContextMenuAction, options: AddMenuItemOptions = {}): Promise<void> {
         const { messageArgs, ...rest } = options;
 
-        await browser.contextMenus.create({
+        await createMenu({
             id: action,
             contexts: ['all'],
             title: translator.getMessage(action, messageArgs),
@@ -173,7 +208,7 @@ export class ContextMenuApi {
      * Creates menu separator.
      */
     private static async addSeparator(): Promise<void> {
-        await browser.contextMenus.create({
+        await createMenu({
             id: nanoid(), // required for Firefox
             type: 'separator',
             contexts: ['all'],

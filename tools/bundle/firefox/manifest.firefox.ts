@@ -17,6 +17,7 @@
  */
 
 import { FIREFOX_APP_IDS_MAP, FIREFOX_WEBEXT_UPDATE_URL } from '../../constants';
+import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
 
 const buildEnv = process.env.BUILD_ENV;
 
@@ -45,7 +46,7 @@ export const firefoxManifest = {
         },
     },
     'options_ui': {
-        'page': 'pages/options.html',
+        'page': OPTIONS_PAGE,
         'open_in_tab': true,
     },
     'permissions': [

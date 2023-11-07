@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
 
 export const edgeManifest = {
-    'options_page': 'pages/options.html',
+    'options_page': OPTIONS_PAGE,
     'devtools_page': 'pages/devtools.html',
     'permissions': [
         'tabs',
