@@ -131,3 +131,5 @@ export enum FiltersUpdateTime {
 
 export const NEWLINE_CHAR_UNIX = '\n';
 export const NEWLINE_CHAR_REGEX = /\r?\n/;
+
+export const OPTIONS_PAGE = 'pages/options.html';
