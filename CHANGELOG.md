@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not use `zh-CN` localized metadata for `zh-TW` browser language
   [#2504](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2504)
 - Collect logs only when filtering log is open [#2544](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2544)
+- Cannot add a custom filter list with a .php URL [#1723](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1723)
 
 
 ## [4.2.209] - 2023-11-01
