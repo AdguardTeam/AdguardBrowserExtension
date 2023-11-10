@@ -30,7 +30,7 @@ import React, {
     useLayoutEffect,
 } from 'react';
 
-import identity from 'lodash/identity';
+import { identity } from 'lodash-es';
 import cn from 'classnames';
 import browser from 'webextension-polyfill';
 

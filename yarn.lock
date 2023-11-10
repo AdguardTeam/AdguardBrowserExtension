@@ -47,10 +47,25 @@
     tldts "5.6.45"
     zod "3.19.1"
 
-"@adguard/tswebextension@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@adguard/tswebextension/-/tswebextension-0.4.1.tgz#84333f479a705c748027b6aa4e739e10accfbf83"
-  integrity sha512-TSRRfiMNUQX9hPMnC/RjXcSUm9LC/K81aGMQlnvmYi8KJCmgeDMsit4t1VbehjbNsJJWn/KWyh2EZ1M+pOqVBQ==
+"@adguard/tsurlfilter@^2.2.4":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@adguard/tsurlfilter/-/tsurlfilter-2.2.4.tgz#97b775f1091eea8f8135eb0890266e3e4be69359"
+  integrity sha512-Q+XfoU5E0gNI6Kf3WIznGWETsrMpA/t7tTg+hUVbY2ELCLW9X/h1wTSizMS1kDPx2dnRFrJa/zzdmXiF3P7trQ==
+  dependencies:
+    "@adguard/scriptlets" "^1.9.83"
+    cidr-tools "^6.4.1"
+    commander "9.4.1"
+    is-cidr "4.0.2"
+    is-ip "3.1.0"
+    lru_map "0.4.1"
+    punycode "2.1.1"
+    tldts "5.6.45"
+    zod "3.19.1"
+
+"@adguard/tswebextension@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@adguard/tswebextension/-/tswebextension-0.4.3.tgz#a349920d895e1e24ea1cc1bc0f5458161435327d"
+  integrity sha512-4LxpFaQuyKxPOR9MZTbQj6XYLcecEZDcmGrK1zGzyUnDMhcEejtO7Pzhnf71OHyCU8SHrV8qaNI73lot9rOiaQ==
   dependencies:
     "@adguard/assistant" "^4.3.70"
     "@adguard/extended-css" "^2.0.52"
@@ -59,6 +74,7 @@
     bowser "2.11.0"
     commander "11.0.0"
     fs-extra "11.1.1"
+    lodash-es "^4.17.21"
     lru_map "0.4.1"
     nanoid "4.0.2"
     text-encoding "git+https://github.com/AdguardTeam/text-encoding.git#v0.7.2"
@@ -1208,10 +1224,17 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/lodash@^4.14.182":
-  version "4.14.192"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.192.tgz#5790406361a2852d332d41635d927f1600811285"
-  integrity sha512-km+Vyn3BYm5ytMO13k9KTp27O75rbQ0NFw+U//g+PX7VZyjCioXaRFisqSIJRECljcTv73G3i6BpglNGHgUQ5A==
+"@types/lodash-es@^4.17.11":
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.11.tgz#6ff7878f90371256a6fed0b7b4707d5d940d945b"
+  integrity sha512-eCw8FYAWHt2DDl77s+AMLLzPn310LKohruumpucZI4oOFJkIgnlaJcy23OKMJxx4r9PeTF13Gv6w+jqjWQaYUg==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.201"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.201.tgz#76f47cb63124e806824b6c18463daf3e1d480239"
+  integrity sha512-y9euML0cim1JrykNxADLfaG0FgD1g/yTHwUs/Jg9ZIU7WKj2/4IW9Lbb1WZbvck78W/lfGXFfe+u2EGfIJXdLQ==
 
 "@types/minimatch@*":
   version "5.1.2"
@@ -5119,6 +5142,11 @@ locate-path@^5.0.0:
   integrity sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==
   dependencies:
     p-locate "^4.1.0"
+
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
 lodash.defaults@^4.2.0:
   version "4.2.0"

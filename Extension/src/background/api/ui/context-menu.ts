@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { Menus } from 'webextension-polyfill';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { nanoid } from 'nanoid';
 
 import { translator } from '../../../common/translators/translator';

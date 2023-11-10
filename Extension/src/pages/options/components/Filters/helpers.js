@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'lodash-es';
 
 /**
  * Sorts filters by enabled status and displayNumber

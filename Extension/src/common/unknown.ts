@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import _ from 'lodash';
+import { get } from 'lodash-es';
 
 /**
  * Helper util used for work with unknown type.
@@ -31,9 +31,9 @@ export class Unknown {
      * @returns Undefined if key doesn't exist in the object
      * or value of key in this object.
      */
-    public static get = (obj: unknown, key: string): unknown | undefined => {
-        return _.get(obj, key);
-    };
+    public static get(obj: unknown, key: string): unknown | undefined {
+        return get(obj, key);
+    }
 
     /**
      * Checks if property exists in the object, and narrows the type of the object.

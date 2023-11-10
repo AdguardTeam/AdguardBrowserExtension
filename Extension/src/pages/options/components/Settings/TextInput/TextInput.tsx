@@ -26,7 +26,7 @@ import React, {
     type FC,
 } from 'react';
 
-import { debounce, type DebouncedFunc } from 'lodash';
+import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type { SettingHandler } from '../../../types';
 
