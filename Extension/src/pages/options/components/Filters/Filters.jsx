@@ -27,7 +27,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'lodash-es';
 
 import { rootStore } from '../../stores/RootStore';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';

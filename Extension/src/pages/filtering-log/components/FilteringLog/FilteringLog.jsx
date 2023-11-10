@@ -19,7 +19,7 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash-es';
 
 import { Filters } from '../Filters';
 import { messenger } from '../../../services/messenger';

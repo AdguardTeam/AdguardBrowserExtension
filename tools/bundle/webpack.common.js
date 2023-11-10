@@ -50,7 +50,6 @@ import {
     ASSISTANT_INJECT_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
-    LODASH_VENDOR_OUTPUT,
 } from '../../constants';
 
 const config = getEnvConf(process.env.BUILD_ENV);
@@ -92,7 +91,6 @@ export const genCommonConfig = (browserConfig) => {
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
                 dependOn: [
-                    LODASH_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                 ],
@@ -100,7 +98,6 @@ export const genCommonConfig = (browserConfig) => {
             [OPTIONS_OUTPUT]: {
                 import: OPTIONS_PATH,
                 dependOn: [
-                    LODASH_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -179,7 +176,6 @@ export const genCommonConfig = (browserConfig) => {
             [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
             [MOBX_VENDOR_OUTPUT]: ['mobx'],
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
-            [LODASH_VENDOR_OUTPUT]: ['lodash'],
             [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
@@ -280,7 +276,6 @@ export const genCommonConfig = (browserConfig) => {
                 },
                 filename: `${BACKGROUND_OUTPUT}.html`,
                 chunks: [
-                    LODASH_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                     BACKGROUND_OUTPUT,
@@ -291,7 +286,6 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
-                    LODASH_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
