@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Macedonian language support [#2574](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2574).
+
 ### Changed
 - Remove "AdGuard settings..." from context menu on options.html [#2258](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258)
 
