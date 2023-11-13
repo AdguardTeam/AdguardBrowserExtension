@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove "AdGuard settings..." from context menu on options.html [#2258](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258)
 - Updated `@adguard/tswebextension` to [v0.4.3](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
 - Updated `@adguard/tsurlfilter` to [v2.2.4](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
-- Updated `@adguard/filters-downloader` to [v1.1.21](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
+- Updated `@adguard/filters-downloader` to [v1.1.23](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
 
 ### Fixed
 - Do not use `zh-CN` localized metadata for `zh-TW` browser language
