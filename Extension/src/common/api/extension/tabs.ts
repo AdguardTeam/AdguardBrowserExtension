@@ -17,7 +17,7 @@
  */
 import browser, { Tabs } from 'webextension-polyfill';
 
-import { Prefs } from '../../prefs';
+import { Prefs } from '../../../background/prefs';
 
 /**
  * Helper class for browser.tabs API.

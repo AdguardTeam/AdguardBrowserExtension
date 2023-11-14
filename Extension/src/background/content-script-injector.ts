@@ -27,8 +27,8 @@ import {
     CONTENT_SCRIPT_END_OUTPUT,
     SUBSCRIBE_OUTPUT,
 } from '../../../constants';
+import { TabsApi } from '../common/api/extension/tabs';
 
-import { TabsApi } from './api/extension/tabs';
 import { createPromiseWithTimeout } from './utils/timers';
 
 /**

@@ -36,9 +36,9 @@ import { listeners } from '../notifier';
 import { Engine } from '../engine';
 import { settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
+import { TabsApi } from '../../common/api/extension/tabs';
 
 import { UserRulesApi } from './filters';
-import { TabsApi } from './extension/tabs';
 
 export type FilteringEventRuleData = {
     filterId: number,

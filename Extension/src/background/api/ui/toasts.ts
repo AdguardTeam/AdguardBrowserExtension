@@ -21,7 +21,7 @@ import { Log } from '../../../common/log';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { notificationTextRecordValidator } from '../../schema';
-import { TabsApi } from '../extension';
+import { TabsApi } from '../../../common/api/extension';
 import { FilterMetadata } from '../filters';
 import { sendTabMessage, MessageType } from '../../../common/messages';
 import {
