@@ -20,7 +20,7 @@ export * from './network';
 export * from './filtering-log';
 export * from './settings';
 export * from './ui';
-export * from './extension';
+export * from '../../common/api/extension';
 export * from './install';
 export * from './update';
 export * from './safebrowsing';

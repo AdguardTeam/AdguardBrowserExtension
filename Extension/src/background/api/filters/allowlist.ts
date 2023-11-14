@@ -32,7 +32,7 @@ import {
     invertedAllowlistDomainsStorage,
 } from '../../storages';
 import { Engine } from '../../engine';
-import { TabsApi } from '../extension';
+import { TabsApi } from '../../../common/api/extension';
 import { AntiBannerFiltersId } from '../../../common/constants';
 
 import { UserRulesApi } from './userrules';
