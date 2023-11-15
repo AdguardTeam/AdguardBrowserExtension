@@ -41,6 +41,9 @@ const config: Config = {
         '.+\\.(js|ts|jsx|tsx)': '@swc/jest',
     },
     globals: {
+        TSWEBEXTENSION_VERSION: '1.0.0',
+        TSURLFILTER_VERSION: '1.0.0',
+        SCRIPTLETS_VERSION: '1.0.0',
         // TODO: (AG-20414) Add tests for Firefox AMO
         IS_FIREFOX_AMO: false,
     },
