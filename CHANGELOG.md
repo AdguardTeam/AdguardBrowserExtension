@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Info about `@adguard/tswebextension`,  `@adguard/tsurlfilter` and  `@adguard/scriptlets` versions to extension's `About` page [#2237](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2237)
+
 ### Changed
 - Remove "AdGuard settings..." from context menu on options.html [#2258](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258)
 
