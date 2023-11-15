@@ -42,6 +42,13 @@ export const BROWSERS = {
     ADGUARD_API: 'adguard-api',
 };
 
+// Versions of these libraries will be taken from package.json to render on the settings About page
+export const OWN_LIBRARIES_NAMES = [
+    '@adguard/tswebextension',
+    '@adguard/tsurlfilter',
+    '@adguard/scriptlets',
+];
+
 export const BROWSERS_CONF = {
     [BROWSERS.CHROME]: {
         browser: BROWSERS.CHROME,

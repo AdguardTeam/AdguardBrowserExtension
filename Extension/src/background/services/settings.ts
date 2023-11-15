@@ -54,6 +54,11 @@ export type ExportMessageResponse = {
 export type GetOptionsDataResponse = {
     settings: SettingsData,
     appVersion: string,
+    libVersions: {
+        tswebextension: string,
+        tsurlfilter: string,
+        scriptlets: string,
+    },
     environmentOptions: {
         isChrome: boolean,
     },
@@ -127,6 +132,7 @@ export class SettingsService {
         return {
             settings: SettingsApi.getData(),
             appVersion: Prefs.version,
+            libVersions: Prefs.libVersions,
             environmentOptions: {
                 isChrome: UserAgent.isChrome,
             },
