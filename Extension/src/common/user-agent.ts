@@ -40,7 +40,10 @@ export class UserAgent {
      * @returns user agent browser name.
      */
     static getBrowserName(): string | undefined {
-        return UserAgent.parser.getBrowser().name;
+        return UserAgent.isFirefoxMobile
+            // Firefox mobile does not have own dedicated browser name
+            ? 'Firefox Mobile'
+            : UserAgent.parser.getBrowser().name;
     }
 
     /**
@@ -188,6 +191,10 @@ export class UserAgent {
         return UserAgent.parser.getEngine().name === engineName;
     }
 
+    static isTargetDeviceType(deviceType: string): boolean {
+        return UserAgent.parser.getDevice().type === deviceType;
+    }
+
     /**
      * Returns a major browser version.
      *
@@ -221,10 +228,15 @@ export class UserAgent {
 
     static isChromium = UserAgent.isTargetEngine('Blink');
 
+    static isMobileDevice = UserAgent.isTargetDeviceType('mobile');
+
+    static isFirefoxMobile = UserAgent.isFirefox && UserAgent.isMobileDevice;
+
     static isSupportedBrowser =
         (UserAgent.isChrome && Number(UserAgent.version) >= 79)
         || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= 79)
         || (UserAgent.isFirefox && Number(UserAgent.version) >= 78)
+        || (UserAgent.isFirefoxMobile && Number(UserAgent.version) >= 113)
         || (UserAgent.isOpera && Number(UserAgent.version) >= 66);
 
     static browserName = UserAgent.getBrowserName();
