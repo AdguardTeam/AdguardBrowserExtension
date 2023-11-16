@@ -19,7 +19,7 @@ import browser from 'webextension-polyfill';
 
 import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
-import { getIconImageData } from '../extension';
+import { getIconImageData } from '../../../common/api/extension';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';

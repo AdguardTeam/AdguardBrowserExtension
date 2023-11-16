@@ -4,7 +4,7 @@ const tabId = 1;
 const title = 'test';
 const eventId = '0';
 
-jest.mock('../../../../Extension/src/background/api/extension/tabs', () => {
+jest.mock('../../../../Extension/src/common/api/extension/tabs', () => {
     return {
         __esModule: true,
         TabsApi: {

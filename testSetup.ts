@@ -20,10 +20,10 @@
 import 'whatwg-fetch';
 import escape from 'css.escape';
 import mockBrowser from 'sinon-chrome';
-import { DebouncedFunc } from 'lodash';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
+import type { DebouncedFunc } from 'lodash-es';
 
 // After mocked user-agent, we can import all other mocks
 // eslint-disable-next-line import/first
@@ -69,8 +69,8 @@ jest.mock('@adguard/tswebextension', () => ({
     TsWebExtension: MockedTsWebExtension,
 }));
 
-jest.mock('lodash', () => ({
-    ...jest.requireActual('lodash'),
+jest.mock('lodash-es', () => ({
+    ...jest.requireActual('lodash-es'),
     debounce: ((func: (...args: unknown[]) => unknown) => func as DebouncedFunc<(...args: unknown[]) => unknown>),
 }));
 

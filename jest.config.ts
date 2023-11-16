@@ -20,6 +20,7 @@ import type { Config } from 'jest';
 const transformedModules = [
     '@adguard/tsurlfilter',
     '@adguard/tswebextension',
+    'lodash-es',
 ];
 
 const config: Config = {

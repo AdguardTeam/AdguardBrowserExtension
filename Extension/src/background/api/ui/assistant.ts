@@ -17,7 +17,7 @@
  */
 import { Log } from '../../../common/log';
 import { Engine } from '../../engine';
-import { TabsApi } from '../extension';
+import { TabsApi } from '../../../common/api/extension';
 
 /**
  * Extension assistant API.

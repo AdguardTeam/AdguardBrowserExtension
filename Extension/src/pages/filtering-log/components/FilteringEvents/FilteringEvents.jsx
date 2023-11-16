@@ -28,7 +28,7 @@ import { observer } from 'mobx-react';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash-es';
 import cn from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
