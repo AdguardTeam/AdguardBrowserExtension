@@ -35,197 +35,197 @@ export type Notification = {
     icons?: Record<string, Record<string, string>>,
 };
 
-export const HALLOWEEN_23_ID = 'halloween23';
+export const BLACK_FRIDAY_23_ID = 'blackFriday23';
 
-export const halloween23Notification: Notification = {
-    id: HALLOWEEN_23_ID,
+export const blackFriday23Notification: Notification = {
+    id: BLACK_FRIDAY_23_ID,
     locales: {
         en: {
-            title: 'Fact or fiction?',
-            btn: 'Investigate',
+            title: 'The best time to improve your protection',
+            btn: 'Learn how',
         },
         ru: {
-            title: 'Верю не верю',
-            btn: 'Давайте проверим',
+            title: 'Время улучшить защиту',
+            btn: 'Узнать как',
         },
         es: {
-            title: '¿Realidad o ficción?',
-            btn: '¡Adivinar!',
+            title: 'El mejor momento para mejorar tu protección',
+            btn: 'Cómo hacerlo',
         },
         de: {
-            title: 'Falsch oder wahr?',
-            btn: 'Kommen Sie klar',
+            title: 'Zeit, sich besser zu schützen',
+            btn: "Auf geht's!",
         },
         fr: {
-            title: 'Fait ou fiction ?',
-            btn: 'Examinons',
+            title: 'Augmentez votre protection',
+            btn: 'Comment faire',
         },
         it: {
-            title: 'Fatto o finzione?',
-            btn: 'Esaminiamo',
+            title: 'Il tempo per una maggiore protezione',
+            btn: 'Come fare',
         },
         ko: {
-            title: '사실일까, 괴담일까?',
-            btn: '퀴즈 시작',
+            title: '보호 기능을 개선하기 가장 좋은 시기',
+            btn: '자세히 알아보기',
         },
         ja: {
-            title: '事実か怪談か？',
-            btn: 'クイズに挑戦する',
+            title: '保護機能を強化\nするなら今だ。',
+            btn: '詳細はこちら',
         },
         zh_cn: {
-            title: '万圣节答题小游戏',
-            btn: '开始玩儿',
+            title: '增强保护',
+            btn: '了解更多',
         },
         zh_tw: {
-            title: '萬聖節答題小遊戲',
-            btn: '開始玩',
+            title: '增強保護',
+            btn: '了解詳情',
         },
         uk: {
-            title: 'Факт чи вигадка?',
-            btn: 'Вгадай!',
+            title: 'Час покращити захист',
+            btn: 'Дізнатись як',
         },
         pt_br: {
-            title: 'Realidade ou ficção?',
-            btn: 'Adivinhar',
+            title: 'O melhor momento para aumentar sua proteção',
+            btn: 'Saiba como',
         },
         pt_pt: {
-            title: 'Realidade ou ficção?',
-            btn: 'Adivinhar',
+            title: 'O melhor momento para aumentar tua proteção',
+            btn: 'Saiba como',
         },
         ar: {
-            title: 'حقيقة أم خيال؟',
-            btn: '!يخمن',
+            title: 'حان الوقت لتحسين الحماية الخاصة بك',
+            btn: 'اكتشف كيف',
         },
         be: {
-            title: 'Факт ці выдумка?',
-            btn: 'Адгадайце!',
+            title: 'Час палепшыць абарону',
+            btn: 'Даведацца як',
         },
         bg: {
-            title: 'Факт или измислица?',
-            btn: 'Познайте!',
+            title: 'Време е да подобрите защитата си',
+            btn: 'Разберете как',
         },
         ca: {
-            title: 'Realitat o ficció?',
-            btn: 'Endevina!',
+            title: 'És hora de millorar la teva protecció',
+            btn: 'Descobriu com',
         },
         cs: {
-            title: 'Pravda nebo fikce?',
-            btn: 'Tipni si!',
+            title: 'Je čas zlepšit vaši ochranu',
+            btn: 'Zjistěte jak',
         },
         da: {
-            title: 'Fakta eller fiktion?',
-            btn: 'Gætte!',
+            title: 'Tid til at forbedre din beskyttelse',
+            btn: 'Find ud af hvordan',
         },
         el: {
-            title: 'Σωστό ή λάθος?',
-            btn: 'Εικασία!',
+            title: 'Ώρα να βελτιώσετε την άμυνά σας',
+            btn: 'Βρες πως',
         },
         es_419: {
-            title: '¿Realidad o ficción?',
-            btn: '¡Adivinar!',
+            title: 'Es hora de mejorar tu protección',
+            btn: 'Averiguar como',
         },
         fa: {
-            title: 'واقعیت یا تخیل؟',
-            btn: '!حدس بزن',
+            title: 'زمان بهبود محافظت از خود است',
+            btn: 'دریابید که چگونه',
         },
         fi: {
-            title: 'Totta vai tarua?',
-            btn: 'Arvaus!',
+            title: 'Aika parantaa suojaustasi',
+            btn: 'Saada selville miten',
         },
         he: {
-            title: '?עובדה או בדיה',
-            btn: '!לְנַחֵשׁ',
+            title: 'הגיע הזמן לשפר את ההגנה שלך',
+            btn: 'לברר איך',
         },
         hr: {
-            title: 'Činjenica ili fikcija?',
-            btn: 'Pogodite!',
+            title: 'Vrijeme je da poboljšate svoju zaštitu',
+            btn: 'Saznajte kako',
         },
         hu: {
-            title: 'Tény vagy fikció?',
-            btn: 'Találd ki!',
+            title: 'Ideje javítani a védelmet',
+            btn: 'Derítsd ki hogy',
         },
         hy: {
-            title: 'Փաստ, թե հորինված.',
-            btn: 'Գուշակիր',
+            title: 'Ցանկանու՞մ եք պաշտպանել ձեր սարքը:',
+            btn: 'Պարզեք, թե ինչպես',
         },
         id: {
-            title: 'Fakta atau Fiksi?',
-            btn: 'Tebakan!',
+            title: 'Tingkatkan perlindungan Anda',
+            btn: 'Cari tahu caranya',
         },
         lt: {
-            title: 'Faktas ar fikcija?',
-            btn: 'Atspėk!',
+            title: 'Laikas pagerinti savo apsaugą',
+            btn: 'Sužinokite, kaip',
         },
         ms: {
-            title: 'Fakta atau fiksyen?',
-            btn: 'Teka!',
+            title: 'Tingkatkan perlindungan anda',
+            btn: 'Ketahui caranya',
         },
         nb: {
-            title: 'Fakta eller fiksjon?',
-            btn: 'Gjett!',
+            title: 'På tide å forbedre beskyttelsen',
+            btn: 'Finn ut hvordan',
         },
         nl: {
-            title: 'Feit of Fictie?',
-            btn: 'Gok!',
+            title: 'Verbeter uw bescherming',
+            btn: 'Uitvinden hoe',
         },
         pl: {
-            title: 'Fakt czy fikcja?',
-            btn: 'Zgadywać!',
+            title: 'Czas ulepszyć swoją ochronę',
+            btn: 'Naucz się jak',
         },
         ro: {
-            title: 'Realitate sau fictiune?',
-            btn: 'Ghici!',
+            title: 'Îmbunătățiți-vă protecția',
+            btn: 'Aflați cum',
         },
         sk: {
-            title: 'Skutočnosť alebo fikcia?',
-            btn: 'Hádaj!',
+            title: 'Čas na zlepšenie ochrany',
+            btn: 'Zistite, ako',
         },
         sl: {
-            title: 'Dejstvo ali fikcija?',
-            btn: 'Ugani!',
+            title: 'Čas za izboljšanje zaščite',
+            btn: 'Ugotovite, kako',
         },
         'sr-Latn': {
-            title: 'Tačno ili netačno?',
-            btn: 'Izgleda!',
+            title: 'Vreme je da poboljšaš svoju odbranu',
+            btn: 'Saznajte kako',
         },
         sv: {
-            title: 'Fakta eller påhitt?',
-            btn: 'Gissa!',
+            title: 'Dags att förbättra ditt skydd',
+            btn: 'Ta reda på hur',
         },
         tr: {
-            title: 'Gerçek mi kurgu mu?',
-            btn: 'Tahmin etmek!',
+            title: 'Korumanızı geliştirme zamanı',
+            btn: 'Nasıl olduğunu öğren',
         },
         vi: {
-            title: 'Sự thật hay hư cấu?',
-            btn: 'Đoán!',
+            title: 'Cải thiện khả năng bảo vệ của bạn',
+            btn: 'Tìm hiểu cách',
         },
         hi: {
-            title: 'तथ्य या कल्पना?',
-            btn: 'अनुमान लगाना!',
+            title: 'अपनी सुरक्षा में सुधार करें',
+            btn: 'सीखो कैसे',
         },
         et: {
-            title: 'Fakt või väljamõeldis?',
-            btn: 'Arva ära!',
+            title: 'Aeg parandada oma kaitset',
+            btn: 'Uurige, kuidas',
         },
         th: {
-            title: 'เรื่องจริงหรือนิยาย?',
-            btn: 'เดา!',
+            title: 'ปรับปรุงการป้องกันของคุณ',
+            btn: 'ค้นหาวิธีการ',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Halloween }),
-    from: '25 October 2023 12:00:00',
-    to: '1 November 2023 23:59:00',
+    url: Forward.get({ action: ForwardAction.BlackFriday23 }),
+    from: '22 November 2023 12:00:00',
+    to: '29 November 2023 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/halloween23-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween23-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday23-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday23-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/halloween23-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween23-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday23-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday23-off-38.png'),
         },
     },
 };
@@ -234,5 +234,5 @@ export const halloween23Notification: Notification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [HALLOWEEN_23_ID, halloween23Notification],
+    [BLACK_FRIDAY_23_ID, blackFriday23Notification],
 ]);
