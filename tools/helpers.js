@@ -35,35 +35,6 @@ import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-c
 
 const { Redirects } = redirects;
 
-/**
- * Returns an object with versions of own libraries used in the extension,
- * which should be rendered in the extension's settings page.
- *
- * @param libraries array of libraries' names
- * @returns object with versions of own libraries
- */
-export const getLibVersions = (libraries) => {
-    const { dependencies } = packageJson;
-
-    const libVersions = {};
-    libraries.forEach((lib) => {
-        let libValue = dependencies[lib];
-        if (!libValue || libValue === '*') {
-            throw new Error(`Version must be specified for "${lib}"`);
-        }
-
-        if (libValue.startsWith('^') || libValue.startsWith('~')) {
-            libValue = libValue.substring(1);
-        }
-
-        const libKey = lib.replace('@adguard/', '');
-
-        libVersions[libKey] = libValue;
-    });
-
-    return libVersions;
-};
-
 export const getEnvConf = (env) => {
     const envConfig = ENV_CONF[env];
     if (!envConfig) {

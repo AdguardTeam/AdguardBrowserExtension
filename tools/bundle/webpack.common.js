@@ -29,11 +29,7 @@ import {
     BROWSERS,
     OWN_LIBRARIES_NAMES,
 } from '../constants';
-import {
-    getEnvConf,
-    updateLocalesMSGName,
-    getLibVersions,
-} from '../helpers';
+import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import {
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
     SUBSCRIBE_OUTPUT,
@@ -58,7 +54,6 @@ import {
 } from '../../constants';
 
 const config = getEnvConf(process.env.BUILD_ENV);
-const libVersions = getLibVersions(OWN_LIBRARIES_NAMES);
 
 const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
 const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
@@ -372,12 +367,9 @@ export const genCommonConfig = (browserConfig) => {
                     },
                 ],
             }),
+            // We are doing stricter JS rule checking for Firefox AMO, so we
+            // need to determine if the Firefox browser is AMO or not.
             new DefinePlugin({
-                TSWEBEXTENSION_VERSION: JSON.stringify(libVersions.tswebextension),
-                TSURLFILTER_VERSION: JSON.stringify(libVersions.tsurlfilter),
-                SCRIPTLETS_VERSION: JSON.stringify(libVersions.scriptlets),
-                // We are doing stricter JS rule checking for Firefox AMO, so we
-                // need to determine if the Firefox browser is AMO or not.
                 IS_FIREFOX_AMO: browserConfig.browser === BROWSERS.FIREFOX_AMO,
             }),
         ],

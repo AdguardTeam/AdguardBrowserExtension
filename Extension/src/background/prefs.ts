@@ -17,10 +17,9 @@
  */
 import browser from 'webextension-polyfill';
 
-// Variables passed from webpack.DefinePlugin that will be primitive at runtime.
-declare const TSWEBEXTENSION_VERSION: string;
-declare const TSURLFILTER_VERSION: string;
-declare const SCRIPTLETS_VERSION: string;
+import { LIB_VERSION as TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
+import { LIB_VERSION as TSWEBEXTENSION_VERSION } from '@adguard/tswebextension';
+import { LIB_VERSION as SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 /**
  * Extension global preferences.
@@ -37,6 +36,6 @@ export class Prefs {
     public static readonly libVersions = {
         tswebextension: TSWEBEXTENSION_VERSION,
         tsurlfilter: TSURLFILTER_VERSION,
-        scriptlets: SCRIPTLETS_VERSION,
+        scriptlets: '1.2.3',
     };
 }
