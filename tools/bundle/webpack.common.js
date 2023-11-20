@@ -27,7 +27,6 @@ import {
     BUILD_PATH,
     ENVS,
     BROWSERS,
-    OWN_LIBRARIES_NAMES,
 } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import {
