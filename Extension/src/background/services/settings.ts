@@ -58,6 +58,7 @@ export type GetOptionsDataResponse = {
         tswebextension: string,
         tsurlfilter: string,
         scriptlets: string,
+        extendedCss: string,
     },
     environmentOptions: {
         isChrome: boolean,

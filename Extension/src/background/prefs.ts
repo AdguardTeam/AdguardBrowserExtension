@@ -17,9 +17,9 @@
  */
 import browser from 'webextension-polyfill';
 
-import { LIB_VERSION as TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
-import { LIB_VERSION as TSWEBEXTENSION_VERSION } from '@adguard/tswebextension';
-import { LIB_VERSION as SCRIPTLETS_VERSION } from '@adguard/scriptlets';
+import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
+import { TSWEBEXTENSION_VERSION, EXTENDEDCSS_VERSION } from '@adguard/tswebextension';
+import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 /**
  * Extension global preferences.
@@ -36,6 +36,7 @@ export class Prefs {
     public static readonly libVersions = {
         tswebextension: TSWEBEXTENSION_VERSION,
         tsurlfilter: TSURLFILTER_VERSION,
-        scriptlets: '1.2.3',
+        scriptlets: SCRIPTLETS_VERSION,
+        extendedCss: EXTENDEDCSS_VERSION,
     };
 }

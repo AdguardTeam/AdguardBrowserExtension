@@ -63,6 +63,8 @@ const About = observer(() => {
                         {`TSUrlFilter v${libVersions.tsurlfilter}`}
                         <br />
                         {`Scriptlets v${libVersions.scriptlets}`}
+                        <br />
+                        {`ExtendedCss v${libVersions.extendedCss}`}
                     </p>
                 </div>
                 <div className="about__copyright">
