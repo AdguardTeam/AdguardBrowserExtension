@@ -849,6 +849,11 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     token: 'keyword.control',
                     next: 'csp-start',
                 },
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2609
+                {
+                    regex: /inline-font|inline-script/,
+                    token: 'keyword.control',
+                },
                 {
                     regex: /document|doc|elemhide|ehide|specifichide|shide|generichide|ghide|genericblock|content|urlblock|jsinject|stealth/,
                     token: 'keyword.control',
