@@ -24,7 +24,7 @@ import { copyExternals } from './bundle/copy-external';
 import { BROWSERS, ENVS } from './constants';
 import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
-import { buildInfo } from './bundle/build-info';
+import { buildInfo, buildBetaInfo } from './bundle/build-info';
 import { buildUpdateJson } from './bundle/firefox/updateJson';
 
 const bundleChrome = (watch) => {
@@ -72,7 +72,7 @@ const betaPlan = [
     bundleChrome,
     bundleChromeCrx,
     bundleEdge,
-    buildInfo,
+    buildBetaInfo,
 ];
 
 const firefoxStandalonePlan = [

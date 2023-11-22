@@ -40,7 +40,7 @@ Build:
 
             ls -la
 
-            # don't use --ignore-optional flag, because swc requires optional deps 
+            # don't use --ignore-optional flag, because swc requires optional deps
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
             yarn beta
 
@@ -53,7 +53,7 @@ Build:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
         configuration:
           selectedRepository: defaultRepository
-          tagName: v${bamboo.inject.version}-beta
+          tagName: v${bamboo.inject.version}
   artifacts:
     - name: build.txt
       location: build/beta

@@ -26,8 +26,10 @@ import { getEnvConf } from '../helpers';
 const config = getEnvConf(process.env.BUILD_ENV);
 const OUTPUT_PATH = config.outputPath;
 
-const content = `version=${packageJson.version}`;
 const FILE_NAME = 'build.txt';
+
+const content = `version=${packageJson.version}`;
+const betaContent = `version=${packageJson.version}-beta`;
 
 const filePath = path.join(BUILD_PATH, OUTPUT_PATH, FILE_NAME);
 
@@ -38,4 +40,13 @@ const filePath = path.join(BUILD_PATH, OUTPUT_PATH, FILE_NAME);
  */
 export const buildInfo = async () => {
     await fsp.writeFile(filePath, content, 'utf-8');
+};
+
+/**
+ * Writes build.txt file with current version for beta builds.
+ *
+ * @returns {Promise<void>}
+ */
+export const buildBetaInfo = async () => {
+    await fsp.writeFile(filePath, betaContent, 'utf-8');
 };
