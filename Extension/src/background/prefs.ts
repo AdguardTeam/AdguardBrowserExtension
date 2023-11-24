@@ -18,7 +18,7 @@
 import browser from 'webextension-polyfill';
 
 import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
-import { TSWEBEXTENSION_VERSION, EXTENDEDCSS_VERSION } from '@adguard/tswebextension';
+import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from '@adguard/tswebextension';
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 /**
@@ -37,6 +37,6 @@ export class Prefs {
         tswebextension: TSWEBEXTENSION_VERSION,
         tsurlfilter: TSURLFILTER_VERSION,
         scriptlets: SCRIPTLETS_VERSION,
-        extendedCss: EXTENDEDCSS_VERSION,
+        extendedCss: EXTENDED_CSS_VERSION,
     };
 }
