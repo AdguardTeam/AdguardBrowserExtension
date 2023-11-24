@@ -52,19 +52,28 @@ const exportMetadata = {
 };
 
 /**
- * @param {ExportTypes} type
+ * Generates filename for exported `type`.
+ *
+ * @param {ExportTypes} type Type of export
+ * @param {string} appVersion App version
+ * @returns {string} Filename
+ */
+export const getExportedSettingsFilename = (type, appVersion) => {
+    const { name, ext } = exportMetadata[type];
+    const product = `adg_ext_${name}`;
+    const currentTimeString = format(Date.now(), 'ddMMyy-HHmmss');
+    return `${product}_${appVersion}_${currentTimeString}.${ext}`;
+};
+
+/**
+ * Exports data to file and downloads it in browser.
+ *
+ * @param {ExportTypes} type Type of export
  */
 export const exportData = async (type) => {
-    const {
-        messageType,
-        name,
-        ext,
-    } = exportMetadata[type];
-
-    const currentTimeString = format(Date.now(), 'yyyyMMdd_HHmmss');
+    const { messageType } = exportMetadata[type];
     const { content, appVersion } = await messenger.sendMessage(messageType);
-    const filename = `${currentTimeString}_adg_ext_${name}_${appVersion}.${ext}`;
-
+    const filename = getExportedSettingsFilename(type, appVersion);
     const blob = new Blob([content]);
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/tsurlfilter` to [v2.2.5](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
 - Updated `@adguard/filters-downloader` to [v1.1.23](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
 - Updated `@adguard/scriptlets` to [v1.9.91](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
+- Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607)
 
 ### Fixed
 - Filtering log not opening on Firefox for Android [#2563](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536)
