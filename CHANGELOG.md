@@ -9,8 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Displaying of Stealth Mode modified cookie rules in Filtering log as "Modified"
+  [#2512](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2512).
 - Highlighting of `$inline-font` and `$inline-script`
   [#2609](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2609).
+
+
+<!-- TODO: add date after the version is released on Github -->
+## [4.2.228]
+
+### Fixed
+
+- Logging of cosmetic rules applying.
 
 
 ## [4.2.226] - 2023-11-22
@@ -132,7 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/tsurlfilter` to [v2.1.7](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#217---2023-08-10)
 - Updated `@adguard/scriptlets` to [v1.9.62](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.226...HEAD
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.228...HEAD
+[4.2.228]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.226...v4.2.228
 [4.2.226]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.209...v4.2.226
 [4.2.209]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/561737249b2c50c39b8e0ee6eefa5d19726c97b3...v4.2.209
 [4.2.208]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.189...561737249b2c50c39b8e0ee6eefa5d19726c97b3
