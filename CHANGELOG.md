@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2512](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2512).
 - Highlighting of `$inline-font` and `$inline-script`
   [#2609](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2609).
+- Filters updating notification styles
+  [#2309](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2309).
 
 
 <!-- TODO: add date after the version is released on Github -->
