@@ -170,7 +170,6 @@ export const genCommonConfig = (browserConfig) => {
                 import: EDITOR_PATH,
                 dependOn: [
                     REACT_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
                 ],
             },
             [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
@@ -324,7 +323,6 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,

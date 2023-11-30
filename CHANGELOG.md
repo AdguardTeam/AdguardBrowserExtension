@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- TSUrlFilter library loading by Fullscreen User Rules Editor
+  [#2412](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2412).
 - Displaying of Stealth Mode modified cookie rules in Filtering log as "Modified"
   [#2512](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2512).
 - Highlighting of `$inline-font` and `$inline-script`
