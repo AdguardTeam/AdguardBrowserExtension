@@ -141,6 +141,12 @@ export class FilteringLogApi {
         this.openedFilteringLogsPages += 1;
 
         try {
+            Engine.api.setDebugScriptlets(true);
+        } catch (e) {
+            Log.error('Failed to enable `verbose scriptlets logging` option', e);
+        }
+
+        try {
             Engine.api.setCollectHitStats(true);
         } catch (e) {
             Log.error('Failed to enable `collect hit stats` option', e);
@@ -157,6 +163,12 @@ export class FilteringLogApi {
             this.tabsInfoMap.forEach((tabInfo) => {
                 tabInfo.filteringEvents = [];
             });
+
+            try {
+                Engine.api.setDebugScriptlets(false);
+            } catch (e) {
+                Log.error('Failed to disable `verbose scriptlets logging` option', e);
+            }
 
             if (settingsStorage.get(SettingOption.DisableCollectHits)) {
                 try {

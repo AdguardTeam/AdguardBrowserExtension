@@ -48,6 +48,8 @@ export class MockedTsWebExtension {
 
     public setCollectHitStats = jest.fn();
 
+    public setDebugScriptlets = jest.fn();
+
     public setStealthModeEnabled = jest.fn();
 
     public setSelfDestructFirstPartyCookies = jest.fn();

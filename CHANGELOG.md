@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Updated `@adguard/tswebextension` to [v0.4.9](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tsurlfilter` to [v2.2.7](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
+- Updated `@adguard/scriptlets` to [v1.9.101](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
+
 ### Fixed
 - TSUrlFilter library loading by Fullscreen User Rules Editor
   [#2412](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2412).
@@ -15,12 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2512](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2512).
 - Highlighting of `$inline-font` and `$inline-script`
   [#2609](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2609).
+- Scriptlets logging in browser console only if Filtering log is opened
+  [#2584](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2584).
 - Filters updating notification styles
   [#2309](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2309).
 
 
-<!-- TODO: add date after the version is released on Github -->
-## [4.2.228]
+## [4.2.228] - 2023-11-27
 
 ### Fixed
 
