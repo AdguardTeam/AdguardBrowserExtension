@@ -10,6 +10,8 @@ import {
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { SbCache } from '../../../../Extension/src/background/storages';
 
+jest.mock('../../../../Extension/src/background/engine');
+
 describe('Update Api', () => {
     describe('update method', () => {
         const timestamp = 12345;

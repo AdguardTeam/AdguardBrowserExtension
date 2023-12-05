@@ -25,6 +25,8 @@ import {
     getExportedSettingsV2,
 } from '../../../helpers';
 
+jest.mock('../../../../Extension/src/background/engine');
+
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
 

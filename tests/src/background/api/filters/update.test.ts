@@ -20,6 +20,8 @@ import { mockLocalStorage } from '../../../../helpers';
 import { AntibannerGroupsId, APP_VERSION_KEY } from '../../../../../Extension/src/common/constants';
 import { SettingOption } from '../../../../../Extension/src/background/schema';
 
+jest.mock('../../../../../Extension/src/background/engine');
+
 describe('Filter Update API should', () => {
     const metadata = getMetadataFixture();
 
