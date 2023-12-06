@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Updated `@adguard/tswebextension` to [v1.0.0](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tswebextension` to [v1.0.1](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
 - Updated `@adguard/tsurlfilter` to [v2.2.7](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
 - Updated `@adguard/scriptlets` to [v1.9.101](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
 ### Fixed
+- $$ rules break encoding on some websites [#2249](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2249)
 - TSUrlFilter library loading by Fullscreen User Rules Editor
   [#2412](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2412).
 - Displaying of Stealth Mode modified cookie rules in Filtering log as "Modified"
