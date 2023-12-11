@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage } from 'webextension-polyfill';
+import { Storage, Events } from 'webextension-polyfill';
 
 /**
  * Emulated browser.storage.local
@@ -10,6 +10,8 @@ export class EmulatedLocalStorage implements Storage.StorageArea {
     constructor(initData: Record<string, unknown> = {}) {
         this.data = initData;
     }
+
+    onChanged = {} as Events.Event<(changes: Storage.StorageAreaOnChangedChangesType) => void>;
 
     get(keys?: string | string[] | Record<string, unknown> | null | undefined): Promise<Record<string, unknown>> {
         if (!keys) {
