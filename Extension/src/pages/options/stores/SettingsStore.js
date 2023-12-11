@@ -80,6 +80,8 @@ class SettingsStore {
 
     @observable version = null;
 
+    @observable libVersions = null;
+
     @observable filters = [];
 
     @observable categories = [];
@@ -160,6 +162,7 @@ class SettingsStore {
             }
             this.rulesCount = data.filtersInfo.rulesCount;
             this.version = data.appVersion;
+            this.libVersions = data.libVersions;
             this.constants = data.constants;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
