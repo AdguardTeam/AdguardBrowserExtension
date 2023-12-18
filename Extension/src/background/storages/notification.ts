@@ -35,197 +35,197 @@ export type Notification = {
     icons?: Record<string, Record<string, string>>,
 };
 
-export const BACK_TO_SCHOOL_23_ID = 'backToSchool23';
+export const HALLOWEEN_23_ID = 'halloween23';
 
-export const backToSchool23Notification: Notification = {
-    id: BACK_TO_SCHOOL_23_ID,
+export const halloween23Notification: Notification = {
+    id: HALLOWEEN_23_ID,
     locales: {
         en: {
-            title: 'Back to school: Quiz and prize',
-            btn: 'Test yourself',
+            title: 'Fact or fiction?',
+            btn: 'Investigate',
         },
         ru: {
-            title: 'Снова в школу: квиз и приз',
-            btn: 'Пройти',
+            title: 'Верю не верю',
+            btn: 'Давайте проверим',
         },
         es: {
-            title: 'Vuelta al cole: quiz y recompensa',
-            btn: 'Hacer el quiz',
+            title: '¿Realidad o ficción?',
+            btn: '¡Adivinar!',
         },
         de: {
-            title: 'Back to School: Quiz und Preis',
-            btn: 'Quiz los',
+            title: 'Falsch oder wahr?',
+            btn: 'Kommen Sie klar',
         },
         fr: {
-            title: 'La rentrée avec AdGuard : Quiz et cadeaux',
-            btn: 'Passez le Quiz',
+            title: 'Fait ou fiction ?',
+            btn: 'Examinons',
         },
         it: {
-            title: 'A Scuola con AdGuard: un quiz e un regalo',
-            btn: 'Supera il Quiz',
+            title: 'Fatto o finzione?',
+            btn: 'Esaminiamo',
         },
         ko: {
-            title: '백 투 스쿨: 퀴즈 및 할인',
-            btn: '퀴즈게임 시작',
+            title: '사실일까, 괴담일까?',
+            btn: '퀴즈 시작',
         },
         ja: {
-            title: 'Back to School セールとクイズ',
-            btn: 'クイズに挑戦！',
+            title: '事実か怪談か？',
+            btn: 'クイズに挑戦する',
         },
         zh_cn: {
-            title: '开学特惠：小测验大惊喜',
-            btn: '测试自己',
+            title: '万圣节答题小游戏',
+            btn: '开始玩儿',
         },
         zh_tw: {
-            title: '開學特惠：小測驗大驚喜',
-            btn: '測試自己',
+            title: '萬聖節答題小遊戲',
+            btn: '開始玩',
         },
         uk: {
-            title: 'Знову до школи: іспит і приз',
-            btn: 'Скласти',
+            title: 'Факт чи вигадка?',
+            btn: 'Вгадай!',
         },
         pt_br: {
-            title: 'Volta às aulas: quiz e prêmio',
-            btn: 'Fazer o quiz',
+            title: 'Realidade ou ficção?',
+            btn: 'Adivinhar',
         },
         pt_pt: {
-            title: 'Volta às aulas: quiz e prémio',
-            btn: 'Fazer o quiz',
+            title: 'Realidade ou ficção?',
+            btn: 'Adivinhar',
         },
         ar: {
-            title: 'العودة إلى المدرسة: مسابقة وجائزة',
-            btn: 'حل الاختبار',
+            title: 'حقيقة أم خيال؟',
+            btn: '!يخمن',
         },
         be: {
-            title: 'Зноў у школу: віктарына і прызы',
-            btn: 'Прайсці',
+            title: 'Факт ці выдумка?',
+            btn: 'Адгадайце!',
         },
         bg: {
-            title: 'Обратно на училище: тест и награда',
-            btn: 'Преминете',
+            title: 'Факт или измислица?',
+            btn: 'Познайте!',
         },
         ca: {
-            title: "Tornada a l'escola",
-            btn: 'Passar',
+            title: 'Realitat o ficció?',
+            btn: 'Endevina!',
         },
         cs: {
-            title: 'Zpátky do školy: kvíz a cena',
-            btn: 'Projít',
+            title: 'Pravda nebo fikce?',
+            btn: 'Tipni si!',
         },
         da: {
-            title: 'Tilbage til skolen: quiz og præmie',
-            btn: 'Test deg selv',
+            title: 'Fakta eller fiktion?',
+            btn: 'Gætte!',
         },
         el: {
-            title: 'Επιστροφή στο σχολείο',
-            btn: 'Περάστε',
+            title: 'Σωστό ή λάθος?',
+            btn: 'Εικασία!',
         },
         es_419: {
-            title: 'Vuelta al cole: quiz y recompensa',
-            btn: 'Hacer el quiz',
+            title: '¿Realidad o ficción?',
+            btn: '¡Adivinar!',
         },
         fa: {
-            title: 'بازگشت به مدرسه: مسابقه و جایزه',
-            btn: 'امتحان را پاس کنید',
+            title: 'واقعیت یا تخیل؟',
+            btn: '!حدس بزن',
         },
         fi: {
-            title: 'Takaisin kouluun',
-            btn: 'Läpäise',
+            title: 'Totta vai tarua?',
+            btn: 'Arvaus!',
         },
         he: {
-            title: 'חזרה לבית הספר: חידון ופרס',
-            btn: 'לעבור',
+            title: '?עובדה או בדיה',
+            btn: '!לְנַחֵשׁ',
         },
         hr: {
-            title: 'Natrag u školu: kviz i nagrada',
-            btn: 'Provjerite se',
+            title: 'Činjenica ili fikcija?',
+            btn: 'Pogodite!',
         },
         hu: {
-            title: 'Vissza az iskolába: egy kvíz és egy díj',
-            btn: 'Teszteld magad',
+            title: 'Tény vagy fikció?',
+            btn: 'Találd ki!',
         },
         hy: {
-            title: 'Վերադառնալ դպրոց',
-            btn: 'Ստուգեք ինքներդ',
+            title: 'Փաստ, թե հորինված.',
+            btn: 'Գուշակիր',
         },
         id: {
-            title: 'Kembali ke Sekolah: kuis dan Hadiah',
-            btn: 'Uji dirimu',
+            title: 'Fakta atau Fiksi?',
+            btn: 'Tebakan!',
         },
         lt: {
-            title: 'Atgal į mokyklą: viktorina ir prizas',
-            btn: 'Išbandyk save',
+            title: 'Faktas ar fikcija?',
+            btn: 'Atspėk!',
         },
         ms: {
-            title: 'Kembali ke Sekolah: kuiz dan Hadiah',
-            btn: 'Uji diri sendiri',
+            title: 'Fakta atau fiksyen?',
+            btn: 'Teka!',
         },
         nb: {
-            title: 'Tilbake til skolen: quiz og premie',
-            btn: 'Test deg selv',
+            title: 'Fakta eller fiksjon?',
+            btn: 'Gjett!',
         },
         nl: {
-            title: 'Terug naar school: quiz en prijs',
-            btn: 'Test jezelf',
+            title: 'Feit of Fictie?',
+            btn: 'Gok!',
         },
         pl: {
-            title: 'Powrót do szkoły: quiz i nagroda',
-            btn: 'Sprawdź się',
+            title: 'Fakt czy fikcja?',
+            btn: 'Zgadywać!',
         },
         ro: {
-            title: 'Înapoi la școală: test și premiu',
-            btn: 'Testați-vă',
+            title: 'Realitate sau fictiune?',
+            btn: 'Ghici!',
         },
         sk: {
-            title: 'Späť do školy: kvíz a cena',
-            btn: 'Otestujte sa',
+            title: 'Skutočnosť alebo fikcia?',
+            btn: 'Hádaj!',
         },
         sl: {
-            title: 'Nazaj v šolo: kviz in nagrada',
-            btn: 'Preizkusite se',
+            title: 'Dejstvo ali fikcija?',
+            btn: 'Ugani!',
         },
         'sr-Latn': {
-            title: 'Povratak u školu: kviz i nagrada',
-            btn: 'Proverite sami',
+            title: 'Tačno ili netačno?',
+            btn: 'Izgleda!',
         },
         sv: {
-            title: 'Tillbaka till skolan: quiz och pris',
-            btn: 'Testa dig själv',
+            title: 'Fakta eller påhitt?',
+            btn: 'Gissa!',
         },
         tr: {
-            title: 'Okula Dönüş: Sınav ve Ödül',
-            btn: 'Kendinizi test edin',
+            title: 'Gerçek mi kurgu mu?',
+            btn: 'Tahmin etmek!',
         },
         vi: {
-            title: 'Back to School: câu đố và giải thưởng',
-            btn: 'Tự kiểm tra',
+            title: 'Sự thật hay hư cấu?',
+            btn: 'Đoán!',
         },
         hi: {
-            title: 'स्कूल में वापसी: प्रश्नोत्तरी और पुरस्कार',
-            btn: 'स्वयं की जांच करो',
+            title: 'तथ्य या कल्पना?',
+            btn: 'अनुमान लगाना!',
         },
         et: {
-            title: 'Tagasi kooli: viktoriin ja auhind',
-            btn: 'Testige ennast',
+            title: 'Fakt või väljamõeldis?',
+            btn: 'Arva ära!',
         },
         th: {
-            title: 'Back to School: แบบทดสอบและรางวัล',
-            btn: 'ทดสอบตัวเอง',
+            title: 'เรื่องจริงหรือนิยาย?',
+            btn: 'เดา!',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BackToSchool }),
-    from: '28 August 2023 12:00:00',
-    to: '3 September 2023 23:59:00',
+    url: Forward.get({ action: ForwardAction.Halloween }),
+    from: '25 October 2023 12:00:00',
+    to: '1 November 2023 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/back-to-school-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/back-to-school-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween23-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween23-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/back-to-school-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/back-to-school-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween23-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween23-off-38.png'),
         },
     },
 };
@@ -234,5 +234,5 @@ export const backToSchool23Notification: Notification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [BACK_TO_SCHOOL_23_ID, backToSchool23Notification],
+    [HALLOWEEN_23_ID, halloween23Notification],
 ]);

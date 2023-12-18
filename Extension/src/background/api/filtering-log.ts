@@ -36,8 +36,7 @@ import { listeners } from '../notifier';
 import { Engine } from '../engine';
 import { FiltersStorage, settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
-
-import { TabsApi } from './extension/tabs';
+import { TabsApi } from '../../common/api/extension/tabs';
 
 export type FilteringEventRuleData = {
     filterId: number,
@@ -344,7 +343,7 @@ export class FilteringLogApi {
      */
     public addEventData(tabId: number, data: FilteringLogEvent): void {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
-        if (!tabInfo || !this.isOpen) {
+        if (!tabInfo || !this.isOpen()) {
             return;
         }
 
@@ -371,7 +370,7 @@ export class FilteringLogApi {
         data: Partial<FilteringLogEvent>,
     ): void {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
-        if (!tabInfo || !this.isOpen) {
+        if (!tabInfo || !this.isOpen()) {
             return;
         }
 

@@ -1,10 +1,13 @@
 &nbsp;
 <p align="center">
-  <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension.svg" width="300px" alt="AdGuard Browser Extension" />
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.adguard.com/public/Adguard/Common/Logos/ext_dark.svg" width="300px" alt="AdGuard Browser Extension" />
+        <img src="https://cdn.adguard.com/public/Adguard/Common/Logos/ext.svg" width="300px" alt="AdGuard Browser Extension"/>
+    </picture>
 </p>
 <h3 align="center">Ad blocker with advanced privacy protection features</h3>
 <p align="center">
-  AdGuard is a fast and lightweight ad blocking browser extension<br/>that effectively blocks all types of ads and trackers.
+    AdGuard is a fast and lightweight ad blocking browser extension<br/>that effectively blocks all types of ads and trackers.
 </p>
 
 
@@ -147,10 +150,10 @@ Before building the release version, you should manually download necessary reso
 ```
 
 ```
-  CREDENTIALS_PASSWORD=<password> yarn beta
-  CREDENTIALS_PASSWORD=<password> yarn release
+  yarn beta
+  yarn release
 ```
-You will need to put certificate.pem and mozilla_credentials.json files to the `./private` directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
+You will need to put certificate.pem file to the `./private` directory. This build will create unpacked extensions and then pack them (crx for Chrome).
 
 **Building the sample extension with API**
 
@@ -170,36 +173,43 @@ Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
 <a id="dev-localizations"></a>
+
 ### Update localizations
 
 To download and append localizations run:
-```
-  yarn locales:download
+
+```bash
+    yarn locales download
 ```
 
 To upload new phrases to crowdin you need the file with phrases `./Extension/_locales/en/messages.json`. Then run:
-```
-  yarn locales:upload
+
+```bash
+    yarn locales upload
 ```
 
 To remove old messages from locale messages run:
-```
-  yarn locales:renew
+
+```bash
+  yarn locales renew
 ```
 
 To validate translations run:
-```
-  yarn locales:validate
+
+```bash
+  yarn locales validate
 ```
 
 To show locales info run:
-```
-  yarn locales:info
+
+```bash
+  yarn locales info
 ```
 
 <a id="minimum-supported-browser-versions"></a>
 
 ## Minimum supported browser versions
+
 | Browser                 	| Version 	 |
 |-------------------------	|:---------:|
 | Chromium Based Browsers 	|  79   	   |

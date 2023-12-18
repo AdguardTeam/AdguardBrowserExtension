@@ -77,10 +77,10 @@ const RequestCreateRule = observer(() => {
                 >
                     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <div className="radio-button" />
+                    <div className="radio-button-desc">
+                        {pattern}
+                    </div>
                 </label>
-                <div className="radio-button-desc">
-                    {pattern}
-                </div>
             </div>
         ));
 
@@ -139,10 +139,10 @@ const RequestCreateRule = observer(() => {
                         <div className="custom-checkbox">
                             <Icon id="#checked" classname="icon--checked" />
                         </div>
+                        <div className="checkbox-label__desc">
+                            {label}
+                        </div>
                     </label>
-                    <div className="checkbox-label__desc">
-                        {label}
-                    </div>
                 </div>
             );
         });

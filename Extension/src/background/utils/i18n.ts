@@ -21,43 +21,27 @@
  */
 export class I18n {
     /**
-     * Returns matched locale from locales list or dictionary.
+     * Returns matched `locale` from `locales` list.
      *
-     * @param locales List or dictionary of i18n locales.
+     * @param locales Array of locale codes represented as strings.
      * @param locale Target locale.
-     * @returns Matched locale or null, if locale is not found.
+     * @returns Normalized locale code if found, otherwise null.
      */
-    public static find(
-        locales: string[] | Record<string, unknown>,
-        locale: string,
-    ): string | null {
+    public static find(locales: string[], locale: string): string | null {
+        const normalizedLocales = locales.map((l) => I18n.normalizeLanguageCode(l));
         const lang = this.normalizeLanguageCode(locale);
 
-        if (I18n.isIncludesLocale(locales, locale)) {
+        if (normalizedLocales.includes(lang)) {
             return lang;
         }
 
         const [localePart] = lang.split('_');
 
-        if (localePart && I18n.isIncludesLocale(locales, localePart)) {
+        if (localePart && normalizedLocales.includes(localePart)) {
             return localePart;
         }
 
         return null;
-    }
-
-    /**
-     * Checks if {@link locales} includes {@link locale}.
-     *
-     * @param locales Locales array or record.
-     * @param locale Target locale.
-     * @returns True if {@link locales} includes {@link locale}, else returns false.
-     */
-    private static isIncludesLocale(
-        locales: string[] | Record<string, unknown>,
-        locale: string,
-    ): boolean {
-        return Array.isArray(locales) ? locales.includes(locale) : locale in locales;
     }
 
     /**

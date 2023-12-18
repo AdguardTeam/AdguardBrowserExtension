@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { Log } from '../../../common/log';
@@ -122,6 +122,7 @@ export class HitStatsApi {
     private static shouldCollectHitStats(filterId: number): boolean {
         return filterId < CUSTOM_FILTERS_START_ID
             && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId
+            && filterId !== AntiBannerFiltersId.StealthModeFilterId;
     }
 }

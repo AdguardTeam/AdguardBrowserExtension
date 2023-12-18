@@ -69,6 +69,7 @@ describe('Hit Stats Api', () => {
         const unsupportedFilters = [
             { title: 'User filter', filterId: AntiBannerFiltersId.UserFilterId },
             { title: 'Allowlist filter', filterId: AntiBannerFiltersId.AllowlistFilterId },
+            { title: 'Stealth mode filter', filterId: AntiBannerFiltersId.StealthModeFilterId },
             { title: 'Custom filter', filterId: CUSTOM_FILTERS_START_ID + 1 },
         ];
 

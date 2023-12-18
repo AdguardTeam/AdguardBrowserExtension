@@ -18,7 +18,7 @@
 
 import { useEffect } from 'react';
 
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash-es';
 
 /**
  * @param {HTMLElement} ref - reference to tracking dom element

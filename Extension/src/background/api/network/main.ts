@@ -21,12 +21,12 @@ import FiltersDownloader from '@adguard/filters-downloader/browser';
 import { LOCALE_METADATA_FILE_NAME, LOCALE_I18N_METADATA_FILE_NAME } from '../../../../../constants';
 import { UserAgent } from '../../../common/user-agent';
 import {
-    I18nMetadata,
-    i18nMetadataValidator,
-    LocalScriptRules,
-    localScriptRulesValidator,
-    Metadata,
+    type Metadata,
+    type I18nMetadata,
+    type LocalScriptRules,
     metadataValidator,
+    i18nMetadataValidator,
+    localScriptRulesValidator,
 } from '../../schema';
 
 import { NetworkSettings } from './settings';

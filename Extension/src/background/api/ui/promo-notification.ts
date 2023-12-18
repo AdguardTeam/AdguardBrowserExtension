@@ -26,7 +26,7 @@ import {
     storage,
 } from '../../storages';
 import { NotificationTextRecord } from '../../schema';
-import { TabsApi } from '../extension';
+import { TabsApi } from '../../../common/api/extension';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
 import { Log } from '../../../common/log';
 import { I18n } from '../../utils';

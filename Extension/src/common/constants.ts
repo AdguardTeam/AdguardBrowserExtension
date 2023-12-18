@@ -84,6 +84,7 @@ export enum NotifierType {
 
 export const FULLSCREEN_USER_RULES_EDITOR = 'fullscreen_user_rules_editor' as const;
 export const FILTERING_LOG = 'filtering-log' as const;
+export const KEEP_ALIVE_PORT_NAME = 'keep-alive' as const;
 
 export const enum NavigationTag {
     Regular = 'regular',
@@ -130,3 +131,5 @@ export enum FiltersUpdateTime {
 
 export const NEWLINE_CHAR_UNIX = '\n';
 export const NEWLINE_CHAR_REGEX = /\r?\n/;
+
+export const OPTIONS_PAGE = 'pages/options.html';
