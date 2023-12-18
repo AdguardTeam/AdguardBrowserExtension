@@ -35,204 +35,219 @@ export type Notification = {
     icons?: Record<string, Record<string, string>>,
 };
 
-export const BLACK_FRIDAY_23_ID = 'blackFriday23';
+const RU_LOCALE = 'ru';
 
-export const blackFriday23Notification: Notification = {
-    id: BLACK_FRIDAY_23_ID,
+const CHRISTMAS_23_ID = 'christmas23';
+
+const christmas23Notification: Notification = {
+    id: CHRISTMAS_23_ID,
     locales: {
         en: {
-            title: 'The best time to improve your protection',
-            btn: 'Learn how',
+            title: 'Christmas at AdGuard',
+            btn: 'Unwrap',
         },
         ru: {
-            title: 'Время улучшить защиту',
-            btn: 'Узнать как',
-        },
-        es: {
-            title: 'El mejor momento para mejorar tu protección',
-            btn: 'Cómo hacerlo',
-        },
-        de: {
-            title: 'Zeit, sich besser zu schützen',
-            btn: "Auf geht's!",
-        },
-        fr: {
-            title: 'Augmentez votre protection',
-            btn: 'Comment faire',
-        },
-        it: {
-            title: 'Il tempo per una maggiore protezione',
-            btn: 'Come fare',
-        },
-        ko: {
-            title: '보호 기능을 개선하기 가장 좋은 시기',
-            btn: '자세히 알아보기',
+            title: 'Новый год в AdGuard',
+            btn: 'Что под ёлкой?',
         },
         ja: {
-            title: '保護機能を強化\nするなら今だ。',
-            btn: '詳細はこちら',
+            title: 'AdGuard Christmas キャンペーン',
+            btn: 'プレゼントはこちら',
+        },
+        ko: {
+            title: 'AdGuard 크리스마스 프로모션',
+            btn: '선물 찾기',
         },
         zh_cn: {
-            title: '增强保护',
-            btn: '了解更多',
+            title: 'AdGuard Christmas',
+            btn: '有什么惊喜？',
         },
         zh_tw: {
-            title: '增強保護',
-            btn: '了解詳情',
+            title: 'AdGuard Christmas',
+            btn: '有什麼驚喜？',
         },
-        uk: {
-            title: 'Час покращити захист',
-            btn: 'Дізнатись як',
+        fr: {
+            title: 'Noël chez AdGuard',
+            btn: 'Venez voir',
+        },
+        it: {
+            title: 'Natale ad AdGuard',
+            btn: 'Vieni a vedere',
+        },
+        de: {
+            title: 'Weihnachten bei AdGuard',
+            btn: 'Öffnen',
+        },
+        es: {
+            title: 'Navidad en AdGuard',
+            btn: 'Abrir',
         },
         pt_br: {
-            title: 'O melhor momento para aumentar sua proteção',
-            btn: 'Saiba como',
+            title: 'É Natal no AdGuard',
+            btn: 'Abrir',
         },
         pt_pt: {
-            title: 'O melhor momento para aumentar tua proteção',
-            btn: 'Saiba como',
+            title: 'É Natal no AdGuard',
+            btn: 'Abrir',
+        },
+        uk: {
+            title: 'Новий рік в AdGuard',
+            btn: 'Що під ялинкою?',
         },
         ar: {
-            title: 'حان الوقت لتحسين الحماية الخاصة بك',
-            btn: 'اكتشف كيف',
+            title: 'تخفيضات العام الجديد',
+            btn: 'يفتح',
         },
         be: {
-            title: 'Час палепшыць абарону',
-            btn: 'Даведацца як',
+            title: 'Новы год у AdGuard',
+            btn: 'Што пад ёлкай?',
         },
         bg: {
-            title: 'Време е да подобрите защитата си',
-            btn: 'Разберете как',
+            title: 'Нова година в AdGuard',
+            btn: 'Отворете',
         },
         ca: {
-            title: 'És hora de millorar la teva protecció',
-            btn: 'Descobriu com',
+            title: 'Nadal a AdGuard',
+            btn: 'Obert',
         },
         cs: {
-            title: 'Je čas zlepšit vaši ochranu',
-            btn: 'Zjistěte jak',
+            title: 'Vánoce v AdGuardu',
+            btn: 'Otevřená',
         },
         da: {
-            title: 'Tid til at forbedre din beskyttelse',
-            btn: 'Find ud af hvordan',
+            title: 'Jul på AdGuard',
+            btn: 'Åben',
         },
         el: {
-            title: 'Ώρα να βελτιώσετε την άμυνά σας',
-            btn: 'Βρες πως',
+            title: 'Πρωτοχρονιά στο AdGuard',
+            btn: 'Ανοιξε',
         },
         es_419: {
-            title: 'Es hora de mejorar tu protección',
-            btn: 'Averiguar como',
+            title: 'Navidad en AdGuard',
+            btn: 'Abre',
         },
         fa: {
-            title: 'زمان بهبود محافظت از خود است',
-            btn: 'دریابید که چگونه',
+            title: 'AdGuard سال نو در',
+            btn: 'باز کن',
         },
         fi: {
-            title: 'Aika parantaa suojaustasi',
-            btn: 'Saada selville miten',
+            title: 'Joulu AdGuardissa',
+            btn: 'Avaa',
         },
         he: {
-            title: 'הגיע הזמן לשפר את ההגנה שלך',
-            btn: 'לברר איך',
+            title: 'קידום לשנה החדשה',
+            btn: 'לִפְתוֹחַ',
         },
         hr: {
-            title: 'Vrijeme je da poboljšate svoju zaštitu',
-            btn: 'Saznajte kako',
+            title: 'Božić u AdGuardu',
+            btn: 'Otvoren',
         },
         hu: {
-            title: 'Ideje javítani a védelmet',
-            btn: 'Derítsd ki hogy',
+            title: 'Új év az AdGuardban',
+            btn: 'Nyisd ki',
         },
         hy: {
-            title: 'Ցանկանու՞մ եք պաշտպանել ձեր սարքը:',
-            btn: 'Պարզեք, թե ինչպես',
+            title: 'Ամանորը AdGuard-ում',
+            btn: 'Բացել',
         },
         id: {
-            title: 'Tingkatkan perlindungan Anda',
-            btn: 'Cari tahu caranya',
+            title: 'Tahun Baru di AdGuard',
+            btn: 'Membuka',
         },
         lt: {
-            title: 'Laikas pagerinti savo apsaugą',
-            btn: 'Sužinokite, kaip',
+            title: 'Kalėdos AdGuard',
+            btn: 'Atviras',
         },
         ms: {
-            title: 'Tingkatkan perlindungan anda',
-            btn: 'Ketahui caranya',
+            title: 'Tahun Baru dalam AdGuard',
+            btn: 'Buka',
         },
         nb: {
-            title: 'På tide å forbedre beskyttelsen',
-            btn: 'Finn ut hvordan',
+            title: 'Nyttår i AdGuard',
+            btn: 'Åpen',
         },
         nl: {
-            title: 'Verbeter uw bescherming',
-            btn: 'Uitvinden hoe',
+            title: 'Kerstmis in AdGuard',
+            btn: 'Open',
         },
         pl: {
-            title: 'Czas ulepszyć swoją ochronę',
-            btn: 'Naucz się jak',
+            title: 'Nowy Rok w AdGuard',
+            btn: 'Otwarty',
         },
         ro: {
-            title: 'Îmbunătățiți-vă protecția',
-            btn: 'Aflați cum',
+            title: 'Crăciun în AdGuard',
+            btn: 'Deschis',
         },
         sk: {
-            title: 'Čas na zlepšenie ochrany',
-            btn: 'Zistite, ako',
+            title: 'Vianoce v AdGuarde',
+            btn: 'Otvorený',
         },
         sl: {
-            title: 'Čas za izboljšanje zaščite',
-            btn: 'Ugotovite, kako',
+            title: 'Božič v AdGuardu',
+            btn: 'Odprt',
         },
         'sr-Latn': {
-            title: 'Vreme je da poboljšaš svoju odbranu',
-            btn: 'Saznajte kako',
+            title: 'Božić u AdGuardu',
+            btn: 'Otvorite',
         },
         sv: {
-            title: 'Dags att förbättra ditt skydd',
-            btn: 'Ta reda på hur',
+            title: 'Jul i AdGuard',
+            btn: 'Öppen',
         },
         tr: {
-            title: 'Korumanızı geliştirme zamanı',
-            btn: 'Nasıl olduğunu öğren',
+            title: "AdGuard'da Yeni Yıl",
+            btn: 'Açık',
         },
         vi: {
-            title: 'Cải thiện khả năng bảo vệ của bạn',
-            btn: 'Tìm hiểu cách',
+            title: 'Năm mới trong AdGuard',
+            btn: 'Mở',
         },
         hi: {
-            title: 'अपनी सुरक्षा में सुधार करें',
-            btn: 'सीखो कैसे',
+            title: 'एडगार्ड में नया साल',
+            btn: 'खुला',
         },
         et: {
-            title: 'Aeg parandada oma kaitset',
-            btn: 'Uurige, kuidas',
+            title: 'Jõulud AdGuardis',
+            btn: 'Avatud',
         },
         th: {
-            title: 'ปรับปรุงการป้องกันของคุณ',
-            btn: 'ค้นหาวิธีการ',
+            title: 'ปีใหม่ใน AdGuard',
+            btn: 'เปิด',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BlackFriday23 }),
-    from: '22 November 2023 12:00:00',
-    to: '29 November 2023 23:59:00',
+    url: Forward.get({ action: ForwardAction.Christmas23 }),
+    from: '22 December 2023 12:00:00',
+    to: '1 January 2024 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/blackfriday23-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/blackfriday23-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/christmas23-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/christmas23-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/blackfriday23-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/blackfriday23-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/christmas23-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/christmas23-off-38.png'),
         },
     },
 };
+
+const normalizeLanguage = (locale: string): string | null => {
+    if (!locale) {
+        return null;
+    }
+    return locale.toLowerCase().replace('-', '_');
+};
+
+const currentLocale = normalizeLanguage(browser.i18n.getUILanguage());
+// possible values of Prefs.language: 'ru', or 'ru-RU' which is 'ru_ru' after normalization
+if (currentLocale?.startsWith(RU_LOCALE)) {
+    christmas23Notification.to = '8 January 2024 23:59:00';
+}
 
 /**
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [BLACK_FRIDAY_23_ID, blackFriday23Notification],
+    [CHRISTMAS_23_ID, christmas23Notification],
 ]);
