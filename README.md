@@ -212,10 +212,10 @@ To show locales info run:
 
 ## Minimum supported browser versions
 
-| Browser                 	| Version      |
-|-------------------------	|:------------:|
-| Chromium Based Browsers 	|  79   	   |
-| Firefox                 	|  78   	   |
-| Firefox Mobile            |  113    	   |
-| Opera                   	|  66   	   |
-| Edge                    	|  79   	   |
+| Browser                 	| Version  |
+|-------------------------	|:--------:|
+| Chromium Based Browsers 	|  80   	  |
+| Firefox                 	|  78   	  |
+| Firefox Mobile            | 113    	 |
+| Opera                   	|  67   	  |
+| Edge                    	|  80   	  |

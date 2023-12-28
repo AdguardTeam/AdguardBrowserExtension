@@ -226,7 +226,7 @@ export const genCommonConfig = (browserConfig) => {
                 },
                 {
                     test: /\.(js|ts)x?$/,
-                    exclude: /node_modules/,
+                    exclude: /node_modules\/(?!@adguard\/tswebextension)/,
                     use: [
                         {
                             loader: 'swc-loader',
