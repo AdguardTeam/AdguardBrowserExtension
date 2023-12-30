@@ -398,7 +398,7 @@ export class PagesApi {
     /**
      * Returns stealth url params.
      *
-     * @param filterIds List of filters id.
+     * @param filterIds List of filter id.
      * @returns Stealth url params record.
      */
     private static getStealthParams(filterIds: number[]): { [key: string]: string } {

@@ -29,6 +29,7 @@ import {
     GroupStateStorage,
     FilterVersionStorage,
     FiltersStorage,
+    RawFiltersStorage,
 } from '../../storages';
 import {
     type Metadata,
@@ -149,14 +150,14 @@ export class FiltersApi {
      * Update metadata from external source and download rules for not installed
      * (not added to the browser storage) filters.
      *
-     * @param filtersIds Filter ids to load.
+     * @param filterIds Filter ids to load.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
      */
-    public static async loadFilters(filtersIds: number[], remote: boolean): Promise<void> {
+    public static async loadFilters(filterIds: number[], remote: boolean): Promise<void> {
         // Ignore loaded filters
-        // Custom filters always has loaded state, so we don't need additional check
-        const unloadedFiltersIds = filtersIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
+        // Custom filters always have loaded state, so we don't need additional check
+        const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
 
         if (unloadedFiltersIds.length === 0) {
             return;
@@ -164,7 +165,10 @@ export class FiltersApi {
 
         await FiltersApi.loadMetadata(remote);
 
-        const tasks = unloadedFiltersIds.map((id) => CommonFilterApi.loadFilterRulesFromBackend(id, remote));
+        const tasks = unloadedFiltersIds.map(
+            // force here to get filters without patches
+            (id) => CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, remote),
+        );
         const promises = await Promise.allSettled(tasks);
 
         // Handles errors
@@ -179,24 +183,23 @@ export class FiltersApi {
      * Loads and enables specified filters. Once the filters are enabled,
      * the untouched groups belonging to those filters will be enabled too.
      *
-     * @param filtersIds Filters ids.
+     * @param filterIds Filter ids.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
      */
-    public static async loadAndEnableFilters(filtersIds: number[], remote = false): Promise<void> {
-        await FiltersApi.loadFilters(filtersIds, remote);
+    public static async loadAndEnableFilters(filterIds: number[], remote = false): Promise<void> {
+        await FiltersApi.loadFilters(filterIds, remote);
 
-        filterStateStorage.enableFilters(filtersIds);
+        filterStateStorage.enableFilters(filterIds);
 
         if (!remote) {
-            // Checks for updates to enabled filters, unless it is a load from
-            // remote resources, as in this case the filters are already
-            // up to date.
-            await FilterUpdateApi.checkForFiltersUpdates(filtersIds);
+            // Update the enabled filters only if loading from local resources,
+            // because when loading from remote resources, the filters are already up-to-date.
+            await FilterUpdateApi.checkForFiltersUpdates(filterIds);
         }
 
         // we enable filters groups if it was never enabled or disabled early
-        FiltersApi.enableGroupsWereNotTouched(filtersIds);
+        FiltersApi.enableGroupsWereNotTouched(filterIds);
     }
 
     /**
@@ -212,17 +215,23 @@ export class FiltersApi {
     /**
      * Force reload enabled common filters metadata and rules from backend.
      * Called on "use optimized filters" setting switch.
-     *
      */
     public static async reloadEnabledFilters(): Promise<void> {
-        const filtersIds = FiltersApi.getEnabledFilters();
+        const filterIds = FiltersApi.getEnabledFilters();
 
         // Ignore custom filters
-        const commonFilters = filtersIds.filter(id => CommonFilterApi.isCommonFilter(id));
+        const commonFilters = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
 
         await FiltersApi.loadMetadata(true);
 
-        const tasks = commonFilters.map(id => CommonFilterApi.loadFilterRulesFromBackend(id, true));
+        const tasks = commonFilters.map(
+            (id) => CommonFilterApi.loadFilterRulesFromBackend(
+                // 'force' is 'true' here, because when we switch to optimized filters or back, we need to
+                // update all filters.
+                { filterId: id, force: true },
+                true,
+            ),
+        );
         const promises = await Promise.allSettled(tasks);
 
         // Handles errors
@@ -232,7 +241,7 @@ export class FiltersApi {
             }
         });
 
-        filterStateStorage.enableFilters(filtersIds);
+        filterStateStorage.enableFilters(filterIds);
     }
 
     /**
@@ -505,6 +514,7 @@ export class FiltersApi {
                 filterVersionStorage.delete(id);
                 filterStateStorage.delete(id);
                 await FiltersStorage.remove(id);
+                await RawFiltersStorage.remove(id);
 
                 Log.info(`Filter with id: ${id} removed from the storage`);
             });

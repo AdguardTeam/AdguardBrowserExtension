@@ -87,18 +87,18 @@ export class FilterVersionStorage extends StringStorage<
     /**
      * Update last check time stamp for specified filters with current time.
      *
-     * @param filtersIds List of filters ids.
+     * @param filterIds List of filter ids.
      * @throws Error if filter version data is not initialized.
      */
-    public refreshLastCheckTime(filtersIds: number[]): void {
+    public refreshLastCheckTime(filterIds: number[]): void {
         if (!this.data) {
             throw FilterVersionStorage.createNotInitializedError();
         }
 
         const now = Date.now();
 
-        for (let i = 0; i < filtersIds.length; i += 1) {
-            const filterId = filtersIds[i];
+        for (let i = 0; i < filterIds.length; i += 1) {
+            const filterId = filterIds[i];
 
             if (!filterId) {
                 continue;

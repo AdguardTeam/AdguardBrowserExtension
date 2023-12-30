@@ -19,19 +19,25 @@ import MD5 from 'crypto-js/md5';
 
 import { BrowserUtils } from '../../../utils/browser-utils';
 import { Log } from '../../../../common/log';
-import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../../common/constants';
+import {
+    AntibannerGroupsId,
+    CUSTOM_FILTERS_START_ID,
+    NEWLINE_CHAR_UNIX,
+} from '../../../../common/constants';
 import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../../schema';
 import {
     customFilterMetadataStorage,
     filterStateStorage,
     FiltersStorage,
+    RawFiltersStorage,
     filterVersionStorage,
     groupStateStorage,
 } from '../../../storages';
 import { Engine } from '../../../engine';
 import { network } from '../../network';
+import { FilterUpdateDetail } from '../update';
+import { FilterParsedData, FilterParser } from '../parser';
 
-import { CustomFilterParsedData, CustomFilterParser } from './parser';
 import { CustomFilterLoader } from './loader';
 
 /**
@@ -48,7 +54,7 @@ export type CustomFilterDTO = {
  * Full info about downloaded custom filter, returned
  * in 'Add custom filter' modal window if filter was not added before.
  */
-export type CustomFilterInfo = CustomFilterParsedData & {
+export type CustomFilterInfo = FilterParsedData & {
     customUrl: string,
     rulesCount: number,
 };
@@ -79,9 +85,10 @@ export type GetCustomFilterInfoResult = CreateCustomFilterResponse | CustomFilte
  * It is downloaded while creating and updating custom filter in {@link CustomFilterApi.getRemoteFilterData}.
  */
 export type GetRemoteCustomFilterResult = {
+    rawRules: string[],
     rules: string[],
     checksum: string | null,
-    parsed: CustomFilterParsedData,
+    parsed: FilterParsedData,
 };
 
 /**
@@ -99,6 +106,7 @@ export type GetRemoteCustomFilterResult = {
  * Filters states is stored in {@link filterStateStorage}.
  * Filters versions is stored in {@link filterVersionStorage}.
  * Filters rules is stored in {@link FiltersStorage}.
+ * Raw filter rules (before applying directives) is saved in {@link FiltersStorage}.
  */
 export class CustomFilterApi {
     /**
@@ -133,7 +141,7 @@ export class CustomFilterApi {
      * One of three options:
      * - {@link CreateCustomFilterResponse} on new filter subscription,
      * - {@link CustomFilterAlreadyExistResponse} if custom filter was added before
-     * - null, if filter rules is not downloaded.
+     * - null, if filter rules are not downloaded.
      */
     public static async getFilterInfo(url: string, title?: string): Promise<GetCustomFilterInfoResult> {
         // Check if filter from this url was added before
@@ -147,14 +155,14 @@ export class CustomFilterApi {
             return null;
         }
 
-        const parsedData = CustomFilterParser.parseFilterDataFromHeader(rules);
+        const parsedData = FilterParser.parseFilterDataFromHeader(rules.filter);
 
         const filter = {
             ...parsedData,
             name: parsedData.name ? parsedData.name : title as string,
             timeUpdated: parsedData.timeUpdated ? parsedData.timeUpdated : new Date().toISOString(),
             customUrl: url,
-            rulesCount: rules.filter(rule => rule.trim().indexOf('!') !== 0).length,
+            rulesCount: rules.filter.filter(rule => rule.trim().indexOf('!') !== 0).length,
         };
 
         return { filter };
@@ -168,7 +176,8 @@ export class CustomFilterApi {
      * Based on parsed data.
      * Create new {@link FilterState} and save it in {@link filterStateStorage}.
      * Create new {@link FilterVersionData} and save it in {@link filterVersionStorage}.
-     * Filters rules is saved in {@link FiltersStorage}.
+     * Filters rules are saved in {@link FiltersStorage}.
+     * Raw filter rules (before applying directives) are saved in {@link RawFiltersStorage}.
      *
      * If the custom filter group has never been enabled, turn it on.
      *
@@ -180,7 +189,12 @@ export class CustomFilterApi {
         const { customUrl, trusted, enabled } = filterData;
 
         // download and parse custom filter data
-        const { rules, parsed, checksum } = await CustomFilterApi.getRemoteFilterData(customUrl);
+        const {
+            rawRules,
+            rules,
+            parsed,
+            checksum,
+        } = await CustomFilterApi.getRemoteFilterData(customUrl);
 
         // create new filter id
         const filterId = CustomFilterApi.genFilterId();
@@ -195,6 +209,7 @@ export class CustomFilterApi {
             expires,
             timeUpdated,
             version,
+            diffPath,
         } = parsed;
 
         const filterMetadata: CustomFilterMetadata = {
@@ -217,6 +232,7 @@ export class CustomFilterApi {
 
         filterVersionStorage.set(filterId, {
             version,
+            diffPath,
             expires: filterMetadata.expires,
             lastUpdateTime: filterMetadata.timeUpdated,
             lastCheckTime: Date.now(),
@@ -229,6 +245,7 @@ export class CustomFilterApi {
         });
 
         await FiltersStorage.set(filterId, rules);
+        await RawFiltersStorage.set(filterId, rawRules);
 
         const group = groupStateStorage.get(filterMetadata.groupId);
 
@@ -241,7 +258,7 @@ export class CustomFilterApi {
     }
 
     /**
-     * Creates new custom filters from passed DTO array.
+     * Creates new custom filters from the passed DTO array.
      *
      * @param filtersData Array of {@link CustomFilterDTO}.
      */
@@ -266,31 +283,37 @@ export class CustomFilterApi {
      * Checks, if new filter version available.
      * If filter need for update, save new filter data in storages.
      *
-     * @param filterId Custom filter id.
+     * @param filterUpdateDetail Filter update detail.
      *
      * @returns Updated filter metadata or null, if filter is not existed
      * or new version is not available.
      */
-    public static async updateFilter(filterId: number): Promise<CustomFilterMetadata | null> {
-        Log.info(`Update Custom filter ${filterId} ...`);
+    public static async updateFilter(filterUpdateDetail: FilterUpdateDetail): Promise<CustomFilterMetadata | null> {
+        Log.info(`Update Custom filter ${filterUpdateDetail.filterId} ...`);
 
-        const filterMetadata = customFilterMetadataStorage.getById(filterId);
+        const filterMetadata = customFilterMetadataStorage.getById(filterUpdateDetail.filterId);
 
         if (!filterMetadata) {
-            Log.error(`Cannot find custom filter ${filterId} metadata`);
+            Log.error(`Cannot find custom filter ${filterUpdateDetail.filterId} metadata`);
             return null;
         }
 
         const { customUrl } = filterMetadata;
 
-        const filterRemoteData = await CustomFilterApi.getRemoteFilterData(customUrl);
+        const rawFilterLines = await RawFiltersStorage.get(filterUpdateDetail.filterId) || [];
+        const rawFilter = rawFilterLines.join(NEWLINE_CHAR_UNIX);
+        const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
+            customUrl,
+            rawFilter,
+            filterUpdateDetail.force,
+        );
 
         if (!CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
-            Log.info(`Custom filter ${filterId} is already updated`);
+            Log.info(`Custom filter ${filterUpdateDetail.filterId} is already updated`);
             return null;
         }
 
-        Log.info(`Successfully update custom filter ${filterId}`);
+        Log.info(`Successfully update custom filter ${filterUpdateDetail.filterId}`);
         return CustomFilterApi.updateFilterData(filterMetadata, filterRemoteData);
     }
 
@@ -312,6 +335,7 @@ export class CustomFilterApi {
         filterStateStorage.delete(filterId);
 
         await FiltersStorage.remove(filterId);
+        await RawFiltersStorage.remove(filterId);
 
         if (filterState?.enabled) {
             Engine.debounceUpdate();
@@ -378,19 +402,31 @@ export class CustomFilterApi {
      * @param downloadedData.rules New rules.
      * @param downloadedData.checksum New checksum.
      * @param downloadedData.parsed New parsed data.
+     * @param downloadedData.rawRules New raw rules.
      *
      * @returns Updated custom filter metadata.
      */
     private static async updateFilterData(
         filterMetadata: CustomFilterMetadata,
-        { rules, checksum, parsed }: GetRemoteCustomFilterResult,
+        {
+            rawRules,
+            rules,
+            checksum,
+            parsed,
+        }: GetRemoteCustomFilterResult,
     ): Promise<CustomFilterMetadata> {
         const { filterId } = filterMetadata;
 
-        const { version, expires, timeUpdated } = parsed;
+        const {
+            version,
+            expires,
+            timeUpdated,
+            diffPath,
+        } = parsed;
 
         filterVersionStorage.set(filterId, {
             version,
+            diffPath,
             expires: Number(expires),
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: Date.now(),
@@ -405,6 +441,7 @@ export class CustomFilterApi {
         customFilterMetadataStorage.set(newFilterMetadata);
 
         await FiltersStorage.set(filterId, rules);
+        await RawFiltersStorage.set(filterId, rawRules);
 
         return newFilterMetadata;
     }
@@ -472,19 +509,32 @@ export class CustomFilterApi {
      *
      * @param url Custom filter subscription url.
      *
+     * @param rawFilter Optional raw filter rules.
+     * @param force If true filter data will be downloaded directly, not through patches.
      * @returns Downloaded and parsed filter data.
      */
-    private static async getRemoteFilterData(url: string): Promise<GetRemoteCustomFilterResult> {
+    private static async getRemoteFilterData(
+        url: string,
+        rawFilter?: string,
+        force?: boolean,
+    ): Promise<GetRemoteCustomFilterResult> {
         Log.info(`Get custom filter data from ${url}`);
 
-        const rules = await CustomFilterLoader.downloadRulesWithTimeout(url);
+        const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
 
-        const parsed = CustomFilterParser.parseFilterDataFromHeader(rules);
+        const parsed = FilterParser.parseFilterDataFromHeader(downloadResult.filter);
 
         const { version } = parsed;
 
-        const checksum = !version || !BrowserUtils.isSemver(version) ? CustomFilterApi.getChecksum(rules) : null;
+        const checksum = !version || !BrowserUtils.isSemver(version)
+            ? CustomFilterApi.getChecksum(downloadResult.filter)
+            : null;
 
-        return { rules, parsed, checksum };
+        return {
+            rawRules: downloadResult.rawFilter,
+            rules: downloadResult.filter,
+            parsed,
+            checksum,
+        };
     }
 }

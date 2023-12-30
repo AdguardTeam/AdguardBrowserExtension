@@ -272,7 +272,8 @@ export class SettingsApi {
 
         if (allowAcceptableAds) {
             await CommonFilterApi.loadFilterRulesFromBackend(
-                AntiBannerFiltersId.SearchAndSelfPromoFilterId,
+                // since this is called on settings import, we use force, to update filters without patches
+                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, force: false },
                 false,
             );
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
@@ -369,7 +370,10 @@ export class SettingsApi {
         const tasks = enabledFilters
             .filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId))
             .map(async (filterId: number) => {
-                await CommonFilterApi.loadFilterRulesFromBackend(filterId, false);
+                await CommonFilterApi.loadFilterRulesFromBackend({
+                    filterId,
+                    force: false,
+                }, false);
                 filterStateStorage.enableFilters([filterId]);
             });
 

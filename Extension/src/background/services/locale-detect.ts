@@ -310,7 +310,7 @@ export class LocaleDetect {
     /**
      * Called when LocaleDetector has detected language-specific filters we can enable.
      *
-     * @param filterIds List of detected language-specific filters identifiers.
+     * @param filterIds List of detected language-specific filter identifiers.
      * @private
      */
     private static async onFilterDetectedByLocale(filterIds: number[]): Promise<void> {
