@@ -26,6 +26,7 @@ export * from './editor';
 export * from './filter-state';
 export * from './filter-version';
 export * from './filters';
+export * from './raw-filters';
 export * from './group-state';
 export * from './i18n-metadata';
 export * from './inverted-allowlist';

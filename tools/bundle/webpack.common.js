@@ -188,7 +188,7 @@ export const genCommonConfig = (browserConfig) => {
             filename: '[name].js',
         },
         resolve: {
-            extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
+            extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
         },
         module: {

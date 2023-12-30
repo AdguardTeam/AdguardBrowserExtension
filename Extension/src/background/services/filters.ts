@@ -168,8 +168,6 @@ export class FiltersService {
         try {
             const updatedFilters = await FilterUpdateApi.autoUpdateFilters(true);
 
-            Engine.debounceUpdate();
-
             toasts.showFiltersUpdatedAlertMessage(true, updatedFilters);
             listeners.notifyListeners(listeners.FiltersUpdateCheckReady, updatedFilters);
 

@@ -57,7 +57,6 @@ export class FilterUpdateService {
      */
     private async update(): Promise<void> {
         window.clearTimeout(this.schedulerTimerId);
-
         await FilterUpdateApi.autoUpdateFilters();
 
         this.schedulerTimerId = window.setTimeout(async () => {
@@ -65,5 +64,8 @@ export class FilterUpdateService {
         }, FilterUpdateService.CHECK_PERIOD_MS);
     }
 }
+
+// @ts-ignore
+window.update = FilterUpdateApi.autoUpdateFilters;
 
 export const filterUpdateService = new FilterUpdateService();
