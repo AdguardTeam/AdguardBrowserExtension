@@ -304,3 +304,8 @@ export class FilterUpdateApi {
         }).map(filter => ({ ...filter, force: true }));
     }
 }
+
+// TODO remove later
+// This method is exposed for the testing purposes.
+// @ts-ignore
+window.autoUpdate = FilterUpdateApi.autoUpdateFilters;
