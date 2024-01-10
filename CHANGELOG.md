@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/scriptlets` to [v1.9.105](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
 
+## [Unreleased]
+
+### Added
+- Getting user consent on annoyances filter enabling.
+
 ## [4.2.240] - 2023-12-15
 
 ### Added

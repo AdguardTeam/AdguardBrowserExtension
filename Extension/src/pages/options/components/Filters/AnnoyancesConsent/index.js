@@ -15,19 +15,5 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './configuration';
-export * from './settings';
-export * from './preprocessor';
-export * from './metadata';
-export * from './i18n-metadata';
-export * from './filter-version';
-export * from './filter-state';
-export * from './group-state';
-export * from './trusted-domains';
-export * from './page-stats';
-export * from './hit-stats';
-export * from './custom-filter-metadata';
-export * from './local-script-rules';
-export * from './notification';
-export * from './safebrowsing';
-export * from './annoyances-consent';
+
+export { AnnoyancesConsent } from './AnnoyancesConsent';

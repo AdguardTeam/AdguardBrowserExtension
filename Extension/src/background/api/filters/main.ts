@@ -331,7 +331,7 @@ export class FiltersApi {
         const localizedMetadata = MetadataStorage.applyI18nMetadata(metadata, i18nMetadata);
 
         localizedMetadata.groups.push({
-            groupId: AntibannerGroupsId.CustomFilterGroupId,
+            groupId: AntibannerGroupsId.CustomFiltersGroupId,
             displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
             groupName: translator.getMessage('options_antibanner_custom_group'),
         });

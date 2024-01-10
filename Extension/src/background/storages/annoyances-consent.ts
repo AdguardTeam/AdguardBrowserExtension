@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './configuration';
-export * from './settings';
-export * from './preprocessor';
-export * from './metadata';
-export * from './i18n-metadata';
-export * from './filter-version';
-export * from './filter-state';
-export * from './group-state';
-export * from './trusted-domains';
-export * from './page-stats';
-export * from './hit-stats';
-export * from './custom-filter-metadata';
-export * from './local-script-rules';
-export * from './notification';
-export * from './safebrowsing';
-export * from './annoyances-consent';
+
+import { ANNOYANCES_CONSENT_KEY } from '../../common/constants';
+import { AnnoyancesConsentStorageData } from '../schema';
+import { StringStorage } from '../utils/string-storage';
+
+import { storage } from './main';
+
+/**
+ * Instance of {@link StringStorage} that stores filter ids for granted consent of
+ * annoyances filters in {@link storage} under {@link ANNOYANCES_CONSENT_KEY} key.
+ */
+export const annoyancesConsentStorage = new StringStorage<
+    typeof ANNOYANCES_CONSENT_KEY,
+    AnnoyancesConsentStorageData,
+    'async'
+>(ANNOYANCES_CONSENT_KEY, storage);

@@ -52,6 +52,7 @@ import {
     FiltersApi,
     UserRulesApi,
     AllowlistApi,
+    annoyancesConsent,
 } from '../filters';
 import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
 import { settingsEvents } from '../../events';
@@ -184,6 +185,9 @@ export class SettingsApi {
 
         // On import should enable only groups from imported file.
         await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
+
+        // reset list of consented filter ids on reset settings
+        await annoyancesConsent.reset();
     }
 
     /**

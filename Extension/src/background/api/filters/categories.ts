@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { UserAgent } from '../../../common/user-agent';
+import { RECOMMENDED_TAG_ID } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
@@ -44,6 +45,7 @@ import { FilterUpdateApi } from './update';
 export type CategoriesFilterData = (
     (RegularFilterMetadata | CustomFilterMetadata) &
     // Optional because there is no field 'languages' in CustomFilterMetadata.
+    // TODO: consider removing because RegularFilterMetadata already has 'languages' field.
     { languages?: string[] } &
     FilterStateData &
     FilterVersionData &
@@ -71,8 +73,6 @@ export type CategoriesData = {
  * Class for filter groups management.
  */
 export class Categories {
-    private static RECOMMENDED_TAG_ID = 10;
-
     private static PURPOSE_MOBILE_TAG_ID = 19;
 
     /**
@@ -162,7 +162,7 @@ export class Categories {
      * @returns True, if filter has recommended tag, else returns false.
      */
     private static isRecommendedFilter(filter: FilterMetadata): boolean {
-        return filter.tags.includes(Categories.RECOMMENDED_TAG_ID);
+        return filter.tags.includes(RECOMMENDED_TAG_ID);
     }
 
     /**

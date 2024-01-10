@@ -168,7 +168,7 @@ describe('Filter Update API should', () => {
         });
 
         it('load filter from local resources after enable group with recommended filters', async () => {
-            const groupId = AntibannerGroupsId.PrivacyFilterGroupId;
+            const groupId = AntibannerGroupsId.PrivacyFiltersGroupId;
             const recommendedPrivacyFilterId = 3;
 
             server.respondWith('GET', /\/filter_3\.txt/, [

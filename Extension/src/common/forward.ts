@@ -38,6 +38,7 @@ export const enum ForwardAction {
     GlobalPrivacyControl = 'global_privacy_control',
     DoNotTrack = 'do_not_track',
     HowToCreateRules = 'userfilter_description',
+    FilterPolicy = 'filter_policy',
     AdguardSite = 'adguard_site',
     SelfPromotion = 'self_promotion',
     ProtectionWorks = 'protection_works',
