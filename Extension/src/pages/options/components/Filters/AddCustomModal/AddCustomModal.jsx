@@ -52,7 +52,7 @@ const customStyles = {
         right: 0,
         bottom: 0,
         left: 0,
-        padding: '30px',
+        padding: 0,
         overflow: 'auto',
     },
 };
@@ -152,14 +152,16 @@ const AddCustomModal = ({
                     {reactTranslator.getMessage('options_popup_description')}
                 </div>
             </form>
-            <button
-                className="button button--m button--green modal__btn"
-                type="button"
-                onClick={handleSendUrlToCheck}
-                disabled={customUrlToAddIsEmpty}
-            >
-                {reactTranslator.getMessage('options_popup_next_button')}
-            </button>
+            <div className="modal__actions modal__actions--centered">
+                <button
+                    className="button button--m button--green modal__btn"
+                    type="button"
+                    onClick={handleSendUrlToCheck}
+                    disabled={customUrlToAddIsEmpty}
+                >
+                    {reactTranslator.getMessage('options_popup_next_button')}
+                </button>
+            </div>
         </ModalContentWrapper>
     );
 
@@ -242,18 +244,20 @@ const AddCustomModal = ({
                             {reactTranslator.getMessage('options_popup_trusted_filter_title')}
                         </label>
                     </div>
+                    <div className="modal__row modal__row--info">
+                        {reactTranslator.getMessage('options_popup_trusted_filter_description')}
+                    </div>
                 </form>
-                <div className="modal__row modal__row--info">
-                    {reactTranslator.getMessage('options_popup_trusted_filter_description')}
+                <div className="modal__actions modal__actions--centered">
+                    <button
+                        disabled={isLoading}
+                        type="button"
+                        onClick={handleApprove}
+                        className="button button--m button--green modal__btn"
+                    >
+                        {reactTranslator.getMessage('options_popup_subscribe_button')}
+                    </button>
                 </div>
-                <button
-                    disabled={isLoading}
-                    type="button"
-                    onClick={handleApprove}
-                    className="button button--m button--green modal__btn"
-                >
-                    {reactTranslator.getMessage('options_popup_subscribe_button')}
-                </button>
             </ModalContentWrapper>
         );
     };
@@ -289,13 +293,15 @@ const AddCustomModal = ({
                             {error || reactTranslator.getMessage('options_popup_check_false_description')}
                         </div>
                     </form>
-                    <button
-                        type="button"
-                        onClick={tryAgainHandler}
-                        className="button button--m button--transparent modal__btn"
-                    >
-                        {reactTranslator.getMessage('options_popup_try_again_button')}
-                    </button>
+                    <div className="modal__actions modal__actions--centered">
+                        <button
+                            type="button"
+                            onClick={tryAgainHandler}
+                            className="button button--m button--transparent modal__btn"
+                        >
+                            {reactTranslator.getMessage('options_popup_try_again_button')}
+                        </button>
+                    </div>
                 </ModalContentWrapper>
             </>
         );

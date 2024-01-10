@@ -114,14 +114,9 @@ export const Icons = () => {
                 </g>
             </symbol>
 
-            <symbol id="link" viewBox="0 0 14 14">
-                <g transform="translate(1 1)" stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round">
-                    <g transform="rotate(-180 6 3.5)">
-                        <path d="M0 1.16666667L0 7 5.71428571 7" />
-                        <path d="M.079 6.96L6.869.03" />
-                    </g>
-                    <path d="M2.76672046 1L0 1 0 12 11 12 11 9.29613954" />
-                </g>
+            {/* eslint-disable-next-line react/no-unknown-property */}
+            <symbol id="link" viewBox="0 0 24 24" fill="none">
+                <path d="M18 11.834V6h-5.714M17.92 6.04l-6.788 6.93M8.767 7H8a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-.704" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
 
             <symbol id="logo" viewBox="0 0 160 35">

@@ -24,3 +24,4 @@ export * from './update';
 export * from './categories';
 export * from './page-stats';
 export * from './hit-stats';
+export * from './annoyances-consent';

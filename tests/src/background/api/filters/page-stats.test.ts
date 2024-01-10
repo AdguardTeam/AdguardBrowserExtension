@@ -72,7 +72,7 @@ describe('Page Stats Api', () => {
         const expectedHits = 1;
 
         const expectedStatItem = {
-            [AntibannerGroupsId.AdBlockingGroupId]: expectedHits,
+            [AntibannerGroupsId.AdBlockingFiltersGroupId]: expectedHits,
             [PageStatsStorage.TOTAL_GROUP_ID]: expectedHits,
         };
 

@@ -37,6 +37,7 @@ export const VIEWED_NOTIFICATIONS_KEY = 'viewed-notifications';
 export const LAST_NOTIFICATION_TIME_KEY = 'viewed-notification-time';
 export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
+export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 
 // Filter ids used in the code on the background page and filtering log page
 export enum AntiBannerFiltersId {
@@ -46,6 +47,7 @@ export enum AntiBannerFiltersId {
     TrackingFilterId = 3,
     SocialFilterId = 4,
     SearchAndSelfPromoFilterId = 10,
+    AnnoyancesCombinedFilterId = 14,
     UrlTrackingFilterId = 17,
     AllowlistFilterId = 100,
     MobileAdsFilterId = 11,
@@ -53,15 +55,21 @@ export enum AntiBannerFiltersId {
 
 // Group ids used in the code on the multiple entry points
 export const enum AntibannerGroupsId {
-    AdBlockingGroupId = 1,
     // custom filters group identifier
-    CustomFilterGroupId = 0,
-    PrivacyFilterGroupId = 2,
+    CustomFiltersGroupId = 0,
+    AdBlockingFiltersGroupId = 1,
+    PrivacyFiltersGroupId = 2,
+    SocialFiltersGroupId = 3,
+    AnnoyancesFiltersGroupId = 4,
+    SecurityFiltersGroupId = 5,
     // other filters group identifier
     OtherFiltersGroupId = 6,
     // language-specific group identifier
     LanguageFiltersGroupId = 7,
 }
+
+// https://github.com/AdguardTeam/FiltersRegistry/blob/4528f7ae6b38aec90111a27efb0a7e0958d0cf37/tags/metadata.json#L40
+export const RECOMMENDED_TAG_ID = 10;
 
 export enum NotifierType {
     RequestFilterUpdated = 'event.request.filter.updated',

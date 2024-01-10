@@ -39,3 +39,4 @@ export * from './page-stats';
 export * from './notification';
 export * from './trusted-domains';
 export * from './hit-stats';
+export * from './annoyances-consent';
