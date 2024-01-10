@@ -1,9 +1,10 @@
-! Checksum: MVhbqBCJkeC1Mo6QX2WBYQ
+! Checksum: 2onnNNL2xo2GDBUIQih75g
+! Diff-Path: ../patches/5/5-s-1704807410-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.18
-! TimeUpdated: 2023-05-17T06:31:54+00:00
-! Expires: 4 days (update frequency)
+! Version: 2.0.1.27
+! TimeUpdated: 2024-01-09T13:33:34+00:00
+! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
 !
@@ -141,12 +142,15 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! vipbox.lc - streaming provider - blocking popunders specific to that page
+/[a-z]{8,}\.(com|info|xyz)/$domain=nolive.me,third-party
 ! main youtube page - changing view for the first row of elements
 www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
 www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
 www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) { --ytd-rich-grid-items-per-row: 1 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96262
 developer.android.com,adssettings.google.com##sc-survey-survey-manager
+!
 !
 ! Allowlist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -259,7 +263,7 @@ imdb.com#$?#body:has(div[data-testid="promptable"] .ipc-rating-display-with-post
 ! is properly working.
 !
 !+ NOT_OPTIMIZED
-adguard.com,adguard.app##.hello_from_adguard_experimental
+adguard.info,adguard.com,adguard.app##.hello_from_adguard_experimental
 !
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!
@@ -268,6 +272,8 @@ adguard.com,adguard.app##.hello_from_adguard_experimental
 ! Mobile advertising networks known rotator domains
 ! Used to show ads in mobile apps and websites
 !
+! https://github.com/AdguardTeam/AdguardFilters/pull/170258
+##.gnt_xmst
 !-------------------------------------------------------------------!
 !---------------------- Dangerous rules ----------------------------!
 !-------------------------------------------------------------------!
