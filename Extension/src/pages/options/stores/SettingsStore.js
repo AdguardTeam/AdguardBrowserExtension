@@ -188,11 +188,6 @@ class SettingsStore {
     }
 
     @action
-    updateRulesCount(rulesCount) {
-        this.rulesCount = rulesCount;
-    }
-
-    @action
     setSelectedGroupId(dirtyGroupId) {
         const groupId = Number.parseInt(dirtyGroupId, 10);
 

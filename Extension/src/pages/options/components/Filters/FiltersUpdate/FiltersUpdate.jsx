@@ -20,6 +20,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { translator } from '../../../../../common/translators/translator';
 import { rootStore } from '../../../stores/RootStore';
 
 import './filters-update.pcss';
@@ -62,7 +63,7 @@ const FiltersUpdate = observer(() => {
                 type="button"
                 onClick={updateClickHandler}
                 className="button button--m button--transparent filters-update__btn"
-                title={reactTranslator.getMessage('options_update_antibanner_filters')}
+                title={translator.getMessage('options_update_antibanner_filters')}
                 disabled={!isUpdateFiltersButtonActive || filtersUpdating}
             >
                 {filtersUpdating

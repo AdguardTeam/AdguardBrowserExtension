@@ -132,7 +132,9 @@ const ruleAccessor = (props) => {
 
     if (replaceRules) {
         const rulesCount = replaceRules.length;
-        ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules')} ${rulesCount}`;
+        ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules', {
+            rules_count: rulesCount,
+        })}`;
     }
 
     return ruleText;
