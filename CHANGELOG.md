@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Getting user consent on annoyances filter enabling.
+
 ### Fixed
 - Fixed compatibility for minimum supported versions [#2661](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2661)
 - Filters group not opening if some text is selected on the page [#2662](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2662)
@@ -18,11 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/scriptlets` to [v1.9.105](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md).
 - Updated `@adguard/filters-downloader` to [v2.0.4](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
 
-
-## [Unreleased]
-
-### Added
-- Getting user consent on annoyances filter enabling.
 
 ## [4.2.240] - 2023-12-15
 
