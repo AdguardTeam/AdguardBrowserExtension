@@ -136,7 +136,12 @@ export class CommonFilterApi {
         const {
             filter,
             rawFilter,
-        } = await network.downloadFilterRules(filterUpdateDetail, forceRemote, isOptimized, oldRawFilter);
+        } = await network.downloadFilterRules(
+            filterUpdateDetail,
+            forceRemote,
+            isOptimized,
+            oldRawFilter,
+        );
 
         await FiltersStorage.set(filterUpdateDetail.filterId, filter);
         await RawFiltersStorage.set(filterUpdateDetail.filterId, rawFilter);
