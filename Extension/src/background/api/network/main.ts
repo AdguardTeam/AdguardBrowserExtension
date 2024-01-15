@@ -81,6 +81,7 @@ export class Network {
     ): Promise<DownloadResult> {
         let url: string;
 
+        let isLocalFilter = false;
         if (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateDetail.filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterUpdateDetail.filterId, useOptimizedFilters);
         } else {
@@ -90,9 +91,11 @@ export class Network {
                 // eslint-disable-next-line max-len
                 url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_mobile_${filterUpdateDetail.filterId}.txt`);
             }
+            isLocalFilter = true;
         }
 
-        if (filterUpdateDetail.force || !rawFilter) {
+        // local filters do not support patches, that is why we always download them fully
+        if (isLocalFilter || filterUpdateDetail.force || !rawFilter) {
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {
