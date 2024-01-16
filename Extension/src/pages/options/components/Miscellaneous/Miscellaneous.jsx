@@ -201,7 +201,6 @@ export const Miscellaneous = observer(() => {
                                     setIsOpen={setIsOpenResetStatsModal}
                                     onConfirm={handleResetStatisticsConfirm}
                                     customConfirmTitle={reactTranslator.getMessage('options_clear_stats_confirm_modal_clear_button')}
-                                    customCancelTitle={reactTranslator.getMessage('options_confirm_modal_cancel_button')}
                                 />
                             )
                     }
@@ -222,7 +221,6 @@ export const Miscellaneous = observer(() => {
                                 setIsOpen={setIsOpenResetSettingsModal}
                                 onConfirm={handleResetSettingsConfirm}
                                 customConfirmTitle={reactTranslator.getMessage('options_reset_settings_confirm_modal_clear_button')}
-                                customCancelTitle={reactTranslator.getMessage('options_confirm_modal_cancel_button')}
                             />
                         )
                     }

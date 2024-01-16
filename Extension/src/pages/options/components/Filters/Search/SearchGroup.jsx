@@ -57,7 +57,7 @@ const SearchGroup = ({
                         classname="icon--setting setting__icon"
                     />
                     <div className="setting__info">
-                        <div className="setting__title group__title">
+                        <div className="setting__title setting__title--search">
                             {groupName}
                         </div>
                     </div>

@@ -72,6 +72,11 @@ export const HOW_TO_CREATE_RULES_URL = Forward.get({
     from: ForwardFrom.Options,
 });
 
+export const FILTER_POLICY_URL = Forward.get({
+    action: ForwardAction.FilterPolicy,
+    from: ForwardFrom.Options,
+});
+
 export const ACCEPTABLE_ADS_LEARN_MORE_URL = Forward.get({
     action: ForwardAction.SelfPromotion,
     from: ForwardFrom.Options,

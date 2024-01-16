@@ -181,6 +181,13 @@ export class Log {
 
         adguard.Log = Log;
     }
+
+    /**
+     * Determines verbosity.
+     */
+    public static isVerbose() {
+        return this.currentLevelValue >= LogLevel.Debug;
+    }
 }
 
 declare global {

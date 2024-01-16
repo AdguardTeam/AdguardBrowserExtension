@@ -89,6 +89,9 @@ export class App {
         // We will remove it once engine initialization becomes faster.
         KeepAlive.init();
 
+        // Reads persisted data from session storage.
+        await Engine.api.initStorage();
+
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 

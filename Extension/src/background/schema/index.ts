@@ -30,3 +30,4 @@ export * from './custom-filter-metadata';
 export * from './local-script-rules';
 export * from './notification';
 export * from './safebrowsing';
+export * from './annoyances-consent';

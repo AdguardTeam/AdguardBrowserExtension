@@ -135,16 +135,16 @@ export class FilterStateStorage extends StringStorage<
     /**
      * Enables specified filters.
      *
-     * @param filtersIds List of filters to enable.
+     * @param filterIds List of filter ids to enable.
      * @throws Error if filter state data is not initialized.
      */
-    public enableFilters(filtersIds: number[]): void {
+    public enableFilters(filterIds: number[]): void {
         if (!this.data) {
             throw FilterStateStorage.createNotInitializedError();
         }
 
-        for (let i = 0; i < filtersIds.length; i += 1) {
-            const filterId = filtersIds[i];
+        for (let i = 0; i < filterIds.length; i += 1) {
+            const filterId = filterIds[i];
 
             if (!filterId) {
                 continue;

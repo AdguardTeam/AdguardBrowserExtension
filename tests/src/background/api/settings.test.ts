@@ -25,6 +25,8 @@ import {
     getExportedSettingsV2,
 } from '../../../helpers';
 
+jest.mock('../../../../Extension/src/background/engine');
+
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
 
@@ -90,6 +92,7 @@ describe('Settings Api', () => {
             const expected = getDefaultSettingsConfigFixture(
                 browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
                 `/${ASSISTANT_INJECT_OUTPUT}.js`,
+                false,
             );
             expect(SettingsApi.getTsWebExtConfiguration()).toStrictEqual(expected);
         });

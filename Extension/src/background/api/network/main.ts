@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
-import FiltersDownloader from '@adguard/filters-downloader/browser';
+import {
+    FiltersDownloader,
+    DefinedExpressions,
+    type DownloadResult,
+} from '@adguard/filters-downloader/browser';
 
 import { LOCALE_METADATA_FILE_NAME, LOCALE_I18N_METADATA_FILE_NAME } from '../../../../../constants';
 import { UserAgent } from '../../../common/user-agent';
@@ -28,15 +32,11 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
+import { FilterUpdateDetail } from '../filters';
+import { Log } from '../../../common/log';
+import { NEWLINE_CHAR_UNIX } from '../../../common/constants';
 
 import { NetworkSettings } from './settings';
-
-export type NetworkConfiguration = {
-    filtersMetadataUrl?: string,
-    filterRulesUrl?: string,
-    localFiltersFolder?: string,
-    localFilterIds?: number[]
-};
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 
@@ -51,7 +51,7 @@ export class Network {
     /**
      * FiltersDownloader constants.
      */
-    private filterCompilerConditionsConstants = {
+    private filterCompilerConditionsConstants: DefinedExpressions = {
         adguard: true,
         adguard_ext_chromium: UserAgent.isChromium,
         adguard_ext_firefox: UserAgent.isFirefox,
@@ -68,35 +68,67 @@ export class Network {
     /**
      * Downloads filter rules by filter ID.
      *
-     * @param filterId              Filter identifier.
-     * @param forceRemote           Force download filter rules from remote server.
-     * @param useOptimizedFilters   Download optimized filters flag.
+     * @param filterUpdateDetail Filter update detail.
+     * @param forceRemote Force download filter rules from remote server.
+     * @param useOptimizedFilters Download optimized filters flag.
+     * @param rawFilter Raw filter rules.
      */
     public async downloadFilterRules(
-        filterId: number,
+        filterUpdateDetail: FilterUpdateDetail,
         forceRemote: boolean,
         useOptimizedFilters: boolean,
-    ): Promise<string[]> {
+        rawFilter?: string[],
+    ): Promise<DownloadResult> {
         let url: string;
 
-        if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {
-            url = this.getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
+        let isLocalFilter = false;
+        if (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateDetail.filterId) < 0) {
+            url = this.getUrlForDownloadFilterRules(filterUpdateDetail.filterId, useOptimizedFilters);
         } else {
-            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterId}.txt`);
+            // eslint-disable-next-line max-len
+            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterUpdateDetail.filterId}.txt`);
             if (useOptimizedFilters) {
-                url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_mobile_${filterId}.txt`);
+                // eslint-disable-next-line max-len
+                url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_mobile_${filterUpdateDetail.filterId}.txt`);
             }
+            isLocalFilter = true;
         }
 
-        return FiltersDownloader.download(url, this.filterCompilerConditionsConstants);
+        // local filters do not support patches, that is why we always download them fully
+        if (isLocalFilter || filterUpdateDetail.force || !rawFilter) {
+            const result = await FiltersDownloader.downloadWithRaw(
+                url,
+                {
+                    force: true,
+                    definedExpressions: this.filterCompilerConditionsConstants,
+                    verbose: Log.isVerbose(),
+                },
+            );
+            return result;
+        }
+
+        return FiltersDownloader.downloadWithRaw(
+            url,
+            {
+                rawFilter: rawFilter.join(NEWLINE_CHAR_UNIX),
+                definedExpressions: this.filterCompilerConditionsConstants,
+                verbose: Log.isVerbose(),
+            },
+        );
     }
 
     /**
      * Downloads filter rules by url.
      *
      * @param url Subscription url.
+     * @param rawFilter Raw filter rules.
+     * @param force Boolean flag to download filter fully or by patches.
      */
-    public async downloadFilterRulesBySubscriptionUrl(url: string): Promise<string[] | undefined> {
+    public async downloadFilterRulesBySubscriptionUrl(
+        url: string,
+        rawFilter?: string,
+        force?: boolean,
+    ): Promise<DownloadResult | undefined> {
         if (url in this.loadingSubscriptions) {
             return;
         }
@@ -105,16 +137,26 @@ export class Network {
 
         try {
             // TODO: runtime validation
-            const lines = await FiltersDownloader.download(url, this.filterCompilerConditionsConstants);
+            const downloadData = await FiltersDownloader.downloadWithRaw(
+                url,
+                {
+                    definedExpressions: this.filterCompilerConditionsConstants,
+                    force,
+                    rawFilter,
+                    verbose: Log.isVerbose(),
+                },
+            );
 
             delete this.loadingSubscriptions[url];
 
-            if (lines[0] && lines[0].indexOf('[') === 0) {
-                // [Adblock Plus 2.0]
-                lines.shift();
+            // Get the first rule to check if it is an adblock agent (like [Adblock Plus 2.0]). If so, ignore it.
+            const firstRule = downloadData.filter[0]?.trim();
+
+            if (firstRule && firstRule.startsWith('[') && firstRule.endsWith(']')) {
+                downloadData.filter.shift();
             }
 
-            return lines;
+            return downloadData;
         } catch (e: unknown) {
             delete this.loadingSubscriptions[url];
             const message = e instanceof Error
@@ -324,7 +366,7 @@ export class Network {
      *
      * @returns Url for filter downloading.
      */
-    private getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
+    public getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
         const url = useOptimizedFilters ? this.settings.optimizedFilterRulesUrl : this.settings.filterRulesUrl;
         return url.replaceAll('{filter_id}', String(filterId));
     }

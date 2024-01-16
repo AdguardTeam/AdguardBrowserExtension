@@ -6,10 +6,12 @@ import { defaultSettings } from '../../../Extension/src/common/settings';
 export const getDefaultSettingsConfigFixture = (
     documentBlockingPageUrl: string,
     assistantUrl: string,
+    debugScriptlets: boolean,
 ): SettingsConfig => ({
     assistantUrl,
     documentBlockingPageUrl,
     collectStats: !defaultSettings[SettingOption.DisableCollectHits],
+    debugScriptlets,
     allowlistInverted: !defaultSettings[SettingOption.DefaultAllowlistMode],
     allowlistEnabled: defaultSettings[SettingOption.AllowlistEnabled],
     stealthModeEnabled: !defaultSettings[SettingOption.DisableStealthMode],

@@ -407,7 +407,7 @@ class LogStore {
                     && !filteringEvent.removeParam
                     && !filteringEvent.removeHeader);
             const isModified = !isAllowlisted
-                && (filteringEvent.requestRule?.isModifyingCookieRule
+                && (filteringEvent.isModifyingCookieRule
                     || filteringEvent.requestRule?.cssRule
                     || filteringEvent.requestRule?.scriptRule
                     || filteringEvent.requestRule?.cspRule

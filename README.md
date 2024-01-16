@@ -26,10 +26,12 @@
 <br />
 
 <p align="center">
-    <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_4_settings.png" width="800" />
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_settings_dark.png" width="900px" alt="AdGuard Browser Extension" />
+        <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_settings_white.png" width="900px" alt="AdGuard Browser Extension"/>
+    </picture>
 </p>
 
-<hr />
 
 AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
 
@@ -210,9 +212,10 @@ To show locales info run:
 
 ## Minimum supported browser versions
 
-| Browser                 	| Version 	 |
-|-------------------------	|:---------:|
-| Chromium Based Browsers 	|  79   	   |
-| Firefox                 	|  78   	   |
-| Opera                   	|  66   	   |
-| Edge                    	|  79   	   |
+| Browser                 	| Version  |
+|-------------------------	|:--------:|
+| Chromium Based Browsers 	|  80   	  |
+| Firefox                 	|  78   	  |
+| Firefox Mobile            | 113    	 |
+| Opera                   	|  67   	  |
+| Edge                    	|  80   	  |

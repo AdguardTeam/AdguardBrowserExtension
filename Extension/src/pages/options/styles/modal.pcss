@@ -2,20 +2,34 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    min-height: 330px;
+    min-height: 200px;
+    padding: 8px 32px 32px 32px;
+    max-width: 600px;
+    min-width: 330px;
+    overflow-y: auto;
+
+    &__header {
+        display: flex;
+        justify-content: right;
+        width: 100%;
+    }
 
     &__title {
-        font-size: 24px;
-        font-weight: 500;
-        margin-bottom: 15px;
+        font-size: 32px;
+        line-height: 39px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        width: 100%;
     }
 
     &__subtitle {
         font-size: 16px;
+        line-height: 24px;
         font-weight: 400;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
+        width: 100%;
 
-        &--confirm {
+        &--short {
             text-overflow: ellipsis;
             overflow: hidden;
             max-width: 300px;
@@ -24,29 +38,32 @@
     }
 
     &__close {
-        position: absolute;
-        width: 15px;
-        height: 15px;
-        top: 30px;
-        right: 30px;
-        color: var(--gray700);
+        margin-right: -24px;
 
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray400);
+        .icon {
+            width: 24px;
+            height: 24px;
+            color: var(--gray700);
         }
     }
 
     &__content {
         width: 100%;
-        margin: auto 0;
-
-        &--button {
-            display: flex;
-            justify-content: space-between;
-        }
+        margin: auto 0 24px 0;
 
         &--center-text {
             text-align: center;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: flex-end;
+        margin: auto 0 0 0;
+
+        &--centered {
+            width: 100%;
+            justify-content: center;
         }
     }
 
@@ -59,6 +76,8 @@
         margin-bottom: 22px;
         padding: 7px 8px;
         outline: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
 
         &:focus-visible {
             outline: none;
@@ -86,16 +105,14 @@
     }
 
     &__btn {
-        margin: 0 auto;
-        margin-top: 15px;
-        min-width: 175px;
+        margin: 0 24px 0 0;
 
-        &--statistic {
+        &--confirm {
             min-width: 100px;
+        }
 
-            &:first-child {
-                margin-right: 25px;
-            }
+        &:last-child {
+            margin-right: 0;
         }
     }
 
