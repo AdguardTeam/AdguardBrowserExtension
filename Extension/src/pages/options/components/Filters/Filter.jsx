@@ -85,7 +85,7 @@ const Filter = observer(({ filter }) => {
         description,
         version,
         lastCheckTime,
-        timeUpdated,
+        lastUpdateTime,
         homepage,
         trusted,
         customUrl,
@@ -198,9 +198,9 @@ const Filter = observer(({ filter }) => {
                                     }
                                     {translator.getMessage('options_filters_filter_updated')}
                                     {' '}
-                                    {lastCheckTime
-                                        ? formatDate(lastCheckTime)
-                                        : formatDate(timeUpdated)}
+                                    {lastUpdateTime
+                                        ? formatDate(lastUpdateTime)
+                                        : formatDate(lastCheckTime)}
                                 </div>
                             </div>
                             <div>

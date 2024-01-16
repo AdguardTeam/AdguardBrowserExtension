@@ -38,7 +38,7 @@ const FiltersUpdate = observer(() => {
 
     const {
         rulesCount,
-        lastUpdateTime,
+        latestCheckTime,
         filtersUpdating,
         isUpdateFiltersButtonActive,
     } = settingsStore;
@@ -47,7 +47,7 @@ const FiltersUpdate = observer(() => {
         await settingsStore.updateFilters();
     };
 
-    const dateObj = new Date(lastUpdateTime);
+    const dateObj = new Date(latestCheckTime);
 
     return (
         <div className="filters-update">

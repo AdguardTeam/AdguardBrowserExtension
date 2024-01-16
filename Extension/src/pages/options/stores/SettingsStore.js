@@ -361,9 +361,13 @@ class SettingsStore {
         ];
     }
 
+    /**
+     * Used to display the last check time under all rules count.
+     *
+     * @returns {number} the latest check time of all filters.
+     */
     @computed
-    get lastUpdateTime() {
-        // TODO: lastCheckTime or lastUpdateTime?
+    get latestCheckTime() {
         return Math.max(...this.filters.map((filter) => filter.lastCheckTime || 0));
     }
 
