@@ -58,6 +58,13 @@ export const baseMetadataValidator = zod.object({
      * version.
      */
     version: zod.string(),
+
+    /**
+     * Diff-Path - Path to the patches if exists.
+     *
+     * @see {@link https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path | Specs}.
+     */
+    diffPath: zod.string().optional(),
 });
 
 export const regularFilterMetadataValidator = baseMetadataValidator.merge(

@@ -35,204 +35,219 @@ export type Notification = {
     icons?: Record<string, Record<string, string>>,
 };
 
-export const HALLOWEEN_23_ID = 'halloween23';
+const RU_LOCALE = 'ru';
 
-export const halloween23Notification: Notification = {
-    id: HALLOWEEN_23_ID,
+const CHRISTMAS_23_ID = 'christmas23';
+
+const christmas23Notification: Notification = {
+    id: CHRISTMAS_23_ID,
     locales: {
         en: {
-            title: 'Fact or fiction?',
-            btn: 'Investigate',
+            title: 'Christmas at AdGuard',
+            btn: 'Unwrap',
         },
         ru: {
-            title: 'Верю не верю',
-            btn: 'Давайте проверим',
-        },
-        es: {
-            title: '¿Realidad o ficción?',
-            btn: '¡Adivinar!',
-        },
-        de: {
-            title: 'Falsch oder wahr?',
-            btn: 'Kommen Sie klar',
-        },
-        fr: {
-            title: 'Fait ou fiction ?',
-            btn: 'Examinons',
-        },
-        it: {
-            title: 'Fatto o finzione?',
-            btn: 'Esaminiamo',
-        },
-        ko: {
-            title: '사실일까, 괴담일까?',
-            btn: '퀴즈 시작',
+            title: 'Новый год в AdGuard',
+            btn: 'Что под ёлкой?',
         },
         ja: {
-            title: '事実か怪談か？',
-            btn: 'クイズに挑戦する',
+            title: 'AdGuard Christmas キャンペーン',
+            btn: 'プレゼントはこちら',
+        },
+        ko: {
+            title: 'AdGuard 크리스마스 프로모션',
+            btn: '선물 찾기',
         },
         zh_cn: {
-            title: '万圣节答题小游戏',
-            btn: '开始玩儿',
+            title: 'AdGuard Christmas',
+            btn: '有什么惊喜？',
         },
         zh_tw: {
-            title: '萬聖節答題小遊戲',
-            btn: '開始玩',
+            title: 'AdGuard Christmas',
+            btn: '有什麼驚喜？',
         },
-        uk: {
-            title: 'Факт чи вигадка?',
-            btn: 'Вгадай!',
+        fr: {
+            title: 'Noël chez AdGuard',
+            btn: 'Venez voir',
+        },
+        it: {
+            title: 'Natale ad AdGuard',
+            btn: 'Vieni a vedere',
+        },
+        de: {
+            title: 'Weihnachten bei AdGuard',
+            btn: 'Öffnen',
+        },
+        es: {
+            title: 'Navidad en AdGuard',
+            btn: 'Abrir',
         },
         pt_br: {
-            title: 'Realidade ou ficção?',
-            btn: 'Adivinhar',
+            title: 'É Natal no AdGuard',
+            btn: 'Abrir',
         },
         pt_pt: {
-            title: 'Realidade ou ficção?',
-            btn: 'Adivinhar',
+            title: 'É Natal no AdGuard',
+            btn: 'Abrir',
+        },
+        uk: {
+            title: 'Новий рік в AdGuard',
+            btn: 'Що під ялинкою?',
         },
         ar: {
-            title: 'حقيقة أم خيال؟',
-            btn: '!يخمن',
+            title: 'تخفيضات العام الجديد',
+            btn: 'يفتح',
         },
         be: {
-            title: 'Факт ці выдумка?',
-            btn: 'Адгадайце!',
+            title: 'Новы год у AdGuard',
+            btn: 'Што пад ёлкай?',
         },
         bg: {
-            title: 'Факт или измислица?',
-            btn: 'Познайте!',
+            title: 'Нова година в AdGuard',
+            btn: 'Отворете',
         },
         ca: {
-            title: 'Realitat o ficció?',
-            btn: 'Endevina!',
+            title: 'Nadal a AdGuard',
+            btn: 'Obert',
         },
         cs: {
-            title: 'Pravda nebo fikce?',
-            btn: 'Tipni si!',
+            title: 'Vánoce v AdGuardu',
+            btn: 'Otevřená',
         },
         da: {
-            title: 'Fakta eller fiktion?',
-            btn: 'Gætte!',
+            title: 'Jul på AdGuard',
+            btn: 'Åben',
         },
         el: {
-            title: 'Σωστό ή λάθος?',
-            btn: 'Εικασία!',
+            title: 'Πρωτοχρονιά στο AdGuard',
+            btn: 'Ανοιξε',
         },
         es_419: {
-            title: '¿Realidad o ficción?',
-            btn: '¡Adivinar!',
+            title: 'Navidad en AdGuard',
+            btn: 'Abre',
         },
         fa: {
-            title: 'واقعیت یا تخیل؟',
-            btn: '!حدس بزن',
+            title: 'AdGuard سال نو در',
+            btn: 'باز کن',
         },
         fi: {
-            title: 'Totta vai tarua?',
-            btn: 'Arvaus!',
+            title: 'Joulu AdGuardissa',
+            btn: 'Avaa',
         },
         he: {
-            title: '?עובדה או בדיה',
-            btn: '!לְנַחֵשׁ',
+            title: 'קידום לשנה החדשה',
+            btn: 'לִפְתוֹחַ',
         },
         hr: {
-            title: 'Činjenica ili fikcija?',
-            btn: 'Pogodite!',
+            title: 'Božić u AdGuardu',
+            btn: 'Otvoren',
         },
         hu: {
-            title: 'Tény vagy fikció?',
-            btn: 'Találd ki!',
+            title: 'Új év az AdGuardban',
+            btn: 'Nyisd ki',
         },
         hy: {
-            title: 'Փաստ, թե հորինված.',
-            btn: 'Գուշակիր',
+            title: 'Ամանորը AdGuard-ում',
+            btn: 'Բացել',
         },
         id: {
-            title: 'Fakta atau Fiksi?',
-            btn: 'Tebakan!',
+            title: 'Tahun Baru di AdGuard',
+            btn: 'Membuka',
         },
         lt: {
-            title: 'Faktas ar fikcija?',
-            btn: 'Atspėk!',
+            title: 'Kalėdos AdGuard',
+            btn: 'Atviras',
         },
         ms: {
-            title: 'Fakta atau fiksyen?',
-            btn: 'Teka!',
+            title: 'Tahun Baru dalam AdGuard',
+            btn: 'Buka',
         },
         nb: {
-            title: 'Fakta eller fiksjon?',
-            btn: 'Gjett!',
+            title: 'Nyttår i AdGuard',
+            btn: 'Åpen',
         },
         nl: {
-            title: 'Feit of Fictie?',
-            btn: 'Gok!',
+            title: 'Kerstmis in AdGuard',
+            btn: 'Open',
         },
         pl: {
-            title: 'Fakt czy fikcja?',
-            btn: 'Zgadywać!',
+            title: 'Nowy Rok w AdGuard',
+            btn: 'Otwarty',
         },
         ro: {
-            title: 'Realitate sau fictiune?',
-            btn: 'Ghici!',
+            title: 'Crăciun în AdGuard',
+            btn: 'Deschis',
         },
         sk: {
-            title: 'Skutočnosť alebo fikcia?',
-            btn: 'Hádaj!',
+            title: 'Vianoce v AdGuarde',
+            btn: 'Otvorený',
         },
         sl: {
-            title: 'Dejstvo ali fikcija?',
-            btn: 'Ugani!',
+            title: 'Božič v AdGuardu',
+            btn: 'Odprt',
         },
         'sr-Latn': {
-            title: 'Tačno ili netačno?',
-            btn: 'Izgleda!',
+            title: 'Božić u AdGuardu',
+            btn: 'Otvorite',
         },
         sv: {
-            title: 'Fakta eller påhitt?',
-            btn: 'Gissa!',
+            title: 'Jul i AdGuard',
+            btn: 'Öppen',
         },
         tr: {
-            title: 'Gerçek mi kurgu mu?',
-            btn: 'Tahmin etmek!',
+            title: "AdGuard'da Yeni Yıl",
+            btn: 'Açık',
         },
         vi: {
-            title: 'Sự thật hay hư cấu?',
-            btn: 'Đoán!',
+            title: 'Năm mới trong AdGuard',
+            btn: 'Mở',
         },
         hi: {
-            title: 'तथ्य या कल्पना?',
-            btn: 'अनुमान लगाना!',
+            title: 'एडगार्ड में नया साल',
+            btn: 'खुला',
         },
         et: {
-            title: 'Fakt või väljamõeldis?',
-            btn: 'Arva ära!',
+            title: 'Jõulud AdGuardis',
+            btn: 'Avatud',
         },
         th: {
-            title: 'เรื่องจริงหรือนิยาย?',
-            btn: 'เดา!',
+            title: 'ปีใหม่ใน AdGuard',
+            btn: 'เปิด',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Halloween }),
-    from: '25 October 2023 12:00:00',
-    to: '1 November 2023 23:59:00',
+    url: Forward.get({ action: ForwardAction.Christmas23 }),
+    from: '22 December 2023 12:00:00',
+    to: '1 January 2024 23:59:00',
     type: 'animated',
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/halloween23-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween23-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/christmas23-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/christmas23-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/halloween23-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween23-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/christmas23-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/christmas23-off-38.png'),
         },
     },
 };
+
+const normalizeLanguage = (locale: string): string | null => {
+    if (!locale) {
+        return null;
+    }
+    return locale.toLowerCase().replace('-', '_');
+};
+
+const currentLocale = normalizeLanguage(browser.i18n.getUILanguage());
+// possible values of Prefs.language: 'ru', or 'ru-RU' which is 'ru_ru' after normalization
+if (currentLocale?.startsWith(RU_LOCALE)) {
+    christmas23Notification.to = '8 January 2024 23:59:00';
+}
 
 /**
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [HALLOWEEN_23_ID, halloween23Notification],
+    [CHRISTMAS_23_ID, christmas23Notification],
 ]);

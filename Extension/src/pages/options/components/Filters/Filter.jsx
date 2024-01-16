@@ -29,7 +29,8 @@ import cn from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
+import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { TRUSTED_TAG } from '../../../../common/constants';
@@ -84,7 +85,7 @@ const Filter = observer(({ filter }) => {
         description,
         version,
         lastCheckTime,
-        timeUpdated,
+        lastUpdateTime,
         homepage,
         trusted,
         customUrl,
@@ -97,14 +98,31 @@ const Filter = observer(({ filter }) => {
         ? [...tagsDetails, {
             tagId: TRUSTED_TAG,
             keyword: TRUSTED_TAG,
-            description: reactTranslator.getMessage('options_filters_filter_trusted_tag_desc'),
+            description: translator.getMessage('options_filters_filter_trusted_tag_desc'),
         }]
         : [...tagsDetails];
 
     const handleFilterSwitch = async ({ id, data }) => {
-        // remove prefix from filter id
-        const filterIdWithoutPrefix = removePrefix(id);
-        await settingsStore.updateFilterSetting(filterIdWithoutPrefix, data);
+        // remove prefix from filter id and parse it to number
+        const filterId = Number.parseInt(removePrefix(id), 10);
+        const annoyancesFilter = settingsStore.annoyancesFilters.find((f) => f.filterId === filterId);
+
+        if (annoyancesFilter && data) {
+            const isConsentedFilter = await messenger.getIsConsentedFilter(filterId);
+            if (!isConsentedFilter) {
+                // ask user to consent for annoyances filter on enabling
+                // if user has not consented for this filter yet
+                settingsStore.setFiltersToGetConsentFor([annoyancesFilter]);
+                settingsStore.setFilterIdSelectedForConsent(filterId);
+                settingsStore.setIsAnnoyancesConsentModalOpen(true);
+            } else {
+                // just update filter setting
+                await settingsStore.updateFilterSetting(filterId, data);
+            }
+            return;
+        }
+
+        await settingsStore.updateFilterSetting(filterId, data);
     };
 
     const handleRemoveFilterClick = async (e) => {
@@ -122,13 +140,12 @@ const Filter = observer(({ filter }) => {
                 <>
                     {isOpenRemoveFilterModal && (
                         <ConfirmModal
-                            title={reactTranslator.getMessage('options_remove_filter_confirm_modal_title')}
+                            title={translator.getMessage('options_remove_filter_confirm_modal_title')}
                             subtitle={name}
                             isOpen={isOpenRemoveFilterModal}
                             setIsOpen={setIsOpenRemoveFilterModal}
                             onConfirm={handleRemoveFilterConfirm}
-                            customConfirmTitle={reactTranslator.getMessage('options_remove_filter_confirm_modal_ok_button')}
-                            customCancelTitle={reactTranslator.getMessage('options_confirm_modal_cancel_button')}
+                            customConfirmTitle={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
                         />
                     )}
                     <a
@@ -176,14 +193,14 @@ const Filter = observer(({ filter }) => {
                                 <div className="filter__desc-item">
                                     {
                                         version
-                                            ? `${reactTranslator.getMessage('options_filters_filter_version')} ${version} `
+                                            ? `${translator.getMessage('options_filters_filter_version')} ${version} `
                                             : ''
                                     }
-                                    {reactTranslator.getMessage('options_filters_filter_updated')}
+                                    {translator.getMessage('options_filters_filter_updated')}
                                     {' '}
-                                    {lastCheckTime
-                                        ? formatDate(lastCheckTime)
-                                        : formatDate(timeUpdated)}
+                                    {lastUpdateTime
+                                        ? formatDate(lastUpdateTime)
+                                        : formatDate(lastCheckTime)}
                                 </div>
                             </div>
                             <div>
@@ -193,7 +210,7 @@ const Filter = observer(({ filter }) => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    {reactTranslator.getMessage('options_filters_filter_link')}
+                                    {translator.getMessage('options_filters_filter_link')}
                                 </a>
                             </div>
                             <FilterTags tags={tags} />

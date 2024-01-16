@@ -15,39 +15,43 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export type CustomFilterParsedData = {
+export type FilterParsedData = {
     name: string,
     description: string,
     homepage: string,
     version: string,
-    expires: string,
+    expires: number,
     timeUpdated: string,
+    // Spec https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path
+    diffPath: string,
 };
 
 /**
- * Helper class for parsing custom filter metadata, loaded from remote source.
+ * Helper class for parsing custom filter metadata, loaded from a remote source.
  */
-export class CustomFilterParser {
+export class FilterParser {
     /**
-     * Amount of lines to parse metadata from filter's header.
+     * Number of lines to parse metadata from filter's header.
      */
     private static AMOUNT_OF_LINES_TO_PARSE = 50;
 
     /**
-     * Parses filter metadata from rules header.
+     * Parses filter metadata from rules' header.
      *
      * @param rules Lines of raw filter data text.
      *
      * @returns Parsed filter data.
      */
-    static parseFilterDataFromHeader(rules: string[]): CustomFilterParsedData {
+    static parseFilterDataFromHeader(rules: string[]): FilterParsedData {
         return {
-            name: CustomFilterParser.parseTag('Title', rules),
-            description: CustomFilterParser.parseTag('Description', rules),
-            homepage: CustomFilterParser.parseTag('Homepage', rules),
-            version: CustomFilterParser.parseTag('Version', rules),
-            expires: CustomFilterParser.parseTag('Expires', rules),
-            timeUpdated: CustomFilterParser.parseTag('TimeUpdated', rules),
+            name: FilterParser.parseTag('Title', rules),
+            description: FilterParser.parseTag('Description', rules),
+            homepage: FilterParser.parseTag('Homepage', rules),
+            version: FilterParser.parseTag('Version', rules),
+            expires: Number(FilterParser.parseTag('Expires', rules)),
+            timeUpdated: FilterParser.parseTag('TimeUpdated', rules),
+            // Specs - https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path
+            diffPath: FilterParser.parseTag('Diff-Path', rules),
         };
     }
 
@@ -63,7 +67,7 @@ export class CustomFilterParser {
         let result = '';
 
         // Look up no more than 50 first lines
-        const maxLines = Math.min(CustomFilterParser.AMOUNT_OF_LINES_TO_PARSE, rules.length);
+        const maxLines = Math.min(FilterParser.AMOUNT_OF_LINES_TO_PARSE, rules.length);
         for (let i = 0; i < maxLines; i += 1) {
             const rule = rules[i];
 
@@ -76,11 +80,12 @@ export class CustomFilterParser {
 
             if (indexOfSearch >= 0) {
                 result = rule.substring(indexOfSearch + search.length);
+                break;
             }
         }
 
         if (tagName === 'Expires') {
-            result = String(CustomFilterParser.parseExpiresStr(result));
+            result = String(FilterParser.parseExpiresStr(result));
         }
 
         if (tagName === 'TimeUpdated') {
@@ -93,7 +98,7 @@ export class CustomFilterParser {
     /**
      * Parses string value of 'Expires' header tag.
      *
-     * @param str Line of rule text with 'Expires' tag.
+     * @param str Line of the rule text with 'Expires' tag.
      *
      * @returns Parsed value of 'Expires' header tag.
      */

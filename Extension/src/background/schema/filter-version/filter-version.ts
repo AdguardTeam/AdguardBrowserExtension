@@ -45,6 +45,13 @@ export const filterVersionDataValidator = zod.object({
      * has not selected a custom update period for filters.
      */
     expires: zod.number(),
+
+    /**
+     * Diff-Path - Path to the patches if exists.
+     *
+     * @see {@link https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path | Specs}.
+     */
+    diffPath: zod.string().optional(),
 });
 
 /**
