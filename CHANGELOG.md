@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Automatic filters update does not work in mobile browsers [#2423](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2423)
 
+## Changed
+- Updated `@adguard/filters-downloader` to [v2.0.7](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
+
 
 ## [4.3.4] - 2023-01-16
 
