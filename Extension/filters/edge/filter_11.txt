@@ -1,9 +1,9 @@
-! Checksum: hWvx3zIgBoINZ+RYHaAZVA
-! Diff-Path: ../patches/11/11-s-1704893785-3600.patch
+! Checksum: QSWA1kpx3izMVmgEatVrPA
+! Diff-Path: ../patches/11/11-s-1705426551-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.48.17
-! TimeUpdated: 2024-01-10T13:31:54+00:00
+! Version: 2.0.48.29
+! TimeUpdated: 2024-01-16T17:31:24+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2346,6 +2346,19 @@ chip.de,gamesworld.de,fnn.jp##.Ad
 !
 ! SECTION: Regular rules
 !
+bellesa.co##div[class^="Column-sc"] > div[class^="MediaQuery__Query-sc"]:has(> div[class^="Structure-sc"] > div[class^="Display__RatioOuter"] > div[class^="Display__RatioInner-sc"]:empty)
+bellesa.co##div[class^="Structure-sc"] > div[class^="MediaQuery__Query-sc"]:has(div[class^="Display__RatioOuter-sc"] > div[class^="Display__RatioInner-sc"]:empty)
+oggi.it##.post > div[class^="wrapper-frame"]:has(> div[id^="rcsad_"])
+jav.direct##div[style^="max-width: 480px; max-height: 500px"]
+teniteo.jp##.item_adv_sp
+shemalez.com#?#.content > div > div.wrapper > div.video-page > div[class]:first-child:has(> div[class] > div[id][class]:empty)
+thehindu.com##.advt-wrapper
+ensonhaber.com###mhome-mansetalti
+cyclesports.jp##[class^="banner"]
+soccer-king.jp##div[style]:has(> div > div[id^="div-gpt-ad"])
+gaming-city.com##.m-top-banner
+gaming-city.com##.mobile-footer-ad
+linternaute.com,journaldunet.com##.ccmcss_oas_top
 www-news18-com.cdn.ampproject.org#?#.short_discription + div[style] > span:contains(advertisement):upward(1)
 komonews-com.cdn.ampproject.org##div[data-testid="story-body"] div[style]:has(> amp-ad)
 knoxnews.com,clarionledger.com,palmbeachpost.com,tennessean.com,northjersey.com,detroitnews.com,greatfallstribune.com,onlineathens.com,usatoday.com,freep.com##.gnt_xmst
@@ -2513,7 +2526,7 @@ hlavnespravy.sk##.mobilebanner
 thevoicemag.ru##.article-detail_tag_ad_mobile_video_recommend
 cointelegraph.com##.asia-posts-listing-mobile__item_press-releases
 slickdeals.net##.displayAdContainer
-timesofindia-indiatimes-com.cdn.ampproject.org##.ampv3-ad
+m-timesofindia-com.cdn.ampproject.org,timesofindia-indiatimes-com.cdn.ampproject.org##.ampv3-ad
 exblog.jp###headAdBanner
 cyzowoman.com#?#article > .adminh:has(> amp-ad)
 cyzowoman.com#$?#article > .adminh:has(> amp-ad) { remove: true; }
@@ -2555,6 +2568,7 @@ poginfo.ddo.jp#?#.mx-0.mx-auto:has(> div[style="height: 250px"])
 poginfo.ddo.jp##.footer-menu-bar
 op.gg#?##__next > div[class^="css-"]:has(> div#vm-av)
 op.gg#?##__next > div[class^="css-"] > div[class^="css-"] > div[class^="css-"]:has(> div:not([class]):not([id]) > div.vm-placement)
+op.gg#?##__next > div[class^="css-"] > div[class^="css-"]:has(> div > div.vm-placement)
 lepoint.fr###WRAP_TOP_POS
 tft.op.gg###video-metaTrend-ad
 jmcomic1.me##.div_sticky2
@@ -3743,8 +3757,6 @@ jukenbbs.com##div[style="margin-top:1px; margin-bottom:1px;"]
 jukenbbs.com##div[style="margin-top:10px; margin-bottom:10px; text-align:center;"]
 woman.mynavi.jp##div[style="margin:20px auto 0;text-align: center;"]
 sirogohan.com##.sp-banner
-yomiuri.co.jp##.p-ad-txt-wrap
-yomiuri.co.jp##.p-ad-list-item
 eromanga-kishin.com##.ad_morelow
 eromanga-numa.com,eromanga-yasan.com,eromanga-kishin.com###spwrapper
 eromanga-numa.com,eromanga-kishin.com##.picad2row
@@ -4325,7 +4337,7 @@ dailyportalz.jp##main > div > div.contents_title:first-child
 cookpad.com##.standard_ad_slot
 cookpad.com##div[data-ad-slot^="spweb-"]
 niji-gazo.com###dmm-recommend
-amp.scmp.com##.advert-fly-carpet-container
+amp-scmp-com.cdn.ampproject.org,amp.scmp.com##.advert-fly-carpet-container
 r7.com###adsMobileFixed
 r7.com###adsTopMobileFixed
 fatede-go.com##div[id^="ovl_"]
@@ -6774,6 +6786,8 @@ livejournal.com##.mdspost-aside__item--banner
 !
 !
 !+ NOT_OPTIMIZED
+forbes.com##.mobile-sticky-ed-placeholder
+!+ NOT_OPTIMIZED
 hoerzu.de##.ad-mobile
 !+ NOT_OPTIMIZED
 9monate.de##.ad_mobile
@@ -6798,7 +6812,7 @@ yahoo.com#$?#li[data-wf-native-da-id^="ntk-native-ad-"] { remove: true; }
 24tv.ua##.within-ads
 ! https://forum.adguard.com/index.php?threads/android-not-blocking-ads-on-yahoo-sites.34021
 !+ NOT_OPTIMIZED
-yahoo.com##.caas-da
+yahoo.com##body .caas-da
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17845
 !+ NOT_OPTIMIZED
 ||baidu.com/po/api/configure/show.jsonp

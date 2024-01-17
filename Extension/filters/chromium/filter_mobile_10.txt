@@ -1,9 +1,9 @@
-! Checksum: W6aFlcxp44sGXuIaxG4jxg
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1703694982-3600.patch
+! Checksum: qo5amLu3lG1S9stnZncMcg
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1705347382-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.17
-! TimeUpdated: 2023-11-22T11:30:20+00:00
+! Version: 2.0.3.19
+! TimeUpdated: 2024-01-15T19:31:55+00:00
 ! Expires: 5 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -143,9 +143,11 @@ amazon.*#@#section[class*="csm-placement-id"]
 amazon.*#@?#div[data-order-sm]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[data-csa-c-painter="enumclaw-slot-display-ad"]:last-child)
 amazon.*#@##dp-container > #px-profile_feature_div[data-csa-c-type="widget"]
 amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
+amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
 search.brave.com#@#div[data-advertiser-id]
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
+@@||developer.mozilla.org/pong/
 mediafire.com#@##upsellBox
 @@||startpage.com/adsense/search/async-ads.js$domain=startpage.com
 irr.ru#@#.ad-link
