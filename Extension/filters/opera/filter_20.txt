@@ -1,9 +1,9 @@
-! Checksum: +KM4fON1p6X1iPKWtOLNrA
-! Diff-Path: ../patches/20/20-s-1704886590-3600.patch
+! Checksum: +3S0Ycl3ABNNsI+xDaBAZA
+! Diff-Path: ../patches/20/20-s-1705416106-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.11.76
-! TimeUpdated: 2024-01-10T11:32:30+00:00
+! Version: 2.0.11.87
+! TimeUpdated: 2024-01-16T14:37:35+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -121,6 +121,15 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161301
 temu.com#?#div[role="main"] div[style] > div[style]:has(> div[style] div[js-selector="mobile-download-ui"])
 !
+rutube.ru##.app-download-default-banner-module__appDownloadPopupButtonWrap
+rutube.ru#%#//scriptlet('set-local-storage-item', 'def_banner_open', 'false')
+dgabc.com.br##._baixeApps
+lemon8-app.com##.pc-reflow
+op.gg##.gnb-desktop-download
+r6.tracker.network,fortnitetracker.com##.trn-site-appbar__apps
+invenglobal.com###floating-banner-ow
+teamblind.com##.openapp_full
+m-timesofindia-com.cdn.ampproject.org##.float_cta_view_ga
 viagogo.*#?#main div[class$=" "] ~ section:has(a[href*="//play.google.com/store/apps/details?id="])
 duolingo.com#%#//scriptlet('trusted-click-element', 'a[href*="mobile_web_to_app_conversion"] + button')
 tubitv.com#?##app > div[class]:has(> div[class] > div[class] > button:contains(Get the app))
@@ -174,8 +183,6 @@ moovitapp.com##mv-side-navigation div[itemtype="http://schema.org/MobileApplicat
 fressay.co.jp##.topic-text > p > a[href="https://www.fressay.co.jp/app_lp/"]
 m.richgo.ai##div[class^="AppDownloadBanner"]
 olx.in#?#main + div div[class^="_"]:has(> div > div > div > div > a[href^="https://apps.apple.com/in/app/olx-buy-sell-near-you/id913492792?"])
-m.hani.co.kr#%#//scriptlet('remove-class', 'no-scroll', 'body')
-m.hani.co.kr#$#.popup-wrap.is-active { display: none !important; }
 javdb.com##.app-desktop-banner
 bing.com###saic_ban
 bizhint.jp##div[id^="sg-footer-app-"]
@@ -2770,6 +2777,7 @@ m.tr.beinsports.com#$#.content_section[style="margin-top: 78px;"] { margin-top: 
 m.tr.beinsports.com#$#body > .android.shown { display: none!important; }
 m.tr.beinsports.com#$#form > header[style="top: 78px;"] { top: 0!important; }
 nepisirsem.com,onliner.by,m.ulmart.ru#$#.smartbanner { display: none!important; }
+m.ulmart.ru#$#.smartbanner_show .snap-content, .smartbanner_show .snap-drawers { top: 0!important; }
 m.vlive.tv#$#.pop_banner { display: none!important; }
 m.vlive.tv#$#.pop_banner+#wrap .vlive_top { top: 0!important; }
 m.vlive.tv#$#.pop_banner+#wrap { padding-top: 0!important; }
