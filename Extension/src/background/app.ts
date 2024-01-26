@@ -149,9 +149,6 @@ export class App {
          */
         await FiltersApi.init(isInstall);
 
-        // Initialize filters updates
-        await filterUpdateService.init();
-
         /**
          * Initializes promo notifications:
          * - Initializes notifications storage
@@ -243,6 +240,10 @@ export class App {
         await Engine.start();
 
         appContext.set(AppContextKey.IsInit, true);
+
+        // Initialize filters updates, after engine started, so that it won't mingle with engine
+        // initialization from current rules
+        filterUpdateService.init();
 
         await sendMessage({ type: MessageType.AppInitialized });
     }

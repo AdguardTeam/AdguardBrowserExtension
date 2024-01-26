@@ -1,9 +1,9 @@
-! Checksum: GsX4zxhTYNCwBpz87IRzBA
-! Diff-Path: ../patches/5_optimized/5_optimized-s-1704807405-3600.patch
+! Checksum: Tp+W4ZDvp4RaFovO1nPn4A
+! Diff-Path: ../patches/5_optimized/5_optimized-s-1704911787-3600.patch
 ! Title: AdGuard Experimental filter (Optimized)
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.27
-! TimeUpdated: 2024-01-09T13:33:34+00:00
+! Version: 2.0.1.28
+! TimeUpdated: 2024-01-10T18:33:21+00:00
 ! Expires: 5 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -23,6 +23,8 @@ www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-ri
 developer.android.com,adssettings.google.com##sc-survey-survey-manager
 mail.yandex.ru#?#.modal:has(> div[data-lego] div[class^="mail-SubscriptionsPopup"])
 ||chrome.test.filter.com^$third-party
+/videojs8/nuevo.min.js
+/videojs/plugins/vastpro.js
 imdb.com#?#div[data-testid="promptable"]:has(.ipc-rating-display-with-poster__image)
 imdb.com#$?#body:has(div[data-testid="promptable"] .ipc-rating-display-with-poster__image) { overflow: auto !important; }
 !+ NOT_OPTIMIZED

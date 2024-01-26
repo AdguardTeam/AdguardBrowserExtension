@@ -1,10 +1,20 @@
-! Checksum: uTwrKXKxIEMcjz+3w8Ny6A
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1704883033-3600.patch
+! Checksum: uH6+ttdYUQXdWuMbU7ioRQ
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1705426563-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.7.77
-! TimeUpdated: 2024-01-09T16:32:10+00:00
+! Version: 2.0.7.84
+! TimeUpdated: 2024-01-16T17:31:51+00:00
 ! Expires: 5 days (update frequency)
+$removeparam=af_xp
+$removeparam=af_ad
+$removeparam=af_adset
+$removeparam=af_click_lookback
+$removeparam=af_force_deeplink
+$removeparam=is_retargeting
+$removeparam=af_force_deeplink
+&af_xp=$removeparam=c
+&af_xp=$removeparam=pid
+$removeparam=dclid
 $removeparam=sms_click
 $removeparam=sms_source
 $removeparam=sms_uph
@@ -193,6 +203,10 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||ilsecoloxix.it^$removeparam=ref
+||gelocal.it^$removeparam=ref
+||gelocal.it^$removeparam=cnt
+||allabout.co.jp^$removeparam=FM
 ||mora.jp^$removeparam=fmid
 ||dvdfab.org^$removeparam=soft
 ||dvdfab.org^$removeparam=ad
@@ -299,7 +313,6 @@ keepstreams.com^$removeparam=downloadmode
 ||dashboard.wedare.pl^$removeparam=smc1
 ||dashboard.wedare.pl^$removeparam=smc2
 ||cmswire.com^$removeparam=source
-||youtube.com^$removeparam=pp
 ||v.daum.net^$removeparam=x_imp
 ||v.daum.net^$removeparam=x_hk
 $removeparam=af_id,domain=dmm.co.jp|dmm.com
@@ -344,6 +357,8 @@ $removeparam=wgexpiry,domain=ibood.com|decathlon.pl
 ||yahoo.co.jp^$removeparam=sc_e
 ||happymail.co.jp^$removeparam=Log
 $removeparam=embeds_referring_euri,domain=youtubekids.com|youtube-nocookie.com|youtube.com
+$removeparam=si,domain=youtu.be|youtube-nocookie.com|youtube.com
+||youtube.com^$removeparam=pp
 ||gotanynudes.com^$removeparam=ref
 ||nitter.net^$removeparam=referer
 ||gitlab.$removeparam=referrer_action
@@ -355,7 +370,6 @@ $removeparam=embeds_referring_euri,domain=youtubekids.com|youtube-nocookie.com|y
 ||etsy.com^$removeparam=click_sum
 ||myprotein.jp^$removeparam=affil
 ||myprotein.jp^$removeparam=a8
-||youtu.be^$removeparam=si
 ||email.nationalgeographic.com^$removeparam=__F__
 ||email.nationalgeographic.com^$removeparam=__dU__
 ||pixiv.net^$removeparam=from
@@ -665,7 +679,6 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||elgato.com^$removeparam=contact_id
 ||elgato.com^$removeparam=attribution_window
 ||hepsiburada.com^$removeparam=wt_so
-||hepsiburada.com^$removeparam=af_xp
 ||vercel.com^$removeparam=redirected
 ||vercel.com^$removeparam=sfmc_channel
 ||vercel.com^$removeparam=sfmc_activity_name
@@ -674,9 +687,6 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||vercel.com^$removeparam=sfmc_journey_id
 ||vercel.com^$removeparam=sfmc_asset_id
 ||vercel.com^$removeparam=sfmc_activityid
-||getir.com^$removeparam=af_xp
-||getir.com^$removeparam=af_force_deeplink
-||getir.com^$removeparam=pid
 ||getir.com^$removeparam=is_retargeting
 ||getir.com^$removeparam=shortlink
 ||getir.com^$removeparam=deep_link_value
@@ -968,7 +978,6 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||adj.st^$removeparam=adj_adgroup
 ||adj.st^$removeparam=adj_creative
 ||adj.st^$removeparam=adj_adnomia_click_id
-||adj.st^$removeparam=utm_content
 ||adj.st^$removeparam=pfx
 ||adj.st^$removeparam=adj_deeplink
 ||adj.st^$removeparam=adj_install_callback
@@ -1010,13 +1019,6 @@ $removeparam=spm,domain=aliyun.com|sohu.com
 ||aliyun.com^$removeparam=scm
 $removeparam=dt_dapp,domain=douban.com|163.com
 ||douban.com^$removeparam=dt_platform
-||hepsiburada.com^$removeparam=af_ad
-||hepsiburada.com^$removeparam=af_adset
-||hepsiburada.com^$removeparam=af_click_lookback
-||hepsiburada.com^$removeparam=af_force_deeplink
-||hepsiburada.com^$removeparam=pid
-||hepsiburada.com^$removeparam=c
-||hepsiburada.com^$removeparam=is_retargeting
 ||hepsiburada.com^$removeparam=shortlink
 ||play.google.com^$removeparam=pcampaignid
 ||cyber-ad01.cc^$removeparam=ip
@@ -1267,7 +1269,6 @@ $removeparam=s,domain=twitter.com|x.com
 ||microsoft.com^$removeparam=ocid
 $removeparam=epi,domain=microsoft.com|xbox.com
 ||nbcume.sc.omtrdc.net/id?d_visid_ver=$removeparam=/mcorgid|mid|ts/,domain=nbcdfw.com
-$removeparam=dclid
 ||trendyol.com^$removeparam=utm_subaff
 ||realitykings.com^$removeparam=ats
 ||marktjagd.de^$removeparam=client
@@ -1367,6 +1368,7 @@ $removeparam=dclid
 ||v.youku.com^$removeparam=spm
 ||theregister.com^$removeparam=td
 ||deezer.com^$removeparam=origin
+||deezer.com^$removeparam=deferredFl
 ||gamesplanet.com^$removeparam=ref
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params

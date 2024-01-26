@@ -43,14 +43,14 @@ const bundleFirefoxStandalone = async () => {
     return bundleRunner(webpackConfig);
 };
 
-const bundleEdge = () => {
-    const webpackConfig = getWebpackConfig(BROWSERS.EDGE);
-    return bundleRunner(webpackConfig);
+const bundleEdge = (watch) => {
+    const webpackConfig = getWebpackConfig(BROWSERS.EDGE, watch);
+    return bundleRunner(webpackConfig, watch);
 };
 
-const bundleOpera = () => {
-    const webpackConfig = getWebpackConfig(BROWSERS.OPERA);
-    return bundleRunner(webpackConfig);
+const bundleOpera = (watch) => {
+    const webpackConfig = getWebpackConfig(BROWSERS.OPERA, watch);
+    return bundleRunner(webpackConfig, watch);
 };
 
 const bundleChromeCrx = async () => {
@@ -133,6 +133,24 @@ const chrome = async (watch) => {
     }
 };
 
+const edge = async (watch) => {
+    try {
+        await bundleEdge(watch);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
+const opera = async (watch) => {
+    try {
+        await bundleOpera(watch);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
 const firefox = async (watch) => {
     try {
         await bundleFirefoxAmo(watch);
@@ -159,6 +177,20 @@ program
     .description('Builds extension for chrome browser')
     .action(() => {
         chrome(program.watch);
+    });
+
+program
+    .command('edge')
+    .description('Builds extension for edge browser')
+    .action(() => {
+        edge(program.watch);
+    });
+
+program
+    .command('opera')
+    .description('Builds extension for opera browser')
+    .action(() => {
+        opera(program.watch);
     });
 
 program

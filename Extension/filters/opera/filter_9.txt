@@ -1,9 +1,9 @@
-! Checksum: fOadp3WGWQwNsbXV7To0sg
-! Diff-Path: ../patches/9/9-s-1704886592-3600.patch
+! Checksum: LPfKpBUnqLy94QcBx32dmA
+! Diff-Path: ../patches/9/9-s-1705397832-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.22.80
-! TimeUpdated: 2024-01-10T11:33:41+00:00
+! Version: 2.0.22.87
+! TimeUpdated: 2024-01-16T09:34:09+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -308,6 +308,9 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/170650
+tv0800.tv#%#//scriptlet('prevent-element-src-loading', 'script', 'pagead2.googlesyndication.com')
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=googlesyndication-adsbygoogle,domain=tv0800.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169886
 biobiochile.cl#@#[id^="google_ads_iframe"]
 biobiochile.cl#%#//scriptlet('prevent-setTimeout', 'window.getComputedStyle')
@@ -2397,6 +2400,10 @@ gaz.com.br,placar.com.br,futebolinterior.com.br,tvhistoria.com.br,tribunapr.uol.
 ! ##body .banner
 ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.*,mundotecnologias.com,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+mundoeducacao.uol.com.br#?#.main_home-right > div[style]:has(> div[style] > div[id^="banner-"])
+dgabc.com.br##div[class*="Banner_"]
+dgabc.com.br##div[class^="_arroba"]
+trampos.co##.dblclkbox
 atelevisao.com##div[id^="ads-boost"]
 adrenaline.com.br##div[id^="ad_conteudo_"]
 reclameaqui.com.br#?#div[role="banner"]:has(> #ads-card-tooltip)
@@ -2405,9 +2412,8 @@ metropoles.com###taboola-mid-article-reco-reel
 clickpb.com.br#?#body > div[style]:has(> a[href^="https://record.nsxafiliados.com/"])
 clickpb.com.br##.adsHorizontal
 depor.com##div[class^="showTds"]
-visortmo.com#?##pills-populars > div.row > div.element:has(> a[href*="offer_id="][target*="_blank"])
-visortmo.com##a[href*="offer_id="][target*="_blank"]
-visortmo.com##div[class^="pbl"]
+visortmo.com#?##pills-populars > div.row > div.element:has(> a[target*="_blank"][rel*="nofollow"])
+visortmo.com##a[target*="_blank"][rel*="nofollow"] > img
 yugenmangas.net.br##.ads-flot
 gartic.com.br###shopIntUm
 vrum.com.br##.ad-banner
@@ -2568,7 +2574,7 @@ cnnportugal.iol.pt##.pub-outer-wrapper
 ||cdn.iol.pt/js/utils/Modules/IOLComercial/dist/iol.comercial.js
 luxwoman.pt##.theiaStickySidebar
 luxwoman.pt##.feat-ad-wrap
-concursosnobrasil.com##div[class^="concur-prebid-lendo-"]
+concursosnobrasil.com.br,concursosnobrasil.com##div[class^="concur-prebid-lendo-"]
 exame.com##div[id^="aside_ad_"]
 exame.com##div[id^="native-home-"]:empty
 lance.com.br##div[class*="styles_ad"]
@@ -3101,7 +3107,7 @@ webarcondicionado.com.br###enveloping
 buscape.com.br##div[class^="Hits_SponsoredWrapper__"]
 brasilescola.uol.com.br##.publi-dir
 brasilescola.uol.com.br##.corpoPubli
-brasilescola.uol.com.br##.area-publi
+mundoeducacao.uol.com.br,brasilescola.uol.com.br##.area-publi
 economia.ig.com.br##div[class^="maislidas"]
 verfutebol.net,verfutebol.tv###superderbi
 opopular.com.br###bannerMateriaAbertaMeiaPagina
@@ -3284,7 +3290,7 @@ otempo.com.br##div.cf.slot-item.count-2.slot-count-20
 otempo.com.br##div[id^="ATF_"]
 ||elsiglodetorreon.com.mx/desplegados/banners/
 reforma.com##div[id^="zonapublicidad"]
-contigo.uol.com.br,tycsports.com,tvpop.com.br,midiamax.uol.com.br##div[id^="banner-"]
+jcconcursos.uol.com.br,contigo.uol.com.br,tycsports.com,tvpop.com.br,midiamax.uol.com.br##div[id^="banner-"]
 atresplayer.com##.adpause
 minha.exame.com##div[class^="AdContainer"]
 arquitecturaydiseno.es##.header-megabanner > *
@@ -3393,7 +3399,7 @@ aeiou.pt,noticiast.com##div[style="margin: 8px 0; clear: both;"]
 comidinhasdochef.com##.wrap-banner
 heraldo.es###top_ads_container
 worlwidestream.net##[id^="player"] ~ div[onclick*="remove"]
-sportsonline.so,sportzonline.co###html1
+sportzonline.co###html1
 vivoplay.sigue.la##div[class*="faux"]:not(.fauxborder-left):not(.fauxcolumns)
 calcular.onlinegratis.tv##td[class="style6"][style="height: 53px"]
 lawebdelprogramador.com##.publi_sky
@@ -3911,7 +3917,7 @@ superflix.net##aside.widget-area > #custom_html-16
 mastercuriosidadesbr.com##.conteudo[id^="adx"]
 ||ticotimes.net/*/*Banner*
 ticotimes.net##a[href^="https://ticotimes.net/linkout/"]
-recetascuriosas.com,cocinarporelmundo.com,cocinaconlupita.com,worldrecipesu.com,planetaneperiano.com,chefac.com,recipesandcooker.com,fashioncomplements.com,recipeski.com,cyclingrute.com,recipesnk.com,motornk.com,worldmangas.com,mangalong.com,mistermanga.com,anitoc.com,enginepassion.com,mangaready.com,otakuteca.com##.pbl
+recetasviaje.com,recetascuriosas.com,cocinarporelmundo.com,cocinaconlupita.com,worldrecipesu.com,planetaneperiano.com,chefac.com,recipesandcooker.com,fashioncomplements.com,recipeski.com,cyclingrute.com,recipesnk.com,motornk.com,worldmangas.com,mangalong.com,mistermanga.com,anitoc.com,enginepassion.com,mangaready.com,otakuteca.com##.pbl
 lavoz.com.ar##.bloque-ads
 lavoz.com.ar##.block-banner
 pivigames.blog##a[href="https://pivigames.blog/descargar.php"]
@@ -4442,7 +4448,6 @@ newpct.com,pctestrenos.com,tumejortv.com###Layer1
 mercadolibre.com.ar###MClicsQCatAdImg
 sapo.pt###MREC2
 magisnet.com###MSC
-ver-pelis.net###Mod78
 ig.com.br###PPA03406
 taringamp3.com###Pluginbarraa
 diariodenavarra.es###PubDesplegable01
@@ -4804,7 +4809,6 @@ geovisites.com##.bg_flash
 oxe7.com##.bg_rek_on
 globo.com##.bi
 autobild.es##.big_banner
-ver-pelis.net##.bkbnrc_2
 somosche.com##.blAdd
 axn.es##.block-spti_operativ
 animax.es,setenveo.es##.block-spti_operative
@@ -5076,7 +5080,6 @@ meneame.net##div[style="height: 65px; border-top: 1px solid #aaa; padding-top: 3
 meneame.net##div[style="height: 95px; border-top: 1px solid #aaa; padding-top: 4px; border-bottom: 1px solid #aaa; margin: 10px 0 4px 80px;white-space:nowrap;overflow:hidden"]
 vagos.es##div[style="margin-left:20px;width:300px;height:250px;margin-left:20px;"]
 filmessemlimite.com.br##div[style="margin:0;padding:0;position:absolute;left:188px;top:15px;width:755px;height:100px;text-align:left;z-index:4;"]
-ver-pelis.net##div[style="padding:5px;background-color:#DDD;width:728px;height:90px;"]
 todoanimes.com##div[style="position:fixed; left:20%; bottom:0; width:732px; height:94px; z-index:99999; background:#3b5998; "]
 autosport.aeiou.pt##div[style="width: 300px; height: 250px; overflow: hidden; position: relative;"]
 autosport.aeiou.pt##div[style="width: 300px; height: 250px; overflow: visible; z-index: 0;"]
@@ -5358,8 +5361,6 @@ infonegocios.tv##td[width="961"][height="60"]
 ||ummilhao.com.br/1mil
 ||uv.terra.com.br^
 ||vagos.es/banners/$script
-||ver-pelis.net/pop/$script
-||ver-pelis.net/si/
 ||vitrine.lugarcerto.com.br^
 ||vitrines.globo.com^
 ||vooz.com.br/imagem/banners/

@@ -283,17 +283,26 @@ export class Categories {
             const tagsDetails = Categories.getTagsDetails(filterMetadata.tags);
 
             const filterState = filterStateStorage.get(filterMetadata.filterId);
-
-            const filterVersion = filterVersionStorage.get(filterMetadata.filterId);
-
             if (!filterState) {
                 Log.error(`Cannot find filter ${filterMetadata.filterId} state data`);
                 return;
             }
 
+            let filterVersion = filterVersionStorage.get(filterMetadata.filterId);
             if (!filterVersion) {
-                Log.error(`Cannot find filter ${filterMetadata.filterId} version data`);
-                return;
+                // TODO: remove this hack after we find how to reproduce this issue
+                // Sometimes filter version data might be missing https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
+                // so we set it to values from metadata
+                Log.info(`Cannot find filter ${filterMetadata.filterId} version data, restoring it from metadata`);
+                filterVersion = {
+                    version: filterMetadata.version,
+                    expires: filterMetadata.expires,
+                    lastUpdateTime: (new Date(filterMetadata.timeUpdated)).getTime(),
+                    // this is set in the past to force update check
+                    lastCheckTime: Date.now() - 1000 * 60 * 60 * 24, // 24 hours
+                    diffPath: filterMetadata.diffPath,
+                };
+                filterVersionStorage.set(filterMetadata.filterId, filterVersion);
             }
 
             result.push({

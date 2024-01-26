@@ -114,6 +114,11 @@ export class FilterUpdateApi {
      * or not.
      */
     public static async autoUpdateFilters(forceUpdate: boolean = false): Promise<FilterMetadata[]> {
+        const startUpdateLogMessage = forceUpdate
+            ? 'Update filters forced by user.'
+            : 'Update filters by scheduler.';
+        Log.info(startUpdateLogMessage);
+
         // If filtering is disabled, and it is not a forced update, it does nothing.
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
         if (filteringDisabled && !forceUpdate) {
@@ -162,9 +167,12 @@ export class FilterUpdateApi {
 
         const updatedFilters = await FilterUpdateApi.updateFilters(filterUpdateDetailsToUpdate);
 
-        // Updates last check time of all installed and enabled filters.
+        // Updates last check time of all installed and enabled filters,
+        // which where updated with force
         filterVersionStorage.refreshLastCheckTime(
-            filterUpdateDetailsToUpdate.map(({ filterId }) => filterId),
+            filterUpdateDetailsToUpdate
+                .filter(filterUpdateDetail => filterUpdateDetail.force)
+                .map(({ filterId }) => filterId),
         );
 
         // If some filters were updated, then it is time to update the engine.

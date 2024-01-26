@@ -7,26 +7,26 @@
   resolved "https://registry.yarnpkg.com/@adguard/assistant/-/assistant-4.3.70.tgz#7fdc072315b5ddc797ad91bf06bee3b20e911098"
   integrity sha512-q5o4ejQgRQMFbtV49X1ark0Ytb+MP/3vC9XErHqAcvh6wHpN/Hm2Q1+jbhiHHIs/H2rCU20TyVwZlGs0xtQ60w==
 
-"@adguard/diff-builder@1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@adguard/diff-builder/-/diff-builder-1.0.8.tgz#7650f184b1a1e975b39ab4d4422d63a967f047bd"
-  integrity sha512-KNcMTqZgP3Dmh7GFT1Rl/ZXFbzWjx+IKwn6MkO2BhRvYjl1X5fPL7OQeNf9SPOd5dzilSSO9kTQSbwjzSre3SA==
+"@adguard/diff-builder@1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@adguard/diff-builder/-/diff-builder-1.0.13.tgz#240891d36e1209774d20096519cadadcd470dfd6"
+  integrity sha512-pqoYGQuDSFQPeZ+Z/yJfZoLtsyTolH/lpmm9fmREpJDMKA5c7piWiNeMj3ldht8I6VQQ6z3SZXofHmTbDO9FAw==
   dependencies:
     commander "^11.1.0"
     crypto-js "^4.2.0"
-    diff "5.1.0"
+    diff "git+https://github.com/105th/jsdiff.git#2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a"
 
 "@adguard/extended-css@^2.0.56":
   version "2.0.56"
   resolved "https://registry.yarnpkg.com/@adguard/extended-css/-/extended-css-2.0.56.tgz#4205287fc3e0b4dbf9f64ccad55c56a73e04cef1"
   integrity sha512-RMPRGZ80kM6KiKRR0K2DUOD0+2CiadBk+G6zYBrRmzk4lD71Cipv2b9/rRy9Fdh41ipoApZsQdbJZozXFsM8RA==
 
-"@adguard/filters-downloader@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@adguard/filters-downloader/-/filters-downloader-2.0.4.tgz#220e1cdcc6f3db3c28376b129ca3a7b630b3e8de"
-  integrity sha512-mEFt8oTt6grA8r9VrAKRjt0KfpQ4srSKTrgFjxd+OzuIxEOfS5e3/6BTOvJiHRcgjc4GUwKjkSTXtmxM5gtzwQ==
+"@adguard/filters-downloader@^2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@adguard/filters-downloader/-/filters-downloader-2.0.7.tgz#dfd360d352e6c959c8c44e5667e14ee8481be46c"
+  integrity sha512-33JkY4VX+apkRrgsZopT6LdnRCjFDrmWICMEPVMVqxMm2Sf9rxpJwSQgzbdIm8ALC+GpAsNyuZc1Ph+YyTeh9w==
   dependencies:
-    "@adguard/diff-builder" "1.0.8"
+    "@adguard/diff-builder" "1.0.13"
     axios "1.6.2"
 
 "@adguard/scriptlets@^1.9.105":
@@ -2915,11 +2915,6 @@ diff-sequences@^29.4.3:
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-29.4.3.tgz#9314bc1fabe09267ffeca9cbafc457d8499a13f2"
   integrity sha512-ofrBgwpPhCD85kMKtE9RYFFq6OC1A89oW2vvgWZNCwxrUpRUILopY7lsYyMDSjc8g6U6aiO0Qubg6r4Wgt5ZnA==
 
-diff@5.1.0, diff@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/diff/-/diff-5.1.0.tgz#bc52d298c5ea8df9194800224445ed43ffc87e40"
-  integrity sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==
-
 diff@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
@@ -2929,6 +2924,15 @@ diff@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.2.tgz#60f3aecb89d5fae520c11aa19efc2bb982aade7d"
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
+
+diff@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-5.1.0.tgz#bc52d298c5ea8df9194800224445ed43ffc87e40"
+  integrity sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==
+
+"diff@git+https://github.com/105th/jsdiff.git#2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a":
+  version "5.1.1"
+  resolved "git+https://github.com/105th/jsdiff.git#2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a"
 
 diffie-hellman@^5.0.0:
   version "5.0.3"
