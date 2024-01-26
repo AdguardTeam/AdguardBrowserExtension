@@ -143,6 +143,30 @@ This will create a build directory with unpacked extensions for all browsers:
   build/dev/opera
 ```
 
+To make dev build for a specific browser, run:
+
+```
+  yarn dev <browser>
+```
+
+where `<browser>` is one of the following: `chrome`, `edge`, `opera`, `firefox`, `firefox-standalone`, like this:
+
+```
+  yarn dev chrome
+```
+
+To run dev build in watch mode, run:
+
+```
+  yarn dev --watch
+```
+
+or for a specific browser:
+
+```
+  yarn dev <browser> --watch
+```
+
 **Building the beta and release versions**
 
 Before building the release version, you should manually download necessary resources: filters and public suffix list.
