@@ -4550,7 +4550,7 @@
 			},
 			"nl": {
 				"description": "Refereert aan het Spyware filter",
-				"name": "Spyware filter referentie"
+				"name": "Traceerbeveiligingsfilter-referentie"
 			},
 			"no": {
 				"description": "Har referanser til spionvare-filteret",
@@ -10869,7 +10869,7 @@
 				"description": "러시아 사이트의 광고를 차단하는 필터"
 			},
 			"mk": {
-				"name": "AdGuard руски филтер",
+				"name": "Руски филтер",
 				"description": "Филтер што овозможува блокирање реклами на веб-локации на руски јазик."
 			},
 			"nl": {
@@ -11028,7 +11028,7 @@
 			},
 			"mk": {
 				"name": "Основен филтер",
-				"description": "EasyList + AdGuard основен филтер. Овој филтер е неопходен за квалитетно блокирање реклами."
+				"description": "EasyList + Основен филтер на AdGuard. Овој филтер е неопходен за квалитетно блокирање реклами."
 			},
 			"nl": {
 				"name": "Engels filter",
@@ -11189,7 +11189,7 @@
 				"description": "Најсеопфатна листа на различни онлајн шалтери и алатки за веб-аналитика. Користете го овој филтер, ако не сакате да се следат вашите постапки на интернет."
 			},
 			"nl": {
-				"name": "Spyware filter",
+				"name": "Traceerbeveiligingsfilter",
 				"description": "De meest uitgebreide lijst van verschillende online statistieken en web analyse tools. Als u wilt dat uw acties op het internet niet worden gevolgd, gebruik dan dit filter."
 			},
 			"no": {
@@ -12450,7 +12450,7 @@
 			},
 			"mk": {
 				"name": "Филтер за мобилни реклами на AdGuard",
-				"description": "Филтер за сите познати мобилни рекламни мрежи. Корисно за мобилни уреди."
+				"description": "Филтер за сите познати мобилни рекламни мрежи. Корисен за мобилни уреди."
 			},
 			"nl": {
 				"name": "Filter voor mobiele advertenties",
@@ -12864,7 +12864,7 @@
 			},
 			"de": {
 				"name": "AdGuard DNS-Filter",
-				"description": "Filter, der sich aus mehreren anderen Filtern zusammensetzt (AdGuard Base-Filter, Social Media-Filter, Tracking-Schutzfilter, Filter für mobile Werbung, EasyList und EasyPrivacy) und speziell vereinfacht wurde, um besser für das Sperren von Werbung auf DNS-Ebene kompatibel zu sein."
+				"description": "Filter, der sich aus mehreren anderen Filtern zusammensetzt (AdGuard Base-Filter, Social Media-Filter, Tracking-Schutz-Filter, Filter für mobile Werbung, EasyList und EasyPrivacy) und speziell vereinfacht wurde, um besser für das Sperren von Werbung auf DNS-Ebene kompatibel zu sein."
 			},
 			"el": {
 				"name": "AdGuard DNS Φίλτρο",
@@ -13472,35 +13472,35 @@
 		"19": {
 			"ar": {
 				"name": "AdGuard Popups filter",
-				"description": "يحظر جميع أنواع النوافذ المنبثقة غير الضرورية لتشغيل مواقع الويب."
+				"description": "يحظر جميع أنواع النوافذ المنبثقة غير الضرورية لتشغيل مواقع الويب وفقا لسياسة التصفية الخاصة بنا."
 			},
 			"be": {
 				"name": "Фільтр усплываючых вокнаў AdGuard",
-				"description": "Блакіруе ўсе віды ўсплывальных вокнаў, якія не патрэбныя для працы сайтаў."
+				"description": "Блакуе ўсе віды ўсплывальных вокнаў, якія не патрэбныя для працы сайтаў у адпаведнасці з нашай Палітыкай фільтрацыі."
 			},
 			"bg": {
 				"name": "Филтър за изскачащи прозорци AdGuard",
-				"description": "Блокира всички видове изскачащи прозорци, които не са необходими за работата на уебсайтовете."
+				"description": "Блокира всички видове изскачащи прозорци, които не са необходими за работата на уебсайтовете според нашата Политика за филтриране."
 			},
 			"ca": {
 				"name": "Filtre de finestres emergents d'AdGuard",
-				"description": "Bloqueja tot tipus de finestres emergents que no són necessàries per al funcionament dels llocs web."
+				"description": "Bloqueja tot tipus de finestres emergents que no són necessàries per al funcionament dels llocs web segons la nostra Política de filtres."
 			},
 			"cs": {
 				"name": "AdGuard Popups filter",
-				"description": "Blokuje všechny druhy vyskakovacích oken, která nejsou nezbytná pro provoz webových stránek."
+				"description": "Blokuje všechny druhy vyskakovacích oken, které nejsou nezbytné pro provoz webových stránek podle našich zásad filtrování."
 			},
 			"da": {
 				"name": "AdGuard pop op-filter",
-				"description": "Blokerer alle for webstedsfunktionaliteten unødvendige pop op-typer."
+				"description": "Blokerer alle for webstedsfunktionaliteten unødvendige pop op-typer jf. vores Filterpolitik."
 			},
 			"de": {
 				"name": "AdGuard Pop-up-Filter",
-				"description": "Sperrt alle Arten von Pop-ups, die für die Funktionalität von Websites nicht erforderlich sind."
+				"description": "Blockiert alle Pop-ups, die für die Funktionalität der Website nicht erforderlich sind, gemäß unserer Filterrichtlinie."
 			},
 			"el": {
 				"name": "Φίλτρο AdGuard Popups",
-				"description": "Αποκλείει κάθε είδους αναδυόμενα παράθυρα που δεν είναι απαραίτητα για τη λειτουργία των ιστότοπων."
+				"description": "Αποκλείει όλα τα είδη αναδυόμενων παραθύρων που δεν είναι απαραίτητα για τη λειτουργία των ιστότοπων σύμφωνα με την πολιτική φίλτρων."
 			},
 			"en": {
 				"name": "AdGuard Popups filter",
@@ -13508,51 +13508,51 @@
 			},
 			"es": {
 				"name": "Filtro de ventanas emergentes",
-				"description": "Bloquea todo tipo de ventanas emergentes que no son necesarias para el funcionamiento de los sitios web."
+				"description": "Bloquea todo tipo de ventanas emergentes no necesarias para el funcionamiento de los sitios web según nuestra Política de filtros."
 			},
 			"es_ES": {
 				"name": "Filtro de ventanas emergentes",
-				"description": "Bloquea todo tipo de ventanas emergentes que no son necesarias para el funcionamiento de los sitios web."
+				"description": "Bloquea todo tipo de ventanas emergentes no necesarias para el funcionamiento de los sitios web según nuestra Política de filtros."
 			},
 			"fa": {
 				"name": "فیلتر AdGuard Popups",
-				"description": "انواع پاپ آپ هایی که برای عملکرد وب سایت ها ضروری نیستند را مسدود می کند."
+				"description": "مسدود کردن انواع پنجره های بازشو که برای عملیات وب سایت ها با توجه به سیاست فیلتر ما لازم نیست."
 			},
 			"fi": {
 				"name": "AdGuardin ponnahdussuodatin",
-				"description": "Estää kaikenlaisia ponnahduksia, jotka eivät ole sivuston toiminnan kannalta välttämättömiä."
+				"description": "Estää kaikenlaisia ponnahduksia, jotka eivät ole välttämättömiä verkkosivustojen toiminnalle suodatuskäytäntömme mukaisesti."
 			},
 			"fr": {
 				"name": "Filtre AdGuard Popups",
-				"description": "Bloque toutes sortes de fenêtres contextuelles qui ne sont pas nécessaires au fonctionnement des sites web."
+				"description": "Bloque toutes sortes de pop-ups qui ne sont pas nécessaires au fonctionnement des sites web selon notre Politique des filtres."
 			},
 			"he": {
 				"name": "מסנן חלונות קופצים של AdGuard",
-				"description": "חוסם כל מיני חלונות קופצים שאינם נחוצים להפעלת אתרים."
+				"description": "חוסם כל מיני חלונות קופצים שאינם נחוצים לתפעול אתרים בהתאם למדיניות הסינון שלנו."
 			},
 			"hr": {
 				"name": "Filtar AdGuard skočnih prozora",
-				"description": "Blokira sve vrste skočnih prozora koji nisu potrebni za rad web stranica."
+				"description": "Blokira sve vrste skočnih prozora koji nisu potrebni za rad web stranica u skladu s našim Pravilima filtriranja."
 			},
 			"hu": {
 				"name": "AdGuard Popups szűrő",
-				"description": "Blokkolja az összes olyan előugró ablakot, amely nem szükséges a webhelyek működéséhez."
+				"description": "Blokkolja az összes olyan felugró ablakot, amely nem szükséges a webhelyek működéséhez a Szűrő irányelvünk szerint."
 			},
 			"id": {
 				"name": "Filter Munculan AdGuard",
-				"description": "Memblokir semua jenis pop-up yang tidak diperlukan untuk pengoperasian situs web."
+				"description": "Memblokir semua jenis pop-up yang tidak diperlukan untuk pengoperasian situs web sesuai dengan kebijakan Filter kami."
 			},
 			"it": {
 				"name": "Filtro AdGuard Popups",
-				"description": "Blocca tutti i tipi di popup che non sono necessari per il funzionamento dei siti web."
+				"description": "Blocca tutti i tipi di popup che non sono necessari per il funzionamento dei siti web in base alla nostra Politica di filtraggio."
 			},
 			"ja": {
 				"name": "AdGuard ポップアップフィルタ",
-				"description": "Webサイトの動作に関係ないポップアップをすべてブロックします。"
+				"description": "当社のフィルターポリシーに従ってWebサイトの動作に関係ないポップアップをすべてブロックします。"
 			},
 			"ko": {
 				"name": "AdGuard 팝업 필터",
-				"description": "웹사이트가 작동하는 데 필요하지 않은 다양한 팝업을 차단합니다."
+				"description": "필터 정책에 따라 웹사이트 운영에 필요하지 않은 모든 종류의 팝업을 차단합니다."
 			},
 			"mk": {
 				"name": "Филтер за скокачки прозорци",
@@ -13560,71 +13560,71 @@
 			},
 			"nl": {
 				"name": "AdGuard Popups-filter",
-				"description": "Blokkeert allerlei pop-ups die niet nodig zijn voor de werking van websites."
+				"description": "Blokkeert allerlei pop-ups die niet nodig zijn voor de werking van websites volgens ons filterbeleid."
 			},
 			"no": {
 				"name": "AdGuard Popups-filter",
-				"description": "Blokkerer alle typer popup-vinduer som ikke er nødvendige for drift av nettsteder."
+				"description": "Blokkerer alle slags popup-vinduer som ikke er nødvendige for nettstedets drift i henhold til vår Filterpolicy."
 			},
 			"pl": {
 				"name": "Filtr Popupów AdGuard",
-				"description": "Blokuje wszelkiego rodzaju wyskakujące okienka, które nie są niezbędne do działania strony."
+				"description": "Blokuje wszelkiego rodzaju wyskakujące okienka, które nie są niezbędne do działania witryn zgodnie z naszą Polityką filtrowania."
 			},
 			"pt": {
 				"name": "Filtro de pop-ups do AdGuard",
-				"description": "Bloqueia todo o tipo de pop-ups que não são necessários para o funcionamento de sítios."
+				"description": "Bloqueia todos os tipos de popups não necessários para o funcionamento dos sítios Web, de acordo com a nossa Política de filtros."
 			},
 			"pt_BR": {
 				"name": "Filtro de pop-ups do AdGuard",
-				"description": "Bloqueia todos os tipos de pop-ups que não são necessários para o funcionamento dos sites."
+				"description": "Bloqueia todos os tipos de popups não necessárias para o funcionamento dos sites de acordo com a nossa Política de filtros."
 			},
 			"pt_PT": {
 				"name": "Filtro de pop-ups do AdGuard",
-				"description": "Bloqueia todo o tipo de pop-ups que não são necessários para o funcionamento de sítios."
+				"description": "Bloqueia todos os tipos de popups não necessários para o funcionamento dos sítios Web, de acordo com a nossa Política de filtros."
 			},
 			"ro": {
 				"name": "AdGuard Popups filter",
-				"description": "Blochează toate tipurile de ferestre pop-up care nu sunt necesare pentru funcționarea site-urilor web."
+				"description": "Blochează toate tipurile de pop-up-uri care nu sunt necesare pentru funcționarea site-urilor web în conformitate cu Politica noastră de filtrare."
 			},
 			"ru": {
 				"name": "Фильтр всплывающих окон",
-				"description": "Блокирует всплывающие окна, не имеющие отношения к функциональности сайта."
+				"description": "Блокирует всплывающие окна, не имеющие отношения к функциональности сайта в соответствии с нашей политикой фильтров."
 			},
 			"sk": {
 				"name": "AdGuard filter vyskakovacích okien",
-				"description": "Blokuje kontextové okná na webových stránkach. Už je zahrnutý vo filtri AdGuard Annoyances."
+				"description": "Blokuje všetky druhy vyskakovacích okien, ktoré nie sú potrebné na prevádzku webových stránok podľa našich Zásad filtrovania."
 			},
 			"sl": {
 				"name": "Filter pojavnih oken AdGuard",
-				"description": "Onemogoča vse vrste pojavnih oken, ki niso potrebna za delovanje spletnih strani."
+				"description": "Onemogoča vse vrste pojavnih oken, ki niso potrebna za delovanje spletnih strani v skladu z našo politiko filtrov."
 			},
 			"sr": {
 				"name": "AdGuard filter iskačućih prozora",
-				"description": "Blokira sve vrste iskačućih prozora koji nisu neophodni za rad Veb lokacija."
+				"description": "Blokira sve vrste iskačućih prozora koji nisu neophodni za rad Veb lokacija prema našoj Politici filtriranja."
 			},
 			"sv": {
 				"name": "AdGuard Popups-filter",
-				"description": "Blockerar alla typer av popup-fönster som inte är nödvändiga för att webbplatsen ska fungera."
+				"description": "Blockerar alla typer av popup-fönster som inte är nödvändiga för att webbplatserna ska fungera enligt vår Filterpolicy."
 			},
 			"tr": {
 				"name": "AdGuard Açılır Pencereler filtresi",
-				"description": "Sitelerin çalışması için gerekli olmayan her türlü açılır pencereleri engeller."
+				"description": "Filtre politikamıza göre Web siteleri için gerekli olmayan her türlü açılır pencereleri engeller."
 			},
 			"uk": {
 				"name": "Фільтр спливних сповіщень AdGuard",
-				"description": "Блокує різні спливні сповіщення, які не стосуються роботи сайту."
+				"description": "Блокує різні спливні сповіщення, які не стосуються роботи сайту, згідно з нашою Політикою фільтрів."
 			},
 			"vi": {
 				"name": "Bộ lọc Quảng cáo AdGuard",
-				"description": "Chặn tất cả các loại cửa sổ bật lên không cần thiết cho hoạt động của trang web."
+				"description": "Chặn tất cả các loại cửa sổ bật lên không cần thiết cho hoạt động của trang web theo chính sách Bộ lọc của chúng tôi."
 			},
 			"zh": {
 				"name": "AdGuard 弹窗过滤器",
-				"description": "拦截网站运营时不需要的各种弹窗。"
+				"description": "根据我们的过滤政策，拦截网站运营时不需要的各种弹窗。"
 			},
 			"zh_TW": {
 				"name": "AdGuard 彈出式視窗過濾器",
-				"description": "封鎖各種各類對於網站運作非必要的彈出式視窗。"
+				"description": "根據我們的過濾政策，封鎖各種各類對於網站運作非必要的彈出式視窗。"
 			}
 		},
 		"20": {
@@ -14330,7 +14330,7 @@
 			},
 			"mk": {
 				"name": "EasyList",
-				"description": "EasyList е примарна претплата што ги отстранува рекламите од веб-страниците на англиски јазик. Веќе вклучен во филтерот Основниот филтер на AdGuard."
+				"description": "EasyList е примарна претплата што ги отстранува рекламите од веб-страниците на англиски јазик. Веќе вклучен во основниот филтер на AdGuard."
 			},
 			"nl": {
 				"name": "EasyList",
@@ -19297,7 +19297,7 @@
 				"description": "한국어 콘텐츠가 포함된 웹 사이트에서 광고와 다양한 스크립트를 제거하는 필터입니다. 필터링 향상을 위해 AdGuard 관련 규칙과 결합 및 보강되었습니다. 이 필터는 AdGuard 베이스 필터와 함께 사용하는 것이 좋습니다."
 			},
 			"mk": {
-				"name": "List-KR",
+				"name": "Корејска листа",
 				"description": "Филтер што отстранува реклами и разни скрипти од веб-локации со корејска содржина. Комбинирани и надополнети со правилата специфични за AdGuard за подобрено филтрирање. Овој филтер се очекува да се користи заедно со филтерот Основниот филтер на AdGuard."
 			},
 			"nl": {
@@ -20232,7 +20232,7 @@
 			},
 			"fi": {
 				"name": "Persian Blocker",
-				"description": "Suodatinlista mainosten ja seurantojen estoo persiankielisillä sivustoilla."
+				"description": "Suodatinlista mainosten ja seurantojen estoon persiankielisillä sivustoilla."
 			},
 			"fr": {
 				"name": "Persian Blocker",
@@ -21777,7 +21777,7 @@
 				"description": "이 목록은 노르웨이, 덴마크, 아이슬란드, 덴마크 영토 및 사미 원주민 인구를위한 웹사이트를 다룹니다."
 			},
 			"mk": {
-				"name": "Нордиските филтри на Dandelion Sprout",
+				"name": "Нордиски филтри на Dandelion Sprout",
 				"description": "Оваа листа опфаќа веб-страници за Норвешка, Данска, Исланд, данските територии и домородното население Сами."
 			},
 			"nl": {
@@ -22058,7 +22058,7 @@
 			},
 			"mk": {
 				"name": "Легитимен скратувач на URL",
-				"description": "Автоматски ги отстранува непотребните вредности на „$“ и „&“ од URL-адресите, што го олеснува нивното копирање од лентата за URL и нивното залепување на друго место како линкови."
+				"description": "Автоматски ги отстранува непотребните вредности како „$“ и „&“ од URL-адресите, што го олеснува нивното копирање од лентата за URL и нивното залепување на друго место како линкови."
 			},
 			"nl": {
 				"name": "Legitieme URL-verkorter",
@@ -22447,7 +22447,7 @@
 				"description": "여러 마케도니아어 웹사이트의 광고와 추적기를 차단합니다."
 			},
 			"mk": {
-				"name": "Македонски adBlock филтри",
+				"name": "Македонски филтри",
 				"description": "Блокира реклами и тракери на различни македонски веб-страници."
 			},
 			"nl": {

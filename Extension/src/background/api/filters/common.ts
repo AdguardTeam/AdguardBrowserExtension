@@ -174,22 +174,24 @@ export class CommonFilterApi {
 
         const filterVersion = filterVersionStorage.get(filterUpdateDetail.filterId);
 
-        let nextExpires: number;
-
         // We only update the expiration date if it is a forced update to
         // avoid updating the expiration date during patch updates.
-        if (filterVersion?.expires && !filterUpdateDetail.force) {
-            nextExpires = filterVersion.expires;
-        } else {
-            nextExpires = Number(expires);
-        }
+        const nextExpires = filterVersion?.expires && !filterUpdateDetail.force
+            ? filterVersion.expires
+            : Number(expires);
+
+        // We only update the last check time if it is a forced update to
+        // avoid updating the last check time during patch updates.
+        const nextLastCheckTime = filterVersion?.lastCheckTime && !filterUpdateDetail.force
+            ? filterVersion.lastCheckTime
+            : Date.now();
 
         filterVersionStorage.set(filterUpdateDetail.filterId, {
             version,
             diffPath,
             expires: nextExpires,
             lastUpdateTime: new Date(timeUpdated).getTime(),
-            lastCheckTime: Date.now(),
+            lastCheckTime: nextLastCheckTime,
         });
 
         return filterMetadata;
