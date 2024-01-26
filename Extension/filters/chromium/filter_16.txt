@@ -1,9 +1,9 @@
-! Checksum: 9OoD+Zy9OsCNA0hVuqI4Dw
-! Diff-Path: ../patches/16/16-s-1704710916-3600.patch
+! Checksum: AuLPbys2ldGNVSRcEt7bdg
+! Diff-Path: ../patches/16/16-s-1705476957-3600.patch
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.42.78
-! TimeUpdated: 2024-01-08T10:32:05+00:00
+! Version: 2.0.42.85
+! TimeUpdated: 2024-01-17T07:31:45+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -634,6 +634,9 @@ tf1.fr,tf1info.fr#%#//scriptlet('prevent-fetch', '/^https:\/\/ads\.stickyadstv\.
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/170646
+jeune-gay.fr#%#//scriptlet('prevent-setTimeout', 'randno', '25')
+jeune-gay.fr#%#//scriptlet('set-cookie', 'p_view', 'true')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164927
 occasions.decathlon.fr#%#//scriptlet('set-constant', 'FastClick', 'noopFunc')
 occasions.decathlon.fr#%#//scriptlet('set-constant', 'FastClick.attach', 'noopFunc')
@@ -736,6 +739,8 @@ tf1info.fr#%#//scriptlet('set-constant', '__NEXT_DATA__.runtimeConfig.playerTF1.
 !------- CSS fixes --------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/170093
+linternaute.com,journaldunet.com#$#@media (min-width: 1024px) { .layout--offcanvas { top: 100px !important; } }
 ! systemed.fr - blank space at the top
 systemed.fr#$#html >body.hasHabillage { padding-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166761
@@ -840,6 +845,13 @@ $script,third-party,denyallow=fastly.net|statically.io|sharecast.ws|bunnycdn.ru|
 !
 !
 !
+jeune-gay.fr##.happy-sidebar
+jeune-gay.fr##.under-video-block > div:has( > div[class] > a[href][target="_blank"])
+jeune-gay.fr##.yellow
+jeune-gay.fr##.happy-mob
+commentcamarche.net##.sticky-zone
+commentcamarche.com,commentcamarche.net,journaldunet.com##div[id^="ctn_"]
+jeux-gratuits.com##div[class^="placeholder_"]
 la-croix.com##.banner-offer__wrapper
 science-et-vie.com###top_intro_article > .viously-player
 revolution-energetique.com#?#main > div[style]:has(> div.container div.row > div[id^="optidigital-adslot"])
@@ -948,7 +960,6 @@ lenouvelliste.ch##.components-advertisement
 webchoc.com##.nav-item > a[href="https://membre.speedrencontre.com"]
 macg.co##body > a[href="/dolce"] > img
 macg.co##.sidebar-content > div[style="min-height: 326px"]
-fusevideo.io##body > a
 animecat.net##div[style^="height: 250px;"]
 lequipe.fr##body div[id^="AmPlaceholder-"]
 orange.fr##.media-advert-rm-center
@@ -2148,11 +2159,6 @@ forodecostarica.com#@##ad_global_below_navbar
 ||script.hentaicdn.com/cdn/*/core/js/arf-$badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54910
 @@||static.stormwall.pro^$domain=zone-annuaire.com
-! https://github.com/AdguardTeam/AdguardFilters/issues/54195
-@@||astatic.ccmbg.com/fc/js/prebid?v=$domain=sante.journaldesfemmes.fr
-@@||dpm.zebestof.com/*/tag.js$domain=sante.journaldesfemmes.fr
-! https://github.com/AdguardTeam/AdguardFilters/issues/54195
-@@||c.amazon-adsystem.com/aax2/apstag.js$domain=sante.journaldesfemmes.fr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/126517
 /redirect/cpa/*$popup,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53109
@@ -2498,11 +2504,6 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 @@||template-help.com^$domain=templatemonster.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/38213
 ! Fixing WordPress auth
-! https://github.com/AdguardTeam/AdguardFilters/issues/6433
-@@||p.ccmbg.com/media/index.php$domain=linternaute.com
-@@||player.ooyala.com/*api/$domain=linternaute.com
-@@||player.ooyala.com/static/$domain=linternaute.com
-@@||damoh.linternaute.com^$domain=linternaute.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6603
 @@||kweb.videostep.com^$domain=jeanmarcmorandini.com
 ! https://forum.adguard.com/index.php?threads/24295/
@@ -6843,6 +6844,7 @@ _siteunder/$popup
 ||019a6180a6.com^
 ||0407ba6a0a.com^
 ||044165bfac.com^
+||045fef1509.com^
 ||04c7739392.com^
 ||05b960757b.com^
 ||05fbc08eac.com^
@@ -6851,6 +6853,7 @@ _siteunder/$popup
 ||0881dd11d9.com^
 ||09f5b75c69.com^
 ||0a7f18e2b2.com^
+||0b163afe38.com^
 ||0b1f7ca090.com^
 ||0b57ha4k4zrd.top^
 ||0be2be6d31.com^
@@ -6924,6 +6927,7 @@ _siteunder/$popup
 ||19d1da8898.com^
 ||19djkfnksdf19.monster^
 ||19jahsjhd19.monster^
+||1a65658575.com^
 ||1ab9ee01cb.com^
 ||1abjhs1.monster^
 ||1ad6ea4211.com^
@@ -7011,6 +7015,7 @@ _siteunder/$popup
 ||255925943c.com^
 ||256683aefe.com^
 ||256bb4a81a.com^
+||25d83d2f3d.com^
 ||25e1f02563.com^
 ||25ff18d2d5.com^
 ||25t6ioaooca2.top^
@@ -7116,6 +7121,7 @@ _siteunder/$popup
 ||3743e0aeab.com^
 ||3782920751.com^
 ||3897e90a2e.com^
+||395b8c2123.com^
 ||396ddcf95b.com^
 ||398375178.com^
 ||3a210691df.com^
@@ -7435,6 +7441,7 @@ _siteunder/$popup
 ||7784465d3a.com^
 ||77c4175fc7.com^
 ||78dcbb8195.com^
+||79a279edc7.com^
 ||79c89ec81a.com^
 ||7abd9b7dad.com^
 ||7ae9fc0b53.com^
@@ -7454,6 +7461,7 @@ _siteunder/$popup
 ||7e77e49c84.com^
 ||7eecfdedc8.com^
 ||7f3adt.com^
+||7ff25e57d1.com^
 ||7hjdbjgd78.monster^
 ||7jahvshjd17.monster^
 ||7jahvsjdasd17.monster^
@@ -7506,6 +7514,7 @@ _siteunder/$popup
 ||8499683.com^
 ||85a0b34a22.com^
 ||8644aaw.com^
+||868a7939b6.com^
 ||86c80a0afb.com^
 ||86c9ac4797.com^
 ||86f0b11d93.com^
@@ -7650,6 +7659,7 @@ _siteunder/$popup
 ||a50d23dcc2.com^
 ||a5541fe704.com^
 ||a7245f3c59.com^
+||a74824bbbe.com^
 ||a81a91e66c.com^
 ||a83dab28b3.com^
 ||a8b87f8f3f.com^
@@ -8659,6 +8669,7 @@ _siteunder/$popup
 ||cevjyhper.com^
 ||cewukbger.work^
 ||ceybrkasaibm.com^
+||cf204c4d96.com^
 ||cf9fa75179.com^
 ||cfasubggyxitad.xyz^
 ||cfbepufkikyxva.com^
@@ -8745,9 +8756,11 @@ _siteunder/$popup
 ||chytraastond.com^
 ||ciahsrqnmowwoae.com^
 ||ciehygeian.com^
+||cilvhypjiv.xyz^
 ||cinchespols.com^
 ||circleunstaid.com^
 ||circuitstadiumburnt.com^
+||ciseglwl.com^
 ||cisekwcvwwkbdks.com^
 ||cissoiddonnerd.com^
 ||citrmhmcgflvmy.com^
@@ -9036,6 +9049,7 @@ _siteunder/$popup
 ||d0wnload1x11.com^
 ||d0wnloadl0adx.com^
 ||d0wnloadx10downl.com^
+||d15455901a.com^
 ||d15f1eb613.com^
 ||d1920b051c.com^
 ||d1d0568e46.com^
@@ -9043,6 +9057,7 @@ _siteunder/$popup
 ||d409401d80.com^
 ||d44a6fef5a.com^
 ||d45181620c.com^
+||d471b968fd.com^
 ||d4725b1bea.com^
 ||d4c7df9561.com^
 ||d4de984e41.com^
@@ -9056,6 +9071,7 @@ _siteunder/$popup
 ||d787d0e334.com^
 ||d7ig4ieghb8arika.com^
 ||d8c2d47135.com^
+||d8f0d7e2c9.com^
 ||d9bd2b35df.com^
 ||daaxnjinrbbhoc.com^
 ||dad524dd40.com^
@@ -9566,6 +9582,7 @@ _siteunder/$popup
 ||e7cac8d218.com^
 ||e83706dbfd.com^
 ||e8c8af7a7c.com^
+||e8e8d13de8.com^
 ||e942c12c75.com^
 ||e98bbb07ff.com^
 ||e99877e518.com^
@@ -9707,6 +9724,7 @@ _siteunder/$popup
 ||elfpetsic.com^
 ||eliatestier.com^
 ||elkdomshute.com^
+||elmenor.xyz^
 ||elnpe.com^
 ||elsegunpowder.com^
 ||elslfgyjjpqaqah.com^
@@ -9719,6 +9737,7 @@ _siteunder/$popup
 ||emasculatecaesar.com^
 ||embarrasschill.com^
 ||embodyopenlyoppose.com^
+||embogpine.uno^
 ||emboleoutcure.com^
 ||embryoszeekoe.digital^
 ||emdenenglut.com^
@@ -10668,6 +10687,7 @@ _siteunder/$popup
 ||hdkmhcbvesraum.com^
 ||hdlet.com^
 ||hdlspogdbxvirq.com^
+||hdtcode.com^
 ||hdtwwvhkf.xyz^
 ||headyblockadebuyer.com^
 ||heaptube.com^
@@ -10715,6 +10735,7 @@ _siteunder/$popup
 ||hewnmuskrat.com^
 ||hexaweb.net^
 ||hexjwsgcamrm.com^
+||heycrktc.xyz^
 ||heydeycovin.com^
 ||hfbplchnhcids.com^
 ||hfflvqcylno.xyz^
@@ -10728,6 +10749,7 @@ _siteunder/$popup
 ||hgnrcpdtxxcfod.com^
 ||hgxcdfomwq.xyz^
 ||hhgvacopegqbxiu.xyz^
+||hhibunejf.com^
 ||hhpnimvfmpfi.com^
 ||hhsp2.com^
 ||hhspapp10.com^
@@ -10980,6 +11002,7 @@ _siteunder/$popup
 ||ihvbkqmrivbn.com^
 ||iieaphca.com^
 ||iiiyolakcqs.com^
+||iijttwfj.com^
 ||iikrgefeyh.com^
 ||iiqwdxylmqj.com^
 ||iiuqnsrfowxkt.xyz^
@@ -12581,6 +12604,7 @@ _siteunder/$popup
 ||nwqiylteqm.com^
 ||nwqsxndlawka.xyz^
 ||nwuwkjuictkaw.com^
+||nxbchpotxr.xyz^
 ||nyapacwcxdvfub.com^
 ||nyftxnyswwi.com^
 ||nyobsxktjtk.com^
@@ -13649,6 +13673,7 @@ _siteunder/$popup
 ||ryjosrxiiekn.com^
 ||ryllae.com^
 ||rynntonyaxowh.com^
+||rypltcelpr.com^
 ||rytknbingqocfl.xyz^
 ||s16adca.com^
 ||s34me.com^
@@ -13812,6 +13837,7 @@ _siteunder/$popup
 ||sheagmay.live^
 ||shebaasot.com^
 ||sheecmuwesil.com^
+||sheegiwo.com^
 ||sheelsoo.com^
 ||sheewaulro.com^
 ||shegraptekry.com^
@@ -14516,6 +14542,7 @@ _siteunder/$popup
 ||underfurniturebet.com^
 ||undom.net^
 ||unducalbottle.com^
+||undyoban.com^
 ||uneasydoll.com^
 ||uneavedbaklawa.com^
 ||unelgyemom.com^
@@ -14537,6 +14564,7 @@ _siteunder/$popup
 ||unpopewaltzed.com^
 ||unrhymeechinal.com^
 ||unvocalfaki.com^
+||unwodgtll.com^
 ||unwrestslots.com^
 ||unzipbechic.store^
 ||uohcbjeck.xyz^
@@ -14585,6 +14613,7 @@ _siteunder/$popup
 ||uusiccyeuyrc.com^
 ||uwfpvlcpn.top^
 ||vainschmuck.store^
+||valkrana.xyz^
 ||vcealwjihgmbejv.com^
 ||vcjxmrspfvm.xyz^
 ||vclouds.com^
@@ -14619,6 +14648,17 @@ _siteunder/$popup
 ||viewmoregirls.com^
 ||vihootch.casa^
 ||viiadr.com^
+||viiddai.com^
+||viiexe.com^
+||viihouse.com^
+||viiitf.com^
+||viiithiang.com^
+||viiportal.com^
+||viipura.com^
+||viipxuah.com^
+||viitoz.com^
+||viiulple.com^
+||viizone.com^
 ||viltoubuste.com^
 ||vimeonk.com^
 ||vinefsnuarlxsso.xyz^
@@ -14885,6 +14925,7 @@ _siteunder/$popup
 ||ykcbjxqltgffsu.xyz^
 ||ykcthttvynsl.xyz^
 ||ykdgwodoyb.xyz^
+||ykgtbakyb.com^
 ||ykmxeretfl.top^
 ||ymqhxxjmjekp.xyz^
 ||ymrsgahqgbvqmim.xyz^
@@ -23358,7 +23399,6 @@ webgirondins.com###top-pub-header
 itele.fr###topBanner
 turbo.fr###topShopper
 webstar-auto.com###top_body_right
-turf-fr.com###top_header
 gameblog.fr###top_sales_slider
 elmoudjahid.com###topads
 mac4ever.com###topappWidget
@@ -23519,6 +23559,7 @@ auto-utilitaire.com,mobilealgerie.com##.banner_sp_cat
 cultivoo.com,laverite.mg,rtc.be,sudhorizons.dz##.bannergroup
 liberte-algerie.com##.bannergroup_pave
 emploitic.com,laverite.mg,maghrebemergent.com##.banneritem
+turf-fr.com##.banners-con
 actu-environnement.com,chouf-chouf.com,emploi-environnement.com,webfrance.com##.banniere
 boulette.fr,envertetcontretous.fr##.banpub
 soonnight.com##.bas_colonne
@@ -23944,6 +23985,7 @@ pagesjaunes.fr##.place-reservee
 tendanceaumasculin.fr##.placeholder
 presse-citron.net##.plan-list
 pausefun.com##.plugin_sidebar
+turf-fr.com##.pmu-block
 lemonde.fr##.poops
 e-wok.tv##.pop_parent
 bongacams.com##.popover_spygasm
@@ -24136,7 +24178,6 @@ ecranlarge.com##.top-banner
 jeretiens.net##.top-bar
 euro-2016-france.net##.top-pub
 gfycat.com##.top-slot
-turf-fr.com##.top2Pic
 save.ca##.topAd
 meilleurmobile.com##.topListingSp
 lnc.nc,softonic.fr,undernews.fr##.topbanner
@@ -24451,7 +24492,7 @@ petit-bulletin.fr##a[onclick^="_gaq.push(['_trackEvent'"]
 ca-anjou-maine.fr,ca-centrest.fr,ca-sudrhonealpes.fr##a[onclick^="xiti_clic('N', 'Promo_"]
 thefreeagent.fr##a[rel*="sponsored"]
 achat-bitcoins.com##a[rel="nofollow"] > img
-lejournaldelamaison.fr,mariefrance.fr##a[rel="sponsored"]
+lejournaldelamaison.fr,maison-travaux.fr,mariefrance.fr##a[rel="sponsored"]
 igen.fr,macg.co,watchgeneration.fr##a[style*="width: 100%;"]
 mega-p2p.net##a[style*="width: 98%; height: 100%; inset:"]
 jeu.video##a[style="position: fixed;top: 110px;left: 0;bottom: 0;width: 50%;"]

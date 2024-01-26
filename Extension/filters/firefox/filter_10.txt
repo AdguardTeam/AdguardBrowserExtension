@@ -1,9 +1,9 @@
-! Checksum: l0lUCQEHaA18PJCZZZecXw
-! Diff-Path: ../patches/10/10-s-1703694997-3600.patch
+! Checksum: ucVt6ZMmqB5KCkWoj/7sdA
+! Diff-Path: ../patches/10/10-s-1705347393-3600.patch
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.17
-! TimeUpdated: 2023-11-22T11:30:20+00:00
+! Version: 2.0.3.19
+! TimeUpdated: 2024-01-15T19:31:55+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -258,6 +258,7 @@ amazon.*#@#section[class*="csm-placement-id"]
 amazon.*#@?#div[data-order-sm]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[data-csa-c-painter="enumclaw-slot-display-ad"]:last-child)
 amazon.*#@##dp-container > #px-profile_feature_div[data-csa-c-type="widget"]
 amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
+amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136364
@@ -265,6 +266,8 @@ search.brave.com#@#div[data-advertiser-id]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/117527
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
 !
+! developer.mozilla.org - self-promo in documentation (the rule is from EasyList)
+@@||developer.mozilla.org/pong/
 ! Mediafire premium upgrade
 mediafire.com#@##upsellBox
 ! Startpage

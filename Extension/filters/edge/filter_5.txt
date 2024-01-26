@@ -1,9 +1,9 @@
-! Checksum: i4fjV4qX0ztpkdUp+u375Q
-! Diff-Path: ../patches/5/5-s-1704807400-3600.patch
+! Checksum: R05PpzEcsYPCllpxW/Vdtw
+! Diff-Path: ../patches/5/5-s-1704911782-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.27
-! TimeUpdated: 2024-01-09T13:33:34+00:00
+! Version: 2.0.1.28
+! TimeUpdated: 2024-01-10T18:33:21+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -254,6 +254,9 @@ mail.yandex.ru#?#.modal:has(> div[data-lego] div[class^="mail-SubscriptionsPopup
 ! Filters for adguard without safari
 ||chrome.test.filter.com^$third-party
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/169842
+/videojs8/nuevo.min.js
+/videojs/plugins/vastpro.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142875
 imdb.com#?#div[data-testid="promptable"]:has(.ipc-rating-display-with-poster__image)
 imdb.com#$?#body:has(div[data-testid="promptable"] .ipc-rating-display-with-poster__image) { overflow: auto !important; }

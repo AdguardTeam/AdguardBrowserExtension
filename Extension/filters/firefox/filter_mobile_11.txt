@@ -1,9 +1,9 @@
-! Checksum: s9GoqffpxJQKJE99Z4nDSw
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1704893791-3600.patch
+! Checksum: bI78A5biayoWe2tzk1qC5g
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1705426557-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.48.17
-! TimeUpdated: 2024-01-10T13:31:54+00:00
+! Version: 2.0.48.29
+! TimeUpdated: 2024-01-16T17:31:24+00:00
 ! Expires: 5 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1558,6 +1558,19 @@ handelsblatt.com,moyens.net,ign.com,gazeteduvar.com.tr,innpoland.pl,wired.com,sp
 kingautos.net,ranky-ranking.net,memo.onl.jp,daily-sun.com,home.kingsoft.jp,berkem.ru,pixiv.net,cartoonpornvideos.com,m.economictimes.com,beethovenmaster.com,m.mistrzowie.org,m.ura.news,up.ymgt.xyz,google.de,www-bento-de.cdn.ampproject.org,m-economictimes-com.cdn.ampproject.org,m.winfuture.de##.ads
 www-cbc-ca.cdn.ampproject.org,m.geboren.am,dictionary.com,transfermarkt.de,iyf.tv,macwelt.de,pcwelt.de,xataka.com.mx,shikiho.toyokeizai.net,newsee-media.com,rank1-media.com,m.proporn.com,rakuraku-info.jp,sugoren.com,dailynewsonline.jp,yakuji.co.jp,asahi.com,m.winporn.com,slate.com,sankei.com,gameranbu.jp,seiga.nicovideo.jp,m.arukikata.co.jp,setn.com,hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,syosetu.org##.ad
 chip.de,gamesworld.de,fnn.jp##.Ad
+bellesa.co##div[class^="Column-sc"] > div[class^="MediaQuery__Query-sc"]:has(> div[class^="Structure-sc"] > div[class^="Display__RatioOuter"] > div[class^="Display__RatioInner-sc"]:empty)
+bellesa.co##div[class^="Structure-sc"] > div[class^="MediaQuery__Query-sc"]:has(div[class^="Display__RatioOuter-sc"] > div[class^="Display__RatioInner-sc"]:empty)
+oggi.it##.post > div[class^="wrapper-frame"]:has(> div[id^="rcsad_"])
+jav.direct##div[style^="max-width: 480px; max-height: 500px"]
+teniteo.jp##.item_adv_sp
+shemalez.com#?#.content > div > div.wrapper > div.video-page > div[class]:first-child:has(> div[class] > div[id][class]:empty)
+thehindu.com##.advt-wrapper
+ensonhaber.com###mhome-mansetalti
+cyclesports.jp##[class^="banner"]
+soccer-king.jp##div[style]:has(> div > div[id^="div-gpt-ad"])
+gaming-city.com##.m-top-banner
+gaming-city.com##.mobile-footer-ad
+linternaute.com,journaldunet.com##.ccmcss_oas_top
 www-news18-com.cdn.ampproject.org#?#.short_discription + div[style] > span:contains(advertisement):upward(1)
 komonews-com.cdn.ampproject.org##div[data-testid="story-body"] div[style]:has(> amp-ad)
 knoxnews.com,clarionledger.com,palmbeachpost.com,tennessean.com,northjersey.com,detroitnews.com,greatfallstribune.com,onlineathens.com,usatoday.com,freep.com##.gnt_xmst
@@ -1725,7 +1738,7 @@ hlavnespravy.sk##.mobilebanner
 thevoicemag.ru##.article-detail_tag_ad_mobile_video_recommend
 cointelegraph.com##.asia-posts-listing-mobile__item_press-releases
 slickdeals.net##.displayAdContainer
-timesofindia-indiatimes-com.cdn.ampproject.org##.ampv3-ad
+m-timesofindia-com.cdn.ampproject.org,timesofindia-indiatimes-com.cdn.ampproject.org##.ampv3-ad
 exblog.jp###headAdBanner
 cyzowoman.com#?#article > .adminh:has(> amp-ad)
 cyzowoman.com#$?#article > .adminh:has(> amp-ad) { remove: true; }
@@ -1767,6 +1780,7 @@ poginfo.ddo.jp#?#.mx-0.mx-auto:has(> div[style="height: 250px"])
 poginfo.ddo.jp##.footer-menu-bar
 op.gg#?##__next > div[class^="css-"]:has(> div#vm-av)
 op.gg#?##__next > div[class^="css-"] > div[class^="css-"] > div[class^="css-"]:has(> div:not([class]):not([id]) > div.vm-placement)
+op.gg#?##__next > div[class^="css-"] > div[class^="css-"]:has(> div > div.vm-placement)
 lepoint.fr###WRAP_TOP_POS
 tft.op.gg###video-metaTrend-ad
 jmcomic1.me##.div_sticky2
@@ -2955,8 +2969,6 @@ jukenbbs.com##div[style="margin-top:1px; margin-bottom:1px;"]
 jukenbbs.com##div[style="margin-top:10px; margin-bottom:10px; text-align:center;"]
 woman.mynavi.jp##div[style="margin:20px auto 0;text-align: center;"]
 sirogohan.com##.sp-banner
-yomiuri.co.jp##.p-ad-txt-wrap
-yomiuri.co.jp##.p-ad-list-item
 eromanga-kishin.com##.ad_morelow
 eromanga-numa.com,eromanga-yasan.com,eromanga-kishin.com###spwrapper
 eromanga-numa.com,eromanga-kishin.com##.picad2row
@@ -3537,7 +3549,7 @@ dailyportalz.jp##main > div > div.contents_title:first-child
 cookpad.com##.standard_ad_slot
 cookpad.com##div[data-ad-slot^="spweb-"]
 niji-gazo.com###dmm-recommend
-amp.scmp.com##.advert-fly-carpet-container
+amp-scmp-com.cdn.ampproject.org,amp.scmp.com##.advert-fly-carpet-container
 r7.com###adsMobileFixed
 r7.com###adsTopMobileFixed
 fatede-go.com##div[id^="ovl_"]
@@ -5921,6 +5933,8 @@ livejournal.com##data-banner-place-id
 livejournal.com##div[id^="billboard_mobile_"]
 livejournal.com##.mdspost-aside__item--banner
 !+ NOT_OPTIMIZED
+forbes.com##.mobile-sticky-ed-placeholder
+!+ NOT_OPTIMIZED
 hoerzu.de##.ad-mobile
 !+ NOT_OPTIMIZED
 9monate.de##.ad_mobile
@@ -5942,7 +5956,7 @@ yahoo.com#$?#li[data-wf-native-da-id^="ntk-native-ad-"] { remove: true; }
 !+ NOT_OPTIMIZED
 24tv.ua##.within-ads
 !+ NOT_OPTIMIZED
-yahoo.com##.caas-da
+yahoo.com##body .caas-da
 !+ NOT_OPTIMIZED
 ||baidu.com/po/api/configure/show.jsonp
 !+ NOT_OPTIMIZED
