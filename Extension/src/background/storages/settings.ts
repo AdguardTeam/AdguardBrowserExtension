@@ -44,7 +44,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      * @param key Setting key.
      * @param value Setting value.
      *
-     * @throws Error if settings is not initialized.
+     * @throws Error if settings are not initialized.
      */
     public set<T extends SettingOption>(key: T, value: Settings[T]): void {
         if (!this.settings) {
@@ -60,7 +60,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      *
      * @param key Setting key.
      * @returns Setting value.
-     * @throws Error if settings is not initialized.
+     * @throws Error if settings are not initialized.
      */
     public get<T extends SettingOption>(key: T): Settings[T] {
         if (!this.settings) {
@@ -74,7 +74,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      * Remove setting from storage.
      *
      * @param key Setting key.
-     * @throws Error if settings is not initialized.
+     * @throws Error if settings are not initialized.
      */
     public remove(key: SettingOption): void {
         if (!this.settings) {
@@ -91,7 +91,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      * Returns current settings.
      *
      * @returns Current settings.
-     * @throws Error if settings is not initialized.
+     * @throws Error if settings are not initialized.
      */
     public getData(): Settings {
         if (!this.settings) {

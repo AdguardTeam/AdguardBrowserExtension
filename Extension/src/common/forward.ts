@@ -38,6 +38,7 @@ export const enum ForwardAction {
     GlobalPrivacyControl = 'global_privacy_control',
     DoNotTrack = 'do_not_track',
     HowToCreateRules = 'userfilter_description',
+    FilterPolicy = 'filter_policy',
     AdguardSite = 'adguard_site',
     SelfPromotion = 'self_promotion',
     ProtectionWorks = 'protection_works',
@@ -50,7 +51,7 @@ export const enum ForwardAction {
     Android = 'android_about',
     GithubVersion = 'github_version_popup',
     LearnAboutAdGuard = 'learn_about_adguard',
-    Halloween = 'halloween_23',
+    Christmas23 = 'christmas_23',
 }
 
 export const enum ForwardFrom {

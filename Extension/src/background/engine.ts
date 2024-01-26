@@ -18,9 +18,9 @@
 import { debounce } from 'lodash-es';
 
 import {
-    TsWebExtension,
     ConfigurationMV2,
     MESSAGE_HANDLER_NAME,
+    createTsWebExtension,
 } from '@adguard/tswebextension';
 
 import { Log, LogLevelString } from '../common/log';
@@ -48,7 +48,7 @@ declare const IS_FIREFOX_AMO: boolean;
  * checks for some specific browsers actions.
  */
 export class Engine {
-    static readonly api = new TsWebExtension(WEB_ACCESSIBLE_RESOURCES_OUTPUT);
+    static readonly api = createTsWebExtension(WEB_ACCESSIBLE_RESOURCES_OUTPUT);
 
     private static readonly UPDATE_TIMEOUT_MS = 1000;
 

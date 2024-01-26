@@ -35,7 +35,7 @@ import './about-page.pcss';
 const About = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
-    const { version } = settingsStore;
+    const { version, libVersions } = settingsStore;
 
     if (!version) {
         return null;
@@ -56,9 +56,16 @@ const About = observer(() => {
                     {reactTranslator.getMessage('options_about_title')}
                 </div>
                 <div className="about__version">
-                    {reactTranslator.getMessage('options_about_version')}
-                    {' '}
-                    {version}
+                    {`${reactTranslator.getMessage('options_about_version')} ${version}`}
+                    <p>
+                        {`TSWebExtension v${libVersions.tswebextension}`}
+                        <br />
+                        {`TSUrlFilter v${libVersions.tsurlfilter}`}
+                        <br />
+                        {`Scriptlets v${libVersions.scriptlets}`}
+                        <br />
+                        {`ExtendedCss v${libVersions.extendedCss}`}
+                    </p>
                 </div>
                 <div className="about__copyright">
                     <div className="about__copyright-item">

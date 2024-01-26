@@ -52,6 +52,7 @@ import {
     FiltersApi,
     UserRulesApi,
     AllowlistApi,
+    annoyancesConsent,
 } from '../filters';
 import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
 import { settingsEvents } from '../../events';
@@ -146,6 +147,7 @@ export class SettingsApi {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
             documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
             collectStats: !settingsStorage.get(SettingOption.DisableCollectHits) || filteringLogApi.isOpen(),
+            debugScriptlets: filteringLogApi.isOpen(),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),
             stealthModeEnabled: !settingsStorage.get(SettingOption.DisableStealthMode),
@@ -183,6 +185,9 @@ export class SettingsApi {
 
         // On import should enable only groups from imported file.
         await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
+
+        // reset list of consented filter ids on reset settings
+        await annoyancesConsent.reset();
     }
 
     /**
@@ -271,7 +276,8 @@ export class SettingsApi {
 
         if (allowAcceptableAds) {
             await CommonFilterApi.loadFilterRulesFromBackend(
-                AntiBannerFiltersId.SearchAndSelfPromoFilterId,
+                // since this is called on settings import, we use force, to update filters without patches
+                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, force: false },
                 false,
             );
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
@@ -368,7 +374,10 @@ export class SettingsApi {
         const tasks = enabledFilters
             .filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId))
             .map(async (filterId: number) => {
-                await CommonFilterApi.loadFilterRulesFromBackend(filterId, false);
+                await CommonFilterApi.loadFilterRulesFromBackend({
+                    filterId,
+                    force: false,
+                }, false);
                 filterStateStorage.enableFilters([filterId]);
             });
 

@@ -15,6 +15,8 @@ import {
     mockLocalStorage,
 } from '../../../../helpers';
 
+jest.mock('../../../../../Extension/src/background/engine');
+
 describe('Page Stats Api', () => {
     let storage: Storage.StorageArea;
 
@@ -70,7 +72,7 @@ describe('Page Stats Api', () => {
         const expectedHits = 1;
 
         const expectedStatItem = {
-            [AntibannerGroupsId.AdBlockingGroupId]: expectedHits,
+            [AntibannerGroupsId.AdBlockingFiltersGroupId]: expectedHits,
             [PageStatsStorage.TOTAL_GROUP_ID]: expectedHits,
         };
 

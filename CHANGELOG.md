@@ -8,20 +8,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Getting user consent on annoyances filter enabling.
+
+### Fixed
+- Fixed compatibility for minimum supported versions [#2661](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2661)
+- Filters group not opening if some text is selected on the page [#2662](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2662)
+
+### Changed
+- Download and apply differential updates [2586](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2586)
+- Updated `@adguard/tswebextension` to [v1.0.8](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tsurlfilter` to [v2.2.9](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
+- Updated `@adguard/scriptlets` to [v1.9.105](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md).
+- Updated `@adguard/filters-downloader` to [v2.0.4](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
+- Convert filter lists and user rules automatically with `@adguard/agtree`
+- Separate applied rules and original rules in the filtering log page, if the rule was converted
+
+## [4.2.240] - 2023-12-15
+
+### Added
+- Info about `@adguard/tswebextension`, `@adguard/tsurlfilter`, `@adguard/extended-css` and `@adguard/scriptlets` versions to the options page's About tab [#2237](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2237)
+
+### Changed
+- Updated `@adguard/tswebextension` to [v1.0.5](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tsurlfilter` to [v2.2.8](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
+- Updated `@adguard/scriptlets` to [v1.9.101](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
+
+### Fixed
+- $$ rules break encoding on some websites [#2249](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2249)
+- TSUrlFilter library loading by Fullscreen User Rules Editor
+  [#2412](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2412).
+- Displaying of Stealth Mode modified cookie rules in Filtering log as "Modified"
+  [#2512](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2512).
+- Highlighting of `$inline-font` and `$inline-script`
+  [#2609](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2609).
+- Scriptlets logging in browser console only if Filtering log is opened
+  [#2584](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2584).
+- Filters updating notification styles
+  [#2309](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2309).
+
+
+## [4.2.228] - 2023-11-27
+
+### Fixed
+
+- Logging of cosmetic rules applying.
+
+
+## [4.2.226] - 2023-11-22
+
+### Added
 - Macedonian language support [#2574](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2574).
 
 ### Changed
 - Remove "AdGuard settings..." from context menu on options.html [#2258](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258)
-- Updated `@adguard/tswebextension` to [v0.4.4](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
-- Updated `@adguard/tsurlfilter` to [v2.2.5](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
+- Updated `@adguard/tswebextension` to [v0.4.6](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tsurlfilter` to [v2.2.6](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
 - Updated `@adguard/filters-downloader` to [v1.1.23](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
-- Updated `@adguard/scriptlets` to [v1.9.91](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
-- Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607)
-- Convert filter lists and user rules automatically with `@adguard/agtree`
-- Separate applied rules and original rules in the filtering log page, if the rule was converted
+- Updated `@adguard/scriptlets` to [v1.9.96](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md).
+- Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607).
 
 ### Fixed
 - Filtering log not opening on Firefox for Android [#2563](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536)
+- Firefox Mobile not being correctly picked on a `Report an issue` page [2250](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2250)
+- Filtering log crash on blocking requests, which were already allowlisted from applying `$removeparam`, `$removeheader` or `$csp` rules [#2534](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2534).
 - Do not use `zh-CN` localized metadata for `zh-TW` browser language
   [#2504](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2504)
 - Collect logs only when filtering log is open [#2544](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2544)
@@ -125,7 +174,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/tsurlfilter` to [v2.1.7](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#217---2023-08-10)
 - Updated `@adguard/scriptlets` to [v1.9.62](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.209...HEAD
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.241...HEAD
+[4.2.240]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.228...v4.2.240
+[4.2.228]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.226...v4.2.228
+[4.2.226]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.209...v4.2.226
 [4.2.209]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/561737249b2c50c39b8e0ee6eefa5d19726c97b3...v4.2.209
 [4.2.208]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.189...561737249b2c50c39b8e0ee6eefa5d19726c97b3
 [4.2.189]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.168...v4.2.189

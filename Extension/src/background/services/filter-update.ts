@@ -57,7 +57,6 @@ export class FilterUpdateService {
      */
     private async update(): Promise<void> {
         window.clearTimeout(this.schedulerTimerId);
-
         await FilterUpdateApi.autoUpdateFilters();
 
         this.schedulerTimerId = window.setTimeout(async () => {

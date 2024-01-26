@@ -1,11 +1,13 @@
 (function(source, args) {
     function GoogleAnalytics(source) {
+        var _window$googleAnalyti;
         var Tracker = function Tracker() {};
         var proto = Tracker.prototype;
         proto.get = noopFunc;
         proto.set = noopFunc;
         proto.send = noopFunc;
         var googleAnalyticsName = window.GoogleAnalyticsObject || "ga";
+        var queue = (_window$googleAnalyti = window[googleAnalyticsName]) === null || _window$googleAnalyti === void 0 ? void 0 : _window$googleAnalyti.q;
         function ga(a) {
             var len = arguments.length;
             if (len === 0) {
@@ -36,6 +38,13 @@
         ga.remove = noopFunc;
         ga.loaded = true;
         window[googleAnalyticsName] = ga;
+        if (Array.isArray(queue)) {
+            var push = function push(arg) {
+                ga(...arg);
+            };
+            queue.push = push;
+            queue.forEach(push);
+        }
         var _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
         if (dataLayer instanceof Object === false) {
             return;

@@ -173,7 +173,6 @@ export const genCommonConfig = (browserConfig) => {
                 import: EDITOR_PATH,
                 dependOn: [
                     REACT_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
                 ],
             },
             [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
@@ -193,7 +192,7 @@ export const genCommonConfig = (browserConfig) => {
             filename: '[name].js',
         },
         resolve: {
-            extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
+            extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
         },
         module: {
@@ -231,7 +230,7 @@ export const genCommonConfig = (browserConfig) => {
                 },
                 {
                     test: /\.(js|ts)x?$/,
-                    exclude: /node_modules/,
+                    exclude: /node_modules\/(?!@adguard\/tswebextension)/,
                     use: [
                         {
                             loader: 'swc-loader',
@@ -331,7 +330,6 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
