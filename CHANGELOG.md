@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Convert filter lists and user rules automatically with `@adguard/agtree`
 - Separate applied rules and original rules in the filtering log page, if the rule was converted
 
+
 ## [4.2.240] - 2023-12-15
 
 ### Added
