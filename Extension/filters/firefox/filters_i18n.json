@@ -11125,7 +11125,7 @@
 				"description": "Den mest omfattende liste over div. online hit-tællere og webanalyseværktøjer. Ønsker du ikke dine handlinger på Internet sporet, så benyt dette filter."
 			},
 			"de": {
-				"name": "AdGuard Tracking-Schutz-Filter",
+				"name": "AdGuard Tracking-Schutzfilter",
 				"description": "Die umfangreichste Liste von verschiedenen Online-Zähler und Web-Analytics-Tools. Wenn Sie nicht möchten, dass Ihre Aktionen im Internet verfolgt werden, aktivieren Sie diesen Filter."
 			},
 			"el": {
@@ -13548,7 +13548,7 @@
 			},
 			"ja": {
 				"name": "AdGuard ポップアップフィルタ",
-				"description": "当社のフィルターポリシーに従ってWebサイトの動作に関係ないポップアップをすべてブロックします。"
+				"description": "AdGuardのフィルターポリシーに従って、Webサイトの動作に関係ないポップアップをすべてブロックします。"
 			},
 			"ko": {
 				"name": "AdGuard 팝업 필터",

@@ -1,9 +1,9 @@
-! Checksum: EFzSVQTHBA4Q0LwfiQX8pg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1705426553-3600.patch
+! Checksum: wQsa3q/JAaxfoi1/Un8WSA
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1705944960-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.7.84
-! TimeUpdated: 2024-01-16T17:31:51+00:00
+! Version: 2.0.7.87
+! TimeUpdated: 2024-01-22T17:31:57+00:00
 ! Expires: 5 days (update frequency)
 $removeparam=af_xp
 $removeparam=af_ad
@@ -11,7 +11,6 @@ $removeparam=af_adset
 $removeparam=af_click_lookback
 $removeparam=af_force_deeplink
 $removeparam=is_retargeting
-$removeparam=af_force_deeplink
 &af_xp=$removeparam=c
 &af_xp=$removeparam=pid
 $removeparam=dclid
@@ -190,7 +189,6 @@ $removeparam=adfrom
 $removeparam=nx_source
 $removeparam=_zucks_suid
 $removeparam=cmpid
-$removeparam=asgtbndr
 $removeparam=guccounter
 $removeparam=guce_referrer
 $removeparam=guce_referrer_sig
@@ -203,6 +201,9 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||chitai-gorod.ru^$removeparam=partnerId
+||mall.kinarino.jp^$removeparam=karea
+||mall.kinarino.jp^$removeparam=klay
 ||ilsecoloxix.it^$removeparam=ref
 ||gelocal.it^$removeparam=ref
 ||gelocal.it^$removeparam=cnt

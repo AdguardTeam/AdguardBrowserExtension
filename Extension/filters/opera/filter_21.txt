@@ -1,9 +1,9 @@
-! Checksum: RGCGoOOcxKi4zs+ItdmkCw
-! Diff-Path: ../patches/21/21-s-1705480575-3600.patch
+! Checksum: E65zYITmiYBh8tqdUhnqpQ
+! Diff-Path: ../patches/21/21-s-1706542588-3600.patch
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.18.72
-! TimeUpdated: 2024-01-17T08:32:04+00:00
+! Version: 2.0.19.14
+! TimeUpdated: 2024-01-29T15:32:18+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -109,6 +109,26 @@ instagram.com##._aagw:empty
 !
 ! End: Instagram.com
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/171690
+lest-eclair.fr#%#//scriptlet('set-constant', 'ultimediaVisiblePlayer.scrollVisiblePlayer', 'noopFunc')
+! https://github.com/AdguardTeam/AdguardFilters/issues/171131
+||geo.dailymotion.com/player/x2ww.js$domain=letribunaldunet.fr
+! https://github.com/AdguardTeam/AdguardFilters/issues/171314
+foxnews.com#%#//scriptlet('set-constant', 'Taplytics', 'emptyObj')
+foxnews.com#%#//scriptlet('set-constant', 'Taplytics.featureFlagEnabled', 'trueFunc')
+foxnews.com#%#//scriptlet('adjust-setTimeout', 'Taplytics', '*', '0.001')
+foxnews.com#%#//scriptlet('remove-class', 'gated-overlay', '.article-gating')
+foxnews.com#%#//scriptlet('remove-class', 'has-gated-overlay|gated-article-body', '.gated-article-body')
+! https://github.com/AdguardTeam/AdguardFilters/issues/171323
+zelvia.co.jp##.p-sticky
+! https://github.com/AdguardTeam/AdguardFilters/issues/171307
+inc.com##.mobile_video_insert
+! https://github.com/AdguardTeam/AdguardFilters/issues/170968
+||geo.dailymotion.com/player/xdgu3.html$domain=idntimes.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/170824
+wlos.com###js-SocialWidget-Container
+! https://github.com/AdguardTeam/AdguardFilters/issues/170933
+cumhuriyet.com.tr#?#div[class^="col"] > div.row:has(> div.row > div.dailymotion-player-root)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169847
 cnyes.com#%#//scriptlet('remove-class', 'ppn-overflows', '.ppn-overflows.ppn-floating_enable')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169424
@@ -1370,14 +1390,6 @@ tvn24.pl#%#//scriptlet("json-prune", "options.auto_play")
 ownedcore.com###site-header > div > div[style="text-align:center;"] > a[rel="nofollow"][target="_blank"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/76893
 gds.it###oggiinedicola
-! https://github.com/AdguardTeam/AdguardFilters/pull/112959
-||search.namu.wiki/api/ranking$domain=arca.live
-||arca.live/api/bywiki.json$domain=arca.live
-namu.wiki#?#aside > div[class]:matches-attr("/data-v-/"):has(> a[href="https://namu.news"])
-namu.wiki#?##app > div[class]:matches-attr("/data-v-/") > div > div:has(> a[href="https://namu.news"])
-board.namu.wiki,arca.live###newsRank
-arca.live###namuRank
-arca.live##body > .root-container > .topbar-area.d-lg-none
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79295
 toroox.com#?#.box-main > div.row > div.col-md-6:has(> div.link-details > div.panel)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/76187
@@ -2856,6 +2868,7 @@ yasir252.com#%#AG_onLoad(function(){setTimeout(function(){var a=document.querySe
 !
 !
 !
+zelvia.co.jp##.p-sticky > div.container > div.p-side_sticky
 sport5.by###news > div[style="margin-bottom: 50px; margin-top: -40px;"]
 istories.media##div[class^="SocialMediaBanner"]
 abc-mart.net###___ratingbadge_0
@@ -3274,6 +3287,8 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 ! END: Yandex
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/171446
+corrector.co##body .code-block
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169627#issuecomment-1889750272
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170758
 4pda.to###navstrip ~ br
@@ -4206,7 +4221,10 @@ felia.373news.com###ticker-area
 ||rakuten-static.com/1/grp/banner/js/create.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/81918
 jiosaavn.com##.c-player > .c-banner
+! https://github.com/AdguardTeam/AdguardFilters/issues/171351
 ! https://github.com/AdguardTeam/AdguardFilters/issues/81283
+avito.ru##div[class^="create-promocode-banner"]
+avito.ru##div[class^="personal-discount-adaptive-banner-"]
 avito.ru##div[class^="main-banner-root-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/80927
 lugatim.com###header-banner-container
@@ -4642,18 +4660,18 @@ geoguessr.com#$#.game-usps { display: none!important; }
 mayoclinic.org##.mayoad
 !
 ! xhamster.com
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.creator-promo-bg
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.heading-promo
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##a[class*="promoMessageBanner-"]
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.earning-block
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.creator-promo-bg
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.heading-promo
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##a[class*="promoMessageBanner-"]
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.earning-block
 ! promo banner
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com#$#header.promo { min-height: auto !important; }
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.promo-message__banner
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.recomm-promo-banner
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com#$#header.promo { min-height: auto !important; }
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster500.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.promo-message__banner
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.recomm-promo-banner
 ! cameras in category/movie pages
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.cams-overlay
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##[class*="cams-widget"]
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##div[class*="cams-thumb-"]
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.cams-overlay
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##[class*="cams-widget"]
+xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##div[class*="cams-thumb-"]
 ||img.stripst.com/*/previews$domain=xhamster.com
 ||xhamsterpremium.com^$third-party
 xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhwide8.com,xhamster4.*,xhamster2.com,xhamster10.com,xhamster.com##iframe[src^="https://xhamsterpremium.com/"]
@@ -4959,6 +4977,17 @@ theguardian.com##.contributions__adblock
 !
 ! SECTION: Self-promo - Regular rules
 !
+kupujemprodajem.com##div[class^="Banner"]
+bookvoed.ru##div[class] > a[href^="/redirect/karusel/stat?"]:has(> img[alt="Новичкам везёт!"])
+eksmo.ru##.cheader__personal-offer
+investing.com##.relative > div.sticky:has(> div > a[href^="/ad-free-subscription?"])
+meduza.io#?#.Section-module-root > div.Section-module-block:has(> article.BookBannerBlock-module-root)
+rocketleague.tracker.network##.app-promo-section
+||youtube.com/embed$domain=bryanadams.com,important
+bryanadams.com##.promo
+microsoftedge.microsoft.com###banner
+dns-shop.ru##.products-list__banner
+tumblr.com##.HOjIH
 e-chords.com##.v_banner > div:has(> div[style="margin-top: 30px;"])
 e-chords.com##.v_banner > div[style="text-align:center; margin-top:20px;"]
 deepl.com##div[data-testid="app-ad-callout-callout"]
@@ -5035,7 +5064,6 @@ undercovertourist.com###announcementbanner
 aliyundrive.com##div[class^="share-list-banner--"]
 dtf.ru#?#.view > div[class]:has(> div > a[href^="https://booster.osnova.io/a/redirect?"])
 dtf.ru#?#.entry > div.rotator:has(> div > a[href^="https://booster.osnova.io/a/redirect?"])
-dtf.ru#?#.content-list > div:has(> a[href^="https://booster.osnova.io/a/redirect?"])
 welcome.mosreg.ru#$#html { overflow: auto !important; padding-right: 0 !important; }
 welcome.mosreg.ru#$#.mfp-bg { display: none !important; }
 welcome.mosreg.ru#$#.mfp-wrap { display: none !important; }
@@ -6479,7 +6507,7 @@ inc42.com##.plus-bottom-bar
 odiarioonline.com.br##.advertising-container
 autoua.net##a[href="https://insurance.autoua.net/ru/osago/"]
 filmora.wondershare.com##.wsc-seasonal-container
-eksisozluk111.com##aside > iframe[src^="https://eksiseyler.com/sozluk/"]
+eksisozluk.com##aside > iframe[src^="https://eksiseyler.com/sozluk/"]
 revistapegn.globo.com###footerOgloboPianoId
 phonearena.com##.widgetOffers__disclaimer
 phonearena.com##.widgetOffers
@@ -6991,8 +7019,8 @@ reviewtech.me#$#.DownloadMainContent #countdown { display: none !important; }
 reviewtech.me#$#.DownloadMainContent #countdown + .text_sco { display: none !important; }
 reviewtech.me#$#.DownloadMainContent #downloadbtn { display: block !important; }
 ! https://www.neo-blood.co.jp/2022-8-19mail/ anti-copy etc.
-neo-blood.co.jp#$#html { -webkit-touch-callout: default !important; -webkit-user-select: auto !important;-moz-user-select: auto !important; -ms-user-select: auto !important; user-select: auto !important; -webkit-tap-highlight-color: black !important; }
-neo-blood.co.jp#$#.unselectable { -webkit-touch-callout: default !important; -webkit-user-select: auto !important;-moz-user-select: auto !important; -ms-user-select: auto !important; user-select: auto !important; -webkit-tap-highlight-color: black !important; }
+rightrasta.com,neo-blood.co.jp#$#html { -webkit-touch-callout: default !important; -webkit-user-select: auto !important;-moz-user-select: auto !important; -ms-user-select: auto !important; user-select: auto !important; -webkit-tap-highlight-color: black !important; }
+rightrasta.com,neo-blood.co.jp#$#.unselectable { -webkit-touch-callout: default !important; -webkit-user-select: auto !important;-moz-user-select: auto !important; -ms-user-select: auto !important; user-select: auto !important; -webkit-tap-highlight-color: black !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/126929
 tech.bloggertheme.xyz#$##timer { display: none !important; }
 tech.bloggertheme.xyz#$##getlink { display: block !important; }
@@ -7072,10 +7100,6 @@ go.insurance-space.xyz#$#div[id^="wpsafe-wait"] { display: none !important; }
 paidappstore.xyz#$##wpsafe-generate { display: block !important; }
 paidappstore.xyz#$##wpsafe-link { display: block !important; }
 paidappstore.xyz#$##wpsafe-wait1 { display: none !important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/110284
-mynewsmedia.co#$##wpsafe-generate { display: block !important; }
-mynewsmedia.co#$##wpsafe-snp { display: block !important; }
-mynewsmedia.co#$##wpsafe-wait1 { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/108435
 deezloaded.com#$##wpsafe-generate { display: block !important; }
 deezloaded.com#$##wpsafe-link { display: block !important; }
@@ -7387,6 +7411,13 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! gplinks - gplinks.co/fi3p
+! https://github.com/AdguardTeam/AdguardFilters/issues/170980
+sbkeditsofficials.in,mktechword.com,picassoappk.com,finley-aaron-love.com,bmremix.in,odiasongmuzic.com,rktemplates.in,seobar.in,bharatsarkarijobalert.com,englishbhaiya.co.in,news21usa.com,gachalifeoldversionapk.net,jankarihubedu21.com,mpscstudyhub.com,djppclub.com,1stepforlife.in,indiasarkari.com,djrajurjm.in,ojasnew.in,myfirstname.in,extraking.in,mystudyhelp.in,wwneed.com,aditechz.com,ccrushapp.com,latestpikashowapk.com,blog24.me,onpointgame.net,blogviewers.com,satyaclub.in,freemodapp.com,howmany.co.in,iwitnessnews.in,doge25.in,jabigetjob.com,nokrimilegi.in,kejriwalyojana.com,netflixrelease.com,onlinegratuitycalculator.com,gplinks.co,rontymobile.in,revadvert.com,globlenews.in#%#//scriptlet('adjust-setInterval', 'myTimer', '*', '0.02')
+! https://github.com/AdguardTeam/AdguardFilters/issues/171550
+sanemoku.com#%#//scriptlet('adjust-setInterval', 'countdown', '*', '0.001')
+! https://github.com/AdguardTeam/AdguardFilters/issues/170596
+shareus.io#%#//scriptlet('trusted-click-element', '.adunit-container >.card img', '','500')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170389
 exactpay.online,btcbitco.in,btcsatoshi.net,cempakajaya.com,crypto4yu.com,readbitcoin.org,wiour.com,mdn.lol,mcafee-com.com,exego.app,blog.carstopia.net,blog.carstopia.net,blog.coinsvalue.net,blog.cookinguide.net,blog.freeoseocheck.com,blog.makeupguide.net#%#//scriptlet('set-constant', 'document.hasFocus', 'trueFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170143
@@ -7399,8 +7430,8 @@ bishalghale.com.np#%#//scriptlet('adjust-setInterval', 'timer', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169882
 privatemoviez.*#%#//scriptlet('adjust-setInterval', 'count', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169605
-apkmodvn.com#%#//scriptlet('set-constant', 'waktu', '-1')
-file.apkmoddone.com#%#//scriptlet('adjust-setInterval', '=--', '*', '0.001')
+modapkvn.com,apkmodvn.com#%#//scriptlet('set-constant', 'waktu', '-1')
+apkmoddone.phongroblox.com,file.apkmoddone.com#%#//scriptlet('adjust-setInterval', '=--', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169278
 anonymfile.com#%#//scriptlet('set-constant', 'countDown', '1')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169123
@@ -7464,7 +7495,7 @@ mcafee-com.com#%#//scriptlet('set-constant', 'count', '0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159577
 1fichier.com#%#//scriptlet('adjust-setTimeout', 'show()', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159777
-1stepforlife.in,djrajurjm.in,ojasnew.in,myfirstname.in,extraking.in,mystudyhelp.in,wwneed.com,aditechz.com,ccrushapp.com,latestpikashowapk.com,blog24.me,onpointgame.net,blogviewers.com,satyaclub.in,freemodapp.com,howmany.co.in,iwitnessnews.in,jabigetjob.com,kojnews.com,serkarijobfind.com,thenovbharattimes.com,nokrimilegi.in,kejriwalyojana.com,netflixrelease.com,mydomainscan.com,onlinegratuitycalculator.com,globlenews.in,rontymobile.in,revadvert.com,mynewsmedia.co#%#//scriptlet('set-constant', 'count', '0')
+1stepforlife.in,djrajurjm.in,ojasnew.in,myfirstname.in,extraking.in,mystudyhelp.in,wwneed.com,aditechz.com,ccrushapp.com,latestpikashowapk.com,blog24.me,onpointgame.net,blogviewers.com,satyaclub.in,freemodapp.com,howmany.co.in,iwitnessnews.in,jabigetjob.com,nokrimilegi.in,kejriwalyojana.com,netflixrelease.com,onlinegratuitycalculator.com,globlenews.in,rontymobile.in,revadvert.com#%#//scriptlet('set-constant', 'count', '0')
 ! https://github.com/uBlockOrigin/uAssets/issues/19422
 nicekkk.com#%#//scriptlet('prevent-setInterval', 'debugger;')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159121
@@ -7989,7 +8020,7 @@ filessrc.com,srcimdb.com#%#//scriptlet("adjust-setInterval", "counter--", "", "0
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104336
 askpaccosi.com#%#!function(){if(-1<location.href.indexOf("?wpsafelink=http")){var a=(new URL(window.location.href)).searchParams.get("wpsafelink");if(a)try{window.location.assign(a)}catch(b){}}}();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/105185
-mdfx9dc8n.net,mixdrop.*#%#//scriptlet("adjust-setTimeout", "Please wait", "*", "0.02")
+mdzsmutpcvykb.net,mdfx9dc8n.net,mixdrop.*#%#//scriptlet("adjust-setTimeout", "Please wait", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104501
 themehits.com#%#//scriptlet("adjust-setTimeout", "showText", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104839
@@ -8664,7 +8695,7 @@ apps2app.com#%#//scriptlet("adjust-setInterval", "#countdown", "", "0.02")
 ! mage.si - skip timer
 mage.si#%#//scriptlet("adjust-setInterval", "countdown", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56155
-ds2play.com,doods.pro,dooood.com,dood.yt,dood.re,dood.wf,dood.la,dood.pm,dood.so,dood.to,dood.watch,dood.ws#%#//scriptlet("adjust-setInterval", ".countdown", "", "0.02")
+do0od.com,ds2play.com,doods.pro,dooood.com,dood.yt,dood.re,dood.wf,dood.la,dood.pm,dood.so,dood.to,dood.watch,dood.ws#%#//scriptlet("adjust-setInterval", ".countdown", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56151
 clicads.fr#%#//scriptlet("adjust-setInterval", "#pleasewait", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56054
@@ -8726,7 +8757,7 @@ filerio.in#%#//scriptlet("adjust-setTimeout", "tick()", "", "0.02")
 retrostic.com#%#//scriptlet("adjust-setInterval", "timeLeft--", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53145
 ! #%#//scriptlet("set-constant", "blurred", "false")
-pwrpa.cc,tinys.click,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,forextrader.site,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,viewfr.com,news.speedynews.xyz,exeurl.com,panyshort.link,casperhd.com,short2url.xyz,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,cybertechng.com,animerigel.com,gainl.ink,megaurl.in,megafly.in,linx.cc,bitlk.com,reqlinks.net,rgl.vn,youlink.ga,wu8.in,qlinks.eu,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,techsguy.com,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,enit.in,veganab.co,mdisklink.link,kinemaster.cc,short.freeltc.top,faucetcrypto.net,download.windowslite.net,dlsite.win,oko.sh,ckk.ai,ovlinks.com,ier.ai,links.medipost.org,forex-trnd.com,paylinnk.com,adpps.com,go.linkbnao.com,baicho.xyz,technemo.xyz,adshorti.co,loptelink.com,crt.im,mshort.top,link-yz.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,mozlink.net,haonguyen.top,pandaznetwork.com,bestcash2020.com,dash-free.com,cekip.xyz,cryptoon.xyz,btcwalk.com,vhorizads.com,theconomy.me,wealthystyle.online,zlink.tk,easysky.in,techgeek.digital,csd.xmod.in,link.tokenoto.com,skincarie.com,shortie.link,defaultfreeshort.in,adsafelink.com,linkshortify.site,kolotoken.site,powerclicks.xyz,akashort.com,rocklink.in,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,linkszia.co,usanewstoday.club,earnforclick.online,tlin.me,adlinkfly.wartakilat.com,shorthero.site,cutp.in,clk.asia,cookdov.com,wplink.*,aylink.info,adinsurance.xyz,usdshort.com,onroid.com,filmyzilla-in.xyz,sohexo.org,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,shorte.anxcinema.com,nini08.com,linkjust.com,download.freestudyweb.com,ultraten.net,vrlinks.xyz,crazyblog.in,shortlink.prz.pw,swzz.xyz,mixfaucet.com,getlink.tienichmaytinh.net,adly.fun,try2link.com,go.netfile.cc,fameen.xyz,gameen.xyz,yameen.xyz,abre.click,adcripto.com,linkbr.xyz,meulynk.com,myad.biz,baominh.tech,bblink.com,shortz.one,newsalret.com,clickscoin.com,za.uy,toptap.website,gtlink.co,upshrink.com,gir.ist,upfiles.io,link.turkdown.com,beingtek.com,automotur.club,insuranceblog.xyz,linkfly.*,coinadfly.com,linkres.in,link1s.com,fire-link.net,enagato.com,dl.tech-story.net,cpm10.org,123link.biz,rancah.com,shrtvip.com,linkerhub.tk,kingurls.com,download.sharenulled.net,go.gets4link.com,lucidcam.com,clikern.com,musicc.xyz,pix4link.com,zipurls.com,theblissempire.com,linkadshield.xyz,xfiles.io,upfiles.com,zshort.cc,filezipa.com,arab-chat.club,dz-linkk.com,newshour.pw,paidthe.site,cslink.in,jp88.xyz,shortenmm.cf,shrink.icu,bevru.club,bitlinks.pw,hoastie.com,arurio.club,fclcc.com,ptc.wtf,tei.ai,exey.*,url4cut.xyz,birdurls.com,claimfreebits.com,allcryptoz.net,shrlink.top,webshort.in,coinsparty.mcrypto.club,zshort.io,eririo.club,nerdy.vn,jameeltips.us,payskip.org,freshi.site,yxoshort.com,pewgame.com,sanos.xyz,shrinkzzy.link,shrinke.me,foxseotools.com,oncehelp.com,earnwithshortlink.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,link.ltc24.com,kiiw.icu,vshort.link,adnit.xyz,fwarycash.moviestar.fun,linkebr.com,bloggingguidance.com,smoner.com,charexempire.com,cut-fly.com,gplinks.co,adomainscan.com,bitmos.co.in,linkshorts.*,cuts-url.com,gainbtc.click,profitlink.info,artipedia.id,gonety.com,viraloc.com,beautyram.info,cashearn.cc,go2.surf,cryptoads.space,adcorto.me,modapk.link,holaurl.com,adbl.live,gplinks.co,miklpro.com,kutt.io,sanoybonito.club,afly.pro,cutlink.link,short88.com,pngit.live,exe.app,adsrt.click,adcorto.xyz,shortbled.com,cuturl.in,womenhaircolors.review,srts.me,paidtomoney.com,lite-link.xyz,apkshrt.com,linkshorts.me,androidnougatapk.com,pureshort.link,recipestutorials.com,droplink.co,tawiia.com,exy.ai,lite-link.com,bdnewsx.com,eio.io,mealip.com,earnfasts.com,linksfire.co,giscr.ac.th,internewstv.com,ivn3.com,pslfive.com,linksly.co,illink.net,coin.mg,trinddz.com,ilinks.in,techupme.com,bitfly.io,earnguap.com,news.techrfour.com,shortzzy.in,asiashort.link,imagenesderopaparaperros.com,c-ut.com,toroox.com,saungfirmware.id,shrinkme.in,fir3.net,softairbay.com,link1s.net,cashurl.in,doctor-groups.com,bitcoinly.in,clk.ink,abdeo8.com,apksvip.com,gibit.xyz,claimcrypto.cc,btcdot.xyz,pkr.pw,shrinkbtc.cc,todaynewspk.win,manikusa.com,try2link.net,stfly.me,dz4win.com,real-sky.com,bolssc.com,short2.cash,fx4vip.com,cutdl.xyz,shrinkurl.org,mediumarticles.com,asupload.com,exee.io,srt.leechpremium.link,adsrt.live,cheappath.com,fcc.lc,shorthitz.com,savelink.site,linkshorten.xyz,tmearn.com,samapro.me,adsy.pw,owllink.net,mondainai.moe,2ota.com,popimed.com,aii.sh,sekilastekno.com,miuiku.com,articlix.com,intothelink.com,pingit.link,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,adsrt.net,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,bestearnonline.com,gamesrs.com,ouofly.com,clicksbee.com,shorterall.com,dutchycorp.space,linkshrnk.com,linkad.in,fc.lc,adslinkfly.online,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
+yoykp.com,pwrpa.cc,tinys.click,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,forextrader.site,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,viewfr.com,news.speedynews.xyz,exeurl.com,panyshort.link,casperhd.com,short2url.xyz,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,cybertechng.com,animerigel.com,gainl.ink,megaurl.in,megafly.in,linx.cc,bitlk.com,reqlinks.net,rgl.vn,youlink.ga,wu8.in,qlinks.eu,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,techsguy.com,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,enit.in,veganab.co,mdisklink.link,kinemaster.cc,short.freeltc.top,faucetcrypto.net,download.windowslite.net,dlsite.win,oko.sh,ckk.ai,ovlinks.com,ier.ai,links.medipost.org,forex-trnd.com,paylinnk.com,adpps.com,go.linkbnao.com,baicho.xyz,technemo.xyz,adshorti.co,loptelink.com,crt.im,mshort.top,link-yz.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,mozlink.net,haonguyen.top,pandaznetwork.com,bestcash2020.com,dash-free.com,cekip.xyz,cryptoon.xyz,btcwalk.com,vhorizads.com,theconomy.me,wealthystyle.online,zlink.tk,easysky.in,techgeek.digital,csd.xmod.in,link.tokenoto.com,skincarie.com,shortie.link,defaultfreeshort.in,adsafelink.com,linkshortify.site,kolotoken.site,powerclicks.xyz,akashort.com,rocklink.in,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,linkszia.co,usanewstoday.club,earnforclick.online,tlin.me,adlinkfly.wartakilat.com,shorthero.site,cutp.in,clk.asia,cookdov.com,wplink.*,aylink.info,adinsurance.xyz,usdshort.com,onroid.com,filmyzilla-in.xyz,sohexo.org,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,shorte.anxcinema.com,nini08.com,linkjust.com,download.freestudyweb.com,ultraten.net,vrlinks.xyz,crazyblog.in,shortlink.prz.pw,swzz.xyz,mixfaucet.com,getlink.tienichmaytinh.net,adly.fun,try2link.com,go.netfile.cc,fameen.xyz,gameen.xyz,yameen.xyz,abre.click,adcripto.com,linkbr.xyz,meulynk.com,myad.biz,baominh.tech,bblink.com,shortz.one,newsalret.com,clickscoin.com,za.uy,toptap.website,gtlink.co,upshrink.com,gir.ist,upfiles.io,link.turkdown.com,beingtek.com,automotur.club,insuranceblog.xyz,linkfly.*,coinadfly.com,linkres.in,link1s.com,fire-link.net,enagato.com,dl.tech-story.net,cpm10.org,123link.biz,rancah.com,shrtvip.com,linkerhub.tk,kingurls.com,download.sharenulled.net,go.gets4link.com,lucidcam.com,clikern.com,musicc.xyz,pix4link.com,zipurls.com,theblissempire.com,linkadshield.xyz,xfiles.io,upfiles.com,zshort.cc,filezipa.com,arab-chat.club,dz-linkk.com,newshour.pw,paidthe.site,cslink.in,jp88.xyz,shortenmm.cf,shrink.icu,bevru.club,bitlinks.pw,hoastie.com,arurio.club,fclcc.com,ptc.wtf,tei.ai,exey.*,url4cut.xyz,birdurls.com,claimfreebits.com,allcryptoz.net,shrlink.top,webshort.in,coinsparty.mcrypto.club,zshort.io,eririo.club,nerdy.vn,jameeltips.us,payskip.org,freshi.site,yxoshort.com,pewgame.com,sanos.xyz,shrinkzzy.link,shrinke.me,foxseotools.com,oncehelp.com,earnwithshortlink.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,link.ltc24.com,kiiw.icu,vshort.link,adnit.xyz,fwarycash.moviestar.fun,linkebr.com,bloggingguidance.com,smoner.com,charexempire.com,cut-fly.com,gplinks.co,adomainscan.com,bitmos.co.in,linkshorts.*,cuts-url.com,gainbtc.click,profitlink.info,artipedia.id,gonety.com,viraloc.com,beautyram.info,cashearn.cc,go2.surf,cryptoads.space,adcorto.me,modapk.link,holaurl.com,adbl.live,gplinks.co,miklpro.com,kutt.io,sanoybonito.club,afly.pro,cutlink.link,short88.com,pngit.live,exe.app,adsrt.click,adcorto.xyz,shortbled.com,cuturl.in,womenhaircolors.review,srts.me,paidtomoney.com,lite-link.xyz,apkshrt.com,linkshorts.me,androidnougatapk.com,pureshort.link,recipestutorials.com,droplink.co,tawiia.com,exy.ai,lite-link.com,bdnewsx.com,eio.io,mealip.com,earnfasts.com,linksfire.co,giscr.ac.th,internewstv.com,ivn3.com,pslfive.com,linksly.co,illink.net,coin.mg,trinddz.com,ilinks.in,techupme.com,bitfly.io,earnguap.com,news.techrfour.com,shortzzy.in,asiashort.link,imagenesderopaparaperros.com,c-ut.com,toroox.com,saungfirmware.id,shrinkme.in,fir3.net,softairbay.com,link1s.net,cashurl.in,doctor-groups.com,bitcoinly.in,clk.ink,abdeo8.com,apksvip.com,gibit.xyz,claimcrypto.cc,btcdot.xyz,pkr.pw,shrinkbtc.cc,todaynewspk.win,manikusa.com,try2link.net,stfly.me,dz4win.com,real-sky.com,bolssc.com,short2.cash,fx4vip.com,cutdl.xyz,shrinkurl.org,mediumarticles.com,asupload.com,exee.io,srt.leechpremium.link,adsrt.live,cheappath.com,fcc.lc,shorthitz.com,savelink.site,linkshorten.xyz,tmearn.com,samapro.me,adsy.pw,owllink.net,mondainai.moe,2ota.com,popimed.com,aii.sh,sekilastekno.com,miuiku.com,articlix.com,intothelink.com,pingit.link,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,adsrt.net,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,bestearnonline.com,gamesrs.com,ouofly.com,clicksbee.com,shorterall.com,dutchycorp.space,linkshrnk.com,linkad.in,fc.lc,adslinkfly.online,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53141
 4shared.com#%#(function(){-1==document.cookie.indexOf("exUserId")&&(document.cookie="exUserId=1; domain=.4shared.com; path=/;")})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/52771
@@ -9086,6 +9117,7 @@ t24.com.tr#%#//scriptlet('set-constant', 'Object.prototype.autoplay', '0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/85982
 ||belezaedieta.com^$third-party
 !
+||mantan-web.jp/assets/js/no_contextmenu.js
 ||topcarweb.com/Content/js/nocopy.js
 ||descargas.pntic.mec.es/*/libot_drag.js
 ||script.gmarket.co.kr/js/itemdweb/ItemBase.js
@@ -9193,9 +9225,9 @@ quotev.com#$#body #res_area ::selection { background-color: #3297FD!important; }
 ! NOTE: Context menu - JS
 !
 ! #%#//scriptlet('abort-current-inline-script', 'document.oncontextmenu')
-daotranslate.com,habuteru.com,ufchgu.ru,mangahentai.me,themodellingnews.com,senpaiediciones.com,descopera.ro,amantecod.it,truelovejapan.com,volt-index.ru,universaladbdriver.com,firmwarefile.com,bg-gledai.co,victorytale.com,clujust.ro,mysports.to,mi-faq.ru,mathbang.net,seriesgratis.biz,mangacrab.com,metalnaveia66.com,bollywoodhindi.in,legionscans.com,footy.to,kdramasurdu.net,osomatsusan.hatenablog.com,flinsetyadi.com,bingotingo.com,carfixer.co.kr,urbanbrush.net,now.rememberapp.co.kr,untitle.org,tecnoprogramas.com,animeactua.com,creativestudio.kr,onna.kr,info-beihilfe.de,audiobookcup.com,funfunhan.com,blofinder.com,bookpost.kr,ex-nihil0.com,donghun.kr,zoommastory.com,deutschaj.com,kokone.co.kr,stevenh.net,ideas0419.com,raycat.net,hosii.info,blahblah.pe.kr,geniusjw.com,blog.esherloon.com,centrair.kr,softwarebits.net,tunovelaligera.com,krtopic.com,healthfeed.co.kr,my-expert.ru,bimiacg.net,solidfile.net,promocode99.in,downloadtutorials.net,nawalakarsa.id,tecnomusic-evolution.com,jpopsingles.eu,wartaterkini.news,pcprogramasymas.net,tistory.com,ghostspectre.the-ninja.jp,slothjuns.net,eduardo-monica.com,apkspurefile.com,foxaholic.com,koreanaddict.net,omgkpop.top,gamegame.kr,eoreuni.com,jstranslations1.com,animeuniverse.it,baltasar5010purohentai.com,aihristdreamtranslations.com,tipslab.info,indcit.com,semi168.net,semi168.club,audio-sound-premium.com,filmboxoffice.web.id,kakpishem.ru,teepr.com,texte.work,sysnettechsolutions.com,reinodekovel.com,elektrikmen.com,world4.eu,activationkeys.co,secondlifetranslations.com,samuraiscan.com,globaledu.jp,lazytranslations.com#%#//scriptlet('abort-current-inline-script', 'document.oncontextmenu')
+rightrasta.com,daotranslate.com,habuteru.com,ufchgu.ru,mangahentai.me,themodellingnews.com,senpaiediciones.com,descopera.ro,amantecod.it,truelovejapan.com,volt-index.ru,universaladbdriver.com,firmwarefile.com,bg-gledai.co,victorytale.com,clujust.ro,mysports.to,mi-faq.ru,mathbang.net,seriesgratis.biz,mangacrab.com,metalnaveia66.com,bollywoodhindi.in,legionscans.com,footy.to,kdramasurdu.net,osomatsusan.hatenablog.com,flinsetyadi.com,bingotingo.com,carfixer.co.kr,urbanbrush.net,now.rememberapp.co.kr,untitle.org,tecnoprogramas.com,animeactua.com,creativestudio.kr,onna.kr,info-beihilfe.de,audiobookcup.com,funfunhan.com,blofinder.com,bookpost.kr,ex-nihil0.com,donghun.kr,zoommastory.com,deutschaj.com,kokone.co.kr,stevenh.net,ideas0419.com,raycat.net,hosii.info,blahblah.pe.kr,geniusjw.com,blog.esherloon.com,centrair.kr,softwarebits.net,tunovelaligera.com,krtopic.com,healthfeed.co.kr,my-expert.ru,bimiacg.net,solidfile.net,promocode99.in,downloadtutorials.net,nawalakarsa.id,tecnomusic-evolution.com,jpopsingles.eu,wartaterkini.news,pcprogramasymas.net,tistory.com,ghostspectre.the-ninja.jp,slothjuns.net,eduardo-monica.com,apkspurefile.com,foxaholic.com,koreanaddict.net,omgkpop.top,gamegame.kr,eoreuni.com,jstranslations1.com,animeuniverse.it,baltasar5010purohentai.com,aihristdreamtranslations.com,tipslab.info,indcit.com,semi168.net,semi168.club,audio-sound-premium.com,filmboxoffice.web.id,kakpishem.ru,teepr.com,texte.work,sysnettechsolutions.com,reinodekovel.com,elektrikmen.com,world4.eu,activationkeys.co,secondlifetranslations.com,samuraiscan.com,globaledu.jp,lazytranslations.com#%#//scriptlet('abort-current-inline-script', 'document.oncontextmenu')
 ! #%#//scriptlet('prevent-addEventListener', 'contextmenu')
-edwardarriveoften.com,paulkitchendark.com,stevenimaginelittle.com,ds2play.com,doods.pro,dooood.com,dood.yt,dood.re,dood.wf,dood.la,dood.pm,dood.so,dood.to,dood.watch,dood.ws,guiasaude.info,gaz.com.br,relevantmagazine.com,camcaps.*,fakazaduo.com,gimy.app,ruyashoujo.com,nhk.or.jp,mangabtt.com,careet.net,contents.premium.naver.com,r114.com,app.kartra.com,box-manga.com,lover91.net,leouve.com.br,comico.jp,tappytoon.com,toonnbook.nate.com,tapas.io,kakaowebtoon.com,lapandilladelarejilla.es,lezhinus.com,lezhin.com,grafolio.naver.com,webtoon.kakao.com,page.kakao.com#%#//scriptlet('prevent-addEventListener', 'contextmenu')
+johntryopen.com,do0od.com,edwardarriveoften.com,paulkitchendark.com,stevenimaginelittle.com,ds2play.com,doods.pro,dooood.com,dood.yt,dood.re,dood.wf,dood.la,dood.pm,dood.so,dood.to,dood.watch,dood.ws,guiasaude.info,gaz.com.br,relevantmagazine.com,camcaps.*,fakazaduo.com,gimy.app,ruyashoujo.com,nhk.or.jp,mangabtt.com,careet.net,contents.premium.naver.com,r114.com,app.kartra.com,box-manga.com,lover91.net,leouve.com.br,comico.jp,tappytoon.com,toonnbook.nate.com,tapas.io,kakaowebtoon.com,lapandilladelarejilla.es,lezhinus.com,lezhin.com,grafolio.naver.com,webtoon.kakao.com,page.kakao.com#%#//scriptlet('prevent-addEventListener', 'contextmenu')
 ! #%#//scriptlet('set-constant', 'document.oncontextmenu', 'null')
 filmzone.com,interface31.ru,ktv.jp,releasewitch.com,news.ntv.co.jp,novatoscans.top,7days2die.info,flying-lines.com,fssp.gov.ru,ilife97.com,rdsong.com,lubedk.com,itempage3.auction.co.kr,cdramalove.com,10000recipe.com,nike.com,a2zapk.com,fully-fundedscholarships.com,shoneekapoor.com,cda-hd.cc,studysolve.online,animeindia.in,bufftoon.plaync.com,studyguideindia.com,codedosa.com,newslibrary.naver.com,insight.co.kr,gamefinity.id,cafe.naver.com#%#//scriptlet('set-constant', 'document.oncontextmenu', 'null')
 ! #%#//scriptlet('set-constant', 'document.onselectstart', 'null')
@@ -9203,19 +9235,19 @@ filmzone.com,interface31.ru,flying-lines.com,fssp.gov.ru,half-musiq.blogspot.com
 ! #%#//scriptlet('set-constant', 'document.ondragstart', 'null')
 7days2die.info,ilife97.com,a2zapk.com,fully-fundedscholarships.com,studysolve.online,animeindia.in,codedosa.com,gradium.co.kr,insight.co.kr,gamefinity.id,cafe.naver.com#%#//scriptlet('set-constant', 'document.ondragstart', 'null')
 ! #%#//scriptlet('abort-current-inline-script', 'document.ondragstart')
-kaystls.site,filmzone.com,immigrantinvest.com,pabrikarang.com,allaboutshaving.kr,javsubtitle.co,clujust.ro,neo-blood.co.jp,machow2.com,rawneix.in,theturtleislandnews.com,audiotools.in,moviesrush.one,lapandilladelarejilla.es,7misr4day.com,michaelemad.com,my-expert.ru,moviesrush.in,toonvideos.net.in,onepiece-online-manga.com,clockks.com,iptv4best.com#%#//scriptlet('abort-current-inline-script', 'document.ondragstart')
+rightrasta.com,kaystls.site,filmzone.com,immigrantinvest.com,pabrikarang.com,allaboutshaving.kr,javsubtitle.co,clujust.ro,neo-blood.co.jp,machow2.com,rawneix.in,theturtleislandnews.com,audiotools.in,moviesrush.one,lapandilladelarejilla.es,7misr4day.com,michaelemad.com,my-expert.ru,moviesrush.in,toonvideos.net.in,onepiece-online-manga.com,clockks.com,iptv4best.com#%#//scriptlet('abort-current-inline-script', 'document.ondragstart')
 ! #%#//scriptlet('prevent-addEventListener', 'dragstart')
 r114.com,kakaowebtoon.com,page.kakao.com#%#//scriptlet('prevent-addEventListener', 'dragstart')
 ! #%#//scriptlet('abort-current-inline-script', 'tjQuery', 'body')
 mathbang.net,teus.me,untitle.org,archwin.net,funfunhan.com,onpc.kr,bookpost.kr,donghun.kr,zoommastory.com,kokone.co.kr,blog.hangyeong.com,stevenh.net,ideas0419.com,raycat.net,hosii.info,blahblah.pe.kr,tokyodomin.com,modoobrisbane.com,geniusjw.com,gamegame.kr,centrair.kr,blog.esherloon.com,tistory.com#%#//scriptlet('abort-current-inline-script', 'tjQuery', 'body')
 ! #%#//scriptlet('abort-on-property-read', 'disable_copy')
-daotranslate.com,pabrikarang.com,novatoscans.top,senpaiediciones.com,truelovejapan.com,neo-blood.co.jp,machow2.com,rawneix.in,mangacrab.com,metalnaveia66.com,bollywoodhindi.in,kdramasurdu.net,theturtleislandnews.com,audiotools.in,audiobookcup.com,lapandilladelarejilla.es,7misr4day.com,michaelemad.com,lazytranslations.com,wartaterkini.news,foxaholic.com,koreanaddict.net,jstranslations1.com,baltasar5010purohentai.com,clockks.com,iptv4best.com,reinodekovel.com,elektrikmen.com,world4.eu,activationkeys.co,samuraiscan.com#%#//scriptlet('abort-on-property-read', 'disable_copy')
+rightrasta.com,daotranslate.com,pabrikarang.com,novatoscans.top,senpaiediciones.com,truelovejapan.com,neo-blood.co.jp,machow2.com,rawneix.in,mangacrab.com,metalnaveia66.com,bollywoodhindi.in,kdramasurdu.net,theturtleislandnews.com,audiotools.in,audiobookcup.com,lapandilladelarejilla.es,7misr4day.com,michaelemad.com,lazytranslations.com,wartaterkini.news,foxaholic.com,koreanaddict.net,jstranslations1.com,baltasar5010purohentai.com,clockks.com,iptv4best.com,reinodekovel.com,elektrikmen.com,world4.eu,activationkeys.co,samuraiscan.com#%#//scriptlet('abort-on-property-read', 'disable_copy')
 ! #%#//scriptlet('abort-on-property-read', 'getSelection')
 fakazaduo.com,sports-g.com,chungnamilbo.co.kr,jejusori.net,incheonilbo.com,ggilbo.com,newsnjoy.or.kr,mediaus.co.kr,lec.co.kr,spotvnews.co.kr,ibric.org,footballist.co.kr,hankooki.com,gametoc.hankyung.com,digitaltoday.co.kr,globale.co.kr,veritas-a.com,shinailbo.co.kr,ksilbo.co.kr,health.chosun.com,gukjenews.com,seoulfn.com,labortoday.co.kr,aitimes.kr,salgoonews.com,postshare.co.kr,rbc.ru,epnc.co.kr,wolyo.co.kr,hinfomax.co.kr,outdoornews.co.kr,anekdoty.ru,championat.com,bloombergquint.com,bigcinema-online.net,bigcinema-tv.club,gidonline-kino.club,kinogo-2017.com,kinogo-720.club,kinogoonline.club,season-var.net,topcinema.tv,kino-kingdom.com,hd-kinogo.co#%#//scriptlet('abort-on-property-read', 'getSelection')
 ! #%#//scriptlet('abort-on-property-read', 'disableSelection')
 skidrowreloaded.com,allaboutshaving.kr,allturkserials.com,victorytale.com,osomatsusan.hatenablog.com,iembra2or.com,battle-one.com,terbit21.online,wizardsubs.com,audio-sound-premium.com,sysnettechsolutions.com,mustafabukulmez.com,ifdreamscametrue.com#%#//scriptlet('abort-on-property-read', 'disableSelection')
 ! #%#//scriptlet('remove-attr', 'oncontextmenu|onselectstart|ondragstart', 'body')
-j-lyric.net,comic.naver.com,thewordcracker.com,hankooki.com,dbr.donga.com,uwayapply.com,gukjenews.com,edujin.co.kr,venturesquare.net,spooncast.net,rdsong.com,slist.kr,3dpchip.com,lover91.net,dragonball-tube.com,onepiece-tube.com,fairytail-tube.org,baho.com.tr,wholehk.com,siyasetcafe.com,webtv.dothome.co.kr,outdoornews.co.kr,novel.naver.com,eskisehirekspres.net#%#//scriptlet('remove-attr', 'oncontextmenu|onselectstart|ondragstart', 'body')
+a2zapk.io,j-lyric.net,comic.naver.com,thewordcracker.com,hankooki.com,dbr.donga.com,uwayapply.com,gukjenews.com,edujin.co.kr,venturesquare.net,spooncast.net,rdsong.com,slist.kr,3dpchip.com,lover91.net,dragonball-tube.com,onepiece-tube.com,fairytail-tube.org,baho.com.tr,wholehk.com,siyasetcafe.com,webtv.dothome.co.kr,outdoornews.co.kr,novel.naver.com,eskisehirekspres.net#%#//scriptlet('remove-attr', 'oncontextmenu|onselectstart|ondragstart', 'body')
 ! #%#//scriptlet('set-constant', 'disableEnterKey', 'noopFunc')
 releasewitch.com,javsubtitle.co,programasvirtualespc.net,legionscans.com,a2zapk.com,flinsetyadi.com,theaircurrent.com,fully-fundedscholarships.com,now.rememberapp.co.kr,codedosa.com,gradium.co.kr,semesters.in#%#//scriptlet('set-constant', 'disableEnterKey', 'noopFunc')
 ! #%#//scriptlet('abort-current-inline-script', 'document.onselectstart')

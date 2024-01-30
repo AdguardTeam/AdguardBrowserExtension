@@ -169,11 +169,13 @@ or for a specific browser:
 
 **Building the beta and release versions**
 
-Before building the release version, you should manually download necessary resources: filters and public suffix list.
+Before building the release version, you should manually download the necessary resources: filters and public suffix list.
 
 ```
   yarn resources
 ```
+This command also checks if there are dangerous rules in the filters.
+See [dangerous rules](tools/resources/dangerous-rules/README.md)
 
 ```
   yarn beta

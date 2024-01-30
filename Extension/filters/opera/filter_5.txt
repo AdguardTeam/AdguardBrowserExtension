@@ -1,9 +1,9 @@
-! Checksum: PVFKRgP+orl+oiY/HuqPmw
-! Diff-Path: ../patches/5/5-s-1704911793-3600.patch
+! Checksum: cAaSEAUptXYbPeZxHPmEhA
+! Diff-Path: ../patches/5/5-s-1706279772-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.28
-! TimeUpdated: 2024-01-10T18:33:21+00:00
+! Version: 2.0.1.31
+! TimeUpdated: 2024-01-26T14:33:03+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -145,9 +145,9 @@
 ! vipbox.lc - streaming provider - blocking popunders specific to that page
 /[a-z]{8,}\.(com|info|xyz)/$domain=nolive.me,third-party
 ! main youtube page - changing view for the first row of elements
-www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
-www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
-www.youtube.com#$?##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) { --ytd-rich-grid-items-per-row: 1 !important; }
+www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
+www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
+www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) { --ytd-rich-grid-items-per-row: 1 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96262
 developer.android.com,adssettings.google.com##sc-survey-survey-manager
 !
