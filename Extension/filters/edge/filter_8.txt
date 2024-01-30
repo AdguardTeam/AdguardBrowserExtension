@@ -1,9 +1,9 @@
-! Checksum: 1fpfPyifT/V9UN0epDmgJw
-! Diff-Path: ../patches/8/8-s-1704987715-3600.patch
+! Checksum: i6VxAZPEPIxWevpfGWdUag
+! Diff-Path: ../patches/8/8-s-1706189784-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.6.37
-! TimeUpdated: 2024-01-11T15:38:46+00:00
+! Version: 2.0.6.41
+! TimeUpdated: 2024-01-25T13:33:38+00:00
 ! Expires: 5 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1298,7 +1298,7 @@ webstick.nl##img[Width="680"]
 wildfm.nl##img[Width="699"][height="90"]
 pokeren.nl,ucl-voetbal.nl##img[Width="728"][height="90"]
 basketballbelgium.be##img[Width="970"][height="250"]
-bol.com##li.js_sponsored_product
+bol.com##li.js_item_root:has(.dsa__list-padding)
 bol.com##section.js_slot-sponsored-products
 landenweb.nl##table[style="margin-left: auto; margin-right: auto; border: 1px solid; width: 100%; margin-bottom: 10px;"]
 radiocaramba.nl##table[Width="120"][height="600"]
@@ -1541,8 +1541,9 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! This section contains the list of domain-specific rules that block ads.
 !
 ! Good: example.org###rek; ||example.com/ads/
-! Bad: example.org#$##rek { display: none !important; } (for instance, should be in general_extensions.txt)
+! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+nieuwsblad.be##.cba_container_grid
 dumpert.nl#?#.ad--billboardrectangle:upward(3)
 dumpert.nl#?#aside div[id^="ad_"]:upward(2)
 dumpert.nl#?#div[id*="leaderboardwallpaper-"]:upward(3)
@@ -1731,6 +1732,7 @@ klusidee.nl##td.td-ad
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
 !
 ! NOTE: Dutch - specific - HINTS
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10738
 !
 ! Special rules for AdGuard websites' test pages. The only purpose of these
