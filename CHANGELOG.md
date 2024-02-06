@@ -6,7 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## Unreleased
+## [4.3.14] - 2023-06-02
+
+### Fixed
+- Cosmetic rules do not work in Opera [#2704](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2704) and [#2705](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2705).
+
+
+## [4.3.13] - 2023-01-30
+
+### Added
+- Added Edge and Opera dev build.
+- Detecting dangerous rules.
 
 ### Fixed
 - Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693)
@@ -188,7 +198,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/tsurlfilter` to [v2.1.7](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md#217---2023-08-10)
 - Updated `@adguard/scriptlets` to [v1.9.62](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md)
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.241...HEAD
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.14...HEAD
+[4.3.14]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.13...v4.3.14
+[4.3.13]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.10...v4.3.13
+[4.3.10]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.4...v4.3.10
+[4.3.4]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.240...v4.3.4
 [4.2.240]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.228...v4.2.240
 [4.2.228]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.226...v4.2.228
 [4.2.226]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.209...v4.2.226
