@@ -156,7 +156,7 @@ export class AllowlistApi {
      * @param tabRefresh Tab refresh flag.
      */
     public static async enableTabFiltering(tabId: number, tabRefresh: boolean = false): Promise<void> {
-        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
+        const tabContext = tsWebExtTabsApi.getLightweightTabContext(tabId);
 
         if (!tabContext) {
             return;
@@ -168,10 +168,10 @@ export class AllowlistApi {
             return;
         }
 
-        const filterId = mainFrameRule.getFilterListId();
+        const filterId = mainFrameRule.filterId;
 
         if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const ruleText = mainFrameRule.getText();
+            const ruleText = mainFrameRule.text;
             await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
             return;
         }

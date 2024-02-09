@@ -61,7 +61,7 @@ describe('Frames Api', () => {
         tabContext.mainFrameRule = new NetworkRule(rule, AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
-        const frameData = FramesApi.getMainFrameData(tabContext);
+        const frameData = FramesApi.getMainFrameData(tabContext.lightweightTabContext);
         const { documentAllowlisted, canAddRemoveRule } = frameData;
 
         expect(documentAllowlisted).toBe(true);

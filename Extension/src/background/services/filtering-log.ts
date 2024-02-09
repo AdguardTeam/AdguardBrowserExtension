@@ -17,7 +17,7 @@
  */
 
 import {
-    TabContext,
+    type LightweightTabContext,
     tabsApi as tsWebExtTabsApi,
     defaultFilteringLog,
     FilteringEventType,
@@ -387,7 +387,7 @@ export class FilteringLogService {
      *
      * @param tabContext Item of {@link TabContext}.
      */
-    private static onTabCreate(tabContext: TabContext): void {
+    private static onTabCreate(tabContext: LightweightTabContext): void {
         const { info, isSyntheticTab } = tabContext;
 
         filteringLogApi.createTabInfo(info, isSyntheticTab);
@@ -398,7 +398,7 @@ export class FilteringLogService {
      *
      * @param tabContext Item of {@link TabContext}.
      */
-    private static onTabUpdate(tabContext: TabContext): void {
+    private static onTabUpdate(tabContext: LightweightTabContext): void {
         const { info } = tabContext;
 
         filteringLogApi.updateTabInfo(info);
@@ -409,7 +409,7 @@ export class FilteringLogService {
      *
      * @param tabContext Item of {@link TabContext}.
      */
-    private static onTabRemove(tabContext: TabContext): void {
+    private static onTabRemove(tabContext: LightweightTabContext): void {
         const { info: { id } } = tabContext;
 
         if (id) {

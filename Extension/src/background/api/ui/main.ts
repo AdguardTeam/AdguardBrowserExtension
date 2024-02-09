@@ -17,7 +17,7 @@
  */
 import { debounce } from 'lodash-es';
 
-import type { TabContext } from '@adguard/tswebextension';
+import type { LightweightTabContext } from '@adguard/tswebextension';
 
 import { MessageType, sendMessage } from '../../../common/messages';
 
@@ -49,7 +49,7 @@ export class UiApi {
      *
      * @param tabContext Updated {@link TabContext}.
      */
-    public static async update(tabContext: TabContext): Promise<void> {
+    public static async update(tabContext: LightweightTabContext): Promise<void> {
         const tabId = tabContext.info.id;
 
         const frameData = FramesApi.getMainFrameData(tabContext);

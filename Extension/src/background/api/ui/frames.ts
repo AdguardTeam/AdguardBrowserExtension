@@ -17,7 +17,7 @@
  */
 
 import {
-    type TabContext,
+    type LightweightTabContext,
     isHttpRequest,
     getDomain,
     MAIN_FRAME_ID,
@@ -70,7 +70,7 @@ export class FramesApi {
         frames,
         blockedRequestCount,
         mainFrameRule,
-    }: TabContext): FrameData {
+    }: LightweightTabContext): FrameData {
         const mainFrame = frames.get(MAIN_FRAME_ID);
 
         const url = info?.url
@@ -94,17 +94,17 @@ export class FramesApi {
         const applicationFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
 
         if (applicationAvailable) {
-            documentAllowlisted = !!mainFrameRule && mainFrameRule.isFilteringDisabled();
+            documentAllowlisted = !!mainFrameRule && mainFrameRule.isFilteringDisabled;
             if (documentAllowlisted && mainFrameRule) {
                 const rule = mainFrameRule;
 
-                const filterId = rule.getFilterListId();
+                const filterId = rule.filterId;
 
                 userAllowlisted = filterId === AntiBannerFiltersId.UserFilterId
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
                 frameRule = {
                     filterId,
-                    ruleText: rule.getText(),
+                    ruleText: rule.text,
                 };
             }
             // It means site in exception
