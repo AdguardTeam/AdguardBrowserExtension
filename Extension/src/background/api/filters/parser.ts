@@ -80,6 +80,20 @@ export class FilterParser {
 
             if (indexOfSearch >= 0) {
                 result = rule.substring(indexOfSearch + search.length);
+                // WARNING!
+                // Potential memory leak mitigation for substring operation due to V8 optimizations:
+                // When extracting a substring with rule.substring(), there's a concern in some JS environments
+                // that the resulting substring might retain a hidden reference to the entire original 'rule' string.
+                // This could prevent the garbage collector (GC) from freeing the memory allocated for filter rules.
+                // This hidden reference occurs because the substring might not create a new string but rather
+                // a view into the original, keeping it in memory longer than necessary.
+                // And we receive a memory leak here because we store parsed tags from first N lines of the filter rules
+                // which have references to the original large string with filter rules.
+                // To ensure that the original large string can be garbage collected, and only the necessary
+                // substring is retained, we explicitly force a copy of the substring via split and join,
+                // thereby breaking the direct reference to the original string and allowing the GC to free the memory
+                // for filter rules when they are no longer in use.
+                result = result.split('').join('');
                 break;
             }
         }
