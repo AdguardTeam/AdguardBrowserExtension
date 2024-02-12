@@ -8,8 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated `@adguard/tswebextension` to [v1.0.12](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tsurlfilter` to [v2.2.12](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
+
+
 ### Fixed
+
 - Memory leak with parsed tags from filter rules.
+- Applying of `$all` modifier rules [#2620](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620).
 
 
 ## [4.3.14] - 2023-06-02
