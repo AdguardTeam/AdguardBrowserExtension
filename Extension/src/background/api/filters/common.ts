@@ -34,7 +34,7 @@ import { network } from '../network';
 
 import { CustomFilterApi } from './custom';
 import { FiltersApi } from './main';
-import { FilterUpdateDetail } from './update';
+import type { FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
 /**
@@ -84,34 +84,36 @@ export class CommonFilterApi {
     /**
      * Update common filter.
      *
-     * @param filterUpdateDetail Filter update detail.
+     * @param filterUpdateOptions Filter update detail.
      *
      * @returns Updated filter metadata or null, if update is not required.
      */
-    public static async updateFilter(filterUpdateDetail: FilterUpdateDetail): Promise<RegularFilterMetadata | null> {
-        Log.info(`Update filter ${filterUpdateDetail.filterId}`);
+    public static async updateFilter(
+        filterUpdateOptions: FilterUpdateOptions,
+    ): Promise<RegularFilterMetadata | null> {
+        Log.info(`Update filter ${filterUpdateOptions.filterId}`);
 
         // we do not have to check metadata for the filters which do not update with force, because
         // they even do not trigger metadata update
-        if (filterUpdateDetail.force) {
-            const filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateDetail.filterId);
+        if (filterUpdateOptions.force) {
+            const filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateOptions.filterId);
 
             if (!filterMetadata) {
-                Log.error(`Cannot find filter ${filterUpdateDetail.filterId} metadata`);
+                Log.error(`Cannot find filter ${filterUpdateOptions.filterId} metadata`);
                 return null;
             }
 
             if (!CommonFilterApi.isFilterNeedUpdate(filterMetadata)) {
-                Log.info(`Filter ${filterUpdateDetail.filterId} is already updated`);
+                Log.info(`Filter ${filterUpdateOptions.filterId} is already updated`);
                 return null;
             }
         }
 
-        Log.info(`Filter ${filterUpdateDetail.filterId} is need to updated`);
+        Log.info(`Filter ${filterUpdateOptions.filterId} is need to updated`);
 
         try {
-            const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateDetail, true);
-            Log.info(`Filter ${filterUpdateDetail.filterId} updated successfully`);
+            const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateOptions, true);
+            Log.info(`Filter ${filterUpdateOptions.filterId} updated successfully`);
             return filterMetadata;
         } catch (e) {
             Log.error(e);
@@ -122,41 +124,41 @@ export class CommonFilterApi {
     /**
      * Download filter rules from backend and update filter state and metadata.
      *
-     * @param filterUpdateDetail Filter update detail.
+     * @param filterUpdateOptions Filter update detail.
      * @param forceRemote Whether to download filter rules from remote resources or
      * from local resources.
      */
     public static async loadFilterRulesFromBackend(
-        filterUpdateDetail: FilterUpdateDetail,
+        filterUpdateOptions: FilterUpdateOptions,
         forceRemote: boolean,
     ): Promise<RegularFilterMetadata> {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
-        const oldRawFilter = await RawFiltersStorage.get(filterUpdateDetail.filterId);
+        const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
         const {
             filter,
             rawFilter,
         } = await network.downloadFilterRules(
-            filterUpdateDetail,
+            filterUpdateOptions,
             forceRemote,
             isOptimized,
             oldRawFilter,
         );
 
-        await FiltersStorage.set(filterUpdateDetail.filterId, filter);
-        await RawFiltersStorage.set(filterUpdateDetail.filterId, rawFilter);
+        await FiltersStorage.set(filterUpdateOptions.filterId, filter);
+        await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
 
-        const currentFilterState = filterStateStorage.get(filterUpdateDetail.filterId);
-        filterStateStorage.set(filterUpdateDetail.filterId, {
+        const currentFilterState = filterStateStorage.get(filterUpdateOptions.filterId);
+        filterStateStorage.set(filterUpdateOptions.filterId, {
             installed: true,
             loaded: true,
             enabled: !!currentFilterState?.enabled,
         });
 
         const parsedMetadata = FilterParser.parseFilterDataFromHeader(filter);
-        let filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateDetail.filterId);
+        let filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateOptions.filterId);
         if (!(parsedMetadata && filterMetadata)) {
-            throw new Error(`Not found metadata for filter id ${filterUpdateDetail.filterId}`);
+            throw new Error(`Not found metadata for filter id ${filterUpdateOptions.filterId}`);
         }
 
         // update filter metadata with new values
@@ -172,21 +174,21 @@ export class CommonFilterApi {
             diffPath,
         } = filterMetadata;
 
-        const filterVersion = filterVersionStorage.get(filterUpdateDetail.filterId);
+        const filterVersion = filterVersionStorage.get(filterUpdateOptions.filterId);
 
         // We only update the expiration date if it is a forced update to
         // avoid updating the expiration date during patch updates.
-        const nextExpires = filterVersion?.expires && !filterUpdateDetail.force
+        const nextExpires = filterVersion?.expires && !filterUpdateOptions.force
             ? filterVersion.expires
             : Number(expires);
 
         // We only update the last check time if it is a forced update to
         // avoid updating the last check time during patch updates.
-        const nextLastCheckTime = filterVersion?.lastCheckTime && !filterUpdateDetail.force
+        const nextLastCheckTime = filterVersion?.lastCheckTime && !filterUpdateOptions.force
             ? filterVersion.lastCheckTime
             : Date.now();
 
-        filterVersionStorage.set(filterUpdateDetail.filterId, {
+        filterVersionStorage.set(filterUpdateOptions.filterId, {
             version,
             diffPath,
             expires: nextExpires,

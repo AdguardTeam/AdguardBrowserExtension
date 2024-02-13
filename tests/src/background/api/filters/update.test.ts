@@ -184,7 +184,7 @@ describe('Filter Update API should', () => {
         });
     });
 
-    it('update filters after 30 minutes delay', async () => {
+    it('update filters after 60 minutes delay', async () => {
         const clock = FakeTimers.install();
         let promise = App.init();
         await clock.tickAsync(10);
@@ -213,7 +213,7 @@ describe('Filter Update API should', () => {
         expect(updatedFilters.length).toBe(0);
 
         // Wait for 31 minutes
-        await clock.tickAsync(1000 * 60 * 31);
+        await clock.tickAsync(1000 * 60 * 61);
         filterVersion = filterVersionStorage.get(filterId);
         // Filter version still the same because filter didn't expired
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
@@ -228,7 +228,7 @@ describe('Filter Update API should', () => {
         // Set period update to 100ms
         await SettingsApi.setSetting(SettingOption.FiltersUpdatePeriod, 100);
         // Wait for first check after filter expired
-        await clock.tickAsync(1000 * 60 * 31);
+        await clock.tickAsync(1000 * 60 * 61);
         filterVersion = filterVersionStorage.get(filterId);
         expect(filterVersion?.version).toStrictEqual(v3);
         clock.uninstall();

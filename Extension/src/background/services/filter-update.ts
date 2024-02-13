@@ -25,7 +25,7 @@ import { Log } from '../../common/log';
  * Service for scheduling filters update checks.
  *
  * After initialization scheduler checks filter updates
- * {@link CHECK_PERIOD_MS every 30 minutes}.
+ * {@link CHECK_PERIOD_MS every 5 minutes}.
  */
 export class FilterUpdateService {
     /**
@@ -42,8 +42,10 @@ export class FilterUpdateService {
     /**
      * Filter update period.
      * This means that filters should be updated if it was updated more than the specified value.
+     * We set 1 hour because currently we generate patches for our filter once an hour and
+     * for third-party filters once every 4 hours.
      */
-    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 60 * 30; // 30 min
+    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 60 * 60; // 1 hour
 
     /**
      * Stores scheduler timer id for checking update in every

@@ -5,29 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [Unreleased]
 
 ### Changed
-
+- Check diff updates once in a hour.
 - Updated `@adguard/tswebextension` to [v1.0.13](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
 - Updated `@adguard/tsurlfilter` to [v2.2.13](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
 - Updated `@adguard/scriptlets` to [v1.10.1](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md).
 
-
 ### Fixed
-
 - Memory leak with parsed tags from filter rules.
 - Applying of `$all` modifier rules [#2620](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620).
 
 
-## [4.3.14] - 2023-06-02
+## [4.3.14] - 2024-06-02
 
 ### Fixed
 - Cosmetic rules do not work in Opera [#2704](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2704) and [#2705](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2705).
 
 
-## [4.3.13] - 2023-01-30
+## [4.3.13] - 2024-01-30
 
 ### Added
 - Added Edge and Opera dev build.
@@ -37,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693)
 
 
-## [4.3.10] - 2023-01-20
+## [4.3.10] - 2024-01-20
 
 ### Fixed
 - Automatic filters update does not work in mobile browsers [#2423](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2423)
@@ -46,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `@adguard/filters-downloader` to [v2.0.7](https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md).
 
 
-## [4.3.4] - 2023-01-16
+## [4.3.4] - 2024-01-16
 
 ### Added
 - Getting user consent on annoyances filter enabling.
