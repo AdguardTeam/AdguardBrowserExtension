@@ -35,7 +35,7 @@ import {
 } from '../../../storages';
 import { Engine } from '../../../engine';
 import { network } from '../../network';
-import { FilterUpdateDetail } from '../update';
+import type { FilterUpdateOptions } from '../update';
 import { FilterParsedData, FilterParser } from '../parser';
 
 import { CustomFilterLoader } from './loader';
@@ -283,37 +283,39 @@ export class CustomFilterApi {
      * Checks, if new filter version available.
      * If filter need for update, save new filter data in storages.
      *
-     * @param filterUpdateDetail Filter update detail.
+     * @param filterUpdateOptions Filter update detail.
      *
      * @returns Updated filter metadata or null, if filter is not existed
      * or new version is not available.
      */
-    public static async updateFilter(filterUpdateDetail: FilterUpdateDetail): Promise<CustomFilterMetadata | null> {
-        Log.info(`Update Custom filter ${filterUpdateDetail.filterId} ...`);
+    public static async updateFilter(
+        filterUpdateOptions: FilterUpdateOptions,
+    ): Promise<CustomFilterMetadata | null> {
+        Log.info(`Update Custom filter ${filterUpdateOptions.filterId} ...`);
 
-        const filterMetadata = customFilterMetadataStorage.getById(filterUpdateDetail.filterId);
+        const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOptions.filterId);
 
         if (!filterMetadata) {
-            Log.error(`Cannot find custom filter ${filterUpdateDetail.filterId} metadata`);
+            Log.error(`Cannot find custom filter ${filterUpdateOptions.filterId} metadata`);
             return null;
         }
 
         const { customUrl } = filterMetadata;
 
-        const rawFilterLines = await RawFiltersStorage.get(filterUpdateDetail.filterId) || [];
+        const rawFilterLines = await RawFiltersStorage.get(filterUpdateOptions.filterId) || [];
         const rawFilter = rawFilterLines.join(NEWLINE_CHAR_UNIX);
         const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
             customUrl,
             rawFilter,
-            filterUpdateDetail.force,
+            filterUpdateOptions.force,
         );
 
         if (!CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
-            Log.info(`Custom filter ${filterUpdateDetail.filterId} is already updated`);
+            Log.info(`Custom filter ${filterUpdateOptions.filterId} is already updated`);
             return null;
         }
 
-        Log.info(`Successfully update custom filter ${filterUpdateDetail.filterId}`);
+        Log.info(`Successfully update custom filter ${filterUpdateOptions.filterId}`);
         return CustomFilterApi.updateFilterData(filterMetadata, filterRemoteData);
     }
 

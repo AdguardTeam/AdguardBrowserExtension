@@ -33,7 +33,7 @@ import { CommonFilterApi } from './common';
 /**
  * Filter update detail.
  */
-export type FilterUpdateDetail = {
+export type FilterUpdateOptions = {
     /**
      * Filter identifier.
      */
@@ -48,7 +48,7 @@ export type FilterUpdateDetail = {
 /**
  * List of filter update details.
  */
-export type FilterUpdateDetails = FilterUpdateDetail[];
+type FilterUpdateOptionsList = FilterUpdateOptions[];
 
 /**
  * API for manual and automatic (by period) filter rules updates.
@@ -136,7 +136,7 @@ export class FilterUpdateApi {
         const installedAndEnabledFilters = FiltersApi.getInstalledAndEnabledFiltersIds();
 
         // If it is a force check - updates all installed and enabled filters.
-        let filterUpdateDetailsToUpdate:FilterUpdateDetails = installedAndEnabledFilters.map(
+        let filterUpdateDetailsToUpdate = installedAndEnabledFilters.map(
             id => ({ filterId: id, force: forceUpdate }),
         );
 
@@ -171,7 +171,7 @@ export class FilterUpdateApi {
         // which where updated with force
         filterVersionStorage.refreshLastCheckTime(
             filterUpdateDetailsToUpdate
-                .filter(filterUpdateDetail => filterUpdateDetail.force)
+                .filter(filterUpdateOptions => filterUpdateOptions.force)
                 .map(({ filterId }) => filterId),
         );
 
@@ -187,18 +187,20 @@ export class FilterUpdateApi {
      * Updates the metadata of all filters and updates the filter contents from
      * the provided list of identifiers.
      *
-     * @param filterUpdateDetails List of filters ids to update.
+     * @param filterUpdateOptionsList List of filters ids to update.
      *
      * @returns Promise with a list of updated {@link FilterMetadata filters' metadata}.
      */
-    private static async updateFilters(filterUpdateDetails: FilterUpdateDetails): Promise<FilterMetadata[]> {
+    private static async updateFilters(
+        filterUpdateOptionsList: FilterUpdateOptionsList,
+    ): Promise<FilterMetadata[]> {
         /**
          * Reload common filters metadata from backend for correct
          * version matching on update check.
          * We do not update metadata on each check if there are no filters or only custom filters.
          */
-        const shouldLoadMetadata = filterUpdateDetails.some(filterUpdateDetail => {
-            return filterUpdateDetail.force && CommonFilterApi.isCommonFilter(filterUpdateDetail.filterId);
+        const shouldLoadMetadata = filterUpdateOptionsList.some(filterUpdateOptions => {
+            return filterUpdateOptions.force && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
         });
 
         if (shouldLoadMetadata) {
@@ -207,7 +209,7 @@ export class FilterUpdateApi {
 
         const updatedFiltersMetadata: FilterMetadata[] = [];
 
-        const updateTasks = filterUpdateDetails.map(async (filterData) => {
+        const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
             let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null;
 
             if (CustomFilterApi.isCustomFilter(filterData.filterId)) {
@@ -262,35 +264,40 @@ export class FilterUpdateApi {
     /**
      * Selects filters with diff path field.
      *
-     * @param filterUpdateDetails Filter update details.
+     * @param filterUpdateOptionsList Filter update details.
      *
      * @returns List with filter update details, which have diff path.
      */
-    private static selectFiltersWithDiffPath(filterUpdateDetails: FilterUpdateDetails): FilterUpdateDetails {
+    private static selectFiltersWithDiffPath(
+        filterUpdateOptionsList: FilterUpdateOptionsList,
+    ): FilterUpdateOptionsList {
         const filterVersions = filterVersionStorage.getData();
-        return filterUpdateDetails.filter(filterData => {
-            const filterVersion = filterVersions[filterData.filterId];
-            // we do not check here expires, since @adguard/filters-downloader does it.
-            return filterVersion?.diffPath;
-        }).map(filterData => ({ ...filterData, force: false }));
+
+        return filterUpdateOptionsList
+            .filter(filterData => {
+                const filterVersion = filterVersions[filterData.filterId];
+                // we do not check here expires, since @adguard/filters-downloader does it.
+                return filterVersion?.diffPath;
+            })
+            .map(({ filterId }) => ({ filterId, force: false }));
     }
 
     /**
      * Selects outdated filters from the provided filter list, based on the
      * provided filter update period from the settings.
      *
-     * @param filterUpdateDetails List of filter update details.
+     * @param filterUpdateOptionsList List of filter update details.
      *
      * @param updatePeriod Period of checking updates in ms.
      * @returns List of outdated filter ids.
      */
     private static selectExpiredFilters(
-        filterUpdateDetails: FilterUpdateDetails,
+        filterUpdateOptionsList: FilterUpdateOptionsList,
         updatePeriod: number,
-    ): FilterUpdateDetails {
+    ): FilterUpdateOptionsList {
         const filterVersions = filterVersionStorage.getData();
 
-        return filterUpdateDetails.filter((data) => {
+        return filterUpdateOptionsList.filter((data) => {
             const filterVersion = filterVersions[data.filterId];
 
             if (!filterVersion) {
@@ -309,7 +316,7 @@ export class FilterUpdateApi {
             // Check, if the renewal period of each filter has passed.
             // If it is time to check the renewal, add to the array.
             return lastCheckTime + updatePeriod <= Date.now();
-        }).map(filter => ({ ...filter, force: true }));
+        }).map(({ filterId }) => ({ filterId, force: true }));
     }
 }
 

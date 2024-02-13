@@ -32,7 +32,7 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import { FilterUpdateDetail } from '../filters';
+import type { FilterUpdateOptions } from '../filters';
 import { Log } from '../../../common/log';
 import { NEWLINE_CHAR_UNIX } from '../../../common/constants';
 
@@ -68,13 +68,13 @@ export class Network {
     /**
      * Downloads filter rules by filter ID.
      *
-     * @param filterUpdateDetail Filter update detail.
+     * @param filterUpdateOptions Filter update detail.
      * @param forceRemote Force download filter rules from remote server.
      * @param useOptimizedFilters Download optimized filters flag.
      * @param rawFilter Raw filter rules.
      */
     public async downloadFilterRules(
-        filterUpdateDetail: FilterUpdateDetail,
+        filterUpdateOptions: FilterUpdateOptions,
         forceRemote: boolean,
         useOptimizedFilters: boolean,
         rawFilter?: string[],
@@ -82,20 +82,20 @@ export class Network {
         let url: string;
 
         let isLocalFilter = false;
-        if (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateDetail.filterId) < 0) {
-            url = this.getUrlForDownloadFilterRules(filterUpdateDetail.filterId, useOptimizedFilters);
+        if (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
+            url = this.getUrlForDownloadFilterRules(filterUpdateOptions.filterId, useOptimizedFilters);
         } else {
             // eslint-disable-next-line max-len
-            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterUpdateDetail.filterId}.txt`);
+            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterUpdateOptions.filterId}.txt`);
             if (useOptimizedFilters) {
                 // eslint-disable-next-line max-len
-                url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_mobile_${filterUpdateDetail.filterId}.txt`);
+                url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_mobile_${filterUpdateOptions.filterId}.txt`);
             }
             isLocalFilter = true;
         }
 
         // local filters do not support patches, that is why we always download them fully
-        if (isLocalFilter || filterUpdateDetail.force || !rawFilter) {
+        if (isLocalFilter || filterUpdateOptions.force || !rawFilter) {
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {
