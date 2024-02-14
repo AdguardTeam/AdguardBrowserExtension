@@ -17,6 +17,8 @@
  */
 
 // replace unsupported fetch API by xhr requests
+import { TextEncoder, TextDecoder } from 'util';
+
 import 'whatwg-fetch';
 import escape from 'css.escape';
 import mockBrowser from 'sinon-chrome';
@@ -35,6 +37,8 @@ import {
 
 // set missing CSS.escape polyfill for test env
 global.CSS.escape = escape;
+
+Object.assign(global, { TextDecoder, TextEncoder });
 
 /**
  * sinon-chrome does declare a browser.runtime.id property, but its value is null, which caused the duck-typing to fail.
