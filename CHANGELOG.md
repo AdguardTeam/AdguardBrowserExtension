@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Check diff updates once in a hour.
-- Updated `@adguard/tswebextension` to [v1.0.13](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
-- Updated `@adguard/tsurlfilter` to [v2.2.13](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
+- Updated `@adguard/tswebextension` to [v1.0.14](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tsurlfilter` to [v2.2.14](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
 - Updated `@adguard/scriptlets` to [v1.10.1](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md).
 
 ### Fixed
