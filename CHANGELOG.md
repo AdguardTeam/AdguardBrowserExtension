@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Memory leak with parsed tags from filter rules.
 - Applying of `$all` modifier rules [#2620](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620).
-
+- All groups and filters are disabled after installation [#2713](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2713)
 
 ## [4.3.14] - 2024-06-02
 
