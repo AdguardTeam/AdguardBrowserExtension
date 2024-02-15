@@ -227,6 +227,9 @@ export class App {
 
             // Loads default filters
             await CommonFilterApi.initDefaultFilters(true);
+
+            // Write the current version to the storage only after successful initialization of the extension
+            await InstallApi.postSuccessInstall(currentAppVersion);
         }
 
         // Update additional scenario
