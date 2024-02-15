@@ -69,6 +69,51 @@ const savingAllowlistService = createSavingService({
     },
 });
 
+/**
+ * Sometimes the options page might be opened before the background page is ready to provide data.
+ * In this case, we need to retry getting data from the background service.
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712
+ *
+ * @returns data for the options page from the background page
+ */
+const getOptionsDataWithRetry = async () => {
+    /**
+     * Delay between retries in milliseconds
+     */
+    const RETRY_DELAY_MS = 500;
+
+    /**
+     * Total number of retries.
+     */
+    const TOTAL_RETRY_TIMES = 10;
+
+    /**
+     * Inner function to retry getting data from the background service.
+     *
+     * @param retryTimes {number} - number of retries left
+     */
+    const innerRetry = async (retryTimes) => {
+        if (retryTimes === 0) {
+            Log.error('Failed to get options data from the background service');
+            return null;
+        }
+        try {
+            const data = await messenger.getOptionsData();
+            if (!data) {
+                await sleep(RETRY_DELAY_MS);
+                return innerRetry(retryTimes - 1);
+            }
+            return data;
+        } catch (e) {
+            Log.error(e);
+            await sleep(RETRY_DELAY_MS);
+            return innerRetry(retryTimes - 1);
+        }
+    };
+
+    return innerRetry(TOTAL_RETRY_TIMES);
+};
+
 class SettingsStore {
     KEYS = {
         ALLOW_ACCEPTABLE_ADS: 'allowAcceptableAds',
@@ -148,7 +193,14 @@ class SettingsStore {
             return;
         }
 
-        const data = await messenger.getOptionsData();
+        let data = null;
+        if (firstRender) {
+            // on first render background service might not be ready to provide data, so we need to get it with retry
+            data = await getOptionsDataWithRetry();
+        } else {
+            data = await messenger.getOptionsData();
+        }
+
         runInAction(() => {
             this.settings = data.settings;
             // on first render we sort filters to show enabled on the top

@@ -36,8 +36,10 @@ export const bundleRunner = (webpackConfig, watch = false) => {
             followSymlinks: true,
             poll: {
                 aggregateTimeout: 300,
-                // This will ignore everything in node_modules except @adguard
-                ignored: /node_modules(?!\/@adguard)/,
+                // This will exclude everything in node_modules except for @adguard, build,
+                // and _locales (the latter unexpectedly triggers even though it is not changing, which could be a bug
+                // in webpack).
+                ignored: /(node_modules(?!\/@adguard)|build|_locales)/,
             },
         }, cb)
         : (cb) => compiler.run(cb);
