@@ -464,8 +464,12 @@ export class PagesApi {
             stealthOptionsEntries.push([queryKey, option]);
         });
 
-        // TODO: Check, maybe obsoleted because we don't have option 'strip url'
-        // in the Stealth Mode options.
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721
+        const isBlockTrackersEnabled = filterIds.includes(AntiBannerFiltersId.TrackingFilterId);
+        if (isBlockTrackersEnabled) {
+            stealthOptionsEntries.push(['stealth.block_trackers', 'true']);
+        }
+
         const isRemoveUrlParamsEnabled = filterIds.includes(AntiBannerFiltersId.UrlTrackingFilterId);
         if (isRemoveUrlParamsEnabled) {
             stealthOptionsEntries.push(['stealth.strip_url', 'true']);
