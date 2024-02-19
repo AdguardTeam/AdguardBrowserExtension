@@ -7,12 +7,14 @@ import * as idb from 'idb';
 import { StorageInterface } from '../../common/storage';
 
 const DEFAULT_STORE_NAME = 'defaultStore';
+// FIXME find better name
+const DEFAULT_IDB_NAME = 'defaultIDBName';
 
 /**
  * Provides a storage mechanism using IndexedDB. This class implements the
  * StorageInterface with asynchronous methods to interact with the database.
  */
-export class IdbStorage implements StorageInterface<string, unknown, 'async'> {
+export class IDBStorage implements StorageInterface<string, unknown, 'async'> {
     /**
      * Holds the instance of the IndexedDB database.
      *
@@ -25,7 +27,6 @@ export class IdbStorage implements StorageInterface<string, unknown, 'async'> {
      * The name of the database.
      *
      * @private
-     * @type {string}
      */
     private name: string;
 
@@ -33,7 +34,6 @@ export class IdbStorage implements StorageInterface<string, unknown, 'async'> {
      * The version of the database. Used for upgrades.
      *
      * @private
-     * @type {number}
      */
     private version: number;
 
@@ -41,18 +41,17 @@ export class IdbStorage implements StorageInterface<string, unknown, 'async'> {
      * The name of the store within the database.
      *
      * @private
-     * @type {string}
      */
     private store: string;
 
     /**
-     * Constructs an instance of the IdbStorage class.
+     * Constructs an instance of the IDBStorage class.
      *
-     * @param {string} name The name of the database.
-     * @param {number} [version=1] The version of the database.
-     * @param {string} [store=DEFAULT_STORE_NAME] The name of the store.
+     * @param name The name of the database.
+     * @param [version=1] The version of the database.
+     * @param [store=DEFAULT_STORE_NAME] The name of the store.
      */
-    constructor(name: string, version = 1, store = DEFAULT_STORE_NAME) {
+    constructor(name = DEFAULT_IDB_NAME, version = 1, store = DEFAULT_STORE_NAME) {
         this.name = name;
         this.version = version;
         this.store = store;
@@ -63,7 +62,7 @@ export class IdbStorage implements StorageInterface<string, unknown, 'async'> {
      * is not already opened, it opens the database.
      *
      * @private
-     * @returns {Promise<idb.IDBPDatabase>} The opened database instance.
+     * @returns The opened database instance.
      */
     private async getOpenedDb(): Promise<idb.IDBPDatabase> {
         if (!this.db) {
@@ -75,8 +74,8 @@ export class IdbStorage implements StorageInterface<string, unknown, 'async'> {
     /**
      * Retrieves a value by key from the store.
      *
-     * @param {string} key The key of the value to retrieve.
-     * @returns {Promise<unknown>} The value associated with the key.
+     * @param key The key of the value to retrieve.
+     * @returns The value associated with the key.
      */
     public async get(key: string): Promise<unknown> {
         const db = await this.getOpenedDb();
@@ -86,23 +85,21 @@ export class IdbStorage implements StorageInterface<string, unknown, 'async'> {
     /**
      * Sets a value in the store with the specified key.
      *
-     * @param {string} key The key under which to store the value.
-     * @param {unknown} value The value to store.
-     * @returns {Promise<void>}
+     * @param key The key under which to store the value.
+     * @param value The value to store.
      */
     public async set(key: string, value: unknown): Promise<void> {
         const db = await this.getOpenedDb();
-        db.put(this.store, value, key);
+        await db.put(this.store, value, key);
     }
 
     /**
      * Removes a value from the store by key.
      *
-     * @param {string} key The key of the value to remove.
-     * @returns {Promise<void>}
+     * @param key The key of the value to remove.
      */
     public async remove(key: string): Promise<void> {
         const db = await this.getOpenedDb();
-        db.delete(this.store, key);
+        await db.delete(this.store, key);
     }
 }
