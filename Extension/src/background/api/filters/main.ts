@@ -43,6 +43,7 @@ import {
     groupStateStorageDataValidator,
 } from '../../schema';
 import { network } from '../network';
+import { getErrorMessage } from '../../../common/error';
 
 import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
@@ -222,7 +223,13 @@ export class FiltersApi {
         // Ignore custom filters
         const commonFilters = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
 
-        await FiltersApi.loadMetadata(true);
+        try {
+            await FiltersApi.loadMetadata(true);
+        } catch (e) {
+            // No need to throw an error here,
+            // because we can still load filters using the old metadata.
+            Log.error('Cannot load metadata due to: ', getErrorMessage(e));
+        }
 
         const tasks = commonFilters.map(
             (id) => CommonFilterApi.loadFilterRulesFromBackend(
