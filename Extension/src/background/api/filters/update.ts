@@ -25,6 +25,7 @@ import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { Log } from '../../../common/log';
 import { FiltersUpdateTime } from '../../../common/constants';
 import { Engine } from '../../engine';
+import { getErrorMessage } from '../../../common/error';
 
 import { FilterMetadata, FiltersApi } from './main';
 import { CustomFilterApi } from './custom';
@@ -204,7 +205,13 @@ export class FilterUpdateApi {
         });
 
         if (shouldLoadMetadata) {
-            await FiltersApi.loadMetadata(true);
+            try {
+                await FiltersApi.loadMetadata(true);
+            } catch (e) {
+                // No need to throw an error here,
+                // because we can still load filters using the old metadata.
+                Log.error('Failed to load metadata due to an error:', getErrorMessage(e));
+            }
         }
 
         const updatedFiltersMetadata: FilterMetadata[] = [];
