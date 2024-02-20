@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applying of `$all` modifier rules [#2620](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620).
 - Settings fail to open on the very first attempt [#2712](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712)
 - All groups and filters are disabled after installation [#2713](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2713)
+- Custom filter adding modal
+  [#2715](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2715)
 - Send `stealth.block_trackers` during issues reporting
   [#2721](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721)
 

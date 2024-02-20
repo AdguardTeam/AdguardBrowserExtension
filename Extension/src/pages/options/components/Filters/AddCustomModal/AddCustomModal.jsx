@@ -45,7 +45,6 @@ const customStyles = {
     },
     content: {
         border: 0,
-        width: '560px',
         height: 'auto',
         position: 'relative',
         top: 0,
@@ -193,6 +192,8 @@ const AddCustomModal = ({
             name, description, version, rulesCount, homepage, customUrl,
         } = filterToAdd;
 
+        const filterTitle = name || filterToAddName || customUrlToAdd;
+
         return (
             <ModalContentWrapper
                 closeModalHandler={closeModal}
@@ -207,7 +208,8 @@ const AddCustomModal = ({
                             type="text"
                             placeholder={reactTranslator.getMessage('options_popup_title_placeholder')}
                             onChange={handleChangeFilterName}
-                            defaultValue={name || filterToAddName || customUrlToAdd}
+                            title={filterTitle}
+                            defaultValue={filterTitle}
                         />
                     </div>
                     <div className="modal__row">
