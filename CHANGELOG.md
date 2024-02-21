@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2715](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2715)
 - Send `stealth.block_trackers` during issues reporting
   [#2721](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721)
+- Update recommended filters on enabling group of filters and on locale detection [#2714](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714)
 
 ## [4.3.14] - 2024-06-02
 
