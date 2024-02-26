@@ -90,13 +90,10 @@ export class FiltersApi {
      * The metadata cannot be loaded individually because the all metadata needs
      * to be updated in order to, for example, update translations or track
      * the removal/addition of filters.
-     *
-     * @param remote Whether to download metadata from remote resources or from
-     * local resources.
      */
-    public static async loadMetadata(remote: boolean): Promise<void> {
-        await FiltersApi.loadI18nMetadataFromBackend(remote);
-        await FiltersApi.loadMetadataFromFromBackend(remote);
+    public static async updateMetadata(): Promise<void> {
+        await FiltersApi.loadI18nMetadataFromBackend(true);
+        await FiltersApi.loadMetadataFromFromBackend(true);
 
         FiltersApi.loadFilteringStates();
 
@@ -148,28 +145,36 @@ export class FiltersApi {
     }
 
     /**
-     * Update metadata from external source and download rules for not installed
-     * (not added to the browser storage) filters.
+     * Update metadata from local or remote source and download rules for filters.
      *
      * @param filterIds Filter ids to load.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
      */
-    public static async loadFilters(filterIds: number[], remote: boolean): Promise<void> {
-        // Ignore loaded filters
-        // Custom filters always have loaded state, so we don't need additional check
-        const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
-
-        if (unloadedFiltersIds.length === 0) {
+    private static async loadFilters(filterIds: number[], remote: boolean): Promise<void> {
+        if (filterIds.length === 0) {
             return;
         }
 
-        await FiltersApi.loadMetadata(remote);
+        if (remote) {
+            try {
+                await FiltersApi.updateMetadata();
+            } catch (e) {
+                // No need to throw an error here,
+                // because we can still load filters using the old metadata.
+                Log.error('Failed to update metadata due to an error:', getErrorMessage(e));
+            }
+        }
 
-        const tasks = unloadedFiltersIds.map(
-            // force here to get filters without patches
-            (id) => CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, remote),
-        );
+        const tasks = filterIds.map(async (filterId) => {
+            try {
+                // force here to get filters without patches
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, force: true }, remote);
+            } catch (e) {
+                // Try to load filters from local copy.
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, force: false }, false);
+            }
+        });
         const promises = await Promise.allSettled(tasks);
 
         // Handles errors
@@ -187,9 +192,19 @@ export class FiltersApi {
      * @param filterIds Filter ids.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
+     * @param enableGroups Should enable groups that were not touched by users
+     * or by code.
      */
-    public static async loadAndEnableFilters(filterIds: number[], remote = false): Promise<void> {
-        await FiltersApi.loadFilters(filterIds, remote);
+    public static async loadAndEnableFilters(
+        filterIds: number[],
+        remote = false,
+        enableGroups = false,
+    ): Promise<void> {
+        // Ignore loaded filters
+        // Custom filters always have loaded state, so we don't need additional check
+        const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
+
+        await FiltersApi.loadFilters(unloadedFiltersIds, remote);
 
         filterStateStorage.enableFilters(filterIds);
 
@@ -199,8 +214,10 @@ export class FiltersApi {
             await FilterUpdateApi.checkForFiltersUpdates(filterIds);
         }
 
-        // we enable filters groups if it was never enabled or disabled early
-        FiltersApi.enableGroupsWereNotTouched(filterIds);
+        if (enableGroups) {
+            // we enable filters groups if it was never enabled or disabled early
+            FiltersApi.enableGroupsWereNotTouched(filterIds);
+        }
     }
 
     /**
@@ -221,32 +238,9 @@ export class FiltersApi {
         const filterIds = FiltersApi.getEnabledFilters();
 
         // Ignore custom filters
-        const commonFilters = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
+        const commonFiltersIds = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
 
-        try {
-            await FiltersApi.loadMetadata(true);
-        } catch (e) {
-            // No need to throw an error here,
-            // because we can still load filters using the old metadata.
-            Log.error('Cannot load metadata due to: ', getErrorMessage(e));
-        }
-
-        const tasks = commonFilters.map(
-            (id) => CommonFilterApi.loadFilterRulesFromBackend(
-                // 'force' is 'true' here, because when we switch to optimized filters or back, we need to
-                // update all filters.
-                { filterId: id, force: true },
-                true,
-            ),
-        );
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                Log.error('Cannot load filter rules due to: ', promise.reason);
-            }
-        });
+        await FiltersApi.loadFilters(commonFiltersIds, true);
 
         filterStateStorage.enableFilters(filterIds);
     }
@@ -378,6 +372,7 @@ export class FiltersApi {
     /**
      * Read stringified i18n metadata from settings storage.
      * If data is not exist, load it from local assets.
+     * If data is exist, update cache version to faster read.
      */
     private static async initI18nMetadata(): Promise<void> {
         const storageData = i18nMetadataStorage.read();
@@ -400,6 +395,7 @@ export class FiltersApi {
     /**
      * Read stringified metadata from settings storage.
      * If data is not exist, load it from local assets.
+     * If data is exist, update cache version to faster read.
      */
     private static async initMetadata(): Promise<void> {
         const storageData = metadataStorage.read();
