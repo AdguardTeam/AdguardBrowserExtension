@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Check diff updates once in a hour.
-- Updated `@adguard/tswebextension` to [v1.0.14](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
+- Updated `@adguard/tswebextension` to [v1.0.15](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
 - Updated `@adguard/tsurlfilter` to [v2.2.14](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
 - Updated `@adguard/scriptlets` to [v1.10.1](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md).
 
@@ -22,7 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#2715](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2715)
 - Send `stealth.block_trackers` during issues reporting
   [#2721](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721)
-- Update recommended filters on enabling group of filters and on locale detection [#2714](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714)
+- `$popup` modifier block other types of resources
+  [#2723](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2723)
+- Update recommended filters on enabling group of filters and on locale detection
+  [#2714](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714)
 
 ## [4.3.14] - 2024-06-02
 
