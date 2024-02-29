@@ -170,9 +170,7 @@ export class FilterUpdateApi {
         // Updates last check time of all installed and enabled filters,
         // which where updated with force
         filterVersionStorage.refreshLastCheckTime(
-            filterUpdateDetailsToUpdate
-                .filter(filterUpdateDetail => filterUpdateDetail.force)
-                .map(({ filterId }) => filterId),
+            filterUpdateDetailsToUpdate.map(({ filterId }) => filterId),
         );
 
         // If some filters were updated, then it is time to update the engine.
