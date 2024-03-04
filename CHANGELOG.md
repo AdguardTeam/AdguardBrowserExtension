@@ -9,23 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Check diff updates once in a hour.
-- Updated `@adguard/tswebextension` to [v1.0.15](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md).
-- Updated `@adguard/tsurlfilter` to [v2.2.14](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md).
-- Updated `@adguard/scriptlets` to [v1.10.1](https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md).
+- Updated `@adguard/tswebextension` to [v1.0.16].
+- Updated `@adguard/tsurlfilter` to [v2.2.15].
+- Updated `@adguard/scriptlets` to [v1.10.1].
+
+[v1.0.16]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
+[v2.2.15]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md
+[v1.10.1]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
 
 ### Fixed
 - Memory leak with parsed tags from filter rules.
-- Applying of `$all` modifier rules [#2620](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620).
-- Settings fail to open on the very first attempt [#2712](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712)
-- All groups and filters are disabled after installation [#2713](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2713)
-- Custom filter adding modal
-  [#2715](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2715)
-- Send `stealth.block_trackers` during issues reporting
-  [#2721](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721)
-- `$popup` modifier block other types of resources
-  [#2723](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2723)
-- Update recommended filters on enabling group of filters and on locale detection
-  [#2714](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714)
+- Applying of `$all` modifier rules [#2620].
+- Settings fail to open on the very first attempt [#2712].
+- All groups and filters are disabled after installation [#2713].
+- Custom filter adding modal [#2715].
+- Send `stealth.block_trackers` during issues reporting [#2721].
+- `$popup` modifier block other types of resources [#2723].
+- `$popup` should not disable simple blocking rule [#2728].
+- Update recommended filters on enabling group of filters and on locale detection [#2714].
+
+[#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
+[#2712]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712
+[#2713]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2713
+[#2714]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714
+[#2715]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2715
+[#2721]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721
+[#2723]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2723
+[#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 
 ## [4.3.14] - 2024-06-02
 
