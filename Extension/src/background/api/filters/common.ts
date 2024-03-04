@@ -192,6 +192,7 @@ export class CommonFilterApi {
             expires: nextExpires,
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: nextLastCheckTime,
+            lastScheduledCheckTime: filterVersion?.lastScheduledCheckTime || Date.now(),
         });
 
         return filterMetadata;

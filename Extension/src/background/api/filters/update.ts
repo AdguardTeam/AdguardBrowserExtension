@@ -113,7 +113,7 @@ export class FilterUpdateApi {
      * @param forceUpdate Is it a force manual check by user action or first run
      * or not.
      */
-    public static async autoUpdateFilters(forceUpdate: boolean = false): Promise<FilterMetadata[]> {
+    public static async autoUpdateFilters(forceUpdate = false): Promise<FilterMetadata[]> {
         const startUpdateLogMessage = forceUpdate
             ? 'Update filters forced by user.'
             : 'Update filters by scheduler.';
@@ -167,10 +167,9 @@ export class FilterUpdateApi {
 
         const updatedFilters = await FilterUpdateApi.updateFilters(filterUpdateDetailsToUpdate);
 
-        // Updates last check time of all installed and enabled filters,
-        // which where updated with force
         filterVersionStorage.refreshLastCheckTime(
             filterUpdateDetailsToUpdate.map(({ filterId }) => filterId),
+            !forceUpdate,
         );
 
         // If some filters were updated, then it is time to update the engine.

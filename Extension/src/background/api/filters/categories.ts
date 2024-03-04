@@ -294,12 +294,14 @@ export class Categories {
                 // Sometimes filter version data might be missing https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
                 // so we set it to values from metadata
                 Log.info(`Cannot find filter ${filterMetadata.filterId} version data, restoring it from metadata`);
+                const dayAgoMs = Date.now() - 1000 * 60 * 60 * 24; // 24 hours
                 filterVersion = {
                     version: filterMetadata.version,
                     expires: filterMetadata.expires,
                     lastUpdateTime: (new Date(filterMetadata.timeUpdated)).getTime(),
                     // this is set in the past to force update check
-                    lastCheckTime: Date.now() - 1000 * 60 * 60 * 24, // 24 hours
+                    lastCheckTime: dayAgoMs,
+                    lastScheduledCheckTime: dayAgoMs,
                     diffPath: filterMetadata.diffPath,
                 };
                 filterVersionStorage.set(filterMetadata.filterId, filterVersion);

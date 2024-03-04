@@ -88,9 +88,10 @@ export class FilterVersionStorage extends StringStorage<
      * Update last check time stamp for specified filters with current time.
      *
      * @param filterIds List of filter ids.
+     * @param forceUpdate If true, last check time will be updated, otherwise last scheduled check time will be updated.
      * @throws Error if filter version data is not initialized.
      */
-    public refreshLastCheckTime(filterIds: number[]): void {
+    public refreshLastCheckTime(filterIds: number[], forceUpdate = false): void {
         if (!this.data) {
             throw FilterVersionStorage.createNotInitializedError();
         }
@@ -106,8 +107,14 @@ export class FilterVersionStorage extends StringStorage<
 
             const data = this.data[filterId];
 
-            if (data) {
+            if (!data) {
+                continue;
+            }
+
+            if (forceUpdate) {
                 data.lastCheckTime = now;
+            } else {
+                data.lastScheduledCheckTime = now;
             }
         }
 
@@ -139,6 +146,7 @@ export class FilterVersionStorage extends StringStorage<
                     expires,
                     lastUpdateTime: new Date(timeUpdated).getTime(),
                     lastCheckTime: Date.now(),
+                    lastScheduledCheckTime: Date.now(),
                 };
             }
         });
