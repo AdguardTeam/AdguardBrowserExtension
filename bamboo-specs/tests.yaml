@@ -35,11 +35,27 @@ Test:
 
             # don't use --ignore-optional flag, because esbuild requires optional deps 
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
+            
             yarn lint --max-warnings=0
             yarn check-types
             yarn test
             yarn dev
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
             rm -rf node_modules
+            echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
       location: build/dev
