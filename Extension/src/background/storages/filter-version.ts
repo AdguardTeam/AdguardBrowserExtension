@@ -22,6 +22,7 @@ import {
     FilterVersionData,
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
+import { Log } from '../../common/log';
 
 import { settingsStorage } from './settings';
 
@@ -108,6 +109,7 @@ export class FilterVersionStorage extends StringStorage<
             const data = this.data[filterId];
 
             if (!data) {
+                Log.warn(`Failed to refresh last check time for filter ${filterId}.`);
                 continue;
             }
 
