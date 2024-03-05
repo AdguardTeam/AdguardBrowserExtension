@@ -369,7 +369,10 @@ class SettingsStore {
     @computed
     get latestCheckTime() {
         return Math.max(...this.filters
-            .map((filter) => Math.max(filter.lastScheduledCheckTime, filter.lastCheckTime)));
+            .map(({ lastScheduledCheckTime, lastCheckTime }) => Math.max(
+                lastScheduledCheckTime || 0,
+                lastCheckTime || 0,
+            )));
     }
 
     @action
