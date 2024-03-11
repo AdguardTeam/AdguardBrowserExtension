@@ -32,6 +32,9 @@ import {
 
 import { promoNotificationApi } from './promo-notification';
 
+// Variable passed from webpack that will be primitive at runtime.
+declare const IS_RELEASE: boolean;
+
 enum StylesAssetsPath {
     AlertPopup = '/assets/css/alert-popup.css',
     AlertContainer = '/assets/css/alert-container.css',
@@ -205,7 +208,7 @@ export class Toasts {
                         ),
                         description: Toasts.getUpdateDescriptionMessage(currentVersion, previousVersion),
                         changelogHref: Forward.get({
-                            action: ForwardAction.GithubVersion,
+                            action: IS_RELEASE ? ForwardAction.GithubVersion : ForwardAction.GithubVersionBeta,
                             from: ForwardFrom.VersionPopup,
                         }),
                         changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
