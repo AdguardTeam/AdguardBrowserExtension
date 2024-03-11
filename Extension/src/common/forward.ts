@@ -50,6 +50,7 @@ export const enum ForwardAction {
     IOS = 'ios_about',
     Android = 'android_about',
     GithubVersion = 'github_version_popup',
+    GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',
     Christmas23 = 'christmas_23',
 }
