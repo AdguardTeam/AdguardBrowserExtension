@@ -359,6 +359,44 @@ export class SettingsApi {
     }
 
     /**
+     * Loads built-in filters and enables them.
+     * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
+     *
+     * @param builtInFilters Array of built-in filters ids.
+     * @private
+     */
+    private static async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
+        const tasks = builtInFilters
+            .map(async (filterId: number) => {
+                try {
+                    await CommonFilterApi.loadFilterRulesFromBackend({
+                        filterId,
+                        force: true,
+                    }, true);
+                } catch (e) {
+                    // eslint-disable-next-line max-len
+                    Log.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                    Log.debug('Trying to load from storage.');
+                    await CommonFilterApi.loadFilterRulesFromBackend({
+                        filterId,
+                        force: true,
+                    }, false);
+                }
+
+                filterStateStorage.enableFilters([filterId]);
+            });
+
+        const promises = await Promise.allSettled(tasks);
+
+        // Handles errors
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                Log.error(promise.reason);
+            }
+        });
+    }
+
+    /**
      * Imports filters settings from object of {@link FiltersConfig}.
      */
     private static async importFilters({
@@ -371,24 +409,8 @@ export class SettingsApi {
         await SettingsApi.importUserFilter(userFilter);
         SettingsApi.importAllowlist(allowlist);
 
-        const tasks = enabledFilters
-            .filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId))
-            .map(async (filterId: number) => {
-                await CommonFilterApi.loadFilterRulesFromBackend({
-                    filterId,
-                    force: false,
-                }, false);
-                filterStateStorage.enableFilters([filterId]);
-            });
-
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                Log.error(promise.reason);
-            }
-        });
+        const builtInFilters = enabledFilters.filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId));
+        await SettingsApi.loadBuiltInFilters(builtInFilters);
 
         await CustomFilterApi.createFilters(customFilters);
 
