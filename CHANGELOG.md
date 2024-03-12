@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Update notification leading to release notes when on beta [#2682].
+- The filters revert to the pre-installed ones when importing settings [#2735].
 
 [#2682]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2682
+[#2735]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2735
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.31...HEAD
 
