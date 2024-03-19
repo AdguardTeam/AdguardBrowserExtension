@@ -174,17 +174,46 @@ export class PromoNotificationApi {
     }
 
     /**
+     * Handles Spanish locale codes:
+     * - for non-Spanish locales, returns the same code;
+     * - for Latin American Spanish, e.g. 'es_mx', returns 'es_419';
+     * - for Spain Spanish, e.g. 'es_es', returns 'es'.
+     *
+     * @param normalizedLocale Normalized locale code.
+     *
+     * @returns Normalized locale code.
+     */
+    private static handleSpanishLocale(normalizedLocale: string): string {
+        const GENERAL_SPANISH_NORMALIZED_CODE = 'es';
+        const SPAIN_SPANISH_NORMALIZED_CODE = 'es_es';
+        const LATIN_AMERICAN_SPANISH_NORMALIZED_CODE = 'es_419';
+
+        if (!normalizedLocale.startsWith(GENERAL_SPANISH_NORMALIZED_CODE)) {
+            return normalizedLocale;
+        }
+
+        if (normalizedLocale === GENERAL_SPANISH_NORMALIZED_CODE
+            || normalizedLocale === SPAIN_SPANISH_NORMALIZED_CODE) {
+            return GENERAL_SPANISH_NORMALIZED_CODE;
+        }
+
+        return LATIN_AMERICAN_SPANISH_NORMALIZED_CODE;
+    }
+
+    /**
      * Scans notification locales and returns the one matching navigator.language.
      *
      * @param notification Notification object.
      * @returns {NotificationTextRecord | undefined} Matching notification text settings or undefined.
      */
     private static getNotificationText(notification: Notification): NotificationTextRecord | undefined {
-        const language = I18n.normalizeLanguageCode(browser.i18n.getUILanguage());
+        let language = I18n.normalizeLanguageCode(browser.i18n.getUILanguage());
 
         if (!language) {
             return;
         }
+
+        language = PromoNotificationApi.handleSpanishLocale(language);
 
         const languageCode = language.split('_')[0];
         if (!languageCode) {

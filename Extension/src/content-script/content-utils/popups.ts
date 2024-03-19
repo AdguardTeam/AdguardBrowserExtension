@@ -120,6 +120,7 @@ export class Popups {
         const {
             title,
             offer,
+            offerBgImage,
             description,
             isAdguardTab,
             changelogHref,
@@ -131,6 +132,10 @@ export class Popups {
             alertStyles,
             iframeStyles,
         } = data;
+
+        const offerStyle = offerBgImage
+            ? `background-image: url('${offerBgImage}')`
+            : '';
 
         /* eslint-disable max-len */
         const iframeHtml = `
@@ -151,7 +156,10 @@ export class Popups {
                         ${disableNotificationText}
                     </a>
                 </div>
-                <div class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}">
+                <div
+                    class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}"
+                    style="${offerStyle}"
+                >
                     <div class="adguard-update-popup__offer-close close-iframe set-notification-viewed"></div>
                     <div class="adguard-update-popup__offer-content">
                         <div class="adguard-update-popup__offer-title">
