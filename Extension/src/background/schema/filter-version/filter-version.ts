@@ -52,6 +52,9 @@ export const filterVersionDataValidator = zod.object({
      * @see {@link https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path | Specs}.
      */
     diffPath: zod.string().optional(),
+
+    // FIXME: add docs
+    shouldWaitFullUpdate: zod.boolean().optional(),
 });
 
 /**

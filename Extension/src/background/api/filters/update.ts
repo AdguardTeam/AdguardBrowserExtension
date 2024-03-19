@@ -144,10 +144,11 @@ export class FilterUpdateApi {
         // If not a force check - updates only outdated filters.
         if (!forceUpdate) {
             // Select filters with diff paths and mark them for no force update
-            const filtersWithDiffPath = FilterUpdateApi.selectFiltersWithDiffPath(filterUpdateDetailsToUpdate);
+            // FIXME: rename variable
+            const filtersWithDiffPath = FilterUpdateApi.selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate);
 
             // Select filters for a forced update and mark them accordingly
-            const expiredFilters = FilterUpdateApi.selectExpiredFilters(
+            const expiredFilters = FilterUpdateApi.selectFiltersToFullUpdate(
                 filterUpdateDetailsToUpdate,
                 updatePeriod,
             );
@@ -268,6 +269,7 @@ export class FilterUpdateApi {
         });
     }
 
+    // FIXME: update docs
     /**
      * Selects filters with diff path field.
      *
@@ -275,20 +277,26 @@ export class FilterUpdateApi {
      *
      * @returns List with filter update details, which have diff path.
      */
-    private static selectFiltersWithDiffPath(
+    private static selectFiltersToPatchUpdate(
         filterUpdateOptionsList: FilterUpdateOptionsList,
     ): FilterUpdateOptionsList {
         const filterVersions = filterVersionStorage.getData();
 
         return filterUpdateOptionsList
-            .filter(filterData => {
+            .filter((filterData) => {
                 const filterVersion = filterVersions[filterData.filterId];
                 // we do not check here expires, since @adguard/filters-downloader does it.
-                return filterVersion?.diffPath;
+                return filterVersion?.diffPath
+                    // filter may have diffPath but if patch update failed previously,
+                    // we should not try to update it with patches again to avoid continuous failures of patch requests
+                    // and wait until full update
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
+                    && !filterVersion?.shouldWaitFullUpdate;
             })
             .map(({ filterId }) => ({ filterId, force: false }));
     }
 
+    // FIXME: update docs
     /**
      * Selects outdated filters from the provided filter list, based on the
      * provided filter update period from the settings.
@@ -298,7 +306,7 @@ export class FilterUpdateApi {
      * @param updatePeriod Period of checking updates in ms.
      * @returns List of outdated filter ids.
      */
-    private static selectExpiredFilters(
+    private static selectFiltersToFullUpdate(
         filterUpdateOptionsList: FilterUpdateOptionsList,
         updatePeriod: number,
     ): FilterUpdateOptionsList {

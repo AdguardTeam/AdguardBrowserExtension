@@ -138,12 +138,28 @@ export class CommonFilterApi {
         const {
             filter,
             rawFilter,
+            isPatchUpdateFailed,
         } = await network.downloadFilterRules(
             filterUpdateOptions,
             forceRemote,
             isOptimized,
             oldRawFilter,
         );
+
+        // Unaccessible status may be returned during patch update
+        // so we consider it as a fatal error https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717.
+        // And if so we
+        // 1. do not update filter
+        // 2. set shouldWaitFullUpdate flag to true for the filter so it will be checked later
+        if (isPatchUpdateFailed) {
+            const filterVersionData = filterVersionStorage.get(filterUpdateOptions.filterId);
+            if (!filterVersionData) {
+                throw new Error(`Filter version data is not initialized for filter id ${filterUpdateOptions.filterId}`);
+            }
+            filterVersionData.shouldWaitFullUpdate = true;
+            filterVersionStorage.set(filterUpdateOptions.filterId, filterVersionData);
+            // FIXME: return here? if so, what should be returned?
+        }
 
         await FiltersStorage.set(filterUpdateOptions.filterId, filter);
         await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
