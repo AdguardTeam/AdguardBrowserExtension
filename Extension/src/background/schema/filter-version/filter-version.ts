@@ -53,7 +53,9 @@ export const filterVersionDataValidator = zod.object({
      */
     diffPath: zod.string().optional(),
 
-    // FIXME: add docs
+    /**
+     * FIXME: add docs
+     */
     shouldWaitFullUpdate: zod.boolean().optional(),
 });
 
