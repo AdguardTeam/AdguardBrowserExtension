@@ -451,6 +451,7 @@ export type ShowVersionUpdatedPopupMessage = {
     offerDesc: string,
     offerButtonText: string,
     offerButtonHref: string,
+    offerBgImage: string,
     disableNotificationText: string,
     alertStyles: string,
     iframeStyles: string,
