@@ -204,6 +204,7 @@ export class CommonFilterApi {
             ? filterVersion.lastCheckTime
             : Date.now();
 
+        // FIXME: Here version will be overrided and flag shouldWaitFullUpdate will be lost
         filterVersionStorage.set(filterUpdateOptions.filterId, {
             version,
             diffPath,
@@ -228,14 +229,14 @@ export class CommonFilterApi {
     public static async initDefaultFilters(enableUntouchedGroups: boolean): Promise<void> {
         const filterIds = [
             AntiBannerFiltersId.EnglishFilterId,
-            AntiBannerFiltersId.SearchAndSelfPromoFilterId,
+            // AntiBannerFiltersId.SearchAndSelfPromoFilterId,
         ];
 
         if (UserAgent.isAndroid) {
             filterIds.push(AntiBannerFiltersId.MobileAdsFilterId);
         }
 
-        filterIds.push(...CommonFilterApi.getLangSuitableFilters());
+        // filterIds.push(...CommonFilterApi.getLangSuitableFilters());
 
         // TODO: Move the use of FiltersApi.loadAndEnableFilters into a separate
         // module to reduce the risk of cyclic dependency, since FiltersApi

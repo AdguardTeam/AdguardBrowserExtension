@@ -84,7 +84,7 @@ export const FIREFOX_APP_IDS_MAP = {
 export const BUILD_PATH = path.resolve(__dirname, '../build');
 
 // filters constants
-export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
+export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'http://localhost:3000/extension/%browser';
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_METADATA_FILE_NAME}`;
 export const FILTERS_DEST = 'Extension/filters/%browser';
 export const METADATA_I18N_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_I18N_METADATA_FILE_NAME}`;

@@ -17,5 +17,7 @@
  */
 import { App } from './app';
 
-// initialize background services
-App.init();
+setTimeout(() => {
+    // initialize background services
+    App.init();
+}, 3000);

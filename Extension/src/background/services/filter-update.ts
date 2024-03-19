@@ -37,7 +37,7 @@ export class FilterUpdateService {
      * Checking period
      * That timer should check every specified period of time if it is time to update filters.
      */
-    private static readonly CHECK_PERIOD_MS = 1000 * 60 * 5; // 5 min
+    private static readonly CHECK_PERIOD_MS = 1000 * 10; // 10 seconds
 
     /**
      * Filter update period.
@@ -45,7 +45,7 @@ export class FilterUpdateService {
      * We set 1 hour because currently we generate patches for our filter once an hour and
      * for third-party filters once every 4 hours.
      */
-    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 60 * 60; // 1 hour
+    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 20; // 20 seconds
 
     /**
      * Stores scheduler timer id for checking update in every

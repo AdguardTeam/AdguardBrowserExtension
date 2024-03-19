@@ -59,7 +59,7 @@ export class FilterUpdateApi {
      * Timeout for recently checked (added, enabled or updated by the scheduler)
      * filters - 5 minutes.
      */
-    private static readonly RECENTLY_CHECKED_FILTER_TIMEOUT_MS = 1000 * 60 * 5;
+    private static readonly RECENTLY_CHECKED_FILTER_TIMEOUT_MS = 1000;
 
     /**
      * Filters the provided filter list with {@link selectFiltersIdsToUpdate},

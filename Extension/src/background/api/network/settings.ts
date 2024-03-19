@@ -54,13 +54,13 @@ export class NetworkSettings {
     // eslint-disable-next-line class-methods-use-this
     get filtersUrl(): string {
         if (UserAgent.isFirefox) {
-            return 'https://filters.adtidy.org/extension/firefox';
+            return 'http://localhost:3000/extension/firefox';
         } if (UserAgent.isEdge) {
-            return 'https://filters.adtidy.org/extension/edge';
+            return 'http://localhost:3000/extension/edge';
         } if (UserAgent.isOpera) {
-            return 'https://filters.adtidy.org/extension/opera';
+            return 'http://localhost:3000/extension/opera';
         }
-        return 'https://filters.adtidy.org/extension/chromium';
+        return 'http://localhost:3000/extension/chromium';
     }
 
     /**

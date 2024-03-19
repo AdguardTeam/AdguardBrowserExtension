@@ -117,7 +117,7 @@ export class FilterParser {
      * @returns Parsed value of 'Expires' header tag.
      */
     private static parseExpiresStr(str: string): number {
-        const regexp = /(\d+)\s+(day|hour)/;
+        const regexp = /(\d+)\s+(day|hour|minute)/;
 
         const parseRes = str.match(regexp);
 
@@ -136,6 +136,10 @@ export class FilterParser {
             }
             case 'hour': {
                 multiplier = 60 * 60;
+                break;
+            }
+            case 'minute': {
+                multiplier = 60;
                 break;
             }
             default: {

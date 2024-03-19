@@ -23,7 +23,7 @@ import { findDangerousRules } from './resources/dangerous-rules';
 const resources = async () => {
     await downloadFilters();
     await updateLocalScriptRules();
-    await findDangerousRules();
+    // await findDangerousRules();
 };
 
 (async () => {
