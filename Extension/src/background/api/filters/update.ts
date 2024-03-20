@@ -144,17 +144,16 @@ export class FilterUpdateApi {
         // If not a force check - updates only outdated filters.
         if (!forceUpdate) {
             // Select filters with diff paths and mark them for no force update
-            // FIXME: rename variable
-            const filtersWithDiffPath = FilterUpdateApi.selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate);
+            const filtersToPatchUpdate = FilterUpdateApi.selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate);
 
             // Select filters for a forced update and mark them accordingly
-            const expiredFilters = FilterUpdateApi.selectFiltersToFullUpdate(
+            const filtersToFullUpdate = FilterUpdateApi.selectFiltersToFullUpdate(
                 filterUpdateDetailsToUpdate,
                 updatePeriod,
             );
 
             // Combine both arrays
-            const combinedFilters = [...filtersWithDiffPath, ...expiredFilters];
+            const combinedFilters = [...filtersToPatchUpdate, ...filtersToFullUpdate];
 
             const uniqueFiltersMap = new Map();
 
@@ -269,9 +268,10 @@ export class FilterUpdateApi {
         });
     }
 
-    // FIXME: update docs
     /**
-     * Selects filters with diff path field.
+     * Selects filters to update with patches. Such filters should
+     * 1. Have `diffPath`
+     * 2. Not have `shouldWaitFullUpdate` flag which means that patch update failed previously.
      *
      * @param filterUpdateOptionsList Filter update details.
      *
@@ -296,14 +296,13 @@ export class FilterUpdateApi {
             .map(({ filterId }) => ({ filterId, force: false }));
     }
 
-    // FIXME: update docs
     /**
-     * Selects outdated filters from the provided filter list, based on the
-     * provided filter update period from the settings.
+     * Selects outdated filters from the provided filter list for a full update.
+     * The selecting is based on the provided filter update period from the settings.
      *
      * @param filterUpdateOptionsList List of filter update details.
-     *
      * @param updatePeriod Period of checking updates in ms.
+     *
      * @returns List of outdated filter ids.
      */
     private static selectFiltersToFullUpdate(
