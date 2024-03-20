@@ -204,6 +204,7 @@ export class CommonFilterApi {
             ? filterVersion.lastCheckTime
             : Date.now();
 
+        // FIXME: Here version will be overridden and flag shouldWaitFullUpdate will be lost
         filterVersionStorage.set(filterUpdateOptions.filterId, {
             version,
             diffPath,
