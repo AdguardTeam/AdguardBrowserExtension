@@ -17,7 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/log';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { notificationTextRecordValidator } from '../../schema';
@@ -78,7 +78,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                Log.warn('Reached max tries on attempts to show alert popup');
+                logger.warn('Reached max tries on attempts to show alert popup');
                 return;
             }
 
@@ -87,7 +87,7 @@ export class Toasts {
             const alertContainerStyles = this.styles.get(StylesAssetsPath.AlertContainer);
 
             if (!alertStyles || !alertContainerStyles) {
-                Log.error('Alert assets is not loaded!');
+                logger.error('Alert assets is not loaded!');
                 return;
             }
 
@@ -188,7 +188,7 @@ export class Toasts {
                     const svgStr = await response.text();
                     offerBgImage = `data:image/svg+xml;base64,${window.btoa(svgStr)}`;
                 } catch (e) {
-                    Log.warn('Failed to load promo notification background image', e);
+                    logger.warn('Failed to load promo notification background image', e);
                 }
             }
         }
@@ -196,7 +196,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                Log.warn('Reached max tries on attempts to show application update popup');
+                logger.warn('Reached max tries on attempts to show application update popup');
                 return;
             }
 
@@ -205,7 +205,7 @@ export class Toasts {
             const iframeStyles = this.styles.get(StylesAssetsPath.UpdateContainer);
 
             if (!alertStyles || !iframeStyles) {
-                Log.error('Update popup assets is not loaded!');
+                logger.error('Update popup assets is not loaded!');
                 return;
             }
 

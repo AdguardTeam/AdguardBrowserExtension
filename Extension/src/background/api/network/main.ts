@@ -33,7 +33,7 @@ import {
     localScriptRulesValidator,
 } from '../../schema';
 import type { FilterUpdateOptions } from '../filters';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/log';
 import { NEWLINE_CHAR_UNIX } from '../../../common/constants';
 
 import { NetworkSettings } from './settings';
@@ -101,7 +101,7 @@ export class Network {
                 {
                     force: true,
                     definedExpressions: this.filterCompilerConditionsConstants,
-                    verbose: Log.isVerbose(),
+                    verbose: logger.isVerbose(),
                 },
             );
             return result;
@@ -112,7 +112,7 @@ export class Network {
             {
                 rawFilter: rawFilter.join(NEWLINE_CHAR_UNIX),
                 definedExpressions: this.filterCompilerConditionsConstants,
-                verbose: Log.isVerbose(),
+                verbose: logger.isVerbose(),
             },
         );
     }
@@ -143,7 +143,7 @@ export class Network {
                     definedExpressions: this.filterCompilerConditionsConstants,
                     force,
                     rawFilter,
-                    verbose: Log.isVerbose(),
+                    verbose: logger.isVerbose(),
                 },
             );
 

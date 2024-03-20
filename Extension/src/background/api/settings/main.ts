@@ -17,7 +17,7 @@
  */
 import type { SettingsConfig } from '@adguard/tswebextension';
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/log';
 import { defaultSettings } from '../../../common/settings';
 import {
     AllowlistConfig,
@@ -86,8 +86,8 @@ export class SettingsApi {
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
-            Log.error('Cannot init settings from storage: ', e);
-            Log.info('Reverting settings to default values');
+            logger.error('Cannot init settings from storage: ', e);
+            logger.info('Reverting settings to default values');
             const settings = { ...defaultSettings };
 
             // Update settings in the cache and in the storage
@@ -232,7 +232,7 @@ export class SettingsApi {
 
             return true;
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             return false;
         }
     }
@@ -375,8 +375,8 @@ export class SettingsApi {
                     }, true);
                 } catch (e) {
                     // eslint-disable-next-line max-len
-                    Log.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
-                    Log.debug('Trying to load from storage.');
+                    logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                    logger.debug('Trying to load from storage.');
                     await CommonFilterApi.loadFilterRulesFromBackend({
                         filterId,
                         force: true,
@@ -391,7 +391,7 @@ export class SettingsApi {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error(promise.reason);
+                logger.error(promise.reason);
             }
         });
     }
@@ -416,7 +416,7 @@ export class SettingsApi {
 
         groupStateStorage.enableGroups(enabledGroups);
 
-        Log.info(`Import filters: next groups were enabled: ${enabledGroups}`);
+        logger.info(`Import filters: next groups were enabled: ${enabledGroups}`);
 
         // Disable groups not listed in the imported list.
         const allGroups = groupStateStorage.getData();
