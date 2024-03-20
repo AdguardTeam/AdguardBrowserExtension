@@ -66,14 +66,21 @@ export const PromoNotification = observer(() => {
         openPromoNotificationUrl();
     };
 
-    const { title, btn } = promoNotification.text;
+    const { bgImage, text: { title, btn } } = promoNotification;
+
+    const promoStyle = {
+        backgroundImage: `url(${bgImage})`,
+    };
 
     const notificationClassnames = classnames('promo-notification', {
         'promo-notification--close': notificationOnClose,
     });
 
     return (
-        <div className={notificationClassnames}>
+        <div
+            className={notificationClassnames}
+            style={promoStyle}
+        >
             <button
                 aria-label="close"
                 type="button"
@@ -81,7 +88,7 @@ export const PromoNotification = observer(() => {
                 onClick={handleNotificationClose}
             >
                 <svg className="icon icon--button">
-                    <use xlinkHref="#cross-white" />
+                    <use xlinkHref="#cross-gray" />
                 </svg>
             </button>
             <div className="promo-notification__content">
