@@ -28,6 +28,12 @@ export type Notification = {
     from: string,
     to: string,
     type: string,
+
+    /**
+     * Path to the background image for the promo.
+     * May be needed for different promos for different locales at the same time.
+     */
+    bgImage: string,
     bgColor?: string,
     textColor?: string,
     badgeBgColor?: string,
@@ -35,199 +41,243 @@ export type Notification = {
     icons?: Record<string, Record<string, string>>,
 };
 
-const RU_LOCALE = 'ru';
+/**
+ * List of locales for the Spring promo, not the Easter one. AG-31141.
+ */
+const SPRING_PROMO_LOCALES = [
+    'ru',
+    'uk',
+    'ar',
+    'be',
+    'bg',
+    'el',
+    'sr',
+    'hi',
+    'hy',
+    'fa',
+    'he',
+    'ms',
+    'id',
+    'tr',
+    'th',
+    'vi',
+    'zh_cn',
+    'zh_tw',
+];
 
-const CHRISTMAS_23_ID = 'christmas23';
+const EASTER_24_ID = 'easter24';
 
-const christmas23Notification: Notification = {
-    id: CHRISTMAS_23_ID,
+let easter24Notification: Notification = {
+    id: EASTER_24_ID,
     locales: {
         en: {
-            title: 'Christmas at AdGuard',
-            btn: 'Unwrap',
+            title: 'Time to improve protection',
+            btn: 'Learn how',
         },
-        ru: {
-            title: 'Новый год в AdGuard',
-            btn: 'Что под ёлкой?',
-        },
-        ja: {
-            title: 'AdGuard Christmas キャンペーン',
-            btn: 'プレゼントはこちら',
-        },
+        // there is no promo for Japanese
+        // ja: {},
         ko: {
-            title: 'AdGuard 크리스마스 프로모션',
-            btn: '선물 찾기',
-        },
-        zh_cn: {
-            title: 'AdGuard Christmas',
-            btn: '有什么惊喜？',
-        },
-        zh_tw: {
-            title: 'AdGuard Christmas',
-            btn: '有什麼驚喜？',
+            title: '개인정보 보호 강화',
+            btn: '자세히 알아보기',
         },
         fr: {
-            title: 'Noël chez AdGuard',
-            btn: 'Venez voir',
+            title: 'Le moment de renouveler la protection',
+            btn: "Voir l'offre",
         },
         it: {
-            title: 'Natale ad AdGuard',
-            btn: 'Vieni a vedere',
+            title: 'Proteggiti online questa primavera',
+            btn: 'Vedere offerta',
         },
         de: {
-            title: 'Weihnachten bei AdGuard',
-            btn: 'Öffnen',
+            title: 'Frühling bedeutet Verbesserung',
+            btn: 'Schutz verbessern',
         },
         es: {
-            title: 'Navidad en AdGuard',
-            btn: 'Abrir',
-        },
-        pt_br: {
-            title: 'É Natal no AdGuard',
-            btn: 'Abrir',
-        },
-        pt_pt: {
-            title: 'É Natal no AdGuard',
-            btn: 'Abrir',
-        },
-        uk: {
-            title: 'Новий рік в AdGuard',
-            btn: 'Що під ялинкою?',
-        },
-        ar: {
-            title: 'تخفيضات العام الجديد',
-            btn: 'يفتح',
-        },
-        be: {
-            title: 'Новы год у AdGuard',
-            btn: 'Што пад ёлкай?',
-        },
-        bg: {
-            title: 'Нова година в AdGuard',
-            btn: 'Отворете',
-        },
-        ca: {
-            title: 'Nadal a AdGuard',
-            btn: 'Obert',
-        },
-        cs: {
-            title: 'Vánoce v AdGuardu',
-            btn: 'Otevřená',
-        },
-        da: {
-            title: 'Jul på AdGuard',
-            btn: 'Åben',
-        },
-        el: {
-            title: 'Πρωτοχρονιά στο AdGuard',
-            btn: 'Ανοιξε',
-        },
-        es_419: {
-            title: 'Navidad en AdGuard',
-            btn: 'Abre',
-        },
-        fa: {
-            title: 'AdGuard سال نو در',
-            btn: 'باز کن',
-        },
-        fi: {
-            title: 'Joulu AdGuardissa',
-            btn: 'Avaa',
-        },
-        he: {
-            title: 'קידום לשנה החדשה',
-            btn: 'לִפְתוֹחַ',
-        },
-        hr: {
-            title: 'Božić u AdGuardu',
-            btn: 'Otvoren',
-        },
-        hu: {
-            title: 'Új év az AdGuardban',
-            btn: 'Nyisd ki',
-        },
-        hy: {
-            title: 'Ամանորը AdGuard-ում',
-            btn: 'Բացել',
-        },
-        id: {
-            title: 'Tahun Baru di AdGuard',
-            btn: 'Membuka',
-        },
-        lt: {
-            title: 'Kalėdos AdGuard',
-            btn: 'Atviras',
-        },
-        ms: {
-            title: 'Tahun Baru dalam AdGuard',
-            btn: 'Buka',
-        },
-        nb: {
-            title: 'Nyttår i AdGuard',
-            btn: 'Åpen',
-        },
-        nl: {
-            title: 'Kerstmis in AdGuard',
-            btn: 'Open',
-        },
-        pl: {
-            title: 'Nowy Rok w AdGuard',
-            btn: 'Otwarty',
-        },
-        ro: {
-            title: 'Crăciun în AdGuard',
-            btn: 'Deschis',
-        },
-        sk: {
-            title: 'Vianoce v AdGuarde',
-            btn: 'Otvorený',
-        },
-        sl: {
-            title: 'Božič v AdGuardu',
-            btn: 'Odprt',
-        },
-        'sr-Latn': {
-            title: 'Božić u AdGuardu',
-            btn: 'Otvorite',
-        },
-        sv: {
-            title: 'Jul i AdGuard',
-            btn: 'Öppen',
-        },
-        tr: {
-            title: "AdGuard'da Yeni Yıl",
-            btn: 'Açık',
-        },
-        vi: {
-            title: 'Năm mới trong AdGuard',
-            btn: 'Mở',
-        },
-        hi: {
-            title: 'एडगार्ड में नया साल',
-            btn: 'खुला',
+            title: 'Es hora de protegerte',
+            btn: 'Descubre cómo',
         },
         et: {
-            title: 'Jõulud AdGuardis',
-            btn: 'Avatud',
+            title: 'Aeg kaitset parandada',
+            btn: 'Õpi kuidas',
         },
-        th: {
-            title: 'ปีใหม่ใน AdGuard',
-            btn: 'เปิด',
+        pt_br: {
+            title: 'É hora de se proteger',
+            btn: 'Descubra como',
+        },
+        pt_pt: {
+            title: 'É hora de se proteger',
+            btn: 'Descubra como',
+        },
+        ca: {
+            title: 'Millorar la protecció',
+            btn: 'Aprèn com',
+        },
+        cs: {
+            title: 'Čas zlepšit ochranu',
+            btn: 'Zjistěte jak',
+        },
+        da: {
+            title: 'Forbedre beskyttelsen',
+            btn: 'Lær hvordan',
+        },
+        es_419: {
+            title: 'Mejorar la protección',
+            btn: 'Aprender cómo',
+        },
+        fi: {
+            title: 'Paranna suojausta',
+            btn: 'Opi kuinka',
+        },
+        hr: {
+            title: 'Poboljšajte zaštitu',
+            btn: 'Nauči kako',
+        },
+        hu: {
+            title: 'Ideje javítani a védelmet',
+            btn: 'Hogyan?',
+        },
+        lt: {
+            title: 'Laikas pagerinti apsaugą',
+            btn: 'Išmokti kaip',
+        },
+        ms: {
+            title: 'Tingkatkan perlindungan anda',
+            btn: 'Ketahui caranya',
+        },
+        nb: {
+            title: 'Forbedre beskyttelsen',
+            btn: 'Lær hvordan',
+        },
+        nl: {
+            title: 'Verbeter de bescherming',
+            btn: 'Leren hoe',
+        },
+        pl: {
+            title: 'Czas poprawić ochronę',
+            btn: 'Naucz się jak',
+        },
+        ro: {
+            title: 'Îmbunătățiți protecția',
+            btn: 'Afla cum',
+        },
+        sk: {
+            title: 'Čas na zlepšenie ochrany',
+            btn: 'Zistite ako',
+        },
+        sl: {
+            title: 'Čas je za izboljšanje zaščite',
+            btn: 'Nauči se kako',
+        },
+        sv: {
+            title: 'Dags att förbättra skyddet',
+            btn: 'Lära sig hur',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Christmas23 }),
-    from: '22 December 2023 12:00:00',
-    to: '1 January 2024 23:59:00',
+    url: Forward.get({ action: ForwardAction.Easter24 }),
+    from: '28 March 2024 12:00:00',
+    to: '3 April 2024 23:59:00',
     type: 'animated',
+    bgImage: browser.runtime.getURL('assets/images/easter24.svg'),
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/christmas23-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/christmas23-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/easter24-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/easter24-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/christmas23-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/christmas23-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/easter24-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/easter24-off-38.png'),
+        },
+    },
+};
+
+/**
+ * Diff data for the Spring promo.
+ */
+const spring24NotificationUpdateDiff = {
+    locales: {
+        ar: {
+            title: 'حان الوقت لتحسين الحماية',
+            btn: 'تعلم كيف',
+        },
+        be: {
+            title: 'Час палепшыць абарону',
+            btn: 'Даведацца як',
+        },
+        bg: {
+            title: 'Подобрете защитата си',
+            btn: 'Разберете как',
+        },
+        el: {
+            title: 'Βελτιώστε την προστασία σας',
+            btn: 'Βρες πως',
+        },
+        fa: {
+            title: 'زمان بهبود دفاع شما است',
+            btn: 'دریابید که چگونه',
+        },
+        hi: {
+            title: 'अपनी सुरक्षा में सुधार करें',
+            btn: 'कैसे?',
+        },
+        he: {
+            title: 'שפר את ההגנה שלך',
+            btn: 'לברר איך',
+        },
+        hy: {
+            title: 'Պաշտպանեք ձեզ հինտերնետում',
+            btn: 'Պարզել, թե ինչպես',
+        },
+        id: {
+            title: 'Tingkatkan perlindungan anda',
+            btn: 'Cari tahu caranya',
+        },
+        ms: {
+            title: 'Tingkatkan perlindungan anda',
+            btn: 'Ketahui caranya',
+        },
+        ru: {
+            title: 'Весна — время улучшить защиту',
+            btn: 'Узнать как',
+        },
+        'sr-Latn': {
+            title: 'Poboljšajte zaštitu',
+            btn: 'Saznajte kako',
+        },
+        th: {
+            title: 'ปรับปรุงการป้องกัน',
+            btn: 'เรียนรู้วิธีการ',
+        },
+        tr: {
+            title: 'Savunmanızı geliştirme zamanı',
+            btn: 'Nasıl?',
+        },
+        uk: {
+            title: 'Час покращити захист',
+            btn: 'Дізнатись як',
+        },
+        vi: {
+            title: 'Cải thiện khả năng bảo vệ của bạn',
+            btn: 'Làm sao?',
+        },
+        zh_cn: {
+            title: '增强隐私保护',
+            btn: '了解更多',
+        },
+        zh_tw: {
+            title: '增強隱私保護',
+            btn: '了解更多',
+        },
+    },
+    bgImage: browser.runtime.getURL('assets/images/spring24.svg'),
+    icons: {
+        ICON_GREEN: {
+            '19': browser.runtime.getURL('assets/icons/spring24-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/spring24-on-38.png'),
+        },
+        ICON_GRAY: {
+            '19': browser.runtime.getURL('assets/icons/spring24-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/spring24-off-38.png'),
         },
     },
 };
@@ -239,15 +289,23 @@ const normalizeLanguage = (locale: string): string | null => {
     return locale.toLowerCase().replace('-', '_');
 };
 
+// possible values of browser lang: 'en', or 'en-US' which is 'en_us' after normalization
 const currentLocale = normalizeLanguage(browser.i18n.getUILanguage());
-// possible values of Prefs.language: 'ru', or 'ru-RU' which is 'ru_ru' after normalization
-if (currentLocale?.startsWith(RU_LOCALE)) {
-    christmas23Notification.to = '8 January 2024 23:59:00';
+
+const shouldShowSpring24Promo = currentLocale
+    && SPRING_PROMO_LOCALES.some((locale) => currentLocale.startsWith(locale));
+
+if (shouldShowSpring24Promo) {
+    easter24Notification = {
+        ...easter24Notification,
+        // update the notification data with the Spring promo data
+        ...spring24NotificationUpdateDiff,
+    };
 }
 
 /**
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [CHRISTMAS_23_ID, christmas23Notification],
+    [EASTER_24_ID, easter24Notification],
 ]);
