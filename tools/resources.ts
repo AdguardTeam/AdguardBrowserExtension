@@ -18,7 +18,7 @@
 
 import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRules } from './resources/update-local-script-rules';
-import { findDangerousRules } from './resources/dangerous-rules';
+// import { findDangerousRules } from './resources/dangerous-rules';
 
 const resources = async () => {
     await downloadFilters();
