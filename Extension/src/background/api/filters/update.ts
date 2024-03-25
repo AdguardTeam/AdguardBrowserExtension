@@ -143,13 +143,21 @@ export class FilterUpdateApi {
         // If not a force check - updates only outdated filters.
         if (!forceUpdate) {
             // Select filters with diff paths and mark them for no force update
-            const filtersWithDiffPath = FilterUpdateApi.selectFiltersWithDiffPath(filterUpdateDetailsToUpdate);
+            const filtersWithDiffPath = FilterUpdateApi
+                .selectFiltersWithDiffPath(filterUpdateDetailsToUpdate)
+                .map(filterData => ({ ...filterData, force: false }));
 
-            // Select filters for a forced update and mark them accordingly
+            /**
+             * Select filters for a forced update and mark them accordingly.
+             *
+             * Filters with diff path must be also full updated from time to time.
+             * Full update period for such full (forced) update is determined by FiltersUpdateTime,
+             * which is set in extension settings.
+             */
             const expiredFilters = FilterUpdateApi.selectExpiredFilters(
                 filterUpdateDetailsToUpdate,
                 updatePeriod,
-            );
+            ).map(filter => ({ ...filter, force: true }));
 
             // Combine both arrays
             const combinedFilters = [...filtersWithDiffPath, ...expiredFilters];
@@ -269,7 +277,7 @@ export class FilterUpdateApi {
             const filterVersion = filterVersions[filterData.filterId];
             // we do not check here expires, since @adguard/filters-downloader does it.
             return filterVersion?.diffPath;
-        }).map(filterData => ({ ...filterData, force: false }));
+        });
     }
 
     /**
@@ -306,7 +314,7 @@ export class FilterUpdateApi {
             // Check, if the renewal period of each filter has passed.
             // If it is time to check the renewal, add to the array.
             return lastCheckTime + updatePeriod <= Date.now();
-        }).map(filter => ({ ...filter, force: true }));
+        });
     }
 }
 
