@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2761]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
 
 <!-- TODO: add an actual date after github release -->
+## Unreleased
+
+### Fixed
+- Check filter checksum after it was downloaded [#2681].
+  [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
+
 ## [4.3.35]
 
 ### Fixed
