@@ -7,8 +7,7 @@ import * as idb from 'idb';
 import { StorageInterface } from '../../common/storage';
 
 const DEFAULT_STORE_NAME = 'defaultStore';
-// FIXME find better name
-const DEFAULT_IDB_NAME = 'defaultIDBName';
+const DEFAULT_IDB_NAME = 'adguardIDB';
 
 /**
  * Provides a storage mechanism using IndexedDB. This class implements the
@@ -19,7 +18,6 @@ export class IDBStorage implements StorageInterface<string, unknown, 'async'> {
      * Holds the instance of the IndexedDB database.
      *
      * @private
-     * @type {(idb.IDBPDatabase | null)}
      */
     private db: idb.IDBPDatabase | null = null;
 
