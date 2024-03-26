@@ -93,10 +93,17 @@ const getUrlsOfFiltersResources = (browser) => {
  */
 const normalizeResponse = (response) => {
     const partOfResponse = response.substring(0, 200);
-    response = response.replace(partOfResponse.match(CHECKSUM_PATTERN)[0], '');
+    const match = partOfResponse.match(CHECKSUM_PATTERN);
+    if (match) {
+        response = response.replace(match[0], '');
+    }
     response = response.replace(/\r/g, '');
     response = response.replace(/\n+/g, '\n');
     return response;
+};
+
+export const calculateChecksum = (body) => {
+    return crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
 };
 
 /**
@@ -115,7 +122,7 @@ const validateChecksum = (url, body) => {
         cliLog.error(`Filter rules from ${url.url} doesn't contain a checksum ${partOfResponse}`);
     }
 
-    const bodyChecksum = crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
+    const bodyChecksum = calculateChecksum(body);
 
     if (bodyChecksum !== checksumMatch[1]) {
         cliLog.error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);

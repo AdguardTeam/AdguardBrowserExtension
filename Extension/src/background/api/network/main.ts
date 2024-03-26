@@ -102,6 +102,9 @@ export class Network {
                     force: true,
                     definedExpressions: this.filterCompilerConditionsConstants,
                     verbose: Log.isVerbose(),
+                    validateChecksum: true,
+                    // use true because we know that our filters have checksums
+                    validateChecksumStrict: true,
                 },
             );
             return result;
@@ -113,12 +116,15 @@ export class Network {
                 rawFilter: rawFilter.join(NEWLINE_CHAR_UNIX),
                 definedExpressions: this.filterCompilerConditionsConstants,
                 verbose: Log.isVerbose(),
+                validateChecksum: true,
+                // use true because we know that our filters have checksums
+                validateChecksumStrict: true,
             },
         );
     }
 
     /**
-     * Downloads filter rules by url.
+     * Downloads filter rules by url. Needed for custom filter lists.
      *
      * @param url Subscription url.
      * @param rawFilter Raw filter rules.
@@ -144,6 +150,9 @@ export class Network {
                     force,
                     rawFilter,
                     verbose: Log.isVerbose(),
+                    validateChecksum: true,
+                    // use false because we know that custom filters might not have checksums
+                    validateChecksumStrict: false,
                 },
             );
 

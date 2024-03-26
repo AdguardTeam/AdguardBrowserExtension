@@ -274,6 +274,8 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
 
@@ -286,6 +288,8 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV1.split('\n'));
@@ -309,6 +313,8 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
@@ -321,6 +327,8 @@ describe('Filter Update API should', () => {
                 {
                     definedExpressions,
                     rawFilter: fakeFilterV4WithDiffPath,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
