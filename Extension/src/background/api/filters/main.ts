@@ -166,16 +166,25 @@ export class FiltersApi {
 
         await FiltersApi.loadMetadata(remote);
 
-        const tasks = unloadedFiltersIds.map(
-            // force here to get filters without patches
-            (id) => CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, remote),
-        );
+        const tasks = unloadedFiltersIds.map((id) => {
+            // 'force: true' here to get filters without patches
+            return CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, remote)
+                .catch((error) => {
+                    Log.info(`Cannot load filter rules for filter ${id} due to: ', ${getErrorMessage(error)}`);
+                    Log.info('Trying to load locally stored filter rules...');
+                    // second arg is 'false' to load locally stored filter rules if remote loading failed
+                    // e.g. server is not available
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+                    return CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, false);
+                });
+        });
+
         const promises = await Promise.allSettled(tasks);
 
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error('Cannot load filter rules due to: ', promise.reason);
+                Log.error('Cannot load local filter rules due to: ', promise.reason);
             }
         });
     }
@@ -347,28 +356,53 @@ export class FiltersApi {
     }
 
     /**
-     * Load i18n metadata from remote source and save it.
+     * Loads i18n metadata from remote source and save it.
+     *
+     * If remote loading fails (due to server issues or network problems, etc.)
+     * loads i18n metadata from local assets.
      *
      * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadI18nMetadataFromBackend(remote: boolean): Promise<void> {
-        const i18nMetadata = remote
-            ? await network.downloadI18nMetadataFromBackend()
-            : await network.getLocalFiltersI18nMetadata();
+        let i18nMetadata;
+
+        if (remote) {
+            try {
+                i18nMetadata = await network.downloadI18nMetadataFromBackend();
+            } catch (e) {
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+                Log.info('Cannot download i18n metadata from backend due to: ', e);
+                i18nMetadata = await network.getLocalFiltersI18nMetadata();
+            }
+        } else {
+            i18nMetadata = await network.getLocalFiltersI18nMetadata();
+        }
 
         i18nMetadataStorage.setData(i18nMetadata);
     }
 
     /**
-     * Load metadata from remote source, apply i18n metadata, add custom group
-     * and save it.
+     * Loads metadata from remote source, applies i18n metadata, adds custom group
+     * and saves it.
+     *
+     * If remote loading fails (due to server issues or network problems, etc.),
+     * loads metadata from local assets.
      *
      * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadMetadataFromFromBackend(remote: boolean): Promise<void> {
-        const metadata = remote
-            ? await network.downloadMetadataFromBackend()
-            : await network.getLocalFiltersMetadata();
+        let metadata;
+        if (remote) {
+            try {
+                metadata = await network.downloadMetadataFromBackend();
+            } catch (e) {
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+                Log.info('Cannot download metadata from backend due to: ', e);
+                metadata = await network.getLocalFiltersMetadata();
+            }
+        } else {
+            metadata = await network.getLocalFiltersMetadata();
+        }
 
         const i18nMetadata = i18nMetadataStorage.getData();
 
