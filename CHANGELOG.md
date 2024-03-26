@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- TODO: add an actual date after github release -->
+## Unreleased
+
+### Fixed
+- Check filter checksum after it was downloaded [#2681].
+  [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
+
 ## [4.3.35]
 
 ### Fixed

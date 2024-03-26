@@ -188,6 +188,10 @@ export const genCommonConfig = (browserConfig) => {
             filename: '[name].js',
         },
         resolve: {
+            fallback: {
+                'crypto': require.resolve('crypto-browserify'),
+                'stream': require.resolve('stream-browserify'),
+            },
             extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
         },
