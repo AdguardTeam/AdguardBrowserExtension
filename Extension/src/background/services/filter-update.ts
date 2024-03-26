@@ -45,7 +45,7 @@ export class FilterUpdateService {
      * We set 1 hour because currently we generate patches for our filter once an hour and
      * for third-party filters once every 4 hours.
      */
-    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 20; // 20 seconds
+    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 60 * 60; // 1 hour
 
     /**
      * Stores scheduler timer id for checking update in every
