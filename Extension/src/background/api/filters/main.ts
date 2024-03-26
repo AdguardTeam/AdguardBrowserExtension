@@ -17,6 +17,7 @@
  */
 import { Log } from '../../../common/log';
 import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
+import { getErrorMessage } from '../../../common/error';
 import { translator } from '../../../common/translators/translator';
 import {
     filterStateStorage,
@@ -43,7 +44,6 @@ import {
     groupStateStorageDataValidator,
 } from '../../schema';
 import { network } from '../network';
-import { getErrorMessage } from '../../../common/error';
 
 import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
@@ -85,18 +85,30 @@ export class FiltersApi {
     }
 
     /**
-     * Load metadata from remote source and reload linked storages.
+     * Loads metadata from remote source and reloads linked storages.
      * Called before filters rules are updated or loaded from backend.
+     *
      * The metadata cannot be loaded individually because the all metadata needs
      * to be updated in order to, for example, update translations or track
      * the removal/addition of filters.
+     *
+     * If remote loading fails (due to server issues or network problems, etc.)
+     * loads metadata from local assets.
      *
      * @param remote Whether to download metadata from remote resources or from
      * local resources.
      */
     public static async loadMetadata(remote: boolean): Promise<void> {
-        await FiltersApi.loadI18nMetadataFromBackend(remote);
-        await FiltersApi.loadMetadataFromFromBackend(remote);
+        try {
+            await FiltersApi.loadI18nMetadataFromBackend(remote);
+            await FiltersApi.loadMetadataFromFromBackend(remote);
+        } catch (e) {
+            // load metadata from local assets so an error will not stop the initialization process
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+            Log.info('Cannot load remote metadata due to: ', getErrorMessage(e));
+            await FiltersApi.loadI18nMetadataFromBackend(false);
+            await FiltersApi.loadMetadataFromFromBackend(false);
+        }
 
         FiltersApi.loadFilteringStates();
 
@@ -166,17 +178,20 @@ export class FiltersApi {
 
         await FiltersApi.loadMetadata(remote);
 
-        const tasks = unloadedFiltersIds.map((id) => {
-            // 'force: true' here to get filters without patches
-            return CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, remote)
-                .catch((error) => {
-                    Log.info(`Cannot load filter rules for filter ${id} due to: ', ${getErrorMessage(error)}`);
-                    Log.info('Trying to load locally stored filter rules...');
-                    // second arg is 'false' to load locally stored filter rules if remote loading failed
-                    // e.g. server is not available
-                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
-                    return CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, false);
-                });
+        const tasks = unloadedFiltersIds.map(async (id) => {
+            try {
+                // 'force: true' here to get filters without patches
+                const task = await CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, remote);
+                return task;
+            } catch (e) {
+                Log.info(`Cannot load filter rules for filter ${id} due to: ', ${getErrorMessage(e)}`);
+                Log.info('Trying to load locally stored filter rules...');
+                // second arg is 'false' to load locally stored filter rules if remote loading failed
+                // e.g. server is not available
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+                const task = await CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, false);
+                return task;
+            }
         });
 
         const promises = await Promise.allSettled(tasks);
@@ -184,7 +199,7 @@ export class FiltersApi {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error('Cannot load local filter rules due to: ', promise.reason);
+                Log.error('Cannot load filter rules due to: ', promise.reason);
             }
         });
     }
@@ -358,25 +373,12 @@ export class FiltersApi {
     /**
      * Loads i18n metadata from remote source and save it.
      *
-     * If remote loading fails (due to server issues or network problems, etc.)
-     * loads i18n metadata from local assets.
-     *
      * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadI18nMetadataFromBackend(remote: boolean): Promise<void> {
-        let i18nMetadata;
-
-        if (remote) {
-            try {
-                i18nMetadata = await network.downloadI18nMetadataFromBackend();
-            } catch (e) {
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
-                Log.info('Cannot download i18n metadata from backend due to: ', e);
-                i18nMetadata = await network.getLocalFiltersI18nMetadata();
-            }
-        } else {
-            i18nMetadata = await network.getLocalFiltersI18nMetadata();
-        }
+        const i18nMetadata = remote
+            ? await network.downloadI18nMetadataFromBackend()
+            : await network.getLocalFiltersI18nMetadata();
 
         i18nMetadataStorage.setData(i18nMetadata);
     }
@@ -385,24 +387,12 @@ export class FiltersApi {
      * Loads metadata from remote source, applies i18n metadata, adds custom group
      * and saves it.
      *
-     * If remote loading fails (due to server issues or network problems, etc.),
-     * loads metadata from local assets.
-     *
      * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadMetadataFromFromBackend(remote: boolean): Promise<void> {
-        let metadata;
-        if (remote) {
-            try {
-                metadata = await network.downloadMetadataFromBackend();
-            } catch (e) {
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
-                Log.info('Cannot download metadata from backend due to: ', e);
-                metadata = await network.getLocalFiltersMetadata();
-            }
-        } else {
-            metadata = await network.getLocalFiltersMetadata();
-        }
+        const metadata = remote
+            ? await network.downloadMetadataFromBackend()
+            : await network.getLocalFiltersMetadata();
 
         const i18nMetadata = i18nMetadataStorage.getData();
 
