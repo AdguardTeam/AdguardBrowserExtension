@@ -7,30 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+### Changed
+- Updated [@adguard/tswebextension] to v1.0.18.
 
+### Fixed
 - The install process stops if filters.js is unreachable [#2761].
+- Check filter checksum after it was downloaded [#2681].
+- Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
 [#2761]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+[#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
+[#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
+
 
 <!-- TODO: add an actual date after github release -->
-## Unreleased
-
-### Fixed
-- Check filter checksum after it was downloaded [#2681].
-  [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
-
 ## [4.3.35]
 
 ### Fixed
 - Update notification leading to release notes when on beta [#2682].
 - The filters revert to the pre-installed ones when importing settings [#2735].
 
+[4.3.35]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.31...v4.3.35
 [#2682]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2682
 [#2735]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2735
 
-[4.3.35]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.31...v4.3.35
 
 ## [4.3.31] - 2024-03-11
 
