@@ -9,14 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated [@adguard/filters-downloader] to v2.1.2.
+- Updated [@adguard/tswebextension] to v1.0.18.
 
 ### Fixed
 - Do not fetch diff updates until the next full update, if some fatal error occurred during the last update [#2717].
 - Check filter checksum after it was downloaded [#2681].
+- Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
 [#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
+[#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
 
 
 <!-- TODO: add an actual date after github release -->
