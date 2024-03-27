@@ -27,6 +27,7 @@ export const filterVersionDataValidator = zod.object({
      * Version of filter. Usually consists of 4 parts: 1.2.3.4.
      */
     version: zod.string(),
+
     /**
      * The time in millisecond of the last check by the scheduler: every
      * {@link FilterUpdateService.CHECK_PERIOD_MS period} the time of the last
@@ -35,10 +36,12 @@ export const filterVersionDataValidator = zod.object({
      * the filter or group.
      */
     lastCheckTime: zod.number(),
+
     /**
      * The time in millisecond of the last update filter from remote resources.
      */
     lastUpdateTime: zod.number(),
+
     /**
      * The time in seconds during which the filter content remains fresh
      * and does not need to be updated. Used to auto-renew filters if the user
@@ -52,6 +55,14 @@ export const filterVersionDataValidator = zod.object({
      * @see {@link https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path | Specs}.
      */
     diffPath: zod.string().optional(),
+
+    /**
+     * Flag that indicates that the filter could not be updated by patches
+     * and should wait for the full update.
+     *
+     * @see {@link https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717}
+     */
+    shouldWaitFullUpdate: zod.boolean().optional(),
 });
 
 /**

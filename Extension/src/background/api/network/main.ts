@@ -72,6 +72,8 @@ export class Network {
      * @param forceRemote Force download filter rules from remote server.
      * @param useOptimizedFilters Download optimized filters flag.
      * @param rawFilter Raw filter rules.
+     *
+     * @throws An error if FiltersDownloader.downloadWithRaw() fails.
      */
     public async downloadFilterRules(
         filterUpdateOptions: FilterUpdateOptions,
