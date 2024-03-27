@@ -92,22 +92,27 @@ export class FiltersApi {
      * to be updated in order to, for example, update translations or track
      * the removal/addition of filters.
      *
-     * If remote loading fails (due to server issues or network problems, etc.)
-     * loads metadata from local assets.
+     * If `remote` is true but the remote loading fails (due to server issues or network problems, etc.),
+     * and if `shouldLoadLocalAsBackup` is true, the method loads metadata from local assets.
      *
      * @param remote Whether to download metadata from remote resources or from
      * local resources.
+     * @param shouldUseLocalAssets Whether to load metadata from local assets
+     * if remote loading fails. Default is false.
      */
-    public static async loadMetadata(remote: boolean): Promise<void> {
+    public static async loadMetadata(remote: boolean, shouldUseLocalAssets = false): Promise<void> {
         try {
             await FiltersApi.loadI18nMetadataFromBackend(remote);
             await FiltersApi.loadMetadataFromFromBackend(remote);
         } catch (e) {
-            // load metadata from local assets so an error will not stop the initialization process
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
             Log.info('Cannot load remote metadata due to: ', getErrorMessage(e));
-            await FiltersApi.loadI18nMetadataFromBackend(false);
-            await FiltersApi.loadMetadataFromFromBackend(false);
+            // loading metadata from local assets is needed to avoid the extension init stopping after the install
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+            if (shouldUseLocalAssets) {
+                Log.info('Trying to load metadata from local assets...');
+                await FiltersApi.loadI18nMetadataFromBackend(false);
+                await FiltersApi.loadMetadataFromFromBackend(false);
+            }
         }
 
         FiltersApi.loadFilteringStates();
@@ -176,7 +181,10 @@ export class FiltersApi {
             return;
         }
 
-        await FiltersApi.loadMetadata(remote);
+        // second arg is true for loading locally stored metadata if remote loading failed.
+        // needed not to stop the initialization process after the extension install
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+        await FiltersApi.loadMetadata(remote, true);
 
         const tasks = unloadedFiltersIds.map(async (id) => {
             try {
