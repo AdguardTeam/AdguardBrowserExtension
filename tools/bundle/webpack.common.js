@@ -190,6 +190,10 @@ export const genCommonConfig = (browserConfig) => {
         resolve: {
             extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
+            fallback: {
+                'crypto': require.resolve('crypto-browserify'),
+                'stream': require.resolve('stream-browserify'),
+            },
         },
         module: {
             rules: [

@@ -103,13 +103,13 @@ export class NetworkSettings {
     // eslint-disable-next-line class-methods-use-this
     get filtersUrl(): string {
         if (UserAgent.isFirefox) {
-            return 'http://localhost:3000/extension/firefox';
+            return `${this.filtersRulesBaseUrl}/firefox`;
         } if (UserAgent.isEdge) {
-            return 'http://localhost:3000/extension/edge';
+            return `${this.filtersRulesBaseUrl}/edge`;
         } if (UserAgent.isOpera) {
-            return 'http://localhost:3000/extension/opera';
+            return `${this.filtersRulesBaseUrl}/opera`;
         }
-        return 'http://localhost:3000/extension/chromium';
+        return `${this.filtersRulesBaseUrl}/chromium`;
     }
 
     /**
