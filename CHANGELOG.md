@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Updated [@adguard/filters-downloader] to v2.1.2.
 - Updated [@adguard/tswebextension] to v1.0.18.
 
 ### Fixed
+- Do not fetch diff updates until the next full update, if some fatal error occurred during the last update [#2717].
 - Check filter checksum after it was downloaded [#2681].
 - Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
+[#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
 [#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
 
@@ -49,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `$popup` modifier block other types of resources [#2723].
 - `$popup` should not disable simple blocking rule [#2728].
 
+[4.3.31]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.13...v4.3.31
 [#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
 [#2712]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712
 [#2713]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2713
@@ -57,7 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2723]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2723
 [#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 
-[4.3.31]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.13...v4.3.31
 
 ## [4.3.14] - 2024-06-02
 
@@ -112,7 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/scriptlets] to v1.9.101.
 
 ### Fixed
-- $$ rules break encoding on some websites [#2249](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2249)
+- `$$` rules break encoding on some websites [#2249](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2249).
 - TSUrlFilter library loading by Fullscreen User Rules Editor
   [#2412](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2412).
 - Displaying of Stealth Mode modified cookie rules in Filtering log as "Modified"

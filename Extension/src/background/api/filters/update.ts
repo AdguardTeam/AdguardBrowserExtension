@@ -144,16 +144,16 @@ export class FilterUpdateApi {
         // If not a force check - updates only outdated filters.
         if (!forceUpdate) {
             // Select filters with diff paths and mark them for no force update
-            const filtersWithDiffPath = FilterUpdateApi.selectFiltersWithDiffPath(filterUpdateDetailsToUpdate);
+            const filtersToPatchUpdate = FilterUpdateApi.selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate);
 
             // Select filters for a forced update and mark them accordingly
-            const expiredFilters = FilterUpdateApi.selectExpiredFilters(
+            const filtersToFullUpdate = FilterUpdateApi.selectFiltersToFullUpdate(
                 filterUpdateDetailsToUpdate,
                 updatePeriod,
             );
 
             // Combine both arrays
-            const combinedFilters = [...filtersWithDiffPath, ...expiredFilters];
+            const combinedFilters = [...filtersToPatchUpdate, ...filtersToFullUpdate];
 
             const uniqueFiltersMap = new Map();
 
@@ -269,36 +269,43 @@ export class FilterUpdateApi {
     }
 
     /**
-     * Selects filters with diff path field.
+     * Selects filters to update with patches. Such filters should
+     * 1. Have `diffPath`
+     * 2. Not have `shouldWaitFullUpdate` flag which means that patch update failed previously.
      *
      * @param filterUpdateOptionsList Filter update details.
      *
      * @returns List with filter update details, which have diff path.
      */
-    private static selectFiltersWithDiffPath(
+    private static selectFiltersToPatchUpdate(
         filterUpdateOptionsList: FilterUpdateOptionsList,
     ): FilterUpdateOptionsList {
         const filterVersions = filterVersionStorage.getData();
 
         return filterUpdateOptionsList
-            .filter(filterData => {
+            .filter((filterData) => {
                 const filterVersion = filterVersions[filterData.filterId];
                 // we do not check here expires, since @adguard/filters-downloader does it.
-                return filterVersion?.diffPath;
+                return filterVersion?.diffPath
+                    // filter may have diffPath but if patch update failed previously,
+                    // we should not try to update it with patches again to avoid continuous failures of patch requests
+                    // and wait until full update
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
+                    && !filterVersion?.shouldWaitFullUpdate;
             })
             .map(({ filterId }) => ({ filterId, force: false }));
     }
 
     /**
-     * Selects outdated filters from the provided filter list, based on the
-     * provided filter update period from the settings.
+     * Selects outdated filters from the provided filter list for a full update.
+     * The selecting is based on the provided filter update period from the settings.
      *
      * @param filterUpdateOptionsList List of filter update details.
-     *
      * @param updatePeriod Period of checking updates in ms.
+     *
      * @returns List of outdated filter ids.
      */
-    private static selectExpiredFilters(
+    private static selectFiltersToFullUpdate(
         filterUpdateOptionsList: FilterUpdateOptionsList,
         updatePeriod: number,
     ): FilterUpdateOptionsList {
