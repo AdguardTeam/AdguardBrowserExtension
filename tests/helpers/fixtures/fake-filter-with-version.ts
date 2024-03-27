@@ -1,8 +1,10 @@
+import { calculateChecksum } from '../../../tools/resources/download-filters';
+
 const fakeFilterWithVersion = (version: string) => {
     const currentDateWithoutMS = new Date().toISOString()
         .slice(0, -5);
 
-    return `! Title: Fake filter
+    const filterWithoutChecksum = `! Title: Fake filter
 ! Description: Fake filter
 ! Version: ${version}
 ! TimeUpdated: ${currentDateWithoutMS}+00:00
@@ -10,6 +12,10 @@ const fakeFilterWithVersion = (version: string) => {
 !
 ||example.com^$document
 ||example.org^##h1`;
+
+    const checksum = calculateChecksum(filterWithoutChecksum);
+    return `! Checksum: ${checksum}
+${filterWithoutChecksum}`;
 };
 
 export { fakeFilterWithVersion };

@@ -32,6 +32,9 @@ import {
 
 import { promoNotificationApi } from './promo-notification';
 
+// Variable passed from webpack that will be primitive at runtime.
+declare const IS_RELEASE: boolean;
+
 enum StylesAssetsPath {
     AlertPopup = '/assets/css/alert-popup.css',
     AlertContainer = '/assets/css/alert-container.css',
@@ -162,10 +165,11 @@ export class Toasts {
             from: ForwardFrom.VersionPopup,
         });
         let offerButtonText = translator.getMessage('options_popup_version_update_offer_button_text');
+        let offerBgImage = '';
 
         if (promoNotification) {
             // check if promo notification is NotificationTextRecord
-            const res = notificationTextRecordValidator.safeParse(promoNotification?.text);
+            const res = notificationTextRecordValidator.safeParse(promoNotification.text);
             if (res.success) {
                 const text = res.data;
                 offer = text.title;
@@ -174,6 +178,17 @@ export class Toasts {
 
                 if (text.desc) {
                     offerDesc = text.desc;
+                }
+            }
+
+            if (promoNotification.bgImage) {
+                try {
+                    // dynamically load svg image if offer should look different for different locales; AG-31141
+                    const response = await fetch(promoNotification.bgImage);
+                    const svgStr = await response.text();
+                    offerBgImage = `data:image/svg+xml;base64,${window.btoa(svgStr)}`;
+                } catch (e) {
+                    Log.warn('Failed to load promo notification background image', e);
                 }
             }
         }
@@ -205,7 +220,7 @@ export class Toasts {
                         ),
                         description: Toasts.getUpdateDescriptionMessage(currentVersion, previousVersion),
                         changelogHref: Forward.get({
-                            action: ForwardAction.GithubVersion,
+                            action: IS_RELEASE ? ForwardAction.GithubVersion : ForwardAction.GithubVersionBeta,
                             from: ForwardFrom.VersionPopup,
                         }),
                         changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
@@ -214,6 +229,7 @@ export class Toasts {
                         offerDesc,
                         offerButtonText,
                         offerButtonHref,
+                        offerBgImage,
                         disableNotificationText: translator.getMessage(
                             'options_popup_version_update_disable_notification',
                         ),
