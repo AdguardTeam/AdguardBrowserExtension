@@ -23,6 +23,7 @@ import {
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 import { Log } from '../../common/log';
+import type { FilterUpdateDetails } from '../api';
 
 import { settingsStorage } from './settings';
 
@@ -88,23 +89,24 @@ export class FilterVersionStorage extends StringStorage<
     /**
      * Update last check time stamp for specified filters with current time.
      *
-     * @param filterIds List of filter ids.
-     * @param forceUpdate If true, last check time will be updated, otherwise last scheduled check time will be updated.
+     * @param filterDetails List of filter details to update check time for.
      * @throws Error if filter version data is not initialized.
      */
-    public refreshLastCheckTime(filterIds: number[], forceUpdate = false): void {
+    public refreshLastCheckTime(filterDetails: FilterUpdateDetails): void { // fixme: array type
         if (!this.data) {
             throw FilterVersionStorage.createNotInitializedError();
         }
 
         const now = Date.now();
 
-        for (let i = 0; i < filterIds.length; i += 1) {
-            const filterId = filterIds[i];
+        for (let i = 0; i < filterDetails.length; i += 1) {
+            const filterDetail = filterDetails[i];
 
-            if (!filterId) {
+            if (!filterDetail) {
                 continue;
             }
+
+            const { filterId, force } = filterDetail;
 
             const data = this.data[filterId];
 
@@ -113,7 +115,7 @@ export class FilterVersionStorage extends StringStorage<
                 continue;
             }
 
-            if (forceUpdate) {
+            if (force) {
                 data.lastCheckTime = now;
             } else {
                 data.lastScheduledCheckTime = now;

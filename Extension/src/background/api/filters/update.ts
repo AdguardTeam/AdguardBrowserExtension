@@ -78,12 +78,11 @@ export class FilterUpdateApi {
     public static async checkForFiltersUpdates(filterIds: number[]): Promise<FilterMetadata[]> {
         const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filterIds);
 
-        const updatedFilters = await FilterUpdateApi.updateFilters(
-            // 'force' is 'true', because we update filters fully (without patches) when we enable groups.
-            filtersToCheck.map((id) => ({ filterId: id, force: true })),
-        );
+        // 'force' is 'true', because we update filters fully (without patches) when we enable groups.
+        const filterDetails = filtersToCheck.map((id) => ({ filterId: id, force: true }));
 
-        filterVersionStorage.refreshLastCheckTime(filtersToCheck);
+        const updatedFilters = await FilterUpdateApi.updateFilters(filterDetails);
+        filterVersionStorage.refreshLastCheckTime(filterDetails);
 
         return updatedFilters;
     }
@@ -175,10 +174,7 @@ export class FilterUpdateApi {
 
         const updatedFilters = await FilterUpdateApi.updateFilters(filterUpdateDetailsToUpdate);
 
-        filterVersionStorage.refreshLastCheckTime(
-            filterUpdateDetailsToUpdate.map(({ filterId }) => filterId),
-            !forceUpdate,
-        );
+        filterVersionStorage.refreshLastCheckTime(filterUpdateDetailsToUpdate);
 
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
