@@ -138,6 +138,7 @@ export class CommonFilterApi {
         const {
             filter,
             rawFilter,
+            isPatchUpdateFailed,
         } = await network.downloadFilterRules(
             filterUpdateOptions,
             forceRemote,
@@ -194,6 +195,11 @@ export class CommonFilterApi {
             expires: nextExpires,
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: nextLastCheckTime,
+            // Unaccessible status may be returned during patch update
+            // which is considered as a fatal error https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717.
+            // And if it happens, isPatchUpdateFailed is returned as true,
+            // and we should set shouldWaitFullUpdate flag to true for the filter so it will be checked later
+            shouldWaitFullUpdate: isPatchUpdateFailed,
         });
 
         return filterMetadata;
