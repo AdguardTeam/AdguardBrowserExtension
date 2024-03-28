@@ -201,8 +201,8 @@ export class FiltersApi {
                 // second arg is 'false' to load locally stored filter rules if remote loading failed
                 // e.g. server is not available
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
-                // FIXME: re-check whether the force flag should be 'true'
-                const task = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, force: false }, false);
+                // 'force: true' here to get filters without patches
+                const task = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, force: true }, false);
                 return task;
             }
         });
