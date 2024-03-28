@@ -8,18 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Updated [@adguard/filters-downloader] to v2.1.2.
-- Updated [@adguard/tswebextension] to v1.0.18.
 - Raw filters are stored as strings.
+- Updated [@adguard/filters-downloader] to v2.1.2.
+- Updated [@adguard/tswebextension] to v1.0.20.
+- Updated [@adguard/tsurlfilter] to v2.2.17.
+- Updated [@adguard/scriptlets] to v1.10.25.
 
 ### Fixed
 - Do not fetch diff updates until the next full update, if some fatal error occurred during the last update [#2717].
 - Check filter checksum after it was downloaded [#2681].
 - Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
+- Applying of modifiers `$popup` and `$all` [#2620], [#2728].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
+[#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 [#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
+[#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
 [#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
 
 
