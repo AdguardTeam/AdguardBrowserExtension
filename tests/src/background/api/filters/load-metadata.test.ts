@@ -147,7 +147,8 @@ describe('tests filter metadata loading', () => {
             JSON.stringify(localI18nMetadata),
         ]);
 
-        // first arg is 'true' for remote load, second arg is 'true' to use local assets
+        // first arg is 'true' for remote load,
+        // second arg is 'true' to use local assets if remote is not available
         await FiltersApi.loadMetadata(true, true);
 
         const i18nMetadata = i18nMetadataStorage.getData();
