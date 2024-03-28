@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated [@adguard/filters-downloader] to v2.1.2.
 - Updated [@adguard/tswebextension] to v1.0.18.
+- Raw filters are stored as strings.
 
 ### Fixed
 - The install process stops if filters.js is unreachable [#2761].
