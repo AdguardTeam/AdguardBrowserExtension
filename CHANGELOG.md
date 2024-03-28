@@ -13,10 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Check filter checksum after it was downloaded [#2681].
 - Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
+- Update recommended filters on enabling group of filters and on locale detection [#2714].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
 [#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
+[#2714]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714
 
 
 <!-- TODO: add an actual date after github release -->
@@ -48,12 +50,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Send `stealth.block_trackers` during issues reporting [#2721].
 - `$popup` modifier block other types of resources [#2723].
 - `$popup` should not disable simple blocking rule [#2728].
-- Update recommended filters on enabling group of filters and on locale detection [#2714].
 
 [#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
 [#2712]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712
 [#2713]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2713
-[#2714]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714
 [#2715]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2715
 [#2721]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721
 [#2723]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2723
