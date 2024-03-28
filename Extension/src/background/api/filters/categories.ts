@@ -116,7 +116,7 @@ export class Categories {
      */
     public static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
         if (recommendedFiltersIds.length > 0) {
-            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds);
+            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds, true);
         }
 
         // Always checks updates for enabled filters of the group.

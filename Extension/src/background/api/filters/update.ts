@@ -206,11 +206,14 @@ export class FilterUpdateApi {
 
         if (shouldLoadMetadata) {
             try {
-                await FiltersApi.loadMetadata(true);
+                await FiltersApi.updateMetadata();
             } catch (e) {
-                // No need to throw an error here,
-                // because we can still load filters using the old metadata.
-                Log.error('Failed to load metadata due to an error:', getErrorMessage(e));
+                // No need to throw an error here, because we still can load
+                // filters using the old metadata: checking metadata needed to
+                // check for updates - without fresh metadata we still can load
+                // newest filter, checking it's version will be against the old,
+                // local metadata, which is possible outdated.
+                Log.error('Failed to update metadata due to an error:', getErrorMessage(e));
             }
         }
 

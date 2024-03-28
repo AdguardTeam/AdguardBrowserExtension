@@ -231,14 +231,7 @@ export class CommonFilterApi {
         // module to reduce the risk of cyclic dependency, since FiltersApi
         // depends on CommonFilterApi and CustomFilterApi.
         // On the first run, we update the common filters from the backend.
-        if (enableUntouchedGroups) {
-            // Enable filters and their groups.
-            await FiltersApi.loadAndEnableFilters(filterIds, true);
-        } else {
-            // Enable only filters.
-            await FiltersApi.loadFilters(filterIds, true);
-            filterStateStorage.enableFilters(filterIds);
-        }
+        await FiltersApi.loadAndEnableFilters(filterIds, true, enableUntouchedGroups);
     }
 
     /**
