@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Raw filters are stored as strings.
 - Updated [@adguard/filters-downloader] to v2.1.2.
-- Updated [@adguard/tswebextension] to v1.0.20.
 - Updated [@adguard/tsurlfilter] to v2.2.17.
+- Updated [@adguard/tswebextension] to v1.0.20.
 - Updated [@adguard/scriptlets] to v1.10.25.
 
 ### Fixed
