@@ -22,7 +22,7 @@ import { network } from '../../network';
 
 const emptyDownloadResult: DownloadResult = {
     filter: [],
-    rawFilter: [],
+    rawFilter: '',
 };
 
 /**
