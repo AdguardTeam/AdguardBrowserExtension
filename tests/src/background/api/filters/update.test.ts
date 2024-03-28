@@ -253,7 +253,7 @@ describe('Filter Update API should', () => {
             jest.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV1.split('\n'),
-                    rawFilter: fakeFilterV1.split('\n'),
+                    rawFilter: fakeFilterV1,
                 }));
         });
 
@@ -293,7 +293,7 @@ describe('Filter Update API should', () => {
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV1.split('\n'));
-            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1.split('\n'));
+            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1);
 
             returnMetadataWithVersion(filterId, '4.0.0.0');
             const filterVersionData = filterVersionStorage.getData();
@@ -303,7 +303,7 @@ describe('Filter Update API should', () => {
             jest.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
-                    rawFilter: fakeFilterV4WithDiffPath.split('\n'),
+                    rawFilter: fakeFilterV4WithDiffPath,
                 }));
 
             await FilterUpdateApi.autoUpdateFilters(false);
@@ -318,7 +318,7 @@ describe('Filter Update API should', () => {
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
-            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
@@ -332,7 +332,7 @@ describe('Filter Update API should', () => {
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
-            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
         });
     });
 });

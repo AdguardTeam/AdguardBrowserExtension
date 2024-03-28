@@ -34,7 +34,6 @@ import {
 } from '../../schema';
 import type { FilterUpdateOptions } from '../filters';
 import { Log } from '../../../common/log';
-import { NEWLINE_CHAR_UNIX } from '../../../common/constants';
 
 import { NetworkSettings } from './settings';
 
@@ -79,7 +78,7 @@ export class Network {
         filterUpdateOptions: FilterUpdateOptions,
         forceRemote: boolean,
         useOptimizedFilters: boolean,
-        rawFilter?: string[],
+        rawFilter?: string,
     ): Promise<DownloadResult> {
         let url: string;
 
@@ -115,7 +114,7 @@ export class Network {
         return FiltersDownloader.downloadWithRaw(
             url,
             {
-                rawFilter: rawFilter.join(NEWLINE_CHAR_UNIX),
+                rawFilter,
                 definedExpressions: this.filterCompilerConditionsConstants,
                 verbose: Log.isVerbose(),
                 validateChecksum: true,

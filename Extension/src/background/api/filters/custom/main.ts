@@ -19,11 +19,7 @@ import MD5 from 'crypto-js/md5';
 
 import { BrowserUtils } from '../../../utils/browser-utils';
 import { Log } from '../../../../common/log';
-import {
-    AntibannerGroupsId,
-    CUSTOM_FILTERS_START_ID,
-    NEWLINE_CHAR_UNIX,
-} from '../../../../common/constants';
+import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../../common/constants';
 import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../../schema';
 import {
     customFilterMetadataStorage,
@@ -85,7 +81,7 @@ export type GetCustomFilterInfoResult = CreateCustomFilterResponse | CustomFilte
  * It is downloaded while creating and updating custom filter in {@link CustomFilterApi.getRemoteFilterData}.
  */
 export type GetRemoteCustomFilterResult = {
-    rawRules: string[],
+    rawRules: string,
     rules: string[],
     checksum: string | null,
     parsed: FilterParsedData,
@@ -174,8 +170,8 @@ export class CustomFilterApi {
      * Downloads filter data by {@link CustomFilterDTO.customUrl} and parse it.
      * Create new {@link CustomFilterMetadata} record and save it in {@link customFilterMetadataStorage},
      * Based on parsed data.
-     * Create new {@link FilterState} and save it in {@link filterStateStorage}.
-     * Create new {@link FilterVersionData} and save it in {@link filterVersionStorage}.
+     * Creates new {@link FilterStateData} and save it in {@link filterStateStorage}.
+     * Creates new {@link FilterVersionData} and save it in {@link filterVersionStorage}.
      * Filters rules are saved in {@link FiltersStorage}.
      * Raw filter rules (before applying directives) are saved in {@link RawFiltersStorage}.
      *
@@ -302,8 +298,7 @@ export class CustomFilterApi {
 
         const { customUrl } = filterMetadata;
 
-        const rawFilterLines = await RawFiltersStorage.get(filterUpdateOptions.filterId) || [];
-        const rawFilter = rawFilterLines.join(NEWLINE_CHAR_UNIX);
+        const rawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
         const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
             customUrl,
             rawFilter,
