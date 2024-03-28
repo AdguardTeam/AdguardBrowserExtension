@@ -92,20 +92,6 @@ describe('tests filter metadata loading', () => {
         mockInitMetadata();
     });
 
-    it('load local assets, no remote', async () => {
-        server.respondWith('GET', new RegExp(`/${LOCAL_I18N_METADATA_FILE_NAME}`), [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify(localI18nMetadata),
-        ]);
-
-        // first arg is 'false' to not remote load
-        await FiltersApi.loadMetadata(false);
-
-        const i18nMetadata = i18nMetadataStorage.getData();
-        expect(i18nMetadata).toStrictEqual(localI18nMetadata);
-    });
-
     it('remote metadata is available, no local assets usage', async () => {
         server.respondWith('GET', new RegExp(`/${REMOTE_I18N_METADATA_FILE_NAME}`), [
             200,
@@ -113,8 +99,8 @@ describe('tests filter metadata loading', () => {
             JSON.stringify(remoteI18nMetadata),
         ]);
 
-        // first arg is 'true' for remote load, second arg is 'false' for no local assets usage
-        await FiltersApi.loadMetadata(true, false);
+        // the arg is 'false' for no local assets usage
+        await FiltersApi.updateMetadata(false);
 
         const i18nMetadata = i18nMetadataStorage.getData();
         expect(i18nMetadata).toStrictEqual(remoteI18nMetadata);
@@ -127,8 +113,8 @@ describe('tests filter metadata loading', () => {
             '',
         ]);
 
-        // first arg is 'true' for remote load, second arg is 'false' for no local assets usage
-        await FiltersApi.loadMetadata(true, false);
+        // the arg is 'false' for no local assets usage
+        await FiltersApi.updateMetadata(false);
 
         const i18nMetadata = i18nMetadataStorage.getData();
         expect(i18nMetadata).toStrictEqual(initI18nMetadata);
@@ -147,9 +133,8 @@ describe('tests filter metadata loading', () => {
             JSON.stringify(localI18nMetadata),
         ]);
 
-        // first arg is 'true' for remote load,
-        // second arg is 'true' to use local assets if remote is not available
-        await FiltersApi.loadMetadata(true, true);
+        // the arg is 'true' to use local assets if remote is not available
+        await FiltersApi.updateMetadata(true);
 
         const i18nMetadata = i18nMetadataStorage.getData();
         expect(i18nMetadata).toStrictEqual(localI18nMetadata);
