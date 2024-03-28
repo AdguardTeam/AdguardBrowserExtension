@@ -36,8 +36,8 @@ import {
 } from '../constants';
 import {
     ADGUARD_FILTERS_IDS,
-    LOCALE_METADATA_FILE_NAME,
-    LOCALE_I18N_METADATA_FILE_NAME,
+    LOCAL_METADATA_FILE_NAME,
+    LOCAL_I18N_METADATA_FILE_NAME,
 } from '../../constants';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
@@ -55,12 +55,12 @@ const getUrlsOfFiltersResources = (browser) => {
 
     meta.push({
         url: METADATA_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCALE_METADATA_FILE_NAME,
+        file: LOCAL_METADATA_FILE_NAME,
     });
 
     meta.push({
         url: METADATA_I18N_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCALE_I18N_METADATA_FILE_NAME,
+        file: LOCAL_I18N_METADATA_FILE_NAME,
     });
 
     // eslint-disable-next-line no-restricted-syntax
