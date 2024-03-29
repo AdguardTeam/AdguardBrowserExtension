@@ -118,7 +118,9 @@ describe('Filter Update API should', () => {
                 fakeFilterWithVersion(v2),
             ]);
 
-            await FiltersApi.loadAndEnableFilters([filterId]);
+            // Remote true because filter 999 is not in local metadata and method
+            // will skip loading it.
+            await FiltersApi.loadAndEnableFilters([filterId], true);
 
             let filterVersion = filterVersionStorage.get(filterId);
             expect(filterVersion?.version).toStrictEqual(v2);
@@ -161,6 +163,8 @@ describe('Filter Update API should', () => {
                 fakeFilterV2,
             ]);
 
+            // Remote true because filter 999 is not in local metadata and method
+            // will skip loading it.
             await FiltersApi.loadAndEnableFilters([filterId], true);
 
             const filterVersion = filterVersionStorage.get(filterId);
@@ -198,7 +202,7 @@ describe('Filter Update API should', () => {
             fakeFilterV2,
         ]);
 
-        promise = FiltersApi.loadAndEnableFilters([filterId]);
+        promise = FiltersApi.loadAndEnableFilters([filterId], true);
         await clock.tickAsync(10);
         await promise;
 

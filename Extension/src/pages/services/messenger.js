@@ -223,19 +223,18 @@ class Messenger {
         return this.sendMessage(MessageType.CheckFiltersUpdate);
     }
 
-    async updateGroupStatus(id, data) {
-        const type = data
+    async updateGroupStatus(id, enabled) {
+        const type = enabled
             ? MessageType.EnableFiltersGroup
             : MessageType.DisableFiltersGroup;
         const groupId = Number.parseInt(id, 10);
         return this.sendMessage(type, { groupId });
     }
 
-    async updateFilterStatus(filterId, data) {
-        const type = data
-            ? MessageType.AddAndEnableFilter
-            : MessageType.DisableFilter;
-        return this.sendMessage(type, { filterId });
+    async updateFilterStatus(filterId, enabled) {
+        return enabled
+            ? this.enableFilter(filterId)
+            : this.disableFilter(filterId);
     }
 
     async setConsentedFilters(filterIds) {

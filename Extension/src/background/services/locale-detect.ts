@@ -186,6 +186,12 @@ export class LocaleDetect {
     private browsingLanguages: BrowsingLanguage[] = [];
 
     /**
+     * Because listener for tab updates cannot be paused during filter loading,
+     * we should save status of loading for each language to exclude double loading.
+     */
+    private loadingLanguagesMutex: Record<string, boolean> = {};
+
+    /**
      * Creates new {@link LocaleDetect}.
      */
     constructor() {
@@ -267,7 +273,7 @@ export class LocaleDetect {
                 return;
             }
 
-            this.detectLanguage(lang);
+            await this.detectLanguage(lang);
         }
     }
 
@@ -279,7 +285,7 @@ export class LocaleDetect {
      * @param language Page language.
      * @private
      */
-    private detectLanguage(language: string): void {
+    private async detectLanguage(language: string): Promise<void> {
         /**
          * For an unknown language "und" will be returned
          * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage.
@@ -301,9 +307,15 @@ export class LocaleDetect {
             return h.language === language;
         });
 
-        if (history.length >= LocaleDetect.SUCCESS_HIT_COUNT) {
+        if (history.length >= LocaleDetect.SUCCESS_HIT_COUNT && !this.loadingLanguagesMutex[language]) {
+            // Lock mutex to exclude double loading.
+            this.loadingLanguagesMutex[language] = true;
+
             const filterIds = metadataStorage.getFilterIdsForLanguage(language);
-            LocaleDetect.onFilterDetectedByLocale(filterIds);
+            await LocaleDetect.onFilterDetectedByLocale(filterIds);
+
+            // Free mutex for language.
+            delete this.loadingLanguagesMutex[language];
         }
     }
 
@@ -327,7 +339,7 @@ export class LocaleDetect {
             return;
         }
 
-        await FiltersApi.loadAndEnableFilters(disabledFiltersIds);
+        await FiltersApi.loadAndEnableFilters(disabledFiltersIds, true);
         Engine.debounceUpdate();
 
         const filters: RegularFilterMetadata[] = [];

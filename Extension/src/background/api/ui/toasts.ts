@@ -32,9 +32,6 @@ import {
 
 import { promoNotificationApi } from './promo-notification';
 
-// Variable passed from webpack that will be primitive at runtime.
-declare const IS_RELEASE: boolean;
-
 enum StylesAssetsPath {
     AlertPopup = '/assets/css/alert-popup.css',
     AlertContainer = '/assets/css/alert-container.css',

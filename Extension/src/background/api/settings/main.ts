@@ -61,6 +61,7 @@ import { Unknown } from '../../../common/unknown';
 import { Prefs } from '../../prefs';
 import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
 import { filteringLogApi } from '../filtering-log';
+import { network } from '../network';
 
 import { SettingsMigrations } from './migrations';
 
@@ -276,8 +277,8 @@ export class SettingsApi {
 
         if (allowAcceptableAds) {
             await CommonFilterApi.loadFilterRulesFromBackend(
-                // since this is called on settings import, we use force, to update filters without patches
-                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, force: false },
+                // Since this is called on settings import we update filters without patches.
+                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, ignorePatches: false },
                 false,
             );
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
@@ -366,25 +367,22 @@ export class SettingsApi {
      * @private
      */
     private static async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
-        const tasks = builtInFilters
-            .map(async (filterId: number) => {
-                try {
-                    await CommonFilterApi.loadFilterRulesFromBackend({
-                        filterId,
-                        force: true,
-                    }, true);
-                } catch (e) {
+        const tasks = builtInFilters.map(async (filterId: number) => {
+            try {
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, true);
+            } catch (e) {
+                Log.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                // eslint-disable-next-line max-len
+                if (!network.isFilterHasLocalCopy(filterId)) {
                     // eslint-disable-next-line max-len
-                    Log.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
-                    Log.debug('Trying to load from storage.');
-                    await CommonFilterApi.loadFilterRulesFromBackend({
-                        filterId,
-                        force: true,
-                    }, false);
+                    throw new Error(`Filter rules were not loaded from backend and there is no local copy of the filter with id ${filterId}.`, { cause: e });
                 }
+                Log.debug('Trying to load from storage.');
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+            }
 
-                filterStateStorage.enableFilters([filterId]);
-            });
+            filterStateStorage.enableFilters([filterId]);
+        });
 
         const promises = await Promise.allSettled(tasks);
 

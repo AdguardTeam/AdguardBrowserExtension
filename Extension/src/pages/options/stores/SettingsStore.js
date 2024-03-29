@@ -530,7 +530,12 @@ class SettingsStore {
 
     @action
     async updateFilterSetting(filterId, enabled) {
+        /**
+         * Optimistically set the enabled property to true.
+         * The verified state of the filter will be emitted after the engine update.
+         */
         this.setFilterEnabledState(filterId, enabled);
+
         try {
             const groupId = await messenger.updateFilterStatus(filterId, enabled);
             // update allow acceptable ads setting

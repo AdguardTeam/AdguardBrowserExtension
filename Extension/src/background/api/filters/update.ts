@@ -40,10 +40,9 @@ export type FilterUpdateOptions = {
      */
     filterId: number,
     /**
-     * Is it a force update or not.
-     * Force update is when we update filters fully without patch updates.
+     * Should we update filters fully without patch updates or load patches to filters.
      */
-    force: boolean,
+    ignorePatches: boolean,
 };
 
 /**
@@ -80,8 +79,8 @@ export class FilterUpdateApi {
         const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filterIds);
 
         const updatedFilters = await FilterUpdateApi.updateFilters(
-            // 'force' is 'true', because we update filters fully (without patches) when we enable groups.
-            filtersToCheck.map((id) => ({ filterId: id, force: true })),
+            // We update filters without patches when we enable groups.
+            filtersToCheck.map((id) => ({ filterId: id, ignorePatches: true })),
         );
 
         filterVersionStorage.refreshLastCheckTime(filtersToCheck);
@@ -138,7 +137,7 @@ export class FilterUpdateApi {
 
         // If it is a force check - updates all installed and enabled filters.
         let filterUpdateDetailsToUpdate = installedAndEnabledFilters.map(
-            id => ({ filterId: id, force: forceUpdate }),
+            id => ({ filterId: id, ignorePatches: forceUpdate }),
         );
 
         // If not a force check - updates only outdated filters.
@@ -158,7 +157,7 @@ export class FilterUpdateApi {
             const uniqueFiltersMap = new Map();
 
             combinedFilters.forEach(filter => {
-                if (!uniqueFiltersMap.has(filter.filterId) || filter.force) {
+                if (!uniqueFiltersMap.has(filter.filterId) || filter.ignorePatches) {
                     uniqueFiltersMap.set(filter.filterId, filter);
                 }
             });
@@ -172,7 +171,7 @@ export class FilterUpdateApi {
         // which where updated with force
         filterVersionStorage.refreshLastCheckTime(
             filterUpdateDetailsToUpdate
-                .filter(filterUpdateOptions => filterUpdateOptions.force)
+                .filter(filterUpdateOptions => filterUpdateOptions.ignorePatches)
                 .map(({ filterId }) => filterId),
         );
 
@@ -201,16 +200,19 @@ export class FilterUpdateApi {
          * We do not update metadata on each check if there are no filters or only custom filters.
          */
         const shouldLoadMetadata = filterUpdateOptionsList.some(filterUpdateOptions => {
-            return filterUpdateOptions.force && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
+            return filterUpdateOptions.ignorePatches && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
         });
 
         if (shouldLoadMetadata) {
             try {
-                await FiltersApi.loadMetadata(true);
+                await FiltersApi.updateMetadata();
             } catch (e) {
-                // No need to throw an error here,
-                // because we can still load filters using the old metadata.
-                Log.error('Failed to load metadata due to an error:', getErrorMessage(e));
+                // No need to throw an error here, because we still can load
+                // filters using the old metadata: checking metadata needed to
+                // check for updates - without fresh metadata we still can load
+                // newest filter, checking it's version will be against the old,
+                // local metadata, which is possible outdated.
+                Log.error('Failed to update metadata due to an error:', getErrorMessage(e));
             }
         }
 
@@ -293,7 +295,7 @@ export class FilterUpdateApi {
                     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
                     && !filterVersion?.shouldWaitFullUpdate;
             })
-            .map(({ filterId }) => ({ filterId, force: false }));
+            .map(({ filterId }) => ({ filterId, ignorePatches: false }));
     }
 
     /**
@@ -330,7 +332,7 @@ export class FilterUpdateApi {
             // Check, if the renewal period of each filter has passed.
             // If it is time to check the renewal, add to the array.
             return lastCheckTime + updatePeriod <= Date.now();
-        }).map(({ filterId }) => ({ filterId, force: true }));
+        }).map(({ filterId }) => ({ filterId, ignorePatches: true }));
     }
 }
 

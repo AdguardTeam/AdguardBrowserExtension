@@ -65,6 +65,17 @@ export class Network {
     private loadingSubscriptions: Record<string, boolean> = {};
 
     /**
+     * Checks if filter has local copy in the extension resources or not.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns True if filter has local copy, false otherwise.
+     */
+    public isFilterHasLocalCopy(filterId: number): boolean {
+        return this.settings.localFilterIds.includes(filterId);
+    }
+
+    /**
      * Downloads filter rules by filter ID.
      *
      * @param filterUpdateOptions Filter update detail.
@@ -82,6 +93,11 @@ export class Network {
     ): Promise<DownloadResult> {
         let url: string;
 
+        if (!forceRemote && this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
+            // eslint-disable-next-line max-len
+            throw new Error(`Cannot locally load filter with id ${filterUpdateOptions.filterId} because it is not build in the extension local resources.`);
+        }
+
         let isLocalFilter = false;
         if (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterUpdateOptions.filterId, useOptimizedFilters);
@@ -96,7 +112,7 @@ export class Network {
         }
 
         // local filters do not support patches, that is why we always download them fully
-        if (isLocalFilter || filterUpdateOptions.force || !rawFilter) {
+        if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {

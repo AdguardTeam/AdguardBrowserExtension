@@ -93,9 +93,9 @@ export class CommonFilterApi {
     ): Promise<RegularFilterMetadata | null> {
         Log.info(`Update filter ${filterUpdateOptions.filterId}`);
 
-        // we do not have to check metadata for the filters which do not update with force, because
-        // they even do not trigger metadata update
-        if (filterUpdateOptions.force) {
+        // We do not have to check metadata for the filters which do not update with force, because
+        // they even do not trigger metadata update.
+        if (filterUpdateOptions.ignorePatches) {
             const filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateOptions.filterId);
 
             if (!filterMetadata) {
@@ -179,13 +179,13 @@ export class CommonFilterApi {
 
         // We only update the expiration date if it is a forced update to
         // avoid updating the expiration date during patch updates.
-        const nextExpires = filterVersion?.expires && !filterUpdateOptions.force
+        const nextExpires = filterVersion?.expires && !filterUpdateOptions.ignorePatches
             ? filterVersion.expires
             : Number(expires);
 
         // We only update the last check time if it is a forced update to
         // avoid updating the last check time during patch updates.
-        const nextLastCheckTime = filterVersion?.lastCheckTime && !filterUpdateOptions.force
+        const nextLastCheckTime = filterVersion?.lastCheckTime && !filterUpdateOptions.ignorePatches
             ? filterVersion.lastCheckTime
             : Date.now();
 
@@ -231,14 +231,7 @@ export class CommonFilterApi {
         // module to reduce the risk of cyclic dependency, since FiltersApi
         // depends on CommonFilterApi and CustomFilterApi.
         // On the first run, we update the common filters from the backend.
-        if (enableUntouchedGroups) {
-            // Enable filters and their groups.
-            await FiltersApi.loadAndEnableFilters(filterIds, true);
-        } else {
-            // Enable only filters.
-            await FiltersApi.loadFilters(filterIds, true);
-            filterStateStorage.enableFilters(filterIds);
-        }
+        await FiltersApi.loadAndEnableFilters(filterIds, true, enableUntouchedGroups);
     }
 
     /**

@@ -368,9 +368,9 @@ export const genCommonConfig = (browserConfig) => {
                     },
                 ],
             }),
-            // We are doing stricter JS rule checking for Firefox AMO, so we
-            // need to determine if the Firefox browser is AMO or not.
             new DefinePlugin({
+                // We are doing stricter JS rule checking for Firefox AMO, so we
+                // need to determine if the Firefox browser is AMO or not.
                 IS_FIREFOX_AMO: browserConfig.browser === BROWSERS.FIREFOX_AMO,
                 IS_RELEASE: process.env.BUILD_ENV === ENVS.RELEASE,
             }),
