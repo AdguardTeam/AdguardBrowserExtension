@@ -88,9 +88,7 @@ export class Engine {
         const rulesCount = Engine.api.getRulesCount();
         Log.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated, {
-            rulesCount,
-        });
+        listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
 
     /**
@@ -106,9 +104,7 @@ export class Engine {
         const rulesCount = Engine.api.getRulesCount();
         Log.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated, {
-            rulesCount,
-        });
+        listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
 
     /**

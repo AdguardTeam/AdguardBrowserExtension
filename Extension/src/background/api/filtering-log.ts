@@ -351,6 +351,7 @@ export class FilteringLogApi {
             tabInfo.filteringEvents.splice(1, 1);
         }
 
+        // TODO: Looks like not using. Maybe lost listener in refactoring.
         listeners.notifyListeners(listeners.LogEventAdded, tabInfo, data);
     }
 
@@ -378,6 +379,7 @@ export class FilteringLogApi {
         if (event) {
             event = Object.assign(event, data);
 
+            // TODO: Looks like not using. Maybe lost listener in refactoring.
             listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
         }
     }

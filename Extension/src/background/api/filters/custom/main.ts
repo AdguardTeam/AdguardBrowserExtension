@@ -302,7 +302,7 @@ export class CustomFilterApi {
         const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
             customUrl,
             rawFilter,
-            filterUpdateOptions.force,
+            filterUpdateOptions.ignorePatches,
         );
 
         if (!CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {

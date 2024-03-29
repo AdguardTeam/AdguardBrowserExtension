@@ -44,6 +44,7 @@ import {
 } from '../../schema';
 import { network } from '../network';
 import { getErrorMessage } from '../../../common/error';
+import { isNumber } from '../../../common/guards';
 
 import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
@@ -90,13 +91,10 @@ export class FiltersApi {
      * The metadata cannot be loaded individually because the all metadata needs
      * to be updated in order to, for example, update translations or track
      * the removal/addition of filters.
-     *
-     * @param remote Whether to download metadata from remote resources or from
-     * local resources.
      */
-    public static async loadMetadata(remote: boolean): Promise<void> {
-        await FiltersApi.loadI18nMetadataFromBackend(remote);
-        await FiltersApi.loadMetadataFromFromBackend(remote);
+    public static async updateMetadata(): Promise<void> {
+        await FiltersApi.loadI18nMetadataFromBackend(true);
+        await FiltersApi.loadMetadataFromFromBackend(true);
 
         FiltersApi.loadFilteringStates();
 
@@ -148,28 +146,51 @@ export class FiltersApi {
     }
 
     /**
-     * Update metadata from external source and download rules for not installed
-     * (not added to the browser storage) filters.
+     * Update metadata from local or remote source and download rules for filters.
+     * If loading filters from remote failed, try to load from local resources,
+     * but only those filters, for which extension has local copies in resources.
      *
      * @param filterIds Filter ids to load.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
+     *
+     * @returns List of loaded filters ids.
      */
-    public static async loadFilters(filterIds: number[], remote: boolean): Promise<void> {
-        // Ignore loaded filters
-        // Custom filters always have loaded state, so we don't need additional check
-        const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
-
-        if (unloadedFiltersIds.length === 0) {
-            return;
+    private static async loadFilters(filterIds: number[], remote: boolean): Promise<number[]> {
+        if (filterIds.length === 0) {
+            return [];
         }
 
-        await FiltersApi.loadMetadata(remote);
+        if (remote) {
+            try {
+                await FiltersApi.updateMetadata();
+            } catch (e) {
+                // No need to throw an error here, because we still can load
+                // filters using the old metadata: checking metadata needed to
+                // check for updates - without fresh metadata we still can load
+                // newest filter, checking it's version will be against the old,
+                // local metadata, which is possible outdated.
+                Log.error('Failed to update metadata due to an error:', getErrorMessage(e));
+            }
+        }
 
-        const tasks = unloadedFiltersIds.map(
-            // force here to get filters without patches
-            (id) => CommonFilterApi.loadFilterRulesFromBackend({ filterId: id, force: true }, remote),
-        );
+        const tasks = filterIds.map(async (filterId) => {
+            try {
+                // Load filters without patches.
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
+            } catch (e) {
+                Log.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                // eslint-disable-next-line max-len
+                if (!network.isFilterHasLocalCopy(filterId)) {
+                    // eslint-disable-next-line max-len
+                    throw new Error(`Filter rules were not loaded from backend and there is no local copy of the filter with id ${filterId}.`, { cause: e });
+                }
+                Log.debug('Trying to load from storage.');
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+            }
+
+            return filterId;
+        });
         const promises = await Promise.allSettled(tasks);
 
         // Handles errors
@@ -178,29 +199,51 @@ export class FiltersApi {
                 Log.error('Cannot load filter rules due to: ', promise.reason);
             }
         });
+
+        return promises
+            .map((p) => (p.status === 'fulfilled' ? p.value : null))
+            .filter((p): p is number => isNumber(p));
     }
 
     /**
      * Loads and enables specified filters. Once the filters are enabled,
      * the untouched groups belonging to those filters will be enabled too.
      *
+     * If method called in offline mode, some filters may not be loaded,
+     * because we have local copies only for our built-in filters.
+     *
      * @param filterIds Filter ids.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
+     * @param enableGroups Should enable groups that were not touched by users
+     * or by code.
      */
-    public static async loadAndEnableFilters(filterIds: number[], remote = false): Promise<void> {
-        await FiltersApi.loadFilters(filterIds, remote);
+    public static async loadAndEnableFilters(
+        filterIds: number[],
+        remote = false,
+        enableGroups = false,
+    ): Promise<void> {
+        // Ignore loaded filters
+        // Custom filters always have loaded state, so we don't need additional check
+        const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
 
-        filterStateStorage.enableFilters(filterIds);
+        const loadedFilters = await FiltersApi.loadFilters(unloadedFiltersIds, remote);
+
+        // Concatenate filters loaded just now with already loaded filters.
+        loadedFilters.push(...filterIds.filter((id) => FiltersApi.isFilterRulesIsLoaded(id)));
+
+        filterStateStorage.enableFilters(loadedFilters);
 
         if (!remote) {
             // Update the enabled filters only if loading from local resources,
             // because when loading from remote resources, the filters are already up-to-date.
-            await FilterUpdateApi.checkForFiltersUpdates(filterIds);
+            await FilterUpdateApi.checkForFiltersUpdates(loadedFilters);
         }
 
-        // we enable filters groups if it was never enabled or disabled early
-        FiltersApi.enableGroupsWereNotTouched(filterIds);
+        if (enableGroups) {
+            // we enable filters groups if it was never enabled or disabled early
+            FiltersApi.enableGroupsWereNotTouched(loadedFilters);
+        }
     }
 
     /**
@@ -216,39 +259,22 @@ export class FiltersApi {
     /**
      * Force reload enabled common filters metadata and rules from backend.
      * Called on "use optimized filters" setting switch.
+     *
+     * If method called in offline mode, some filters may not be loaded,
+     * because we have local copies only for our built-in filters.
      */
     public static async reloadEnabledFilters(): Promise<void> {
         const filterIds = FiltersApi.getEnabledFilters();
 
         // Ignore custom filters
-        const commonFilters = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
+        const commonFiltersIds = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
 
-        try {
-            await FiltersApi.loadMetadata(true);
-        } catch (e) {
-            // No need to throw an error here,
-            // because we can still load filters using the old metadata.
-            Log.error('Cannot load metadata due to: ', getErrorMessage(e));
-        }
+        const loadedFiltersIds = await FiltersApi.loadFilters(commonFiltersIds, true);
 
-        const tasks = commonFilters.map(
-            (id) => CommonFilterApi.loadFilterRulesFromBackend(
-                // 'force' is 'true' here, because when we switch to optimized filters or back, we need to
-                // update all filters.
-                { filterId: id, force: true },
-                true,
-            ),
-        );
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                Log.error('Cannot load filter rules due to: ', promise.reason);
-            }
-        });
-
-        filterStateStorage.enableFilters(filterIds);
+        // Enable only loaded filters, because click on "use optimized filters"
+        // can happen in offline mode and not every filter can be loaded, only
+        // built-in filters from local extension's resources.
+        filterStateStorage.enableFilters(loadedFiltersIds);
     }
 
     /**
@@ -378,6 +404,7 @@ export class FiltersApi {
     /**
      * Read stringified i18n metadata from settings storage.
      * If data is not exist, load it from local assets.
+     * If data is exist, update cache version to faster read.
      */
     private static async initI18nMetadata(): Promise<void> {
         const storageData = i18nMetadataStorage.read();
@@ -400,6 +427,7 @@ export class FiltersApi {
     /**
      * Read stringified metadata from settings storage.
      * If data is not exist, load it from local assets.
+     * If data is exist, update cache version to faster read.
      */
     private static async initMetadata(): Promise<void> {
         const storageData = metadataStorage.read();

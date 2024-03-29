@@ -53,7 +53,9 @@ export enum LogLevelString {
  * Simple logger with log levels
  */
 export class Log {
-    private static currentLevelValue = LogLevel.Info;
+    private static currentLevelValue = IS_RELEASE
+        ? LogLevel.Info
+        : LogLevel.Debug;
 
     /**
      * Print debug messages. Usually used for technical information.
