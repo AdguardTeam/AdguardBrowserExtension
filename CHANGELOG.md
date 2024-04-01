@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693)
-
+- Filters auto updates not refreshing `last updated date` field [#2726](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2726)
 
 ## [4.3.10] - 2023-01-20
 

@@ -22,7 +22,11 @@ import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
 import { fakeFilterV1 } from '../../../../helpers/fixtures/fake_filter_v1';
 import { getMetadataFixture } from '../../../../helpers/fixtures';
 import { mockLocalStorage } from '../../../../helpers';
-import { AntibannerGroupsId, APP_VERSION_KEY } from '../../../../../Extension/src/common/constants';
+import {
+    AntibannerGroupsId,
+    APP_VERSION_KEY,
+    CLIENT_ID_KEY,
+} from '../../../../../Extension/src/common/constants';
 import { SettingOption } from '../../../../../Extension/src/background/schema';
 import { fakeFilterWithVersion } from '../../../../helpers/fixtures/fake-filter-with-version';
 import { fakeFilterV4WithDiffPath } from '../../../../helpers/fixtures/fake_filter_v4_with_diff_path';
@@ -96,6 +100,8 @@ describe('Filter Update API should', () => {
 
     // Groups test with real timers
     describe('tests with real timers', () => {
+        const nativeDateNow = Date.now;
+
         beforeEach(async () => {
             storage = mockLocalStorage({
                 [APP_VERSION_KEY]: '4.2.0.0',
@@ -105,6 +111,7 @@ describe('Filter Update API should', () => {
 
         afterEach(async () => {
             await storage.clear();
+            Date.now = nativeDateNow;
         });
 
         it('check for updates after load filter from local resources', async () => {
@@ -247,14 +254,9 @@ describe('Filter Update API should', () => {
         beforeEach(async () => {
             storage = mockLocalStorage({
                 [APP_VERSION_KEY]: '4.2.0.0',
+                [CLIENT_ID_KEY]: 'id',
             });
             await App.init();
-
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
-                .mockImplementation(() => Promise.resolve({
-                    filter: fakeFilterV1.split('\n'),
-                    rawFilter: fakeFilterV1.split('\n'),
-                }));
         });
 
         afterEach(async () => {
@@ -265,6 +267,13 @@ describe('Filter Update API should', () => {
 
         it('calls downloadWithRaw', async () => {
             const filterId = 1;
+
+            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+                .mockImplementation(() => Promise.resolve({
+                    filter: fakeFilterV1.split('\n'),
+                    rawFilter: fakeFilterV1.split('\n'),
+                }));
+
             await FiltersApi.loadAndEnableFilters([filterId]);
             await Categories.enableGroup(7);
             // after load and enable it downloads filters embedded into the extension
@@ -325,6 +334,82 @@ describe('Filter Update API should', () => {
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+        });
+
+        it('Filters with diff path get full (force) update on expiring', async () => {
+            const filterId = 1;
+
+            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+                .mockImplementation(() => Promise.resolve({
+                    filter: fakeFilterV4WithDiffPath.split('\n'),
+                    rawFilter: fakeFilterV4WithDiffPath.split('\n'),
+                }));
+
+            // Trigger full (force) filter update on filter load
+            await FiltersApi.loadAndEnableFilters([filterId]);
+            await Categories.enableGroup(7);
+            expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
+                1,
+                'chrome-extension://test/filters/filter_1.txt',
+                {
+                    force: true,
+                    definedExpressions,
+                },
+            );
+            expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+
+            // Auto update filter to get a diff patch
+            await FilterUpdateApi.autoUpdateFilters(false);
+            expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
+                2,
+                'https://filters.adtidy.org/extension/chromium/filters/1.txt',
+                {
+                    definedExpressions,
+                    rawFilter: fakeFilterV4WithDiffPath,
+                },
+            );
+
+            // Expire and update filter to get full (forced) update again
+            await SettingsApi.setSetting(SettingOption.FiltersUpdatePeriod, 350);
+            let filterVersionData = filterVersionStorage.getData();
+            filterVersionData[1]!.lastCheckTime = 0;
+            filterVersionData[1]!.lastScheduledCheckTime = 0;
+
+            await FilterUpdateApi.autoUpdateFilters(false);
+            expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
+                3,
+                'https://filters.adtidy.org/extension/chromium/filters/1.txt',
+                {
+                    force: true,
+                    definedExpressions,
+                },
+            );
+
+            // Force update must set new lastCheckTime to current time
+            filterVersionData = filterVersionStorage.getData();
+
+            let lastCheckTime = filterVersionData[1]!.lastCheckTime;
+            let lastScheduledCheckTime = filterVersionData[1]!.lastScheduledCheckTime;
+            expect(lastCheckTime > lastScheduledCheckTime).toBeTruthy();
+
+            // Next auto update brings diff patch again
+            await FilterUpdateApi.autoUpdateFilters(false);
+            expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
+                4,
+                'https://filters.adtidy.org/extension/chromium/filters/1.txt',
+                {
+                    definedExpressions,
+                    rawFilter: fakeFilterV4WithDiffPath,
+                },
+            );
+
+            // Auto update must set new lastScheduledCheckTime to current time
+            filterVersionData = filterVersionStorage.getData();
+
+            lastCheckTime = filterVersionData[1]!.lastCheckTime;
+            lastScheduledCheckTime = filterVersionData[1]!.lastScheduledCheckTime;
+            expect(lastScheduledCheckTime > lastCheckTime).toBeTruthy();
         });
     });
 });

@@ -28,13 +28,17 @@ export const filterVersionDataValidator = zod.object({
      */
     version: zod.string(),
     /**
-     * The time in millisecond of the last check by the scheduler: every
-     * {@link FilterUpdateService.CHECK_PERIOD_MS period} the time of the last
-     * check will be overwritten by the scheduler or if the user clicks
+     * The time in millisecond of the last forced update: if the user clicks
      * the forced update check from the user interface or if the user enabled
      * the filter or group.
      */
     lastCheckTime: zod.number(),
+    /**
+     * The time in millisecond of the last check by the scheduler: every
+     * {@link FilterUpdateService.CHECK_PERIOD_MS period} the time of the last
+     * check will be overwritten by the scheduler.
+     */
+    lastScheduledCheckTime: zod.number(),
     /**
      * The time in millisecond of the last update filter from remote resources.
      */

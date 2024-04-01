@@ -236,6 +236,7 @@ export class CustomFilterApi {
             expires: filterMetadata.expires,
             lastUpdateTime: filterMetadata.timeUpdated,
             lastCheckTime: Date.now(),
+            lastScheduledCheckTime: Date.now(),
         });
 
         filterStateStorage.set(filterId, {
@@ -430,6 +431,7 @@ export class CustomFilterApi {
             expires: Number(expires),
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: Date.now(),
+            lastScheduledCheckTime: Date.now(),
         });
 
         const newFilterMetadata = {
