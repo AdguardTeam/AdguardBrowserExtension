@@ -1,10 +1,10 @@
-! Checksum: 2/xn5+NuNmiKKHDBp0IwYg
-! Diff-Path: ../patches/5/5-s-1706279762-3600.patch
+! Checksum: yMFfyf7CGsHKY9hEguvCMw
+! Diff-Path: ../patches/5/5-s-1711964234-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.31
-! TimeUpdated: 2024-01-26T14:33:03+00:00
-! Expires: 5 days (update frequency)
+! Version: 2.0.1.40
+! TimeUpdated: 2024-04-01T09:33:27+00:00
+! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
 !
@@ -142,8 +142,12 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! vipbox.lc - streaming provider - blocking popunders specific to that page
-/[a-z]{8,}\.(com|info|xyz)/$domain=nolive.me,third-party
+! remove anti-adb
+www.youtube.com#%#(()=>{const wrapper=(target,thisArg,args)=>{let content=Reflect.apply(target,thisArg,args);if(content.includes('bkaEnforcementMessage')){const modifiedContent=content.replace(/\n.\n[A-Z]auxiliaryUi\.messageRenderers\.bkaEnforcementMessageViewModel\.displayType.\dENFORCEMENT_MESSAGE_VIEW_MODEL_DISPLAY_TYPE_[A-Z]+\n[A-Z]\n[A-Z]auxiliaryUi\.messageRenderers\.bkaEnforcementMessageViewModel\.isVisible.{2}(?:tru|fals)e/,'');return modifiedContent;}return content;};const handler={apply:wrapper};window.atob=new Proxy(window.atob,handler);})();
+www.youtube.com#%#//scriptlet('set-constant', 'ytInitialPlayerResponse.auxiliaryUi.messageRenderers.bkaEnforcementMessageViewModel', 'undefined')
+! Fix ads on https://www.youtube.com/shorts/
+! TODO: If it does not cause any problems, move it to the Base filter
+www.youtube.com#%#(()=>{window.JSON.parse=new Proxy(JSON.parse,{apply(r,e,t){const n=Reflect.apply(r,e,t);if(!location.pathname.startsWith("/shorts/"))return n;const a=n?.entries;return a&&Array.isArray(a)&&(n.entries=n.entries.filter((r=>{if(!r?.command?.reelWatchEndpoint?.adClientParams?.isAd)return r}))),n}});})();
 ! main youtube page - changing view for the first row of elements
 www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
 www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
@@ -151,6 +155,9 @@ www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-ric
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96262
 developer.android.com,adssettings.google.com##sc-survey-survey-manager
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/174701#issuecomment-1991730425
+foxtel.com.au#%#//scriptlet('xml-prune', 'xpath(//*[name()="MPD"]/@mediaPresentationDuration | //*[name()="Period"]/@start | //*[name()="Period"][.//*[name()="BaseURL" and contains(text(),"/adease/")]])', '', '.mpd')
+foxtel.com.au#%#//scriptlet('json-prune', 'adease adeaseBlob vmap')
 !
 ! Allowlist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -249,11 +256,6 @@ mail.yandex.ru#?#.modal:has(> div[data-lego] div[class^="mail-SubscriptionsPopup
 ! This file contains all filters other than English, Social, Spyware and Russian.
 ! Also filters by platforms https://github.com/AdguardTeam/AdguardBrowserExtension/issues/917
 !
-!
-!
-! Filters for adguard without safari
-||chrome.test.filter.com^$third-party
-!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169842
 /videojs8/nuevo.min.js
 /videojs/plugins/vastpro.js
@@ -267,6 +269,9 @@ imdb.com#$?#body:has(div[data-testid="promptable"] .ipc-rating-display-with-post
 !
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_experimental
+! Detect of using AdGuard products
+!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
+adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!
@@ -275,8 +280,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_experimental
 ! Mobile advertising networks known rotator domains
 ! Used to show ads in mobile apps and websites
 !
-! https://github.com/AdguardTeam/AdguardFilters/pull/170258
-##.gnt_xmst
 !-------------------------------------------------------------------!
 !---------------------- Dangerous rules ----------------------------!
 !-------------------------------------------------------------------!

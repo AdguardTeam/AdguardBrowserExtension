@@ -1,10 +1,10 @@
-! Checksum: i6VxAZPEPIxWevpfGWdUag
-! Diff-Path: ../patches/8/8-s-1706189784-3600.patch
+! Checksum: kA+hYxGLk7OfsRAdy0b09g
+! Diff-Path: ../patches/8/8-s-1711964235-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.6.41
-! TimeUpdated: 2024-01-25T13:33:38+00:00
-! Expires: 5 days (update frequency)
+! Version: 2.0.6.51
+! TimeUpdated: 2024-04-01T09:33:42+00:00
+! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
 !
@@ -615,7 +615,7 @@ minimumloon.nl,omroepeemsdelta.nl,wereldreizigers.nl###custom_html-2
 arrowcaz.nl,messianieuws.nl###custom_html-3
 historiek.net###custom_html-38
 messianieuws.nl###custom_html-4
-messianieuws.nl###custom_html-5
+huisvlijt.com,messianieuws.nl###custom_html-5
 rtvalbrandswaard.com###custom_html-6
 nljug.org###custom_html-7
 vroom.be###divBanneringSlot
@@ -1477,7 +1477,7 @@ icttipsandtricks.nl##body #adblock_screen
 !
 ! This section contains the list of ad blocking rules that fall under "advanced" category.
 !
-! Good: example.org#$##rek { display: none !important; }; example.org#%#//scriptlet('set-cookie', 'ad', '0'); example.org#%#document.cookie = "ad =0"; ; example.org$$script[tag-content="ad"][max-length="3000"].
+! Good: example.org#$##rek { display: none !important; }; example.org#%#//scriptlet('set-cookie', 'ad', '0'); example.org$$script[tag-content="ad"][max-length="3000"].
 ! Bad: example.org###rek (should be in specific.txt)
 !
 !--------------------------------------!
@@ -1497,6 +1497,9 @@ hardware.info#%#//scriptlet("set-constant", "BannerManager", "undefined")
 !--------------------------------------!
 ! SECTION: Dutch - CSS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/172847
+! https://github.com/AdguardTeam/AdguardFilters/issues/143168
+rtlnieuws.nl#$#.article-sidebar__ad { visibility: hidden !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157818
 gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3226
@@ -1543,6 +1546,12 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+iphoned.nl##div[data-name="dynamic-content-injected"][data-campaign]
+iphoned.nl##div[data-name="dynamic-content"]:has(> div[id^="div-gpt-"])
+iphoned.nl##div[data-name="featured-header-container"] > header[data-campaign]
+iphoned.nl##article > .no-content-styles:has(> div[data-nosnippet] > div[data-name="dynamic-content-injected"][data-campaign])
+rtl.nl##div[data-adslot-variant]
+bright.nl##body .ad
 nieuwsblad.be##.cba_container_grid
 dumpert.nl#?#.ad--billboardrectangle:upward(3)
 dumpert.nl#?#aside div[id^="ad_"]:upward(2)
@@ -1557,7 +1566,6 @@ agconnect.nl##div[class$="_ad-slot"]
 alblasserdamsnieuws.nl##.albla-adlabel
 alblasserdamsnieuws.nl##div[id^="albla-"]
 alle-tests.nl,bloovi.be###advertising
-androidworld.nl##.r89-desktop-billboard-atf
 cinenews.be,handbal.nl,webmastersunited.com,wegdamnieuws.nl##.ads
 ans-online.nl#?#.theiaStickySidebar > aside.penci_latest_news_widget > h4.widget-title:contains(Advertentie)
 antilliaansdagblad.com,dolcevia.com,h2owaternetwerk.nl,lokaleomroepzeewolde.nl,radiolelystad.nl##.bannergroup
@@ -1568,7 +1576,7 @@ autosport.nl##.advertentie_links
 autosport.nl##.bigbanner
 autowereld.nl###banner-lister-top
 autowereld.nl###mainbanner
-mannenzaken.nl##.r89-desktop-billboard-atf
+androidworld.nl,mannenzaken.nl##.r89-desktop-billboard-atf
 mannenzaken.nl##.r89-desktop-leaderboard-btf
 mannenzaken.nl##.r89-desktop-hpa-atf
 fr12.nl##.sda
@@ -1594,7 +1602,6 @@ looopings.nl##div[style="min-height:250px;"]
 gpblog.com##.betting-insert
 tameteo.nl###bannerDerPC
 tameteo.nl##.megabanner
-rtlnieuws.nl##.article-sidebar__ad
 ||e*.knack.be/rest/dialogues/files/*/Banner_Notificaties_AppInstall
 knack.be##.js-partner-content
 historiek.net##.ablok
@@ -1741,6 +1748,9 @@ klusidee.nl##td.td-ad
 !
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_dutch
+! Detect of using AdGuard products
+!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
+adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !---------------------------------------------------------------------------!
 !-------------- Fixing filtration errors (false-positive) ------------------!
@@ -1753,7 +1763,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_dutch
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165229
 @@||mmcdn.nl/tags/vkmag.com/
-! https://github.com/AdguardTeam/AdguardFilters/issues/142788
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131712
 ! https://github.com/AdguardTeam/AdguardFilters/issues/130694
 underarmour.nl#@#.b-header-banner
