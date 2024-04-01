@@ -1,10 +1,10 @@
-! Checksum: F23Kq3eHLPy20DKro31AYQ
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1706189797-3600.patch
+! Checksum: S1tD5xCqOUIAz5hkDlYQ4g
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1711964253-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.6.41
-! TimeUpdated: 2024-01-25T13:33:38+00:00
-! Expires: 5 days (update frequency)
+! Version: 2.0.6.51
+! TimeUpdated: 2024-04-01T09:33:42+00:00
+! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -556,7 +556,7 @@ minimumloon.nl,omroepeemsdelta.nl,wereldreizigers.nl###custom_html-2
 arrowcaz.nl,messianieuws.nl###custom_html-3
 historiek.net###custom_html-38
 messianieuws.nl###custom_html-4
-messianieuws.nl###custom_html-5
+huisvlijt.com,messianieuws.nl###custom_html-5
 rtvalbrandswaard.com###custom_html-6
 nljug.org###custom_html-7
 vroom.be###divBanneringSlot
@@ -1344,10 +1344,17 @@ icttipsandtricks.nl##body #adblock_screen
 @@||static.buienradar.nl/resources/js/advertisement.js
 npo.nl#%#//scriptlet('json-prune', 'assets.preroll')
 hardware.info#%#//scriptlet("set-constant", "BannerManager", "undefined")
+rtlnieuws.nl#$#.article-sidebar__ad { visibility: hidden !important; }
 gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px !important; }
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+iphoned.nl##div[data-name="dynamic-content-injected"][data-campaign]
+iphoned.nl##div[data-name="dynamic-content"]:has(> div[id^="div-gpt-"])
+iphoned.nl##div[data-name="featured-header-container"] > header[data-campaign]
+iphoned.nl##article > .no-content-styles:has(> div[data-nosnippet] > div[data-name="dynamic-content-injected"][data-campaign])
+rtl.nl##div[data-adslot-variant]
+bright.nl##body .ad
 nieuwsblad.be##.cba_container_grid
 dumpert.nl#?#.ad--billboardrectangle:upward(3)
 dumpert.nl#?#aside div[id^="ad_"]:upward(2)
@@ -1362,7 +1369,6 @@ agconnect.nl##div[class$="_ad-slot"]
 alblasserdamsnieuws.nl##.albla-adlabel
 alblasserdamsnieuws.nl##div[id^="albla-"]
 alle-tests.nl,bloovi.be###advertising
-androidworld.nl##.r89-desktop-billboard-atf
 cinenews.be,handbal.nl,webmastersunited.com,wegdamnieuws.nl##.ads
 ans-online.nl#?#.theiaStickySidebar > aside.penci_latest_news_widget > h4.widget-title:contains(Advertentie)
 antilliaansdagblad.com,dolcevia.com,h2owaternetwerk.nl,lokaleomroepzeewolde.nl,radiolelystad.nl##.bannergroup
@@ -1373,7 +1379,7 @@ autosport.nl##.advertentie_links
 autosport.nl##.bigbanner
 autowereld.nl###banner-lister-top
 autowereld.nl###mainbanner
-mannenzaken.nl##.r89-desktop-billboard-atf
+androidworld.nl,mannenzaken.nl##.r89-desktop-billboard-atf
 mannenzaken.nl##.r89-desktop-leaderboard-btf
 mannenzaken.nl##.r89-desktop-hpa-atf
 fr12.nl##.sda
@@ -1399,7 +1405,6 @@ looopings.nl##div[style="min-height:250px;"]
 gpblog.com##.betting-insert
 tameteo.nl###bannerDerPC
 tameteo.nl##.megabanner
-rtlnieuws.nl##.article-sidebar__ad
 ||e*.knack.be/rest/dialogues/files/*/Banner_Notificaties_AppInstall
 knack.be##.js-partner-content
 historiek.net##.ablok
@@ -1539,6 +1544,8 @@ klusidee.nl##td.td-ad
 voipsipclient.blogspot.nl##.adsbygoogle
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_dutch
+!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
+adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 @@||mmcdn.nl/tags/vkmag.com/
 underarmour.nl#@#.b-header-banner
 frontpage.fok.nl#@#.advertentie
