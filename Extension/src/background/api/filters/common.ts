@@ -107,7 +107,7 @@ export class CommonFilterApi {
             }
         }
 
-        Log.info(`Filter ${filterUpdateDetail.filterId} is need to updated`);
+        Log.info(`Filter ${filterUpdateDetail.filterId} needs to be updated`);
 
         try {
             const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateDetail, true);
@@ -192,6 +192,7 @@ export class CommonFilterApi {
             expires: nextExpires,
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: nextLastCheckTime,
+            lastScheduledCheckTime: filterVersion?.lastScheduledCheckTime || Date.now(),
         });
 
         return filterMetadata;
