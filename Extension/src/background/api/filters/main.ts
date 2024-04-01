@@ -17,6 +17,8 @@
  */
 import { Log } from '../../../common/log';
 import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
+import { getErrorMessage } from '../../../common/error';
+import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
 import {
     filterStateStorage,
@@ -43,8 +45,6 @@ import {
     groupStateStorageDataValidator,
 } from '../../schema';
 import { network } from '../network';
-import { getErrorMessage } from '../../../common/error';
-import { isNumber } from '../../../common/guards';
 
 import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
@@ -86,15 +86,33 @@ export class FiltersApi {
     }
 
     /**
-     * Load metadata from remote source and reload linked storages.
+     * Tries to load metadata from remote source and reloads linked storages.
      * Called before filters rules are updated or loaded from backend.
+     *
      * The metadata cannot be loaded individually because the all metadata needs
      * to be updated in order to, for example, update translations or track
      * the removal/addition of filters.
+     *
+     * If remote loading fails (due to server issues or network problems, etc.),
+     * and if `shouldUseLocalAssets` is true, the method loads metadata from local assets.
+     *
+     * @param shouldUseLocalAssets Whether to load metadata from local assets
+     * if remote loading fails. Default is false.
      */
-    public static async updateMetadata(): Promise<void> {
-        await FiltersApi.loadI18nMetadataFromBackend(true);
-        await FiltersApi.loadMetadataFromFromBackend(true);
+    public static async updateMetadata(shouldUseLocalAssets = false): Promise<void> {
+        try {
+            await FiltersApi.loadI18nMetadataFromBackend(true);
+            await FiltersApi.loadMetadataFromFromBackend(true);
+        } catch (e) {
+            Log.debug('Cannot load remote metadata due to: ', getErrorMessage(e));
+            // loading metadata from local assets is needed to avoid the extension init stopping after the install
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+            if (shouldUseLocalAssets) {
+                Log.debug('Trying to load metadata from local assets...');
+                await FiltersApi.loadI18nMetadataFromBackend(false);
+                await FiltersApi.loadMetadataFromFromBackend(false);
+            }
+        }
 
         FiltersApi.loadFilteringStates();
 
@@ -147,6 +165,7 @@ export class FiltersApi {
 
     /**
      * Update metadata from local or remote source and download rules for filters.
+     *
      * If loading filters from remote failed, try to load from local resources,
      * but only those filters, for which extension has local copies in resources.
      *
@@ -163,7 +182,10 @@ export class FiltersApi {
 
         if (remote) {
             try {
-                await FiltersApi.updateMetadata();
+                // the arg is 'true' for loading locally stored metadata if remote loading failed.
+                // needed not to stop the initialization process after the extension install
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+                await FiltersApi.updateMetadata(true);
             } catch (e) {
                 // No need to throw an error here, because we still can load
                 // filters using the old metadata: checking metadata needed to
@@ -176,21 +198,25 @@ export class FiltersApi {
 
         const tasks = filterIds.map(async (filterId) => {
             try {
-                // Load filters without patches.
-                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
+                // 'ignorePatches: true' here for loading filters without patches
+                const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
+                return f.filterId;
             } catch (e) {
                 Log.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
-                // eslint-disable-next-line max-len
                 if (!network.isFilterHasLocalCopy(filterId)) {
-                    // eslint-disable-next-line max-len
-                    throw new Error(`Filter rules were not loaded from backend and there is no local copy of the filter with id ${filterId}.`, { cause: e });
+                    Log.debug(`Filter rules cannot be loaded because there is no local assets for filter ${filterId}.`);
+                    return null;
                 }
-                Log.debug('Trying to load from storage.');
-                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+                Log.debug(`Trying to load locally stored filter rules for filter: ${filterId}...`);
+                // second arg is 'false' to load locally stored filter rules if remote loading failed
+                // e.g. server is not available
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+                // 'ignorePatches: true' here for loading filters without patches
+                const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+                return f.filterId;
             }
-
-            return filterId;
         });
+
         const promises = await Promise.allSettled(tasks);
 
         // Handles errors
@@ -373,7 +399,7 @@ export class FiltersApi {
     }
 
     /**
-     * Load i18n metadata from remote source and save it.
+     * Loads i18n metadata from remote source and save it.
      *
      * @param remote If true, download data from backend, else load it from local files.
      */
@@ -386,8 +412,8 @@ export class FiltersApi {
     }
 
     /**
-     * Load metadata from remote source, apply i18n metadata, add custom group
-     * and save it.
+     * Loads metadata from remote source, applies i18n metadata, adds custom group
+     * and saves it.
      *
      * @param remote If true, download data from backend, else load it from local files.
      */

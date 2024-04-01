@@ -127,6 +127,8 @@ export class CommonFilterApi {
      * @param filterUpdateOptions Filter update detail.
      * @param forceRemote Whether to download filter rules from remote resources or
      * from local resources.
+     *
+     * @returns Filter metadata — {@link RegularFilterMetadata}.
      */
     public static async loadFilterRulesFromBackend(
         filterUpdateOptions: FilterUpdateOptions,
