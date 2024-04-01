@@ -22,7 +22,7 @@ import {
     type DownloadResult,
 } from '@adguard/filters-downloader/browser';
 
-import { LOCALE_METADATA_FILE_NAME, LOCALE_I18N_METADATA_FILE_NAME } from '../../../../../constants';
+import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
 import { UserAgent } from '../../../common/user-agent';
 import {
     type Metadata,
@@ -201,7 +201,7 @@ export class Network {
      * @returns Object of {@link Metadata}.
      */
     public async getLocalFiltersMetadata(): Promise<Metadata> {
-        const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCALE_METADATA_FILE_NAME}`);
+        const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
 
         let response: ExtensionXMLHttpRequest;
 
@@ -234,7 +234,7 @@ export class Network {
      * @returns Object of {@link I18nMetadata}.
      */
     public async getLocalFiltersI18nMetadata(): Promise<I18nMetadata> {
-        const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCALE_I18N_METADATA_FILE_NAME}`);
+        const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_I18N_METADATA_FILE_NAME}`);
 
         let response: ExtensionXMLHttpRequest;
 

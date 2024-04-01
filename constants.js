@@ -49,8 +49,7 @@ export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
 export const REMOTE_METADATA_FILE_NAME = 'filters.js';
 export const REMOTE_I18N_METADATA_FILE_NAME = 'filters_i18n.js';
 // But locally we prefer to use '.json' extension.
-export const LOCALE_METADATA_FILE_NAME = 'filters.json';
-export const LOCALE_I18N_METADATA_FILE_NAME = 'filters_i18n.json';
+export const LOCAL_METADATA_FILE_NAME = 'filters.json';
+export const LOCAL_I18N_METADATA_FILE_NAME = 'filters_i18n.json';
 
-// eslint-disable-next-line max-len
-export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 224];
+export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 224];
