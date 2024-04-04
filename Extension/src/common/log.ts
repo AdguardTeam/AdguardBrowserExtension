@@ -53,7 +53,7 @@ export enum LogLevelString {
  * Simple logger with log levels
  */
 export class Log {
-    private static currentLevelValue = IS_RELEASE
+    private static currentLevelValue = IS_RELEASE || IS_BETA
         ? LogLevel.Info
         : LogLevel.Debug;
 

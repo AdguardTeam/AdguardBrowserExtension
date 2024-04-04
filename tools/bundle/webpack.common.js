@@ -373,6 +373,7 @@ export const genCommonConfig = (browserConfig) => {
                 // need to determine if the Firefox browser is AMO or not.
                 IS_FIREFOX_AMO: browserConfig.browser === BROWSERS.FIREFOX_AMO,
                 IS_RELEASE: process.env.BUILD_ENV === ENVS.RELEASE,
+                IS_BETA: process.env.BUILD_ENV === ENVS.BETA,
             }),
         ],
     };
