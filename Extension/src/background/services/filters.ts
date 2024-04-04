@@ -88,7 +88,9 @@ export class FiltersService {
     private static onFilterEnable(message: AddAndEnableFilterMessage): number | undefined {
         const { filterId } = message.data;
 
-        FiltersService.enableFilter(filterId);
+        // second arg 'true' is needed to enable not touched group
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2776
+        FiltersService.enableFilter(filterId, true);
 
         const group = Categories.getGroupByFilterId(filterId);
 
@@ -256,9 +258,10 @@ export class FiltersService {
      * If filter group has not been touched before, it will be activated.
      *
      * @param filterId Id of filter.
+     * @param shouldEnableGroup Flag for enabling the filter group if it has not been touched before.
      */
-    private static async enableFilter(filterId: number): Promise<void> {
-        await FiltersApi.loadAndEnableFilters([filterId], true);
+    private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
+        await FiltersApi.loadAndEnableFilters([filterId], true, shouldEnableGroup);
         Engine.debounceUpdate();
     }
 }
