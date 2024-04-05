@@ -18,8 +18,8 @@
 import MD5 from 'crypto-js/md5';
 
 import { BrowserUtils } from '../../../utils/browser-utils';
-import { Log } from '../../../../common/log';
 import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../../common/constants';
+import { logger } from '../../../../common/logger';
 import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../../schema';
 import {
     customFilterMetadataStorage,
@@ -120,7 +120,10 @@ export class CustomFilterApi {
                 customFilterMetadataStorage.setData([]);
             }
         } catch (e) {
-            Log.warn('Cannot parse custom filter metadata from persisted storage, reset to default. Origin error: ', e);
+            logger.warn(
+                'Cannot parse custom filter metadata from persisted storage, reset to default. Origin error: ',
+                e,
+            );
             customFilterMetadataStorage.setData([]);
         }
     }
@@ -195,7 +198,7 @@ export class CustomFilterApi {
         // create new filter id
         const filterId = CustomFilterApi.genFilterId();
 
-        Log.info(`Create new custom filter with id ${filterId}`);
+        logger.info(`Create new custom filter with id ${filterId}`);
 
         const name = filterData.title ? filterData.title : parsed.name;
 
@@ -266,7 +269,7 @@ export class CustomFilterApi {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error('Cannot create filter due to: ', promise.reason);
+                logger.error('Cannot create filter due to: ', promise.reason);
             }
         });
     }
@@ -287,12 +290,12 @@ export class CustomFilterApi {
     public static async updateFilter(
         filterUpdateOptions: FilterUpdateOptions,
     ): Promise<CustomFilterMetadata | null> {
-        Log.info(`Update Custom filter ${filterUpdateOptions.filterId} ...`);
+        logger.info(`Update Custom filter ${filterUpdateOptions.filterId} ...`);
 
         const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOptions.filterId);
 
         if (!filterMetadata) {
-            Log.error(`Cannot find custom filter ${filterUpdateOptions.filterId} metadata`);
+            logger.error(`Cannot find custom filter ${filterUpdateOptions.filterId} metadata`);
             return null;
         }
 
@@ -306,11 +309,11 @@ export class CustomFilterApi {
         );
 
         if (!CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
-            Log.info(`Custom filter ${filterUpdateOptions.filterId} is already updated`);
+            logger.info(`Custom filter ${filterUpdateOptions.filterId} is already updated`);
             return null;
         }
 
-        Log.info(`Successfully update custom filter ${filterUpdateOptions.filterId}`);
+        logger.info(`Successfully update custom filter ${filterUpdateOptions.filterId}`);
         return CustomFilterApi.updateFilterData(filterMetadata, filterRemoteData);
     }
 
@@ -322,7 +325,7 @@ export class CustomFilterApi {
      * @param filterId Custom filter id.
      */
     public static async removeFilter(filterId: number): Promise<void> {
-        Log.info(`Remove Custom filter ${filterId} ...`);
+        logger.info(`Remove Custom filter ${filterId} ...`);
 
         customFilterMetadataStorage.remove(filterId);
         filterVersionStorage.delete(filterId);
@@ -488,7 +491,7 @@ export class CustomFilterApi {
         filter: CustomFilterMetadata,
         { checksum, parsed }: GetRemoteCustomFilterResult,
     ): boolean {
-        Log.info(`Check if custom filter ${filter.filterId} need to update`);
+        logger.info(`Check if custom filter ${filter.filterId} need to update`);
 
         if (BrowserUtils.isSemver(filter.version) && BrowserUtils.isSemver(parsed.version)) {
             return !BrowserUtils.isGreaterOrEqualsVersion(filter.version, parsed.version);
@@ -515,7 +518,7 @@ export class CustomFilterApi {
         rawFilter?: string,
         force?: boolean,
     ): Promise<GetRemoteCustomFilterResult> {
-        Log.info(`Get custom filter data from ${url}`);
+        logger.info(`Get custom filter data from ${url}`);
 
         const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
 

@@ -24,7 +24,7 @@ import {
     type SetConsentedFiltersMessage,
     type GetIsConsentedFilterMessage,
 } from '../../common/messages';
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 import { SettingOption } from '../schema';
 import { messageHandler } from '../message-handler';
 import { Engine } from '../engine';
@@ -139,7 +139,7 @@ export class FiltersService {
         const group = Categories.getGroupState(groupId);
 
         if (!group) {
-            Log.error(`Cannot find group with ${groupId} id`);
+            logger.error(`Cannot find group with ${groupId} id`);
             return;
         }
 

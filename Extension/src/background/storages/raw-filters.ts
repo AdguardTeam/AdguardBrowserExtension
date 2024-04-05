@@ -17,7 +17,7 @@
  */
 import zod from 'zod';
 
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 
 import { storage } from './main';
 
@@ -54,7 +54,7 @@ export class RawFiltersStorage {
         const parseResult = stringArraySchema.safeParse(data);
 
         if (!parseResult.success) {
-            Log.info('Received data had a format that was not expected:', parseResult.error.message);
+            logger.info('Received data had a format that was not expected:', parseResult.error.message);
             return undefined;
         }
 

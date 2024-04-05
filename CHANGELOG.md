@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `@adguard/logger` for logging messages.
+
 ### Changed
 - Raw filters are stored as strings.
 - Updated [@adguard/filters-downloader] to v2.2.0.

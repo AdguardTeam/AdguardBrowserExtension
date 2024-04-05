@@ -20,7 +20,7 @@
 import Nanobar from 'nanobar';
 
 import { MessageType } from '../common/messages';
-import { Log } from '../common/log';
+import { logger } from '../common/logger';
 
 import { messenger } from './services/messenger';
 
@@ -53,7 +53,7 @@ export class FilterDownload {
                 setTimeout(FilterDownload.checkRequestFilterReady, FilterDownload.checkRequestTimeoutMs);
             }
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             // retry request, if message handler is not ready
             setTimeout(FilterDownload.checkRequestFilterReady, FilterDownload.checkRequestTimeoutMs);
         }

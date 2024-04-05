@@ -19,7 +19,7 @@
 import { FilterUpdateApi } from '../api';
 import { storage } from '../storages';
 import { isNumber } from '../../common/guards';
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 
 /**
  * Service for scheduling filters update checks.
@@ -88,7 +88,7 @@ export class FilterUpdateService {
             try {
                 await FilterUpdateApi.autoUpdateFilters();
             } catch (e) {
-                Log.error('An error occurred during filters update:', e);
+                logger.error('An error occurred during filters update:', e);
             }
             // Saving current time to storage is required in the cases
             // when background page is often unloaded,

@@ -22,7 +22,7 @@ import { observer } from 'mobx-react';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { FULLSCREEN_USER_RULES_EDITOR, NotifierType } from '../../../../common/constants';
 import { messenger } from '../../../services/messenger';
-import { Log } from '../../../../common/log';
+import { logger } from '../../../../common/logger';
 import { fullscreenUserRulesStore } from '../../stores/FullscreenUserRulesStore';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons } from '../../../common/components/ui/Icons';
@@ -58,7 +58,7 @@ export const FullscreenUserRules = observer(() => {
                             break;
                         }
                         default: {
-                            Log.debug('There is no listener for type:', type);
+                            logger.debug('There is no listener for type:', type);
                             break;
                         }
                     }

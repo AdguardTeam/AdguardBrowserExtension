@@ -17,7 +17,7 @@
  */
 import zod from 'zod';
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
 import { SbCache, storage } from '../../storages';
 import {
@@ -101,8 +101,8 @@ export class UpdateApi {
                 await UpdateApi.runSchemaMigration(schemaMigrationAction, schema, schema + 1);
             }
         } catch (e) {
-            Log.error('Error while migrate: ', e);
-            Log.info('Reset settings...');
+            logger.error('Error while migrate: ', e);
+            logger.info('Reset settings...');
             await storage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
         }
     }
@@ -124,7 +124,7 @@ export class UpdateApi {
         } catch (e: unknown) {
             // eslint-disable-next-line max-len
             const errMessage = `Error while schema migrating from ${previousSchemaVersion} to ${currentSchemaVersion}: ${getErrorMessage(e)}`;
-            Log.error(errMessage);
+            logger.error(errMessage);
 
             throw new Error(errMessage, { cause: e });
         }
@@ -159,11 +159,11 @@ export class UpdateApi {
 
             results.forEach((result) => {
                 if (result.status === 'rejected') {
-                    Log.info(getErrorMessage(result.reason));
+                    logger.info(getErrorMessage(result.reason));
                 }
             });
         } catch (e: unknown) {
-            Log.info('Error while migrate user rules', getErrorMessage(e));
+            logger.info('Error while migrate user rules', getErrorMessage(e));
         } finally {
             if (db) {
                 db.close();

@@ -19,7 +19,7 @@
 import browser from 'webextension-polyfill';
 import { nanoid } from 'nanoid';
 
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../../common/messages';
 
 class Messenger {
@@ -32,9 +32,9 @@ class Messenger {
 
     // eslint-disable-next-line class-methods-use-this
     async sendMessage(type, data) {
-        Log.debug('Request type:', type);
+        logger.debug('Request type:', type);
         if (data) {
-            Log.debug('Request data:', data);
+            logger.debug('Request data:', data);
         }
 
         const response = await browser.runtime.sendMessage({
@@ -44,8 +44,8 @@ class Messenger {
         });
 
         if (response) {
-            Log.debug('Response type:', type);
-            Log.debug('Response data:', response);
+            logger.debug('Response type:', type);
+            logger.debug('Response data:', response);
         }
 
         return response;
@@ -80,7 +80,7 @@ class Messenger {
 
             port.onDisconnect.addListener(() => {
                 if (browser.runtime.lastError) {
-                    Log.error(browser.runtime.lastError.message);
+                    logger.error(browser.runtime.lastError.message);
                 }
                 // we try to connect again if the background page was terminated
                 if (!forceDisconnected) {

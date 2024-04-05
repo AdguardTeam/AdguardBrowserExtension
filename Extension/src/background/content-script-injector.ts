@@ -21,7 +21,7 @@ import browser, { type Tabs } from 'webextension-polyfill';
 import { isHttpRequest } from '@adguard/tswebextension';
 
 import { UserAgent } from '../common/user-agent';
-import { Log } from '../common/log';
+import { logger } from '../common/logger';
 import {
     CONTENT_SCRIPT_START_OUTPUT,
     CONTENT_SCRIPT_END_OUTPUT,
@@ -105,7 +105,7 @@ export class ContentScriptInjector {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error('Cannot inject script to tab due to: ', promise.reason);
+                logger.error('Cannot inject script to tab due to: ', promise.reason);
             }
         });
     }

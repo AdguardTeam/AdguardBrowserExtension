@@ -33,7 +33,7 @@ import {
     FilterVersionData,
     CustomFilterMetadata,
 } from '../../schema';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 
 import { CommonFilterApi } from './common';
 import { FilterMetadata, FiltersApi } from './main';
@@ -292,7 +292,7 @@ export class Categories {
 
             const filterState = filterStateStorage.get(filterId);
             if (!filterState) {
-                Log.error(`Cannot find filter ${filterId} state data`);
+                logger.error(`Cannot find filter ${filterId} state data`);
                 return;
             }
 
@@ -301,7 +301,7 @@ export class Categories {
                 // TODO: remove this hack after we find how to reproduce this issue
                 // Sometimes filter version data might be missing https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
                 // so we set it to values from metadata
-                Log.info(`Cannot find filter ${filterId} version data, restoring it from metadata`);
+                logger.info(`Cannot find filter ${filterId} version data, restoring it from metadata`);
                 filterVersion = {
                     version,
                     expires,
@@ -338,7 +338,7 @@ export class Categories {
             const groupState = groupStateStorage.get(groupMetadata.groupId);
 
             if (!groupState) {
-                Log.error(`Cannot find group ${groupMetadata.groupId} state data`);
+                logger.error(`Cannot find group ${groupMetadata.groupId} state data`);
                 return;
             }
 

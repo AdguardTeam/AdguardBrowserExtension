@@ -19,7 +19,7 @@ import browser from 'webextension-polyfill';
 
 import { isHttpRequest } from '@adguard/tswebextension';
 
-import { Log } from '../common/log';
+import { logger } from '../common/logger';
 import { UserAgent } from '../common/user-agent';
 import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
 import { messenger } from '../pages/services/messenger';
@@ -83,7 +83,7 @@ export class KeepAlive {
         } catch (e) {
             // This error occurs if there is no pages able to handle this listener.
             // It could happen if background page reloaded, when option page was not open.
-            Log.debug(e);
+            logger.debug(e);
         }
     }
 
@@ -102,7 +102,7 @@ export class KeepAlive {
                 await browser.tabs.executeScript(tab.id, { code });
                 return;
             } catch (e) {
-                Log.error(e);
+                logger.error(e);
             }
         }
     }
