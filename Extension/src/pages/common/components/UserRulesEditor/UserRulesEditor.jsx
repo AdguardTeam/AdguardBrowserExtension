@@ -40,7 +40,7 @@ import {
     NEWLINE_CHAR_REGEX,
 } from '../../../../common/constants';
 import { handleFileUpload } from '../../../helpers';
-import { Log } from '../../../../common/log';
+import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
@@ -83,7 +83,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                             break;
                         }
                         default: {
-                            Log.debug('Undefined message type:', type);
+                            logger.debug('Undefined message type:', type);
                             break;
                         }
                     }
@@ -177,7 +177,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                             break;
                         }
                         default: {
-                            Log.debug('Undefined message type:', type);
+                            logger.debug('Undefined message type:', type);
                             break;
                         }
                     }
@@ -252,7 +252,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 await store.saveUserRules(rulesUnionString);
             }
         } catch (e) {
-            Log.debug(e.message);
+            logger.debug(e.message);
             if (uiStore?.addNotification) {
                 uiStore.addNotification({ description: e.message });
             }

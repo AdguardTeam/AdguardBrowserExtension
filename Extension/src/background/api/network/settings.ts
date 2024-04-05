@@ -22,7 +22,7 @@ import {
 } from '../../../../../constants';
 import { UserAgent } from '../../../common/user-agent';
 import { BrowserUtils } from '../../utils/browser-utils';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 
 /**
  * NetworkSettings contains a bunch of url's which are using by extension.
@@ -79,7 +79,7 @@ export class NetworkSettings {
      */
     constructor() {
         this.filtersRulesBaseUrl = this.getFilterRulesBaseUrl();
-        Log.info('Filters rules base url:', this.filtersRulesBaseUrl);
+        logger.info('Filters rules base url:', this.filtersRulesBaseUrl);
     }
 
     /**

@@ -22,7 +22,7 @@ import {
     CustomFilterMetadata,
 } from '../../schema';
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { FiltersUpdateTime } from '../../../common/constants';
 import { Engine } from '../../engine';
 import { getErrorMessage } from '../../../common/error';
@@ -117,7 +117,7 @@ export class FilterUpdateApi {
         const startUpdateLogMessage = forceUpdate
             ? 'Update filters forced by user.'
             : 'Update filters by scheduler.';
-        Log.info(startUpdateLogMessage);
+        logger.info(startUpdateLogMessage);
 
         // If filtering is disabled, and it is not a forced update, it does nothing.
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
@@ -212,7 +212,7 @@ export class FilterUpdateApi {
                 // check for updates - without fresh metadata we still can load
                 // newest filter, checking it's version will be against the old,
                 // local metadata, which is possible outdated.
-                Log.error('Failed to update metadata due to an error:', getErrorMessage(e));
+                logger.error('Failed to update metadata due to an error:', getErrorMessage(e));
             }
         }
 
@@ -237,7 +237,7 @@ export class FilterUpdateApi {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error('Cannot update filter due to: ', promise.reason);
+                logger.error('Cannot update filter due to: ', promise.reason);
             }
         });
 

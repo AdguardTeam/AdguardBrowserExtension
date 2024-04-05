@@ -28,7 +28,7 @@ import {
 import { NotificationTextRecord } from '../../schema';
 import { TabsApi } from '../../../common/api/extension';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { I18n } from '../../utils';
 
 import { UiApi } from './main';
@@ -98,7 +98,7 @@ export class PromoNotificationApi {
                 const tab = await TabsApi.getActive();
 
                 if (!tab?.id) {
-                    Log.error('Cannot get active tab');
+                    logger.error('Cannot get active tab');
                     return;
                 }
 

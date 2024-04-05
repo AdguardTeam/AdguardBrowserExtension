@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { annoyancesConsentStorageDataValidator } from '../../schema';
 import { annoyancesConsentStorage } from '../../storages';
 
@@ -52,7 +52,7 @@ export class AnnoyancesConsentApi {
             }
         } catch (e) {
             // eslint-disable-next-line max-len
-            Log.warn(`Cannot parse data from "${annoyancesConsentStorage.key}" storage, set default states. Origin error: `, e);
+            logger.warn(`Cannot parse data from "${annoyancesConsentStorage.key}" storage, set default states. Origin error: `, e);
             data = [];
             await annoyancesConsentStorage.setData(data);
         }

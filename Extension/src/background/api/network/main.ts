@@ -33,7 +33,7 @@ import {
     localScriptRulesValidator,
 } from '../../schema';
 import type { FilterUpdateOptions } from '../filters';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 
 import { NetworkSettings } from './settings';
 
@@ -118,7 +118,7 @@ export class Network {
                 {
                     force: true,
                     definedExpressions: this.filterCompilerConditionsConstants,
-                    verbose: Log.isVerbose(),
+                    verbose: logger.isVerbose(),
                     validateChecksum: true,
                     // use true because we know that our filters have checksums
                     validateChecksumStrict: true,
@@ -132,7 +132,7 @@ export class Network {
             {
                 rawFilter,
                 definedExpressions: this.filterCompilerConditionsConstants,
-                verbose: Log.isVerbose(),
+                verbose: logger.isVerbose(),
                 validateChecksum: true,
                 // use true because we know that our filters have checksums
                 validateChecksumStrict: true,
@@ -166,7 +166,7 @@ export class Network {
                     definedExpressions: this.filterCompilerConditionsConstants,
                     force,
                     rawFilter,
-                    verbose: Log.isVerbose(),
+                    verbose: logger.isVerbose(),
                     validateChecksum: true,
                     // use false because we know that custom filters might not have checksums
                     validateChecksumStrict: false,

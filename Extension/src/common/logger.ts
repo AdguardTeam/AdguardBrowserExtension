@@ -1,5 +1,6 @@
 /**
  * @file
+ *
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * AdGuard Browser Extension is free software: you can redistribute it and/or modify
@@ -15,28 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { logger } from '../../../common/logger';
-import { Engine } from '../../engine';
-import { TabsApi } from '../../../common/api/extension';
 
-/**
- * Extension assistant API.
- */
-export class AssistantApi {
-    /**
-     * Opens assistant window in active tab.
-     */
-    static async openAssistant(): Promise<void> {
-        const activeTab = await TabsApi.getActive();
+import { Logger, LogLevel } from '@adguard/logger';
 
-        if (activeTab?.id) {
-            try {
-                Engine.api.openAssistant(activeTab.id);
-            } catch (e) {
-                logger.warn('Cannot open assistant in active tab due to: ', e);
-            }
-        } else {
-            logger.warn('Cannot open assistant in active tab');
+declare global {
+    interface Window {
+        adguard: {
+            logger: Logger;
         }
     }
 }
+
+class ExtendedLogger extends Logger {
+    isVerbose() {
+        return this.currentLevel === LogLevel.Debug;
+    }
+}
+
+const logger = new ExtendedLogger();
+
+logger.currentLevel = IS_RELEASE || IS_BETA
+    ? LogLevel.Info
+    : LogLevel.Debug;
+
+// Expose logger to the window object,
+// to have possibility to switch log level from the console.
+// Example: adguard.logger.setLevel('debug');
+const adguard = window.adguard ?? {};
+window.adguard = adguard;
+
+adguard.logger = logger;
+
+export { LogLevel, logger };
