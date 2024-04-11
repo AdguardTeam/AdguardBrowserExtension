@@ -30,10 +30,13 @@ import {
     ENV_CONF,
     BROWSERS,
     BROWSERS_CONF,
+    FILTERS_DEST,
 } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
 const { Redirects } = redirects;
+
+const RULESET_NAME_PREFIX = 'ruleset_';
 
 export const getEnvConf = (env) => {
     const envConfig = ENV_CONF[env];
@@ -85,15 +88,40 @@ export const updateManifest = (env, targetPart, addedPart) => {
     const union = merge(targetPart, addedPart);
 
     const devPolicy = env === ENVS.DEV
-        ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
-        : { content_security_policy: `script-src 'self' '${getClickToLoadSha()}'; object-src 'self'` };
+    // ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
+        ? { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } }
+        : { };
 
     delete union.version;
 
+    // FIXME: Move chrome to params
+    const filtersDir = FILTERS_DEST.replace('%browser', 'chromium');
+
+    const filtersDirPath = path.resolve(__dirname, '../', filtersDir, 'declarative/');
+
+    if (fs.existsSync(filtersDir)) {
+        const nameList = fs.readdirSync(filtersDirPath);
+        const rules = {
+            rule_resources: nameList.map((name) => {
+                const rulesetIndex = Number.parseInt(name.match(/\d+/)[0], 10);
+                const id = `${RULESET_NAME_PREFIX}${rulesetIndex}`;
+                return {
+                    id,
+                    enabled: false,
+                    path: `filters/declarative/${name}/${name}.json`,
+                };
+            }),
+        };
+
+        union.declarative_net_request = rules;
+    } else {
+        throw new Error("Declarative rulesets directory doesn't exist");
+    }
+
     const result = {
         version: packageJson.version,
-        ...union,
         ...devPolicy,
+        ...union,
     };
 
     return result;

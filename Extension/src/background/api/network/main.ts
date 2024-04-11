@@ -39,6 +39,9 @@ import { NetworkSettings } from './settings';
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 
+export type ResponseLikeXMLHttpRequest = Response
+    & Pick<ExtensionXMLHttpRequest, 'responseText' | 'mozBackgroundRequest'>;
+
 /**
  * Api for working with our backend server.
  * All requests sent by this class are covered in the privacy policy:
@@ -203,10 +206,10 @@ export class Network {
     public async getLocalFiltersMetadata(): Promise<Metadata> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
 
-        let response: ExtensionXMLHttpRequest;
+        let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
         try {
-            response = await Network.executeRequestAsync(url, 'application/json');
+            response = await Network.fetchJson(url);
         } catch (e: unknown) {
             const exMessage = e instanceof Error ? e.message : 'could not load local filters metadata';
             throw Network.createError(exMessage, url);
@@ -236,10 +239,10 @@ export class Network {
     public async getLocalFiltersI18nMetadata(): Promise<I18nMetadata> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_I18N_METADATA_FILE_NAME}`);
 
-        let response: ExtensionXMLHttpRequest;
+        let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
         try {
-            response = await Network.executeRequestAsync(url, 'application/json');
+            response = await Network.fetchJson(url);
         } catch (e: unknown) {
             const exMessage = e instanceof Error ? e.message : 'could not load local filters i18n metadata';
             throw Network.createError(exMessage, url);
@@ -270,10 +273,10 @@ export class Network {
     public async getLocalScriptRules(): Promise<LocalScriptRules> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/local_script_rules.json`);
 
-        let response: ExtensionXMLHttpRequest;
+        let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
         try {
-            response = await Network.executeRequestAsync(url, 'application/json');
+            response = await Network.fetchJson(url);
         } catch (e: unknown) {
             const exMessage = e instanceof Error ? e.message : 'could not load local script rules';
             throw Network.createError(exMessage, url);
@@ -299,7 +302,7 @@ export class Network {
      */
     public async downloadMetadataFromBackend(): Promise<Metadata> {
         const url = this.settings.filtersMetadataUrl;
-        const response = await Network.executeRequestAsync(url, 'application/json');
+        const response = await Network.fetchJson(url);
         if (!response?.responseText) {
             throw new Error(`Empty response: ${response}`);
         }
@@ -320,10 +323,7 @@ export class Network {
      * @returns Object of {@link I18nMetadata}.
      */
     public async downloadI18nMetadataFromBackend(): Promise<I18nMetadata> {
-        const response = await Network.executeRequestAsync(
-            this.settings.filtersI18nMetadataUrl,
-            'application/json',
-        );
+        const response = await Network.fetchJson(this.settings.filtersI18nMetadataUrl);
 
         if (!response?.responseText) {
             throw new Error(`Empty response: ${response}`);
@@ -342,9 +342,9 @@ export class Network {
      *
      * @param hashes Host hashes.
      */
-    public async lookupSafebrowsing(hashes: string[]): Promise<ExtensionXMLHttpRequest> {
+    public async lookupSafebrowsing(hashes: string[]): Promise<ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest> {
         const url = `${this.settings.safebrowsingLookupUrl}?prefixes=${encodeURIComponent(hashes.join('/'))}`;
-        const response = await Network.executeRequestAsync(url, 'application/json');
+        const response = await Network.fetchJson(url);
         return response;
     }
 
@@ -409,19 +409,42 @@ export class Network {
     }
 
     /**
+     *
+     * @param request
+     * @param url
+     */
+    private static async fetchJSON(url: string): Promise<ResponseLikeXMLHttpRequest> {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        const responseText = await response.text();
+
+        return {
+            ...response,
+            mozBackgroundRequest: true,
+            responseText,
+        };
+    }
+
+    /**
      * Executes async request.
      *
      * @param url Url.
-     * @param contentType Content type.
      */
-    private static async executeRequestAsync(url: string, contentType: string): Promise<ExtensionXMLHttpRequest> {
+    private static async fetchJson(url: string): Promise<ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest> {
+        if (typeof XMLHttpRequest === 'undefined') {
+            return Network.fetchJSON(url);
+        }
+
         return new Promise((resolve, reject) => {
             const request = new XMLHttpRequest() as ExtensionXMLHttpRequest;
             try {
                 request.open('GET', url);
-                request.setRequestHeader('Content-type', contentType);
+                request.setRequestHeader('Content-type', 'application/json');
                 request.setRequestHeader('Pragma', 'no-cache');
-                request.overrideMimeType(contentType);
+                request.overrideMimeType('application/json');
                 request.mozBackgroundRequest = true;
                 request.onload = function (): void {
                     resolve(request);
@@ -461,7 +484,7 @@ export class Network {
     private static createError(
         message: string,
         url: string,
-        response?: ExtensionXMLHttpRequest,
+        response?: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest,
         originError?: Error,
     ): Error {
         let errorMessage = `

@@ -19,5 +19,6 @@
 import { copyWar } from '@adguard/tswebextension/cli';
 
 export const copyExternals = async () => {
+    // TODO: Replace with const
     await copyWar('Extension/web-accessible-resources');
 };

@@ -47,7 +47,11 @@ export const genChromeConfig = (browserConfig, isWatchMode = false) => {
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, chromeManifest),
+                        transform: (content) => updateManifestBuffer(
+                            process.env.BUILD_ENV,
+                            content,
+                            chromeManifest,
+                        ),
                     },
                     {
                         context: 'Extension',

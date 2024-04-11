@@ -17,12 +17,6 @@
  */
 import browser, { WebNavigation } from 'webextension-polyfill';
 
-import {
-    isHttpOrWsRequest,
-    MAIN_FRAME_ID,
-    tabsApi,
-} from '@adguard/tswebextension';
-
 import { SUBSCRIBE_OUTPUT } from '../../../../constants';
 import { NotifierType, BACKGROUND_TAB_ID } from '../../common/constants';
 import {
@@ -34,8 +28,13 @@ import {
 import { CustomFilterApi, GetCustomFilterInfoResult } from '../api/filters/custom';
 import { messageHandler } from '../message-handler';
 import { listeners } from '../notifier';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import type { CustomFilterMetadata } from '../schema';
+import {
+    MAIN_FRAME_ID,
+    isHttpOrWsRequest,
+    tabsApi,
+} from '../../mocks';
 
 /**
  * Service for processing events with custom filters.
@@ -81,7 +80,7 @@ export class CustomFilterService {
             enabled: true,
         });
 
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
 
         listeners.notifyListeners(NotifierType.CustomFilterAdded);
         return filterMetadata;
@@ -118,6 +117,7 @@ export class CustomFilterService {
 
         const isDocumentFrame = frameId === MAIN_FRAME_ID;
 
+        // @ts-ignore
         if (!isDocumentFrame || !isHttpOrWsRequest(frame.url)) {
             return;
         }

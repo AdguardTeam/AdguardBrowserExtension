@@ -27,7 +27,7 @@ import { SettingOption } from '../schema';
 import { messageHandler } from '../message-handler';
 import { UserAgent } from '../../common/user-agent';
 import { AntiBannerFiltersId } from '../../common/constants';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import {
     Categories,
     CategoriesData,
@@ -167,7 +167,7 @@ export class SettingsService {
         try {
             // Should enable default filters and their groups.
             await SettingsApi.reset(true);
-            Engine.debounceUpdate();
+            engine.debounceUpdate();
 
             return true;
         } catch (e) {
@@ -185,7 +185,7 @@ export class SettingsService {
 
         const isImported = await SettingsApi.import(json);
 
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
 
         // TODO: Looks like not using. Maybe lost listener in refactoring.
         listeners.notifyListeners(listeners.SettingsUpdated, isImported);
@@ -233,7 +233,7 @@ export class SettingsService {
      */
     static async onDisableStealthModeStateChange(): Promise<void> {
         try {
-            Engine.debounceUpdate();
+            engine.debounceUpdate();
         } catch (e) {
             Log.error('Failed to change stealth mode state', e);
         }
@@ -310,7 +310,7 @@ export class SettingsService {
      * {@link SettingOption.SelfDestructThirdPartyCookies} Setting value.
      */
     static onSelfDestructThirdPartyCookiesStateChange(): void {
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -319,7 +319,7 @@ export class SettingsService {
      * {@link SettingOption.SelfDestructThirdPartyCookiesTime} Setting value.
      */
     static onSelfDestructThirdPartyCookiesTimeStateChange(): void {
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -328,7 +328,7 @@ export class SettingsService {
      * {@link SettingOption.SelfDestructFirstPartyCookies} Setting value.
      */
     static onSelfDestructFirstPartyCookiesStateChange(): void {
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -337,7 +337,7 @@ export class SettingsService {
      * {@link SettingOption.SelfDestructFirstPartyCookiesTime} Setting value.
      */
     static onSelfDestructFirstPartyCookiesTimeStateChange(): void {
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**

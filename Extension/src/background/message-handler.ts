@@ -24,7 +24,11 @@ import {
     MessageListener,
 } from '../common/messages';
 
-import { Engine, EngineMessage } from './engine';
+import {
+    engine,
+    Engine,
+    EngineMessage,
+} from './engine';
 
 /**
  * Common message handler {@link MessageHandler} specified for background
@@ -46,8 +50,11 @@ export class BackgroundMessageHandler extends MessageHandler {
         message: T,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
+        // eslint-disable-next-line no-console
+        console.log('handle message', message, sender);
+
         if (message.handlerName === Engine.messageHandlerName) {
-            return Engine.handleMessage(message, sender);
+            return engine.handleMessage(message, sender as chrome.runtime.MessageSender);
         }
 
         if (message.handlerName === APP_MESSAGE_HANDLER_NAME) {

@@ -17,9 +17,9 @@
  */
 import browser from 'webextension-polyfill';
 
-import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
-import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from '@adguard/tswebextension';
-import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
+// import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
+// import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from '@adguard/tswebextension';
+// import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 /**
  * Extension global preferences.
@@ -34,9 +34,10 @@ export class Prefs {
     public static language = browser.i18n.getUILanguage();
 
     public static readonly libVersions = {
-        tswebextension: TSWEBEXTENSION_VERSION,
-        tsurlfilter: TSURLFILTER_VERSION,
-        scriptlets: SCRIPTLETS_VERSION,
-        extendedCss: EXTENDED_CSS_VERSION,
+        // FIXME: Exclude using 'window' object from the exported modules
+        tswebextension: 'TSWEBEXTENSION_VERSION',
+        tsurlfilter: 'TSURLFILTER_VERSION',
+        scriptlets: 'SCRIPTLETS_VERSION',
+        extendedCss: 'EXTENDED_CSS_VERSION',
     };
 }

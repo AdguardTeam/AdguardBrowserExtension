@@ -17,8 +17,6 @@
  */
 import browser from 'webextension-polyfill';
 
-import { tabsApi as tsWebExtTabsApi } from '@adguard/tswebextension';
-
 import { UserAgent } from '../../../common/user-agent';
 import {
     notificationStorage,
@@ -30,6 +28,7 @@ import { TabsApi } from '../../../common/api/extension';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
 import { Log } from '../../../common/log';
 import { I18n } from '../../utils';
+import { tsWebExtTabsApi } from '../../../mocks';
 
 import { UiApi } from './main';
 

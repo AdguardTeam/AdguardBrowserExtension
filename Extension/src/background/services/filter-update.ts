@@ -72,8 +72,6 @@ export class FilterUpdateService {
      * should be updated with setTimeout which saved to {@link schedulerTimerId}.
      */
     private async update(): Promise<void> {
-        window.clearTimeout(this.schedulerTimerId);
-
         const prevCheckTimeMs = await storage.get(FilterUpdateService.STORAGE_KEY);
 
         /**
@@ -96,9 +94,11 @@ export class FilterUpdateService {
             await storage.set(FilterUpdateService.STORAGE_KEY, Date.now());
         }
 
-        this.schedulerTimerId = window.setTimeout(async () => {
-            await this.update();
-        }, FilterUpdateService.CHECK_PERIOD_MS);
+        chrome.alarms.onAlarm.addListener(this.update);
+        chrome.alarms.create(
+            'filters-updater',
+            { when: Date.now() + FilterUpdateService.CHECK_PERIOD_MS },
+        );
     }
 }
 

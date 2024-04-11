@@ -35,7 +35,6 @@ import {
     CONTENT_SCRIPT_START_OUTPUT,
     CONTENT_SCRIPT_END_OUTPUT,
     OPTIONS_OUTPUT,
-    FILTERING_LOG_OUTPUT,
     FILTER_DOWNLOAD_OUTPUT,
     FULLSCREEN_USER_RULES_OUTPUT,
     SAFEBROWSING_OUTPUT,
@@ -54,10 +53,9 @@ import {
 
 const config = getEnvConf(process.env.BUILD_ENV);
 
-const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
+const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background.ts');
 const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
 const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
-const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
 const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const ASSISTANT_INJECT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant-inject');
@@ -80,20 +78,22 @@ export const genCommonConfig = (browserConfig) => {
     const isDev = process.env.BUILD_ENV === ENVS.DEV;
     return {
         mode: config.mode,
-        target: 'web',
+        // target: 'web',
         optimization: {
             minimize: false,
-            runtimeChunk: 'single',
+            splitChunks: false,
+            runtimeChunk: false,
         },
         cache: isDev,
-        devtool: isDev ? 'eval-source-map' : false,
+        // devtool: isDev ? 'eval-source-map' : false,
+        devtool: false,
         entry: {
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
-                dependOn: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                ],
+                // dependOn: [
+                //     TSURLFILTER_VENDOR_OUTPUT,
+                //     TSWEBEXTENSION_VENDOR_OUTPUT,
+                // ],
             },
             [OPTIONS_OUTPUT]: {
                 import: OPTIONS_PATH,
@@ -104,23 +104,7 @@ export const genCommonConfig = (browserConfig) => {
                     EDITOR_OUTPUT,
                 ],
             },
-            [POPUP_OUTPUT]: {
-                import: POPUP_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                ],
-            },
-            [FILTERING_LOG_OUTPUT]: {
-                import: FILTERING_LOG_PATH,
-                dependOn: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                ],
-            },
+            [POPUP_OUTPUT]: POPUP_PATH,
             [FILTER_DOWNLOAD_OUTPUT]: {
                 import: FILTER_DOWNLOAD_PATH,
                 runtime: false,
@@ -268,53 +252,19 @@ export const genCommonConfig = (browserConfig) => {
                 },
             ],
         },
-
         plugins: [
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(BACKGROUND_PATH, 'index.html'),
-                templateParameters: {
-                    browser: process.env.BROWSER,
-                },
-                filename: `${BACKGROUND_OUTPUT}.html`,
-                chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    BACKGROUND_OUTPUT,
-                ],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: `${OPTIONS_OUTPUT}.html`,
-                chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    EDITOR_OUTPUT,
-                    OPTIONS_OUTPUT,
-                ],
+                chunks: [OPTIONS_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(POPUP_PATH, 'index.html'),
                 filename: `${POPUP_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, MOBX_VENDOR_OUTPUT, POPUP_OUTPUT],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(FILTERING_LOG_PATH, 'index.html'),
-                filename: `${FILTERING_LOG_OUTPUT}.html`,
-                chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    FILTERING_LOG_OUTPUT,
-                ],
+                chunks: [POPUP_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
@@ -326,25 +276,19 @@ export const genCommonConfig = (browserConfig) => {
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
-                chunks: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    EDITOR_OUTPUT,
-                    FULLSCREEN_USER_RULES_OUTPUT,
-                ],
+                chunks: [FULLSCREEN_USER_RULES_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(AD_BLOCKED_PATH, 'index.html'),
                 filename: `${DOCUMENT_BLOCK_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, DOCUMENT_BLOCK_OUTPUT],
+                chunks: [DOCUMENT_BLOCK_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(SAFEBROWSING_PATH, 'index.html'),
                 filename: `${SAFEBROWSING_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, SAFEBROWSING_OUTPUT],
+                chunks: [SAFEBROWSING_OUTPUT],
             }),
             new CopyWebpackPlugin({
                 patterns: [

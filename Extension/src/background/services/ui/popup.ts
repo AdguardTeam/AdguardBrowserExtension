@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { tabsApi as tsWebExtTabApi } from '@adguard/tswebextension';
-
 import {
     ChangeApplicationFilteringDisabledMessage,
     GetTabInfoForPopupMessage,
@@ -32,10 +30,10 @@ import {
     PageStatsApi,
     SettingsApi,
     promoNotificationApi,
-    UserRulesApi,
     GetStatisticsDataResponse,
     SettingsData,
 } from '../../api';
+import { tsWebExtTabsApi } from '../../../mocks';
 
 export type GetTabInfoForPopupResponse = {
     frameInfo: FrameData,
@@ -83,7 +81,7 @@ export class PopupService {
     ): Promise<GetTabInfoForPopupResponse | undefined> {
         const { tabId } = data;
 
-        const tabContext = tsWebExtTabApi.getTabContext(tabId);
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         if (tabContext) {
             return {
@@ -98,7 +96,8 @@ export class PopupService {
                     isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
                     notification: await promoNotificationApi.getCurrentNotification(),
                     isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasCustomRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
+                    hasCustomRulesToReset: false,
+                    // hasCustomRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
                 },
             };
         }

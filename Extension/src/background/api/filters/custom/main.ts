@@ -29,7 +29,7 @@ import {
     filterVersionStorage,
     groupStateStorage,
 } from '../../../storages';
-import { Engine } from '../../../engine';
+import { engine } from '../../../engine';
 import { network } from '../../network';
 import type { FilterUpdateOptions } from '../update';
 import { FilterParsedData, FilterParser } from '../parser';
@@ -335,7 +335,7 @@ export class CustomFilterApi {
         await RawFiltersStorage.remove(filterId);
 
         if (filterState?.enabled) {
-            Engine.debounceUpdate();
+            engine.debounceUpdate();
         }
     }
 

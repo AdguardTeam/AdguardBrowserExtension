@@ -16,13 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-    type TabContext,
-    isHttpRequest,
-    getDomain,
-    MAIN_FRAME_ID,
-} from '@adguard/tswebextension';
+import { type TabContext } from '@adguard/tswebextension';
 
+import {
+    getDomain,
+    isHttpRequest,
+    MAIN_FRAME_ID,
+} from '../../../mocks';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';

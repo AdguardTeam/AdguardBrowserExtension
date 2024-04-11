@@ -60,7 +60,7 @@ import { listeners } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
 import { Prefs } from '../../prefs';
 import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
-import { filteringLogApi } from '../filtering-log';
+// import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
 
 import { SettingsMigrations } from './migrations';
@@ -147,8 +147,10 @@ export class SettingsApi {
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
             documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
-            collectStats: !settingsStorage.get(SettingOption.DisableCollectHits) || filteringLogApi.isOpen(),
-            debugScriptlets: filteringLogApi.isOpen(),
+            // collectStats: !settingsStorage.get(SettingOption.DisableCollectHits) || filteringLogApi.isOpen(),
+            // debugScriptlets: filteringLogApi.isOpen(),
+            collectStats: !settingsStorage.get(SettingOption.DisableCollectHits) || false,
+            debugScriptlets: false,
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),
             stealthModeEnabled: !settingsStorage.get(SettingOption.DisableStealthMode),
