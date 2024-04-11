@@ -27,10 +27,10 @@ import {
 } from '../common/forward';
 import { CLIENT_ID_KEY } from '../common/constants';
 
-import { ContentScriptInjector } from './content-script-injector';
+// import { ContentScriptInjector } from './content-script-injector';
 import { messageHandler } from './message-handler';
 import { ConnectionHandler } from './connection-handler';
-import { Engine } from './engine';
+import { engine } from './engine';
 import {
     appContext,
     AppContextKey,
@@ -54,7 +54,6 @@ import {
     AllowlistService,
     UserRulesService,
     CustomFilterService,
-    FilteringLogService,
     eventService,
     SafebrowsingService,
     DocumentBlockService,
@@ -90,7 +89,7 @@ export class App {
         KeepAlive.init();
 
         // Reads persisted data from session storage.
-        await Engine.api.initStorage();
+        // await Engine.api.initStorage();
 
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
@@ -138,7 +137,7 @@ export class App {
          */
         if (SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
             // inject content scripts into opened tabs
-            await ContentScriptInjector.init();
+            // await ContentScriptInjector.init();
         }
         /**
          * Initializes Filters data:
@@ -172,7 +171,7 @@ export class App {
         await UserRulesService.init();
 
         // Adds listeners for filtering log
-        FilteringLogService.init();
+        // FilteringLogService.init();
 
         /**
          * Adds listeners for managing ui
@@ -240,7 +239,7 @@ export class App {
         }
 
         // Runs tswebextension
-        await Engine.start();
+        await engine.start();
 
         appContext.set(AppContextKey.IsInit, true);
 
@@ -266,7 +265,7 @@ export class App {
      * @returns True, if filter engine is initialized, else false.
      */
     private static onCheckRequestFilterReady(): boolean {
-        const ready = Engine.api.isStarted;
+        const ready = engine.api.isStarted;
 
         /**
          * If engine is ready, user will be redirected to thankyou page.

@@ -19,11 +19,13 @@
 import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRules } from './resources/update-local-script-rules';
 import { findDangerousRules } from './resources/dangerous-rules';
+import { convertFiltersToRulesets } from './resources/build-rule-sets';
 
 const resources = async () => {
-    await downloadFilters();
-    await updateLocalScriptRules();
-    await findDangerousRules();
+    // await downloadFilters();
+    // await updateLocalScriptRules();
+    // await findDangerousRules();
+    await convertFiltersToRulesets();
 };
 
 (async () => {

@@ -200,4 +200,5 @@ declare global {
     }
 }
 
-Log.expose(window);
+// eslint-disable-next-line no-restricted-globals
+Log.expose(self);

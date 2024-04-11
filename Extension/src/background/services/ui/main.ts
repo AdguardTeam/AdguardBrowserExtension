@@ -17,13 +17,6 @@
  */
 import browser from 'webextension-polyfill';
 
-import {
-    ApplyBasicRuleEvent,
-    defaultFilteringLog,
-    FilteringEventType,
-    tabsApi as tsWebExtTabApi,
-} from '@adguard/tswebextension';
-
 import { Log } from '../../../common/log';
 import { messageHandler } from '../../message-handler';
 import {
@@ -32,7 +25,7 @@ import {
     OpenSiteReportTabMessage,
 } from '../../../common/messages';
 import { UserAgent } from '../../../common/user-agent';
-import { Engine } from '../../engine';
+import { engine } from '../../engine';
 import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
 import { listeners } from '../../notifier';
 import {
@@ -42,8 +35,6 @@ import {
     SettingsApi,
     PagesApi,
     AssistantApi,
-    UiApi,
-    PageStatsApi,
     SettingsData,
     FilterMetadata,
     ContextMenuApi,
@@ -125,11 +116,11 @@ export class UiService {
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
         messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 
-        tsWebExtTabApi.onCreate.subscribe(UiApi.update);
-        tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
-        tsWebExtTabApi.onActivate.subscribe(UiApi.update);
+        // tsWebExtTabApi.onCreate.subscribe(UiApi.update);
+        // tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
+        // tsWebExtTabApi.onActivate.subscribe(UiApi.update);
 
-        defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
+        // defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
 
     /**
@@ -201,7 +192,7 @@ export class UiService {
             enabledFilters,
             filtersMetadata: FiltersApi.getFiltersMetadata(),
             requestFilterInfo: {
-                rulesCount: Engine.api.getRulesCount(),
+                rulesCount: engine.api.getRulesCount(),
             },
             environmentOptions: {
                 isMacOs: UserAgent.isMacOs,
@@ -229,30 +220,30 @@ export class UiService {
         };
     }
 
-    /**
-     * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter.
-     *
-     * @param event Handled {@link ApplyBasicRuleEvent}.
-     * @param event.data Event data.
-     */
-    private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
-        const { rule, tabId } = data;
+    // /**
+    //  * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter.
+    //  *
+    //  * @param event Handled {@link ApplyBasicRuleEvent}.
+    //  * @param event.data Event data.
+    //  */
+    // private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
+    //     const { rule, tabId } = data;
 
-        // If rule is not blocking, ignore it
-        if (rule.isAllowlist()) {
-            return;
-        }
+    //     // If rule is not blocking, ignore it
+    //     if (rule.isAllowlist()) {
+    //         return;
+    //     }
 
-        await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
-        PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
+    //     await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
+    //     PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
 
-        const tabContext = tsWebExtTabApi.getTabContext(tabId);
+    //     const tabContext = tsWebExtTabApi.getTabContext(tabId);
 
-        // If tab context is not found, do not update request blocking counter and icon badge for tab
-        if (!tabContext) {
-            return;
-        }
+    //     // If tab context is not found, do not update request blocking counter and icon badge for tab
+    //     if (!tabContext) {
+    //         return;
+    //     }
 
-        await UiApi.update(tabContext);
-    }
+    //     await UiApi.update(tabContext);
+    // }
 }

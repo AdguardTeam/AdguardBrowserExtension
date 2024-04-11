@@ -27,7 +27,7 @@ import {
 import { Log } from '../../common/log';
 import { SettingOption } from '../schema';
 import { messageHandler } from '../message-handler';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import {
     annoyancesConsent,
     FilterMetadata,
@@ -116,7 +116,7 @@ export class FiltersService {
 
         FiltersApi.disableFilters([filterId]);
 
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -163,7 +163,7 @@ export class FiltersService {
         const { groupId } = message.data;
 
         Categories.disableGroup(groupId);
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -188,7 +188,7 @@ export class FiltersService {
      */
     private static async onOptimizedFiltersSwitch(): Promise<void> {
         await FiltersApi.reloadEnabledFilters();
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -248,7 +248,7 @@ export class FiltersService {
      */
     private static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
         await Categories.enableGroup(groupId, recommendedFiltersIds);
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -259,6 +259,6 @@ export class FiltersService {
      */
     private static async enableFilter(filterId: number): Promise<void> {
         await FiltersApi.loadAndEnableFilters([filterId], true);
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 }

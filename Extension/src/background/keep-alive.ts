@@ -17,13 +17,12 @@
  */
 import browser from 'webextension-polyfill';
 
-import { isHttpRequest } from '@adguard/tswebextension';
-
 import { Log } from '../common/log';
 import { UserAgent } from '../common/user-agent';
 import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
 import { messenger } from '../pages/services/messenger';
 import { MessageType } from '../common/messages';
+import { isHttpRequest } from '../mocks';
 
 /**
  * Code which is injected into the page as content-script to keep the connection alive.

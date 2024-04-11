@@ -26,7 +26,7 @@ import { MessageType } from '../common/messages';
 import { Log } from '../common/log';
 
 import { listeners } from './notifier';
-import { filteringLogApi } from './api';
+// import { filteringLogApi } from './api';
 import { fullscreenUserRulesEditor } from './services';
 import { KeepAlive } from './keep-alive';
 
@@ -85,10 +85,10 @@ export class ConnectionHandler {
      */
     private static onPortConnection(port: Runtime.Port): void {
         switch (true) {
-            case port.name.startsWith(FILTERING_LOG): {
-                filteringLogApi.onOpenFilteringLogPage();
-                break;
-            }
+            // case port.name.startsWith(FILTERING_LOG): {
+            //     filteringLogApi.onOpenFilteringLogPage();
+            //     break;
+            // }
 
             case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
                 fullscreenUserRulesEditor.onOpenPage();
@@ -117,10 +117,10 @@ export class ConnectionHandler {
      */
     private static onPortDisconnection(port: Runtime.Port): void {
         switch (true) {
-            case port.name.startsWith(FILTERING_LOG): {
-                filteringLogApi.onCloseFilteringLogPage();
-                break;
-            }
+            // case port.name.startsWith(FILTERING_LOG): {
+            //     filteringLogApi.onCloseFilteringLogPage();
+            //     break;
+            // }
 
             case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
                 fullscreenUserRulesEditor.onClosePage();

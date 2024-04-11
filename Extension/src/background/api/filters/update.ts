@@ -24,7 +24,7 @@ import {
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { Log } from '../../../common/log';
 import { FiltersUpdateTime } from '../../../common/constants';
-import { Engine } from '../../engine';
+import { engine } from '../../engine';
 import { getErrorMessage } from '../../../common/error';
 
 import { FilterMetadata, FiltersApi } from './main';
@@ -177,7 +177,7 @@ export class FilterUpdateApi {
 
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
-            Engine.debounceUpdate();
+            engine.debounceUpdate();
         }
 
         return updatedFilters;
@@ -339,4 +339,5 @@ export class FilterUpdateApi {
 // TODO remove later
 // This method is exposed for the testing purposes.
 // @ts-ignore
-window.autoUpdate = FilterUpdateApi.autoUpdateFilters;
+// eslint-disable-next-line no-restricted-globals
+self.autoUpdate = FilterUpdateApi.autoUpdateFilters;

@@ -15,13 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { debounce } from 'lodash-es';
+import { debounce, filter } from 'lodash-es';
+import { Configuration, TsWebExtension } from '@adguard/tswebextension/mv3';
+import type { MessagesHandlerMV3 } from '@adguard/tswebextension/dist/types/src/lib/mv3/background/messages-api';
 
-import {
-    ConfigurationMV2,
-    MESSAGE_HANDLER_NAME,
-    createTsWebExtension,
-} from '@adguard/tswebextension';
+// import { MESSAGE_HANDLER_NAME } from '@adguard/tswebextension';
 
 import { Log, LogLevelString } from '../common/log';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
@@ -35,9 +33,10 @@ import {
     SettingsApi,
     DocumentBlockApi,
     network,
+    CustomFilterApi,
 } from './api';
 
-export type { Message as EngineMessage } from '@adguard/tswebextension';
+export type { CommonMessageType as EngineMessage } from '@adguard/tswebextension/mv3';
 
 // Variable passed from webpack that will be primitive at runtime.
 declare const IS_FIREFOX_AMO: boolean;
@@ -48,22 +47,46 @@ declare const IS_FIREFOX_AMO: boolean;
  * checks for some specific browsers actions.
  */
 export class Engine {
-    static readonly api = createTsWebExtension(WEB_ACCESSIBLE_RESOURCES_OUTPUT);
+    readonly api: TsWebExtension;
+
+    readonly handleMessage: MessagesHandlerMV3;
 
     private static readonly UPDATE_TIMEOUT_MS = 1000;
 
-    static readonly messageHandlerName = MESSAGE_HANDLER_NAME;
+    // FIXME: use MESSAGE_HANDLER_NAME
+    static readonly messageHandlerName = 'tsWebExtension';
 
-    static debounceUpdate = debounce(() => {
-        Engine.update();
+    /**
+     *
+     */
+    constructor() {
+        this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT}`);
+
+        this.handleMessage = this.api.getMessageHandler();
+
+        this.api.onAssistantCreateRule.subscribe(async (rule) => {
+            // FIXME: Add new user rule
+            // eslint-disable-next-line no-console
+            console.log('onAssistantCreateRule', rule);
+            // await userRules.addRule(rule);
+            // await this.configure();
+
+            // const updatedRules = await userRules.getRules();
+            // // Notify UI about changes
+            // notifier.notify(NOTIFIER_EVENTS.SET_RULES, { value: updatedRules });
+        });
+    }
+
+    debounceUpdate = debounce(() => {
+        this.update();
     }, Engine.UPDATE_TIMEOUT_MS);
 
-    static handleMessage = Engine.api.getMessageHandler();
+    // static handleMessage = this.api?.getMessageHandler();
 
     /**
      * Starts the tswebextension and updates the counter of active rules.
      */
-    static async start(): Promise<void> {
+    async start(): Promise<void> {
         /**
          * By the rules of Firefox AMO we cannot use remote scripts (and our JS rules can be counted as such).
          * Because of that we use the following approach (that was accepted by AMO reviewers):
@@ -74,18 +97,19 @@ export class Engine {
          * 3. We also allow "User rules" to work since those rules are added manually by the user.
          *  This way filters maintainers can test new rules before including them in the filters.
          */
-        if (IS_FIREFOX_AMO) {
-            const localScriptRules = await network.getLocalScriptRules();
+        // if (IS_FIREFOX_AMO) {
+        //     const localScriptRules = await network.getLocalScriptRules();
 
-            Engine.api.setLocalScriptRules(localScriptRules);
-        }
+        // FIXME: Add this method
+        //     this.api.setLocalScriptRules(localScriptRules);
+        // }
 
         const configuration = await Engine.getConfiguration();
 
         Log.info('Start tswebextension...');
-        await Engine.api.start(configuration);
+        await this.api.start(configuration);
 
-        const rulesCount = Engine.api.getRulesCount();
+        const rulesCount = this.api.getRulesCount();
         Log.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
@@ -95,13 +119,13 @@ export class Engine {
      * Updates tswebextension configuration and after that updates the counter
      * of active rules.
      */
-    static async update(): Promise<void> {
+    async update(): Promise<void> {
         const configuration = await Engine.getConfiguration();
 
         Log.info('Update tswebextension configuration...');
-        await Engine.api.configure(configuration);
+        await this.api.configure(configuration);
 
-        const rulesCount = Engine.api.getRulesCount();
+        const rulesCount = this.api.getRulesCount();
         Log.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
@@ -110,26 +134,10 @@ export class Engine {
     /**
      * Creates tswebextension configuration based on current app state.
      */
-    private static async getConfiguration(): Promise<ConfigurationMV2> {
-        const enabledFilters = FiltersApi.getEnabledFilters();
-
-        const filters: ConfigurationMV2['filters'] = [];
-
-        const tasks = enabledFilters.map(async (filterId) => {
-            const rules = await FiltersStorage.get(filterId);
-
-            const trusted = FiltersApi.isFilterTrusted(filterId);
-
-            const rulesTexts = rules.join('\n');
-
-            filters.push({
-                filterId,
-                content: rulesTexts,
-                trusted,
-            });
-        });
-
-        await Promise.all(tasks);
+    private static async getConfiguration(): Promise<Configuration> {
+        const staticFiltersIds = FiltersApi.getEnabledFilters()
+            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId))
+            .concat([14]);
 
         const settings = SettingsApi.getTsWebExtConfiguration();
 
@@ -161,13 +169,19 @@ export class Engine {
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
         return {
+            filteringLogEnabled: false,
+            customFilters: [],
             verbose: false,
             logLevel: LogLevelString.Info,
-            filters,
+            staticFiltersIds,
             userrules,
             allowlist,
             settings,
             trustedDomains,
+            filtersPath: 'filters/',
+            ruleSetsPath: 'filters/declarative',
         };
     }
 }
+
+export const engine = new Engine();

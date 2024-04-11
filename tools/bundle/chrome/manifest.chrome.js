@@ -22,14 +22,16 @@ export const chromeManifest = {
     'devtools_page': 'pages/devtools.html',
     'permissions': [
         'tabs',
-        '<all_urls>',
         'webRequest',
-        'webRequestBlocking',
         'webNavigation',
         'storage',
         'unlimitedStorage',
         'contextMenus',
         'cookies',
+        'declarativeNetRequest',
+        'declarativeNetRequestFeedback',
+        'scripting',
+        'alarms',
     ],
     'optional_permissions': [
         'privacy',

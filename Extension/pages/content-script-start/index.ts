@@ -16,10 +16,21 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import '@adguard/tswebextension/content-script';
+import '@adguard/tswebextension/mv3/content-script';
 
 import { ContentUtils } from '../../src/content-script/content-utils';
 import { SubscribeToScriptlets } from '../../src/content-script/subscribe-to-scriptlets';
 
 ContentUtils.init();
 SubscribeToScriptlets.init();
+
+// TODO: Temporary construction for keeping alive service worker
+// via constantly standing message exchange
+if (window.top === window && (document.documentElement instanceof HTMLElement)) {
+    setInterval(() => {
+        try {
+            chrome.runtime.sendMessage({ type: 'PING' });
+        // eslint-disable-next-line no-empty
+        } catch (e) { }
+    }, 10000);
+}

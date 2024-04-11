@@ -72,13 +72,20 @@ export class NetworkSettings {
      *
      * @private
      */
-    private readonly filtersRulesBaseUrl: string;
+    private filtersRulesBaseUrl: string = '';
 
     /**
      * Constructor.
      */
     constructor() {
-        this.filtersRulesBaseUrl = this.getFilterRulesBaseUrl();
+        this.init();
+    }
+
+    /**
+     *
+     */
+    private async init(): Promise<void> {
+        this.filtersRulesBaseUrl = await this.getFilterRulesBaseUrl();
         Log.info('Filters rules base url:', this.filtersRulesBaseUrl);
     }
 
@@ -87,10 +94,10 @@ export class NetworkSettings {
      *
      * @returns The base url for filter rules.
      */
-    private getFilterRulesBaseUrl(): string {
-        const url = localStorage.getItem(this.FILTERS_BASE_URL_KEY);
-        if (url) {
-            return url;
+    private async getFilterRulesBaseUrl(): Promise<string> {
+        const url = await chrome.storage.local.get(this.FILTERS_BASE_URL_KEY);
+        if (url[this.FILTERS_BASE_URL_KEY]) {
+            return url[this.FILTERS_BASE_URL_KEY];
         }
         return this.DEFAULT_FILTER_RULES_BASE_URL;
     }

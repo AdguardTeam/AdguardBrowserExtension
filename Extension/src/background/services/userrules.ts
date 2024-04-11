@@ -24,7 +24,7 @@ import {
     SetEditorStorageContentMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import { SettingOption } from '../schema';
 import {
     SettingsApi,
@@ -62,7 +62,7 @@ export class UserRulesService {
         messageHandler.addListener(MessageType.SetEditorStorageContent, UserRulesService.setEditorStorageContent);
         messageHandler.addListener(MessageType.ResetCustomRulesForPage, UserRulesService.resetCustomRulesForPage);
 
-        Engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
+        engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
 
         settingsEvents.addListener(
             SettingOption.UserFilterEnabled,
@@ -104,7 +104,7 @@ export class UserRulesService {
      */
     private static async addUserRule(rule: string): Promise<void> {
         await UserRulesApi.addUserRule(rule);
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -128,7 +128,7 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.addUserRule(ruleText);
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -140,7 +140,7 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.removeUserRule(ruleText);
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**
@@ -149,7 +149,7 @@ export class UserRulesService {
      * via debounce function, as this is a heavyweight call.
      */
     private static handleEnableStateChange(): void {
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
     }
 
     /**

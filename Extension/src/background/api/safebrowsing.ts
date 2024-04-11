@@ -29,7 +29,11 @@ import {
 import { UrlUtils } from '../utils/url';
 import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 
-import { type ExtensionXMLHttpRequest, network } from './network';
+import {
+    type ExtensionXMLHttpRequest,
+    network,
+    ResponseLikeXMLHttpRequest,
+} from './network';
 
 /**
  * The Safe Browsing API checks whether a site is in a database of potentially
@@ -146,7 +150,7 @@ export class SafebrowsingApi {
             return SafebrowsingApi.createResponse(SbCache.SB_ALLOW_LIST);
         }
 
-        let response: ExtensionXMLHttpRequest;
+        let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
         try {
             response = await network.lookupSafebrowsing(shortHashes);

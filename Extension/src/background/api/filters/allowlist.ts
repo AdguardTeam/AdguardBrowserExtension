@@ -17,8 +17,6 @@
  */
 import zod from 'zod';
 
-import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
-
 import { Log } from '../../../common/log';
 import { SettingOption } from '../../schema';
 import { listeners } from '../../notifier';
@@ -27,11 +25,13 @@ import {
     allowlistDomainsStorage,
     invertedAllowlistDomainsStorage,
 } from '../../storages';
-import { Engine } from '../../engine';
+import { engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
 import { AntiBannerFiltersId } from '../../../common/constants';
 
 import { UserRulesApi } from './userrules';
+
+// import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
 
 /**
  * Allowlist and Inverted Allowlist storages have same api.
@@ -162,25 +162,25 @@ export class AllowlistApi {
             return;
         }
 
-        const { mainFrameRule } = tabContext;
+        // const { mainFrameRule } = tabContext;
 
-        if (!mainFrameRule) {
-            return;
-        }
+        // if (!mainFrameRule) {
+        //     return;
+        // }
 
-        const filterId = mainFrameRule.getFilterListId();
+        // const filterId = mainFrameRule.getFilterListId();
 
-        if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const ruleText = mainFrameRule.getText();
-            await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
-            return;
-        }
+        // if (filterId === AntiBannerFiltersId.UserFilterId) {
+        //     const ruleText = mainFrameRule.getText();
+        //     await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
+        //     return;
+        // }
 
-        const { info: { url } } = tabContext;
+        // const { info: { url } } = tabContext;
 
-        if (url && filterId === AntiBannerFiltersId.AllowlistFilterId) {
-            await AllowlistApi.enableTabUrlFiltering(url, tabId, tabRefresh);
-        }
+        // if (url && filterId === AntiBannerFiltersId.AllowlistFilterId) {
+        //     await AllowlistApi.enableTabUrlFiltering(url, tabId, tabRefresh);
+        // }
     }
 
     /**
@@ -229,7 +229,7 @@ export class AllowlistApi {
             AllowlistApi.removeAllowlistDomain(domain);
         }
 
-        await Engine.update();
+        await engine.update();
 
         if (tabRefresh) {
             await TabsApi.reload(tabId);
@@ -262,7 +262,7 @@ export class AllowlistApi {
             AllowlistApi.addAllowlistDomain(domain);
         }
 
-        await Engine.update();
+        await engine.update();
 
         await TabsApi.reload(tabId);
     }
@@ -284,7 +284,7 @@ export class AllowlistApi {
     ): Promise<void> {
         await UserRulesApi.removeUserRule(ruleText);
 
-        await Engine.update();
+        await engine.update();
 
         if (tabRefresh) {
             await TabsApi.reload(tabId);

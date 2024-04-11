@@ -23,7 +23,7 @@ import {
     RemoveAllowlistDomainMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import { SettingOption } from '../schema';
 import { AllowlistApi, TabsApi } from '../api';
 import {
@@ -51,8 +51,8 @@ export class AllowlistService {
         messageHandler.addListener(MessageType.AddAllowlistDomainPopup, AllowlistService.onAddAllowlistDomain);
         messageHandler.addListener(MessageType.RemoveAllowlistDomain, AllowlistService.onRemoveAllowlistDomain);
 
-        settingsEvents.addListener(SettingOption.AllowlistEnabled, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.AllowlistEnabled, engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, engine.debounceUpdate);
 
         contextMenuEvents.addListener(
             ContextMenuAction.SiteFilteringOn,
@@ -117,7 +117,7 @@ export class AllowlistService {
             AllowlistApi.setAllowlistDomains(domains);
         }
 
-        await Engine.update();
+        await engine.update();
     }
 
     /**

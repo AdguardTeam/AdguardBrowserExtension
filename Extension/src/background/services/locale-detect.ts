@@ -18,8 +18,6 @@
 
 import browser, { Tabs } from 'webextension-polyfill';
 
-import { isHttpRequest, getDomain } from '@adguard/tswebextension';
-
 import { UserAgent } from '../../common/user-agent';
 import { RegularFilterMetadata, SettingOption } from '../schema';
 import {
@@ -27,11 +25,12 @@ import {
     metadataStorage,
     settingsStorage,
 } from '../storages';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import { toasts } from '../api/ui';
 import { FiltersApi } from '../api/filters/main';
 import { CommonFilterApi } from '../api/filters/common';
 import { AntibannerGroupsId } from '../../common/constants';
+import { getDomain, isHttpRequest } from '../../mocks';
 
 export type BrowsingLanguage = {
     language: string,
@@ -340,7 +339,7 @@ export class LocaleDetect {
         }
 
         await FiltersApi.loadAndEnableFilters(disabledFiltersIds, true);
-        Engine.debounceUpdate();
+        engine.debounceUpdate();
 
         const filters: RegularFilterMetadata[] = [];
 

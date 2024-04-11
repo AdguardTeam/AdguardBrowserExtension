@@ -18,11 +18,7 @@
 import browser, { WebRequest } from 'webextension-polyfill';
 import { RequestType } from '@adguard/tsurlfilter/es/request-type';
 
-import {
-    RequestData,
-    RequestEvents,
-    tabsApi as tsWebExtTabsApi,
-} from '@adguard/tswebextension';
+import { type RequestData } from '@adguard/tswebextension';
 
 import {
     SafebrowsingApi,
@@ -35,6 +31,7 @@ import { messageHandler } from '../message-handler';
 import { MessageType, OpenSafebrowsingTrustedMessage } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
 import { Log } from '../../common/log';
+import { tsWebExtTabsApi } from '../../mocks';
 
 /**
  * SafebrowsingService adds listeners for correct work of {@link SafebrowsingApi} module.
@@ -51,7 +48,7 @@ export class SafebrowsingService {
 
         settingsEvents.addListener(SettingOption.DisableSafebrowsing, SafebrowsingApi.clearCache);
 
-        RequestEvents.onHeadersReceived.addListener(SafebrowsingService.onHeadersReceived);
+        // RequestEvents.onHeadersReceived.addListener(SafebrowsingService.onHeadersReceived);
 
         messageHandler.addListener(MessageType.OpenSafebrowsingTrusted, SafebrowsingService.onAddTrustedDomain);
     }
