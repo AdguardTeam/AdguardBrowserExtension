@@ -379,7 +379,7 @@ describe('Filter Update API should', () => {
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
-            // // Auto update filter to get a diff patch
+            // Auto update filter to get a diff patch
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 2,
@@ -417,7 +417,7 @@ describe('Filter Update API should', () => {
             let lastScheduledCheckTime = filterVersionData[1]!.lastScheduledCheckTime;
             expect(lastCheckTime > lastScheduledCheckTime).toBeTruthy();
 
-            // // Next auto update brings diff patch again
+            // Next auto update brings diff patch again
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 4,
