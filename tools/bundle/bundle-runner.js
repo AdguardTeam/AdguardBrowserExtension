@@ -18,12 +18,30 @@
 
 /* eslint-disable no-console */
 import webpack from 'webpack';
+import { merge } from 'webpack-merge';
 
 export const bundleRunner = (webpackConfig, watch = false) => {
+    if (watch) {
+        // Disabling cache is crucial in watch mode as it allows to follow
+        // changes in the @adguard dependencies and rebuild vendors correctly.
+        webpackConfig = merge(webpackConfig, { cache: false });
+    }
+
     const compiler = webpack(webpackConfig);
 
     const run = watch
-        ? (cb) => compiler.watch({}, cb)
+        ? (cb) => compiler.watch({
+            // We may be using symlinked dependencies (tsurlfilter, etc) so it's
+            // important that watch should follow symlinks.
+            followSymlinks: true,
+            poll: {
+                aggregateTimeout: 300,
+                // This will exclude everything in node_modules except for @adguard, build,
+                // and _locales (the latter unexpectedly triggers even though it is not changing, which could be a bug
+                // in webpack).
+                ignored: /(node_modules(?!\/@adguard)|build|_locales)/,
+            },
+        }, cb)
         : (cb) => compiler.run(cb);
 
     return new Promise((resolve, reject) => {

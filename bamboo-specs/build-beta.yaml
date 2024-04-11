@@ -5,7 +5,7 @@ plan:
   key: BEBETASPECS
   name: browser extension - build beta
 variables:
-  dockerNode: adguard/extension-builder:18.17.1--0.1.2
+  dockerNode: adguard/extension-builder:18.19.0--0.1.3
 stages:
   - Build:
       manual: 'false'
@@ -43,8 +43,6 @@ Build:
             # don't use --ignore-optional flag, because swc requires optional deps 
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
             yarn beta
-
-            rm -rf node_modules
     - inject-variables:
         file: build/beta/build.txt
         scope: RESULT
@@ -54,6 +52,22 @@ Build:
         configuration:
           selectedRepository: defaultRepository
           tagName: v${bamboo.inject.version}-beta
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
+            rm -rf node_modules
+            echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
       location: build/beta

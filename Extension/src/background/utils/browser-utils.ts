@@ -17,7 +17,7 @@
  */
 import { Prefs } from '../prefs';
 import { appContext, AppContextKey } from '../storages';
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 
 import { Version } from './version';
 
@@ -90,7 +90,7 @@ export class BrowserUtils {
             // eslint-disable-next-line no-new
             new Version(version);
         } catch (e: unknown) {
-            Log.debug(`Can not parse version: "${version}", error: `, e);
+            logger.debug(`Can not parse version: "${version}", error: `, e);
             return false;
         }
         return true;

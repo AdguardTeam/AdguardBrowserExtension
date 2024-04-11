@@ -19,13 +19,13 @@
 import { FilterUpdateApi } from '../api';
 import { storage } from '../storages';
 import { isNumber } from '../../common/guards';
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 
 /**
  * Service for scheduling filters update checks.
  *
  * After initialization scheduler checks filter updates
- * {@link CHECK_PERIOD_MS every 30 minutes}.
+ * {@link CHECK_PERIOD_MS every 5 minutes}.
  */
 export class FilterUpdateService {
     /**
@@ -42,8 +42,10 @@ export class FilterUpdateService {
     /**
      * Filter update period.
      * This means that filters should be updated if it was updated more than the specified value.
+     * We set 1 hour because currently we generate patches for our filter once an hour and
+     * for third-party filters once every 4 hours.
      */
-    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 60 * 30; // 30 min
+    private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 60 * 60; // 1 hour
 
     /**
      * Stores scheduler timer id for checking update in every
@@ -86,7 +88,7 @@ export class FilterUpdateService {
             try {
                 await FilterUpdateApi.autoUpdateFilters();
             } catch (e) {
-                Log.error('An error occurred during filters update:', e);
+                logger.error('An error occurred during filters update:', e);
             }
             // Saving current time to storage is required in the cases
             // when background page is often unloaded,

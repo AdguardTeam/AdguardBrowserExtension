@@ -34,7 +34,7 @@ import { settingsEvents } from '../events';
 import { messageHandler } from '../message-handler';
 import { MessageType, OpenSafebrowsingTrustedMessage } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 
 /**
  * SafebrowsingService adds listeners for correct work of {@link SafebrowsingApi} module.
@@ -96,19 +96,19 @@ export class SafebrowsingService {
                                 browser.tabs.remove(tabId);
                             })
                             .catch((e) => {
-                                Log.warn('Cannot open info page about blocked domain. Original error: ', e);
+                                logger.warn('Cannot open info page about blocked domain. Original error: ', e);
                             });
                     } else {
                         browser.tabs.update(tabId, { url: safebrowsingUrl })
                             .catch((e) => {
                                 // eslint-disable-next-line max-len
-                                Log.warn(`Cannot update tab with id ${tabId} to show info page about blocked domain. Original error: `, e);
+                                logger.warn(`Cannot update tab with id ${tabId} to show info page about blocked domain. Original error: `, e);
                             });
                     }
                 })
                 .catch((e) => {
                     // eslint-disable-next-line max-len
-                    Log.warn(`Cannot execute safe browsing check for requested url "${requestUrl}". Original error: `, e);
+                    logger.warn(`Cannot execute safe browsing check for requested url "${requestUrl}". Original error: `, e);
                 });
         }
     }

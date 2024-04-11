@@ -125,7 +125,9 @@ describe('Filter Update API should', () => {
                 fakeFilterWithVersion(v2),
             ]);
 
-            await FiltersApi.loadAndEnableFilters([filterId]);
+            // Remote true because filter 999 is not in local metadata and method
+            // will skip loading it.
+            await FiltersApi.loadAndEnableFilters([filterId], true);
 
             let filterVersion = filterVersionStorage.get(filterId);
             expect(filterVersion?.version).toStrictEqual(v2);
@@ -168,6 +170,8 @@ describe('Filter Update API should', () => {
                 fakeFilterV2,
             ]);
 
+            // Remote true because filter 999 is not in local metadata and method
+            // will skip loading it.
             await FiltersApi.loadAndEnableFilters([filterId], true);
 
             const filterVersion = filterVersionStorage.get(filterId);
@@ -191,7 +195,7 @@ describe('Filter Update API should', () => {
         });
     });
 
-    it('update filters after 30 minutes delay', async () => {
+    it('update filters after 60 minutes delay', async () => {
         const clock = FakeTimers.install();
         let promise = App.init();
         await clock.tickAsync(10);
@@ -205,7 +209,7 @@ describe('Filter Update API should', () => {
             fakeFilterV2,
         ]);
 
-        promise = FiltersApi.loadAndEnableFilters([filterId]);
+        promise = FiltersApi.loadAndEnableFilters([filterId], true);
         await clock.tickAsync(10);
         await promise;
 
@@ -220,7 +224,7 @@ describe('Filter Update API should', () => {
         expect(updatedFilters.length).toBe(0);
 
         // Wait for 31 minutes
-        await clock.tickAsync(1000 * 60 * 31);
+        await clock.tickAsync(1000 * 60 * 61);
         filterVersion = filterVersionStorage.get(filterId);
         // Filter version still the same because filter didn't expired
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
@@ -235,7 +239,7 @@ describe('Filter Update API should', () => {
         // Set period update to 100ms
         await SettingsApi.setSetting(SettingOption.FiltersUpdatePeriod, 100);
         // Wait for first check after filter expired
-        await clock.tickAsync(1000 * 60 * 31);
+        await clock.tickAsync(1000 * 60 * 61);
         filterVersion = filterVersionStorage.get(filterId);
         expect(filterVersion?.version).toStrictEqual(v3);
         clock.uninstall();
@@ -257,6 +261,12 @@ describe('Filter Update API should', () => {
                 [CLIENT_ID_KEY]: 'id',
             });
             await App.init();
+
+            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+                .mockImplementation(() => Promise.resolve({
+                    filter: fakeFilterV1.split('\n'),
+                    rawFilter: fakeFilterV1,
+                }));
         });
 
         afterEach(async () => {
@@ -283,6 +293,8 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
 
@@ -295,10 +307,12 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV1.split('\n'));
-            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1.split('\n'));
+            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1);
 
             returnMetadataWithVersion(filterId, '4.0.0.0');
             const filterVersionData = filterVersionStorage.getData();
@@ -308,7 +322,7 @@ describe('Filter Update API should', () => {
             jest.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
-                    rawFilter: fakeFilterV4WithDiffPath.split('\n'),
+                    rawFilter: fakeFilterV4WithDiffPath,
                 }));
 
             await FilterUpdateApi.autoUpdateFilters(false);
@@ -318,10 +332,12 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
-            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
@@ -330,10 +346,12 @@ describe('Filter Update API should', () => {
                 {
                     definedExpressions,
                     rawFilter: fakeFilterV4WithDiffPath,
+                    validateChecksum: true,
+                    validateChecksumStrict: true,
                 },
             );
             expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
-            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
         });
 
         it('Filters with diff path get full (force) update on expiring', async () => {

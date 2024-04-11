@@ -17,9 +17,11 @@
  */
 import zod from 'zod';
 
+import { logger } from '../../common/logger';
+
 import { storage } from './main';
 
-const stringArraySchema = zod.string().array().optional().transform(data => data ?? undefined);
+const stringArraySchema = zod.string().optional().transform(data => data ?? undefined);
 
 /**
  * Encapsulates interaction with stored filter rules before applying directives.
@@ -31,26 +33,32 @@ export class RawFiltersStorage {
      * @param filterId Filter id.
      * @param filter Filter rules strings.
      */
-    static async set(filterId: number, filter: string[]): Promise<void> {
+    static async set(filterId: number, filter: string): Promise<void> {
         const key = RawFiltersStorage.getFilterKey(filterId);
 
         await storage.set(key, filter);
     }
 
     /**
-     * Returns specified filter list from {@link storage}.
+     * Retrieves raw filter from the {@link storage}. Parses it and returns string if data is
+     * valid or undefined otherwise.
      *
      * @param filterId Filter id.
-     *
-     * @returns Promise, resolved with filter rules strings.
-     * @throws Error, if filter list data is not valid.
+     * @returns Promise, resolved with filter rules strings or undefined if data is invalid.
      */
-    static async get(filterId: number): Promise<string[] | undefined> {
+    static async get(filterId: number): Promise<string | undefined> {
         const key = RawFiltersStorage.getFilterKey(filterId);
 
         const data = await storage.get(key);
 
-        return stringArraySchema.parse(data);
+        const parseResult = stringArraySchema.safeParse(data);
+
+        if (!parseResult.success) {
+            logger.info('Received data had a format that was not expected:', parseResult.error.message);
+            return undefined;
+        }
+
+        return parseResult.data;
     }
 
     /**

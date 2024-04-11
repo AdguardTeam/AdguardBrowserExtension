@@ -17,7 +17,7 @@
  */
 import type { SettingsConfig } from '@adguard/tswebextension';
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { defaultSettings } from '../../../common/settings';
 import {
     AllowlistConfig,
@@ -61,6 +61,7 @@ import { Unknown } from '../../../common/unknown';
 import { Prefs } from '../../prefs';
 import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
 import { filteringLogApi } from '../filtering-log';
+import { network } from '../network';
 
 import { SettingsMigrations } from './migrations';
 
@@ -86,8 +87,8 @@ export class SettingsApi {
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
-            Log.error('Cannot init settings from storage: ', e);
-            Log.info('Reverting settings to default values');
+            logger.error('Cannot init settings from storage: ', e);
+            logger.info('Reverting settings to default values');
             const settings = { ...defaultSettings };
 
             // Update settings in the cache and in the storage
@@ -232,7 +233,7 @@ export class SettingsApi {
 
             return true;
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             return false;
         }
     }
@@ -276,8 +277,8 @@ export class SettingsApi {
 
         if (allowAcceptableAds) {
             await CommonFilterApi.loadFilterRulesFromBackend(
-                // since this is called on settings import, we use force, to update filters without patches
-                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, force: false },
+                // Since this is called on settings import we update filters without patches.
+                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, ignorePatches: false },
                 false,
             );
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
@@ -359,6 +360,41 @@ export class SettingsApi {
     }
 
     /**
+     * Loads built-in filters and enables them.
+     * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
+     *
+     * @param builtInFilters Array of built-in filters ids.
+     * @private
+     */
+    private static async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
+        const tasks = builtInFilters.map(async (filterId: number) => {
+            try {
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, true);
+            } catch (e) {
+                logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                // eslint-disable-next-line max-len
+                if (!network.isFilterHasLocalCopy(filterId)) {
+                    // eslint-disable-next-line max-len
+                    throw new Error(`Filter rules were not loaded from backend and there is no local copy of the filter with id ${filterId}.`, { cause: e });
+                }
+                logger.debug('Trying to load from storage.');
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+            }
+
+            filterStateStorage.enableFilters([filterId]);
+        });
+
+        const promises = await Promise.allSettled(tasks);
+
+        // Handles errors
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                logger.error(promise.reason);
+            }
+        });
+    }
+
+    /**
      * Imports filters settings from object of {@link FiltersConfig}.
      */
     private static async importFilters({
@@ -371,30 +407,14 @@ export class SettingsApi {
         await SettingsApi.importUserFilter(userFilter);
         SettingsApi.importAllowlist(allowlist);
 
-        const tasks = enabledFilters
-            .filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId))
-            .map(async (filterId: number) => {
-                await CommonFilterApi.loadFilterRulesFromBackend({
-                    filterId,
-                    force: false,
-                }, false);
-                filterStateStorage.enableFilters([filterId]);
-            });
-
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                Log.error(promise.reason);
-            }
-        });
+        const builtInFilters = enabledFilters.filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId));
+        await SettingsApi.loadBuiltInFilters(builtInFilters);
 
         await CustomFilterApi.createFilters(customFilters);
 
         groupStateStorage.enableGroups(enabledGroups);
 
-        Log.info(`Import filters: next groups were enabled: ${enabledGroups}`);
+        logger.info(`Import filters: next groups were enabled: ${enabledGroups}`);
 
         // Disable groups not listed in the imported list.
         const allGroups = groupStateStorage.getData();

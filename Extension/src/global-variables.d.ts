@@ -16,14 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { downloadFilters } from './resources/download-filters';
-import { updateLocalScriptRules } from './resources/update-local-script-rules';
-
-const resources = async () => {
-    await downloadFilters();
-    await updateLocalScriptRules();
-};
-
-(async () => {
-    await resources();
-})();
+// Variables passed from webpack that will be primitive at runtime.
+declare const IS_RELEASE: boolean;
+declare const IS_BETA: boolean;
