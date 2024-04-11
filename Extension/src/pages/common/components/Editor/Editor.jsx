@@ -26,7 +26,7 @@ import 'ace-builds/src-noconflict/ext-searchbox.js';
 import 'ace-builds/src-noconflict/theme-textmate.js';
 import 'ace-builds/src-noconflict/mode-text.js';
 
-import { Log } from '../../../../common/log';
+import { logger } from '../../../../common/logger';
 
 import './mode-adguard.js';
 
@@ -59,7 +59,7 @@ const Editor = ({
                 setSize(JSON.parse(editorStorageSize));
             } catch (e) {
                 setSize(DEFAULT_EDITOR_SIZE);
-                Log.debug(e.message);
+                logger.debug(e.message);
             }
         }
     }, [editorStorageSize]);

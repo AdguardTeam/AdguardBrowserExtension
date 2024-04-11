@@ -10,7 +10,6 @@
     AdGuard is a fast and lightweight ad blocking browser extension<br/>that effectively blocks all types of ads and trackers.
 </p>
 
-
 <p align="center">
     <a href="https://adguard.com/">AdGuard.com</a> |
     <a href="https://reddit.com/r/Adguard">Reddit</a> |
@@ -31,7 +30,6 @@
         <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_extension_settings_white.png" width="900px" alt="AdGuard Browser Extension"/>
     </picture>
 </p>
-
 
 AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
 
@@ -55,59 +53,88 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 - [Minimum supported browser versions](#minimum-supported-browser-versions)
 
 <a id="installation"></a>
+
 ## Installation
 
 <a id="installation-chrome"></a>
+
 ### Chrome and Chromium-based browsers
-You can get the latest available AdGuard Extension version from the [Chrome Web Store](https://agrd.io/extension_chrome).
+
+You can get the latest available AdGuard Extension version from the
+[Chrome Web Store](https://agrd.io/extension_chrome).
 
 <a id="installation-firefox"></a>
+
 ### Firefox
-You can get the latest version of AdGuard Extension from the [Mozilla Add-ons website](https://agrd.io/extension_firefox).
+
+You can get the latest version of AdGuard Extension from the
+[Mozilla Add-ons website](https://agrd.io/extension_firefox).
 
 <a id="installation-opera"></a>
+
 ### Opera
-Opera is basically a Chromium browser, but it maintains its own add-ons store. You can get AdGuard Extension [from there](https://agrd.io/extension_opera).
+
+Opera is basically a Chromium browser, but it maintains its own add-ons store.
+You can get AdGuard Extension [from there](https://agrd.io/extension_opera).
 
 <a id="installation-edge"></a>
+
 ### Microsoft Edge
-The latest stable version of AdGuard browser extension is available in [Microsoft Store](https://agrd.io/extension_edge).
+
+The latest stable version of AdGuard browser extension is available in
+[Microsoft Store](https://agrd.io/extension_edge).
 
 <a id="contribution"></a>
+
 ## Contribution
 
-We are blessed to have a community that does not only love AdGuard, but also gives back. A lot of people volunteer in various ways to make other users' experience with AdGuard better, and you can join them!
+We are blessed to have a community that does not only love AdGuard, but also
+gives back. A lot of people volunteer in various ways to make other users'
+experience with AdGuard better, and you can join them!
 
-We, on our part, can only be happy to reward the most active members of the community. So, what can you do?
+We, on our part, can only be happy to reward the most active members of the
+community. So, what can you do?
 
 <a id="contribution-translating"></a>
+
 ### Translating AdGuard
 
-If you want to help with AdGuard translations, please learn more about translating our products here: https://kb.adguard.com/en/general/adguard-translations
+If you want to help with AdGuard translations, please learn more about
+translating our products here: <https://kb.adguard.com/en/general/adguard-translations>
 
 <a id="contribution-testing"></a>
+
 ### Testing AdGuard
 
-You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found on a [dedicated page on our website](https://adguard.com/beta.html).
+You can get a beta version of AdGuard Browser Extension for any browser.
+All necessary information on this topic can be found on a
+[dedicated page on our website](https://adguard.com/beta.html).
 
 <a id="contribution-reporting"></a>
+
 ### Reporting issues
 
-GitHub can be used to report a bug or to submit a feature request. To do so, go to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues) and click the *New issue* button.
+GitHub can be used to report a bug or to submit a feature request. To do so, go
+to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues)
+and click the *New issue* button.
 
->**Note:** for the filter-related issues (missed ads, false positives etc.) use the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
+> [!NOTE]
+> For the filter-related issues (missed ads, false positives etc.) use
+> the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
 
 <a id="contribution-other"></a>
+
 ### Other options
 
-Here is a [dedicated page](https://adguard.com/contribute.html) for those who are willing to contribute.
+Here is a [dedicated page](https://adguard.com/contribute.html) for those who
+are willing to contribute.
 
 <a id="dev"></a>
+
 ## Development
 
-> Since version 4.0, Adguard browser extension uses opensource [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) library for implementing content blocking rules.
-
 <a id="dev-requirements"></a>
+
 ### Requirements
 
 - [node.js LTS](https://nodejs.org/en/download/)
@@ -115,27 +142,32 @@ Here is a [dedicated page](https://adguard.com/contribute.html) for those who ar
 - [yarn v1.22](https://yarnpkg.com/en/docs/install/)
 
 Install local dependencies by running:
-```
+
+```shell
   yarn install
 ```
 
 <a id="dev-build"></a>
+
 ### How to build
 
-**How to run tests**
-```
+#### Tests and dev build
+
+Running tests:
+
+```shell
   yarn test
 ```
 
-**Building the dev version**
+Run the following command to build the dev version:
 
-Run the following command:
-```
+```shell
   yarn dev
 ```
 
 This will create a build directory with unpacked extensions for all browsers:
-```
+
+```shell
   build/dev/chrome
   build/dev/edge
   build/dev/firefox-amo
@@ -143,58 +175,86 @@ This will create a build directory with unpacked extensions for all browsers:
   build/dev/opera
 ```
 
-To make dev build for a specific browser, run:
+To make a dev build for a specific browser, run:
 
-```
+```shell
   yarn dev <browser>
 ```
 
-where `<browser>` is one of the following: `chrome`, `edge`, `opera`, `firefox`, `firefox-standalone`, like this:
+Where `<browser>` is one of the following: `chrome`, `edge`, `opera`, `firefox`,
+`firefox-standalone`, like this:
 
-```
+```shell
   yarn dev chrome
 ```
 
 To run dev build in watch mode, run:
 
-```
+```shell
   yarn dev --watch
 ```
 
-or for a specific browser:
+Or for a specific browser:
 
-```
+```shell
   yarn dev <browser> --watch
 ```
 
-**Building the beta and release versions**
+#### Linking with the developer build of tsurlfilter/tswebextension
 
-Before building the release version, you should manually download necessary resources: filters and public suffix list.
+Since version v4.0, AdGuard browser extension uses an open source library
+[tsurlfilter][tsurlfilter] that implements
+the filtering engine.
 
-```
+While developing the browser extension it may be required to test the changes
+to `tsurlfilter`. Here's what you need to do to link your local dev build
+to the local dev build of `tsurlfilter`.
+
+1. Clone and build [tsurlfilter][tsurlfilter] libraries.
+1. Go to the `tsurlfilter/packages/tsurlfilter` and
+`tsurlfilter/packages/tswebextension` directories and run `yarn link`.
+
+1. Now you can link these packages to the browser extension. To do that run
+`yarn link` commands in the root directory of the browser extension root
+directory:
+
+  ```shell
+  yarn link @adguard/tsurlfilter
+  yarn link @adguard/tswebextension
+  ```
+
+1. Build the browser extension in the watch mode:
+
+  ```shell
+  yarn dev <browser> --watch
+  ```
+
+[tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
+
+#### Building the beta and release versions
+
+Before building the release version, you should manually download the necessary
+resources that will be included into the build: filters and public suffix list.
+
+```shell
   yarn resources
 ```
 
-```
+This command also checks if there are dangerous rules in the filters.
+See [dangerous rules](tools/resources/dangerous-rules/README.md)
+
+```shell
   yarn beta
   yarn release
 ```
-You will need to put certificate.pem file to the `./private` directory. This build will create unpacked extensions and then pack them (crx for Chrome).
 
-**Building the sample extension with API**
-
-Run the following command:
-```
-yarn adguard-api
-```
-This will create a build directory with unpacked sample extension for chromium browsers:
-
-```
-build/dev/adguard-api
-```
+You will need to put certificate.pem file to the `./private` directory. This
+build will create unpacked extensions and then pack them (crx for Chrome).
 
 <a id="dev-linter"></a>
+
 ### Linter
+
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
@@ -204,25 +264,26 @@ please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
 To download and append localizations run:
 
-```bash
+```shell
     yarn locales download
 ```
 
-To upload new phrases to crowdin you need the file with phrases `./Extension/_locales/en/messages.json`. Then run:
+To upload new phrases to crowdin you need the file with phrases
+`./Extension/_locales/en/messages.json`. Then run:
 
-```bash
+```shell
     yarn locales upload
 ```
 
 To remove old messages from locale messages run:
 
-```bash
+```shell
   yarn locales renew
 ```
 
 To validate translations run:
 
-```bash
+```shell
   yarn locales validate
 ```
 
@@ -236,10 +297,10 @@ To show locales info run:
 
 ## Minimum supported browser versions
 
-| Browser                 	| Version  |
-|-------------------------	|:--------:|
-| Chromium Based Browsers 	|  80   	  |
-| Firefox                 	|  78   	  |
-| Firefox Mobile            | 113    	 |
-| Opera                   	|  67   	  |
-| Edge                    	|  80   	  |
+| Browser                  | Version  |
+|------------------------- |:--------:|
+| Chromium Based Browsers  |  80      |
+| Firefox                  |  78      |
+| Firefox Mobile           | 113      |
+| Opera                    |  67      |
+| Edge                     |  80      |

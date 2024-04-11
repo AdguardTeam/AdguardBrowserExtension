@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { Engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
 
@@ -33,10 +33,10 @@ export class AssistantApi {
             try {
                 Engine.api.openAssistant(activeTab.id);
             } catch (e) {
-                Log.warn('Cannot open assistant in active tab due to: ', e);
+                logger.warn('Cannot open assistant in active tab due to: ', e);
             }
         } else {
-            Log.warn('Cannot open assistant in active tab');
+            logger.warn('Cannot open assistant in active tab');
         }
     }
 }

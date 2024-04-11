@@ -23,7 +23,7 @@ import {
     KEEP_ALIVE_PORT_NAME,
 } from '../common/constants';
 import { MessageType } from '../common/messages';
-import { Log } from '../common/log';
+import { logger } from '../common/logger';
 
 import { listeners } from './notifier';
 import { filteringLogApi } from './api';
@@ -49,7 +49,7 @@ export class ConnectionHandler {
     private static handleConnection(port: Runtime.Port): void {
         let listenerId: number;
 
-        Log.info(`Port: "${port.name}" connected`);
+        logger.info(`Port: "${port.name}" connected`);
 
         ConnectionHandler.onPortConnection(port);
 
@@ -62,7 +62,7 @@ export class ConnectionHandler {
                     try {
                         port.postMessage({ type, data });
                     } catch (e) {
-                        Log.error(e);
+                        logger.error(e);
                     }
                 });
             }
@@ -71,7 +71,7 @@ export class ConnectionHandler {
         port.onDisconnect.addListener(() => {
             ConnectionHandler.onPortDisconnection(port);
             listeners.removeListener(listenerId);
-            Log.info(`Port: "${port.name}" disconnected`);
+            logger.info(`Port: "${port.name}" disconnected`);
         });
     }
 
@@ -97,7 +97,7 @@ export class ConnectionHandler {
 
             case port.name === KEEP_ALIVE_PORT_NAME: {
                 // This handler exists solely to prevent errors from the default case.
-                Log.debug('Connected to the port');
+                logger.debug('Connected to the port');
                 break;
             }
 

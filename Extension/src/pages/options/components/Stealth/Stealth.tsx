@@ -26,7 +26,7 @@ import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
-import { Log } from '../../../../common/log';
+import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { GLOBAL_PRIVACY_CONTROL_URL, DO_NOT_TRACK_URL } from '../../constants';
 import {
@@ -73,7 +73,7 @@ const Stealth = observer(() => {
             }
         }
 
-        Log.info(`Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
+        logger.info(`Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
         await settingsStore.updateSetting(id, value, ignoreBackground);
     };
 

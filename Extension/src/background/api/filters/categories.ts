@@ -33,7 +33,7 @@ import {
     FilterVersionData,
     CustomFilterMetadata,
 } from '../../schema';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 
 import { CommonFilterApi } from './common';
 import { FilterMetadata, FiltersApi } from './main';
@@ -116,7 +116,7 @@ export class Categories {
      */
     public static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
         if (recommendedFiltersIds.length > 0) {
-            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds);
+            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds, true);
         }
 
         // Always checks updates for enabled filters of the group.
@@ -280,31 +280,39 @@ export class Categories {
         const result: CategoriesFilterData[] = [];
 
         filtersMetadata.forEach((filterMetadata) => {
-            const tagsDetails = Categories.getTagsDetails(filterMetadata.tags);
+            const {
+                filterId,
+                tags,
+                version,
+                expires,
+                timeUpdated,
+                diffPath,
+            } = filterMetadata;
+            const tagsDetails = Categories.getTagsDetails(tags);
 
-            const filterState = filterStateStorage.get(filterMetadata.filterId);
+            const filterState = filterStateStorage.get(filterId);
             if (!filterState) {
-                Log.error(`Cannot find filter ${filterMetadata.filterId} state data`);
+                logger.error(`Cannot find filter ${filterId} state data`);
                 return;
             }
 
-            let filterVersion = filterVersionStorage.get(filterMetadata.filterId);
+            let filterVersion = filterVersionStorage.get(filterId);
             if (!filterVersion) {
                 // TODO: remove this hack after we find how to reproduce this issue
                 // Sometimes filter version data might be missing https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
                 // so we set it to values from metadata
-                Log.info(`Cannot find filter ${filterMetadata.filterId} version data, restoring it from metadata`);
+                logger.info(`Cannot find filter ${filterId} version data, restoring it from metadata`);
                 const dayAgoMs = Date.now() - 1000 * 60 * 60 * 24; // 24 hours
                 filterVersion = {
-                    version: filterMetadata.version,
-                    expires: filterMetadata.expires,
-                    lastUpdateTime: (new Date(filterMetadata.timeUpdated)).getTime(),
+                    version,
+                    expires,
+                    lastUpdateTime: (new Date(timeUpdated)).getTime(),
                     // this is set in the past to force update check
                     lastCheckTime: dayAgoMs,
                     lastScheduledCheckTime: dayAgoMs,
-                    diffPath: filterMetadata.diffPath,
+                    diffPath,
                 };
-                filterVersionStorage.set(filterMetadata.filterId, filterVersion);
+                filterVersionStorage.set(filterId, filterVersion);
             }
 
             result.push({
@@ -332,7 +340,7 @@ export class Categories {
             const groupState = groupStateStorage.get(groupMetadata.groupId);
 
             if (!groupState) {
-                Log.error(`Cannot find group ${groupMetadata.groupId} state data`);
+                logger.error(`Cannot find group ${groupMetadata.groupId} state data`);
                 return;
             }
 

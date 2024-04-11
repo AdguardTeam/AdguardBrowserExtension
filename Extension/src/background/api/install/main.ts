@@ -46,16 +46,29 @@ export class InstallApi {
      * Initializes app install.
      *
      * @param runInfo Info about extension start up.
-     * @param runInfo.currentAppVersion Current extension version.
      * @param runInfo.currentSchemaVersion Current data schema version.
      *
      */
-    public static async install({ currentAppVersion, currentSchemaVersion }: RunInfo): Promise<void> {
+    public static async install({ currentSchemaVersion }: RunInfo): Promise<void> {
         const clientId = InstallApi.genClientId();
         await storage.set(CLIENT_ID_KEY, clientId);
 
         await storage.set(SCHEMA_VERSION_KEY, currentSchemaVersion);
-        await storage.set(APP_VERSION_KEY, currentAppVersion);
+
         await storage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
+    }
+
+    /**
+     * This method is called after a successful update of the extension.
+     * If the extension installation is interrupted for some reason,
+     * for example, if the user runs the extension in private mode and the initiation stops,
+     * this method is not called. This ensures that actions needed upon
+     * initialization will be called again since the version did not change.
+     * Issue: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2713.
+     *
+     * @param currentAppVersion Current extension version.
+     */
+    public static async postSuccessInstall(currentAppVersion: string): Promise<void> {
+        await storage.set(APP_VERSION_KEY, currentAppVersion);
     }
 }

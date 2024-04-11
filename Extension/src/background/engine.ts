@@ -23,7 +23,7 @@ import {
     createTsWebExtension,
 } from '@adguard/tswebextension';
 
-import { Log, LogLevelString } from '../common/log';
+import { logger, LogLevel } from '../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
 
 import { listeners } from './notifier';
@@ -82,15 +82,13 @@ export class Engine {
 
         const configuration = await Engine.getConfiguration();
 
-        Log.info('Start tswebextension...');
+        logger.info('Start tswebextension...');
         await Engine.api.start(configuration);
 
         const rulesCount = Engine.api.getRulesCount();
-        Log.info(`tswebextension is started. Rules count: ${rulesCount}`);
+        logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated, {
-            rulesCount,
-        });
+        listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
 
     /**
@@ -100,15 +98,13 @@ export class Engine {
     static async update(): Promise<void> {
         const configuration = await Engine.getConfiguration();
 
-        Log.info('Update tswebextension configuration...');
+        logger.info('Update tswebextension configuration...');
         await Engine.api.configure(configuration);
 
         const rulesCount = Engine.api.getRulesCount();
-        Log.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
+        logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated, {
-            rulesCount,
-        });
+        listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
 
     /**
@@ -166,7 +162,7 @@ export class Engine {
 
         return {
             verbose: false,
-            logLevel: LogLevelString.Info,
+            logLevel: LogLevel.Info,
             filters,
             userrules,
             allowlist,

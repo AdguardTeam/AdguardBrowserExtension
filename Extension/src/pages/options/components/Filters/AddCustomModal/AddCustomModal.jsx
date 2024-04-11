@@ -25,7 +25,7 @@ import PropTypes from 'prop-types';
 
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { Log } from '../../../../../common/log';
+import { logger } from '../../../../../common/logger';
 import { rootStore } from '../../../stores/RootStore';
 import { Icon } from '../../../../common/components/ui/Icon';
 
@@ -45,7 +45,6 @@ const customStyles = {
     },
     content: {
         border: 0,
-        width: '560px',
         height: 'auto',
         position: 'relative',
         top: 0,
@@ -126,7 +125,7 @@ const AddCustomModal = ({
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             setStepToRender(STEPS.ERROR);
         }
     };
@@ -183,7 +182,7 @@ const AddCustomModal = ({
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
             setStepToRender(STEPS.ERROR);
-            Log.error(e);
+            logger.error(e);
         }
         closeModal();
     };
@@ -192,6 +191,8 @@ const AddCustomModal = ({
         const {
             name, description, version, rulesCount, homepage, customUrl,
         } = filterToAdd;
+
+        const filterTitle = name || filterToAddName || customUrlToAdd;
 
         return (
             <ModalContentWrapper
@@ -207,7 +208,8 @@ const AddCustomModal = ({
                             type="text"
                             placeholder={reactTranslator.getMessage('options_popup_title_placeholder')}
                             onChange={handleChangeFilterName}
-                            defaultValue={name || filterToAddName || customUrlToAdd}
+                            title={filterTitle}
+                            defaultValue={filterTitle}
                         />
                     </div>
                     <div className="modal__row">

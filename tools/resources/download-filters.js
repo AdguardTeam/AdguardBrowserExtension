@@ -36,8 +36,8 @@ import {
 } from '../constants';
 import {
     ADGUARD_FILTERS_IDS,
-    LOCALE_METADATA_FILE_NAME,
-    LOCALE_I18N_METADATA_FILE_NAME,
+    LOCAL_METADATA_FILE_NAME,
+    LOCAL_I18N_METADATA_FILE_NAME,
 } from '../../constants';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
@@ -55,12 +55,12 @@ const getUrlsOfFiltersResources = (browser) => {
 
     meta.push({
         url: METADATA_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCALE_METADATA_FILE_NAME,
+        file: LOCAL_METADATA_FILE_NAME,
     });
 
     meta.push({
         url: METADATA_I18N_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCALE_I18N_METADATA_FILE_NAME,
+        file: LOCAL_I18N_METADATA_FILE_NAME,
     });
 
     // eslint-disable-next-line no-restricted-syntax
@@ -93,10 +93,17 @@ const getUrlsOfFiltersResources = (browser) => {
  */
 const normalizeResponse = (response) => {
     const partOfResponse = response.substring(0, 200);
-    response = response.replace(partOfResponse.match(CHECKSUM_PATTERN)[0], '');
+    const match = partOfResponse.match(CHECKSUM_PATTERN);
+    if (match) {
+        response = response.replace(match[0], '');
+    }
     response = response.replace(/\r/g, '');
     response = response.replace(/\n+/g, '\n');
     return response;
+};
+
+export const calculateChecksum = (body) => {
+    return crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
 };
 
 /**
@@ -115,7 +122,7 @@ const validateChecksum = (url, body) => {
         cliLog.error(`Filter rules from ${url.url} doesn't contain a checksum ${partOfResponse}`);
     }
 
-    const bodyChecksum = crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
+    const bodyChecksum = calculateChecksum(body);
 
     if (bodyChecksum !== checksumMatch[1]) {
         cliLog.error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);

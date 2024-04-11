@@ -18,7 +18,7 @@
 import browser from 'webextension-polyfill';
 import SHA256 from 'crypto-js/sha256';
 
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
 import {
     storage,
@@ -88,16 +88,16 @@ export class SafebrowsingApi {
      * @param referrerUrl Referrer URL.
      */
     public static async checkSafebrowsingFilter(requestUrl: string, referrerUrl: string): Promise<string | undefined> {
-        Log.debug('Checking safebrowsing filter for', requestUrl);
+        logger.debug('Checking safebrowsing filter for', requestUrl);
 
         const sbList = await SafebrowsingApi.lookupUrl(requestUrl);
 
         if (!sbList) {
-            Log.debug('No safebrowsing rule found');
+            logger.debug('No safebrowsing rule found');
             return;
         }
 
-        Log.debug('Following safebrowsing filter has been fired:', sbList);
+        logger.debug('Following safebrowsing filter has been fired:', sbList);
         return SafebrowsingApi.getErrorPageURL(requestUrl, referrerUrl, sbList);
     }
 
@@ -151,20 +151,20 @@ export class SafebrowsingApi {
         try {
             response = await network.lookupSafebrowsing(shortHashes);
         } catch (e) {
-            Log.error('Error response from safebrowsing lookup server for', host);
+            logger.error('Error response from safebrowsing lookup server for', host);
             await SafebrowsingApi.suspendSafebrowsing();
             return null;
         }
 
         if (response && response.status >= 500) {
             // Error on server side, suspend request
-            Log.error(`Error response status ${response.status} received from safebrowsing lookup server.`);
+            logger.error(`Error response status ${response.status} received from safebrowsing lookup server.`);
             await SafebrowsingApi.suspendSafebrowsing();
             return null;
         }
 
         if (!response) {
-            Log.error('Cannot read response from the server');
+            logger.error('Cannot read response from the server');
             return null;
         }
 
@@ -272,7 +272,7 @@ export class SafebrowsingApi {
 
             return null;
         } catch (ex) {
-            Log.error('Error parse safebrowsing response, cause', ex);
+            logger.error('Error parse safebrowsing response, cause', ex);
         }
         return null;
     }

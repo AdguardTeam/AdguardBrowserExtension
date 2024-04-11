@@ -41,7 +41,7 @@ export const getExportedSettingsProtocolV1Fixture = () => ({
         'user-rules-editor-wrap': false,
     },
     'filters': {
-        'enabled-filters': [1, 2, 3, 4, 7, 13, 14, 15, 17, 242, 1000],
+        'enabled-filters': [1, 2, 3, 4, 7, 13, 14, 15, 17, 241, 1000],
         'enabled-groups': [0, 1, 2, 3, 4, 5, 6, 7],
         'custom-filters': [{
             'customUrl': 'https://testcases.agrd.dev/Filters/element-hiding-rules/test-element-hiding-rules.txt',
@@ -140,7 +140,7 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
         [ExtensionSpecificSettingsOption.UserRulesEditorWrap]: false,
     },
     [RootOption.Filters]: {
-        [FiltersOption.EnabledFilters]: [1, 2, 3, 4, 7, 13, 14, 15, 17, 242, 1000, 1001],
+        [FiltersOption.EnabledFilters]: [1, 2, 3, 4, 7, 13, 14, 15, 17, 241, 1000, 1001],
         [FiltersOption.EnabledGroups]: [0, 1, 2, 3, 4, 5, 6, 7],
         [FiltersOption.CustomFilters]: [{
             // eslint-disable-next-line max-len
