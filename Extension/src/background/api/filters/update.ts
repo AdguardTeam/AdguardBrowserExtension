@@ -144,7 +144,7 @@ export class FilterUpdateApi {
             // Select filters with diff paths and mark them for no force update
             const filtersToPatchUpdate = FilterUpdateApi
                 .selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate)
-                .map(filterData => ({ ...filterData, force: false }));
+                .map(filterData => ({ ...filterData, ignorePatches: false }));
 
             /**
              * Select filters for a forced update and mark them accordingly.
@@ -156,7 +156,7 @@ export class FilterUpdateApi {
             const filtersToFullUpdate = FilterUpdateApi.selectFiltersToFullUpdate(
                 filterUpdateDetailsToUpdate,
                 updatePeriod,
-            ).map(filter => ({ ...filter, force: true }));
+            ).map(filter => ({ ...filter, ignorePatches: true }));
 
             // Combine both arrays
             const combinedFilters = [...filtersToPatchUpdate, ...filtersToFullUpdate];
@@ -176,10 +176,7 @@ export class FilterUpdateApi {
 
         // Updates last check time of all installed and enabled filters,
         // which where updated with force
-        filterVersionStorage.refreshLastCheckTime(
-            filterUpdateDetailsToUpdate
-                .filter(filterUpdateOptions => filterUpdateOptions.ignorePatches),
-        );
+        filterVersionStorage.refreshLastCheckTime(filterUpdateDetailsToUpdate);
 
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
@@ -300,8 +297,7 @@ export class FilterUpdateApi {
                     // and wait until full update
                     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
                     && !filterVersion?.shouldWaitFullUpdate;
-            })
-            .map(({ filterId }) => ({ filterId, ignorePatches: false }));
+            });
     }
 
     /**
@@ -338,7 +334,7 @@ export class FilterUpdateApi {
             // Check, if the renewal period of each filter has passed.
             // If it is time to check the renewal, add to the array.
             return lastCheckTime + updatePeriod <= Date.now();
-        }).map(({ filterId }) => ({ filterId, ignorePatches: true }));
+        });
     }
 }
 
