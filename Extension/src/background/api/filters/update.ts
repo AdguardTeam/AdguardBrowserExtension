@@ -48,7 +48,7 @@ export type FilterUpdateOptions = {
 /**
  * List of filter update details.
  */
-type FilterUpdateOptionsList = FilterUpdateOptions[];
+export type FilterUpdateOptionsList = FilterUpdateOptions[];
 
 /**
  * API for manual and automatic (by period) filter rules updates.
@@ -178,8 +178,7 @@ export class FilterUpdateApi {
         // which where updated with force
         filterVersionStorage.refreshLastCheckTime(
             filterUpdateDetailsToUpdate
-                .filter(filterUpdateOptions => filterUpdateOptions.ignorePatches)
-                .map(({ filterId }) => filterId),
+                .filter(filterUpdateOptions => filterUpdateOptions.ignorePatches),
         );
 
         // If some filters were updated, then it is time to update the engine.

@@ -281,7 +281,7 @@ describe('Filter Update API should', () => {
             jest.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV1.split('\n'),
-                    rawFilter: fakeFilterV1.split('\n'),
+                    rawFilter: fakeFilterV1,
                 }));
 
             await FiltersApi.loadAndEnableFilters([filterId]);
@@ -360,7 +360,7 @@ describe('Filter Update API should', () => {
             jest.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
-                    rawFilter: fakeFilterV4WithDiffPath.split('\n'),
+                    rawFilter: fakeFilterV4WithDiffPath,
                 }));
 
             // Trigger full (force) filter update on filter load
