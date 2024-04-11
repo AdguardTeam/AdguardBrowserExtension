@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { logger } from '../../common/logger';
 import {
     SettingOption,
     Metadata,
@@ -22,8 +23,7 @@ import {
     FilterVersionData,
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
-import { Log } from '../../common/log';
-import type { FilterUpdateDetails } from '../api';
+import type { FilterUpdateOptionsList } from '../api';
 
 import { settingsStorage } from './settings';
 
@@ -92,7 +92,7 @@ export class FilterVersionStorage extends StringStorage<
      * @param filterDetails List of filter details to update check time for.
      * @throws Error if filter version data is not initialized.
      */
-    public refreshLastCheckTime(filterDetails: FilterUpdateDetails): void {
+    public refreshLastCheckTime(filterDetails: FilterUpdateOptionsList): void {
         if (!this.data) {
             throw FilterVersionStorage.createNotInitializedError();
         }
@@ -106,16 +106,16 @@ export class FilterVersionStorage extends StringStorage<
                 continue;
             }
 
-            const { filterId, force } = filterDetail;
+            const { filterId, ignorePatches } = filterDetail;
 
             const data = this.data[filterId];
 
             if (!data) {
-                Log.warn(`Failed to refresh last check time for filter ${filterId}.`);
+                logger.warn(`Failed to refresh last check time for filter ${filterId}.`);
                 continue;
             }
 
-            if (force) {
+            if (ignorePatches) {
                 data.lastCheckTime = now;
             } else {
                 data.lastScheduledCheckTime = now;
