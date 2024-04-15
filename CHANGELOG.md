@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
 - Applying of modifiers `$popup` and `$all` [#2620], [#2728].
 - Update recommended filters on enabling group of filters and on locale detection [#2714].
+- Extension's action icon flickering on tab change.
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
 [#2761]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
@@ -89,13 +90,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Detecting dangerous rules.
 
 ### Fixed
-- Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693)
-- Filters auto updates not refreshing `last updated date` field [#2726](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2726)
+- Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693).
+- Filters auto updates not refreshing `last updated date` field [#2726](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2726).
+- Extension's action icon flickering on tab change.
+
 
 ## [4.3.10] - 2024-01-20
 
 ### Fixed
-- Automatic filters update does not work in mobile browsers [#2423](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2423)
+- Automatic filters update does not work in mobile browsers [#2423](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2423).
 
 ## Changed
 - Updated [@adguard/filters-downloader] to v2.0.7.
@@ -107,8 +110,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Getting user consent on annoyances filter enabling.
 
 ### Fixed
-- Fixed compatibility for minimum supported versions [#2661](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2661)
-- Filters group not opening if some text is selected on the page [#2662](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2662)
+- Fixed compatibility for minimum supported versions [#2661](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2661).
+- Filters group not opening if some text is selected on the page [#2662](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2662).
 
 ### Changed
 - Download and apply differential updates [2586](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2586)
@@ -121,7 +124,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.2.240] - 2023-12-15
 
 ### Added
-- Info about `@adguard/tswebextension`, `@adguard/tsurlfilter`, `@adguard/extended-css` and `@adguard/scriptlets` versions to the options page's About tab [#2237](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2237)
+- Info about `@adguard/tswebextension`, `@adguard/tsurlfilter`, `@adguard/extended-css` and `@adguard/scriptlets` versions to the options page's About tab [#2237](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2237).
 
 ### Changed
 - Updated [@adguard/tswebextension] to v1.0.5.

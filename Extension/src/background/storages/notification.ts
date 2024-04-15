@@ -20,6 +20,11 @@ import browser from 'webextension-polyfill';
 import { Forward, ForwardAction } from '../../common/forward';
 import { NotificationTextRecord } from '../schema';
 
+export type IconData = {
+    '19': string;
+    '38': string;
+};
+
 export type Notification = {
     id: string,
     locales: Record<string, NotificationTextRecord>
@@ -38,7 +43,7 @@ export type Notification = {
     textColor?: string,
     badgeBgColor?: string,
     badgeText?: string,
-    icons?: Record<string, Record<string, string>>,
+    icons?: Record<string, IconData>,
 };
 
 /**
@@ -180,11 +185,11 @@ let easter24Notification: Notification = {
     type: 'animated',
     bgImage: browser.runtime.getURL('assets/images/easter24.svg'),
     icons: {
-        ICON_GREEN: {
+        enabled: {
             '19': browser.runtime.getURL('assets/icons/easter24-on-19.png'),
             '38': browser.runtime.getURL('assets/icons/easter24-on-38.png'),
         },
-        ICON_GRAY: {
+        disabled: {
             '19': browser.runtime.getURL('assets/icons/easter24-off-19.png'),
             '38': browser.runtime.getURL('assets/icons/easter24-off-38.png'),
         },
