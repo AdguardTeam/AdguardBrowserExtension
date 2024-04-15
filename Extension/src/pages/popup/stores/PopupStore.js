@@ -128,16 +128,20 @@ class PopupStore {
                 settings,
             } = response;
 
-            // frame info
-            this.applicationFilteringDisabled = frameInfo.applicationFilteringDisabled;
-            this.applicationAvailable = frameInfo.applicationAvailable;
-            this.url = frameInfo.url;
-            this.totalBlocked = frameInfo.totalBlocked;
-            this.totalBlockedTab = frameInfo.totalBlockedTab;
-            this.domainName = frameInfo.domainName;
-            this.documentAllowlisted = frameInfo.documentAllowlisted;
-            this.userAllowlisted = frameInfo.userAllowlisted;
-            this.canAddRemoveRule = frameInfo.canAddRemoveRule;
+            if (frameInfo) {
+                this.applicationFilteringDisabled = frameInfo.applicationFilteringDisabled;
+                this.applicationAvailable = frameInfo.applicationAvailable;
+                this.url = frameInfo.url;
+                this.totalBlocked = frameInfo.totalBlocked;
+                this.totalBlockedTab = frameInfo.totalBlockedTab;
+                this.domainName = frameInfo.domainName;
+                this.documentAllowlisted = frameInfo.documentAllowlisted;
+                this.userAllowlisted = frameInfo.userAllowlisted;
+                this.canAddRemoveRule = frameInfo.canAddRemoveRule;
+
+                this.isInitialDataReceived = true;
+                this.currentTabId = currentTab?.id;
+            }
 
             // options
             this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
@@ -150,9 +154,6 @@ class PopupStore {
 
             // settings
             this.settings = settings;
-
-            this.isInitialDataReceived = true;
-            this.currentTabId = currentTab?.id;
         });
     };
 

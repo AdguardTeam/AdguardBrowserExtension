@@ -91,6 +91,7 @@ export class UiService {
      */
     public static async init(): Promise<void> {
         await toasts.init();
+        await UiApi.init();
 
         // TODO add better handling for AdGuard for Firefox
         // Do not init context menu for mobile browsers

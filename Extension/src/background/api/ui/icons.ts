@@ -20,15 +20,49 @@ import browser from 'webextension-polyfill';
 import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
 import { getIconImageData } from '../../../common/api/extension';
+import type { IconData } from '../../storages';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
 
+const defaultIconVariants = {
+    enabled: {
+        '19': browser.runtime.getURL('assets/icons/green-19.png'),
+        '38': browser.runtime.getURL('assets/icons/green-38.png'),
+    },
+    disabled: {
+        '19': browser.runtime.getURL('assets/icons/gray-19.png'),
+        '38': browser.runtime.getURL('assets/icons/gray-38.png'),
+    },
+};
+
 /**
- * The Icons API is responsible for setting the icon that corresponds
- * to the current state of the background extension in the specified tab.
+ * The Icons API is responsible for managing the extension's action state.
  */
-export class IconsApi {
+class IconsApi {
+    /**
+     * Badge background color.
+     */
+    private readonly BADGE_COLOR = '#555';
+
+    /**
+     * Icon variants for the promo notification, if any is available.
+     */
+    private promoIcons: Record<string, IconData> | null = null;
+
+    /**
+     * Initializes Icons API.
+     */
+    public async init(): Promise<void> {
+        await this.setPromoIconIfAny();
+
+        if (this.promoIcons?.enabled) {
+            // Pre-set promo icon to avoid flicker on tabs change
+            const icon = this.pickIconVariant();
+            await IconsApi.setActionIcon(icon);
+        }
+    }
+
     /**
      * Updates current extension icon for specified tab.
      *
@@ -40,7 +74,7 @@ export class IconsApi {
      * @param frameData.applicationFilteringDisabled Is app filtering disabled globally.
      * @param frameData.totalBlockedTab Number of blocked requests.
      */
-    static async updateTabIcon(
+    public async updateTabAction(
         tabId: number,
         {
             documentAllowlisted,
@@ -48,65 +82,118 @@ export class IconsApi {
             totalBlockedTab,
         }: FrameData,
     ): Promise<void> {
-        let icon: Record<string, string>;
-        let badge: string;
-        let badgeColor = '#555';
-
-        // Icon is gray only if application is disabled or site is in exception
-        const disabled = documentAllowlisted || applicationFilteringDisabled;
-
-        let blocked: number;
-
-        if (!disabled && !settingsStorage.get(SettingOption.DisableShowPageStats)) {
-            blocked = totalBlockedTab;
-        } else {
-            blocked = 0;
-        }
+        const isDisabled = documentAllowlisted || applicationFilteringDisabled;
 
         try {
-            if (disabled) {
-                icon = {
-                    '19': browser.runtime.getURL('assets/icons/gray-19.png'),
-                    '38': browser.runtime.getURL('assets/icons/gray-38.png'),
-                };
-            } else {
-                icon = {
-                    '19': browser.runtime.getURL('assets/icons/green-19.png'),
-                    '38': browser.runtime.getURL('assets/icons/green-38.png'),
-                };
+            await this.setPromoIconIfAny();
+        } catch { /* do nothing */ }
+
+        // Determine extension's action new state based on the current tab state
+        const icon = this.pickIconVariant(isDisabled);
+        const badgeText = IconsApi.getBadgeText(totalBlockedTab, isDisabled);
+
+        try {
+            await IconsApi.setActionIcon(icon, tabId);
+
+            if (badgeText.length !== 0) {
+                await browser.browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
+                await browser.browserAction.setBadgeText({ tabId, text: badgeText });
             }
+        } catch (e) { /* do nothing */ }
+    }
 
-            if (blocked === 0) {
-                badge = '';
-            } else if (blocked > 99) {
-                badge = '\u221E';
-            } else {
-                badge = String(blocked);
-            }
+    /**
+     * Cleans up the promo icon variants. If the current tab action data is provided,
+     * updates the icon for the current tab.
+     *
+     * @param tabId Tab's id.
+     * @param frameData Tab's {@link FrameData}.
+     */
+    public async dismissPromoIcon(tabId?: number, frameData?: FrameData): Promise<void> {
+        this.setPromoIcons(null);
 
-            // If there's an active notification, indicate it on the badge
-            const notification = await promoNotificationApi.getCurrentNotification();
-            if (notification) {
-                badge = notification.badgeText || badge;
-                badgeColor = notification.badgeBgColor || badgeColor;
+        // Get rid of promo icon on all tabs, this prevents icon flickering on tab change
+        await IconsApi.setActionIcon(this.pickIconVariant());
 
-                if (disabled) {
-                    if (notification?.icons?.ICON_GRAY) {
-                        icon = notification.icons.ICON_GRAY;
-                    }
-                } else if (notification?.icons?.ICON_GREEN) {
-                    icon = notification.icons.ICON_GREEN;
-                }
-            }
+        // Update current tab action
+        if (tabId && frameData) {
+            const isDisabled = frameData.documentAllowlisted || frameData.applicationFilteringDisabled;
+            await IconsApi.setActionIcon(this.pickIconVariant(isDisabled), tabId);
+        }
+    }
 
-            await browser.browserAction.setIcon({ tabId, imageData: await getIconImageData(icon) });
+    /**
+     * Sets the icon for the extension action.
+     *
+     * @param icon Icon to set.
+     * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
+     */
+    private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
+        await browser.browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
+    }
 
-            if (badge) {
-                await browser.browserAction.setBadgeText({ tabId, text: badge });
-                await browser.browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
-            }
-        } catch (e) {
-            // do nothing
+    /**
+     * Picks the icon variant based on the current tab state.
+     * Fallbacks to default icon variants if the current icon variants are not provided.
+     *
+     * @param isDisabled Is website allowlisted or app filtering disabled.
+     * @returns Icon variant to display.
+     */
+    private pickIconVariant(isDisabled = false): IconData {
+        return isDisabled
+            ? this.promoIcons?.disabled || defaultIconVariants.disabled
+            : this.promoIcons?.enabled || defaultIconVariants.enabled;
+    }
+
+    /**
+     * Calculates the badge text based on the current tab state.
+     *
+     * @param totalBlockedTab Number of blocked requests.
+     * @param isDisabled Is website allowlisted or app filtering disabled.
+     * @returns Badge text to display.
+     */
+    private static getBadgeText(totalBlockedTab: number, isDisabled: boolean): string {
+        let totalBlocked: number;
+
+        if (!isDisabled && !settingsStorage.get(SettingOption.DisableShowPageStats)) {
+            totalBlocked = totalBlockedTab;
+        } else {
+            totalBlocked = 0;
+        }
+
+        if (totalBlocked === 0) {
+            return '';
+        }
+
+        if (totalBlocked > 99) {
+            return '\u221E'; // infinity symbol
+        }
+
+        return String(totalBlocked);
+    }
+
+    /**
+     * Sets the promo icon variants.
+     *
+     * @param iconVariants Icon variants to set.
+     */
+    private setPromoIcons(iconVariants: Record<string, IconData> | null): void {
+        this.promoIcons = iconVariants;
+    }
+
+    /**
+     * Fetches the current icon variants from the promo notification api, if any.
+     * Does nothing if the icon variants are already set.
+     */
+    private async setPromoIconIfAny(): Promise<void> {
+        if (this.promoIcons) {
+            return;
+        }
+        const notification = await promoNotificationApi.getCurrentNotification();
+        if (notification && notification.icons) {
+            this.setPromoIcons(notification.icons);
         }
     }
 }
+
+export const iconsApi = new IconsApi();
