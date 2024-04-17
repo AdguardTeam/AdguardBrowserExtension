@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607].
 - Updated [@adguard/filters-downloader] to v2.2.0.
 - Updated [@adguard/tsurlfilter] to v2.2.18.
-- Updated [@adguard/tswebextension] to v1.0.22.
+- Updated [@adguard/tswebextension] to v1.0.23.
 - Updated [@adguard/scriptlets] to v1.10.25.
 
 ### Fixed
@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
 - Applying of modifiers `$popup` and `$all` [#2620], [#2728].
 - Update recommended filters on enabling group of filters and on locale detection [#2714].
+- Do not throw an error during cookie setting if a cookie domain mismatches a request URL [#2683].
 - Extension's action icon flickering on tab change.
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
@@ -32,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 [#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
 [#2714]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714
+[#2683]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2683
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
 [#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
 [#2607]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607
