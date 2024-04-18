@@ -161,6 +161,7 @@ const Stealth = observer(() => {
                     handler={stripTrackingParametersChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_hide_search_queries_title')}
@@ -174,6 +175,7 @@ const Stealth = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_send_not_track_title')}
@@ -221,6 +223,7 @@ const Stealth = observer(() => {
                 { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                 {/* @ts-ignore */}
                 <SettingsSetCheckbox
+                    className="disabled"
                     title={reactTranslator.getMessage('options_third_party_title')}
                     description={reactTranslator.getMessage('options_third_party_desc')}
                     disabled={!isThirdPartyCookiesEnabled}
@@ -247,6 +250,7 @@ const Stealth = observer(() => {
                 { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                 {/* @ts-ignore */}
                 <SettingsSetCheckbox
+                    className="disabled"
                     title={reactTranslator.getMessage('options_first_party_title')}
                     description={reactTranslator.getMessage('options_first_party_desc')}
                     disabled={!isFirstPartyCookiesEnabled}
@@ -277,6 +281,7 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
+                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_hide_referrer_title')}
@@ -292,6 +297,7 @@ const Stealth = observer(() => {
 
                 {settingsStore.isChrome && (
                     <SettingsSetCheckbox
+                        className="disabled"
                         // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                         // @ts-ignore
                         title={reactTranslator.getMessage('options_remove_client_data_title')}
@@ -307,6 +313,7 @@ const Stealth = observer(() => {
                 )}
 
                 <SettingsSetCheckbox
+                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_disable_webrtc_title')}

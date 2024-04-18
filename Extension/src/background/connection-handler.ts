@@ -17,11 +17,7 @@
  */
 import browser, { Runtime } from 'webextension-polyfill';
 
-import {
-    FILTERING_LOG,
-    FULLSCREEN_USER_RULES_EDITOR,
-    KEEP_ALIVE_PORT_NAME,
-} from '../common/constants';
+import { FULLSCREEN_USER_RULES_EDITOR, KEEP_ALIVE_PORT_NAME } from '../common/constants';
 import { MessageType } from '../common/messages';
 import { Log } from '../common/log';
 

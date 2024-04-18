@@ -180,6 +180,11 @@ export class FiltersApi {
             return [];
         }
 
+        if (filterIds.some((id) => !network.isFilterHasLocalCopy(id))) {
+            Log.error(`In MV3, filters with ids: ${filterIds} cannot be loaded without local copy.`);
+            return [];
+        }
+
         if (remote) {
             try {
                 // the arg is 'true' for loading locally stored metadata if remote loading failed.

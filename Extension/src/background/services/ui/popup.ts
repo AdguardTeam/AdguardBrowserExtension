@@ -101,6 +101,24 @@ export class PopupService {
                 },
             };
         }
+
+        // FIXME: Tmp solution, delete.
+        return {
+            frameInfo: FramesApi.getMockedMainFrameData(),
+            stats: PageStatsApi.getStatisticsData(),
+            settings: SettingsApi.getData(),
+            options: {
+                showStatsSupported: true,
+                isFirefoxBrowser: UserAgent.isFirefox,
+                showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                isMacOs: UserAgent.isMacOs,
+                isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
+                notification: await promoNotificationApi.getCurrentNotification(),
+                isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                hasCustomRulesToReset: false,
+                // hasCustomRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
+            },
+        };
     }
 
     /**

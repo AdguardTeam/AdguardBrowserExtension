@@ -219,8 +219,10 @@ class Messenger {
         await this.sendMessage(MessageType.SaveAllowlistDomains, { value });
     }
 
+    // eslint-disable-next-line class-methods-use-this
     async updateFilters() {
-        return this.sendMessage(MessageType.CheckFiltersUpdate);
+        alert('Not available in MV3');
+        // return this.sendMessage(MessageType.CheckFiltersUpdate);
     }
 
     async updateGroupStatus(id, enabled) {
@@ -273,12 +275,16 @@ class Messenger {
         return this.sendMessage(MessageType.OpenAssistant);
     }
 
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     async openAbuseSite(url, from) {
-        return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
+        alert('Cannot open because url of tab is empty.');
+        // return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
     }
 
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     async checkSiteSecurity(url, from) {
-        return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
+        alert('Cannot open because url of tab is empty.');
+        // return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
     }
 
     async resetCustomRulesForPage(url) {
@@ -301,8 +307,10 @@ class Messenger {
         return this.sendMessage(MessageType.GetStatisticsData);
     }
 
+    // eslint-disable-next-line class-methods-use-this
     async onOpenFilteringLogPage() {
-        await this.sendMessage(MessageType.OnOpenFilteringLogPage);
+        alert('Filtering log is not available in MV3.');
+        // await this.sendMessage(MessageType.OnOpenFilteringLogPage);
     }
 
     async getFilteringLogData() {

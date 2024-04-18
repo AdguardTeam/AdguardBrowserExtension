@@ -35,9 +35,9 @@ export class Prefs {
 
     public static readonly libVersions = {
         // FIXME: Exclude using 'window' object from the exported modules
-        tswebextension: 'TSWEBEXTENSION_VERSION',
-        tsurlfilter: 'TSURLFILTER_VERSION',
-        scriptlets: 'SCRIPTLETS_VERSION',
-        extendedCss: 'EXTENDED_CSS_VERSION',
+        tswebextension: 'N/A',
+        tsurlfilter: 'N/A',
+        scriptlets: 'N/A',
+        extendedCss: 'N/A',
     };
 }

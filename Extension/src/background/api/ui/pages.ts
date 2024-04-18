@@ -26,7 +26,7 @@ import {
     ForwardFrom,
     ForwardParams,
 } from '../../../common/forward';
-import { Engine } from '../../engine';
+import { engine } from '../../engine';
 import { UrlUtils } from '../../utils/url';
 import { storage, settingsStorage } from '../../storages';
 import { SettingOption } from '../../schema';
@@ -198,7 +198,7 @@ export class PagesApi {
             browserName = 'Other';
         }
 
-        const filterIds = Engine.api.configuration?.filters || [];
+        const filterIds = engine.api.configuration?.filters || [];
 
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,

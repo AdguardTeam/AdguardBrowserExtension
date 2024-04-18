@@ -15,31 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { debounce, filter } from 'lodash-es';
-import { Configuration, TsWebExtension } from '@adguard/tswebextension/mv3';
+import { debounce } from 'lodash-es';
+import {
+    type CommonMessageType,
+    Configuration,
+    TsWebExtension,
+} from '@adguard/tswebextension/mv3';
+// FIXME: Export from top file.
 import type { MessagesHandlerMV3 } from '@adguard/tswebextension/dist/types/src/lib/mv3/background/messages-api';
-
-// import { MESSAGE_HANDLER_NAME } from '@adguard/tswebextension';
 
 import { Log, LogLevelString } from '../common/log';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
 
 import { listeners } from './notifier';
-import { FiltersStorage } from './storages';
 import {
     FiltersApi,
     AllowlistApi,
     UserRulesApi,
     SettingsApi,
     DocumentBlockApi,
-    network,
     CustomFilterApi,
 } from './api';
 
-export type { CommonMessageType as EngineMessage } from '@adguard/tswebextension/mv3';
-
-// Variable passed from webpack that will be primitive at runtime.
-declare const IS_FIREFOX_AMO: boolean;
+// FIXME: Move this to tswebextension/mv3 package.
+export type EngineMessage = {
+    handlerName: 'tsWebExtension', // FIXME: Use MESSAGE_HANDLER_NAME
+    type: CommonMessageType,
+    data: unknown,
+};
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -57,31 +60,17 @@ export class Engine {
     static readonly messageHandlerName = 'tsWebExtension';
 
     /**
-     *
+     * Creates new Engine.
      */
     constructor() {
         this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT}`);
 
         this.handleMessage = this.api.getMessageHandler();
-
-        this.api.onAssistantCreateRule.subscribe(async (rule) => {
-            // FIXME: Add new user rule
-            // eslint-disable-next-line no-console
-            console.log('onAssistantCreateRule', rule);
-            // await userRules.addRule(rule);
-            // await this.configure();
-
-            // const updatedRules = await userRules.getRules();
-            // // Notify UI about changes
-            // notifier.notify(NOTIFIER_EVENTS.SET_RULES, { value: updatedRules });
-        });
     }
 
     debounceUpdate = debounce(() => {
         this.update();
     }, Engine.UPDATE_TIMEOUT_MS);
-
-    // static handleMessage = this.api?.getMessageHandler();
 
     /**
      * Starts the tswebextension and updates the counter of active rules.
@@ -111,6 +100,19 @@ export class Engine {
 
         const rulesCount = this.api.getRulesCount();
         Log.info(`tswebextension is started. Rules count: ${rulesCount}`);
+        // TODO: remove after frontend refactoring
+        listeners.notifyListeners(listeners.RequestFilterUpdated);
+    }
+
+    /**
+     * Stops the tswebextension and updates the counter of active rules.
+     */
+    async stop(): Promise<void> {
+        Log.info('Stop tswebextension...');
+        await this.api.stop();
+
+        const rulesCount = this.api.getRulesCount();
+        Log.info(`tswebextension is stopped. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
@@ -175,9 +177,10 @@ export class Engine {
             logLevel: LogLevelString.Info,
             staticFiltersIds,
             userrules,
-            allowlist,
+            allowlist, // FIXME: Not used in MV3, should be fixed.
             settings,
-            trustedDomains,
+            // eslint-disable-next-line max-len
+            trustedDomains, // FIXME: Not used in MV3, should be fixed. We can add DNR rule and delete it after expiration.
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
         };

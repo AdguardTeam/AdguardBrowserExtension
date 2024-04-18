@@ -141,7 +141,7 @@ export class SettingsService {
                 AntiBannerFiltersId,
             },
             filtersInfo: {
-                rulesCount: Engine.api.getRulesCount(),
+                rulesCount: engine.api.getRulesCount(),
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
@@ -211,7 +211,11 @@ export class SettingsService {
      */
     static async onDisableFilteringStateChange(isFilteringDisabled: boolean): Promise<void> {
         try {
-            await Engine.api.setFilteringEnabled(!isFilteringDisabled);
+            if (isFilteringDisabled) {
+                await engine.stop();
+            } else {
+                await engine.start();
+            }
 
             if (isFilteringDisabled) {
                 await SafebrowsingApi.clearCache();
@@ -245,11 +249,13 @@ export class SettingsService {
      * @param isHideReferrerEnabled Changed {@link SettingOption.HideReferrer} setting value.
      */
     static onHideReferrerStateChange(isHideReferrerEnabled: boolean): void {
-        try {
-            Engine.api.setHideReferrer(isHideReferrerEnabled);
-        } catch (e) {
-            Log.error('Failed to change `hide referrer` option state', e);
-        }
+        // FIXME: It can be implemented.
+        console.error('Not implemented!');
+        // try {
+        //     engine.api.setHideReferrer(isHideReferrerEnabled);
+        // } catch (e) {
+        //     Log.error('Failed to change `hide referrer` option state', e);
+        // }
     }
 
     /**
@@ -258,11 +264,13 @@ export class SettingsService {
      * @param isHideSearchQueriesEnabled Changed {@link SettingOption.HideSearchQueries} setting value.
      */
     static onHideSearchQueriesStateChange(isHideSearchQueriesEnabled: boolean): void {
-        try {
-            Engine.api.setHideSearchQueries(isHideSearchQueriesEnabled);
-        } catch (e) {
-            Log.error('Failed to change `hide search queries` option state', e);
-        }
+        // FIXME: It can be implemented.
+        console.error('Not implemented!');
+        // try {
+        //     engine.api.setHideSearchQueries(isHideSearchQueriesEnabled);
+        // } catch (e) {
+        //     Log.error('Failed to change `hide search queries` option state', e);
+        // }
     }
 
     /**
@@ -271,11 +279,13 @@ export class SettingsService {
      * @param isSendDoNotTrackEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
      */
     static onSendDoNotTrackStateChange(isSendDoNotTrackEnabled: boolean): void {
-        try {
-            Engine.api.setSendDoNotTrack(isSendDoNotTrackEnabled);
-        } catch (e) {
-            Log.error('Failed to change `send do not track` option state', e);
-        }
+        // FIXME: It can be implemented.
+        console.error('Not implemented!');
+        // try {
+        //     engine.api.setSendDoNotTrack(isSendDoNotTrackEnabled);
+        // } catch (e) {
+        //     Log.error('Failed to change `send do not track` option state', e);
+        // }
     }
 
     /**
@@ -284,11 +294,13 @@ export class SettingsService {
      * @param isRemoveXClientDataEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
      */
     static onRemoveXClientDataStateChange(isRemoveXClientDataEnabled: boolean): void {
-        try {
-            Engine.api.setBlockChromeClientData(isRemoveXClientDataEnabled);
-        } catch (e) {
-            Log.error('Failed to change `remove x-client-data` option state', e);
-        }
+        // FIXME: It can be implemented.
+        console.error('Not implemented!');
+        // try {
+        //     engine.api.setBlockChromeClientData(isRemoveXClientDataEnabled);
+        // } catch (e) {
+        //     Log.error('Failed to change `remove x-client-data` option state', e);
+        // }
     }
 
     /**
@@ -297,13 +309,16 @@ export class SettingsService {
      * @param isBlockWebRTCEnabled Changed {@link SettingOption.BlockWebRTC} setting value.
      */
     static async onBlockWebRTCStateChange(isBlockWebRTCEnabled: boolean): Promise<void> {
-        try {
-            await Engine.api.setBlockWebRTC(isBlockWebRTCEnabled);
-        } catch (e) {
-            Log.error('Failed to change `block WebRTC` option state', e);
-        }
+        // FIXME: It can be implemented.
+        console.error('Not implemented!');
+        // try {
+        //     await engine.api.setBlockWebRTC(isBlockWebRTCEnabled);
+        // } catch (e) {
+        //     Log.error('Failed to change `block WebRTC` option state', e);
+        // }
     }
 
+    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructThirdPartyCookies} setting changed.
      *
@@ -313,6 +328,7 @@ export class SettingsService {
         engine.debounceUpdate();
     }
 
+    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting changed.
      *
@@ -322,6 +338,7 @@ export class SettingsService {
         engine.debounceUpdate();
     }
 
+    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructFirstPartyCookies} setting changed.
      *
@@ -331,6 +348,7 @@ export class SettingsService {
         engine.debounceUpdate();
     }
 
+    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting changed.
      *
