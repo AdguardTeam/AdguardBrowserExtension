@@ -8,13 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Updated [@adguard/tswebextension] to v1.0.23.
+- Updated [@adguard/tswebextension] to v1.0.24.
 
 ### Fixed
 - Do not throw an error during cookie setting if a cookie domain mismatches a request URL [#2683].
+- Script rules are not applied in Firefox due to CSP [#1733].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.46...HEAD
 [#2683]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2683
+[#1733]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1733
 
 
 ## [4.3.46] - 2024-04-08
