@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { Menus } from 'webextension-polyfill';
-import { throttle } from 'lodash-es';
 import { nanoid } from 'nanoid';
 
 import { translator } from '../../../common/translators/translator';
@@ -53,6 +52,31 @@ const createMenu = (props: browser.Menus.CreateCreatePropertiesType): Promise<vo
     });
 };
 
+// const throttle = async (action: (...args: never[]) => Promise<unknown>, ms: number): Promise<void> => {
+//     const TIMER_NAME = 'updateContextMenuTimer';
+//     const timer = await chrome.alarms.get(TIMER_NAME);
+
+//     const removeTimer = (): Promise<boolean> => {
+//         chrome.alarms.onAlarm.removeListener(alarmHandler);
+//         return chrome.alarms.clear(TIMER_NAME);
+//     };
+
+//     const alarmHandler = async (alarm: chrome.alarms.Alarm): Promise<void> => {
+//         if (alarm.name !== TIMER_NAME) {
+//             return;
+//         }
+
+//         await action();
+
+//         await removeTimer();
+//     };
+
+//     if (!timer) {
+//         chrome.alarms.onAlarm.addListener(alarmHandler);
+//         chrome.alarms.create(TIMER_NAME, { when: Date.now() + ms });
+//     }
+// };
+
 /**
  * API for creating and updating browser context menus.
  */
@@ -72,7 +96,8 @@ export class ContextMenuApi {
      * Used in because updateMenu can be called multiple times from various event listeners, but
      * context menu doesn't require fast update.
      */
-    public static throttledUpdateMenu = throttle(ContextMenuApi.updateMenu, 100);
+    // FIXME: Add chrome.alarms for throttle;
+    public static throttledUpdateMenu = ContextMenuApi.updateMenu;
 
     /**
      * Updates context menu depends on tab filtering state.

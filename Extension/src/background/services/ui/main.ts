@@ -38,6 +38,7 @@ import {
     SettingsData,
     FilterMetadata,
     ContextMenuApi,
+    UiApi,
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
@@ -116,9 +117,14 @@ export class UiService {
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
         messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 
+        // FIXME: Export from MV3.
         // tsWebExtTabApi.onCreate.subscribe(UiApi.update);
         // tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
         // tsWebExtTabApi.onActivate.subscribe(UiApi.update);
+
+        browser.tabs.onCreated.addListener(UiApi.partialUpdate);
+        browser.tabs.onUpdated.addListener(UiApi.partialUpdate);
+        browser.tabs.onActivated.addListener(UiApi.partialUpdate);
 
         // defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
