@@ -409,6 +409,7 @@ export class Network {
     }
 
     /**
+     * Make a request for json via fetch.
      *
      * @param request
      * @param url

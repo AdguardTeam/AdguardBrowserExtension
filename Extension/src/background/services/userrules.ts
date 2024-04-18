@@ -116,7 +116,7 @@ export class UserRulesService {
         const { value } = message.data;
 
         await UserRulesApi.setUserRules(value.split('\n'));
-        await Engine.update();
+        await engine.update();
     }
 
     /**
@@ -161,7 +161,7 @@ export class UserRulesService {
         const { url, tabId } = message.data;
 
         await UserRulesApi.removeRulesByUrl(url);
-        await Engine.update();
+        await engine.update();
         await TabsApi.reload(tabId);
     }
 

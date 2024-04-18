@@ -95,15 +95,7 @@ export const genCommonConfig = (browserConfig) => {
                 //     TSWEBEXTENSION_VENDOR_OUTPUT,
                 // ],
             },
-            [OPTIONS_OUTPUT]: {
-                import: OPTIONS_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    EDITOR_OUTPUT,
-                ],
-            },
+            [OPTIONS_OUTPUT]: OPTIONS_PATH,
             [POPUP_OUTPUT]: POPUP_PATH,
             [FILTER_DOWNLOAD_OUTPUT]: {
                 import: FILTER_DOWNLOAD_PATH,

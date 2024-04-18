@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Log } from '../../../common/log';
-import { Engine } from '../../engine';
+import { engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
 
 /**
@@ -31,7 +31,7 @@ export class AssistantApi {
 
         if (activeTab?.id) {
             try {
-                Engine.api.openAssistant(activeTab.id);
+                engine.api.openAssistant(activeTab.id);
             } catch (e) {
                 Log.warn('Cannot open assistant in active tab due to: ', e);
             }

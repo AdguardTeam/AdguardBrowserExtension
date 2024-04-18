@@ -48,6 +48,8 @@ export class SafebrowsingService {
 
         settingsEvents.addListener(SettingOption.DisableSafebrowsing, SafebrowsingApi.clearCache);
 
+        // FIXME: RequestEvents can be exported from MV3, because non-blocking
+        // listener for onHeadersReceived is allowed in MV3.
         // RequestEvents.onHeadersReceived.addListener(SafebrowsingService.onHeadersReceived);
 
         messageHandler.addListener(MessageType.OpenSafebrowsingTrusted, SafebrowsingService.onAddTrustedDomain);

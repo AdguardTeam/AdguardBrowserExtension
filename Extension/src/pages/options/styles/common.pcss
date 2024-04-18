@@ -161,6 +161,11 @@ label.checkbox-label {
         text-decoration: underline;
         cursor: pointer;
 
+        &.disabled {
+            opacity: .5;
+            pointer-events: none;
+        }
+
         @media (prefers-color-scheme: dark) {
             color: var(--gray300);
         }

@@ -118,6 +118,7 @@ export const Miscellaneous = observer(() => {
                         inverted
                     />
                     <SettingsSetCheckbox
+                        className="disabled"
                         title={reactTranslator.getMessage('options_collect_hit_stats_title')}
                         description={reactTranslator.getMessage('options_collect_hit_stats_desc', {
                             a: (chunks) => (

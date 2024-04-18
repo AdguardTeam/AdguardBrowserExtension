@@ -221,6 +221,7 @@ export const General = observer(() => {
                     handler={allowAcceptableAdsChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_safebrowsing_enabled')}
@@ -259,6 +260,7 @@ export const General = observer(() => {
                     value={settings.values[DisableDetectFilters]}
                 />
                 <SettingSetSelect
+                    className="disabled"
                     title={reactTranslator.getMessage('options_set_update_interval')}
                     description={reactTranslator.getMessage('options_set_update_interval_desc')}
                     id={FiltersUpdatePeriod}
@@ -284,7 +286,7 @@ export const General = observer(() => {
                 />
                 <label
                     htmlFor="inputEl"
-                    className="links-menu__item"
+                    className="links-menu__item disabled"
                 >
                     <input
                         type="file"

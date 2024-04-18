@@ -35,16 +35,49 @@ export type FrameRule = {
 };
 
 export type FrameData = {
+    /**
+     * Url of the tab.
+     */
     url: string | null,
+    /**
+     * Domain of the tab's url.
+     */
     domainName: string | null,
+    /**
+     * Is background already started.
+     */
     applicationAvailable: boolean,
+    /**
+     * Is filtering disabled or enabled in extension settings.
+     */
     applicationFilteringDisabled: boolean,
+    /**
+     * If url of current tab is not http.
+     */
     urlFilteringDisabled: boolean,
+    /**
+     * If main frame rule disabled filtering in current tab.
+     */
     documentAllowlisted: boolean,
+    /**
+     * If main frame rule from user rules or from allowlist.
+     */
     userAllowlisted: boolean,
+    /**
+     * Is current url of the tab in the exceptions or not.
+     */
     canAddRemoveRule: boolean,
+    /**
+     * Main frame rule - rule which applied to entire frame, e.g. $document, $all, etc.
+     */
     frameRule: FrameRule | null,
+    /**
+     * Number of blocked request for current tab.
+     */
     totalBlockedTab: number,
+    /**
+     * Number of blocked request for entire extension.
+     */
     totalBlocked: number,
 };
 
@@ -52,6 +85,44 @@ export type FrameData = {
  * Helper class for retrieving main frame data from both tswebextension and app state.
  */
 export class FramesApi {
+    /**
+     * FIXME: TMP method, use getMainFrameData instead.
+     *
+     * Tries to find the main frame data for the provided tab context
+     * and returns it.
+     *
+     * @returns The {@link FrameData} object can be partially empty if no frames
+     * were found for a given tab context.
+     */
+    public static getMockedMainFrameData(): FrameData {
+        const url = 'N/A'; // FIXME: Can be extracted in MV3
+
+        const domainName = url ? getDomain(url) : null;
+
+        const urlFilteringDisabled = !url || !isHttpRequest(url);
+
+        const applicationAvailable = appContext.get(AppContextKey.IsInit) && !urlFilteringDisabled;
+
+        const totalBlocked = PageStatsApi.getTotalBlocked();
+
+        const totalBlockedTab = 0; // FIXME: Cannot be computed in MV3, only total.
+        const applicationFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
+
+        return {
+            url,
+            applicationAvailable,
+            domainName,
+            applicationFilteringDisabled,
+            urlFilteringDisabled,
+            documentAllowlisted: false,
+            userAllowlisted: false,
+            canAddRemoveRule: false,
+            frameRule: null,
+            totalBlockedTab,
+            totalBlocked,
+        };
+    }
+
     /**
      * Tries to find the main frame data for the provided tab context
      * and returns it.

@@ -16,9 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { downloadFilters } from './resources/download-filters';
-import { updateLocalScriptRules } from './resources/update-local-script-rules';
-import { findDangerousRules } from './resources/dangerous-rules';
 import { convertFiltersToRulesets } from './resources/build-rule-sets';
 
 const resources = async () => {
