@@ -170,6 +170,8 @@ export class FiltersService {
      * Called when requesting an force update for filters.
      */
     private static async manualCheckFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
+        console.error('not available in mv3');
+        return;
         try {
             const updatedFilters = await FilterUpdateApi.autoUpdateFilters(true);
 

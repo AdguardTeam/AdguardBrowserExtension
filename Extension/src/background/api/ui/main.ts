@@ -52,11 +52,22 @@ export class UiApi {
     public static async update(tabContext: TabContext): Promise<void> {
         const tabId = tabContext.info.id;
 
-        const frameData = FramesApi.getMainFrameData(tabContext);
+        const frameData = FramesApi.getMockedMainFrameData();
 
         await ContextMenuApi.throttledUpdateMenu(frameData);
 
         UiApi.debouncedUpdate(tabId, frameData);
+    }
+
+    /**
+     * Updates the tab icon and the blocked requests counter on the provided tab
+     * with debounce {@link UiApi.UPDATE_THROTTLE_MS}.
+     *
+     */
+    public static async partialUpdate(): Promise<void> {
+        const frameData = FramesApi.getMockedMainFrameData();
+
+        await ContextMenuApi.throttledUpdateMenu(frameData);
     }
 
     /**
