@@ -27,8 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update recommended filters on enabling group of filters and on locale detection [#2714].
 - Do not throw an error during cookie setting if a cookie domain mismatches a request URL [#2683].
 - Extension's action icon flickering on tab change.
+- Missing info on custom filters when reporting issues [#2793].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
+[#2793]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2793
 [#2761]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
 [#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 [#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
@@ -38,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
 [#2607]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607
 [#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
-
 
 ## [4.3.35] - 2024-03-28
 

@@ -34,6 +34,7 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
 import { Prefs } from '../../prefs';
+import { CustomFilterApi } from '../filters';
 import {
     FILTERING_LOG_OUTPUT,
     FILTER_DOWNLOAD_OUTPUT,
@@ -185,6 +186,7 @@ export class PagesApi {
 
     /**
      * Opens abuse page tab.
+     * Query parameters are described here: https://github.com/AdguardTeam/ReportsWebApp.
      *
      * @param siteUrl Target site url.
      * @param from UI which user is forwarded from.
@@ -198,7 +200,12 @@ export class PagesApi {
             browserName = 'Other';
         }
 
-        const filterIds = Engine.api.configuration?.filters || [];
+        const commonFilterIds = (Engine.api.configuration?.filters || [])
+            .filter((id: number) => !CustomFilterApi.isCustomFilter(id));
+
+        const customFilterUrls = CustomFilterApi.getFiltersData()
+            .filter(({ enabled }) => !!enabled)
+            .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
 
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
@@ -221,13 +228,17 @@ export class PagesApi {
             params.browser_detail = encodeURIComponent(browserDetails);
         }
 
-        if (filterIds.length > 0) {
-            params.filters = encodeURIComponent(filterIds.join('.'));
+        if (commonFilterIds.length > 0) {
+            params.filters = encodeURIComponent(commonFilterIds.join('.'));
+        }
+
+        if (customFilterUrls.length > 0) {
+            params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
         }
 
         Object.assign(
             params,
-            PagesApi.getStealthParams(filterIds),
+            PagesApi.getStealthParams(commonFilterIds),
             PagesApi.getBrowserSecurityParams(),
         );
 
