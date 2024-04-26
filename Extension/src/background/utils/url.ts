@@ -190,4 +190,27 @@ export class UrlUtils {
 
         return false;
     }
+
+    /**
+     * Cleanups file path of a custom filter.
+     *
+     * @param path Path to filter.
+     * @returns Cleaned path.
+     */
+    static trimFilterFilepath(path: string): string {
+        if (path.indexOf('http') === 0) {
+            return path;
+        }
+
+        const lastSlashIndex = path.lastIndexOf('/');
+        const lastBackslashIndex = path.lastIndexOf('\\');
+
+        if (lastSlashIndex === -1 && lastBackslashIndex === -1) {
+            return path;
+        }
+
+        const lastSeparatorIndex = Math.max(lastSlashIndex, lastBackslashIndex);
+
+        return path.substring(lastSeparatorIndex);
+    }
 }
