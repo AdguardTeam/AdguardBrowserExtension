@@ -16,19 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FIREFOX_APP_IDS_MAP, FIREFOX_WEBEXT_UPDATE_URL } from '../../constants';
+import {
+    BUILD_ENV,
+    FIREFOX_APP_IDS_MAP,
+    FIREFOX_WEBEXT_UPDATE_URL,
+} from '../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
 
-const buildEnv = process.env.BUILD_ENV;
-
-if (buildEnv === undefined) {
-    throw new Error('BUILD_ENV is not set in the environment variables.');
-}
-
-const appId = FIREFOX_APP_IDS_MAP[buildEnv];
+const appId = FIREFOX_APP_IDS_MAP[BUILD_ENV];
 
 if (appId === undefined) {
-    throw new Error(`App ID not found for BUILD_ENV: ${buildEnv}`);
+    throw new Error(`App ID not found for BUILD_ENV: ${BUILD_ENV}`);
 }
 
 export const firefoxManifest = {
@@ -36,6 +34,17 @@ export const firefoxManifest = {
         'page': 'pages/background.html',
         'persistent': false,
     },
+    'browser_action': {
+        'default_icon': {
+            '19': 'assets/icons/green-19.png',
+            '38': 'assets/icons/green-38.png',
+        },
+        'default_title': '__MSG_name__',
+        'default_popup': 'pages/popup.html',
+    },
+    'web_accessible_resources': [
+        '/web-accessible-resources/*',
+    ],
     'browser_specific_settings': {
         'gecko': {
             'id': appId,

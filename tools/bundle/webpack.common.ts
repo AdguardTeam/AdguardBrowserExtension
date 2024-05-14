@@ -21,12 +21,14 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import { DefinePlugin } from 'webpack';
+import { Configuration, DefinePlugin } from 'webpack';
 
 import {
     BUILD_PATH,
-    ENVS,
-    BROWSERS,
+    Env,
+    Browser,
+    BUILD_ENV,
+    BrowserConfig,
 } from '../constants';
 import { getEnvConf, updateLocalesMSGName } from '../helpers';
 import {
@@ -39,7 +41,6 @@ import {
     FULLSCREEN_USER_RULES_OUTPUT,
     SAFEBROWSING_OUTPUT,
     DOCUMENT_BLOCK_OUTPUT,
-    BACKGROUND_OUTPUT,
     POPUP_OUTPUT,
     THANKYOU_OUTPUT,
     EDITOR_OUTPUT,
@@ -49,13 +50,16 @@ import {
     ASSISTANT_INJECT_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
+    FILTERING_LOG_OUTPUT,
 } from '../../constants';
 
-const config = getEnvConf(process.env.BUILD_ENV);
+import { htmlTemplatePluginCommonOptions } from './common-constants';
 
-const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background.ts');
+const config = getEnvConf(BUILD_ENV);
+
 const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
 const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
+const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
 const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const ASSISTANT_INJECT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant-inject');
@@ -69,34 +73,44 @@ const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/co
 
 const OUTPUT_PATH = config.outputPath;
 
-const htmlTemplatePluginCommonOptions = {
-    cache: false,
-    scriptLoading: 'blocking',
-};
-
-export const genCommonConfig = (browserConfig) => {
-    const isDev = process.env.BUILD_ENV === ENVS.DEV;
+export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => {
+    const isDev = process.env.BUILD_ENV === Env.Dev;
     return {
         mode: config.mode,
-        // target: 'web',
+        target: 'web',
         optimization: {
             minimize: false,
-            splitChunks: false,
-            runtimeChunk: false,
+            runtimeChunk: 'single',
         },
         cache: isDev,
-        // devtool: isDev ? 'eval-source-map' : false,
-        devtool: false,
+        devtool: isDev ? 'eval-source-map' : false, // FIXME check how it will work with mv3
         entry: {
-            [BACKGROUND_OUTPUT]: {
-                import: BACKGROUND_PATH,
-                // dependOn: [
-                //     TSURLFILTER_VENDOR_OUTPUT,
-                //     TSWEBEXTENSION_VENDOR_OUTPUT,
-                // ],
+            [OPTIONS_OUTPUT]: {
+                import: OPTIONS_PATH,
+                dependOn: [
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    EDITOR_OUTPUT,
+                ],
             },
-            [OPTIONS_OUTPUT]: OPTIONS_PATH,
-            [POPUP_OUTPUT]: POPUP_PATH,
+            [POPUP_OUTPUT]: {
+                import: POPUP_PATH,
+                dependOn: [
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                ],
+            },
+            [FILTERING_LOG_OUTPUT]: {
+                import: FILTERING_LOG_PATH,
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                ],
+            },
             [FILTER_DOWNLOAD_OUTPUT]: {
                 import: FILTER_DOWNLOAD_PATH,
                 runtime: false,
@@ -165,8 +179,8 @@ export const genCommonConfig = (browserConfig) => {
         },
         resolve: {
             fallback: {
-                'crypto': require.resolve('crypto-browserify'),
-                'stream': require.resolve('stream-browserify'),
+                crypto: require.resolve('crypto-browserify'),
+                stream: require.resolve('stream-browserify'),
             },
             extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
@@ -250,13 +264,20 @@ export const genCommonConfig = (browserConfig) => {
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: `${OPTIONS_OUTPUT}.html`,
-                chunks: [OPTIONS_OUTPUT],
+                chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    EDITOR_OUTPUT,
+                    OPTIONS_OUTPUT,
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(POPUP_PATH, 'index.html'),
                 filename: `${POPUP_OUTPUT}.html`,
-                chunks: [POPUP_OUTPUT],
+                chunks: [REACT_VENDOR_OUTPUT, MOBX_VENDOR_OUTPUT, POPUP_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
@@ -266,21 +287,40 @@ export const genCommonConfig = (browserConfig) => {
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
+                template: path.join(FILTERING_LOG_PATH, 'index.html'),
+                filename: `${FILTERING_LOG_OUTPUT}.html`,
+                chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    FILTERING_LOG_OUTPUT,
+                ],
+            }),
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
-                chunks: [FULLSCREEN_USER_RULES_OUTPUT],
+                chunks: [
+                    REACT_VENDOR_OUTPUT,
+                    MOBX_VENDOR_OUTPUT,
+                    XSTATE_VENDOR_OUTPUT,
+                    EDITOR_OUTPUT,
+                    FULLSCREEN_USER_RULES_OUTPUT,
+                ],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(AD_BLOCKED_PATH, 'index.html'),
                 filename: `${DOCUMENT_BLOCK_OUTPUT}.html`,
-                chunks: [DOCUMENT_BLOCK_OUTPUT],
+                chunks: [REACT_VENDOR_OUTPUT, DOCUMENT_BLOCK_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(SAFEBROWSING_PATH, 'index.html'),
                 filename: `${SAFEBROWSING_OUTPUT}.html`,
-                chunks: [SAFEBROWSING_OUTPUT],
+                chunks: [REACT_VENDOR_OUTPUT, SAFEBROWSING_OUTPUT],
             }),
             new CopyWebpackPlugin({
                 patterns: [
@@ -294,7 +334,7 @@ export const genCommonConfig = (browserConfig) => {
                         from: '_locales',
                         to: '_locales',
                         transform: (content) => {
-                            return updateLocalesMSGName(content, process.env.BUILD_ENV, browserConfig.browser);
+                            return updateLocalesMSGName(content, BUILD_ENV, browserConfig.browser);
                         },
                     },
                     {
@@ -307,8 +347,8 @@ export const genCommonConfig = (browserConfig) => {
             new DefinePlugin({
                 // We are doing stricter JS rule checking for Firefox AMO, so we
                 // need to determine if the Firefox browser is AMO or not.
-                IS_FIREFOX_AMO: browserConfig.browser === BROWSERS.FIREFOX_AMO,
-                IS_RELEASE: process.env.BUILD_ENV === ENVS.RELEASE,
+                IS_FIREFOX_AMO: browserConfig.browser === Browser.FirefoxAmo,
+                IS_RELEASE: process.env.BUILD_ENV === Env.Release,
             }),
         ],
     };

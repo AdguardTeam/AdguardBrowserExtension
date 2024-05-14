@@ -21,45 +21,51 @@ import { program } from 'commander';
 
 import { bundleRunner } from './bundle/bundle-runner';
 import { copyExternals } from './bundle/copy-external';
-import { BROWSERS, ENVS } from './constants';
+import { Browser, BUILD_ENV, Env } from './constants';
 import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { buildInfo } from './bundle/build-info';
 import { buildUpdateJson } from './bundle/firefox/updateJson';
 
 const bundleChrome = (watch) => {
-    const webpackConfig = getWebpackConfig(BROWSERS.CHROME, watch);
+    const webpackConfig = getWebpackConfig(Browser.Chrome, watch);
+    return bundleRunner(webpackConfig, watch);
+};
+
+const bundleChromeMv3 = (watch) => {
+    const webpackConfig = getWebpackConfig(Browser.ChromeMv3, watch);
     return bundleRunner(webpackConfig, watch);
 };
 
 const bundleFirefoxAmo = (watch) => {
-    const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_AMO, watch);
+    const webpackConfig = getWebpackConfig(Browser.FirefoxAmo, watch);
     return bundleRunner(webpackConfig, watch);
 };
 
 const bundleFirefoxStandalone = async () => {
-    const webpackConfig = getWebpackConfig(BROWSERS.FIREFOX_STANDALONE);
+    const webpackConfig = getWebpackConfig(Browser.FirefoxStandalone);
     await buildUpdateJson();
     return bundleRunner(webpackConfig);
 };
 
 const bundleEdge = (watch) => {
-    const webpackConfig = getWebpackConfig(BROWSERS.EDGE, watch);
+    const webpackConfig = getWebpackConfig(Browser.Edge, watch);
     return bundleRunner(webpackConfig, watch);
 };
 
 const bundleOpera = (watch) => {
-    const webpackConfig = getWebpackConfig(BROWSERS.OPERA, watch);
+    const webpackConfig = getWebpackConfig(Browser.Opera, watch);
     return bundleRunner(webpackConfig, watch);
 };
 
 const bundleChromeCrx = async () => {
-    await crx(BROWSERS.CHROME);
+    await crx(Browser.Chrome);
 };
 
 const devPlan = [
     copyExternals,
     bundleChrome,
+    bundleChromeMv3,
     bundleFirefoxAmo,
     bundleFirefoxStandalone,
     bundleEdge,
@@ -97,16 +103,16 @@ const runBuild = async (tasks) => {
 };
 
 const mainBuild = async () => {
-    switch (process.env.BUILD_ENV) {
-        case ENVS.DEV: {
+    switch (BUILD_ENV) {
+        case Env.Dev: {
             await runBuild(devPlan);
             break;
         }
-        case ENVS.BETA: {
+        case Env.Beta: {
             await runBuild(betaPlan);
             break;
         }
-        case ENVS.RELEASE: {
+        case Env.Release: {
             await runBuild(releasePlan);
             break;
         }
@@ -127,6 +133,15 @@ const main = async () => {
 const chrome = async (watch) => {
     try {
         await bundleChrome(watch);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
+const chromeMv3 = async (watch) => {
+    try {
+        await bundleChromeMv3(watch);
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -177,6 +192,13 @@ program
     .description('Builds extension for chrome browser')
     .action(() => {
         chrome(program.watch);
+    });
+
+program
+    .command('chrome-mv3')
+    .description('Builds extension for chrome-mv3 browser')
+    .action(() => {
+        chromeMv3(program.watch);
     });
 
 program

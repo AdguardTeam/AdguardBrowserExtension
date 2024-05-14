@@ -112,9 +112,7 @@ export const TRUSTED_TAG = 'trusted' as const;
 export const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99 as const;
 
 /**
- * Custom filters identifiers starts from this number
- *
- * @type {number}
+ * Custom filters identifier starts from this number
  */
 export const CUSTOM_FILTERS_START_ID = 1000 as const;
 

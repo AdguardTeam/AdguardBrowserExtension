@@ -19,21 +19,27 @@
 import path from 'path';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
+import { Configuration } from 'webpack';
 
 import { genCommonConfig } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
+import { BrowserConfig } from '../../constants';
 
-import { operaManifest } from './manifest.opera';
+import { chromeManifest } from './manifest.chrome';
 
-export const genOperaConfig = (browserConfig) => {
+export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);
+
+    if (!commonConfig?.output?.path) {
+        throw new Error('commonConfig.output.path is undefined');
+    }
 
     const DEVTOOLS_PATH = path.resolve(__dirname, '../../../Extension/pages/devtools');
 
-    const operaConfig = {
+    const chromeConfig: Configuration = {
         entry: {
             'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
             'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
@@ -47,11 +53,18 @@ export const genOperaConfig = (browserConfig) => {
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, operaManifest),
+                        transform: (content: Buffer) => updateManifestBuffer(
+                            // FIXME later
+                            // @ts-ignore
+                            process.env.BUILD_ENV,
+                            browserConfig.browser,
+                            content,
+                            chromeManifest,
+                        ),
                     },
                     {
                         context: 'Extension',
-                        from: 'filters/opera',
+                        from: 'filters/chromium',
                         to: 'filters',
                     },
                 ],
@@ -66,12 +79,18 @@ export const genOperaConfig = (browserConfig) => {
                 filename: 'pages/devtools-elements-sidebar.html',
                 chunks: ['pages/devtools-elements-sidebar'],
             }),
-            new ZipWebpackPlugin({
-                path: '../',
-                filename: `${browserConfig.browser}.zip`,
-            }),
         ],
     };
 
-    return merge(commonConfig, operaConfig);
+    // Run the archive only if it is not a watch mode
+    if (!isWatchMode && chromeConfig.plugins) {
+        chromeConfig.plugins.push(new ZipWebpackPlugin({
+            path: '../',
+            filename: `${browserConfig.browser}.zip`,
+        }));
+    }
+
+    // FIXME later
+    // @ts-ignore
+    return merge(commonConfig, chromeConfig);
 };
