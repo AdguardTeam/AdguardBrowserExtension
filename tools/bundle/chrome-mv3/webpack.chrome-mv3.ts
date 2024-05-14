@@ -17,24 +17,81 @@
  */
 
 import path from 'path';
+import fs from 'fs';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
+import { Manifest } from 'webextension-polyfill';
+import { Configuration } from 'webpack';
 
 import { genCommonConfig } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
+import {
+    BrowserConfig,
+    BUILD_ENV,
+    FILTERS_DEST,
+} from '../../constants';
+import { BACKGROUND_PATH } from '../common-constants';
+import { BACKGROUND_OUTPUT } from '../../../constants';
 
-import { chromeManifest } from './manifest.chrome';
+import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
-export const genChromeConfig = (browserConfig, isWatchMode = false) => {
+type ManifestBase = Manifest.ManifestBase;
+
+export const RULESET_NAME_PREFIX = 'ruleset_';
+
+const addDeclarativeNetRequest = (manifest: ManifestBase) => {
+    // FIXME: Move chrome to params
+    const filtersDir = FILTERS_DEST.replace('%browser', 'chromium');
+
+    const filtersDirPath = path.resolve(__dirname, '../../../', filtersDir, 'declarative/');
+
+    if (fs.existsSync(filtersDir)) {
+        const nameList = fs.readdirSync(filtersDirPath);
+        const rules = {
+            rule_resources: nameList.map((name) => {
+                const nameMatch = name.match(/\d+/);
+                if (!nameMatch) {
+                    throw new Error(`Invalid ruleset name: ${name}`);
+                }
+
+                const rulesetIndex = Number.parseInt(nameMatch[0], 10);
+                const id = `${RULESET_NAME_PREFIX}${rulesetIndex}`;
+                return {
+                    id,
+                    enabled: false,
+                    path: `filters/declarative/${name}/${name}.json`,
+                };
+            }),
+        };
+
+        return {
+            ...manifest,
+            declarative_net_request: rules,
+        };
+    }
+
+    throw new Error("Declarative rulesets directory doesn't exist");
+};
+
+export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);
 
     const DEVTOOLS_PATH = path.resolve(__dirname, '../../../Extension/pages/devtools');
 
-    const chromeConfig = {
+    if (!commonConfig?.output?.path) {
+        throw new Error('commonConfig.output.path is undefined');
+    }
+
+    const chromeConfig: Configuration = {
+        devtool: BUILD_ENV === 'dev' ? 'inline-source-map' : false,
         entry: {
+            [BACKGROUND_OUTPUT]: {
+                import: BACKGROUND_PATH,
+                runtime: false,
+            },
             'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
             'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
         },
@@ -48,9 +105,12 @@ export const genChromeConfig = (browserConfig, isWatchMode = false) => {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
                         transform: (content) => updateManifestBuffer(
-                            process.env.BUILD_ENV,
+                            BUILD_ENV,
+                            browserConfig.browser,
                             content,
-                            chromeManifest,
+                            // FIXME later
+                            // @ts-ignore
+                            addDeclarativeNetRequest(chromeMv3Manifest),
                         ),
                     },
                     {
@@ -74,12 +134,14 @@ export const genChromeConfig = (browserConfig, isWatchMode = false) => {
     };
 
     // Run the archive only if it is not a watch mode
-    if (!isWatchMode) {
+    if (!isWatchMode && chromeConfig.plugins) {
         chromeConfig.plugins.push(new ZipWebpackPlugin({
             path: '../',
             filename: `${browserConfig.browser}.zip`,
         }));
     }
 
+    // FIXME later
+    // @ts-ignore
     return merge(commonConfig, chromeConfig);
 };

@@ -15,26 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import {
-    BUILD_ENV,
-    FIREFOX_APP_IDS_MAP,
-    FIREFOX_WEBEXT_UPDATE_URL,
-} from '../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
 
-const appId = FIREFOX_APP_IDS_MAP[BUILD_ENV];
-
-if (appId === undefined) {
-    throw new Error(`App ID not found for BUILD_ENV: ${BUILD_ENV}`);
-}
-
-export const firefoxManifest = {
-    'background': {
-        'page': 'pages/background.html',
-        'persistent': false,
-    },
-    'browser_action': {
+export const chromeMv3Manifest = {
+    'manifest_version': 3,
+    'action': {
         'default_icon': {
             '19': 'assets/icons/green-19.png',
             '38': 'assets/icons/green-38.png',
@@ -42,39 +27,39 @@ export const firefoxManifest = {
         'default_title': '__MSG_name__',
         'default_popup': 'pages/popup.html',
     },
-    'web_accessible_resources': [
-        '/web-accessible-resources/*',
+    'background': {
+        'service_worker': 'pages/background.js',
+    },
+    'host_permissions': [
+        '<all_urls>',
     ],
-    'browser_specific_settings': {
-        'gecko': {
-            'id': appId,
-            'strict_min_version': '78.0',
+    'minimum_chrome_version': '88.0',
+    'web_accessible_resources': [
+        {
+            'resources': ['web-accessible-resources/*'],
+            'matches': [
+                'http://*/*',
+                'https://*/*',
+            ],
+            'use_dynamic_url': true,
         },
-        'gecko_android': {
-            'strict_min_version': '113.0',
-        },
-    },
-    'options_ui': {
-        'page': OPTIONS_PAGE,
-        'open_in_tab': true,
-    },
+    ],
+    'options_page': OPTIONS_PAGE,
+    'devtools_page': 'pages/devtools.html',
     'permissions': [
         'tabs',
-        '<all_urls>',
         'webRequest',
-        'webRequestBlocking',
         'webNavigation',
         'storage',
+        'unlimitedStorage',
         'contextMenus',
         'cookies',
+        'declarativeNetRequest',
+        'declarativeNetRequestFeedback',
+        'scripting',
+        'alarms',
+    ],
+    'optional_permissions': [
         'privacy',
     ],
-};
-
-export const firefoxManifestStandalone = {
-    'browser_specific_settings': {
-        'gecko': {
-            'update_url': FIREFOX_WEBEXT_UPDATE_URL,
-        },
-    },
 };

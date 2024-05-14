@@ -22,8 +22,8 @@ import path from 'path';
 import Crx from 'crx';
 
 import {
-    ENVS,
-    BROWSERS,
+    Env,
+    Browser,
     BUILD_PATH,
     CHROME_CERT,
     CHROME_UPDATE_URL,
@@ -35,7 +35,7 @@ export const crx = async (browser) => {
     const buildEnv = process.env.BUILD_ENV;
 
     // Guards
-    if (browser === BROWSERS.CHROME && buildEnv !== ENVS.BETA) {
+    if (browser === Browser.Chrome && buildEnv !== Env.Beta) {
         throw new Error('CRX for chrome is built only for beta');
     }
 

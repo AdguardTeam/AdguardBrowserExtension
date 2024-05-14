@@ -17,25 +17,12 @@
  */
 
 import path from 'path';
-import { promises as fsp } from 'fs';
 
-import { BUILD_ENV, BUILD_PATH } from '../constants';
-import packageJson from '../../package.json';
-import { getEnvConf } from '../helpers';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-const config = getEnvConf(BUILD_ENV);
-const OUTPUT_PATH = config.outputPath;
+export const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
 
-const content = `version=${packageJson.version}`;
-const FILE_NAME = 'build.txt';
-
-const filePath = path.join(BUILD_PATH, OUTPUT_PATH, FILE_NAME);
-
-/**
- * Writes build.txt file with current version
- *
- * @returns {Promise<void>}
- */
-export const buildInfo = async () => {
-    await fsp.writeFile(filePath, content, 'utf-8');
+export const htmlTemplatePluginCommonOptions: Partial<HtmlWebpackPlugin.Options> = {
+    cache: false,
+    scriptLoading: 'blocking',
 };

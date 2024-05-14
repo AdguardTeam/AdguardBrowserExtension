@@ -21,64 +21,97 @@ import path from 'path';
 
 import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../constants';
 
-export const ENVS = {
-    DEV: 'dev',
-    BETA: 'beta',
-    RELEASE: 'release',
+/**
+ * Environment types
+ */
+export enum Env {
+    Dev = 'dev',
+    Beta = 'beta',
+    Release = 'release',
+}
+
+export const BUILD_ENV = process.env.BUILD_ENV as Env;
+
+const isValidBuildEnv = (buildEnv: any): buildEnv is Env => {
+    return Object.values(Env).includes(buildEnv as Env);
 };
 
-export const ENV_CONF = {
-    [ENVS.DEV]: { outputPath: 'dev', mode: 'development' },
-    [ENVS.BETA]: { outputPath: 'beta', mode: 'production' },
-    [ENVS.RELEASE]: { outputPath: 'release', mode: 'production' },
+if (!isValidBuildEnv(BUILD_ENV)) {
+    throw new Error('BUILD_ENV is not set in the environment variables.');
+}
+
+export type EnvConfig = {
+    outputPath: string;
+    mode: 'development' | 'production';
 };
 
-export const BROWSERS = {
-    CHROME: 'chrome',
-    FIREFOX_AMO: 'firefox-amo',
-    FIREFOX_STANDALONE: 'firefox-standalone',
-    OPERA: 'opera',
-    EDGE: 'edge',
-    ADGUARD_API: 'adguard-api',
+export const ENV_CONF: Record<Env, EnvConfig> = {
+    [Env.Dev]: {
+        outputPath: 'dev',
+        mode: 'development',
+    },
+    [Env.Beta]: {
+        outputPath: 'beta',
+        mode: 'production',
+    },
+    [Env.Release]: {
+        outputPath: 'release',
+        mode: 'production',
+    },
 };
 
-export const BROWSERS_CONF = {
-    [BROWSERS.CHROME]: {
-        browser: BROWSERS.CHROME,
+export const enum Browser {
+    Chrome = 'chrome',
+    ChromeMv3 = 'chrome-mv3',
+    FirefoxAmo = 'firefox-amo',
+    FirefoxStandalone = 'firefox-standalone',
+    Opera = 'opera',
+    Edge = 'edge',
+}
+
+export type BrowserConfig = {
+    browser: Browser;
+    devtools: boolean;
+    buildDir: string;
+};
+
+export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
+    [Browser.Chrome]: {
+        browser: Browser.Chrome,
         devtools: true,
-        buildDir: BROWSERS.CHROME,
+        buildDir: Browser.Chrome,
     },
-    [BROWSERS.FIREFOX_STANDALONE]: {
-        browser: BROWSERS.FIREFOX_STANDALONE,
-        devtools: false,
-        buildDir: BROWSERS.FIREFOX_STANDALONE,
-    },
-    [BROWSERS.FIREFOX_AMO]: {
-        browser: BROWSERS.FIREFOX_AMO,
-        devtools: false,
-        buildDir: BROWSERS.FIREFOX_AMO,
-    },
-    [BROWSERS.OPERA]: {
-        browser: BROWSERS.OPERA,
+    [Browser.ChromeMv3]: {
+        browser: Browser.ChromeMv3,
         devtools: true,
-        buildDir: BROWSERS.OPERA,
+        buildDir: Browser.ChromeMv3,
     },
-    [BROWSERS.EDGE]: {
-        browser: BROWSERS.EDGE,
-        devtools: true,
-        buildDir: BROWSERS.EDGE,
-    },
-    [BROWSERS.ADGUARD_API]: {
-        browser: BROWSERS.ADGUARD_API,
+    [Browser.FirefoxStandalone]: {
+        browser: Browser.FirefoxStandalone,
         devtools: false,
-        buildDir: BROWSERS.ADGUARD_API,
+        buildDir: Browser.FirefoxStandalone,
+    },
+    [Browser.FirefoxAmo]: {
+        browser: Browser.FirefoxAmo,
+        devtools: false,
+        buildDir: Browser.FirefoxAmo,
+    },
+    [Browser.Opera]: {
+        browser: Browser.Opera,
+        devtools: true,
+        buildDir: Browser.Opera,
+    },
+    [Browser.Edge]: {
+        browser: Browser.Edge,
+        devtools: true,
+        buildDir: Browser.Edge,
     },
 };
 
-export const FIREFOX_APP_IDS_MAP = {
-    [ENVS.DEV]: 'adguardadblockerdev@adguard.com',
-    [ENVS.BETA]: 'adguardadblockerbeta@adguard.com',
-    [ENVS.RELEASE]: 'adguardadblocker@adguard.com',
+export const FIREFOX_APP_IDS_MAP: Record<Env, string> = {
+    [Env.Dev]: 'adguardadblockerdev@adguard.com',
+    [Env.Beta]: 'adguardadblockerbeta@adguard.com',
+    [Env.Release]: 'adguardadblocker@adguard.com',
 };
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');
@@ -101,6 +134,5 @@ export const LOCAL_SCRIPT_RULES_COMMENT = `By the rules of AMO we cannot use rem
 export const CHROME_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
 export const CHROME_CODEBASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/chrome.crx';
-export const FIREFOX_CREDENTIALS = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
 export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.json';

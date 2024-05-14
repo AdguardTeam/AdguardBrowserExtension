@@ -20,25 +20,28 @@ import fs from 'fs';
 import path from 'path';
 
 import { merge } from 'webpack-merge';
+import { Manifest } from 'webextension-polyfill';
 
 import { redirects } from '@adguard/scriptlets';
 
 import packageJson from '../package.json';
 
 import {
-    ENVS,
+    Env,
     ENV_CONF,
-    BROWSERS,
+    Browser,
     BROWSERS_CONF,
-    FILTERS_DEST,
+    BrowserConfig,
+    EnvConfig,
 } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
+import ManifestBase = Manifest.ManifestBase;
+import WebExtensionManifest = Manifest.WebExtensionManifest;
+
 const { Redirects } = redirects;
 
-const RULESET_NAME_PREFIX = 'ruleset_';
-
-export const getEnvConf = (env) => {
+export const getEnvConf = (env: Env): EnvConfig => {
     const envConfig = ENV_CONF[env];
     if (!envConfig) {
         throw new Error(`No env config for: "${env}"`);
@@ -46,7 +49,7 @@ export const getEnvConf = (env) => {
     return envConfig;
 };
 
-export const getBrowserConf = (browser) => {
+export const getBrowserConf = (browser: Browser): BrowserConfig => {
     const browserConf = BROWSERS_CONF[browser];
     if (!browserConf) {
         throw new Error(`No browser config for: "${browser}"`);
@@ -71,52 +74,46 @@ export const getBrowserConf = (browser) => {
 const getClickToLoadSha = () => {
     const redirectsYamlPath = path.resolve(__dirname, '../Extension/assets/libs/scriptlets/redirects.yml');
     const rawYaml = fs.readFileSync(redirectsYamlPath);
+    // FIXME later
+    // @ts-ignore
     const redirects = new Redirects(rawYaml);
     const click2loadSource = redirects.getRedirect('click2load.html');
     return click2loadSource.sha;
+};
+
+const getEnvPolicy = (env: Env, browser: Browser) => {
+    switch (browser) {
+        case Browser.ChromeMv3:
+            return env === Env.Dev
+                ? { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } }
+                : { }; // FIXME check if this is correct
+        default:
+            return env === Env.Dev
+                // eslint-disable-next-line max-len
+                ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
+                : { content_security_policy: `script-src 'self' '${getClickToLoadSha()}'; object-src 'self'` };
+    }
 };
 
 /**
  * Updates manifest object with new values
  *
  * @param env
+ * @param browser
  * @param targetPart
  * @param addedPart
- * @returns {*&{content_security_policy: string, version: string}}
  */
-export const updateManifest = (env, targetPart, addedPart) => {
+export const updateManifest = (
+    env: Env,
+    browser: Browser,
+    targetPart: Partial<ManifestBase>,
+    addedPart: Partial<ManifestBase>,
+): WebExtensionManifest => {
     const union = merge(targetPart, addedPart);
 
-    const devPolicy = env === ENVS.DEV
-    // ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
-        ? { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } }
-        : { };
+    const devPolicy = getEnvPolicy(env, browser);
 
     delete union.version;
-
-    // FIXME: Move chrome to params
-    const filtersDir = FILTERS_DEST.replace('%browser', 'chromium');
-
-    const filtersDirPath = path.resolve(__dirname, '../', filtersDir, 'declarative/');
-
-    if (fs.existsSync(filtersDir)) {
-        const nameList = fs.readdirSync(filtersDirPath);
-        const rules = {
-            rule_resources: nameList.map((name) => {
-                const rulesetIndex = Number.parseInt(name.match(/\d+/)[0], 10);
-                const id = `${RULESET_NAME_PREFIX}${rulesetIndex}`;
-                return {
-                    id,
-                    enabled: false,
-                    path: `filters/declarative/${name}/${name}.json`,
-                };
-            }),
-        };
-
-        union.declarative_net_request = rules;
-    } else {
-        throw new Error("Declarative rulesets directory doesn't exist");
-    }
 
     const result = {
         version: packageJson.version,
@@ -124,52 +121,60 @@ export const updateManifest = (env, targetPart, addedPart) => {
         ...union,
     };
 
+    // FIXME later
+    // @ts-ignore
     return result;
 };
 
 /**
- * Receives targetPart as a buffer updates it and returns it as a buffer
+ * Updates a manifest buffer with new values and returns the updated buffer.
  *
- * @param env
- * @param targetPart
- * @param addedPart
- * @returns {Buffer}
+ * @param env The build environment.
+ * @param browser The target browser.
+ * @param targetPart The existing manifest content as a buffer.
+ * @param addedPart The additional manifest content to merge.
+ * @returns A buffer containing the updated manifest.
  */
-export const updateManifestBuffer = (env, targetPart, addedPart) => {
+export const updateManifestBuffer = (
+    env: Env,
+    browser: Browser,
+    targetPart: Buffer,
+    addedPart: Partial<WebExtensionManifest>,
+): Buffer => {
     const target = JSON.parse(targetPart.toString());
 
-    const result = updateManifest(env, target, addedPart);
+    const result = updateManifest(env, browser, target, addedPart);
 
     return Buffer.from(JSON.stringify(result, null, 4));
 };
 
-const capitalize = (str) => {
+const capitalize = (str: string) => {
     return str.charAt(0)
         .toUpperCase() + str.slice(1);
 };
 
-const getNameSuffix = (buildEnv, browser) => {
+const getNameSuffix = (buildEnv: Env, browser: Browser) => {
     switch (browser) {
-        case BROWSERS.FIREFOX_STANDALONE: {
-            if (buildEnv === ENVS.BETA) {
+        case Browser.FirefoxStandalone: {
+            if (buildEnv === Env.Beta) {
                 return ' (Standalone)';
             }
-            if (buildEnv === ENVS.DEV) {
+            if (buildEnv === Env.Dev) {
                 return ' (Standalone Dev)';
             }
             break;
         }
-        case BROWSERS.FIREFOX_AMO: {
-            if (buildEnv === ENVS.BETA) {
+        case Browser.FirefoxAmo: {
+            if (buildEnv === Env.Beta) {
                 return ' (Beta)';
             }
-            if (buildEnv === ENVS.DEV) {
+            if (buildEnv === Env.Dev) {
                 return ' (AMO Dev)';
             }
             break;
         }
         default:
-            if (buildEnv !== ENVS.RELEASE) {
+            if (buildEnv !== Env.Release) {
                 return ` (${capitalize(buildEnv)})`;
             }
             break;
@@ -177,7 +182,7 @@ const getNameSuffix = (buildEnv, browser) => {
     return '';
 };
 
-export const updateLocalesMSGName = (content, env, browser) => {
+export const updateLocalesMSGName = (content: Buffer, env: Env, browser: Browser) => {
     const suffix = getNameSuffix(env, browser);
 
     const messages = JSON.parse(content.toString());
@@ -186,20 +191,38 @@ export const updateLocalesMSGName = (content, env, browser) => {
     return JSON.stringify(messages, null, 4);
 };
 
-export const chunkArray = (arr, size) => arr.reduce((chunks, el, idx) => {
-    if (idx % size === 0) {
-        chunks.push([el]);
-    } else {
-        chunks[chunks.length - 1].push(el);
+/**
+ * Splits an array into chunks of a specified size.
+ *
+ * @param arr The array to be split into chunks.
+ * @param size The size of each chunk.
+ * @returns An array of chunks.
+ * @throws Error if size is less than or equal to 0.
+ */
+export const chunkArray = <T>(arr: T[], size: number): T[][] => {
+    if (size <= 0) {
+        throw new Error('Size must be greater than 0');
     }
-    return chunks;
-}, []);
+
+    return arr.reduce((chunks: T[][], el: T, idx: number) => {
+        if (idx % size === 0) {
+            chunks.push([el]);
+        } else {
+            const lastChunk = chunks[chunks.length - 1];
+            if (lastChunk) {
+                lastChunk.push(el);
+            }
+        }
+        return chunks;
+    }, []);
+};
 
 /**
- * Gets strings for certain locale
+ * Retrieves translations for a specific locale.
  *
- * @param {string} locale
- * @returns {object}
+ * @param locale - The locale identifier (e.g., 'en', 'fr') to fetch translations for.
+ * @returns A promise that resolves to an object containing key-value pairs of translation strings.
+ * @throws If the file for the specified locale cannot be read or parsed.
  */
 export const getLocaleTranslations = async (locale) => {
     const filePath = path.join(LOCALES_ABSOLUTE_PATH, locale, LOCALE_DATA_FILENAME);
@@ -208,13 +231,13 @@ export const getLocaleTranslations = async (locale) => {
 };
 
 /**
- * Compares two arrays
+ * Compares two arrays for equality
  *
- * @param {Array} arr1
- * @param {Array} arr2
- * @returns {boolean}
+ * @param arr1 - First array
+ * @param arr2 - Second array
+ * @returns Returns true if arrays are equal, else false
  */
-export const areArraysEqual = (arr1, arr2) => {
+export const areArraysEqual = <T>(arr1: T[], arr2: T[]): boolean => {
     if (!arr1 || !arr2) {
         return false;
     }

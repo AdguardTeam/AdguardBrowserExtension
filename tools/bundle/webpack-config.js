@@ -16,29 +16,33 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { BROWSERS } from '../constants';
+import { Browser } from '../constants';
 import { getBrowserConf } from '../helpers';
 
 import { genChromeConfig } from './chrome/webpack.chrome';
 import { genFirefoxConfig } from './firefox/webpack.firefox';
 import { genEdgeConfig } from './edge/webpack.edge';
 import { genOperaConfig } from './opera/webpack.opera';
+import { genChromeMv3Config } from './chrome-mv3/webpack.chrome-mv3';
 
 export const getWebpackConfig = (browser, isWatchMode = false) => {
     const browserConf = getBrowserConf(browser);
 
     switch (browser) {
-        case BROWSERS.CHROME: {
+        case Browser.Chrome: {
             return genChromeConfig(browserConf, isWatchMode);
         }
-        case BROWSERS.FIREFOX_STANDALONE:
-        case BROWSERS.FIREFOX_AMO: {
+        case Browser.ChromeMv3: {
+            return genChromeMv3Config(browserConf, isWatchMode);
+        }
+        case Browser.FirefoxStandalone:
+        case Browser.FirefoxAmo: {
             return genFirefoxConfig(browserConf);
         }
-        case BROWSERS.OPERA: {
+        case Browser.Opera: {
             return genOperaConfig(browserConf);
         }
-        case BROWSERS.EDGE: {
+        case Browser.Edge: {
             return genEdgeConfig(browserConf);
         }
         default: {

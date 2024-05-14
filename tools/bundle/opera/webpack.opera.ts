@@ -25,16 +25,34 @@ import { merge } from 'webpack-merge';
 
 import { genCommonConfig } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
+import {
+    BACKGROUND_OUTPUT,
+    TSURLFILTER_VENDOR_OUTPUT,
+    TSWEBEXTENSION_VENDOR_OUTPUT,
+} from '../../../constants';
+import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-constants';
+import { BrowserConfig, BUILD_ENV } from '../../constants';
 
-import { edgeManifest } from './manifest.edge';
+import { operaManifest } from './manifest.opera';
 
-export const genEdgeConfig = (browserConfig) => {
+export const genOperaConfig = (browserConfig: BrowserConfig) => {
     const commonConfig = genCommonConfig(browserConfig);
+
+    if (!commonConfig?.output?.path) {
+        throw new Error('commonConfig.output.path is undefined');
+    }
 
     const DEVTOOLS_PATH = path.resolve(__dirname, '../../../Extension/pages/devtools');
 
-    const edgeConfig = {
+    const operaConfig = {
         entry: {
+            [BACKGROUND_OUTPUT]: {
+                import: BACKGROUND_PATH,
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                ],
+            },
             'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
             'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
         },
@@ -47,13 +65,33 @@ export const genEdgeConfig = (browserConfig) => {
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifestBuffer(process.env.BUILD_ENV, content, edgeManifest),
+                        transform: (content) => updateManifestBuffer(
+                            BUILD_ENV,
+                            browserConfig.browser,
+                            content,
+                            // FIXME later
+                            // @ts-ignore
+                            operaManifest,
+                        ),
                     },
                     {
                         context: 'Extension',
-                        from: 'filters/edge',
+                        from: 'filters/opera',
                         to: 'filters',
                     },
+                ],
+            }),
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
+                template: path.join(BACKGROUND_PATH, 'index.html'),
+                templateParameters: {
+                    browser: process.env.BROWSER,
+                },
+                filename: `${BACKGROUND_OUTPUT}.html`,
+                chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                    BACKGROUND_OUTPUT,
                 ],
             }),
             new HtmlWebpackPlugin({
@@ -73,5 +111,7 @@ export const genEdgeConfig = (browserConfig) => {
         ],
     };
 
-    return merge(commonConfig, edgeConfig);
+    // FIXME later
+    // @ts-ignore
+    return merge(commonConfig, operaConfig);
 };

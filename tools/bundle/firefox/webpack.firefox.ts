@@ -21,32 +21,59 @@ import path from 'path';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { merge } from 'webpack-merge';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { WebpackPluginInstance } from 'webpack';
 
 import { genCommonConfig } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { BROWSERS, ENVS } from '../../constants';
+import {
+    Browser,
+    BrowserConfig,
+    BUILD_ENV,
+    Env,
+} from '../../constants';
+import {
+    BACKGROUND_OUTPUT,
+    TSURLFILTER_VENDOR_OUTPUT,
+    TSWEBEXTENSION_VENDOR_OUTPUT,
+} from '../../../constants';
+import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-constants';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
 
-export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
+export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = false) => {
     const commonConfig = genCommonConfig(browserConfig);
 
+    if (!commonConfig?.output?.path) {
+        throw new Error('commonConfig.output.path is undefined');
+    }
+
     let zipFilename = `${browserConfig.browser}.zip`;
-    if (process.env.BUILD_ENV === ENVS.BETA
-        || process.env.BUILD_ENV === ENVS.RELEASE) {
+    if (BUILD_ENV === Env.Beta
+        || BUILD_ENV === Env.Release) {
         zipFilename = 'firefox.zip';
     }
 
-    const plugins = [
+    const plugins: WebpackPluginInstance[] = [
         new CopyWebpackPlugin({
             patterns: [
                 {
                     from: path.resolve(__dirname, '../manifest.common.json'),
                     to: 'manifest.json',
                     transform: (content) => {
-                        content = updateManifestBuffer(process.env.BUILD_ENV, content, firefoxManifest);
-                        if (browserConfig.browser === BROWSERS.FIREFOX_STANDALONE) {
-                            content = updateManifestBuffer(process.env.BUILD_ENV, content, firefoxManifestStandalone);
+                        content = updateManifestBuffer(
+                            BUILD_ENV,
+                            browserConfig.browser,
+                            content,
+                            firefoxManifest,
+                        );
+                        if (browserConfig.browser === Browser.FirefoxStandalone) {
+                            content = updateManifestBuffer(
+                                BUILD_ENV,
+                                browserConfig.browser,
+                                content,
+                                firefoxManifestStandalone,
+                            );
                         }
                         return content;
                     },
@@ -58,10 +85,23 @@ export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
                 },
             ],
         }),
+        new HtmlWebpackPlugin({
+            ...htmlTemplatePluginCommonOptions,
+            template: path.join(BACKGROUND_PATH, 'index.html'),
+            templateParameters: {
+                browser: process.env.BROWSER,
+            },
+            filename: `${BACKGROUND_OUTPUT}.html`,
+            chunks: [
+                TSURLFILTER_VENDOR_OUTPUT,
+                TSWEBEXTENSION_VENDOR_OUTPUT,
+                BACKGROUND_OUTPUT,
+            ],
+        }),
     ];
 
     // Run the archive only if it is not a watch mode
-    if (!isWatchMode) {
+    if (!isWatchMode && plugins) {
         plugins.push(new ZipWebpackPlugin({
             path: '../',
             filename: zipFilename,
@@ -69,11 +109,22 @@ export const genFirefoxConfig = (browserConfig, isWatchMode = false) => {
     }
 
     const firefoxConfig = {
+        entry: {
+            [BACKGROUND_OUTPUT]: {
+                import: BACKGROUND_PATH,
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                ],
+            },
+        },
         output: {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
         plugins,
     };
 
+    // FIXME later
+    // @ts-ignore
     return merge(commonConfig, firefoxConfig);
 };

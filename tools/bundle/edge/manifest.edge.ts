@@ -17,21 +17,34 @@
  */
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
 
-export const chromeManifest = {
+export const edgeManifest = {
+    'browser_action': {
+        'default_icon': {
+            '19': 'assets/icons/green-19.png',
+            '38': 'assets/icons/green-38.png',
+        },
+        'default_title': '__MSG_name__',
+        'default_popup': 'pages/popup.html',
+    },
+    'background': {
+        'page': 'pages/background.html',
+        'persistent': true,
+    },
+    'web_accessible_resources': [
+        '/web-accessible-resources/*',
+    ],
     'options_page': OPTIONS_PAGE,
     'devtools_page': 'pages/devtools.html',
     'permissions': [
         'tabs',
+        '<all_urls>',
         'webRequest',
+        'webRequestBlocking',
         'webNavigation',
         'storage',
         'unlimitedStorage',
         'contextMenus',
         'cookies',
-        'declarativeNetRequest',
-        'declarativeNetRequestFeedback',
-        'scripting',
-        'alarms',
     ],
     'optional_permissions': [
         'privacy',
