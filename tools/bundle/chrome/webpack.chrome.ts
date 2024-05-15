@@ -27,6 +27,12 @@ import { Configuration } from 'webpack';
 import { genCommonConfig } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { BrowserConfig } from '../../constants';
+import {
+    BACKGROUND_OUTPUT,
+    TSURLFILTER_VENDOR_OUTPUT,
+    TSWEBEXTENSION_VENDOR_OUTPUT,
+} from '../../../constants';
+import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-constants';
 
 import { chromeManifest } from './manifest.chrome';
 
@@ -41,6 +47,13 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
 
     const chromeConfig: Configuration = {
         entry: {
+            [BACKGROUND_OUTPUT]: {
+                import: BACKGROUND_PATH,
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                ],
+            },
             'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
             'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
         },
@@ -67,6 +80,19 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                         from: 'filters/chromium',
                         to: 'filters',
                     },
+                ],
+            }),
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
+                template: path.join(BACKGROUND_PATH, 'index.html'),
+                templateParameters: {
+                    browser: process.env.BROWSER,
+                },
+                filename: `${BACKGROUND_OUTPUT}.html`,
+                chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                    BACKGROUND_OUTPUT,
                 ],
             }),
             new HtmlWebpackPlugin({

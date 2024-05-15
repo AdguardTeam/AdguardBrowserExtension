@@ -317,7 +317,7 @@ const Filters = observer(() => {
         <SettingsSection
             title={reactTranslator.getMessage('options_filters')}
         >
-            <FiltersUpdate />
+            {!__IS_MV3__ && <FiltersUpdate />}
             <Search />
             {settingsStore.isSearching
                 ? renderGroupsOnSearch(filtersToRender)

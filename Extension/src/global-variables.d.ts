@@ -18,3 +18,5 @@
 
 // Variable passed from webpack that will be primitive at runtime.
 declare const IS_RELEASE: boolean;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare const __IS_MV3__: boolean;
