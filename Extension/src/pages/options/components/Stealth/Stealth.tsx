@@ -215,65 +215,67 @@ const Stealth = observer(() => {
                 />
             </SettingsSection>
 
-            <SettingsSection
-                title={reactTranslator.getMessage('options_stealth_cookies_title')}
-                mode="subTitle"
-                disabled={isStealthModeDisabled}
-            >
-                { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
-                {/* @ts-ignore */}
-                <SettingsSetCheckbox
-                    className="disabled"
-                    title={reactTranslator.getMessage('options_third_party_title')}
-                    description={reactTranslator.getMessage('options_third_party_desc')}
-                    disabled={!isThirdPartyCookiesEnabled}
-                    sectionDisabled={isStealthModeDisabled}
-                    id={SelfDestructThirdPartyCookies}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_third_party_title')}
-                    value={isThirdPartyCookiesEnabled}
-                    handler={settingChangeHandler}
+            {!__IS_MV3__ && (
+                <SettingsSection
+                    title={reactTranslator.getMessage('options_stealth_cookies_title')}
+                    mode="subTitle"
+                    disabled={isStealthModeDisabled}
                 >
-                    <Setting
-                        id={SelfDestructThirdPartyCookiesTime}
-                        disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
-                        type={SETTINGS_TYPES.INPUT}
-                        value={settings.values[SelfDestructThirdPartyCookiesTime]}
+                    { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                    {/* @ts-ignore */}
+                    <SettingsSetCheckbox
+                        className="disabled"
+                        title={reactTranslator.getMessage('options_third_party_title')}
+                        description={reactTranslator.getMessage('options_third_party_desc')}
+                        disabled={!isThirdPartyCookiesEnabled}
+                        sectionDisabled={isStealthModeDisabled}
+                        id={SelfDestructThirdPartyCookies}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_third_party_title')}
+                        value={isThirdPartyCookiesEnabled}
                         handler={settingChangeHandler}
-                        placeholder={DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN}
-                        required={isThirdPartyCookiesEnabled}
-                        minValue="0"
-                        step="0.1"
-                    />
-                </SettingsSetCheckbox>
+                    >
+                        <Setting
+                            id={SelfDestructThirdPartyCookiesTime}
+                            disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
+                            type={SETTINGS_TYPES.INPUT}
+                            value={settings.values[SelfDestructThirdPartyCookiesTime]}
+                            handler={settingChangeHandler}
+                            placeholder={DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN}
+                            required={isThirdPartyCookiesEnabled}
+                            minValue="0"
+                            step="0.1"
+                        />
+                    </SettingsSetCheckbox>
 
-                { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
-                {/* @ts-ignore */}
-                <SettingsSetCheckbox
-                    className="disabled"
-                    title={reactTranslator.getMessage('options_first_party_title')}
-                    description={reactTranslator.getMessage('options_first_party_desc')}
-                    disabled={!isFirstPartyCookiesEnabled}
-                    sectionDisabled={isStealthModeDisabled}
-                    id={SelfDestructFirstPartyCookies}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_first_party_title')}
-                    value={isFirstPartyCookiesEnabled}
-                    handler={settingChangeHandler}
-                >
-                    <Setting
-                        id={SelfDestructFirstPartyCookiesTime}
-                        disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
-                        type={SETTINGS_TYPES.INPUT}
-                        value={settings.values[SelfDestructFirstPartyCookiesTime]}
+                    { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                    {/* @ts-ignore */}
+                    <SettingsSetCheckbox
+                        className="disabled"
+                        title={reactTranslator.getMessage('options_first_party_title')}
+                        description={reactTranslator.getMessage('options_first_party_desc')}
+                        disabled={!isFirstPartyCookiesEnabled}
+                        sectionDisabled={isStealthModeDisabled}
+                        id={SelfDestructFirstPartyCookies}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_first_party_title')}
+                        value={isFirstPartyCookiesEnabled}
                         handler={settingChangeHandler}
-                        placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
-                        required={isFirstPartyCookiesEnabled}
-                        minValue="0"
-                        step="0.1"
-                    />
-                </SettingsSetCheckbox>
-            </SettingsSection>
+                    >
+                        <Setting
+                            id={SelfDestructFirstPartyCookiesTime}
+                            disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
+                            type={SETTINGS_TYPES.INPUT}
+                            value={settings.values[SelfDestructFirstPartyCookiesTime]}
+                            handler={settingChangeHandler}
+                            placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
+                            required={isFirstPartyCookiesEnabled}
+                            minValue="0"
+                            step="0.1"
+                        />
+                    </SettingsSetCheckbox>
+                </SettingsSection>
+            )}
 
             <SettingsSection
                 title={reactTranslator.getMessage('options_stealth_miscellaneous_title')}
