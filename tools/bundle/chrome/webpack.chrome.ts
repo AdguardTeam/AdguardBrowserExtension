@@ -79,6 +79,9 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                         context: 'Extension',
                         from: 'filters/chromium',
                         to: 'filters',
+                        globOptions: {
+                            ignore: ['**/declarative/**'],
+                        },
                     },
                 ],
             }),
