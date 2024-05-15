@@ -30,7 +30,7 @@ import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../common/constants';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 
 import './header.pcss';
 
@@ -77,31 +77,33 @@ export const Header = observer(() => {
                 />
             </div>
             <div className="popup-header__buttons">
-                <button
-                    className={cn(
-                        'button',
-                        'popup-header__button',
-                    )}
-                    ref={refUpdatingBtn}
-                    disabled={filtersUpdating}
-                    type="button"
-                    onClick={handleUpdateFiltersClick}
-                    title={reactTranslator.getMessage('popup_header_update_filters')}
-                >
-                    <Icon
-                        id="#update-filters"
-                        classname="icon--update-filters"
-                        animationCondition={filtersUpdating}
-                        animationClassname="icon--loading"
-                    />
-                </button>
+                {!__IS_MV3__ && (
+                    <button
+                        className={cn(
+                            'button',
+                            'popup-header__button',
+                        )}
+                        ref={refUpdatingBtn}
+                        disabled={filtersUpdating}
+                        type="button"
+                        onClick={handleUpdateFiltersClick}
+                        title={translator.getMessage('popup_header_update_filters')}
+                    >
+                        <Icon
+                            id="#update-filters"
+                            classname="icon--update-filters"
+                            animationCondition={filtersUpdating}
+                            animationClassname="icon--loading"
+                        />
+                    </button>
+                )}
                 {!applicationFilteringDisabled
                     && (
                         <button
                             className="button popup-header__button"
                             type="button"
                             onClick={handlePauseClick}
-                            title={reactTranslator.getMessage('context_disable_protection')}
+                            title={translator.getMessage('context_disable_protection')}
                         >
                             <Icon
                                 id="#pause"
@@ -115,7 +117,7 @@ export const Header = observer(() => {
                             className="button popup-header__button"
                             type="button"
                             onClick={handleEnableClick}
-                            title={reactTranslator.getMessage('context_enable_protection')}
+                            title={translator.getMessage('context_enable_protection')}
                         >
                             <Icon
                                 id="#start"
@@ -127,7 +129,7 @@ export const Header = observer(() => {
                     className="button popup-header__button"
                     type="button"
                     onClick={handleSettingsClick}
-                    title={reactTranslator.getMessage('options_settings')}
+                    title={translator.getMessage('options_settings')}
                 >
                     <Icon
                         id="#settings"

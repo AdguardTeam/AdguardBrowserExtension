@@ -160,8 +160,10 @@ export class ContextMenuApi {
                 await ContextMenuApi.addMenuItem(ContextMenuAction.SecurityReport);
                 await ContextMenuApi.addMenuItem(ContextMenuAction.ComplaintWebsite);
                 await ContextMenuApi.addSeparator();
-                await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
-                await ContextMenuApi.addSeparator();
+                if (!__IS_MV3__) {
+                    await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
+                    await ContextMenuApi.addSeparator();
+                }
                 if (!isOptionsPage) {
                     await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
                 }
@@ -209,7 +211,9 @@ export class ContextMenuApi {
         if (!isOptionsPage) {
             await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
         }
-        await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
+        if (!__IS_MV3__) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
+        }
     }
 
     /**

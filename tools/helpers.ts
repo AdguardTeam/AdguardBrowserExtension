@@ -173,6 +173,15 @@ const getNameSuffix = (buildEnv: Env, browser: Browser) => {
             }
             break;
         }
+        case Browser.ChromeMv3: {
+            if (buildEnv === Env.Beta) {
+                return ' (MV3 Beta)';
+            }
+            if (buildEnv === Env.Dev) {
+                return ' (MV3 Dev)';
+            }
+            break;
+        }
         default:
             if (buildEnv !== Env.Release) {
                 return ` (${capitalize(buildEnv)})`;
@@ -224,7 +233,7 @@ export const chunkArray = <T>(arr: T[], size: number): T[][] => {
  * @returns A promise that resolves to an object containing key-value pairs of translation strings.
  * @throws If the file for the specified locale cannot be read or parsed.
  */
-export const getLocaleTranslations = async (locale) => {
+export const getLocaleTranslations = async (locale: string) => {
     const filePath = path.join(LOCALES_ABSOLUTE_PATH, locale, LOCALE_DATA_FILENAME);
     const fileContent = await fs.promises.readFile(filePath, 'utf-8');
     return JSON.parse(fileContent);

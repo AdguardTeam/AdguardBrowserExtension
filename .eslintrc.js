@@ -14,6 +14,7 @@ module.exports = {
         'page': true,
         'context': true,
         'jestPuppeteer': true,
+        __IS_MV3__: true,
     },
     'parser': '@typescript-eslint/parser',
     'parserOptions': {

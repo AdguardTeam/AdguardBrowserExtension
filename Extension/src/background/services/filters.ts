@@ -61,12 +61,16 @@ export class FiltersService {
         messageHandler.addListener(MessageType.DisableFilter, FiltersService.onFilterDisable);
         messageHandler.addListener(MessageType.EnableFiltersGroup, FiltersService.onGroupEnable);
         messageHandler.addListener(MessageType.DisableFiltersGroup, FiltersService.onGroupDisable);
-        messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.manualCheckFiltersUpdate);
+        if (!__IS_MV3__) {
+            messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.manualCheckFiltersUpdate);
+        }
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersService.setConsentedFilters);
         messageHandler.addListener(MessageType.GetIsConsentedFilter, FiltersService.getIsConsentedFilter);
 
-        contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
+        if (!__IS_MV3__) {
+            contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
+        }
 
         settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
         settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
@@ -170,8 +174,6 @@ export class FiltersService {
      * Called when requesting an force update for filters.
      */
     private static async manualCheckFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
-        console.error('not available in mv3');
-        return;
         try {
             const updatedFilters = await FilterUpdateApi.autoUpdateFilters(true);
 
