@@ -17,7 +17,7 @@
  */
 import type { SettingsConfig } from '@adguard/tswebextension';
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { defaultSettings } from '../../../common/settings';
 import {
     AllowlistConfig,
@@ -87,8 +87,8 @@ export class SettingsApi {
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
-            Log.error('Cannot init settings from storage: ', e);
-            Log.info('Reverting settings to default values');
+            logger.error('Cannot init settings from storage: ', e);
+            logger.info('Reverting settings to default values');
             const settings = { ...defaultSettings };
 
             // Update settings in the cache and in the storage
@@ -235,7 +235,7 @@ export class SettingsApi {
 
             return true;
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             return false;
         }
     }
@@ -373,13 +373,13 @@ export class SettingsApi {
             try {
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, true);
             } catch (e) {
-                Log.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
                 // eslint-disable-next-line max-len
                 if (!network.isFilterHasLocalCopy(filterId)) {
                     // eslint-disable-next-line max-len
                     throw new Error(`Filter rules were not loaded from backend and there is no local copy of the filter with id ${filterId}.`, { cause: e });
                 }
-                Log.debug('Trying to load from storage.');
+                logger.debug('Trying to load from storage.');
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
             }
 
@@ -391,7 +391,7 @@ export class SettingsApi {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                Log.error(promise.reason);
+                logger.error(promise.reason);
             }
         });
     }
@@ -416,7 +416,7 @@ export class SettingsApi {
 
         groupStateStorage.enableGroups(enabledGroups);
 
-        Log.info(`Import filters: next groups were enabled: ${enabledGroups}`);
+        logger.info(`Import filters: next groups were enabled: ${enabledGroups}`);
 
         // Disable groups not listed in the imported list.
         const allGroups = groupStateStorage.getData();

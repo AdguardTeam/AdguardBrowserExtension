@@ -19,7 +19,7 @@ import { LRUMap } from 'lru_map';
 
 import { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from '../schema';
 import { SB_LRU_CACHE_KEY } from '../../common/constants';
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 
 import { storage } from './main';
 
@@ -63,7 +63,7 @@ export class SbCache {
 
             this.cache.assign(data.map(({ key, value }) => [key, value]));
         } catch (e: unknown) {
-            Log.error(e);
+            logger.error(e);
         }
     }
 

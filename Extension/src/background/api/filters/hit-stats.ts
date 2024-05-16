@@ -18,7 +18,7 @@
 import { debounce } from 'lodash-es';
 
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { hitStatsStorageDataValidator } from '../../schema';
 import { hitStatsStorage } from '../../storages';
 import { network } from '../network';
@@ -54,7 +54,7 @@ export class HitStatsApi {
             }
         } catch (e) {
             // eslint-disable-next-line max-len
-            Log.warn(`Cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error: `, e);
+            logger.warn(`Cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error: `, e);
             hitStatsStorage.setData({});
         }
     }

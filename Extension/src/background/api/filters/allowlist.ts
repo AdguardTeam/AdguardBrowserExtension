@@ -17,7 +17,7 @@
  */
 import zod from 'zod';
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { listeners } from '../../notifier';
 import {
@@ -366,7 +366,7 @@ export class AllowlistApi {
             }
         } catch (e) {
             // eslint-disable-next-line max-len
-            Log.warn(`Cannot parse ${storage.key} storage data from persisted storage, reset to default. Origin error: `, e);
+            logger.warn(`Cannot parse ${storage.key} storage data from persisted storage, reset to default. Origin error: `, e);
             storage.setData(defaultData);
         }
     }

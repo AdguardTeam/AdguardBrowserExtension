@@ -17,7 +17,14 @@
  */
 import browser from 'webextension-polyfill';
 
-import { Log } from '../../../common/log';
+import {
+    ApplyBasicRuleEvent,
+    defaultFilteringLog,
+    FilteringEventType,
+    tabsApi as tsWebExtTabApi,
+} from '@adguard/tswebextension';
+
+import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';
 import {
     MessageType,
@@ -150,7 +157,7 @@ export class UiService {
         if (activeTab?.url) {
             await PagesApi.openAbusePage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
-            Log.warn('Cannot open abuse page for active tab');
+            logger.warn('Cannot open abuse page for active tab');
         }
     }
 
@@ -175,7 +182,7 @@ export class UiService {
         if (activeTab?.url) {
             await PagesApi.openSiteReportPage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
-            Log.warn('Cannot open site report page for active tab');
+            logger.warn('Cannot open site report page for active tab');
         }
     }
 

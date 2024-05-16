@@ -24,7 +24,7 @@ import {
 // FIXME: Export from top file.
 import type { MessagesHandlerMV3 } from '@adguard/tswebextension/dist/types/src/lib/mv3/background/messages-api';
 
-import { Log, LogLevelString } from '../common/log';
+import { logger, LogLevel } from '../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
 
 import { listeners } from './notifier';
@@ -95,11 +95,11 @@ export class Engine {
 
         const configuration = await Engine.getConfiguration();
 
-        Log.info('Start tswebextension...');
+        logger.info('Start tswebextension...');
         await this.api.start(configuration);
 
         const rulesCount = this.api.getRulesCount();
-        Log.info(`tswebextension is started. Rules count: ${rulesCount}`);
+        logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
@@ -124,11 +124,11 @@ export class Engine {
     async update(): Promise<void> {
         const configuration = await Engine.getConfiguration();
 
-        Log.info('Update tswebextension configuration...');
+        logger.info('Update tswebextension configuration...');
         await this.api.configure(configuration);
 
         const rulesCount = this.api.getRulesCount();
-        Log.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
+        logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
@@ -174,7 +174,7 @@ export class Engine {
             filteringLogEnabled: false,
             customFilters: [],
             verbose: false,
-            logLevel: LogLevelString.Info,
+            logLevel: LogLevel.Info,
             staticFiltersIds,
             userrules,
             allowlist, // FIXME: Not used in MV3, should be fixed.

@@ -353,6 +353,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                 // TODO consider making this variable to be less common used
                 //  (e.g., make it to be __IS_RELEASE__ instead of IS_RELEASE)
                 IS_RELEASE: process.env.BUILD_ENV === Env.Release,
+                IS_BETA: process.env.BUILD_ENV === Env.Beta,
                 __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
             }),
         ],

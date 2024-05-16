@@ -25,7 +25,7 @@ import PropTypes from 'prop-types';
 
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { Log } from '../../../../../common/log';
+import { logger } from '../../../../../common/logger';
 import { rootStore } from '../../../stores/RootStore';
 import { Icon } from '../../../../common/components/ui/Icon';
 
@@ -125,7 +125,7 @@ const AddCustomModal = ({
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             setStepToRender(STEPS.ERROR);
         }
     };
@@ -182,7 +182,7 @@ const AddCustomModal = ({
             await settingsStore.addCustomFilter(filterToAdd);
         } catch (e) {
             setStepToRender(STEPS.ERROR);
-            Log.error(e);
+            logger.error(e);
         }
         closeModal();
     };

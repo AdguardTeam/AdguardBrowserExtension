@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 /**
  * Module used to keep options page settings, which do not need extension level persistence
  */
@@ -62,7 +62,7 @@ export class OptionsStorage {
         try {
             this.storage.setItem(key, JSON.stringify(value));
         } catch (e) {
-            Log.debug(e);
+            logger.debug(e);
         }
     }
 
@@ -71,7 +71,7 @@ export class OptionsStorage {
         try {
             storedValue = JSON.parse(this.storage.getItem(key));
         } catch (e) {
-            Log.debug(e);
+            logger.debug(e);
             storedValue = null;
         }
 

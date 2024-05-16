@@ -24,7 +24,7 @@ import {
     runInAction,
 } from 'mobx';
 
-import { Log } from '../../../common/log';
+import { logger } from '../../../common/logger';
 import {
     createSavingService,
     EVENTS as SAVING_FSM_EVENTS,
@@ -94,7 +94,7 @@ const getOptionsDataWithRetry = async () => {
      */
     const innerRetry = async (retryTimes) => {
         if (retryTimes === 0) {
-            Log.error('Failed to get options data from the background service');
+            logger.error('Failed to get options data from the background service');
             return null;
         }
         try {
@@ -105,7 +105,7 @@ const getOptionsDataWithRetry = async () => {
             }
             return data;
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             await sleep(RETRY_DELAY_MS);
             return innerRetry(retryTimes - 1);
         }
@@ -557,7 +557,7 @@ class SettingsStore {
                 }
             }
         } catch (e) {
-            Log.error(e);
+            logger.error(e);
             this.setFilterEnabledState(filterId, !enabled);
         }
     }
@@ -627,7 +627,7 @@ class SettingsStore {
             const { content } = await messenger.getAllowlist();
             this.setAllowlist(content);
         } catch (e) {
-            Log.debug(e);
+            logger.debug(e);
         }
     };
 
