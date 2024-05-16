@@ -1,0 +1,25 @@
+name: ❓ Question
+description: If the options above do not work for you.
+labels: "Question"
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this form!
+  
+  - type: checkboxes
+    attributes:
+      label: Please answer the following questions for yourself before submitting a question.
+      options:
+        - label: I am running the latest version
+        - label: I checked the [knowledge base](https://adguard.com/kb/) and found no answer
+          required: true
+        - label: I checked to make sure that this issue has not already been filed
+          required: true
+      
+  - type: textarea
+    id: question
+    attributes:
+      label: Ask a question
+      placeholder: If you want to know more about how the app works.
+    validations:
+      required: true

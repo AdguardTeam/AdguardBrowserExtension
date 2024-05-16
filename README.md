@@ -20,6 +20,9 @@
     <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
         <img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" />
     </a>
+    <a href="https://addons.mozilla.org/en-US/firefox/addon/adguard-adblocker/">
+        <img src="https://img.shields.io/amo/v/adguard-adblocker?labelColor=orange" alt="Mozilla Add-on Version" />
+    </a>
 </p>
 
 <br />
