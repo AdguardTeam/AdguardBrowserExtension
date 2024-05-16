@@ -42,8 +42,11 @@ logger.currentLevel = IS_RELEASE || IS_BETA
 // Expose logger to the window object,
 // to have possibility to switch log level from the console.
 // Example: adguard.logger.setLevel('debug');
-const adguard = window.adguard ?? {};
-window.adguard = adguard;
+// FIXME setup eslint and remove this rule
+// eslint-disable-next-line no-restricted-globals
+const adguard = self.adguard ?? {};
+// eslint-disable-next-line no-restricted-globals
+self.adguard = adguard;
 
 adguard.logger = logger;
 
