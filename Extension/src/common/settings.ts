@@ -42,6 +42,7 @@ export const defaultSettings: Settings = {
     [SettingOption.DisableCollectHits]: true,
     [SettingOption.DefaultAllowlistMode]: true,
     [SettingOption.AllowlistEnabled]: true,
+    // TODO: consider ditching optimized filters for mobile mv3 builds if (or when) they become available
     [SettingOption.UseOptimizedFilters]: UserAgent.isAndroid,
     [SettingOption.DisableDetectFilters]: false,
     [SettingOption.DisableShowAppUpdatedNotification]: false,

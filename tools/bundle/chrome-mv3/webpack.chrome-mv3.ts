@@ -117,6 +117,10 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
                         context: 'Extension',
                         from: 'filters/chromium',
                         to: 'filters',
+                        globOptions: {
+                            // optimized filters are not used in the mv3 build
+                            ignore: ['**/*_mobile_*.txt'],
+                        },
                     },
                 ],
             }),
