@@ -108,11 +108,11 @@ export class Engine {
      * Stops the tswebextension and updates the counter of active rules.
      */
     async stop(): Promise<void> {
-        Log.info('Stop tswebextension...');
+        logger.info('Stop tswebextension...');
         await this.api.stop();
 
         const rulesCount = this.api.getRulesCount();
-        Log.info(`tswebextension is stopped. Rules count: ${rulesCount}`);
+        logger.info(`tswebextension is stopped. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
     }

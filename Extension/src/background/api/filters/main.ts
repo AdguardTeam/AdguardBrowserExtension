@@ -181,7 +181,7 @@ export class FiltersApi {
         }
 
         if (filterIds.some((id) => !network.isFilterHasLocalCopy(id))) {
-            Log.error(`In MV3, filters with ids: ${filterIds} cannot be loaded without local copy.`);
+            logger.error(`In MV3, filters with ids: ${filterIds} cannot be loaded without local copy.`);
             return [];
         }
 
