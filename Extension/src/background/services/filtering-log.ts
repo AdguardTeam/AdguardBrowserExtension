@@ -149,6 +149,8 @@ export class FilteringLogService {
     private static onSendRequest({ data }: SendRequestEvent): void {
         const { tabId, ...eventData } = data;
 
+        // FIXME later
+        // @ts-ignore
         filteringLogApi.addEventData(tabId, eventData);
     }
 
@@ -195,6 +197,8 @@ export class FilteringLogService {
     private static onApplyCosmeticRule({ data }: ApplyCosmeticRuleEvent): void {
         const {
             tabId,
+            // FIXME later
+            // @ts-ignore
             rule,
             ...eventData
         } = data;
@@ -222,6 +226,8 @@ export class FilteringLogService {
             ...eventData
         } = data;
 
+        // FIXME later
+        // @ts-ignore
         filteringLogApi.addEventData(tabId, {
             ...eventData,
             // TODO refactor log event scheme to use requestDomain as string | null
