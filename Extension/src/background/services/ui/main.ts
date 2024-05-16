@@ -17,12 +17,13 @@
  */
 import browser from 'webextension-polyfill';
 
-import {
-    ApplyBasicRuleEvent,
-    defaultFilteringLog,
-    FilteringEventType,
-    tabsApi as tsWebExtTabApi,
-} from '@adguard/tswebextension';
+// FIXME revert for mv2 and disable for mv3
+// import {
+//     ApplyBasicRuleEvent,
+//     defaultFilteringLog,
+//     FilteringEventType,
+//     tabsApi as tsWebExtTabApi,
+// } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';

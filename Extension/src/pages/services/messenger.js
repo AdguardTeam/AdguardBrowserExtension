@@ -52,7 +52,7 @@ class Messenger {
     }
 
     /**
-     * Creates long lived connections between popup and background page.
+     * Creates long-lived connections between popup and background page.
      *
      * @param {string} page
      * @param events
@@ -219,10 +219,9 @@ class Messenger {
         await this.sendMessage(MessageType.SaveAllowlistDomains, { value });
     }
 
-    // eslint-disable-next-line class-methods-use-this
+    // FIXME should not be used for mv3
     async updateFilters() {
-        alert('Not available in MV3');
-        // return this.sendMessage(MessageType.CheckFiltersUpdate);
+        return this.sendMessage(MessageType.CheckFiltersUpdate);
     }
 
     async updateGroupStatus(id, enabled) {
@@ -275,16 +274,14 @@ class Messenger {
         return this.sendMessage(MessageType.OpenAssistant);
     }
 
-    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    // FIXME this method should work in mv2 and mv3
     async openAbuseSite(url, from) {
-        alert('Cannot open because url of tab is empty.');
-        // return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
+        return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
     }
 
-    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    // FIXME this method should work in mv2 and mv3
     async checkSiteSecurity(url, from) {
-        alert('Cannot open because url of tab is empty.');
-        // return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
+        return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
     }
 
     async resetCustomRulesForPage(url) {
@@ -307,10 +304,9 @@ class Messenger {
         return this.sendMessage(MessageType.GetStatisticsData);
     }
 
-    // eslint-disable-next-line class-methods-use-this
+    // FIXME this method should not work in the mv3, since there is no such functionality
     async onOpenFilteringLogPage() {
-        alert('Filtering log is not available in MV3.');
-        // await this.sendMessage(MessageType.OnOpenFilteringLogPage);
+        await this.sendMessage(MessageType.OnOpenFilteringLogPage);
     }
 
     async getFilteringLogData() {
@@ -357,6 +353,7 @@ class Messenger {
         return this.sendMessage(MessageType.SetEditorStorageContent, { content });
     }
 
+    // FIXME make sure that this is not used anymore
     async convertRuleText(content) {
         return this.sendMessage(MessageType.ConvertRulesText, { content });
     }

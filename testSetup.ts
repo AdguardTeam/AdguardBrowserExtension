@@ -45,7 +45,21 @@ Object.assign(global, { TextDecoder, TextEncoder });
  *
  * @see https://github.com/mozilla/webextension-polyfill/issues/218#issuecomment-584936358
  */
-chrome.runtime.id = 'text';
+chrome.runtime.id = 'test';
+
+/**
+ * These values are used in the background script to determine the maximum
+ * number of rules that can be added.
+ */
+chrome.declarativeNetRequest = {
+    /** @see https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#property-MAX_NUMBER_OF_REGEX_RULES */
+    MAX_NUMBER_OF_REGEX_RULES: 1000,
+    MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES: 5000,
+};
+
+// FIXME different tests should require different values
+// @ts-ignore
+global.__IS_MV3__ = false;
 
 // mock chrome webextension api
 global.chrome = chrome;
