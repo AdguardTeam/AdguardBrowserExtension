@@ -97,16 +97,18 @@ export const Miscellaneous = observer(() => {
         <>
             <SettingsSection title={reactTranslator.getMessage('options_miscellaneous_settings')}>
                 <div className="settings__group">
-                    <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_use_optimized_filters')}
-                        description={reactTranslator.getMessage('options_use_optimized_filters_desc')}
-                        disabled={!settings.values[UseOptimizedFilters]}
-                        id={UseOptimizedFilters}
-                        label={reactTranslator.getMessage('options_use_optimized_filters')}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[UseOptimizedFilters]}
-                        handler={settingChangeHandler}
-                    />
+                    {!__IS_MV3__ && (
+                        <SettingsSetCheckbox
+                            title={reactTranslator.getMessage('options_use_optimized_filters')}
+                            description={reactTranslator.getMessage('options_use_optimized_filters_desc')}
+                            disabled={!settings.values[UseOptimizedFilters]}
+                            id={UseOptimizedFilters}
+                            label={reactTranslator.getMessage('options_use_optimized_filters')}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            value={settings.values[UseOptimizedFilters]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
                     <SettingsSetCheckbox
                         title={reactTranslator.getMessage('options_allowlist_invert')}
                         description={reactTranslator.getMessage('options_allowlist_invert_desc')}

@@ -107,7 +107,7 @@ export class Network {
         } else {
             // eslint-disable-next-line max-len
             url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterUpdateOptions.filterId}.txt`);
-            if (useOptimizedFilters) {
+            if (useOptimizedFilters && !__IS_MV3__) {
                 // eslint-disable-next-line max-len
                 url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_mobile_${filterUpdateOptions.filterId}.txt`);
             }
@@ -409,10 +409,12 @@ export class Network {
     }
 
     /**
-     * Make a request for json via fetch.
+     * Makes a request for json via fetch.
      *
-     * @param request
-     * @param url
+     * @param url Url.
+     *
+     * @returns Response with type {@link ResponseLikeXMLHttpRequest} to be
+     * compatible with XMLHttpRequest.
      */
     private static async fetchJSON(url: string): Promise<ResponseLikeXMLHttpRequest> {
         const response = await fetch(url, {
