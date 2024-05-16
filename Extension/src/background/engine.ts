@@ -139,7 +139,7 @@ export class Engine {
     private static async getConfiguration(): Promise<Configuration> {
         const staticFiltersIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId))
-            .concat([14]);
+            .concat([]);
 
         const settings = SettingsApi.getTsWebExtConfiguration();
 
