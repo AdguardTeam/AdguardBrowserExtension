@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Log } from '../common/log';
+import { logger } from '../common/logger';
 import { NotifierType } from '../common/constants';
 
 type Listener = (...args: unknown[]) => unknown;
@@ -123,7 +123,7 @@ class Notifier {
             try {
                 listener.apply(listener, args);
             } catch (ex) {
-                Log.error(`Error invoking listener for ${event} cause:`, ex);
+                logger.error(`Error invoking listener for ${event} cause:`, ex);
             }
         });
     }

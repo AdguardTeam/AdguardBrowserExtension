@@ -29,7 +29,7 @@ import { SettingsSection } from '../Settings/SettingsSection';
 import { Editor } from '../../../common/components/Editor';
 import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
-import { Log } from '../../../../common/log';
+import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
@@ -84,7 +84,7 @@ const Allowlist = observer(() => {
             await settingsStore.appendAllowlist(content);
             setAllowlistRerender(true);
         } catch (e) {
-            Log.debug(e.message);
+            logger.debug(e.message);
             uiStore.addNotification({ description: e.message });
         }
 

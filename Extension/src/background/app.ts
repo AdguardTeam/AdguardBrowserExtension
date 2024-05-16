@@ -19,7 +19,7 @@ import browser from 'webextension-polyfill';
 import zod from 'zod';
 
 import { MessageType, sendMessage } from '../common/messages';
-import { Log } from '../common/log';
+import { logger } from '../common/logger';
 import {
     Forward,
     ForwardAction,
@@ -286,7 +286,7 @@ export class App {
         try {
             await browser.runtime.setUninstallURL(App.uninstallUrl);
         } catch (e) {
-            Log.error('Cannot set app uninstall url. Origin error: ', e);
+            logger.error('Cannot set app uninstall url. Origin error: ', e);
         }
     }
 
@@ -300,7 +300,7 @@ export class App {
         try {
             clientId = zod.string().parse(storageClientId);
         } catch (e) {
-            Log.warn('Error while parsing client id, generating a new one');
+            logger.warn('Error while parsing client id, generating a new one');
             clientId = InstallApi.genClientId();
             await storage.set(CLIENT_ID_KEY, clientId);
         }

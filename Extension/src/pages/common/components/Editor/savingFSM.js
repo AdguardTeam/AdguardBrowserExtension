@@ -18,7 +18,7 @@
 
 import { interpret, Machine } from 'xstate';
 
-import { Log } from '../../../../common/log';
+import { logger } from '../../../../common/logger';
 
 export const STATES = {
     IDLE: 'idle',
@@ -53,7 +53,7 @@ const savingStateMachine = {
                     target: STATES.SAVED,
                     actions: (context, event) => {
                         const { data: error } = event;
-                        Log.error(error.message);
+                        logger.error(error.message);
                     },
                 },
             },
@@ -70,9 +70,9 @@ export const createSavingService = ({ id, services }) => {
     return interpret(Machine({ ...savingStateMachine, id }, { services }))
         .start()
         .onEvent((event) => {
-            Log.debug(id, event);
+            logger.debug(id, event);
         })
         .onTransition((state) => {
-            Log.debug(id, { currentState: state.value });
+            logger.debug(id, { currentState: state.value });
         });
 };

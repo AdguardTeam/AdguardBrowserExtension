@@ -25,7 +25,7 @@ import {
 } from '@adguard/tsurlfilter';
 
 import { strings } from '../../../../common/strings';
-import { Log } from '../../../../common/log';
+import { logger } from '../../../../common/logger';
 
 import { COMMA_DELIMITER } from './constants';
 import { UrlUtils } from './utils';
@@ -160,7 +160,7 @@ export const createExceptionCssRule = (rule, event) => {
         return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Html);
     }
 
-    Log.error('Cannot createExceptionCssRule for the rule:', rule);
+    logger.error('Cannot createExceptionCssRule for the rule:', rule);
 
     return '';
 };

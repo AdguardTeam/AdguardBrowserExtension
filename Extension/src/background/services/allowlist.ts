@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Log } from '../../common/log';
+import { logger } from '../../common/logger';
 import {
     MessageType,
     SaveAllowlistDomainsMessage,
@@ -129,7 +129,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.enableTabFiltering(activeTab.id, true);
         } else {
-            Log.warn('Cannot open site report page for active tab');
+            logger.warn('Cannot open site report page for active tab');
         }
     }
 
@@ -142,7 +142,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.disableTabFiltering(activeTab.id);
         } else {
-            Log.warn('Cannot open site report page for active tab');
+            logger.warn('Cannot open site report page for active tab');
         }
     }
 }
