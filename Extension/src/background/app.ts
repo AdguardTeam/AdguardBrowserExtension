@@ -222,7 +222,7 @@ export class App {
             messageHandler.addListener(MessageType.CheckRequestFilterReady, App.onCheckRequestFilterReady);
 
             // Opens filters-download page
-            await PagesApi.openFiltersDownloadPage();
+            await PagesApi.openPostInstallPage();
 
             // Loads default filters
             await CommonFilterApi.initDefaultFilters(true);

@@ -37,7 +37,7 @@ import {
     CONTENT_SCRIPT_START_OUTPUT,
     CONTENT_SCRIPT_END_OUTPUT,
     OPTIONS_OUTPUT,
-    FILTER_DOWNLOAD_OUTPUT,
+    POST_INSTALL_OUTPUT,
     FULLSCREEN_USER_RULES_OUTPUT,
     SAFEBROWSING_OUTPUT,
     DOCUMENT_BLOCK_OUTPUT,
@@ -60,7 +60,7 @@ const config = getEnvConf(BUILD_ENV);
 const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
 const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
 const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
-const FILTER_DOWNLOAD_PATH = path.resolve(__dirname, '../../Extension/pages/filter-download');
+const POST_INSTALL_PATH = path.resolve(__dirname, '../../Extension/pages/post-install');
 const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
 const ASSISTANT_INJECT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant-inject');
 const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
@@ -111,8 +111,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                     XSTATE_VENDOR_OUTPUT,
                 ],
             },
-            [FILTER_DOWNLOAD_OUTPUT]: {
-                import: FILTER_DOWNLOAD_PATH,
+            [POST_INSTALL_OUTPUT]: {
+                import: POST_INSTALL_PATH,
                 runtime: false,
             },
             [CONTENT_SCRIPT_START_OUTPUT]: {
@@ -281,9 +281,9 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(FILTER_DOWNLOAD_PATH, 'index.html'),
-                filename: `${FILTER_DOWNLOAD_OUTPUT}.html`,
-                chunks: [FILTER_DOWNLOAD_OUTPUT],
+                template: path.join(POST_INSTALL_PATH, 'index.html'),
+                filename: `${POST_INSTALL_OUTPUT}.html`,
+                chunks: [POST_INSTALL_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,

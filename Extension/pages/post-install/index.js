@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18n } from '../../src/common/i18n';
-import { FilterDownload } from '../../src/pages/filter-download';
+import { PostInstall } from '../../src/pages/post-install';
 
 I18n.init();
-FilterDownload.init();
+PostInstall.init();
