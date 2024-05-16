@@ -17,6 +17,8 @@
  */
 import zod from 'zod';
 
+import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
+
 import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { listeners } from '../../notifier';
@@ -27,11 +29,9 @@ import {
 } from '../../storages';
 import { engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
-import { AntiBannerFiltersId } from '../../../common/constants';
+// import { AntiBannerFiltersId } from '../../../common/constants';
 
 import { UserRulesApi } from './userrules';
-
-// import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
 
 /**
  * Allowlist and Inverted Allowlist storages have same api.
@@ -155,12 +155,14 @@ export class AllowlistApi {
      * @param tabId Tab id.
      * @param tabRefresh Tab refresh flag.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async enableTabFiltering(tabId: number, tabRefresh: boolean = false): Promise<void> {
-        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
-
-        if (!tabContext) {
-            return;
-        }
+        // FIXME revert this for mv2
+        // const tabContext = tsWebExtTabsApi.getTabContext(tabId);
+        //
+        // if (!tabContext) {
+        //     return;
+        // }
 
         // const { mainFrameRule } = tabContext;
 

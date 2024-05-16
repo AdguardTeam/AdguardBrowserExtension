@@ -33,7 +33,7 @@ import { AntiBannerFiltersId } from '../../common/constants';
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
-import { Engine } from '../engine';
+import { engine, Engine } from '../engine';
 import { settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
@@ -165,14 +165,14 @@ export class FilteringLogApi {
             });
 
             try {
-                Engine.api.setDebugScriptlets(false);
+                engine.api.setDebugScriptlets(false);
             } catch (e) {
                 logger.error('Failed to disable `verbose scriptlets logging` option', e);
             }
 
             if (settingsStorage.get(SettingOption.DisableCollectHits)) {
                 try {
-                    Engine.api.setCollectHitStats(false);
+                    engine.api.setCollectHitStats(false);
                 } catch (e) {
                     logger.error('Failed to disable `collect hit stats` option', e);
                 }

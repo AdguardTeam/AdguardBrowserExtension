@@ -248,8 +248,10 @@ export class SettingsService {
      *
      * @param isHideReferrerEnabled Changed {@link SettingOption.HideReferrer} setting value.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static onHideReferrerStateChange(isHideReferrerEnabled: boolean): void {
         // FIXME: It can be implemented.
+        // eslint-disable-next-line no-console
         console.error('Not implemented!');
         // try {
         //     engine.api.setHideReferrer(isHideReferrerEnabled);
@@ -263,8 +265,10 @@ export class SettingsService {
      *
      * @param isHideSearchQueriesEnabled Changed {@link SettingOption.HideSearchQueries} setting value.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static onHideSearchQueriesStateChange(isHideSearchQueriesEnabled: boolean): void {
         // FIXME: It can be implemented.
+        // eslint-disable-next-line no-console
         console.error('Not implemented!');
         // try {
         //     engine.api.setHideSearchQueries(isHideSearchQueriesEnabled);
@@ -278,8 +282,10 @@ export class SettingsService {
      *
      * @param isSendDoNotTrackEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static onSendDoNotTrackStateChange(isSendDoNotTrackEnabled: boolean): void {
         // FIXME: It can be implemented.
+        // eslint-disable-next-line no-console
         console.error('Not implemented!');
         // try {
         //     engine.api.setSendDoNotTrack(isSendDoNotTrackEnabled);
@@ -293,8 +299,10 @@ export class SettingsService {
      *
      * @param isRemoveXClientDataEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static onRemoveXClientDataStateChange(isRemoveXClientDataEnabled: boolean): void {
         // FIXME: It can be implemented.
+        // eslint-disable-next-line no-console
         console.error('Not implemented!');
         // try {
         //     engine.api.setBlockChromeClientData(isRemoveXClientDataEnabled);
@@ -308,8 +316,10 @@ export class SettingsService {
      *
      * @param isBlockWebRTCEnabled Changed {@link SettingOption.BlockWebRTC} setting value.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static async onBlockWebRTCStateChange(isBlockWebRTCEnabled: boolean): Promise<void> {
         // FIXME: It can be implemented.
+        // eslint-disable-next-line no-console
         console.error('Not implemented!');
         // try {
         //     await engine.api.setBlockWebRTC(isBlockWebRTCEnabled);

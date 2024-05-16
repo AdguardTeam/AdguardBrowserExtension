@@ -21,7 +21,11 @@ import { program } from 'commander';
 
 import { bundleRunner } from './bundle/bundle-runner';
 import { copyExternals } from './bundle/copy-external';
-import { Browser, BUILD_ENV, Env } from './constants';
+import {
+    Browser,
+    BUILD_ENV,
+    Env,
+} from './constants';
 import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
 import { buildInfo } from './bundle/build-info';

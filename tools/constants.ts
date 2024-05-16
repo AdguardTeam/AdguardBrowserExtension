@@ -30,14 +30,14 @@ export enum Env {
     Release = 'release',
 }
 
-export const BUILD_ENV = process.env.BUILD_ENV as Env;
-
 const isValidBuildEnv = (buildEnv: any): buildEnv is Env => {
     return Object.values(Env).includes(buildEnv as Env);
 };
 
+export const BUILD_ENV = process.env.BUILD_ENV as Env || Env.Dev;
+
 if (!isValidBuildEnv(BUILD_ENV)) {
-    throw new Error('BUILD_ENV is not set in the environment variables.');
+    throw new Error(`Invalid BUILD_ENV: ${BUILD_ENV}`);
 }
 
 export type EnvConfig = {
