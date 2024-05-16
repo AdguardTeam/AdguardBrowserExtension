@@ -36,7 +36,7 @@ import { WindowsApi, TabsApi } from '../../../common/api/extension';
 import { Prefs } from '../../prefs';
 import {
     FILTERING_LOG_OUTPUT,
-    FILTER_DOWNLOAD_OUTPUT,
+    POST_INSTALL_OUTPUT,
     FULLSCREEN_USER_RULES_OUTPUT,
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
@@ -75,7 +75,7 @@ export class PagesApi {
     /**
      * Filters download page url.
      */
-    public static readonly filtersDownloadPageUrl = PagesApi.getExtensionPageUrl(FILTER_DOWNLOAD_OUTPUT);
+    public static readonly postInstallPageUrl = PagesApi.getExtensionPageUrl(POST_INSTALL_OUTPUT);
 
     /**
      * Thank you page page url.
@@ -280,8 +280,8 @@ export class PagesApi {
     /**
      * Opens filters download page.
      */
-    public static async openFiltersDownloadPage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApi.filtersDownloadPageUrl });
+    public static async openPostInstallPage(): Promise<void> {
+        await browser.tabs.create({ url: PagesApi.postInstallPageUrl });
     }
 
     /**
@@ -299,10 +299,10 @@ export class PagesApi {
         params.push(`_locale=${encodeURIComponent(browser.i18n.getUILanguage())}`);
         const thankYouUrl = `${PagesApi.thankYouPageUrl}?${params.join('&')}`;
 
-        const filtersDownloadPage = await TabsApi.findOne({ url: PagesApi.filtersDownloadPageUrl });
+        const postInstallPage = await TabsApi.findOne({ url: PagesApi.postInstallPageUrl });
 
-        if (filtersDownloadPage) {
-            await browser.tabs.update(filtersDownloadPage.id, { url: thankYouUrl });
+        if (postInstallPage) {
+            await browser.tabs.update(postInstallPage.id, { url: thankYouUrl });
         } else {
             await browser.tabs.create({ url: thankYouUrl });
         }

@@ -24,7 +24,7 @@ import { logger } from '../common/logger';
 
 import { messenger } from './services/messenger';
 
-export class FilterDownload {
+export class PostInstall {
     private static nanobar = new Nanobar({
         classname: 'adg-progress-bar',
     });
@@ -34,13 +34,13 @@ export class FilterDownload {
     private static openThankyouPageTimeoutMs = 1000;
 
     public static init(): void {
-        document.addEventListener('DOMContentLoaded', FilterDownload.onDOMContentLoaded);
+        document.addEventListener('DOMContentLoaded', PostInstall.onDOMContentLoaded);
     }
 
     private static onDOMContentLoaded(): void {
-        FilterDownload.nanobar.go(15);
+        PostInstall.nanobar.go(15);
 
-        FilterDownload.checkRequestFilterReady();
+        PostInstall.checkRequestFilterReady();
     }
 
     private static async checkRequestFilterReady(): Promise<void> {
@@ -48,23 +48,23 @@ export class FilterDownload {
             const ready = await messenger.sendMessage(MessageType.CheckRequestFilterReady);
 
             if (ready) {
-                FilterDownload.onEngineLoaded();
+                PostInstall.onEngineLoaded();
             } else {
-                setTimeout(FilterDownload.checkRequestFilterReady, FilterDownload.checkRequestTimeoutMs);
+                setTimeout(PostInstall.checkRequestFilterReady, PostInstall.checkRequestTimeoutMs);
             }
         } catch (e) {
             logger.error(e);
             // retry request, if message handler is not ready
-            setTimeout(FilterDownload.checkRequestFilterReady, FilterDownload.checkRequestTimeoutMs);
+            setTimeout(PostInstall.checkRequestFilterReady, PostInstall.checkRequestTimeoutMs);
         }
     }
 
     private static onEngineLoaded(): void {
-        FilterDownload.nanobar.go(100);
+        PostInstall.nanobar.go(100);
         setTimeout(() => {
             if (window) {
                 messenger.sendMessage(MessageType.OpenThankyouPage);
             }
-        }, FilterDownload.openThankyouPageTimeoutMs);
+        }, PostInstall.openThankyouPageTimeoutMs);
     }
 }
