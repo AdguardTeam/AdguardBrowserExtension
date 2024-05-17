@@ -17,15 +17,19 @@
  */
 
 /* eslint-disable no-console */
+import path from 'path';
+
 import webpack from 'webpack';
-import { merge } from 'webpack-merge';
+// FIXME look fixme bellow
+// import { merge } from 'webpack-merge';
 
 export const bundleRunner = (webpackConfig, watch = false) => {
-    if (watch) {
-        // Disabling cache is crucial in watch mode as it allows to follow
-        // changes in the @adguard dependencies and rebuild vendors correctly.
-        webpackConfig = merge(webpackConfig, { cache: false });
-    }
+    // FIXME check if this is needed
+    // if (watch) {
+    //     // Disabling cache is crucial in watch mode as it allows to follow
+    //     // changes in the @adguard dependencies and rebuild vendors correctly.
+    //     webpackConfig = merge(webpackConfig, { cache: false });
+    // }
 
     const compiler = webpack(webpackConfig);
 
@@ -34,13 +38,15 @@ export const bundleRunner = (webpackConfig, watch = false) => {
             // We may be using symlinked dependencies (tsurlfilter, etc) so it's
             // important that watch should follow symlinks.
             followSymlinks: true,
-            poll: {
-                aggregateTimeout: 300,
-                // This will exclude everything in node_modules except for @adguard, build,
-                // and _locales (the latter unexpectedly triggers even though it is not changing, which could be a bug
-                // in webpack).
-                ignored: /(node_modules(?!\/@adguard)|build|_locales)/,
-            },
+            aggregateTimeout: 300,
+            // This will exclude everything in node_modules except for @adguard, build,
+            // and _locales (the latter unexpectedly triggers even though it is not changing, which could be a bug
+            // in webpack).
+            ignored: [
+                '/node_modules(?!\/@adguard)/',
+                'build',
+                path.resolve(__dirname, 'Extension/_locales'),
+            ],
         }, cb)
         : (cb) => compiler.run(cb);
 
