@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { tabsApi, isHttpOrWsRequest } from '@adguard/tswebextension/mv3';
+
 import {
     ChangeApplicationFilteringDisabledMessage,
     GetTabInfoForPopupMessage,
@@ -32,8 +34,8 @@ import {
     promoNotificationApi,
     GetStatisticsDataResponse,
     SettingsData,
+    PartialTabContext,
 } from '../../api';
-import { tsWebExtTabsApi } from '../../../mocks';
 
 export type GetTabInfoForPopupResponse = {
     frameInfo: FrameData,
@@ -79,9 +81,19 @@ export class PopupService {
     static async getTabInfoForPopup(
         { data }: GetTabInfoForPopupMessage,
     ): Promise<GetTabInfoForPopupResponse | undefined> {
-        const { tabId } = data;
+        const { tabId, tabUrl } = data;
 
-        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
+        let tabContext: PartialTabContext | undefined = tabsApi.getTabContext(tabId);
+
+        // FIXME: Tmp solution for internal tabs until AG-32609 is done.
+        if (!isHttpOrWsRequest(tabUrl)) {
+            tabContext = {
+                info: { url: tabUrl },
+                frames: new Map(),
+                blockedRequestCount: 0,
+                mainFrameRule: null,
+            };
+        }
 
         if (tabContext) {
             return {
@@ -101,24 +113,6 @@ export class PopupService {
                 },
             };
         }
-
-        // FIXME: Tmp solution, delete.
-        return {
-            frameInfo: FramesApi.getMockedMainFrameData(),
-            stats: PageStatsApi.getStatisticsData(),
-            settings: SettingsApi.getData(),
-            options: {
-                showStatsSupported: true,
-                isFirefoxBrowser: UserAgent.isFirefox,
-                showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                isMacOs: UserAgent.isMacOs,
-                isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                notification: await promoNotificationApi.getCurrentNotification(),
-                isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                hasCustomRulesToReset: false,
-                // hasCustomRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
-            },
-        };
     }
 
     /**

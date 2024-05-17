@@ -16,8 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
-
-import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
+import { tabsApi, getDomain } from '@adguard/tswebextension/mv3';
+// import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
@@ -29,7 +29,7 @@ import {
 } from '../../storages';
 import { engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
-// import { AntiBannerFiltersId } from '../../../common/constants';
+import { AntiBannerFiltersId } from '../../../common/constants';
 
 import { UserRulesApi } from './userrules';
 
@@ -157,32 +157,31 @@ export class AllowlistApi {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async enableTabFiltering(tabId: number, tabRefresh: boolean = false): Promise<void> {
-        // FIXME revert this for mv2
-        // const tabContext = tsWebExtTabsApi.getTabContext(tabId);
-        //
-        // if (!tabContext) {
-        //     return;
-        // }
+        const tabContext = tabsApi.getTabContext(tabId);
 
-        // const { mainFrameRule } = tabContext;
+        if (!tabContext) {
+            return;
+        }
 
-        // if (!mainFrameRule) {
-        //     return;
-        // }
+        const { mainFrameRule } = tabContext;
 
-        // const filterId = mainFrameRule.getFilterListId();
+        if (!mainFrameRule) {
+            return;
+        }
 
-        // if (filterId === AntiBannerFiltersId.UserFilterId) {
-        //     const ruleText = mainFrameRule.getText();
-        //     await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
-        //     return;
-        // }
+        const filterId = mainFrameRule.getFilterListId();
 
-        // const { info: { url } } = tabContext;
+        if (filterId === AntiBannerFiltersId.UserFilterId) {
+            const ruleText = mainFrameRule.getText();
+            await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
+            return;
+        }
 
-        // if (url && filterId === AntiBannerFiltersId.AllowlistFilterId) {
-        //     await AllowlistApi.enableTabUrlFiltering(url, tabId, tabRefresh);
-        // }
+        const { info: { url } } = tabContext;
+
+        if (url && filterId === AntiBannerFiltersId.AllowlistFilterId) {
+            await AllowlistApi.enableTabUrlFiltering(url, tabId, tabRefresh);
+        }
     }
 
     /**
@@ -191,7 +190,7 @@ export class AllowlistApi {
      * @param tabId Tab id.
      */
     public static async disableTabFiltering(tabId: number): Promise<void> {
-        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
+        const tabContext = tabsApi.getTabContext(tabId);
         if (!tabContext) {
             return;
         }

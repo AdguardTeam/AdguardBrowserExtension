@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Tabs } from 'webextension-polyfill';
-
 import {
     BACKGROUND_TAB_ID,
     ContentType,
@@ -27,15 +26,11 @@ import {
     CosmeticRuleType,
     NetworkRuleOption,
     StealthActionEvent,
-} from '@adguard/tswebextension';
+} from '@adguard/tswebextension/mv3';
 
 import { AntiBannerFiltersId } from '../../common/constants';
-import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
-import { engine, Engine } from '../engine';
-import { settingsStorage } from '../storages';
-import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
 
 import { UserRulesApi } from './filters';
@@ -59,9 +54,9 @@ export type FilteringEventRuleData = {
 export type FilteringLogEvent = {
     eventId: string,
     requestUrl?: string,
-    requestDomain?: string,
+    requestDomain?: string | null,
     frameUrl?: string,
-    frameDomain?: string,
+    frameDomain: string | null,
     requestType?: ContentType,
     timestamp?: number,
     requestThirdParty?: boolean,
@@ -140,21 +135,18 @@ export class FilteringLogApi {
     public onOpenFilteringLogPage(): void {
         this.openedFilteringLogsPages += 1;
 
-        try {
-            // FIXME later
-            // @ts-ignore
-            Engine.api.setDebugScriptlets(true);
-        } catch (e) {
-            logger.error('Failed to enable `verbose scriptlets logging` option', e);
-        }
+        // FIXME: Fix
+        // try {
+        //     engine.api.setDebugScriptlets(true);
+        // } catch (e) {
+        //     Log.error('Failed to enable `verbose scriptlets logging` option', e);
+        // }
 
-        try {
-            // FIXME later
-            // @ts-ignore
-            Engine.api.setCollectHitStats(true);
-        } catch (e) {
-            logger.error('Failed to enable `collect hit stats` option', e);
-        }
+        // try {
+        //     engine.api.setCollectHitStats(true);
+        // } catch (e) {
+        //     Log.error('Failed to enable `collect hit stats` option', e);
+        // }
     }
 
     /**
@@ -168,23 +160,20 @@ export class FilteringLogApi {
                 tabInfo.filteringEvents = [];
             });
 
-            try {
-                // FIXME later
-                // @ts-ignore
-                engine.api.setDebugScriptlets(false);
-            } catch (e) {
-                logger.error('Failed to disable `verbose scriptlets logging` option', e);
-            }
+            // FIXME: Fix
+            // try {
+            //     engine.api.setDebugScriptlets(false);
+            // } catch (e) {
+            //     Log.error('Failed to disable `verbose scriptlets logging` option', e);
+            // }
 
-            if (settingsStorage.get(SettingOption.DisableCollectHits)) {
-                try {
-                    // FIXME later
-                    // @ts-ignore
-                    engine.api.setCollectHitStats(false);
-                } catch (e) {
-                    logger.error('Failed to disable `collect hit stats` option', e);
-                }
-            }
+            // if (settingsStorage.get(SettingOption.DisableCollectHits)) {
+            //     try {
+            //         engine.api.setCollectHitStats(false);
+            //     } catch (e) {
+            //         Log.error('Failed to disable `collect hit stats` option', e);
+            //     }
+            // }
         }
     }
 

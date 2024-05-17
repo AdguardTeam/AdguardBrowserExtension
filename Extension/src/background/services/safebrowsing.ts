@@ -17,6 +17,7 @@
  */
 import browser, { WebRequest } from 'webextension-polyfill';
 import { RequestType } from '@adguard/tsurlfilter/es/request-type';
+import { tabsApi } from '@adguard/tswebextension/mv3';
 
 import { type RequestData } from '@adguard/tswebextension';
 
@@ -31,7 +32,6 @@ import { messageHandler } from '../message-handler';
 import { MessageType, OpenSafebrowsingTrustedMessage } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
 import { logger } from '../../common/logger';
-import { tsWebExtTabsApi } from '../../mocks';
 
 /**
  * SafebrowsingService adds listeners for correct work of {@link SafebrowsingApi} module.
@@ -88,7 +88,7 @@ export class SafebrowsingService {
                     }
 
                     // Chromium doesn't allow open extension url in incognito mode
-                    if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
+                    if (tabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
                         // Closing tab before opening a new one may lead to browser crash (Chromium)
                         browser.tabs.create({ url: safebrowsingUrl })
                             .then(() => {

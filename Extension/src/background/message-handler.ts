@@ -50,9 +50,6 @@ export class BackgroundMessageHandler extends MessageHandler {
         message: T,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
-        // eslint-disable-next-line no-console
-        console.log('handle message', message, sender);
-
         if (message.handlerName === Engine.messageHandlerName) {
             return engine.handleMessage(message, sender as chrome.runtime.MessageSender);
         }

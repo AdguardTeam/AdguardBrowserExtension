@@ -16,6 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+import {
+    tabsApi,
+    defaultFilteringLog,
+    FilteringEventType,
+    ApplyBasicRuleEvent,
+} from '@adguard/tswebextension/mv3';
 
 // FIXME revert for mv2 and disable for mv3
 // import {
@@ -47,6 +53,7 @@ import {
     FilterMetadata,
     ContextMenuApi,
     UiApi,
+    PageStatsApi,
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
@@ -125,16 +132,11 @@ export class UiService {
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
         messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 
-        // FIXME: Export from MV3.
-        // tsWebExtTabApi.onCreate.subscribe(UiApi.update);
-        // tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
-        // tsWebExtTabApi.onActivate.subscribe(UiApi.update);
+        tabsApi.onCreate.subscribe(UiApi.update);
+        tabsApi.onUpdate.subscribe(UiApi.update);
+        tabsApi.onActivate.subscribe(UiApi.update);
 
-        browser.tabs.onCreated.addListener(UiApi.partialUpdate);
-        browser.tabs.onUpdated.addListener(UiApi.partialUpdate);
-        browser.tabs.onActivated.addListener(UiApi.partialUpdate);
-
-        // defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
 
     /**
@@ -234,30 +236,30 @@ export class UiService {
         };
     }
 
-    // /**
-    //  * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter.
-    //  *
-    //  * @param event Handled {@link ApplyBasicRuleEvent}.
-    //  * @param event.data Event data.
-    //  */
-    // private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
-    //     const { rule, tabId } = data;
+    /**
+     * Handles {@link ApplyBasicRuleEvent} and update blocking request stats and counter.
+     *
+     * @param event Handled {@link ApplyBasicRuleEvent}.
+     * @param event.data Event data.
+     */
+    private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
+        const { rule, tabId } = data;
 
-    //     // If rule is not blocking, ignore it
-    //     if (rule.isAllowlist()) {
-    //         return;
-    //     }
+        // If rule is not blocking, ignore it
+        if (rule.isAllowlist()) {
+            return;
+        }
 
-    //     await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
-    //     PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
+        await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
+        PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
 
-    //     const tabContext = tsWebExtTabApi.getTabContext(tabId);
+        const tabContext = tabsApi.getTabContext(tabId);
 
-    //     // If tab context is not found, do not update request blocking counter and icon badge for tab
-    //     if (!tabContext) {
-    //         return;
-    //     }
+        // If tab context is not found, do not update request blocking counter and icon badge for tab
+        if (!tabContext) {
+            return;
+        }
 
-    //     await UiApi.update(tabContext);
-    // }
+        await UiApi.update(tabContext);
+    }
 }

@@ -17,6 +17,7 @@
  */
 
 import browser, { Tabs } from 'webextension-polyfill';
+import { getDomain, isHttpRequest } from '@adguard/tswebextension/mv3';
 
 import { UserAgent } from '../../common/user-agent';
 import { RegularFilterMetadata, SettingOption } from '../schema';
@@ -30,7 +31,6 @@ import { toasts } from '../api/ui';
 import { FiltersApi } from '../api/filters/main';
 import { CommonFilterApi } from '../api/filters/common';
 import { AntibannerGroupsId } from '../../common/constants';
-import { getDomain, isHttpRequest } from '../../mocks';
 
 export type BrowsingLanguage = {
     language: string,

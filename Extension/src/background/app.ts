@@ -60,6 +60,7 @@ import {
     localeDetect,
     PromoNotificationService,
     filterUpdateService,
+    FilteringLogService,
 } from './services';
 import { SettingOption } from './schema';
 import { getRunInfo } from './utils';
@@ -170,8 +171,8 @@ export class App {
         // Adds listeners for userrules list events
         await UserRulesService.init();
 
-        // Adds listeners for filtering log
-        // FilteringLogService.init();
+        // Adds listeners for filtering log (in MV3 needed for at least count total blocked requests)
+        FilteringLogService.init();
 
         /**
          * Adds listeners for managing ui

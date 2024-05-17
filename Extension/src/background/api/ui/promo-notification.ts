@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+import { tabsApi } from '@adguard/tswebextension/mv3';
 
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -28,7 +29,6 @@ import { TabsApi } from '../../../common/api/extension';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { I18n } from '../../utils';
-import { tsWebExtTabsApi } from '../../../mocks';
 
 import { UiApi } from './main';
 
@@ -101,7 +101,7 @@ export class PromoNotificationApi {
                     return;
                 }
 
-                const tabContext = tsWebExtTabsApi.getTabContext(tab.id);
+                const tabContext = tabsApi.getTabContext(tab.id);
 
                 if (tabContext) {
                     await UiApi.update(tabContext);
