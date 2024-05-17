@@ -20,9 +20,8 @@ import {
     type CommonMessageType,
     Configuration,
     TsWebExtension,
+    type MessagesHandlerMV3,
 } from '@adguard/tswebextension/mv3';
-// FIXME: Export from top file.
-import type { MessagesHandlerMV3 } from '@adguard/tswebextension/dist/types/src/lib/mv3/background/messages-api';
 
 import { logger, LogLevel } from '../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
