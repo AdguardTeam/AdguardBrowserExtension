@@ -57,9 +57,14 @@ chrome.declarativeNetRequest = {
     MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES: 5000,
 };
 
+declare global {
+    interface Global {
+        __IS_MV3__: boolean;
+    }
+}
+
 // FIXME different tests should require different values
-// @ts-ignore
-global.__IS_MV3__ = false;
+(global as any).__IS_MV3__ = false;
 
 // mock chrome webextension api
 global.chrome = chrome;
