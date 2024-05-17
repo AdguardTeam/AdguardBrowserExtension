@@ -175,8 +175,6 @@ export class Engine {
             verbose: false,
             logLevel: LogLevel.Info,
             staticFiltersIds,
-            // FIXME later
-            // @ts-ignore
             userrules,
             allowlist, // FIXME: Not used in MV3, should be fixed.
             settings,
