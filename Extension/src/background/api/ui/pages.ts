@@ -198,9 +198,12 @@ export class PagesApi {
             browserName = 'Other';
         }
 
-        // FIXME later
-        // @ts-ignore
-        const filterIds = engine.api.configuration?.filters || [];
+        const filterIds = engine.api.configuration
+            ? [
+                ...engine.api.configuration.staticFiltersIds,
+                ...engine.api.configuration?.customFilters,
+            ]
+            : [];
 
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,

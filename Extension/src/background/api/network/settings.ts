@@ -82,7 +82,7 @@ export class NetworkSettings {
     }
 
     /**
-     * Initialize the network settings.
+     * Initializes the network settings.
      */
     private async init(): Promise<void> {
         this.filtersRulesBaseUrl = await this.getFilterRulesBaseUrl();

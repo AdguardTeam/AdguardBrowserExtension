@@ -16,13 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type TabContext } from '@adguard/tswebextension';
-
 import {
     getDomain,
     isHttpRequest,
     MAIN_FRAME_ID,
-} from '../../../mocks';
+    type TabContext,
+} from '@adguard/tswebextension/mv3';
+
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';
@@ -81,48 +81,14 @@ export type FrameData = {
     totalBlocked: number,
 };
 
+export type PartialTabContext = Pick<TabContext, 'frames' | 'blockedRequestCount' | 'mainFrameRule'> & {
+    info: Pick<TabContext['info'], 'url'>,
+};
+
 /**
  * Helper class for retrieving main frame data from both tswebextension and app state.
  */
 export class FramesApi {
-    /**
-     * FIXME: TMP method, use getMainFrameData instead.
-     *
-     * Tries to find the main frame data for the provided tab context
-     * and returns it.
-     *
-     * @returns The {@link FrameData} object can be partially empty if no frames
-     * were found for a given tab context.
-     */
-    public static getMockedMainFrameData(): FrameData {
-        const url = 'N/A'; // FIXME: Can be extracted in MV3
-
-        const domainName = url ? getDomain(url) : null;
-
-        const urlFilteringDisabled = !url || !isHttpRequest(url);
-
-        const applicationAvailable = appContext.get(AppContextKey.IsInit) && !urlFilteringDisabled;
-
-        const totalBlocked = PageStatsApi.getTotalBlocked();
-
-        const totalBlockedTab = 0; // FIXME: Cannot be computed in MV3, only total.
-        const applicationFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
-
-        return {
-            url,
-            applicationAvailable,
-            domainName,
-            applicationFilteringDisabled,
-            urlFilteringDisabled,
-            documentAllowlisted: false,
-            userAllowlisted: false,
-            canAddRemoveRule: false,
-            frameRule: null,
-            totalBlockedTab,
-            totalBlocked,
-        };
-    }
-
     /**
      * Tries to find the main frame data for the provided tab context
      * and returns it.
@@ -141,7 +107,7 @@ export class FramesApi {
         frames,
         blockedRequestCount,
         mainFrameRule,
-    }: TabContext): FrameData {
+    }: PartialTabContext): FrameData {
         const mainFrame = frames.get(MAIN_FRAME_ID);
 
         const url = info?.url

@@ -219,9 +219,13 @@ class Messenger {
         await this.sendMessage(MessageType.SaveAllowlistDomains, { value });
     }
 
-    // FIXME should not be used for mv3
+    // FIXME: should not be used for mv3
+    // eslint-disable-next-line class-methods-use-this
     async updateFilters() {
-        return this.sendMessage(MessageType.CheckFiltersUpdate);
+        // FIXME: Remove alert
+        // eslint-disable-next-line no-alert
+        alert('Not available in MV3');
+        // return this.sendMessage(MessageType.CheckFiltersUpdate);
     }
 
     async updateGroupStatus(id, enabled) {
@@ -258,8 +262,10 @@ class Messenger {
         await this.sendMessage(MessageType.RemoveAntiBannerFilter, { filterId });
     }
 
-    async getTabInfoForPopup(tabId) {
-        return this.sendMessage(MessageType.GetTabInfoForPopup, { tabId });
+    // FIXME: Remove tabUrl because this is temporary solution to ensure that
+    // tab is not "system" page like "chrome://extensions/" (see AG-32609).
+    async getTabInfoForPopup(tabId, tabUrl) {
+        return this.sendMessage(MessageType.GetTabInfoForPopup, { tabId, tabUrl });
     }
 
     async changeApplicationFilteringDisabled(state) {
@@ -274,14 +280,22 @@ class Messenger {
         return this.sendMessage(MessageType.OpenAssistant);
     }
 
-    // FIXME this method should work in mv2 and mv3
+    // FIXME: this method should work in mv2 and mv3
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     async openAbuseSite(url, from) {
-        return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
+        // FIXME: Remove alert
+        // eslint-disable-next-line no-alert
+        alert('Cannot open because url of tab is empty.');
+        // return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
     }
 
-    // FIXME this method should work in mv2 and mv3
+    // FIXME: this method should work in mv2 and mv3
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     async checkSiteSecurity(url, from) {
-        return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
+        // FIXME: Remove alert
+        // eslint-disable-next-line no-alert
+        alert('Cannot open because url of tab is empty.');
+        // return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
     }
 
     async resetCustomRulesForPage(url) {
@@ -304,9 +318,13 @@ class Messenger {
         return this.sendMessage(MessageType.GetStatisticsData);
     }
 
-    // FIXME this method should not work in the mv3, since there is no such functionality
+    // FIXME: this method should not work in the mv3, since there is no such functionality
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     async onOpenFilteringLogPage() {
-        await this.sendMessage(MessageType.OnOpenFilteringLogPage);
+        // FIXME: Remove alert
+        // eslint-disable-next-line no-alert
+        alert('Filtering log is not available in MV3.');
+        // await this.sendMessage(MessageType.OnOpenFilteringLogPage);
     }
 
     async getFilteringLogData() {

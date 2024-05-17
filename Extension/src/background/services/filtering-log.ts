@@ -18,7 +18,7 @@
 
 import {
     TabContext,
-    tabsApi as tsWebExtTabsApi,
+    tabsApi,
     defaultFilteringLog,
     FilteringEventType,
     SendRequestEvent,
@@ -35,7 +35,7 @@ import {
     StealthActionEvent,
     CspReportBlockedEvent,
     getDomain,
-} from '@adguard/tswebextension';
+} from '@adguard/tswebextension/mv3';
 
 import { messageHandler } from '../message-handler';
 import {
@@ -93,9 +93,9 @@ export class FilteringLogService {
             FilteringLogService.onSetFilteringLogWindowState,
         );
 
-        tsWebExtTabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
-        tsWebExtTabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
-        tsWebExtTabsApi.onDelete.subscribe(FilteringLogService.onTabRemove);
+        tabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
+        tabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
+        tabsApi.onDelete.subscribe(FilteringLogService.onTabRemove);
 
         defaultFilteringLog.addEventListener(FilteringEventType.SendRequest, FilteringLogService.onSendRequest);
         defaultFilteringLog.addEventListener(FilteringEventType.TabReload, FilteringLogService.onTabReload);
@@ -197,20 +197,16 @@ export class FilteringLogService {
     private static onApplyCosmeticRule({ data }: ApplyCosmeticRuleEvent): void {
         const {
             tabId,
-            // FIXME later
-            // @ts-ignore
-            rule,
             ...eventData
         } = data;
 
-        filteringLogApi.addEventData(tabId, {
-            ...eventData,
-            requestRule: FilteringLogApi.createCosmeticRuleEventData(rule),
-        });
+        // TODO: Check that logging will be correct, because the rule now is not passed since AG-31744.
+        filteringLogApi.addEventData(tabId, eventData);
 
-        if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
-        }
+        // FIXME: Remove commented code before merge to master.
+        // if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+        //     HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+        // }
     }
 
     /**
@@ -230,8 +226,7 @@ export class FilteringLogService {
         // @ts-ignore
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            // TODO refactor log event scheme to use requestDomain as string | null
-            requestDomain: getDomain(eventData.requestUrl) ?? undefined,
+            requestDomain: getDomain(eventData.requestUrl),
             requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
         });
 
@@ -255,7 +250,7 @@ export class FilteringLogService {
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestDomain: getDomain(eventData.requestUrl) ?? undefined,
+            requestDomain: getDomain(eventData.requestUrl),
             requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
         });
 
@@ -275,7 +270,7 @@ export class FilteringLogService {
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestDomain: getDomain(eventData.requestUrl) ?? undefined,
+            requestDomain: getDomain(eventData.requestUrl),
             requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
         });
 

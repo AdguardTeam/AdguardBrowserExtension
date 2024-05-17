@@ -16,8 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { debounce } from 'lodash-es';
-
-import type { TabContext } from '@adguard/tswebextension';
+import type { TabContext } from '@adguard/tswebextension/mv3';
 
 import { MessageType, sendMessage } from '../../../common/messages';
 
@@ -52,22 +51,11 @@ export class UiApi {
     public static async update(tabContext: TabContext): Promise<void> {
         const tabId = tabContext.info.id;
 
-        const frameData = FramesApi.getMockedMainFrameData();
+        const frameData = FramesApi.getMainFrameData(tabContext);
 
         await ContextMenuApi.throttledUpdateMenu(frameData);
 
         UiApi.debouncedUpdate(tabId, frameData);
-    }
-
-    /**
-     * Updates the tab icon and the blocked requests counter on the provided tab
-     * with debounce {@link UiApi.UPDATE_THROTTLE_MS}.
-     *
-     */
-    public static async partialUpdate(): Promise<void> {
-        const frameData = FramesApi.getMockedMainFrameData();
-
-        await ContextMenuApi.throttledUpdateMenu(frameData);
     }
 
     /**

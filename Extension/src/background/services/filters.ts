@@ -178,6 +178,9 @@ export class FiltersService {
      * Called when requesting an force update for filters.
      */
     private static async manualCheckFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
+        // eslint-disable-next-line no-console
+        console.error('not available in mv3');
+        return;
         try {
             const updatedFilters = await FilterUpdateApi.autoUpdateFilters(true);
 

@@ -30,7 +30,7 @@ describe('FilteringLogApi', () => {
 
         // initially isOpen should be false
         expect(filteringLogApi.isOpen()).toBe(false);
-        filteringLogApi.addEventData(tabId, { eventId });
+        filteringLogApi.addEventData(tabId, { eventId, frameDomain: null });
 
         // while filtering log is closed events shouldn't be collected
         expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents).toEqual([]);
@@ -39,9 +39,10 @@ describe('FilteringLogApi', () => {
         // after opening filtering log page isOpen should be true
         expect(filteringLogApi.isOpen()).toBe(true);
         expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents).toEqual([]);
-        filteringLogApi.addEventData(tabId, { eventId });
+        filteringLogApi.addEventData(tabId, { eventId, frameDomain: null });
 
         // and events should start to be collected
-        expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents).toEqual([{ eventId }]);
+        // eslint-disable-next-line max-len
+        expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents).toEqual([{ eventId, frameDomain: null }]);
     });
 });

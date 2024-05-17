@@ -114,7 +114,7 @@ class PopupStore {
         });
         const currentTab = tabs?.[0];
 
-        const response = await messenger.getTabInfoForPopup(currentTab?.id);
+        const response = await messenger.getTabInfoForPopup(currentTab?.id, currentTab?.url);
 
         if (!response) {
             return;
