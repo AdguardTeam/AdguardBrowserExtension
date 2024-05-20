@@ -83,7 +83,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
             runtimeChunk: 'single',
         },
         cache: isDev,
-        devtool: isDev ? 'eval-source-map' : false, // FIXME check how it will work with mv3
+        devtool: isDev ? 'eval-source-map' : false,
         entry: {
             [OPTIONS_OUTPUT]: {
                 import: OPTIONS_PATH,

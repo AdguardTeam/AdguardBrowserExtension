@@ -71,24 +71,24 @@ export const getBrowserConf = (browser: Browser): BrowserConfig => {
  *
  * @returns Hash of click2load.html redirect resource.
  */
-// FIXME: Check usage
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getClickToLoadSha = () => {
     const redirectsYamlPath = path.resolve(__dirname, '../Extension/assets/libs/scriptlets/redirects.yml');
     const rawYaml = fs.readFileSync(redirectsYamlPath);
-    // FIXME later
-    // @ts-ignore
-    const redirects = new Redirects(rawYaml);
+    const redirects = new Redirects(rawYaml.toString());
     const click2loadSource = redirects.getRedirect('click2load.html');
     return click2loadSource.sha;
 };
 
+/**
+ * Returns the content security policy for the given environment and browser.
+ *
+ * @param env The build environment.
+ * @param browser The target browser.
+ */
 const getEnvPolicy = (env: Env, browser: Browser) => {
     switch (browser) {
         case Browser.ChromeMv3:
-            return env === Env.Dev
-                ? { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } }
-                : { }; // FIXME check if this is correct
+            return { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } };
         default:
             return env === Env.Dev
                 // eslint-disable-next-line max-len
