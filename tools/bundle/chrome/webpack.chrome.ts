@@ -26,7 +26,7 @@ import { Configuration } from 'webpack';
 
 import { genCommonConfig } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { BrowserConfig } from '../../constants';
+import { BrowserConfig, BUILD_ENV } from '../../constants';
 import {
     BACKGROUND_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
@@ -67,9 +67,7 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
                         transform: (content: Buffer) => updateManifestBuffer(
-                            // FIXME later
-                            // @ts-ignore
-                            process.env.BUILD_ENV,
+                            BUILD_ENV,
                             browserConfig.browser,
                             content,
                             chromeManifest,
@@ -119,7 +117,5 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         }));
     }
 
-    // FIXME later
-    // @ts-ignore
     return merge(commonConfig, chromeConfig);
 };

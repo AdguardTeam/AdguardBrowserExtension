@@ -74,7 +74,7 @@ const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/co
 const OUTPUT_PATH = config.outputPath;
 
 export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => {
-    const isDev = process.env.BUILD_ENV === Env.Dev;
+    const isDev = BUILD_ENV === Env.Dev;
     return {
         mode: config.mode,
         target: 'web',
@@ -352,8 +352,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                 IS_FIREFOX_AMO: browserConfig.browser === Browser.FirefoxAmo,
                 // TODO consider making this variable to be less common used
                 //  (e.g., make it to be __IS_RELEASE__ instead of IS_RELEASE)
-                IS_RELEASE: process.env.BUILD_ENV === Env.Release,
-                IS_BETA: process.env.BUILD_ENV === Env.Beta,
+                IS_RELEASE: BUILD_ENV === Env.Release,
+                IS_BETA: BUILD_ENV === Env.Beta,
                 __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
             }),
         ],

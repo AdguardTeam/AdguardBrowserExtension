@@ -26,7 +26,7 @@ export const bundleRunner = (webpackConfig, options) => {
     const { watch, cache } = options;
 
     // Without cache, building watches linked dependencies, but building takes 5-7 seconds.
-    // Without cache, building happens almost instantly, but changes from linked dependencies are not applied.
+    // With cache, building happens almost instantly, but changes from linked dependencies are not applied.
     if (watch) {
         // Disabling cache is crucial in watch mode as it allows tracking
         // changes in the @adguard dependencies and rebuilding vendors correctly.
