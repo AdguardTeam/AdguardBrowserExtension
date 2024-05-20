@@ -28,11 +28,12 @@ import {
     CHROME_CERT,
     CHROME_UPDATE_URL,
     CHROME_CODEBASE_URL,
+    BUILD_ENV,
 } from '../constants';
 import { getBrowserConf, getEnvConf } from '../helpers';
 
 export const crx = async (browser) => {
-    const buildEnv = process.env.BUILD_ENV;
+    const buildEnv = BUILD_ENV;
 
     // Guards
     if (browser === Browser.Chrome && buildEnv !== Env.Beta) {

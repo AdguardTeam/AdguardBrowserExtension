@@ -124,7 +124,5 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
         plugins,
     };
 
-    // FIXME later
-    // @ts-ignore
     return merge(commonConfig, firefoxConfig);
 };

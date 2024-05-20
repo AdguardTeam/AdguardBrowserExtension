@@ -69,8 +69,6 @@ export const genOperaConfig = (browserConfig: BrowserConfig) => {
                             BUILD_ENV,
                             browserConfig.browser,
                             content,
-                            // FIXME later
-                            // @ts-ignore
                             operaManifest,
                         ),
                     },
@@ -111,7 +109,5 @@ export const genOperaConfig = (browserConfig: BrowserConfig) => {
         ],
     };
 
-    // FIXME later
-    // @ts-ignore
     return merge(commonConfig, operaConfig);
 };

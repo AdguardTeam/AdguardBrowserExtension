@@ -38,12 +38,11 @@ import { BACKGROUND_OUTPUT } from '../../../constants';
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
-type ManifestBase = Manifest.ManifestBase;
+import WebExtensionManifest = Manifest.WebExtensionManifest;
 
 export const RULESET_NAME_PREFIX = 'ruleset_';
 
-const addDeclarativeNetRequest = (manifest: ManifestBase) => {
-    // FIXME: Move chrome to params
+const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
     const filtersDir = FILTERS_DEST.replace('%browser', 'chromium');
 
     const filtersDirPath = path.resolve(__dirname, '../../../', filtersDir, 'declarative/');
@@ -108,8 +107,6 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
                             BUILD_ENV,
                             browserConfig.browser,
                             content,
-                            // FIXME later
-                            // @ts-ignore
                             addDeclarativeNetRequest(chromeMv3Manifest),
                         ),
                     },
@@ -145,7 +142,5 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
         }));
     }
 
-    // FIXME later
-    // @ts-ignore
     return merge(commonConfig, chromeConfig);
 };
