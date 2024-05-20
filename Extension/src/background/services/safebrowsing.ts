@@ -16,10 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { WebRequest } from 'webextension-polyfill';
-import { RequestType } from '@adguard/tsurlfilter/es/request-type';
-import { tabsApi } from '@adguard/tswebextension/mv3';
 
+import { RequestType } from '@adguard/tsurlfilter/es/request-type';
 import { type RequestData } from '@adguard/tswebextension';
+import { tabsApi } from '@adguard/tswebextension/mv3';
 
 import {
     SafebrowsingApi,

@@ -1,4 +1,5 @@
 import { Storage } from 'webextension-polyfill';
+
 // Fake timers from jest didn't work with fetch polyfill wrapper around xhr
 // (because of setTimeout before send response).
 // See https://github.com/mswjs/msw/issues/448

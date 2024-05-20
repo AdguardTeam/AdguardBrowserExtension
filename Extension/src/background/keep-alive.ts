@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+
 import { isHttpRequest } from '@adguard/tswebextension/mv3';
 
 import { logger } from '../common/logger';

@@ -17,6 +17,7 @@
  */
 
 import browser, { Tabs } from 'webextension-polyfill';
+
 import { getDomain, isHttpRequest } from '@adguard/tswebextension/mv3';
 
 import { UserAgent } from '../../common/user-agent';
