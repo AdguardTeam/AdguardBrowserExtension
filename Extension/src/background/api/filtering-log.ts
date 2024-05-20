@@ -140,13 +140,13 @@ export class FilteringLogApi {
         // try {
         //     engine.api.setDebugScriptlets(true);
         // } catch (e) {
-        //     Log.error('Failed to enable `verbose scriptlets logging` option', e);
+        //     logger.error('Failed to enable `verbose scriptlets logging` option', e);
         // }
 
         // try {
         //     engine.api.setCollectHitStats(true);
         // } catch (e) {
-        //     Log.error('Failed to enable `collect hit stats` option', e);
+        //     logger.error('Failed to enable `collect hit stats` option', e);
         // }
     }
 
@@ -165,14 +165,14 @@ export class FilteringLogApi {
             // try {
             //     engine.api.setDebugScriptlets(false);
             // } catch (e) {
-            //     Log.error('Failed to disable `verbose scriptlets logging` option', e);
+            //     logger.error('Failed to disable `verbose scriptlets logging` option', e);
             // }
 
             // if (settingsStorage.get(SettingOption.DisableCollectHits)) {
             //     try {
             //         engine.api.setCollectHitStats(false);
             //     } catch (e) {
-            //         Log.error('Failed to disable `collect hit stats` option', e);
+            //         logger.error('Failed to disable `collect hit stats` option', e);
             //     }
             // }
         }
