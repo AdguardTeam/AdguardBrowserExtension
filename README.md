@@ -229,8 +229,10 @@ directory:
 1. Build the browser extension in the watch mode:
 
   ```shell
-  yarn dev <browser> --watch
+  yarn dev <browser> --watch --no-cache
   ```
+
+`--no-cache` flag is required to rebuild the extension on changes in the linked packages.
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
 
