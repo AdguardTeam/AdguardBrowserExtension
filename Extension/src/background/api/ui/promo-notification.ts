@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+
 import { tabsApi } from '@adguard/tswebextension/mv3';
 
 import { UserAgent } from '../../../common/user-agent';

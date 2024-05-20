@@ -178,10 +178,12 @@ export class Toasts {
                 }
             }
 
-            if (promoNotification.bgImage) {
+            const bgImageOnUpdate = promoNotification.bgImageOnUpdate || promoNotification.bgImage;
+
+            if (bgImageOnUpdate) {
                 try {
                     // dynamically load svg image if offer should look different for different locales; AG-31141
-                    const response = await fetch(promoNotification.bgImage);
+                    const response = await fetch(bgImageOnUpdate);
                     const svgStr = await response.text();
                     offerBgImage = `data:image/svg+xml;base64,${window.btoa(svgStr)}`;
                 } catch (e) {

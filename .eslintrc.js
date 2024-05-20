@@ -84,7 +84,7 @@ module.exports = {
                     },
                     // Place all our libraries after react-like
                     {
-                        'pattern': '@adguard/*',
+                        'pattern': '@adguard/**',
                         'group': 'external',
                         'position': 'after',
                     },
