@@ -219,13 +219,18 @@ class Messenger {
         await this.sendMessage(MessageType.SaveAllowlistDomains, { value });
     }
 
-    // FIXME: should not be used for mv3
-    // eslint-disable-next-line class-methods-use-this
+    /**
+     * Sends a message to the background page to update filters.
+     *
+     * @returns {Promise<[]>} List of filters.
+     */
     async updateFilters() {
-        // FIXME: Remove alert
-        // eslint-disable-next-line no-alert
-        alert('Not available in MV3');
-        // return this.sendMessage(MessageType.CheckFiltersUpdate);
+        if (__IS_MV3__) {
+            logger.debug('Filters update is not supported in MV3');
+            return [];
+        }
+
+        return this.sendMessage(MessageType.CheckFiltersUpdate);
     }
 
     async updateGroupStatus(id, enabled) {
