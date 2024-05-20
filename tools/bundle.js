@@ -31,35 +31,35 @@ import { crx } from './bundle/crx';
 import { buildInfo } from './bundle/build-info';
 import { buildUpdateJson } from './bundle/firefox/updateJson';
 
-const bundleChrome = (watch) => {
-    const webpackConfig = getWebpackConfig(Browser.Chrome, watch);
-    return bundleRunner(webpackConfig, watch);
+const bundleChrome = (options) => {
+    const webpackConfig = getWebpackConfig(Browser.Chrome, options.watch);
+    return bundleRunner(webpackConfig, options);
 };
 
-const bundleChromeMv3 = (watch) => {
-    const webpackConfig = getWebpackConfig(Browser.ChromeMv3, watch);
-    return bundleRunner(webpackConfig, watch);
+const bundleChromeMv3 = (options) => {
+    const webpackConfig = getWebpackConfig(Browser.ChromeMv3, options.watch);
+    return bundleRunner(webpackConfig, options);
 };
 
-const bundleFirefoxAmo = (watch) => {
-    const webpackConfig = getWebpackConfig(Browser.FirefoxAmo, watch);
-    return bundleRunner(webpackConfig, watch);
+const bundleFirefoxAmo = (options) => {
+    const webpackConfig = getWebpackConfig(Browser.FirefoxAmo, options.watch);
+    return bundleRunner(webpackConfig, options);
 };
 
-const bundleFirefoxStandalone = async () => {
-    const webpackConfig = getWebpackConfig(Browser.FirefoxStandalone);
+const bundleFirefoxStandalone = async (options) => {
+    const webpackConfig = getWebpackConfig(Browser.FirefoxStandalone, options.watch);
     await buildUpdateJson();
-    return bundleRunner(webpackConfig);
+    return bundleRunner(webpackConfig, options);
 };
 
-const bundleEdge = (watch) => {
-    const webpackConfig = getWebpackConfig(Browser.Edge, watch);
-    return bundleRunner(webpackConfig, watch);
+const bundleEdge = (options) => {
+    const webpackConfig = getWebpackConfig(Browser.Edge, options.watch);
+    return bundleRunner(webpackConfig, options);
 };
 
-const bundleOpera = (watch) => {
-    const webpackConfig = getWebpackConfig(Browser.Opera, watch);
-    return bundleRunner(webpackConfig, watch);
+const bundleOpera = (options) => {
+    const webpackConfig = getWebpackConfig(Browser.Opera, options.watch);
+    return bundleRunner(webpackConfig, options);
 };
 
 const bundleChromeCrx = async () => {
@@ -100,24 +100,24 @@ const releasePlan = [
     buildInfo,
 ];
 
-const runBuild = async (tasks) => {
+const runBuild = async (tasks, options) => {
     for (const task of tasks) {
-        await task();
+        await task(options);
     }
 };
 
-const mainBuild = async () => {
+const mainBuild = async (options) => {
     switch (BUILD_ENV) {
         case Env.Dev: {
-            await runBuild(devPlan);
+            await runBuild(devPlan, options);
             break;
         }
         case Env.Beta: {
-            await runBuild(betaPlan);
+            await runBuild(betaPlan, options);
             break;
         }
         case Env.Release: {
-            await runBuild(releasePlan);
+            await runBuild(releasePlan, options);
             break;
         }
         default:
@@ -125,63 +125,63 @@ const mainBuild = async () => {
     }
 };
 
-const main = async () => {
+const main = async (options) => {
     try {
-        await mainBuild();
+        await mainBuild(options);
     } catch (e) {
         console.error(e);
         process.exit(1);
     }
 };
 
-const chrome = async (watch) => {
+const chrome = async (options) => {
     try {
-        await bundleChrome(watch);
+        await bundleChrome(options);
     } catch (e) {
         console.error(e);
         process.exit(1);
     }
 };
 
-const chromeMv3 = async (watch) => {
+const chromeMv3 = async (options) => {
     try {
-        await bundleChromeMv3(watch);
+        await bundleChromeMv3(options);
     } catch (e) {
         console.error(e);
         process.exit(1);
     }
 };
 
-const edge = async (watch) => {
+const edge = async (options) => {
     try {
-        await bundleEdge(watch);
+        await bundleEdge(options);
     } catch (e) {
         console.error(e);
         process.exit(1);
     }
 };
 
-const opera = async (watch) => {
+const opera = async (options) => {
     try {
-        await bundleOpera(watch);
+        await bundleOpera(options);
     } catch (e) {
         console.error(e);
         process.exit(1);
     }
 };
 
-const firefox = async (watch) => {
+const firefox = async (options) => {
     try {
-        await bundleFirefoxAmo(watch);
+        await bundleFirefoxAmo(options);
     } catch (e) {
         console.error(e);
         process.exit(1);
     }
 };
 
-const firefoxStandalone = async () => {
+const firefoxStandalone = async (options) => {
     try {
-        await runBuild(firefoxStandalonePlan);
+        await runBuild(firefoxStandalonePlan, options);
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -189,41 +189,46 @@ const firefoxStandalone = async () => {
 };
 
 program
-    .option('--watch', 'Builds in watch mode', false);
+    .option('--watch', 'Builds in watch mode', false)
+    .option(
+        '--no-cache',
+        'Builds without cache. Is useful when watch mode rebuild on the changes from the linked dependencies',
+        false,
+    );
 
 program
     .command('chrome')
     .description('Builds extension for chrome browser')
     .action(() => {
-        chrome(program.watch);
+        chrome(program.opts());
     });
 
 program
     .command('chrome-mv3')
     .description('Builds extension for chrome-mv3 browser')
     .action(() => {
-        chromeMv3(program.watch);
+        chromeMv3(program.opts());
     });
 
 program
     .command('edge')
     .description('Builds extension for edge browser')
     .action(() => {
-        edge(program.watch);
+        edge(program.opts());
     });
 
 program
     .command('opera')
     .description('Builds extension for opera browser')
     .action(() => {
-        opera(program.watch);
+        opera(program.opts());
     });
 
 program
     .command('firefox')
     .description('Builds extension for firefox browser')
     .action(() => {
-        firefox(program.watch);
+        firefox(program.opts());
     });
 
 program
@@ -235,6 +240,8 @@ program
 
 program
     .description('By default builds for all platforms')
-    .action(main);
+    .action(() => {
+        main(program.opts());
+    });
 
 program.parse(process.argv);
