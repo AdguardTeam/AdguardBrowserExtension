@@ -25,6 +25,7 @@ import React, {
 import { observer } from 'mobx-react';
 
 import { Range } from 'ace-builds';
+
 import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
 import { Editor } from '../Editor';

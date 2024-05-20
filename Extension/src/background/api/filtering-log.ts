@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Tabs } from 'webextension-polyfill';
+
 import {
     BACKGROUND_TAB_ID,
     ContentType,

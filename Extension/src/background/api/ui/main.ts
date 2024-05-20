@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { debounce } from 'lodash-es';
+
 import type { TabContext } from '@adguard/tswebextension/mv3';
 
 import { MessageType, sendMessage } from '../../../common/messages';
