@@ -71,14 +71,10 @@ export const getBrowserConf = (browser: Browser): BrowserConfig => {
  *
  * @returns Hash of click2load.html redirect resource.
  */
-// FIXME: Check usage
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getClickToLoadSha = () => {
     const redirectsYamlPath = path.resolve(__dirname, '../Extension/assets/libs/scriptlets/redirects.yml');
     const rawYaml = fs.readFileSync(redirectsYamlPath);
-    // FIXME later
-    // @ts-ignore
-    const redirects = new Redirects(rawYaml);
+    const redirects = new Redirects(rawYaml.toString());
     const click2loadSource = redirects.getRedirect('click2load.html');
     return click2loadSource.sha;
 };
