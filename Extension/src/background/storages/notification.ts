@@ -33,7 +33,12 @@ export type Notification = {
      * Path to the background image for the promo.
      * May be needed for different promos for different locales at the same time.
      */
+
     bgImage: string,
+    /**
+     * Update popup background image may have a bit different width.
+     */
+    bgImageOnUpdate?: string,
     bgColor?: string,
     textColor?: string,
     badgeBgColor?: string,
@@ -41,271 +46,210 @@ export type Notification = {
     icons?: Record<string, Record<string, string>>,
 };
 
-/**
- * List of locales for the Spring promo, not the Easter one. AG-31141.
- */
-const SPRING_PROMO_LOCALES = [
-    'ru',
-    'uk',
-    'ar',
-    'be',
-    'bg',
-    'el',
-    'sr',
-    'hi',
-    'hy',
-    'fa',
-    'he',
-    'ms',
-    'id',
-    'tr',
-    'th',
-    'vi',
-    'zh_cn',
-    'zh_tw',
-];
+const BIRTHDAY_24_ID = 'birthday24';
 
-const EASTER_24_ID = 'easter24';
-
-let easter24Notification: Notification = {
-    id: EASTER_24_ID,
+const birthday24Notification: Notification = {
+    id: BIRTHDAY_24_ID,
     locales: {
         en: {
-            title: 'Time to improve protection',
-            btn: 'Learn how',
-        },
-        // there is no promo for Japanese
-        // ja: {},
-        ko: {
-            title: '개인정보 보호 강화',
-            btn: '자세히 알아보기',
+            title: 'Would you fit in AdGuard?',
+            btn: 'Find out',
         },
         fr: {
-            title: 'Le moment de renouveler la protection',
-            btn: "Voir l'offre",
+            title: 'Qui seriez-vous chez AdGuard ?',
+            btn: 'Découvrez-le',
         },
         it: {
-            title: 'Proteggiti online questa primavera',
-            btn: 'Vedere offerta',
+            title: 'Chi sarai ad AdGuard ?',
+            btn: 'Scoprirlo',
         },
         de: {
-            title: 'Frühling bedeutet Verbesserung',
-            btn: 'Schutz verbessern',
+            title: 'Wer wären Sie bei AdGuard?',
+            btn: 'Herausfinden',
+        },
+        ru: {
+            title: 'Кем бы вы были в AdGuard?',
+            btn: 'Узнать',
         },
         es: {
-            title: 'Es hora de protegerte',
-            btn: 'Descubre cómo',
-        },
-        et: {
-            title: 'Aeg kaitset parandada',
-            btn: 'Õpi kuidas',
-        },
-        pt_br: {
-            title: 'É hora de se proteger',
-            btn: 'Descubra como',
-        },
-        pt_pt: {
-            title: 'É hora de se proteger',
-            btn: 'Descubra como',
-        },
-        ca: {
-            title: 'Millorar la protecció',
-            btn: 'Aprèn com',
-        },
-        cs: {
-            title: 'Čas zlepšit ochranu',
-            btn: 'Zjistěte jak',
-        },
-        da: {
-            title: 'Forbedre beskyttelsen',
-            btn: 'Lær hvordan',
+            title: '¿Quién eres en AdGuard?',
+            btn: 'Descubrirlo',
         },
         es_419: {
-            title: 'Mejorar la protección',
-            btn: 'Aprender cómo',
+            title: '¿Quién eres en AdGuard?',
+            btn: 'Descubrirlo',
         },
-        fi: {
-            title: 'Paranna suojausta',
-            btn: 'Opi kuinka',
+        pt_pt: {
+            title: 'Quem seria no AdGuard?',
+            btn: 'Descobrir',
         },
-        hr: {
-            title: 'Poboljšajte zaštitu',
-            btn: 'Nauči kako',
+        pt_br: {
+            title: 'Quem é você no AdGuard?',
+            btn: 'Descobrir',
         },
-        hu: {
-            title: 'Ideje javítani a védelmet',
-            btn: 'Hogyan?',
+        zh_cn: {
+            title: '如果你在 AdGuard 工作',
+            btn: '你的岗位会是...',
         },
-        lt: {
-            title: 'Laikas pagerinti apsaugą',
-            btn: 'Išmokti kaip',
+        zh_tw: {
+            title: '如果您在 AdGuard 工作',
+            btn: '您的崗位會是...',
         },
-        ms: {
-            title: 'Tingkatkan perlindungan anda',
-            btn: 'Ketahui caranya',
+        ja: {
+            title: 'あなたが AdGuard メンバーだったら？',
+            btn: 'おもしろアンケート',
         },
-        nb: {
-            title: 'Forbedre beskyttelsen',
-            btn: 'Lær hvordan',
+        ko: {
+            title: '여러분이 AdGuard 직원이라면?',
+            btn: '테스트 시작',
         },
-        nl: {
-            title: 'Verbeter de bescherming',
-            btn: 'Leren hoe',
+        uk: {
+            title: 'Ким би ви були в AdGuard?',
+            btn: 'Дізнатися',
+        },
+        ar: {
+            title: '؟AdGuard من كنت ستكون في ',
+            btn: 'اكتشاف',
+        },
+        be: {
+            title: 'Кім бы вы былі ў AdGuard?',
+            btn: 'Даведацца',
+        },
+        id: {
+            title: 'Siapa yang akan Anda jadi di AdGuard?',
+            btn: 'Mengetahui',
         },
         pl: {
-            title: 'Czas poprawić ochronę',
-            btn: 'Naucz się jak',
+            title: 'Kim byłbyś w AdGuard?',
+            btn: 'Dowiedzieć się',
+        },
+        tr: {
+            title: "AdGuard'da kim olurdunuz?",
+            btn: 'Öğrenmek',
+        },
+        vi: {
+            title: 'Bạn sẽ là ai trong AdGuard?',
+            btn: 'Tìm hiểu',
+        },
+        bg: {
+            title: 'Кой бихте били в AdGuard?',
+            btn: 'Разбера',
+        },
+        ca: {
+            title: 'Qui seríeu a AdGuard?',
+            btn: 'Esbrinar',
+        },
+        cs: {
+            title: 'Kým byste byli v AdGuard?',
+            btn: 'Zjistit',
+        },
+        da: {
+            title: 'Hvem ville du være i AdGuard?',
+            btn: 'Finde ud af',
+        },
+        el: {
+            title: 'Ποιος θα ήσασταν στο AdGuard;',
+            btn: 'Μάθω',
+        },
+        fa: {
+            title: 'چه نقشی داشته‌اید؟ AdGuard شما در ',
+            btn: 'فهمیدن',
+        },
+        fi: {
+            title: 'Kuka olisit AdGuardissa?',
+            btn: 'Selvittää',
+        },
+        he: {
+            title: '?AdGuardמי היית ב',
+            btn: 'לגלות',
+        },
+        hr: {
+            title: 'Tko bi bio u AdGuardu?',
+            btn: 'Saznati',
+        },
+        hu: {
+            title: 'Ki lennél az AdGuardban?',
+            btn: 'Megtudni',
+        },
+        hy: {
+            title: 'Ով կլինեիք AdGuard-ում՞',
+            btn: 'Պարզել',
+        },
+        lt: {
+            title: 'Kuo būtumėte AdGuard?',
+            btn: 'Sužinoti',
+        },
+        ms: {
+            title: 'Siapa anda akan jadi di AdGuard?',
+            btn: 'Ketahui',
+        },
+        no: {
+            title: 'Hvem ville du vært i AdGuard?',
+            btn: 'Finne ut',
+        },
+        nl: {
+            title: 'Wie zou je zijn bij AdGuard?',
+            btn: 'Uitvinden',
         },
         ro: {
-            title: 'Îmbunătățiți protecția',
-            btn: 'Afla cum',
+            title: 'Cine ai fi în AdGuard?',
+            btn: 'Afla',
         },
         sk: {
-            title: 'Čas na zlepšenie ochrany',
-            btn: 'Zistite ako',
+            title: 'Kým by ste boli v AdGuard?',
+            btn: 'Zistiť',
         },
         sl: {
-            title: 'Čas je za izboljšanje zaščite',
-            btn: 'Nauči se kako',
+            title: 'Kdo bi bil v AdGuard?',
+            btn: 'Izvedeti',
+        },
+        'sr-Latn': {
+            title: 'Ko bi ste bili u AdGuard?',
+            btn: 'Saznati',
         },
         sv: {
-            title: 'Dags att förbättra skyddet',
-            btn: 'Lära sig hur',
+            title: 'Vem skulle du vara i AdGuard?',
+            btn: 'Ta reda på',
+        },
+        hi: {
+            title: 'आप AdGuard में कौन होंगे?',
+            btn: 'पता लगाना',
+        },
+        et: {
+            title: 'Kes sa oleksid AdGuardis?',
+            btn: 'Teada saama',
+        },
+        th: {
+            title: 'คุณจะเป็นใครใน AdGuard?',
+            btn: 'หาข้อมูล',
+        },
+        mk: {
+            title: 'Кој би биле вие во AdGuard?',
+            btn: 'Дознај',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Easter24 }),
-    from: '28 March 2024 12:00:00',
-    to: '3 April 2024 23:59:00',
+    url: Forward.get({ action: ForwardAction.Birthday24 }),
+    from: '30 May 2024 12:00:00',
+    to: '5 June 2024 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/easter24.svg'),
+    bgImage: browser.runtime.getURL('assets/images/birthday24.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/birthday24-on-update.svg'),
     icons: {
         ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/easter24-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/easter24-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/birthday24-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/birthday24-on-38.png'),
         },
         ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/easter24-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/easter24-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/birthday24-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/birthday24-off-38.png'),
         },
     },
 };
-
-/**
- * Diff data for the Spring promo.
- */
-const spring24NotificationUpdateDiff = {
-    locales: {
-        ar: {
-            title: 'حان الوقت لتحسين الحماية',
-            btn: 'تعلم كيف',
-        },
-        be: {
-            title: 'Час палепшыць абарону',
-            btn: 'Даведацца як',
-        },
-        bg: {
-            title: 'Подобрете защитата си',
-            btn: 'Разберете как',
-        },
-        el: {
-            title: 'Βελτιώστε την προστασία σας',
-            btn: 'Βρες πως',
-        },
-        fa: {
-            title: 'زمان بهبود دفاع شما است',
-            btn: 'دریابید که چگونه',
-        },
-        hi: {
-            title: 'अपनी सुरक्षा में सुधार करें',
-            btn: 'कैसे?',
-        },
-        he: {
-            title: 'שפר את ההגנה שלך',
-            btn: 'לברר איך',
-        },
-        hy: {
-            title: 'Պաշտպանեք ձեզ հինտերնետում',
-            btn: 'Պարզել, թե ինչպես',
-        },
-        id: {
-            title: 'Tingkatkan perlindungan anda',
-            btn: 'Cari tahu caranya',
-        },
-        ms: {
-            title: 'Tingkatkan perlindungan anda',
-            btn: 'Ketahui caranya',
-        },
-        ru: {
-            title: 'Весна — время улучшить защиту',
-            btn: 'Узнать как',
-        },
-        'sr-Latn': {
-            title: 'Poboljšajte zaštitu',
-            btn: 'Saznajte kako',
-        },
-        th: {
-            title: 'ปรับปรุงการป้องกัน',
-            btn: 'เรียนรู้วิธีการ',
-        },
-        tr: {
-            title: 'Savunmanızı geliştirme zamanı',
-            btn: 'Nasıl?',
-        },
-        uk: {
-            title: 'Час покращити захист',
-            btn: 'Дізнатись як',
-        },
-        vi: {
-            title: 'Cải thiện khả năng bảo vệ của bạn',
-            btn: 'Làm sao?',
-        },
-        zh_cn: {
-            title: '增强隐私保护',
-            btn: '了解更多',
-        },
-        zh_tw: {
-            title: '增強隱私保護',
-            btn: '了解更多',
-        },
-    },
-    bgImage: browser.runtime.getURL('assets/images/spring24.svg'),
-    icons: {
-        ICON_GREEN: {
-            '19': browser.runtime.getURL('assets/icons/spring24-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/spring24-on-38.png'),
-        },
-        ICON_GRAY: {
-            '19': browser.runtime.getURL('assets/icons/spring24-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/spring24-off-38.png'),
-        },
-    },
-};
-
-const normalizeLanguage = (locale: string): string | null => {
-    if (!locale) {
-        return null;
-    }
-    return locale.toLowerCase().replace('-', '_');
-};
-
-// possible values of browser lang: 'en', or 'en-US' which is 'en_us' after normalization
-const currentLocale = normalizeLanguage(browser.i18n.getUILanguage());
-
-const shouldShowSpring24Promo = currentLocale
-    && SPRING_PROMO_LOCALES.some((locale) => currentLocale.startsWith(locale));
-
-if (shouldShowSpring24Promo) {
-    easter24Notification = {
-        ...easter24Notification,
-        // update the notification data with the Spring promo data
-        ...spring24NotificationUpdateDiff,
-    };
-}
 
 /**
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, Notification>([
-    [EASTER_24_ID, easter24Notification],
+    [BIRTHDAY_24_ID, birthday24Notification],
 ]);
