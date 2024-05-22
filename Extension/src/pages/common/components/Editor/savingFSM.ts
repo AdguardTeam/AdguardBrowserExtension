@@ -20,37 +20,46 @@ import { interpret, Machine } from 'xstate';
 
 import { logger } from '../../../../common/logger';
 
-export const STATES = {
-    IDLE: 'idle',
-    SAVING: 'saving',
-    SAVED: 'saved',
-};
+/**
+ * Possible states of the saving state machine.
+ */
+export const enum SavingFSMState {
+    Idle = 'idle',
+    Saving = 'saving',
+    Saved = 'saved',
+}
 
-export const EVENTS = {
-    SAVE: 'save',
-    SUCCESS: 'success',
-    ERROR: 'error',
-    TIMEOUT: 'timeout',
-};
+export type SavingFSMStateType = SavingFSMState.Idle | SavingFSMState.Saving | SavingFSMState.Saved;
+
+/**
+ * Possible events of the saving state machine.
+ */
+export const enum SavingFSMEvent {
+    Save = 'save',
+    Success = 'success',
+    Error = 'error',
+    Timeout = 'timeout',
+}
 
 const SAVED_DISPLAY_TIMEOUT_MS = 1000;
 
 const savingStateMachine = {
-    initial: 'idle',
+    initial: SavingFSMState.Idle,
     states: {
-        [STATES.IDLE]: {
+        [SavingFSMState.Idle]: {
             on: {
-                [EVENTS.SAVE]: STATES.SAVING,
+                [SavingFSMEvent.Save]: SavingFSMState.Saving,
             },
         },
-        [STATES.SAVING]: {
+        [SavingFSMState.Saving]: {
             invoke: {
                 src: 'saveData',
                 onDone: {
-                    target: STATES.SAVED,
+                    target: SavingFSMState.Saved,
                 },
                 onError: {
-                    target: STATES.SAVED,
+                    target: SavingFSMState.Saved,
+                    // @ts-ignore
                     actions: (context, event) => {
                         const { data: error } = event;
                         logger.error(error.message);
@@ -58,15 +67,30 @@ const savingStateMachine = {
                 },
             },
         },
-        [STATES.SAVED]: {
+        [SavingFSMState.Saved]: {
             after: [{
-                delay: SAVED_DISPLAY_TIMEOUT_MS, target: STATES.IDLE,
+                delay: SAVED_DISPLAY_TIMEOUT_MS, target: SavingFSMState.Idle,
             }],
         },
     },
 };
 
-export const createSavingService = ({ id, services }) => {
+type SavingServiceParams = {
+    /**
+     * Identifier.
+     */
+    id: string,
+
+    /**
+     * Services to be used in the state machine.
+     */
+    services: {
+        saveData: () => Promise<void>,
+    },
+
+};
+
+export const createSavingService = ({ id, services }: SavingServiceParams) => {
     return interpret(Machine({ ...savingStateMachine, id }, { services }))
         .start()
         .onEvent((event) => {

@@ -16,4 +16,29 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { AttachmentPortal } from './AttacmentPortal';
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
+
+import { type SavingFSMStateType } from '../Editor/savingFSM';
+import { SavingButton } from '../SavingButton';
+
+import { userRulesEditorStore } from './UserRulesEditorStore';
+
+type UserRulesSavingButtonParams = {
+    /**
+     * Click handler.
+     */
+    onClick: () => void;
+};
+
+export const UserRulesSavingButton = observer(({ onClick }: UserRulesSavingButtonParams) => {
+    const store = useContext(userRulesEditorStore);
+
+    return (
+        <SavingButton
+            onClick={onClick}
+            contentChanged={store.userRulesEditorContentChanged}
+            savingState={store.savingUserRulesState as SavingFSMStateType}
+        />
+    );
+});

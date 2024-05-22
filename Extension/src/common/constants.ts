@@ -104,7 +104,12 @@ export const enum NavigationTag {
 /**
  * Trusted tag for custom filters
  */
-export const TRUSTED_TAG = 'trusted' as const;
+export const TRUSTED_TAG_KEYWORD = 'trusted' as const;
+
+/**
+ * Trusted tag id for custom filters.
+ */
+export const TRUSTED_TAG_ID = 999 as const;
 
 /**
  * Custom filters group display number

@@ -20,24 +20,29 @@ import React from 'react';
 
 import classnames from 'classnames';
 
-import { STATES as SAVING_STATES } from '../Editor/savingFSM';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { SavingFSMState } from '../Editor/savingFSM';
+import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../ui/Icon';
 
-const renderSavingState = (savingRulesState) => {
-    const indicatorTextMap = {
-        [SAVING_STATES.SAVED]: reactTranslator.getMessage('options_editor_indicator_saved'),
-        [SAVING_STATES.SAVING]: reactTranslator.getMessage('options_editor_indicator_saving'),
+const renderSavingState = (savingRulesState: SavingFSMState) => {
+    type IndicatorTextMapType = {
+        [key in SavingFSMState]: string | null;
     };
 
-    const indicatorText = indicatorTextMap[savingRulesState] || '';
+    const indicatorTextMap: IndicatorTextMapType = {
+        [SavingFSMState.Idle]: null,
+        [SavingFSMState.Saved]: translator.getMessage('options_editor_indicator_saved'),
+        [SavingFSMState.Saving]: translator.getMessage('options_editor_indicator_saving'),
+    };
 
-    if (indicatorText === '') {
+    const indicatorText = indicatorTextMap[savingRulesState as SavingFSMState];
+
+    if (!indicatorText) {
         return null;
     }
 
     const indicatorClassnames = classnames('editor__label', {
-        'editor__label--saved': savingRulesState === SAVING_STATES.SAVED,
+        'editor__label--saved': savingRulesState === SavingFSMState.Saved,
     });
 
     return (
@@ -48,7 +53,24 @@ const renderSavingState = (savingRulesState) => {
     );
 };
 
-export const SavingButton = ({ onClick, savingState, contentChanged }) => {
+type SavingButtonParams = {
+    /**
+     * Click handler.
+     */
+    onClick: () => void;
+
+    /**
+     * Saving state.
+     */
+    savingState: SavingFSMState;
+
+    /**
+     * Indicates if content has changed.
+     */
+    contentChanged: boolean;
+};
+
+export const SavingButton = ({ onClick, savingState, contentChanged }: SavingButtonParams) => {
     return (
         <div className="actions__saving">
             {renderSavingState(savingState)}
@@ -58,7 +80,7 @@ export const SavingButton = ({ onClick, savingState, contentChanged }) => {
                 onClick={onClick}
                 disabled={!contentChanged}
             >
-                {reactTranslator.getMessage('options_editor_save')}
+                {translator.getMessage('options_editor_save')}
             </button>
         </div>
     );

@@ -24,6 +24,53 @@ import cn from 'classnames';
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../ui/Icon';
 
+type ConfirmModalParams = {
+    /**
+     * Modal title.
+     */
+    title: string,
+
+    /**
+     * Modal subtitle.
+     */
+    subtitle?: string,
+
+    /**
+     * Modal visibility flag.
+     */
+    isOpen: boolean,
+
+    /**
+     * Confirm button click handler.
+     */
+    onConfirm: () => void,
+
+    /**
+     * Cancel button click handler.
+     */
+    onCancel?: () => void,
+
+    /**
+     * Modal visibility flag setter.
+     */
+    setIsOpen: (isOpen: boolean) => void,
+
+    /**
+     * Custom confirm button title.
+     */
+    customConfirmTitle?: string,
+
+    /**
+     * Custom cancel button title.
+     */
+    customCancelTitle?: string,
+
+    /**
+     * Flag to show consent modal.
+     */
+    isConsent?: boolean,
+};
+
 export const ConfirmModal = ({
     title,
     subtitle,
@@ -31,10 +78,10 @@ export const ConfirmModal = ({
     onConfirm,
     onCancel,
     setIsOpen,
-    customCancelTitle,
     customConfirmTitle,
+    customCancelTitle,
     isConsent,
-}) => {
+}: ConfirmModalParams) => {
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
 
@@ -57,7 +104,9 @@ export const ConfirmModal = ({
 
     const handleCancel = () => {
         closeModal();
-        onCancel();
+        if (onCancel) {
+            onCancel();
+        }
     };
 
     return (

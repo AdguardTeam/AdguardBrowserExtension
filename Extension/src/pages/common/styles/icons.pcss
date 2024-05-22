@@ -102,6 +102,22 @@
         height: 24px;
         color: var(--gray700);
     }
+
+    &--loading {
+        pointer-events: none;
+        animation: loader-spin 1s infinite linear;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes loader-spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
 }
 
 .light-mode {

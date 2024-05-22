@@ -43,6 +43,8 @@ import {
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
+import { SavingFSMState } from '../Editor/savingFSM';
+import { Loader } from '../Loader';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
@@ -355,8 +357,15 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         ? reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')
         : reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip');
 
+    /**
+     * Show loader in mv3 when allowlist is being saved.
+     */
+    const isMv3Saving = __IS_MV3__
+        && store.savingUserRulesState === SavingFSMState.Saving;
+
     return (
         <>
+            <Loader condition={isMv3Saving} />
             <Editor
                 name="user-rules"
                 editorRef={editorRef}

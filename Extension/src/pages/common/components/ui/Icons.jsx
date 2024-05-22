@@ -252,6 +252,10 @@ export const Icons = () => {
                 <path d="M9.5 12C9.5 10.6196 10.6188 9.50046 11.9991 9.5C13.3795 9.5021 14.4979 10.6206 14.5 12.0009C14.4995 13.3812 13.3804 14.5 12 14.5C10.6193 14.5 9.5 13.3807 9.5 12Z" fill="currentColor" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                 <circle cx="12.0001" cy="12" r="8.33333" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
+
+            <symbol id="loading" viewBox="0 0 24 24">
+                <path fill="none" stroke="#67B279" d="M6.29054 5.04252c.11374-.09345.22981-.18417.34812-.27205M8.55511 3.68292c.2649-.10985.53619-.20741.81315-.29197.14206-.04337.28562-.08333.43057-.11976M12 3c4.9706 0 9 4.02944 9 9 0 4.9706-4.0294 9-9 9-2.48528 0-4.73528-1.0074-6.36396-2.636-.829-.829-1.49703-1.819-1.95318-2.9191" />
+            </symbol>
         </svg>
     );
 };

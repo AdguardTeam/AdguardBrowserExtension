@@ -20,15 +20,20 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { type TagMetadata } from '../../../../../background/schema';
 import { rootStore } from '../../../stores/RootStore';
 import { HighlightSearch } from '../Search/HighlightSearch';
 
-export const FilterTag = observer(({ tag }) => {
+type FilterTagParams = {
+    tag: TagMetadata,
+};
+
+export const FilterTag = observer(({ tag }: FilterTagParams) => {
     const { settingsStore } = useContext(rootStore);
 
     const tagString = `#${tag.keyword}`;
 
-    const handleClick = (e) => {
+    const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
         // we remove other content of search input when user clicks to tag
         settingsStore.setSearchInput(tagString);

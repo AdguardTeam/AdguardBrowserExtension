@@ -19,9 +19,11 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
+import { Position } from '../types';
+
 const TOOLTIP_EDGE_PADDING = 4; // px
 
-const getCssString = (position, visible) => {
+const getCssString = (position: Position, visible: boolean) => {
     const { x, y } = position;
     let css = `z-index:999;position:absolute;top:${y}px;left:${x}px;`;
     if (!visible) {
@@ -30,14 +32,20 @@ const getCssString = (position, visible) => {
     return css;
 };
 
-export const AttachmentPortal = ({ rootId, position, children }) => {
+type AttachmentPortalParams = {
+    rootId: string,
+    position: Position,
+    children: React.ReactNode,
+};
+
+export const AttachmentPortal = ({ rootId, position, children }: AttachmentPortalParams) => {
     const parent = document.getElementById(rootId);
     const ref = useRef(document.createElement('div'));
 
     useEffect(() => {
         const el = ref.current;
         el.setAttribute('style', getCssString(position, false));
-        parent.appendChild(el);
+        parent?.appendChild(el);
         const rect = el.getBoundingClientRect();
 
         const offsetEdge = {
@@ -68,7 +76,7 @@ export const AttachmentPortal = ({ rootId, position, children }) => {
         el.setAttribute('style', getCssString(nextPosition, true));
 
         return () => {
-            parent.removeChild(el);
+            parent?.removeChild(el);
         };
     }, [ref, parent, position]);
 

@@ -24,24 +24,49 @@ import React, {
 
 import { AttachmentPortal } from '../../AttachmentPortal';
 import { Tooltip } from '../Tooltip';
+import { Position } from '../../types';
 
 const TOOLTIP_SHOW_DELAY_MS = 1000;
 
-/*
-    Wrap child container for handle tooltips rendering in overlay on hover
-*/
+type TooltipState = {
+    visible: boolean;
+    position: Position | null;
+};
+
+type PopoverParams = {
+    /**
+     * Tooltip text.
+     */
+    text?: string;
+
+    /**
+     * Delay before showing tooltip.
+     */
+    delay?: number;
+
+    /**
+     * Child node.
+     */
+    children: React.ReactNode;
+};
+
+/**
+ * Wrap child container for handle tooltips rendering in overlay on hover
+ */
 export const Popover = ({
     text,
     delay,
     children,
     ...props
-}) => {
-    const [tooltip, setTooltip] = useState({
+}: PopoverParams) => {
+    const defaultTooltip: TooltipState = {
         visible: false,
         position: null,
-    });
+    };
 
-    const timer = useRef();
+    const [tooltip, setTooltip] = useState(defaultTooltip);
+
+    const timer = useRef<ReturnType<typeof setTimeout> | undefined>();
 
     // clear timer on unmounting
     useEffect(() => {
@@ -50,15 +75,19 @@ export const Popover = ({
         };
     }, []);
 
-    const handleMouseEnter = (e) => {
-        const rect = e.target.getBoundingClientRect();
+    const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+        const { left, bottom } = e.currentTarget.getBoundingClientRect();
+
+        if (!timer.current) {
+            return;
+        }
 
         timer.current = setTimeout(() => {
             setTooltip({
                 visible: true,
                 position: {
-                    x: rect.left + window.scrollX,
-                    y: rect.bottom + window.scrollY,
+                    x: left + window.scrollX,
+                    y: bottom + window.scrollY,
                 },
             });
         }, delay || TOOLTIP_SHOW_DELAY_MS);
@@ -79,7 +108,7 @@ export const Popover = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            {tooltip.visible && (
+            {tooltip.visible && tooltip.position && (
                 <AttachmentPortal rootId="root-portal" position={tooltip.position}>
                     <Tooltip text={text} />
                 </AttachmentPortal>

@@ -18,24 +18,27 @@
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
-import cn from 'classnames';
+import { Popover } from '../../../../common/components/ui/Popover';
+import { TagMetadata } from '../../../../../background/schema';
 
-import './tooltip.pcss';
+import { FilterTag } from './FilterTag';
 
-export const Tooltip = ({ text, visible }) => {
+type FilterTagsParams = {
+    tags: TagMetadata[];
+};
+
+export const FilterTags = ({ tags }: FilterTagsParams) => {
+    if (tags.length === 0) {
+        return null;
+    }
+
     return (
-        <div className={cn('tooltip', visible ? 'tooltip--on' : 'tooltip--off')}>
-            {text}
+        <div className="filter__tags">
+            {tags.map((tag) => (
+                <Popover text={tag.description} key={tag.tagId}>
+                    <FilterTag tag={tag} />
+                </Popover>
+            ))}
         </div>
     );
-};
-
-Tooltip.propTypes = {
-    text: PropTypes.string.isRequired,
-    visible: PropTypes.bool,
-};
-
-Tooltip.defaultProps = {
-    visible: true,
 };
