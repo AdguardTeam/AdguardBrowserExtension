@@ -24,7 +24,7 @@ import { copyExternals } from './bundle/copy-external';
 import {
     Browser,
     BUILD_ENV,
-    Env,
+    BuildTargetEnv,
 } from './constants';
 import { getWebpackConfig } from './bundle/webpack-config';
 import { crx } from './bundle/crx';
@@ -108,15 +108,15 @@ const runBuild = async (tasks, options) => {
 
 const mainBuild = async (options) => {
     switch (BUILD_ENV) {
-        case Env.Dev: {
+        case BuildTargetEnv.Dev: {
             await runBuild(devPlan, options);
             break;
         }
-        case Env.Beta: {
+        case BuildTargetEnv.Beta: {
             await runBuild(betaPlan, options);
             break;
         }
-        case Env.Release: {
+        case BuildTargetEnv.Release: {
             await runBuild(releasePlan, options);
             break;
         }

@@ -30,7 +30,7 @@ import {
     Browser,
     BrowserConfig,
     BUILD_ENV,
-    Env,
+    BuildTargetEnv,
 } from '../../constants';
 import {
     BACKGROUND_OUTPUT,
@@ -49,8 +49,8 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
     }
 
     let zipFilename = `${browserConfig.browser}.zip`;
-    if (BUILD_ENV === Env.Beta
-        || BUILD_ENV === Env.Release) {
+    if (BUILD_ENV === BuildTargetEnv.Beta
+        || BUILD_ENV === BuildTargetEnv.Release) {
         zipFilename = 'firefox.zip';
     }
 

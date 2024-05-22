@@ -88,6 +88,12 @@ module.exports = {
                         'group': 'external',
                         'position': 'after',
                     },
+                    // Place engine alias after internal
+                    {
+                        'pattern': 'engine',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Separate group for all .pcss styles
                     {
                         'pattern': '*.pcss',

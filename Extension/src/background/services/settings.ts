@@ -211,11 +211,7 @@ export class SettingsService {
      */
     static async onDisableFilteringStateChange(isFilteringDisabled: boolean): Promise<void> {
         try {
-            if (isFilteringDisabled) {
-                await engine.stop();
-            } else {
-                await engine.start();
-            }
+            await engine.setFilteringState(!isFilteringDisabled);
 
             if (isFilteringDisabled) {
                 await SafebrowsingApi.clearCache();
