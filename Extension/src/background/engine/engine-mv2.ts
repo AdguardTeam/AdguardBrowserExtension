@@ -18,59 +18,43 @@
 import { debounce } from 'lodash-es';
 
 import {
-    type CommonMessageType,
-    Configuration,
-    TsWebExtension,
-    type MessagesHandlerMV3,
-} from '@adguard/tswebextension/mv3';
+    ConfigurationMV2,
+    MESSAGE_HANDLER_NAME,
+    createTsWebExtension,
+} from '@adguard/tswebextension';
 
-import { logger, LogLevel } from '../common/logger';
-import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../constants';
-
-import { listeners } from './notifier';
+import { logger, LogLevel } from '../../common/logger';
+import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
+import { listeners } from '../notifier';
+import { FiltersStorage } from '../storages';
 import {
     FiltersApi,
     AllowlistApi,
     UserRulesApi,
     SettingsApi,
     DocumentBlockApi,
-    CustomFilterApi,
-} from './api';
+    network,
+} from '../api';
 
-// FIXME: Move this to tswebextension/mv3 package.
-export type EngineMessage = {
-    handlerName: 'tsWebExtension', // FIXME: Use MESSAGE_HANDLER_NAME
-    type: CommonMessageType,
-    data: unknown,
-};
+import { TsWebExtensionEngine } from './interface';
+
+export type { Message as EngineMessage } from '@adguard/tswebextension';
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
  * interface with some internal business logic: updates rules counters,
  * checks for some specific browsers actions.
  */
-export class Engine {
-    readonly api: TsWebExtension;
-
-    readonly handleMessage: MessagesHandlerMV3;
+export class Engine implements TsWebExtensionEngine {
+    readonly api = createTsWebExtension(WEB_ACCESSIBLE_RESOURCES_OUTPUT);
 
     private static readonly UPDATE_TIMEOUT_MS = 1000;
 
-    // FIXME: use MESSAGE_HANDLER_NAME
-    static readonly messageHandlerName = 'tsWebExtension';
+    static readonly messageHandlerName = MESSAGE_HANDLER_NAME;
 
-    /**
-     * Creates new Engine.
-     */
-    constructor() {
-        this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT}`);
+    debounceUpdate = debounce(this.update.bind(this), Engine.UPDATE_TIMEOUT_MS);
 
-        this.handleMessage = this.api.getMessageHandler();
-    }
-
-    debounceUpdate = debounce(() => {
-        this.update();
-    }, Engine.UPDATE_TIMEOUT_MS);
+    handleMessage = this.api.getMessageHandler();
 
     /**
      * Starts the tswebextension and updates the counter of active rules.
@@ -86,12 +70,11 @@ export class Engine {
          * 3. We also allow "User rules" to work since those rules are added manually by the user.
          *  This way filters maintainers can test new rules before including them in the filters.
          */
-        // if (IS_FIREFOX_AMO) {
-        //     const localScriptRules = await network.getLocalScriptRules();
+        if (IS_FIREFOX_AMO) {
+            const localScriptRules = await network.getLocalScriptRules();
 
-        // FIXME: Add this method
-        //     this.api.setLocalScriptRules(localScriptRules);
-        // }
+            this.api.setLocalScriptRules(localScriptRules);
+        }
 
         const configuration = await Engine.getConfiguration();
 
@@ -100,19 +83,6 @@ export class Engine {
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
-        // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
-    }
-
-    /**
-     * Stops the tswebextension and updates the counter of active rules.
-     */
-    async stop(): Promise<void> {
-        logger.info('Stop tswebextension...');
-        await this.api.stop();
-
-        const rulesCount = this.api.getRulesCount();
-        logger.info(`tswebextension is stopped. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
@@ -136,10 +106,26 @@ export class Engine {
     /**
      * Creates tswebextension configuration based on current app state.
      */
-    private static async getConfiguration(): Promise<Configuration> {
-        const staticFiltersIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId))
-            .concat([]);
+    private static async getConfiguration(): Promise<ConfigurationMV2> {
+        const enabledFilters = FiltersApi.getEnabledFilters();
+
+        const filters: ConfigurationMV2['filters'] = [];
+
+        const tasks = enabledFilters.map(async (filterId) => {
+            const rules = await FiltersStorage.get(filterId);
+
+            const trusted = FiltersApi.isFilterTrusted(filterId);
+
+            const rulesTexts = rules.join('\n');
+
+            filters.push({
+                filterId,
+                content: rulesTexts,
+                trusted,
+            });
+        });
+
+        await Promise.all(tasks);
 
         const settings = SettingsApi.getTsWebExtConfiguration();
 
@@ -171,20 +157,22 @@ export class Engine {
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
         return {
-            filteringLogEnabled: false,
-            customFilters: [],
             verbose: false,
             logLevel: LogLevel.Info,
-            staticFiltersIds,
+            filters,
             userrules,
-            allowlist, // FIXME: Not used in MV3, should be fixed.
+            allowlist,
             settings,
-            // eslint-disable-next-line max-len
-            trustedDomains, // FIXME: Not used in MV3, should be fixed. We can add DNR rule and delete it after expiration.
-            filtersPath: 'filters/',
-            ruleSetsPath: 'filters/declarative',
+            trustedDomains,
         };
     }
-}
 
-export const engine = new Engine();
+    /**
+     * Sets the filtering state.
+     *
+     * @param isFilteringEnabled - The filtering state.
+     */
+    public async setFilteringState(isFilteringEnabled: boolean): Promise<void> {
+        await this.api.setFilteringEnabled(isFilteringEnabled);
+    }
+}

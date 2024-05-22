@@ -17,6 +17,8 @@
  */
 import { Runtime } from 'webextension-polyfill';
 
+import { Engine, type EngineMessage } from 'engine';
+
 import {
     Message,
     APP_MESSAGE_HANDLER_NAME,
@@ -24,11 +26,7 @@ import {
     MessageListener,
 } from '../common/messages';
 
-import {
-    engine,
-    Engine,
-    EngineMessage,
-} from './engine';
+import { engine } from './engine';
 
 /**
  * Common message handler {@link MessageHandler} specified for background
@@ -51,7 +49,7 @@ export class BackgroundMessageHandler extends MessageHandler {
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
         if (message.handlerName === Engine.messageHandlerName) {
-            return engine.handleMessage(message, sender as chrome.runtime.MessageSender);
+            return engine.handleMessage(message, sender);
         }
 
         if (message.handlerName === APP_MESSAGE_HANDLER_NAME) {

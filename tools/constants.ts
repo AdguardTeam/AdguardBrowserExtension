@@ -22,19 +22,29 @@ import path from 'path';
 import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../constants';
 
 /**
- * Environment types
+ * Environment types for build target.
  */
-export enum Env {
+export enum BuildTargetEnv {
     Dev = 'dev',
     Beta = 'beta',
     Release = 'release',
 }
 
-const isValidBuildEnv = (buildEnv: any): buildEnv is Env => {
-    return Object.values(Env).includes(buildEnv as Env);
+/**
+ * Environment types for manifest version.
+ */
+export enum ManifestVersionEnv {
+    Second = '2',
+    Third = '3',
+}
+
+const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
+    return Object.values(BuildTargetEnv).includes(buildEnv as BuildTargetEnv);
 };
 
-export const BUILD_ENV = process.env.BUILD_ENV as Env || Env.Dev;
+export const BUILD_ENV = process.env.BUILD_ENV as BuildTargetEnv || BuildTargetEnv.Dev;
+
+export const MANIFEST_ENV = process.env.MANIFEST_ENV as ManifestVersionEnv || ManifestVersionEnv.Second;
 
 if (!isValidBuildEnv(BUILD_ENV)) {
     throw new Error(`Invalid BUILD_ENV: ${BUILD_ENV}`);
@@ -45,16 +55,16 @@ export type EnvConfig = {
     mode: 'development' | 'production';
 };
 
-export const ENV_CONF: Record<Env, EnvConfig> = {
-    [Env.Dev]: {
+export const ENV_CONF: Record<BuildTargetEnv, EnvConfig> = {
+    [BuildTargetEnv.Dev]: {
         outputPath: 'dev',
         mode: 'development',
     },
-    [Env.Beta]: {
+    [BuildTargetEnv.Beta]: {
         outputPath: 'beta',
         mode: 'production',
     },
-    [Env.Release]: {
+    [BuildTargetEnv.Release]: {
         outputPath: 'release',
         mode: 'production',
     },
@@ -108,10 +118,10 @@ export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
     },
 };
 
-export const FIREFOX_APP_IDS_MAP: Record<Env, string> = {
-    [Env.Dev]: 'adguardadblockerdev@adguard.com',
-    [Env.Beta]: 'adguardadblockerbeta@adguard.com',
-    [Env.Release]: 'adguardadblocker@adguard.com',
+export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
+    [BuildTargetEnv.Dev]: 'adguardadblockerdev@adguard.com',
+    [BuildTargetEnv.Beta]: 'adguardadblockerbeta@adguard.com',
+    [BuildTargetEnv.Release]: 'adguardadblocker@adguard.com',
 };
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');

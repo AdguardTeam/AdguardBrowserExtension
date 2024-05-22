@@ -27,7 +27,7 @@ import { redirects } from '@adguard/scriptlets';
 import packageJson from '../package.json';
 
 import {
-    Env,
+    BuildTargetEnv,
     ENV_CONF,
     Browser,
     BROWSERS_CONF,
@@ -41,7 +41,7 @@ import WebExtensionManifest = Manifest.WebExtensionManifest;
 
 const { Redirects } = redirects;
 
-export const getEnvConf = (env: Env): EnvConfig => {
+export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
     const envConfig = ENV_CONF[env];
     if (!envConfig) {
         throw new Error(`No env config for: "${env}"`);
@@ -85,12 +85,12 @@ const getClickToLoadSha = () => {
  * @param env The build environment.
  * @param browser The target browser.
  */
-const getEnvPolicy = (env: Env, browser: Browser) => {
+const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
     switch (browser) {
         case Browser.ChromeMv3:
             return { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } };
         default:
-            return env === Env.Dev
+            return env === BuildTargetEnv.Dev
                 // eslint-disable-next-line max-len
                 ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
                 : { content_security_policy: `script-src 'self' '${getClickToLoadSha()}'; object-src 'self'` };
@@ -109,7 +109,7 @@ const getEnvPolicy = (env: Env, browser: Browser) => {
  * @throws Error when directory with declarative rulesets doesn't exist.
  */
 export const updateManifest = (
-    env: Env,
+    env: BuildTargetEnv,
     browser: Browser,
     targetPart: Partial<ManifestBase>,
     addedPart: Partial<ManifestBase>,
@@ -141,7 +141,7 @@ export const updateManifest = (
  * @returns A buffer containing the updated manifest.
  */
 export const updateManifestBuffer = (
-    env: Env,
+    env: BuildTargetEnv,
     browser: Browser,
     targetPart: Buffer,
     addedPart: Partial<WebExtensionManifest>,
@@ -158,37 +158,37 @@ const capitalize = (str: string) => {
         .toUpperCase() + str.slice(1);
 };
 
-const getNameSuffix = (buildEnv: Env, browser: Browser) => {
+const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
     switch (browser) {
         case Browser.FirefoxStandalone: {
-            if (buildEnv === Env.Beta) {
+            if (buildEnv === BuildTargetEnv.Beta) {
                 return ' (Standalone)';
             }
-            if (buildEnv === Env.Dev) {
+            if (buildEnv === BuildTargetEnv.Dev) {
                 return ' (Standalone Dev)';
             }
             break;
         }
         case Browser.FirefoxAmo: {
-            if (buildEnv === Env.Beta) {
+            if (buildEnv === BuildTargetEnv.Beta) {
                 return ' (Beta)';
             }
-            if (buildEnv === Env.Dev) {
+            if (buildEnv === BuildTargetEnv.Dev) {
                 return ' (AMO Dev)';
             }
             break;
         }
         case Browser.ChromeMv3: {
-            if (buildEnv === Env.Beta) {
+            if (buildEnv === BuildTargetEnv.Beta) {
                 return ' (MV3 Beta)';
             }
-            if (buildEnv === Env.Dev) {
+            if (buildEnv === BuildTargetEnv.Dev) {
                 return ' (MV3 Dev)';
             }
             break;
         }
         default:
-            if (buildEnv !== Env.Release) {
+            if (buildEnv !== BuildTargetEnv.Release) {
                 return ` (${capitalize(buildEnv)})`;
             }
             break;

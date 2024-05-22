@@ -15,13 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+// NOTE: Here important to use 'engine' without path, because it is an alias for
+// manifest-specific implementation of the engine. It will be replaced with mv2
+// or mv3 version during the build via webpack.
+import { Engine } from 'engine';
 
-// Variable passed from webpack that will be primitive at runtime.
-declare const IS_FIREFOX_AMO: boolean;
-
-// Variables passed from webpack that will be primitive at runtime.
-declare const IS_RELEASE: boolean;
-declare const IS_BETA: boolean;
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-declare const __IS_MV3__: boolean;
+/**
+ * Engine is a singleton instance of tswebextension wrapper which will be
+ * replaced with mv2 or mv3 implementation during the build via webpack.
+ *
+ * By default, mv2 will be used.
+ */
+export const engine = new Engine();

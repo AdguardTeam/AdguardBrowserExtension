@@ -16,6 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import type { Config } from 'jest';
+import { pathsToModuleNameMapper } from 'ts-jest';
+
+import { MANIFEST_ENV } from './tools/constants';
+
+// eslint-disable-next-line no-console
+console.log(`Run test with manifest version (MANIFEST_ENV) ${MANIFEST_ENV}.\n`);
+
+// eslint-disable-next-line import/no-dynamic-require
+const TsConfigWithManifestDependantTypes = require(`./tsconfig.with_types_mv${MANIFEST_ENV}.json`);
 
 const transformedModules = [
     '@adguard/tsurlfilter',
@@ -39,6 +48,11 @@ const config: Config = {
         `<rootDir>/node_modules/(?!(${transformedModules.join('|')}))`,
         '.*\\.json',
     ],
+    // Use same aliases as in tsconfig.
+    moduleNameMapper: pathsToModuleNameMapper(
+        TsConfigWithManifestDependantTypes.compilerOptions.paths,
+        { prefix: '<rootDir>/' },
+    ),
     transform: {
         '.+\\.(js|ts|jsx|tsx)': '@swc/jest',
     },
