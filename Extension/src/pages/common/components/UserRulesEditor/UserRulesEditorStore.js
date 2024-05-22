@@ -29,8 +29,8 @@ import {
 import { messenger } from '../../../services/messenger';
 import {
     createSavingService,
-    EVENTS as SAVING_FSM_EVENTS,
-    STATES,
+    SavingFSMEvent,
+    SavingFSMState,
 } from '../Editor/savingFSM';
 
 const savingService = createSavingService({
@@ -59,7 +59,7 @@ class UserRulesEditorStore {
         savingService.onTransition((state) => {
             runInAction(() => {
                 this.savingUserRulesState = state.value;
-                if (state.value === STATES.SAVING) {
+                if (state.value === SavingFSMState.Saving) {
                     this.userRulesEditorContentChanged = false;
                 }
             });
@@ -140,7 +140,7 @@ class UserRulesEditorStore {
 
     // eslint-disable-next-line class-methods-use-this
     async saveUserRules(value) {
-        savingService.send(SAVING_FSM_EVENTS.SAVE, { value });
+        savingService.send(SavingFSMEvent.Save, { value });
     }
 }
 

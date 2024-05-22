@@ -18,22 +18,26 @@
 
 import React from 'react';
 
-import { Popover } from '../../../../common/components/ui/Popover';
+import cn from 'classnames';
 
-import { FilterTag } from './FilterTag';
+import './tooltip.pcss';
 
-export const FilterTags = ({ tags }) => {
-    if (tags.length === 0) {
-        return null;
-    }
+type TooltipParams = {
+    /**
+     * Tooltip text.
+     */
+    text?: string,
 
+    /**
+     * Tooltip visibility flag.
+     */
+    visible?: boolean,
+};
+
+export const Tooltip = ({ text, visible }: TooltipParams) => {
     return (
-        <div className="filter__tags">
-            {tags.map((tag) => (
-                <Popover text={tag.description} key={tag.tagId}>
-                    <FilterTag tag={tag} />
-                </Popover>
-            ))}
+        <div className={cn('tooltip', visible ? 'tooltip--on' : 'tooltip--off')}>
+            {text}
         </div>
     );
 };

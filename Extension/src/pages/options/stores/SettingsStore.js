@@ -27,8 +27,8 @@ import {
 import { logger } from '../../../common/logger';
 import {
     createSavingService,
-    EVENTS as SAVING_FSM_EVENTS,
-    STATES,
+    SavingFSMEvent,
+    SavingFSMState,
 } from '../../common/components/Editor/savingFSM';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../common/constants';
 import { sleep } from '../../helpers';
@@ -45,7 +45,7 @@ import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
     RECOMMENDED_TAG_ID,
-    TRUSTED_TAG,
+    TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
 } from '../../../common/constants';
 
@@ -178,7 +178,7 @@ class SettingsStore {
         savingAllowlistService.onTransition((state) => {
             runInAction(() => {
                 this.savingAllowlistState = state.value;
-                if (state.value === STATES.SAVING) {
+                if (state.value === SavingFSMState.Saving) {
                     this.allowlistEditorContentChanged = false;
                 }
             });
@@ -638,7 +638,7 @@ class SettingsStore {
 
     @action
     saveAllowlist = async (allowlist) => {
-        await savingAllowlistService.send(SAVING_FSM_EVENTS.SAVE, { value: allowlist });
+        await savingAllowlistService.send(SavingFSMEvent.Save, { value: allowlist });
     };
 
     @action
@@ -759,7 +759,7 @@ class SettingsStore {
 
                 // AG-10491
                 if (filter.trusted && filter.trusted === true) {
-                    const trustedTagMatching = `#${TRUSTED_TAG}`.match(searchQuery);
+                    const trustedTagMatching = `#${TRUSTED_TAG_KEYWORD}`.match(searchQuery);
                     if (trustedTagMatching) {
                         return true;
                     }

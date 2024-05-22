@@ -27,23 +27,30 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
+import {
+    CustomFilterMetadata,
+    FilterVersionData,
+    RegularFilterMetadata,
+    TagMetadata,
+} from '../../../../background/schema';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { translator } from '../../../../common/translators/translator';
 import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
-import { TRUSTED_TAG } from '../../../../common/constants';
+import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constants';
 import { Popover } from '../../../common/components/ui/Popover';
+import { Loader } from '../../../common/components/Loader';
 
 import { HighlightSearch } from './Search/HighlightSearch';
 import { FilterTags } from './FilterTags';
 
 import './filter.pcss';
 
-const formatDate = (date) => {
+const formatDate = (date: number) => {
     const dateObj = new Date(date);
-    const formatOptions = {
+    const formatOptions: Intl.DateTimeFormatOptions = {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -54,30 +61,44 @@ const formatDate = (date) => {
 };
 
 const FILTER_PREFIX = 'filter-';
+
 /**
  * Appends prefix to filter id
  *
- * @param filterId
- * @returns {string}
+ * @param filterId Filter id.
+ *
+ * @returns Filter if with prefix.
  */
-const addPrefix = (filterId) => {
+const addPrefix = (filterId: number): string => {
     return `${FILTER_PREFIX}${filterId}`;
 };
 
 /**
- * Removes prefix from filter id
+ * Removes prefix from filter id.
  *
- * @param {string} extendedFilterId
- * @returns {string}
+ * @param extendedFilterId Filter id with prefix.
+ * @returns Filter id without prefix.
  */
-const removePrefix = (extendedFilterId) => {
+const removePrefix = (extendedFilterId: string): string => {
     return extendedFilterId.replace(FILTER_PREFIX, '');
 };
 
-const Filter = observer(({ filter }) => {
+type FilterParams = {
+    filter: RegularFilterMetadata
+        & FilterVersionData
+        & CustomFilterMetadata
+        & {
+            enabled: boolean,
+            tagsDetails: TagMetadata[],
+        }
+};
+
+const Filter = observer(({ filter }: FilterParams) => {
     const { settingsStore } = useContext(rootStore);
 
     const [isOpenRemoveFilterModal, setIsOpenRemoveFilterModal] = useState(false);
+
+    const [showLoader, setShowLoader] = useState(false);
 
     const {
         name,
@@ -96,16 +117,17 @@ const Filter = observer(({ filter }) => {
     // Trusted tag can be only on custom filters,
     const tags = trusted
         ? [...tagsDetails, {
-            tagId: TRUSTED_TAG,
-            keyword: TRUSTED_TAG,
+            tagId: TRUSTED_TAG_ID,
+            keyword: TRUSTED_TAG_KEYWORD,
             description: translator.getMessage('options_filters_filter_trusted_tag_desc'),
         }]
         : [...tagsDetails];
 
-    const handleFilterSwitch = async ({ id, data }) => {
+    const handleFilterSwitch = async ({ id, data }: { id: string, data: boolean }) => {
         // remove prefix from filter id and parse it to number
         const filterId = Number.parseInt(removePrefix(id), 10);
-        const annoyancesFilter = settingsStore.annoyancesFilters.find((f) => f.filterId === filterId);
+        const annoyancesFilter = settingsStore.annoyancesFilters
+            .find((f: RegularFilterMetadata) => f.filterId === filterId);
 
         if (annoyancesFilter && data) {
             const isConsentedFilter = await messenger.getIsConsentedFilter(filterId);
@@ -115,6 +137,11 @@ const Filter = observer(({ filter }) => {
                 settingsStore.setFiltersToGetConsentFor([annoyancesFilter]);
                 settingsStore.setFilterIdSelectedForConsent(filterId);
                 settingsStore.setIsAnnoyancesConsentModalOpen(true);
+            } else if (__IS_MV3__) {
+                // show loader for mv3
+                setShowLoader(true);
+                await settingsStore.updateFilterSetting(filterId, data);
+                setShowLoader(false);
             } else {
                 // just update filter setting
                 await settingsStore.updateFilterSetting(filterId, data);
@@ -122,10 +149,16 @@ const Filter = observer(({ filter }) => {
             return;
         }
 
-        await settingsStore.updateFilterSetting(filterId, data);
+        if (__IS_MV3__) {
+            setShowLoader(true);
+            await settingsStore.updateFilterSetting(filterId, data);
+            setShowLoader(false);
+        } else {
+            await settingsStore.updateFilterSetting(filterId, data);
+        }
     };
 
-    const handleRemoveFilterClick = async (e) => {
+    const handleRemoveFilterClick = async (e: React.MouseEvent) => {
         e.preventDefault();
         setIsOpenRemoveFilterModal(true);
     };
@@ -168,66 +201,69 @@ const Filter = observer(({ filter }) => {
     const prefixedFilterId = addPrefix(filterId);
 
     return (
-        <label htmlFor={prefixedFilterId} className="setting-checkbox">
-            <div className={filterClassName} role="presentation">
-                <div className="filter__info">
-                    <div className="setting__container setting__container--horizontal">
-                        <div className="setting__inner">
-                            <div className="filter__title">
-                                <Popover text={name}>
-                                    <div className="filter__title-constraint">
-                                        <span className="filter__title-in">
-                                            <HighlightSearch string={name} />
-                                        </span>
-                                    </div>
-                                </Popover>
-                                <span className="filter__controls">
-                                    {renderRemoveButton()}
-                                </span>
-                            </div>
+        <>
+            <Loader condition={showLoader} />
+            <label htmlFor={prefixedFilterId} className="setting-checkbox">
+                <div className={filterClassName} role="presentation">
+                    <div className="filter__info">
+                        <div className="setting__container setting__container--horizontal">
+                            <div className="setting__inner">
+                                <div className="filter__title">
+                                    <Popover text={name}>
+                                        <div className="filter__title-constraint">
+                                            <span className="filter__title-in">
+                                                <HighlightSearch string={name} />
+                                            </span>
+                                        </div>
+                                    </Popover>
+                                    <span className="filter__controls">
+                                        {renderRemoveButton()}
+                                    </span>
+                                </div>
 
-                            <div className="filter__desc">
-                                <div className="filter__desc-item">
-                                    {description}
+                                <div className="filter__desc">
+                                    <div className="filter__desc-item">
+                                        {description}
+                                    </div>
+                                    <div className="filter__desc-item">
+                                        {
+                                            version
+                                                ? `${translator.getMessage('options_filters_filter_version')} ${version} `
+                                                : ''
+                                        }
+                                        {translator.getMessage('options_filters_filter_updated')}
+                                        {' '}
+                                        {lastUpdateTime
+                                            ? formatDate(lastUpdateTime)
+                                            : formatDate(lastCheckTime)}
+                                    </div>
                                 </div>
-                                <div className="filter__desc-item">
-                                    {
-                                        version
-                                            ? `${translator.getMessage('options_filters_filter_version')} ${version} `
-                                            : ''
-                                    }
-                                    {translator.getMessage('options_filters_filter_updated')}
-                                    {' '}
-                                    {lastUpdateTime
-                                        ? formatDate(lastUpdateTime)
-                                        : formatDate(lastCheckTime)}
+                                <div>
+                                    <a
+                                        className="filter__link"
+                                        href={homepage || customUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {translator.getMessage('options_filters_filter_link')}
+                                    </a>
                                 </div>
+                                <FilterTags tags={tags} />
                             </div>
-                            <div>
-                                <a
-                                    className="filter__link"
-                                    href={homepage || customUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {translator.getMessage('options_filters_filter_link')}
-                                </a>
+                            <div className="setting__inline-control">
+                                <Setting
+                                    id={prefixedFilterId}
+                                    type={SETTINGS_TYPES.CHECKBOX}
+                                    label={name}
+                                    value={!!enabled}
+                                    handler={handleFilterSwitch}
+                                />
                             </div>
-                            <FilterTags tags={tags} />
-                        </div>
-                        <div className="setting__inline-control">
-                            <Setting
-                                id={prefixedFilterId}
-                                type={SETTINGS_TYPES.CHECKBOX}
-                                label={name}
-                                value={!!enabled}
-                                handler={handleFilterSwitch}
-                            />
                         </div>
                     </div>
                 </div>
-            </div>
-        </label>
+            </label>
+        </>
     );
 });
 

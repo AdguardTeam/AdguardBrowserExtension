@@ -29,10 +29,11 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import { sortBy } from 'lodash-es';
 
+import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { Icon } from '../../../common/components/ui/Icon';
+import { Loader } from '../../../common/components/Loader';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { AntibannerGroupsId } from '../../../../common/constants';
 
@@ -67,15 +68,17 @@ const Filters = observer(() => {
     // This state used to remove blinking while filters to render were not selected
     const [groupDetermined, setGroupDetermined] = useState(false);
 
+    const [showLoader, setShowLoader] = useState(false);
+
     const GROUP_DESCRIPTION = {
-        [AntibannerGroupsId.CustomFiltersGroupId]: reactTranslator.getMessage('group_description_custom'),
-        [AntibannerGroupsId.AdBlockingFiltersGroupId]: reactTranslator.getMessage('group_description_adblocking'),
-        [AntibannerGroupsId.PrivacyFiltersGroupId]: reactTranslator.getMessage('group_description_stealth'),
-        [AntibannerGroupsId.SocialFiltersGroupId]: reactTranslator.getMessage('group_description_social'),
-        [AntibannerGroupsId.AnnoyancesFiltersGroupId]: reactTranslator.getMessage('group_description_annoyances'),
-        [AntibannerGroupsId.SecurityFiltersGroupId]: reactTranslator.getMessage('group_description_security'),
-        [AntibannerGroupsId.OtherFiltersGroupId]: reactTranslator.getMessage('group_description_miscellaneous'),
-        [AntibannerGroupsId.LanguageFiltersGroupId]: reactTranslator.getMessage('group_description_lang'),
+        [AntibannerGroupsId.CustomFiltersGroupId]: translator.getMessage('group_description_custom'),
+        [AntibannerGroupsId.AdBlockingFiltersGroupId]: translator.getMessage('group_description_adblocking'),
+        [AntibannerGroupsId.PrivacyFiltersGroupId]: translator.getMessage('group_description_stealth'),
+        [AntibannerGroupsId.SocialFiltersGroupId]: translator.getMessage('group_description_social'),
+        [AntibannerGroupsId.AnnoyancesFiltersGroupId]: translator.getMessage('group_description_annoyances'),
+        [AntibannerGroupsId.SecurityFiltersGroupId]: translator.getMessage('group_description_security'),
+        [AntibannerGroupsId.OtherFiltersGroupId]: translator.getMessage('group_description_miscellaneous'),
+        [AntibannerGroupsId.LanguageFiltersGroupId]: translator.getMessage('group_description_lang'),
     };
 
     const {
@@ -107,7 +110,13 @@ const Filters = observer(() => {
             return;
         }
 
-        await settingsStore.updateGroupSetting(groupId, data);
+        if (__IS_MV3__) {
+            setShowLoader(true);
+            await settingsStore.updateGroupSetting(groupId, data);
+            setShowLoader(false);
+        } else {
+            await settingsStore.updateGroupSetting(groupId, data);
+        }
     };
 
     const groupClickHandler = (groupId) => () => {
@@ -186,7 +195,7 @@ const Filters = observer(() => {
         }
         return (
             <div className="filter__empty">
-                {reactTranslator.getMessage('options_filters_empty_title')}
+                {translator.getMessage('options_filters_empty_title')}
             </div>
         );
     };
@@ -226,7 +235,7 @@ const Filters = observer(() => {
                 onClick={openModalHandler}
                 className={buttonClass}
             >
-                {reactTranslator.getMessage('options_add_custom_filter')}
+                {translator.getMessage('options_add_custom_filter')}
             </button>
         );
     };
@@ -274,13 +283,14 @@ const Filters = observer(() => {
                     <Setting
                         id={selectedGroup.groupId}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_privacy_title')}
+                        label={translator.getMessage('options_privacy_title')}
                         value={selectedGroup.enabled}
                         handler={handleGroupSwitch}
                     />
                 )}
                 renderBackButton={renderBackButton}
             >
+                <Loader condition={showLoader} />
                 {isEmpty && isCustom && !settingsStore.isSearching
                     ? <EmptyCustom />
                     : (
@@ -315,9 +325,10 @@ const Filters = observer(() => {
 
     return (
         <SettingsSection
-            title={reactTranslator.getMessage('options_filters')}
+            title={translator.getMessage('options_filters')}
         >
             {!__IS_MV3__ && <FiltersUpdate />}
+            <Loader condition={showLoader} />
             <Search />
             {settingsStore.isSearching
                 ? renderGroupsOnSearch(filtersToRender)

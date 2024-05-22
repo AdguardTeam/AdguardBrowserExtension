@@ -80,7 +80,7 @@ export const Actions = observer(() => {
 
     const actionChangingClassname = cn('action', { action_disabled: !store.applicationAvailable });
 
-    const removeUserRulesIconId = removingUserRules ? '#removing-user-rules' : '#small-cross';
+    const removeUserRulesIconId = removingUserRules ? '#loading' : '#small-cross';
 
     return (
         <div className="actions">
