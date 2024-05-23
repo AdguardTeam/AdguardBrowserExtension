@@ -24,7 +24,7 @@ import { merge } from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { WebpackPluginInstance } from 'webpack';
 
-import { genCommonConfig } from '../webpack.common';
+import { genCommonConfig, Mv2ReplacementPlugin } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import {
     Browser,
@@ -55,6 +55,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
     }
 
     const plugins: WebpackPluginInstance[] = [
+        Mv2ReplacementPlugin,
         new CopyWebpackPlugin({
             patterns: [
                 {

@@ -33,7 +33,7 @@ import { messenger } from '../../services/messenger';
 import {
     POPUP_STATES,
     TIME_RANGES,
-    VIEW_STATES,
+    ViewState,
 } from '../constants';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { MessageType } from '../../../common/messages';
@@ -61,7 +61,7 @@ class PopupStore {
     url = null;
 
     @observable
-    viewState = VIEW_STATES.ACTIONS;
+    viewState = ViewState.Actions;
 
     @observable
     totalBlocked = 0;

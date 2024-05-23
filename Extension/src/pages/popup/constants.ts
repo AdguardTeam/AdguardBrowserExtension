@@ -37,10 +37,10 @@ export const COMPARE_URL = Forward.get({
     from: ForwardFrom.Popup,
 });
 
-export const VIEW_STATES = {
-    ACTIONS: 'actions',
-    STATS: 'stats',
-};
+export const enum ViewState {
+    Actions = 'actions',
+    Stats = 'stats',
+}
 
 export const POPUP_STATES = {
     APPLICATION_ENABLED: 'application.enabled',

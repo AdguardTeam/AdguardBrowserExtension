@@ -24,7 +24,7 @@ import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { Configuration } from 'webpack';
 
-import { genCommonConfig } from '../webpack.common';
+import { genCommonConfig, Mv2ReplacementPlugin } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import {
     BACKGROUND_OUTPUT,
@@ -61,6 +61,7 @@ export const genEdgeConfig = (browserConfig: BrowserConfig) => {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
         plugins: [
+            Mv2ReplacementPlugin,
             new CopyWebpackPlugin({
                 patterns: [
                     {

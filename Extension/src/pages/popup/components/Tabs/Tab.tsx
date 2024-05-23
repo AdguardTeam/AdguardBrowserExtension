@@ -16,29 +16,37 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
+import React from 'react';
 
-import { Main } from '../Main';
-import { VIEW_STATES } from '../../constants';
-import { StatsChart } from '../Stats/StatsChart';
-import { popupStore } from '../../stores/PopupStore';
+import classnames from 'classnames';
 
-import './main-container.pcss';
+type TabParams = {
+    /**
+     * Tab title.
+     */
+    title: string,
 
-export const MainContainer = observer(() => {
-    const store = useContext(popupStore);
+    /**
+     * Whether the tab is active.
+     */
+    active: boolean,
 
-    const contentMap = {
-        [VIEW_STATES.ACTIONS]: Main,
-        [VIEW_STATES.STATS]: StatsChart,
-    };
+    /**
+     * Click handler.
+     */
+    onClick: () => void,
+};
 
-    const Content = contentMap[store.viewState];
+export const Tab = ({ title, active, onClick }: TabParams) => {
+    const tabClass = classnames('tabs__tab', { tabs__tab_active: active });
 
     return (
-        <div className="main-container">
-            <Content />
-        </div>
+        <button
+            type="button"
+            className={tabClass}
+            onClick={onClick}
+        >
+            {title}
+        </button>
     );
-});
+};

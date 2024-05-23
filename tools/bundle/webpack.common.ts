@@ -21,7 +21,11 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import { Configuration, DefinePlugin } from 'webpack';
+import {
+    Configuration,
+    DefinePlugin,
+    NormalModuleReplacementPlugin,
+} from 'webpack';
 
 import {
     BUILD_PATH,
@@ -367,3 +371,29 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
         ],
     };
 };
+
+/**
+ * Regexp to match the path to the abstract components that should be replaced for mv2 and mv3.
+ */
+const replacementMatchRegexp = new RegExp(
+    `\\.\\/Abstract(${
+        [
+            'Tabs',
+            'MainContainer',
+        ].join('|')
+    })`,
+);
+
+export const Mv2ReplacementPlugin = new NormalModuleReplacementPlugin(
+    replacementMatchRegexp,
+    ((resource: any) => {
+        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv2$1');
+    }),
+);
+
+export const Mv3ReplacementPlugin = new NormalModuleReplacementPlugin(
+    replacementMatchRegexp,
+    ((resource: any) => {
+        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv3$1');
+    }),
+);

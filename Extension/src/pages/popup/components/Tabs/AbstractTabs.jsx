@@ -16,4 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { Tabs } from './Tabs';
+/**
+ * This component is needed to be replaced during webpack compilation
+ * with NormalModuleReplacementPlugin to proper implementation
+ * from './Mv2Tabs' or './Mv3Tabs'.
+ *
+ * @throws An error if the component is not replaced.
+ */
+const AbstractTabs = () => {
+    throw new Error('Seems like webpack did not inject proper Tabs component');
+};
+
+export { AbstractTabs as Tabs };

@@ -16,20 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-
-import classnames from 'classnames';
-
-export const Tab = ({ title, active, onClick }) => {
-    const tabClass = classnames('tabs__tab', { tabs__tab_active: active });
-
-    return (
-        <button
-            type="button"
-            className={tabClass}
-            onClick={onClick}
-        >
-            {title}
-        </button>
-    );
+/**
+ * This component is needed to be replaced during webpack compilation
+ * with NormalModuleReplacementPlugin to proper implementation
+ * from './Mv2MainContainer' or './Mv3MainContainer'.
+ *
+ * @throws An error if the component is not replaced.
+ */
+const AbstractMainContainer = () => {
+    throw new Error('Seems like webpack did not inject proper MainContainer component');
 };
+
+export { AbstractMainContainer as MainContainer };

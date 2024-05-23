@@ -16,4 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { MainContainer } from './MainContainer';
+// !IMPORTANT!
+// export './MainContainer' will be replaced during webpack compilation
+// with NormalModuleReplacementPlugin to proper implementation
+// from './Mv2MainContainer' or './Mv3MainContainer'
+
+export { MainContainer } from './AbstractMainContainer';
