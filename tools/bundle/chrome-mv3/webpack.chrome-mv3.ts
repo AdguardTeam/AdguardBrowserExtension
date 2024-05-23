@@ -26,7 +26,7 @@ import { merge } from 'webpack-merge';
 import { Manifest } from 'webextension-polyfill';
 import { Configuration } from 'webpack';
 
-import { genCommonConfig } from '../webpack.common';
+import { genCommonConfig, Mv3ReplacementPlugin } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import {
     BrowserConfig,
@@ -131,6 +131,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
                 filename: 'pages/devtools-elements-sidebar.html',
                 chunks: ['pages/devtools-elements-sidebar'],
             }),
+            Mv3ReplacementPlugin,
         ],
     };
 

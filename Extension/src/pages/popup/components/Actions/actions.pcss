@@ -1,7 +1,7 @@
 .actions {
     background-color: transparent;
     border: 0;
-    height: 168px;
+    min-height: 120px;
     padding-top: 9px;
     padding-bottom: 9px;
     width: 100%;
@@ -18,10 +18,10 @@
         width: 100%;
         display: flex;
         align-items: center;
-        padding: 0 20px;
+        padding: 0 16px;
         cursor: pointer;
         transition: 0.3s ease background-color;
-        height: 35px;
+        height: 40px;
 
         &:hover {
             background-color: var(--gray100);
@@ -31,18 +31,20 @@
             }
         }
 
-        &_disabled {
-            cursor: initial;
+        &--disabled {
+            cursor: not-allowed;
             opacity: 0.5;
 
             &:hover {
                 background-color: inherit;
+                cursor: not-allowed;
             }
         }
 
-        .action-title {
-            padding-left: 15px;
-            font-size: 13px;
+        &__title {
+            padding-left: 12px;
+            font-size: 14px;
+            line-height: 18px;
             color: var(--gray900);
             white-space: nowrap;
             overflow: hidden;
@@ -65,7 +67,7 @@
                 background-color: var(--gray100);
             }
 
-            .action-title {
+            &__title {
                 color: var(--gray900);
             }
         }
@@ -81,7 +83,7 @@
                 background-color: var(--grayDark);
             }
 
-            .action-title {
+            &__title {
                 color: var(--gray300);
             }
         }

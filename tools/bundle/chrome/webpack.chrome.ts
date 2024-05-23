@@ -24,7 +24,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { Configuration } from 'webpack';
 
-import { genCommonConfig } from '../webpack.common';
+import { genCommonConfig, Mv2ReplacementPlugin } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { BrowserConfig, BUILD_ENV } from '../../constants';
 import {
@@ -61,6 +61,7 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
         plugins: [
+            Mv2ReplacementPlugin,
             new CopyWebpackPlugin({
                 patterns: [
                     {

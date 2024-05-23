@@ -19,27 +19,27 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { translator } from '../../../../common/translators/translator';
 import { Actions } from '../Actions';
 import { StatsTable } from '../Stats/StatsTable';
-import { VIEW_STATES } from '../../constants';
+import { ViewState } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 import { Tab } from './Tab';
 
 import './tabs.pcss';
 
-export const Tabs = observer(() => {
+const Mv2Tabs = observer(() => {
     const store = useContext(popupStore);
 
-    const contentMap = {
-        [VIEW_STATES.ACTIONS]: Actions,
-        [VIEW_STATES.STATS]: StatsTable,
+    const contentMapMv2 = {
+        [ViewState.Actions]: Actions,
+        [ViewState.Stats]: StatsTable,
     };
 
-    const TabContent = contentMap[store.viewState];
+    const TabContentMv2 = contentMapMv2[store.viewState];
 
-    const handleTabClick = (viewState) => () => {
+    const handleTabClick = (viewState: string) => () => {
         store.setViewState(viewState);
     };
 
@@ -47,22 +47,24 @@ export const Tabs = observer(() => {
         <div className="tabs">
             <div className="tabs__panel">
                 <Tab
-                    title={reactTranslator.getMessage('popup_tab_actions')}
-                    active={store.viewState === VIEW_STATES.ACTIONS}
-                    onClick={handleTabClick(VIEW_STATES.ACTIONS)}
+                    title={translator.getMessage('popup_tab_actions')}
+                    active={store.viewState === ViewState.Actions}
+                    onClick={handleTabClick(ViewState.Actions)}
                 />
                 <Tab
-                    title={reactTranslator.getMessage('popup_tab_statistics')}
-                    active={store.viewState === VIEW_STATES.STATS}
-                    onClick={handleTabClick(VIEW_STATES.STATS)}
+                    title={translator.getMessage('popup_tab_statistics')}
+                    active={store.viewState === ViewState.Stats}
+                    onClick={handleTabClick(ViewState.Stats)}
                 />
             </div>
             <div
                 className="tabs__content"
-                tabIndex={TabContent === contentMap[VIEW_STATES.STATS] ? 0 : -1}
+                tabIndex={TabContentMv2 === contentMapMv2[ViewState.Stats] ? 0 : -1}
             >
-                <TabContent />
+                <TabContentMv2 />
             </div>
         </div>
     );
 });
+
+export { Mv2Tabs as Tabs };

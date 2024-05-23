@@ -11,24 +11,62 @@
     }
 
     &__header {
-        min-height: 75px;
-    }
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 123px;
 
-    &__cta-link {
-        text-align: center;
-        font-size: 12px;
-        color: var(--gray700);
-        transition: var(--t3) color;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray400);
+        &--current-status {
+            font-size: 24px;
+            line-height: 29px;
+            font-weight: 700;
+            text-align: center;
+            max-width: 280px;
+            margin-top: 48px;
         }
 
-        &:hover {
-            color: var(--gray900);
+        &--current-site {
+            padding-top: 4px;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 400;
+            max-width: 260px;
+            text-align: center;
+            margin: 0 auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--gray7f);
 
             @media (prefers-color-scheme: dark) {
-                color: var(--gray100);
+                color: var(--grayc0);
+            }
+        }
+    }
+
+    &__cta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 88px;
+
+        &--link {
+            font-size: 14px;
+            line-height: 18px;
+            color: var(--gray7f);
+            transition: var(--t3) color;
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--grayc0);
+            }
+
+            &:hover {
+                color: var(--gray3d);
+
+                @media (prefers-color-scheme: dark) {
+                    color: var(--graye4);
+                }
             }
         }
     }
@@ -42,24 +80,6 @@
     &__total-blocked-all {
         text-align: center;
         font-size: 16px;
-    }
-
-    .current-site {
-        padding-bottom: 2px;
-        font-size: 16px;
-        max-width: 260px;
-        text-align: center;
-        margin: 0 auto;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-weight: bold;
-    }
-
-    .current-status {
-        font-size: 14px;
-        text-align: center;
-        max-width: 280px;
     }
 
     &--allowlisted {

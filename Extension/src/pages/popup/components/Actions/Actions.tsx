@@ -21,9 +21,9 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
+import { translator } from '../../../../common/translators/translator';
 import { messenger } from '../../../services/messenger';
 import { popupStore } from '../../stores/PopupStore';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { ForwardFrom } from '../../../../common/forward';
 import { addMinDurationTime } from '../../../../common/common-script';
@@ -78,7 +78,7 @@ export const Actions = observer(() => {
         window.close();
     };
 
-    const actionChangingClassname = cn('action', { action_disabled: !store.applicationAvailable });
+    const actionChangingClassname = cn('action', { 'action--disabled': !store.applicationAvailable });
 
     const removeUserRulesIconId = removingUserRules ? '#loading' : '#small-cross';
 
@@ -93,8 +93,8 @@ export const Actions = observer(() => {
                     id="#block-ad"
                     classname="icon--action"
                 />
-                <div className="action-title">
-                    {reactTranslator.getMessage('popup_block_site_ads_option')}
+                <div className="action__title">
+                    {translator.getMessage('popup_block_site_ads_option')}
                 </div>
             </button>
             <button
@@ -106,8 +106,8 @@ export const Actions = observer(() => {
                     id="#sandwich"
                     classname="icon--action"
                 />
-                <div className="action-title">
-                    {reactTranslator.getMessage('popup_open_filtering_log')}
+                <div className="action__title">
+                    {translator.getMessage('popup_open_filtering_log')}
                 </div>
             </button>
             <button
@@ -119,8 +119,8 @@ export const Actions = observer(() => {
                     id="#thumb-down"
                     classname="icon--action"
                 />
-                <div className="action-title">
-                    {reactTranslator.getMessage('popup_abuse_site')}
+                <div className="action__title">
+                    {translator.getMessage('popup_abuse_site')}
                 </div>
             </button>
             <button
@@ -129,11 +129,11 @@ export const Actions = observer(() => {
                 onClick={handleCheckSiteSecurity}
             >
                 <Icon
-                    id="#shield"
+                    id="#info"
                     classname="icon--action"
                 />
-                <div className="action-title">
-                    {reactTranslator.getMessage('popup_security_report')}
+                <div className="action__title">
+                    {translator.getMessage('popup_security_report')}
                 </div>
             </button>
             { store.hasCustomRulesToReset
@@ -151,10 +151,10 @@ export const Actions = observer(() => {
                         animationClassname="icon--loading"
                     />
                     <div
-                        className="action-title"
-                        title={reactTranslator.getMessage('popup_reset_custom_rules')}
+                        className="action__title"
+                        title={translator.getMessage('popup_reset_custom_rules')}
                     >
-                        {reactTranslator.getMessage('popup_reset_custom_rules')}
+                        {translator.getMessage('popup_reset_custom_rules')}
                     </div>
                 </button>
             )}
