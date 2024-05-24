@@ -27,6 +27,7 @@ import { rootStore } from '../../stores/RootStore';
 import { userRulesEditorStore } from '../../../common/components/UserRulesEditor/UserRulesEditorStore';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { COLLECT_HITS_LEARN_MORE_URL } from '../../constants';
 
@@ -207,13 +208,16 @@ export const Miscellaneous = observer(() => {
                                 />
                             )
                     }
-                    <button
-                        type="button"
-                        className="links-menu__item button--red"
-                        onClick={handleResetStatisticsClick}
-                    >
-                        {reactTranslator.getMessage('options_reset_stats')}
-                    </button>
+
+                    {!__IS_MV3__ && (
+                        <button
+                            type="button"
+                            className="links-menu__item button--red"
+                            onClick={handleResetStatisticsClick}
+                        >
+                            {translator.getMessage('options_reset_stats')}
+                        </button>
+                    )}
 
                     {
                         isOpenResetSettingsModal
