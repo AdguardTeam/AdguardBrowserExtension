@@ -27,7 +27,7 @@ import {
 } from '../common/forward';
 import { CLIENT_ID_KEY } from '../common/constants';
 
-// import { ContentScriptInjector } from './content-script-injector';
+import { ContentScriptInjector } from './content-script-injector';
 import { engine } from './engine';
 import { messageHandler } from './message-handler';
 import { ConnectionHandler } from './connection-handler';
@@ -136,9 +136,9 @@ export class App {
          * To avoid this bug, we don't inject content scripts into open tabs during initialization
          * when stats collection is enabled.
          */
-        if (SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+        if (!__IS_MV3__ && SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
             // inject content scripts into opened tabs
-            // await ContentScriptInjector.init();
+            await ContentScriptInjector.init();
         }
         /**
          * Initializes Filters data:

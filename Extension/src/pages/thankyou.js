@@ -143,14 +143,17 @@ const PageController = (response) => {
     };
 
     const render = () => {
-        const safebrowsingEnabled = !userSettings.values[userSettings.names.DisableSafebrowsing];
-        const collectHitsCount = !userSettings.values[userSettings.names.DisableCollectHits];
         const trackingFilterEnabled = AntiBannerFiltersId.TrackingFilterId in enabledFilters;
         const socialFilterEnabled = AntiBannerFiltersId.SocialFilterId in enabledFilters;
         // eslint-disable-next-line max-len
         const allowAcceptableAdsEnabled = AntiBannerFiltersId.SearchAndSelfPromoFilterId in enabledFilters;
 
-        renderSafebrowsingSection(safebrowsingEnabled, collectHitsCount);
+        if (!__IS_MV3__) {
+            const safebrowsingEnabled = !userSettings.values[userSettings.names.DisableSafebrowsing];
+            const collectHitsCount = !userSettings.values[userSettings.names.DisableCollectHits];
+            renderSafebrowsingSection(safebrowsingEnabled, collectHitsCount);
+        }
+
         updateCheckbox(trackingFilterEnabledCheckbox, trackingFilterEnabled);
         updateCheckbox(socialFilterEnabledCheckbox, socialFilterEnabled);
         updateCheckbox(allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);
