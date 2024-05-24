@@ -18,7 +18,7 @@
 import { getHostname } from 'tldts';
 import browser, { type Tabs } from 'webextension-polyfill';
 
-import { isHttpRequest } from '@adguard/tswebextension';
+import { isHttpRequest } from 'tswebextension';
 
 import { UserAgent } from '../common/user-agent';
 import { logger } from '../common/logger';

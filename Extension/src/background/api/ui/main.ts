@@ -17,8 +17,7 @@
  */
 import { debounce } from 'lodash-es';
 
-import type { TabContext } from '@adguard/tswebextension/mv3';
-
+import type { TabContext } from '../../tswebextension';
 import { MessageType, sendMessage } from '../../../common/messages';
 
 import { ContextMenuApi } from './context-menu';

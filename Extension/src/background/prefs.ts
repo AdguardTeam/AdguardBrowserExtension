@@ -17,6 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
+// FIXME: Fix before merge to master
 // import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
 // import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from '@adguard/tswebextension';
 // import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';

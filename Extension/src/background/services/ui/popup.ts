@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { tabsApi, isHttpOrWsRequest } from '@adguard/tswebextension/mv3';
-
+import { tabsApi as tsWebExtTabsApi, isHttpOrWsRequest } from '../../tswebextension';
 import {
     ChangeApplicationFilteringDisabledMessage,
     GetTabInfoForPopupMessage,
@@ -83,7 +82,7 @@ export class PopupService {
     ): Promise<GetTabInfoForPopupResponse | undefined> {
         const { tabId, tabUrl } = data;
 
-        let tabContext: PartialTabContext | undefined = tabsApi.getTabContext(tabId);
+        let tabContext: PartialTabContext | undefined = tsWebExtTabsApi.getTabContext(tabId);
 
         // FIXME: Tmp solution for internal tabs until AG-32609 is done.
         if (!isHttpOrWsRequest(tabUrl)) {

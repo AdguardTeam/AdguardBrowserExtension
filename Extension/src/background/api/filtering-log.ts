@@ -27,8 +27,7 @@ import {
     CosmeticRuleType,
     NetworkRuleOption,
     StealthActionEvent,
-} from '@adguard/tswebextension/mv3';
-
+} from '../tswebextension';
 import { AntiBannerFiltersId } from '../../common/constants';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';

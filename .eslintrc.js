@@ -94,6 +94,12 @@ module.exports = {
                         'group': 'internal',
                         'position': 'after',
                     },
+                    // Place tswebextension alias after internal
+                    {
+                        'pattern': 'tswebextension',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Separate group for all .pcss styles
                     {
                         'pattern': '*.pcss',

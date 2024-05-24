@@ -6,6 +6,7 @@ import {
 
 import { MockedEventCannel } from './event-channel';
 
+// FIXME: Add mock for mv3
 // TODO: restore inherit from TsWebExtension after lib module resolves update if needed.
 export class MockedTsWebExtension {
     public isStarted = false;
