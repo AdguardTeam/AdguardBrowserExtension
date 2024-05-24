@@ -29,7 +29,6 @@ import { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { handleFileUpload } from '../../../helpers';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AppearanceTheme } from '../../../../common/settings';
 import {
     ACCEPTABLE_ADS_LEARN_MORE_URL,
@@ -42,6 +41,7 @@ import { BROWSER_ADDON_STORE_LINKS } from '../../../constants';
 import { getErrorMessage } from '../../../../common/error';
 import { SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
+import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { Unknown } from '../../../../common/unknown';
 import { FiltersUpdateTime } from '../../../../common/constants';
@@ -49,46 +49,46 @@ import { FiltersUpdateTime } from '../../../../common/constants';
 const filtersUpdatePeriodOptions = [
     {
         value: FiltersUpdateTime.Default,
-        title: reactTranslator.getMessage('options_select_update_period_default'),
+        title: translator.getMessage('options_select_update_period_default'),
     },
     {
         value: FiltersUpdateTime.FortyEightHours,
-        title: reactTranslator.getMessage('options_select_update_period_48h'),
+        title: translator.getMessage('options_select_update_period_48h'),
     },
     {
         value: FiltersUpdateTime.TwentyFourHours,
-        title: reactTranslator.getMessage('options_select_update_period_24h'),
+        title: translator.getMessage('options_select_update_period_24h'),
     },
     {
         value: FiltersUpdateTime.TwelveHours,
-        title: reactTranslator.getMessage('options_select_update_period_12h'),
+        title: translator.getMessage('options_select_update_period_12h'),
     },
     {
         value: FiltersUpdateTime.SixHours,
-        title: reactTranslator.getMessage('options_select_update_period_6h'),
+        title: translator.getMessage('options_select_update_period_6h'),
     },
     {
         value: FiltersUpdateTime.OneHour,
-        title: reactTranslator.getMessage('options_select_update_period_1h'),
+        title: translator.getMessage('options_select_update_period_1h'),
     },
     {
         value: FiltersUpdateTime.Disabled,
-        title: reactTranslator.getMessage('options_select_update_period_disabled'),
+        title: translator.getMessage('options_select_update_period_disabled'),
     },
 ];
 
 const APPEARANCE_THEMES_OPTIONS = [
     {
         value: AppearanceTheme.System,
-        title: reactTranslator.getMessage('options_theme_selector_system'),
+        title: translator.getMessage('options_theme_selector_system'),
     },
     {
         value: AppearanceTheme.Light,
-        title: reactTranslator.getMessage('options_theme_selector_light'),
+        title: translator.getMessage('options_theme_selector_light'),
     },
     {
         value: AppearanceTheme.Dark,
-        title: reactTranslator.getMessage('options_theme_selector_dark'),
+        title: translator.getMessage('options_theme_selector_dark'),
     },
 ];
 
@@ -154,14 +154,14 @@ export const General = observer(() => {
 
             const result = await messenger.applySettingsJson(content);
             if (result) {
-                const successMessage = reactTranslator.getMessage('options_popup_import_success_title');
+                const successMessage = translator.getMessage('options_popup_import_success_title');
                 uiStore.addNotification({ description: successMessage });
             } else {
-                const errorMessage = reactTranslator.getMessage('options_popup_import_error_file_description');
+                const errorMessage = translator.getMessage('options_popup_import_error_file_description');
                 uiStore.addNotification({ description: errorMessage });
             }
         } catch (e) {
-            const message = getErrorMessage(e) || reactTranslator.getMessage('options_popup_import_error_title');
+            const message = getErrorMessage(e) || translator.getMessage('options_popup_import_error_title');
             uiStore.addNotification({ description: message });
         }
 
@@ -186,11 +186,11 @@ export const General = observer(() => {
 
     return (
         <>
-            <SettingsSection title={reactTranslator.getMessage('options_general_settings')}>
+            <SettingsSection title={translator.getMessage('options_general_settings')}>
                 { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                 {/* @ts-ignore */}
                 <SettingSetSelect
-                    title={reactTranslator.getMessage('options_select_theme')}
+                    title={translator.getMessage('options_select_theme')}
                     id={AppearanceTheme}
                     options={APPEARANCE_THEMES_OPTIONS}
                     value={settings.values[AppearanceTheme]}
@@ -199,7 +199,7 @@ export const General = observer(() => {
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_block_acceptable_ads')}
+                    title={translator.getMessage('options_block_acceptable_ads')}
                     description={reactTranslator.getMessage('options_block_acceptable_ads_desc', {
                         // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                         // @ts-ignore
@@ -217,57 +217,59 @@ export const General = observer(() => {
                     id={AllowAcceptableAds}
                     type={SETTINGS_TYPES.CHECKBOX}
                     value={!allowAcceptableAds}
-                    label={reactTranslator.getMessage('options_block_acceptable_ads')}
+                    label={translator.getMessage('options_block_acceptable_ads')}
                     handler={allowAcceptableAdsChangeHandler}
                 />
-                <SettingsSetCheckbox
-                    className="disabled"
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
-                    title={reactTranslator.getMessage('options_safebrowsing_enabled')}
-                    description={reactTranslator.getMessage('options_safebrowsing_enabled_desc', {
+                {!__IS_MV3__ && (
+                    <SettingsSetCheckbox
                         // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                         // @ts-ignore
-                        a: (chunks) => (
-                            <a
-                                href={SAFEBROWSING_LEARN_MORE_URL}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {chunks}
-                            </a>
-                        ),
-                    })}
-                    disabled={settings.values[DisableSafebrowsing]}
-                    id={DisableSafebrowsing}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    inverted
-                    label={reactTranslator.getMessage('options_safebrowsing_enabled')}
-                    value={settings.values[DisableSafebrowsing]}
-                    handler={settingChangeHandler}
-                />
+                        title={translator.getMessage('options_safebrowsing_enabled')}
+                        description={reactTranslator.getMessage('options_safebrowsing_enabled_desc', {
+                            // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                            // @ts-ignore
+                            a: (chunks) => (
+                                <a
+                                    href={SAFEBROWSING_LEARN_MORE_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {chunks}
+                                </a>
+                            ),
+                        })}
+                        disabled={settings.values[DisableSafebrowsing]}
+                        id={DisableSafebrowsing}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        inverted
+                        label={translator.getMessage('options_safebrowsing_enabled')}
+                        value={settings.values[DisableSafebrowsing]}
+                        handler={settingChangeHandler}
+                    />
+                )}
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_enable_autodetect_filter')}
-                    description={reactTranslator.getMessage('options_enable_autodetect_filter_desc')}
+                    title={translator.getMessage('options_enable_autodetect_filter')}
+                    description={translator.getMessage('options_enable_autodetect_filter_desc')}
                     disabled={settings.values[DisableDetectFilters]}
                     id={DisableDetectFilters}
                     type={SETTINGS_TYPES.CHECKBOX}
                     inverted
-                    label={reactTranslator.getMessage('options_enable_autodetect_filter')}
+                    label={translator.getMessage('options_enable_autodetect_filter')}
                     handler={settingChangeHandler}
                     value={settings.values[DisableDetectFilters]}
                 />
-                <SettingSetSelect
-                    className="disabled"
-                    title={reactTranslator.getMessage('options_set_update_interval')}
-                    description={reactTranslator.getMessage('options_set_update_interval_desc')}
-                    id={FiltersUpdatePeriod}
-                    options={filtersUpdatePeriodOptions}
-                    value={settings.values[FiltersUpdatePeriod]}
-                    handler={settingChangeHandler}
-                />
+                {!__IS_MV3__ && (
+                    <SettingSetSelect
+                        title={translator.getMessage('options_set_update_interval')}
+                        description={translator.getMessage('options_set_update_interval_desc')}
+                        id={FiltersUpdatePeriod}
+                        options={filtersUpdatePeriodOptions}
+                        value={settings.values[FiltersUpdatePeriod]}
+                        handler={settingChangeHandler}
+                    />
+                )}
             </SettingsSection>
             <div className="links-menu links-menu--section">
                 <button
@@ -275,7 +277,7 @@ export const General = observer(() => {
                     className="links-menu__item"
                     onClick={handleExportSettings}
                 >
-                    {reactTranslator.getMessage('options_export_settings')}
+                    {translator.getMessage('options_export_settings')}
                 </button>
                 <input
                     id="inputEl"
@@ -286,7 +288,7 @@ export const General = observer(() => {
                 />
                 <label
                     htmlFor="inputEl"
-                    className="links-menu__item disabled"
+                    className="links-menu__item"
                 >
                     <input
                         type="file"
@@ -294,7 +296,7 @@ export const General = observer(() => {
                         onChange={inputChangeHandler}
                         className="actions__input-file"
                     />
-                    {reactTranslator.getMessage('options_import_settings')}
+                    {translator.getMessage('options_import_settings')}
                 </label>
                 <a
                     target="_blank"
@@ -302,7 +304,7 @@ export const General = observer(() => {
                     href={BUG_REPORT_URL}
                     className="links-menu__item"
                 >
-                    {reactTranslator.getMessage('options_report_bug')}
+                    {translator.getMessage('options_report_bug')}
                 </a>
                 <a
                     target="_blank"
@@ -310,7 +312,7 @@ export const General = observer(() => {
                     href={currentBrowserAddonStoreUrl}
                     className="links-menu__item"
                 >
-                    {reactTranslator.getMessage('options_leave_feedback')}
+                    {translator.getMessage('options_leave_feedback')}
                 </a>
             </div>
         </>

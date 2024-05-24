@@ -391,6 +391,10 @@ export class PagesApi {
      * @returns Browser security url params record.
      */
     private static getBrowserSecurityParams(): { [key: string]: string } {
+        if (__IS_MV3__) {
+            return {};
+        }
+
         const isEnabled = !settingsStorage.get(SettingOption.DisableSafebrowsing);
         return { 'browsing_security.enabled': String(isEnabled) };
     }

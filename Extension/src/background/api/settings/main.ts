@@ -270,8 +270,10 @@ export class SettingsApi {
 
         settingsStorage.set(SettingOption.DisableShowPageStats, !showBlockedAdsCount);
         settingsStorage.set(SettingOption.DisableDetectFilters, !autodetectFilters);
-        settingsStorage.set(SettingOption.DisableSafebrowsing, !safebrowsingEnabled);
-        settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
+        if (!__IS_MV3__) {
+            settingsStorage.set(SettingOption.DisableSafebrowsing, !safebrowsingEnabled);
+            settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
+        }
 
         if (appearanceTheme) {
             settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme);
