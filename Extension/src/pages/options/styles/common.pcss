@@ -154,20 +154,21 @@ label.checkbox-label {
         padding: 0;
     }
 
+    a {
+        text-decoration: none;
+    }
+
     &__item {
-        color: var(--gray4a);
-        margin-bottom: 15px;
+        color: var(--green400);
+        margin-bottom: 32px;
         font-size: 16px;
-        text-decoration: underline;
+        line-height: 21px;
+        font-weight: 600;
         cursor: pointer;
 
         &.disabled {
             opacity: .5;
             pointer-events: none;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
         }
     }
 }
@@ -304,12 +305,12 @@ label.checkbox-label {
     }
 
     &--link {
-        color: var(--green74);
+        color: var(--green400);
     }
 }
 
 .settings__group {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 
     &--disabled {
         opacity: 0.5;
@@ -486,12 +487,6 @@ select:focus {
     .actions__btn--active {
         background-color: var(--gray100);
     }
-
-    .links-menu {
-        &__item {
-            color: var(--gray4a);
-        }
-    }
 }
 
 .dark-mode {
@@ -547,11 +542,5 @@ select:focus {
 
     .actions__btn--active {
         background-color: var(--gray900);
-    }
-
-    .links-menu {
-        &__item {
-            color:  var(--gray300);
-        }
     }
 }

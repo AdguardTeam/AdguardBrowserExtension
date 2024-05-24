@@ -213,7 +213,7 @@ export class SettingsService {
         try {
             await engine.setFilteringState(!isFilteringDisabled);
 
-            if (isFilteringDisabled) {
+            if (isFilteringDisabled && !__IS_MV3__) {
                 await SafebrowsingApi.clearCache();
             }
 
