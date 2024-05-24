@@ -21,8 +21,7 @@ import {
     isHttpRequest,
     MAIN_FRAME_ID,
     type TabContext,
-} from '@adguard/tswebextension/mv3';
-
+} from '../../tswebextension';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';

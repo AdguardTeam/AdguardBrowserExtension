@@ -17,8 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import { tabsApi } from '@adguard/tswebextension/mv3';
-
+import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
 import { UserAgent } from '../../../common/user-agent';
 import {
     notificationStorage,
@@ -102,7 +101,7 @@ export class PromoNotificationApi {
                     return;
                 }
 
-                const tabContext = tabsApi.getTabContext(tab.id);
+                const tabContext = tsWebExtTabsApi.getTabContext(tab.id);
 
                 if (tabContext) {
                     await UiApi.update(tabContext);

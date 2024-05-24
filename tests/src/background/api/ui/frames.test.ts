@@ -1,5 +1,6 @@
 import { type Storage } from 'webextension-polyfill';
 
+// FIXME: Use alias for mv2/mv3 versions
 import {
     TabContext,
     NetworkRule,

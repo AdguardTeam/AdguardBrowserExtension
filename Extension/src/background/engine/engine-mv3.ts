@@ -17,6 +17,8 @@
  */
 import { debounce } from 'lodash-es';
 
+// Because this file is already MV3 replacement module, we can import directly
+// from mv3 tswebextension without using aliases.
 import {
     MESSAGE_HANDLER_NAME,
     Configuration,
@@ -38,6 +40,8 @@ import {
 
 import { TsWebExtensionEngine } from './interface';
 
+// Because this file is already MV3 replacement module, we can import directly
+// from mv3 tswebextension without using aliases.
 export type { Message as EngineMessage } from '@adguard/tswebextension/mv3';
 
 /**

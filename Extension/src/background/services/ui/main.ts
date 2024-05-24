@@ -18,20 +18,11 @@
 import browser from 'webextension-polyfill';
 
 import {
-    tabsApi,
+    tabsApi as tsWebExtTabsApi,
     defaultFilteringLog,
     FilteringEventType,
     ApplyBasicRuleEvent,
-} from '@adguard/tswebextension/mv3';
-
-// FIXME revert for mv2 and disable for mv3
-// import {
-//     ApplyBasicRuleEvent,
-//     defaultFilteringLog,
-//     FilteringEventType,
-//     tabsApi as tsWebExtTabApi,
-// } from '@adguard/tswebextension';
-
+} from '../../tswebextension';
 import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';
 import {
@@ -133,9 +124,9 @@ export class UiService {
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
         messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 
-        tabsApi.onCreate.subscribe(UiApi.update);
-        tabsApi.onUpdate.subscribe(UiApi.update);
-        tabsApi.onActivate.subscribe(UiApi.update);
+        tsWebExtTabsApi.onCreate.subscribe(UiApi.update);
+        tsWebExtTabsApi.onUpdate.subscribe(UiApi.update);
+        tsWebExtTabsApi.onActivate.subscribe(UiApi.update);
 
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
@@ -254,7 +245,7 @@ export class UiService {
         await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
         PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
 
-        const tabContext = tabsApi.getTabContext(tabId);
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         // If tab context is not found, do not update request blocking counter and icon badge for tab
         if (!tabContext) {

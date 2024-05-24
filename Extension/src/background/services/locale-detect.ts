@@ -18,8 +18,7 @@
 
 import browser, { Tabs } from 'webextension-polyfill';
 
-import { getDomain, isHttpRequest } from '@adguard/tswebextension/mv3';
-
+import { getDomain, isHttpRequest } from '../tswebextension';
 import { UserAgent } from '../../common/user-agent';
 import { RegularFilterMetadata, SettingOption } from '../schema';
 import {

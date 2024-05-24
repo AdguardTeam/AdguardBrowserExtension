@@ -87,6 +87,7 @@ jest.mock('nanoid', () => ({
 // Mock log to hide all logger message
 jest.mock('./Extension/src/common/logger.ts');
 
+// FIXME: Add mock for mv3 version
 jest.mock('@adguard/tswebextension', () => ({
     ...(jest.requireActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,

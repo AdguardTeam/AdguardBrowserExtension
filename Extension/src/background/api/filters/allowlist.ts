@@ -17,9 +17,7 @@
  */
 import zod from 'zod';
 
-import { tabsApi, getDomain } from '@adguard/tswebextension/mv3';
-// import { tabsApi as tsWebExtTabsApi, getDomain } from '@adguard/tswebextension';
-
+import { tabsApi as tsWebExtTabsApi, getDomain } from '../../tswebextension';
 import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { listeners } from '../../notifier';
@@ -158,7 +156,7 @@ export class AllowlistApi {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async enableTabFiltering(tabId: number, tabRefresh: boolean = false): Promise<void> {
-        const tabContext = tabsApi.getTabContext(tabId);
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         if (!tabContext) {
             return;
@@ -191,7 +189,7 @@ export class AllowlistApi {
      * @param tabId Tab id.
      */
     public static async disableTabFiltering(tabId: number): Promise<void> {
-        const tabContext = tabsApi.getTabContext(tabId);
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
         if (!tabContext) {
             return;
         }
