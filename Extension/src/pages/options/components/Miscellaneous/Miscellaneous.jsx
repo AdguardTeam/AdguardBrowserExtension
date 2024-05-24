@@ -63,7 +63,7 @@ export const Miscellaneous = observer(() => {
 
     const handleResetStatisticsConfirm = async () => {
         await messenger.resetStatistics();
-        uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_stats_done') });
+        uiStore.addNotification({ description: translator.getMessage('options_reset_stats_done') });
     };
 
     const handleResetSettingsClick = async () => {
@@ -78,9 +78,9 @@ export const Miscellaneous = observer(() => {
         if (result) {
             /* force all setting context data update with 'firstRender' option */
             settingsStore.requestOptionsData(true);
-            uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_settings_done') });
+            uiStore.addNotification({ description: translator.getMessage('options_reset_settings_done') });
         } else {
-            uiStore.addNotification({ description: reactTranslator.getMessage('options_reset_settings_error') });
+            uiStore.addNotification({ description: translator.getMessage('options_reset_settings_error') });
         }
     };
 
@@ -96,92 +96,94 @@ export const Miscellaneous = observer(() => {
 
     return (
         <>
-            <SettingsSection title={reactTranslator.getMessage('options_miscellaneous_settings')}>
+            <SettingsSection title={translator.getMessage('options_miscellaneous_settings')}>
                 <div className="settings__group">
                     {!__IS_MV3__ && (
                         <SettingsSetCheckbox
-                            title={reactTranslator.getMessage('options_use_optimized_filters')}
-                            description={reactTranslator.getMessage('options_use_optimized_filters_desc')}
+                            title={translator.getMessage('options_use_optimized_filters')}
+                            description={translator.getMessage('options_use_optimized_filters_desc')}
                             disabled={!settings.values[UseOptimizedFilters]}
                             id={UseOptimizedFilters}
-                            label={reactTranslator.getMessage('options_use_optimized_filters')}
+                            label={translator.getMessage('options_use_optimized_filters')}
                             type={SETTINGS_TYPES.CHECKBOX}
                             value={settings.values[UseOptimizedFilters]}
                             handler={settingChangeHandler}
                         />
                     )}
                     <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_allowlist_invert')}
-                        description={reactTranslator.getMessage('options_allowlist_invert_desc')}
+                        title={translator.getMessage('options_allowlist_invert')}
+                        description={translator.getMessage('options_allowlist_invert_desc')}
                         id={DefaultAllowlistMode}
-                        label={reactTranslator.getMessage('options_allowlist_invert')}
+                        label={translator.getMessage('options_allowlist_invert')}
                         type={SETTINGS_TYPES.CHECKBOX}
                         value={settings.values[DefaultAllowlistMode]}
                         handler={settingChangeHandler}
                         inverted
                     />
-                    <SettingsSetCheckbox
-                        className="disabled"
-                        title={reactTranslator.getMessage('options_collect_hit_stats_title')}
-                        description={reactTranslator.getMessage('options_collect_hit_stats_desc', {
-                            a: (chunks) => (
-                                <a
-                                    href={COLLECT_HITS_LEARN_MORE_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {chunks}
-                                </a>
-                            ),
-                        })}
-                        disabled={settings.values[DisableCollectHits]}
-                        id={DisableCollectHits}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_collect_hit_stats_title')}
-                        inverted
-                        value={settings.values[DisableCollectHits]}
-                        handler={settingChangeHandler}
-                    />
+
+                    {!__IS_MV3__ && (
+                        <SettingsSetCheckbox
+                            title={translator.getMessage('options_collect_hit_stats_title')}
+                            description={reactTranslator.getMessage('options_collect_hit_stats_desc', {
+                                a: (chunks) => (
+                                    <a
+                                        href={COLLECT_HITS_LEARN_MORE_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {chunks}
+                                    </a>
+                                ),
+                            })}
+                            disabled={settings.values[DisableCollectHits]}
+                            id={DisableCollectHits}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            label={translator.getMessage('options_collect_hit_stats_title')}
+                            inverted
+                            value={settings.values[DisableCollectHits]}
+                            handler={settingChangeHandler}
+                        />
+                    )}
 
                     <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_show_blocked_ads_count_title')}
+                        title={translator.getMessage('options_show_blocked_ads_count_title')}
                         disabled={settings.values[DisableShowPageStats]}
                         id={DisableShowPageStats}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_show_blocked_ads_count_title')}
+                        label={translator.getMessage('options_show_blocked_ads_count_title')}
                         inverted
                         value={settings.values[DisableShowPageStats]}
                         handler={settingChangeHandler}
                     />
 
                     <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_show_context_menu_title')}
+                        title={translator.getMessage('options_show_context_menu_title')}
                         disabled={settings.values[DisableShowContextMenu]}
                         id={DisableShowContextMenu}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_show_context_menu_title')}
+                        label={translator.getMessage('options_show_context_menu_title')}
                         inverted
                         value={settings.values[DisableShowContextMenu]}
                         handler={settingChangeHandler}
                     />
 
                     <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_show_adguard_full_version_title')}
+                        title={translator.getMessage('options_show_adguard_full_version_title')}
                         disabled={settings.values[DisableShowAdguardPromoInfo]}
                         id={DisableShowAdguardPromoInfo}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_show_adguard_full_version_title')}
+                        label={translator.getMessage('options_show_adguard_full_version_title')}
                         inverted
                         value={settings.values[DisableShowAdguardPromoInfo]}
                         handler={settingChangeHandler}
                     />
 
                     <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_show_app_updated_notification')}
+                        title={translator.getMessage('options_show_app_updated_notification')}
                         disabled={settings.values[DisableShowAppUpdatedNotification]}
                         id={DisableShowAppUpdatedNotification}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_show_app_updated_notification')}
+                        label={translator.getMessage('options_show_app_updated_notification')}
                         inverted
                         value={settings.values[DisableShowAppUpdatedNotification]}
                         handler={settingChangeHandler}
@@ -193,18 +195,18 @@ export const Miscellaneous = observer(() => {
                         className="links-menu__item"
                         onClick={handleFilteringLogClick}
                     >
-                        {reactTranslator.getMessage('options_open_log')}
+                        {translator.getMessage('options_open_log')}
                     </button>
 
                     {
                         isOpenResetStatsModal
                             && (
                                 <ConfirmModal
-                                    title={reactTranslator.getMessage('options_clear_stats_confirm_modal_title')}
+                                    title={translator.getMessage('options_clear_stats_confirm_modal_title')}
                                     isOpen={isOpenResetStatsModal}
                                     setIsOpen={setIsOpenResetStatsModal}
                                     onConfirm={handleResetStatisticsConfirm}
-                                    customConfirmTitle={reactTranslator.getMessage('options_clear_stats_confirm_modal_clear_button')}
+                                    customConfirmTitle={translator.getMessage('options_clear_stats_confirm_modal_clear_button')}
                                 />
                             )
                     }
@@ -223,11 +225,11 @@ export const Miscellaneous = observer(() => {
                         isOpenResetSettingsModal
                         && (
                             <ConfirmModal
-                                title={reactTranslator.getMessage('options_reset_settings_confirm_modal_title')}
+                                title={translator.getMessage('options_reset_settings_confirm_modal_title')}
                                 isOpen={isOpenResetSettingsModal}
                                 setIsOpen={setIsOpenResetSettingsModal}
                                 onConfirm={handleResetSettingsConfirm}
-                                customConfirmTitle={reactTranslator.getMessage('options_reset_settings_confirm_modal_clear_button')}
+                                customConfirmTitle={translator.getMessage('options_reset_settings_confirm_modal_clear_button')}
                             />
                         )
                     }
@@ -236,7 +238,7 @@ export const Miscellaneous = observer(() => {
                         className="links-menu__item button--red"
                         onClick={handleResetSettingsClick}
                     >
-                        {reactTranslator.getMessage('options_reset_settings')}
+                        {translator.getMessage('options_reset_settings')}
                     </button>
                 </div>
             </SettingsSection>
