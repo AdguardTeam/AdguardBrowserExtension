@@ -38,7 +38,7 @@ type TabParams = {
 };
 
 export const Tab = ({ title, active, onClick }: TabParams) => {
-    const tabClass = classnames('tabs__tab', { tabs__tab_active: active });
+    const tabClass = classnames('tabs__tab', { 'tabs__tab--active': active });
 
     return (
         <button

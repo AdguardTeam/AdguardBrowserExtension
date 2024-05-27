@@ -114,9 +114,10 @@ export const Icons = () => {
                 </g>
             </symbol>
 
-            {/* eslint-disable-next-line react/no-unknown-property */}
-            <symbol id="link" viewBox="0 0 24 24" fill="none">
-                <path d="M18 11.834V6h-5.714M17.92 6.04l-6.788 6.93M8.767 7H8a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-.704" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <symbol id="link" viewBox="0 0 24 24">
+                <g fill="none" fillRule="evenodd">
+                    <path d="M18 11.834V6h-5.714M17.92 6.04l-6.788 6.93M8.767 7H8a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-.704" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
             </symbol>
 
             <symbol id="logo" viewBox="0 0 160 35">
