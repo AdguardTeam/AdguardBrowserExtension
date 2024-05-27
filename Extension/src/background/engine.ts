@@ -164,7 +164,10 @@ export class Engine {
             verbose: false,
             logLevel: LogLevel.Info,
             filters,
-            userrules,
+            userrules: {
+                // FIXME provide sourcemaps
+                content: userrules.join('\n'),
+            },
             allowlist,
             settings,
             trustedDomains,
