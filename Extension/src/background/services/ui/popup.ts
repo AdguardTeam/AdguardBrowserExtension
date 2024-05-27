@@ -96,6 +96,7 @@ export class PopupService {
         }
 
         if (tabContext) {
+            // FIXME: fix for mv3 before releasing
             let hasCustomRulesToReset = false;
             if (!__IS_MV3__) {
                 hasCustomRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
