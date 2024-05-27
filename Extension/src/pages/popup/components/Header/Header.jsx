@@ -70,12 +70,10 @@ export const Header = observer(() => {
 
     return (
         <div className="popup-header">
-            <div className="popup-header__logo">
-                <Icon
-                    id="#logo"
-                    classname="icon--logo"
-                />
-            </div>
+            <Icon
+                id="#logo"
+                classname="icon--logo"
+            />
             <div className="popup-header__buttons">
                 {!__IS_MV3__ && (
                     <button

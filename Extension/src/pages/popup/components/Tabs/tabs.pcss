@@ -1,20 +1,12 @@
 .tabs {
     &__panel {
+        min-height: 48px;
         display: flex;
-        max-width: 288px;
-        padding: 4px;
-        border-radius: 12px;
-        margin: 0 auto;
-        background-color: var(--gray100);
         overflow: hidden;
-
-        @media (prefers-color-scheme: dark) {
-            background: var(--gray900);
-        }
     }
 
     &__content {
-        height: 168px;
+        min-height: 136px;
         overflow: auto;
         scrollbar-width: thin;
 
@@ -52,37 +44,42 @@
     }
 
     &__tab {
-        font-size: 16px;
+        font-size: 14px;
+        line-height: 18px;
+        font-weight: 400;
         width: 50%;
-        padding: 6px 5px;
-        line-height: 20px;
-        border: 0;
-        color: var(--gray700);
+        padding: 0;
         cursor: pointer;
         text-align: center;
         transition: var(--t3) color;
+        color: var(--gray7f);
+        border-bottom: 1px solid var(--grayd2);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--grayc0);
+            border-bottom: 1px solid var(--gray5b);
+        }
 
         &:hover {
-            color: var(--gray900);
+            background-color: var(--grayf6);
 
             @media (prefers-color-scheme: dark) {
-                color: var(--gray100);
+                background-color: var(--gray3d);
             }
         }
 
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray400);
-        }
-
-        &_active {
-            border-radius: 8px;
-            background-color: var(--white);
-            color: var(--gray900);
-            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.12), 0px 3px 1px rgba(0, 0, 0, 0.04);
+        &--active {
+            cursor: default;
+            font-weight: 600;
+            border-bottom: 2px solid var(--green400);
+            color: var(--gray3d);
 
             @media (prefers-color-scheme: dark) {
-                background-color: var(--black);
-                color: var(--gray300);
+                color: var(--graye4);
+            }
+
+            &:hover {
+                background-color: transparent;
             }
         }
     }
@@ -90,10 +87,6 @@
 
 .light-mode {
     .tabs {
-        &__panel {
-            background-color: var(--gray100);
-        }
-
         &__content {
             background-color: var(--white);
 
@@ -109,15 +102,20 @@
         }
 
         &__tab {
-            color: var(--gray700);
+            color: var(--gray7f);
+            border-bottom: 1px solid var(--grayd2);
 
             &:hover {
-                color: var(--gray900);
+                background-color: var(--grayf6);
             }
 
-            &_active {
-                background-color: var(--white);
-                color: var(--gray900);
+            &--active {
+                border-bottom: 2px solid var(--green400);
+                color: var(--gray3d);
+
+                &:hover {
+                    background-color: transparent;
+                }
             }
         }
     }
@@ -125,10 +123,6 @@
 
 .dark-mode {
     .tabs {
-        &__panel {
-            background: var(--gray900);
-        }
-
         &__content {
             background-color: var(--black);
 
@@ -144,15 +138,20 @@
         }
 
         &__tab {
-            color: var(--gray400);
+            color: var(--grayc0);
+            border-bottom: 1px solid var(--gray5b);
 
             &:hover {
-                color: var(--gray100);
+                background-color: var(--gray3d);
             }
 
-            &_active {
-                background-color: var(--black);
-                color: var(--gray300);
+            &--active {
+                border-bottom: 2px solid var(--green400);
+                color: var(--graye4);
+
+                &:hover {
+                    background-color: transparent;
+                }
             }
         }
     }

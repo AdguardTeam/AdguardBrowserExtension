@@ -2,16 +2,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 50px;
-    padding: 0 16px;
+    min-height: 65px;
+    padding: 0 16px 0 24px;
 
     @media (prefers-color-scheme: dark) {
         background-color: var(--black);
-    }
-
-    &__logo {
-        width: 113px;
-        height: 25px;
     }
 
     &__buttons {
@@ -21,24 +16,18 @@
     &__button {
         width: 24px;
         height: 24px;
-        margin: 0 8px;
+        margin-left: 16px;
         padding: 0;
         border-radius: 4px;
-        color: var(--gray400);
+        color: var(--gray7f);
         transition: var(--t3) color, var(--t3) background-color;
 
         @media (prefers-color-scheme: dark) {
-            color: var(--gray700);
+            color: var(--grayc0);
         }
 
         &:hover {
-            color: var(--gray700);
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
-                color: var(--gray400);
-            }
+            color: var(--green400);
         }
     }
 }
@@ -53,11 +42,10 @@
         background-color: var(--white);
 
         &__button {
-            color: var(--gray400);
+            color: var(--gray7f);
 
             &:hover {
-                background-color: var(--gray100);
-                color: var(--gray700);
+                color: var(--green400);
             }
         }
     }
@@ -68,11 +56,10 @@
         background-color: var(--black);
 
         &__button {
-            color: var(--gray700);
+            color: var(--grayc0);
 
             &:hover {
-                background-color: var(--gray900);
-                color: var(--gray400);
+                color: var(--green400);
             }
         }
     }
