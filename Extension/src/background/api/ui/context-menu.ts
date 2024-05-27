@@ -167,7 +167,9 @@ export class ContextMenuApi {
                 if (!isOptionsPage) {
                     await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
                 }
-                await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+                if (!__IS_MV3__) {
+                    await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+                }
                 await ContextMenuApi.addMenuItem(ContextMenuAction.DisableProtection);
             }
         } catch (e) {
@@ -192,7 +194,9 @@ export class ContextMenuApi {
     private static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
         await ContextMenuApi.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
         await ContextMenuApi.addSeparator();
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        if (!__IS_MV3__) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        }
         if (!isOptionsPage) {
             await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
         }
@@ -207,7 +211,9 @@ export class ContextMenuApi {
     private static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
         await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled);
         await ContextMenuApi.addSeparator();
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        if (!__IS_MV3__) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        }
         if (!isOptionsPage) {
             await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
         }

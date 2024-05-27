@@ -20,13 +20,16 @@ import path from 'path';
 import fs from 'fs';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import ZipWebpackPlugin from 'zip-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { Manifest } from 'webextension-polyfill';
 import { Configuration } from 'webpack';
 
-import { genCommonConfig, Mv3ReplacementPlugin } from '../webpack.common';
+import { genMv3CommonConfig } from '../webpack.common-mv3';
+import {
+    CHROMIUM_DEVTOOLS_ENTRIES,
+    CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
+    genChromiumZipPlugin,
+} from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import {
     BrowserConfig,
@@ -76,9 +79,7 @@ const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
 };
 
 export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = false) => {
-    const commonConfig = genCommonConfig(browserConfig);
-
-    const DEVTOOLS_PATH = path.resolve(__dirname, '../../../Extension/pages/devtools');
+    const commonConfig = genMv3CommonConfig(browserConfig);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
@@ -91,8 +92,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
                 import: BACKGROUND_PATH,
                 runtime: false,
             },
-            'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
-            'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
+            ...CHROMIUM_DEVTOOLS_ENTRIES,
         },
         output: {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
@@ -121,26 +121,13 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
                     },
                 ],
             }),
-            new HtmlWebpackPlugin({
-                template: path.join(DEVTOOLS_PATH, 'devtools.html'),
-                filename: 'pages/devtools.html',
-                chunks: ['pages/devtools'],
-            }),
-            new HtmlWebpackPlugin({
-                template: path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.html'),
-                filename: 'pages/devtools-elements-sidebar.html',
-                chunks: ['pages/devtools-elements-sidebar'],
-            }),
-            Mv3ReplacementPlugin,
+            ...CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
         ],
     };
 
     // Run the archive only if it is not a watch mode
     if (!isWatchMode && chromeConfig.plugins) {
-        chromeConfig.plugins.push(new ZipWebpackPlugin({
-            path: '../',
-            filename: `${browserConfig.browser}.zip`,
-        }));
+        chromeConfig.plugins.push(genChromiumZipPlugin(browserConfig.browser));
     }
 
     return merge(commonConfig, chromeConfig);

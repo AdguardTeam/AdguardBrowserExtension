@@ -151,8 +151,7 @@ export class SettingsApi {
                 && (!settingsStorage.get(SettingOption.DisableCollectHits)
                     || filteringLogApi.isOpen()
                 ),
-            // debugScriptlets: filteringLogApi.isOpen(),
-            debugScriptlets: false,
+            debugScriptlets: !__IS_MV3__ && filteringLogApi.isOpen(),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),
             stealthModeEnabled: !settingsStorage.get(SettingOption.DisableStealthMode),

@@ -19,7 +19,7 @@ import {
     AddUserRuleMessage,
     MessageType,
     RemoveUserRuleMessage,
-    ResetCustomRulesForPageMessage,
+    ResetUserRulesForPageMessage,
     SaveUserRulesMessage,
     SetEditorStorageContentMessage,
 } from '../../common/messages';
@@ -60,7 +60,7 @@ export class UserRulesService {
         messageHandler.addListener(MessageType.RemoveUserRule, UserRulesService.handleUserRuleRemove);
         messageHandler.addListener(MessageType.GetEditorStorageContent, UserRulesService.getEditorStorageContent);
         messageHandler.addListener(MessageType.SetEditorStorageContent, UserRulesService.setEditorStorageContent);
-        messageHandler.addListener(MessageType.ResetCustomRulesForPage, UserRulesService.resetCustomRulesForPage);
+        messageHandler.addListener(MessageType.ResetUserRulesForPage, UserRulesService.resetUserRulesForPage);
 
         engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
 
@@ -155,9 +155,9 @@ export class UserRulesService {
     /**
      * Removes user rules for provided url on the specified tab.
      *
-     * @param message Message of type {@link ResetCustomRulesForPageMessage} with url and tab info.
+     * @param message Message of type {@link ResetUserRulesForPageMessage} with url and tab info.
      */
-    private static async resetCustomRulesForPage(message: ResetCustomRulesForPageMessage): Promise<void> {
+    private static async resetUserRulesForPage(message: ResetUserRulesForPageMessage): Promise<void> {
         const { url, tabId } = message.data;
 
         await UserRulesApi.removeRulesByUrl(url);

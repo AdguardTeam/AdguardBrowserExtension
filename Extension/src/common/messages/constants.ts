@@ -59,7 +59,7 @@ export enum MessageType {
   OpenAbuseTab = 'openAbuseTab',
   OpenSiteReportTab = 'openSiteReportTab',
   OpenComparePage = 'openComparePage',
-  ResetCustomRulesForPage = 'resetCustomRulesForPage',
+  ResetUserRulesForPage = 'resetUserRulesForPage',
   RemoveAllowlistDomain = 'removeAllowlistDomainPopup',
   AddAllowlistDomainPopup = 'addAllowlistDomainPopup',
   GetStatisticsData = 'getStatisticsData',
@@ -254,8 +254,8 @@ export type RemoveUserRuleMessage = {
   }
 };
 
-export type ResetCustomRulesForPageMessage = {
-  type: MessageType.ResetCustomRulesForPage
+export type ResetUserRulesForPageMessage = {
+  type: MessageType.ResetUserRulesForPage
   data: {
     url: string,
     tabId: number,
@@ -481,7 +481,7 @@ export type Message = (
   | GetUserRulesEditorDataMessage
   | AddUserRuleMessage
   | RemoveUserRuleMessage
-  | ResetCustomRulesForPageMessage
+  | ResetUserRulesForPageMessage
   | GetEditorStorageContentMessage
   | SetEditorStorageContentMessage
   | AddAllowlistDomainPopupMessage

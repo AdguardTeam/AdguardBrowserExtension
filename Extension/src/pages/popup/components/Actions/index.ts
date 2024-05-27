@@ -16,4 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { Actions } from './Actions';
+// !IMPORTANT!
+// export './Actions' will be replaced during webpack compilation
+// with NormalModuleReplacementPlugin to proper implementation
+// from './Mv2Actions' or './Mv3Actions'
+export { Actions } from './AbstractActions';

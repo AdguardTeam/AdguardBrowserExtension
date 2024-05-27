@@ -26,7 +26,7 @@ class Messenger {
     onMessage = browser.runtime.onMessage;
 
     constructor() {
-        this.resetCustomRulesForPage = this.resetCustomRulesForPage.bind(this);
+        this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
         this.updateFilters = this.updateFilters.bind(this);
     }
 
@@ -303,10 +303,10 @@ class Messenger {
         // return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
     }
 
-    async resetCustomRulesForPage(url) {
+    async resetUserRulesForPage(url) {
         const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
         return this.sendMessage(
-            MessageType.ResetCustomRulesForPage,
+            MessageType.ResetUserRulesForPage,
             { url, tabId: currentTab?.id },
         );
     }

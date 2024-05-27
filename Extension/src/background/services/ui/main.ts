@@ -100,8 +100,10 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
         contextMenuEvents.addListener(ContextMenuAction.OpenSettings, PagesApi.openSettingsPage);
 
-        messageHandler.addListener(MessageType.OpenFilteringLog, PagesApi.openFilteringLogPage);
-        contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
+        if (!__IS_MV3__) {
+            messageHandler.addListener(MessageType.OpenFilteringLog, PagesApi.openFilteringLogPage);
+            contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
+        }
 
         messageHandler.addListener(MessageType.OpenAbuseTab, UiService.openAbusePage);
         contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageForActiveTab);

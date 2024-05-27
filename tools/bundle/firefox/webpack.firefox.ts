@@ -24,7 +24,7 @@ import { merge } from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { WebpackPluginInstance } from 'webpack';
 
-import { genCommonConfig, Mv2ReplacementPlugin } from '../webpack.common';
+import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { updateManifestBuffer } from '../../helpers';
 import {
     Browser,
@@ -42,7 +42,7 @@ import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-cons
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
 
 export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = false) => {
-    const commonConfig = genCommonConfig(browserConfig);
+    const commonConfig = genMv2CommonConfig(browserConfig);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
@@ -55,7 +55,6 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
     }
 
     const plugins: WebpackPluginInstance[] = [
-        Mv2ReplacementPlugin,
         new CopyWebpackPlugin({
             patterns: [
                 {
@@ -110,15 +109,6 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
     }
 
     const firefoxConfig = {
-        entry: {
-            [BACKGROUND_OUTPUT]: {
-                import: BACKGROUND_PATH,
-                dependOn: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                ],
-            },
-        },
         output: {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
