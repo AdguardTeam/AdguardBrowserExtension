@@ -25,7 +25,7 @@ import './tabs.pcss';
 
 const Mv3Tabs = observer(() => (
     <div className="tabs">
-        <div className="tabs__content--actions">
+        <div className="tabs__content--mv3">
             <Actions />
         </div>
     </div>

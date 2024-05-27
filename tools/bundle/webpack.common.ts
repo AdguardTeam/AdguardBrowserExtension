@@ -20,11 +20,13 @@ import path from 'path';
 
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import {
     Configuration,
     DefinePlugin,
-    NormalModuleReplacementPlugin,
+    type WebpackPluginInstance,
+    type EntryObject,
 } from 'webpack';
 
 import {
@@ -55,6 +57,8 @@ import {
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
     FILTERING_LOG_OUTPUT,
+    DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT,
+    DEVTOOLS_OUTPUT,
 } from '../../constants';
 
 import { htmlTemplatePluginCommonOptions } from './common-constants';
@@ -77,6 +81,204 @@ const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/co
 
 const OUTPUT_PATH = config.outputPath;
 
+export const FILTERING_LOG_ENTRY = {
+    import: FILTERING_LOG_PATH,
+    dependOn: [
+        TSURLFILTER_VENDOR_OUTPUT,
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        REACT_VENDOR_OUTPUT,
+        MOBX_VENDOR_OUTPUT,
+        XSTATE_VENDOR_OUTPUT,
+    ],
+};
+
+export const genCommonEntry = (browserConfig: BrowserConfig): EntryObject => {
+    const manifestVersion = browserConfig.browser === Browser.ChromeMv3 ? 3 : 2;
+
+    return {
+        [OPTIONS_OUTPUT]: {
+            import: OPTIONS_PATH,
+            dependOn: [
+                REACT_VENDOR_OUTPUT,
+                MOBX_VENDOR_OUTPUT,
+                XSTATE_VENDOR_OUTPUT,
+                EDITOR_OUTPUT,
+            ],
+        },
+        [POPUP_OUTPUT]: {
+            import: POPUP_PATH,
+            dependOn: [
+                REACT_VENDOR_OUTPUT,
+                MOBX_VENDOR_OUTPUT,
+            ],
+        },
+        [POST_INSTALL_OUTPUT]: {
+            import: POST_INSTALL_PATH,
+            runtime: false,
+        },
+        [CONTENT_SCRIPT_START_OUTPUT]: {
+            import: path.resolve(CONTENT_SCRIPT_START_PATH, `mv${manifestVersion}.ts`),
+            runtime: false,
+        },
+        [ASSISTANT_INJECT_OUTPUT]: {
+            import: ASSISTANT_INJECT_PATH,
+            runtime: false,
+        },
+        [CONTENT_SCRIPT_END_OUTPUT]: {
+            import: CONTENT_SCRIPT_END_PATH,
+            runtime: false,
+        },
+        [SUBSCRIBE_OUTPUT]: {
+            import: SUBSCRIBE_PATH,
+            runtime: false,
+        },
+        [THANKYOU_OUTPUT]: {
+            import: THANKYOU_PATH,
+            runtime: false,
+        },
+        [FULLSCREEN_USER_RULES_OUTPUT]: {
+            import: FULLSCREEN_USER_RULES_PATH,
+            dependOn: [
+                REACT_VENDOR_OUTPUT,
+                MOBX_VENDOR_OUTPUT,
+                XSTATE_VENDOR_OUTPUT,
+                EDITOR_OUTPUT,
+            ],
+        },
+        [SAFEBROWSING_OUTPUT]: {
+            import: SAFEBROWSING_PATH,
+            dependOn: [
+                REACT_VENDOR_OUTPUT,
+            ],
+        },
+        [DOCUMENT_BLOCK_OUTPUT]: {
+            import: AD_BLOCKED_PATH,
+            dependOn: [
+                REACT_VENDOR_OUTPUT,
+            ],
+        },
+        [EDITOR_OUTPUT]: {
+            import: EDITOR_PATH,
+            dependOn: [
+                REACT_VENDOR_OUTPUT,
+            ],
+        },
+        [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
+        [MOBX_VENDOR_OUTPUT]: ['mobx'],
+        [XSTATE_VENDOR_OUTPUT]: ['xstate'],
+        [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
+        [TSWEBEXTENSION_VENDOR_OUTPUT]: {
+            import: '@adguard/tswebextension',
+            dependOn: [
+                TSURLFILTER_VENDOR_OUTPUT,
+            ],
+        },
+    };
+};
+
+export const filteringLogHtmlPlugin = new HtmlWebpackPlugin({
+    ...htmlTemplatePluginCommonOptions,
+    template: path.join(FILTERING_LOG_PATH, 'index.html'),
+    filename: `${FILTERING_LOG_OUTPUT}.html`,
+    chunks: [
+        TSURLFILTER_VENDOR_OUTPUT,
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        REACT_VENDOR_OUTPUT,
+        MOBX_VENDOR_OUTPUT,
+        XSTATE_VENDOR_OUTPUT,
+        FILTERING_LOG_OUTPUT,
+    ],
+});
+
+export const genCommonPlugins = (browserConfig: BrowserConfig): WebpackPluginInstance[] => {
+    return [
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            ...htmlTemplatePluginCommonOptions,
+            template: path.join(OPTIONS_PATH, 'index.html'),
+            filename: `${OPTIONS_OUTPUT}.html`,
+            chunks: [
+                TSURLFILTER_VENDOR_OUTPUT,
+                REACT_VENDOR_OUTPUT,
+                MOBX_VENDOR_OUTPUT,
+                XSTATE_VENDOR_OUTPUT,
+                EDITOR_OUTPUT,
+                OPTIONS_OUTPUT,
+            ],
+        }),
+        new HtmlWebpackPlugin({
+            ...htmlTemplatePluginCommonOptions,
+            template: path.join(POPUP_PATH, 'index.html'),
+            filename: `${POPUP_OUTPUT}.html`,
+            chunks: [REACT_VENDOR_OUTPUT, MOBX_VENDOR_OUTPUT, POPUP_OUTPUT],
+        }),
+        new HtmlWebpackPlugin({
+            ...htmlTemplatePluginCommonOptions,
+            template: path.join(POST_INSTALL_PATH, 'index.html'),
+            filename: `${POST_INSTALL_OUTPUT}.html`,
+            chunks: [POST_INSTALL_OUTPUT],
+        }),
+        new HtmlWebpackPlugin({
+            ...htmlTemplatePluginCommonOptions,
+            template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
+            filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
+            chunks: [
+                REACT_VENDOR_OUTPUT,
+                MOBX_VENDOR_OUTPUT,
+                XSTATE_VENDOR_OUTPUT,
+                EDITOR_OUTPUT,
+                FULLSCREEN_USER_RULES_OUTPUT,
+            ],
+        }),
+        new HtmlWebpackPlugin({
+            ...htmlTemplatePluginCommonOptions,
+            template: path.join(AD_BLOCKED_PATH, 'index.html'),
+            filename: `${DOCUMENT_BLOCK_OUTPUT}.html`,
+            chunks: [REACT_VENDOR_OUTPUT, DOCUMENT_BLOCK_OUTPUT],
+        }),
+        new HtmlWebpackPlugin({
+            ...htmlTemplatePluginCommonOptions,
+            template: path.join(SAFEBROWSING_PATH, 'index.html'),
+            filename: `${SAFEBROWSING_OUTPUT}.html`,
+            chunks: [REACT_VENDOR_OUTPUT, SAFEBROWSING_OUTPUT],
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    context: 'Extension',
+                    from: 'assets',
+                    to: 'assets',
+                },
+                {
+                    context: 'Extension',
+                    from: '_locales',
+                    to: '_locales',
+                    transform: (content) => {
+                        return updateLocalesMSGName(content, BUILD_ENV, browserConfig.browser);
+                    },
+                },
+                {
+                    context: 'Extension',
+                    from: 'web-accessible-resources',
+                    to: WEB_ACCESSIBLE_RESOURCES_OUTPUT,
+                },
+            ],
+        }),
+        new DefinePlugin({
+            // We are doing stricter JS rule checking for Firefox AMO, so we
+            // need to determine if the Firefox browser is AMO or not.
+            // TODO consider making this variable to be less common used
+            //  (e.g., make it to be __IS_FIREFOX_AMO__ instead of IS_FIREFOX_AMO)
+            IS_FIREFOX_AMO: browserConfig.browser === Browser.FirefoxAmo,
+            // TODO consider making this variable to be less common used
+            //  (e.g., make it to be __IS_RELEASE__ instead of IS_RELEASE)
+            IS_RELEASE: BUILD_ENV === BuildTargetEnv.Release,
+            IS_BETA: BUILD_ENV === BuildTargetEnv.Beta,
+            __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
+        }),
+    ];
+};
+
 export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => {
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
     const manifestVersion = browserConfig.browser === Browser.ChromeMv3 ? 3 : 2;
@@ -90,95 +292,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
         },
         cache: isDev,
         devtool: isDev ? 'eval-source-map' : false,
-        entry: {
-            [OPTIONS_OUTPUT]: {
-                import: OPTIONS_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    EDITOR_OUTPUT,
-                ],
-            },
-            [POPUP_OUTPUT]: {
-                import: POPUP_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                ],
-            },
-            [FILTERING_LOG_OUTPUT]: {
-                import: FILTERING_LOG_PATH,
-                dependOn: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                ],
-            },
-            [POST_INSTALL_OUTPUT]: {
-                import: POST_INSTALL_PATH,
-                runtime: false,
-            },
-            [CONTENT_SCRIPT_START_OUTPUT]: {
-                import: path.resolve(CONTENT_SCRIPT_START_PATH, `mv${manifestVersion}.ts`),
-                runtime: false,
-            },
-            [ASSISTANT_INJECT_OUTPUT]: {
-                import: ASSISTANT_INJECT_PATH,
-                runtime: false,
-            },
-            [CONTENT_SCRIPT_END_OUTPUT]: {
-                import: CONTENT_SCRIPT_END_PATH,
-                runtime: false,
-            },
-            [SUBSCRIBE_OUTPUT]: {
-                import: SUBSCRIBE_PATH,
-                runtime: false,
-            },
-            [THANKYOU_OUTPUT]: {
-                import: THANKYOU_PATH,
-                runtime: false,
-            },
-            [FULLSCREEN_USER_RULES_OUTPUT]: {
-                import: FULLSCREEN_USER_RULES_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    EDITOR_OUTPUT,
-                ],
-            },
-            [SAFEBROWSING_OUTPUT]: {
-                import: SAFEBROWSING_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                ],
-            },
-            [DOCUMENT_BLOCK_OUTPUT]: {
-                import: AD_BLOCKED_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                ],
-            },
-            [EDITOR_OUTPUT]: {
-                import: EDITOR_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                ],
-            },
-            [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
-            [MOBX_VENDOR_OUTPUT]: ['mobx'],
-            [XSTATE_VENDOR_OUTPUT]: ['xstate'],
-            [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
-            [TSWEBEXTENSION_VENDOR_OUTPUT]: {
-                import: '@adguard/tswebextension',
-                dependOn: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                ],
-            },
-        },
+        // should be re-defined in common-mv2 and common-mv3 webpack configs
+        entry: {},
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
             filename: '[name].js',
@@ -278,130 +393,50 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                 },
             ],
         },
-        plugins: [
-            new CleanWebpackPlugin(),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(OPTIONS_PATH, 'index.html'),
-                filename: `${OPTIONS_OUTPUT}.html`,
-                chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    EDITOR_OUTPUT,
-                    OPTIONS_OUTPUT,
-                ],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(POPUP_PATH, 'index.html'),
-                filename: `${POPUP_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, MOBX_VENDOR_OUTPUT, POPUP_OUTPUT],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(POST_INSTALL_PATH, 'index.html'),
-                filename: `${POST_INSTALL_OUTPUT}.html`,
-                chunks: [POST_INSTALL_OUTPUT],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(FILTERING_LOG_PATH, 'index.html'),
-                filename: `${FILTERING_LOG_OUTPUT}.html`,
-                chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    FILTERING_LOG_OUTPUT,
-                ],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
-                filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
-                chunks: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    EDITOR_OUTPUT,
-                    FULLSCREEN_USER_RULES_OUTPUT,
-                ],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(AD_BLOCKED_PATH, 'index.html'),
-                filename: `${DOCUMENT_BLOCK_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, DOCUMENT_BLOCK_OUTPUT],
-            }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(SAFEBROWSING_PATH, 'index.html'),
-                filename: `${SAFEBROWSING_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, SAFEBROWSING_OUTPUT],
-            }),
-            new CopyWebpackPlugin({
-                patterns: [
-                    {
-                        context: 'Extension',
-                        from: 'assets',
-                        to: 'assets',
-                    },
-                    {
-                        context: 'Extension',
-                        from: '_locales',
-                        to: '_locales',
-                        transform: (content) => {
-                            return updateLocalesMSGName(content, BUILD_ENV, browserConfig.browser);
-                        },
-                    },
-                    {
-                        context: 'Extension',
-                        from: 'web-accessible-resources',
-                        to: WEB_ACCESSIBLE_RESOURCES_OUTPUT,
-                    },
-                ],
-            }),
-            new DefinePlugin({
-                // We are doing stricter JS rule checking for Firefox AMO, so we
-                // need to determine if the Firefox browser is AMO or not.
-                // TODO consider making this variable to be less common used
-                //  (e.g., make it to be __IS_FIREFOX_AMO__ instead of IS_FIREFOX_AMO)
-                IS_FIREFOX_AMO: browserConfig.browser === Browser.FirefoxAmo,
-                // TODO consider making this variable to be less common used
-                //  (e.g., make it to be __IS_RELEASE__ instead of IS_RELEASE)
-                IS_RELEASE: BUILD_ENV === BuildTargetEnv.Release,
-                IS_BETA: BUILD_ENV === BuildTargetEnv.Beta,
-                __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
-            }),
-        ],
+        // should be re-defined in common-mv2 and common-mv3 webpack configs
+        plugins: [],
     };
 };
 
 /**
  * Regexp to match the path to the abstract components that should be replaced for mv2 and mv3.
  */
-const replacementMatchRegexp = new RegExp(
+export const replacementMatchRegexp = new RegExp(
     `\\.\\/Abstract(${
         [
+            'Actions',
             'Tabs',
             'MainContainer',
         ].join('|')
     })`,
 );
 
-export const Mv2ReplacementPlugin = new NormalModuleReplacementPlugin(
-    replacementMatchRegexp,
-    ((resource: any) => {
-        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv2$1');
-    }),
-);
+const DEVTOOLS_PATH = path.resolve(__dirname, '../../Extension/pages/devtools');
 
-export const Mv3ReplacementPlugin = new NormalModuleReplacementPlugin(
-    replacementMatchRegexp,
-    ((resource: any) => {
-        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv3$1');
+const DEVTOOLS_ENTRY = path.join(DEVTOOLS_PATH, 'devtools.js');
+const DEVTOOLS_ELEMENTS_SIDEBAR_ENTRY = path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js');
+
+export const CHROMIUM_DEVTOOLS_ENTRIES: EntryObject = {
+    [DEVTOOLS_OUTPUT]: DEVTOOLS_ENTRY,
+    [DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT]: DEVTOOLS_ELEMENTS_SIDEBAR_ENTRY,
+};
+
+export const CHROMIUM_DEVTOOLS_PAGES_PLUGINS = [
+    new HtmlWebpackPlugin({
+        template: path.join(DEVTOOLS_PATH, 'devtools.html'),
+        filename: 'pages/devtools.html',
+        chunks: [DEVTOOLS_OUTPUT],
     }),
-);
+    new HtmlWebpackPlugin({
+        template: path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.html'),
+        filename: 'pages/devtools-elements-sidebar.html',
+        chunks: [DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT],
+    }),
+];
+
+export const genChromiumZipPlugin = (browser: Browser): WebpackPluginInstance => {
+    return new ZipWebpackPlugin({
+        path: '../',
+        filename: `${browser}.zip`,
+    });
+};

@@ -19,12 +19,16 @@
 import path from 'path';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import ZipWebpackPlugin from 'zip-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { Configuration } from 'webpack';
 
-import { genCommonConfig, Mv2ReplacementPlugin } from '../webpack.common';
+import { genMv2CommonConfig } from '../webpack.common-mv2';
+import {
+    CHROMIUM_DEVTOOLS_ENTRIES,
+    CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
+    genChromiumZipPlugin,
+} from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { BrowserConfig, BUILD_ENV } from '../../constants';
 import {
@@ -37,31 +41,20 @@ import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-cons
 import { chromeManifest } from './manifest.chrome';
 
 export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = false) => {
-    const commonConfig = genCommonConfig(browserConfig);
+    const commonConfig = genMv2CommonConfig(browserConfig);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
     }
 
-    const DEVTOOLS_PATH = path.resolve(__dirname, '../../../Extension/pages/devtools');
-
     const chromeConfig: Configuration = {
         entry: {
-            [BACKGROUND_OUTPUT]: {
-                import: BACKGROUND_PATH,
-                dependOn: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                ],
-            },
-            'pages/devtools': path.join(DEVTOOLS_PATH, 'devtools.js'),
-            'pages/devtools-elements-sidebar': path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.js'),
+            ...CHROMIUM_DEVTOOLS_ENTRIES,
         },
         output: {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
         plugins: [
-            Mv2ReplacementPlugin,
             new CopyWebpackPlugin({
                 patterns: [
                     {
@@ -97,25 +90,13 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     BACKGROUND_OUTPUT,
                 ],
             }),
-            new HtmlWebpackPlugin({
-                template: path.join(DEVTOOLS_PATH, 'devtools.html'),
-                filename: 'pages/devtools.html',
-                chunks: ['pages/devtools'],
-            }),
-            new HtmlWebpackPlugin({
-                template: path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.html'),
-                filename: 'pages/devtools-elements-sidebar.html',
-                chunks: ['pages/devtools-elements-sidebar'],
-            }),
+            ...CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
         ],
     };
 
     // Run the archive only if it is not a watch mode
     if (!isWatchMode && chromeConfig.plugins) {
-        chromeConfig.plugins.push(new ZipWebpackPlugin({
-            path: '../',
-            filename: `${browserConfig.browser}.zip`,
-        }));
+        chromeConfig.plugins.push(genChromiumZipPlugin(browserConfig.browser));
     }
 
     return merge(commonConfig, chromeConfig);

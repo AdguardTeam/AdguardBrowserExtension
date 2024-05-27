@@ -16,8 +16,31 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// !IMPORTANT!
-// export './Actions' will be replaced during webpack compilation
-// with NormalModuleReplacementPlugin to proper implementation
-// from './Mv2Actions' or './Mv3Actions'
-export { Actions } from './AbstractActions';
+import { type Configuration, NormalModuleReplacementPlugin } from 'webpack';
+
+import { type BrowserConfig } from '../constants';
+
+import {
+    genCommonConfig,
+    genCommonEntry,
+    genCommonPlugins,
+    replacementMatchRegexp,
+} from './webpack.common';
+
+export const Mv3ReplacementPlugin = new NormalModuleReplacementPlugin(
+    replacementMatchRegexp,
+    ((resource: any) => {
+        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv3$1');
+    }),
+);
+
+export const genMv3CommonConfig = (browserConfig: BrowserConfig): Configuration => {
+    return {
+        ...genCommonConfig(browserConfig),
+        entry: genCommonEntry(browserConfig),
+        plugins: [
+            Mv3ReplacementPlugin,
+            ...genCommonPlugins(browserConfig),
+        ],
+    };
+};

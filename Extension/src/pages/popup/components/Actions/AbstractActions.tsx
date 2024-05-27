@@ -16,8 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// !IMPORTANT!
-// export './Actions' will be replaced during webpack compilation
-// with NormalModuleReplacementPlugin to proper implementation
-// from './Mv2Actions' or './Mv3Actions'
-export { Actions } from './AbstractActions';
+/**
+ * This component is needed to be replaced during webpack compilation
+ * with NormalModuleReplacementPlugin to proper implementation
+ * from './Mv2Actions' or './Mv3Actions'.
+ *
+ * @throws An error if the component is not replaced.
+ */
+const AbstractActions = () => {
+    throw new Error('Seems like webpack did not inject proper Actions component');
+};
+
+export { AbstractActions as Actions };
