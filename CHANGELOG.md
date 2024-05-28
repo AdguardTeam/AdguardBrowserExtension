@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Some filters are not updated when enabled [#2818].
+
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...HEAD
+[#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
+
+<!-- TODO: add the date when the version become public -->
+## [4.3.53]
+
 ### Changed
 - Updated [@adguard/tswebextension] to v1.0.24.
 
@@ -14,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not throw an error during cookie setting if a cookie domain mismatches a request URL [#2683].
 - Script rules are not applied in Firefox due to CSP [#1733].
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.46...HEAD
+[4.3.53]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.46...v4.3.53
 [#2683]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2683
 [#1733]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1733
 
