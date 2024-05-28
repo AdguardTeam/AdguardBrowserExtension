@@ -24,12 +24,14 @@ import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
+import { handleWithMinLoaderDelay } from '../../../common/components/helpers';
 import { userRulesEditorStore } from '../../../common/components/UserRulesEditor/UserRulesEditorStore';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { COLLECT_HITS_LEARN_MORE_URL } from '../../constants';
+import { Loader } from '../../../common/components/Loader';
 
 export const Miscellaneous = observer(() => {
     const {
@@ -41,16 +43,24 @@ export const Miscellaneous = observer(() => {
 
     const { settings } = settingsStore;
 
-    const [isOpenResetStatsModal, setIsOpenResetStatsModal] = useState(false);
-    const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
-
     if (!settings) {
         return null;
     }
 
+    const [isOpenResetStatsModal, setIsOpenResetStatsModal] = useState(false);
+    const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
+
     const settingChangeHandler = async ({ id, data }) => {
         logger.info(`Setting ${id} set to ${data}`);
         await settingsStore.updateSetting(id, data);
+    };
+
+    const handleInvertAllowlistChange = ({ id, data }) => {
+        handleWithMinLoaderDelay(
+            setShowLoader,
+            () => settingsStore.updateSetting(id, data),
+        );
     };
 
     const handleFilteringLogClick = async () => {
@@ -96,6 +106,7 @@ export const Miscellaneous = observer(() => {
 
     return (
         <>
+            <Loader condition={showLoader} />
             <SettingsSection title={translator.getMessage('options_miscellaneous_settings')}>
                 <div className="settings__group">
                     {!__IS_MV3__ && (
@@ -117,7 +128,7 @@ export const Miscellaneous = observer(() => {
                         label={translator.getMessage('options_allowlist_invert')}
                         type={SETTINGS_TYPES.CHECKBOX}
                         value={settings.values[DefaultAllowlistMode]}
-                        handler={settingChangeHandler}
+                        handler={handleInvertAllowlistChange}
                         inverted
                     />
 

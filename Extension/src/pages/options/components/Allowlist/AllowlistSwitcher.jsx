@@ -24,12 +24,16 @@ import { Loader } from '../../../common/components/Loader';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
-export const UserRulesSwitcher = observer(() => {
+export const AllowlistSwitcher = observer(() => {
     const { settingsStore } = useContext(rootStore);
+
+    const { settings } = settingsStore;
+
+    const { AllowlistEnabled } = settings.names;
 
     const [showLoader, setShowLoader] = useState(false);
 
-    const handleUserGroupToggle = ({ id, data }) => {
+    const allowlistChangeHandler = ({ id, data }) => {
         handleWithMinLoaderDelay(
             setShowLoader,
             () => settingsStore.updateSetting(id, data),
@@ -40,10 +44,10 @@ export const UserRulesSwitcher = observer(() => {
         <>
             <Loader condition={showLoader} />
             <Setting
-                id={settingsStore.userFilterEnabledSettingId}
+                id={AllowlistEnabled}
                 type={SETTINGS_TYPES.CHECKBOX}
-                value={settingsStore.userFilterEnabled}
-                handler={handleUserGroupToggle}
+                value={settings.values[AllowlistEnabled]}
+                handler={allowlistChangeHandler}
             />
         </>
     );

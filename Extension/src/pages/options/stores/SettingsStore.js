@@ -534,6 +534,7 @@ class SettingsStore {
          * Optimistically set the enabled property to true.
          * The verified state of the filter will be emitted after the engine update.
          */
+        // FIXME(Slava): maybe do not set it optimistically for mv3
         this.setFilterEnabledState(filterId, enabled);
 
         try {
