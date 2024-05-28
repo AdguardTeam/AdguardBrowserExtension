@@ -18,19 +18,23 @@
 
 import { sortBy } from 'lodash-es';
 
+import type { CategoriesFilterData, CategoriesGroupData } from '../../../../background/api';
+
 /**
  * Sorts filters by enabled status and displayNumber
  *
- * @param filters
+ * @param filters Filters to sort.
+ *
+ * @returns Sorted filters.
  */
-export const sortFilters = (filters) => {
+export const sortFilters = (filters: CategoriesFilterData[]) => {
     const sorted = [...filters]
         .sort((a, b) => {
             // sort by enabled
             const enabledA = !!a.enabled;
             const enabledB = !!b.enabled;
             if (enabledA !== enabledB) {
-                return enabledB - enabledA;
+                return Number(enabledB) - Number(enabledA);
             }
 
             // sort by groupId
@@ -62,8 +66,13 @@ export const sortFilters = (filters) => {
  *
  * @param currentFilters
  * @param newFilters
+ *
+ * @returns Filters with updated state.
  */
-export const updateFilters = (currentFilters, newFilters) => {
+export const updateFilters = (
+    currentFilters: CategoriesFilterData[],
+    newFilters: CategoriesFilterData[],
+): CategoriesFilterData[] => {
     const updatedFilters = [...currentFilters];
 
     newFilters.forEach((newFilter) => {
@@ -86,8 +95,13 @@ export const updateFilters = (currentFilters, newFilters) => {
  *
  * @param currentGroups
  * @param newGroups
+ *
+ * @returns Groups with updated state.
  */
-export const updateGroups = (currentGroups, newGroups) => {
+export const updateGroups = (
+    currentGroups: CategoriesGroupData[],
+    newGroups: CategoriesGroupData[],
+): CategoriesGroupData[] => {
     const updatedGroups = [...currentGroups];
 
     newGroups.forEach((newGroup) => {
@@ -105,7 +119,7 @@ export const updateGroups = (currentGroups, newGroups) => {
     return updatedGroups;
 };
 
-export const sortGroupsOnSearch = (groups) => {
+export const sortGroupsOnSearch = (groups: CategoriesGroupData[]) => {
     const sortedGroups = sortBy(groups, 'displayNumber')
         .sort((a, b) => {
             // enabled first
@@ -118,4 +132,23 @@ export const sortGroupsOnSearch = (groups) => {
             return 0;
         });
     return sortedGroups;
+};
+
+/**
+ * Formats `date` to string.
+ *
+ * @param dateMs Date to format.
+ *
+ * @returns Formatted date.
+ */
+export const formatDate = (dateMs: number) => {
+    const dateObj = new Date(dateMs);
+    const formatOptions: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    };
+    return dateObj.toLocaleDateString('default', formatOptions);
 };
