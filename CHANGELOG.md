@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Updated [@adguard/tswebextension] to v1.0.25.
+
 ### Fixed
 - Some filters are not updated when enabled [#2818].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...HEAD
 [#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
 
-<!-- TODO: add the date when the version become public -->
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...HEAD
+[#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
+
+
 ## [4.3.53]
 
 ### Changed
