@@ -49,7 +49,7 @@ export const enum ForwardAction {
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
-    // FIXME(Slava): update tds
+    // FIXME: available in tds v529; should be deployed if action does not work
     FiltersSpecsMv3 = 'filters_specs_mv3',
     GithubVersion = 'github_version_popup',
     GithubVersionBeta = 'github_version_popup_beta',
