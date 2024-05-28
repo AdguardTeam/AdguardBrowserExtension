@@ -49,6 +49,8 @@ export const enum ForwardAction {
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
+    // FIXME(Slava): update tds
+    FiltersSpecsMv3 = 'filters_specs_mv3',
     GithubVersion = 'github_version_popup',
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',

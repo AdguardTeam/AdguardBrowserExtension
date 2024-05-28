@@ -43,22 +43,11 @@ import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constant
 import { Popover } from '../../../common/components/ui/Popover';
 import { Loader } from '../../../common/components/Loader';
 
+import { formatDate } from './helpers';
 import { HighlightSearch } from './Search/HighlightSearch';
 import { FilterTags } from './FilterTags';
 
 import './filter.pcss';
-
-const formatDate = (date: number) => {
-    const dateObj = new Date(date);
-    const formatOptions: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    };
-    return dateObj.toLocaleDateString('default', formatOptions);
-};
 
 const FILTER_PREFIX = 'filter-';
 

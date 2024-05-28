@@ -213,7 +213,7 @@ class SettingsStore {
                  * TODO (v.zhelvis): Updating filters on background service response can cause filter enable state mismatch,
                  * because we toggle switches on frontend side first, but cannot determine when action
                  * in background service is completed and final result of user action.
-                 * It seems that we need to use a new approach with atomic updates instead of global state synchronisation
+                 * It seems that we need to use a new approach with atomic updates instead of global state synchronization
                  * to avoid this kind of problems. This task can be split into two parts:
                  * - Moving specific logic from the background to the settings page.
                  * - Integrate a transparent transaction model with simple collision resolution to prevent race conditions.
