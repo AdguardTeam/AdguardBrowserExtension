@@ -16,25 +16,35 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 
+import { handleWithMinLoaderDelay } from '../../../common/components/helpers';
+import { Loader } from '../../../common/components/Loader';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 export const UserRulesSwitcher = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
-    const handleUserGroupToggle = (e) => {
-        settingsStore.updateSetting(e.id, e.data);
+    const [showLoader, setShowLoader] = useState(false);
+
+    const handleUserGroupToggle = ({ id, data }) => {
+        handleWithMinLoaderDelay(
+            setShowLoader,
+            () => settingsStore.updateSetting(id, data),
+        );
     };
 
     return (
-        <Setting
-            id={settingsStore.userFilterEnabledSettingId}
-            type={SETTINGS_TYPES.CHECKBOX}
-            value={settingsStore.userFilterEnabled}
-            handler={handleUserGroupToggle}
-        />
+        <>
+            <Loader condition={showLoader} />
+            <Setting
+                id={settingsStore.userFilterEnabledSettingId}
+                type={SETTINGS_TYPES.CHECKBOX}
+                value={settingsStore.userFilterEnabled}
+                handler={handleUserGroupToggle}
+            />
+        </>
     );
 });

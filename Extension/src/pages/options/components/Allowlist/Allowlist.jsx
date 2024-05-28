@@ -34,10 +34,10 @@ import { SavingFSMState } from '../../../common/components/Editor/savingFSM';
 import { Loader } from '../../../common/components/Loader';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { usePrevious } from '../../../common/hooks/usePrevious';
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
+import { AllowlistSwitcher } from './AllowlistSwitcher';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -113,11 +113,6 @@ const Allowlist = observer(() => {
         },
     }];
 
-    const allowlistChangeHandler = async (e) => {
-        const { id, data } = e;
-        await settingsStore.updateSetting(id, data);
-    };
-
     const { AllowlistEnabled } = settings.names;
 
     let shouldResetSize = false;
@@ -157,14 +152,7 @@ const Allowlist = observer(() => {
                             </span>
                         </div>
                     )}
-                inlineControl={(
-                    <Setting
-                        id={AllowlistEnabled}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        value={settings.values[AllowlistEnabled]}
-                        handler={allowlistChangeHandler}
-                    />
-                )}
+                inlineControl={<AllowlistSwitcher />}
             />
             <Editor
                 name="allowlist"

@@ -118,6 +118,7 @@ const Options = observer(() => {
         <HashRouter hashType="noslash">
             <Icons />
             <div className="page">
+                {/* FIXME(Slava): try to add Loader here once and get the condition from the uiStore */}
                 <Sidebar />
                 <div className="inner">
                     <div className="content">
