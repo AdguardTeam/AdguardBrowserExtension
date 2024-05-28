@@ -78,10 +78,6 @@ export const Popover = ({
     const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
         const { left, bottom } = e.currentTarget.getBoundingClientRect();
 
-        if (!timer.current) {
-            return;
-        }
-
         timer.current = setTimeout(() => {
             setTooltip({
                 visible: true,
@@ -110,7 +106,7 @@ export const Popover = ({
         >
             {tooltip.visible && tooltip.position && (
                 <AttachmentPortal rootId="root-portal" position={tooltip.position}>
-                    <Tooltip text={text} />
+                    <Tooltip text={text} visible={tooltip.visible} />
                 </AttachmentPortal>
             )}
             {children}
