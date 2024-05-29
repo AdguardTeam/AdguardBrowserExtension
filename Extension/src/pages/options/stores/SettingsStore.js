@@ -534,8 +534,10 @@ class SettingsStore {
          * Optimistically set the enabled property to true.
          * The verified state of the filter will be emitted after the engine update.
          */
-        // FIXME(Slava): maybe do not set it optimistically for mv3
-        this.setFilterEnabledState(filterId, enabled);
+        // do not update filter state for mv3 optimistically
+        if (!__IS_MV3__) {
+            this.setFilterEnabledState(filterId, enabled);
+        }
 
         try {
             const groupId = await messenger.updateFilterStatus(filterId, enabled);
@@ -556,6 +558,9 @@ class SettingsStore {
                     // if any filter in group is enabled, the group is considered as touched
                     group.touched = true;
                 }
+            }
+            if (__IS_MV3__) {
+                this.setFilterEnabledState(filterId, enabled);
             }
         } catch (e) {
             logger.error(e);
