@@ -78,10 +78,18 @@ export class PagesApi {
     public static readonly postInstallPageUrl = PagesApi.getExtensionPageUrl(POST_INSTALL_OUTPUT);
 
     /**
-     * Thank you page page url.
+     * Thank you page url.
      */
     public static readonly thankYouPageUrl = Forward.get({
         action: ForwardAction.ThankYou,
+        from: ForwardFrom.Background,
+    });
+
+    /**
+     * Thank you page url for mv3.
+     */
+    public static readonly thankYouPageUrlMv3 = Forward.get({
+        action: ForwardAction.ThankYouMv3,
         from: ForwardFrom.Background,
     });
 
@@ -297,7 +305,9 @@ export class PagesApi {
     public static async openThankYouPage(): Promise<void> {
         const params = BrowserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(browser.i18n.getUILanguage())}`);
-        const thankYouUrl = `${PagesApi.thankYouPageUrl}?${params.join('&')}`;
+
+        const pageUrl = __IS_MV3__ ? PagesApi.thankYouPageUrlMv3 : PagesApi.thankYouPageUrl;
+        const thankYouUrl = `${pageUrl}?${params.join('&')}`;
 
         const postInstallPage = await TabsApi.findOne({ url: PagesApi.postInstallPageUrl });
 
