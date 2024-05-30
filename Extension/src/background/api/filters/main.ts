@@ -357,6 +357,20 @@ export class FiltersApi {
     }
 
     /**
+     * Returns enabled filters with metadata.
+     *
+     * @returns Enabled filters metadata array.
+     */
+    public static getEnabledFiltersWithMetadata(): FilterMetadata[] {
+        const filters = filterStateStorage.getEnabledFilters();
+        return filters
+            .map(f => {
+                return FiltersApi.getFilterMetadata(f);
+            })
+            .filter((f): f is FilterMetadata => f !== undefined);
+    }
+
+    /**
      * Enable filters groups that were not touched by users or by code.
      *
      * Called on filter enabling.

@@ -15,26 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import zod from 'zod';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+export const rulesLimitsStorageDataValidator = zod.array(zod.number());
 
-import { SelectProvider } from '../common/components/ui/Select/SelectProvider';
-import { translator } from '../../common/translators/translator';
-import { i18n } from '../../common/translators/i18n';
-
-import { Options } from './components/Options';
-
-export const optionsPage = {
-    init: () => {
-        document.title = translator.getMessage('options_settings');
-        document.documentElement.lang = i18n.getUILanguage();
-
-        ReactDOM.render(
-            <SelectProvider>
-                <Options />
-            </SelectProvider>,
-            document.getElementById('root'),
-        );
-    },
-};
+/**
+ * Contains an array of filters which were enabled.
+ */
+export type RulesLimitsStorageData = zod.infer<typeof rulesLimitsStorageDataValidator>;

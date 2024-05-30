@@ -16,25 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+// Rules limits schema entry point
 
-import { SelectProvider } from '../common/components/ui/Select/SelectProvider';
-import { translator } from '../../common/translators/translator';
-import { i18n } from '../../common/translators/i18n';
-
-import { Options } from './components/Options';
-
-export const optionsPage = {
-    init: () => {
-        document.title = translator.getMessage('options_settings');
-        document.documentElement.lang = i18n.getUILanguage();
-
-        ReactDOM.render(
-            <SelectProvider>
-                <Options />
-            </SelectProvider>,
-            document.getElementById('root'),
-        );
-    },
-};
+// Rules limits validators and types
+export * from './rules-limits';

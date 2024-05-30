@@ -16,13 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import {
-    MessageType,
     type AddAndEnableFilterMessage,
     type DisableFilterMessage,
     type DisableFiltersGroupMessage,
     type EnableFiltersGroupMessage,
-    type SetConsentedFiltersMessage,
     type GetIsConsentedFilterMessage,
+    MessageType,
+    type SetConsentedFiltersMessage,
 } from '../../common/messages';
 import { logger } from '../../common/logger';
 import { SettingOption } from '../schema';
@@ -30,13 +30,13 @@ import { messageHandler } from '../message-handler';
 import { engine } from '../engine';
 import {
     annoyancesConsent,
+    Categories,
     FilterMetadata,
     FiltersApi,
     FilterUpdateApi,
-    toasts,
-    Categories,
-    PageStatsApi,
     HitStatsApi,
+    PageStatsApi,
+    toasts,
 } from '../api';
 import {
     ContextMenuAction,
@@ -44,6 +44,8 @@ import {
     settingsEvents,
 } from '../events';
 import { listeners } from '../notifier';
+
+import { RulesLimitsService } from './rules-limits/mv3/rules-limits';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
@@ -61,6 +63,7 @@ export class FiltersService {
         messageHandler.addListener(MessageType.DisableFilter, FiltersService.onFilterDisable);
         messageHandler.addListener(MessageType.EnableFiltersGroup, FiltersService.onGroupEnable);
         messageHandler.addListener(MessageType.DisableFiltersGroup, FiltersService.onGroupDisable);
+        messageHandler.addListener(MessageType.RestoreFilters, FiltersService.onRestoreFilters);
         if (!__IS_MV3__) {
             messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.manualCheckFiltersUpdate);
         }
@@ -172,6 +175,15 @@ export class FiltersService {
 
         Categories.disableGroup(groupId);
         engine.debounceUpdate();
+    }
+
+    /**
+     * Called when user tries to restore filters.
+     */
+    private static async onRestoreFilters(): Promise<void> {
+        const expectedEnabledFilters = await RulesLimitsService.getExpectedEnabledFilters();
+        await FiltersApi.loadAndEnableFilters(expectedEnabledFilters);
+        await engine.update();
     }
 
     /**

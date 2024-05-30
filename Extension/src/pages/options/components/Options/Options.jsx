@@ -33,6 +33,7 @@ import { UserRules } from '../UserRules';
 import { Miscellaneous } from '../Miscellaneous';
 import { About } from '../About';
 import { Footer } from '../Footer';
+import { RulesLimits } from '../RulesLimits';
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
 import { updateFilterDescription } from '../../../helpers';
@@ -87,7 +88,7 @@ const Options = observer(() => {
                         }
                         case NotifierType.FullscreenUserRulesEditorUpdated: {
                             const [isOpen] = message.data;
-                            await settingsStore.setFullscreenUserRulesEditorState(isOpen);
+                            settingsStore.setFullscreenUserRulesEditorState(isOpen);
                             break;
                         }
                         default: {
@@ -130,6 +131,7 @@ const Options = observer(() => {
                             <Route path="/allowlist" component={Allowlist} />
                             <Route path="/user-filter" component={UserRules} />
                             <Route path="/miscellaneous" component={Miscellaneous} />
+                            <Route path="/rule-limits" component={RulesLimits} />
                             <Route path="/about" component={About} />
                             <Route component={General} />
                         </Switch>
