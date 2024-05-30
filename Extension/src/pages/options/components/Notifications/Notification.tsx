@@ -22,13 +22,26 @@ import React, {
     useState,
 } from 'react';
 
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
 
-export const Notification = (props) => {
+/**
+ * Notification component props
+ */
+interface NotificationProps {
+    id: string;
+    title: string;
+    description: string;
+}
+
+/**
+ * Notification component.
+ *
+ * @param props Notification component props
+ */
+export const Notification = (props: NotificationProps) => {
     const [notificationOnClose, setNotificationOnClose] = useState(false);
 
     const { id, title, description } = props;
@@ -81,10 +94,4 @@ export const Notification = (props) => {
             </button>
         </div>
     );
-};
-
-Notification.propTypes = {
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
 };

@@ -16,13 +16,25 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import { createContext } from 'react';
 
-import { translate } from '@adguard/translate';
+import { configure } from 'mobx';
 
-import { i18n } from './i18n';
+import SettingsStore from './SettingsStore';
+import UiStore from './UiStore';
 
-/**
- * Retrieves localized messages by key, formats and converts into react components or string
- */
-export const reactTranslator = translate.createReactTranslator(i18n, React);
+// Do not allow property change outside of store actions
+configure({ enforceActions: 'observed' });
+
+export class RootStore {
+    public uiStore: UiStore;
+
+    public settingsStore: SettingsStore;
+
+    constructor() {
+        this.settingsStore = new SettingsStore(this);
+        this.uiStore = new UiStore(this);
+    }
+}
+
+export const rootStore = createContext(new RootStore());

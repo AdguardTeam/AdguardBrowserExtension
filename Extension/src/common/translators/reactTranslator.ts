@@ -16,37 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-    observable,
-    action,
-    makeObservable,
-} from 'mobx';
-import { nanoid } from 'nanoid';
+import React from 'react';
 
-class UiStore {
-    constructor(rootStore) {
-        this.rootStore = rootStore;
-        makeObservable(this);
-    }
+import { I18nInterface, translate } from '@adguard/translate';
 
-    @observable notifications = [];
+import { i18n } from './i18n';
 
-    @action
-    addNotification({ title = '', description }) {
-        const id = nanoid();
-        this.notifications.push({
-            id,
-            title,
-            description,
-        });
-        return id;
-    }
-
-    @action
-    removeNotification(id) {
-        this.notifications = this.notifications
-            .filter((notification) => notification.id !== id);
-    }
-}
-
-export default UiStore;
+/**
+ * Retrieves localized messages by key, formats and converts into react components or string
+ */
+export const reactTranslator = translate.createReactTranslator(<I18nInterface>i18n, React);
