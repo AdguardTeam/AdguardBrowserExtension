@@ -26,7 +26,11 @@ import UiStore from './UiStore';
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
-class RootStore {
+export class RootStore {
+    public uiStore: UiStore;
+
+    public settingsStore: SettingsStore;
+
     constructor() {
         this.settingsStore = new SettingsStore(this);
         this.uiStore = new UiStore(this);
