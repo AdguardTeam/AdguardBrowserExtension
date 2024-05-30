@@ -23,16 +23,39 @@ import {
 } from 'mobx';
 import { nanoid } from 'nanoid';
 
+import type { RootStore } from './RootStore';
+
+/**
+ * Notification object.
+ */
+type Notification = {
+    id: string;
+    title: string;
+    description: string;
+};
+
+/**
+ * Set notification input object.
+ */
+type NotificationInput = {
+    description: string;
+} & Partial<Omit<Notification, 'description'>>;
+
 class UiStore {
-    constructor(rootStore) {
+    /**
+     * Root store instance. Added in advance, even though it is not used.
+     */
+    private rootStore: RootStore;
+
+    constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
         makeObservable(this);
     }
 
-    @observable notifications = [];
+    @observable notifications: Notification[] = [];
 
     @action
-    addNotification({ title = '', description }) {
+    addNotification({ title = '', description }: NotificationInput) {
         const id = nanoid();
         this.notifications.push({
             id,
@@ -43,7 +66,7 @@ class UiStore {
     }
 
     @action
-    removeNotification(id) {
+    removeNotification(id: string) {
         this.notifications = this.notifications
             .filter((notification) => notification.id !== id);
     }
