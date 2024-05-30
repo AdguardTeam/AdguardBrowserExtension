@@ -82,6 +82,14 @@ const Nav = ({ closeSidebar }) => {
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"
+                to="/rule-limits"
+                onClick={onClick}
+            >
+                {reactTranslator.getMessage('options_rule_limits')}
+            </NavLink>
+            <NavLink
+                className="nav__item"
+                activeClassName="nav__item--active"
                 to="/about"
                 onClick={onClick}
             >

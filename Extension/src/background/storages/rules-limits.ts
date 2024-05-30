@@ -16,25 +16,18 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { RULES_LIMITS_KEY } from '../../common/constants';
+import { StringStorage } from '../utils/string-storage';
+import { RulesLimitsStorageData } from '../schema/rules-limits/rules-limits';
 
-import { SelectProvider } from '../common/components/ui/Select/SelectProvider';
-import { translator } from '../../common/translators/translator';
-import { i18n } from '../../common/translators/i18n';
+import { storage } from './main';
 
-import { Options } from './components/Options';
-
-export const optionsPage = {
-    init: () => {
-        document.title = translator.getMessage('options_settings');
-        document.documentElement.lang = i18n.getUILanguage();
-
-        ReactDOM.render(
-            <SelectProvider>
-                <Options />
-            </SelectProvider>,
-            document.getElementById('root'),
-        );
-    },
-};
+/**
+ * Instance of {@link StringStorage} that stores filter enabled before chrome decided to disable them
+ * in {@link storage} under {@link RULES_LIMITS_KEY} key.
+ */
+export const rulesLimitsStorage = new StringStorage<
+    typeof RULES_LIMITS_KEY,
+    RulesLimitsStorageData,
+    'async'
+>(RULES_LIMITS_KEY, storage);

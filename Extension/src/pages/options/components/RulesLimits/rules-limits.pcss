@@ -1,0 +1,110 @@
+.rules-limits {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+
+    &__section {
+        padding: 16px;
+
+        &-title {
+            font-size: 16px;
+            line-height: 21px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+    }
+
+    &__group {
+        &-limits {
+            font-weight: 600;
+        }
+
+        &-option {
+            margin-bottom: 18px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            &-link {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__text {
+        &--gray {
+            color: var(--gray7f);
+
+            @media (prefers-color-scheme: dark) {
+                color: var(--grayc0);
+            }
+        }
+
+        &--orange {
+            color: var(--orange-limit);
+        }
+
+        &--green {
+            color: var(--green400);
+        }
+    }
+
+    &__warning {
+        padding: 16px 0;
+        border-radius: 8px;
+        background-color: var(--grayf6);
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--gray900);
+        }
+
+        &-title {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            line-height: 21px;
+            font-weight: 600;
+            padding: 16px;
+            color: var(--warning-header);
+
+            &--icon {
+                width: 24px;
+                height: 24px;
+            }
+
+            &--text {
+                margin-left: 8px;
+            }
+        }
+    }
+}
+
+.light-mode {
+    & .rules-limits {
+        &__text {
+            &--gray {
+                color: var(--gray7f);
+            }
+        }
+
+        &__warning {
+            background-color: var(--grayf6);
+        }
+    }
+}
+
+.dark-mode {
+    & .rules-limits {
+        &__text {
+            &--gray {
+                color: var(--grayc0);
+            }
+        }
+
+        &__warning {
+            background-color: var(--gray900);
+        }
+    }
+}

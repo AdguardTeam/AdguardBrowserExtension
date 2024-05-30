@@ -66,6 +66,7 @@ import { SettingOption } from './schema';
 import { getRunInfo } from './utils';
 import { contextMenuEvents, settingsEvents } from './events';
 import { KeepAlive } from './keep-alive';
+import { rulesLimitsService } from './services/rules-limits/mv3/rules-limits';
 
 /**
  * This class is app entry point.
@@ -126,6 +127,8 @@ export class App {
 
         // Initializes Settings storage data
         await SettingsApi.init();
+
+        rulesLimitsService.init();
 
         /**
          * When the extension is enabled, disabled and re-enabled during the user session,
