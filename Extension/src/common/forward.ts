@@ -21,7 +21,11 @@
  */
 export const enum ForwardAction {
     UninstallExtension = 'adguard_uninstal_ext',
+    // used for thank you page
     ThankYou = 'thank_you_page',
+    // used for thank you page for MV3
+    // FIXME: 'thank_you_page_mv3' is available in tds v530; should be deployed if action does not work
+    ThankYouMv3 = 'thank_you_page_mv3',
     // used for "More information" on the page blocked by Safebrowsing
     SiteReport = 'site_report_page',
     // used for "Report an issue" in popup or context menu on the page
