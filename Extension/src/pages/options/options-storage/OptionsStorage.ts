@@ -17,12 +17,15 @@
  */
 
 import { logger } from '../../../common/logger';
+
 /**
  * Module used to keep options page settings, which do not need extension level persistence
  */
 export class OptionsStorage {
     KEYS = {
-        /* allowlist editor wrap setting */
+        /**
+         * Allowlist editor wrap setting
+         */
         ALLOWLIST_EDITOR_WRAP: 'allowlist-editor-wrap',
 
         /**
@@ -54,11 +57,22 @@ export class OptionsStorage {
         },
     };
 
+    /**
+     * Storage object
+     */
+    private storage: Storage;
+
     constructor() {
         this.storage = localStorage;
     }
 
-    setItem(key, value) {
+    /**
+     * Set item to storage.
+     *
+     * @param key Key
+     * @param value Value
+     */
+    setItem(key: string, value: any): void {
         try {
             this.storage.setItem(key, JSON.stringify(value));
         } catch (e) {
@@ -66,13 +80,20 @@ export class OptionsStorage {
         }
     }
 
-    getItem(key) {
-        let storedValue;
-        try {
-            storedValue = JSON.parse(this.storage.getItem(key));
-        } catch (e) {
-            logger.debug(e);
-            storedValue = null;
+    /**
+     * Get item from storage.
+     *
+     * @param key Key
+     */
+    getItem(key: string): any {
+        let storedValue = null;
+        const item = this.storage.getItem(key);
+        if (item !== null) {
+            try {
+                storedValue = JSON.parse(item);
+            } catch (e) {
+                logger.debug(e);
+            }
         }
 
         return storedValue === null ? this.DEFAULTS[key] : storedValue;
