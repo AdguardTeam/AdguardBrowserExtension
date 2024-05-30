@@ -49,8 +49,10 @@ export const enum ForwardAction {
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
-    // FIXME: available in tds v529; should be deployed if action does not work
+    // FIXME: 'filters_specs_mv3' is available in tds v529; should be deployed if action does not work
     FiltersSpecsMv3 = 'filters_specs_mv3',
+    LearnMoreAboutMv3 = 'learn_more_about_mv3',
+    GetTheApp = 'get_the_app',
     GithubVersion = 'github_version_popup',
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',

@@ -37,6 +37,7 @@ import {
     DocumentBlockApi,
     CustomFilterApi,
 } from '../api';
+import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/mv3/rules-limits';
 
 import { TsWebExtensionEngine } from './interface';
 
@@ -95,12 +96,15 @@ export class Engine implements TsWebExtensionEngine {
         const configuration = await Engine.getConfiguration();
 
         logger.info('Start tswebextension...');
-        await this.api.start(configuration);
+        const result = await this.api.start(configuration);
+        rulesLimitsService.set(result);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
+
+        await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
     }
 
     /**
@@ -119,17 +123,24 @@ export class Engine implements TsWebExtensionEngine {
     /**
      * Updates tswebextension configuration and after that updates the counter
      * of active rules.
+     *
+     * @param skipLimitsCheck Skip limits check.
      */
-    async update(): Promise<void> {
+    async update(skipLimitsCheck: boolean = false): Promise<void> {
         const configuration = await Engine.getConfiguration();
 
         logger.info('Update tswebextension configuration...');
-        await this.api.configure(configuration);
+        const result = await this.api.configure(configuration);
+        rulesLimitsService.set(result);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
+
+        if (!skipLimitsCheck) {
+            await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
+        }
     }
 
     /**

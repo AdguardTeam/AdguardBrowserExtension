@@ -265,11 +265,23 @@ label.checkbox-label {
     &__desc {
         font-size: 14px;
         font-weight: 400;
-        color: var(--gray700);
         margin-top: 8px;
+        color: var(--gray7f);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--grayc0);
+        }
 
         &--back {
             cursor: pointer;
+        }
+
+        &--additional {
+            margin-top: 4px;
+
+            &-link {
+                color: var(--green400);
+            }
         }
     }
 
@@ -463,6 +475,10 @@ select:focus {
                 }
             }
         }
+
+        &__desc {
+            color: var(--gray7f);
+        }
     }
 
     .ReactModal__Content--after-open {
@@ -519,6 +535,10 @@ select:focus {
                     background-color: var(--gray900);
                 }
             }
+        }
+
+        &__desc {
+            color: var(--grayc0);
         }
     }
 

@@ -114,6 +114,21 @@ const getOptionsDataWithRetry = async () => {
     return innerRetry(TOTAL_RETRY_TIMES);
 };
 
+const DEFAULT_RULES_LIMITS = {
+    userRulesEnabledCount: 0,
+    userRulesMaximumCount: 0,
+    userRulesRegexpsEnabledCount: 0,
+    userRulesRegexpsMaximumCount: 0,
+    staticFiltersEnabledCount: 0,
+    staticFiltersMaximumCount: 0,
+    staticRulesEnabledCount: 0,
+    staticRulesMaximumCount: 0,
+    staticRulesRegexpsEnabledCount: 0,
+    staticRulesRegexpsMaxCount: 0,
+    expectedEnabledFilters: [],
+    actuallyEnabledFilters: [],
+};
+
 class SettingsStore {
     KEYS = {
         ALLOW_ACCEPTABLE_ADS: 'allowAcceptableAds',
@@ -171,6 +186,8 @@ class SettingsStore {
 
     @observable filterIdSelectedForConsent = null;
 
+    @observable rulesLimits = DEFAULT_RULES_LIMITS;
+
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -182,6 +199,15 @@ class SettingsStore {
                     this.allowlistEditorContentChanged = false;
                 }
             });
+        });
+    }
+
+    @action
+    async getRulesLimits() {
+        const rulesLimits = await messenger.getRulesLimits();
+
+        runInAction(() => {
+            this.rulesLimits = rulesLimits;
         });
     }
 

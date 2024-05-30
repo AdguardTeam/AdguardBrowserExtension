@@ -38,6 +38,7 @@ export const LAST_NOTIFICATION_TIME_KEY = 'viewed-notification-time';
 export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
+export const RULES_LIMITS_KEY = 'rules-limits';
 
 // Filter ids used in the code on the background page and filtering log page
 export enum AntiBannerFiltersId {

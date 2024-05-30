@@ -336,6 +336,7 @@ class Messenger {
         return this.sendMessage(MessageType.GetFilteringLogData);
     }
 
+    // FIXME check why this is not used anymore
     async onCloseFilteringLogPage() {
         await this.sendMessage(MessageType.OnCloseFilteringLogPage);
     }
@@ -379,6 +380,10 @@ class Messenger {
     // FIXME make sure that this is not used anymore
     async convertRuleText(content) {
         return this.sendMessage(MessageType.ConvertRulesText, { content });
+    }
+
+    async getRulesLimits() {
+        return this.sendMessage(MessageType.GetRulesLimits);
     }
 }
 
