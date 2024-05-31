@@ -16,33 +16,29 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { handleWithMinLoaderDelay } from '../../../common/components/helpers';
-import { Loader } from '../../../common/components/Loader';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 export const AllowlistSwitcher = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     const { settings } = settingsStore;
 
     const { AllowlistEnabled } = settings.names;
 
-    const [showLoader, setShowLoader] = useState(false);
-
-    const allowlistChangeHandler = ({ id, data }) => {
-        handleWithMinLoaderDelay(
-            setShowLoader,
-            () => settingsStore.updateSetting(id, data),
-        );
+    const allowlistChangeHandler = async ({ id, data }) => {
+        await addMinDelayLoader(
+            uiStore.setShowLoader,
+            settingsStore.updateSetting,
+        )(id, data);
     };
 
     return (
         <>
-            <Loader condition={showLoader} />
             <Setting
                 id={AllowlistEnabled}
                 type={SETTINGS_TYPES.CHECKBOX}

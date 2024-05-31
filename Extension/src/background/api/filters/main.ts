@@ -362,7 +362,7 @@ export class FiltersApi {
      * @returns Enabled filters metadata array.
      */
     public static getEnabledFiltersWithMetadata(): FilterMetadata[] {
-        const filters = filterStateStorage.getEnabledFilters();
+        const filters = FiltersApi.getEnabledFilters();
         return filters
             .map(f => {
                 return FiltersApi.getFilterMetadata(f);
