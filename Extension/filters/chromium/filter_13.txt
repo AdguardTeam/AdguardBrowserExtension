@@ -1,9 +1,9 @@
-! Checksum: C6jIn3PfdlzGVWFW0rSiiQ
-! Diff-Path: ../patches/13/13-s-1717068895-3600.patch
+! Checksum: Tb3W6Vqpq0x9hYpTMcn6hg
+! Diff-Path: ../patches/13/13-s-1717169753-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.51.97
-! TimeUpdated: 2024-05-30T11:32:45+00:00
+! Version: 2.0.51.98
+! TimeUpdated: 2024-05-31T15:33:35+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -498,6 +498,7 @@ $image,redirect-rule=1x1-transparent.gif,domain=puhutv.com
 @@||puhutv.com/banner-ad*.png
 puhutv.com#%#//scriptlet('set-constant', 'maari', 'noopFunc')
 puhutv.com#%#//scriptlet("set-constant", "adBlockEnabled", "false")
+puhutv.com#%#//scriptlet('prevent-setTimeout', '/div#gpt-passback|playerNew\.dispose\(\)/')
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=puhutv.com
 ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,xmlhttprequest,redirect=googlesyndication-adsbygoogle,domain=puhutv.com
 ! TODO: remove hint when app for iOS/Safari extension will use scriptlets library version 1.9.57 or newer

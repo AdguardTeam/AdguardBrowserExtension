@@ -1,9 +1,9 @@
-! Checksum: KE22Aa0ZSoaF0Gb+JA1MIQ
-! Diff-Path: ../patches/11/11-s-1717162518-3600.patch
+! Checksum: vFtDzXb2+vm9/H9bfEbC8g
+! Diff-Path: ../patches/11/11-s-1717169753-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.51.89
-! TimeUpdated: 2024-05-31T13:33:15+00:00
+! Version: 2.0.51.90
+! TimeUpdated: 2024-05-31T15:33:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1975,6 +1975,10 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/180493
+@@||advertising-cdn.dpgmedia.cloud/web-advertising/$domain=totaaltv.nl
+@@||advertising-cdn.dpgmedia.cloud/native-renderer/main.js$domain=totaaltv.nl
+@@||acdn.adnxs.com/ast/ast.js$domain=totaaltv.nl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/180431
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179429
 @@||cmp.inmobi.com/GVL-v2/$domain=express.co.uk
@@ -2363,6 +2367,7 @@ otakei.otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.sm
 !
 ! SECTION: Regular rules
 !
+blocktrends.com.br##.popup-rolagem
 russian.rt.com##.column > .column__content > div.column__row:has(> div[data-bid])
 sport24.ru###adfox_Sport24_branding
 ortacizgi.com##div.display:has(> div.post-ad-title)
