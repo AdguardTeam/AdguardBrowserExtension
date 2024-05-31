@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Updated [@adguard/tswebextension] to v1.0.25.
+
+### Fixed
+- Some filters are not updated when enabled [#2818].
+
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...HEAD
+[#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
+
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...HEAD
+[#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
+
+
+## [4.3.53]
+
+### Changed
+- Updated [@adguard/tswebextension] to v1.0.24.
+
+### Fixed
+- Do not throw an error during cookie setting if a cookie domain mismatches a request URL [#2683].
+- Script rules are not applied in Firefox due to CSP [#1733].
+
+[4.3.53]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.46...v4.3.53
+[#2683]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2683
+[#1733]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1733
+
+
+## [4.3.46] - 2024-04-08
+
 ### Added
 - `@adguard/logger` for logging messages.
 
@@ -15,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607].
 - Updated [@adguard/filters-downloader] to v2.2.0.
 - Updated [@adguard/tsurlfilter] to v2.2.18.
-- Updated [@adguard/tswebextension] to v1.0.23.
+- Updated [@adguard/tswebextension] to v1.0.22.
 - Updated [@adguard/scriptlets] to v1.10.25.
 
 ### Fixed
@@ -25,17 +54,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
 - Applying of modifiers `$popup` and `$all` [#2620], [#2728].
 - Update recommended filters on enabling group of filters and on locale detection [#2714].
-- Do not throw an error during cookie setting if a cookie domain mismatches a request URL [#2683].
 - Extension's action icon flickering on tab change.
 - Missing info on custom filters when reporting issues [#2793].
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...HEAD
+[4.3.46]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...v4.3.46
 [#2793]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2793
 [#2761]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
 [#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 [#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
 [#2714]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714
-[#2683]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2683
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
 [#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
 [#2607]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607
