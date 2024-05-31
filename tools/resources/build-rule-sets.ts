@@ -32,7 +32,7 @@ const convert = async (browser: string) => {
 };
 
 export const convertFiltersToRulesets = async () => {
-    await convert('chromium');
+    await convert('chromium-mv3');
     // await convert('edge');
     // await convert('firefox');
     // await convert('opera');
