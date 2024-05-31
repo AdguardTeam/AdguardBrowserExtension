@@ -185,7 +185,7 @@ export class Engine implements TsWebExtensionEngine {
             logLevel: LogLevel.Info,
             staticFiltersIds,
             userrules,
-            allowlist, // FIXME: Not used in MV3, should be fixed.
+            allowlist,
             settings,
             // eslint-disable-next-line max-len
             trustedDomains, // FIXME: Not used in MV3, should be fixed. We can add DNR rule and delete it after expiration.
