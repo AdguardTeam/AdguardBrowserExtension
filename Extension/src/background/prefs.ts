@@ -38,7 +38,8 @@ export class Prefs {
         tswebextension: TSWEBEXTENSION_VERSION,
         tsurlfilter: TSURLFILTER_VERSION,
         scriptlets: SCRIPTLETS_VERSION,
-        // FIXME: Exclude using 'window' object from the exported modules
-        extendedCss: 'N/A',
+        // FIXME: 1. Exclude using 'window' object from the exported modules
+        // FIXME: 2. Use the imported version after the fix
+        extendedCss: '2.0.56',
     };
 }
