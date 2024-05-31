@@ -36,7 +36,9 @@ import {
 const savingService = createSavingService({
     id: 'userRules',
     services: {
-        saveData: (_, e) => messenger.saveUserRules(e.value),
+        saveData: async (_, e) => {
+            await messenger.saveUserRules(e.value);
+        },
     },
 });
 
@@ -55,6 +57,8 @@ class UserRulesEditorStore {
 
     constructor() {
         makeObservable(this);
+
+        this.updateSetting = this.updateSetting.bind(this);
 
         savingService.onTransition((state) => {
             runInAction(() => {
@@ -91,12 +95,12 @@ class UserRulesEditorStore {
     };
 
     @action
-    updateSetting(settingId, value) {
+    async updateSetting(settingId, value) {
         if (this.settings) {
             this.settings.values[settingId] = value;
         }
 
-        messenger.changeUserSetting(settingId, value);
+        await messenger.changeUserSetting(settingId, value);
     }
 
     @action

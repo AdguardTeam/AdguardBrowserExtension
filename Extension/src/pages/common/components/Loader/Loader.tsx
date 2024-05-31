@@ -17,7 +17,6 @@
  */
 
 import React from 'react';
-import { observer } from 'mobx-react';
 
 import { translator } from '../../../../common/translators/translator';
 import { AttachmentPortal } from '../AttachmentPortal';
@@ -27,12 +26,12 @@ import './loader.pcss';
 
 type LoaderParams = {
     /**
-     * Condition to show the loader.
+     * Flag whether to show loader or not.
      */
-    condition: boolean,
+    showLoader: boolean,
 };
 
-export const Loader = observer(({ condition }: LoaderParams) => {
+export const Loader = ({ showLoader }: LoaderParams) => {
     const LOADER_POSITION = {
         x: 0,
         y: 0,
@@ -40,7 +39,7 @@ export const Loader = observer(({ condition }: LoaderParams) => {
 
     return (
         <>
-            {condition && (
+            {showLoader && (
                 <AttachmentPortal rootId="root-portal" position={LOADER_POSITION}>
                     <div className="loader">
                         <div className="loader__background">
@@ -49,7 +48,7 @@ export const Loader = observer(({ condition }: LoaderParams) => {
                                     <Icon
                                         id="#loading"
                                         classname="icon--24"
-                                        animationCondition={condition}
+                                        animationCondition={showLoader}
                                         animationClassname="icon--loading"
                                     />
                                     <div className="loader__text">
@@ -63,4 +62,4 @@ export const Loader = observer(({ condition }: LoaderParams) => {
             )}
         </>
     );
-});
+};

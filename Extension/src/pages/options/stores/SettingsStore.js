@@ -192,11 +192,19 @@ class SettingsStore {
         makeObservable(this);
         this.rootStore = rootStore;
 
+        this.updateSetting = this.updateSetting.bind(this);
+        this.updateFilterSetting = this.updateFilterSetting.bind(this);
+        this.updateGroupSetting = this.updateGroupSetting.bind(this);
+        this.setAllowAcceptableAdsState = this.setAllowAcceptableAdsState.bind(this);
+
         savingAllowlistService.onTransition((state) => {
             runInAction(() => {
                 this.savingAllowlistState = state.value;
                 if (state.value === SavingFSMState.Saving) {
                     this.allowlistEditorContentChanged = false;
+                    this.rootStore.uiStore.setShowLoader(true);
+                } else {
+                    this.rootStore.uiStore.setShowLoader(false);
                 }
             });
         });
@@ -282,11 +290,11 @@ class SettingsStore {
     }
 
     @action
-    updateSetting(settingId, value, ignoreBackground = false) {
+    async updateSetting(settingId, value, ignoreBackground = false) {
         this.settings.values[settingId] = value;
 
         if (!ignoreBackground) {
-            messenger.changeUserSetting(settingId, value);
+            await messenger.changeUserSetting(settingId, value);
         }
     }
 
@@ -669,8 +677,8 @@ class SettingsStore {
     };
 
     @action
-    saveAllowlist = async (allowlist) => {
-        await savingAllowlistService.send(SavingFSMEvent.Save, { value: allowlist });
+    saveAllowlist = async (value) => {
+        await savingAllowlistService.send(SavingFSMEvent.Save, { value });
     };
 
     @action

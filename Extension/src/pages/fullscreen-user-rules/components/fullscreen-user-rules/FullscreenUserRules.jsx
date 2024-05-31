@@ -19,8 +19,10 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
+import { Loader } from '../../../common/components/Loader';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { FULLSCREEN_USER_RULES_EDITOR, NotifierType } from '../../../../common/constants';
+import { rootStore } from '../../../options/stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { fullscreenUserRulesStore } from '../../stores/FullscreenUserRulesStore';
@@ -32,6 +34,8 @@ import '../../../options/components/UserRules/styles.pcss';
 
 export const FullscreenUserRules = observer(() => {
     const store = useContext(fullscreenUserRulesStore);
+
+    const { uiStore } = useContext(rootStore);
 
     useAppearanceTheme(store.appearanceTheme);
 
@@ -73,8 +77,9 @@ export const FullscreenUserRules = observer(() => {
 
     return (
         <>
+            <Loader showLoader={uiStore.showLoader} />
             <Icons />
-            <UserRulesEditor fullscreen />
+            <UserRulesEditor fullscreen uiStore={uiStore} />
         </>
     );
 });

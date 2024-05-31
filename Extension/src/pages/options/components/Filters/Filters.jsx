@@ -32,8 +32,8 @@ import { sortBy } from 'lodash-es';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 import { SettingsSection } from '../Settings/SettingsSection';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Icon } from '../../../common/components/ui/Icon';
-import { Loader } from '../../../common/components/Loader';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { AntibannerGroupsId } from '../../../../common/constants';
 
@@ -55,7 +55,7 @@ const QUERY_PARAM_NAMES = {
 };
 
 const Filters = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     const history = useHistory();
 
@@ -68,8 +68,6 @@ const Filters = observer(() => {
 
     // This state used to remove blinking while filters to render were not selected
     const [groupDetermined, setGroupDetermined] = useState(false);
-
-    const [showLoader, setShowLoader] = useState(false);
 
     const GROUP_DESCRIPTION = {
         [AntibannerGroupsId.CustomFiltersGroupId]: translator.getMessage('group_description_custom'),
@@ -111,13 +109,10 @@ const Filters = observer(() => {
             return;
         }
 
-        if (__IS_MV3__) {
-            setShowLoader(true);
-            await settingsStore.updateGroupSetting(groupId, data);
-            setShowLoader(false);
-        } else {
-            await settingsStore.updateGroupSetting(groupId, data);
-        }
+        await addMinDelayLoader(
+            uiStore.setShowLoader,
+            settingsStore.updateGroupSetting,
+        )(groupId, data);
     };
 
     const groupClickHandler = (groupId) => () => {
@@ -291,7 +286,6 @@ const Filters = observer(() => {
                 )}
                 renderBackButton={renderBackButton}
             >
-                <Loader condition={showLoader} />
                 {isEmpty && isCustom && !settingsStore.isSearching
                     ? <EmptyCustom />
                     : (
@@ -333,7 +327,6 @@ const Filters = observer(() => {
             ) : (
                 <FiltersUpdate />
             )}
-            <Loader condition={showLoader} />
             <Search />
             {settingsStore.isSearching
                 ? renderGroupsOnSearch(filtersToRender)

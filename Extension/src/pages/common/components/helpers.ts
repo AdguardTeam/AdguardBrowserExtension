@@ -16,29 +16,38 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { addMinDurationTime } from '../../../common/common-script';
 import { MIN_LOADER_SHOWING_TIME_MS } from '../constants';
 
 /**
- * Runs the callback function with a minimum delay to show the loader.
+ * Checks if the extension is MV3, and
+ * - if so it returns a new callback that shows the loader for at least {@link MIN_LOADER_SHOWING_TIME_MS},
+ * - otherwise (for MV2) it returns the callback as it is.
  *
- * Needed when the operation is too fast and the loader is not shown at all or is shown for a very short time.
+ * @param setShowLoaderCb Callback to set the loader visibility.
+ * @param callback Async callback to run.
  *
- * @param setShowLoader Function to set the loader visibility.
- * @param callback Callback function to run.
+ * @returns Async callback with the loader showing for at least {@link MIN_LOADER_SHOWING_TIME_MS}.
  */
-export const handleWithMinLoaderDelay = (
-    setShowLoader: (showLoader: boolean) => void,
-    callback: () => void,
-): void => {
-    const startMs = Date.now();
-    setShowLoader(true);
+export const addMinDelayLoader = (
+    setShowLoaderCb: (showLoader: boolean) => void,
+    callback: (...args: unknown[]) => Promise<unknown>,
+) => {
+    if (!__IS_MV3__) {
+        return callback;
+    }
 
-    callback();
-    const endMs = Date.now();
+    const callbackWithMinDuration = addMinDurationTime(callback, MIN_LOADER_SHOWING_TIME_MS);
 
-    const delayMs = MIN_LOADER_SHOWING_TIME_MS - (endMs - startMs);
-
-    setTimeout(() => {
-        setShowLoader(false);
-    }, delayMs);
+    return async (...args: unknown[]) => {
+        setShowLoaderCb(true);
+        try {
+            const response = await callbackWithMinDuration(...args);
+            setShowLoaderCb(false);
+            return response;
+        } catch (e) {
+            setShowLoaderCb(false);
+            throw e;
+        }
+    };
 };

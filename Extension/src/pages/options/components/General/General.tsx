@@ -35,6 +35,7 @@ import {
     SAFEBROWSING_LEARN_MORE_URL,
     BUG_REPORT_URL,
 } from '../../constants';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { UserAgent } from '../../../../common/user-agent';
 import { BROWSER_ADDON_STORE_LINKS } from '../../../constants';
@@ -170,7 +171,10 @@ export const General = observer(() => {
     };
 
     const allowAcceptableAdsChangeHandler: SettingHandler = async ({ data }) => {
-        await settingsStore.setAllowAcceptableAdsState(data);
+        await addMinDelayLoader(
+            uiStore.setShowLoader,
+            settingsStore.setAllowAcceptableAdsState,
+        )(data);
     };
 
     const settingChangeHandler: SettingHandler = async ({ id, data }) => {

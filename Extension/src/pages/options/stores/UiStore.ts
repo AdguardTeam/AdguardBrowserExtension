@@ -49,10 +49,18 @@ class UiStore {
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
+
         makeObservable(this);
+
+        this.setShowLoader = this.setShowLoader.bind(this);
     }
 
     @observable notifications: Notification[] = [];
+
+    /**
+     * Loader visibility state. **Used for mv3**.
+     */
+    @observable showLoader = false;
 
     @action
     addNotification({ title = '', description }: NotificationInput) {
@@ -69,6 +77,16 @@ class UiStore {
     removeNotification(id: string) {
         this.notifications = this.notifications
             .filter((notification) => notification.id !== id);
+    }
+
+    /**
+     * Sets the loader visibility state. **Used for mv3**
+     *
+     * @param {boolean} value Loader visibility state. Default value is false.
+     */
+    @action
+    setShowLoader(value = false) {
+        this.showLoader = value;
     }
 }
 
