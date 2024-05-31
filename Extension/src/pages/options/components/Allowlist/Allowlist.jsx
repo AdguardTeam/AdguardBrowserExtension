@@ -30,8 +30,6 @@ import { Editor } from '../../../common/components/Editor';
 import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
-import { SavingFSMState } from '../../../common/components/Editor/savingFSM';
-import { Loader } from '../../../common/components/Loader';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { exportData, ExportTypes } from '../../../common/utils/export';
@@ -108,9 +106,7 @@ const Allowlist = observer(() => {
     const shortcuts = [{
         name: 'save',
         bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-        exec: async () => {
-            await saveClickHandler();
-        },
+        exec: saveClickHandler,
     }];
 
     const { AllowlistEnabled } = settings.names;
@@ -121,15 +117,8 @@ const Allowlist = observer(() => {
         shouldResetSize = true;
     }
 
-    /**
-     * Show loader in mv3 when allowlist is being saved.
-     */
-    const isMv3Saving = __IS_MV3__
-        && settingsStore.savingAllowlistState === SavingFSMState.Saving;
-
     return (
         <>
-            <Loader condition={isMv3Saving} />
             <SettingsSection
                 title={reactTranslator.getMessage('options_allowlist')}
                 id={AllowlistEnabled}

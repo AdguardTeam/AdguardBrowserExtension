@@ -40,8 +40,8 @@ import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constants';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
-import { Loader } from '../../../common/components/Loader';
 
 import { formatDate } from './helpers';
 import { HighlightSearch } from './Search/HighlightSearch';
@@ -83,11 +83,9 @@ type FilterParams = {
 };
 
 const Filter = observer(({ filter }: FilterParams) => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     const [isOpenRemoveFilterModal, setIsOpenRemoveFilterModal] = useState(false);
-
-    const [showLoader, setShowLoader] = useState(false);
 
     const {
         name,
@@ -118,6 +116,11 @@ const Filter = observer(({ filter }: FilterParams) => {
         const annoyancesFilter = settingsStore.annoyancesFilters
             .find((f: RegularFilterMetadata) => f.filterId === filterId);
 
+        const updateFilterSettingWrapper = addMinDelayLoader(
+            uiStore.setShowLoader,
+            settingsStore.updateFilterSetting,
+        );
+
         if (annoyancesFilter && data) {
             const isConsentedFilter = await messenger.getIsConsentedFilter(filterId);
             if (!isConsentedFilter) {
@@ -126,25 +129,13 @@ const Filter = observer(({ filter }: FilterParams) => {
                 settingsStore.setFiltersToGetConsentFor([annoyancesFilter]);
                 settingsStore.setFilterIdSelectedForConsent(filterId);
                 settingsStore.setIsAnnoyancesConsentModalOpen(true);
-            } else if (__IS_MV3__) {
-                // show loader for mv3
-                setShowLoader(true);
-                await settingsStore.updateFilterSetting(filterId, data);
-                setShowLoader(false);
             } else {
-                // just update filter setting
-                await settingsStore.updateFilterSetting(filterId, data);
+                await updateFilterSettingWrapper(filterId, data);
             }
             return;
         }
 
-        if (__IS_MV3__) {
-            setShowLoader(true);
-            await settingsStore.updateFilterSetting(filterId, data);
-            setShowLoader(false);
-        } else {
-            await settingsStore.updateFilterSetting(filterId, data);
-        }
+        await updateFilterSettingWrapper(filterId, data);
     };
 
     const handleRemoveFilterClick = async (e: React.MouseEvent) => {
@@ -191,7 +182,6 @@ const Filter = observer(({ filter }: FilterParams) => {
 
     return (
         <>
-            <Loader condition={showLoader} />
             <label htmlFor={prefixedFilterId} className="setting-checkbox">
                 <div className={filterClassName} role="presentation">
                     <div className="filter__info">

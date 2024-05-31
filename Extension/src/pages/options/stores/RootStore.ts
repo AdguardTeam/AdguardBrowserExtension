@@ -32,8 +32,10 @@ export class RootStore {
     public settingsStore: SettingsStore;
 
     constructor() {
-        this.settingsStore = new SettingsStore(this);
+        // uiStore should be initialized before settingsStore
+        // because settingsStore uses uiStore
         this.uiStore = new UiStore(this);
+        this.settingsStore = new SettingsStore(this);
     }
 }
 

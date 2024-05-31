@@ -40,6 +40,7 @@ import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { Icons } from '../../../common/components/ui/Icons';
+import { Loader } from '../../../common/components/Loader';
 import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 
@@ -119,7 +120,7 @@ const Options = observer(() => {
         <HashRouter hashType="noslash">
             <Icons />
             <div className="page">
-                {/* FIXME(Slava): try to add Loader here once and get the condition from the uiStore */}
+                <Loader showLoader={uiStore.showLoader} />
                 <Sidebar />
                 <div className="inner">
                     <div className="content">
