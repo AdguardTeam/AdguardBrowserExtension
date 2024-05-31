@@ -308,10 +308,9 @@ const startDownload = async (browser: AssetsFiltersBrowser): Promise<void> => {
 
 export const downloadFilters = async () => {
     await startDownload(AssetsFiltersBrowser.Chromium);
-    // FIXME: revert commented code
-    // await startDownload(AssetsFiltersBrowser.Edge);
-    // await startDownload(AssetsFiltersBrowser.Firefox);
-    // await startDownload(AssetsFiltersBrowser.Opera);
+    await startDownload(AssetsFiltersBrowser.Edge);
+    await startDownload(AssetsFiltersBrowser.Firefox);
+    await startDownload(AssetsFiltersBrowser.Opera);
     // should be run after chromium filters are downloaded
     await prepareMv3Filters();
 };
