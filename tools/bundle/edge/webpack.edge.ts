@@ -35,8 +35,12 @@ import {
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
 } from '../../../constants';
-import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-constants';
-import { BrowserConfig, BUILD_ENV } from '../../constants';
+import {
+    type BrowserConfig,
+    BACKGROUND_PATH,
+    htmlTemplatePluginCommonOptions,
+} from '../common-constants';
+import { BUILD_ENV } from '../../constants';
 
 import { edgeManifest } from './manifest.edge';
 

@@ -21,7 +21,8 @@ import { promises as fsp } from 'fs';
 
 import { BUILD_ENV, BUILD_PATH } from '../constants';
 import packageJson from '../../package.json';
-import { getEnvConf } from '../helpers';
+
+import { getEnvConf } from './helpers';
 
 const config = getEnvConf(BUILD_ENV);
 const OUTPUT_PATH = config.outputPath;

@@ -17,11 +17,15 @@
  */
 
 import { convertFiltersToRulesets } from './resources/build-rule-sets';
+import { downloadFilters } from './resources/download-filters';
 
 const resources = async () => {
-    // await downloadFilters();
+    await downloadFilters();
+    // FIXME: revert commented code
     // await updateLocalScriptRules();
     // await findDangerousRules();
+
+    // converting filters to rulesets should be done after all filters are downloaded
     await convertFiltersToRulesets();
 };
 

@@ -21,7 +21,6 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { type Configuration, NormalModuleReplacementPlugin } from 'webpack';
 
-import { type BrowserConfig } from '../constants';
 import {
     REACT_VENDOR_OUTPUT,
     MOBX_VENDOR_OUTPUT,
@@ -32,7 +31,11 @@ import {
     BACKGROUND_OUTPUT,
 } from '../../constants';
 
-import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from './common-constants';
+import {
+    type BrowserConfig,
+    BACKGROUND_PATH,
+    htmlTemplatePluginCommonOptions,
+} from './common-constants';
 import {
     genCommonConfig,
     genCommonEntry,

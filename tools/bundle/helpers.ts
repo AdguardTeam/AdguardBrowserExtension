@@ -16,27 +16,27 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-
-import fse from 'fs-extra';
-
 import {
-    BUILD_ENV,
-    BUILD_PATH,
-    FIREFOX_UPDATE_TEMPLATE,
-} from '../../constants';
-import { version } from '../../../package.json';
-import { getEnvConf } from '../helpers';
+    Browser,
+    BuildTargetEnv,
+    ENV_CONF,
+    type EnvConfig,
+} from '../constants';
 
-export const buildUpdateJson = async () => {
-    const envConf = getEnvConf(BUILD_ENV);
+import { type BrowserConfig, BROWSERS_CONF } from './common-constants';
 
-    const buildDir = path.join(BUILD_PATH, envConf.outputPath);
-    await fse.ensureDir(buildDir);
+export const getBrowserConf = (browser: Browser): BrowserConfig => {
+    const browserConf = BROWSERS_CONF[browser];
+    if (!browserConf) {
+        throw new Error(`No browser config for: "${browser}"`);
+    }
+    return browserConf;
+};
 
-    // create update.json
-    let updateJsonTemplate = (await fs.readFile(FIREFOX_UPDATE_TEMPLATE)).toString();
-    updateJsonTemplate = updateJsonTemplate.replace(/\%VERSION\%/g, version);
-    await fs.writeFile(path.join(buildDir, 'update.json'), updateJsonTemplate);
+export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
+    const envConfig = ENV_CONF[env];
+    if (!envConfig) {
+        throw new Error(`No env config for: "${env}"`);
+    }
+    return envConfig;
 };

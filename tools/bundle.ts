@@ -31,33 +31,37 @@ import { crx } from './bundle/crx';
 import { buildInfo } from './bundle/build-info';
 import { buildUpdateJson } from './bundle/firefox/updateJson';
 
-const bundleChrome = (options) => {
+type CommanderOptions = {
+    [key: string]: any,
+};
+
+const bundleChrome = (options: CommanderOptions) => {
     const webpackConfig = getWebpackConfig(Browser.Chrome, options.watch);
     return bundleRunner(webpackConfig, options);
 };
 
-const bundleChromeMv3 = (options) => {
+const bundleChromeMv3 = (options: CommanderOptions) => {
     const webpackConfig = getWebpackConfig(Browser.ChromeMv3, options.watch);
     return bundleRunner(webpackConfig, options);
 };
 
-const bundleFirefoxAmo = (options) => {
+const bundleFirefoxAmo = (options: CommanderOptions) => {
     const webpackConfig = getWebpackConfig(Browser.FirefoxAmo, options.watch);
     return bundleRunner(webpackConfig, options);
 };
 
-const bundleFirefoxStandalone = async (options) => {
+const bundleFirefoxStandalone = async (options: CommanderOptions) => {
     const webpackConfig = getWebpackConfig(Browser.FirefoxStandalone, options.watch);
     await buildUpdateJson();
     return bundleRunner(webpackConfig, options);
 };
 
-const bundleEdge = (options) => {
+const bundleEdge = (options: CommanderOptions) => {
     const webpackConfig = getWebpackConfig(Browser.Edge, options.watch);
     return bundleRunner(webpackConfig, options);
 };
 
-const bundleOpera = (options) => {
+const bundleOpera = (options: CommanderOptions) => {
     const webpackConfig = getWebpackConfig(Browser.Opera, options.watch);
     return bundleRunner(webpackConfig, options);
 };
@@ -100,13 +104,16 @@ const releasePlan = [
     buildInfo,
 ];
 
-const runBuild = async (tasks, options) => {
+const runBuild = async (
+    tasks: ((options: CommanderOptions) => Promise<void>)[],
+    options: CommanderOptions,
+) => {
     for (const task of tasks) {
         await task(options);
     }
 };
 
-const mainBuild = async (options) => {
+const mainBuild = async (options: CommanderOptions) => {
     switch (BUILD_ENV) {
         case BuildTargetEnv.Dev: {
             await runBuild(devPlan, options);
@@ -125,7 +132,7 @@ const mainBuild = async (options) => {
     }
 };
 
-const main = async (options) => {
+const main = async (options: CommanderOptions) => {
     try {
         await mainBuild(options);
     } catch (e) {
@@ -134,7 +141,7 @@ const main = async (options) => {
     }
 };
 
-const chrome = async (options) => {
+const chrome = async (options: CommanderOptions) => {
     try {
         await bundleChrome(options);
     } catch (e) {
@@ -143,7 +150,7 @@ const chrome = async (options) => {
     }
 };
 
-const chromeMv3 = async (options) => {
+const chromeMv3 = async (options: CommanderOptions) => {
     try {
         await bundleChromeMv3(options);
     } catch (e) {
@@ -152,7 +159,7 @@ const chromeMv3 = async (options) => {
     }
 };
 
-const edge = async (options) => {
+const edge = async (options: CommanderOptions) => {
     try {
         await bundleEdge(options);
     } catch (e) {
@@ -161,7 +168,7 @@ const edge = async (options) => {
     }
 };
 
-const opera = async (options) => {
+const opera = async (options: CommanderOptions) => {
     try {
         await bundleOpera(options);
     } catch (e) {
@@ -170,7 +177,7 @@ const opera = async (options) => {
     }
 };
 
-const firefox = async (options) => {
+const firefox = async (options: CommanderOptions) => {
     try {
         await bundleFirefoxAmo(options);
     } catch (e) {
@@ -179,7 +186,7 @@ const firefox = async (options) => {
     }
 };
 
-const firefoxStandalone = async (options) => {
+const firefoxStandalone = async (options: CommanderOptions) => {
     try {
         await runBuild(firefoxStandalonePlan, options);
     } catch (e) {
@@ -235,7 +242,7 @@ program
     .command('firefox-standalone')
     .description('Builds signed extension for firefox browser')
     .action(() => {
-        firefoxStandalone();
+        firefoxStandalone(program.opts());
     });
 
 program
