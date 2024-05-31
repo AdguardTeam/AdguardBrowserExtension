@@ -68,9 +68,7 @@ export class Engine implements TsWebExtensionEngine {
         this.handleMessage = this.api.getMessageHandler();
     }
 
-    debounceUpdate = debounce(() => {
-        this.update();
-    }, Engine.UPDATE_TIMEOUT_MS);
+    debounceUpdate = debounce(this.update.bind(this), Engine.UPDATE_TIMEOUT_MS);
 
     /**
      * Starts the tswebextension and updates the counter of active rules.
