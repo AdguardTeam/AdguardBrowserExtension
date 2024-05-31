@@ -1,0 +1,933 @@
+[
+	{
+		"id": 26,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||api-read.facebook.com/restserver.php?api_key=",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 27,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||api.facebook.com^",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 28,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||badge.facebook.com^",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 29,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||connect.facebook.com^",
+			"domainType": "thirdParty",
+			"excludedInitiatorDomains": [
+				"facebook.net",
+				"fb.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 3
+	},
+	{
+		"id": 30,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||connect.facebook.net^",
+			"domainType": "thirdParty",
+			"excludedInitiatorDomains": [
+				"facebook.com",
+				"fb.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 3
+	},
+	{
+		"id": 31,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/connect/",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 32,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/dialog/oauth?display=popup",
+			"initiatorDomains": [
+				"humorhub.org"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 201
+	},
+	{
+		"id": 33,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/activity.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 34,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/comments.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 35,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/facepile.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 36,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/fan.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 37,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/follow.php",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 38,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/like.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 39,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/like_box.php",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 40,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/likebox.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 41,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/post.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 42,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/recommendations.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 43,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/recommendations_bar.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 44,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/send.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 45,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/share_button.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 46,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/subscribe.php",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 47,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/plugins/subscribe?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 48,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/restserver.php?*.getStats&",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 49,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/whitepages/wpminiprofile.php",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 50,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/widgets/activity.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 51,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/widgets/fan.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 52,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/widgets/like.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 53,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/widgets/recommendations.php?",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 54,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||fbcdn-profile-a.akamaihd.net^",
+			"domainType": "thirdParty",
+			"excludedInitiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 3
+	},
+	{
+		"id": 55,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||google.com/js/client:plusone.js",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 56,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||google.com/js/plusone.js",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 57,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||graph.facebook.com/?id=",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 58,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||graph.facebook.com^",
+			"domainType": "thirdParty",
+			"resourceTypes": [
+				"xmlhttprequest"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 102
+	},
+	{
+		"id": 59,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||profile.ak.fbcdn.net^",
+			"domainType": "thirdParty",
+			"excludedInitiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 3
+	},
+	{
+		"id": 60,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||scontent-a.*.fbcdn.net^",
+			"domainType": "thirdParty",
+			"excludedInitiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 3
+	},
+	{
+		"id": 61,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||spot.im/embed/scripts/launcher.js",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 62,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "||static.ak.fbcdn.net^",
+			"domainType": "thirdParty",
+			"excludedInitiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 3
+	},
+	{
+		"id": 70,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "/cdn-cgi/pe/bag2?*connect.facebook.net",
+			"initiatorDomains": [
+				"forwardprogressives.com",
+				"onhax.net",
+				"opensubtitles.org",
+				"viralthread.com",
+				"youngcons.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100121
+	},
+	{
+		"id": 71,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||akamaihd.net/rsrc.php/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 72,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||channel.facebook.com^",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 73,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||connect.facebook.com^*/AudienceNetworkPrebid.js",
+			"initiatorDomains": [
+				"vice.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 74,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/browse/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 75,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/bz",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 76,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/chat/buddy_list.php",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 77,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/chat/hovercard/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 78,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/hovercard/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 79,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/litestand/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 80,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/notifications/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 81,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/pagelet/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 82,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/photos/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 83,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/presence/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 84,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/typeahead/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 85,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/ajax/webstorage/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 86,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/chat/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 87,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||facebook.com/images/",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 88,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||fbcdn-photos-*.akamaihd.net^",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 89,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||fbcdn-profile-*.akamaihd.net^",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 90,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||fbcdn-sphotos-*.akamaihd.net^",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 91,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||fbexternal-*.akamaihd.net^",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 92,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||scontent-*.fbcdn.net^",
+			"initiatorDomains": [
+				"facebook.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 96,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||cloudfront.net^",
+			"initiatorDomains": [
+				"magicseaweed.com"
+			],
+			"resourceTypes": [
+				"font"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100301
+	},
+	{
+		"id": 97,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||connect.facebook.com^*/audiencenetworkprebid.js",
+			"initiatorDomains": [
+				"screenrant.com"
+			],
+			"resourceTypes": [
+				"script"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100301
+	},
+	{
+		"id": 98,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||connect.facebook.net^",
+			"initiatorDomains": [
+				"id.logi.com",
+				"tinder.com",
+				"abc.go.com",
+				"adultswim.com",
+				"contv.com",
+				"damnyouautocorrect.com",
+				"embedly.com",
+				"fitbit.com",
+				"instagram.com",
+				"interviewmagazine.com",
+				"noovo.ca",
+				"pogo.com",
+				"reddit.com",
+				"salon.com",
+				"sci2.tv",
+				"southpark.cc.com",
+				"southpark.de",
+				"upi.com"
+			],
+			"resourceTypes": [
+				"script"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100207
+	},
+	{
+		"id": 99,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||google.com/js/plusone.js",
+			"initiatorDomains": [
+				"abcnews.go.com",
+				"watch.nba.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100151
+	},
+	{
+		"id": 100,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||graph.facebook.com^",
+			"initiatorDomains": [
+				"theguardian.com"
+			],
+			"resourceTypes": [
+				"xmlhttprequest"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100301
+	},
+	{
+		"id": 101,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"urlFilter": "||staticxx.facebook.com/connect/",
+			"initiatorDomains": [
+				"embedly.com"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100201
+	},
+	{
+		"id": 105,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "/cdn-cgi/pe/bag2?*connect.facebook.com",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 1
+	},
+	{
+		"id": 106,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"urlFilter": "/cdn-cgi/pe/bag2?*connect.facebook.net",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 1
+	}
+]
