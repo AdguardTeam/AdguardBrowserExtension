@@ -74,6 +74,20 @@ type DownloadResourceData = {
     validate?: boolean;
 };
 
+const getFiltersMetadataDownloadData = (browser: AssetsFiltersBrowser): DownloadResourceData => {
+    return {
+        url: METADATA_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
+        file: LOCAL_METADATA_FILE_NAME,
+    };
+};
+
+const getFiltersI18nMetadataDownloadData = (browser: AssetsFiltersBrowser): DownloadResourceData => {
+    return {
+        url: METADATA_I18N_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
+        file: LOCAL_I18N_METADATA_FILE_NAME,
+    };
+};
+
 /**
  * Returns an array needed for downloading filters resources:
  * - filters metadata
@@ -89,15 +103,9 @@ const getUrlsOfFiltersResources = (browser: AssetsFiltersBrowser): DownloadResou
     const filtersMobile = [];
     const meta = [];
 
-    meta.push({
-        url: METADATA_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCAL_METADATA_FILE_NAME,
-    });
+    meta.push(getFiltersMetadataDownloadData(browser));
 
-    meta.push({
-        url: METADATA_I18N_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCAL_I18N_METADATA_FILE_NAME,
-    });
+    meta.push(getFiltersI18nMetadataDownloadData(browser));
 
     // eslint-disable-next-line no-restricted-syntax
     for (const filterId of ADGUARD_FILTERS_IDS) {
@@ -170,15 +178,17 @@ const validateChecksum = (resourceData: DownloadResourceData, body: string): voi
 };
 
 /**
- * Downloads a filter resource.
+ * Downloads a filter resource, saves it to the filters directory, and returns its content.
  *
  * @param resourceData Data for downloading a resource.
  * @param browser Browser assets filters directory name.
+ *
+ * @returns Response content as a string.
  */
-const downloadFilter = async (resourceData: DownloadResourceData, browser: AssetsFiltersBrowser): Promise<void> => {
+const downloadFilter = async (resourceData: DownloadResourceData, browser: AssetsFiltersBrowser): Promise<string> => {
     const { url, file, validate } = resourceData;
 
-    const filtersDir = getFiltersDestDir(browser);
+    const filtersDir = FILTERS_DEST.replace('%browser', browser);
 
     fse.ensureDirSync(filtersDir);
 
@@ -193,70 +203,48 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
     await fs.promises.writeFile(path.join(filtersDir, file), response.data);
 
     cliLog.info('Done');
-};
 
-/**
- * Returns a path to filters destination directory.
- *
- * @param browser Browser assets filters directory name.
- *
- * @returns Directory path.
- */
-const getFiltersDestDir = (browser: AssetsFiltersBrowser): string => {
-    return FILTERS_DEST.replace('%browser', browser);
+    return response.data.toString();
 };
 
 /**
  * Returns all filter ids from the metadata file.
  *
- * @param metadataFilePath Path to the metadata file.
+ * @param metadataContent Metadata file content.
  *
  * @returns Array of filter ids as strings.
  */
-const getAllFiltersIds = (metadataFilePath: string): string[] => {
-    const metadataContent = fs.readFileSync(metadataFilePath, 'utf8');
-
+const getAllFiltersIds = (metadataContent: string): string[] => {
     let filters: RegularFilterMetadata[] = [];
     try {
         filters = JSON.parse(metadataContent).filters;
     } catch (e) {
-        cliLog.error('Failed to parse chromium filters metadata');
+        cliLog.error('Failed to parse filters metadata');
     }
 
     return filters.map((filter) => String(filter.filterId));
 };
 
 /**
- * Copies file from sourceDir to destDir.
- *
- * @param fileName File name.
- * @param sourceDir Source directory.
- * @param destDir Destination directory.
- */
-export const copyFile = (fileName: string, sourceDir: string, destDir: string): void => {
-    fse.ensureDirSync(destDir);
-    fse.copyFileSync(
-        path.join(sourceDir, fileName),
-        path.join(destDir, fileName),
-    );
-};
-
-/**
  * Prepares filters for chromium-mv3:
- * 1. Gets all filter ids from the chromium metadata file.
- * 2. If the filter file exists in the chromium folder (relevant for {@link ADGUARD_FILTERS_IDS} only),
- *    copies it to the chromium-mv3 folder,
- *    otherwise downloads the filter file since mv3 requires all filters to be present as a rulesets.
- * 3. Copies chromium's filters metadata and i18n metadata files to the chromium-mv3 folder.
+ * 1. Downloads chromium filters metadata and parses it to get all filter ids.
+ * 2. Downloads chromium i18n metadata.
+ * 3. Downloads all chromium filters and stores them in the chromium-mv3 folder.
  */
-const prepareMv3Filters = async () => {
-    const chromiumMv3FiltersDir = FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3);
+const downloadAndPrepareMv3Filters = async () => {
+    const chromiumFiltersMetadata = await downloadFilter(
+        // chromium mv3 filters metadata is the same as chromium filters metadata
+        getFiltersMetadataDownloadData(AssetsFiltersBrowser.Chromium),
+        AssetsFiltersBrowser.ChromiumMv3,
+    );
 
-    const chromiumFiltersDir = getFiltersDestDir(AssetsFiltersBrowser.Chromium);
-    const chromiumMetadataFilePath = path.resolve(chromiumFiltersDir, LOCAL_METADATA_FILE_NAME);
+    // download chromium i18n metadata file
+    await downloadFilter(
+        getFiltersI18nMetadataDownloadData(AssetsFiltersBrowser.Chromium),
+        AssetsFiltersBrowser.ChromiumMv3,
+    );
 
-    const chromiumFiltersIds = getAllFiltersIds(chromiumMetadataFilePath);
-    const chromiumFiltersFiles = fs.readdirSync(chromiumFiltersDir);
+    const chromiumFiltersIds = getAllFiltersIds(chromiumFiltersMetadata);
 
     // eslint-disable-next-line no-restricted-syntax
     for (let i = 0; i < chromiumFiltersIds.length; i += 1) {
@@ -265,28 +253,17 @@ const prepareMv3Filters = async () => {
             continue;
         }
 
-        const fileName = `filter_${filterId}.txt`;
-
-        if (chromiumFiltersFiles.includes(fileName)) {
-            cliLog.info(`Copying local chromium file '${fileName}'...`);
-            copyFile(fileName, chromiumFiltersDir, chromiumMv3FiltersDir);
-            cliLog.info('Copied');
-        } else {
-            const url = {
-                // download chromium versions of filters
-                url: FILTER_DOWNLOAD_URL_FORMAT
-                    .replace('%browser', AssetsFiltersBrowser.Chromium)
-                    .replace('%filter', filterId),
-                file: fileName,
-                validate: true,
-            };
-            // and store them in the chromium-mv3 folder
-            await downloadFilter(url, AssetsFiltersBrowser.ChromiumMv3); // eslint-disable-line no-await-in-loop
-        }
+        const downloadData = {
+            // download chromium versions of filters
+            url: FILTER_DOWNLOAD_URL_FORMAT
+                .replace('%browser', AssetsFiltersBrowser.Chromium)
+                .replace('%filter', filterId),
+            file: `filter_${filterId}.txt`,
+            validate: true,
+        };
+        // and store them in the chromium-mv3 folder
+        await downloadFilter(downloadData, AssetsFiltersBrowser.ChromiumMv3); // eslint-disable-line no-await-in-loop
     }
-
-    copyFile(LOCAL_METADATA_FILE_NAME, chromiumFiltersDir, chromiumMv3FiltersDir);
-    copyFile(LOCAL_I18N_METADATA_FILE_NAME, chromiumFiltersDir, chromiumMv3FiltersDir);
 };
 
 /**
@@ -311,6 +288,5 @@ export const downloadFilters = async () => {
     await startDownload(AssetsFiltersBrowser.Edge);
     await startDownload(AssetsFiltersBrowser.Firefox);
     await startDownload(AssetsFiltersBrowser.Opera);
-    // should be run after chromium filters are downloaded
-    await prepareMv3Filters();
+    await downloadAndPrepareMv3Filters();
 };
