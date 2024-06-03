@@ -30,13 +30,17 @@ import {
     genChromiumZipPlugin,
 } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { BrowserConfig, BUILD_ENV } from '../../constants';
+import { BUILD_ENV } from '../../constants';
 import {
     BACKGROUND_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
 } from '../../../constants';
-import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-constants';
+import {
+    type BrowserConfig,
+    BACKGROUND_PATH,
+    htmlTemplatePluginCommonOptions,
+} from '../common-constants';
 
 import { chromeManifest } from './manifest.chrome';
 
@@ -71,9 +75,6 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                         context: 'Extension',
                         from: 'filters/chromium',
                         to: 'filters',
-                        globOptions: {
-                            ignore: ['**/declarative/**'],
-                        },
                     },
                 ],
             }),

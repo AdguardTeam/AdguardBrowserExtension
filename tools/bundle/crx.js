@@ -30,7 +30,8 @@ import {
     CHROME_CODEBASE_URL,
     BUILD_ENV,
 } from '../constants';
-import { getBrowserConf, getEnvConf } from '../helpers';
+
+import { getBrowserConf, getEnvConf } from './helpers';
 
 export const crx = async (browser) => {
     const buildEnv = BUILD_ENV;

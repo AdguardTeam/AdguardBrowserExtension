@@ -18,8 +18,7 @@
 
 import { type Configuration, NormalModuleReplacementPlugin } from 'webpack';
 
-import { type BrowserConfig } from '../constants';
-
+import { type BrowserConfig } from './common-constants';
 import {
     genCommonConfig,
     genCommonEntry,

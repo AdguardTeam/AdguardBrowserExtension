@@ -32,8 +32,5 @@ const convert = async (browser: string) => {
 };
 
 export const convertFiltersToRulesets = async () => {
-    await convert('chromium');
-    // await convert('edge');
-    // await convert('firefox');
-    // await convert('opera');
+    await convert('chromium-mv3');
 };

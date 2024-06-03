@@ -1,9 +1,9 @@
-! Checksum: f/HTr9o3amifC0aHzbthKg
-! Diff-Path: ../patches/5/5-s-1711964243-3600.patch
+! Checksum: BTvfYk5ktZT76IEMztHVYA
+! Diff-Path: ../patches/5/5-s-1715848465-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.40
-! TimeUpdated: 2024-04-01T09:33:27+00:00
+! Version: 2.0.1.47
+! TimeUpdated: 2024-05-16T08:31:32+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -143,9 +143,6 @@
 ! This section contain any type of rule grouped by domain.
 !
 ! remove anti-adb
-! Fix ads on https://www.youtube.com/shorts/
-! TODO: If it does not cause any problems, move it to the Base filter
-www.youtube.com#%#(()=>{window.JSON.parse=new Proxy(JSON.parse,{apply(r,e,t){const n=Reflect.apply(r,e,t);if(!location.pathname.startsWith("/shorts/"))return n;const a=n?.entries;return a&&Array.isArray(a)&&(n.entries=n.entries.filter((r=>{if(!r?.command?.reelWatchEndpoint?.adClientParams?.isAd)return r}))),n}});})();
 ! main youtube page - changing view for the first row of elements
 www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
 www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
@@ -270,6 +267,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_experimental
 ! Detect of using AdGuard products
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+! Detect HTTPS filtering
+! Detect Advanced Protection of AdGuard for iOS
 !
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!

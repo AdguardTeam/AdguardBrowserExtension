@@ -79,45 +79,6 @@ export const enum Browser {
     Edge = 'edge',
 }
 
-export type BrowserConfig = {
-    browser: Browser;
-    devtools: boolean;
-    buildDir: string;
-};
-
-export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
-    [Browser.Chrome]: {
-        browser: Browser.Chrome,
-        devtools: true,
-        buildDir: Browser.Chrome,
-    },
-    [Browser.ChromeMv3]: {
-        browser: Browser.ChromeMv3,
-        devtools: true,
-        buildDir: Browser.ChromeMv3,
-    },
-    [Browser.FirefoxStandalone]: {
-        browser: Browser.FirefoxStandalone,
-        devtools: false,
-        buildDir: Browser.FirefoxStandalone,
-    },
-    [Browser.FirefoxAmo]: {
-        browser: Browser.FirefoxAmo,
-        devtools: false,
-        buildDir: Browser.FirefoxAmo,
-    },
-    [Browser.Opera]: {
-        browser: Browser.Opera,
-        devtools: true,
-        buildDir: Browser.Opera,
-    },
-    [Browser.Edge]: {
-        browser: Browser.Edge,
-        devtools: true,
-        buildDir: Browser.Edge,
-    },
-};
-
 export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
     [BuildTargetEnv.Dev]: 'adguardadblockerdev@adguard.com',
     [BuildTargetEnv.Beta]: 'adguardadblockerbeta@adguard.com',
