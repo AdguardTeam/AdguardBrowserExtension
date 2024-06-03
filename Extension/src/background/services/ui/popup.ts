@@ -49,7 +49,7 @@ export type GetTabInfoForPopupResponse = {
         isEdgeBrowser: boolean,
         notification: Notification | null,
         isDisableShowAdguardPromoInfo: boolean,
-        hasCustomRulesToReset: boolean,
+        hasUserRulesToReset: boolean,
     },
 };
 
@@ -96,11 +96,7 @@ export class PopupService {
         }
 
         if (tabContext) {
-            // FIXME: fix for mv3 before releasing
-            let hasCustomRulesToReset = false;
-            if (!__IS_MV3__) {
-                hasCustomRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
-            }
+            const hasUserRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
             return {
                 frameInfo: FramesApi.getMainFrameData(tabContext),
                 stats: PageStatsApi.getStatisticsData(),
@@ -113,7 +109,7 @@ export class PopupService {
                     isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
                     notification: await promoNotificationApi.getCurrentNotification(),
                     isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasCustomRulesToReset,
+                    hasUserRulesToReset,
                 },
             };
         }
