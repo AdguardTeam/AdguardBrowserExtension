@@ -33,6 +33,7 @@ import { rootStore } from '../../stores/RootStore';
 import { type IRulesLimits } from '../../../../background/services/rules-limits/mv3/rules-limits';
 import { messenger } from '../../../services/messenger';
 import { MessageType } from '../../../../common/messages';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 
 import { Warning } from './Warning';
 
@@ -44,7 +45,7 @@ export const RulesLimits = observer(() => {
      */
     const THRESHOLD_HIGHLIGHT_PERCENTAGE = 80;
 
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     useEffect(() => {
         settingsStore.getRulesLimits();
@@ -80,19 +81,25 @@ export const RulesLimits = observer(() => {
 
     const showWarning = rulesLimits.expectedEnabledFilters.length > 0;
 
-    const onClickReactivateFilters = async () => {
-        // FIXME(Slava): enable loader
+    const handleReactivateFilters = async () => {
         await messenger.sendMessage(MessageType.RestoreFilters);
         await settingsStore.getRulesLimits();
-        // FIXME(Slava): disable loader
     };
 
-    const onClickCloseWarning = async () => {
-        // FIXME(Slava): enable loader
+    const handleReactivateFiltersWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        handleReactivateFilters,
+    );
+
+    const handleCloseWarning = async () => {
         await messenger.sendMessage(MessageType.ClearRulesLimitsWarning);
         await settingsStore.getRulesLimits();
-        // FIXME(Slava): disable loader
     };
+
+    const handleCloseWarningWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        handleCloseWarning,
+    );
 
     const getClassNamesForNumbers = (current: number, maximum: number) => {
         const percentage = (current / maximum) * 100;
@@ -127,8 +134,8 @@ export const RulesLimits = observer(() => {
                 <Warning
                     actuallyEnabledFilterNames={actuallyEnabledFilterNames.join(', ')}
                     expectedEnabledFilterNames={expectedEnabledFilterNames.join(', ')}
-                    onClickReactivateFilters={onClickReactivateFilters}
-                    onClickCloseWarning={onClickCloseWarning}
+                    onClickReactivateFilters={handleReactivateFiltersWrapper}
+                    onClickCloseWarning={handleCloseWarningWrapper}
                 />
             )}
             <div className="rules-limits">
