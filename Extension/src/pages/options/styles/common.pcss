@@ -160,15 +160,14 @@ label.checkbox-label {
 
     &__item {
         color: var(--green400);
-        margin-bottom: 32px;
+        margin: 16px 0;
         font-size: 16px;
         line-height: 21px;
         font-weight: 600;
         cursor: pointer;
 
-        &.disabled {
-            opacity: .5;
-            pointer-events: none;
+        &--wrapper {
+            margin: 16px 0;
         }
     }
 }
@@ -176,6 +175,12 @@ label.checkbox-label {
 .footer {
     width: 100%;
     flex: 0 0 auto;
+}
+
+.disabled {
+    opacity: .5;
+    pointer-events: none;
+    cursor: help;
 }
 
 .title {

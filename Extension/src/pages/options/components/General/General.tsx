@@ -36,6 +36,7 @@ import {
     BUG_REPORT_URL,
 } from '../../constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
+import { Popover } from '../../../common/components/ui/Popover';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { UserAgent } from '../../../../common/user-agent';
 import { BROWSER_ADDON_STORE_LINKS } from '../../../constants';
@@ -188,6 +189,29 @@ export const General = observer(() => {
         AppearanceTheme,
     } = settings.names;
 
+    /**
+     * Returns the same element for MV2,
+     * adds a popover with 'Coming soon' text for MV3 and disables the element.
+     *
+     * @param element Element to handle.
+     *
+     * @returns Disabled element with popover for MV3 or the same element for MV2.
+     */
+    const addPopoverForComingSoonElement = (element: React.JSX.Element) => {
+        if (!__IS_MV3__) {
+            return element;
+        }
+
+        const comingSoonText = translator.getMessage('options_coming_soon');
+        const disabledClassName = `disabled ${element.props.className}`;
+
+        return (
+            <Popover text={comingSoonText} comingSoon>
+                {React.cloneElement(element, { className: disabledClassName })}
+            </Popover>
+        );
+    };
+
     return (
         <>
             <SettingsSection title={translator.getMessage('options_general_settings')}>
@@ -276,32 +300,38 @@ export const General = observer(() => {
                 )}
             </SettingsSection>
             <div className="links-menu links-menu--section">
-                <button
-                    type="button"
-                    className="links-menu__item"
-                    onClick={handleExportSettings}
-                >
-                    {translator.getMessage('options_export_settings')}
-                </button>
-                <input
-                    id="inputEl"
-                    type="file"
-                    accept="application/json"
-                    onChange={inputChangeHandler}
-                    className="actions__input-file"
-                />
-                <label
-                    htmlFor="inputEl"
-                    className="links-menu__item"
-                >
-                    <input
-                        type="file"
-                        accept="application/json"
-                        onChange={inputChangeHandler}
-                        className="actions__input-file"
-                    />
-                    {translator.getMessage('options_import_settings')}
-                </label>
+                {addPopoverForComingSoonElement(
+                    <button
+                        type="button"
+                        className="links-menu__item"
+                        onClick={handleExportSettings}
+                    >
+                        {translator.getMessage('options_export_settings')}
+                    </button>,
+                )}
+                {addPopoverForComingSoonElement(
+                    <div className="links-menu__item--wrapper">
+                        <input
+                            id="inputEl"
+                            type="file"
+                            accept="application/json"
+                            onChange={inputChangeHandler}
+                            className="actions__input-file"
+                        />
+                        <label
+                            htmlFor="inputEl"
+                            className="links-menu__item"
+                        >
+                            <input
+                                type="file"
+                                accept="application/json"
+                                onChange={inputChangeHandler}
+                                className="actions__input-file"
+                            />
+                            {translator.getMessage('options_import_settings')}
+                        </label>
+                    </div>,
+                )}
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
