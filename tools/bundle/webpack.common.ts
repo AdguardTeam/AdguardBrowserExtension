@@ -34,9 +34,8 @@ import {
     BuildTargetEnv,
     Browser,
     BUILD_ENV,
-    BrowserConfig,
 } from '../constants';
-import { getEnvConf, updateLocalesMSGName } from '../helpers';
+import { updateLocalesMSGName } from '../helpers';
 import {
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
     SUBSCRIBE_OUTPUT,
@@ -61,7 +60,8 @@ import {
     DEVTOOLS_OUTPUT,
 } from '../../constants';
 
-import { htmlTemplatePluginCommonOptions } from './common-constants';
+import { type BrowserConfig, htmlTemplatePluginCommonOptions } from './common-constants';
+import { getEnvConf } from './helpers';
 
 const config = getEnvConf(BUILD_ENV);
 

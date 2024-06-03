@@ -20,9 +20,50 @@ import path from 'path';
 
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
+import { Browser } from '../constants';
+
 export const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
 
 export const htmlTemplatePluginCommonOptions: Partial<HtmlWebpackPlugin.Options> = {
     cache: false,
     scriptLoading: 'blocking',
+};
+
+export type BrowserConfig = {
+    browser: Browser;
+    devtools: boolean;
+    buildDir: string;
+};
+
+export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
+    [Browser.Chrome]: {
+        browser: Browser.Chrome,
+        devtools: true,
+        buildDir: Browser.Chrome,
+    },
+    [Browser.ChromeMv3]: {
+        browser: Browser.ChromeMv3,
+        devtools: true,
+        buildDir: Browser.ChromeMv3,
+    },
+    [Browser.FirefoxStandalone]: {
+        browser: Browser.FirefoxStandalone,
+        devtools: false,
+        buildDir: Browser.FirefoxStandalone,
+    },
+    [Browser.FirefoxAmo]: {
+        browser: Browser.FirefoxAmo,
+        devtools: false,
+        buildDir: Browser.FirefoxAmo,
+    },
+    [Browser.Opera]: {
+        browser: Browser.Opera,
+        devtools: true,
+        buildDir: Browser.Opera,
+    },
+    [Browser.Edge]: {
+        browser: Browser.Edge,
+        devtools: true,
+        buildDir: Browser.Edge,
+    },
 };

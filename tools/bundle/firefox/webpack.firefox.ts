@@ -28,7 +28,6 @@ import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { updateManifestBuffer } from '../../helpers';
 import {
     Browser,
-    BrowserConfig,
     BUILD_ENV,
     BuildTargetEnv,
 } from '../../constants';
@@ -37,7 +36,11 @@ import {
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
 } from '../../../constants';
-import { BACKGROUND_PATH, htmlTemplatePluginCommonOptions } from '../common-constants';
+import {
+    type BrowserConfig,
+    BACKGROUND_PATH,
+    htmlTemplatePluginCommonOptions,
+} from '../common-constants';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
 

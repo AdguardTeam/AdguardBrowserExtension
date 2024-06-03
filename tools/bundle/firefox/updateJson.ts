@@ -27,7 +27,7 @@ import {
     FIREFOX_UPDATE_TEMPLATE,
 } from '../../constants';
 import { version } from '../../../package.json';
-import { getEnvConf } from '../../helpers';
+import { getEnvConf } from '../helpers';
 
 export const buildUpdateJson = async () => {
     const envConf = getEnvConf(BUILD_ENV);

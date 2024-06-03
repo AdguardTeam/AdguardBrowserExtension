@@ -1,9 +1,9 @@
-! Checksum: HrGhYeg0EGFxBKSelOR23A
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1711964216-3600.patch
+! Checksum: YcJnhmPLemHYygdfepnKEw
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1717090507-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.25
-! TimeUpdated: 2024-04-01T09:31:36+00:00
+! Version: 2.0.3.36
+! TimeUpdated: 2024-05-30T17:33:06+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -91,7 +91,10 @@ google.*#@#c-wiz[jsrenderer="YTTf6c"] > .bhapoc.oJeWuf[jsname="bN97Pc"][data-ved
 search.ask.com#@#.sponsoredTop
 search.ask.com#@##sponsoredTop
 yandex.*#@#body:not([data-bem*="pogoda"]) .mini-suggest__popup-content > li[data-type="nav"]
-[$path=/search]yandex.*#@?#.serp-list > li.serp-item:has(> div[data-bem*="organic"] > div.organic__title-wrapper > a[href][data-event-required])
+yandex.*#@?#.content__left > ul#search-result > li:has(> div[data-bem*="organic"] > div.organic__title-wrapper > a[href][data-event-required])
+ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="Organic"] > div[class^="VanillaReact"] > a[data-event-required])
+ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div.Organic-Columns > div.Organic-Column > a[href][data-event-required])
+ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="VanillaReact"] > a[href][data-event-required])
 amazon.in,amazon.fr,amazon.co.uk,amazon.de#@#.s-result-list > li[id^="result_"][style*="display: block;"]
 amazon.de#@#div[data-cel-widget="desktop-rhf_SponsoredProductsRemoteRHFSearchEXPSubsK2ClickPagination"]
 amazon.com,amazon.de#@##huc-first-upsell-row
@@ -158,6 +161,10 @@ ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored)
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
+[$path=/jobs]linkedin.com#@##ember33
+[$path=/jobs]linkedin.com#@#.discovery-templates-entity-item:has(> div[data-job-id="search"] > div > .job-card-list__footer-wrapper > .job-card-container__footer-item.align-items-center:first-child)
+startpage.com#@?##main > div[class^="css-"]:has(> div[class^="css-"] > p[class^="css-"]:contains(/Annoncer|Anzeigen|Ads|Anuncios|Publicités|Advertenties|Annonser|Reklamy|Anúncios/))
+startpage.com#@?#.main-results-container > div.shopping-header > div[class^="css-"] > div[class^="css-"] > div.information-container + div[class^="css-"]:has(> span:contains(/Sponsoreret|Gesponsert|Sponsored|Patrocinad|Sponsorisé|Gesponsord|Sponset|Sponsorowane|Sponsrad/))
 metager.org#@$?##results > div.result:has(> div.result-header > div.result-subheadline > a.result-link > span.advertisement-mark) { remove: true; }
 metager.org#@$?##results > div.result:has(> div.result-header > div.result-subheadline > a[href="https://metager.org/partnershops"]) { remove: true; }
 etherscan.io#@#.auto-results-wrapper > div.p-2
@@ -165,6 +172,7 @@ yaani.com.tr#@##content > div[advicetype="Shopping"] > .shoppingWidget
 news.fresheye.com#@#.bk2.spsite
 websearch.rakuten.co.jp#@##ad-ichiba
 etsy.com#@?#.responsive-listing-grid > li:has( > div > a div > .ad-iindicator)
+etsy.com#@?#div[data-search-results-region] li:has( div[class*="merch-stash"]:only-child > a > div[class*="listing-card__info"] p > span:not([aria-hidden="true"]):contains(Etsy))
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.result--ad > .result__body
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.sponsored
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.highlight_sponsored
@@ -194,10 +202,10 @@ consultant.ru#@#img[width="468"][height="60"]
 alibaba.com#@?#div[data-content="abox-ProductNormalList"] > div.J-offer-wrapper:has(> div > i.search-ad-icon)
 ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com#@##content_left > div:not([class]) > div[data-placeid]
 baidu.com#@#.bds-list-ads
+wish.com#@#div[class^="ProductGrid__ProductGridRow"] > div:has(> a:only-child > div[class] > div[class]> div[class^="FeedTile__ProductBoostLabelWrapper"])
 tf1.fr#@#div[aria-describedby^="max-banner-"]
 home.kingsoft.jp#@?#.search > span.url > a.pr:upward(2)
 walmart.com#@?#.flex > div[class]:has(> div[class][style*="contain-intrinsic-size"] > div[data-item-id] > a[href^="https://wrd.walmart.com/track?adUid"])
-2gis.ru#@#._3hmsj
 !#safari_cb_affinity
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_usefulads

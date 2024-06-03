@@ -21,8 +21,8 @@ import fs from 'fs';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import { Manifest } from 'webextension-polyfill';
-import { Configuration } from 'webpack';
+import type { Manifest } from 'webextension-polyfill';
+import type { Configuration } from 'webpack';
 
 import { genMv3CommonConfig } from '../webpack.common-mv3';
 import {
@@ -31,22 +31,18 @@ import {
     genChromiumZipPlugin,
 } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import {
-    BrowserConfig,
-    BUILD_ENV,
-    FILTERS_DEST,
-} from '../../constants';
-import { BACKGROUND_PATH } from '../common-constants';
+import { BUILD_ENV, FILTERS_DEST } from '../../constants';
+import { BACKGROUND_PATH, type BrowserConfig } from '../common-constants';
 import { BACKGROUND_OUTPUT } from '../../../constants';
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
-import WebExtensionManifest = Manifest.WebExtensionManifest;
+type WebExtensionManifest = Manifest.WebExtensionManifest;
 
 export const RULESET_NAME_PREFIX = 'ruleset_';
 
 const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
-    const filtersDir = FILTERS_DEST.replace('%browser', 'chromium');
+    const filtersDir = FILTERS_DEST.replace('%browser', 'chromium-mv3');
 
     const filtersDirPath = path.resolve(__dirname, '../../../', filtersDir, 'declarative/');
 
@@ -112,12 +108,8 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
                     },
                     {
                         context: 'Extension',
-                        from: 'filters/chromium',
+                        from: 'filters/chromium-mv3',
                         to: 'filters',
-                        globOptions: {
-                            // optimized filters are not used in the mv3 build
-                            ignore: ['**/*_mobile_*.txt'],
-                        },
                     },
                 ],
             }),

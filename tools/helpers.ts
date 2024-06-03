@@ -20,42 +20,19 @@ import fs from 'fs';
 import path from 'path';
 
 import { merge } from 'webpack-merge';
-import { Manifest } from 'webextension-polyfill';
+import type { Manifest } from 'webextension-polyfill';
 
 import { redirects } from '@adguard/scriptlets';
 
 import packageJson from '../package.json';
 
-import {
-    BuildTargetEnv,
-    ENV_CONF,
-    Browser,
-    BROWSERS_CONF,
-    BrowserConfig,
-    EnvConfig,
-} from './constants';
+import { BuildTargetEnv, Browser } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
-import ManifestBase = Manifest.ManifestBase;
-import WebExtensionManifest = Manifest.WebExtensionManifest;
+type ManifestBase = Manifest.ManifestBase;
+type WebExtensionManifest = Manifest.WebExtensionManifest;
 
 const { Redirects } = redirects;
-
-export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
-    const envConfig = ENV_CONF[env];
-    if (!envConfig) {
-        throw new Error(`No env config for: "${env}"`);
-    }
-    return envConfig;
-};
-
-export const getBrowserConf = (browser: Browser): BrowserConfig => {
-    const browserConf = BROWSERS_CONF[browser];
-    if (!browserConf) {
-        throw new Error(`No browser config for: "${browser}"`);
-    }
-    return browserConf;
-};
 
 /**
  * Retrieves the sha value for the click2load.html redirects resource.
@@ -196,7 +173,7 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
     return '';
 };
 
-export const updateLocalesMSGName = (content: Buffer, env: Env, browser: Browser) => {
+export const updateLocalesMSGName = (content: Buffer, env: BuildTargetEnv, browser: Browser) => {
     const suffix = getNameSuffix(env, browser);
 
     const messages = JSON.parse(content.toString());
