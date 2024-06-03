@@ -45,6 +45,11 @@ type PopoverParams = {
     delay?: number;
 
     /**
+     * Flag to show "Coming soon" text and use 'help' cursor.
+     */
+    comingSoon?: boolean;
+
+    /**
      * Child node.
      */
     children: React.ReactNode;
@@ -56,6 +61,7 @@ type PopoverParams = {
 export const Popover = ({
     text,
     delay,
+    comingSoon,
     children,
     ...props
 }: PopoverParams) => {
@@ -97,9 +103,13 @@ export const Popover = ({
         });
     };
 
+    const popoverClassName = comingSoon
+        ? 'popover popover--coming-soon'
+        : 'popover';
+
     return (
         <div
-            className="popover"
+            className={popoverClassName}
             {...props}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
