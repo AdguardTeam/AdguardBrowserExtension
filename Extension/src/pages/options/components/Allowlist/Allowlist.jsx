@@ -26,6 +26,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import { SettingsSection } from '../Settings/SettingsSection';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor } from '../../../common/components/Editor';
 import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
@@ -91,6 +92,11 @@ const Allowlist = observer(() => {
         // eslint-disable-next-line no-param-reassign
         event.target.value = '';
     };
+
+    const inputChangeHandlerWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        inputChangeHandler,
+    );
 
     const saveClickHandler = async () => {
         if (settingsStore.allowlistEditorContentChanged) {
@@ -160,7 +166,7 @@ const Allowlist = observer(() => {
                         id="inputEl"
                         accept="text/plain"
                         ref={inputRef}
-                        onChange={inputChangeHandler}
+                        onChange={inputChangeHandlerWrapper}
                         style={{ display: 'none' }}
                     />
                     <button

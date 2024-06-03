@@ -264,6 +264,11 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         event.target.value = '';
     };
 
+    const inputChangeHandlerWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        inputChangeHandler,
+    );
+
     const importClickHandler = (e) => {
         e.preventDefault();
         inputRef.current.click();
@@ -276,14 +281,16 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         }
     };
 
+    const saveClickHandlerWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        saveClickHandler,
+    );
+
     const shortcuts = [
         {
             name: 'save',
             bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-            exec: addMinDelayLoader(
-                uiStore.setShowLoader,
-                saveClickHandler,
-            ),
+            exec: saveClickHandlerWrapper,
         },
         {
             name: 'togglecomment',
@@ -392,13 +399,13 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                             </label>
                         )
                     }
-                    <UserRulesSavingButton onClick={saveClickHandler} />
+                    <UserRulesSavingButton onClick={saveClickHandlerWrapper} />
                     <input
                         type="file"
                         id="inputEl"
                         accept="text/plain"
                         ref={inputRef}
-                        onChange={inputChangeHandler}
+                        onChange={inputChangeHandlerWrapper}
                         style={{ display: 'none' }}
                     />
                     <button
