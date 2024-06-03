@@ -54,10 +54,10 @@ export const RulesLimits = observer(() => {
     const rulesLimits = settingsStore.rulesLimits as IRulesLimits;
 
     const {
-        userRulesEnabledCount,
-        userRulesMaximumCount,
-        userRulesRegexpsEnabledCount,
-        userRulesRegexpsMaximumCount,
+        dynamicRulesEnabledCount,
+        dynamicRulesMaximumCount,
+        dynamicRulesRegexpsEnabledCount,
+        dynamicRulesRegexpsMaximumCount,
         staticFiltersEnabledCount,
         staticFiltersMaximumCount,
         staticRulesEnabledCount,
@@ -149,10 +149,10 @@ export const RulesLimits = observer(() => {
                         <div className="rules-limits__text--gray">
                             {translator.getMessage('options_rule_limits_dynamic_user_rules')}
                         </div>
-                        <div className={getClassNamesForNumbers(userRulesEnabledCount, userRulesMaximumCount)}>
+                        <div className={getClassNamesForNumbers(dynamicRulesEnabledCount, dynamicRulesMaximumCount)}>
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
-                                current: userRulesEnabledCount,
-                                maximum: userRulesMaximumCount,
+                                current: dynamicRulesEnabledCount,
+                                maximum: dynamicRulesMaximumCount,
                             })}
                         </div>
                     </div>
@@ -161,13 +161,13 @@ export const RulesLimits = observer(() => {
                             {translator.getMessage('options_rule_limits_dynamic_regex')}
                         </div>
                         <div className={getClassNamesForNumbers(
-                            userRulesRegexpsEnabledCount,
-                            userRulesRegexpsMaximumCount,
+                            dynamicRulesRegexpsEnabledCount,
+                            dynamicRulesRegexpsMaximumCount,
                         )}
                         >
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
-                                current: userRulesRegexpsEnabledCount,
-                                maximum: userRulesRegexpsMaximumCount,
+                                current: dynamicRulesRegexpsEnabledCount,
+                                maximum: dynamicRulesRegexpsMaximumCount,
                             })}
                         </div>
                     </div>

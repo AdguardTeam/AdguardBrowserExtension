@@ -63,24 +63,24 @@ interface RuleSetCountersMap {
  */
 export interface IRulesLimits {
     /**
-     * How many user rules are enabled in the browser.
+     * How many dynamic rules are enabled in the browser.
      */
-    userRulesEnabledCount: number;
+    dynamicRulesEnabledCount: number;
 
     /**
-     * Maximum count of the user rules, which can be enabled in the browser.
+     * Maximum count of the dynamic rules, which can be enabled in the browser.
      */
-    userRulesMaximumCount: number;
+    dynamicRulesMaximumCount: number;
 
     /**
      * How many user regexp rules are enabled in the browser.
      */
-    userRulesRegexpsEnabledCount: number;
+    dynamicRulesRegexpsEnabledCount: number;
 
     /**
      * Maximum count of the user regexp rules, which can be enabled in the browser.
      */
-    userRulesRegexpsMaximumCount: number;
+    dynamicRulesRegexpsMaximumCount: number;
 
     /**
      * How many static filters are enabled in the browser.
@@ -244,47 +244,47 @@ export class RulesLimitsService {
     };
 
     /**
-     * How many user rules are enabled.
+     * How many dynamic rules are enabled.
      *
      * @param result Configuration result.
      * @returns Count of enabled user rules.
      */
-    static getUserRulesEnabledCount = (result: ConfigurationResult): number => {
+    static getDynamicRulesEnabledCount = (result: ConfigurationResult): number => {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
         const declarativeRulesCount = result.dynamicRules.ruleSet.getRulesCount();
         return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount;
     };
 
     /**
-     * Returns number of maximum possible user rules.
+     * Returns number of maximum possible dynamic rules.
      *
      * @param result Configuration result.
      * @returns Count of rules.
      */
-    static getUserRulesMaximumCount = (result: ConfigurationResult): number => {
+    static getDynamicRulesMaximumCount = (result: ConfigurationResult): number => {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
         return rulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES;
     };
 
     /**
-     * Returns how much user regex rules are enabled.
+     * Returns how much dynamic regex rules are enabled.
      *
      * @param result Configuration result.
      * @returns Number rules.
      */
-    static getUserRulesRegexpsEnabledCount = (result: ConfigurationResult): number => {
+    static getDynamicRulesRegexpsEnabledCount = (result: ConfigurationResult): number => {
         const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
         const regexpsCount = result.dynamicRules.ruleSet.getRegexpRulesCount();
         return regexpsCount + (regexpRulesLimitExceedErr?.excludedRulesIds.length || 0);
     };
 
     /**
-     * Returns maximum count of the user regexp rules.
+     * Returns maximum count of the dynamic regexp rules.
      *
      * @param result Configuration result.
      * @returns Rules count.
      */
-    static getUserRulesRegexpsMaximumCount = (result: ConfigurationResult): number => {
+    static getDynamicRulesRegexpsMaximumCount = (result: ConfigurationResult): number => {
         const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
         return regexpRulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_REGEX_RULES;
     };
@@ -311,10 +311,10 @@ export class RulesLimitsService {
             .map((filter) => filter.filterId);
 
         return {
-            userRulesEnabledCount: RulesLimitsService.getUserRulesEnabledCount(result),
-            userRulesMaximumCount: RulesLimitsService.getUserRulesMaximumCount(result),
-            userRulesRegexpsEnabledCount: RulesLimitsService.getUserRulesRegexpsEnabledCount(result),
-            userRulesRegexpsMaximumCount: RulesLimitsService.getUserRulesRegexpsMaximumCount(result),
+            dynamicRulesEnabledCount: RulesLimitsService.getDynamicRulesEnabledCount(result),
+            dynamicRulesMaximumCount: RulesLimitsService.getDynamicRulesMaximumCount(result),
+            dynamicRulesRegexpsEnabledCount: RulesLimitsService.getDynamicRulesRegexpsEnabledCount(result),
+            dynamicRulesRegexpsMaximumCount: RulesLimitsService.getDynamicRulesRegexpsMaximumCount(result),
             staticFiltersEnabledCount: RulesLimitsService.getStaticEnabledFiltersCount(),
             staticFiltersMaximumCount: MAX_NUMBER_OF_ENABLED_STATIC_RULESETS,
             staticRulesEnabledCount,

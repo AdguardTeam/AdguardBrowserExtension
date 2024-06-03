@@ -16,8 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
+import { observer } from 'mobx-react';
 
+import { type IRulesLimits } from '../../../../../background/services/rules-limits/mv3/rules-limits';
 import {
     Forward,
     ForwardAction,
@@ -25,10 +27,21 @@ import {
 } from '../../../../../common/forward';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { rootStore } from '../../../stores/RootStore';
 
 import './filters-info-mv3.pcss';
 
-export const FiltersInfoMv3 = () => {
+export const FiltersInfoMv3 = observer(() => {
+    const { settingsStore } = useContext(rootStore);
+
+    const rulesLimits = settingsStore.rulesLimits as IRulesLimits;
+
+    useEffect(() => {
+        settingsStore.getRulesLimits();
+    }, [settingsStore, rulesLimits]);
+
+    const { staticRulesEnabledCount, dynamicRulesEnabledCount } = rulesLimits;
+
     const specsUrl = Forward.get({
         action: ForwardAction.FiltersSpecsMv3,
         from: ForwardFrom.Options,
@@ -38,8 +51,7 @@ export const FiltersInfoMv3 = () => {
         <div className="filters-info-mv3">
             <div>
                 {translator.getMessage('options_filters_info_mv3_total_rules', {
-                    // FIXME: use rulesLimits.nowEnabledFilters after pull-requests/1750 is merged
-                    num: 12345,
+                    num: staticRulesEnabledCount + dynamicRulesEnabledCount,
                 })}
             </div>
             <div className="filters-info-mv3--specs">
@@ -60,4 +72,4 @@ export const FiltersInfoMv3 = () => {
             </div>
         </div>
     );
-};
+});

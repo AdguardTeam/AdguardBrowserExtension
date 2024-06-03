@@ -115,10 +115,10 @@ const getOptionsDataWithRetry = async () => {
 };
 
 const DEFAULT_RULES_LIMITS = {
-    userRulesEnabledCount: 0,
-    userRulesMaximumCount: 0,
-    userRulesRegexpsEnabledCount: 0,
-    userRulesRegexpsMaximumCount: 0,
+    dynamicRulesEnabledCount: 0,
+    dynamicRulesMaximumCount: 0,
+    dynamicRulesRegexpsEnabledCount: 0,
+    dynamicRulesRegexpsMaximumCount: 0,
     staticFiltersEnabledCount: 0,
     staticFiltersMaximumCount: 0,
     staticRulesEnabledCount: 0,
