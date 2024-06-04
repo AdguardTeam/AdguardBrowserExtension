@@ -19,6 +19,7 @@ import { debounce } from 'lodash-es';
 
 import type { TabContext } from '../../tswebextension';
 import { MessageType, sendMessage } from '../../../common/messages';
+import { logger } from '../../../common/logger';
 
 import { ContextMenuApi } from './context-menu';
 import { FrameData, FramesApi } from './frames';
@@ -75,7 +76,7 @@ export class UiApi {
                 },
             });
         } catch (e) {
-            // do nothing
+            logger.info('Failed to broadcast total blocked message:', e);
         }
     }
 }
