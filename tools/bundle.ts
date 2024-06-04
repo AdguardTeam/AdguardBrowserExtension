@@ -200,7 +200,7 @@ program
     .option(
         '--no-cache',
         'Builds without cache. Is useful when watch mode rebuild on the changes from the linked dependencies',
-        false,
+        true,
     );
 
 program

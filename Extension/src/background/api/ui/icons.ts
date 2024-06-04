@@ -20,6 +20,7 @@ import browser from 'webextension-polyfill';
 import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
 import { getIconImageData } from '../../../common/api/extension';
+import { logger } from '../../../common/logger';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
@@ -99,14 +100,17 @@ export class IconsApi {
                 }
             }
 
-            await browser.browserAction.setIcon({ tabId, imageData: await getIconImageData(icon) });
+            // TODO abstract to two different modules for mv3 and mv2 extensions
+            const browserAction = __IS_MV3__ ? browser.action : browser.browserAction;
+
+            await browserAction.setIcon({ tabId, imageData: await getIconImageData(icon) });
 
             if (badge) {
-                await browser.browserAction.setBadgeText({ tabId, text: badge });
-                await browser.browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
+                await browserAction.setBadgeText({ tabId, text: badge });
+                await browserAction.setBadgeBackgroundColor({ tabId, color: badgeColor });
             }
         } catch (e) {
-            // do nothing
+            logger.info('Failed to update tab icon:', e);
         }
     }
 }
