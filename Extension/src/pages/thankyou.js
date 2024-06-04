@@ -100,6 +100,7 @@ const PageController = (response) => {
         sendStatsCheckbox = document.getElementById('sendSafebrowsingStatsCheckbox');
         allowAcceptableAdsCheckbox = document.getElementById('allowAcceptableAds');
 
+        // FIXME: safebrowsingEnabledCheckbox is absent on thankyou page for mv3
         safebrowsingEnabledCheckbox.addEventListener('change', safebrowsingEnabledChange);
         trackingFilterEnabledCheckbox.addEventListener('change', trackingFilterEnabledChange);
         socialFilterEnabledCheckbox.addEventListener('change', socialFilterEnabledChange);

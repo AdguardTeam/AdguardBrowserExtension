@@ -21,8 +21,8 @@ export const chromeMv3Manifest = {
     'manifest_version': 3,
     'action': {
         'default_icon': {
-            '19': 'assets/icons/green-19.png',
-            '38': 'assets/icons/green-38.png',
+            '19': 'assets/icons/on-19.png',
+            '38': 'assets/icons/on-38.png',
         },
         'default_title': '__MSG_name__',
         'default_popup': 'pages/popup.html',
