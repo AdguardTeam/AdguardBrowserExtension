@@ -149,7 +149,7 @@ export class Engine implements TsWebExtensionEngine {
             .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId))
             .concat([]);
 
-        const settings = SettingsApi.getTsWebExtConfiguration();
+        const settings = SettingsApi.getTsWebExtConfiguration(true);
 
         let allowlist: string[] = [];
 

@@ -87,6 +87,7 @@ export const Notification = (props: NotificationProps) => {
             </div>
             <button
                 type="button"
+                aria-label="Close"
                 className="button notification__close"
                 onClick={close}
             >

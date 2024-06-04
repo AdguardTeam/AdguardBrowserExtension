@@ -94,7 +94,7 @@ describe('Settings Api', () => {
                 `/${ASSISTANT_INJECT_OUTPUT}.js`,
                 false,
             );
-            expect(SettingsApi.getTsWebExtConfiguration()).toStrictEqual(expected);
+            expect(SettingsApi.getTsWebExtConfiguration(__IS_MV3__)).toStrictEqual(expected);
         });
     });
 

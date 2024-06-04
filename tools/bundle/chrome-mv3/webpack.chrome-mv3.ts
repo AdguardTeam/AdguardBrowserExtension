@@ -33,13 +33,20 @@ import {
 import { updateManifestBuffer } from '../../helpers';
 import { BUILD_ENV, FILTERS_DEST } from '../../constants';
 import { BACKGROUND_PATH, type BrowserConfig } from '../common-constants';
-import { BACKGROUND_OUTPUT } from '../../../constants';
+import {
+    BACKGROUND_OUTPUT,
+    GPC_SCRIPT_OUTPUT,
+    HIDE_DOCUMENT_REFERRER_OUTPUT,
+} from '../../../constants';
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
 type WebExtensionManifest = Manifest.WebExtensionManifest;
 
 export const RULESET_NAME_PREFIX = 'ruleset_';
+
+const GPC_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/gpc');
+const HIDE_DOCUMENT_REFERRER_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/hide-document-referrer');
 
 const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
     const filtersDir = FILTERS_DEST.replace('%browser', 'chromium-mv3');
@@ -86,6 +93,14 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
         entry: {
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
+                runtime: false,
+            },
+            [GPC_SCRIPT_OUTPUT]: {
+                import: GPC_SCRIPT_PATH,
+                runtime: false,
+            },
+            [HIDE_DOCUMENT_REFERRER_OUTPUT]: {
+                import: HIDE_DOCUMENT_REFERRER_SCRIPT_PATH,
                 runtime: false,
             },
             ...CHROMIUM_DEVTOOLS_ENTRIES,
