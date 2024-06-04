@@ -47,6 +47,22 @@ Object.assign(global, { TextDecoder, TextEncoder });
  */
 chrome.runtime.id = 'test';
 
+enum ResourceType {
+    MAIN_FRAME = 'main_frame',
+    SUB_FRAME = 'sub_frame',
+    STYLESHEET = 'stylesheet',
+    SCRIPT = 'script',
+    IMAGE = 'image',
+    FONT = 'font',
+    OBJECT = 'object',
+    XMLHTTPREQUEST = 'xmlhttprequest',
+    PING = 'ping',
+    CSP_REPORT = 'csp_report',
+    MEDIA = 'media',
+    WEBSOCKET = 'websocket',
+    OTHER = 'other',
+}
+
 /**
  * These values are used in the background script to determine the maximum
  * number of rules that can be added.
@@ -55,6 +71,7 @@ chrome.declarativeNetRequest = {
     /** @see https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#property-MAX_NUMBER_OF_REGEX_RULES */
     MAX_NUMBER_OF_REGEX_RULES: 1000,
     MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES: 5000,
+    ResourceType,
 };
 
 declare global {

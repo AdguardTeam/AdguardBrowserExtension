@@ -253,6 +253,7 @@ const Filters = observer(() => {
             <>
                 <button
                     type="button"
+                    aria-label="Back"
                     className="button setting__back"
                     onClick={handleReturnToGroups}
                 >

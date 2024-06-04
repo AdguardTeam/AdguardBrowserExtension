@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import type { SettingsConfig } from '@adguard/tswebextension';
+import type { SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextension/mv3';
+import type { SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { defaultSettings } from '../../../common/settings';
@@ -59,7 +60,12 @@ import { settingsEvents } from '../../events';
 import { listeners } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
 import { Prefs } from '../../prefs';
-import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
+import {
+    ASSISTANT_INJECT_OUTPUT,
+    DOCUMENT_BLOCK_OUTPUT,
+    GPC_SCRIPT_OUTPUT,
+    HIDE_DOCUMENT_REFERRER_OUTPUT,
+} from '../../../../../constants';
 import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
 
@@ -141,17 +147,24 @@ export class SettingsApi {
     /**
      * Collects {@link SettingsConfig} for tswebextension from current extension settings.
      *
+     * @param isMV3 Is the extension in MV3 mode.
      * @returns Collected {@link SettingsConfig} for tswebextension.
      */
-    public static getTsWebExtConfiguration(): SettingsConfig {
+    public static getTsWebExtConfiguration<T extends boolean>(
+        isMV3: T,
+    ): T extends true ? SettingsConfigMV3 : SettingsConfigMV2 {
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
             documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
-            collectStats: !__IS_MV3__
+            ...(isMV3 && {
+                gpcScriptUrl: `/${GPC_SCRIPT_OUTPUT}.js`,
+                hideDocumentReferrerScriptUrl: `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
+            }),
+            collectStats: !isMV3
                 && (!settingsStorage.get(SettingOption.DisableCollectHits)
                     || filteringLogApi.isOpen()
                 ),
-            debugScriptlets: !__IS_MV3__ && filteringLogApi.isOpen(),
+            debugScriptlets: !isMV3 && filteringLogApi.isOpen(),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),
             stealthModeEnabled: !settingsStorage.get(SettingOption.DisableStealthMode),

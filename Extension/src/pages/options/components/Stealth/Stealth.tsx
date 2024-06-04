@@ -77,19 +77,38 @@ const Stealth = observer(() => {
         await settingsStore.updateSetting(id, value, ignoreBackground);
     };
 
-    const webRtcHandler: SettingHandler = async (payload) => {
+    const privacySettingChangeHandler: SettingHandler = async (payload) => {
         const { id, data } = payload;
+
+        if (typeof data !== 'boolean') {
+            throw new Error('Invalid setting value type');
+        }
 
         await settingsStore.updateSetting(id, data, true);
 
-        // TODO remove "as boolean" after payload types be better defined
-        const successfullyHandled = await ensurePermission(data as boolean);
+        const successfullyHandled = await ensurePermission(data);
 
         if (successfullyHandled) {
             await settingsStore.updateSetting(id, data);
         } else {
             await settingsStore.updateSetting(id, !data, true);
         }
+    };
+
+    const disableStealthChangeHandler: SettingHandler = async (payload) => {
+        const { data: isStealthDisabled } = payload;
+
+        if (typeof isStealthDisabled !== 'boolean') {
+            throw new Error('Invalid setting value type');
+        }
+
+        const isPermissionRequired = !isStealthDisabled && settings.values[BlockWebRTC];
+
+        if (isPermissionRequired) {
+            return privacySettingChangeHandler(payload);
+        }
+
+        return settingChangeHandler(payload);
     };
 
     const {
@@ -123,7 +142,7 @@ const Stealth = observer(() => {
                         label={reactTranslator.getMessage('options_privacy_title')}
                         inverted
                         value={settings.values[DisableStealthMode]}
-                        handler={settingChangeHandler}
+                        handler={disableStealthChangeHandler}
                     />
                 )}
             />
@@ -134,6 +153,7 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
+                    // FIXME(Slava): add loader for this setting
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_block_known_trackers_title')}
@@ -148,6 +168,7 @@ const Stealth = observer(() => {
                 />
 
                 <SettingsSetCheckbox
+                    // FIXME(Slava): add loader for this setting
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_strip_tracking_params_title')}
@@ -161,7 +182,6 @@ const Stealth = observer(() => {
                     handler={stripTrackingParametersChangeHandler}
                 />
                 <SettingsSetCheckbox
-                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_hide_search_queries_title')}
@@ -175,7 +195,6 @@ const Stealth = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
-                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_send_not_track_title')}
@@ -283,7 +302,6 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
-                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_hide_referrer_title')}
@@ -299,7 +317,6 @@ const Stealth = observer(() => {
 
                 {settingsStore.isChrome && (
                     <SettingsSetCheckbox
-                        className="disabled"
                         // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                         // @ts-ignore
                         title={reactTranslator.getMessage('options_remove_client_data_title')}
@@ -315,7 +332,6 @@ const Stealth = observer(() => {
                 )}
 
                 <SettingsSetCheckbox
-                    className="disabled"
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_disable_webrtc_title')}
@@ -326,7 +342,7 @@ const Stealth = observer(() => {
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_disable_webrtc_title')}
                     value={settings.values[BlockWebRTC]}
-                    handler={webRtcHandler}
+                    handler={privacySettingChangeHandler}
                 />
             </SettingsSection>
         </>

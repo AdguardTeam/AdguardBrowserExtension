@@ -131,7 +131,7 @@ export class Engine implements TsWebExtensionEngine {
 
         await Promise.all(tasks);
 
-        const settings = SettingsApi.getTsWebExtConfiguration();
+        const settings = SettingsApi.getTsWebExtConfiguration(false);
 
         let allowlist: string[] = [];
 
