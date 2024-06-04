@@ -181,7 +181,7 @@ export class FiltersService {
      * Called when user tries to restore filters.
      */
     private static async onRestoreFilters(): Promise<void> {
-        const expectedEnabledFilters = await RulesLimitsService.getExpectedEnabledFilters();
+        const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
         await FiltersApi.loadAndEnableFilters(expectedEnabledFilters);
         await engine.update();
     }

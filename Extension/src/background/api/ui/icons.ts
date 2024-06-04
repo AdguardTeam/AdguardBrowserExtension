@@ -21,6 +21,7 @@ import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
 import { getIconImageData } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
+import { RulesLimitsService } from '../../services/rules-limits/mv3/rules-limits';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
@@ -64,16 +65,23 @@ export class IconsApi {
             blocked = 0;
         }
 
+        const isWarning = RulesLimitsService.areFilterLimitsExceeded();
+
         try {
-            if (disabled) {
+            if (isWarning) {
                 icon = {
-                    '19': browser.runtime.getURL('assets/icons/gray-19.png'),
-                    '38': browser.runtime.getURL('assets/icons/gray-38.png'),
+                    '19': browser.runtime.getURL('assets/icons/warning-19.png'),
+                    '38': browser.runtime.getURL('assets/icons/warning-38.png'),
+                };
+            } else if (disabled) {
+                icon = {
+                    '19': browser.runtime.getURL('assets/icons/off-19.png'),
+                    '38': browser.runtime.getURL('assets/icons/off-38.png'),
                 };
             } else {
                 icon = {
-                    '19': browser.runtime.getURL('assets/icons/green-19.png'),
-                    '38': browser.runtime.getURL('assets/icons/green-38.png'),
+                    '19': browser.runtime.getURL('assets/icons/on-19.png'),
+                    '38': browser.runtime.getURL('assets/icons/on-38.png'),
                 };
             }
 

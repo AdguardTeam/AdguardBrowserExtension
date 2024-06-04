@@ -290,6 +290,17 @@ export class RulesLimitsService {
     };
 
     /**
+     * Returns actually enabled filters.
+     *
+     * @returns Actually enabled filters.
+     */
+    private static getActuallyEnabledFilters(): number[] {
+        return FiltersApi.getEnabledFiltersWithMetadata()
+            .filter(f => f.groupId <= CUSTOM_FILTERS_START_ID)
+            .map((filter) => filter.filterId);
+    }
+
+    /**
      * Determines and returns rules limits.
      *
      * @returns Rules limits.
@@ -306,10 +317,6 @@ export class RulesLimitsService {
         const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
         const staticRulesMaximumCount = staticRulesEnabledCount + availableStaticRulesCount;
 
-        const actuallyEnabledFilters = FiltersApi.getEnabledFiltersWithMetadata()
-            .filter(f => f.groupId <= CUSTOM_FILTERS_START_ID)
-            .map((filter) => filter.filterId);
-
         return {
             dynamicRulesEnabledCount: RulesLimitsService.getDynamicRulesEnabledCount(result),
             dynamicRulesMaximumCount: RulesLimitsService.getDynamicRulesMaximumCount(result),
@@ -321,9 +328,20 @@ export class RulesLimitsService {
             staticRulesMaximumCount,
             staticRulesRegexpsEnabledCount: RulesLimitsService.getStaticRulesRegexpsCount(result, filters),
             staticRulesRegexpsMaxCount: MAX_NUMBER_OF_REGEX_RULES,
-            actuallyEnabledFilters,
+            actuallyEnabledFilters: RulesLimitsService.getActuallyEnabledFilters(),
             expectedEnabledFilters: rulesLimitsStorage.getData(),
         };
+    }
+
+    /**
+     * Checks whether the filter limits are exceeded.
+     *
+     * @returns True if the filter limits are exceeded, false otherwise.
+     */
+    static areFilterLimitsExceeded(): boolean {
+        // limits are exceeded if the number of actually enabled filters is fewer
+        // than the number of filters that should be enabled (expected enabled filters)
+        return RulesLimitsService.getActuallyEnabledFilters() < RulesLimitsService.getExpectedEnabledFilters();
     }
 
     /**
@@ -407,8 +425,10 @@ export class RulesLimitsService {
 
     /**
      * Returns previously enabled filters.
+     *
+     * @returns Previously enabled filters.
      */
-    public static getExpectedEnabledFilters = async (): Promise<number[]> => {
+    public static getExpectedEnabledFilters = (): number[] => {
         return rulesLimitsStorage.getData();
     };
 }
