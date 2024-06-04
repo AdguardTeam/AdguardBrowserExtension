@@ -180,7 +180,7 @@ export class FiltersApi {
             return [];
         }
 
-        if (filterIds.some((id) => !network.isFilterHasLocalCopy(id))) {
+        if (filterIds.some((id) => !network.isFilterHasLocalCopy(id) && !CustomFilterApi.isCustomFilter(id))) {
             logger.error(`In MV3, filters with ids: ${filterIds} cannot be loaded without local copy.`);
             return [];
         }

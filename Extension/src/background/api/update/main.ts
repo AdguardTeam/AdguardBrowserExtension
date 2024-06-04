@@ -16,12 +16,18 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
+import browser from 'webextension-polyfill';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
-import { SbCache, storage } from '../../storages';
+import {
+    FiltersStorage,
+    SbCache,
+    storage,
+} from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
+    AntiBannerFiltersId,
     APP_VERSION_KEY,
     CLIENT_ID_KEY,
     SCHEMA_VERSION_KEY,
@@ -35,6 +41,9 @@ import type { RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
+import { network } from '../network';
+
+import { Experimental } from './experimental';
 
 /**
  * Update API is a facade for handling migrations for the settings object from
@@ -62,6 +71,10 @@ export class UpdateApi {
         currentSchemaVersion,
         previousSchemaVersion,
     }: RunInfo): Promise<void> {
+        if (__IS_MV3__) {
+            await UpdateApi.migrateFromExperimental();
+        }
+
         // check clientId existence
         if (clientId) {
             await storage.set(CLIENT_ID_KEY, clientId);
@@ -75,6 +88,27 @@ export class UpdateApi {
 
         // run migrations, if they needed.
         await UpdateApi.runMigrations(currentSchemaVersion, previousSchemaVersion);
+    }
+
+    /**
+     * Migrates data from the experimental extension to the new mv3 extension.
+     */
+    static async migrateFromExperimental(): Promise<void> {
+        const dataFromStorage = await browser.storage.local.get(null);
+        const metadata = await network.getLocalFiltersMetadata();
+
+        if (!Experimental.isExperimental(dataFromStorage)) {
+            return;
+        }
+
+        const {
+            settings,
+            userrules,
+        } = Experimental.migrateSettings(dataFromStorage, metadata);
+
+        await storage.clear();
+        await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, userrules);
+        await storage.set(ADGUARD_SETTINGS_KEY, settings);
     }
 
     /**
@@ -243,8 +277,11 @@ export class UpdateApi {
         // In the v4.0.171 we have littered window.localStorage with proms used in the promo notifications module,
         // now we are clearing them
 
-        window.localStorage.removeItem('viewed-notifications');
-        window.localStorage.removeItem('viewed-notification-time');
+        if (typeof window !== 'undefined') {
+            // there is no window in the mv3 extension service worker
+            window.localStorage.removeItem('viewed-notifications');
+            window.localStorage.removeItem('viewed-notification-time');
+        }
 
         // In the v4.2.0 we are refactoring storage data structure
 
