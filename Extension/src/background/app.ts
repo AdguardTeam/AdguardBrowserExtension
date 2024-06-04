@@ -67,6 +67,7 @@ import { getRunInfo } from './utils';
 import { contextMenuEvents, settingsEvents } from './events';
 import { KeepAlive } from './keep-alive';
 import { rulesLimitsService } from './services/rules-limits/mv3/rules-limits';
+import { Experimental } from './api/update/experimental';
 
 /**
  * This class is app entry point.
@@ -104,15 +105,21 @@ export class App {
         // get application run info
         const runInfo = await getRunInfo();
 
-        const {
-            previousAppVersion,
-            currentAppVersion,
-        } = runInfo;
+        let { previousAppVersion } = runInfo;
+        const { currentAppVersion } = runInfo;
 
         const isAppVersionChanged = previousAppVersion !== currentAppVersion;
 
-        const isInstall = isAppVersionChanged && !previousAppVersion;
-        const isUpdate = isAppVersionChanged && !!previousAppVersion;
+        let isInstall = isAppVersionChanged && !previousAppVersion;
+        let isUpdate = isAppVersionChanged && !!previousAppVersion;
+
+        // special case for MV3 experimental extension
+        const storageData = await browser.storage.local.get(null);
+        if (__IS_MV3__ && Experimental.isExperimental(storageData)) {
+            isInstall = false;
+            isUpdate = true;
+            previousAppVersion = '0.0.0';
+        }
 
         if (isInstall) {
             await InstallApi.install(runInfo);
@@ -240,7 +247,8 @@ export class App {
         // Update additional scenario
         if (isUpdate) {
             if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
-                toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion);
+                // for isUpdate state previousAppVersion can't be null
+                toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion!);
             }
         }
 

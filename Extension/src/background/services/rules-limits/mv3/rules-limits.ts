@@ -360,7 +360,7 @@ export class RulesLimitsService {
      */
     static async checkFiltersLimitsChange(update: (skipCheck: boolean) => Promise<void>): Promise<void> {
         const expectedEnabledFilters = FiltersApi.getEnabledFiltersWithMetadata()
-            .filter(f => f.groupId <= CUSTOM_FILTERS_START_ID)
+            .filter(f => f.filterId < CUSTOM_FILTERS_START_ID)
             .map((filter) => filter.filterId)
             .sort((a, b) => a - b);
 

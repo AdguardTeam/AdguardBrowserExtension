@@ -54,6 +54,13 @@ export class Storage implements StorageInterface<string, unknown, 'async'> {
     public async remove(key: string): Promise<void> {
         await this.storage.remove(key);
     }
+
+    /**
+     * Clears storage.
+     */
+    public async clear(): Promise<void> {
+        await this.storage.clear();
+    }
 }
 
 export const storage = new Storage();
