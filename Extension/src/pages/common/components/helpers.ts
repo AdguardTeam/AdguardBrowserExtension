@@ -31,7 +31,7 @@ import { MIN_LOADER_SHOWING_TIME_MS } from '../constants';
  */
 export const addMinDelayLoader = (
     setShowLoaderCb: (showLoader: boolean) => void,
-    callback: (...args: unknown[]) => Promise<unknown>,
+    callback: (...args: any[]) => Promise<any>,
 ) => {
     if (!__IS_MV3__) {
         return callback;
