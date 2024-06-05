@@ -88,8 +88,8 @@ export const Header = observer(() => {
                         title={translator.getMessage('popup_header_update_filters')}
                     >
                         <Icon
-                            id="#update-filters"
-                            classname="icon--update-filters"
+                            id="#reload"
+                            classname="icon--24"
                             animationCondition={filtersUpdating}
                             animationClassname="icon--loading"
                         />
@@ -105,7 +105,7 @@ export const Header = observer(() => {
                         >
                             <Icon
                                 id="#pause"
-                                classname="icon--pause"
+                                classname="icon--24"
                             />
                         </button>
                     )}
@@ -131,7 +131,7 @@ export const Header = observer(() => {
                 >
                     <Icon
                         id="#settings"
-                        classname="icon--settings"
+                        classname="icon--24"
                     />
                 </button>
             </div>

@@ -28,6 +28,7 @@ import { PromoNotification } from '../PromoNotification';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
+import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
@@ -74,6 +75,7 @@ export const Popup = observer(() => {
 
     return (
         <div className="popup">
+            <CommonIcons />
             <Icons />
             <Header />
             <MainContainer />

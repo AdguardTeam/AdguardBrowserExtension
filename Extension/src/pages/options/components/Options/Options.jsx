@@ -39,10 +39,11 @@ import { Notifications } from '../Notifications';
 import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
-import { Icons } from '../../../common/components/ui/Icons';
+import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { Loader } from '../../../common/components/Loader';
 import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
+import { Icons } from '../ui/Icons';
 
 import '../../styles/styles.pcss';
 
@@ -118,6 +119,7 @@ const Options = observer(() => {
 
     return (
         <HashRouter hashType="noslash">
+            <CommonIcons />
             <Icons />
             <div className="page">
                 <Loader showLoader={uiStore.showLoader} />

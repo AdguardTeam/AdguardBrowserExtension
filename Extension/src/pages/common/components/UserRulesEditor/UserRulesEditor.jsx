@@ -435,7 +435,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                                     onClick={closeEditorFullscreen}
                                     aria-label={reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')}
                                 >
-                                    <Icon classname="icon--extend" id="#reduce" />
+                                    <Icon classname="icon--gray700 icon--24" id="#reduce" />
                                 </button>
                             ) : (
                                 <button
@@ -444,7 +444,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                                     onClick={openEditorFullscreen}
                                     aria-label={reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip')}
                                 >
-                                    <Icon classname="icon--extend" id="#extend" />
+                                    <Icon classname="icon--gray700 icon--24" id="#extend" />
                                 </button>
                             )
                         }

@@ -47,7 +47,7 @@ export const ReportIssueAction = ({ className, applicationAvailable, url }: Sing
         >
             <Icon
                 id="#thumb-down"
-                classname="icon--action"
+                classname="icon--24"
             />
             <div className="action__title">
                 {translator.getMessage('popup_abuse_site')}

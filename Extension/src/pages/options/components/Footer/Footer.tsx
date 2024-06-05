@@ -59,7 +59,7 @@ export const Footer = observer(() => {
                             onClick={hideRate}
                             aria-label={translator.getMessage('close_button_title')}
                         >
-                            <Icon id="#cross" classname="icon--cross" />
+                            <Icon id="#cross" classname="icon--24" />
                         </button>
                     </div>
                 </div>

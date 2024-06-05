@@ -62,7 +62,7 @@ export const ResetPageUserRulesAction = ({ className, applicationAvailable, url 
         >
             <Icon
                 id={removeUserRulesIconId}
-                classname="icon--action"
+                classname="icon--24"
                 animationCondition={removingUserRules}
                 animationClassname="icon--loading"
             />

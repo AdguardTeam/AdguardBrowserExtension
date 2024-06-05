@@ -55,7 +55,7 @@ const Mv2Actions = observer(() => {
                 url={url}
             />
             {
-                store.hasCustomRulesToReset && (
+                store.hasUserRulesToReset && (
                     <ResetPageUserRulesAction
                         applicationAvailable={applicationAvailable}
                         className={actionChangingClassname}

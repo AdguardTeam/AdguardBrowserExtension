@@ -53,7 +53,7 @@ const Mv3Actions = observer(() => {
                 url={url}
             />
             {
-                store.hasCustomRulesToReset && (
+                store.hasUserRulesToReset && (
                     <ResetPageUserRulesAction
                         applicationAvailable={applicationAvailable}
                         className={actionChangingClassname}

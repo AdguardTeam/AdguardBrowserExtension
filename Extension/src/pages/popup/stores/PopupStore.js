@@ -94,7 +94,7 @@ class PopupStore {
     promoNotification = null;
 
     @observable
-    hasCustomRulesToReset = false;
+    hasUserRulesToReset = false;
 
     @observable
     settings = null;
@@ -143,7 +143,7 @@ class PopupStore {
             this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
             this.isEdgeBrowser = options.isEdgeBrowser;
             this.promoNotification = options.notification;
-            this.hasCustomRulesToReset = options.hasCustomRulesToReset;
+            this.hasUserRulesToReset = options.hasUserRulesToReset;
 
             // stats
             this.stats = stats;

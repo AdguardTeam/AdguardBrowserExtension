@@ -156,9 +156,9 @@ const Search = observer(() => {
                     aria-label={reactTranslator.getMessage('close_button_title')}
                     onClick={searchCloseHandler}
                 >
-                    <Icon id="#cross" classname="search__cross" />
+                    <Icon id="#cross" classname="icon--20 search__cross" />
                 </button>
-            ) : <Icon id="#magnifying" classname="icon--magnifying" />}
+            ) : <Icon id="#magnifying" classname="icon--20 icon--magnifying" />}
             <div className="search__select">
                 <Select
                     id="search-select"
