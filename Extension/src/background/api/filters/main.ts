@@ -180,6 +180,7 @@ export class FiltersApi {
             return [];
         }
 
+        // FIXME(Slava): allow to enable any filter since all of them have local copies now
         if (filterIds.some((id) => !network.isFilterHasLocalCopy(id) && !CustomFilterApi.isCustomFilter(id))) {
             logger.error(`In MV3, filters with ids: ${filterIds} cannot be loaded without local copy.`);
             return [];
