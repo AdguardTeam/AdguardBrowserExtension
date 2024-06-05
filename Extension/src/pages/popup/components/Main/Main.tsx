@@ -74,7 +74,7 @@ export const Main = observer(() => {
                                 __IS_MV3__
                                     ? store.currentStatusMessage
                                     : translator.getMessage('popup_tab_blocked_count', {
-                                        num: store.totalBlocked.toLocaleString(),
+                                        num: store.totalBlockedTab.toLocaleString(),
                                     })
                             }
                         </div>
