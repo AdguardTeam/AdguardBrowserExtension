@@ -119,7 +119,7 @@ export const Header = observer(() => {
                         >
                             <Icon
                                 id="#start"
-                                classname="icon--button icon--start"
+                                classname="icon--button icon--24"
                             />
                         </button>
                     )}
