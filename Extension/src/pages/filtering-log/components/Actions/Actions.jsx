@@ -77,7 +77,7 @@ const Actions = observer(() => {
                             aria-label={reactTranslator.getMessage('filtering_clear_log_events')}
                             onClick={clearLogHandler}
                         >
-                            <Icon id="#trash" classname="icon--trash actions__del" />
+                            <Icon id="#trash" classname="icon--24 actions__del" />
                         </button>
                     </Popover>
                 </div>
@@ -109,8 +109,10 @@ const Actions = observer(() => {
                         type="button"
                         onClick={refreshPage}
                     >
-                        <Icon id="#reload" classname="icon--reload actions__refresh-ico" />
-                        {reactTranslator.getMessage('filtering_refresh_tab_short')}
+                        <Icon id="#reload" classname="icon--24 actions__refresh--icon" />
+                        <span className="actions__refresh--text">
+                            {reactTranslator.getMessage('filtering_refresh_tab_short')}
+                        </span>
                     </button>
                 </div>
             </div>

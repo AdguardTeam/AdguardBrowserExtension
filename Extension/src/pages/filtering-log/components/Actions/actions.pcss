@@ -56,6 +56,7 @@
 
     &__action {
         margin-right: 16px;
+        max-height: 24px;
         display: inline-block;
         vertical-align: middle;
         white-space: nowrap;
@@ -72,22 +73,30 @@
     &__refresh {
         color: var(--gray700);
         border: 0;
-        padding: 5px 0;
+        padding: 0;
+        max-height: 24px;
         cursor: pointer;
-        font-size: 14px;
-        font-weight: 400;
         background-color: transparent;
-    }
+        display: flex;
+        align-items: center;
 
-    &__refresh-ico {
-        transform: translateY(-1px);
-        margin-right: 5px;
+        &--icon {
+            transform: translateY(-1px);
+            margin-right: 4px;
+            color: var(--green400);
+        }
+
+        &--text {
+            font-size: 14px;
+            font-weight: 400;
+        }
     }
 
     &__clear {
-        color: var(--btnRed);
+        color: var(--red300);
         cursor: pointer;
         border: 0;
+        padding: 0;
         font-size: 14px;
         font-weight: 400;
         background-color: transparent;
@@ -114,6 +123,6 @@
     color: var(--gray700);
 
     &.active {
-        color: var(--red400);
+        color: var(--red300);
     }
 }
