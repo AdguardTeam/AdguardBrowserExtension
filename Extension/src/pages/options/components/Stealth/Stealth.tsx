@@ -28,19 +28,20 @@ import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { GLOBAL_PRIVACY_CONTROL_URL, DO_NOT_TRACK_URL } from '../../constants';
 import {
     DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN,
     DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,
 } from '../../../../common/settings';
-import { SettingHandler } from '../../types';
+import { type SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 
 const BlockKnownTrackers = 'blockKnownTrackers';
 const STRIP_TRACKING_PARAMETERS = 'stripTrackingParameters';
 
 const Stealth = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
     const { settings, blockKnownTrackers, stripTrackingParameters }: any = settingsStore;
 
     if (!settings) {
@@ -51,9 +52,19 @@ const Stealth = observer(() => {
         await settingsStore.setBlockKnownTrackersState(data);
     };
 
+    const blockKnownTrackersChangeHandlerWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        blockKnownTrackersChangeHandler,
+    );
+
     const stripTrackingParametersChangeHandler: SettingHandler = async ({ data }) => {
         await settingsStore.setStripTrackingParametersState(data);
     };
+
+    const stripTrackingParametersChangeHandlerWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        stripTrackingParametersChangeHandler,
+    );
 
     const settingChangeHandler: SettingHandler = async ({ id, data, event }) => {
         let ignoreBackground = false;
@@ -111,6 +122,11 @@ const Stealth = observer(() => {
         return settingChangeHandler(payload);
     };
 
+    const disableStealthChangeHandlerWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        disableStealthChangeHandler,
+    );
+
     const {
         DisableStealthMode,
         SelfDestructThirdPartyCookies,
@@ -142,7 +158,7 @@ const Stealth = observer(() => {
                         label={reactTranslator.getMessage('options_privacy_title')}
                         inverted
                         value={settings.values[DisableStealthMode]}
-                        handler={disableStealthChangeHandler}
+                        handler={disableStealthChangeHandlerWrapper}
                     />
                 )}
             />
@@ -153,7 +169,6 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
-                    // FIXME(Slava): add loader for this setting
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_block_known_trackers_title')}
@@ -164,11 +179,10 @@ const Stealth = observer(() => {
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_block_known_trackers_title')}
                     value={blockKnownTrackers}
-                    handler={blockKnownTrackersChangeHandler}
+                    handler={blockKnownTrackersChangeHandlerWrapper}
                 />
 
                 <SettingsSetCheckbox
-                    // FIXME(Slava): add loader for this setting
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={reactTranslator.getMessage('options_strip_tracking_params_title')}
@@ -179,7 +193,7 @@ const Stealth = observer(() => {
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_strip_tracking_params_title')}
                     value={stripTrackingParameters}
-                    handler={stripTrackingParametersChangeHandler}
+                    handler={stripTrackingParametersChangeHandlerWrapper}
                 />
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript

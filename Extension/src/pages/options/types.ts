@@ -28,5 +28,5 @@ type HandlerPayload = {
 };
 
 export type SettingHandler = {
-    (payload: HandlerPayload): void;
+    (payload: HandlerPayload): Promise<void>
 };
