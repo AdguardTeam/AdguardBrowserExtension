@@ -66,14 +66,11 @@ export const Icons = () => {
                 </g>
             </symbol>
 
-            <symbol id="trash" viewBox="0 0 14 17">
-                <g fill="none" fillRule="evenodd" stroke="currentColor" transform="translate(1 1)">
-                    <path d="m.54 3.5.888 11.538a.5.5 0 0 0 .498.462h8.148a.5.5 0 0 0 .498-.462l.888-11.538z" />
-                    <g strokeLinecap="round">
-                        <path d="m0 1.5h12" />
-                        <path d="m4 0v1h4v-1" strokeLinejoin="round" transform="matrix(-1 0 0 -1 12 1)" />
-                    </g>
-                    <path d="m7.5 6v7zm-3 0v7z" strokeLinejoin="round" />
+            <symbol id="trash" viewBox="0 0 24 24">
+                <g fill="none" fillRule="evenodd" stroke="currentColor">
+                    <path clipRule="evenodd" d="M7 9h10l-.7633 10.0755c-.0395.5215-.4742.9245-.9971.9245H8.76044c-.52298 0-.95763-.403-.99714-.9245L7 9Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M6 6.5h12M14 6V4h-4v2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path clipRule="evenodd" d="M13.5 12v5-5ZM10.5 12v5-5Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
             </symbol>
 

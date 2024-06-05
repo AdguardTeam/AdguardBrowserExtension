@@ -161,12 +161,13 @@ const Filter = observer(({ filter }: FilterParams) => {
                             customConfirmTitle={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
                         />
                     )}
-                    <a
+                    <button
+                        type="button"
                         className="filter__remove"
                         onClick={handleRemoveFilterClick}
                     >
-                        <Icon id="#trash" classname="icon--trash" />
-                    </a>
+                        <Icon id="#trash" classname="icon--24" />
+                    </button>
                 </>
             );
         }
@@ -195,9 +196,9 @@ const Filter = observer(({ filter }: FilterParams) => {
                                             </span>
                                         </div>
                                     </Popover>
-                                    <span className="filter__controls">
+                                    <div className="filter__controls">
                                         {renderRemoveButton()}
-                                    </span>
+                                    </div>
                                 </div>
 
                                 <div className="filter__desc">
