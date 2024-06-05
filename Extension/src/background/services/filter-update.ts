@@ -94,11 +94,9 @@ export class FilterUpdateService {
             await storage.set(FilterUpdateService.STORAGE_KEY, Date.now());
         }
 
-        chrome.alarms.onAlarm.addListener(this.update);
-        chrome.alarms.create(
-            'filters-updater',
-            { when: Date.now() + FilterUpdateService.CHECK_PERIOD_MS },
-        );
+        this.schedulerTimerId = window.setTimeout(async () => {
+            await this.update();
+        }, FilterUpdateService.CHECK_PERIOD_MS);
     }
 }
 

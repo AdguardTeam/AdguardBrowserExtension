@@ -37,7 +37,7 @@ import {
     DocumentBlockApi,
     CustomFilterApi,
 } from '../api';
-import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/mv3/rules-limits';
+import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 
 import { TsWebExtensionEngine } from './interface';
 
@@ -207,5 +207,3 @@ export class Engine implements TsWebExtensionEngine {
         }
     }
 }
-
-export const engine = new Engine();

@@ -27,14 +27,18 @@ import {
     type ConfigurationResult,
 } from '@adguard/tswebextension/mv3';
 
-import { messageHandler } from '../../../message-handler';
-import { MessageType } from '../../../../common/messages';
-import { FilterMetadata, FiltersApi } from '../../../api';
-import { CUSTOM_FILTERS_START_ID } from '../../../../common/constants';
-import { filterStateStorage } from '../../../storages';
-import { rulesLimitsStorage } from '../../../storages/rules-limits';
-import { rulesLimitsStorageDataValidator } from '../../../schema/rules-limits';
-import { logger } from '../../../../common/logger';
+import { MessageType } from '../../../common/messages';
+import { FilterMetadata, FiltersApi } from '../../api';
+import { CUSTOM_FILTERS_START_ID } from '../../../common/constants';
+import { filterStateStorage } from '../../storages';
+import { rulesLimitsStorage } from '../../storages/rules-limits';
+import { rulesLimitsStorageDataValidator } from '../../schema/rules-limits';
+import { logger } from '../../../common/logger';
+// Note: due to circular dependencies, import message-handler.ts after all
+// other imports.
+import { messageHandler } from '../../message-handler';
+
+import { type IRulesLimits } from './interface';
 
 const {
     MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES,
@@ -56,71 +60,6 @@ interface RuleSetCounter {
  */
 interface RuleSetCountersMap {
     [key: number]: RuleSetCounter;
-}
-
-/**
- * Interface for rules limits.
- */
-export interface IRulesLimits {
-    /**
-     * How many dynamic rules are enabled in the browser.
-     */
-    dynamicRulesEnabledCount: number;
-
-    /**
-     * Maximum count of the dynamic rules, which can be enabled in the browser.
-     */
-    dynamicRulesMaximumCount: number;
-
-    /**
-     * How many user regexp rules are enabled in the browser.
-     */
-    dynamicRulesRegexpsEnabledCount: number;
-
-    /**
-     * Maximum count of the user regexp rules, which can be enabled in the browser.
-     */
-    dynamicRulesRegexpsMaximumCount: number;
-
-    /**
-     * How many static filters are enabled in the browser.
-     */
-    staticFiltersEnabledCount: number;
-
-    /**
-     * Maximum count of the static filters, which can be enabled in the browser.
-     */
-    staticFiltersMaximumCount: number;
-
-    /**
-     * How many static rules are enabled in the browser.
-     */
-    staticRulesEnabledCount: number;
-
-    /**
-     * Maximum count of the static rules, which can be enabled in the browser.
-     */
-    staticRulesMaximumCount: number;
-
-    /**
-     * How many static regexp rules are enabled in the browser.
-     */
-    staticRulesRegexpsEnabledCount: number;
-
-    /**
-     * Maximum count of the static regexp rules, which can be enabled in the browser.
-     */
-    staticRulesRegexpsMaxCount: number;
-
-    /**
-     * List of actually enabled filters ids.
-     */
-    actuallyEnabledFilters: number[];
-
-    /**
-     * List of expected enabled filters ids.
-     */
-    expectedEnabledFilters: number[];
 }
 
 /**

@@ -30,10 +30,10 @@ import {
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
-import { type IRulesLimits } from '../../../../background/services/rules-limits/mv3/rules-limits';
 import { messenger } from '../../../services/messenger';
 import { MessageType } from '../../../../common/messages';
 import { addMinDelayLoader } from '../../../common/components/helpers';
+import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
 import { Warning } from './Warning';
 
@@ -71,11 +71,11 @@ export const RulesLimits = observer(() => {
         from: ForwardFrom.Options,
     });
 
-    const actuallyEnabledFilterNames = rulesLimits.actuallyEnabledFilters.map((filterId) => {
+    const actuallyEnabledFilterNames = rulesLimits.actuallyEnabledFilters.map((filterId: number) => {
         return settingsStore.filters.find(f => f.filterId === filterId)?.name;
     });
 
-    const expectedEnabledFilterNames = rulesLimits.expectedEnabledFilters.map((filterId) => {
+    const expectedEnabledFilterNames = rulesLimits.expectedEnabledFilters.map((filterId: number) => {
         return settingsStore.filters.find(f => f.filterId === filterId)?.name;
     });
 

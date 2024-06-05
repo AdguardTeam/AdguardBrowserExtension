@@ -19,7 +19,6 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
-import { type IRulesLimits } from '../../../../../background/services/rules-limits/mv3/rules-limits';
 import {
     Forward,
     ForwardAction,
@@ -28,6 +27,7 @@ import {
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
+import { type IRulesLimits } from '../../../../../background/services/rules-limits/interface';
 
 import './filters-info-mv3.pcss';
 

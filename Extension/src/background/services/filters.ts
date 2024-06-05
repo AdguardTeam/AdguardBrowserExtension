@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { RulesLimitsService } from 'rules-limits-service';
+
 import {
     type AddAndEnableFilterMessage,
     type DisableFilterMessage,
@@ -44,8 +46,6 @@ import {
     settingsEvents,
 } from '../events';
 import { listeners } from '../notifier';
-
-import { RulesLimitsService } from './rules-limits/mv3/rules-limits';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
