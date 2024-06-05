@@ -54,7 +54,7 @@ const SearchGroup = ({
                 >
                     <Icon
                         id={`#setting-${groupId}`}
-                        classname="icon--setting setting__icon"
+                        classname="icon--24 setting__icon"
                     />
                     <div className="setting__info">
                         <div className="setting__title setting__title--search">

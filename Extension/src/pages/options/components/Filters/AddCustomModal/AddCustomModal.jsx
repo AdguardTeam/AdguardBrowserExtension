@@ -241,7 +241,7 @@ const AddCustomModal = ({
                                 onChange={handleTrustedCheckbox}
                             />
                             <div className="custom-checkbox">
-                                <Icon id="#checked" classname="icon--checked" />
+                                <Icon id="#checked" classname="icon--18" />
                             </div>
                             {reactTranslator.getMessage('options_popup_trusted_filter_title')}
                         </label>

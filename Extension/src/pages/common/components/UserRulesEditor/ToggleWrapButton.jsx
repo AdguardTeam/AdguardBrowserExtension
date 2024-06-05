@@ -53,7 +53,7 @@ export const ToggleWrapButton = observer(({ onClick }) => {
                 aria-label={tooltipText}
             >
                 <Icon
-                    classname="icon--extend"
+                    classname="icon--gray700 icon--24"
                     id={iconId}
                 />
             </button>

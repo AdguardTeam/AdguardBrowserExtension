@@ -245,7 +245,6 @@ const Filters = observer(() => {
             return group.groupId === settingsStore.selectedGroupId;
         });
 
-        // eslint-disable-next-line max-len
         const isCustom = settingsStore.selectedGroupId === AntibannerGroupsId.CustomFiltersGroupId;
         const isEmpty = filtersToRender.length === 0;
 
@@ -257,7 +256,7 @@ const Filters = observer(() => {
                     className="button setting__back"
                     onClick={handleReturnToGroups}
                 >
-                    <Icon id="#arrow-back" classname="icon--back" />
+                    <Icon id="#arrow-left" classname="icon--24" />
                 </button>
                 <div className="title__inner">
                     <button

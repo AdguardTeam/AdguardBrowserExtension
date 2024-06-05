@@ -46,7 +46,7 @@ export const BlockAdsAction = ({ className, applicationAvailable }: SingleAction
         >
             <Icon
                 id="#block-ad"
-                classname="icon--action"
+                classname="icon--24"
             />
             <div className="action__title">
                 {translator.getMessage('popup_block_site_ads_option')}

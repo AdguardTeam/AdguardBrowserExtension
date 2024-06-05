@@ -1,0 +1,52 @@
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+
+    &--empty {
+        width: 82px;
+        height: 104px;
+    }
+
+    &--link {
+        width: 14px;
+        height: 14px;
+        color: var(--green400);
+    }
+
+    &--20 {
+        width: 20px;
+        min-width: 20px;
+        height: 20px;
+    }
+
+    &--magnifying {
+        color: var(--gray700);
+    }
+
+    &--reload {
+        width: 22px;
+        height: 15px;
+    }
+
+    &--menu {
+        width: 24px;
+        height: 26px;
+    }
+
+    &--loading {
+        pointer-events: none;
+        animation: loader-spin 1s infinite linear;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes loader-spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+}
