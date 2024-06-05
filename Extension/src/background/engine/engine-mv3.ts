@@ -38,6 +38,7 @@ import {
     CustomFilterApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
+import { FiltersStorage } from '../storages';
 
 import { TsWebExtensionEngine } from './interface';
 
@@ -146,8 +147,7 @@ export class Engine implements TsWebExtensionEngine {
      */
     private static async getConfiguration(): Promise<Configuration> {
         const staticFiltersIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId))
-            .concat([]);
+            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
 
         const settings = SettingsApi.getTsWebExtConfiguration(true);
 
@@ -178,9 +178,21 @@ export class Engine implements TsWebExtensionEngine {
 
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
+        const customFiltersIds = FiltersApi.getEnabledFilters()
+            .filter((filterId) => CustomFilterApi.isCustomFilter(filterId));
+
+        const customFilters = await Promise.all(customFiltersIds
+            .map(async (filterId) => {
+                const filterLines = await FiltersStorage.get(filterId);
+                return {
+                    filterId,
+                    content: filterLines.join('\n'),
+                };
+            }));
+
         return {
             filteringLogEnabled: false,
-            customFilters: [], // FIXME: Pass custom filters.
+            customFilters,
             verbose: false,
             logLevel: LogLevel.Info,
             staticFiltersIds,
