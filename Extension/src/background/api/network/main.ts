@@ -69,6 +69,16 @@ export class Network {
     private loadingSubscriptions: Record<string, boolean> = {};
 
     /**
+     * Returns promise that resolves when network is initialized.
+     * Only needed in MV3 with async initialization.
+     *
+     * @returns Promise that resolves when network is initialized.
+     */
+    public waitForNetworkInit(): Promise<void> | null {
+        return this.settings.initPromise;
+    }
+
+    /**
      * Checks if filter has local copy in the extension resources or not.
      *
      * @param filterId Filter id.

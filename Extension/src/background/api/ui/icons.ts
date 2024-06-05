@@ -17,11 +17,12 @@
  */
 import browser from 'webextension-polyfill';
 
+import { RulesLimitsService } from 'rules-limits-service';
+
 import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
 import { getIconImageData } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
-import { RulesLimitsService } from '../../services/rules-limits/mv3/rules-limits';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
@@ -65,10 +66,12 @@ export class IconsApi {
             blocked = 0;
         }
 
-        const isWarning = RulesLimitsService.areFilterLimitsExceeded();
+        const isMv3LimitsExceeded = __IS_MV3__
+            ? RulesLimitsService.areFilterLimitsExceeded()
+            : false;
 
         try {
-            if (isWarning) {
+            if (isMv3LimitsExceeded) {
                 icon = {
                     '19': browser.runtime.getURL('assets/icons/warning-19.png'),
                     '38': browser.runtime.getURL('assets/icons/warning-38.png'),

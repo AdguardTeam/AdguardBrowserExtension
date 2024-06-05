@@ -18,6 +18,8 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
+import { rulesLimitsService } from 'rules-limits-service';
+
 import { MessageType, sendMessage } from '../common/messages';
 import { logger } from '../common/logger';
 import {
@@ -45,6 +47,7 @@ import {
     SettingsApi,
     UpdateApi,
     InstallApi,
+    network,
 } from './api';
 import {
     UiService,
@@ -66,7 +69,6 @@ import { SettingOption } from './schema';
 import { getRunInfo } from './utils';
 import { contextMenuEvents, settingsEvents } from './events';
 import { KeepAlive } from './keep-alive';
-import { rulesLimitsService } from './services/rules-limits/mv3/rules-limits';
 import { Experimental } from './api/update/experimental';
 
 /**
@@ -129,13 +131,20 @@ export class App {
             await UpdateApi.update(runInfo);
         }
 
+        if (__IS_MV3__) {
+            // Initializes network settings.
+            await network.waitForNetworkInit();
+        }
+
         // Initializes App storage data
         await App.initClientId();
 
         // Initializes Settings storage data
         await SettingsApi.init();
 
-        rulesLimitsService.init();
+        if (__IS_MV3__) {
+            rulesLimitsService.init();
+        }
 
         /**
          * When the extension is enabled, disabled and re-enabled during the user session,
@@ -257,9 +266,11 @@ export class App {
 
         appContext.set(AppContextKey.IsInit, true);
 
-        // Initialize filters updates, after engine started, so that it won't mingle with engine
-        // initialization from current rules
-        filterUpdateService.init();
+        if (!__IS_MV3__) {
+            // Initialize filters updates, after engine started, so that
+            // it won't mingle with engine initialization from current rules.
+            filterUpdateService.init();
+        }
 
         await sendMessage({ type: MessageType.AppInitialized });
     }

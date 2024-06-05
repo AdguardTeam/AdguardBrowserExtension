@@ -79,14 +79,19 @@ const Nav = ({ closeSidebar }) => {
             >
                 {reactTranslator.getMessage('options_miscellaneous_settings')}
             </NavLink>
-            <NavLink
-                className="nav__item"
-                activeClassName="nav__item--active"
-                to="/rule-limits"
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_rule_limits')}
-            </NavLink>
+            {
+                __IS_MV3__
+                    && (
+                        <NavLink
+                            className="nav__item"
+                            activeClassName="nav__item--active"
+                            to="/rule-limits"
+                            onClick={onClick}
+                        >
+                            {reactTranslator.getMessage('options_rule_limits')}
+                        </NavLink>
+                    )
+            }
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"

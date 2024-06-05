@@ -134,7 +134,7 @@ const Options = observer(() => {
                             <Route path="/allowlist" component={Allowlist} />
                             <Route path="/user-filter" component={UserRules} />
                             <Route path="/miscellaneous" component={Miscellaneous} />
-                            <Route path="/rule-limits" component={RulesLimits} />
+                            { __IS_MV3__ && <Route path="/rule-limits" component={RulesLimits} /> }
                             <Route path="/about" component={About} />
                             <Route component={General} />
                         </Switch>

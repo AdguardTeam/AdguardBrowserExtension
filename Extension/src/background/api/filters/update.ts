@@ -76,6 +76,12 @@ export class FilterUpdateApi {
      * @returns List of metadata for updated filters.
      */
     public static async checkForFiltersUpdates(filterIds: number[]): Promise<FilterMetadata[]> {
+        // TODO: We can add update filters in MV3 via patches via using
+        // dynamic conversion of these patches, but it can be done later.
+        if (__IS_MV3__) {
+            return [];
+        }
+
         const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filterIds);
 
         const updatedFilters = await FilterUpdateApi.updateFilters(

@@ -26,7 +26,7 @@ import {
     replacementMatchRegexp,
 } from './webpack.common';
 
-export const Mv3ReplacementPlugin = new NormalModuleReplacementPlugin(
+const Mv3ReplacementPlugin = new NormalModuleReplacementPlugin(
     replacementMatchRegexp,
     ((resource: any) => {
         resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv3$1');

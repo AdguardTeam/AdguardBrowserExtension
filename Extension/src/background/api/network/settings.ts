@@ -75,10 +75,16 @@ export class NetworkSettings {
     private filtersRulesBaseUrl: string = '';
 
     /**
+     * Promise that resolves when the network settings are initialized.
+     * Only needed in MV3 with async initialization.
+     */
+    public initPromise: Promise<void> | null = null;
+
+    /**
      * Constructor.
      */
     constructor() {
-        this.init();
+        this.initPromise = this.init();
     }
 
     /**
@@ -95,10 +101,16 @@ export class NetworkSettings {
      * @returns The base url for filter rules.
      */
     private async getFilterRulesBaseUrl(): Promise<string> {
-        const url = await chrome.storage.local.get(this.FILTERS_BASE_URL_KEY);
-        if (url[this.FILTERS_BASE_URL_KEY]) {
-            return url[this.FILTERS_BASE_URL_KEY];
+        // We don't need to set base url in MV3 because we cannot update filters
+        // via patches.
+        // TODO: Remove check when filters will support patches in MV3.
+        if (!__IS_MV3__) {
+            const url = localStorage.getItem(this.FILTERS_BASE_URL_KEY);
+            if (url) {
+                return url;
+            }
         }
+
         return this.DEFAULT_FILTER_RULES_BASE_URL;
     }
 

@@ -100,6 +100,12 @@ module.exports = {
                         'group': 'internal',
                         'position': 'after',
                     },
+                    // Place rules-limits-service alias after internal
+                    {
+                        'pattern': 'rules-limits-service',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Separate group for all .pcss styles
                     {
                         'pattern': '*.pcss',

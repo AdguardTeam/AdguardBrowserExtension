@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-// NOTE: Here important to use 'engine' without path, because it is an alias for
-// manifest-specific implementation of the engine. It will be replaced with MV2
-// or MV3 version during the build via webpack.
-import { Engine } from 'engine';
+// NOTE: Here important to use 'rules-limits-service' without path, because
+// it is an alias for manifest-specific implementation of the rules rules limits
+// service. It will be replaced with mv2 or mv3 version during the build
+// via webpack.
+import { RulesLimitsService } from 'rules-limits-service';
 
 /**
- * Engine is a singleton instance of tswebextension wrapper which will be
- * replaced with MV2 or MV3 implementation during the build via webpack.
+ * RulesLimitsService is a singleton instance of RulesLimitsService which
+ * will be replaced with mv2 or mv3 implementation during the build via webpack.
  *
- * By default, MV3 will be used.
+ * By default, mv2 will be used.
  */
-export const engine = new Engine();
+export const rulesLimitsService = new RulesLimitsService();
