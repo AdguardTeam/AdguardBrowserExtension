@@ -18,32 +18,33 @@
 
 import { MessageType } from '../common/messages';
 import { UserAgent } from '../common/user-agent';
+import { type PageInitAppData } from '../background/services';
 
 import { messenger } from './services/messenger';
 
-const PageController = (response) => {
+const PageController = (response: PageInitAppData) => {
     const {
         userSettings,
         enabledFilters,
         constants: { AntiBannerFiltersId },
     } = response;
 
-    let safebrowsingEnabledCheckbox;
-    let trackingFilterEnabledCheckbox;
-    let socialFilterEnabledCheckbox;
-    let sendStatsCheckbox;
-    let allowAcceptableAdsCheckbox;
+    let safebrowsingEnabledCheckbox: HTMLElement | null = null;
+    let trackingFilterEnabledCheckbox: HTMLElement | null = null;
+    let socialFilterEnabledCheckbox: HTMLElement | null = null;
+    let sendStatsCheckbox: HTMLElement | null = null;
+    let allowAcceptableAdsCheckbox: HTMLElement | null = null;
 
-    const safebrowsingEnabledChange = (e) => {
-        const checkbox = e.currentTarget;
+    const safebrowsingEnabledChange = (e: Event) => {
+        const checkbox = e.currentTarget as HTMLInputElement;
         messenger.sendMessage(MessageType.ChangeUserSettings, {
             key: userSettings.names.DisableSafebrowsing,
             value: !checkbox.checked,
         });
     };
 
-    const trackingFilterEnabledChange = (e) => {
-        const checkbox = e.currentTarget;
+    const trackingFilterEnabledChange = (e: Event) => {
+        const checkbox = e.currentTarget as HTMLInputElement;
         if (checkbox.checked) {
             messenger.sendMessage(MessageType.AddAndEnableFilter, {
                 filterId: AntiBannerFiltersId.TrackingFilterId,
@@ -56,8 +57,8 @@ const PageController = (response) => {
         }
     };
 
-    const socialFilterEnabledChange = (e) => {
-        const checkbox = e.currentTarget;
+    const socialFilterEnabledChange = (e: Event) => {
+        const checkbox = e.currentTarget as HTMLInputElement;
         if (checkbox.checked) {
             messenger.sendMessage(MessageType.AddAndEnableFilter, {
                 filterId: AntiBannerFiltersId.SocialFilterId,
@@ -70,16 +71,16 @@ const PageController = (response) => {
         }
     };
 
-    const sendStatsCheckboxChange = (e) => {
-        const checkbox = e.currentTarget;
+    const sendStatsCheckboxChange = (e: Event) => {
+        const checkbox = e.currentTarget as HTMLInputElement;
         messenger.sendMessage(MessageType.ChangeUserSettings, {
             key: userSettings.names.DisableCollectHits,
             value: !checkbox.checked,
         });
     };
 
-    const allowAcceptableAdsChange = (e) => {
-        const checkbox = e.currentTarget;
+    const allowAcceptableAdsChange = (e: Event) => {
+        const checkbox = e.currentTarget as HTMLInputElement;
         if (checkbox.checked) {
             messenger.sendMessage(MessageType.AddAndEnableFilter, {
                 filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId,
@@ -100,25 +101,24 @@ const PageController = (response) => {
         sendStatsCheckbox = document.getElementById('sendSafebrowsingStatsCheckbox');
         allowAcceptableAdsCheckbox = document.getElementById('allowAcceptableAds');
 
-        // FIXME: safebrowsingEnabledCheckbox is absent on thankyou page for mv3
-        safebrowsingEnabledCheckbox.addEventListener('change', safebrowsingEnabledChange);
-        trackingFilterEnabledCheckbox.addEventListener('change', trackingFilterEnabledChange);
-        socialFilterEnabledCheckbox.addEventListener('change', socialFilterEnabledChange);
+        safebrowsingEnabledCheckbox?.addEventListener('change', safebrowsingEnabledChange);
+        trackingFilterEnabledCheckbox?.addEventListener('change', trackingFilterEnabledChange);
+        socialFilterEnabledCheckbox?.addEventListener('change', socialFilterEnabledChange);
         // ignore Firefox, see task AG-2322
         if (!UserAgent.isFirefox) {
-            sendStatsCheckbox.addEventListener('change', sendStatsCheckboxChange);
+            sendStatsCheckbox?.addEventListener('change', sendStatsCheckboxChange);
         }
-        allowAcceptableAdsCheckbox.addEventListener('change', allowAcceptableAdsChange);
+        allowAcceptableAdsCheckbox?.addEventListener('change', allowAcceptableAdsChange);
 
-        const openExtensionStoreBtns = [].slice.call(document.querySelectorAll('.openExtensionStore'));
+        const openExtensionStoreBtns: HTMLElement[] = [].slice.call(document.querySelectorAll('.openExtensionStore'));
         openExtensionStoreBtns.forEach((openExtensionStoreBtn) => {
-            openExtensionStoreBtn.addEventListener('click', (e) => {
+            openExtensionStoreBtn.addEventListener('click', (e: Event) => {
                 e.preventDefault();
                 messenger.sendMessage(MessageType.OpenExtensionStore);
             });
         });
 
-        const openSettingsBtns = [].slice.call(document.querySelectorAll('.openSettings'));
+        const openSettingsBtns: HTMLElement[] = [].slice.call(document.querySelectorAll('.openSettings'));
         openSettingsBtns.forEach((openSettingsBtn) => {
             openSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -127,7 +127,7 @@ const PageController = (response) => {
         });
     };
 
-    const updateCheckbox = (checkbox, enabled) => {
+    const updateCheckbox = (checkbox: HTMLElement | null, enabled: boolean) => {
         if (!checkbox) {
             return;
         }
@@ -138,7 +138,7 @@ const PageController = (response) => {
         }
     };
 
-    const renderSafebrowsingSection = (safebrowsingEnabled, collectHitStats) => {
+    const renderSafebrowsingSection = (safebrowsingEnabled: boolean, collectHitStats: boolean) => {
         updateCheckbox(safebrowsingEnabledCheckbox, safebrowsingEnabled);
         updateCheckbox(sendStatsCheckbox, collectHitStats);
     };
@@ -170,22 +170,22 @@ const PageController = (response) => {
     };
 };
 
-let timeoutId;
+let timeoutId: number;
 let counter = 0;
 const MAX_WAIT_RETRY = 10;
 const RETRY_TIMEOUT_MS = 100;
 const init = async () => {
     if (typeof messenger === 'undefined') {
         if (counter > MAX_WAIT_RETRY) {
-            clearTimeout(timeoutId);
+            window.clearTimeout(timeoutId);
             return;
         }
-        timeoutId = setTimeout(init, RETRY_TIMEOUT_MS);
+        timeoutId = window.setTimeout(init, RETRY_TIMEOUT_MS);
         counter += 1;
         return;
     }
 
-    clearTimeout(timeoutId);
+    window.clearTimeout(timeoutId);
 
     const response = await messenger.sendMessage(MessageType.InitializeFrameScript);
     const controller = PageController(response);
