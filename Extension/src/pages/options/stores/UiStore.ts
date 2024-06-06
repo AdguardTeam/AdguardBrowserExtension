@@ -23,6 +23,8 @@ import {
 } from 'mobx';
 import { nanoid } from 'nanoid';
 
+import { MIN_LOADER_SHOWING_TIME_MS } from '../../common/constants';
+
 import type { RootStore } from './RootStore';
 
 /**
@@ -62,6 +64,8 @@ class UiStore {
      */
     @observable showLoader = false;
 
+    private loaderStart: number | null = null;
+
     @action
     addNotification({ title = '', description }: NotificationInput) {
         const id = nanoid();
@@ -87,6 +91,28 @@ class UiStore {
     @action
     setShowLoader(value = false) {
         this.showLoader = value;
+
+        if (value) {
+            this.loaderStart = Date.now();
+        } else {
+            this.loaderStart = null;
+        }
+    }
+
+    /**
+     * Checks whether the loader should be hidden.
+     *
+     * **Used for mv3**.
+     *
+     * @todo Can be removed after AG-33293 is done.
+     *
+     * @returns True if the loader is visible now,
+     * and at least {@link MIN_LOADER_SHOWING_TIME_MS} has passed since it was shown.
+     */
+    shouldHideLoader() {
+        return this.showLoader
+            && this.loaderStart !== null
+            && Date.now() - this.loaderStart >= MIN_LOADER_SHOWING_TIME_MS;
     }
 }
 

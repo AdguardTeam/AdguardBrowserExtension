@@ -21,8 +21,13 @@ import { MIN_LOADER_SHOWING_TIME_MS } from '../constants';
 
 /**
  * Checks if the extension is MV3, and
- * - if so it returns a new callback that shows the loader for at least {@link MIN_LOADER_SHOWING_TIME_MS},
+ * - if so it returns a new callback that starts showing a loader for at least {@link MIN_LOADER_SHOWING_TIME_MS},
  * - otherwise (for MV2) it returns the callback as it is.
+ *
+ * Note: it may happen that async callback is passed but it is not awaited, e.g. FiltersService.enableFilter,
+ * that's why if the callback succeeds, the function does not hide the loader
+ * and it should be done on options page data update (should be fixed later AG-33293);
+ * if the callback throws an error, the function hides the loader and rethrows the error.
  *
  * @param setShowLoaderCb Callback to set the loader visibility.
  * @param callback Async callback to run.
@@ -43,7 +48,9 @@ export const addMinDelayLoader = (
         setShowLoaderCb(true);
         try {
             const response = await callbackWithMinDuration(...args);
-            setShowLoaderCb(false);
+            // TODO: some async callback are not awaited, e.g. FiltersService.enableFilter,
+            // so the loader should not be hidden here, but on options page data update; should be fixed later AG-33293
+            // setShowLoaderCb(false);
             return response;
         } catch (e) {
             setShowLoaderCb(false);
