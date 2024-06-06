@@ -27,6 +27,7 @@ import cn from 'classnames';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
+import { addMinDelayLoaderAndRemove } from '../../../common/components/helpers';
 import { Icon } from '../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../common/constants';
@@ -58,9 +59,19 @@ export const Header = observer(() => {
         await store.changeApplicationFilteringDisabled(false);
     };
 
+    const handleEnableClickWrapper = addMinDelayLoaderAndRemove(
+        store.setShowLoader,
+        handleEnableClick,
+    );
+
     const handlePauseClick = async () => {
         await store.changeApplicationFilteringDisabled(true);
     };
+
+    const handlePauseClickWrapper = addMinDelayLoaderAndRemove(
+        store.setShowLoader,
+        handlePauseClick,
+    );
 
     const handleSettingsClick = (e) => {
         e.preventDefault();
@@ -100,7 +111,7 @@ export const Header = observer(() => {
                         <button
                             className="button popup-header__button"
                             type="button"
-                            onClick={handlePauseClick}
+                            onClick={handlePauseClickWrapper}
                             title={translator.getMessage('context_disable_protection')}
                         >
                             <Icon
@@ -114,7 +125,7 @@ export const Header = observer(() => {
                         <button
                             className="button popup-header__button"
                             type="button"
-                            onClick={handleEnableClick}
+                            onClick={handleEnableClickWrapper}
                             title={translator.getMessage('context_enable_protection')}
                         >
                             <Icon

@@ -24,23 +24,32 @@ import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { popupStore } from '../../stores/PopupStore';
 import { POPUP_STATES, COMPARE_URL } from '../../constants';
+import { addMinDelayLoaderAndRemove } from '../../../common/components/helpers';
 
 import './main.pcss';
 
 export const Main = observer(() => {
     const store = useContext(popupStore);
 
+    const toggleAllowlistedHandler = __IS_MV3__
+        ? addMinDelayLoaderAndRemove(
+            store.setShowLoader,
+            store.toggleAllowlistedMv3,
+        )
+        : store.toggleAllowlisted;
+
     const switchersMap = {
         [POPUP_STATES.APPLICATION_ENABLED]: {
-            handler: () => {
-                store.toggleAllowlisted();
-            },
+            handler: toggleAllowlistedHandler,
             mode: 'enabled',
         },
         [POPUP_STATES.APPLICATION_FILTERING_DISABLED]: {
-            handler: () => {
-                store.changeApplicationFilteringDisabled(false);
-            },
+            handler: addMinDelayLoaderAndRemove(
+                store.setShowLoader,
+                async () => {
+                    await store.changeApplicationFilteringDisabled(false);
+                },
+            ),
             mode: 'disabled',
         },
         [POPUP_STATES.APPLICATION_UNAVAILABLE]: {
@@ -50,9 +59,7 @@ export const Main = observer(() => {
             mode: 'in-exception',
         },
         [POPUP_STATES.SITE_ALLOWLISTED]: {
-            handler: () => {
-                store.toggleAllowlisted();
-            },
+            handler: toggleAllowlistedHandler,
             mode: 'allowlisted',
         },
     };
