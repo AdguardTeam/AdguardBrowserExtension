@@ -92,6 +92,11 @@ export const BUG_REPORT_URL = Forward.get({
     from: ForwardFrom.Options,
 });
 
+export const BUG_REPORT_MV3_URL = Forward.get({
+    action: ForwardAction.BugReportMv3,
+    from: ForwardFrom.Options,
+});
+
 export const COLLECT_HITS_LEARN_MORE_URL = Forward.get({
     action: ForwardAction.CollectHitsLearnMore,
     from: ForwardFrom.Options,
