@@ -51,7 +51,7 @@ export const ResetPageUserRulesAction = ({ className, applicationAvailable, url 
         window.close();
     };
 
-    const removeUserRulesIconId = removingUserRules ? '#loading' : '#small-cross';
+    const removeUserRulesIconId = removingUserRules ? '#popup-loading' : '#small-cross';
 
     return (
         <button
@@ -68,9 +68,9 @@ export const ResetPageUserRulesAction = ({ className, applicationAvailable, url 
             />
             <div
                 className="action__title"
-                title={translator.getMessage('popup_reset_custom_rules')}
+                title={translator.getMessage('popup_reset_page_user_rules')}
             >
-                {translator.getMessage('popup_reset_custom_rules')}
+                {translator.getMessage('popup_reset_page_user_rules')}
             </div>
         </button>
     );
