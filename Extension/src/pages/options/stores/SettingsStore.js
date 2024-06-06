@@ -235,6 +235,15 @@ class SettingsStore {
             data = await messenger.getOptionsData();
         }
 
+        // When some settings is changed by user, the message is sent to the background service.
+        // So after the setting is applied in the background service,
+        // the options page sends another message to get the updated settings.
+        // That's why we need to show the loader until the settings are actually updated.
+        // TODO: should be fixed later AG-33293
+        if (this.rootStore.uiStore.shouldHideLoader()) {
+            this.rootStore.uiStore.setShowLoader(false);
+        }
+
         runInAction(() => {
             this.settings = data.settings;
             // on first render we sort filters to show enabled on the top

@@ -99,6 +99,8 @@ export class FiltersService {
 
         // second arg 'true' is needed to enable not touched group
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2776
+        // TODO: FiltersService.enableFilter is async, and for mv2 it is ok to not await it,
+        // but for mv3 the loader should be shown until the operation is completed so it should be awaited. AG-33293
         FiltersService.enableFilter(filterId, true);
 
         const group = Categories.getGroupByFilterId(filterId);
