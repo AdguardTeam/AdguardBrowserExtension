@@ -31,7 +31,6 @@ export const enum ForwardAction {
     IssueReport = 'report',
     // used for "Report a bug" on options page in General section
     BugReport = 'bug_report',
-    // FIXME: 'chrome_mv3_store' is available in tds v533
     BugReportMv3 = 'bug_report_mv3',
     Privacy = 'privacy',
     Acknowledgments = 'acknowledgments',
@@ -51,7 +50,6 @@ export const enum ForwardAction {
     OperaStore = 'opera_store',
     FirefoxStore = 'firefox_store',
     ChromeStore = 'chrome_store',
-    // FIXME: 'chrome_mv3_store' is available in tds v533
     ChromeMv3Store = 'chrome_mv3_store',
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
