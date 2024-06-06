@@ -469,6 +469,7 @@ class SettingsStore {
     @action
     async updateGroupSetting(groupId, enabled) {
         const recommendedFiltersIds = await messenger.updateGroupStatus(groupId, enabled);
+        await this.getRulesLimits();
 
         runInAction(() => {
             if (groupId === AntibannerGroupsId.OtherFiltersGroupId

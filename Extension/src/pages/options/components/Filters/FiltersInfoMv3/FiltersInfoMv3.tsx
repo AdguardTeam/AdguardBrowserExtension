@@ -27,18 +27,17 @@ import {
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
-import { type IRulesLimits } from '../../../../../background/services/rules-limits/interface';
 
 import './filters-info-mv3.pcss';
 
 export const FiltersInfoMv3 = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
-    const rulesLimits = settingsStore.rulesLimits as IRulesLimits;
+    const rulesLimits = settingsStore.rulesLimits;
 
     useEffect(() => {
         settingsStore.getRulesLimits();
-    }, [settingsStore, rulesLimits]);
+    }, [settingsStore]);
 
     const { staticRulesEnabledCount, dynamicRulesEnabledCount } = rulesLimits;
 
