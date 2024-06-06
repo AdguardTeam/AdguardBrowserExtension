@@ -1,8 +1,8 @@
 ---
 
-name: 🐞 Bug report
-description: If you found something that we should know about.
-labels: [Bug]
+name: 🧪 Bug report — for MV3 extension
+description: If you found something wrong in the MV3 extension.
+labels: [Bug, MV3]
 body:
   - type: markdown
     attributes:
@@ -22,7 +22,7 @@ body:
     attributes:
       label: AdGuard Extension version
       description: What version of our extension are you running?
-      placeholder: For example, 4.3.46 beta
+      placeholder: For example, 5.0.1 beta
     validations:
       required: true
   - type: input
@@ -30,7 +30,7 @@ body:
     attributes:
       label: Browser version
       description: What browser do you use?
-      placeholder: For example, Chrome 123
+      placeholder: For example, Chrome 125
     validations:
       required: true
   - type: input
@@ -210,8 +210,6 @@ body:
         - Remove tracking parameters
         - Hide your search queries
         - Ask websites not to track you
-        - Self-destruction of third-party cookies
-        - Self-destruction of first-party cookies
         - Hide Referrer from third parties
         - Remove X-Client-Data header
         - Disable WebRTC
@@ -271,9 +269,3 @@ body:
       placeholder: Add any other context about the problem here, custom filters, etc.
     validations:
       required: false
-
-  - type: markdown
-    attributes:
-      value: |
-        ---
-        Upvote [important issues](https://github.com/AdguardTeam/AdguardBrowserExtension/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+) with a :+1:

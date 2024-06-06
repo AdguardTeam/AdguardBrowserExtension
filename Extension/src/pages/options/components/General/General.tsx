@@ -34,12 +34,11 @@ import {
     ACCEPTABLE_ADS_LEARN_MORE_URL,
     SAFEBROWSING_LEARN_MORE_URL,
     BUG_REPORT_URL,
+    BUG_REPORT_MV3_URL,
 } from '../../constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
 import { exportData, ExportTypes } from '../../../common/utils/export';
-import { UserAgent } from '../../../../common/user-agent';
-import { BROWSER_ADDON_STORE_LINKS } from '../../../constants';
 import { getErrorMessage } from '../../../../common/error';
 import { SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
@@ -95,15 +94,6 @@ const APPEARANCE_THEMES_OPTIONS = [
 ];
 
 const AllowAcceptableAds = 'allowAcceptableAds';
-
-let currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.CHROME;
-if (UserAgent.isFirefox) {
-    currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.FIREFOX;
-} else if (UserAgent.isEdgeChromium) {
-    currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.EDGE;
-} else if (UserAgent.isOpera) {
-    currentBrowserAddonStoreUrl = BROWSER_ADDON_STORE_LINKS.OPERA;
-}
 
 /**
  * We need to handle privacy permission on user action.
@@ -169,6 +159,10 @@ export const General = observer(() => {
 
         // eslint-disable-next-line no-param-reassign
         event.target.value = '';
+    };
+
+    const handleLeaveFeedback = async () => {
+        await messenger.openExtensionStore();
     };
 
     const allowAcceptableAdsChangeHandler: SettingHandler = async ({ data }) => {
@@ -335,19 +329,18 @@ export const General = observer(() => {
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={BUG_REPORT_URL}
+                    href={__IS_MV3__ ? BUG_REPORT_MV3_URL : BUG_REPORT_URL}
                     className="links-menu__item"
                 >
                     {translator.getMessage('options_report_bug')}
                 </a>
-                <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={currentBrowserAddonStoreUrl}
+                <button
+                    type="button"
                     className="links-menu__item"
+                    onClick={handleLeaveFeedback}
                 >
                     {translator.getMessage('options_leave_feedback')}
-                </a>
+                </button>
             </div>
         </>
     );

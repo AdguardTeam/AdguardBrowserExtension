@@ -24,7 +24,6 @@ export const enum ForwardAction {
     // used for thank you page
     ThankYou = 'thank_you_page',
     // used for thank you page for MV3
-    // FIXME: 'thank_you_page_mv3' is available in tds v530; should be deployed if action does not work
     ThankYouMv3 = 'thank_you_page_mv3',
     // used for "More information" on the page blocked by Safebrowsing
     SiteReport = 'site_report_page',
@@ -32,6 +31,8 @@ export const enum ForwardAction {
     IssueReport = 'report',
     // used for "Report a bug" on options page in General section
     BugReport = 'bug_report',
+    // FIXME: 'chrome_mv3_store' is available in tds v533
+    BugReportMv3 = 'bug_report_mv3',
     Privacy = 'privacy',
     Acknowledgments = 'acknowledgments',
     Github = 'github_options',
@@ -50,13 +51,12 @@ export const enum ForwardAction {
     OperaStore = 'opera_store',
     FirefoxStore = 'firefox_store',
     ChromeStore = 'chrome_store',
+    // FIXME: 'chrome_mv3_store' is available in tds v533
+    ChromeMv3Store = 'chrome_mv3_store',
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
-    // FIXME: 'filters_specs_mv3' is available in tds v529; should be deployed if action does not work
     FiltersSpecsMv3 = 'filters_specs_mv3',
-    // FIXME: both 'learn_more_about_mv3' and get_the_app' are available in tds v531;
-    // should be deployed if actions do not work
     LearnMoreAboutMv3 = 'learn_more_about_mv3',
     GetTheApp = 'get_the_app',
     GithubVersion = 'github_version_popup',
