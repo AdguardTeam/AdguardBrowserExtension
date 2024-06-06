@@ -58,3 +58,34 @@ export const addMinDelayLoader = (
         }
     };
 };
+
+/**
+ * Similar to {@link addMinDelayLoader}, but hides the loader after the callback is executed.
+ *
+ * @param setShowLoaderCb Callback to set the loader visibility.
+ * @param callback Async callback to run.
+ *
+ * @returns Async callback with the loader showing for at least {@link MIN_LOADER_SHOWING_TIME_MS}.
+ */
+export const addMinDelayLoaderAndRemove = (
+    setShowLoaderCb: (showLoader: boolean) => void,
+    callback: (...args: any[]) => Promise<any>,
+) => {
+    if (!__IS_MV3__) {
+        return callback;
+    }
+
+    const callbackWithMinDuration = addMinDurationTime(callback, MIN_LOADER_SHOWING_TIME_MS);
+
+    return async (...args: unknown[]) => {
+        setShowLoaderCb(true);
+        try {
+            const response = await callbackWithMinDuration(...args);
+            setShowLoaderCb(false);
+            return response;
+        } catch (e) {
+            setShowLoaderCb(false);
+            throw e;
+        }
+    };
+};

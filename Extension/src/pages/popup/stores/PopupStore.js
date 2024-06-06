@@ -101,8 +101,15 @@ class PopupStore {
 
     currentTabId = null;
 
+    /**
+     * Loader visibility state. **Used for mv3**.
+     */
+    @observable showLoader = false;
+
     constructor() {
         makeObservable(this);
+
+        this.setShowLoader = this.setShowLoader.bind(this);
     }
 
     @action
@@ -216,7 +223,39 @@ class PopupStore {
             messenger.removeAllowlistDomain(this.currentTabId, true);
             isAllowlisted = false;
         } else {
+            // do not wait for the result for mv2 since there is no loader for it
             messenger.addAllowlistDomain(this.currentTabId);
+            isAllowlisted = true;
+        }
+
+        runInAction(() => {
+            this.documentAllowlisted = isAllowlisted;
+            this.userAllowlisted = isAllowlisted;
+            this.totalBlockedTab = 0;
+        });
+    };
+
+    /**
+     * Async version of the {@link toggleAllowlisted} method that waits for the result.
+     *
+     * **Used for mv3**.
+     */
+    @action
+    toggleAllowlistedMv3 = async () => {
+        if (!this.applicationAvailable || this.applicationFilteringDisabled) {
+            return;
+        }
+        if (!this.canAddRemoveRule) {
+            return;
+        }
+
+        let isAllowlisted = this.documentAllowlisted;
+
+        if (isAllowlisted) {
+            await messenger.removeAllowlistDomain(this.currentTabId, true);
+            isAllowlisted = false;
+        } else {
+            await messenger.addAllowlistDomain(this.currentTabId);
             isAllowlisted = true;
         }
 
@@ -344,6 +383,16 @@ class PopupStore {
         await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
         await browser.tabs.create({ url });
     };
+
+    /**
+     * Sets the loader visibility state. **Used for mv3**
+     *
+     * @param {boolean} value Loader visibility state. Default value is false.
+     */
+    @action
+    setShowLoader(value = false) {
+        this.showLoader = value;
+    }
 
     @action
     updateBlockedStats = (tabInfo) => {
