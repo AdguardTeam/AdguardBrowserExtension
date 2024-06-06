@@ -34,7 +34,6 @@ import {
     AllowlistApi,
     UserRulesApi,
     SettingsApi,
-    DocumentBlockApi,
     CustomFilterApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
@@ -176,8 +175,6 @@ export class Engine implements TsWebExtensionEngine {
             userrules = UserRulesApi.convertRules(userrules);
         }
 
-        const trustedDomains = await DocumentBlockApi.getTrustedDomains();
-
         const customFiltersIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => CustomFilterApi.isCustomFilter(filterId));
 
@@ -199,8 +196,6 @@ export class Engine implements TsWebExtensionEngine {
             userrules,
             allowlist,
             settings,
-            // eslint-disable-next-line max-len
-            trustedDomains, // FIXME: Not used in MV3, should be fixed. We can add DNR rule and delete it after expiration.
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
         };
