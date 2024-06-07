@@ -89,10 +89,6 @@
             &__btn {
                 right: 36px;
 
-                & .switcher__icon--play {
-                    display: none;
-                }
-
                 & .switcher__icon--checkmark {
                     display: none;
                 }
@@ -106,27 +102,7 @@
 
     &--disabled {
         & .switcher {
-            opacity: 1;
-
-            &__center {
-                opacity: 0;
-            }
-
-            &__btn {
-                right: 18px;
-
-                & .switcher__icon--play {
-                    display: block;
-                }
-
-                & .switcher__icon--checkmark {
-                    display: none;
-                }
-
-                & .switcher__icon--circle {
-                    display: none;
-                }
-            }
+            display: none;
         }
     }
 
@@ -241,14 +217,23 @@
         }
     }
 
+    &__resume-btn {
+        color: var(--white);
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+        background-color: var(--green400);
+        padding: 16px 48px;
+        min-width: 168px;
+        border: 0;
+        border-radius: 8px;
+        margin: 2px 0;
+    }
+
     &__icon {
         position: absolute;
         left: 13px;
         top: 13px;
-
-        &--play {
-            display: none;
-        }
 
         &--circle {
             display: none;

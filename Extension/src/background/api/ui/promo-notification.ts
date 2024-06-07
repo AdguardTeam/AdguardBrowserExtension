@@ -21,7 +21,7 @@ import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
 import { UserAgent } from '../../../common/user-agent';
 import {
     notificationStorage,
-    Notification,
+    type PromoNotification,
     storage,
 } from '../../storages';
 import { NotificationTextRecord } from '../../schema';
@@ -42,7 +42,7 @@ export class PromoNotificationApi {
 
     private static readonly DELAY_MS = 30 * 1000; // clear notification in 30 seconds
 
-    private currentNotification: Notification | null = null;
+    private currentNotification: PromoNotification | null = null;
 
     private notificationCheckTime = 0;
 
@@ -115,7 +115,7 @@ export class PromoNotificationApi {
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet.
      */
-    public async getCurrentNotification(): Promise<Notification | null> {
+    public async getCurrentNotification(): Promise<PromoNotification | null> {
         // Do not display notification on Firefox
         if (UserAgent.isFirefox) {
             return null;
@@ -205,7 +205,7 @@ export class PromoNotificationApi {
      * @param notification Notification object.
      * @returns {NotificationTextRecord | undefined} Matching notification text settings or undefined.
      */
-    private static getNotificationText(notification: Notification): NotificationTextRecord | undefined {
+    private static getNotificationText(notification: PromoNotification): NotificationTextRecord | undefined {
         let language = I18n.normalizeLanguageCode(browser.i18n.getUILanguage());
 
         if (!language) {

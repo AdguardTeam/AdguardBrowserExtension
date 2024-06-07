@@ -29,14 +29,22 @@ import {
 } from 'mobx';
 import punycode from 'punycode/';
 
+import type { GetStatisticsDataResponse, SettingsData } from '../../../background/api';
+import type { PageStatsDataItem } from '../../../background/schema';
 import { messenger } from '../../services/messenger';
 import {
-    POPUP_STATES,
+    PopupState,
     TIME_RANGES,
     ViewState,
 } from '../constants';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { MessageType } from '../../../common/messages';
+import { type PromoNotification } from '../../../background/storages';
+
+type BlockedStatsInfo = {
+    totalBlocked: number;
+    totalBlockedTab: number;
+};
 
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
@@ -49,7 +57,7 @@ class PopupStore {
     isInitialDataReceived = false;
 
     @observable
-    applicationFilteringDisabled = null;
+    applicationFilteringDisabled: boolean | null = null;
 
     @observable
     applicationAvailable = true;
@@ -70,10 +78,10 @@ class PopupStore {
     totalBlockedTab = 0;
 
     @observable
-    documentAllowlisted = null;
+    documentAllowlisted: boolean | null = null;
 
     @observable
-    userAllowlisted = null;
+    userAllowlisted: boolean | null = null;
 
     @observable
     showInfoAboutFullVersion = true;
@@ -82,7 +90,7 @@ class PopupStore {
     isEdgeBrowser = false;
 
     @observable
-    stats = null;
+    stats: GetStatisticsDataResponse | null = null;
 
     @observable
     selectedTimeRange = TIME_RANGES.WEEK;
@@ -91,15 +99,17 @@ class PopupStore {
     selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
 
     @observable
-    promoNotification = null;
+    promoNotification: PromoNotification | null = null;
 
     @observable
     hasUserRulesToReset = false;
 
     @observable
-    settings = null;
+    settings: SettingsData | null = null;
 
-    currentTabId = null;
+    currentTabId?: number | null = null;
+
+    domainName = null;
 
     /**
      * Loader visibility state. **Used for mv3**.
@@ -164,7 +174,7 @@ class PopupStore {
     };
 
     @action
-    changeApplicationFilteringDisabled = async (state) => {
+    changeApplicationFilteringDisabled = async (state: boolean) => {
         await messenger.changeApplicationFilteringDisabled(state);
 
         runInAction(() => {
@@ -173,7 +183,7 @@ class PopupStore {
     };
 
     @action
-    setViewState = (state) => {
+    setViewState = (state: ViewState) => {
         this.viewState = state;
     };
 
@@ -267,24 +277,24 @@ class PopupStore {
     };
 
     @computed
-    get popupState() {
+    get popupState(): PopupState {
         if (this.applicationFilteringDisabled) {
-            return POPUP_STATES.APPLICATION_FILTERING_DISABLED;
+            return PopupState.ApplicationFilteringDisabled;
         }
 
         if (!this.applicationAvailable) {
-            return POPUP_STATES.APPLICATION_UNAVAILABLE;
+            return PopupState.ApplicationUnavailable;
         }
 
         if (!this.canAddRemoveRule) {
-            return POPUP_STATES.SITE_IN_EXCEPTION;
+            return PopupState.SiteInException;
         }
 
         if (this.documentAllowlisted) {
-            return POPUP_STATES.SITE_ALLOWLISTED;
+            return PopupState.SiteAllowlisted;
         }
 
-        return POPUP_STATES.APPLICATION_ENABLED;
+        return PopupState.ApplicationEnabled;
     }
 
     @action
@@ -295,17 +305,26 @@ class PopupStore {
         });
     };
 
-    getDataByRange = (stats, range) => {
+    getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
         switch (range) {
             case TIME_RANGES.DAY:
+                if (!stats.lastMonth[stats.lastMonth.length - 1]) {
+                    return undefined;
+                }
                 return stats.lastMonth[stats.lastMonth.length - 1];
             case TIME_RANGES.WEEK: {
-                const result = {};
+                const result: PageStatsDataItem = {};
                 for (let i = 0; i < stats.lastWeek.length; i += 1) {
                     const day = stats.lastWeek[i];
+                    if (!day) {
+                        continue;
+                    }
                     // eslint-disable-next-line no-restricted-syntax
                     for (const type of Object.keys(day)) {
-                        result[type] = (result[type] || 0) + day[type];
+                        if (!type) {
+                            continue;
+                        }
+                        result[type] = (result[type] || 0) + (day[type] || 0);
                     }
                 }
                 return result;
@@ -313,12 +332,15 @@ class PopupStore {
             case TIME_RANGES.MONTH:
                 return stats.lastYear[stats.lastYear.length - 1];
             case TIME_RANGES.YEAR: {
-                const result = {};
+                const result: PageStatsDataItem = {};
                 for (let i = 0; i < stats.lastYear.length; i += 1) {
                     const month = stats.lastYear[i];
+                    if (!month) {
+                        continue;
+                    }
                     // eslint-disable-next-line no-restricted-syntax
                     for (const type of Object.keys(month)) {
-                        result[type] = (result[type] || 0) + month[type];
+                        result[type] = (result[type] || 0) + (month[type] || 0);
                     }
                 }
                 return result;
@@ -338,11 +360,20 @@ class PopupStore {
 
         const statsDataForCurrentRange = this.getDataByRange(stats, this.selectedTimeRange);
 
+        if (!statsDataForCurrentRange) {
+            return null;
+        }
+
         const { blockedGroups } = stats;
 
         return blockedGroups
             .slice()
-            .sort((groupA, groupB) => groupA.displayNumber - groupB.displayNumber)
+            .sort((groupA, groupB) => {
+                if ('displayNumber' in groupA && 'displayNumber' in groupB) {
+                    return groupA.displayNumber - groupB.displayNumber;
+                }
+                return 0;
+            })
             .map((group) => {
                 const { groupId, groupName } = group;
                 const blocked = statsDataForCurrentRange[group.groupId];
@@ -352,16 +383,19 @@ class PopupStore {
                     groupName,
                 };
             })
-            .filter((group) => group.blocked > 0 || group.groupId === this.TOTAL_BLOCKED_GROUP_ID);
+            .filter((group) => {
+                return group.blocked
+                    && (group.blocked > 0 || group.groupId === this.TOTAL_BLOCKED_GROUP_ID);
+            });
     }
 
     @action
-    setSelectedBlockedType = (value) => {
+    setSelectedBlockedType = (value: string) => {
         this.selectedBlockedType = value;
     };
 
     @action
-    setSelectedTimeRange = (value) => {
+    setSelectedTimeRange = (value: string) => {
         this.selectedTimeRange = value;
     };
 
@@ -373,11 +407,17 @@ class PopupStore {
 
     @action
     openPromoNotificationUrl = async () => {
-        let { url } = this.promoNotification;
+        let url = this.promoNotification?.url;
+        if (!url) {
+            return;
+        }
+
         url = `${url}&from=popup`;
+
         runInAction(() => {
             this.promoNotification = null;
         });
+
         // TODO: This message will mark the notification as viewed,
         // but it seems that we need to show it.
         await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
@@ -395,17 +435,9 @@ class PopupStore {
     }
 
     @action
-    updateBlockedStats = (tabInfo) => {
+    updateBlockedStats = (tabInfo: BlockedStatsInfo) => {
         this.totalBlocked = tabInfo.totalBlocked;
         this.totalBlockedTab = tabInfo.totalBlockedTab;
-    };
-
-    @action
-    onSettingUpdated = (name, value) => {
-        if (!this.settings) {
-            return;
-        }
-        this.settings.values[name] = value;
     };
 
     @computed
