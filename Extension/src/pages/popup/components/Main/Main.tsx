@@ -84,6 +84,11 @@ export const Main = observer(() => {
         return null;
     }
 
+    if (!currentStatusMessage) {
+        logger.error('Popup status message is not defined');
+        return null;
+    }
+
     return (
         <div className={`main main--${switcher.mode}`}>
             {store.isInitialDataReceived && (
@@ -133,6 +138,12 @@ export const Main = observer(() => {
                                 {translator.getMessage('popup_resume_protection_button')}
                             </button>
                         </>
+                    )}
+
+                    {popupState === PopupState.ApplicationUnavailable && (
+                        <div>
+                            <Icon id="#secure-page" classname="icon--no-filtering" />
+                        </div>
                     )}
 
                     {showInfoAboutFullVersion && (

@@ -100,6 +100,7 @@
         }
     }
 
+    &--unavailable,
     &--disabled {
         & .switcher {
             display: none;
@@ -107,24 +108,9 @@
     }
 
     &--enabled,
-    &--unavailable,
     &--in-exception {
         & .switcher {
             opacity: 1;
-        }
-    }
-
-    &--unavailable {
-        & .switcher {
-            pointer-events: none;
-
-            &__center {
-                opacity: 0;
-            }
-
-            &__btn {
-                right: 18px;
-            }
         }
     }
 

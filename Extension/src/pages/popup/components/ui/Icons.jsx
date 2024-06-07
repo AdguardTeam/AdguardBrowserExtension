@@ -111,6 +111,13 @@ export const Icons = () => {
             <symbol id="popup-loading" viewBox="0 0 24 24">
                 <path stroke="#67B279" fill="#67B279" d="M3.274 14.842c-.433.141-.673.609-.497 1.03a10.002 10.002 0 1 0 2.83-11.565c-.35.291-.353.817-.034 1.142.32.326.84.327 1.195.041a8.352 8.352 0 1 1-2.415 9.867c-.183-.417-.645-.656-1.079-.515Z" strokeLinecap="round" />
             </symbol>
+
+            <symbol id="secure-page" viewBox="0 0 48 48">
+                <g fill="none" fillRule="evenodd">
+                    <path d="m18 22 6 6 8-10" stroke="#67B279" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path clipRule="evenodd" d="M24 6c-6 0-12 1-18 4 0 6 0 22 18 32 18-10 18-26 18-32-6-3-12-4-18-4v0Z" stroke="#67B279" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
+            </symbol>
         </svg>
     );
 };
