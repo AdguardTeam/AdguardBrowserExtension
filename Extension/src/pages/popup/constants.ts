@@ -42,13 +42,21 @@ export const enum ViewState {
     Stats = 'stats',
 }
 
-export const POPUP_STATES = {
-    APPLICATION_ENABLED: 'application.enabled',
-    APPLICATION_FILTERING_DISABLED: 'application.filtering.disabled',
-    APPLICATION_UNAVAILABLE: 'application.unavailable',
-    SITE_IN_EXCEPTION: 'site.in.exception',
-    SITE_ALLOWLISTED: 'site.allowlisted',
-};
+export const enum MainSwitcherMode {
+    Enabled = 'enabled',
+    Disabled = 'disabled',
+    Unavailable = 'unavailable',
+    InException = 'in-exception',
+    Allowlisted = 'allowlisted',
+}
+
+export const enum PopupState {
+    ApplicationEnabled = 'application.enabled',
+    ApplicationFilteringDisabled = 'application.filtering.disabled',
+    ApplicationUnavailable = 'application.unavailable',
+    SiteInException = 'site.in.exception',
+    SiteAllowlisted = 'site.allowlisted',
+}
 
 export const TIME_RANGES = {
     DAY: 'day',

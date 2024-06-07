@@ -20,7 +20,7 @@ import browser from 'webextension-polyfill';
 import { Forward, ForwardAction } from '../../common/forward';
 import { NotificationTextRecord } from '../schema';
 
-export type Notification = {
+export type PromoNotification = {
     id: string,
     locales: Record<string, NotificationTextRecord>
     url: string,
@@ -48,7 +48,7 @@ export type Notification = {
 
 const BIRTHDAY_24_ID = 'birthday24';
 
-const birthday24Notification: Notification = {
+const birthday24Notification: PromoNotification = {
     id: BIRTHDAY_24_ID,
     locales: {
         en: {
@@ -250,6 +250,6 @@ const birthday24Notification: Notification = {
 /**
  * In-memory notifications mapping.
  */
-export const notificationStorage = new Map<string, Notification>([
+export const notificationStorage = new Map<string, PromoNotification>([
     [BIRTHDAY_24_ID, birthday24Notification],
 ]);

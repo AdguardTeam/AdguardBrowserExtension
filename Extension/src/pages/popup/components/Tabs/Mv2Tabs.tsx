@@ -39,7 +39,7 @@ const Mv2Tabs = observer(() => {
 
     const TabContentMv2 = contentMapMv2[store.viewState];
 
-    const handleTabClick = (viewState: string) => () => {
+    const handleTabClick = (viewState: ViewState) => () => {
         store.setViewState(viewState);
     };
 

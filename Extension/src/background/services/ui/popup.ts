@@ -24,16 +24,16 @@ import {
 import { messageHandler } from '../../message-handler';
 import { SettingOption } from '../../schema';
 import { UserAgent } from '../../../common/user-agent';
-import { settingsStorage, Notification } from '../../storages';
+import { settingsStorage, type PromoNotification } from '../../storages';
 import {
-    FrameData,
+    type FrameData,
     FramesApi,
     PageStatsApi,
     SettingsApi,
     promoNotificationApi,
-    GetStatisticsDataResponse,
-    SettingsData,
-    PartialTabContext,
+    type GetStatisticsDataResponse,
+    type SettingsData,
+    type PartialTabContext,
     UserRulesApi,
 } from '../../api';
 
@@ -47,7 +47,7 @@ export type GetTabInfoForPopupResponse = {
         showInfoAboutFullVersion: boolean
         isMacOs: boolean,
         isEdgeBrowser: boolean,
-        notification: Notification | null,
+        notification: PromoNotification | null,
         isDisableShowAdguardPromoInfo: boolean,
         hasUserRulesToReset: boolean,
     },
