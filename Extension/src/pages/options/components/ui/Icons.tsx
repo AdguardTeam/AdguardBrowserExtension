@@ -71,7 +71,7 @@ export const Icons = () => {
 
             <symbol id="empty" viewBox="0 0 81 104">
                 <g fill="none" fillRule="evenodd" transform="translate(1 2)">
-                    <rect fill="#99eaa8" fillRule="nonzero" height="10.424528" rx="5.212264" width="40" x="12.573151" y="90.69107" />
+                    <rect fill="#67b279" fillRule="nonzero" height="10.424528" rx="5.212264" width="40" x="12.573151" y="90.69107" />
                     <ellipse cx="7.701977" cy="61.254354" fill="#3b3b3b" fillRule="nonzero" rx="1.607724" ry="1.632159" />
                     <ellipse cx="66.099384" cy="45.782087" fill="#3b3b3b" fillRule="nonzero" rx="1.607724" ry="1.632159" />
                     <g stroke="#3b3b3b" strokeWidth="2.4">
