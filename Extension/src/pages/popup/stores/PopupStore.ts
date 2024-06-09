@@ -37,13 +37,28 @@ import {
     TIME_RANGES,
     ViewState,
 } from '../constants';
-import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { MessageType } from '../../../common/messages';
+import { translator } from '../../../common/translators/translator';
 import { type PromoNotification } from '../../../background/storages';
 
 type BlockedStatsInfo = {
     totalBlocked: number;
     totalBlockedTab: number;
+};
+
+/**
+ * Popup status data.
+ */
+type PopupStatus = {
+    /**
+     * Status title.
+     */
+    title: string;
+
+    /**
+     * Status description.
+     */
+    description?: string;
 };
 
 // Do not allow property change outside of store actions
@@ -195,27 +210,73 @@ class PopupStore {
         return this.url;
     }
 
-    @computed
-    get currentStatusMessage() {
-        let messageKey = '';
+    /**
+     * Returns the current status message data for MV2.
+     *
+     * @returns Popup status data.
+     */
+    private getCurrentStatusMv2 = (): PopupStatus | null => {
+        let status: PopupStatus | null = null;
 
         if (!this.applicationAvailable) {
-            messageKey = 'popup_site_filtering_state_secure_page';
+            status = {
+                title: translator.getMessage('popup_site_filtering_state_secure_page'),
+            };
         } else if (!this.canAddRemoveRule) {
-            messageKey = 'popup_site_exception_information';
-        } else if (this.applicationFilteringDisabled) {
-            messageKey = 'popup_site_filtering_state_paused';
-        } else if (this.documentAllowlisted) {
-            messageKey = 'popup_site_filtering_state_disabled';
+            status = {
+                title: translator.getMessage('popup_site_filtering_state_disabled'),
+                description: translator.getMessage('popup_site_exception_information'),
+            };
         } else {
-            messageKey = 'popup_site_filtering_state_enabled';
+            status = {
+                title: translator.getMessage('popup_tab_blocked_count', {
+                    num: this.totalBlockedTab.toLocaleString(),
+                }),
+            };
         }
 
-        if (messageKey) {
-            return reactTranslator.getMessage(messageKey);
+        return status;
+    };
+
+    /**
+     * Returns the current status message data for MV3.
+     *
+     * @returns Popup status data.
+     */
+    private getCurrentStatusMv3 = (): PopupStatus | null => {
+        let status: PopupStatus | null = null;
+
+        if (!this.applicationAvailable) {
+            status = {
+                title: translator.getMessage('popup_site_filtering_state_secure_page'),
+            };
+        } else if (!this.canAddRemoveRule) {
+            status = {
+                title: translator.getMessage('popup_site_filtering_state_disabled'),
+                description: translator.getMessage('popup_site_exception_information'),
+            };
+        } else if (this.applicationFilteringDisabled) {
+            status = {
+                title: translator.getMessage('popup_site_filtering_state_paused'),
+            };
+        } else if (this.documentAllowlisted) {
+            status = {
+                title: translator.getMessage('popup_site_filtering_state_disabled'),
+            };
+        } else {
+            status = {
+                title: translator.getMessage('popup_site_filtering_state_enabled'),
+            };
         }
 
-        return null;
+        return status;
+    };
+
+    @computed
+    get currentStatus(): PopupStatus | null {
+        return __IS_MV3__
+            ? this.getCurrentStatusMv3()
+            : this.getCurrentStatusMv2();
     }
 
     @action

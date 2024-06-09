@@ -104,12 +104,15 @@ export const Icons = () => {
                 <path fillRule="evenodd" clipRule="evenodd" d="M20.9842 4.86804C21.6094 5.4116 21.6755 6.35904 21.132 6.98421L10.6987 18.9842C10.4212 19.3034 10.0219 19.4905 9.5991 19.4997C9.1763 19.5088 8.76928 19.339 8.47828 19.0322L2.91156 13.1617C2.34153 12.5606 2.36674 11.6112 2.96787 11.0412C3.569 10.4711 4.51841 10.4963 5.08845 11.0975L9.51856 15.7693L18.868 5.01584C19.4116 4.39066 20.359 4.32449 20.9842 4.86804Z" fill="#67b279" />
             </symbol>
 
-            <symbol id="exclamation" viewBox="0 0 4 24">
-                <path d="M3.9697 6.88858V0H0V6.88858L0.848485 15.4217H3.12121L3.9697 6.88858ZM4 22V17.8731H0V22H4Z" fill="#D58500" />
-            </symbol>
-
             <symbol id="popup-loading" viewBox="0 0 24 24">
                 <path stroke="#67B279" fill="#67B279" d="M3.274 14.842c-.433.141-.673.609-.497 1.03a10.002 10.002 0 1 0 2.83-11.565c-.35.291-.353.817-.034 1.142.32.326.84.327 1.195.041a8.352 8.352 0 1 1-2.415 9.867c-.183-.417-.645-.656-1.079-.515Z" strokeLinecap="round" />
+            </symbol>
+
+            <symbol id="lock" viewBox="0 0 48 48">
+                <g fill="none" fillRule="evenodd">
+                    <path clipRule="evenodd" d="M10 20.8c0 4 0 21.2 14 21.2s14-17.2 14-21.2a36.7 36.7 0 0 0-28 0Z" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M24 28v4M16 18c0-5.4 0-12 7.7-12S32 12.4 32 18" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
             </symbol>
 
             <symbol id="secure-page" viewBox="0 0 48 48">

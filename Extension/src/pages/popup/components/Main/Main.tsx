@@ -37,10 +37,20 @@ export const Main = observer(() => {
 
     const {
         currentSite,
-        currentStatusMessage,
+        currentStatus,
         popupState,
         showInfoAboutFullVersion,
     } = store;
+
+    if (!currentStatus) {
+        logger.error('Popup status message is not defined');
+        return null;
+    }
+
+    if (!currentSite) {
+        logger.error('Current site is not defined');
+        return null;
+    }
 
     const toggleAllowlistedHandler = __IS_MV3__
         ? addMinDelayLoaderAndRemove(
@@ -84,65 +94,68 @@ export const Main = observer(() => {
         return null;
     }
 
-    if (!currentStatusMessage) {
-        logger.error('Popup status message is not defined');
-        return null;
-    }
-
     return (
         <div className={`main main--${switcher.mode}`}>
             {store.isInitialDataReceived && (
                 <>
                     <div className="main__header">
-                        <div className="main__header--current-status">
-                            {
-                                __IS_MV3__
-                                    ? currentStatusMessage
-                                    : translator.getMessage('popup_tab_blocked_count', {
-                                        num: store.totalBlockedTab.toLocaleString(),
-                                    })
-                            }
+                        <div className="main__header--current-status--title">
+                            {currentStatus.title}
                         </div>
-                        <div className="main__header--current-site">
+                        <div
+                            className="main__header--current-site"
+                            title={currentSite}
+                        >
                             {currentSite}
                         </div>
+                        {currentStatus?.description && (
+                            <div className="main__header--current-status--description">
+                                {currentStatus.description}
+                            </div>
+                        )}
                     </div>
 
-                    <button
-                        type="button"
-                        className="switcher"
-                        // TODO: handle later
-                        // @ts-ignore
-                        onClick={switcher.handler}
-                        title={translator.getMessage('popup_switch_button')}
-                    >
-                        <div className={`switcher__center switcher__center--${switcher.mode}`} />
-                        <div className="switcher__btn">
-                            {/* enabled switcher state */}
-                            <Icon id="#checkmark" classname="icon--24 switcher__icon switcher__icon--checkmark" />
-                            {/* disabled switcher state */}
-                            <Icon id="#circle" classname="icon--24 switcher__icon switcher__icon--circle" />
-                            {/* FIXME(Slava): should be replaced */}
-                            <Icon id="#exclamation" classname="icon--exclamation switcher__icon switcher__icon--exclamation" />
-                        </div>
-                    </button>
+                    <div className="switcher__wrapper">
+                        <button
+                            type="button"
+                            className="switcher"
+                            // TODO: handle later
+                            // @ts-ignore
+                            onClick={switcher.handler}
+                            title={translator.getMessage('popup_switch_button')}
+                        >
+                            <div className={`switcher__center switcher__center--${switcher.mode}`} />
+                            <div className="switcher__btn">
+                                {/* enabled switcher state */}
+                                <Icon id="#checkmark" classname="icon--24 switcher__icon switcher__icon--checkmark" />
+                                {/* disabled switcher state */}
+                                <Icon id="#circle" classname="icon--24 switcher__icon switcher__icon--circle" />
+                            </div>
+                        </button>
+                    </div>
 
                     {popupState === PopupState.ApplicationFilteringDisabled && (
-                        <>
+                        <div className="switcher__resume--wrapper">
                             <button
                                 type="button"
-                                className="button switcher__resume-btn"
+                                className="button switcher__resume--btn"
                                 onClick={enableFilteringHandler}
                                 title={translator.getMessage('popup_resume_protection_button')}
                             >
                                 {translator.getMessage('popup_resume_protection_button')}
                             </button>
-                        </>
+                        </div>
                     )}
 
                     {popupState === PopupState.ApplicationUnavailable && (
-                        <div>
+                        <div className="switcher__no-filtering">
                             <Icon id="#secure-page" classname="icon--no-filtering" />
+                        </div>
+                    )}
+
+                    {popupState === PopupState.SiteInException && (
+                        <div className="switcher__no-filtering">
+                            <Icon id="#lock" classname="icon--no-filtering" />
                         </div>
                     )}
 
