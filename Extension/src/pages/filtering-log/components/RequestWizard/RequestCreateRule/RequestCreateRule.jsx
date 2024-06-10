@@ -77,7 +77,10 @@ const RequestCreateRule = observer(() => {
                 >
                     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <div className="radio-button" />
-                    <div className="radio-button-desc">
+                    <div
+                        className="radio-button-desc"
+                        title={pattern}
+                    >
                         {pattern}
                     </div>
                 </label>

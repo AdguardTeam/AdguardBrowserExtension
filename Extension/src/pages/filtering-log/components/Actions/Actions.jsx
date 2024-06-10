@@ -98,7 +98,7 @@ const Actions = observer(() => {
                     >
                         <Popover text={preserveLogTooltipText}>
                             <div className={preserveLogClassName}>
-                                <Icon id="#radio" classname="icon--24" />
+                                <Icon id="#record" classname="icon--24" />
                             </div>
                         </Popover>
                     </label>

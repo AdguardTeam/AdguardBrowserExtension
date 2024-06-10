@@ -89,7 +89,7 @@ const Search = forwardRef(({
                     className="search__btn"
                 >
                     <Icon
-                        id="#arrow-bottom"
+                        id="#arrow-down"
                         classname={cn(
                             'search__ico',
                             onOpenSelect ? 'search__arrow-up' : 'search__arrow-down',

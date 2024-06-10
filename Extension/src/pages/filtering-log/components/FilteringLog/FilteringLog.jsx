@@ -26,10 +26,11 @@ import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
-import { Icons } from '../../../common/components/ui/Icons';
+import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { FILTERING_LOG, NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
+import { Icons } from '../ui/Icons';
 
 import '../../styles/styles.pcss';
 
@@ -180,6 +181,7 @@ const FilteringLog = observer(() => {
 
     return (
         <>
+            <CommonIcons />
             <Icons />
             {wizardStore.isModalOpen
                 && <RequestModal />}
