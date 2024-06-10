@@ -289,22 +289,12 @@ class Messenger {
         return this.sendMessage(MessageType.OpenAssistant);
     }
 
-    // FIXME: this method should work in mv2 and mv3
-    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     async openAbuseSite(url, from) {
-        // FIXME: Remove alert
-        // eslint-disable-next-line no-alert
-        alert('Cannot open because url of tab is empty.');
-        // return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
+        return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
     }
 
-    // FIXME: this method should work in mv2 and mv3
-    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     async checkSiteSecurity(url, from) {
-        // FIXME: Remove alert
-        // eslint-disable-next-line no-alert
-        alert('Cannot open because url of tab is empty.');
-        // return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
+        return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
     }
 
     async resetUserRulesForPage(url) {
@@ -327,20 +317,17 @@ class Messenger {
         return this.sendMessage(MessageType.GetStatisticsData);
     }
 
-    // FIXME: this method should not work in the mv3, since there is no such functionality
-    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    /**
+     * Works only in mv2, since mv3 doesn't support filtering log yet.
+     */
     async onOpenFilteringLogPage() {
-        // FIXME: Remove alert
-        // eslint-disable-next-line no-alert
-        alert('Filtering log is not available in MV3.');
-        // await this.sendMessage(MessageType.OnOpenFilteringLogPage);
+        await this.sendMessage(MessageType.OnOpenFilteringLogPage);
     }
 
     async getFilteringLogData() {
         return this.sendMessage(MessageType.GetFilteringLogData);
     }
 
-    // FIXME check why this is not used anymore
     async onCloseFilteringLogPage() {
         await this.sendMessage(MessageType.OnCloseFilteringLogPage);
     }
@@ -389,11 +376,6 @@ class Messenger {
 
     async setEditorStorageContent(content) {
         return this.sendMessage(MessageType.SetEditorStorageContent, { content });
-    }
-
-    // FIXME make sure that this is not used anymore
-    async convertRuleText(content) {
-        return this.sendMessage(MessageType.ConvertRulesText, { content });
     }
 
     async getRulesLimits() {
