@@ -119,10 +119,12 @@ export class ConnectionHandler {
      */
     private static onPortDisconnection(port: Runtime.Port): void {
         switch (true) {
-            // case port.name.startsWith(FILTERING_LOG): {
-            //     filteringLogApi.onCloseFilteringLogPage();
-            //     break;
-            // }
+            case port.name.startsWith(FILTERING_LOG): {
+                if (!__IS_MV3__) {
+                    filteringLogApi.onCloseFilteringLogPage();
+                }
+                break;
+            }
 
             case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
                 fullscreenUserRulesEditor.onClosePage();

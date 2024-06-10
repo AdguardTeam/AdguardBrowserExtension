@@ -32,6 +32,10 @@ import { AntiBannerFiltersId } from '../../common/constants';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
 import { TabsApi } from '../../common/api/extension/tabs';
+import { engine } from '../engine';
+import { logger } from '../../common/logger';
+import { settingsStorage } from '../storages';
+import { SettingOption } from '../schema';
 
 import { UserRulesApi } from './filters';
 
@@ -142,18 +146,17 @@ export class FilteringLogApi {
     public onOpenFilteringLogPage(): void {
         this.openedFilteringLogsPages += 1;
 
-        // FIXME: Fix
-        // try {
-        //     engine.api.setDebugScriptlets(true);
-        // } catch (e) {
-        //     logger.error('Failed to enable `verbose scriptlets logging` option', e);
-        // }
+        try {
+            engine.api.setDebugScriptlets(true);
+        } catch (e) {
+            logger.error('Failed to enable `verbose scriptlets logging` option', e);
+        }
 
-        // try {
-        //     engine.api.setCollectHitStats(true);
-        // } catch (e) {
-        //     logger.error('Failed to enable `collect hit stats` option', e);
-        // }
+        try {
+            engine.api.setCollectHitStats(true);
+        } catch (e) {
+            logger.error('Failed to enable `collect hit stats` option', e);
+        }
     }
 
     /**
@@ -167,20 +170,19 @@ export class FilteringLogApi {
                 tabInfo.filteringEvents = [];
             });
 
-            // FIXME: Fix
-            // try {
-            //     engine.api.setDebugScriptlets(false);
-            // } catch (e) {
-            //     logger.error('Failed to disable `verbose scriptlets logging` option', e);
-            // }
+            try {
+                engine.api.setDebugScriptlets(false);
+            } catch (e) {
+                logger.error('Failed to disable `verbose scriptlets logging` option', e);
+            }
 
-            // if (settingsStorage.get(SettingOption.DisableCollectHits)) {
-            //     try {
-            //         engine.api.setCollectHitStats(false);
-            //     } catch (e) {
-            //         logger.error('Failed to disable `collect hit stats` option', e);
-            //     }
-            // }
+            if (settingsStorage.get(SettingOption.DisableCollectHits)) {
+                try {
+                    engine.api.setCollectHitStats(false);
+                } catch (e) {
+                    logger.error('Failed to disable `collect hit stats` option', e);
+                }
+            }
         }
     }
 
