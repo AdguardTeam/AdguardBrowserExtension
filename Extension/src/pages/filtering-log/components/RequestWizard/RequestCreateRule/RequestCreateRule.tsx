@@ -22,41 +22,48 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { rootStore } from '../../../stores/RootStore';
-import { RULE_OPTIONS } from '../constants';
+import { RULE_CREATION_OPTION } from '../constants';
 import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { ADDED_RULE_STATES, WIZARD_STATES } from '../../../stores/WizardStore';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
+import { AddedRuleState, WizardRequestState } from '../../../constants';
 
 import './request-create-rule.pcss';
 
 const RequestCreateRule = observer(() => {
-    const ref = useRef();
+    const ref = useRef(null);
     const contentOverflowed = useOverflowed(ref);
 
     const { wizardStore, logStore } = useContext(rootStore);
 
+    const { selectedEvent } = logStore;
+
+    if (!selectedEvent) {
+        return null;
+    }
+
     const RULE_OPTIONS_MAP = {
-        [RULE_OPTIONS.RULE_DOMAIN]: {
-            label: `${reactTranslator.getMessage('filtering_modal_apply_domains')}`,
+        [RULE_CREATION_OPTION.DOMAIN]: {
+            label: `${translator.getMessage('filtering_modal_apply_domains')}`,
         },
-        [RULE_OPTIONS.RULE_THIRD_PARTY]: {
-            label: `${reactTranslator.getMessage('filtering_modal_third_party')}`,
+        [RULE_CREATION_OPTION.THIRD_PARTY]: {
+            label: `${translator.getMessage('filtering_modal_third_party')}`,
         },
-        [RULE_OPTIONS.RULE_IMPORTANT]: {
-            label: `${reactTranslator.getMessage('filtering_modal_important')}`,
+        [RULE_CREATION_OPTION.IMPORTANT]: {
+            label: `${translator.getMessage('filtering_modal_important')}`,
         },
-        [RULE_OPTIONS.RULE_REMOVE_PARAM]: {
-            label: `${reactTranslator.getMessage('filtering_modal_remove_param')}`,
+        [RULE_CREATION_OPTION.REMOVE_PARAM]: {
+            label: `${translator.getMessage('filtering_modal_remove_param')}`,
         },
     };
 
-    const handlePatternChange = (pattern) => () => {
+    const handlePatternChange = (pattern: string) => () => {
         wizardStore.setRulePattern(pattern);
     };
 
-    const renderPatterns = (patterns) => {
+    const renderPatterns = (patterns: string[]): React.JSX.Element => {
         const patternItems = patterns.map((pattern, idx) => (
             <div className="radio-button-wrapper">
                 <input
@@ -94,7 +101,7 @@ const RequestCreateRule = observer(() => {
         );
     };
 
-    const handleOptionsChange = (id) => (e) => {
+    const handleOptionsChange = (id: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const { checked } = e.target;
         wizardStore.setRuleOptionState(id, checked);
     };
@@ -102,22 +109,24 @@ const RequestCreateRule = observer(() => {
     const renderOptions = () => {
         const options = Object.entries(RULE_OPTIONS_MAP);
         const renderedOptions = options.map(([id, { label }]) => {
-            if (id === RULE_OPTIONS.RULE_DOMAIN && !logStore.selectedEvent.frameDomain) {
+            if (id === RULE_CREATION_OPTION.DOMAIN
+                && !selectedEvent.frameDomain) {
                 return null;
             }
 
             // $third-party and $important modifiers are active for cookie rules
             // so $domain modifier is forbidden
-            if (logStore.selectedEvent?.requestRule?.cookieRule
-                && id === RULE_OPTIONS.RULE_DOMAIN) {
+            if (selectedEvent?.requestRule?.cookieRule
+                && id === RULE_CREATION_OPTION.DOMAIN) {
                 return null;
             }
 
             // $removeparam option is available only for requests with query
             // and is not shown for cookie rules
-            if (id === RULE_OPTIONS.RULE_REMOVE_PARAM
-                && (logStore.selectedEvent.requestUrl?.indexOf('?') < 0
-                    || logStore.selectedEvent.requestRule?.cookieRule)) {
+            if (id === RULE_CREATION_OPTION.REMOVE_PARAM
+                && selectedEvent.requestUrl
+                && (selectedEvent.requestUrl?.indexOf('?') < 0
+                    || selectedEvent.requestRule?.cookieRule)) {
                 return null;
             }
 
@@ -131,7 +140,7 @@ const RequestCreateRule = observer(() => {
                         value={id}
                         disabled={wizardStore.isActionSubmitted}
                         onChange={handleOptionsChange(id)}
-                        checked={wizardStore.ruleOptions[id].checked}
+                        checked={wizardStore.ruleOptions[id]?.checked}
                     />
                     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <label
@@ -166,15 +175,15 @@ const RequestCreateRule = observer(() => {
     const handleAddRuleClick = async () => {
         wizardStore.setActionSubmitted(true);
         await messenger.addUserRule(wizardStore.rule);
-        const addedRuleState = wizardStore.requestModalState === WIZARD_STATES.BLOCK_REQUEST
-            ? ADDED_RULE_STATES.BLOCK
-            : ADDED_RULE_STATES.UNBLOCK;
+        const addedRuleState = wizardStore.requestModalState === WizardRequestState.Block
+            ? AddedRuleState.Block
+            : AddedRuleState.Unblock;
 
         wizardStore.setAddedRuleState(addedRuleState);
         wizardStore.setActionSubmitted(false);
     };
 
-    const handleRuleChange = (e) => {
+    const handleRuleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         wizardStore.setRuleText(e.currentTarget.value);
     };
 
@@ -182,7 +191,7 @@ const RequestCreateRule = observer(() => {
         element,
         script,
         requestRule,
-    } = logStore.selectedEvent;
+    } = selectedEvent;
 
     // Must invoke wizardStore.rulePatterns unconditionally to trigger wizardStore.rule computation
     const rulePatterns = renderPatterns(wizardStore.rulePatterns);
@@ -191,11 +200,12 @@ const RequestCreateRule = observer(() => {
     const isElementOrScript = element || script;
     const showPatterns = !isElementOrScript
         && !requestRule?.documentLevelRule
+        && wizardStore.rulePatterns
         && wizardStore.rulePatterns.length > 1;
     const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
 
     let title = reactTranslator.getMessage('filtering_modal_add_title');
-    if (wizardStore.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST) {
+    if (wizardStore.requestModalState === WizardRequestState.Unblock) {
         title = reactTranslator.getMessage('filtering_modal_exception_title');
     }
 
@@ -226,7 +236,7 @@ const RequestCreateRule = observer(() => {
                 {showPatterns && (
                     <div className="request-info patterns">
                         <div className="request-info__key">
-                            {reactTranslator.getMessage('filtering_modal_patterns_desc')}
+                            {translator.getMessage('filtering_modal_patterns_desc')}
                         </div>
                         {rulePatterns}
                     </div>
@@ -234,7 +244,7 @@ const RequestCreateRule = observer(() => {
                 {showOptions && (
                     <div className="request-info options">
                         <div className="request-info__key">
-                            {reactTranslator.getMessage('filtering_modal_options_desc')}
+                            {translator.getMessage('filtering_modal_options_desc')}
                         </div>
                         {options}
                     </div>
@@ -246,9 +256,9 @@ const RequestCreateRule = observer(() => {
                     type="button"
                     className="request-modal__button"
                     onClick={handleAddRuleClick}
-                    title={reactTranslator.getMessage('filtering_modal_add_rule')}
+                    title={translator.getMessage('filtering_modal_add_rule')}
                 >
-                    {reactTranslator.getMessage('filtering_modal_add_rule')}
+                    {translator.getMessage('filtering_modal_add_rule')}
                 </button>
             </div>
         </>

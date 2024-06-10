@@ -22,6 +22,10 @@ import { nanoid } from 'nanoid';
 import { logger } from '../../common/logger';
 import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../../common/messages';
 
+/**
+ * @typedef {import('../../background/api').FilteringLogTabInfo} FilteringLogTabInfo
+ */
+
 class Messenger {
     onMessage = browser.runtime.onMessage;
 
@@ -57,7 +61,7 @@ class Messenger {
      * @param {string} page
      * @param events
      * @param callback
-     * @returns {Function}
+     * @returns {() => Promise<void>}
      */
     createLongLivedConnection = (page, events, callback) => {
         const eventListener = (...args) => {
@@ -341,10 +345,20 @@ class Messenger {
         await this.sendMessage(MessageType.OnCloseFilteringLogPage);
     }
 
+    /**
+     * Sends a message to the background page to get filtering info by tab id.
+     *
+     * @returns {FilteringLogTabInfo} Filtering info about the tab.
+     */
     async getFilteringInfoByTabId(tabId) {
         return this.sendMessage(MessageType.GetFilteringInfoByTabId, { tabId });
     }
 
+    /**
+     * Sends a message to synchronize the list of open tabs.
+     *
+     * @returns {FilteringLogTabInfo[]} Array of filtering info about open tabs.
+     */
     async synchronizeOpenTabs() {
         return this.sendMessage(MessageType.SynchronizeOpenTabs);
     }

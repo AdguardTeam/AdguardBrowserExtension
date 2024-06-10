@@ -37,13 +37,13 @@ const RESIZE_OBSERVER_THROTTLE_MS = 500;
 const Filters = () => {
     const [leftArrow, setLeftArrow] = useState(false);
     const [rightArrow, setRightArrow] = useState(true);
-    const ref = useRef();
+    const ref = useRef<HTMLDivElement>(null);
 
     const calcArrowState = useCallback(([entry]) => {
         const { scrollLeft, scrollWidth, clientWidth } = entry.target;
 
         /**
-         * call setState within requestAnimationFrame to prevent inifinite loop
+         * Call setState within requestAnimationFrame to prevent infinite loop
          */
         window.requestAnimationFrame(() => {
             setLeftArrow(scrollLeft > 0);
@@ -54,6 +54,10 @@ const Filters = () => {
     useResizeObserver(ref, calcArrowState, RESIZE_OBSERVER_THROTTLE_MS);
 
     const scrollTags = () => {
+        if (!ref.current) {
+            return;
+        }
+
         const { scrollLeft, scrollWidth, clientWidth } = ref.current;
 
         setLeftArrow(scrollLeft > 0);
@@ -61,19 +65,36 @@ const Filters = () => {
     };
 
     const scrollLeft = () => {
+        if (!ref.current) {
+            return;
+        }
+
         const { width } = ref.current.getBoundingClientRect();
+
         ref.current.scrollLeft -= width;
     };
 
     const scrollRight = () => {
+        if (!ref.current) {
+            return;
+        }
+
         const { width } = ref.current.getBoundingClientRect();
+
         ref.current.scrollLeft += width;
     };
 
-    const handleWheel = (e) => {
+    const handleWheel = (e: React.WheelEvent) => {
+        if (!ref.current) {
+            return;
+        }
+
         if (isVerticalScroll(e.deltaY, e.deltaX)) {
-            if (e.deltaY < 0) ref.current.scrollLeft += 10;
-            else ref.current.scrollLeft -= 10;
+            if (e.deltaY < 0) {
+                ref.current.scrollLeft += 10;
+            } else {
+                ref.current.scrollLeft -= 10;
+            }
         }
     };
 

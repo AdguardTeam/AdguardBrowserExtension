@@ -257,7 +257,6 @@ const Stealth = observer(() => {
                     { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
-                        className="disabled"
                         title={reactTranslator.getMessage('options_third_party_title')}
                         description={reactTranslator.getMessage('options_third_party_desc')}
                         disabled={!isThirdPartyCookiesEnabled}
@@ -284,7 +283,6 @@ const Stealth = observer(() => {
                     { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
-                        className="disabled"
                         title={reactTranslator.getMessage('options_first_party_title')}
                         description={reactTranslator.getMessage('options_first_party_desc')}
                         disabled={!isFirstPartyCookiesEnabled}

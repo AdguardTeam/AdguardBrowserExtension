@@ -16,21 +16,37 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createContext } from 'react';
+import { RefObject, useEffect } from 'react';
 
-import { configure } from 'mobx';
+import { throttle } from 'lodash-es';
 
-import { LogStore } from './LogStore';
-import { WizardStore } from './WizardStore';
+/**
+ * Hook for tracking dom element resize.
+ *
+ * @param ref Reference to tracking dom element.
+ * @param callback Tracking flag.
+ * @param throttleTimeMs Throttle time in ms, default is 500ms.
+ *
+ * @returns
+ */
+export const useResizeObserver = (
+    ref: RefObject<HTMLElement>,
+    callback: ([entry]: any) => void,
+    throttleTimeMs = 500,
+) => {
+    useEffect(() => {
+        const target = ref.current;
 
-// Do not allow property change outside of store actions
-configure({ enforceActions: 'observed' });
+        if (!target) {
+            return;
+        }
 
-class RootStore {
-    constructor() {
-        this.logStore = new LogStore(this);
-        this.wizardStore = new WizardStore(this);
-    }
-}
+        const observer = new ResizeObserver(throttle(callback, throttleTimeMs));
 
-export const rootStore = createContext(new RootStore());
+        observer.observe(target);
+
+        return () => {
+            observer.unobserve(target);
+        };
+    }, [ref, callback, throttleTimeMs]);
+};

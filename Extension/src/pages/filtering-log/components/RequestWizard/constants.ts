@@ -16,11 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const RULE_OPTIONS = {
-    RULE_DOMAIN: 'ruleDomain',
-    RULE_IMPORTANT: 'ruleImportant',
-    RULE_THIRD_PARTY: 'ruleThirdParty',
-    RULE_REMOVE_PARAM: 'ruleRemoveParam',
+export const RULE_CREATION_OPTION = {
+    DOMAIN: 'ruleDomain',
+    IMPORTANT: 'ruleImportant',
+    THIRD_PARTY: 'ruleThirdParty',
+    REMOVE_PARAM: 'ruleRemoveParam',
 };
 
 export const LINE_COUNT_LIMIT = {

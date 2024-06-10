@@ -26,14 +26,29 @@ import { CopyToClipboard } from '../CopyToClipboard';
 
 import './text-collapser.pcss';
 
-export const TextCollapser = forwardRef(({
-    text,
-    width,
-    lineCountLimit,
-    collapserButtonMessages,
-    canCopy,
-    children,
-}, ref) => {
+type TextCollapserProps = {
+    text: string,
+    width: number,
+    lineCountLimit: number,
+    collapserButtonMessages: {
+        showMessage?: string,
+        hideMessage?: string,
+    },
+    canCopy?: boolean,
+    children?: React.ReactNode,
+};
+
+export const TextCollapser = forwardRef((
+    {
+        text,
+        width,
+        lineCountLimit,
+        collapserButtonMessages,
+        canCopy,
+        children,
+    }: TextCollapserProps,
+    ref: React.Ref<HTMLElement>,
+) => {
     const [
         isCollapsed,
         isOverflown,
@@ -44,7 +59,7 @@ export const TextCollapser = forwardRef(({
         toggleCollapsed();
     };
 
-    const handleKeyUp = (e) => {
+    const handleKeyUp = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             toggleCollapsed();
         }
@@ -101,8 +116,7 @@ export const TextCollapser = forwardRef(({
                 <div
                     role="button"
                     className="request-modal__url-button"
-                    type="button"
-                    tabIndex="0"
+                    tabIndex={0}
                     onClick={handleClick}
                     onKeyUp={handleKeyUp}
                 >

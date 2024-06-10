@@ -35,6 +35,9 @@ import { TabsApi } from '../../common/api/extension/tabs';
 
 import { UserRulesApi } from './filters';
 
+/**
+ * Rule data for filtering log event.
+ */
 export type FilteringEventRuleData = {
     filterId: number,
     ruleText: string,
@@ -51,6 +54,9 @@ export type FilteringEventRuleData = {
     appliedRuleText?: string,
 };
 
+/**
+ * Filtering log event.
+ */
 export type FilteringLogEvent = {
     eventId: string,
     requestUrl?: string,
@@ -67,6 +73,7 @@ export type FilteringLogEvent = {
     removeHeader?: boolean,
     headerName?: string,
     element?: string,
+    script?: boolean,
     cookieName?: string,
     cookieValue?: string,
     isModifyingCookieRule?: boolean,
@@ -271,6 +278,8 @@ export class FilteringLogApi {
 
     /**
      * Synchronizes currently opened tabs with out state.
+     *
+     * @returns Array of {@link FilteringLogTabInfo} for all opened tabs.
      */
     public async synchronizeOpenTabs(): Promise<FilteringLogTabInfo[]> {
         const tabs = await TabsApi.getAll();
