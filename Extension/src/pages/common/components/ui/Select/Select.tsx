@@ -26,6 +26,61 @@ import { Icon } from '../Icon';
 
 import './select.pcss';
 
+/**
+ * Single option for select.
+ */
+type SelectOption = {
+    /**
+     * Option value.
+     */
+    value: string,
+
+    /**
+     * Option title.
+     */
+    title: string,
+};
+
+/**
+ * Select component parameters.
+ */
+type SelectParams = {
+    /**
+     * Select id.
+     */
+    id: string,
+
+    /**
+     * Select change handler.
+     */
+    handler: (value: string) => void,
+
+    /**
+     * List of select options.
+     */
+    options: SelectOption[],
+
+    /**
+     * Current select value.
+     */
+    value: string,
+
+    /**
+     * Select visibility.
+     */
+    hidden: boolean,
+
+    /**
+     * Set select visibility.
+     */
+    setHidden: (value: boolean) => void,
+
+    /**
+     * Flag whether the select is used in popup.
+     */
+    popupModification?: boolean,
+};
+
 export const Select = ({
     id,
     handler,
@@ -34,14 +89,14 @@ export const Select = ({
     hidden,
     setHidden,
     popupModification = false,
-}) => {
+}: SelectParams): React.JSX.Element | null => {
     const ref = useRef(null);
     const refList = useRef(null);
 
-    const renderItems = () => options.map((option) => {
+    const renderItems = (options: SelectOption[]) => options.map((option) => {
         const { value: currentValue, title } = option;
 
-        const handleOptionClick = (e) => {
+        const handleOptionClick = (e: React.MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             handler(currentValue);
             setHidden(true);
@@ -74,16 +129,25 @@ export const Select = ({
         setHidden(true);
     });
 
-    const handleSelectClick = (e) => {
+    const handleSelectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         setHidden(!hidden);
     };
 
     const currentValue = options.find((i) => i.value === value);
+
+    if (!currentValue) {
+        return null;
+    }
+
     const currentTitle = currentValue.title;
 
     return (
-        <div id={id} className={cn('select', popupModification ? 'popup-modification' : '')} ref={ref}>
+        <div
+            id={id}
+            ref={ref}
+            className={cn('select', popupModification ? 'popup-modification' : '')}
+        >
             <button
                 type="button"
                 className="select__value"

@@ -32,10 +32,16 @@ import './tabs.pcss';
 const Mv2Tabs = observer(() => {
     const store = useContext(popupStore);
 
+    const { viewState } = store;
+
     const contentMapMv2 = {
         [ViewState.Actions]: Actions,
         [ViewState.Stats]: StatsTable,
     };
+
+    const tabContentClassName = viewState === ViewState.Stats
+        ? 'tabs__content--stats'
+        : 'tabs__content';
 
     const TabContentMv2 = contentMapMv2[store.viewState];
 
@@ -48,17 +54,17 @@ const Mv2Tabs = observer(() => {
             <div className="tabs__panel">
                 <Tab
                     title={translator.getMessage('popup_tab_actions')}
-                    active={store.viewState === ViewState.Actions}
+                    active={viewState === ViewState.Actions}
                     onClick={handleTabClick(ViewState.Actions)}
                 />
                 <Tab
                     title={translator.getMessage('popup_tab_statistics')}
-                    active={store.viewState === ViewState.Stats}
+                    active={viewState === ViewState.Stats}
                     onClick={handleTabClick(ViewState.Stats)}
                 />
             </div>
             <div
-                className="tabs__content"
+                className={tabContentClassName}
                 tabIndex={TabContentMv2 === contentMapMv2[ViewState.Stats] ? 0 : -1}
             >
                 <TabContentMv2 />
