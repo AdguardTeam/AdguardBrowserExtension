@@ -16,25 +16,25 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { useEffect } from 'react';
+import { createContext } from 'react';
 
-import { throttle } from 'lodash-es';
+import { configure } from 'mobx';
 
-/**
- * @param {HTMLElement} ref - reference to tracking dom element
- * @param {Function} callback - tracking flags
- * @param {number} throttleTime - throttle time in ms
- * @returns {void}
- */
-export const useResizeObserver = (ref, callback, throttleTime = 500) => {
-    useEffect(() => {
-        const target = ref.current;
-        const observer = new ResizeObserver(throttle(callback, throttleTime));
+import { LogStore } from './LogStore';
+import { WizardStore } from './WizardStore';
 
-        observer.observe(target);
+// Do not allow property change outside of store actions
+configure({ enforceActions: 'observed' });
 
-        return () => {
-            observer.unobserve(target);
-        };
-    }, [ref, callback, throttleTime]);
-};
+export class RootStore {
+    public logStore: LogStore;
+
+    public wizardStore: WizardStore;
+
+    constructor() {
+        this.logStore = new LogStore(this);
+        this.wizardStore = new WizardStore(this);
+    }
+}
+
+export const rootStore = createContext(new RootStore());

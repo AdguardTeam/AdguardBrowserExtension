@@ -32,9 +32,9 @@ import cn from 'classnames';
 
 import { rootStore } from '../../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
-import { WIZARD_STATES } from '../../../stores/WizardStore';
 import { RequestCreateRule } from '../RequestCreateRule';
 import { optionsStorage } from '../../../../options/options-storage';
+import { WizardRequestState } from '../../../constants';
 import { RequestPreview } from '../RequestPreview';
 import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
 
@@ -76,18 +76,18 @@ const RequestModal = observer(() => {
     let modalContent;
 
     switch (requestModalState) {
-        case WIZARD_STATES.VIEW_REQUEST: {
+        case WizardRequestState.View: {
             modalContent = <RequestInfo />;
             break;
         }
 
-        case WIZARD_STATES.BLOCK_REQUEST:
-        case WIZARD_STATES.UNBLOCK_REQUEST: {
+        case WizardRequestState.Block:
+        case WizardRequestState.Unblock: {
             modalContent = <RequestCreateRule />;
             break;
         }
 
-        case WIZARD_STATES.PREVIEW_REQUEST: {
+        case WizardRequestState.Preview: {
             modalContent = <RequestPreview />;
             break;
         }

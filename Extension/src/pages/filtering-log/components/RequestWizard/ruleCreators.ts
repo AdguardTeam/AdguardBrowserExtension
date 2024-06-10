@@ -24,21 +24,24 @@ import {
     OPTIONS_DELIMITER,
 } from '@adguard/tsurlfilter';
 
+import type { FilteringEventRuleData } from '../../../../background/api';
 import { strings } from '../../../../common/strings';
 import { logger } from '../../../../common/logger';
+import type { RuleCreationOptions, UIFilteringLogEvent } from '../../types';
 
 import { COMMA_DELIMITER } from './constants';
 import { UrlUtils } from './utils';
 
 /**
- * Splits request url by backslash to block or allow patterns
+ * Splits request url by backslash to block or allow patterns.
  *
- * @param {string} requestUrl - request event url
- * @param {string} domain - request event domain
- * @param {boolean} isAllowlist - flag determining if patterns would be blocking or allowing
- * @returns {string[]}
+ * @param requestUrl Request event url.
+ * @param domain Request event domain.
+ * @param isAllowlist Flag determining if patterns would be blocking or allowing.
+ *
+ * @returns Array of patterns.
  */
-export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
+export const splitToPatterns = (requestUrl: string, domain: string, isAllowlist: boolean): string[] => {
     const PATTERNS_COUNT = 2;
 
     const hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
@@ -102,7 +105,7 @@ export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
  * @param rule
  * @returns {string}
  */
-export const createDocumentLevelBlockRule = (rule) => {
+export const createDocumentLevelBlockRule = (rule: FilteringEventRuleData) => {
     const { ruleText } = rule;
     if (ruleText.indexOf(NetworkRule.OPTIONS_DELIMITER) > -1) {
         return `${ruleText},${NetworkRule.OPTIONS.BADFILTER}`;
@@ -111,14 +114,17 @@ export const createDocumentLevelBlockRule = (rule) => {
 };
 
 /**
- * Generates exception rule with required mask
+ * Generates exception rule with required mask.
  *
- * @param ruleText
- * @param mask
- * @returns {*}
+ * @param ruleText Rule text.
+ * @param mask Mask to be inserted.
+ *
+ * @returns Exception rule.
  */
-const generateExceptionRule = (ruleText, mask) => {
-    const insert = (str, index, value) => str.slice(0, index) + value + str.slice(index);
+const generateExceptionRule = (ruleText: string, mask: CosmeticRuleMarker): string => {
+    const insert = (str: CosmeticRuleMarker, index: number, value: string) => {
+        return str.slice(0, index) + value + str.slice(index);
+    };
 
     const maskIndex = ruleText.indexOf(mask);
     const maskLength = mask.length;
@@ -129,29 +135,41 @@ const generateExceptionRule = (ruleText, mask) => {
 };
 
 /**
- * Creates exception rules for css rules
+ * Creates exception rules for css rule.
  *
- * @param rule
- * @param event
- * @returns {string}
+ * @param rule Css rule.
+ * @param event Filtering log event.
+ * @returns Exception rule for css rule.
  */
-export const createExceptionCssRule = (rule, event) => {
+export const createExceptionCssRule = (
+    rule: FilteringEventRuleData | undefined,
+    event: UIFilteringLogEvent,
+): string => {
+    if (!rule) {
+        logger.error(`Cannot create css exception rule for an event with id: ${event.eventId}`);
+        return '';
+    }
+
     const { ruleText } = rule;
     const domainPart = event.frameDomain;
+
     if (ruleText.indexOf(CosmeticRuleMarker.Css) > -1) {
         return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Css);
     }
+
     if (ruleText.indexOf(CosmeticRuleMarker.ElementHidingExtCSS) > -1) {
         return domainPart + generateExceptionRule(
             ruleText,
             CosmeticRuleMarker.ElementHidingExtCSS,
         );
     }
+
     if (ruleText.indexOf(CosmeticRuleMarker.CssExtCSS) > -1) {
         return domainPart + generateExceptionRule(
             ruleText, CosmeticRuleMarker.CssExtCSS,
         );
     }
+
     if (ruleText.indexOf(CosmeticRuleMarker.ElementHiding) > -1) {
         return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.ElementHiding);
     }
@@ -172,15 +190,24 @@ export const createExceptionCssRule = (rule, event) => {
  * @param event
  * @returns {string}
  */
-export const createExceptionScriptRule = (rule, event) => {
+export const createExceptionScriptRule = (
+    rule: FilteringEventRuleData | undefined,
+    event: UIFilteringLogEvent,
+): string => {
+    if (!rule) {
+        logger.error(`Cannot create exception blocking script rule for an event with id: ${event.eventId}`);
+        return '';
+    }
+
     const { ruleText } = rule;
+
     const domainPart = event.frameDomain;
 
     if (ruleText.indexOf(CosmeticRuleMarker.Js) > -1) {
         return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Js);
     }
 
-    const MASK_SCRIPT_RULE_UBO = '##';
+    const MASK_SCRIPT_RULE_UBO = CosmeticRuleMarker.ElementHiding;
     if (ruleText.indexOf(MASK_SCRIPT_RULE_UBO) > -1) {
         return domainPart + generateExceptionRule(ruleText, MASK_SCRIPT_RULE_UBO);
     }
@@ -188,75 +215,87 @@ export const createExceptionScriptRule = (rule, event) => {
     return '';
 };
 
-const getBlockDomainRule = (domain, ruleOption) => {
+const getBlockDomainRule = (domain: string, ruleOption: string) => {
     const { MASK_START_URL, MASK_SEPARATOR } = SimpleRegex;
-
-    return MASK_START_URL
-        + domain
-        + MASK_SEPARATOR
-        + NetworkRule.OPTIONS_DELIMITER
-        + ruleOption;
+    return `${MASK_START_URL}${domain}${MASK_SEPARATOR}${NetworkRule.OPTIONS_DELIMITER}${ruleOption}`;
 };
 
-const getUnblockDomainRule = (domain, ruleOption) => {
+const getUnblockDomainRule = (rawDomain: string | null, ruleOption: string) => {
+    const domain = rawDomain || '';
     return NetworkRule.MASK_ALLOWLIST + getBlockDomainRule(domain, ruleOption);
 };
 
 /**
- * Create exception rules for cookie event
+ * Creates exception rules for cookie event.
  *
- * @param event
- * @returns {string[]} array of patterns
+ * @param event Filtering log event.
+ * @returns Array of patterns.
  */
-export const createExceptionCookieRules = (event) => {
+export const createExceptionCookieRules = (event: UIFilteringLogEvent): string[] => {
     const {
         frameDomain,
         cookieName,
-        requestRule: { modifierValue },
+        requestRule,
     } = event;
-    const domain = UrlUtils.getCookieDomain(frameDomain);
-    const totalUnblockingRule = getUnblockDomainRule(domain, NetworkRule.OPTIONS.COOKIE);
 
     const patterns = [];
+    const domain = UrlUtils.getCookieDomain(frameDomain);
+
     if (cookieName) {
         patterns.push(getUnblockDomainRule(domain, `${NetworkRule.OPTIONS.COOKIE}=${cookieName}`));
     }
-    if (modifierValue
-        && modifierValue !== cookieName
+
+    if (
+        requestRule
+        && requestRule.modifierValue
+        && requestRule.modifierValue !== cookieName
     ) {
-        patterns.push(getUnblockDomainRule(domain, `${NetworkRule.OPTIONS.COOKIE}=${modifierValue}`));
+        patterns.push(getUnblockDomainRule(domain, `${NetworkRule.OPTIONS.COOKIE}=${requestRule.modifierValue}`));
     }
-    patterns.push(totalUnblockingRule);
+
+    patterns.push(getUnblockDomainRule(domain, NetworkRule.OPTIONS.COOKIE));
 
     return patterns;
 };
 
 // TODO: these could be refactored into one createExceptionAdvancedModifierRules
-export const createExceptionRemoveParamRules = (event) => {
+export const createExceptionRemoveParamRules = (event: UIFilteringLogEvent): string[] => {
     const { frameDomain, requestRule } = event;
+    const patterns = [];
 
-    return [
-        getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.REMOVEPARAM}=${requestRule.modifierValue}`),
-        getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.REMOVEPARAM),
-    ];
+    if (requestRule && requestRule.modifierValue) {
+        patterns.push(getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.REMOVEPARAM}=${requestRule.modifierValue}`));
+    }
+
+    patterns.push(getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.REMOVEPARAM));
+
+    return patterns;
 };
 
-export const createExceptionRemoveHeaderRules = (event) => {
+export const createExceptionRemoveHeaderRules = (event: UIFilteringLogEvent): string[] => {
     const { frameDomain, requestRule } = event;
+    const patterns = [];
 
-    return [
-        getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.REMOVEHEADER}=${requestRule.modifierValue}`),
-        getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.REMOVEHEADER),
-    ];
+    if (requestRule && requestRule.modifierValue) {
+        patterns.push(getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.REMOVEHEADER}=${requestRule.modifierValue}`));
+    }
+
+    patterns.push(getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.REMOVEHEADER));
+
+    return patterns;
 };
 
-export const createExceptionCspRules = (event) => {
+export const createExceptionCspRules = (event: UIFilteringLogEvent): string[] => {
     const { frameDomain, requestRule } = event;
+    const patterns = [];
 
-    return [
-        getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.CSP}=${requestRule.modifierValue}`),
-        getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.CSP),
-    ];
+    if (requestRule && requestRule.modifierValue) {
+        patterns.push(getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.CSP}=${requestRule.modifierValue}`));
+    }
+
+    patterns.push(getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.CSP));
+
+    return patterns;
 };
 
 /**
@@ -265,15 +304,16 @@ export const createExceptionCspRules = (event) => {
  * @param event
  * @returns {string}
  */
-export const createBlockingCookieRule = (event) => {
+export const createBlockingCookieRule = (event: UIFilteringLogEvent) => {
     const {
         frameDomain,
         cookieName,
     } = event;
+
+    const patterns = [];
     const domain = UrlUtils.getCookieDomain(frameDomain);
     const blockingRule = getBlockDomainRule(domain, NetworkRule.OPTIONS.COOKIE);
 
-    const patterns = [];
     if (cookieName) {
         patterns.push(getBlockDomainRule(domain, `${NetworkRule.OPTIONS.COOKIE}=${cookieName}`));
     }
@@ -282,14 +322,23 @@ export const createBlockingCookieRule = (event) => {
     return patterns;
 };
 
+type RuleCreationParams = {
+    urlPattern?: string;
+    rulePattern?: string;
+    urlDomain?: string | null;
+    thirdParty?: boolean;
+    important?: boolean;
+    removeParam?: boolean;
+};
+
 export const createRuleFromParams = ({
     urlPattern,
     urlDomain,
     thirdParty,
     important,
     removeParam,
-}) => {
-    let ruleText = urlPattern;
+}: RuleCreationParams): string => {
+    let ruleText = urlPattern || '';
 
     const options = [];
 
@@ -322,7 +371,7 @@ export const createRuleFromParams = ({
     return ruleText;
 };
 
-export const createCssRuleFromParams = (urlPattern, permitDomain) => {
+export const createCssRuleFromParams = (urlPattern: string, permitDomain: boolean): string => {
     let ruleText = urlPattern;
     if (!permitDomain) {
         ruleText = ruleText.slice(ruleText.indexOf('#'));
@@ -335,7 +384,7 @@ export const createCookieRuleFromParams = ({
     rulePattern,
     thirdParty,
     important,
-}) => {
+}: RuleCreationParams) => {
     let ruleText = rulePattern;
 
     const options = [];
@@ -355,7 +404,15 @@ export const createCookieRuleFromParams = ({
     return ruleText;
 };
 
-export const getRuleText = (selectedEvent, rulePattern, ruleOptions) => {
+export const getRuleText = (
+    selectedEvent: UIFilteringLogEvent | null,
+    rulePattern: string,
+    ruleOptions: RuleCreationOptions,
+) => {
+    if (!selectedEvent) {
+        return '';
+    }
+
     const {
         ruleDomain,
         ruleImportant,
@@ -363,10 +420,10 @@ export const getRuleText = (selectedEvent, rulePattern, ruleOptions) => {
         ruleRemoveParam,
     } = ruleOptions;
 
-    const permitDomain = !ruleDomain.checked;
-    const important = !!ruleImportant.checked;
-    const thirdParty = !!ruleThirdParty.checked;
-    const removeParam = !!ruleRemoveParam.checked;
+    const permitDomain = !ruleDomain?.checked;
+    const important = !!ruleImportant?.checked;
+    const thirdParty = !!ruleThirdParty?.checked;
+    const removeParam = !!ruleRemoveParam?.checked;
 
     const domain = permitDomain ? selectedEvent.frameDomain : null;
 

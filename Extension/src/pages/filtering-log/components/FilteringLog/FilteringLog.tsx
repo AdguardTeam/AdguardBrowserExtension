@@ -34,6 +34,21 @@ import { Icons } from '../ui/Icons';
 
 import '../../styles/styles.pcss';
 
+/**
+ * Type of message for long-lived connection listener callback message argument.
+ */
+type LongLivedConnectionCallbackMessage = {
+    /**
+     * Type of notifier.
+     */
+    type: NotifierType,
+
+    /**
+     * Data of notifier.
+     */
+    data: any,
+};
+
 const FilteringLog = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
     const RESIZE_THROTTLE = 500;
@@ -98,7 +113,7 @@ const FilteringLog = observer(() => {
             removeListenerCallback = messenger.createLongLivedConnection(
                 FILTERING_LOG,
                 events,
-                async (message) => {
+                async (message: LongLivedConnectionCallbackMessage) => {
                     const { type, data } = message;
 
                     switch (type) {

@@ -19,7 +19,9 @@ import { ContentType as RequestType } from '@adguard/tswebextension';
 
 import { AntiBannerFiltersId } from '../../../../common/constants';
 import { strings } from '../../../../common/strings';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
+import type { FilterMetadata } from '../../../../background/api';
+import type { UIFilteringLogEvent } from '../../types';
 
 /**
  * Url utils
@@ -27,7 +29,14 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
  * @type {{getUrlWithoutScheme, isHierarchicUrl, getProtocol, getCookieDomain}}
  */
 export const UrlUtils = {
-    getProtocol(url) {
+    /**
+     * Returns protocol for the given URL.
+     *
+     * @param url URL to process.
+     *
+     * @returns URL protocol.
+     */
+    getProtocol(url: string): string {
         try {
             const urlObject = new URL(url);
             return urlObject.protocol;
@@ -37,11 +46,13 @@ export const UrlUtils = {
     },
 
     /**
-     * Removes protocol from URL and "www." if url starts with it
+     * Removes protocol from URL and `www.` if url starts with it.
      *
-     * @param url
+     * @param url URL to process.
+     *
+     * @returns URL without protocol and `www.`.
      */
-    getUrlWithoutScheme(url) {
+    getUrlWithoutScheme(url: string): string {
         let resultUrl;
 
         const protocol = this.getProtocol(url);
@@ -57,20 +68,26 @@ export const UrlUtils = {
     /**
      * Checks the given URL whether is hierarchical or not.
      *
-     * @param url
-     * @returns {boolean}
+     * @param url Url to check.
+     *
+     * @returns True if the URL is hierarchical, false otherwise.
      */
-    isHierarchicUrl(url) {
+    isHierarchicUrl(url: string): boolean {
         return url.indexOf('//') !== -1;
     },
 
     /**
      * Returns domain for cookie rule.
      *
-     * @param {string} frameDomain
-     * @returns {string}
+     * @param frameDomain Frame domain.
+     *
+     * @returns Domain for cookie rule.
      */
-    getCookieDomain(frameDomain) {
+    getCookieDomain(frameDomain: string | null): string {
+        if (!frameDomain) {
+            return '';
+        }
+
         return frameDomain[0] === '.'
             ? frameDomain.substring(1)
             : frameDomain;
@@ -78,19 +95,27 @@ export const UrlUtils = {
 };
 
 /**
- * Filter's name for filterId
+ * Returns filter name for filterId.
  *
- * @param {number} filterId
- * @param filtersMetadata
- * @returns {string}
+ * @param filterId Filter id.
+ * @param filtersMetadata Filters metadata.
+ *
+ * @returns Filter name for filterId
  */
-export const getFilterName = (filterId, filtersMetadata) => {
+export const getFilterName = (
+    filterId: number | undefined,
+    filtersMetadata: FilterMetadata[] | null,
+): string | null => {
+    if (!filterId) {
+        return null;
+    }
+
     if (filterId === AntiBannerFiltersId.UserFilterId) {
-        return reactTranslator.getMessage('options_userfilter');
+        return translator.getMessage('options_userfilter');
     }
 
     if (filterId === AntiBannerFiltersId.AllowlistFilterId) {
-        return reactTranslator.getMessage('options_allowlist');
+        return translator.getMessage('options_allowlist');
     }
 
     const filterMetadata = filtersMetadata?.filter((el) => el.filterId === filterId)[0];
@@ -99,24 +124,26 @@ export const getFilterName = (filterId, filtersMetadata) => {
 };
 
 /**
- * Request type map
+ * Returns request type for the given event.
  *
- * @param event
- * @returns {string}
+ * @param event Filtering log event.
+ *
+ * @returns Request type for the given event.
  */
-export const getRequestEventType = (event) => {
+export const getRequestEventType = (event: UIFilteringLogEvent): string => {
     const {
         requestType,
         requestRule,
         cspReportBlocked,
         removeHeader,
         removeParam,
+        isModifyingCookieRule,
     } = event;
 
     let requestEventType = requestType;
 
     if (requestRule?.cookieRule
-        || requestRule?.isModifyingCookieRule) {
+        || isModifyingCookieRule) {
         requestEventType = RequestType.Cookie;
     } else if (cspReportBlocked) {
         // By default csp requests in firefox have other request type,
@@ -166,12 +193,13 @@ export const getRequestEventType = (event) => {
 };
 
 /**
- * Returns data for cookie event
+ * Returns data for cookie event.
  *
- * @param event
- * @returns {string|null}
+ * @param event Filtering log event.
+ *
+ * @returns Cookie data as a string or null.
  */
-export const getCookieData = (event) => {
+export const getCookieData = (event: UIFilteringLogEvent): string | null => {
     if (!event.requestRule?.cookieRule || !event?.cookieName) {
         return null;
     }

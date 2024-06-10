@@ -25,7 +25,7 @@ import {
 
 import { ContentType } from '@adguard/tswebextension';
 
-import { RULE_OPTIONS } from '../components/RequestWizard/constants';
+import { RULE_CREATION_OPTION } from '../components/RequestWizard/constants';
 import {
     createDocumentLevelBlockRule,
     createExceptionCookieRules,
@@ -39,27 +39,22 @@ import {
     getRuleText,
 } from '../components/RequestWizard/ruleCreators';
 import { messenger } from '../../services/messenger';
+import { AddedRuleState, WizardRequestState } from '../constants';
+import type { RuleCreationOptions, UIFilteringLogEvent } from '../types';
 
-export const WIZARD_STATES = {
-    VIEW_REQUEST: 'view.request',
-    BLOCK_REQUEST: 'block.request',
-    UNBLOCK_REQUEST: 'unblock.request',
-    PREVIEW_REQUEST: 'preview.request',
-};
+import type { RootStore } from './RootStore';
 
-export const ADDED_RULE_STATES = {
-    BLOCK: 'block',
-    UNBLOCK: 'unblock',
-};
-
-const defaultRuleOptions = {
-    [RULE_OPTIONS.RULE_DOMAIN]: { checked: false },
-    [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
-    [RULE_OPTIONS.RULE_IMPORTANT]: { checked: false },
+const defaultRuleOptions: RuleCreationOptions = {
+    [RULE_CREATION_OPTION.DOMAIN]: { checked: false },
+    [RULE_CREATION_OPTION.THIRD_PARTY]: { checked: false },
+    [RULE_CREATION_OPTION.IMPORTANT]: { checked: false },
+    [RULE_CREATION_OPTION.REMOVE_PARAM]: null,
 };
 
 class WizardStore {
-    constructor(rootStore) {
+    private rootStore: RootStore;
+
+    constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
         makeObservable(this);
     }
@@ -68,19 +63,19 @@ class WizardStore {
     isModalOpen = false;
 
     @observable
-    requestModalState = WIZARD_STATES.VIEW_REQUEST;
+    requestModalState = WizardRequestState.View;
 
     @observable
-    ruleText = null;
+    ruleText: string | null = null;
 
     @observable
     rulePattern = '';
 
     @observable
-    ruleOptions = defaultRuleOptions;
+    ruleOptions: RuleCreationOptions = defaultRuleOptions;
 
     @observable
-    addedRuleState = null;
+    addedRuleState: AddedRuleState | null = null;
 
     /**
      * Whether the rule for the specified request is now applied or deleted
@@ -92,40 +87,43 @@ class WizardStore {
     get requestModalStateEnum() {
         /* should have only one true value */
         return {
-            isBlock: this.requestModalState === WIZARD_STATES.BLOCK_REQUEST,
-            isUnblock: this.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST,
-            isView: this.requestModalState === WIZARD_STATES.VIEW_REQUEST,
+            isBlock: this.requestModalState === WizardRequestState.Block,
+            isUnblock: this.requestModalState === WizardRequestState.Unblock,
+            isView: this.requestModalState === WizardRequestState.View,
         };
     }
 
     @action
-    setActionSubmitted(value) {
+    setActionSubmitted(value: boolean) {
         this.isActionSubmitted = value;
     }
 
     @action
     updateRuleOptions() {
         const { selectedEvent } = this.rootStore.logStore;
-        const {
-            requestRule,
-        } = selectedEvent;
 
-        const isImportant = requestRule
+        if (!selectedEvent) {
+            return;
+        }
+
+        const { requestRule } = selectedEvent;
+
+        const isImportant = !!(requestRule
             && (requestRule.allowlistRule || requestRule.isImportant)
-            && !requestRule.documentLevelRule;
+            && !requestRule.documentLevelRule);
 
         this.ruleOptions = {
-            [RULE_OPTIONS.RULE_DOMAIN]: { checked: false },
-            [RULE_OPTIONS.RULE_THIRD_PARTY]: { checked: false },
-            [RULE_OPTIONS.RULE_IMPORTANT]: { checked: isImportant },
-            [RULE_OPTIONS.RULE_REMOVE_PARAM]: { checked: false },
+            [RULE_CREATION_OPTION.DOMAIN]: { checked: false },
+            [RULE_CREATION_OPTION.THIRD_PARTY]: { checked: false },
+            [RULE_CREATION_OPTION.IMPORTANT]: { checked: isImportant },
+            [RULE_CREATION_OPTION.REMOVE_PARAM]: { checked: false },
         };
     }
 
     @action
     openModal() {
         this.isModalOpen = true;
-        this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+        this.requestModalState = WizardRequestState.View;
         this.updateRuleOptions();
     }
 
@@ -134,29 +132,29 @@ class WizardStore {
         this.isActionSubmitted = false;
         this.isModalOpen = false;
         this.addedRuleState = null;
-        this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+        this.requestModalState = WizardRequestState.View;
         this.rootStore.logStore.removeSelectedEvent();
     };
 
     @action
     setBlockState() {
-        this.requestModalState = WIZARD_STATES.BLOCK_REQUEST;
+        this.requestModalState = WizardRequestState.Block;
     }
 
     @action
     setUnblockState() {
-        this.requestModalState = WIZARD_STATES.UNBLOCK_REQUEST;
+        this.requestModalState = WizardRequestState.Unblock;
     }
 
     @action
-    setAddedRuleState(nextAddedRuleState) {
+    setAddedRuleState(nextAddedRuleState: AddedRuleState | null) {
         this.addedRuleState = nextAddedRuleState;
-        this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+        this.requestModalState = WizardRequestState.View;
     }
 
     @action
     setPreviewState() {
-        this.requestModalState = WIZARD_STATES.PREVIEW_REQUEST;
+        this.requestModalState = WizardRequestState.Preview;
     }
 
     @action
@@ -170,9 +168,13 @@ class WizardStore {
     };
 
     @action
-    removeFromUserFilterHandler = async (filteringEvent) => {
+    removeFromUserFilterHandler = async (filteringEvent: UIFilteringLogEvent) => {
         this.setActionSubmitted(true);
         const { requestRule } = filteringEvent;
+
+        if (!requestRule) {
+            return;
+        }
 
         await messenger.removeUserRule(requestRule.ruleText);
 
@@ -188,18 +190,18 @@ class WizardStore {
 
     @action
     setViewState() {
-        this.requestModalState = WIZARD_STATES.VIEW_REQUEST;
+        this.requestModalState = WizardRequestState.View;
     }
 
     @action
-    setRulePattern(rulePattern) {
+    setRulePattern(rulePattern: string): void {
         // on every rule pattern change we reset rule text inserted manually
         this.ruleText = null;
         this.rulePattern = rulePattern;
     }
 
     @action
-    setRuleText(ruleText) {
+    setRuleText(ruleText: string) {
         this.ruleText = ruleText;
     }
 
@@ -215,8 +217,13 @@ class WizardStore {
     @computed
     get rulePatterns() {
         const { selectedEvent } = this.rootStore.logStore;
-        if (this.requestModalState === WIZARD_STATES.UNBLOCK_REQUEST) {
-            let patterns;
+
+        if (!selectedEvent) {
+            return [];
+        }
+
+        if (this.requestModalState === WizardRequestState.Unblock) {
+            let patterns: string[] = [];
             if (selectedEvent.requestUrl && selectedEvent.requestDomain) {
                 patterns = splitToPatterns(
                     selectedEvent.requestUrl,
@@ -249,12 +256,14 @@ class WizardStore {
                 patterns = createExceptionCspRules(selectedEvent);
             }
 
-            this.setRulePattern(patterns[0]);
+            if (patterns[0]) {
+                this.setRulePattern(patterns[0]);
+            }
 
             return patterns;
         }
 
-        let patterns = [];
+        let patterns: string[] = [];
         if (selectedEvent.requestUrl && selectedEvent.requestDomain) {
             patterns = splitToPatterns(
                 selectedEvent.requestUrl,
@@ -269,14 +278,18 @@ class WizardStore {
             patterns = [createDocumentLevelBlockRule(selectedEvent.requestRule)];
         }
 
-        this.setRulePattern(patterns[0]);
+        if (patterns[0]) {
+            this.setRulePattern(patterns[0]);
+        }
+
         return patterns;
     }
 
     @action
-    setRuleOptionState(optionId, checked) {
+    setRuleOptionState(optionId: string, checked: boolean) {
         // on every rule pattern change we reset rule text inserted manually
         this.ruleText = null;
+        // @ts-ignore
         this.ruleOptions[optionId].checked = checked;
     }
 }

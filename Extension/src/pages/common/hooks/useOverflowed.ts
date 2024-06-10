@@ -16,21 +16,30 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { useState, useCallback } from 'react';
+import {
+    useState,
+    useCallback,
+    RefObject,
+} from 'react';
 
 import { useResizeObserver } from './useResizeObserver';
 
 /**
- * Detects if container content is overflowed
+ * Detects if container content is overflowed.
  *
- * @param {React.Ref} ref - reference to tracking dom element
- * @param {object} track - tracking flags
- * @param {boolean} track.x - tracking overflow on x axis
- * @param {boolean} track.y - tracking overflow on y axis
- * @param {number} throttleTime - throttle time in ms
- * @returns {boolean}
+ * @param ref Reference to tracking dom element.
+ * @param track Tracking flags.
+ * @param track.x Tracking overflow on x axis.
+ * @param track.y Tracking overflow on y axis.
+ * @param throttleTime Throttle time in ms.
+ *
+ * @returns True if content is overflowed.
  */
-export const useOverflowed = (ref, track = { x: false, y: true }, throttleTime = 500) => {
+export const useOverflowed = (
+    ref: RefObject<HTMLElement>,
+    track = { x: false, y: true },
+    throttleTime = 500,
+): boolean => {
     const [isOverflowed, setOverflowed] = useState(false);
 
     const calcIsOverflowed = useCallback(([entry]) => {
@@ -45,7 +54,7 @@ export const useOverflowed = (ref, track = { x: false, y: true }, throttleTime =
         }
 
         /**
-         * call setState within requestAnimationFrame to prevent inifinite loop
+         * Call setState within requestAnimationFrame to prevent infinite loop
          */
         window.requestAnimationFrame(() => {
             if (ref && ref.current) {

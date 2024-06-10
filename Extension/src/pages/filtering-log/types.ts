@@ -16,24 +16,33 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { containsIgnoreCase } from '../../helpers';
+import { FilteringLogEvent } from '../../background/api';
 
-export const matchesSearch = (filteringEvent, search) => {
-    let matches = !search
-    || containsIgnoreCase(filteringEvent.requestUrl, search)
-    || containsIgnoreCase(filteringEvent.element, search)
-    || containsIgnoreCase(filteringEvent.cookieName, search)
-    || containsIgnoreCase(filteringEvent.cookieValue, search);
+/**
+ * Filtering log event with additional fields for UI.
+ */
+export type UIFilteringLogEvent = FilteringLogEvent & {
+    /**
+     * Rule text.
+     */
+    ruleText?: string;
 
-    const { ruleText, filterName } = filteringEvent;
-    if (ruleText) {
-        matches = matches || containsIgnoreCase(ruleText, search);
-    }
+    /**
+     * Filter name.
+     */
+    filterName?: string | null;
+};
 
-    if (filterName) {
-        matches = matches
-            || containsIgnoreCase(filterName, search);
-    }
+/**
+ * Single rule creation option.
+ */
+type RuleCreationOption = {
+    checked: boolean;
+};
 
-    return matches;
+/**
+ * Rule creation options.
+ */
+export type RuleCreationOptions = {
+    [key: string]: RuleCreationOption | null;
 };
