@@ -127,8 +127,8 @@ select {
     }
 
     &:checked + .checkbox-label .custom-checkbox {
-        background-color: var(--mainGreen);
-        border-color: var(--mainGreen);
+        background-color: var(--green400);
+        border-color: var(--green400);
 
         & .icon {
             display: block;
@@ -158,6 +158,8 @@ select {
     color: var(--textColor);
     display: flex;
     align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     & .radio-button {
         width: 18px;
@@ -189,7 +191,7 @@ select {
             width: 12px;
             height: 12px;
             border-radius: 100%;
-            background-color: var(--mainGreen);
+            background-color: var(--green400);
         }
     }
 
@@ -206,6 +208,8 @@ select {
 .radio-button-desc {
     margin-left: 10px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* green button */
@@ -217,7 +221,7 @@ button.green-button {
     font-size: 12px;
     font-weight: 400;
     color: var(--bgColor);
-    background-color: var(--mainGreen);
+    background-color: var(--green400);
     transition: 0.3s ease background-color;
 
     &:hover {
@@ -225,31 +229,8 @@ button.green-button {
     }
 }
 
-.icon {
-    /* FIXME(Slava): check if it can be ditched as there is similar common style */
-    &--24 {
-        --size: 24px;
-        width: var(--size);
-        height: var(--size);
-    }
-
-    &--green {
-        color: var(--green400);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--white);
-        }
-    }
-}
-
 .light-mode {
     color-scheme: light;
-
-    & .icon {
-        &--green {
-            color: var(--green400);
-        }
-    }
 
     *::-webkit-scrollbar-track {
         background: var(--gray100);
@@ -268,12 +249,6 @@ button.green-button {
 
 .dark-mode {
     color-scheme: dark;
-
-    & .icon {
-        &--green {
-            color: var(--white);
-        }
-    }
 
     *::-webkit-scrollbar-track {
         background: var(--grayDark);

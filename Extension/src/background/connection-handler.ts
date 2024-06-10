@@ -17,12 +17,16 @@
  */
 import browser, { Runtime } from 'webextension-polyfill';
 
-import { FULLSCREEN_USER_RULES_EDITOR, KEEP_ALIVE_PORT_NAME } from '../common/constants';
+import {
+    FILTERING_LOG,
+    FULLSCREEN_USER_RULES_EDITOR,
+    KEEP_ALIVE_PORT_NAME,
+} from '../common/constants';
 import { MessageType } from '../common/messages';
 import { logger } from '../common/logger';
 
 import { listeners } from './notifier';
-// import { filteringLogApi } from './api';
+import { filteringLogApi } from './api';
 import { fullscreenUserRulesEditor } from './services';
 import { KeepAlive } from './keep-alive';
 
@@ -81,10 +85,12 @@ export class ConnectionHandler {
      */
     private static onPortConnection(port: Runtime.Port): void {
         switch (true) {
-            // case port.name.startsWith(FILTERING_LOG): {
-            //     filteringLogApi.onOpenFilteringLogPage();
-            //     break;
-            // }
+            case port.name.startsWith(FILTERING_LOG): {
+                if (!__IS_MV3__) {
+                    filteringLogApi.onOpenFilteringLogPage();
+                }
+                break;
+            }
 
             case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
                 fullscreenUserRulesEditor.onOpenPage();

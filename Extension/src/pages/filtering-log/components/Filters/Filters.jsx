@@ -96,7 +96,7 @@ const Filters = () => {
                             onClick={scrollLeft}
                             className="filters__arrow filters__arrow--left"
                         >
-                            <Icon classname="filters__arrow__icon" id="#arrow-scrollbar" />
+                            <Icon id="#arrow-left" classname="filters__arrow__icon" />
                         </button>
                     )}
                     <MiscellaneousFilters />
@@ -107,7 +107,7 @@ const Filters = () => {
                             onClick={scrollRight}
                             className="filters__arrow filters__arrow--right"
                         >
-                            <Icon classname="filters__arrow__icon" id="#arrow-scrollbar" />
+                            <Icon id="#arrow-left" classname="filters__arrow__icon" />
                         </button>
                     )}
                 </div>

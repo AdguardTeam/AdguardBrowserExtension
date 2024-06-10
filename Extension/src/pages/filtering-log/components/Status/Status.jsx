@@ -67,13 +67,17 @@ export const Status = (props) => {
                     <>
                         <div className={itemClassNames}>
                             <Popover text={statusTooltipText}>
-                                <Icon id={statusCode ? '#transfer-status' : '#arrow-status'} classname="status__icon" />
+                                <div className="status__icon--wrapper">
+                                    <Icon id={statusCode ? '#transfer-status' : '#arrow-status'} classname="status__icon" />
+                                </div>
                             </Popover>
                         </div>
                         <div className={cn(itemClassNames, 'status__item_centered')}>
                             {isBlocked ? (
                                 <Popover text={reactTranslator.getMessage('filtering_log_status_blocked')}>
-                                    <Icon id="#ban" classname="status__icon" />
+                                    <div className="status__icon--wrapper">
+                                        <Icon id="#ban" classname="status__icon" />
+                                    </div>
                                 </Popover>
                             ) : (
                                 <Popover text={reactTranslator.getMessage('filtering_log_badge_tooltip_http_status_code')}>

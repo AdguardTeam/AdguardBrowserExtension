@@ -34,8 +34,11 @@ export const Icons = () => {
                 <path stroke="currentColor" d="M6.42871 17.5714L17.6045 6.39563" strokeWidth="1.5" strokeLinecap="round" />
             </symbol>
 
-            <symbol id="checked" viewBox="0 0 12 9">
-                <path d="m4.05 8.12903226 4.47096774 4.47096774 5.42903226-7.02580645" fill="none" stroke="#fff" strokeLinecap="round" strokeWidth="1.08" transform="translate(-3 -5)" />
+            <symbol id="checked" viewBox="0 0 20 20">
+                <g fill="none" fillRule="evenodd">
+                    <rect fill="#67b279" width="20" height="20" rx="2" />
+                    <path stroke="#fff" d="m5.05 9.04 4.47 4.47 5.43-7.02" strokeWidth="1.5" strokeLinecap="round" />
+                </g>
             </symbol>
 
             <symbol id="logo" viewBox="0 0 107 24">
@@ -81,11 +84,6 @@ export const Icons = () => {
                 <path d="m6 10 6 6 6-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" transform="translate(-5 -9)" />
             </symbol>
 
-            {/* FIXME: move to page/filtering-log components/ui/Icons as it is not common, and used only there */}
-            <symbol id="arrow-bottom" viewBox="0 0 24 24">
-                <path d="M8.0354 10.9305L11.965 14.9997L16.0342 11.0702" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </symbol>
-
             <symbol id="extend" viewBox="0 0 24 24">
                 <rect width="24" height="24" fill="none" />
                 <path d="M6 10V6H10M6 14V18H10M18 10V6H14M18 14V18H14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -114,40 +112,6 @@ export const Icons = () => {
                 <path d="M10 18V14H6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M14 6V10H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M14 18V14H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </symbol>
-
-            {/* FIXME: move to page/filtering-log components/ui/Icons as it is not common, and used only there */}
-            <symbol id="ban" viewBox="0 0 16 16">
-                <path fillRule="evenodd" clipRule="evenodd" d="M8 14C11.3137 14 14 11.3137 14 8C14 6.34315 13.3284 4.84315 12.2426 3.75736C11.69 3.20469 11.03 2.75934 10.2966 2.45524C9.58921 2.1619 8.81351 2 8 2C4.68629 2 2 4.68629 2 8C2 8.81351 2.1619 9.58921 2.45524 10.2966C2.75934 11.03 3.20469 11.69 3.75736 12.2426C4.84315 13.3284 6.34315 14 8 14Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M2.21513 13.8442L13.5485 2.51087" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </symbol>
-
-            {/* FIXME: move to page/filtering-log components/ui/Icons as it is not common, and used only there */}
-            <symbol id="arrow-status" viewBox="0 0 16 16">
-                <path d="M11.7038 4.66663L14.6667 7.99996L1.33341 7.99996" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M11.7038 11.3334L14.6667 8.00004" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </symbol>
-
-            {/* FIXME: move to page/filtering-log components/ui/Icons as it is not common, and used only there */}
-            <symbol id="transfer-status" viewBox="0 0 16 16">
-                <path d="M10.3333 2.66663L12.3333 4.66663" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M10.3333 6.66663L12.3333 4.66663" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12.3334 4.66671H3.66675" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M5.66675 9.33337L3.66675 11.3334" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M5.66675 13.3334L3.66675 11.3334" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M3.66659 11.3333H12.3333" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </symbol>
-
-            {/* FIXME: move to page/filtering-log components/ui/Icons as it is not common, and used only there */}
-            <symbol id="arrow-scrollbar" viewBox="0 0 32 32">
-                <rect width="32" height="32" fill="none" />
-                <path d="M13.8958 21.9468L19.9996 16.0524L14.1052 9.9486" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </symbol>
-
-            {/* FIXME: move to page/filtering-log components/ui/Icons as it is not common, and used only there */}
-            <symbol id="radio" viewBox="0 0 24 24">
-                <path d="M9.5 12C9.5 10.6196 10.6188 9.50046 11.9991 9.5C13.3795 9.5021 14.4979 10.6206 14.5 12.0009C14.4995 13.3812 13.3804 14.5 12 14.5C10.6193 14.5 9.5 13.3807 9.5 12Z" fill="currentColor" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="12.0001" cy="12" r="8.33333" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
         </svg>
     );
