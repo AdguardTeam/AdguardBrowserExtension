@@ -35,6 +35,7 @@ import {
     UserRulesApi,
     SettingsApi,
     CustomFilterApi,
+    network,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { FiltersStorage } from '../storages';
@@ -84,12 +85,10 @@ export class Engine implements TsWebExtensionEngine {
          * 3. We also allow "User rules" to work since those rules are added manually by the user.
          *  This way filters maintainers can test new rules before including them in the filters.
          */
-        // if (IS_FIREFOX_AMO) {
-        //     const localScriptRules = await network.getLocalScriptRules();
-
-        // FIXME: Add this method
-        //     this.api.setLocalScriptRules(localScriptRules);
-        // }
+        if (IS_FIREFOX_AMO) {
+            const localScriptRules = await network.getLocalScriptRules();
+            this.api.setLocalScriptRules(localScriptRules);
+        }
 
         const configuration = await Engine.getConfiguration();
 
