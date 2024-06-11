@@ -306,7 +306,7 @@ export class SettingsService {
         }
     }
 
-    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
+    // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructThirdPartyCookies} setting changed.
      *
@@ -316,7 +316,7 @@ export class SettingsService {
         engine.debounceUpdate();
     }
 
-    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
+    // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting changed.
      *
@@ -326,7 +326,7 @@ export class SettingsService {
         engine.debounceUpdate();
     }
 
-    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
+    // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructFirstPartyCookies} setting changed.
      *
@@ -336,7 +336,7 @@ export class SettingsService {
         engine.debounceUpdate();
     }
 
-    // FIXME: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
+    // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     /**
      * Called when {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting changed.
      *
