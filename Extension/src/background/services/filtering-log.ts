@@ -148,8 +148,6 @@ export class FilteringLogService {
     private static onSendRequest({ data }: SendRequestEvent): void {
         const { tabId, ...eventData } = data;
 
-        // FIXME later
-        // @ts-ignore
         filteringLogApi.addEventData(tabId, eventData);
     }
 
@@ -221,8 +219,6 @@ export class FilteringLogService {
             ...eventData
         } = data;
 
-        // FIXME later
-        // @ts-ignore
         filteringLogApi.addEventData(tabId, {
             ...eventData,
             requestDomain: getDomain(eventData.requestUrl),
