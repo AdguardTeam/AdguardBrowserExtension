@@ -122,6 +122,9 @@ class PopupStore {
     @observable
     settings: SettingsData | null = null;
 
+    @observable
+    areFilterLimitsExceeded = false;
+
     currentTabId?: number | null = null;
 
     domainName = null;
@@ -158,6 +161,7 @@ class PopupStore {
                 options,
                 stats,
                 settings,
+                areFilterLimitsExceeded,
             } = response;
 
             // frame info
@@ -182,6 +186,8 @@ class PopupStore {
 
             // settings
             this.settings = settings;
+
+            this.areFilterLimitsExceeded = areFilterLimitsExceeded;
 
             this.isInitialDataReceived = true;
             this.currentTabId = currentTab?.id;

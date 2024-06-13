@@ -123,6 +123,8 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);
         contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
 
+        messageHandler.addListener(MessageType.OpenRulesLimitsTab, PagesApi.openRulesLimitsPage);
+
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
         messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 

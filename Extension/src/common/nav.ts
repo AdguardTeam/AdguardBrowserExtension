@@ -16,18 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-
-import { Main } from '../Main';
-
-import './main-container.pcss';
-
-const Mv3MainContainer = () => {
-    return (
-        <div className="main-container">
-            <Main />
-        </div>
-    );
-};
-
-export { Mv3MainContainer as MainContainer };
+export enum OptionsPageSections {
+    general = '',
+    filters = 'filters',
+    stealth = 'stealth',
+    allowlist = 'allowlist',
+    userFilter = 'user-filter',
+    miscellaneous = 'miscellaneous',
+    ruleLimits = 'rule-limits',
+    about = 'about',
+}

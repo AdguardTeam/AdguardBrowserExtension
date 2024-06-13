@@ -40,6 +40,7 @@ import {
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
 import { FiltersApi } from '../filters';
+import { OptionsPageSections } from '../../../common/nav';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
@@ -272,14 +273,15 @@ export class PagesApi {
      * Create full extension page url, based on precomputed values from webextension API.
      *
      * @param filename Page html filename.
-     * @param optionalPart Url query string or/and hash.
+     * @param urlQuery Url query string or/and hash.
+     *
      * @returns Full extension page url.
      */
-    public static getExtensionPageUrl(filename: string, optionalPart?: string): string {
+    public static getExtensionPageUrl(filename: string, urlQuery?: string): string {
         let url = `${Prefs.baseUrl}${filename}.html`;
 
-        if (typeof optionalPart === 'string') {
-            url += optionalPart;
+        if (typeof urlQuery === 'string') {
+            url += urlQuery;
         }
 
         return url;
@@ -326,6 +328,23 @@ export class PagesApi {
     }
 
     /**
+     * Opens specified path on settings page.
+     *
+     * @param url URL path to open on settings page.
+     *
+     * @returns Opened or updated Tab object.
+     */
+    private static async openTabOnSettingsPage(url: string): Promise<browser.Tabs.Tab> {
+        const tab = await TabsApi.findOne({ url: `${PagesApi.settingsUrl}*` });
+
+        if (!tab) {
+            return browser.tabs.create({ url });
+        }
+
+        return browser.tabs.update(tab.id, { url });
+    }
+
+    /**
      * Opens 'Add custom filter' modal window into settings page.
      * If the page has been already opened, reload it with new custom filter query params, passed from content script.
      *
@@ -342,17 +361,26 @@ export class PagesApi {
 
         const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, optionalPart);
 
-        const tab = await TabsApi.findOne({ url: `${PagesApi.settingsUrl}*` });
+        const tab = await PagesApi.openTabOnSettingsPage(path);
 
-        if (!tab) {
-            await browser.tabs.create({ url: path });
-            return;
-        }
-
-        await browser.tabs.update(tab.id, { url: path });
         // Reload option page for force modal window rerender
         // TODO: track url update in frontend and remove force reloading via webextension API
         await TabsApi.reload(tab.id);
+
+        await TabsApi.focus(tab);
+    }
+
+    /**
+     * Opens rules limits section on settings page.
+     * If the page has been already opened, focus on it.
+     */
+    public static async openRulesLimitsPage(): Promise<void> {
+        const queryPart = `#${OptionsPageSections.ruleLimits}`;
+
+        const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, queryPart);
+
+        const tab = await PagesApi.openTabOnSettingsPage(path);
+
         await TabsApi.focus(tab);
     }
 

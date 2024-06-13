@@ -73,6 +73,7 @@ export const PromoNotification = observer(() => {
     };
 
     const notificationClassnames = classnames('promo-notification', {
+        // TODO: Check how it works, because this class is not exist in css.
         'promo-notification--close': notificationOnClose,
     });
 

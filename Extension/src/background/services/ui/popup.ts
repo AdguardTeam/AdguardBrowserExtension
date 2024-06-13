@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { RulesLimitsService } from 'rules-limits-service';
+
 import { tabsApi as tsWebExtTabsApi, isHttpOrWsRequest } from '../../tswebextension';
 import {
     ChangeApplicationFilteringDisabledMessage,
@@ -41,6 +43,7 @@ export type GetTabInfoForPopupResponse = {
     frameInfo: FrameData,
     stats: GetStatisticsDataResponse,
     settings: SettingsData,
+    areFilterLimitsExceeded: boolean,
     options: {
         showStatsSupported: boolean,
         isFirefoxBrowser: boolean
@@ -101,6 +104,7 @@ export class PopupService {
                 frameInfo: FramesApi.getMainFrameData(tabContext),
                 stats: PageStatsApi.getStatisticsData(),
                 settings: SettingsApi.getData(),
+                areFilterLimitsExceeded: RulesLimitsService.areFilterLimitsExceeded(),
                 options: {
                     showStatsSupported: true,
                     isFirefoxBrowser: UserAgent.isFirefox,

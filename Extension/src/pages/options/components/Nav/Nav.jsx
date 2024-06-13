@@ -19,11 +19,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+import { OptionsPageSections } from '../../../../common/nav';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 import './nav.pcss';
 
-const Nav = ({ closeSidebar }) => {
+export const Nav = ({ closeSidebar }) => {
     const onClick = () => {
         closeSidebar();
     };
@@ -42,7 +43,7 @@ const Nav = ({ closeSidebar }) => {
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"
-                to="/filters"
+                to={`/${OptionsPageSections.filters}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_filters')}
@@ -50,7 +51,7 @@ const Nav = ({ closeSidebar }) => {
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"
-                to="/stealth"
+                to={`/${OptionsPageSections.stealth}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_privacy')}
@@ -58,7 +59,7 @@ const Nav = ({ closeSidebar }) => {
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"
-                to="/allowlist"
+                to={`/${OptionsPageSections.allowlist}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_allowlist')}
@@ -66,7 +67,7 @@ const Nav = ({ closeSidebar }) => {
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"
-                to="/user-filter"
+                to={`/${OptionsPageSections.userFilter}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_userfilter')}
@@ -74,7 +75,7 @@ const Nav = ({ closeSidebar }) => {
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"
-                to="/miscellaneous"
+                to={`/${OptionsPageSections.miscellaneous}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_miscellaneous_settings')}
@@ -85,7 +86,7 @@ const Nav = ({ closeSidebar }) => {
                         <NavLink
                             className="nav__item"
                             activeClassName="nav__item--active"
-                            to="/rule-limits"
+                            to={`/${OptionsPageSections.ruleLimits}`}
                             onClick={onClick}
                         >
                             {reactTranslator.getMessage('options_rule_limits')}
@@ -95,7 +96,7 @@ const Nav = ({ closeSidebar }) => {
             <NavLink
                 className="nav__item"
                 activeClassName="nav__item--active"
-                to="/about"
+                to={`/${OptionsPageSections.about}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_about')}
@@ -103,5 +104,3 @@ const Nav = ({ closeSidebar }) => {
         </div>
     );
 };
-
-export { Nav };

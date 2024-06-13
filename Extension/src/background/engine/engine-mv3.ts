@@ -35,6 +35,7 @@ import {
     UserRulesApi,
     SettingsApi,
     CustomFilterApi,
+    toasts,
     network,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
@@ -102,6 +103,10 @@ export class Engine implements TsWebExtensionEngine {
         listeners.notifyListeners(listeners.RequestFilterUpdated);
 
         await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
+
+        if (RulesLimitsService.areFilterLimitsExceeded()) {
+            toasts.showRuleLimitsAlert();
+        }
     }
 
     /**
