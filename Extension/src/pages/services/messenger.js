@@ -271,10 +271,8 @@ class Messenger {
         await this.sendMessage(MessageType.RemoveAntiBannerFilter, { filterId });
     }
 
-    // FIXME: Remove tabUrl because this is temporary solution to ensure that
-    // tab is not "system" page like "chrome://extensions/" (see AG-32609).
-    async getTabInfoForPopup(tabId, tabUrl) {
-        return this.sendMessage(MessageType.GetTabInfoForPopup, { tabId, tabUrl });
+    async getTabInfoForPopup(tabId) {
+        return this.sendMessage(MessageType.GetTabInfoForPopup, { tabId });
     }
 
     async changeApplicationFilteringDisabled(state) {

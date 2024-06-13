@@ -145,7 +145,6 @@ export type GetTabInfoForPopupMessage = {
   type: MessageType.GetTabInfoForPopup;
   data: {
     tabId: number;
-    tabUrl: string;
   };
 };
 

@@ -80,10 +80,6 @@ export type FrameData = {
     totalBlocked: number,
 };
 
-export type PartialTabContext = Pick<TabContext, 'frames' | 'blockedRequestCount' | 'mainFrameRule'> & {
-    info: Pick<TabContext['info'], 'url'>,
-};
-
 /**
  * Helper class for retrieving main frame data from both tswebextension and app state.
  */
@@ -106,7 +102,7 @@ export class FramesApi {
         frames,
         blockedRequestCount,
         mainFrameRule,
-    }: PartialTabContext): FrameData {
+    }: TabContext): FrameData {
         const mainFrame = frames.get(MAIN_FRAME_ID);
 
         const url = info?.url

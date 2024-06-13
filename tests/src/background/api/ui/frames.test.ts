@@ -4,7 +4,7 @@ import { type Storage } from 'webextension-polyfill';
 import {
     TabContext,
     NetworkRule,
-    TabInfo,
+    type TabInfo,
     documentApi,
 } from '@adguard/tswebextension';
 
@@ -62,6 +62,8 @@ describe('Frames Api', () => {
         tabContext.mainFrameRule = new NetworkRule(rule, AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
+        // FIXME: Remove when aliases for tests will be configured.
+        // @ts-ignore
         const frameData = FramesApi.getMainFrameData(tabContext);
         const { documentAllowlisted, canAddRemoveRule } = frameData;
 
