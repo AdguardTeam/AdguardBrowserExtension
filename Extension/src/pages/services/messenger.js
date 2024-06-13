@@ -281,6 +281,10 @@ class Messenger {
         return this.sendMessage(MessageType.ChangeApplicationFilteringDisabled, { state });
     }
 
+    async openRulesLimitsTab() {
+        return this.sendMessage(MessageType.OpenRulesLimitsTab);
+    }
+
     async openSettingsTab() {
         return this.sendMessage(MessageType.OpenSettingsTab);
     }

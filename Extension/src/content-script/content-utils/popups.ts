@@ -20,6 +20,7 @@ import {
     ShowVersionUpdatedPopupMessage,
     sendMessage,
     MessageType,
+    ShowRuleLimitsAlertMessage,
 } from '../../common/messages';
 import { SettingOption } from '../../background/schema/settings';
 
@@ -31,17 +32,21 @@ import { Elements } from './elements';
 // target always is document
 export type AppendAlertPopupProps = Omit<AppendAlertElementProps, 'target'>;
 
-export type AppendVersionUpdatedPopupProps = {
+export type AppendPopupProps = {
     // content css string
     alertStyles: string,
     // iframe container html string
     iframeHtml: string,
     // iframe container css string
     iframeStyles: string,
+    // iframe container css class name
+    iframeClassName: string,
     // Is Adguard tab
     isAdguardTab: boolean,
     // Is we need to show promo notification
     showPromoNotification: boolean,
+    // Callback after iframe is injected
+    onIframeInjected?: (iframe: HTMLIFrameElement) => void,
 };
 
 /**
@@ -174,12 +179,65 @@ export class Popups {
         `;
         /* eslint-enable max-len */
 
-        Popups.appendVersionUpdatedPopup(0, {
+        Popups.appendPopup(0, {
             iframeHtml,
             iframeStyles,
+            iframeClassName: 'adguard-update-iframe',
             alertStyles,
             isAdguardTab,
             showPromoNotification,
+        });
+
+        return true;
+    }
+
+    /**
+     * Shows rules limits exceeded message.
+     *
+     * @param message - {@link ShowRuleLimitsAlertMessage}
+     * @param message.data - {@link ShowRuleLimitsAlertMessage} payload
+     *
+     * @returns execution flag
+     */
+    public static showRuleLimitsAlert({ data }: ShowRuleLimitsAlertMessage): boolean {
+        const {
+            isAdguardTab,
+            mainText,
+            linkText,
+            alertStyles,
+            alertContainerStyles,
+        } = data;
+
+        const iframeHtml = `
+            <div id="adguard-rules-limits-exceeded-popup" class="adguard-rules-limits-exceeded-popup">
+                <div class="adguard-rules-limits-exceeded-popup__info-icon"></div>
+                <div class="adguard-rules-limits-exceeded-popup__content">
+                    <p> ${mainText} </p>
+                    <button id="open-rule-limits-link" type="button"> ${linkText} </button>
+                </div>
+                <button
+                    aria-label="close"
+                    type="button"
+                    class="adguard-rules-limits-exceeded-popup__close close-iframe"
+                ></button>
+            </div>
+        `;
+
+        Popups.appendPopup(0, {
+            iframeHtml,
+            iframeStyles: alertContainerStyles,
+            iframeClassName: 'adguard-rules-limits-exceeded-iframe',
+            alertStyles,
+            isAdguardTab,
+            showPromoNotification: false,
+            onIframeInjected: (iframe) => {
+                const isListening = Popups.handleOpenRulesLimitsPage(iframe);
+                if (!isListening) {
+                    iframe.addEventListener('load', () => {
+                        Popups.handleOpenRulesLimitsPage(iframe);
+                    });
+                }
+            },
         });
 
         return true;
@@ -230,9 +288,9 @@ export class Popups {
      * @param count - try count
      * @param props - {@link AppendVersionUpdatedPopupProps}
      */
-    private static appendVersionUpdatedPopup(
+    private static appendPopup(
         count: number,
-        props: AppendVersionUpdatedPopupProps,
+        props: AppendPopupProps,
     ): void {
         if (count >= Popups.triesCount) {
             return;
@@ -242,8 +300,10 @@ export class Popups {
             isAdguardTab,
             showPromoNotification,
             iframeStyles,
+            iframeClassName,
             iframeHtml,
             alertStyles,
+            onIframeInjected,
         } = props;
 
         if (document.body && !isAdguardTab) {
@@ -256,7 +316,7 @@ export class Popups {
                 styles: alertStyles,
             });
 
-            iframe.classList.add('adguard-update-iframe');
+            iframe.classList.add(iframeClassName);
 
             const isListening = Popups.handleCloseIframe(iframe, showPromoNotification);
             if (!isListening) {
@@ -264,9 +324,13 @@ export class Popups {
                     Popups.handleCloseIframe(iframe, showPromoNotification);
                 });
             }
+
+            if (onIframeInjected) {
+                onIframeInjected(iframe);
+            }
         } else {
             setTimeout(() => {
-                Popups.appendVersionUpdatedPopup(count + 1, props);
+                Popups.appendPopup(count + 1, props);
             }, 500);
         }
     }
@@ -277,7 +341,7 @@ export class Popups {
      * @param iframe - iframe element
      * @param showPromoNotification - notification show flag
      *
-     * @returns true if iframe is closed, else returns false
+     * @returns True if registered click listener, false otherwise.
      */
     private static handleCloseIframe(
         iframe: HTMLIFrameElement,
@@ -291,47 +355,82 @@ export class Popups {
 
         const closeElements = iframeDocument.querySelectorAll('.close-iframe');
 
-        if (closeElements.length > 0) {
-            closeElements.forEach((element) => {
-                element.addEventListener('click', () => {
-                    if (element.classList.contains('disable-notifications')) {
-                        // disable update notifications
-                        sendMessage({
-                            type: MessageType.ChangeUserSettings,
-                            data: {
-                                key: SettingOption.DisableShowAppUpdatedNotification,
-                                value: true,
-                            },
-                        });
-                    }
-                    if (showPromoNotification && element.classList.contains('set-notification-viewed')) {
-                        sendMessage({
-                            type: MessageType.SetNotificationViewed,
-                            data: {
-                                withDelay: false,
-                            },
-                        });
-                        // close only promo notification, not whole iframe
-                        const promoNotification = iframeDocument.querySelector('.adguard-update-popup__offer');
-                        if (promoNotification) {
-                            promoNotification.parentNode?.removeChild(promoNotification);
-                            // eslint-disable-next-line max-len
-                            const versionPopup: HTMLElement | null = iframeDocument.getElementById('adguard-new-version-popup');
-                            if (versionPopup) {
-                                // fix height of the frame
-                                versionPopup.style.minHeight = '300px';
-                            }
-                        }
-                        return;
-                    }
-
-                    setTimeout(() => {
-                        iframe.parentNode?.removeChild(iframe);
-                    }, Popups.removeFrameTimeoutMs);
-                });
-            });
-            return true;
+        if (closeElements.length === 0) {
+            return false;
         }
-        return false;
+        closeElements.forEach((element) => {
+            element.addEventListener('click', () => {
+                if (element.classList.contains('disable-notifications')) {
+                    // disable update notifications
+                    sendMessage({
+                        type: MessageType.ChangeUserSettings,
+                        data: {
+                            key: SettingOption.DisableShowAppUpdatedNotification,
+                            value: true,
+                        },
+                    });
+                }
+
+                if (showPromoNotification && element.classList.contains('set-notification-viewed')) {
+                    sendMessage({
+                        type: MessageType.SetNotificationViewed,
+                        data: {
+                            withDelay: false,
+                        },
+                    });
+                    // close only promo notification, not whole iframe
+                    const promoNotification = iframeDocument.querySelector('.adguard-update-popup__offer');
+                    if (promoNotification) {
+                        promoNotification.parentNode?.removeChild(promoNotification);
+                        // eslint-disable-next-line max-len
+                        const versionPopup: HTMLElement | null = iframeDocument.getElementById('adguard-new-version-popup');
+                        if (versionPopup) {
+                            // fix height of the frame
+                            versionPopup.style.minHeight = '300px';
+                        }
+                    }
+                    return;
+                }
+
+                setTimeout(() => {
+                    iframe.parentNode?.removeChild(iframe);
+                }, Popups.removeFrameTimeoutMs);
+            });
+        });
+
+        return true;
+    }
+
+    /**
+     * Handle open rules limits settings page.
+     *
+     * @param iframe - iframe element
+     *
+     * @returns True if registered click listener, false otherwise.
+     */
+    private static handleOpenRulesLimitsPage(iframe: HTMLIFrameElement): boolean {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+
+        if (!iframeDocument) {
+            return false;
+        }
+
+        const link = iframeDocument.querySelector('#open-rule-limits-link');
+
+        if (!link) {
+            return false;
+        }
+
+        link.addEventListener('click', () => {
+            // Open rules limits settings page.
+            sendMessage({ type: MessageType.OpenRulesLimitsTab });
+
+            // After redirect to settings page, close iframe.
+            setTimeout(() => {
+                iframe.parentNode?.removeChild(iframe);
+            }, Popups.removeFrameTimeoutMs);
+        });
+
+        return true;
     }
 }

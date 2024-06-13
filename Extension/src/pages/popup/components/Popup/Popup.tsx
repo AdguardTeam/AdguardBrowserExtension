@@ -24,11 +24,13 @@ import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Icons } from '../ui/Icons';
 import { MainContainer } from '../MainContainer';
+import { Notification } from '../Notification';
 import { PromoNotification } from '../PromoNotification';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
+import { Message, MessageType } from '../../../../common/messages';
 import { Loader } from '../Loader';
 
 import '../../styles/main.pcss';
@@ -53,13 +55,13 @@ export const Popup = observer(() => {
 
     // subscribe to stats change
     useEffect(() => {
-        const messageHandler = (message) => {
+        const messageHandler = (message: Message) => {
             switch (message.type) {
-                case 'updateTotalBlocked': {
+                case MessageType.UpdateTotalBlocked: {
                     updateBlockedStats(message.data);
                     break;
                 }
-                case 'appInitialized': {
+                case MessageType.AppInitialized: {
                     getPopupData();
                     break;
                 }
@@ -84,6 +86,8 @@ export const Popup = observer(() => {
             <MainContainer />
             <Tabs />
             <Footer />
+            {/* Promo should be rendered in top of other notifications */}
+            <Notification />
             <PromoNotification />
         </div>
     );

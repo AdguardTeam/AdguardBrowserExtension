@@ -40,6 +40,7 @@ export const Main = observer(() => {
         currentStatus,
         popupState,
         showInfoAboutFullVersion,
+        areFilterLimitsExceeded,
     } = store;
 
     if (!currentStatus) {
@@ -94,84 +95,91 @@ export const Main = observer(() => {
         return null;
     }
 
+    const mainClassNames = `main main--${switcher.mode}`;
+
+    if (!store.isInitialDataReceived) {
+        return <div className={mainClassNames} />;
+    }
+
     return (
-        <div className={`main main--${switcher.mode}`}>
-            {store.isInitialDataReceived && (
-                <>
-                    <div className="main__header">
-                        <div className="main__header--current-status--title">
-                            {currentStatus.title}
-                        </div>
-                        <div
-                            className="main__header--current-site"
-                            title={currentSite}
-                        >
-                            {currentSite}
-                        </div>
-                        {currentStatus?.description && (
-                            <div className="main__header--current-status--description">
-                                {currentStatus.description}
-                            </div>
-                        )}
+        <div className={mainClassNames}>
+            <div className="main__header">
+                <div className="main__header--current-status--title">
+                    {currentStatus.title}
+                </div>
+                <div
+                    className="main__header--current-site"
+                    title={currentSite}
+                >
+                    {currentSite}
+                </div>
+                {currentStatus?.description && (
+                    <div className="main__header--current-status--description">
+                        {currentStatus.description}
                     </div>
-
-                    <div className="switcher__wrapper">
-                        <button
-                            type="button"
-                            className="switcher"
-                            // TODO: handle later
-                            // @ts-ignore
-                            onClick={switcher.handler}
-                            title={translator.getMessage('popup_switch_button')}
-                        >
-                            <div className={`switcher__center switcher__center--${switcher.mode}`} />
-                            <div className="switcher__btn">
-                                {/* enabled switcher state */}
-                                <Icon id="#checkmark" classname="icon--24 switcher__icon switcher__icon--checkmark" />
-                                {/* disabled switcher state */}
-                                <Icon id="#circle" classname="icon--24 switcher__icon switcher__icon--circle" />
-                            </div>
-                        </button>
+                )}
+                { areFilterLimitsExceeded && (
+                    <div className="main__header--limits-exceeded">
+                        {translator.getMessage('popup_limits_exceeded_warning')}
                     </div>
+                )}
+            </div>
 
-                    {popupState === PopupState.ApplicationFilteringDisabled && (
-                        <div className="switcher__resume--wrapper">
-                            <button
-                                type="button"
-                                className="button switcher__resume--btn"
-                                onClick={enableFilteringHandler}
-                                title={translator.getMessage('popup_resume_protection_button')}
-                            >
-                                {translator.getMessage('popup_resume_protection_button')}
-                            </button>
-                        </div>
-                    )}
+            <div className="switcher__wrapper">
+                <button
+                    type="button"
+                    className="switcher"
+                    // TODO: handle later
+                    // @ts-ignore
+                    onClick={switcher.handler}
+                    title={translator.getMessage('popup_switch_button')}
+                >
+                    <div className={`switcher__center switcher__center--${switcher.mode}`} />
+                    <div className="switcher__btn">
+                        {/* enabled switcher state */}
+                        <Icon id="#checkmark" classname="icon--24 switcher__icon switcher__icon--checkmark" />
+                        {/* disabled switcher state */}
+                        <Icon id="#circle" classname="icon--24 switcher__icon switcher__icon--circle" />
+                    </div>
+                </button>
+            </div>
 
-                    {popupState === PopupState.ApplicationUnavailable && (
-                        <div className="switcher__no-filtering">
-                            <Icon id="#secure-page" classname="icon--no-filtering" />
-                        </div>
-                    )}
+            {popupState === PopupState.ApplicationFilteringDisabled && (
+                <div className="switcher__resume--wrapper">
+                    <button
+                        type="button"
+                        className="button switcher__resume--btn"
+                        onClick={enableFilteringHandler}
+                        title={translator.getMessage('popup_resume_protection_button')}
+                    >
+                        {translator.getMessage('popup_resume_protection_button')}
+                    </button>
+                </div>
+            )}
 
-                    {popupState === PopupState.SiteInException && (
-                        <div className="switcher__no-filtering">
-                            <Icon id="#lock" classname="icon--no-filtering" />
-                        </div>
-                    )}
+            {popupState === PopupState.ApplicationUnavailable && (
+                <div className="switcher__no-filtering">
+                    <Icon id="#secure-page" classname="icon--no-filtering" />
+                </div>
+            )}
 
-                    {showInfoAboutFullVersion && (
-                        <div className="main__cta">
-                            <a
-                                href={COMPARE_URL}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="main__cta--link"
-                            >
-                                {translator.getMessage('popup_header_cta_link')}
-                            </a>
-                        </div>
-                    )}
-                </>
+            {popupState === PopupState.SiteInException && (
+                <div className="switcher__no-filtering">
+                    <Icon id="#lock" classname="icon--no-filtering" />
+                </div>
+            )}
+
+            {showInfoAboutFullVersion && (
+                <div className="main__cta">
+                    <a
+                        href={COMPARE_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="main__cta--link"
+                    >
+                        {translator.getMessage('popup_header_cta_link')}
+                    </a>
+                </div>
             )}
         </div>
     );

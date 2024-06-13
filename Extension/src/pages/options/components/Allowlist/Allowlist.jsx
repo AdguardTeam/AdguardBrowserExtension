@@ -32,6 +32,7 @@ import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { OptionsPageSections } from '../../../../common/nav';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 
@@ -138,7 +139,7 @@ const Allowlist = observer(() => {
                                     a: (chunks) => (
                                         <Link
                                             className="setting__alert-link"
-                                            to="/miscellaneous"
+                                            to={`/${OptionsPageSections.miscellaneous}`}
                                         >
                                             {chunks}
                                         </Link>

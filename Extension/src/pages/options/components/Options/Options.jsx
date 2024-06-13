@@ -43,6 +43,7 @@ import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { Loader } from '../../../common/components/Loader';
 import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
+import { OptionsPageSections } from '../../../../common/nav';
 import { Icons } from '../ui/Icons';
 
 import '../../styles/styles.pcss';
@@ -129,13 +130,13 @@ const Options = observer(() => {
                         <Notifications />
                         <Switch>
                             <Route path="/" exact component={General} />
-                            <Route path="/filters" component={Filters} />
-                            <Route path="/stealth" component={Stealth} />
-                            <Route path="/allowlist" component={Allowlist} />
-                            <Route path="/user-filter" component={UserRules} />
-                            <Route path="/miscellaneous" component={Miscellaneous} />
-                            { __IS_MV3__ && <Route path="/rule-limits" component={RulesLimits} /> }
-                            <Route path="/about" component={About} />
+                            <Route path={`/${OptionsPageSections.filters}`} component={Filters} />
+                            <Route path={`/${OptionsPageSections.stealth}`} component={Stealth} />
+                            <Route path={`/${OptionsPageSections.allowlist}`} component={Allowlist} />
+                            <Route path={`/${OptionsPageSections.userFilter}`} component={UserRules} />
+                            <Route path={`/${OptionsPageSections.miscellaneous}`} component={Miscellaneous} />
+                            { __IS_MV3__ && <Route path={`/${OptionsPageSections.ruleLimits}`} component={RulesLimits} /> }
+                            <Route path={`/${OptionsPageSections.about}`} component={About} />
                             <Route component={General} />
                         </Switch>
                     </div>

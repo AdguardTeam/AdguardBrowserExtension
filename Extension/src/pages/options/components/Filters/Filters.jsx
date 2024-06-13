@@ -36,6 +36,7 @@ import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Icon } from '../../../common/components/ui/Icon';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { AntibannerGroupsId } from '../../../../common/constants';
+import { OptionsPageSections } from '../../../../common/nav';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group } from './Group';
@@ -145,7 +146,7 @@ const Filters = observer(() => {
     };
 
     const handleReturnToGroups = () => {
-        history.push('/filters');
+        history.push(`/${OptionsPageSections.filters}`);
         settingsStore.setSelectedGroupId(null);
         settingsStore.setSearchInput('');
         settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);

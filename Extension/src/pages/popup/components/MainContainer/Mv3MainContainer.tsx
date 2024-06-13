@@ -17,18 +17,17 @@
  */
 
 import React from 'react';
-import { observer } from 'mobx-react';
 
 import { Main } from '../Main';
 
 import './main-container.pcss';
 
-const Mv3MainContainer = observer(() => {
+const Mv3MainContainer = () => {
     return (
         <div className="main-container">
             <Main />
         </div>
     );
-});
+};
 
 export { Mv3MainContainer as MainContainer };

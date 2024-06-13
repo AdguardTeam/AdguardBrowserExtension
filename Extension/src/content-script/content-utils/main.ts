@@ -34,5 +34,6 @@ export class ContentUtils {
 
         messageHandler.addListener(MessageType.ShowAlertPopup, Popups.showAlertPopup);
         messageHandler.addListener(MessageType.ShowVersionUpdatedPopup, Popups.showVersionUpdatedPopup);
+        messageHandler.addListener(MessageType.ShowRuleLimitsAlert, Popups.showRuleLimitsAlert);
     }
 }

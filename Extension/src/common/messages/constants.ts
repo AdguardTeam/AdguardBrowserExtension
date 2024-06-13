@@ -54,6 +54,7 @@ export enum MessageType {
   RemoveAntiBannerFilter = 'removeAntiBannerFilter',
   GetTabInfoForPopup = 'getTabInfoForPopup',
   ChangeApplicationFilteringDisabled = 'changeApplicationFilteringDisabled',
+  OpenRulesLimitsTab = 'openRulesLimitsTab',
   OpenSettingsTab = 'openSettingsTab',
   OpenAssistant = 'openAssistant',
   OpenAbuseTab = 'openAbuseTab',
@@ -100,6 +101,7 @@ export enum MessageType {
   AppInitialized = 'appInitialized',
   UpdateTotalBlocked = 'updateTotalBlocked',
   ScriptletCloseWindow = 'scriptletCloseWindow',
+  ShowRuleLimitsAlert = 'showRuleLimitsAlert',
   ShowAlertPopup = 'showAlertPopup',
   ShowVersionUpdatedPopup = 'showVersionUpdatedPopup',
   UpdateListeners = 'updateListeners',
@@ -152,6 +154,10 @@ export type ChangeApplicationFilteringDisabledMessage = {
   data: {
     state: boolean;
   };
+};
+
+export type OpenRulesLimitsTabMessage = {
+  type: MessageType.OpenRulesLimitsTab;
 };
 
 export type OpenSettingsTabMessage = {
@@ -441,6 +447,17 @@ export type ShowAlertPopupMessage = {
   }
 };
 
+export type ShowRuleLimitsAlertMessage = {
+  type: MessageType.ShowRuleLimitsAlert,
+  data: {
+    isAdguardTab: boolean,
+    mainText: string,
+    linkText: string,
+    alertStyles: string,
+    alertContainerStyles: string,
+  }
+};
+
 export type ShowVersionUpdatedPopupMessage = {
   type: MessageType.ShowVersionUpdatedPopup,
   data: {
@@ -466,6 +483,7 @@ export type Message = (
   | AddFilteringSubscriptionMessage
   | GetTabInfoForPopupMessage
   | ChangeApplicationFilteringDisabledMessage
+  | OpenRulesLimitsTabMessage
   | OpenSettingsTabMessage
   | OpenAssistantMessage
   | OpenFilteringLogMessage
@@ -507,6 +525,7 @@ export type Message = (
   | SetNotificationViewedMessage
   | RemoveListenerMessage
   | ScriptletCloseWindowMessage
+  | ShowRuleLimitsAlertMessage
   | ShowAlertPopupMessage
   | ShowVersionUpdatedPopupMessage
 ) &

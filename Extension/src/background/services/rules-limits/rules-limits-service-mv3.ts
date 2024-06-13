@@ -278,9 +278,12 @@ export class RulesLimitsService {
      * @returns True if the filter limits are exceeded, false otherwise.
      */
     static areFilterLimitsExceeded(): boolean {
+        const actuallyEnabledFilters = RulesLimitsService.getActuallyEnabledFilters().length;
+        const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters().length;
+
         // limits are exceeded if the number of actually enabled filters is fewer
         // than the number of filters that should be enabled (expected enabled filters)
-        return RulesLimitsService.getActuallyEnabledFilters() < RulesLimitsService.getExpectedEnabledFilters();
+        return actuallyEnabledFilters !== expectedEnabledFilters;
     }
 
     /**
@@ -315,7 +318,7 @@ export class RulesLimitsService {
         // await browserActions.setIconBroken(isStateBroken);
 
         if (isStateBroken) {
-            // Save last expected to be enabled filters to show user
+            // Save last expected to be enabled filters to notify UI.
             await rulesLimitsStorage.setData(expectedEnabledFilters);
             filterStateStorage.enableFilters(actuallyEnabledFilters);
             filterStateStorage.disableFilters(filtersToDisable);
