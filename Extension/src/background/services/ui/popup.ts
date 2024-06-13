@@ -17,7 +17,7 @@
  */
 import { RulesLimitsService } from 'rules-limits-service';
 
-import { tabsApi as tsWebExtTabsApi, isHttpOrWsRequest } from '../../tswebextension';
+import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
 import {
     ChangeApplicationFilteringDisabledMessage,
     GetTabInfoForPopupMessage,
@@ -35,7 +35,6 @@ import {
     promoNotificationApi,
     type GetStatisticsDataResponse,
     type SettingsData,
-    type PartialTabContext,
     UserRulesApi,
 } from '../../api';
 
@@ -84,19 +83,9 @@ export class PopupService {
     static async getTabInfoForPopup(
         { data }: GetTabInfoForPopupMessage,
     ): Promise<GetTabInfoForPopupResponse | undefined> {
-        const { tabId, tabUrl } = data;
+        const { tabId } = data;
 
-        let tabContext: PartialTabContext | undefined = tsWebExtTabsApi.getTabContext(tabId);
-
-        // FIXME: Tmp solution for internal tabs until AG-32609 is done.
-        if (!isHttpOrWsRequest(tabUrl)) {
-            tabContext = {
-                info: { url: tabUrl },
-                frames: new Map(),
-                blockedRequestCount: 0,
-                mainFrameRule: null,
-            };
-        }
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         if (tabContext) {
             const hasUserRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
