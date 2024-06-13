@@ -88,6 +88,12 @@ module.exports = {
                         'group': 'external',
                         'position': 'after',
                     },
+                    // Place app alias after internal
+                    {
+                        'pattern': 'app',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place engine alias after internal
                     {
                         'pattern': 'engine',

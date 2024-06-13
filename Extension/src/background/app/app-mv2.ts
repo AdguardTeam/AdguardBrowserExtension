@@ -18,27 +18,24 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { rulesLimitsService } from 'rules-limits-service';
-
-import { MessageType, sendMessage } from '../common/messages';
-import { logger } from '../common/logger';
+import { engine } from '../engine';
+import { MessageType, sendMessage } from '../../common/messages';
+import { logger } from '../../common/logger';
 import {
     Forward,
     ForwardAction,
     ForwardFrom,
-} from '../common/forward';
-import { CLIENT_ID_KEY } from '../common/constants';
-
-import { ContentScriptInjector } from './content-script-injector';
-import { engine } from './engine';
-import { messageHandler } from './message-handler';
-import { ConnectionHandler } from './connection-handler';
+} from '../../common/forward';
+import { CLIENT_ID_KEY } from '../../common/constants';
+import { ContentScriptInjector } from '../content-script-injector';
+import { messageHandler } from '../message-handler';
+import { ConnectionHandler } from '../connection-handler';
 import {
     appContext,
     AppContextKey,
     settingsStorage,
     storage,
-} from './storages';
+} from '../storages';
 import {
     toasts,
     CommonFilterApi,
@@ -47,8 +44,7 @@ import {
     SettingsApi,
     UpdateApi,
     InstallApi,
-    network,
-} from './api';
+} from '../api';
 import {
     UiService,
     PopupService,
@@ -59,17 +55,16 @@ import {
     CustomFilterService,
     FilteringLogService,
     eventService,
-    SafebrowsingService,
     DocumentBlockService,
     localeDetect,
     PromoNotificationService,
     filterUpdateService,
-} from './services';
-import { SettingOption } from './schema';
-import { getRunInfo } from './utils';
-import { contextMenuEvents, settingsEvents } from './events';
-import { KeepAlive } from './keep-alive';
-import { Experimental } from './api/update/experimental';
+} from '../services';
+import { SettingOption } from '../schema';
+import { getRunInfo } from '../utils';
+import { contextMenuEvents, settingsEvents } from '../events';
+import { KeepAlive } from '../keep-alive';
+import { SafebrowsingService } from '../services/safebrowsing';
 
 /**
  * This class is app entry point.
@@ -107,21 +102,15 @@ export class App {
         // get application run info
         const runInfo = await getRunInfo();
 
-        let { previousAppVersion } = runInfo;
-        const { currentAppVersion } = runInfo;
+        const {
+            previousAppVersion,
+            currentAppVersion,
+        } = runInfo;
 
         const isAppVersionChanged = previousAppVersion !== currentAppVersion;
 
-        let isInstall = isAppVersionChanged && !previousAppVersion;
-        let isUpdate = isAppVersionChanged && !!previousAppVersion;
-
-        // special case for MV3 experimental extension
-        const storageData = await browser.storage.local.get(null);
-        if (__IS_MV3__ && Experimental.isExperimental(storageData)) {
-            isInstall = false;
-            isUpdate = true;
-            previousAppVersion = '0.0.0';
-        }
+        const isInstall = isAppVersionChanged && !previousAppVersion;
+        const isUpdate = isAppVersionChanged && !!previousAppVersion;
 
         if (isInstall) {
             await InstallApi.install(runInfo);
@@ -131,20 +120,11 @@ export class App {
             await UpdateApi.update(runInfo);
         }
 
-        if (__IS_MV3__) {
-            // Initializes network settings.
-            await network.waitForNetworkInit();
-        }
-
         // Initializes App storage data
         await App.initClientId();
 
         // Initializes Settings storage data
         await SettingsApi.init();
-
-        if (__IS_MV3__) {
-            rulesLimitsService.init();
-        }
 
         /**
          * When the extension is enabled, disabled and re-enabled during the user session,
@@ -155,7 +135,7 @@ export class App {
          * To avoid this bug, we don't inject content scripts into open tabs during initialization
          * when stats collection is enabled.
          */
-        if (!__IS_MV3__ && SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+        if (SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
             // inject content scripts into opened tabs
             await ContentScriptInjector.init();
         }
@@ -190,7 +170,7 @@ export class App {
         // Adds listeners for userrules list events
         await UserRulesService.init();
 
-        // Adds listeners for filtering log (in MV3 needed for at least count total blocked requests)
+        // Adds listeners for filtering log
         FilteringLogService.init();
 
         /**
@@ -224,9 +204,7 @@ export class App {
          * - Adds listener for safebrowsing settings option switcher
          * - Adds listener for "add trusted domain" message.
          */
-        if (!__IS_MV3__) {
-            await SafebrowsingService.init();
-        }
+        await SafebrowsingService.init();
 
         /**
          * Initializes Document block module
@@ -256,8 +234,7 @@ export class App {
         // Update additional scenario
         if (isUpdate) {
             if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
-                // for isUpdate state previousAppVersion can't be null
-                toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion!);
+                toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion);
             }
         }
 
@@ -266,11 +243,9 @@ export class App {
 
         appContext.set(AppContextKey.IsInit, true);
 
-        if (!__IS_MV3__) {
-            // Initialize filters updates, after engine started, so that
-            // it won't mingle with engine initialization from current rules.
-            filterUpdateService.init();
-        }
+        // Initialize filters updates, after engine started, so that it won't mingle with engine
+        // initialization from current rules
+        filterUpdateService.init();
 
         await sendMessage({ type: MessageType.AppInitialized });
     }

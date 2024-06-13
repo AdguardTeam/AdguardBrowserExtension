@@ -200,7 +200,7 @@ export class FilteringLogService {
         // TODO: Check that logging will be correct, because the rule now is not passed since AG-31744.
         filteringLogApi.addEventData(tabId, eventData);
 
-        // FIXME: Remove commented code before merge to master.
+        // FIXME: Uncomment when we merged v4.4.
         // if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
         //     HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
         // }

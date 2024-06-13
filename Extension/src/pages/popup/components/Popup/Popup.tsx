@@ -41,6 +41,7 @@ export const Popup = observer(() => {
         appearanceTheme,
         showLoader,
         getPopupData,
+        areFilterLimitsExceeded,
         updateBlockedStats,
     } = useContext(popupStore);
 
@@ -87,7 +88,7 @@ export const Popup = observer(() => {
             <Tabs />
             <Footer />
             {/* Promo should be rendered in top of other notifications */}
-            <Notification />
+            { areFilterLimitsExceeded && __IS_MV3__ && <Notification />}
             <PromoNotification />
         </div>
     );
