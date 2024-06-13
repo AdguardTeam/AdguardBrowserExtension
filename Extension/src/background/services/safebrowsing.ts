@@ -18,13 +18,11 @@
 import browser, { WebRequest } from 'webextension-polyfill';
 
 import { RequestType } from '@adguard/tsurlfilter/es/request-type';
-
-// Note: While SafeBrowsingService is not used in MV3, we still need to use
-// alias here to get "clean" build (without calls to window object etc.),
-// because if use '@adguard/tswebextension' here - webpack will not correct
-// tree-shaked and excluded from output build this (SafebrowsingService)
-// component as unused.
-import { type RequestData, tabsApi as tsWebExtTabsApi } from 'tswebextension';
+import {
+    type RequestData,
+    RequestEvents,
+    tabsApi as tsWebExtTabsApi,
+} from '@adguard/tswebextension';
 
 import {
     SafebrowsingApi,
@@ -53,9 +51,7 @@ export class SafebrowsingService {
 
         settingsEvents.addListener(SettingOption.DisableSafebrowsing, SafebrowsingApi.clearCache);
 
-        // FIXME: RequestEvents can be exported from MV3, because non-blocking
-        // listener for onHeadersReceived is allowed in MV3.
-        // RequestEvents.onHeadersReceived.addListener(SafebrowsingService.onHeadersReceived);
+        RequestEvents.onHeadersReceived.addListener(SafebrowsingService.onHeadersReceived);
 
         messageHandler.addListener(MessageType.OpenSafebrowsingTrusted, SafebrowsingService.onAddTrustedDomain);
     }
@@ -71,9 +67,6 @@ export class SafebrowsingService {
         const isFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
 
         if (!context
-            // This check is needed only for MV3 version.
-            // @ts-ignore
-            || !context.statusCode
             || isSafebrowsingDisabled
             || isFilteringDisabled) {
             return;
@@ -81,8 +74,6 @@ export class SafebrowsingService {
 
         const {
             requestType,
-            // Disable typechecking only for MV3 version.
-            // @ts-ignore
             statusCode,
             requestUrl,
             referrerUrl,

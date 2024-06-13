@@ -15,17 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './filtering-log';
-export * from './settings';
-export * from './allowlist';
-export * from './fullscreen-user-rules-editor';
-export * from './custom-filter';
-export * from './userrules';
-export * from './event';
-export * from './ui';
-export * from './filters';
-export * from './locale-detect';
-export * from './document-block';
-export * from './filter-update';
-// Do not export SafebrowsingService here, because it will break MV3 build
-// because of dependencies with window object.
+// NOTE: Here important to use 'app' without path, because it is an alias for
+// manifest-specific implementation of the app. It will be replaced with MV2
+// or MV3 version during the build via webpack.
+// By default, MV3 will be used.
+import { App } from 'app';
+
+export { App };

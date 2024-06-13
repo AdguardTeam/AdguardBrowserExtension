@@ -118,7 +118,7 @@ export const Main = observer(() => {
                         {currentStatus.description}
                     </div>
                 )}
-                { areFilterLimitsExceeded && (
+                { areFilterLimitsExceeded && __IS_MV3__ && (
                     <div className="main__header--limits-exceeded">
                         {translator.getMessage('popup_limits_exceeded_warning')}
                     </div>

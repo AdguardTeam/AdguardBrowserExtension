@@ -310,6 +310,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                     __dirname,
                     `../../Extension/src/background/tswebextension/tswebextension-mv${manifestVersion}.ts`,
                 ),
+                'app': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/app/app-mv${manifestVersion}.ts`,
+                ),
                 'engine': path.resolve(
                     __dirname,
                     `../../Extension/src/background/engine/engine-mv${manifestVersion}.ts`,
