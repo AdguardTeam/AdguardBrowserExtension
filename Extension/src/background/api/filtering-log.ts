@@ -35,6 +35,7 @@ import { Engine } from '../engine';
 import { FiltersStorage, settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
+import { AntiBannerFiltersId } from '../../common/constants';
 
 export type FilteringEventRuleData = {
     filterId: number,
@@ -44,6 +45,7 @@ export type FilteringEventRuleData = {
     documentLevelRule?: boolean,
     isStealthModeRule?: boolean,
     allowlistRule?: boolean,
+    allowlistStealthRule?: boolean,
     cspRule?: boolean,
     modifierValue?: string,
     cookieRule?: boolean,
@@ -74,6 +76,7 @@ export type FilteringLogEvent = {
     isModifyingCookieRule?: boolean,
     cspReportBlocked?: boolean,
     replaceRules?: FilteringEventRuleData[],
+    stealthAllowlistRules?: FilteringEventRuleData[],
     stealthActions?: StealthActionEvent['data']['stealthActions'],
 };
 
@@ -206,6 +209,14 @@ export class FilteringLogApi {
      * @returns Rule text or null if the rule is not found.
      */
     public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
+        // Note: We do not store rule texts for stealth rules in the browser storage,
+        // so we can't get the original rule text for them.
+        // For stealth rules, we send appliedRuleText directly from the engine.
+        // TODO: Resolve this issue in the future.
+        if (filterId === AntiBannerFiltersId.StealthModeFilterId) {
+            return null;
+        }
+
         const filterData = await this.getFilterData(filterId);
 
         if (!filterData) {
@@ -484,9 +495,13 @@ export class FilteringLogApi {
         // Get rule text based on filter id and rule index
         if (data.requestRule) {
             const { filterId, ruleIndex } = data.requestRule;
-            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-            if (ruleTextData) {
-                data.requestRule = Object.assign(data.requestRule, ruleTextData);
+            // TODO: Remove sending getText for stealth rules
+            // Special case: do not get rule text for stealth rules - they already have appliedRuleText
+            if (filterId !== AntiBannerFiltersId.StealthModeFilterId) {
+                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+                if (ruleTextData) {
+                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
+                }
             }
         }
 
@@ -525,9 +540,13 @@ export class FilteringLogApi {
         if (event) {
             if (data.requestRule) {
                 const { filterId, ruleIndex } = data.requestRule;
-                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                if (ruleTextData) {
-                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
+                // TODO: Remove sending getText for stealth rules
+                // Special case: do not get rule text for stealth rules - they already have appliedRuleText
+                if (filterId !== AntiBannerFiltersId.StealthModeFilterId) {
+                    const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+                    if (ruleTextData) {
+                        data.requestRule = Object.assign(data.requestRule, ruleTextData);
+                    }
                 }
             }
 

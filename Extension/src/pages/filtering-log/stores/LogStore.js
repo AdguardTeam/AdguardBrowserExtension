@@ -257,8 +257,25 @@ class LogStore {
     }
 
     formatEvent = (filteringEvent) => {
-        const { requestRule } = filteringEvent;
-        const { filterId, originalRuleText, appliedRuleText } = requestRule ?? {};
+        const {
+            requestRule,
+            replaceRules,
+            stealthAllowlistRules,
+        } = filteringEvent;
+
+        const { originalRuleText, appliedRuleText } = requestRule ?? {};
+
+        // For $replace and $stealth rules, which will be grouped in RequestInfo with filter names specified,
+        // we only show filter name on a main log screen for a single rule.
+        if (requestRule) {
+            filteringEvent.filterName = getFilterName(requestRule?.filterId, this.filtersMetadata);
+        }
+
+        const { filterName } = filteringEvent;
+
+        if (!filterName && replaceRules && replaceRules.length === 1) {
+            filteringEvent.filterName = getFilterName(replaceRules[0]?.filterId, this.filtersMetadata);
+        }
 
         if (originalRuleText) {
             filteringEvent.originalRuleText = originalRuleText;
@@ -268,8 +285,8 @@ class LogStore {
             filteringEvent.appliedRuleText = appliedRuleText;
         }
 
-        if (filterId !== undefined) {
-            filteringEvent.filterName = getFilterName(filterId, this.filtersMetadata);
+        if (!filterName && stealthAllowlistRules && stealthAllowlistRules.length === 1) {
+            filteringEvent.filterName = getFilterName(stealthAllowlistRules[0]?.filterId, this.filtersMetadata);
         }
 
         return filteringEvent;

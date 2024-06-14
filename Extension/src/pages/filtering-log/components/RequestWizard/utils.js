@@ -85,6 +85,10 @@ export const UrlUtils = {
  * @returns {string}
  */
 export const getFilterName = (filterId, filtersMetadata) => {
+    if (typeof filterId !== 'number') {
+        return null;
+    }
+
     if (filterId === AntiBannerFiltersId.UserFilterId) {
         return reactTranslator.getMessage('options_userfilter');
     }
