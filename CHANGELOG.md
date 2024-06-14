@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `HybridStorage` for storing data via IndexedDB with fallback to `chrome.storage.local`.
+
 ### Changed
 - Updated [@adguard/tswebextension] to v1.0.25.
 

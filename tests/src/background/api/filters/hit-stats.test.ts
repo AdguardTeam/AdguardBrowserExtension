@@ -12,8 +12,8 @@ import { mockLocalStorage } from '../../../../helpers';
 describe('Hit Stats Api', () => {
     let storage: Storage.StorageArea;
 
-    const ruleText = '||example.org^';
     const filterId = AntiBannerFiltersId.EnglishFilterId;
+    const ruleIndex = 4;
 
     beforeEach(async () => {
         storage = mockLocalStorage();
@@ -28,13 +28,13 @@ describe('Hit Stats Api', () => {
     it('Adds rule hit', async () => {
         await HitStatsApi.init();
 
-        HitStatsApi.addRuleHit(ruleText, filterId);
+        HitStatsApi.addRuleHit(filterId, ruleIndex);
 
         const expected: HitStatsStorageData = {
             stats: {
                 filters: {
                     [filterId]: {
-                        [ruleText]: 1,
+                        [ruleIndex]: 1,
                     },
                 },
             },
@@ -50,7 +50,7 @@ describe('Hit Stats Api', () => {
                 stats: {
                     filters: {
                         [filterId]: {
-                            [ruleText]: 1,
+                            [ruleIndex]: 1,
                         },
                     },
                 },
@@ -76,7 +76,7 @@ describe('Hit Stats Api', () => {
         it.each(unsupportedFilters)('Ignores rule from $title', async ({ filterId }) => {
             await HitStatsApi.init();
 
-            HitStatsApi.addRuleHit(ruleText, filterId);
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
 
             expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({ [HIT_STATISTIC_KEY]: JSON.stringify({}) });
         });

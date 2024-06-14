@@ -348,10 +348,6 @@ class Messenger {
     async setEditorStorageContent(content) {
         return this.sendMessage(MessageType.SetEditorStorageContent, { content });
     }
-
-    async convertRuleText(content) {
-        return this.sendMessage(MessageType.ConvertRulesText, { content });
-    }
 }
 
 const messenger = new Messenger();

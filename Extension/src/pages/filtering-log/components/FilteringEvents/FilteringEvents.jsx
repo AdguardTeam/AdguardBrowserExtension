@@ -126,7 +126,7 @@ const ruleAccessor = (props) => {
         if (requestRule.filterId === AntiBannerFiltersId.AllowlistFilterId) {
             ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
         } else {
-            ruleText = requestRule.ruleText;
+            ruleText = requestRule.appliedRuleText;
         }
     }
 

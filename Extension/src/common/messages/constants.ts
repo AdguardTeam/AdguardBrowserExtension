@@ -96,7 +96,6 @@ export enum MessageType {
   GetUserRulesEditorData = 'getUserRulesEditorData',
   GetEditorStorageContent = 'getEditorStorageContent',
   SetEditorStorageContent = 'setEditorStorageContent',
-  ConvertRulesText = 'convertRulesText',
   SetFilteringLogWindowState = 'setFilteringLogWindowState',
   AppInitialized = 'appInitialized',
   UpdateTotalBlocked = 'updateTotalBlocked',

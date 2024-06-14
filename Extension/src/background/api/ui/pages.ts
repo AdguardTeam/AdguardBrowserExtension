@@ -28,7 +28,7 @@ import {
 } from '../../../common/forward';
 import { Engine } from '../../engine';
 import { UrlUtils } from '../../utils/url';
-import { storage, settingsStorage } from '../../storages';
+import { browserStorage, settingsStorage } from '../../storages';
 import { SettingOption } from '../../schema';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
@@ -157,7 +157,7 @@ export class PagesApi {
             return;
         }
 
-        const windowStateString = await storage.get(FILTERING_LOG_WINDOW_STATE);
+        const windowStateString = await browserStorage.get(FILTERING_LOG_WINDOW_STATE);
 
         try {
             const options = typeof windowStateString === 'string'

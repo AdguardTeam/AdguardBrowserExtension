@@ -21,7 +21,7 @@ import { ADGUARD_SETTINGS_KEY } from '../../common/constants';
 import { StorageInterface } from '../../common/storage';
 import { Settings, SettingOption } from '../schema';
 
-import { storage } from './main';
+import { browserStorage } from './shared-instances';
 
 /**
  * Storage for app settings.
@@ -33,7 +33,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      * Saves settings in browser.storage.local with {@link saveTimeoutMs} debounce.
      */
     private save = debounce(() => {
-        storage.set(ADGUARD_SETTINGS_KEY, this.settings);
+        browserStorage.set(ADGUARD_SETTINGS_KEY, this.settings);
     }, SettingsStorage.saveTimeoutMs);
 
     private settings: Settings | undefined;

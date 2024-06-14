@@ -15,8 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { HybridStorage } from './hybrid-storage';
+import { BrowserStorage } from './browser-storage';
 
 /**
- * Map rules conversion result where key is a result, value is a source rule.
+ * Storage instance for accessing `browser.storage.local`.
  */
-export const ruleConversionStorage = new Map<string, string>();
+export const browserStorage = new BrowserStorage();
+
+/**
+ * Storage instance for accessing `IndexedDB` with fallback to `browser.storage.local`.
+ */
+export const hybridStorage = new HybridStorage();

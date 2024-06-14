@@ -52,6 +52,8 @@ import {
     TSWEBEXTENSION_VENDOR_OUTPUT,
 } from '../../constants';
 
+// FIXME (David, v4.4): AGTREE_VENDOR_OUTPUT is not used currently
+
 const config = getEnvConf(process.env.BUILD_ENV);
 
 const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
@@ -92,6 +94,7 @@ export const genCommonConfig = (browserConfig) => {
                 import: BACKGROUND_PATH,
                 dependOn: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    // AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                 ],
             },
@@ -115,6 +118,7 @@ export const genCommonConfig = (browserConfig) => {
                 import: FILTERING_LOG_PATH,
                 dependOn: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    // AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
@@ -176,6 +180,7 @@ export const genCommonConfig = (browserConfig) => {
             [MOBX_VENDOR_OUTPUT]: ['mobx'],
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
             [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
+            // [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
                 dependOn: [
@@ -280,6 +285,7 @@ export const genCommonConfig = (browserConfig) => {
                 filename: `${BACKGROUND_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    // AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                     BACKGROUND_OUTPUT,
                 ],
@@ -290,6 +296,7 @@ export const genCommonConfig = (browserConfig) => {
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    // AGTREE_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -309,6 +316,7 @@ export const genCommonConfig = (browserConfig) => {
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    // AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
@@ -327,6 +335,7 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
+                    // AGTREE_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,

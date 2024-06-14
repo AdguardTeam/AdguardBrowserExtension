@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+// TODO (David): Build rules with AGTree
 
 import {
     SimpleRegex,
-    CosmeticRuleMarker,
     NetworkRule,
     NETWORK_RULE_OPTIONS,
     OPTIONS_DELIMITER,
@@ -29,6 +29,18 @@ import { logger } from '../../../../common/logger';
 
 import { COMMA_DELIMITER } from './constants';
 import { UrlUtils } from './utils';
+
+/**
+ * Possible cosmetic rule markers.
+ */
+const CosmeticRuleMarker = {
+    Css: '#$#',
+    ElementHidingExtCSS: '#?#',
+    CssExtCSS: '#$?#',
+    ElementHiding: '##',
+    Js: '#%#',
+    Html: '$$',
+};
 
 /**
  * Splits request url by backslash to block or allow patterns
