@@ -44,7 +44,7 @@ export class I18n {
      * @param i18nAttributeName - i18n attribute
      */
     private static translateElements(i18nAttributeName: string) {
-        document.querySelectorAll(`[${i18nAttributeName}]`).forEach(el => {
+        document.querySelectorAll(`[${i18nAttributeName}]`).forEach((el) => {
             const message = I18n.getI18nMessage(el, i18nAttributeName);
 
             if (!message) {
@@ -125,7 +125,7 @@ export class I18n {
 
         attributes
             .split(/([a-z]+='[^']+')/)
-            .forEach(attr => {
+            .forEach((attr) => {
                 if (!attr) {
                     return;
                 }
@@ -156,7 +156,7 @@ export class I18n {
         i18nAttributeName: string,
         attributeName: string,
     ): void {
-        document.querySelectorAll(`[${i18nAttributeName}]`).forEach(element => {
+        document.querySelectorAll(`[${i18nAttributeName}]`).forEach((element) => {
             const message = I18n.getI18nMessage(element, i18nAttributeName);
 
             if (!message) {

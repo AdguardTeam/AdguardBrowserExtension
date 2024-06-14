@@ -82,7 +82,7 @@ export class UserRulesApi {
         }
 
         const userRules = (await UserRulesApi.getUserRules()).rawFilterList.split('\n');
-        return userRules.some(userRuleString => RuleSyntaxUtils.isRuleForUrl(
+        return userRules.some((userRuleString) => RuleSyntaxUtils.isRuleForUrl(
             RuleParser.parse(userRuleString),
             url,
         ));
@@ -139,7 +139,7 @@ export class UserRulesApi {
     public static async removeUserRule(rule: string): Promise<void> {
         const userRules = await UserRulesApi.getOriginalUserRules();
 
-        await UserRulesApi.setUserRules(userRules.filter(r => r !== rule));
+        await UserRulesApi.setUserRules(userRules.filter((r) => r !== rule));
     }
 
     /**
@@ -151,7 +151,7 @@ export class UserRulesApi {
         const userRules = await UserRulesApi.getOriginalUserRules();
 
         await UserRulesApi.setUserRules(
-            userRules.filter(rule => !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url)),
+            userRules.filter((rule) => !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url)),
         );
     }
 

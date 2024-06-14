@@ -29,7 +29,7 @@ export const getSettingsV2 = () => ({
     'extension-specific-settings': SETTINGS_V_1_0['extension-specific-settings'],
     'filters': {
         ...restFiltersOptions,
-        'custom-filters': customFilters.map(f => {
+        'custom-filters': customFilters.map((f) => {
             if (f.trusted === undefined) {
                 Object.assign(f, {
                     'trusted': false,
