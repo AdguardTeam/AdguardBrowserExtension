@@ -39,7 +39,7 @@ const RE_FILTER_KEY = new RegExp(`^${RAW_FILTER_KEY_PREFIX}(?<filterId>\\d+)${FI
 /**
  * Zod schema for string array.
  */
-const stringArraySchema = zod.string().optional().transform(data => data ?? undefined);
+const stringArraySchema = zod.string().optional().transform((data) => data ?? undefined);
 
 /**
  * Encapsulates interaction with stored filter rules before applying directives.

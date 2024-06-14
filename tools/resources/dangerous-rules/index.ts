@@ -32,7 +32,7 @@ export const findDangerousRules = async (): Promise<void> => {
 
     // Extracting script text from each rule for analysis with the OpenAI API
     const scriptTexts = potentialDangerousRules
-        .map(rule => rule.text.split('#%#')[1])
+        .map((rule) => rule.text.split('#%#')[1])
         .filter((rule): rule is string => !!rule);
 
     // Removing duplicates to optimize the checking process

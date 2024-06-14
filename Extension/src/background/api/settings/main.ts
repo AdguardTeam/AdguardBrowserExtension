@@ -418,10 +418,10 @@ export class SettingsApi {
 
         // Disable groups not listed in the imported list.
         const allGroups = groupStateStorage.getData();
-        const allGroupsIds = Object.keys(allGroups).map(id => Number(id));
+        const allGroupsIds = Object.keys(allGroups).map((id) => Number(id));
 
         const groupIdsToDisable = allGroupsIds
-            .filter(groupId => !enabledGroups.includes(groupId));
+            .filter((groupId) => !enabledGroups.includes(groupId));
 
         // Disable all other groups and mark them as untouched.
         groupStateStorage.disableGroups(groupIdsToDisable, false);

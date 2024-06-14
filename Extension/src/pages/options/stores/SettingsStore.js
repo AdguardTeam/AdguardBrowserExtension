@@ -465,7 +465,7 @@ class SettingsStore {
 
     @action
     updateGroupStateUI(groupId, enabled) {
-        this.categories.forEach(category => {
+        this.categories.forEach((category) => {
             if (category.groupId === groupId) {
                 if (enabled) {
                     category.enabled = true;
@@ -478,7 +478,7 @@ class SettingsStore {
 
     @action
     updateFilterStateUI(filterId, enabled) {
-        this.filters.forEach(filter => {
+        this.filters.forEach((filter) => {
             if (filter.filterId === filterId) {
                 if (enabled) {
                     filter.enabled = true;

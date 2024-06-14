@@ -259,7 +259,7 @@ export class Toasts {
 
         const text = enabledFilters
             .sort((a, b) => a.displayNumber - b.displayNumber)
-            .map(filter => translator.getMessage('alert_popup_filter_enabled_desc', { filter_name: filter.name }));
+            .map((filter) => translator.getMessage('alert_popup_filter_enabled_desc', { filter_name: filter.name }));
 
         return {
             title,
@@ -305,7 +305,7 @@ export class Toasts {
                 }
                 return Number(a.groupId === b.groupId);
             })
-            .map(filter => `${filter.name}`)
+            .map((filter) => `${filter.name}`)
             .join(', ');
 
         if (updatedFilters.length > 1) {

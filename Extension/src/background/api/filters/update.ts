@@ -136,7 +136,7 @@ export class FilterUpdateApi {
 
         // If it is a force check - updates all installed and enabled filters.
         let filterUpdateDetailsToUpdate = installedAndEnabledFilters.map(
-            id => ({ filterId: id, ignorePatches: forceUpdate }),
+            (id) => ({ filterId: id, ignorePatches: forceUpdate }),
         );
 
         // If not a force check - updates only outdated filters.
@@ -144,7 +144,7 @@ export class FilterUpdateApi {
             // Select filters with diff paths and mark them for no force update
             const filtersToPatchUpdate = FilterUpdateApi
                 .selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate)
-                .map(filterData => ({ ...filterData, ignorePatches: false }));
+                .map((filterData) => ({ ...filterData, ignorePatches: false }));
 
             /**
              * Select filters for a forced update and mark them accordingly.
@@ -156,14 +156,14 @@ export class FilterUpdateApi {
             const filtersToFullUpdate = FilterUpdateApi.selectFiltersToFullUpdate(
                 filterUpdateDetailsToUpdate,
                 updatePeriod,
-            ).map(filter => ({ ...filter, ignorePatches: true }));
+            ).map((filter) => ({ ...filter, ignorePatches: true }));
 
             // Combine both arrays
             const combinedFilters = [...filtersToPatchUpdate, ...filtersToFullUpdate];
 
             const uniqueFiltersMap = new Map();
 
-            combinedFilters.forEach(filter => {
+            combinedFilters.forEach((filter) => {
                 if (!uniqueFiltersMap.has(filter.filterId) || filter.ignorePatches) {
                     uniqueFiltersMap.set(filter.filterId, filter);
                 }
@@ -202,7 +202,7 @@ export class FilterUpdateApi {
          * version matching on update check.
          * We do not update metadata on each check if there are no filters or only custom filters.
          */
-        const shouldLoadMetadata = filterUpdateOptionsList.some(filterUpdateOptions => {
+        const shouldLoadMetadata = filterUpdateOptionsList.some((filterUpdateOptions) => {
             return filterUpdateOptions.ignorePatches && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
         });
 
