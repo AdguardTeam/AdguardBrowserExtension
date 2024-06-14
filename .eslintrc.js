@@ -126,6 +126,7 @@ module.exports = {
         'dot-notation': 'off',
         'quote-props': 'off',
         'arrow-body-style': 'off',
+        // FIXME (David / Slava, v4.4): Enable this rule before release
         'arrow-parens': 'off',
         'no-use-before-define': 'off',
         'no-useless-escape': 'off',

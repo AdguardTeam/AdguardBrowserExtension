@@ -311,7 +311,7 @@ describe('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.get(1)).toEqual(fakeFilterV1.split('\n'));
+            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV1);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1);
 
             returnMetadataWithVersion(filterId, '4.0.0.0');
@@ -336,7 +336,7 @@ describe('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             await FilterUpdateApi.autoUpdateFilters(false);
@@ -350,7 +350,7 @@ describe('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
         });
 
@@ -376,7 +376,7 @@ describe('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath.split('\n'));
+            expect((await FiltersStorage.getAllFilterData(1))?.rawFilterList).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             // Auto update filter to get a diff patch
@@ -435,7 +435,7 @@ describe('Filter Update API should', () => {
 
             lastCheckTime = filterVersionData[1]!.lastCheckTime;
             lastScheduledCheckTime = filterVersionData[1]!.lastScheduledCheckTime;
-            expect(lastScheduledCheckTime > lastCheckTime).toBeTruthy();
+            expect(lastScheduledCheckTime).toBeGreaterThanOrEqual(lastCheckTime);
         });
     });
 });

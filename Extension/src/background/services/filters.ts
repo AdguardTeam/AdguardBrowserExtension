@@ -37,6 +37,7 @@ import {
     Categories,
     PageStatsApi,
     HitStatsApi,
+    filteringLogApi,
 } from '../api';
 import {
     ContextMenuAction,
@@ -91,6 +92,7 @@ export class FiltersService {
         // second arg 'true' is needed to enable not touched group
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2776
         FiltersService.enableFilter(filterId, true);
+        filteringLogApi.onFiltersChanged([filterId]);
 
         const group = Categories.getGroupByFilterId(filterId);
 
@@ -117,6 +119,7 @@ export class FiltersService {
         const { filterId } = message.data;
 
         FiltersApi.disableFilters([filterId]);
+        filteringLogApi.onFiltersChanged([filterId]);
 
         Engine.debounceUpdate();
     }
@@ -145,6 +148,8 @@ export class FiltersService {
 
         if (group.touched) {
             FiltersService.enableGroup(groupId);
+            const enabledFilters = Categories.getEnabledFiltersIdsByGroupId(groupId);
+            filteringLogApi.onFiltersChanged(enabledFilters);
             return;
         }
 
@@ -152,6 +157,7 @@ export class FiltersService {
         // enable the recommended filters.
         const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
         FiltersService.enableGroup(groupId, recommendedFiltersIds);
+        filteringLogApi.onFiltersChanged(recommendedFiltersIds);
         return recommendedFiltersIds;
     }
 
@@ -164,8 +170,10 @@ export class FiltersService {
     private static async onGroupDisable(message: DisableFiltersGroupMessage): Promise<void> {
         const { groupId } = message.data;
 
+        const enabledFilters = Categories.getEnabledFiltersIdsByGroupId(groupId);
         Categories.disableGroup(groupId);
         Engine.debounceUpdate();
+        filteringLogApi.onFiltersChanged(enabledFilters);
     }
 
     /**
@@ -177,6 +185,7 @@ export class FiltersService {
 
             toasts.showFiltersUpdatedAlertMessage(true, updatedFilters);
             listeners.notifyListeners(listeners.FiltersUpdateCheckReady, updatedFilters);
+            filteringLogApi.onFiltersChanged(updatedFilters.map((filter) => filter.filterId));
 
             return updatedFilters;
         } catch (e) {
@@ -191,6 +200,8 @@ export class FiltersService {
     private static async onOptimizedFiltersSwitch(): Promise<void> {
         await FiltersApi.reloadEnabledFilters();
         Engine.debounceUpdate();
+        const enabledFilters = FiltersApi.getEnabledFilters();
+        filteringLogApi.onFiltersChanged(enabledFilters);
     }
 
     /**
@@ -220,6 +231,8 @@ export class FiltersService {
         const { filterIds } = message.data;
 
         await annoyancesConsent.addFilterIds(filterIds);
+
+        filteringLogApi.onFiltersChanged(filterIds);
     }
 
     /**
@@ -251,6 +264,7 @@ export class FiltersService {
     private static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
         await Categories.enableGroup(groupId, recommendedFiltersIds);
         Engine.debounceUpdate();
+        filteringLogApi.onFiltersChanged(recommendedFiltersIds);
     }
 
     /**
@@ -263,5 +277,6 @@ export class FiltersService {
     private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
         await FiltersApi.loadAndEnableFilters([filterId], true, shouldEnableGroup);
         Engine.debounceUpdate();
+        filteringLogApi.onFiltersChanged([filterId]);
     }
 }

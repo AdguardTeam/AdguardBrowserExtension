@@ -371,7 +371,7 @@ export class Categories {
      *
      * @returns List of filters ids.
      */
-    private static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
+    public static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
         const filtersMetadata = FiltersApi.getFiltersMetadata();
 
         return filtersMetadata

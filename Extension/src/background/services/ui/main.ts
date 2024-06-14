@@ -237,14 +237,14 @@ export class UiService {
      * @param event.data Event data.
      */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
-        const { rule, tabId } = data;
+        const { filterId, isAllowlist, tabId } = data;
 
         // If rule is not blocking, ignore it
-        if (rule.isAllowlist()) {
+        if (isAllowlist) {
             return;
         }
 
-        await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
+        await PageStatsApi.updateStats(filterId, UiService.blockedCountIncrement);
         PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
 
         const tabContext = tsWebExtTabApi.getTabContext(tabId);

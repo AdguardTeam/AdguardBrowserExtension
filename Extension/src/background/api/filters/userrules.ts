@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { RuleSyntaxUtils, RuleConverter } from '@adguard/tsurlfilter';
+import { RuleParser } from '@adguard/agtree';
+import { PreprocessedFilterList, RuleSyntaxUtils } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
 import { AntiBannerFiltersId } from '../../../common/constants';
@@ -25,8 +26,8 @@ import {
     FiltersStorage,
     settingsStorage,
     editorStorage,
-    ruleConversionStorage,
 } from '../../storages';
+import { filteringLogApi } from '../filtering-log';
 
 /**
  * API for managing user rules list.
@@ -45,6 +46,7 @@ export class UserRulesApi {
 
             if (!userRules) {
                 await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
+                filteringLogApi.onFiltersChanged([AntiBannerFiltersId.UserFilterId]);
             }
         } catch (e) {
             if (!isInstall) {
@@ -54,6 +56,7 @@ export class UserRulesApi {
                 );
             }
             await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
+            filteringLogApi.onFiltersChanged([AntiBannerFiltersId.UserFilterId]);
         }
     }
 
@@ -78,9 +81,9 @@ export class UserRulesApi {
             return false;
         }
 
-        const userRules = await UserRulesApi.getUserRules();
+        const userRules = (await UserRulesApi.getUserRules()).rawFilterList.split('\n');
         return userRules.some(userRuleString => RuleSyntaxUtils.isRuleForUrl(
-            userRuleString,
+            RuleParser.parse(userRuleString),
             url,
         ));
     }
@@ -88,8 +91,31 @@ export class UserRulesApi {
     /**
      * Returns rules from user list.
      */
-    public static async getUserRules(): Promise<string[]> {
-        return FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+    public static async getUserRules(): Promise<PreprocessedFilterList> {
+        const data = await FiltersStorage.getAllFilterData(AntiBannerFiltersId.UserFilterId);
+
+        if (!data) {
+            return {
+                rawFilterList: '',
+                filterList: [],
+                sourceMap: {},
+                conversionMap: {},
+            };
+        }
+
+        return data;
+    }
+
+    /**
+     * Returns original rules from user list.
+     *
+     * When we save user rules, the rules may be modified (e.g converted),
+     * but when user opens the editor, we need to show their original rules.
+     * User rules is a bit special because for that list we store the whole original filter list.
+     * This method return that original list and we use it to load content in the editor.
+     */
+    public static async getOriginalUserRules(): Promise<string[]> {
+        return FiltersStorage.getOriginalRules(AntiBannerFiltersId.UserFilterId);
     }
 
     /**
@@ -98,7 +124,7 @@ export class UserRulesApi {
      * @param rule Rule text.
      */
     public static async addUserRule(rule: string): Promise<void> {
-        const userRules = await UserRulesApi.getUserRules();
+        const userRules = await UserRulesApi.getOriginalUserRules();
 
         userRules.push(rule);
 
@@ -111,7 +137,7 @@ export class UserRulesApi {
      * @param rule Rule text.
      */
     public static async removeUserRule(rule: string): Promise<void> {
-        const userRules = await UserRulesApi.getUserRules();
+        const userRules = await UserRulesApi.getOriginalUserRules();
 
         await UserRulesApi.setUserRules(userRules.filter(r => r !== rule));
     }
@@ -122,9 +148,11 @@ export class UserRulesApi {
      * @param url Page url.
      */
     public static async removeRulesByUrl(url: string): Promise<void> {
-        const userRules = await UserRulesApi.getUserRules();
+        const userRules = await UserRulesApi.getOriginalUserRules();
 
-        await UserRulesApi.setUserRules(userRules.filter(rule => !RuleSyntaxUtils.isRuleForUrl(rule, url)));
+        await UserRulesApi.setUserRules(
+            userRules.filter(rule => !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url)),
+        );
     }
 
     /**
@@ -136,6 +164,7 @@ export class UserRulesApi {
         await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rules);
 
         listeners.notifyListeners(listeners.UserFilterUpdated);
+        filteringLogApi.onFiltersChanged([AntiBannerFiltersId.UserFilterId]);
     }
 
     /**
@@ -154,51 +183,5 @@ export class UserRulesApi {
      */
     public static setEditorStorageData(data: string): void {
         editorStorage.set(data);
-    }
-
-    /**
-     * Converts rules text lines with conversion map.
-     *
-     * @param rules List of rule strings.
-     *
-     * @returns List of converted rule strings.
-     */
-    public static convertRules(rules: string[]): string[] {
-        ruleConversionStorage.clear();
-
-        const result: string[] = [];
-
-        rules.forEach((line) => {
-            let converted: string[] = [];
-            try {
-                converted = RuleConverter.convertRule(line);
-            } catch (e: unknown) {
-                logger.info(`Error converting rule ${line}, due to: `, e);
-            }
-            result.push(...converted);
-
-            if (converted.length > 0) {
-                if (converted.length > 1 || converted[0] !== line) {
-                    // Fill the map only for converted rules
-                    converted.forEach((x) => {
-                        ruleConversionStorage.set(x, line);
-                    });
-                }
-            }
-        });
-
-        logger.debug(`Converted ${rules.length} rules to ${result.length} for user filter`);
-
-        return result;
-    }
-
-    /**
-     * Returns source rule text if the rule has been converted.
-     *
-     * @param rule Converted rule text.
-     * @returns Source rule text, if exist, else undefined.
-     */
-    public static getSourceRule(rule: string): string | undefined {
-        return ruleConversionStorage.get(rule);
     }
 }

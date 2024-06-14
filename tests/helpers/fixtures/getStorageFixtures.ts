@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 
+const FILTER_KEY_PREFIX = 'filterrules_';
+
 export type StorageData = Record<string, unknown>;
 
 export const getStorageFixturesV0 = (): StorageData[] => ([{
@@ -153,18 +155,18 @@ export const getStorageFixturesV1 = (): StorageData[] => ([{
     'app-version': '0.0.0',
     'client-id': '5HR7pkwP78401460',
     'filterrules_0.txt': [],
-    'filterrules_1.txt': '',
-    'filterrules_10.txt': '',
-    'filterrules_16.txt': '',
-    'filterrules_18.txt': '',
-    'filterrules_19.txt': '',
-    'filterrules_2.txt': '',
-    'filterrules_20.txt': '',
-    'filterrules_21.txt': '',
-    'filterrules_22.txt': '',
-    'filterrules_224.txt': '',
-    'filterrules_4.txt': '',
-    'filterrules_6.txt': '',
+    'filterrules_1.txt': [],
+    'filterrules_10.txt': [],
+    'filterrules_16.txt': [],
+    'filterrules_18.txt': [],
+    'filterrules_19.txt': [],
+    'filterrules_2.txt': [],
+    'filterrules_20.txt': [],
+    'filterrules_21.txt': [],
+    'filterrules_22.txt': [],
+    'filterrules_224.txt': [],
+    'filterrules_4.txt': [],
+    'filterrules_6.txt': [],
     'sb-lru-cache': '[{"key":"7D5B0B1D213AEB4109A9EC26DA13B9F2F2C9D4DD5DDFE99891859940AB3E2C5F","value":"adguard-malware-shavar"}]',
     'schema-version': 1,
     'viewed-notification-time': 123456789,
@@ -207,21 +209,21 @@ export const getStorageFixturesV1 = (): StorageData[] => ([{
     'app-version': '0.0.0',
     'client-id': '5HR7pkwP78401460',
     'filterrules_0.txt': ['||example.com^$document', 'example.org###h1'],
-    'filterrules_1.txt': '',
-    'filterrules_2.txt': '',
-    'filterrules_4.txt': '',
-    'filterrules_6.txt': '',
-    'filterrules_10.txt': '',
-    'filterrules_16.txt': '',
-    'filterrules_18.txt': '',
-    'filterrules_19.txt': '',
-    'filterrules_20.txt': '',
-    'filterrules_21.txt': '',
-    'filterrules_22.txt': '',
-    'filterrules_224.txt': '',
-    'filterrules_1000.txt': '',
-    'filterrules_1001.txt': '',
-    'filterrules_1002.txt': '',
+    'filterrules_1.txt': [],
+    'filterrules_2.txt': [],
+    'filterrules_4.txt': [],
+    'filterrules_6.txt': [],
+    'filterrules_10.txt': [],
+    'filterrules_16.txt': [],
+    'filterrules_18.txt': [],
+    'filterrules_19.txt': [],
+    'filterrules_20.txt': [],
+    'filterrules_21.txt': [],
+    'filterrules_22.txt': [],
+    'filterrules_224.txt': [],
+    'filterrules_1000.txt': [],
+    'filterrules_1001.txt': [],
+    'filterrules_1002.txt': [],
     'sb-lru-cache': '[]',
     'schema-version': 1,
     'page-statistic': '{"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"months":[{"total":0},{"total":0},{"total":0}],"updated":123456789}}',
@@ -263,6 +265,21 @@ export const getStorageFixturesV3 = (expires: number): StorageData[] => {
         return {
             ...storageSettings,
             'schema-version': 3,
+        };
+    });
+};
+
+export const getStorageFixturesV4 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV3 = getStorageFixturesV3(expires);
+
+    return storageSettingsFixturesV3.map((storageSettings) => {
+        // Get keys that starts with 'filterrules_'
+        const filterRelatedKeys = Object.keys(storageSettings).filter((key) => key.startsWith(FILTER_KEY_PREFIX));
+
+        return {
+            // Pick all non-filter keys
+            ...Object.fromEntries(Object.entries(storageSettings).filter(([key]) => !filterRelatedKeys.includes(key))),
+            'schema-version': 4,
         };
     });
 };

@@ -21,7 +21,7 @@ import { UserAgent } from '../../../common/user-agent';
 import {
     notificationStorage,
     Notification,
-    storage,
+    browserStorage,
 } from '../../storages';
 import { NotificationTextRecord } from '../../schema';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
@@ -88,11 +88,11 @@ export class PromoNotificationApi {
 
         const { id } = this.currentNotification;
 
-        const viewedNotifications = await storage.get(VIEWED_NOTIFICATIONS_KEY) || [];
+        const viewedNotifications = await browserStorage.get(VIEWED_NOTIFICATIONS_KEY) || [];
 
         if (Array.isArray(viewedNotifications) && !viewedNotifications.includes(id)) {
             viewedNotifications.push(id);
-            await storage.set(VIEWED_NOTIFICATIONS_KEY, viewedNotifications);
+            await browserStorage.set(VIEWED_NOTIFICATIONS_KEY, viewedNotifications);
 
             this.currentNotification = null;
 
@@ -133,7 +133,7 @@ export class PromoNotificationApi {
 
         const notificationsValues = Array.from(notificationStorage.values());
 
-        const viewedNotifications = await storage.get(VIEWED_NOTIFICATIONS_KEY) || [];
+        const viewedNotifications = await browserStorage.get(VIEWED_NOTIFICATIONS_KEY) || [];
 
         for (let i = 0; i < notificationsValues.length; i += 1) {
             const notification = notificationsValues[i];
@@ -215,11 +215,11 @@ export class PromoNotificationApi {
      * If it was not shown yet, initialized with the current time.
      */
     private static async getLastNotificationTime(): Promise<number> {
-        let lastTime = Number(await storage.get(LAST_NOTIFICATION_TIME_KEY) || 0);
+        let lastTime = Number(await browserStorage.get(LAST_NOTIFICATION_TIME_KEY) || 0);
 
         if (lastTime === 0) {
             lastTime = Date.now();
-            await storage.set(LAST_NOTIFICATION_TIME_KEY, lastTime);
+            await browserStorage.set(LAST_NOTIFICATION_TIME_KEY, lastTime);
         }
 
         return lastTime;

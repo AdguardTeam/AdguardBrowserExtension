@@ -17,10 +17,12 @@
  */
 import { debounce } from 'lodash-es';
 
+import { getRuleSourceIndex, getRuleSourceText } from '@adguard/tswebextension';
+
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { hitStatsStorageDataValidator } from '../../schema';
-import { hitStatsStorage } from '../../storages';
+import { FiltersStorage, hitStatsStorage } from '../../storages';
 import { network } from '../network';
 
 /**
@@ -62,19 +64,19 @@ export class HitStatsApi {
     /**
      * Add 1 rule hit to stats.
      *
-     * @param ruleText Rule test.
      * @param filterId Filter id.
+     * @param ruleIndex Rule index.
      */
     public static addRuleHit(
-        ruleText: string,
         filterId: number,
+        ruleIndex: number,
     ): void {
         // We collect hit stats only for own predefined filter lists
         if (!HitStatsApi.shouldCollectHitStats(filterId)) {
             return;
         }
 
-        hitStatsStorage.addRuleHitToCache(ruleText, filterId);
+        hitStatsStorage.addRuleHitToCache(filterId, ruleIndex);
         HitStatsApi.debounceSaveAndSaveHitStats();
     }
 
@@ -98,7 +100,76 @@ export class HitStatsApi {
             return;
         }
 
-        network.sendHitStats(JSON.stringify(hitStats.stats));
+        // In the hit stats API, we only have rule indexes, so we need to get original rule texts before sending them
+        // So we transform `{ [filterId]: { [ruleIndex]: hits } `} to `{ [filterId]: { [originalRuleText]: hits } }`
+        const affectedFilterIds = Object.keys(hitStats.stats?.filters ?? {});
+
+        /**
+         * Helper function to transform one filter list data from the hit stats to the format that we need.
+         *
+         * @param filterId Filter list id.
+         * @param stats Filter list stats.
+         * @returns Transformed filter list data.
+         */
+        const transformFilterHits = async (
+            filterId: string,
+            stats: Record<string, number>,
+        ): Promise<[string, Record<string, number>]> => {
+            const filterData = await FiltersStorage.getAllFilterData(Number(filterId));
+
+            if (!filterData) {
+                return [filterId, {}];
+            }
+
+            const { rawFilterList, conversionMap, sourceMap } = filterData;
+
+            // It is impossible to get rule text if there is no source map
+            if (!sourceMap) {
+                return [filterId, {}];
+            }
+
+            const ruleTexts = (await Promise.all(
+                Object.entries(stats).map(async ([ruleIndex, hits]): Promise<[string, number] | null> => {
+                    // Get line start index in the source file by rule start index in the byte array
+                    const lineStartIndex = getRuleSourceIndex(Number(ruleIndex), sourceMap);
+
+                    // During normal operation, this should not happen
+                    if (lineStartIndex === -1) {
+                        return null;
+                    }
+
+                    const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
+
+                    // During normal operation, this should not happen
+                    if (!appliedRuleText) {
+                        return null;
+                    }
+
+                    // In statistics, we need the original rule text which can be found in the filter list
+                    if (conversionMap) {
+                        const originalRuleText = conversionMap[lineStartIndex];
+                        if (originalRuleText) {
+                            return [originalRuleText, hits];
+                        }
+                    }
+
+                    return [appliedRuleText, hits];
+                }),
+            )).filter((entry): entry is [string, number] => entry !== null);
+
+            return [filterId, Object.fromEntries(ruleTexts)];
+        };
+
+        const hitStatsData: Record<string, Record<string, number>> = Object.fromEntries(
+            await Promise.all(
+                affectedFilterIds.map(async (filterId) => {
+                    const stats = hitStats.stats?.filters?.[filterId] || {};
+                    return transformFilterHits(filterId, stats);
+                }),
+            ),
+        );
+
+        network.sendHitStats(JSON.stringify(hitStatsData));
         await HitStatsApi.cleanup();
     }
 

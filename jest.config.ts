@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import type { Config } from 'jest';
+import escapeStringRegexp from 'escape-string-regexp';
 
 const transformedModules = [
     '@adguard/tsurlfilter',
@@ -36,7 +37,7 @@ const config: Config = {
         './testSetup.ts',
     ],
     transformIgnorePatterns: [
-        `<rootDir>/node_modules/(?!(${transformedModules.join('|')}))`,
+        `<rootDir>/node_modules/(?!(${transformedModules.map(escapeStringRegexp).join('|')}))`,
         '.*\\.json',
     ],
     transform: {

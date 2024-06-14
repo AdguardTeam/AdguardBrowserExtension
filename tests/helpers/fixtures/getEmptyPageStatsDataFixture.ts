@@ -1,5 +1,5 @@
 import { PageStatsData } from '../../../Extension/src/background/schema';
-import { PageStatsStorage } from '../../../Extension/src/background/storages';
+import { PageStatsStorage } from '../../../Extension/src/background/storages/page-stats';
 
 export const getEmptyPageStatsDataFixture = (
     updated: number,

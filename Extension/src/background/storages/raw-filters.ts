@@ -18,9 +18,27 @@
 import zod from 'zod';
 
 import { logger } from '../../common/logger';
+import { FILTER_LIST_EXTENSION } from '../../common/constants';
 
-import { storage } from './main';
+import { hybridStorage } from './shared-instances';
 
+/**
+ * Prefix for storage keys where raw filter lists are stored.
+ * These filter lists are stored in raw format, and they are used in the diff update process.
+ *
+ * @example
+ * raw_filterrules_1.txt
+ */
+export const RAW_FILTER_KEY_PREFIX = 'raw_filterrules_';
+
+/**
+ * Regular expression that helps to extract filter id from the key.
+ */
+const RE_FILTER_KEY = new RegExp(`^${RAW_FILTER_KEY_PREFIX}(?<filterId>\\d+)${FILTER_LIST_EXTENSION}$`);
+
+/**
+ * Zod schema for string array.
+ */
 const stringArraySchema = zod.string().optional().transform(data => data ?? undefined);
 
 /**
@@ -28,7 +46,7 @@ const stringArraySchema = zod.string().optional().transform(data => data ?? unde
  */
 export class RawFiltersStorage {
     /**
-     * Sets specified filter list to {@link storage}.
+     * Sets specified filter list to {@link hybridStorage}.
      *
      * @param filterId Filter id.
      * @param filter Filter rules strings.
@@ -36,11 +54,11 @@ export class RawFiltersStorage {
     static async set(filterId: number, filter: string): Promise<void> {
         const key = RawFiltersStorage.getFilterKey(filterId);
 
-        await storage.set(key, filter);
+        await hybridStorage.set(key, filter);
     }
 
     /**
-     * Retrieves raw filter from the {@link storage}. Parses it and returns string if data is
+     * Retrieves raw filter from the {@link hybridStorage}. Parses it and returns string if data is
      * valid or undefined otherwise.
      *
      * @param filterId Filter id.
@@ -49,7 +67,7 @@ export class RawFiltersStorage {
     static async get(filterId: number): Promise<string | undefined> {
         const key = RawFiltersStorage.getFilterKey(filterId);
 
-        const data = await storage.get(key);
+        const data = await hybridStorage.get(key);
 
         const parseResult = stringArraySchema.safeParse(data);
 
@@ -62,22 +80,33 @@ export class RawFiltersStorage {
     }
 
     /**
-     * Removes specified filter list from {@link storage}.
+     * Removes specified filter list from {@link hybridStorage}.
      *
      * @param filterId Filter id.
      */
     static async remove(filterId: number): Promise<void> {
         const key = RawFiltersStorage.getFilterKey(filterId);
-        return storage.remove(key);
+        return hybridStorage.remove(key);
     }
 
     /**
-     * Returns {@link storage} key from specified filter list.
+     * Returns {@link hybridStorage} key from specified filter list.
      *
      * @param filterId Filter id.
      * @returns Storage key from specified filter list.
      */
     private static getFilterKey(filterId: number): string {
-        return `raw_filterrules_${filterId}.txt`;
+        return `${RAW_FILTER_KEY_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    }
+
+    /**
+     * Helper method to extract filter id from the key.
+     *
+     * @param key Storage key.
+     * @returns Filter id or `null` if the key is invalid.
+     */
+    static extractFilterIdFromFilterKey(key: string): number | null {
+        const match = key.match(RE_FILTER_KEY);
+        return match ? parseInt(match.groups?.filterId ?? '', 10) : null;
     }
 }

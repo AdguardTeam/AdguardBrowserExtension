@@ -25,7 +25,7 @@ import {
     SCHEMA_VERSION_KEY,
 } from '../../common/constants';
 import { Prefs } from '../prefs';
-import { storage } from '../storages';
+import { browserStorage } from '../storages';
 
 export type RunInfo = {
     currentAppVersion: string,
@@ -43,7 +43,7 @@ export type RunInfo = {
  * @returns Specified storage value.
  */
 async function getData(key: string, fallback = true): Promise<unknown | null> {
-    const data = await storage.get(key);
+    const data = await browserStorage.get(key);
 
     if (data) {
         return data;
@@ -51,7 +51,7 @@ async function getData(key: string, fallback = true): Promise<unknown | null> {
 
     // Before v4.2, app version and client id were stored in settings
     if (fallback) {
-        const settings = await storage.get(ADGUARD_SETTINGS_KEY);
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
 
         const result = zod.record(zod.unknown()).safeParse(settings);
 

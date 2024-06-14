@@ -258,14 +258,15 @@ class LogStore {
 
     formatEvent = (filteringEvent) => {
         const { requestRule } = filteringEvent;
+        const { filterId, originalRuleText, appliedRuleText } = requestRule ?? {};
 
-        const ruleText = requestRule?.ruleText;
-
-        if (ruleText) {
-            filteringEvent.ruleText = ruleText;
+        if (originalRuleText) {
+            filteringEvent.originalRuleText = originalRuleText;
         }
 
-        const filterId = requestRule?.filterId;
+        if (appliedRuleText) {
+            filteringEvent.appliedRuleText = appliedRuleText;
+        }
 
         if (filterId !== undefined) {
             filteringEvent.filterName = getFilterName(filterId, this.filtersMetadata);
