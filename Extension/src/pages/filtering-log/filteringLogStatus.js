@@ -28,6 +28,7 @@ export const StatusMode = {
     MODIFIED: 'modified',
     BLOCKED: 'blocked',
     ALLOWED: 'allowed',
+    ALLOWED_STEALTH: 'allowed-stealth',
 };
 
 /**
@@ -40,6 +41,7 @@ export const getStatusMode = (event) => {
     const {
         cspReportBlocked,
         replaceRules,
+        stealthAllowlistRules,
         requestRule,
         removeParam,
         removeHeader,
@@ -57,6 +59,10 @@ export const getStatusMode = (event) => {
         mode = StatusMode.MODIFIED;
     }
 
+    if (stealthAllowlistRules) {
+        mode = StatusMode.ALLOWED_STEALTH;
+    }
+
     if (requestRule && !replaceRules) {
         /**
          * All of these fields are fields that are "synthetically" added to the
@@ -64,10 +70,16 @@ export const getStatusMode = (event) => {
          * {@link FilteringLogApi.createCosmeticRuleEventData}.
          */
         const {
-            allowlistRule, cssRule, scriptRule, cookieRule, cspRule,
+            allowlistRule,
+            cssRule,
+            scriptRule,
+            cookieRule,
+            cspRule,
         } = requestRule;
 
         if (allowlistRule) {
+            // $stealth allowlist rules are not being marked as allowed
+            // to prevent log cluttering and conform with desktop applications
             mode = StatusMode.ALLOWED;
         } else if (cssRule || scriptRule || removeParam || removeHeader) {
             mode = StatusMode.MODIFIED;

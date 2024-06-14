@@ -95,40 +95,66 @@ const getType = (selectedEvent) => {
 };
 
 /**
- * Gets rule texts for the selected event
+ * Gets rules text data for the selected event.
  *
- * @param selectedEvent
+ * @param {FilteringEvent} event Event object to get the rule(s) from.
+ * @param {RegularFilterMetadata} filtersMetadata Filters metadata.
  * @returns An object with the following properties:
- * - `appliedRuleTexts` - an array of rule texts that were applied to the request
+ * - `appliedRuleTexts` - an array of rule texts that were applied to the request.
+ *   If there are multiple rules, each rule text is followed by the filter name in parentheses.
  * - `originalRuleTexts` - an array of original rule texts that were converted to the applied rule texts (if any)
- * If the rule was not converted, `appliedRuleTexts` contains the original rule text and `originalRuleTexts` is empty.
+ *   If the rule was not converted, `appliedRuleTexts` contains the original rule text and `originalRuleTexts` is empty.
+ *   If there are multiple rules, each rule text is followed by the filter name in parentheses.
  */
-const getRule = (selectedEvent) => {
-    // Prepare an empty result
+const getRulesData = (event, filtersMetadata) => {
+    const {
+        requestRule,
+        replaceRules,
+        stealthAllowlistRules,
+    } = event;
+
     const result = {
         appliedRuleTexts: [],
         originalRuleTexts: [],
     };
 
-    // Handle replace rules
-    const replaceRules = selectedEvent?.replaceRules;
-    if (replaceRules && replaceRules.length > 0) {
-        replaceRules.forEach(rule => {
-            const { appliedRuleText, originalRuleText } = rule;
+    const addRule = (rule, filterName) => {
+        const { appliedRuleText, originalRuleText } = rule;
 
-            if (appliedRuleText) {
-                result.appliedRuleTexts.push(appliedRuleText);
-            }
+        if (appliedRuleText) {
+            result.appliedRuleTexts.push(filterName ? `${appliedRuleText} (${filterName})` : appliedRuleText);
+        }
 
-            if (originalRuleText) {
-                result.originalRuleTexts.push(originalRuleText);
-            }
-        });
+        if (originalRuleText) {
+            result.originalRuleTexts.push(filterName ? `${originalRuleText} (${filterName})` : originalRuleText);
+        }
+    };
 
+    const addRuleGroup = (rules) => {
+        if (!rules) {
+            return;
+        }
+
+        if (rules.length === 1) {
+            addRule(rules[0]);
+        } else {
+            // in this case add rule texts with filter name
+            rules.forEach((rule) => {
+                const filterName = filtersMetadata ? getFilterName(rule.filterId, filtersMetadata) : null;
+                addRule(rule, filterName);
+            });
+        }
+    };
+
+    if (replaceRules) {
+        addRuleGroup(replaceRules);
         return result;
     }
 
-    const requestRule = selectedEvent?.requestRule;
+    if (stealthAllowlistRules) {
+        addRuleGroup(stealthAllowlistRules);
+        return result;
+    }
 
     if (!requestRule) {
         return result;
@@ -144,13 +170,38 @@ const getRule = (selectedEvent) => {
         return result;
     }
 
-    // Handle other rules
-    const { appliedRuleText, originalRuleText } = requestRule;
+    addRule(requestRule);
 
-    return {
-        appliedRuleTexts: appliedRuleText ? [appliedRuleText] : [],
-        originalRuleTexts: originalRuleText ? [originalRuleText] : [],
-    };
+    return result;
+};
+
+/**
+ * Returns filter name for a rule
+ *
+ * @param selectedEvent filtering event
+ * @param {RegularFilterMetadata} filtersMetadata filters metadata
+ * @returns {string|null} filter name or null, if filter is not found or there are multiple rules
+ */
+const getRuleFilterName = (selectedEvent, filtersMetadata) => {
+    const {
+        requestRule,
+        replaceRules,
+        stealthAllowlistRules,
+    } = selectedEvent;
+
+    if (requestRule) {
+        return getFilterName(requestRule.filterId, filtersMetadata);
+    }
+
+    if (replaceRules?.length === 1) {
+        return getFilterName(replaceRules[0]?.filterId, filtersMetadata);
+    }
+
+    if (stealthAllowlistRules?.length === 1) {
+        return getFilterName(stealthAllowlistRules[0]?.filterId, filtersMetadata);
+    }
+
+    return null;
 };
 
 const PARTS = {
@@ -210,7 +261,7 @@ const RequestInfo = observer(() => {
         },
         [PARTS.FILTER]: {
             title: reactTranslator.getMessage('filtering_modal_filter'),
-            data: getFilterName(selectedEvent.requestRule?.filterId, filtersMetadata),
+            data: getRuleFilterName(selectedEvent, filtersMetadata),
         },
         [PARTS.STEALTH]: {
             title: reactTranslator.getMessage('filtering_modal_privacy'),
@@ -219,20 +270,20 @@ const RequestInfo = observer(() => {
     };
 
     // Handle rule texts
-    const rule = getRule(selectedEvent);
+    const rulesData = getRulesData(selectedEvent, filtersMetadata);
 
     eventPartsMap[PARTS.APPLIED_RULE] = {
-        title: reactTranslator.getPlural('filtering_modal_applied_rules', Math.max(rule.appliedRuleTexts.length, 1)),
-        data: rule.appliedRuleTexts.length > 0
-            ? rule.appliedRuleTexts.join('\n')
+        title: reactTranslator.getPlural('filtering_modal_applied_rules', Math.max(rulesData.appliedRuleTexts.length, 1)),
+        data: rulesData.appliedRuleTexts.length > 0
+            ? rulesData.appliedRuleTexts.join('\n')
             : null,
     };
 
     // Original rule texts contains elements only if the rule was converted
-    if (rule.originalRuleTexts.length > 0) {
+    if (rulesData.originalRuleTexts.length > 0) {
         eventPartsMap[PARTS.ORIGINAL_RULE] = {
-            title: reactTranslator.getPlural('filtering_modal_original_rules', Math.max(rule.originalRuleTexts.length, 1)),
-            data: rule.originalRuleTexts.join('\n'),
+            title: reactTranslator.getPlural('filtering_modal_original_rules', Math.max(rulesData.originalRuleTexts.length, 1)),
+            data: rulesData.originalRuleTexts.join('\n'),
         };
     }
 
