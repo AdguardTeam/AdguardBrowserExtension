@@ -36,6 +36,7 @@ import { Footer } from '../Footer';
 import { RulesLimits } from '../RulesLimits';
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
+import { Mv3Notifications } from '../Mv3Notifications';
 import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
@@ -128,6 +129,7 @@ const Options = observer(() => {
                 <div className="inner">
                     <div className="content">
                         <Notifications />
+                        <Mv3Notifications />
                         <Switch>
                             <Route path="/" exact component={General} />
                             <Route path={`/${OptionsPageSections.filters}`} component={Filters} />

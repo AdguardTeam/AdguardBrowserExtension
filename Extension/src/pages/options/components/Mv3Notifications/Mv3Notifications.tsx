@@ -21,33 +21,40 @@ import React, { useContext } from 'react';
 
 import { rootStore } from '../../stores/RootStore';
 
-import { Notification } from './Notification';
+import { Mv3Notification } from './Mv3Notification';
 
-import './notifications.pcss';
+import './mv3-notifications.pcss';
 
 /**
  * TODO: Use only one type of notifications (now we have MV3 notifications
  * about limits and old notifications about filters changes).
  */
-export const Notifications = observer(() => {
+export const Mv3Notifications = observer(() => {
     const { uiStore } = useContext(rootStore);
 
-    const { notifications } = uiStore;
+    const { mv3Notifications } = uiStore;
 
-    if (notifications.length === 0) {
+    if (mv3Notifications.length === 0) {
         return null;
     }
 
+    /**
+     * Reverse notifications to correct transition for change position
+     * of notification. If we use normal, not reversed order, new notification
+     * will push old notifications (up or down) on the Y axis without transition.
+     */
+    const reversedNotifications = mv3Notifications.slice().reverse();
+
     return (
-        <div className="notifications">
-            {notifications.map((notification) => {
-                const { id, description, title } = notification;
+        <div className="mv3-notifications">
+            {reversedNotifications.map((notification) => {
+                const { id, description, extra } = notification;
                 return (
-                    <Notification
+                    <Mv3Notification
                         key={id}
-                        id={id}
-                        title={title}
+                        id={id || description}
                         description={description}
+                        extra={extra}
                     />
                 );
             })}

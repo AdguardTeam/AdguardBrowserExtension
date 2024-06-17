@@ -35,6 +35,8 @@ import './notification.pcss';
  */
 export const Notification = () => {
     const [notificationClosing, setNotificationClosing] = useState(false);
+    // We save the state "close" of the notification in local state to show it
+    // again until user has not fixed list of filters.
     const [notificationClosed, setNotificationClosed] = useState(false);
 
     const notificationClassnames = classnames(

@@ -26,14 +26,15 @@ import classnames from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
+import { messenger } from '../../../services/messenger';
 
 /**
  * Notification component props
  */
 interface NotificationProps {
     id: string;
-    title?: string;
     description: string;
+    extra?: Record<string, any>;
 }
 
 /**
@@ -41,12 +42,13 @@ interface NotificationProps {
  *
  * @param props Notification component props
  */
-export const Notification = (props: NotificationProps) => {
+export const Mv3Notification = (props: NotificationProps) => {
     const [notificationOnClose, setNotificationOnClose] = useState(false);
 
-    const { id, title, description } = props;
-
     const { uiStore } = useContext(rootStore);
+
+    const { id, description, extra } = props;
+    const isNotificationWithLink = extra?.link && typeof extra?.link === 'string';
 
     const displayTimeoutAnimationMs = 5000;
     const displayTimeoutMs = 5300;
@@ -57,7 +59,7 @@ export const Notification = (props: NotificationProps) => {
         }, displayTimeoutAnimationMs);
 
         const displayTimeout = setTimeout(() => {
-            uiStore.removeNotification(id);
+            uiStore.removeMv3Notification(id);
         }, displayTimeoutMs);
 
         return () => {
@@ -66,31 +68,50 @@ export const Notification = (props: NotificationProps) => {
         };
     }, [id, uiStore]);
 
-    const notificationClassnames = classnames('notification', {
-        'notification--close': notificationOnClose,
-    });
+    const notificationClassnames = classnames(
+        'mv3-notification',
+        { 'mv3-notification--close': notificationOnClose },
+    );
 
-    const close = () => {
+    const handleCloseClick = () => {
         setNotificationOnClose(true);
         setTimeout(() => {
-            uiStore.removeNotification(id);
+            uiStore.removeMv3Notification(id);
         }, 300);
+    };
+
+    // TODO: Refactor this code and extract click handler from general
+    // notification component.
+    const handleRuleLimitsClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        messenger.openRulesLimitsTab();
+        handleCloseClick();
     };
 
     return (
         <div className={notificationClassnames}>
-            <Icon id="#info" classname="notification__icon notification__icon--info" />
-            <div className="notification__message">
-                {title && <div className="notification__title">{title}</div>}
-                <div className="notification__description">{description}</div>
+            <Icon
+                id="#info"
+                classname="icon--24 left-icon"
+            />
+            <div className="mv3-notification__content">
+                <p>{description}</p>
+                { isNotificationWithLink && (
+                    <button type="button" onClick={handleRuleLimitsClick}>
+                        {extra.link}
+                    </button>
+                )}
             </div>
             <button
+                aria-label="close"
                 type="button"
-                aria-label="Close"
-                className="button notification__close"
-                onClick={close}
+                className="mv3-notification__close"
+                onClick={handleCloseClick}
             >
-                <Icon id="#cross" classname="notification__icon notification__icon--close" />
+                <Icon
+                    id="#cross-gray"
+                    classname="icon--24"
+                />
             </button>
         </div>
     );

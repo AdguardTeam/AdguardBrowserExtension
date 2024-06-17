@@ -32,16 +32,19 @@ import type { RootStore } from './RootStore';
  */
 type Notification = {
     id: string;
-    title: string;
+    title?: string;
     description: string;
 };
 
 /**
- * Set notification input object.
+ * MV3 notification object.
  */
-type NotificationInput = {
-    description: string;
-} & Partial<Omit<Notification, 'description'>>;
+type Mv3Notification = Notification & {
+    /**
+     * Some additional data, e.g. links.
+     */
+    extra?: Record<string, any>;
+};
 
 class UiStore {
     /**
@@ -57,6 +60,14 @@ class UiStore {
         this.setShowLoader = this.setShowLoader.bind(this);
     }
 
+    /**
+     * Notifications in new design.
+     */
+    @observable mv3Notifications: Mv3Notification[] = [];
+
+    /**
+     * Notifications in old design.
+     */
     @observable notifications: Notification[] = [];
 
     /**
@@ -67,7 +78,7 @@ class UiStore {
     private loaderStart: number | null = null;
 
     @action
-    addNotification({ title = '', description }: NotificationInput) {
+    addNotification({ title = '', description }: Omit<Notification, 'id'>) {
         const id = nanoid();
         this.notifications.push({
             id,
@@ -80,6 +91,24 @@ class UiStore {
     @action
     removeNotification(id: string) {
         this.notifications = this.notifications
+            .filter((notification) => notification.id !== id);
+    }
+
+    @action
+    addMv3Notification({ title = '', description, extra }: Omit<Mv3Notification, 'id'>) {
+        const id = nanoid();
+        this.mv3Notifications.push({
+            id,
+            title,
+            description,
+            extra,
+        });
+        return id;
+    }
+
+    @action
+    removeMv3Notification(id: string) {
+        this.mv3Notifications = this.mv3Notifications
             .filter((notification) => notification.id !== id);
     }
 
