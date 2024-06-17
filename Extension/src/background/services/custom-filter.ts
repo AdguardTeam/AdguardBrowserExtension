@@ -15,7 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { WebNavigation } from 'webextension-polyfill';
+
+import browser, { type WebNavigation } from 'webextension-polyfill';
+
+import { executeScript } from 'scripting-service';
 
 import {
     MAIN_FRAME_ID,
@@ -122,7 +125,7 @@ export class CustomFilterService {
         }
 
         try {
-            await browser.tabs.executeScript(tabId, {
+            await executeScript(tabId, {
                 file: `/${SUBSCRIBE_OUTPUT}.js`,
                 runAt: 'document_start',
                 frameId,
