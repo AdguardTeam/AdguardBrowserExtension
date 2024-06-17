@@ -15,7 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import browser from 'webextension-polyfill';
+
+import { executeScript } from 'scripting-service';
 
 import { logger } from '../common/logger';
 import { UserAgent } from '../common/user-agent';
@@ -99,7 +102,7 @@ export class KeepAlive {
         for (const tab of tabs) {
             try {
                 // eslint-disable-next-line no-await-in-loop
-                await browser.tabs.executeScript(tab.id, { code });
+                await executeScript(tab.id, { code });
                 return;
             } catch (e) {
                 logger.error(e);

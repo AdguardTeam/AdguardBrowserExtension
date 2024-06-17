@@ -318,6 +318,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                     __dirname,
                     `../../Extension/src/background/engine/engine-mv${manifestVersion}.ts`,
                 ),
+                'scripting-service': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/services/scripting/scripting-service-mv${manifestVersion}.ts`,
+                ),
                 'rules-limits-service': path.resolve(
                     __dirname,
                     `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`,

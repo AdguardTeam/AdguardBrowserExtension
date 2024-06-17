@@ -15,10 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { getHostname } from 'tldts';
-import browser, { type Tabs } from 'webextension-polyfill';
+import { type Tabs } from 'webextension-polyfill';
 
 import { isHttpRequest } from 'tswebextension';
+
+import { executeScript } from 'scripting-service';
 
 import { UserAgent } from '../common/user-agent';
 import { logger } from '../common/logger';
@@ -127,7 +130,7 @@ export class ContentScriptInjector {
              * from freezing the application when Chrome drops tabs.
              */
             await createPromiseWithTimeout(
-                browser.tabs.executeScript(tabId, {
+                executeScript(tabId, {
                     allFrames: true,
                     file: src,
                 }),
