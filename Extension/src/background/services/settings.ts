@@ -17,6 +17,8 @@
  */
 import browser from 'webextension-polyfill';
 
+import { RulesLimitsService } from 'rules-limits-service';
+
 import {
     MessageType,
     ChangeUserSettingMessage,
@@ -71,6 +73,11 @@ export type GetOptionsDataResponse = {
     },
     filtersMetadata: CategoriesData,
     fullscreenUserRulesEditorIsOpen: boolean,
+    /**
+     * Whether the limit of rules in the user filter is exceeded and browser
+     * changed list of enabled filters.
+     */
+    areFilterLimitsExceeded: boolean,
 };
 
 /**
@@ -147,6 +154,7 @@ export class SettingsService {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
+            areFilterLimitsExceeded: RulesLimitsService.areFilterLimitsExceeded(),
         };
     }
 

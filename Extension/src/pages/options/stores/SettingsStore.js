@@ -48,6 +48,7 @@ import {
     TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
 } from '../../../common/constants';
+import { translator } from '../../../common/translators/translator';
 
 const savingAllowlistService = createSavingService({
     id: 'allowlist',
@@ -280,6 +281,15 @@ class SettingsStore {
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });
+
+        if (data.areFilterLimitsExceeded) {
+            this.rootStore.uiStore.addMv3Notification({
+                description: translator.getMessage('popup_limits_exceeded_warning'),
+                extra: {
+                    link: translator.getMessage('options_rule_limits'),
+                },
+            });
+        }
     }
 
     @action

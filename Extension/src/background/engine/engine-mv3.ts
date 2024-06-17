@@ -104,6 +104,12 @@ export class Engine implements TsWebExtensionEngine {
 
         await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
 
+        // For popup and options page we need to show a warning if the user exceeds the limit.
+        // Notification in popup can be shown only after the popup is opened -
+        // popup will request current status on each opening.
+        // Notification on the options page can be shown while options page is
+        // open - so that options will request current status on each
+        // listeners.RequestFilterUpdated event.
         if (RulesLimitsService.areFilterLimitsExceeded()) {
             toasts.showRuleLimitsAlert();
         }

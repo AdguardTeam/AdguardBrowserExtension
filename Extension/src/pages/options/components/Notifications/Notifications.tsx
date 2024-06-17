@@ -25,6 +25,10 @@ import { Notification } from './Notification';
 
 import './notifications.pcss';
 
+/**
+ * TODO: Use only one type of notifications (now we have MV3 notifications
+ * about limits and old notifications about filters changes).
+ */
 export const Notifications = observer(() => {
     const { uiStore } = useContext(rootStore);
 

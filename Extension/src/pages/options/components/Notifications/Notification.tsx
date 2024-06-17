@@ -32,7 +32,7 @@ import { Icon } from '../../../common/components/ui/Icon';
  */
 interface NotificationProps {
     id: string;
-    title: string;
+    title?: string;
     description: string;
 }
 
@@ -81,8 +81,7 @@ export const Notification = (props: NotificationProps) => {
         <div className={notificationClassnames}>
             <Icon id="#info" classname="notification__icon notification__icon--info" />
             <div className="notification__message">
-                {title.length > 0
-                    && <div className="notification__title">{title}</div>}
+                {title && <div className="notification__title">{title}</div>}
                 <div className="notification__description">{description}</div>
             </div>
             <button
