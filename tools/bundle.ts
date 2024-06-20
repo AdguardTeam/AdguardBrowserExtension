@@ -84,6 +84,7 @@ const devPlan = [
 const betaPlan = [
     copyExternals,
     bundleChrome,
+    bundleChromeMv3,
     bundleChromeCrx,
     bundleEdge,
     buildInfo,
