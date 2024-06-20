@@ -69,9 +69,6 @@ export const enum AntibannerGroupsId {
     LanguageFiltersGroupId = 7,
 }
 
-// https://github.com/AdguardTeam/FiltersRegistry/blob/4528f7ae6b38aec90111a27efb0a7e0958d0cf37/tags/metadata.json#L40
-export const RECOMMENDED_TAG_ID = 10;
-
 // TODO: Add types checking for messages payload, because it many messages data
 // are not used in the fronted code, except FiltersUpdateCheckReady and FullscreenUserRulesEditorUpdated.
 export enum NotifierType {

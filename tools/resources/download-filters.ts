@@ -39,6 +39,7 @@ import {
     ADGUARD_FILTERS_IDS,
     LOCAL_METADATA_FILE_NAME,
     LOCAL_I18N_METADATA_FILE_NAME,
+    RECOMMENDED_TAG_ID,
 } from '../../constants';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
@@ -208,13 +209,13 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
 };
 
 /**
- * Returns all filter ids from the metadata file.
+ * Returns **recommended** filter ids from the metadata file.
  *
  * @param metadataContent Metadata file content.
  *
  * @returns Array of filter ids as strings.
  */
-const getAllFiltersIds = (metadataContent: string): string[] => {
+const getRecommendedFiltersIds = (metadataContent: string): string[] => {
     let filters: RegularFilterMetadata[] = [];
     try {
         filters = JSON.parse(metadataContent).filters;
@@ -222,14 +223,22 @@ const getAllFiltersIds = (metadataContent: string): string[] => {
         cliLog.error('Failed to parse filters metadata');
     }
 
-    return filters.map((filter) => String(filter.filterId));
+    const filterIds: string[] = [];
+
+    filters.forEach((filter) => {
+        if (filter.tags.includes(RECOMMENDED_TAG_ID)) {
+            filterIds.push(String(filter.filterId));
+        }
+    });
+
+    return filterIds;
 };
 
 /**
  * Prepares filters for chromium-mv3:
  * 1. Downloads chromium filters metadata and parses it to get all filter ids.
  * 2. Downloads chromium i18n metadata.
- * 3. Downloads all chromium filters and stores them in the chromium-mv3 folder.
+ * 3. Downloads only **recommended** chromium filters and stores them in the chromium-mv3 folder.
  */
 const downloadAndPrepareMv3Filters = async () => {
     const chromiumFiltersMetadata = await downloadFilter(
@@ -244,11 +253,11 @@ const downloadAndPrepareMv3Filters = async () => {
         AssetsFiltersBrowser.ChromiumMv3,
     );
 
-    const chromiumFiltersIds = getAllFiltersIds(chromiumFiltersMetadata);
+    const filtersIds = getRecommendedFiltersIds(chromiumFiltersMetadata);
 
     // eslint-disable-next-line no-restricted-syntax
-    for (let i = 0; i < chromiumFiltersIds.length; i += 1) {
-        const filterId = chromiumFiltersIds[i];
+    for (let i = 0; i < filtersIds.length; i += 1) {
+        const filterId = filtersIds[i];
         if (!filterId) {
             continue;
         }

@@ -1,15 +1,15 @@
-! Checksum: 4WU41ZNtge1Upa62H6nx4g
-! Diff-Path: ../patches/233/233-s-1717088678-14400.patch
+! Checksum: feozW3faTeXtoVlgAlSvAA
+! Diff-Path: ../patches/233/233-s-1718485449-14400.patch
 ! Title: Adblock List for Finland
 ! Description: Finnish ad blocking filter list.
-! Version: 2.0.11.1
-! TimeUpdated: 2024-05-30T17:01:55+00:00
+! Version: 2.0.11.5
+! TimeUpdated: 2024-06-15T21:01:38+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Adblock List for Finland
 ! Description: Finnish adblock list
 ! Expires: 4 days
-! Last modified: Thu, 30 May 2024 16:50:51 +0000
+! Last modified: Sat, 15 Jun 2024 20:35:24 +0000
 ! Homepage: https://github.com/finnish-easylist-addition/finnish-easylist-addition
 ! License: https://unlicense.org/
 ! Raportoi mainoksenestoon liittyvistä ongelmista tai estämättömistä mainoksista täällä / Please report adblocking related issues or unblocked ads at:
@@ -107,6 +107,8 @@ mtv.fi,mtvuutiset.fi##.visit-advertiser-link
 ||cloudfront.net/creatives/assets/*.mp4$media,redirect=noopmp3-0.1s,domain=mtv.fi|mtvuutiset.fi
 ||fi-mtv3.videoplaza.tv/proxy/distributor/*&xpb=1$xmlhttprequest,important,domain=mtv.fi|mtvuutiset.fi
 @@||fwmrm.net/ad/g/*mtv$xmlhttprequest,domain=mtv.fi|mtvuutiset.fi
+! for mobile, only works for short videos // disabled, seems to cause issues after all
+! mtv.fi,mtvuutiset.fi##+js(m3u-prune, .mp4, yospace.com)
 ! Waiting for EP to support uBO filters as well
 ! https://github.com/finnish-easylist-addition/finnish-easylist-addition/issues/433
 muropaketti.com#$#body.noImages .content img { display: inline-block !important }
@@ -1578,6 +1580,10 @@ classic.nettiauto.com,www.nettiauto.com#@##adv
 @@||adobedtm.com^$script,domain=verkkopalvelu.turva.fi
 ! To fix the opening of dna.fi product links on hinta.fi
 @@||track.adform.net/*dna.fi/$document,domain=track.adform.net
+! To fix the opening of cdon.fi product links on kivasiivous.fi
+@@||clk.tradedoubler.com/click*cdon.fi$document,domain=clk.tradedoubler.com
+! To fix the opening of coolshop.fi product links on kivasiivous.fi
+@@||ad.doubleclick.net/ddm/clk/*coolshop.fi/tuote/$document,domain=ad.doubleclick.net
 ! Unbreak netstat.ayy.fi
 @@||netstat.ayy.fi^
 @@leiki.com/mtv3/mwidget$domain=mtvuutiset.fi
