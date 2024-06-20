@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+import { RECOMMENDED_TAG_ID } from '../../../../../constants';
 import { UserAgent } from '../../../common/user-agent';
-import { RECOMMENDED_TAG_ID } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,

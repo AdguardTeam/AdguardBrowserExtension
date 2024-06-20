@@ -24,6 +24,7 @@ import {
     runInAction,
 } from 'mobx';
 
+import { RECOMMENDED_TAG_ID } from '../../../../../constants';
 import { logger } from '../../../common/logger';
 import {
     createSavingService,
@@ -44,7 +45,6 @@ import { optionsStorage } from '../options-storage';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
-    RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
 } from '../../../common/constants';

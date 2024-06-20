@@ -1,14 +1,14 @@
-! Checksum: knzxtHLxFNJ3yu+ONR/Zsg
-! Diff-Path: ../patches/249/249-s-1716570237-14400.patch
+! Checksum: X+KlbU4xhPSl9+1qMJP6vw
+! Diff-Path: ../patches/249/249-s-1718874290-14400.patch
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.50
-! TimeUpdated: 2024-05-24T17:01:57+00:00
+! Version: 2.0.7.52
+! TimeUpdated: 2024-06-20T09:02:16+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! OriginalVersion: 24May2024v3
+! OriginalVersion: 20June2024v1
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -222,6 +222,7 @@ finn.no##.ads__unit--banner
 bt.no##div[class^=article-wrapper-] > div[class^=_]
 nettavisen.no##amedia-include[param-editionid=reklame]:upward(1)
 sundhedslex.dk##.boxl
+costume.no##.teaser--link:has(.teaser__cat--sponsorlabel)
 mytastenor.com,mytastednk.com##.affiliate
 itavisen.no##.td-adspot-title
 byggfakta.no##.sponsor-row
@@ -270,6 +271,16 @@ canariajournalen.no##.ad-separator-top
 1819.is,finna.is##.augl
 gamer.no##.col-12:has(> betting-matchup)
 eyjar.net##.hausad
+baeredygtigtfiskeri.dk##div[data-element_type=widget][data-widget_type="search-form.default"] ~ div[data-element_type=widget][data-widget_type="image.default"]
+baeredygtigtfiskeri.dk##div[data-element_type=widget][data-widget_type="search-form.default"] ~ div[data-element_type=widget][data-widget_type="heading.default"]:has(+ div[data-widget_type="image.default"])
+baeredygtigtfiskeri.dk##section.elementor-top-section:has-text(/\s\sAnnoncer?\s\s/i) + section.elementor-top-section:has(.elementor-image > [loading=lazy])
+baeredygtigtfiskeri.dk##section.elementor-top-section:has-text(/\s\sAnnoncer?\s\s/i):has(+ section.elementor-top-section .elementor-image > [loading=lazy])
+fiskerforum.dk##section[class*=_slider]:has([class*=banner-ads])
+fiskerforum.dk##.elementor-widget-text-editor:has-text(/\s\sANNONCER\s\s/)
+fiskerforum.dk##div[data-elementor-type=wp-post] section[class*=_slider]:has(.elementor-size-default > a)
+fiskerforum.dk##section:has(.elementor-row > div:only-of-type div[id*=ezoic])
+netnatur.dk##.widget:has(.g-single)
+europamester.dk##div:has(> div[id^=cncpt-])
 musikknyheter.no##.centered:not(#toTop)
 itavisen.no,tvguide.dk##div[id^=ad-]
 mbl.is##.col-sm-6.col-12:has(.augl):not(:has(.fluid))
@@ -944,6 +955,7 @@ madbanditten.dk##.madbanditten-widget
 gunnarandreassen.com##a[href*=dreamz]
 midtsiden.no##main > div > div:not([class])
 journalisten.dk#$#.article { padding-bottom: 10px !important }
+datamaskin.biz##.ad2
 latterkula.no##a[title*=spill]
 kundeavisogtilbud.no,tilbudsaviseronline.dk##.anchor-wrapper
 fcbarcelona.dk##.bluebox.custom
@@ -981,6 +993,8 @@ valutakurser.dk##.bottom_banner_div
 vg.no##div[id*=-netboard_article- i]
 hardwareonline.dk##.centerfull
 gamer.no##div[data-track-visibility]
+arto.dk##div[style^="margin-bottom: "]:has(> iframe)
+arto.dk##div[style^="margin-bottom: "]:has(> iframe) + div[style^="margin:"]
 fcbarcelona.dk##.bluebox:has([src*=bet365])
 magasinetskolen.dk##.region-leaderboard
 aftenposten.no###superright-side
@@ -1199,6 +1213,7 @@ gamereactor.*##.external_div_videoAd
 gamereactor.*###grtvbelt_Sponsored:upward(1)
 gamereactor.*##.ad_interscroller:upward(.wrapper)
 sjoborg.no##div[data-debuglabel=_app]
+gulesider.no##div.place-items-center.grid:has([data-adunitid])
 ! — — — — — — — — —
 ! 🇳🇴: Oppføringer for minst 3 nettsteder
 ! 🇬🇧: Entries for at least 3 websites
@@ -1637,28 +1652,29 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||ytresogn.no/wp-content/uploads/2020/02/Ytre_718_360_2.jpg^
 ||gamereactor.*/ads^
 ||gamereactor.*/exclusive.json^
+||datamaskin.biz/ad/
 ! — — — — — — —
 ! 🇳🇴: Filtjener- eller nettstedsspesifikke oppføringer med kilder
 ! 🇳🇴🏞: Filtenar- eller nettstadsspesifikke oppføringar med kildar
 ! 🇩🇰: Filserver- eller webstedsspecifikke indførsler med kilder
 ! 🇬🇧: Fileserver or site-specific blocking rules with sources
-! bilasolur.is (03/05/2020)
+! bilasolur•is (03/05/2020)
 /lykill_banner$image
-! bt.no
+! bt•no
 ||finn.no/distribution-carousel?$object,third-party
 ! https://newsbreak.dk/a01-problemer-hos-tdc-maaske-kan-du-ikke-ringe-01072020/
 ||images.sprinklecontent.com/*.amazonaws.com%2Fimages%$image
 ! https://github.com/AdguardTeam/AdguardFilters/issues/67358#issuecomment-724888304
 ||gfx.no^*/refererPromo$script,stylesheet
-! buildingsupply.no, maskinregisteret.no, metalsupply.no, plastforum.no
+! buildingsupply•no, maskinregisteret•no, metalsupply•no, plastforum•no
 ||f.nordiskemedier.dk/*.gif^
-! building-supply.dk
+! building-supply•dk
 ||f.nordiskemedier.dk/banner^
-! metalsupply.no, licitationen.dk
+! metalsupply•no, licitationen•dk
 /://f\.nordiskemedier\.dk/2[a-z0-9]{12,}\.(jpg|png|jpeg)/$third-party
-! viivilla.no (10/11/2020)
+! viivilla•no (10/11/2020)
 ||bcm.interactives.dk/script^$third-party
-! adressa.no (10/11/2020)
+! adressa•no (10/11/2020)
 ||static.polarismedia.no/*/cxense.js
 ! https://github.com/uBlockOrigin/uAssets/issues/13661 (11/06/2022)
 ||freewheel-mtgx-tv.akamaized.net^$media,domain=embed.viaplay.com,redirect=noopmp3-0.1s
@@ -1666,6 +1682,8 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||finn.no/distribution-front/external/carousel^$subdocument,third-party
 ! https://github.com/DandelionSprout/adfilt/issues/983
 .no/api/unit-image?config=$image
+! arto•dk
+||artodata.net/site/ads/$subdocument
 ! — — — — —
 ! 🇳🇴: Generelle oppføringer med kilder
 ! 🇬🇧: Generic entries that have sources
@@ -1898,7 +1916,7 @@ vafo.dk##.adform-flexblock
 ! bt.no, byas.no, aftenbladet.no (30/10/2020)
 ##.vertical-x1-ad > .column--big:not(body,:empty)
 ! costume.no, costume.dk (09/11/2020)
-##.grid > div[class=flow-banner]:not(body,:empty)
+##.grid > div[class=flow-banner]:not(body)
 ! boligpluss.no (09/11/2020), women.dk
 ##.wg-banner:not(html,body,:empty)
 ! ytresogn.no (16/12/2020)
@@ -1972,6 +1990,8 @@ innherred.no##.master.x10
 rbkweb.no##font > table:first-of-type
 !+ NOT_OPTIMIZED
 baadmagasinet.dk##.article-bottom .qx-inner > .qx-section:last-of-type
+! Should not have ":not" + ":empty" added to it due to costume.no
+##.bonnier-ad:not(html,body)
 ! — — — — — — — — —
 ! 🇳🇴: Hovedsaklig for AdGuard
 ! 🇳🇴🏞: Huvudsakleg for AdGuard
@@ -2163,6 +2183,7 @@ startsiden.no##div[class^=nyttig__tippingHeader__]
 ||cloudfront.net/v*/Liveoddsen.aspx^$domain=vglive.no
 abcnyheter.no##div + section[class*=" o-section__between-layout"]
 startsiden.no##a[id^=desked-section][data-orig-url]
+.cloudfront.net/oddsen^$subdocument,third-party,domain=~norsk-tipping.no|~tipster.no
 ! nidaros.no (02/12/2021)
 ##.sportspill-container[href*=lotto]:not(html,body,:empty)
 ! h-avis.no (11/12/2023)
@@ -2778,7 +2799,7 @@ fla.de##.index-banner
 /zone?pub
 ! Various Android apps
 ! Other entries that are «AdGuard syntax»-specific
-! Last updated: 18April2024v1-Extension
+! Last updated: 20June2024v2-Extension
 ! 🇳🇴: ——— Vindusviskere for betalte artikler (sånn at de nederste linjene i en forhåndsvisning ikke toner ut) ———
 ! Takk til THEtomaso (https://github.com/THEtomaso) for de fleste av disse oppføringene.
 ! 🇩🇰: ——— Vinduesviskere for betalte artikler (så de sidste par linjer i en forhåndsvisning ikke falder ud) ———
@@ -2805,7 +2826,7 @@ vg.no##p[data-test-tag=lead-text] ~ p[class] ~ div[class]:not(.undefined):not([c
 borsen.dk#$#.paywall { top: 0px !important }
 borsen.dk##.indent-wrapper > .overlay
 dknyt.dk,kommunen.dk##.fade-out
-vartoslo.no##.teaserContent::before
+vartoslo.no,minerva.no##.teaserContent::before
 h-a.no,lokal-avisa.no,ringsakern.no,stangeavisa.no##.faded-content::before
 h-a.no,lokal-avisa.no,ringsakern.no,stangeavisa.no#$#.faded-content { max-height: none !important }
 markedsforing.dk##.gradient-y-trans-to-white-95
