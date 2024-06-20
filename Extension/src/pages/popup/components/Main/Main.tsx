@@ -49,8 +49,7 @@ export const Main = observer(() => {
     }
 
     if (!currentSite) {
-        logger.error('Current site is not defined');
-        return null;
+        logger.debug('Current site is not defined yet');
     }
 
     const toggleAllowlistedHandler = __IS_MV3__
@@ -109,7 +108,7 @@ export const Main = observer(() => {
                 </div>
                 <div
                     className="main__header--current-site"
-                    title={currentSite}
+                    title={currentSite || ''}
                 >
                     {currentSite}
                 </div>
