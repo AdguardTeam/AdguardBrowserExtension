@@ -1441,23 +1441,6 @@
 		"priority": 100214
 	},
 	{
-		"id": 486,
-		"action": {
-			"type": "allow"
-		},
-		"condition": {
-			"regexFilter": "/wp-content/plugins/deblocker/",
-			"initiatorDomains": [
-				"exdb.net"
-			],
-			"resourceTypes": [
-				"script"
-			],
-			"isUrlFilterCaseSensitive": false
-		},
-		"priority": 100301
-	},
-	{
 		"id": 487,
 		"action": {
 			"type": "allow"
@@ -3841,6 +3824,60 @@
 		},
 		"condition": {
 			"urlFilter": "||criteo.net/js/ld/publishertag.js",
+			"domainType": "thirdParty",
+			"initiatorDomains": [
+				"shinden.pl"
+			],
+			"resourceTypes": [
+				"script"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100302
+	},
+	{
+		"id": 447,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"regexFilter": "/\\/wp-content\\/uploads\\/[a-zA-Z]{8,}\\/[a-zA-Z]{8,}\\.js/",
+			"initiatorDomains": [
+				"fandroid.com.pl",
+				"crazynauka.pl",
+				"legiobiznes.pl"
+			],
+			"resourceTypes": [
+				"script"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 235
+	},
+	{
+		"id": 486,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"regexFilter": "/wp-content/plugins/deblocker/",
+			"initiatorDomains": [
+				"exdb.net"
+			],
+			"resourceTypes": [
+				"script"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100301
+	},
+	{
+		"id": 790,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"regexFilter": "/^https:\\/\\/www\\.[a-z]{7,14}\\.com\\/[a-z]{1,4}\\.js/",
 			"domainType": "thirdParty",
 			"initiatorDomains": [
 				"shinden.pl"

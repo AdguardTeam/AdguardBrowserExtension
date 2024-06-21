@@ -1,9 +1,9 @@
-! Checksum: M1HMgEWgu9GKoxYcp6OP8A
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1717090509-3600.patch
+! Checksum: 67ByEWtaqspqorzUGmC29Q
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1718958901-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.36
-! TimeUpdated: 2024-05-30T17:33:06+00:00
+! Version: 2.0.3.40
+! TimeUpdated: 2024-06-21T08:32:40+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -30,9 +30,9 @@ bing.com#@#.sb_adTA
 bing.com#@#.b_adPATitleBlock
 bing.com#@#.b_adPATitleBlock + div
 bing.com#@##b_content > main > #b_results > li:not(.b_algo):not(.b_ans):not(.b_mop):not(.b_pag)
-bing.com#@?##b_results > li.b_algo:has(> .b_caption > p:matches-css-before(content: /^(Ad|Ann\.|Annonce|Anúncio|Anzeige|Reklama|Реклама|Reclamă|Publicidade)$/))
+bing.com#@?##b_results > li.b_algo:has(> .b_caption > p:matches-css(before, content: /^(Ad|Ann\.|Annonce|Anúncio|Anzeige|Reklama|Реклама|Reclamă|Publicidade)$/))
 bing.com#@?##b_results > li:has(> h2 + .b_caption > div.b_attribution:not([u]) + p[class])
-bing.com#@?##b_results > .b_algo:has(> .b_caption > .b_attribution:matches-css-before(content: /url\(data:image/))
+bing.com#@?##b_results > .b_algo:has(> .b_caption > .b_attribution:matches-css(before, content: /url\(data:image/))
 bing.com#@#.b_spa_adblock
 @@||r.bat.bing.com/?ld=
 carview.yahoo.co.jp#@##ad_SS
@@ -94,9 +94,10 @@ search.ask.com#@#.sponsoredTop
 search.ask.com#@##sponsoredTop
 yandex.*#@#body:not([data-bem*="pogoda"]) .mini-suggest__popup-content > li[data-type="nav"]
 yandex.*#@?#.content__left > ul#search-result > li:has(> div[data-bem*="organic"] > div.organic__title-wrapper > a[href][data-event-required])
+ya.ru,yandex.*#@$?##search-result > li:has(span:contains(/[PРeеkклaаmмaа]{7}/)) { remove: true; }
 ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="Organic"] > div[class^="VanillaReact"] > a[data-event-required])
-ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div.Organic-Columns > div.Organic-Column > a[href][data-event-required])
-ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="VanillaReact"] > a[href][data-event-required])
+amazon.*#@#div[id^="dp-ads-"]
+amazon.*#@##px-profile_feature_div
 amazon.in,amazon.fr,amazon.co.uk,amazon.de#@#.s-result-list > li[id^="result_"][style*="display: block;"]
 amazon.de#@#div[data-cel-widget="desktop-rhf_SponsoredProductsRemoteRHFSearchEXPSubsK2ClickPagination"]
 amazon.com,amazon.de#@##huc-first-upsell-row
@@ -181,12 +182,11 @@ duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@##ads
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.js-results-ads
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.results--ads
-ecosia.org#@#.results-ads
-ecosia.org#@#.card-ad
-ecosia.org#@#.js-ad
+ecosia.org#@#div[data-test-id="mainline-result-ad"]
+ecosia.org#@#.ad-label
+ecosia.org#@#.ad-result
 presearch.org#@#div[x-data*="keywordAdFirst"]
 suchmaschine.com#@##ypa-top-wrap > iframe[src^="http://partnerads.ysm.yahoo.com/ypa/?"]
-@@||ecosia.org^$elemhide
 qwant.com#@?#.results-container > div.result:has(> div.url > span.info:contains(Annonce))
 lite.qwant.com#@?#.content > article.result:has(> p > span.ad)
 oscobo.com#@?##results-list > .result:has(> a > .cite > .ba)

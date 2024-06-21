@@ -1,5 +1,65 @@
 [
 	{
+		"id": 348,
+		"action": {
+			"type": "modifyHeaders",
+			"responseHeaders": [
+				{
+					"operation": "append",
+					"header": "Content-Security-Policy",
+					"value": "script-src 'self' * blob: data: 'unsafe-inline'"
+				}
+			]
+		},
+		"condition": {
+			"urlFilter": "||walla.co.il^",
+			"initiatorDomains": [
+				"animals.walla.co.il",
+				"b.walla.co.il",
+				"buzzit.walla.co.il",
+				"cars.walla.co.il",
+				"celebs.walla.co.il",
+				"e.walla.co.il",
+				"elections.walla.co.il",
+				"fashion.walla.co.il",
+				"finance.walla.co.il",
+				"food.walla.co.il",
+				"healthy.walla.co.il",
+				"home.walla.co.il",
+				"judaism.walla.co.il",
+				"mag.walla.co.il",
+				"movies.walla.co.il",
+				"nadlan.walla.co.il",
+				"news.walla.co.il",
+				"sports.walla.co.il",
+				"tags.walla.co.il",
+				"tech.walla.co.il",
+				"travel.walla.co.il",
+				"tv-guide.walla.co.il",
+				"viva.walla.co.il",
+				"vod.walla.co.il",
+				"weather.walla.co.il",
+				"www.walla.co.il"
+			],
+			"isUrlFilterCaseSensitive": false,
+			"resourceTypes": [
+				"main_frame",
+				"sub_frame",
+				"stylesheet",
+				"script",
+				"image",
+				"font",
+				"object",
+				"xmlhttprequest",
+				"ping",
+				"media",
+				"websocket",
+				"other"
+			]
+		},
+		"priority": 105
+	},
+	{
 		"id": 33,
 		"action": {
 			"type": "block"
@@ -8821,63 +8881,84 @@
 		"priority": 100151
 	},
 	{
-		"id": 348,
+		"id": 342,
 		"action": {
-			"type": "modifyHeaders",
-			"responseHeaders": [
-				{
-					"operation": "append",
-					"header": "Content-Security-Policy",
-					"value": "script-src 'self' * blob: data: 'unsafe-inline'"
-				}
-			]
+			"type": "block"
 		},
 		"condition": {
-			"urlFilter": "||walla.co.il^",
+			"regexFilter": "/^[a-zA-Z0-9\\-]+\\:\\/+[0-9\\.]+([\\/\\:]|$)/",
+			"domainType": "thirdParty",
 			"initiatorDomains": [
+				"6days.walla.co.il",
 				"animals.walla.co.il",
+				"astrology.walla.co.il",
 				"b.walla.co.il",
 				"buzzit.walla.co.il",
+				"calendar.walla.co.il",
 				"cars.walla.co.il",
 				"celebs.walla.co.il",
 				"e.walla.co.il",
 				"elections.walla.co.il",
+				"euro.walla.co.il",
 				"fashion.walla.co.il",
 				"finance.walla.co.il",
 				"food.walla.co.il",
+				"forums.walla.co.il",
+				"fun.walla.co.il",
 				"healthy.walla.co.il",
 				"home.walla.co.il",
 				"judaism.walla.co.il",
+				"kids.walla.co.il",
 				"mag.walla.co.il",
+				"maps.walla.co.il",
+				"milon.walla.co.il",
 				"movies.walla.co.il",
+				"mundial.walla.co.il",
 				"nadlan.walla.co.il",
 				"news.walla.co.il",
+				"nick.walla.co.il",
+				"olympics.walla.co.il",
+				"search.walla.co.il",
 				"sports.walla.co.il",
 				"tags.walla.co.il",
 				"tech.walla.co.il",
+				"translate.walla.co.il",
 				"travel.walla.co.il",
 				"tv-guide.walla.co.il",
+				"tv.walla.co.il",
+				"usaelections.walla.co.il",
 				"viva.walla.co.il",
 				"vod.walla.co.il",
 				"weather.walla.co.il",
 				"www.walla.co.il"
 			],
-			"isUrlFilterCaseSensitive": false,
 			"resourceTypes": [
-				"main_frame",
 				"sub_frame",
 				"stylesheet",
 				"script",
 				"image",
-				"font",
-				"object",
-				"xmlhttprequest",
-				"ping",
-				"media",
-				"websocket",
-				"other"
-			]
+				"media"
+			],
+			"isUrlFilterCaseSensitive": false
 		},
-		"priority": 105
+		"priority": 165
+	},
+	{
+		"id": 534,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"regexFilter": "/(\\/|\\.)[a-fA-F0-9]{32}\\.com\\.?([\\/\\:]|$)/",
+			"domainType": "thirdParty",
+			"resourceTypes": [
+				"sub_frame",
+				"script",
+				"xmlhttprequest",
+				"media"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 65
 	}
 ]

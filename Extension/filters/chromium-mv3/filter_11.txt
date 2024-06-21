@@ -1,9 +1,9 @@
-! Checksum: jorw9iHRh/0u55n4bTLeNA
-! Diff-Path: ../patches/11/11-s-1718879710-3600.patch
+! Checksum: F+BlyLPWhAaZG4u2w4S5sQ
+! Diff-Path: ../patches/11/11-s-1718976904-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.52.22
-! TimeUpdated: 2024-06-20T10:33:01+00:00
+! Version: 2.0.52.27
+! TimeUpdated: 2024-06-21T13:32:59+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,6 +219,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||s-odx.oleads.com^
 ||mediation.unity3d.com^
 ||cdn-ad.wtzw.com^
 ||appsrv.display.io^
@@ -1124,9 +1125,8 @@ ya.ru##services-feed div.banner
 ! Yandex.Search
 ! Update unblocking rule for the search ads in usefulads.txt
 yandex.*##div[class^="Direct "]
+ya.ru,yandex.*#$?##search-result > li:has(span:contains(/[PРeеkклaаmмaа]{7}/)) { remove: true; }
 ya.ru,yandex.*##div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="Organic"] > div[class^="VanillaReact"] > a[data-event-required])
-ya.ru,yandex.*##div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div.Organic-Columns > div.Organic-Column > a[href][data-event-required])
-ya.ru,yandex.*##div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="VanillaReact"] > a[href][data-event-required])
 !
 ! Yandex.Images
 yandex.*##.justifier__col > div.incut
@@ -2369,6 +2369,10 @@ otakei.otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.sm
 !
 ! SECTION: Regular rules
 !
+m.sex3.com##.banner_bottom
+segodnya.ua##.branding-under-menu
+goloskarpat.info##.w-full:has(> aside.h-\[250px\])
+yahoo.com##div[id^="sda-COMMENT"]
 mine-3m.com##.block-banner-ad
 jionews.com##.swiper-wrapper > .swiper-slide:has(> div[class*=" adCard-"])
 jionews.com##div[class*=" adsMobileView-"]
@@ -3162,8 +3166,9 @@ autos-yahoo-com.cdn.ampproject.org,yahoo.com##.pencilad
 ||my-best.com/anchor_banners/
 my-best.com##.l-wrapper > div > a[href^="https://hb.afl.rakuten.co.jp/ichiba"][target="_blank"]
 the-ans.jp##.banner-list-item > a:not([href*="the-ans.jp"])
-yahoo.co.jp##.sn-videoEmbed__banner
-yahoo.co.jp##.sn-videoEmbed__credit
+baseball.yahoo.co.jp,soccer.yahoo.co.jp,sports.yahoo.co.jp##.sn-videoEmbed__banner
+baseball.yahoo.co.jp,soccer.yahoo.co.jp,sports.yahoo.co.jp##.sn-videoEmbed__credit
+baseball.yahoo.co.jp,soccer.yahoo.co.jp,sports.yahoo.co.jp##.sn-modAppText
 sports.yahoo.co.jp##div[class^="yf-modCommon"]
 itc.ua,ain.ua##amp-wordpress-embed
 comic.pixiv.net##.bottom-0.fixed[style="bottom:env\(safe-area-inset-bottom\)"] > div.w-screen
@@ -6033,7 +6038,7 @@ pnp.de###aufmacher > div[style*="color:#aaa"]
 m.onvista.de##.marketOverviewIntegration
 m.onvista.de##a[href^="https://track.adform.net"]
 m.onvista.de##.ANZEIGE
-rat.xxx,hdxnxx.xxx,zbporn.com,xbabe.com,hdpornfree.xxx,hellporno.net###fltd
+sex3.com,rat.xxx,hdxnxx.xxx,zbporn.com,xbabe.com,hdpornfree.xxx,hellporno.net###fltd
 ||m.txxx.com/sizo^
 upornia.com,hotmovs.com##.topad
 wetter.com##div[id^="ad-fullbanner"]
@@ -7208,6 +7213,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! Yandex ads in mobile apps
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/181356
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181178
 ! https://github.com/AdguardTeam/AdguardFilters/issues/174175
 ! https://github.com/AdguardTeam/AdguardFilters/issues/173122

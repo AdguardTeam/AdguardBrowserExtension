@@ -1,10 +1,11 @@
-! Checksum: vJxxyf2NNJDpgYlJhwpISw
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1716564926-3600.patch
+! Checksum: khMRhb89jMkGUJF5cwkoTA
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1718901305-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.51
-! TimeUpdated: 2024-05-24T15:33:28+00:00
+! Version: 2.0.8.62
+! TimeUpdated: 2024-06-20T16:33:10+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=cstrackid
 /?affijet-click=$removeparam
 $removeparam=btag
 $removeparam=jmtyClId
@@ -228,6 +229,23 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||email1.io^$removeparam=aid
+||blogmura.com^$removeparam=p_cid
+||nvidia.com^$removeparam=jso
+||booking.com^$removeparam=aid
+||nytimes.com^$removeparam=smid
+||nytimes.com^$removeparam=referringSource
+||nytimes.com^$removeparam=sgrp
+||nytimes.com^$removeparam=impression_id
+||shimotsuke.co.jp^$removeparam=rankinghour
+||shimotsuke.co.jp^$removeparam=top
+||shimotsuke.co.jp^$removeparam=newsletter
+||shimotsuke.co.jp^$removeparam=relatedarticle
+||shimotsuke.co.jp^$removeparam=ref
+||boncharge.com^$removeparam=shpxid
+||plarium.com/landings/$removeparam
+||lancasterarchery.com^$removeparam=af_lnk
+||lancasterarchery.com^$removeparam=dt_id
 ||lenta.ru^$removeparam=es
 ||finance.yahoo.co.jp^$removeparam=cpt_m
 ||finance.yahoo.co.jp^$removeparam=cpt_n
@@ -712,6 +730,10 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||tiktok.com^$removeparam=share_app_id
 ||tiktok.com^$removeparam=share_author_id
 ||tiktok.com^$removeparam=tt_from
+||tiktok.com^$removeparam=_d
+||tiktok.com^$removeparam=share_link_id
+||tiktok.com^$removeparam=u_code
+||tiktok.com^$removeparam=_r
 ||tiktok.com/@*/video/*$removeparam=is_from_webapp
 ||tiktok.com/@*/video/*$removeparam=sender_device
 ||tiktok.com$removeparam=enter_method
@@ -1428,7 +1450,6 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||visit.digidip.net^$removeparam=/^(ppref|ref|pid)=/
 ||ad.admitad.com^$removeparam=/^subid/
 ||mvideo.ru^$removeparam=/^(_requestid|reff)=/
-||nytimes.com^$removeparam=impression_id
 ||websearch.rakuten.co.jp/Web?$removeparam=ref
 ||rakuten.co.jp^*&trflg=$removeparam=trflg
 ||search.yahoo.co.jp^$removeparam=fr

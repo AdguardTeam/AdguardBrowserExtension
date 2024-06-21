@@ -4916,24 +4916,6 @@
 		"priority": 1
 	},
 	{
-		"id": 2085,
-		"action": {
-			"type": "allow"
-		},
-		"condition": {
-			"regexFilter": "/obj/global/feature/tagCommander/",
-			"initiatorDomains": [
-				"billetlugen.dk",
-				"eventim.no"
-			],
-			"resourceTypes": [
-				"script"
-			],
-			"isUrlFilterCaseSensitive": false
-		},
-		"priority": 100251
-	},
-	{
 		"id": 2089,
 		"action": {
 			"type": "allow"
@@ -12426,6 +12408,50 @@
 			"urlFilter": "||akamai.vgc.no/drfront3^",
 			"resourceTypes": [
 				"image"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 101
+	},
+	{
+		"id": 1674,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"regexFilter": "/://f\\.nordiskemedier\\.dk/2[a-z0-9]{12,}\\.(jpg|png|jpeg)/",
+			"domainType": "thirdParty",
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 2
+	},
+	{
+		"id": 2085,
+		"action": {
+			"type": "allow"
+		},
+		"condition": {
+			"regexFilter": "/obj/global/feature/tagCommander/",
+			"initiatorDomains": [
+				"billetlugen.dk",
+				"eventim.no"
+			],
+			"resourceTypes": [
+				"script"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 100251
+	},
+	{
+		"id": 2461,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"regexFilter": "/^(https?://)?[a-z]{10,12}\\.easy\\.co($|/.*$)/",
+			"resourceTypes": [
+				"main_frame"
 			],
 			"isUrlFilterCaseSensitive": false
 		},

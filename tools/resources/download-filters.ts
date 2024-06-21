@@ -254,6 +254,7 @@ const downloadAndPrepareMv3Filters = async () => {
     );
 
     const filtersIds = getRecommendedFiltersIds(chromiumFiltersMetadata);
+    filtersIds.push('10'); // TODO remove this hack later
 
     // eslint-disable-next-line no-restricted-syntax
     for (let i = 0; i < filtersIds.length; i += 1) {

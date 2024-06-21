@@ -1,9 +1,9 @@
-! Checksum: uUocYpRJ2HD5OmVp+5qy+Q
-! Diff-Path: ../patches/8/8-s-1716917727-3600.patch
+! Checksum: 3BRQBiLWdDZVgIPGXqW5KA
+! Diff-Path: ../patches/8/8-s-1718984099-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.2
-! TimeUpdated: 2024-05-28T17:33:15+00:00
+! Version: 2.0.7.7
+! TimeUpdated: 2024-06-21T15:32:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -600,7 +600,10 @@ veto.be###advert-campaign
 rtveen.nl###advertenties
 omroeppenm.nl,rickfm.nl###advertisement
 alle-tests.nl,bloovi.be###advertising
+demorgen.be,parool.nl,trouw.nl,volkskrant.nl###article_paragraph_1
 demorgen.be,humo.be,parool.nl,trouw.nl,volkskrant.nl###article_paragraph_3
+demorgen.be,parool.nl,trouw.nl,volkskrant.nl###article_paragraph_6
+demorgen.be,parool.nl,trouw.nl,volkskrant.nl###article_paragraph_9
 autobahn.eu###avantisTarget
 ciaotutti.nl###b_searchboxInc
 belgiancycling.be,zoekhulp.nl###banner
@@ -1616,6 +1619,8 @@ hardware.info#%#//scriptlet("set-constant", "BannerManager", "undefined")
 !--------------------------------------!
 ! SECTION: Dutch - CSS
 !
+! https://github.com/uBlockOrigin/uAssets/issues/23325#issuecomment-2166894545
+rtl.nl#$#.css-19tp5d5 { max-width: unset !important; margin-right: unset !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178794
 datumprikker.nl#$#.takeover #main #maincontainer { margin-top: 15px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172847
@@ -1687,9 +1692,7 @@ iphoned.nl##article > .no-content-styles:has(> div[data-nosnippet] > div[data-na
 rtl.nl##div[data-adslot-variant]
 bright.nl##body .ad
 nieuwsblad.be##.cba_container_grid
-dumpert.nl#?#.ad--billboardrectangle:upward(3)
-dumpert.nl#?#aside div[id^="ad_"]:upward(2)
-dumpert.nl#?#div[id*="leaderboardwallpaper-"]:upward(3)
+dumpert.nl##div[class^="css-"]:has(> div[class^="css-"]:only-child > .ad)
 402online.com##.bannerblock
 7sur7.be,ad.nl,bd.nl,bndestem.nl,destentor.nl,ed.nl,gelderlander.nl,hln.be,pzc.nl,tubantia.nl##.tile:has(> article.ankeiler--advertisement)
 adultwebmaster.nl##.main-promo-bn-responsive
