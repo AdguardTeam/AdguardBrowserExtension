@@ -36,7 +36,7 @@ export const FiltersInfoMv3 = observer(() => {
     const rulesLimits = settingsStore.rulesLimits;
 
     useEffect(() => {
-        settingsStore.getRulesLimits();
+        settingsStore.getRulesLimitsCounters();
     }, [settingsStore]);
 
     const { staticRulesEnabledCount, dynamicRulesEnabledCount } = rulesLimits;

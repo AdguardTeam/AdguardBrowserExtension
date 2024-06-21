@@ -35,7 +35,7 @@ import '../../../options/components/UserRules/styles.pcss';
 export const FullscreenUserRules = observer(() => {
     const store = useContext(fullscreenUserRulesStore);
 
-    const { uiStore } = useContext(rootStore);
+    const { uiStore: { showLoader } } = useContext(rootStore);
 
     useAppearanceTheme(store.appearanceTheme);
 
@@ -77,9 +77,9 @@ export const FullscreenUserRules = observer(() => {
 
     return (
         <>
-            <Loader showLoader={uiStore.showLoader} />
+            <Loader showLoader={showLoader} />
             <Icons />
-            <UserRulesEditor fullscreen uiStore={uiStore} />
+            <UserRulesEditor fullscreen />
         </>
     );
 });

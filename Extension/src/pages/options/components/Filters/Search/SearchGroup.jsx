@@ -26,22 +26,22 @@ import { Icon } from '../../../../common/components/ui/Icon';
 
 import '../group.pcss';
 
-const renderFilters = (matchedFilters) => {
+const renderFilters = (matchedFilters, groupEnabled) => {
     return matchedFilters
-        .map((filter) => <Filter key={filter.filterId} filter={filter} />);
+        .map((filter) => <Filter key={filter.filterId} filter={filter} groupEnabled={groupEnabled} />);
 };
 
 const SearchGroup = ({
     groupName,
     groupId,
+    groupEnabled,
     filtersToShow,
     groupClickHandler,
     checkboxHandler,
-    checkboxValue,
 }) => {
-    const groupClassName = cn('setting group', { 'group--disabled': !checkboxValue });
+    const groupClassName = cn('setting group', { 'group--disabled': !groupEnabled });
     const filtersClassName = cn('filters', {
-        'filters--disabled': !checkboxValue,
+        'filters--disabled': !groupEnabled,
     });
     return (
         <>
@@ -67,14 +67,15 @@ const SearchGroup = ({
                         id={groupId}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={groupName}
-                        value={checkboxValue}
+                        value={groupEnabled}
                         handler={checkboxHandler}
                         className="group__checkbox"
+                        optimistic={!__IS_MV3__}
                     />
                 </div>
             </div>
             <div className={filtersClassName}>
-                {renderFilters(filtersToShow)}
+                {renderFilters(filtersToShow, groupEnabled)}
             </div>
         </>
     );

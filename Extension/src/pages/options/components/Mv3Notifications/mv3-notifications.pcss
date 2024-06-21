@@ -64,7 +64,6 @@
 
         p {
             margin: 0;
-            color: #fff;
         }
 
         button {
@@ -83,6 +82,11 @@
         background: transparent;
         outline: none;
         border: none;
+        color: var(--gray700);
+
+        @media (prefers-color-scheme: dark) {
+            color: var(--gray300);
+        }
     }
 }
 
@@ -91,13 +95,21 @@
 }
 
 .light-mode {
-    .notification {
+    .mv3-notification {
         background-color: var(--gray900);
+
+        &__close {
+            color: var(--gray700);
+        }
     }
 }
 
 .dark-mode {
-    .notification {
+    .mv3-notification {
         background-color: var(--gray700);
+
+        &__close {
+            color: var(--gray300);
+        }
     }
 }

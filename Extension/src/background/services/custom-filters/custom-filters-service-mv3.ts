@@ -15,43 +15,41 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import browser, { type WebNavigation } from 'webextension-polyfill';
-
-import { executeScript } from 'scripting-service';
+import browser, { WebNavigation } from 'webextension-polyfill';
 
 import {
     MAIN_FRAME_ID,
     isHttpOrWsRequest,
     tabsApi as tsWebExtTabsApi,
-} from '../tswebextension';
-import { SUBSCRIBE_OUTPUT } from '../../../../constants';
-import { NotifierType, BACKGROUND_TAB_ID } from '../../common/constants';
+} from '../../tswebextension';
+import { SUBSCRIBE_OUTPUT } from '../../../../../constants';
+import { NotifierType, BACKGROUND_TAB_ID } from '../../../common/constants';
 import {
     MessageType,
     LoadCustomFilterInfoMessage,
     SubscribeToCustomFilterMessage,
     RemoveAntiBannerFilterMessage,
-} from '../../common/messages';
-import { CustomFilterApi, GetCustomFilterInfoResult } from '../api/filters/custom';
-import { messageHandler } from '../message-handler';
-import { listeners } from '../notifier';
-import { engine } from '../engine';
-import type { CustomFilterMetadata } from '../schema';
+} from '../../../common/messages';
+import { CustomFilterApi, GetCustomFilterInfoResult } from '../../api/filters/custom';
+import { messageHandler } from '../../message-handler';
+import { listeners } from '../../notifier';
+import { engine } from '../../engine';
+import type { CustomFilterMetadata } from '../../schema';
 
 /**
  * Service for processing events with custom filters.
  */
-export class CustomFilterService {
+export class CustomFiltersService {
     /**
      * Init handlers.
      */
     static init(): void {
-        messageHandler.addListener(MessageType.LoadCustomFilterInfo, CustomFilterService.onCustomFilterInfoLoad);
-        messageHandler.addListener(MessageType.SubscribeToCustomFilter, CustomFilterService.onCustomFilterSubscription);
-        messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFilterService.onCustomFilterRemove);
+        messageHandler.addListener(MessageType.LoadCustomFilterInfo, CustomFiltersService.onCustomFilterInfoLoad);
+        // eslint-disable-next-line max-len
+        messageHandler.addListener(MessageType.SubscribeToCustomFilter, CustomFiltersService.onCustomFilterSubscription);
+        messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFiltersService.onCustomFilterRemove);
 
-        browser.webNavigation.onCommitted.addListener(CustomFilterService.injectSubscriptionScript);
+        browser.webNavigation.onCommitted.addListener(CustomFiltersService.injectSubscriptionScript);
     }
 
     /**
@@ -83,7 +81,7 @@ export class CustomFilterService {
             enabled: true,
         });
 
-        engine.debounceUpdate();
+        await engine.update();
 
         listeners.notifyListeners(NotifierType.CustomFilterAdded);
         return filterMetadata;
@@ -125,7 +123,7 @@ export class CustomFilterService {
         }
 
         try {
-            await executeScript(tabId, {
+            await browser.tabs.executeScript(tabId, {
                 file: `/${SUBSCRIBE_OUTPUT}.js`,
                 runAt: 'document_start',
                 frameId,

@@ -47,6 +47,8 @@ export type GetUserRulesEditorDataResponse = {
 
 /**
  * Service for handling user rules: reading, adding, deleting.
+ *
+ * FIXME: Should we add check for MV3 limitations here too?
  */
 export class UserRulesService {
     /**
@@ -146,10 +148,16 @@ export class UserRulesService {
     /**
      * Updates the tswebextension engine on {@link SettingOption.UserFilterEnabled} setting change.
      * This setting can be changed by the switch ui element, so it is important to update the engine config
-     * via debounce function, as this is a heavyweight call.
+     * via debounce function for MV2, as this is a heavyweight call.
+     * For MV3 we should wait for the engine to be ready and then check for
+     * possible exceeding the limits.
      */
-    private static handleEnableStateChange(): void {
-        engine.debounceUpdate();
+    private static async handleEnableStateChange(): Promise<void> {
+        if (__IS_MV3__) {
+            await engine.update();
+        } else {
+            engine.debounceUpdate();
+        }
     }
 
     /**

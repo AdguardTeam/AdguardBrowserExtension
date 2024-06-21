@@ -30,11 +30,27 @@ export const AllowlistSwitcher = observer(() => {
 
     const { AllowlistEnabled } = settings.names;
 
-    const allowlistChangeHandler = async ({ id, data }) => {
+    /**
+     * Check if allowlist can be enabled (due to dynamic rules limit)
+     * and if so, update the setting. Otherwise, sets a specific limit warning to show.
+     *
+     * @param {object} updateSettingData Data to update the setting.
+     * @param {string} updateSettingData.id Setting ID.
+     * @param {boolean} updateSettingData.data New setting value.
+     */
+    const updateAllowlistSetting = async ({ id, data }) => {
+        await settingsStore.updateSetting(id, data);
+
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
+    };
+
+    const allowlistChangeHandler = async (updateSettingData) => {
         await addMinDelayLoader(
             uiStore.setShowLoader,
-            settingsStore.updateSetting,
-        )(id, data);
+            updateAllowlistSetting,
+        )(updateSettingData);
     };
 
     return (
@@ -44,6 +60,7 @@ export const AllowlistSwitcher = observer(() => {
                 type={SETTINGS_TYPES.CHECKBOX}
                 value={settings.values[AllowlistEnabled]}
                 handler={allowlistChangeHandler}
+                optimistic={!__IS_MV3__}
             />
         </>
     );

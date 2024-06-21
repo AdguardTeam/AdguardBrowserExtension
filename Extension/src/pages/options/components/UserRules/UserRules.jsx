@@ -16,16 +16,18 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { MessageType } from '../../../../common/messages';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { HOW_TO_CREATE_RULES_URL } from '../../constants';
+import { DynamicRulesLimitsWarning } from '../Warnings';
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
 
@@ -38,10 +40,21 @@ const UserRules = observer(() => {
         await messenger.sendMessage(MessageType.OpenFullscreenUserRules);
     };
 
+    // When we close fullscreen editor we should update limits warning message.
+    useEffect(() => {
+        const updateLimits = async () => {
+            if (__IS_MV3__ && !settingsStore.isFullscreenUserRulesEditorOpen) {
+                await settingsStore.checkLimitations();
+            }
+        };
+
+        updateLimits();
+    }, [settingsStore, uiStore, settingsStore.isFullscreenUserRulesEditorOpen]);
+
     return (
         <>
             <SettingsSection
-                title={reactTranslator.getMessage('options_userfilter')}
+                title={translator.getMessage('options_userfilter')}
                 id={settingsStore.userFilterEnabledSettingId}
                 mode="smallContainer"
                 description={reactTranslator.getMessage('options_userfilter_description_key', {
@@ -58,18 +71,19 @@ const UserRules = observer(() => {
                 })}
                 inlineControl={<UserRulesSwitcher />}
             />
+            <DynamicRulesLimitsWarning useWrapper />
             {settingsStore.isFullscreenUserRulesEditorOpen
                 ? (
                     <div className="editor__open">
                         <div className="editor__open-title">
-                            {reactTranslator.getMessage('options_user_rules_editor_stub_title')}
+                            {translator.getMessage('options_user_rules_editor_stub_title')}
                         </div>
                         <button
                             type="button"
                             className="button button--m button--green actions__btn"
                             onClick={handleGoToEditorClick}
                         >
-                            {reactTranslator.getMessage('options_user_rules_editor_stub_go_to_editor_button')}
+                            {translator.getMessage('options_user_rules_editor_stub_go_to_editor_button')}
                         </button>
                     </div>
                 )

@@ -50,26 +50,6 @@ import {
 } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
 
-const savingAllowlistService = createSavingService({
-    id: 'allowlist',
-    services: {
-        saveData: async (_, e) => {
-            /**
-             * If saveAllowlist executes faster than MIN_EXECUTION_TIME_REQUIRED_MS we increase
-             * execution time for smoother user experience
-             */
-            const MIN_EXECUTION_TIME_REQUIRED_MS = 500;
-            const start = Date.now();
-            await messenger.saveAllowlist(e.value);
-            const end = Date.now();
-            const timePassed = end - start;
-            if (timePassed < MIN_EXECUTION_TIME_REQUIRED_MS) {
-                await sleep(MIN_EXECUTION_TIME_REQUIRED_MS - timePassed);
-            }
-        },
-    },
-});
-
 /**
  * Sometimes the options page might be opened before the background page is ready to provide data.
  * In this case, we need to retry getting data from the background service.
@@ -129,7 +109,12 @@ const DEFAULT_RULES_LIMITS = {
     staticRulesRegexpsMaxCount: 0,
     expectedEnabledFilters: [],
     actuallyEnabledFilters: [],
+    areFilterLimitsExceeded: false,
 };
+
+/**
+ * @typedef {import('../../common/messages/constants').CustomFilterSubscriptionData} CustomFilterSubscriptionData
+ */
 
 class SettingsStore {
     KEYS = {
@@ -137,6 +122,33 @@ class SettingsStore {
         BLOCK_KNOWN_TRACKERS: 'blockKnownTrackers',
         STRIP_TRACKING_PARAMETERS: 'stripTrackingParameters',
     };
+
+    savingAllowlistService = createSavingService({
+        id: 'allowlist',
+        services: {
+            saveData: async (_, e) => {
+                /**
+                 * If saveAllowlist executes faster than MIN_EXECUTION_TIME_REQUIRED_MS we increase
+                 * execution time for smoother user experience.
+                 *
+                 * TODO: Can we remove this and set minDelayLoader when we call
+                 * saveAllowlist as in the user rules section?
+                 */
+                const MIN_EXECUTION_TIME_REQUIRED_MS = 500;
+                const start = Date.now();
+
+                await messenger.saveAllowlist(e.value);
+
+                const end = Date.now();
+                const timePassed = end - start;
+                if (timePassed < MIN_EXECUTION_TIME_REQUIRED_MS) {
+                    await sleep(MIN_EXECUTION_TIME_REQUIRED_MS - timePassed);
+                }
+
+                await e.callback();
+            },
+        },
+    });
 
     @observable settings = null;
 
@@ -162,7 +174,7 @@ class SettingsStore {
 
     @observable allowlist = '';
 
-    @observable savingAllowlistState = savingAllowlistService.initialState.value;
+    @observable savingAllowlistState = this.savingAllowlistService.initialState.value;
 
     @observable filtersUpdating = false;
 
@@ -199,26 +211,43 @@ class SettingsStore {
         this.updateGroupSetting = this.updateGroupSetting.bind(this);
         this.setAllowAcceptableAdsState = this.setAllowAcceptableAdsState.bind(this);
 
-        savingAllowlistService.onTransition((state) => {
+        this.savingAllowlistService.onTransition((state) => {
             runInAction(() => {
                 this.savingAllowlistState = state.value;
                 if (state.value === SavingFSMState.Saving) {
                     this.allowlistEditorContentChanged = false;
-                    this.rootStore.uiStore.setShowLoader(true);
-                } else {
-                    this.rootStore.uiStore.setShowLoader(false);
                 }
             });
         });
     }
 
     @action
-    async getRulesLimits() {
-        const rulesLimits = await messenger.getRulesLimits();
+    async getRulesLimitsCounters() {
+        const rulesLimits = await messenger.getRulesLimitsCounters();
 
         runInAction(() => {
             this.rulesLimits = rulesLimits;
         });
+    }
+
+    @action
+    // TODO: Maybe add notification show here too?
+    async checkLimitations() {
+        const currentLimitsMv3 = await messenger.getCurrentLimits();
+
+        const uiStore = this.rootStore.uiStore;
+
+        uiStore.setStaticFiltersLimitsWarning(currentLimitsMv3.staticFiltersData);
+        uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
+
+        if (uiStore.dynamicRulesLimitsWarning) {
+            uiStore.addMv3Notification({
+                description: uiStore.dynamicRulesLimitsWarning,
+                extra: {
+                    link: translator.getMessage('options_rule_limits'),
+                },
+            });
+        }
     }
 
     @action
@@ -235,15 +264,6 @@ class SettingsStore {
             data = await getOptionsDataWithRetry();
         } else {
             data = await messenger.getOptionsData();
-        }
-
-        // When some settings is changed by user, the message is sent to the background service.
-        // So after the setting is applied in the background service,
-        // the options page sends another message to get the updated settings.
-        // That's why we need to show the loader until the settings are actually updated.
-        // TODO: should be fixed later AG-33293
-        if (this.rootStore.uiStore.shouldHideLoader()) {
-            this.rootStore.uiStore.setShowLoader(false);
         }
 
         runInAction(() => {
@@ -283,14 +303,7 @@ class SettingsStore {
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });
 
-        if (data.areFilterLimitsExceeded) {
-            this.rootStore.uiStore.addMv3Notification({
-                description: translator.getMessage('popup_limits_exceeded_warning'),
-                extra: {
-                    link: translator.getMessage('options_rule_limits'),
-                },
-            });
-        }
+        return data;
     }
 
     @action
@@ -420,17 +433,17 @@ class SettingsStore {
 
     isAllowAcceptableAdsFilterEnabled() {
         const { SearchAndSelfPromoFilterId } = this.constants.AntiBannerFiltersId;
-        this.isFilterEnabled(SearchAndSelfPromoFilterId);
+        return this.isFilterEnabled(SearchAndSelfPromoFilterId);
     }
 
     isBlockKnownTrackersFilterEnabled() {
         const { TrackingFilterId } = this.constants.AntiBannerFiltersId;
-        this.isFilterEnabled(TrackingFilterId);
+        return this.isFilterEnabled(TrackingFilterId);
     }
 
     isStripTrackingParametersFilterEnabled() {
         const { UrlTrackingFilterId } = this.constants.AntiBannerFiltersId;
-        this.isFilterEnabled(UrlTrackingFilterId);
+        return this.isFilterEnabled(UrlTrackingFilterId);
     }
 
     /**
@@ -480,7 +493,6 @@ class SettingsStore {
     @action
     async updateGroupSetting(groupId, enabled) {
         const recommendedFiltersIds = await messenger.updateGroupStatus(groupId, enabled);
-        await this.getRulesLimits();
 
         runInAction(() => {
             if (groupId === AntibannerGroupsId.OtherFiltersGroupId
@@ -596,6 +608,7 @@ class SettingsStore {
 
         try {
             const groupId = await messenger.updateFilterStatus(filterId, enabled);
+
             // update allow acceptable ads setting
             if (filterId === this.constants.AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
                 this.allowAcceptableAds = enabled;
@@ -644,6 +657,13 @@ class SettingsStore {
         }
     }
 
+    /**
+     * Adds a custom filter but does not enable it.
+     *
+     * @param {CustomFilterSubscriptionData} filter Custom filter data.
+     *
+     * @returns {Promise<number>} Custom filter id.
+     */
     @action
     async addCustomFilter(filter) {
         const newFilter = await messenger.addCustomFilter(filter);
@@ -654,16 +674,12 @@ class SettingsStore {
 
         runInAction(() => {
             this.filters.push(newFilter);
-            /**
-             * Optimistically set the enabled property to true.
-             * The verified state of the filter will be emitted after the engine update.
-             */
-            this.setFilterEnabledState(newFilter.filterId, true);
-
             if (this.searchSelect !== SEARCH_FILTERS.ALL) {
                 this.setSearchSelect(SEARCH_FILTERS.ALL);
             }
         });
+
+        return newFilter.filterId;
     }
 
     @action
@@ -692,14 +708,14 @@ class SettingsStore {
         }
     };
 
-    @action
-    appendAllowlist = async (allowlist) => {
-        await this.saveAllowlist(this.allowlist.concat('\n', allowlist));
-    };
-
-    @action
     saveAllowlist = async (value) => {
-        await savingAllowlistService.send(SavingFSMEvent.Save, { value });
+        return new Promise((resolve, reject) => {
+            try {
+                this.savingAllowlistService.send(SavingFSMEvent.Save, { value, callback: resolve });
+            } catch (e) {
+                reject(e);
+            }
+        });
     };
 
     @action

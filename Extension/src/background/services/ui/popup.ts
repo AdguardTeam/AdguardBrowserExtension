@@ -89,11 +89,16 @@ export class PopupService {
 
         if (tabContext) {
             const hasUserRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
+
+            const areFilterLimitsExceeded = __IS_MV3__
+                ? RulesLimitsService.areFilterLimitsExceeded()
+                : false;
+
             return {
                 frameInfo: FramesApi.getMainFrameData(tabContext),
                 stats: PageStatsApi.getStatisticsData(),
                 settings: SettingsApi.getData(),
-                areFilterLimitsExceeded: RulesLimitsService.areFilterLimitsExceeded(),
+                areFilterLimitsExceeded,
                 options: {
                     showStatsSupported: true,
                     isFirefoxBrowser: UserAgent.isFirefox,

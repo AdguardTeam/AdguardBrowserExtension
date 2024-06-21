@@ -52,7 +52,7 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
-    CustomFilterService,
+    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,
@@ -162,7 +162,7 @@ export class App {
         await FiltersService.init();
 
         // Adds listeners specified for custom filters
-        CustomFilterService.init();
+        CustomFiltersService.init();
 
         // Adds listeners for allowlist events
         AllowlistService.init();

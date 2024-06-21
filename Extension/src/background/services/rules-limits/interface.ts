@@ -79,4 +79,118 @@ export interface IRulesLimits {
      * List of expected enabled filters ids.
      */
     expectedEnabledFilters: number[];
+
+    /**
+     * Whether the limits are exceeded and browser has changed list of enabled filters.
+     */
+    areFilterLimitsExceeded: boolean;
 }
+
+/**
+ * Data for rules count.
+ */
+type CountData = {
+    /**
+     * Number of rules or filters which are trying to be enabled.
+     */
+    current: number;
+
+    /**
+     * Limit of rules or filters.
+     */
+    maximum: number;
+};
+
+/**
+ * Data for invalid result.
+ */
+type InvalidResultData = {
+    /**
+     * Type of the rules.
+     */
+    type: 'static' | 'dynamic';
+
+    /**
+     * Rules count data.
+     */
+    rulesCount?: CountData;
+
+    /**
+     * Regex rules count data.
+     */
+    rulesRegexpsCount?: CountData;
+};
+
+/**
+ * Data for invalid static result.
+ *
+ * At least one of the fields should be present.
+ */
+export type InvalidStaticResultData = InvalidResultData & {
+    /**
+     * Filters count data.
+     */
+    filtersCount?: Partial<CountData> & {
+        /**
+         * Number of filters which should be active since last successful run.
+         */
+        expected?: number;
+    };
+};
+
+/**
+ * Data for invalid dynamic result.
+ *
+ * At least one of the fields should be present.
+ */
+export type InvalidDynamicResultData = InvalidResultData;
+
+/**
+ * Result of static limits check.
+ */
+export type StaticLimitsCheckResult = {
+    /**
+     * Whether the check is successful. If false, the data field should be present.
+     */
+    ok: boolean;
+
+    /**
+     * Data for invalid result.
+     */
+    data?: InvalidStaticResultData;
+};
+
+/**
+ * Result of dynamic limits check.
+ */
+export type DynamicLimitsCheckResult = {
+    /**
+     * Whether the check is successful. If false, the data field should be present.
+     */
+    ok: boolean;
+
+    /**
+     * Data for invalid result.
+     */
+    data?: InvalidDynamicResultData;
+};
+
+/**
+ * Result of dynamic rules limits and static filters limits check in one object.
+ */
+export type Mv3LimitsCheckResult = {
+    /**
+     * Whether the check is successful. If false, the data field should be present.
+     */
+    ok: boolean;
+
+    /**
+     * Data for invalid result of static filters.
+     */
+    staticFiltersData?: InvalidStaticResultData;
+
+    /**
+     * Data for invalid result of dynamic rules.
+     */
+    dynamicRulesData?: InvalidDynamicResultData;
+};

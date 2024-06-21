@@ -83,7 +83,7 @@ export const Notification = () => {
                 onClick={handleCloseClick}
             >
                 <Icon
-                    id="#cross-gray"
+                    id="#cross"
                     classname="icon--24"
                 />
             </button>

@@ -27,7 +27,7 @@ import cn from 'classnames';
 
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
-import { addMinDelayLoaderAndRemove } from '../../../common/components/helpers';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Icon } from '../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../common/constants';
@@ -59,7 +59,7 @@ export const Header = observer(() => {
         await store.changeApplicationFilteringDisabled(false);
     };
 
-    const handleEnableClickWrapper = addMinDelayLoaderAndRemove(
+    const handleEnableClickWrapper = addMinDelayLoader(
         store.setShowLoader,
         handleEnableClick,
     );
@@ -68,7 +68,7 @@ export const Header = observer(() => {
         await store.changeApplicationFilteringDisabled(true);
     };
 
-    const handlePauseClickWrapper = addMinDelayLoaderAndRemove(
+    const handlePauseClickWrapper = addMinDelayLoader(
         store.setShowLoader,
         handlePauseClick,
     );

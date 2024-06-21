@@ -109,7 +109,7 @@ export const Mv3Notification = (props: NotificationProps) => {
                 onClick={handleCloseClick}
             >
                 <Icon
-                    id="#cross-gray"
+                    id="#cross"
                     classname="icon--24"
                 />
             </button>

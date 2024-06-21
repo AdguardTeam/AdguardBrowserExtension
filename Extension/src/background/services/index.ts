@@ -19,7 +19,7 @@ export * from './filtering-log';
 export * from './settings';
 export * from './allowlist';
 export * from './fullscreen-user-rules-editor';
-export * from './custom-filter';
+export * from './custom-filters';
 export * from './userrules';
 export * from './event';
 export * from './ui';

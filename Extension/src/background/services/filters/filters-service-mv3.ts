@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -25,30 +26,21 @@ import {
     type GetIsConsentedFilterMessage,
     MessageType,
     type SetConsentedFiltersMessage,
-} from '../../common/messages';
-import { logger } from '../../common/logger';
-import { SettingOption } from '../schema';
-import { messageHandler } from '../message-handler';
-import { engine } from '../engine';
+} from '../../../common/messages';
+import { logger } from '../../../common/logger';
+import { messageHandler } from '../../message-handler';
+import { engine } from '../../engine';
 import {
     annoyancesConsent,
     Categories,
-    FilterMetadata,
     FiltersApi,
-    FilterUpdateApi,
-    HitStatsApi,
     PageStatsApi,
-    toasts,
-} from '../api';
-import {
-    ContextMenuAction,
-    contextMenuEvents,
-    settingsEvents,
-} from '../events';
-import { listeners } from '../notifier';
+} from '../../api';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
+ *
+ * **MV3 version**.
  */
 export class FiltersService {
     /**
@@ -63,22 +55,10 @@ export class FiltersService {
         messageHandler.addListener(MessageType.DisableFilter, FiltersService.onFilterDisable);
         messageHandler.addListener(MessageType.EnableFiltersGroup, FiltersService.onGroupEnable);
         messageHandler.addListener(MessageType.DisableFiltersGroup, FiltersService.onGroupDisable);
-        messageHandler.addListener(MessageType.RestoreFilters, FiltersService.onRestoreFilters);
-        if (!__IS_MV3__) {
-            messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.manualCheckFiltersUpdate);
-        }
+        messageHandler.addListener(MessageType.RestoreFiltersMv3, FiltersService.onRestoreFilters);
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersService.setConsentedFilters);
         messageHandler.addListener(MessageType.GetIsConsentedFilter, FiltersService.getIsConsentedFilter);
-
-        if (!__IS_MV3__) {
-            contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
-        }
-
-        if (!__IS_MV3__) {
-            settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
-            settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
-        }
     }
 
     /**
@@ -94,14 +74,13 @@ export class FiltersService {
      *
      * @returns Id of the enabled filter group, if it has not been touched before, otherwise returns undefined.
      */
-    private static onFilterEnable(message: AddAndEnableFilterMessage): number | undefined {
+    private static async onFilterEnable(message: AddAndEnableFilterMessage): Promise<number | undefined> {
         const { filterId } = message.data;
 
-        // second arg 'true' is needed to enable not touched group
+        // FiltersService.enableFilter() method's second arg is 'true'
+        // because it is needed to enable not touched group
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2776
-        // TODO: FiltersService.enableFilter is async, and for mv2 it is ok to not await it,
-        // but for mv3 the loader should be shown until the operation is completed so it should be awaited. AG-33293
-        FiltersService.enableFilter(filterId, true);
+        await FiltersService.enableFilter(filterId, true);
 
         const group = Categories.getGroupByFilterId(filterId);
 
@@ -121,15 +100,14 @@ export class FiltersService {
     /**
      * Called at the request to disable filter.
      *
-     * @param message Message of {@link DisableFilterMessage} with filter
-     * id to disable.
+     * @param message Message of {@link DisableFilterMessage} with filter id to disable.
      */
     private static async onFilterDisable(message: DisableFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
         FiltersApi.disableFilters([filterId]);
 
-        engine.debounceUpdate();
+        await engine.update();
     }
 
     /**
@@ -144,7 +122,7 @@ export class FiltersService {
      *
      * @returns Array of recommended filters on first group activation.
      */
-    private static onGroupEnable(message: EnableFiltersGroupMessage): number[] | undefined {
+    private static async onGroupEnable(message: EnableFiltersGroupMessage): Promise<number[] | undefined> {
         const { groupId } = message.data;
 
         const group = Categories.getGroupState(groupId);
@@ -155,14 +133,16 @@ export class FiltersService {
         }
 
         if (group.touched) {
-            FiltersService.enableGroup(groupId);
+            await FiltersService.enableGroup(groupId);
             return;
         }
 
         // If this is the first time the group has been activated - load and
         // enable the recommended filters.
         const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
-        FiltersService.enableGroup(groupId, recommendedFiltersIds);
+
+        await FiltersService.enableGroup(groupId, recommendedFiltersIds);
+
         return recommendedFiltersIds;
     }
 
@@ -176,7 +156,8 @@ export class FiltersService {
         const { groupId } = message.data;
 
         Categories.disableGroup(groupId);
-        engine.debounceUpdate();
+
+        await engine.update();
     }
 
     /**
@@ -186,42 +167,6 @@ export class FiltersService {
         const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
         await FiltersApi.loadAndEnableFilters(expectedEnabledFilters);
         await engine.update();
-    }
-
-    /**
-     * Called when requesting an force update for filters.
-     */
-    private static async manualCheckFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
-        try {
-            const updatedFilters = await FilterUpdateApi.autoUpdateFilters(true);
-
-            toasts.showFiltersUpdatedAlertMessage(true, updatedFilters);
-            listeners.notifyListeners(listeners.FiltersUpdateCheckReady, updatedFilters);
-
-            return updatedFilters;
-        } catch (e) {
-            toasts.showFiltersUpdatedAlertMessage(false);
-            listeners.notifyListeners(listeners.FiltersUpdateCheckReady);
-        }
-    }
-
-    /**
-     * Called at the request to use optimized filters.
-     */
-    private static async onOptimizedFiltersSwitch(): Promise<void> {
-        await FiltersApi.reloadEnabledFilters();
-        engine.debounceUpdate();
-    }
-
-    /**
-     * Called when prompted to disable or enable hit collection.
-     *
-     * @param value Desired collecting status.
-     */
-    private static async onCollectHitsSwitch(value: boolean): Promise<void> {
-        if (value) {
-            HitStatsApi.cleanup();
-        }
     }
 
     /**
@@ -270,7 +215,7 @@ export class FiltersService {
      */
     private static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
         await Categories.enableGroup(groupId, recommendedFiltersIds);
-        engine.debounceUpdate();
+        await engine.update();
     }
 
     /**
@@ -282,6 +227,6 @@ export class FiltersService {
      */
     private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
         await FiltersApi.loadAndEnableFilters([filterId], true, shouldEnableGroup);
-        engine.debounceUpdate();
+        await engine.update();
     }
 }
