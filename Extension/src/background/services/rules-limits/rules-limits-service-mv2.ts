@@ -42,7 +42,7 @@ export class RulesLimitsService {
      * @throws Not implemented error.
      */
     public static areFilterLimitsExceeded(): boolean {
-        throw new Error('Not implemented');
+        throw new Error('areFilterLimitsExceeded Not implemented');
     }
 }
 

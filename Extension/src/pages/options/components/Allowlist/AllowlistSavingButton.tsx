@@ -27,7 +27,7 @@ type AllowlistSavingButtonParams = {
     /**
      * Click handler.
      */
-    onClick: () => void;
+    onClick: () => Promise<void>;
 };
 
 export const AllowlistSavingButton = observer(({ onClick }: AllowlistSavingButtonParams) => {

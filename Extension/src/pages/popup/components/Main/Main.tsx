@@ -28,7 +28,7 @@ import {
     COMPARE_URL,
     MainSwitcherMode,
 } from '../../constants';
-import { addMinDelayLoaderAndRemove } from '../../../common/components/helpers';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 
 import './main.pcss';
 
@@ -53,13 +53,13 @@ export const Main = observer(() => {
     }
 
     const toggleAllowlistedHandler = __IS_MV3__
-        ? addMinDelayLoaderAndRemove(
+        ? addMinDelayLoader(
             store.setShowLoader,
             store.toggleAllowlistedMv3,
         )
         : store.toggleAllowlisted;
 
-    const enableFilteringHandler = addMinDelayLoaderAndRemove(
+    const enableFilteringHandler = addMinDelayLoader(
         store.setShowLoader,
         async () => {
             await store.changeApplicationFilteringDisabled(false);

@@ -322,6 +322,15 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                     __dirname,
                     `../../Extension/src/background/services/scripting/scripting-service-mv${manifestVersion}.ts`,
                 ),
+                'filters-service': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`,
+                ),
+                'custom-filters-service': path.resolve(
+                    __dirname,
+                    // eslint-disable-next-line max-len
+                    `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`,
+                ),
                 'rules-limits-service': path.resolve(
                     __dirname,
                     `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`,

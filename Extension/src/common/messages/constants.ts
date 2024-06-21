@@ -16,10 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Windows } from 'webextension-polyfill';
+import { z } from 'zod';
 
 import { ForwardFrom } from '../forward';
 import { SettingOption, Settings } from '../../background/schema';
 import { NotifierType } from '../constants';
+
+import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from './schema';
 
 /**
  * Message types used for message passing between extension contexts
@@ -33,83 +36,86 @@ export type MessageCommonProps = {
 };
 
 export enum MessageType {
-  CreateEventListener = 'createEventListener',
-  RemoveListener = 'removeListener',
-  OpenExtensionStore = 'openExtensionStore',
-  AddAndEnableFilter = 'addAndEnableFilter',
-  ApplySettingsJson = 'applySettingsJson',
-  OpenFilteringLog = 'openFilteringLog',
-  OpenFullscreenUserRules = 'openFullscreenUserRules',
-  ResetBlockedAdsCount = 'resetBlockedAdsCount',
-  ResetSettings = 'resetSettings',
-  GetUserRules = 'getUserRules',
-  SaveUserRules = 'saveUserRules',
-  GetAllowlistDomains = 'getAllowlistDomains',
-  SaveAllowlistDomains = 'saveAllowlistDomains',
-  CheckFiltersUpdate = 'checkFiltersUpdate',
-  DisableFiltersGroup = 'disableFiltersGroup',
-  DisableFilter = 'disableFilter',
-  LoadCustomFilterInfo = 'loadCustomFilterInfo',
-  SubscribeToCustomFilter = 'subscribeToCustomFilter',
-  RemoveAntiBannerFilter = 'removeAntiBannerFilter',
-  GetTabInfoForPopup = 'getTabInfoForPopup',
-  ChangeApplicationFilteringDisabled = 'changeApplicationFilteringDisabled',
-  OpenRulesLimitsTab = 'openRulesLimitsTab',
-  OpenSettingsTab = 'openSettingsTab',
-  OpenAssistant = 'openAssistant',
-  OpenAbuseTab = 'openAbuseTab',
-  OpenSiteReportTab = 'openSiteReportTab',
-  OpenComparePage = 'openComparePage',
-  ResetUserRulesForPage = 'resetUserRulesForPage',
-  RemoveAllowlistDomain = 'removeAllowlistDomainPopup',
-  AddAllowlistDomainPopup = 'addAllowlistDomainPopup',
-  GetStatisticsData = 'getStatisticsData',
-  OnOpenFilteringLogPage = 'onOpenFilteringLogPage',
-  GetFilteringLogData = 'getFilteringLogData',
-  InitializeFrameScript = 'initializeFrameScript',
-  OnCloseFilteringLogPage = 'onCloseFilteringLogPage',
-  GetFilteringInfoByTabId = 'getFilteringInfoByTabId',
-  SynchronizeOpenTabs = 'synchronizeOpenTabs',
-  ClearEventsByTabId = 'clearEventsByTabId',
-  RefreshPage = 'refreshPage',
-  AddUserRule = 'addUserRule',
-  RemoveUserRule = 'removeUserRule',
-  EnableFiltersGroup = 'enableFiltersGroup',
-  NotifyListeners = 'notifyListeners',
-  AddLongLivedConnection = 'addLongLivedConnection',
-  GetOptionsData = 'getOptionsData',
-  ChangeUserSettings = 'changeUserSetting',
-  CheckRequestFilterReady = 'checkRequestFilterReady',
-  OpenThankyouPage = 'openThankYouPage',
-  OpenSafebrowsingTrusted = 'openSafebrowsingTrusted',
-  GetSelectorsAndScripts = 'getSelectorsAndScripts',
-  CheckPageScriptWrapperRequest = 'checkPageScriptWrapperRequest',
-  ProcessShouldCollapse = 'processShouldCollapse',
-  ProcessShouldCollapseMany = 'processShouldCollapseMany',
-  AddFilteringSubscription = 'addFilterSubscription',
-  SetNotificationViewed = 'setNotificationViewed',
-  SaveCssHitsStats = 'saveCssHitStats',
-  GetCookieRules = 'getCookieRules',
-  SaveCookieLogEvent = 'saveCookieRuleEvent',
-  LoadSettingsJson = 'loadSettingsJson',
-  AddUrlToTrusted = 'addUrlToTrusted',
-  SetPreserveLogState = 'setPreserveLogState',
-  GetUserRulesEditorData = 'getUserRulesEditorData',
-  GetEditorStorageContent = 'getEditorStorageContent',
-  SetEditorStorageContent = 'setEditorStorageContent',
-  SetFilteringLogWindowState = 'setFilteringLogWindowState',
-  AppInitialized = 'appInitialized',
-  UpdateTotalBlocked = 'updateTotalBlocked',
-  ScriptletCloseWindow = 'scriptletCloseWindow',
-  ShowRuleLimitsAlert = 'showRuleLimitsAlert',
-  ShowAlertPopup = 'showAlertPopup',
-  ShowVersionUpdatedPopup = 'showVersionUpdatedPopup',
-  UpdateListeners = 'updateListeners',
-  SetConsentedFilters = 'setConsentedFilters',
-  GetIsConsentedFilter = 'getIsConsentedFilter',
-  GetRulesLimits = 'getRulesLimits',
-  ClearRulesLimitsWarning = 'clearRulesLimitsWarning',
-  RestoreFilters = 'restoreFilters',
+    CreateEventListener = 'createEventListener',
+    RemoveListener = 'removeListener',
+    OpenExtensionStore = 'openExtensionStore',
+    AddAndEnableFilter = 'addAndEnableFilter',
+    ApplySettingsJson = 'applySettingsJson',
+    OpenFilteringLog = 'openFilteringLog',
+    OpenFullscreenUserRules = 'openFullscreenUserRules',
+    ResetBlockedAdsCount = 'resetBlockedAdsCount',
+    ResetSettings = 'resetSettings',
+    GetUserRules = 'getUserRules',
+    SaveUserRules = 'saveUserRules',
+    GetAllowlistDomains = 'getAllowlistDomains',
+    SaveAllowlistDomains = 'saveAllowlistDomains',
+    CheckFiltersUpdate = 'checkFiltersUpdate',
+    DisableFiltersGroup = 'disableFiltersGroup',
+    DisableFilter = 'disableFilter',
+    LoadCustomFilterInfo = 'loadCustomFilterInfo',
+    SubscribeToCustomFilter = 'subscribeToCustomFilter',
+    RemoveAntiBannerFilter = 'removeAntiBannerFilter',
+    GetTabInfoForPopup = 'getTabInfoForPopup',
+    ChangeApplicationFilteringDisabled = 'changeApplicationFilteringDisabled',
+    OpenRulesLimitsTab = 'openRulesLimitsTab',
+    OpenSettingsTab = 'openSettingsTab',
+    OpenAssistant = 'openAssistant',
+    OpenAbuseTab = 'openAbuseTab',
+    OpenSiteReportTab = 'openSiteReportTab',
+    OpenComparePage = 'openComparePage',
+    ResetUserRulesForPage = 'resetUserRulesForPage',
+    RemoveAllowlistDomain = 'removeAllowlistDomainPopup',
+    AddAllowlistDomainPopup = 'addAllowlistDomainPopup',
+    GetStatisticsData = 'getStatisticsData',
+    OnOpenFilteringLogPage = 'onOpenFilteringLogPage',
+    GetFilteringLogData = 'getFilteringLogData',
+    InitializeFrameScript = 'initializeFrameScript',
+    OnCloseFilteringLogPage = 'onCloseFilteringLogPage',
+    GetFilteringInfoByTabId = 'getFilteringInfoByTabId',
+    SynchronizeOpenTabs = 'synchronizeOpenTabs',
+    ClearEventsByTabId = 'clearEventsByTabId',
+    RefreshPage = 'refreshPage',
+    AddUserRule = 'addUserRule',
+    RemoveUserRule = 'removeUserRule',
+    EnableFiltersGroup = 'enableFiltersGroup',
+    NotifyListeners = 'notifyListeners',
+    AddLongLivedConnection = 'addLongLivedConnection',
+    GetOptionsData = 'getOptionsData',
+    ChangeUserSettings = 'changeUserSetting',
+    CheckRequestFilterReady = 'checkRequestFilterReady',
+    OpenThankyouPage = 'openThankYouPage',
+    OpenSafebrowsingTrusted = 'openSafebrowsingTrusted',
+    GetSelectorsAndScripts = 'getSelectorsAndScripts',
+    CheckPageScriptWrapperRequest = 'checkPageScriptWrapperRequest',
+    ProcessShouldCollapse = 'processShouldCollapse',
+    ProcessShouldCollapseMany = 'processShouldCollapseMany',
+    AddFilteringSubscription = 'addFilterSubscription',
+    SetNotificationViewed = 'setNotificationViewed',
+    SaveCssHitsStats = 'saveCssHitStats',
+    GetCookieRules = 'getCookieRules',
+    SaveCookieLogEvent = 'saveCookieRuleEvent',
+    LoadSettingsJson = 'loadSettingsJson',
+    AddUrlToTrusted = 'addUrlToTrusted',
+    SetPreserveLogState = 'setPreserveLogState',
+    GetUserRulesEditorData = 'getUserRulesEditorData',
+    GetEditorStorageContent = 'getEditorStorageContent',
+    SetEditorStorageContent = 'setEditorStorageContent',
+    SetFilteringLogWindowState = 'setFilteringLogWindowState',
+    AppInitialized = 'appInitialized',
+    UpdateTotalBlocked = 'updateTotalBlocked',
+    ScriptletCloseWindow = 'scriptletCloseWindow',
+    ShowRuleLimitsAlert = 'showRuleLimitsAlert',
+    ShowAlertPopup = 'showAlertPopup',
+    ShowVersionUpdatedPopup = 'showVersionUpdatedPopup',
+    UpdateListeners = 'updateListeners',
+    SetConsentedFilters = 'setConsentedFilters',
+    GetIsConsentedFilter = 'getIsConsentedFilter',
+    GetRulesLimitsCountersMv3 = 'getRulesLimitsCountersMv3',
+    CanEnableStaticFilterMv3 = 'canEnableStaticFilterMv3',
+    CanEnableStaticGroupMv3 = 'canEnableStaticGroupMv3',
+    ClearRulesLimitsWarningMv3 = 'clearRulesLimitsWarningMv3',
+    RestoreFiltersMv3 = 'restoreFiltersMv3',
+    CurrentLimitsMv3 = 'currentLimitsMv3',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -303,15 +309,17 @@ export type LoadCustomFilterInfoMessage = {
   }
 };
 
+export type CustomFilterSubscriptionData = {
+    customUrl: string,
+    name: string,
+    trusted: boolean,
+};
+
 export type SubscribeToCustomFilterMessage = {
-  type: MessageType.SubscribeToCustomFilter
-  data: {
-    filter: {
-      customUrl: string,
-      name: string,
-      trusted: boolean,
+    type: MessageType.SubscribeToCustomFilter
+    data: {
+        filter: CustomFilterSubscriptionData
     }
-  }
 };
 
 export type AppInitializedMessage = {
@@ -477,57 +485,63 @@ export type ShowVersionUpdatedPopupMessage = {
   }
 };
 
+export type CanEnableStaticFilterMessageMv3 = z.infer<typeof canEnableStaticFilterSchema>;
+
+export type CanEnableStaticGroupMessageMv3 = z.infer<typeof canEnableStaticGroupSchema>;
+
 export type Message = (
-  | ApplySettingsJsonMessage
-  | AddFilteringSubscriptionMessage
-  | GetTabInfoForPopupMessage
-  | ChangeApplicationFilteringDisabledMessage
-  | OpenRulesLimitsTabMessage
-  | OpenSettingsTabMessage
-  | OpenAssistantMessage
-  | OpenFilteringLogMessage
-  | OpenAbuseTabMessage
-  | OpenSiteReportTabMessage
-  | GetOptionsDataMessage
-  | ChangeUserSettingMessage
-  | ResetSettingsMessage
-  | AddAndEnableFilterMessage
-  | DisableFilterMessage
-  | RemoveAntiBannerFilterMessage
-  | SaveAllowlistDomainsMessage
-  | SaveUserRulesMessage
-  | GetUserRulesMessage
-  | GetUserRulesEditorDataMessage
-  | AddUserRuleMessage
-  | RemoveUserRuleMessage
-  | ResetUserRulesForPageMessage
-  | GetEditorStorageContentMessage
-  | SetEditorStorageContentMessage
-  | AddAllowlistDomainPopupMessage
-  | RemoveAllowlistDomainMessage
-  | LoadCustomFilterInfoMessage
-  | SubscribeToCustomFilterMessage
-  | AppInitializedMessage
-  | UpdateTotalBlockedMessage
-  | GetFilteringLogDataMessage
-  | CheckRequestFilterReadyMessage
-  | OpenFilteringLogPageMessage
-  | CloseFilteringLogPageMessage
-  | ClearEventsByTabIdMessage
-  | SetPreserveLogStateMessage
-  | PageRefreshMessage
-  | GetFilteringInfoByTabIdMessage
-  | SetFilteringLogWindowStateMessage
-  | EnableFiltersGroupMessage
-  | DisableFiltersGroupMessage
-  | OpenSafebrowsingTrustedMessage
-  | SetNotificationViewedMessage
-  | RemoveListenerMessage
-  | ScriptletCloseWindowMessage
-  | ShowRuleLimitsAlertMessage
-  | ShowAlertPopupMessage
-  | ShowVersionUpdatedPopupMessage
-) &
-  MessageCommonProps;
+    | ApplySettingsJsonMessage
+    | AddFilteringSubscriptionMessage
+    | GetTabInfoForPopupMessage
+    | ChangeApplicationFilteringDisabledMessage
+    | OpenRulesLimitsTabMessage
+    | OpenSettingsTabMessage
+    | OpenAssistantMessage
+    | OpenFilteringLogMessage
+    | OpenAbuseTabMessage
+    | OpenSiteReportTabMessage
+    | GetOptionsDataMessage
+    | ChangeUserSettingMessage
+    | ResetSettingsMessage
+    | AddAndEnableFilterMessage
+    | DisableFilterMessage
+    | RemoveAntiBannerFilterMessage
+    | SaveAllowlistDomainsMessage
+    | SaveUserRulesMessage
+    | GetUserRulesMessage
+    | GetUserRulesEditorDataMessage
+    | AddUserRuleMessage
+    | RemoveUserRuleMessage
+    | ResetUserRulesForPageMessage
+    | GetEditorStorageContentMessage
+    | SetEditorStorageContentMessage
+    | AddAllowlistDomainPopupMessage
+    | RemoveAllowlistDomainMessage
+    | LoadCustomFilterInfoMessage
+    | SubscribeToCustomFilterMessage
+    | AppInitializedMessage
+    | UpdateTotalBlockedMessage
+    | GetFilteringLogDataMessage
+    | CheckRequestFilterReadyMessage
+    | OpenFilteringLogPageMessage
+    | CloseFilteringLogPageMessage
+    | ClearEventsByTabIdMessage
+    | SetPreserveLogStateMessage
+    | PageRefreshMessage
+    | GetFilteringInfoByTabIdMessage
+    | SetFilteringLogWindowStateMessage
+    | EnableFiltersGroupMessage
+    | DisableFiltersGroupMessage
+    | OpenSafebrowsingTrustedMessage
+    | SetNotificationViewedMessage
+    | RemoveListenerMessage
+    | ScriptletCloseWindowMessage
+    | ShowRuleLimitsAlertMessage
+    | ShowAlertPopupMessage
+    | ShowVersionUpdatedPopupMessage
+    | CanEnableStaticFilterMessageMv3
+    | CanEnableStaticGroupMessageMv3
+    ) &
+    MessageCommonProps;
 
 export type ExtractedMessage<P> = Extract<Message, { type: P }>;

@@ -27,7 +27,7 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
-import {
+import type {
     CustomFilterMetadata,
     FilterVersionData,
     RegularFilterMetadata,
@@ -42,6 +42,8 @@ import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
+import { CustomFilterHelper } from '../../../../common/custom-filter-helper';
+import { getStaticWarningMessage } from '../Warnings/messages';
 
 import { formatDate } from './helpers';
 import { HighlightSearch } from './Search/HighlightSearch';
@@ -79,10 +81,11 @@ type FilterParams = {
         & {
             enabled: boolean,
             tagsDetails: TagMetadata[],
-        }
+        },
+    groupEnabled: boolean,
 };
 
-const Filter = observer(({ filter }: FilterParams) => {
+const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const [isOpenRemoveFilterModal, setIsOpenRemoveFilterModal] = useState(false);
@@ -110,6 +113,47 @@ const Filter = observer(({ filter }: FilterParams) => {
         }]
         : [...tagsDetails];
 
+    const updateFilterSettingMV3 = async (filterId: number, enabled: boolean) => {
+        if (CustomFilterHelper.isCustomFilter(filterId)) {
+            // for custom filters, we can't check limits before applying,
+            // so we need to check the after applying
+            await settingsStore.updateFilterSetting(filterId, enabled);
+            if (__IS_MV3__) {
+                await settingsStore.checkLimitations();
+            }
+            return;
+        }
+
+        // check limits only if filter is enabled
+        if (enabled && groupEnabled) {
+            // for static rules, we can check limits before enabling
+            const result = await messenger.canEnableStaticFilter(filterId);
+            if (!result.ok && result.data) {
+                settingsStore.setFilterEnabledState(filterId, !enabled);
+
+                const staticFiltersLimitsWarning = getStaticWarningMessage(result.data);
+                if (staticFiltersLimitsWarning) {
+                    uiStore.addMv3Notification({
+                        description: staticFiltersLimitsWarning,
+                        extra: {
+                            link: translator.getMessage('options_rule_limits'),
+                        },
+                    });
+                }
+
+                // We don't enable the filter if it exceeds the limit.
+                // [revert-checkbox] is used to revert the checkbox state.
+                throw new Error('Filter will exceed the limit. [revert-checkbox]');
+            }
+        }
+
+        await settingsStore.updateFilterSetting(filterId, enabled);
+    };
+
+    const updateFilterSettingMV2 = settingsStore.updateFilterSetting;
+
+    const updateFilterSetting = __IS_MV3__ ? updateFilterSettingMV3 : updateFilterSettingMV2;
+
     const handleFilterSwitch = async ({ id, data }: { id: string, data: boolean }) => {
         // remove prefix from filter id and parse it to number
         const filterId = Number.parseInt(removePrefix(id), 10);
@@ -118,7 +162,7 @@ const Filter = observer(({ filter }: FilterParams) => {
 
         const updateFilterSettingWrapper = addMinDelayLoader(
             uiStore.setShowLoader,
-            settingsStore.updateFilterSetting,
+            updateFilterSetting,
         );
 
         if (annoyancesFilter && data) {
@@ -182,68 +226,67 @@ const Filter = observer(({ filter }: FilterParams) => {
     const prefixedFilterId = addPrefix(filterId);
 
     return (
-        <>
-            <label htmlFor={prefixedFilterId} className="setting-checkbox">
-                <div className={filterClassName} role="presentation">
-                    <div className="filter__info">
-                        <div className="setting__container setting__container--horizontal">
-                            <div className="setting__inner">
-                                <div className="filter__title">
-                                    <Popover text={name}>
-                                        <div className="filter__title-constraint">
-                                            <span className="filter__title-in">
-                                                <HighlightSearch string={name} />
-                                            </span>
-                                        </div>
-                                    </Popover>
-                                    <div className="filter__controls">
-                                        {renderRemoveButton()}
+        <label htmlFor={prefixedFilterId} className="setting-checkbox">
+            <div className={filterClassName} role="presentation">
+                <div className="filter__info">
+                    <div className="setting__container setting__container--horizontal">
+                        <div className="setting__inner">
+                            <div className="filter__title">
+                                <Popover text={name}>
+                                    <div className="filter__title-constraint">
+                                        <span className="filter__title-in">
+                                            <HighlightSearch string={name} />
+                                        </span>
                                     </div>
+                                </Popover>
+                                <div className="filter__controls">
+                                    {renderRemoveButton()}
                                 </div>
+                            </div>
 
-                                <div className="filter__desc">
-                                    <div className="filter__desc-item">
-                                        {description}
-                                    </div>
-                                    <div className="filter__desc-item">
-                                        {
-                                            version
-                                                ? `${translator.getMessage('options_filters_filter_version')} ${version} `
-                                                : ''
-                                        }
-                                        {translator.getMessage('options_filters_filter_updated')}
-                                        {' '}
-                                        {lastUpdateTime
-                                            ? formatDate(lastUpdateTime)
-                                            : formatDate(lastCheckTime)}
-                                    </div>
+                            <div className="filter__desc">
+                                <div className="filter__desc-item">
+                                    {description}
                                 </div>
-                                <div>
-                                    <a
-                                        className="filter__link"
-                                        href={homepage || customUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {translator.getMessage('options_filters_filter_link')}
-                                    </a>
+                                <div className="filter__desc-item">
+                                    {
+                                        version
+                                            ? `${translator.getMessage('options_filters_filter_version')} ${version} `
+                                            : ''
+                                    }
+                                    {translator.getMessage('options_filters_filter_updated')}
+                                    {' '}
+                                    {lastUpdateTime
+                                        ? formatDate(lastUpdateTime)
+                                        : formatDate(lastCheckTime)}
                                 </div>
-                                <FilterTags tags={tags} />
                             </div>
-                            <div className="setting__inline-control">
-                                <Setting
-                                    id={prefixedFilterId}
-                                    type={SETTINGS_TYPES.CHECKBOX}
-                                    label={name}
-                                    value={!!enabled}
-                                    handler={handleFilterSwitch}
-                                />
+                            <div>
+                                <a
+                                    className="filter__link"
+                                    href={homepage || customUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {translator.getMessage('options_filters_filter_link')}
+                                </a>
                             </div>
+                            <FilterTags tags={tags} />
+                        </div>
+                        <div className="setting__inline-control">
+                            <Setting
+                                id={prefixedFilterId}
+                                type={SETTINGS_TYPES.CHECKBOX}
+                                label={name}
+                                value={!!enabled}
+                                optimistic={!__IS_MV3__}
+                                handler={handleFilterSwitch}
+                            />
                         </div>
                     </div>
                 </div>
-            </label>
-        </>
+            </div>
+        </label>
     );
 });
 

@@ -19,12 +19,20 @@
 // it is an alias for manifest-specific implementation of the rules rules limits
 // service. It will be replaced with mv2 or mv3 version during the build
 // via webpack.
+
 import { RulesLimitsService } from 'rules-limits-service';
+
+export type {
+    InvalidStaticResultData,
+    InvalidDynamicResultData,
+    StaticLimitsCheckResult,
+    DynamicLimitsCheckResult,
+} from './interface';
 
 /**
  * RulesLimitsService is a singleton instance of RulesLimitsService which
  * will be replaced with mv2 or mv3 implementation during the build via webpack.
  *
- * By default, mv2 will be used.
+ * By default, MV3 will be used.
  */
 export const rulesLimitsService = new RulesLimitsService();

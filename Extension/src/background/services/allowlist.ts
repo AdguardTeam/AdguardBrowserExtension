@@ -40,6 +40,8 @@ export type GetAllowlistDomainsResponse = {
 
 /**
  * Service for processing events with a allowlist.
+ *
+ * FIXME: Should we add check for MV3 limitations here too?
  */
 export class AllowlistService {
     /**
@@ -51,8 +53,8 @@ export class AllowlistService {
         messageHandler.addListener(MessageType.AddAllowlistDomainPopup, AllowlistService.onAddAllowlistDomain);
         messageHandler.addListener(MessageType.RemoveAllowlistDomain, AllowlistService.onRemoveAllowlistDomain);
 
-        settingsEvents.addListener(SettingOption.AllowlistEnabled, engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.AllowlistEnabled, AllowlistService.updateEngine);
+        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, AllowlistService.updateEngine);
 
         contextMenuEvents.addListener(
             ContextMenuAction.SiteFilteringOn,
@@ -143,6 +145,23 @@ export class AllowlistService {
             await AllowlistApi.disableTabFiltering(activeTab.id);
         } else {
             logger.warn('Cannot open site report page for active tab');
+        }
+    }
+
+    /**
+     * Updates the tswebextension engine on {@link SettingOption.AllowlistEnabled}
+     * or {@link SettingOption.DefaultAllowlistMode} setting change.
+     * This setting can be changed by the switch ui element, so it is important
+     * to update the engine config via debounce function for MV2, as this
+     * is a heavyweight call.
+     * For MV3 we should wait for the engine to be ready and then check for
+     * possible exceeding the limits.
+     */
+    private static async updateEngine(): Promise<void> {
+        if (__IS_MV3__) {
+            await engine.update();
+        } else {
+            engine.debounceUpdate();
         }
     }
 }

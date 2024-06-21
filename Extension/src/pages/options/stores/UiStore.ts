@@ -23,7 +23,9 @@ import {
 } from 'mobx';
 import { nanoid } from 'nanoid';
 
-import { MIN_LOADER_SHOWING_TIME_MS } from '../../common/constants';
+import type { InvalidStaticResultData, InvalidDynamicResultData } from '../../../background/services/rules-limits';
+// TODO: Maybe not import from components folder here?
+import { getDynamicWarningMessage, getStaticWarningMessage } from '../components/Warnings/messages';
 
 import type { RootStore } from './RootStore';
 
@@ -58,6 +60,8 @@ class UiStore {
         makeObservable(this);
 
         this.setShowLoader = this.setShowLoader.bind(this);
+        this.setStaticFiltersLimitsWarning = this.setStaticFiltersLimitsWarning.bind(this);
+        this.setDynamicRulesLimitsWarning = this.setDynamicRulesLimitsWarning.bind(this);
     }
 
     /**
@@ -75,7 +79,15 @@ class UiStore {
      */
     @observable showLoader = false;
 
-    private loaderStart: number | null = null;
+    /**
+     * Specific limits warning message to be displayed about static filters.
+     */
+    @observable staticFiltersLimitsWarning: string | null = null;
+
+    /**
+     * Specific limits warning message to be displayed about dynamic section with user rules.
+     */
+    @observable dynamicRulesLimitsWarning: string | null = null;
 
     @action
     addNotification({ title = '', description }: Omit<Notification, 'id'>) {
@@ -120,28 +132,48 @@ class UiStore {
     @action
     setShowLoader(value = false) {
         this.showLoader = value;
-
-        if (value) {
-            this.loaderStart = Date.now();
-        } else {
-            this.loaderStart = null;
-        }
     }
 
     /**
-     * Checks whether the loader should be hidden.
+     * Sets a specific limit warning message to be displayed about static filters.
      *
-     * **Used for mv3**.
+     * @throws Error if the warning type is incorrect.
      *
-     * @todo Can be removed after AG-33293 is done.
-     *
-     * @returns True if the loader is visible now,
-     * and at least {@link MIN_LOADER_SHOWING_TIME_MS} has passed since it was shown.
+     * @param data Result of limits check of static rules.
      */
-    shouldHideLoader() {
-        return this.showLoader
-            && this.loaderStart !== null
-            && Date.now() - this.loaderStart >= MIN_LOADER_SHOWING_TIME_MS;
+    @action
+    setStaticFiltersLimitsWarning(data?: InvalidStaticResultData | undefined) {
+        if (!data) {
+            this.staticFiltersLimitsWarning = null;
+            return;
+        }
+
+        if (data.type !== 'static') {
+            throw new Error('Incorrect warning type');
+        }
+
+        this.staticFiltersLimitsWarning = getStaticWarningMessage(data);
+    }
+
+    /**
+     * Sets a specific limit warning message to be displayed about dynamic section with user rules.
+     *
+     * @throws Error if the warning type is incorrect.
+     *
+     * @param data Result of limits check of dynamic rules.
+     */
+    @action
+    setDynamicRulesLimitsWarning(data?: InvalidDynamicResultData | undefined) {
+        if (!data) {
+            this.dynamicRulesLimitsWarning = null;
+            return;
+        }
+
+        if (data.type !== 'dynamic') {
+            throw new Error('Incorrect warning type');
+        }
+
+        this.dynamicRulesLimitsWarning = getDynamicWarningMessage(data);
     }
 }
 

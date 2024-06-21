@@ -114,6 +114,7 @@ const Group = ({
                         label={groupName}
                         value={checkboxValue}
                         handler={checkboxHandler}
+                        optimistic={!__IS_MV3__}
                         className="group__checkbox"
                     />
                 </div>

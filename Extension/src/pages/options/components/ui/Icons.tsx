@@ -99,10 +99,6 @@ export const Icons = () => {
                     <path d="m4 13h16m-16-5.41666667h16m-16 10.83333337h16" stroke="#888" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
                 </g>
             </symbol>
-
-            <symbol id="cross-gray" width="24" height="24">
-                <path stroke="#888" d="M6.429 6.796 17.604 18.61M6.429 18.576 17.605 6.76" />
-            </symbol>
         </svg>
     );
 };

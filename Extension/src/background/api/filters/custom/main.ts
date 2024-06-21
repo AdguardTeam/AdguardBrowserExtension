@@ -33,6 +33,7 @@ import { engine } from '../../../engine';
 import { network } from '../../network';
 import type { FilterUpdateOptions } from '../update';
 import { FilterParsedData, FilterParser } from '../parser';
+import { CustomFilterHelper } from '../../../../common/custom-filter-helper';
 
 import { CustomFilterLoader } from './loader';
 
@@ -350,7 +351,7 @@ export class CustomFilterApi {
      * @returns True, if filter is custom, else returns false.
      */
     public static isCustomFilter(filterId: number): boolean {
-        return filterId >= CUSTOM_FILTERS_START_ID;
+        return CustomFilterHelper.isCustomFilter(filterId);
     }
 
     /**

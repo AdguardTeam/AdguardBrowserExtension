@@ -15,17 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './filtering-log';
-export * from './settings';
-export * from './allowlist';
-export * from './fullscreen-user-rules-editor';
-export * from './custom-filters';
-export * from './userrules';
-export * from './event';
-export * from './ui';
-export * from './filters';
-export * from './locale-detect';
-export * from './document-block';
-export * from './filter-update';
-// Do not export SafebrowsingService here, because it will break MV3 build
-// because of dependencies with window object.
+
+// NOTE: Here important to use 'custom-filters-service' without path, because
+// it is an alias for manifest-specific implementation of the custom filters
+// service. It will be replaced with mv2 or mv3 version during the build
+// via webpack.
+
+/**
+ * CustomFiltersService is a class which will be replaced with mv2 or mv3 implementation during
+ * the build via webpack.
+ *
+ * By default, MV3 will be used.
+ */
+export { CustomFiltersService } from 'custom-filters-service';

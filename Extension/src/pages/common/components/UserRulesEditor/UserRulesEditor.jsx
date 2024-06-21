@@ -44,6 +44,9 @@ import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
 import { addMinDelayLoader } from '../helpers';
+// TODO: Continue to remove dependency on the root store via adding loader and
+// notifications to own 'user-rules-editor' store.
+import { rootStore } from '../../../options/stores/RootStore';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
@@ -53,8 +56,9 @@ import { userRulesEditorStore } from './UserRulesEditorStore';
  * This module is placed in the common directory because it is used in the options page
  * and fullscreen-user-rules page
  */
-export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
+export const UserRulesEditor = observer(({ fullscreen }) => {
     const store = useContext(userRulesEditorStore);
+    const { uiStore, settingsStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
@@ -80,6 +84,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                     const { type } = message;
 
                     switch (type) {
+                        // This event will be triggered when the user rules status is toggled.
                         case NotifierType.SettingUpdated: {
                             await store.requestSettingsData();
                             break;
@@ -220,6 +225,18 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         editorRef.current.editor.session.setUseWrapMode(store.userRulesEditorWrapState);
     }, [store.userRulesEditorWrapState]);
 
+    const saveUserRules = async (userRules) => {
+        // For MV2 version we don't show loader and don't check limits.
+        if (!__IS_MV3__) {
+            await store.saveUserRules(userRules);
+        } else {
+            uiStore.setShowLoader(true);
+            await store.saveUserRules(userRules);
+            await settingsStore.checkLimitations();
+            uiStore.setShowLoader(false);
+        }
+    };
+
     const inputChangeHandler = async (event) => {
         event.persist();
         const file = event.target.files[0];
@@ -251,7 +268,8 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
             if (oldRulesString !== rulesUnionString) {
                 editorRef.current.editor.setValue(rulesUnionString, 1);
-                await store.saveUserRules(rulesUnionString);
+
+                await saveUserRules(rulesUnionString);
             }
         } catch (e) {
             logger.debug(e.message);
@@ -264,11 +282,6 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         event.target.value = '';
     };
 
-    const inputChangeHandlerWrapper = addMinDelayLoader(
-        uiStore.setShowLoader,
-        inputChangeHandler,
-    );
-
     const importClickHandler = (e) => {
         e.preventDefault();
         inputRef.current.click();
@@ -277,20 +290,15 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
     const saveClickHandler = async () => {
         if (store.userRulesEditorContentChanged) {
             const value = editorRef.current.editor.getValue();
-            await store.saveUserRules(value);
+            await saveUserRules(value);
         }
     };
-
-    const saveClickHandlerWrapper = addMinDelayLoader(
-        uiStore.setShowLoader,
-        saveClickHandler,
-    );
 
     const shortcuts = [
         {
             name: 'save',
             bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-            exec: saveClickHandlerWrapper,
+            exec: saveClickHandler,
         },
         {
             name: 'togglecomment',
@@ -332,10 +340,14 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
 
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content
-    const toggleWrap = () => {
+    const toggleWrap = async () => {
         const toggledWrapMode = !store.userRulesEditorWrapState;
         editorRef.current.editor.session.setUseWrapMode(toggledWrapMode);
-        store.toggleUserRulesEditorWrapMode(toggledWrapMode);
+        await store.toggleUserRulesEditorWrapMode(toggledWrapMode);
+
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
     };
 
     const openEditorFullscreen = async () => {
@@ -399,13 +411,13 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                             </label>
                         )
                     }
-                    <UserRulesSavingButton onClick={saveClickHandlerWrapper} />
+                    <UserRulesSavingButton onClick={saveClickHandler} />
                     <input
                         type="file"
                         id="inputEl"
                         accept="text/plain"
                         ref={inputRef}
-                        onChange={inputChangeHandlerWrapper}
+                        onChange={inputChangeHandler}
                         style={{ display: 'none' }}
                     />
                     <button

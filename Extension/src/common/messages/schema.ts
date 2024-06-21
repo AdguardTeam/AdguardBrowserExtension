@@ -15,17 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './filtering-log';
-export * from './settings';
-export * from './allowlist';
-export * from './fullscreen-user-rules-editor';
-export * from './custom-filters';
-export * from './userrules';
-export * from './event';
-export * from './ui';
-export * from './filters';
-export * from './locale-detect';
-export * from './document-block';
-export * from './filter-update';
-// Do not export SafebrowsingService here, because it will break MV3 build
-// because of dependencies with window object.
+
+import { z } from 'zod';
+
+import { MessageType } from './constants';
+
+export const canEnableStaticFilterSchema = z.object({
+    type: z.literal(MessageType.CanEnableStaticFilterMv3),
+    data: z.object({
+        filterId: z.number(),
+    }),
+});
+
+export const canEnableStaticGroupSchema = z.object({
+    type: z.literal(MessageType.CanEnableStaticGroupMv3),
+    data: z.object({
+        groupId: z.number(),
+    }),
+});

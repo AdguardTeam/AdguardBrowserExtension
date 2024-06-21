@@ -46,6 +46,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { Unknown } from '../../../../common/unknown';
 import { FiltersUpdateTime } from '../../../../common/constants';
+import { StaticFiltersLimitsWarning } from '../Warnings';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -209,6 +210,8 @@ export const General = observer(() => {
     return (
         <>
             <SettingsSection title={translator.getMessage('options_general_settings')}>
+                {/* FIXME: Check why not showed. */}
+                <StaticFiltersLimitsWarning useWrapper />
                 { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                 {/* @ts-ignore */}
                 <SettingSetSelect

@@ -85,11 +85,14 @@ type SavingServiceParams = {
      * Services to be used in the state machine.
      */
     services: {
-        saveData: () => Promise<void>,
+        // TODO: Actual type of event is { value: any, callback: Promise<void> }
+        // but it's not possible to define it in xstate.
+        saveData: (context: any, event: any) => Promise<void>,
     },
 
 };
 
+// TODO: Maybe we can remove this service?
 export const createSavingService = ({ id, services }: SavingServiceParams) => {
     return interpret(Machine({ ...savingStateMachine, id }, { services }))
         .start()

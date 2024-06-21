@@ -18,7 +18,6 @@
 
 export const MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS = 2000;
 export const MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS = 1500;
-export const HANDLER_DELAY_MS = 2000; // less time leads to interface freeze
 
 /**
  * Minimal delay for showing loader. Needed in mv3 for smoother user experience.

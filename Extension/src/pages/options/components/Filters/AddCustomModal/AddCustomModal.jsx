@@ -20,6 +20,7 @@
 
 import React, { useState, useContext } from 'react';
 import Modal from 'react-modal';
+import { observer } from 'mobx-react';
 
 import PropTypes from 'prop-types';
 
@@ -27,6 +28,7 @@ import { messenger } from '../../../../services/messenger';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { logger } from '../../../../../common/logger';
 import { rootStore } from '../../../stores/RootStore';
+import { addMinDelayLoader } from '../../../../common/components/helpers';
 import { Icon } from '../../../../common/components/ui/Icon';
 
 import { ModalContentWrapper } from './ModalContentWrapper';
@@ -56,7 +58,7 @@ const customStyles = {
     },
 };
 
-const AddCustomModal = ({
+const AddCustomModal = observer(({
     closeModalHandler,
     modalIsOpen,
     initialUrl,
@@ -87,7 +89,7 @@ const AddCustomModal = ({
         setFilterToAddName(initialTitle);
     };
 
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     const handleInputChange = (e) => {
         const { value } = e.target;
@@ -180,12 +182,20 @@ const AddCustomModal = ({
             }
 
             await settingsStore.addCustomFilter(filterToAdd);
+            if (__IS_MV3__) {
+                await settingsStore.checkLimitations();
+            }
         } catch (e) {
             setStepToRender(STEPS.ERROR);
             logger.error(e);
         }
         closeModal();
     };
+
+    const handleApproveWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        handleApprove,
+    );
 
     const renderApproveStep = () => {
         const {
@@ -199,7 +209,7 @@ const AddCustomModal = ({
                 closeModalHandler={closeModal}
                 title="New filter subscription"
             >
-                <form className="modal__content" onSubmit={handleApprove}>
+                <form className="modal__content" onSubmit={handleApproveWrapper}>
                     <div className="modal__row">
                         <div className="modal__cell modal__cell--title">{reactTranslator.getMessage('options_popup_filter_title')}</div>
                         <input
@@ -254,7 +264,7 @@ const AddCustomModal = ({
                     <button
                         disabled={isLoading}
                         type="button"
-                        onClick={handleApprove}
+                        onClick={handleApproveWrapper}
                         className="button button--m button--green modal__btn"
                     >
                         {reactTranslator.getMessage('options_popup_subscribe_button')}
@@ -337,7 +347,7 @@ const AddCustomModal = ({
             {renderStep()}
         </Modal>
     );
-};
+});
 
 AddCustomModal.propTypes = {
     closeModalHandler: PropTypes.func.isRequired,

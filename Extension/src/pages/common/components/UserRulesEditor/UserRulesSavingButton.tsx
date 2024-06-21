@@ -28,7 +28,7 @@ type UserRulesSavingButtonParams = {
     /**
      * Click handler.
      */
-    onClick: () => void;
+    onClick: () => Promise<void>;
 };
 
 export const UserRulesSavingButton = observer(({ onClick }: UserRulesSavingButtonParams) => {

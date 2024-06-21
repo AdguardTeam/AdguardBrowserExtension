@@ -48,10 +48,10 @@ export const RulesLimits = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     useEffect(() => {
-        settingsStore.getRulesLimits();
+        settingsStore.getRulesLimitsCounters();
     }, [settingsStore]);
 
-    const rulesLimits = settingsStore.rulesLimits as IRulesLimits;
+    const rulesLimits: IRulesLimits = settingsStore.rulesLimits;
 
     const {
         dynamicRulesEnabledCount,
@@ -64,6 +64,7 @@ export const RulesLimits = observer(() => {
         staticRulesMaximumCount,
         staticRulesRegexpsEnabledCount,
         staticRulesRegexpsMaxCount,
+        areFilterLimitsExceeded,
     } = rulesLimits;
 
     const learnMoreAboutMv3Url = Forward.get({
@@ -71,19 +72,23 @@ export const RulesLimits = observer(() => {
         from: ForwardFrom.Options,
     });
 
-    const actuallyEnabledFilterNames = rulesLimits.actuallyEnabledFilters.map((filterId: number) => {
-        return settingsStore.filters.find(f => f.filterId === filterId)?.name;
-    });
-
-    const expectedEnabledFilterNames = rulesLimits.expectedEnabledFilters.map((filterId: number) => {
-        return settingsStore.filters.find(f => f.filterId === filterId)?.name;
-    });
-
-    const showWarning = rulesLimits.expectedEnabledFilters.length > 0;
+    /**
+     * Returns names of filters by their ids.
+     *
+     * @param filterIds Array of filter ids.
+     *
+     * @returns Array of filter names.
+     */
+    const getFiltersNames = (filterIds: number[]): string[] => {
+        return filterIds.map((filterId: number) => {
+            return settingsStore.filters.find(f => f.filterId === filterId)?.name;
+        });
+    };
 
     const handleReactivateFilters = async () => {
-        await messenger.sendMessage(MessageType.RestoreFilters);
-        await settingsStore.getRulesLimits();
+        await messenger.sendMessage(MessageType.RestoreFiltersMv3);
+        await settingsStore.getRulesLimitsCounters();
+        await settingsStore.checkLimitations();
     };
 
     const handleReactivateFiltersWrapper = addMinDelayLoader(
@@ -92,8 +97,9 @@ export const RulesLimits = observer(() => {
     );
 
     const handleCloseWarning = async () => {
-        await messenger.sendMessage(MessageType.ClearRulesLimitsWarning);
-        await settingsStore.getRulesLimits();
+        await messenger.sendMessage(MessageType.ClearRulesLimitsWarningMv3);
+        await settingsStore.getRulesLimitsCounters();
+        await settingsStore.checkLimitations();
     };
 
     const handleCloseWarningWrapper = addMinDelayLoader(
@@ -130,10 +136,10 @@ export const RulesLimits = observer(() => {
                 </>
             )}
         >
-            {showWarning && (
+            {areFilterLimitsExceeded && (
                 <Warning
-                    actuallyEnabledFilterNames={actuallyEnabledFilterNames.join(', ')}
-                    expectedEnabledFilterNames={expectedEnabledFilterNames.join(', ')}
+                    actuallyEnabledFilterNames={getFiltersNames(rulesLimits.actuallyEnabledFilters).join(', ')}
+                    expectedEnabledFilterNames={getFiltersNames(rulesLimits.expectedEnabledFilters).join(', ')}
                     onClickReactivateFilters={handleReactivateFiltersWrapper}
                     onClickCloseWarning={handleCloseWarningWrapper}
                 />

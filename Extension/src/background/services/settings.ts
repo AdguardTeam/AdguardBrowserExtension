@@ -139,6 +139,10 @@ export class SettingsService {
      * @returns Item of {@link GetOptionsDataResponse}.
      */
     static getOptionsData(): GetOptionsDataResponse {
+        const areFilterLimitsExceeded = __IS_MV3__
+            ? RulesLimitsService.areFilterLimitsExceeded()
+            : false;
+
         return {
             settings: SettingsApi.getData(),
             appVersion: Prefs.version,
@@ -154,7 +158,7 @@ export class SettingsService {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
-            areFilterLimitsExceeded: RulesLimitsService.areFilterLimitsExceeded(),
+            areFilterLimitsExceeded,
         };
     }
 

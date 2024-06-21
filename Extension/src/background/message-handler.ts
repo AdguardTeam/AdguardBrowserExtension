@@ -25,6 +25,7 @@ import {
     MessageHandler,
     MessageListener,
 } from '../common/messages';
+import { logger } from '../common/logger';
 
 import { engine } from './engine';
 
@@ -55,7 +56,16 @@ export class BackgroundMessageHandler extends MessageHandler {
         if (message.handlerName === APP_MESSAGE_HANDLER_NAME) {
             const listener = this.listeners.get(message.type) as MessageListener<T>;
             if (listener) {
-                return Promise.resolve(listener(message, sender));
+                const fn = (async (): Promise<unknown> => {
+                    try {
+                        const result = await listener(message, sender);
+                        return await Promise.resolve(result);
+                    } catch (e) {
+                        logger.error('An error occurred while handling message:', message, 'error:', e);
+                        return Promise.reject(e);
+                    }
+                });
+                return Promise.resolve(fn());
             }
         }
     }

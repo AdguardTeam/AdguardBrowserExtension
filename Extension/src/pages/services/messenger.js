@@ -26,6 +26,26 @@ import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../../common/messages';
  * @typedef {import('../../background/api').FilteringLogTabInfo} FilteringLogTabInfo
  */
 
+/**
+ * @typedef {import('../../background/services/rules-limits/interface').StaticLimitsCheckResult} StaticLimitsCheckResult
+ */
+
+/**
+ * @typedef {import('../../background/services/rules-limits/interface').DynamicLimitsCheckResult} DynamicLimitsCheckResult
+ */
+
+/**
+ * @typedef {import('../../common/messages/constants').CustomFilterSubscriptionData} CustomFilterSubscriptionData
+ */
+
+/**
+ * @typedef {import('../../background/schema/custom-filter-metadata').CustomFilterMetadata} CustomFilterMetadata
+ */
+
+/**
+ * @typedef {import('../../background/services/rules-limits/interface').Mv3LimitsCheckResult} Mv3LimitsCheckResult
+ */
+
 class Messenger {
     onMessage = browser.runtime.onMessage;
 
@@ -263,6 +283,13 @@ class Messenger {
         return this.sendMessage(MessageType.LoadCustomFilterInfo, { url });
     }
 
+    /**
+     * Sends a message to the background page to add a custom filter.
+     *
+     * @param {CustomFilterSubscriptionData} filter Custom filter data.
+     *
+     * @returns {Promise<CustomFilterMetadata>} Custom filter metadata.
+     */
     async addCustomFilter(filter) {
         return this.sendMessage(MessageType.SubscribeToCustomFilter, { filter });
     }
@@ -380,8 +407,39 @@ class Messenger {
         return this.sendMessage(MessageType.SetEditorStorageContent, { content });
     }
 
-    async getRulesLimits() {
-        return this.sendMessage(MessageType.GetRulesLimits);
+    async getRulesLimitsCounters() {
+        return this.sendMessage(MessageType.GetRulesLimitsCountersMv3);
+    }
+
+    /**
+     * Sends a message to background page to check if it is possible to enable static filter.
+     *
+     * @param {number} filterId Filter id.
+     *
+     * @returns {Promise<StaticLimitsCheckResult>} A check result.
+     * @throws {Error} If the filter is not static.
+     */
+    async canEnableStaticFilter(filterId) {
+        return this.sendMessage(MessageType.CanEnableStaticFilterMv3, { filterId });
+    }
+
+    /**
+     * Sends a message to the background page to check if all user rules' dynamic rules are be enabled.
+     *
+     * @param groupId Group identifier.
+     * @returns {Promise<StaticLimitsCheckResult>}
+     */
+    async canEnableStaticGroup(groupId) {
+        return this.sendMessage(MessageType.CanEnableStaticGroupMv3, { groupId });
+    }
+
+    /**
+     * Sends a message to the background page to get static filters limits.
+     *
+     * @returns {Promise<Mv3LimitsCheckResult>}
+     */
+    async getCurrentLimits() {
+        return this.sendMessage(MessageType.CurrentLimitsMv3);
     }
 }
 

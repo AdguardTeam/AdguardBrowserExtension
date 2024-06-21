@@ -29,52 +29,48 @@ export const Nav = ({ closeSidebar }) => {
         closeSidebar();
     };
 
+    const getNavLinkClassName = (navData) => (navData.isActive ? 'nav__item nav__item--active' : 'nav__item');
+
     return (
         <div className="nav">
             <NavLink
-                className="nav__item"
-                exact
-                activeClassName="nav__item--active"
+                className={getNavLinkClassName}
                 to="/"
                 onClick={onClick}
+                end
             >
                 {reactTranslator.getMessage('options_general_settings')}
             </NavLink>
             <NavLink
-                className="nav__item"
-                activeClassName="nav__item--active"
+                className={getNavLinkClassName}
                 to={`/${OptionsPageSections.filters}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_filters')}
             </NavLink>
             <NavLink
-                className="nav__item"
-                activeClassName="nav__item--active"
+                className={getNavLinkClassName}
                 to={`/${OptionsPageSections.stealth}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_privacy')}
             </NavLink>
             <NavLink
-                className="nav__item"
-                activeClassName="nav__item--active"
+                className={getNavLinkClassName}
                 to={`/${OptionsPageSections.allowlist}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_allowlist')}
             </NavLink>
             <NavLink
-                className="nav__item"
-                activeClassName="nav__item--active"
+                className={getNavLinkClassName}
                 to={`/${OptionsPageSections.userFilter}`}
                 onClick={onClick}
             >
                 {reactTranslator.getMessage('options_userfilter')}
             </NavLink>
             <NavLink
-                className="nav__item"
-                activeClassName="nav__item--active"
+                className={getNavLinkClassName}
                 to={`/${OptionsPageSections.miscellaneous}`}
                 onClick={onClick}
             >
@@ -84,8 +80,7 @@ export const Nav = ({ closeSidebar }) => {
                 __IS_MV3__
                     && (
                         <NavLink
-                            className="nav__item"
-                            activeClassName="nav__item--active"
+                            className={getNavLinkClassName}
                             to={`/${OptionsPageSections.ruleLimits}`}
                             onClick={onClick}
                         >
@@ -94,8 +89,7 @@ export const Nav = ({ closeSidebar }) => {
                     )
             }
             <NavLink
-                className="nav__item"
-                activeClassName="nav__item--active"
+                className={getNavLinkClassName}
                 to={`/${OptionsPageSections.about}`}
                 onClick={onClick}
             >

@@ -33,15 +33,6 @@ import {
     SavingFSMState,
 } from '../Editor/savingFSM';
 
-const savingService = createSavingService({
-    id: 'userRules',
-    services: {
-        saveData: async (_, e) => {
-            await messenger.saveUserRules(e.value);
-        },
-    },
-});
-
 class UserRulesEditorStore {
     @observable settings = null;
 
@@ -49,18 +40,31 @@ class UserRulesEditorStore {
 
     @observable userRulesEditorWrap = null;
 
-    @observable savingUserRulesState = savingService.initialState.value;
-
     @observable userRulesExportAvailable = false;
 
     @observable userRulesEditorPrefsDropped = false;
+
+    @observable specificLimitWarningData = null;
+
+    savingService = createSavingService({
+        id: 'userRules',
+        services: {
+            saveData: async (_, e) => {
+                await messenger.saveUserRules(e.value);
+
+                await e.callback();
+            },
+        },
+    });
+
+    @observable savingUserRulesState = this.savingService.initialState.value;
 
     constructor() {
         makeObservable(this);
 
         this.updateSetting = this.updateSetting.bind(this);
 
-        savingService.onTransition((state) => {
+        this.savingService.onTransition((state) => {
             runInAction(() => {
                 this.savingUserRulesState = state.value;
                 if (state.value === SavingFSMState.Saving) {
@@ -142,9 +146,14 @@ class UserRulesEditorStore {
         return false;
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    async saveUserRules(value) {
-        savingService.send(SavingFSMEvent.Save, { value });
+    saveUserRules(value) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.savingService.send(SavingFSMEvent.Save, { value, callback: resolve });
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 }
 

@@ -35,6 +35,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { OptionsPageSections } from '../../../../common/nav';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { exportData, ExportTypes } from '../../../common/utils/export';
+import { DynamicRulesLimitsWarning } from '../Warnings';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
@@ -77,13 +78,24 @@ const Allowlist = observer(() => {
         exportData(ExportTypes.ALLOW_LIST);
     };
 
+    const saveAllowlist = async (allowlist) => {
+        if (!__IS_MV3__) {
+            await settingsStore.saveAllowlist(allowlist);
+        } else {
+            uiStore.setShowLoader(true);
+            await settingsStore.saveAllowlist(allowlist);
+            await settingsStore.checkLimitations();
+            uiStore.setShowLoader(false);
+        }
+    };
+
     const inputChangeHandler = async (event) => {
         event.persist();
         const file = event.target.files[0];
 
         try {
             const content = await handleFileUpload(file, 'txt');
-            await settingsStore.appendAllowlist(content);
+            await saveAllowlist(settingsStore.allowlist.concat('\n', content));
             setAllowlistRerender(true);
         } catch (e) {
             logger.debug(e.message);
@@ -102,7 +114,7 @@ const Allowlist = observer(() => {
     const saveClickHandler = async () => {
         if (settingsStore.allowlistEditorContentChanged) {
             const value = editorRef.current.editor.getValue();
-            await settingsStore.saveAllowlist(value);
+            await saveAllowlist(value);
         }
     };
 
@@ -150,6 +162,7 @@ const Allowlist = observer(() => {
                     )}
                 inlineControl={<AllowlistSwitcher />}
             />
+            <DynamicRulesLimitsWarning useWrapper />
             <Editor
                 name="allowlist"
                 editorRef={editorRef}

@@ -20,7 +20,7 @@ import React, { useContext, useEffect } from 'react';
 import {
     HashRouter,
     Route,
-    Switch,
+    Routes,
 } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
@@ -45,6 +45,7 @@ import { Loader } from '../../../common/components/Loader';
 import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { OptionsPageSections } from '../../../../common/nav';
+import { translator } from '../../../../common/translators/translator';
 import { Icons } from '../ui/Icons';
 
 import '../../styles/styles.pcss';
@@ -105,7 +106,24 @@ const Options = observer(() => {
         };
 
         (async () => {
-            await settingsStore.requestOptionsData(true);
+            const { areFilterLimitsExceeded } = await settingsStore.requestOptionsData(true);
+
+            // Show notification about changed filter list by browser only once.
+            if (__IS_MV3__ && areFilterLimitsExceeded) {
+                uiStore.addMv3Notification({
+                    description: translator.getMessage('popup_limits_exceeded_warning'),
+                    extra: {
+                        link: translator.getMessage('options_rule_limits'),
+                    },
+                });
+            }
+
+            // Note: Is it important to check the limits after the request for
+            // options data is completed, because the request for options data
+            // will wait until the background service worker wakes up.
+            if (__IS_MV3__) {
+                await settingsStore.checkLimitations();
+            }
 
             await subscribeToMessages();
         })();
@@ -130,17 +148,19 @@ const Options = observer(() => {
                     <div className="content">
                         <Notifications />
                         <Mv3Notifications />
-                        <Switch>
-                            <Route path="/" exact component={General} />
-                            <Route path={`/${OptionsPageSections.filters}`} component={Filters} />
-                            <Route path={`/${OptionsPageSections.stealth}`} component={Stealth} />
-                            <Route path={`/${OptionsPageSections.allowlist}`} component={Allowlist} />
-                            <Route path={`/${OptionsPageSections.userFilter}`} component={UserRules} />
-                            <Route path={`/${OptionsPageSections.miscellaneous}`} component={Miscellaneous} />
-                            { __IS_MV3__ && <Route path={`/${OptionsPageSections.ruleLimits}`} component={RulesLimits} /> }
-                            <Route path={`/${OptionsPageSections.about}`} component={About} />
-                            <Route component={General} />
-                        </Switch>
+                        <Routes>
+                            <Route path="/" exact element={<General />} />
+                            <Route path={`/${OptionsPageSections.filters}`} element={<Filters />} />
+                            <Route path={`/${OptionsPageSections.stealth}`} element={<Stealth />} />
+                            <Route path={`/${OptionsPageSections.allowlist}`} element={<Allowlist />} />
+                            <Route path={`/${OptionsPageSections.userFilter}`} element={<UserRules />} />
+                            <Route path={`/${OptionsPageSections.miscellaneous}`} element={<Miscellaneous />} />
+                            {__IS_MV3__ && (
+                                <Route path={`/${OptionsPageSections.ruleLimits}`} element={<RulesLimits />} />
+                            )}
+                            <Route path={`/${OptionsPageSections.about}`} element={<About />} />
+                            <Route element={<General />} />
+                        </Routes>
                     </div>
                     <Footer />
                 </div>

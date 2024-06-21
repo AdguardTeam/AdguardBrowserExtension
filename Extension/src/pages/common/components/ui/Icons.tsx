@@ -113,6 +113,10 @@ export const Icons = () => {
                 <path d="M14 6V10H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M14 18V14H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
+
+            <symbol id="cross" width="24" height="24">
+                <path stroke="currentColor" d="M6.429 6.796 17.604 18.61M6.429 18.576 17.605 6.76" />
+            </symbol>
         </svg>
     );
 };

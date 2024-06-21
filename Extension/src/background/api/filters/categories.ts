@@ -140,7 +140,7 @@ export class Categories {
      * Returns specified group metadata by filter id.
      *
      * @param filterId Filter id.
-     * @returns {GroupMetadata | undefined} Specified {@link GroupMetadata | group metadata }
+     * @returns Specified {@link GroupMetadata | group metadata }
      * or undefined.
      */
     public static getGroupByFilterId(filterId: number): GroupMetadata | undefined {
@@ -370,7 +370,7 @@ export class Categories {
      *
      * @returns List of filters ids.
      */
-    private static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
+    public static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
         const filtersMetadata = FiltersApi.getFiltersMetadata();
 
         return filtersMetadata

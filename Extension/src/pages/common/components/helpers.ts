@@ -21,13 +21,8 @@ import { MIN_LOADER_SHOWING_TIME_MS } from '../constants';
 
 /**
  * Checks if the extension is MV3, and
- * - if so it returns a new callback that starts showing a loader for at least {@link MIN_LOADER_SHOWING_TIME_MS},
+ * - if so it returns a new callback and shows a loader for at least {@link MIN_LOADER_SHOWING_TIME_MS},
  * - otherwise (for MV2) it returns the callback as it is.
- *
- * Note: it may happen that async callback is passed but it is not awaited, e.g. FiltersService.enableFilter,
- * that's why if the callback succeeds, the function does not hide the loader
- * and it should be done on options page data update (should be fixed later AG-33293);
- * if the callback throws an error, the function hides the loader and rethrows the error.
  *
  * @param setShowLoaderCb Callback to set the loader visibility.
  * @param callback Async callback to run.
@@ -35,39 +30,6 @@ import { MIN_LOADER_SHOWING_TIME_MS } from '../constants';
  * @returns Async callback with the loader showing for at least {@link MIN_LOADER_SHOWING_TIME_MS}.
  */
 export const addMinDelayLoader = (
-    setShowLoaderCb: (showLoader: boolean) => void,
-    callback: (...args: any[]) => Promise<any>,
-) => {
-    if (!__IS_MV3__) {
-        return callback;
-    }
-
-    const callbackWithMinDuration = addMinDurationTime(callback, MIN_LOADER_SHOWING_TIME_MS);
-
-    return async (...args: unknown[]) => {
-        setShowLoaderCb(true);
-        try {
-            const response = await callbackWithMinDuration(...args);
-            // TODO: some async callback are not awaited, e.g. FiltersService.enableFilter,
-            // so the loader should not be hidden here, but on options page data update; should be fixed later AG-33293
-            // setShowLoaderCb(false);
-            return response;
-        } catch (e) {
-            setShowLoaderCb(false);
-            throw e;
-        }
-    };
-};
-
-/**
- * Similar to {@link addMinDelayLoader}, but hides the loader after the callback is executed.
- *
- * @param setShowLoaderCb Callback to set the loader visibility.
- * @param callback Async callback to run.
- *
- * @returns Async callback with the loader showing for at least {@link MIN_LOADER_SHOWING_TIME_MS}.
- */
-export const addMinDelayLoaderAndRemove = (
     setShowLoaderCb: (showLoader: boolean) => void,
     callback: (...args: any[]) => Promise<any>,
 ) => {
