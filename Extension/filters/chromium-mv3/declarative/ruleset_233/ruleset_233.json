@@ -1,5 +1,66 @@
 [
 	{
+		"id": 77,
+		"action": {
+			"type": "redirect",
+			"redirect": {
+				"transform": {
+					"queryTransform": {
+						"removeParams": [
+							"caid"
+						]
+					}
+				}
+			}
+		},
+		"condition": {
+			"urlFilter": "||v.fwmrm.net/ad/g/1",
+			"isUrlFilterCaseSensitive": false,
+			"resourceTypes": [
+				"main_frame",
+				"sub_frame",
+				"stylesheet",
+				"script",
+				"image",
+				"font",
+				"object",
+				"xmlhttprequest",
+				"ping",
+				"media",
+				"websocket",
+				"other"
+			]
+		},
+		"priority": 1
+	},
+	{
+		"id": 98,
+		"action": {
+			"type": "redirect",
+			"redirect": {
+				"transform": {
+					"queryTransform": {
+						"removeParams": [
+							"browser"
+						]
+					}
+				}
+			}
+		},
+		"condition": {
+			"urlFilter": "&browser=MozillaFirefox",
+			"initiatorDomains": [
+				"mtv.fi",
+				"mtvuutiset.fi"
+			],
+			"resourceTypes": [
+				"xmlhttprequest"
+			],
+			"isUrlFilterCaseSensitive": false
+		},
+		"priority": 251
+	},
+	{
 		"id": 74,
 		"action": {
 			"type": "redirect",
@@ -2867,64 +2928,18 @@
 		"priority": 100201
 	},
 	{
-		"id": 77,
+		"id": 1367,
 		"action": {
-			"type": "redirect",
-			"redirect": {
-				"transform": {
-					"queryTransform": {
-						"removeParams": [
-							"caid"
-						]
-					}
-				}
-			}
+			"type": "block"
 		},
 		"condition": {
-			"urlFilter": "||v.fwmrm.net/ad/g/1",
-			"isUrlFilterCaseSensitive": false,
-			"resourceTypes": [
-				"main_frame",
-				"sub_frame",
-				"stylesheet",
-				"script",
-				"image",
-				"font",
-				"object",
-				"xmlhttprequest",
-				"ping",
-				"media",
-				"websocket",
-				"other"
-			]
-		},
-		"priority": 1
-	},
-	{
-		"id": 98,
-		"action": {
-			"type": "redirect",
-			"redirect": {
-				"transform": {
-					"queryTransform": {
-						"removeParams": [
-							"browser"
-						]
-					}
-				}
-			}
-		},
-		"condition": {
-			"urlFilter": "&browser=MozillaFirefox",
-			"initiatorDomains": [
-				"mtv.fi",
-				"mtvuutiset.fi"
-			],
+			"regexFilter": "/https:\\/\\/[www]{3}\\.v{0}t{1}f{0}e{1}f{0}l{1}f{0}s{1}f{0}g{0}u{1}\\.fi\\/[\\w]{3}\\?[\\d]{8}\\+[\\d]/",
+			"domainType": "firstParty",
 			"resourceTypes": [
 				"xmlhttprequest"
 			],
 			"isUrlFilterCaseSensitive": false
 		},
-		"priority": 251
+		"priority": 102
 	}
 ]

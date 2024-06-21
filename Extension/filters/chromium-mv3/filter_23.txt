@@ -1,9 +1,9 @@
-! Checksum: k4i0s1k+An0mDcQsna4lew
-! Diff-Path: ../patches/23/23-s-1718728537-3600.patch
+! Checksum: S4erE/qKqhJE9lNF5o8GOA
+! Diff-Path: ../patches/23/23-s-1718973330-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.4.84
-! TimeUpdated: 2024-06-18T16:33:41+00:00
+! Version: 2.0.4.86
+! TimeUpdated: 2024-06-21T12:33:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -4617,6 +4617,7 @@ $script,third-party,denyallow=rsc.cdn77.org|linkvertise.com|fastly.net|staticall
 !
 !
 !
+goloskarpat.info##.gkad
 newsarmenia.am##.partner
 inkorr.com##.tg-box
 fakty.ua##.FKY_VIDEO
@@ -4860,6 +4861,7 @@ citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
 !
 !
 !
+segodnya.ua##.article__banner-container
 goloskarpat.info##.gkad
 kurs.com.ua##div[data-display-before="РЕКЛАМА"]
 unn.ua###ads-sidebar
@@ -5267,7 +5269,7 @@ lubimiygorod.od.ua##img[alt="baner"]
 ||agro-business.com.ua/images/bgmax/
 .com^|$other,xmlhttprequest,domain=football.ua
 .com/?*=*=$domain=football.ua
-goloskarpat.info##.advertising
+segodnya.ua,goloskarpat.info##.advertising
 ogo.ua###banners-top
 /\/images[0-9]?\/(560h110|[a-z]{4,6}-banner.*)\.gif/$domain=kg.ua
 ||comments.ua/img/elits.png
@@ -5809,7 +5811,7 @@ osvita.ua##div[class="block w300 wrapbanner"]
 patrioty.org.ua##div[id^="ads"]
 pc-torrent.net##a[href^="https://rdr.salesdoubler.com.ua/"]
 pdrs.dp.ua##.gadtable
-pmg.ua##div[class^="advertising"]
+segodnya.ua,pmg.ua##div[class^="advertising"]
 portal.lviv.ua##.wonderpluginslider[data-width="470"][data-height="200"]
 portaltele.com.ua##.td-pb-row > div.td-main-sidebar > div.td-ss-main-sidebar > aside[class^="td_block_template_"]
 portaltele.com.ua##.top-ads-links

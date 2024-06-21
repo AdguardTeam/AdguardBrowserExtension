@@ -1,9 +1,9 @@
-! Checksum: bJn9LHct97NNmkVsyRFCqQ
-! Diff-Path: ../patches/21/21-s-1718868969-3600.patch
+! Checksum: i21PBPqXttUy7DZVKgwN0A
+! Diff-Path: ../patches/21/21-s-1718958899-3600.patch
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.23.51
-! TimeUpdated: 2024-06-20T07:33:48+00:00
+! Version: 2.0.23.53
+! TimeUpdated: 2024-06-21T08:33:05+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -108,6 +108,8 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/181493
+livesport.ru##.z_soc
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181644
 obozrevatel.com##.recommendation
 ! https://github.com/kargig/greek-adblockplus-filter/issues/111
@@ -5179,6 +5181,8 @@ theguardian.com##.contributions__adblock
 !
 ! SECTION: Self-promo - Regular rules
 !
+faselhds.*##.alert-danger
+faselhds.*##body > div[id]:has(> div > a[href^="https://www.faselplus.com/onboarding?"])
 hesgoal.watch###block-9
 email1.io##.browser-card
 thetimes.com#$#html { overflow: auto !important; }

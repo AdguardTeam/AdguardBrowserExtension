@@ -1,9 +1,9 @@
-! Checksum: eQNVjWPVnqWsYlKnR6+1pQ
-! Diff-Path: ../patches/17/17-s-1716564929-3600.patch
+! Checksum: l6NpkPfoklebyH6XYvBc7w
+! Diff-Path: ../patches/17/17-s-1718901308-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.51
-! TimeUpdated: 2024-05-24T15:33:28+00:00
+! Version: 2.0.8.62
+! TimeUpdated: 2024-06-20T16:33:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -21,6 +21,8 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! channelsight.com
+$removeparam=cstrackid
 ! Tracking in casino links
 /?affijet-click=$removeparam
 ! https://theaffiliateplatform.com/affiliate-custom-links/
@@ -356,6 +358,32 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/181725
+||email1.io^$removeparam=aid
+! https://github.com/AdguardTeam/AdguardFilters/issues/181404
+||blogmura.com^$removeparam=p_cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/181299
+||nvidia.com^$removeparam=jso
+! https://github.com/AdguardTeam/AdguardFilters/issues/181125
+||booking.com^$removeparam=aid
+! https://github.com/AdguardTeam/AdguardFilters/issues/180304
+||nytimes.com^$removeparam=smid
+||nytimes.com^$removeparam=referringSource
+||nytimes.com^$removeparam=sgrp
+||nytimes.com^$removeparam=impression_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/180890
+||shimotsuke.co.jp^$removeparam=rankinghour
+||shimotsuke.co.jp^$removeparam=top
+||shimotsuke.co.jp^$removeparam=newsletter
+||shimotsuke.co.jp^$removeparam=relatedarticle
+||shimotsuke.co.jp^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/180896
+||boncharge.com^$removeparam=shpxid
+! https://github.com/AdguardTeam/AdguardFilters/issues/180000
+||plarium.com/landings/$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/180785
+||lancasterarchery.com^$removeparam=af_lnk
+||lancasterarchery.com^$removeparam=dt_id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179379
 ||lenta.ru^$removeparam=es
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179934
@@ -1062,6 +1090,12 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||tiktok.com^$removeparam=share_app_id
 ||tiktok.com^$removeparam=share_author_id
 ||tiktok.com^$removeparam=tt_from
+! https://github.com/AdguardTeam/AdguardFilters/issues/181809
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-750307
+||tiktok.com^$removeparam=_d
+||tiktok.com^$removeparam=share_link_id
+||tiktok.com^$removeparam=u_code
+||tiktok.com^$removeparam=_r
 ! email/copy link function
 ||tiktok.com/@*/video/*$removeparam=is_from_webapp
 ||tiktok.com/@*/video/*$removeparam=sender_device
@@ -2067,7 +2101,6 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||visit.digidip.net^$removeparam=/^(ppref|ref|pid)=/
 ||ad.admitad.com^$removeparam=/^subid/
 ||mvideo.ru^$removeparam=/^(_requestid|reff)=/
-||nytimes.com^$removeparam=impression_id
 !
 ||websearch.rakuten.co.jp/Web?$removeparam=ref
 ||rakuten.co.jp^*&trflg=$removeparam=trflg

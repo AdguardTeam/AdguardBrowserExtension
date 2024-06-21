@@ -1,14 +1,14 @@
-! Checksum: y/y63TWizNe8wF6Xnj3FDg
-! Diff-Path: ../patches/227/227-s-1718802282-14400.patch
+! Checksum: MryGI1dXEXdfZeT19s4oAw
+! Diff-Path: ../patches/227/227-s-1718888657-14400.patch
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.18.65
-! TimeUpdated: 2024-06-19T13:01:55+00:00
+! Version: 2.0.18.66
+! TimeUpdated: 2024-06-20T13:01:50+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.0619.3
+! OriginalVersion: 2024.0620.1
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://community.list-kr.com/docs/
@@ -1336,11 +1336,8 @@
 /^https:\/\/yt[0-9]+\.org\/files\/attach\/banner_images\/[0-9]+\/([0-9-]+(x|X)[0-9]+|(%[A-Z0-9]+)+)\./$domain=yt723.org|yt724.org|yt725.org|yt726.org|yt727.org|yt728.org|yt729.org|yt730.org|yt731.org|yt732.org|yt733.org
 /^https:\/\/bookmoa[0-9]+\.com\/data\/apms\/background\//
 ||kormovie.com/img/*.gif|
-! FIXME: invalid regexFilter is generated in rulesets
-! https://uploads.adguard.org/slle4sycen51a.png
-! /^https:\/\/\jusoyo[0-9]+\.(net|com)\/data\/apms\/background\//
-! FIXME: invalid regexFilter is generated in rulesets
-! /^https:\/\/\jusoyo[0-9]+\.(net|com)\/.+\.webp$/
+/^https:\/\/\jusoyo[0-9]+\.(net|com)\/data\/apms\/background\//
+/^https:\/\/\jusoyo[0-9]+\.(net|com)\/.+\.webp$/
 /^https:\/\/yadong[0-9]+\.net\/Uploads\/images\/[0-9]{4}-[0-9]{2}-[0-9]{2}/
 ||blogger.googleusercontent.com^$domain=yasyadong.com
 ||i.imgur.com^$domain=yasyadong.com
@@ -1533,6 +1530,7 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+muko.kr##.xe-widget-wrapper > div[style]:has(a[href^="/ad"])
 m.gmarket.co.kr##.js-impressionable
 gmarket.co.kr###login-banner-box
 www.naver.com###shortcutArea .shortcut_item:has( > a[href*="veta.naver.com"] > i.ico_ad)
@@ -1577,7 +1575,6 @@ app.dcinside.com,m.dcinside.com##.brick-wid > .grid:has(> *[id*="_title"] ~ *[st
 www.naver.com###newsstand ~ #feed.id_cargame .feed_box:has(span[class^="HighlightedColumnView-module__tag_ad_"])
 www.naver.com###root div[class^="Layout-module__content_"]:has(iframe[src^="https://shopsquare.naver.com/"])
 www.naver.com##div[class^="Layout-module__content_area_"]:has(> div[class*="_banner_"])
-muko.kr##.col-md-3 .eq .xe-widget-wrapper:has(.plusad_point)
 tftps.gg###content-container > div[class*=" "]:has(> .vm-placement)
 tftps.gg###top-area + div[class*=" "] > div[class*=" "]:not([id]):has(> .vm-placement)
 tftps.gg###top-area div[class*=" "]:has(> .vm-placement)
@@ -2650,6 +2647,7 @@ www.erdcloud.com##.erd-ads-area
 !
 ! DOMAIN-REFRESHER: START
 !
+tv25.co##.code-block
 tv40.wiki,tv41.wiki,tv42.wiki,tv43.wiki,tv44.wiki,tv45.wiki,tv46.wiki,tv47.wiki,tv48.wiki,tv49.wiki,tv50.wiki,tv51.wiki,tv52.wiki,tv53.wiki##img[src*="images.request-support.com/br/"]
 xn--vv4b11c.com##.mp4-banner-view
 xn--vv4b11c.com###xcontent-goodsite
@@ -3195,7 +3193,6 @@ mule.co.kr#$?#.section-lefttop-center:has(> .mule-today) { width: 100% !importan
 zzzz.lol#$?#.ent_wrapper.slide-vertical-effect .ent_news:not(:has(.ent_prefix:contains(ZZAPFLIX))) { remove: true; }
 !
 ! DOMAIN-REFRESHER: END
-muko.kr#?#.bd_lst .notice:has(.no > .list:contains(AD))
 search.tmon.co.kr#?#.deallist_wrap li[data-d].item:has(span[role="presentation"] > button:contains(AD))
 namu.wiki#?#aside > div[class*=" "]:has(> img[class] ~ div[class]:contains(광고))
 m.pay.naver.com#?##content > .recommend_section:has(> div[style^="padding:"] > #m_pay_deliverytracking):contains(/^[ \\n]+$/)
@@ -3469,6 +3466,7 @@ play.aidungeon.io,tamrieltradecentre.com,downloads.descendant.me,html5.gamedistr
 !
 ! DOMAIN-REFRESHER: START
 !
+||fundingchoicesmessages.google.com^$domain=tv25.co
 lover932.net,lover933.net,lover934.net,lover935.net,lover936.net,lover937.net,lover938.net,lover939.net,lover940.net,lover941.net#%#//scriptlet('prevent-setTimeout', 'document[_0x')
 !
 ! DOMAIN-REFRESHER: END

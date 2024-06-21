@@ -1,9 +1,9 @@
-! Checksum: VWaS6seNv/bU4CiRKxRcGw
-! Diff-Path: ../patches/19/19-s-1718822203-3600.patch
+! Checksum: dsLbE8pI6OqvVMuc3yGcrw
+! Diff-Path: ../patches/19/19-s-1718984086-3600.patch
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.38.35
-! TimeUpdated: 2024-06-19T18:34:51+00:00
+! Version: 2.0.38.47
+! TimeUpdated: 2024-06-21T15:32:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -349,9 +349,12 @@ fosspost.org,portalvirtualreality.ru,pingvin.pro,bonobono.com,curbsideclassic.co
 ! Exceptions are also required because these requests can be blocked by other rules
 !#safari_cb_affinity(general)
 ||succeedscene.com^$badfilter
+@@||succeedscene.com/_adslot/
+@@||succeedscene.com/pagead/ads?ad=
 @@||succeedscene.com/*/ads.load.js
 @@||succeedscene.com/ads/*/*.js
 @@||succeedscene.com/admr/site-adbanner.js
+@@||succeedscene.com/customads/custom_ads.js
 !#safari_cb_affinity
 ! https://github.com/AdguardTeam/AdguardFilters/pull/142877
 /^https:\/\/[0-9a-z]{7,25}\.com\/v2(?:\/0\/)?(?=[0-9a-z_-]{0,84}[A-Z])(?=[a-zA-Z_-]{0,84}[0-9])[0-9a-zA-Z_-]{54,85}(#\?v=[0-9a-f]{32})?$/$ping,script,xmlhttprequest,third-party,match-case
@@ -377,6 +380,8 @@ dailyvoice.com,сnbc.com#%#//scriptlet('abort-current-inline-script', 'Object.fr
 slashfilm.com#%#//scriptlet('abort-current-inline-script', 'String.fromCharCode', '/admiral|String\.fromCharCode\(97,( )*?100,( )*?109,( )*?105,( )*?114,( )*?97,( )*?108\)|a%64%6d%69%72%61%6c|adm%69%72%61l|%61%64m%69r%61l|-engaged[\s\S]*?googletag[\s\S]*?decodeURI/')
 ! #%#//scriptlet('set-constant', 'loadAdmiral', 'noopFunc')
 cbssports.com#%#//scriptlet('set-constant', 'loadAdmiral', 'noopFunc')
+! #%#//scriptlet('set-constant', 'admrlLoaded', 'true')
+mlive.com#%#//scriptlet('set-constant', 'admrlLoaded', 'true')
 ! bait - Admiral overlay
 howtogeek.com#%#//scriptlet('prevent-element-src-loading', 'script', 'nebulousgarden.com')
 ##body div.bOvWNQ
@@ -1663,6 +1668,8 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+4spn.github.io#?##oframepreroll pjsdiv:has(> pjsdiv[style^="position: absolute;"]:contains(ADBLOCK))
+redv.co##div[data-reactroot] > div[class] > form + div[class^="sc-"]:has(> ins.adsbygoogle[data-ad-client])
 playnow.pl###js-player-wrapper > .c-adblock-popup
 geotastic.net##.ad-hero-teaser
 lephoceen.fr#$#body { overflow: auto !important; }
@@ -3976,6 +3983,7 @@ utsports.com##body > div[class][aria-label="Ad Blocker Detected"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/109655
 !#safari_cb_affinity(general,privacy)
 @@||meteoblue.com/build/website/gpt.js
+@@||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=meteoblue.com
 !#safari_cb_affinity
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100714
@@ -4208,6 +4216,13 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+communities.win###app > main ~ div:has(> div > button[aria-label="Close"])
+edumail.icu##.fixed.bottom-0
+wenku.baidu.com##.wk-chat-modal
+smclinic.ru#%#//scriptlet('set-constant', 'popup.showWin', 'noopFunc')
+mydown.yesky.com##.bottom_fc
+mail.ru##.popup-container:has(> div.snack-container > div.snack > div.snack__content > a[href="https://help.mail.ru/legal/terms/common/mainrecommendation"])
+mail.ru##.rn-container:has(> div.bar > div.bar__text > a[href="https://help.mail.ru/legal/terms/common/mainrecommendation"])
 thepostmillennial.com##div[aria-labelledby="modalLabel"][aria-modal="true"]
 thepostmillennial.com##.modal-backdrop
 notube.re##.modal-plus
@@ -8152,8 +8167,8 @@ touristik-aktuell.de,zinspilot.de,fussball.com,ionos.it,giardiniblog.it#$##bio_e
 puntocellulare.it#$?##pushbox { remove: true; }
 puntocellulare.it#%#//scriptlet('set-cookie', 'ilike', '1')
 shotam.info,khiphach.vn,bahndampf.de,vpncompare.co.uk,nurgsm.com##.sgpb-popup-dialog-main-div-wrapper
-shotam.info,khiphach.vn,bahndampf.de,jardinierparesseux.com,enfasys.net,unimoni.in,gameviet.mobi,gartenflora.de,pasada.com.tr,sonperiyot.com,vpncompare.co.uk,nurgsm.com,retromedia.pl,ranchoportugues.com.br,knote.com.tr,capage.in,ekremcoskundoner.com.tr,savunmahaber.com,python-scripts.com,labkom.co.id,petroturk.com##.sgpb-popup-overlay
-jardinierparesseux.com,enfasys.net,unimoni.in,gameviet.mobi,gartenflora.de,pasada.com.tr,sonperiyot.com,retromedia.pl,ranchoportugues.com.br,knote.com.tr,capage.in,ekremcoskundoner.com.tr,savunmahaber.com,python-scripts.com,labkom.co.id,petroturk.com###sgpb-popup-dialog-main-div-wrapper
+sozgazetesi.org.tr,shotam.info,khiphach.vn,bahndampf.de,jardinierparesseux.com,enfasys.net,unimoni.in,gameviet.mobi,gartenflora.de,pasada.com.tr,sonperiyot.com,vpncompare.co.uk,nurgsm.com,retromedia.pl,ranchoportugues.com.br,knote.com.tr,capage.in,ekremcoskundoner.com.tr,savunmahaber.com,python-scripts.com,labkom.co.id,petroturk.com##.sgpb-popup-overlay
+sozgazetesi.org.tr,jardinierparesseux.com,enfasys.net,unimoni.in,gameviet.mobi,gartenflora.de,pasada.com.tr,sonperiyot.com,retromedia.pl,ranchoportugues.com.br,knote.com.tr,capage.in,ekremcoskundoner.com.tr,savunmahaber.com,python-scripts.com,labkom.co.id,petroturk.com###sgpb-popup-dialog-main-div-wrapper
 voltimum.de,sicurezza.net##.mf-modal-overlay
 voltimum.de,sicurezza.net##.mf-modal-iframe
 apk.tw###main01
@@ -11632,7 +11647,6 @@ mdzol.com##.notification-modal
 gercekgundem.com###notification-prompt
 ||canalnet.tv/_templates/desktop/includes/js/net_alerts.js
 agazeta.com.br##.notification-dialog
-||customer-gw.hepsiburada.com/api/users/notificationpermissions/
 calc.ru###notifies_subscription_info
 ||calc.ru/js/push_subscription.js
 zakon.kz###allowNotificationsPopup
@@ -12289,7 +12303,7 @@ corrierenazionale.it,trustedreviews.com,superdeluxeedition.com,schmuckwerk.de,de
 ! ##.subscribe-widget
 admissionnotice.com,forbesindia.com,materializedview.io,computerenhance.com,clubstrannik.ru,noktabursa.com.tr,girlonthenet.com,substack.com,santiye.com.tr,rb.ru,investors.com##.subscribe-widget
 ! ##.subscribe-block
-pozirk.online,zagorodna.com,markformelle.by,mc.today,dobrotsen.ru,65ymas.com,techtimes.com,elplural.com,kinometro.ru,sport24.ua,newsweek.com,positronica.ru,eurasia.expert,hockey.by,kleo.ru,focusme.com,charbelnemnom.com,iphonegeek.me,afanasy.biz,media.nenaprasno.ru,vogue.ru,hyperhost.ua,pravda.ru,reverso.net,vokrug.tv##.subscribe-block
+rozetked.me,pozirk.online,zagorodna.com,markformelle.by,mc.today,dobrotsen.ru,65ymas.com,techtimes.com,elplural.com,kinometro.ru,sport24.ua,newsweek.com,positronica.ru,eurasia.expert,hockey.by,kleo.ru,focusme.com,charbelnemnom.com,iphonegeek.me,afanasy.biz,media.nenaprasno.ru,vogue.ru,hyperhost.ua,pravda.ru,reverso.net,vokrug.tv##.subscribe-block
 ! ##.mc4wp-form
 eleftherostypos.gr,presse-citron.net,teknoloji.org,slantmagazine.com,newsmaker.md,seance.ru,photorecept.ru,helpnetsecurity.com,forbes.com.br,javacodegeeks.com,turizmgunlugu.com##.mc4wp-form
 ! Turkish digital magazines
@@ -12308,6 +12322,9 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 !
 ! SECTION: Subscriptions - Regular rules
 !
+segodnya.ua##.article__newsfeeds
+standard.co.uk##div[data-island-hydration-component="NewsletterSignup"]
+kod.ru##div[class^="NewsDetail_smallBanner"]
 bbc.com##section[aria-labelledby="Подписывайтесь-на-наши-соцсети-и-рассылку"]
 growdiaries.com#$#body { overflow: auto !important; }
 growdiaries.com#$#.modal:has(img[src^="/images/signup_"]) { display: none !important; }
@@ -18950,7 +18967,7 @@ der-postillon.com##.whatsapp-abo
 mybroadband.co.za##.whatsapp-button
 mobil.berliner-zeitung.de##.whatsapp-widget-blz
 erdbeerlounge.de##.whatsapp-widget-container
-hdwalle.com,androidcentral.com,windowscentral.com,cinemablend.com,ef.com,ef.kz,exame.com,vandalism-sounds.com,deadline.com,emag.hu,cyclingnews.com,ef.ru,voxel.com.br##.widget-newsletter
+motor1.com,hdwalle.com,androidcentral.com,windowscentral.com,cinemablend.com,ef.com,ef.kz,exame.com,vandalism-sounds.com,deadline.com,emag.hu,cyclingnews.com,ef.ru,voxel.com.br##.widget-newsletter
 radiotimes.com,bikeradar.com##.widget-newsletter-sign-up
 beverfood.com,gamerant.ru##.widget-subscribe
 bestvpn.com##.widget-subscribe_widget
