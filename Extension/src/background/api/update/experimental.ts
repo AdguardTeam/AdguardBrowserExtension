@@ -17,6 +17,9 @@
  */
 
 import { z } from 'zod';
+import browser from 'webextension-polyfill';
+
+import { RULE_SET_NAME_PREFIX } from '@adguard/tswebextension/mv3';
 
 import {
     CustomFilterMetadataStorageData,
@@ -32,6 +35,19 @@ import { logger } from '../../../common/logger';
 import { filteredArray } from '../../schema/zod-helpers';
 
 /**
+ * Custom filter schema from the experimental extension.
+ */
+const customFilterSchema = z.object({
+    id: z.number(),
+    rules: z.string(),
+});
+
+/**
+ * Custom filter type.
+ */
+type CustomFilter = z.infer<typeof customFilterSchema>;
+
+/**
  * Filter info schema from the experimental extension.
  */
 const filterInfoSchema = z.object({
@@ -45,10 +61,22 @@ const filterInfoSchema = z.object({
     url: z.string().url().optional(),
 });
 
+type FilterInfo = z.infer<typeof filterInfoSchema>;
+
 /**
  * Filters info schema from the experimental extension.
  */
 const filtersInfoSchema = filteredArray(filterInfoSchema);
+
+/**
+ * Custom filters rules schema from the experimental extension.
+ */
+const customFiltersRulesSchema = z.array(customFilterSchema);
+
+/**
+ * Alias for type from extension.
+ */
+type RuleResource = browser.Manifest.WebExtensionManifestDeclarativeNetRequestRuleResourcesItemType;
 
 /**
  * This module is used for migrating data from the experimental extension to the new mv3 extension.
@@ -109,14 +137,75 @@ export class Experimental {
     }
 
     /**
+     * Retrieves data from the custom_filters_rules field and prepares it into custom filters.
+     *
+     * @param customFiltersRules Custom filters rules object from the experimental extension.
+     * @returns Custom filters rules.
+     */
+    static getCustomFilters(customFiltersRules: unknown): CustomFilter[] {
+        const result = customFiltersRulesSchema.safeParse(customFiltersRules);
+
+        if (!result.success) {
+            logger.info('Failed to parse custom filters rules', result.error);
+            return [];
+        }
+
+        return result.data;
+    }
+
+    /**
+     * Filters out any filters that do not exist in the manifest's declarative_net_request rule_resources.
+     *
+     * @param filters Array of FilterInfo objects to filter.
+     * @param ruleResources Array of rule resources from the manifest.
+     * @returns Filtered array of FilterInfo objects that exist in the manifest rule resources.
+     */
+    static filterExistingRules(
+        filters: FilterInfo[],
+        ruleResources: RuleResource[],
+    ): FilterInfo[] {
+        return filters.filter((filter) => {
+            if (Experimental.isCustomFilter(filter)) {
+                return true;
+            }
+
+            const contains = ruleResources.some((ruleResource) => {
+                return ruleResource.id === `${RULE_SET_NAME_PREFIX}${filter.id}`;
+            });
+
+            if (!contains) {
+                logger.debug('Filter with id is not presented in the declarative rulesets');
+            }
+
+            return contains;
+        });
+    }
+
+    /**
+     * Checks if the filter is a custom filter.
+     *
+     * @param filter Filter info object.
+     * @returns True if the filter is a custom filter.
+     */
+    static isCustomFilter(filter: FilterInfo): boolean {
+        const CUSTOM_GROUP_ID = 0;
+        return filter.groupId === CUSTOM_GROUP_ID && filter.url !== undefined;
+    }
+
+    /**
      * Retrieves data from the filters_info field and prepares it into filters settings.
      *
      * @param filtersInfo Filters info object.
      * @param metadata Object with filters metadata. It is needed since a group id of a filter in
      * the experimental extension is different from in the new extension.
+     * @param ruleResources Array of rule resources from the manifest.
      * @returns Filters settings.
      */
-    static getFiltersSettings(filtersInfo: unknown, metadata: Metadata):
+    static getFiltersSettings(
+        filtersInfo: unknown,
+        metadata: Metadata,
+        ruleResources: RuleResource[],
+    ):
         {
             filtersState: FilterStateStorageData,
             groupsState: GroupStateStorageData,
@@ -133,7 +222,7 @@ export class Experimental {
             };
         }
 
-        const parsedFilters = result.data;
+        const parsedFilters = Experimental.filterExistingRules(result.data, ruleResources);
 
         const filtersState: FilterStateStorageData = {};
         parsedFilters.forEach(filter => {
@@ -150,7 +239,7 @@ export class Experimental {
         parsedFilters.forEach(filter => {
             if (filter.enabled) {
                 // special case for custom filters
-                if (filter.groupId === 0) {
+                if (Experimental.isCustomFilter(filter)) {
                     groupsState[filter.groupId] = {
                         enabled: true,
                         touched: true,
@@ -169,7 +258,7 @@ export class Experimental {
 
         const customFiltersState: CustomFilterMetadataStorageData = [];
         parsedFilters.forEach(filter => {
-            if (filter.url) {
+            if (Experimental.isCustomFilter(filter)) {
                 customFiltersState.push({
                     filterId: filter.id,
                     displayNumber: 0,
@@ -180,7 +269,7 @@ export class Experimental {
                     version: '',
                     checksum: '',
                     tags: [0],
-                    customUrl: filter.url,
+                    customUrl: filter.url!, // url is checked in the isCustomFilter method
                     trusted: false,
                     expires: 0,
                     timeUpdated: 0,
@@ -200,16 +289,26 @@ export class Experimental {
      *
      * @param dataFromStorage Data from the storage.
      * @param metadata Object with filters metadata.
+     * @param ruleResources Array of rule resources from the manifest.
      * @returns Migrated data.
      */
-    static migrateSettings(dataFromStorage: unknown, metadata: Metadata): { userrules: string[], settings: Settings } {
+    static migrateSettings(
+        dataFromStorage: unknown,
+        metadata: Metadata,
+        ruleResources: RuleResource[],
+    ):
+        {
+            userrules: string[],
+            settings: Settings,
+            customFilters: CustomFilter[]
+        } {
         const userrules = Experimental.getUserRules((dataFromStorage as {
             user_rules?: unknown
         }).user_rules);
 
         const filtersSettings = Experimental.getFiltersSettings((dataFromStorage as {
             filters_info?: unknown
-        }).filters_info, metadata);
+        }).filters_info, metadata, ruleResources);
 
         const settings = {
             ...defaultSettings,
@@ -218,9 +317,14 @@ export class Experimental {
             [SettingOption.CustomFilters]: JSON.stringify(filtersSettings.customFiltersState),
         };
 
+        const customFilters = Experimental.getCustomFilters((dataFromStorage as {
+            custom_filters_rules?: unknown
+        }).custom_filters_rules);
+
         return {
             userrules,
             settings,
+            customFilters,
         };
     }
 }
