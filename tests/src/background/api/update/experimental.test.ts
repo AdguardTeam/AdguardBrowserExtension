@@ -31,7 +31,7 @@ describe('experimental', () => {
 
     describe('retrieves filters and groups', () => {
         it('returns empty objects if the data is not provided', () => {
-            expect(Experimental.getFiltersSettings(null, metadata))
+            expect(Experimental.getFiltersSettings(null, metadata, []))
                 .toEqual({
                     customFiltersState: [],
                     groupsState: {},
@@ -40,7 +40,7 @@ describe('experimental', () => {
         });
 
         it('does not fail if some data is empty or invalid', () => {
-            expect(Experimental.getFiltersSettings([{}], metadata))
+            expect(Experimental.getFiltersSettings([{}], metadata, []))
                 .toEqual({
                     customFiltersState: [],
                     groupsState: {},
@@ -63,7 +63,11 @@ describe('experimental', () => {
                     'iconId': 'AD_BLOCKING',
                     'title': 'Block ads',
                 },
-            ], metadata))
+            ], metadata, [{
+                'id': 'ruleset_2',
+                'enabled': false,
+                'path': 'filters/declarative/ruleset_2/ruleset_2.json',
+            }]))
                 .toEqual({
                     customFiltersState: [],
                     groupsState: {
@@ -99,7 +103,11 @@ describe('experimental', () => {
                     'title': 'custom',
                     'url': 'https://custom-url.com',
                 },
-            ], metadata))
+            ], metadata, [{
+                'id': 'ruleset_2',
+                'enabled': false,
+                'path': 'filters/declarative/ruleset_2/ruleset_2.json',
+            }]))
                 .toEqual({
                     customFiltersState: [
                         {
@@ -161,7 +169,11 @@ describe('experimental', () => {
                     'ja_JP',
                 ],
                 'title': 'Japanese',
-            }], metadata))
+            }], metadata, [{
+                'id': 'ruleset_2',
+                'enabled': false,
+                'path': 'filters/declarative/ruleset_2/ruleset_2.json',
+            }]))
                 .toEqual({
                     customFiltersState: [],
                     groupsState: {
@@ -190,8 +202,9 @@ describe('experimental', () => {
             'user_rules_status': '',
         };
 
-        expect(Experimental.migrateSettings(data, metadata))
+        expect(Experimental.migrateSettings(data, metadata, []))
             .toEqual({
+                customFilters: [],
                 userrules: [],
                 settings: {
                     ...defaultSettings,

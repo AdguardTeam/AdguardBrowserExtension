@@ -95,18 +95,33 @@ export class UpdateApi {
      */
     static async migrateFromExperimental(): Promise<void> {
         const dataFromStorage = await browser.storage.local.get(null);
-        const metadata = await network.getLocalFiltersMetadata();
-
         if (!Experimental.isExperimental(dataFromStorage)) {
             return;
         }
 
+        const metadata = await network.getLocalFiltersMetadata();
+
+        const manifest = browser.runtime.getManifest();
+        if (!manifest.declarative_net_request) {
+            throw new Error('Cannot find declarative_net_request in manifest');
+        }
+
+        const ruleResources = manifest.declarative_net_request.rule_resources;
+
         const {
             settings,
             userrules,
-        } = Experimental.migrateSettings(dataFromStorage, metadata);
+            customFilters,
+        } = Experimental.migrateSettings(dataFromStorage, metadata, ruleResources);
 
         await storage.clear();
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const customFilter of customFilters) {
+            // eslint-disable-next-line no-await-in-loop
+            await FiltersStorage.set(customFilter.id, customFilter.rules.split(/\r?\n/));
+        }
+
         await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, userrules);
         await storage.set(ADGUARD_SETTINGS_KEY, settings);
     }

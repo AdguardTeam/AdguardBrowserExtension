@@ -102,6 +102,7 @@ const getOptionsDataWithRetry = async () => {
             const data = await messenger.getOptionsData();
             if (!data) {
                 await sleep(RETRY_DELAY_MS);
+                // eslint-disable-next-line @typescript-eslint/return-await
                 return innerRetry(retryTimes - 1);
             }
             return data;
