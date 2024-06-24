@@ -47,6 +47,7 @@ Test:
             # Copy all artifacts to the artifacts directory
             cp build/dev/build.txt artifacts/
             cp build/dev/chrome.zip artifacts/
+            cp build/dev/chrome-mv3.zip artifacts/
             cp build/dev/edge.zip artifacts/
             cp build/dev/firefox-amo.zip artifacts/
             cp build/dev/firefox-standalone.zip artifacts/
@@ -77,7 +78,7 @@ Test:
       pattern: chrome.zip
       required: true
     - name: chrome-mv3.zip
-      location: build/dev
+      location: artifacts
       pattern: chrome-mv3.zip
       required: true
     - name: edge.zip
