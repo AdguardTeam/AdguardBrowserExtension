@@ -50,6 +50,7 @@ Build:
             # Copy all artifacts to the artifacts directory
             cp build/beta/build.txt artifacts/
             cp build/beta/chrome.zip artifacts/
+            cp build/beta/chrome-mv3.zip artifacts/
             cp build/beta/edge.zip artifacts/
             cp build/beta/chrome.crx artifacts/
             cp build/beta/update.xml artifacts/
@@ -90,7 +91,7 @@ Build:
       shared: true
       required: true
     - name: chrome-mv3.zip
-      location: build/beta
+      location: artifacts
       pattern: chrome-mv3.zip
       shared: true
       required: false
