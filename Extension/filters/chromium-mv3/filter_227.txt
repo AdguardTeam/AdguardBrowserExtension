@@ -1,14 +1,14 @@
-! Checksum: MryGI1dXEXdfZeT19s4oAw
-! Diff-Path: ../patches/227/227-s-1718888657-14400.patch
+! Checksum: TyjIDnOLfeaGAYfFOGytiQ
+! Diff-Path: ../patches/227/227-s-1719219833-14400.patch
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.18.66
-! TimeUpdated: 2024-06-20T13:01:50+00:00
+! Version: 2.0.18.68
+! TimeUpdated: 2024-06-24T09:01:30+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.0620.1
+! OriginalVersion: 2024.0624.2
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://community.list-kr.com/docs/
@@ -523,6 +523,8 @@
 /data/banner.json?$domain=~nintendo.*
 /ad-manager.min.js
 !
+||d2c8akc1t97nhh.cloudfront.net/static/images/academies/*_ad_banner_$domain=academy.prompie.com
+||d2c8akc1t97nhh.cloudfront.net/media/creators/$domain=academy.prompie.com
 ||cvsnet.co.kr/image/2024/4/202404230404320390.png
 ||mitem.gmarket.co.kr/Item/PowerClickAd
 ||trendjournal.co.kr/theme/*/include/adsense.php
@@ -1530,6 +1532,8 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+mininote.co.kr##rs-fullwidth-wrap[style^="margin-top:"]
+mininote.co.kr##rs-module-wrap[id^="rev_slider_"]
 muko.kr##.xe-widget-wrapper > div[style]:has(a[href^="/ad"])
 m.gmarket.co.kr##.js-impressionable
 gmarket.co.kr###login-banner-box
@@ -2803,6 +2807,9 @@ x86.co.kr#@#.download_ad
 auto.danawa.com#%#//scriptlet('set-constant', 'NAVER_ADPOST_V2', 'noopFunc')
 ||shopsquare.naver.com^$badfilter
 ! TODO: remove the following filter if https://github.com/AdguardTeam/CoreLibs/issues/1831 is resolved.
+academy.prompie.com#$#body > #academyMainModal:has(a[href^="https://academy.prompie.com/banners/"]) { display: none !important; }
+academy.prompie.com#$#body.modal-open:has(> #academyMainModal a[href^="https://academy.prompie.com/banners/"]) { overflow: auto !important; }
+academy.prompie.com#$#body > #academyMainModal:has(a[href^="https://academy.prompie.com/banners/"]) ~ .modal-backdrop { display: none !important; }
 www.naver.com#$##shortcutArea { padding-left: 64px !important; }
 ggulzam.zal.kr#$#.partners-inside { display: none !important; }
 ggulzam.zal.kr#$#.inside-content-background-gradient { display: none !important; }

@@ -57,13 +57,6 @@ export const LOCAL_METADATA_FILE_NAME = 'filters.json';
 export const LOCAL_I18N_METADATA_FILE_NAME = 'filters_i18n.json';
 
 /**
- * Recommended filters tag ID.
- *
- * @see https://github.com/AdguardTeam/FiltersRegistry/blob/4528f7ae6b38aec90111a27efb0a7e0958d0cf37/tags/metadata.json#L40
- */
-export const RECOMMENDED_TAG_ID = 10;
-
-/**
  * List of AdGuard filters IDs.
  *
  * `12` is absent because Safari filter if obsolete and not used anymore.
