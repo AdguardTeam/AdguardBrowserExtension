@@ -674,7 +674,14 @@ class SettingsStore {
         }
 
         runInAction(() => {
-            this.filters.push(newFilter);
+            /**
+             * This was added because sometimes the filter might already be in the list.
+             * It happens in the case where a filter was added and the engine fired an
+             * event that it was updated and the options page already fetched options data.
+             */
+            if (!this.filters.some((f) => f.filterId === newFilter.filterId)) {
+                this.filters.push(newFilter);
+            }
             if (this.searchSelect !== SEARCH_FILTERS.ALL) {
                 this.setSearchSelect(SEARCH_FILTERS.ALL);
             }
