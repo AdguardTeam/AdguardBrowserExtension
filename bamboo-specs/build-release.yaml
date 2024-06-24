@@ -44,8 +44,19 @@ Build:
 
             # zip source files for publishing on AMO
             git ls-files | zip -@ build/release/source.zip
+
+            # Create artifacts directory if it doesn't exist
+            mkdir -p artifacts
+
+            # Copy all artifacts to the artifacts directory
+            cp build/release/build.txt artifacts/
+            cp build/release/chrome.zip artifacts/
+            cp build/release/firefox.zip artifacts/
+            cp build/release/edge.zip artifacts/
+            cp build/release/opera.zip artifacts/
+            cp build/release/source.zip artifacts/
     - inject-variables:
-        file: build/release/build.txt
+        file: artifacts/build.txt
         scope: RESULT
         namespace: inject
     - any-task:
@@ -67,36 +78,36 @@ Build:
             ls -la
 
             echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules
+            rm -rf node_modules build
             echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
-      location: build/release
+      location: artifacts
       pattern: build.txt
       shared: true
       required: true
     - name: chrome.zip
-      location: build/release
+      location: artifacts
       pattern: chrome.zip
       shared: true
       required: true
     - name: firefox.zip
-      location: build/release
+      location: artifacts
       pattern: firefox.zip
       shared: true
       required: true
     - name: edge.zip
-      location: build/release
+      location: artifacts
       pattern: edge.zip
       shared: true
       required: true
     - name: opera.zip
-      location: build/release
+      location: artifacts
       pattern: opera.zip
       shared: true
       required: true
     - name: source.zip
-      location: build/release
+      location: artifacts
       pattern: source.zip
       shared: true
       required: true
