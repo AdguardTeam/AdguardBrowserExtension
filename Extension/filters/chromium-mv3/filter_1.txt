@@ -1,9 +1,9 @@
-! Checksum: 2f2KE5GxnKkBYqDb1v6zsQ
-! Diff-Path: ../patches/1/1-s-1718973326-3600.patch
+! Checksum: mwoVE3BoqMsgtC18oE+TAQ
+! Diff-Path: ../patches/1/1-s-1719225462-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.91.74
-! TimeUpdated: 2024-06-21T12:31:12+00:00
+! Version: 2.0.91.75
+! TimeUpdated: 2024-06-24T10:31:19+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -4391,6 +4391,8 @@ modsforwot.ru,helpsetup.ru,vargr.ru,trialkeys.ru#%#//scriptlet("abort-on-propert
 modsforwot.ru,helpsetup.ru,vargr.ru,trialkeys.ru#%#//scriptlet("abort-on-property-read", "ad_nodes")
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/181707
+anidubonline.com#%#//scriptlet('prevent-xhr', '/(vast|getCode)\?/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181132
 ||v*.plrjs.org/*.xml$xmlhttprequest,redirect=nooptext,domain=volley.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177587
@@ -8078,7 +8080,6 @@ tlgrm.ru#?#.channel-feed > div.channel-feed__brick:has(> div.cfeed-card > div.cf
 day.ru##.b-a-n-e-r
 gameguru.ru##a[target="_blank"][href*="referal"] > img[title="Играть"]
 ||realt.by/uploads/pics/bsb-bank_mechty_
-wionews.com##.ad_fixed
 ura.news##.publication-c4
 k-ps.ru##.banner_iframe
 myfreesoft.ru#?##singlepost > div.post:has(> [id^="id-C-A-"])

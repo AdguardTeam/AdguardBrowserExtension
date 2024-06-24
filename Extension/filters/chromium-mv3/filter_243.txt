@@ -1,14 +1,14 @@
-! Checksum: Mu6M26uaZoz+pqZ8twNlLw
-! Diff-Path: ../patches/243/243-s-1718946233-14400.patch
+! Checksum: bok9I2WRw2p+FTU50GDk9w
+! Diff-Path: ../patches/243/243-s-1719205428-14400.patch
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.18.78
-! TimeUpdated: 2024-06-21T05:01:42+00:00
+! Version: 2.0.18.80
+! TimeUpdated: 2024-06-24T05:01:36+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2024-06-21 06:11:41 CEST
+! Last modified: 2024-06-24 06:59:31 CEST
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -681,9 +681,11 @@ hemhyra.se##.pageCookies, #ad-insider1, #ad-insider2, #ad-mobil-1, #ad-mobil-2, 
 hemmafixbloggen.se##.post-item:has(.sponsor-summary)
 hemmanytt.se###sa_slider_shortcode
 hemnet.se#$#body { overflow:unset!important }
+hemnet.se##div[data-testid="living-cost-logos-section"]:has(span[aria-label="annons"])
 hemnet.se##span:has-text(/annons från/i):upward(div[class^="ArticleContent_articlePage"])
-hemnet.se###ad_unit_placeholder, div[class^="Panorama_panoramaAd"], .listing__panorama-banner, .broker-banner
+hemnet.se###ad_unit_placeholder, div[class^="Panorama_panoramaAd"], .listing__panorama-banner, .broker-banner, div[class^="BrokerBanner"]
 hemnet.se##:is(article, li):has([class*="SponsoredLabel"], .article-card__sponsored-text)
+hemnet.se##:is(div[class^="Carousel"], #top_listing):has(div[class^="PaidPlacementLabel"])
 hemnet.se##:is(small, span):has-text(/sponsrad/i):upward(article, li, a)
 hemtrevligt.se##div[id^="hj-"], div[id^="ik-"]
 hemtrevligt.se##.article:has(.annons)
@@ -842,7 +844,7 @@ livesport.expressen.se##[class^="BauProvider"]
 livetochdiabetes.se###text-3
 livetsgoda.se#$#body { opacity:unset!important }
 livetsgoda.se##.penci-rlt-popup
-livetsgoda.se,betongforeningen.se,espressomedia.se,realtid.se,ordfrontmagasin.se,europaportalen.se,motorsportbladet.se,battregolf.se,nitroz.se,magasinethockey.se##a[target$="blank"] img
+livetsgoda.se,betongforeningen.se,espressomedia.se,realtid.se,ordfrontmagasin.se,europaportalen.se,motorsportbladet.se,battregolf.se,nitroz.se,magasinethockey.se##a[target$="blank"] img:not([class^="tweet"])
 livinguppsala.se##.fusion-post-content-container:has-text(/^annons/i):upward(article)
 livsmedelsverket.se###CookieConsent
 livsmedelsverket.se#$#.lock-scroll { overflow:unset!important }
@@ -1088,10 +1090,10 @@ samfalligheterna.se##.tdm-popup-modal-wrap
 samfalligheterna.se#$#.tds-locked-content { display:unset!important; }
 samfalligheterna.se##.td-cpt-post:has(a[href*="/sponsra"])
 samfalligheterna.se##.td_block_wrap:has-text(Annons)
-samnytt.se,samnytt.nu##a[href*="casino"], a[target="_blank"] img
+samnytt.se,samnytt.nu##a[href*="casino"], a[target="_blank"] img:not([class^="tweet-"])
 samnytt.se,samnytt.nu##a[target]:has(img[width="340"][height="680"])
-samnytt.se,samnytt.nu##div[class*="bg-opacity-"]:has(img[src*="samnyttbutiken.se"])
 samnytt.se,samnytt.nu##span:has-text(/Ann​ons|Ann​ons/i):upward(1)
+samnytt.se,samnytt.nu##.sticky div[class*="bg-opacity-"].items-center
 sbf.se##.sv-cookie-consent-banner, .hiq-partners-banner
 scanaktier.se###overlay-black
 schack.se##.schac-widget
@@ -2186,6 +2188,7 @@ zeromagazine.nu##div[id^="ads"]
 /promoted_ads$domain=bostadsportal.se
 /ps-partner$xmlhttprequest,domain=dagensps.se
 /publicPartners$domain=familjehemsbanken.se|familjehemmet.se
+/public/log$domain=kalender.se
 /pulsetracking$script
 /pum/*$domain=flm.nu|dagenslogistik.se|battrestadsdel.se|skaneplus.se
 /qc_cmp$domain=reseguiden.se
@@ -2525,6 +2528,7 @@ zeromagazine.nu##div[id^="ads"]
 ||bytelab.dk^$third-party
 ||cargodisplayads.com^$third-party
 ||carneoam.com/advert/
+||cartbooster.io^$third-party
 ||casinotoplists.com^$third-party
 ||casinoutankonto.net^$third-party
 ||casono.se^$third-party
@@ -2716,7 +2720,7 @@ zeromagazine.nu##div[id^="ads"]
 ||img.upsales.com/*/visit$script,important
 ||imp.laget.se^
 ||inboxads.com^$third-party
-||inmobi.com^$domain=alltomelbil.se|rikatillsammans.se|egoinas.se|land.se|moviezine.se|travelnews.se|varldenshaftigaste.se|merinfo.se|foreca.se|matklubben.se|reseguiden.se|newsner.com|humorbibeln.se|sportbibeln.se|ettgottskratt.se|djurbibeln.se|laget.se|byrum.se|sportlovin.se|receptfavoriter.se|forni.se|kimura.se|cornucopia.se|norrahalland.se|elevspel.se|finanstid.se|tittapavideon.se|motormagasinet.se|food-supply.se|dagenshandel.se|plastnet.se|habit.se|woodnet.se|foodnet.se|transportnet.se|processnet.se|packnet.se|verkstaderna.se|medtechmagazine.se|recyclingnet.se|rt-forum.se|uochd.se|lifesciencesweden.se|fri-kopenskap.se|cleannet.se|metal-supply.se|framtidensbygg.se|entreprenad.com|mykitchenstories.se|cancelculture.se|mytaste.se|findit.se|lchfarkivet.se|brinkenbakar.se|foretagande.se|fotbolltransfers.com|affarsvarlden.se|villalivet.se|branschaktuellt.se|nordic.ign.com|fragbite.se|lindasbakskola.se|jennysmatblogg.nu|filippoon.se|lesscarbs.se|eniro.se|matspar.se|xnytt.se|alltomkungligt.se
+||inmobi.com^$domain=alltomelbil.se|rikatillsammans.se|egoinas.se|land.se|moviezine.se|travelnews.se|varldenshaftigaste.se|merinfo.se|foreca.se|matklubben.se|reseguiden.se|newsner.com|humorbibeln.se|sportbibeln.se|ettgottskratt.se|djurbibeln.se|laget.se|byrum.se|sportlovin.se|receptfavoriter.se|forni.se|kimura.se|cornucopia.se|norrahalland.se|elevspel.se|finanstid.se|tittapavideon.se|motormagasinet.se|food-supply.se|dagenshandel.se|plastnet.se|habit.se|woodnet.se|foodnet.se|transportnet.se|processnet.se|packnet.se|verkstaderna.se|medtechmagazine.se|recyclingnet.se|rt-forum.se|uochd.se|lifesciencesweden.se|fri-kopenskap.se|cleannet.se|metal-supply.se|framtidensbygg.se|entreprenad.com|mykitchenstories.se|cancelculture.se|mytaste.se|findit.se|lchfarkivet.se|brinkenbakar.se|foretagande.se|fotbolltransfers.com|affarsvarlden.se|villalivet.se|branschaktuellt.se|nordic.ign.com|fragbite.se|lindasbakskola.se|jennysmatblogg.nu|filippoon.se|lesscarbs.se|eniro.se|matspar.se|xnytt.se|alltomkungligt.se|swehockey.se|vackertvader.se
 ||insertcoin.se^$third-party
 ||insplanet.com^$third-party
 ||instaforex.com^$third-party
@@ -2910,7 +2914,7 @@ zeromagazine.nu##div[id^="ads"]
 ||prismic.io/prismic-toolbar$domain=alltomarbetsmiljo.se
 ||privacymanager.io^$domain=hastnet.se
 ||privacypolicies.com^$domain=fl-net.se
-||privacy-center.org^$domain=180.se|agriaffaires.se|truckscorner.se|machineryzone.se|viivilla.se|stegforhalsa.se|netdoktor.se|netdoktorpro.se
+||privacy-center.org^$domain=180.se|agriaffaires.se|truckscorner.se|machineryzone.se|viivilla.se|stegforhalsa.se|netdoktor.se|netdoktorpro.se|news55.se
 ||privacy-mgmt.com^$domain=radio.se|dagenstv.com|kolla.tv|computersweden.se|woxikon.se|kokaihop.se|dagen.se|filmtopp.se|upday.com|gaffa.se
 ||prod.uidapi.com^$domain=tittapavideon.se
 ||proff.se^$third-party
@@ -2927,7 +2931,7 @@ zeromagazine.nu##div[id^="ads"]
 ||pushwhy.com^
 ||pxl.host^$third-party
 ||qimtek.se^$third-party
-||quantcast.com^$domain=flashback.org|hippson.se|stoppapressarna.se|babyhjalp.se|nyadagbladet.se|enkelteknik.se|travelgrip.se|samnytt.se|swehockey.se|nyteknik.se|lag-avtal.se|arbetarskydd.se|leta.se|kalender.se|motivation.se|sporttv.nu|goforfit.se|expo.se|ljudochbild.se|poddtoppen.se|vackertvader.se|langd.se|doon.se|garaget.org|nouw.com|listor.se|news55.se
+||quantcast.com^$domain=flashback.org|hippson.se|stoppapressarna.se|babyhjalp.se|nyadagbladet.se|enkelteknik.se|travelgrip.se|samnytt.se|nyteknik.se|lag-avtal.se|arbetarskydd.se|leta.se|motivation.se|sporttv.nu|goforfit.se|expo.se|poddtoppen.se|langd.se|doon.se|garaget.org|nouw.com|listor.se
 ||qx.se/view.php$image
 ||rabble-res.cloudinary.com^$third-party
 ||radio.se/iomm

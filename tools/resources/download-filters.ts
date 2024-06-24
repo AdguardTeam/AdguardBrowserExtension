@@ -39,7 +39,6 @@ import {
     ADGUARD_FILTERS_IDS,
     LOCAL_METADATA_FILE_NAME,
     LOCAL_I18N_METADATA_FILE_NAME,
-    RECOMMENDED_TAG_ID,
 } from '../../constants';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
@@ -67,7 +66,7 @@ type DownloadResourceData = {
     /**
      * File name to save the resource.
      */
-    file: string;
+    fileName: string;
 
     /**
      * Whether to validate the checksum of the downloaded resource.
@@ -78,14 +77,14 @@ type DownloadResourceData = {
 const getFiltersMetadataDownloadData = (browser: AssetsFiltersBrowser): DownloadResourceData => {
     return {
         url: METADATA_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCAL_METADATA_FILE_NAME,
+        fileName: LOCAL_METADATA_FILE_NAME,
     };
 };
 
 const getFiltersI18nMetadataDownloadData = (browser: AssetsFiltersBrowser): DownloadResourceData => {
     return {
         url: METADATA_I18N_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
-        file: LOCAL_I18N_METADATA_FILE_NAME,
+        fileName: LOCAL_I18N_METADATA_FILE_NAME,
     };
 };
 
@@ -112,13 +111,13 @@ const getUrlsOfFiltersResources = (browser: AssetsFiltersBrowser): DownloadResou
     for (const filterId of ADGUARD_FILTERS_IDS) {
         filters.push({
             url: FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%filter', String(filterId)),
-            file: `filter_${filterId}.txt`,
+            fileName: `filter_${filterId}.txt`,
             validate: true,
         });
 
         filtersMobile.push({
             url: OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%s', String(filterId)),
-            file: `filter_mobile_${filterId}.txt`,
+            fileName: `filter_mobile_${filterId}.txt`,
             validate: true,
         });
     }
@@ -187,7 +186,7 @@ const validateChecksum = (resourceData: DownloadResourceData, body: string): voi
  * @returns Response content as a string.
  */
 const downloadFilter = async (resourceData: DownloadResourceData, browser: AssetsFiltersBrowser): Promise<string> => {
-    const { url, file, validate } = resourceData;
+    const { url, fileName, validate } = resourceData;
 
     const filtersDir = FILTERS_DEST.replace('%browser', browser);
 
@@ -197,25 +196,26 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
 
     const response = await axios.get(url, { responseType: 'arraybuffer' });
 
+    const content = response.data.toString();
+
     if (validate) {
-        validateChecksum(resourceData, response.data.toString());
+        validateChecksum(resourceData, content);
     }
 
-    await fs.promises.writeFile(path.join(filtersDir, file), response.data);
+    await fs.promises.writeFile(path.join(filtersDir, fileName), response.data);
 
     cliLog.info('Done');
 
-    return response.data.toString();
+    return content;
 };
-
 /**
- * Returns **recommended** filter ids from the metadata file.
+ * Returns all filter ids from the metadata file.
  *
  * @param metadataContent Metadata file content.
  *
  * @returns Array of filter ids as strings.
  */
-const getRecommendedFiltersIds = (metadataContent: string): string[] => {
+const getAllFiltersIds = (metadataContent: string): string[] => {
     let filters: RegularFilterMetadata[] = [];
     try {
         filters = JSON.parse(metadataContent).filters;
@@ -223,40 +223,28 @@ const getRecommendedFiltersIds = (metadataContent: string): string[] => {
         cliLog.error('Failed to parse filters metadata');
     }
 
-    const filterIds: string[] = [];
-
-    filters.forEach((filter) => {
-        if (filter.tags.includes(RECOMMENDED_TAG_ID)) {
-            filterIds.push(String(filter.filterId));
-        }
-    });
-
-    return filterIds;
+    return filters.map((filter) => String(filter.filterId));
 };
 
 /**
  * Prepares filters for chromium-mv3:
- * 1. Downloads chromium filters metadata and parses it to get all filter ids.
- * 2. Downloads chromium i18n metadata.
- * 3. Downloads only **recommended** chromium filters and stores them in the chromium-mv3 folder.
+ * 1. Downloads chromium-mv3 filters metadata and parses it to get all filter ids.
+ * 2. Downloads chromium-mv3 i18n metadata.
+ * 3. Downloads all chromium-mv3 filters (parsed from the metadata (1)) and stores them in the chromium-mv3 folder.
  */
 const downloadAndPrepareMv3Filters = async () => {
-    const chromiumFiltersMetadata = await downloadFilter(
-        // chromium mv3 filters metadata is the same as chromium filters metadata
-        getFiltersMetadataDownloadData(AssetsFiltersBrowser.Chromium),
+    const metadata = await downloadFilter(
+        getFiltersMetadataDownloadData(AssetsFiltersBrowser.ChromiumMv3),
         AssetsFiltersBrowser.ChromiumMv3,
     );
 
-    // download chromium i18n metadata file
     await downloadFilter(
-        getFiltersI18nMetadataDownloadData(AssetsFiltersBrowser.Chromium),
+        getFiltersI18nMetadataDownloadData(AssetsFiltersBrowser.ChromiumMv3),
         AssetsFiltersBrowser.ChromiumMv3,
     );
 
-    const filtersIds = getRecommendedFiltersIds(chromiumFiltersMetadata);
-    filtersIds.push('10'); // TODO remove this hack later
+    const filtersIds = getAllFiltersIds(metadata);
 
-    // eslint-disable-next-line no-restricted-syntax
     for (let i = 0; i < filtersIds.length; i += 1) {
         const filterId = filtersIds[i];
         if (!filterId) {
@@ -264,15 +252,15 @@ const downloadAndPrepareMv3Filters = async () => {
         }
 
         const downloadData = {
-            // download chromium versions of filters
             url: FILTER_DOWNLOAD_URL_FORMAT
-                .replace('%browser', AssetsFiltersBrowser.Chromium)
+                .replace('%browser', AssetsFiltersBrowser.ChromiumMv3)
                 .replace('%filter', filterId),
-            file: `filter_${filterId}.txt`,
+            fileName: `filter_${filterId}.txt`,
             validate: true,
         };
         // and store them in the chromium-mv3 folder
-        await downloadFilter(downloadData, AssetsFiltersBrowser.ChromiumMv3); // eslint-disable-line no-await-in-loop
+        // eslint-disable-next-line no-await-in-loop
+        await downloadFilter(downloadData, AssetsFiltersBrowser.ChromiumMv3);
     }
 };
 
