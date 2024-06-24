@@ -127,7 +127,7 @@ class UiStore {
     /**
      * Sets the loader visibility state. **Used for mv3**
      *
-     * @param {boolean} value Loader visibility state. Default value is false.
+     * @param value Loader visibility state. Default value is false.
      */
     @action
     setShowLoader(value = false) {
