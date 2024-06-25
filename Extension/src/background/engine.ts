@@ -155,8 +155,7 @@ export class Engine {
             logLevel: LogLevel.Info,
             filters,
             userrules: {
-                // FIXME (David, v4.4): Handle empty user rules
-                content: await FiltersStorage.get(0),
+                content: [],
                 sourceMap: {},
             },
             allowlist,
