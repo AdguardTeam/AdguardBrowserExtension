@@ -18,6 +18,8 @@
 import zod from 'zod';
 import browser from 'webextension-polyfill';
 
+import { Experimental } from 'experimental-update';
+
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
 import {
@@ -42,8 +44,6 @@ import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 import { network } from '../network';
-
-import { Experimental } from './experimental';
 
 /**
  * Update API is a facade for handling migrations for the settings object from

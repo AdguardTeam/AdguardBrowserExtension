@@ -255,7 +255,7 @@ const Filters = observer(() => {
         if (query.has(QUERY_PARAM_NAMES.TITLE) || query.has(QUERY_PARAM_NAMES.SUBSCRIBE)) {
             query.delete(QUERY_PARAM_NAMES.TITLE);
             query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
-            navigate(`${navigate.location.pathname}?${decodeURIComponent(query.toString())}`);
+            navigate(`${location.pathname}?${decodeURIComponent(query.toString())}`);
         }
     };
 

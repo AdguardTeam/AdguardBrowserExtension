@@ -322,6 +322,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                     __dirname,
                     `../../Extension/src/background/services/scripting/scripting-service-mv${manifestVersion}.ts`,
                 ),
+                'experimental-update': path.resolve(
+                    __dirname,
+                    // eslint-disable-next-line max-len
+                    `../../Extension/src/background/services/experimental-update/experimental-update-service-mv${manifestVersion}.ts`,
+                ),
                 'filters-service': path.resolve(
                     __dirname,
                     `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`,

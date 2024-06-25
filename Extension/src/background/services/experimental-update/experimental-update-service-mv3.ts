@@ -16,67 +16,28 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import browser from 'webextension-polyfill';
-
 import { RULE_SET_NAME_PREFIX } from '@adguard/tswebextension/mv3';
 
 import {
-    CustomFilterMetadataStorageData,
-    FilterStateStorageData,
-    GroupStateStorageData,
-    Metadata,
+    type CustomFilterMetadataStorageData,
+    type FilterStateStorageData,
+    type GroupStateStorageData,
+    type Metadata,
     SettingOption,
-    Settings,
 } from '../../schema';
 import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { defaultSettings } from '../../../common/settings';
 import { logger } from '../../../common/logger';
-import { filteredArray } from '../../schema/zod-helpers';
 
-/**
- * Custom filter schema from the experimental extension.
- */
-const customFilterSchema = z.object({
-    id: z.number(),
-    rules: z.string(),
-});
-
-/**
- * Custom filter type.
- */
-type CustomFilter = z.infer<typeof customFilterSchema>;
-
-/**
- * Filter info schema from the experimental extension.
- */
-const filterInfoSchema = z.object({
-    description: z.string().optional(),
-    enabled: z.boolean(),
-    groupId: z.number(),
-    id: z.number(),
-    localeCodes: z.array(z.string()).optional(),
-    title: z.string(),
-    iconId: z.string().optional(),
-    url: z.string().url().optional(),
-});
-
-type FilterInfo = z.infer<typeof filterInfoSchema>;
-
-/**
- * Filters info schema from the experimental extension.
- */
-const filtersInfoSchema = filteredArray(filterInfoSchema);
-
-/**
- * Custom filters rules schema from the experimental extension.
- */
-const customFiltersRulesSchema = z.array(customFilterSchema);
-
-/**
- * Alias for type from extension.
- */
-type RuleResource = browser.Manifest.WebExtensionManifestDeclarativeNetRequestRuleResourcesItemType;
+import {
+    type CustomFilter,
+    type FilterInfo,
+    type FiltersSettings,
+    type MigratedData,
+    type RuleResource,
+    customFiltersRulesSchema,
+    filtersInfoSchema,
+} from './schema';
 
 /**
  * This module is used for migrating data from the experimental extension to the new mv3 extension.
@@ -205,12 +166,7 @@ export class Experimental {
         filtersInfo: unknown,
         metadata: Metadata,
         ruleResources: RuleResource[],
-    ):
-        {
-            filtersState: FilterStateStorageData,
-            groupsState: GroupStateStorageData,
-            customFiltersState: CustomFilterMetadataStorageData,
-        } {
+    ): FiltersSettings {
         const result = filtersInfoSchema.safeParse(filtersInfo);
 
         if (!result.success) {
@@ -296,12 +252,7 @@ export class Experimental {
         dataFromStorage: unknown,
         metadata: Metadata,
         ruleResources: RuleResource[],
-    ):
-        {
-            userrules: string[],
-            settings: Settings,
-            customFilters: CustomFilter[]
-        } {
+    ): MigratedData {
         const userrules = Experimental.getUserRules((dataFromStorage as {
             user_rules?: unknown
         }).user_rules);

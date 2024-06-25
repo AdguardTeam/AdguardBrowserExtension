@@ -18,6 +18,8 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
+import { Experimental } from 'experimental-update';
+
 import { rulesLimitsService } from 'rules-limits-service';
 
 import { engine } from '../engine';
@@ -65,7 +67,6 @@ import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
-import { Experimental } from '../api/update/experimental';
 
 /**
  * This class is app entry point.
@@ -138,7 +139,7 @@ export class App {
 
         rulesLimitsService.init();
 
-        // TODO mv3 uses other way to inject scripts
+        // TODO mv3 uses other way to inject scripts. AG-33507
         // /**
         //  * When the extension is enabled, disabled and re-enabled during the user session,
         //  * content scripts will be loaded multiple times in each open tab.
