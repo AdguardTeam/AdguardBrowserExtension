@@ -119,7 +119,10 @@ export class AllowlistService {
             AllowlistApi.setAllowlistDomains(domains);
         }
 
-        await engine.update();
+        // update the engine only if the module is enabled
+        if (AllowlistApi.isEnabled()) {
+            await engine.update();
+        }
     }
 
     /**

@@ -106,7 +106,11 @@ export class UserRulesService {
      */
     private static async addUserRule(rule: string): Promise<void> {
         await UserRulesApi.addUserRule(rule);
-        engine.debounceUpdate();
+
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            engine.debounceUpdate();
+        }
     }
 
     /**
@@ -118,7 +122,11 @@ export class UserRulesService {
         const { value } = message.data;
 
         await UserRulesApi.setUserRules(value.split('\n'));
-        await engine.update();
+
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            await engine.update();
+        }
     }
 
     /**
@@ -130,7 +138,11 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.addUserRule(ruleText);
-        engine.debounceUpdate();
+
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            engine.debounceUpdate();
+        }
     }
 
     /**
@@ -142,7 +154,11 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.removeUserRule(ruleText);
-        engine.debounceUpdate();
+
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            engine.debounceUpdate();
+        }
     }
 
     /**
