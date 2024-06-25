@@ -65,6 +65,8 @@ export class FiltersService {
      * Enables filter on {@link AddAndEnableFilterMessage} message via {@link FiltersService.enableFilter}.
      * If filter group has not been touched before, it will be activated.
      *
+     * If filter group has been touched before and it is disabled now, the engine will not be updated.
+     *
      * NOTE: we do not await of async task execution and returns group id optimistic.
      * TODO (v.zhelvis): handle enabling of group on frontend instead using this handler,
      * because this is UI edge case.
@@ -92,13 +94,24 @@ export class FiltersService {
 
         const groupState = Categories.getGroupState(groupId);
 
-        if (groupState && !groupState.touched) {
+        if (!groupState) {
+            return;
+        }
+
+        if (!groupState.touched) {
             return groupId;
+        }
+
+        if (groupState.enabled) {
+            // update the engine only if the group is enabled
+            await engine.update();
         }
     }
 
     /**
      * Called at the request to disable filter.
+     *
+     * If filter group is disabled, the engine will not be updated.
      *
      * @param message Message of {@link DisableFilterMessage} with filter id to disable.
      */
@@ -107,7 +120,18 @@ export class FiltersService {
 
         FiltersApi.disableFilters([filterId]);
 
-        await engine.update();
+        const group = Categories.getGroupByFilterId(filterId);
+
+        if (!group) {
+            return;
+        }
+
+        const groupState = Categories.getGroupState(group.groupId);
+
+        if (groupState && groupState.enabled) {
+            // update the engine only if the group is enabled
+            await engine.update();
+        }
     }
 
     /**
@@ -219,14 +243,15 @@ export class FiltersService {
     }
 
     /**
-     * Loads and enables specified filter and updates filter engine.
+     * Loads and enables specified filter.
      * If filter group has not been touched before, it will be activated.
+     *
+     * Note: this method **does not update the engine**.
      *
      * @param filterId Id of filter.
      * @param shouldEnableGroup Flag for enabling the filter group if it has not been touched before.
      */
     private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
         await FiltersApi.loadAndEnableFilters([filterId], true, shouldEnableGroup);
-        await engine.update();
     }
 }

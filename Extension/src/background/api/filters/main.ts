@@ -278,6 +278,8 @@ export class FiltersApi {
      * Disables specified filters.
      * Called on filter option switch.
      *
+     * Note: this method **does not update the engine**.
+     *
      * @param filtersIds Filters ids.
      */
     public static disableFilters(filtersIds: number[]): void {
