@@ -19,6 +19,7 @@
 // TODO: generate tools/bundle/manifest.common.json with this constants
 
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT = 'web-accessible-resources';
+export const WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS = `${WEB_ACCESSIBLE_RESOURCES_OUTPUT}/redirects`;
 
 export const BACKGROUND_OUTPUT = 'pages/background';
 export const OPTIONS_OUTPUT = 'pages/options';
