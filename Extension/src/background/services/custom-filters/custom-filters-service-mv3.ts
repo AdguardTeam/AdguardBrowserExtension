@@ -17,6 +17,8 @@
  */
 import browser, { WebNavigation } from 'webextension-polyfill';
 
+import { executeScript } from 'scripting-service';
+
 import {
     MAIN_FRAME_ID,
     isHttpOrWsRequest,
@@ -123,7 +125,7 @@ export class CustomFiltersService {
         }
 
         try {
-            await browser.tabs.executeScript(tabId, {
+            await executeScript(tabId, {
                 file: `/${SUBSCRIBE_OUTPUT}.js`,
                 runAt: 'document_start',
                 frameId,

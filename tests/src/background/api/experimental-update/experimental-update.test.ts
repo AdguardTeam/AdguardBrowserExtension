@@ -1,9 +1,11 @@
-import { Experimental } from '../../../../../Extension/src/background/api/update/experimental';
+import {
+    Experimental,
+} from '../../../../../Extension/src/background/services/experimental-update/experimental-update-service-mv3';
 import { defaultSettings } from '../../../../../Extension/src/common/settings';
 import { SettingOption } from '../../../../../Extension/src/background/schema';
 import { getMetadataFixture } from '../../../../helpers';
 
-describe('experimental', () => {
+describe('experimental update', () => {
     const metadata = getMetadataFixture();
 
     it('checks if the data is from the experimental extension', () => {

@@ -112,6 +112,12 @@ module.exports = {
                         'group': 'internal',
                         'position': 'after',
                     },
+                    // Place experimental-update alias after internal
+                    {
+                        'pattern': 'experimental-update',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place filters-service alias after internal
                     {
                         'pattern': 'filters-service',
