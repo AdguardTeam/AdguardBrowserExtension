@@ -127,6 +127,8 @@ export class NetworkSettings {
             return `${this.filtersRulesBaseUrl}/edge`;
         } if (UserAgent.isOpera) {
             return `${this.filtersRulesBaseUrl}/opera`;
+        } if (__IS_MV3__) {
+            return `${this.filtersRulesBaseUrl}/chromium-mv3`;
         }
         return `${this.filtersRulesBaseUrl}/chromium`;
     }
