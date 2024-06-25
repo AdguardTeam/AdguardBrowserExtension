@@ -27,7 +27,7 @@ import {
 } from '@adguard/tswebextension/mv3';
 
 import { logger, LogLevel } from '../../common/logger';
-import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
+import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
 import { listeners } from '../notifier';
 import {
     FiltersApi,
@@ -65,7 +65,7 @@ export class Engine implements TsWebExtensionEngine {
      * Creates new Engine.
      */
     constructor() {
-        this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT}`);
+        this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`);
 
         this.handleMessage = this.api.getMessageHandler();
     }
