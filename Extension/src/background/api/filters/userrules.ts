@@ -15,7 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { RuleSyntaxUtils, RuleConverter } from '@adguard/tsurlfilter';
+import {
+    RuleSyntaxUtils,
+    RuleConverter,
+    SimpleRegex,
+} from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
 import { AntiBannerFiltersId } from '../../../common/constants';
@@ -125,6 +129,35 @@ export class UserRulesApi {
         const userRules = await UserRulesApi.getUserRules();
 
         await UserRulesApi.setUserRules(userRules.filter(rule => !RuleSyntaxUtils.isRuleForUrl(rule, url)));
+    }
+
+    /**
+     * Disables user rules (by commenting them) matched by any of specified `rulesToDisable`.
+     *
+     * If any rule is disabled, it notifies listeners to show a notification about it.
+     *
+     * @param rulesToDisable User rules to disable.
+     */
+    public static async disableUserRules(rulesToDisable: string[]): Promise<void> {
+        const userRules = await UserRulesApi.getUserRules();
+
+        let isAnyRuleDisabled = false;
+
+        const newRules = userRules.map((rule) => {
+            if (rulesToDisable.includes(rule)) {
+                isAnyRuleDisabled = true;
+                // comment the invalid rule
+                return `${SimpleRegex.MASK_COMMENT}${rule}`;
+            }
+            return rule;
+        });
+
+        // notify that some user rules cannot be applied and they are commented
+        if (isAnyRuleDisabled) {
+            listeners.notifyListeners(listeners.SomeUserRulesDisabled);
+        }
+
+        await UserRulesApi.setUserRules(newRules);
     }
 
     /**

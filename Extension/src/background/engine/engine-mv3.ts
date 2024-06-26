@@ -123,8 +123,9 @@ export class Engine implements TsWebExtensionEngine {
     }
 
     /**
-     * Updates tswebextension configuration and after that updates the counter
-     * of active rules.
+     * Updates tswebextension configuration and after that updates the counter of active rules.
+     *
+     * Note: If some of the user rules are invalid, they will be disabled.
      *
      * @param skipLimitsCheck Skip limits check.
      */
@@ -143,6 +144,28 @@ export class Engine implements TsWebExtensionEngine {
         if (!skipLimitsCheck) {
             await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
         }
+
+        const { dynamicRules } = result;
+        if (!dynamicRules || dynamicRules.errors.length === 0) {
+            return;
+        }
+
+        // check if there are invalid dynamic rules so they should be disabled
+        const invalidDynamicRules: string[] = [];
+        dynamicRules.errors.forEach((error) => {
+            if ('networkRule' in error && error.networkRule) {
+                invalidDynamicRules.push(error.networkRule.getText());
+            }
+        });
+
+        if (invalidDynamicRules.length === 0) {
+            return;
+        }
+
+        // disable invalid user rules
+        await UserRulesApi.disableUserRules(
+            configuration.userrules.filter((r) => invalidDynamicRules.includes(r)),
+        );
     }
 
     /**

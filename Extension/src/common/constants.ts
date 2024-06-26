@@ -81,6 +81,7 @@ export const RECOMMENDED_TAG_ID = 10;
 export enum NotifierType {
     RequestFilterUpdated = 'event.request.filter.updated',
     UserFilterUpdated = 'event.user.filter.updated',
+    SomeUserRulesDisabled = 'event.user.rules.disabled',
     CustomFilterAdded = 'event.custom.filter.added',
     UpdateAllowlistFilterRules = 'event.update.allowlist.filter.rules',
     SettingUpdated = 'event.update.setting.value',
