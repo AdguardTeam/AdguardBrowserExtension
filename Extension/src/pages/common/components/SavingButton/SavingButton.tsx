@@ -73,7 +73,7 @@ type SavingButtonParams = {
 export const SavingButton = ({ onClick, savingState, contentChanged }: SavingButtonParams) => {
     return (
         <div className="actions__saving">
-            {renderSavingState(savingState)}
+            {!__IS_MV3__ && renderSavingState(savingState)}
             <button
                 type="button"
                 className="button button--m button--green actions__btn"
