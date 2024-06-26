@@ -170,6 +170,11 @@ const Filters = observer(() => {
         filters.filter((filter) => filter.groupId === group.groupId && filter.enabled)
     );
 
+    const handleFilterConsentConfirmWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        settingsStore.handleFilterConsentConfirm,
+    );
+
     const renderGroups = (groups) => {
         // TODO: use 'displayNumber' as a const
         // or add sorting by it to a separate helper as it is used in several places
@@ -361,7 +366,7 @@ const Filters = observer(() => {
                     <AnnoyancesConsent
                         isOpen={settingsStore.isAnnoyancesConsentModalOpen}
                         setIsOpen={settingsStore.setIsAnnoyancesConsentModalOpen}
-                        onConfirm={settingsStore.handleFilterConsentConfirm}
+                        onConfirm={handleFilterConsentConfirmWrapper}
                         onCancel={settingsStore.handleFilterConsentCancel}
                         shouldShowFilterPolicy={settingsStore.shouldShowFilterPolicy}
                     />
@@ -389,7 +394,7 @@ const Filters = observer(() => {
                 <AnnoyancesConsent
                     isOpen={settingsStore.isAnnoyancesConsentModalOpen}
                     setIsOpen={settingsStore.setIsAnnoyancesConsentModalOpen}
-                    onConfirm={settingsStore.handleFilterConsentConfirm}
+                    onConfirm={handleFilterConsentConfirmWrapper}
                     onCancel={settingsStore.handleFilterConsentCancel}
                     shouldShowFilterPolicy={settingsStore.shouldShowFilterPolicy}
                 />

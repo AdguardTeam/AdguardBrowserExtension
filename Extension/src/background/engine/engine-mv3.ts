@@ -27,7 +27,7 @@ import {
 } from '@adguard/tswebextension/mv3';
 
 import { logger, LogLevel } from '../../common/logger';
-import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
+import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
 import { listeners } from '../notifier';
 import {
     FiltersApi,
@@ -65,7 +65,7 @@ export class Engine implements TsWebExtensionEngine {
      * Creates new Engine.
      */
     constructor() {
-        this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT}`);
+        this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`);
 
         this.handleMessage = this.api.getMessageHandler();
     }
@@ -202,15 +202,16 @@ export class Engine implements TsWebExtensionEngine {
             userrules = UserRulesApi.convertRules(userrules);
         }
 
-        const customFiltersIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => CustomFilterApi.isCustomFilter(filterId));
+        const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
+            .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-        const customFilters = await Promise.all(customFiltersIds
-            .map(async (filterId) => {
+        const customFilters = await Promise.all(customFiltersWithMetadata
+            .map(async ({ filterId, trusted }) => {
                 const filterLines = await FiltersStorage.get(filterId);
                 return {
                     filterId,
                     content: filterLines.join('\n'),
+                    trusted,
                 };
             }));
 
