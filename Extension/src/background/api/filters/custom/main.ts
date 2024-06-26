@@ -34,6 +34,7 @@ import { network } from '../../network';
 import type { FilterUpdateOptions } from '../update';
 import { FilterParsedData, FilterParser } from '../parser';
 import { CustomFilterHelper } from '../../../../common/custom-filter-helper';
+import { type FilterMetadata } from '../main';
 
 import { CustomFilterLoader } from './loader';
 
@@ -352,6 +353,16 @@ export class CustomFilterApi {
      */
     public static isCustomFilter(filterId: number): boolean {
         return CustomFilterHelper.isCustomFilter(filterId);
+    }
+
+    /**
+     * Check if filter is custom.
+     *
+     * @param filter Filter metadata.
+     * @returns True, if filter is custom, else returns false.
+     */
+    public static isCustomFilterMetadata(filter: FilterMetadata): filter is CustomFilterMetadata {
+        return CustomFilterHelper.isCustomFilter(filter.filterId);
     }
 
     /**

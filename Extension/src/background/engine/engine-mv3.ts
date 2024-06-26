@@ -179,15 +179,16 @@ export class Engine implements TsWebExtensionEngine {
             userrules = UserRulesApi.convertRules(userrules);
         }
 
-        const customFiltersIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => CustomFilterApi.isCustomFilter(filterId));
+        const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
+            .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-        const customFilters = await Promise.all(customFiltersIds
-            .map(async (filterId) => {
+        const customFilters = await Promise.all(customFiltersWithMetadata
+            .map(async ({ filterId, trusted }) => {
                 const filterLines = await FiltersStorage.get(filterId);
                 return {
                     filterId,
                     content: filterLines.join('\n'),
+                    trusted,
                 };
             }));
 
