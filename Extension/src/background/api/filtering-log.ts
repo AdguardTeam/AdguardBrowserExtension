@@ -209,11 +209,14 @@ export class FilteringLogApi {
      * @returns Rule text or null if the rule is not found.
      */
     public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
-        // Note: We do not store rule texts for stealth rules in the browser storage,
+        // Note: We do not store rule texts for stealth / allowlist rules in the browser storage,
         // so we can't get the original rule text for them.
         // For stealth rules, we send appliedRuleText directly from the engine.
         // TODO: Resolve this issue in the future.
-        if (filterId === AntiBannerFiltersId.StealthModeFilterId) {
+        if (
+            filterId === AntiBannerFiltersId.StealthModeFilterId
+            || filterId === AntiBannerFiltersId.AllowlistFilterId
+        ) {
             return null;
         }
 
