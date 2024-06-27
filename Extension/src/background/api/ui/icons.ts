@@ -20,12 +20,12 @@ import browser from 'webextension-polyfill';
 import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
 import { getIconImageData } from '../../../common/api/extension';
-import type { IconData } from '../../storages';
+import type { IconData, IconVariants } from '../../storages';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
 
-const defaultIconVariants = {
+const defaultIconVariants: IconVariants = {
     enabled: {
         '19': browser.runtime.getURL('assets/icons/green-19.png'),
         '38': browser.runtime.getURL('assets/icons/green-38.png'),
@@ -48,7 +48,7 @@ class IconsApi {
     /**
      * Icon variants for the promo notification, if any is available.
      */
-    private promoIcons: Record<string, IconData> | null = null;
+    private promoIcons: IconVariants | null = null;
 
     /**
      * Initializes Icons API.
@@ -177,7 +177,7 @@ class IconsApi {
      *
      * @param iconVariants Icon variants to set.
      */
-    private setPromoIcons(iconVariants: Record<string, IconData> | null): void {
+    private setPromoIcons(iconVariants: IconVariants | null): void {
         this.promoIcons = iconVariants;
     }
 
