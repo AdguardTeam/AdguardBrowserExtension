@@ -29,7 +29,7 @@ import { Range } from 'ace-builds';
 import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
 import { Editor } from '../Editor';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import { Popover } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
 import { Icon } from '../ui/Icon';
@@ -378,8 +378,8 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     };
 
     const fullscreenTooltipText = fullscreen
-        ? reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')
-        : reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip');
+        ? translator.getMessage('options_editor_close_fullscreen_button_tooltip')
+        : translator.getMessage('options_editor_open_fullscreen_button_tooltip');
 
     return (
         <>
@@ -400,7 +400,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                                 htmlFor="user-filter-enabled"
                             >
                                 <div className="actions__title">
-                                    {reactTranslator.getMessage('fullscreen_user_rules_title')}
+                                    {translator.getMessage('fullscreen_user_rules_title')}
                                 </div>
                                 <Checkbox
                                     id="user-filter-enabled"
@@ -425,7 +425,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                         className="button button--m button--transparent actions__btn"
                         onClick={importClickHandler}
                     >
-                        {reactTranslator.getMessage('options_userfilter_import')}
+                        {translator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
@@ -433,7 +433,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
                     >
-                        {reactTranslator.getMessage('options_userfilter_export')}
+                        {translator.getMessage('options_userfilter_export')}
                     </button>
                 </div>
                 <div className="actions__group">
@@ -445,7 +445,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                                     type="button"
                                     className="button actions__btn actions__btn--icon"
                                     onClick={closeEditorFullscreen}
-                                    aria-label={reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')}
+                                    aria-label={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
                                 >
                                     <Icon classname="icon--gray700 icon--24" id="#reduce" />
                                 </button>
@@ -454,7 +454,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                                     type="button"
                                     className="button actions__btn actions__btn--icon"
                                     onClick={openEditorFullscreen}
-                                    aria-label={reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip')}
+                                    aria-label={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
                                 >
                                     <Icon classname="icon--gray700 icon--24" id="#extend" />
                                 </button>
