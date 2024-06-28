@@ -14,17 +14,24 @@ body,
     height: 100%;
     min-height: 100%;
     width: auto;
-    min-width: 320px;
-    background-color: var(--width);
+    background-color: var(--white);
 
     @media (prefers-color-scheme: dark) {
         background-color: var(--black);
     }
 }
 
+/*
+ * #root needs to be separated otherwise popup page will be broken in Firefox Nightly v129.
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2817
+ */
+#root {
+    min-width: 320px;
+}
+
 html {
     font-size: 10px;
-    background-color: var(--width);
+    background-color: var(--white);
 
     @media (prefers-color-scheme: dark) {
         background-color: var(--black);
@@ -69,11 +76,11 @@ select {
 
 .light-mode {
     color-scheme: light;
-    background-color: var(--width);
+    background-color: var(--white);
 
     body,
     #root {
-        background-color: var(--width);
+        background-color: var(--white);
     }
 }
 

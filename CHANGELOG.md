@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Some filters are not updated when enabled [#2818].
+- Popup menu does not open in Firefox Nightly [#2817].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...HEAD
+[#2817]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2817
 [#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...HEAD
