@@ -208,7 +208,7 @@ export class RulesLimitsService {
      * @returns Limitation error.
      */
     private static getRegexpRulesLimitExceedErr = (result: ConfigurationResult): LimitationError | undefined => {
-        return result.dynamicRules.limitations
+        return result.dynamicRules?.limitations
             .find((e) => e instanceof TooManyRegexpRulesError);
     };
 
@@ -219,7 +219,7 @@ export class RulesLimitsService {
      * @returns Too many rules error.
      */
     private static getRulesLimitExceedErr = (result: ConfigurationResult): LimitationError | undefined => {
-        return result.dynamicRules.limitations
+        return result.dynamicRules?.limitations
             .find((e) => e instanceof TooManyRulesError);
     };
 
@@ -231,8 +231,8 @@ export class RulesLimitsService {
      */
     private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        const declarativeRulesCount = result.dynamicRules.ruleSet.getRulesCount();
-        return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount;
+        const declarativeRulesCount = result.dynamicRules?.ruleSet.getRulesCount();
+        return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount || 0;
     }
 
     /**
@@ -265,8 +265,8 @@ export class RulesLimitsService {
      */
     private static getDynamicRulesRegexpsEnabledCount(result: ConfigurationResult): number {
         const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
-        const regexpsCount = result.dynamicRules.ruleSet.getRegexpRulesCount();
-        return regexpsCount + (regexpRulesLimitExceedErr?.excludedRulesIds.length || 0);
+        const regexpsCount = result.dynamicRules?.ruleSet.getRegexpRulesCount();
+        return (regexpsCount || 0) + (regexpRulesLimitExceedErr?.excludedRulesIds.length || 0);
     }
 
     /**
