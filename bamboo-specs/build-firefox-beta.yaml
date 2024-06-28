@@ -52,8 +52,21 @@ Build:
             FIREFOX_CLIENT_ID="${bamboo_firefoxAmoClientId}" \
             FIREFOX_CLIENT_SECRET="${bamboo_firefoxAmoClientSecret}" \
             go-webext -v sign firefox -f 'firefox.zip' -s 'source.zip' -o 'firefox.xpi'
+
+            # Exit from build/beta directory
+            cd ../..
+
+            # Create artifacts directory if it doesn't exist
+            mkdir -p artifacts
+
+            # Copy all artifacts to the artifacts directory
+            cp build/beta/build.txt artifacts/
+            cp build/beta/firefox.zip artifacts/
+            cp build/beta/firefox.xpi artifacts/
+            cp build/beta/update.json artifacts/
+            cp build/beta/source.zip artifacts/
     - inject-variables:
-        file: build/beta/build.txt
+        file: artifacts/build.txt
         scope: RESULT
         namespace: inject
   final-tasks:
@@ -70,31 +83,31 @@ Build:
             ls -la
 
             echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules
+            rm -rf node_modules build
             echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
-      location: build/beta
+      location: artifacts
       pattern: build.txt
       shared: true
       required: true
     - name: firefox.zip
-      location: build/beta
+      location: artifacts
       pattern: firefox.zip
       shared: true
       required: true
     - name: firefox.xpi
-      location: build/beta
+      location: artifacts
       pattern: firefox.xpi
       shared: true
       required: true
     - name: update.json
-      location: build/beta
+      location: artifacts
       pattern: update.json
       shared: true
       required: true
     - name: source.zip
-      location: build/beta
+      location: artifacts
       pattern: source.zip
       shared: true
       required: true
