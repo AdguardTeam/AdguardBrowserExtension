@@ -187,11 +187,15 @@ export class FilteringLogApi {
                 return undefined;
             }
 
-            return {
+            const filterData: CachedFilterData = {
                 rawFilterList,
                 conversionMap,
                 sourceMap,
             };
+
+            this.filtersCache.set(filterId, filterData);
+
+            return filterData;
         } catch (e) {
             logger.error(`Failed to get filter data for filter id ${filterId}`, e);
         }
