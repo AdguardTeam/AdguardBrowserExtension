@@ -36,6 +36,7 @@ import {
     StealthAllowlistActionEvent,
     CspReportBlockedEvent,
     getDomain,
+    ApplyPermissionsRuleEvent,
 } from '@adguard/tswebextension';
 
 import { messageHandler } from '../message-handler';
@@ -113,6 +114,11 @@ export class FilteringLogService {
         defaultFilteringLog.addEventListener(
             FilteringEventType.ApplyCspRule,
             FilteringLogService.onApplyCspRule,
+        );
+
+        defaultFilteringLog.addEventListener(
+            FilteringEventType.ApplyPermissionsRule,
+            FilteringLogService.onApplyPermissionsRule,
         );
 
         defaultFilteringLog.addEventListener(
@@ -278,6 +284,51 @@ export class FilteringLogService {
                 documentLevelRule: isDocumentLevel,
                 isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
                 cspRule: isCsp,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
+        });
+
+        if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
+        }
+    }
+
+    /**
+     * Records the application of the rule with $permissions modifier.
+     *
+     * @param ruleEvent Item of {@link ApplyPermissionsRuleEvent}.
+     * @param ruleEvent.data Data for this event.
+     */
+    private static async onApplyPermissionsRule({ data }: ApplyPermissionsRuleEvent): Promise<void> {
+        const {
+            tabId,
+            filterId,
+            ruleIndex,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
+            frameDomain,
+            ...eventData
+        } = data;
+
+        filteringLogApi.addEventData(tabId, {
+            ...eventData,
+            // TODO: Fix `string | null` vs `string | undefined` inconsistency
+            frameDomain: frameDomain ?? undefined,
+            requestDomain: getDomain(eventData.requestUrl) ?? undefined,
+            requestRule: {
+                filterId,
+                ruleIndex,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                permissionsRule: true,
                 cookieRule: isCookie,
                 modifierValue: advancedModifier ?? undefined,
             },

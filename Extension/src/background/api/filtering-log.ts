@@ -47,6 +47,7 @@ export type FilteringEventRuleData = {
     allowlistRule?: boolean,
     allowlistStealthRule?: boolean,
     cspRule?: boolean,
+    permissionsRule?: boolean,
     modifierValue?: string,
     cookieRule?: boolean,
     contentRule?: boolean,

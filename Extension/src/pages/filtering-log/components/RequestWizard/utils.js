@@ -156,6 +156,8 @@ export const getRequestEventType = (event) => {
             return 'WebRTC';
         case RequestType.Csp:
             return 'CSP';
+        case RequestType.PermissionsPolicy:
+            return 'Permissions Policy';
         case RequestType.CspReport:
             return 'CSP report';
         case RequestType.Cookie:

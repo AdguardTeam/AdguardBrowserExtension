@@ -75,6 +75,7 @@ export const getStatusMode = (event) => {
             scriptRule,
             cookieRule,
             cspRule,
+            permissionsRule,
         } = requestRule;
 
         if (allowlistRule) {
@@ -89,7 +90,7 @@ export const getStatusMode = (event) => {
             } else {
                 mode = StatusMode.BLOCKED;
             }
-        } else if (cspRule) {
+        } else if (cspRule || permissionsRule) {
             mode = StatusMode.MODIFIED;
         } else {
             mode = StatusMode.BLOCKED;
