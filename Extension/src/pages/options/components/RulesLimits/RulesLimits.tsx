@@ -39,6 +39,8 @@ import { Warning } from './Warning';
 
 import './rules-limits.pcss';
 
+// TODO: We can add an one additional possible step to remove warning: try to
+// enable some filter and if configuration will success - warning will be removed.
 export const RulesLimits = observer(() => {
     /**
      * Threshold for highlighting the number of enabled rules.

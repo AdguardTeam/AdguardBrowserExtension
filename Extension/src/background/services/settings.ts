@@ -138,9 +138,9 @@ export class SettingsService {
      *
      * @returns Item of {@link GetOptionsDataResponse}.
      */
-    static getOptionsData(): GetOptionsDataResponse {
+    static async getOptionsData(): Promise<GetOptionsDataResponse> {
         const areFilterLimitsExceeded = __IS_MV3__
-            ? RulesLimitsService.areFilterLimitsExceeded()
+            ? await RulesLimitsService.areFilterLimitsExceeded()
             : false;
 
         return {

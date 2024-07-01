@@ -17,7 +17,6 @@
  */
 
 import browser from 'webextension-polyfill';
-import { isEqual } from 'lodash-es';
 
 import {
     TooManyRegexpRulesError,
@@ -38,7 +37,7 @@ import {
     type FilterMetadata,
     FiltersApi,
 } from '../../api';
-import { filterStateStorage } from '../../storages';
+import { filterStateStorage, settingsStorage } from '../../storages';
 import { rulesLimitsStorage } from '../../storages/rules-limits';
 import { rulesLimitsStorageDataValidator } from '../../schema/rules-limits';
 import { logger } from '../../../common/logger';
@@ -46,6 +45,8 @@ import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from '../../.
 // Note: due to circular dependencies, import message-handler.ts after all
 // other imports.
 import { messageHandler } from '../../message-handler';
+import { arraysAreEqual } from '../../utils/arrays-are-equal';
+import { SettingOption } from '../../schema/settings/main';
 
 import type {
     StaticLimitsCheckResult,
@@ -85,7 +86,7 @@ export class RulesLimitsService {
     /**
      * Subscribes to messages from the options' page.
      */
-    public init(): void {
+    public async init(): Promise<void> {
         // Rules limits page overall status with all counters.
         messageHandler.addListener(MessageType.GetRulesLimitsCountersMv3, this.onGetRulesLimitsCounters.bind(this));
 
@@ -101,6 +102,9 @@ export class RulesLimitsService {
             MessageType.ClearRulesLimitsWarningMv3,
             RulesLimitsService.cleanExpectedEnabledFilters,
         );
+
+        // First read from storage and set data to cache.
+        await RulesLimitsService.initStorage();
     }
 
     /**
@@ -231,8 +235,8 @@ export class RulesLimitsService {
      */
     private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        const declarativeRulesCount = result.dynamicRules?.ruleSet.getRulesCount();
-        return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount || 0;
+        const declarativeRulesCount = result.dynamicRules?.ruleSet.getRulesCount() || 0;
+        return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount;
     }
 
     /**
@@ -265,8 +269,8 @@ export class RulesLimitsService {
      */
     private static getDynamicRulesRegexpsEnabledCount(result: ConfigurationResult): number {
         const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
-        const regexpsCount = result.dynamicRules?.ruleSet.getRegexpRulesCount();
-        return (regexpsCount || 0) + (regexpRulesLimitExceedErr?.excludedRulesIds.length || 0);
+        const regexpsCount = result.dynamicRules?.ruleSet.getRegexpRulesCount() || 0;
+        return regexpsCount + (regexpRulesLimitExceedErr?.excludedRulesIds.length || 0);
     }
 
     /**
@@ -281,14 +285,27 @@ export class RulesLimitsService {
     }
 
     /**
-     * Returns actually enabled filters.
+     * Returns filters which marked as enabled in storage.
      *
-     * @returns Actually enabled filters.
+     * @returns Filters which marked as enabled in storage.
      */
-    private static getActuallyEnabledFilters(): number[] {
+    public static getExpectedEnabledFilters(): number[] {
         return FiltersApi.getEnabledFiltersWithMetadata()
+            // Ignore custom filters because they are user-defined and conversion
+            // of them is going via dynamic part of DNR rules.
             .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId))
-            .map((f) => f.filterId);
+            .map((filter) => filter.filterId);
+    }
+
+    /**
+     * Returns filters which rulesets (we have 1 to 1 relation) actually enabled.
+     *
+     * @returns Filters which rulesets (we have 1 to 1 relation) actually enabled.
+     */
+    private static async getActuallyEnabledFilters(): Promise<number[]> {
+        const enabledRuleSetsIds = await chrome.declarativeNetRequest.getEnabledRulesets();
+
+        return enabledRuleSetsIds.map((id) => Number.parseInt(id.slice(RULE_SET_NAME_PREFIX.length), 10));
     }
 
     /**
@@ -319,9 +336,9 @@ export class RulesLimitsService {
             staticRulesMaximumCount,
             staticRulesRegexpsEnabledCount: RulesLimitsService.getStaticRulesRegexpsCount(result, filters),
             staticRulesRegexpsMaxCount: MAX_NUMBER_OF_REGEX_RULES,
-            actuallyEnabledFilters: RulesLimitsService.getActuallyEnabledFilters(),
-            expectedEnabledFilters: rulesLimitsStorage.getData(),
-            areFilterLimitsExceeded: RulesLimitsService.areFilterLimitsExceeded(),
+            actuallyEnabledFilters: await RulesLimitsService.getActuallyEnabledFilters(),
+            expectedEnabledFilters: RulesLimitsService.getExpectedEnabledFilters(),
+            areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
         };
     }
 
@@ -330,14 +347,31 @@ export class RulesLimitsService {
      *
      * @returns True if the filter limits are exceeded, false otherwise.
      */
-    public static areFilterLimitsExceeded(): boolean {
-        const actuallyEnabledFilters = RulesLimitsService.getActuallyEnabledFilters().length;
-        const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters().length;
+    public static async areFilterLimitsExceeded(): Promise<boolean> {
+        const cachedEnabledFilters = rulesLimitsStorage.getData();
+        const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
 
-        // limits are exceeded if the number of actually enabled filters is fewer
-        // than the number of filters that should be enabled (expected enabled filters)
-        // and everything in manifest is disabled
-        return actuallyEnabledFilters < expectedEnabledFilters;
+        const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
+        if (actuallyEnabledFilters.length === 0 && filteringDisabled) {
+            return false;
+        }
+
+        // If there are some filters in storage - it means, that last used
+        // configuration is damaged and we should notify user about them until
+        // he will fix configuration or turn off this notification.
+        // This case needed to save warning if service worker will restart and
+        // after successful configuration update we will not notify user about
+        // changed configuration or user paused and resumed protection.
+        if (cachedEnabledFilters.length > 0 && !arraysAreEqual(actuallyEnabledFilters, cachedEnabledFilters)) {
+            return true;
+        }
+
+        // Else we do a full check of the current configuration: if filters from
+        // configuration are not same as enabled filters - it means that browser
+        // declined update of the configuration and we should notify user about it.
+        const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
+
+        return !arraysAreEqual(actuallyEnabledFilters, expectedEnabledFilters);
     }
 
     /**
@@ -352,35 +386,34 @@ export class RulesLimitsService {
     /**
      * Check if filters limits have changed and update filters state if needed.
      *
-     * @param update Function to update filters state.
+     * @param update Function to update filters state and configure tswebextension.
      */
     public static async checkFiltersLimitsChange(update: (skipCheck: boolean) => Promise<void>): Promise<void> {
-        const expectedEnabledFilters = FiltersApi.getEnabledFiltersWithMetadata()
-            .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId))
-            .map((filter) => filter.filterId)
-            .sort((a, b) => a - b);
+        const isStateBroken = await RulesLimitsService.areFilterLimitsExceeded();
 
-        const actuallyEnabledFilters = (await chrome.declarativeNetRequest.getEnabledRulesets())
-            .map((s) => Number.parseInt(s.slice(RULE_SET_NAME_PREFIX.length), 10))
-            .sort((a, b) => a - b);
-
-        const isStateBroken = !isEqual(expectedEnabledFilters, actuallyEnabledFilters);
-
-        const filtersToDisable = expectedEnabledFilters.filter((id) => !actuallyEnabledFilters.includes(id));
-
-        // Save last expected to be enabled filters to notify UI.
-
+        // If state is broken - disable filters that were expected to be enabled
+        // and configure tswebextension without them to activate minimal possible
+        // defense.
         if (isStateBroken) {
+            const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
+            const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
+
+            const filtersToDisable = expectedEnabledFilters.filter((id) => !actuallyEnabledFilters.includes(id));
+
+            // Save last expected to be enabled filters to notify UI about them.
             await rulesLimitsStorage.setData(expectedEnabledFilters);
+
             filterStateStorage.enableFilters(actuallyEnabledFilters);
             filterStateStorage.disableFilters(filtersToDisable);
 
+            // Update tswebextension configuration without check limitations to
+            // skip recursion.
             await update(true);
         } else {
-            const prevExpectedEnabledFilters = await RulesLimitsService.getFromStorage();
             // If state is not broken - clear list of "broken" filters
+            const prevExpectedEnabledFilters = rulesLimitsStorage.getData();
             if (prevExpectedEnabledFilters.length > 0) {
-                await rulesLimitsStorage.setData([]);
+                await this.cleanExpectedEnabledFilters();
             }
         }
     }
@@ -393,37 +426,25 @@ export class RulesLimitsService {
     }
 
     /**
-     * Returns an array of previously set filter ids from storage.
+     * Read stringified domains array from specified allowlist storage,
+     * parse it and set memory cache.
      *
-     * @returns An array of previously set filter ids.
+     * If data is not exist, set default data.
      */
-    private static async getFromStorage(): Promise<number[]> {
-        let data: number[] = [];
+    private static async initStorage(): Promise<void> {
         try {
             const storageData = await rulesLimitsStorage.read();
             if (typeof storageData === 'string') {
-                data = rulesLimitsStorageDataValidator.parse(JSON.parse(storageData));
-                rulesLimitsStorage.setCache(data);
+                const validatedData = rulesLimitsStorageDataValidator.parse(JSON.parse(storageData));
+                rulesLimitsStorage.setCache(validatedData);
             } else {
-                data = [];
-                await rulesLimitsStorage.setData(data);
+                await this.cleanExpectedEnabledFilters();
             }
         } catch (e) {
             // eslint-disable-next-line max-len
             logger.warn(`Cannot parse data from "${rulesLimitsStorage.key}" storage, set default states. Origin error: `, e);
-            data = [];
-            await rulesLimitsStorage.setData(data);
+            await this.cleanExpectedEnabledFilters();
         }
-        return data;
-    }
-
-    /**
-     * Returns previously enabled filters.
-     *
-     * @returns Previously enabled filters.
-     */
-    public static getExpectedEnabledFilters(): number[] {
-        return rulesLimitsStorage.getData();
     }
 
     /**
@@ -448,7 +469,7 @@ export class RulesLimitsService {
      *
      * @returns Promise that resolves with possible limitations.
      */
-    private static getStaticFiltersLimitations(): StaticLimitsCheckResult {
+    private static async getStaticFiltersLimitations(): Promise<StaticLimitsCheckResult> {
         const enabledFiltersCount = RulesLimitsService.getStaticEnabledFiltersCount();
         if (enabledFiltersCount === MAX_NUMBER_OF_ENABLED_STATIC_RULESETS) {
             return {
@@ -463,13 +484,15 @@ export class RulesLimitsService {
             };
         }
 
-        if (RulesLimitsService.areFilterLimitsExceeded()) {
+        const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
+        if (areFilterLimitsExceeded) {
+            const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
             return {
                 ok: false,
                 data: {
                     type: 'static',
                     filtersCount: {
-                        current: RulesLimitsService.getActuallyEnabledFilters().length,
+                        current: actuallyEnabledFilters.length,
                         expected: RulesLimitsService.getExpectedEnabledFilters().length,
                     },
                 },

@@ -137,7 +137,7 @@ export class App {
         // Initializes Settings storage data
         await SettingsApi.init();
 
-        rulesLimitsService.init();
+        await rulesLimitsService.init();
 
         // TODO mv3 uses other way to inject scripts. AG-33507
         // /**

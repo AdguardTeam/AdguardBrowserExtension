@@ -91,7 +91,7 @@ export class PopupService {
             const hasUserRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
 
             const areFilterLimitsExceeded = __IS_MV3__
-                ? RulesLimitsService.areFilterLimitsExceeded()
+                ? await RulesLimitsService.areFilterLimitsExceeded()
                 : false;
 
             return {
