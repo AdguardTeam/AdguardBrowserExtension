@@ -116,6 +116,11 @@
             left: 0;
             right: initial;
             margin-top: 20px;
+            background-color: var(--white);
+
+            @media (prefers-color-scheme: dark) {
+                background-color: var(--gray1f);
+            }
         }
     }
 }
@@ -138,6 +143,12 @@
                 color: var(--gray900);
             }
         }
+
+        &.popup-modification {
+            .select__list {
+                background-color: var(--white);
+            }
+        }
     }
 }
 
@@ -156,6 +167,12 @@
 
             &:hover {
                 background-color: var(--gray900);
+            }
+        }
+
+        &.popup-modification {
+            .select__list {
+                background-color: var(--gray1f);
             }
         }
     }
