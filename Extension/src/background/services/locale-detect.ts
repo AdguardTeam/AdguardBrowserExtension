@@ -216,7 +216,7 @@ export class LocaleDetect {
         changeInfo: Tabs.OnUpdatedChangeInfoType,
         tab: Tabs.Tab,
     ): Promise<void> {
-        if (tab.status === 'complete') {
+        if (tab.status === 'complete' && !__IS_MV3__) {
             await this.detectTabLanguage(tab);
         }
     }
@@ -331,6 +331,8 @@ export class LocaleDetect {
 
         const disabledFiltersIds = filterIds.filter(filterId => !FiltersApi.isFilterEnabled(filterId));
 
+        // TODO: Check, do we really need always enable language group,
+        // even if user disabled it manually?
         // Always enable language filters group.
         groupStateStorage.enableGroups([AntibannerGroupsId.LanguageFiltersGroupId]);
 

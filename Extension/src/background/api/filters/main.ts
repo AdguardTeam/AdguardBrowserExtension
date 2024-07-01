@@ -359,11 +359,8 @@ export class FiltersApi {
      * @returns Enabled filters metadata array.
      */
     public static getEnabledFiltersWithMetadata(): FilterMetadata[] {
-        const filters = FiltersApi.getEnabledFilters();
-        return filters
-            .map(f => {
-                return FiltersApi.getFilterMetadata(f);
-            })
+        return FiltersApi.getEnabledFilters()
+            .map(f => FiltersApi.getFilterMetadata(f))
             .filter((f): f is FilterMetadata => f !== undefined);
     }
 

@@ -26,6 +26,8 @@ export enum SettingOption {
     DisableDetectFilters = 'detect-filters-disabled',
     DisableSafebrowsing = 'safebrowsing-disabled',
     FiltersUpdatePeriod = 'filters-update-period',
+    // Is filtering disabled or not.
+    DisableFiltering = 'adguard-disabled',
 
     // Extension specific settings.
     UseOptimizedFilters = 'use-optimized-filters',
@@ -65,9 +67,6 @@ export enum SettingOption {
     Metadata = 'filters-metadata',
     I18nMetadata = 'filters-i18n-metadata',
     CustomFilters = 'custom-filters',
-
-    // Allowlist domains.
-    DisableFiltering = 'adguard-disabled',
 }
 
 // Setting options may be stringified, use preprocessors for correct type casting

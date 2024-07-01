@@ -104,22 +104,9 @@ export class Engine implements TsWebExtensionEngine {
 
         await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
 
-        if (RulesLimitsService.areFilterLimitsExceeded()) {
+        if (await RulesLimitsService.areFilterLimitsExceeded()) {
             toasts.showRuleLimitsAlert();
         }
-    }
-
-    /**
-     * Stops the tswebextension and updates the counter of active rules.
-     */
-    async stop(): Promise<void> {
-        logger.info('Stop tswebextension...');
-        await this.api.stop();
-
-        const rulesCount = this.api.getRulesCount();
-        logger.info(`tswebextension is stopped. Rules count: ${rulesCount}`);
-        // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
     }
 
     /**
@@ -132,6 +119,9 @@ export class Engine implements TsWebExtensionEngine {
         const configuration = await Engine.getConfiguration();
 
         logger.info('Update tswebextension configuration...');
+        if (skipLimitsCheck) {
+            logger.info('With skip limits check.');
+        }
         const result = await this.api.configure(configuration);
         rulesLimitsService.set(result);
 
@@ -142,6 +132,10 @@ export class Engine implements TsWebExtensionEngine {
 
         if (!skipLimitsCheck) {
             await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
+        }
+
+        if (await RulesLimitsService.areFilterLimitsExceeded()) {
+            toasts.showRuleLimitsAlert();
         }
     }
 
@@ -210,12 +204,16 @@ export class Engine implements TsWebExtensionEngine {
      * Sets the filtering state.
      *
      * @param isFilteringEnabled - The filtering state.
+     *
+     * Note: we do not pass the parameter to engine because we suppose that
+     * settings already changed and tswebextension will generate configuration
+     * itself based on the current settings.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async setFilteringState(isFilteringEnabled: boolean): Promise<void> {
-        if (isFilteringEnabled) {
-            await this.stop();
-        } else {
-            await this.start();
-        }
+        // Configure tswebextension with the new settings without checking limits
+        // if we paused filtering.
+        const skipCheck = isFilteringEnabled === false;
+        await this.update(skipCheck);
     }
 }
