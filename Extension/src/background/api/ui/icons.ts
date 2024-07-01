@@ -67,7 +67,7 @@ export class IconsApi {
         }
 
         const isMv3LimitsExceeded = __IS_MV3__
-            ? RulesLimitsService.areFilterLimitsExceeded()
+            ? await RulesLimitsService.areFilterLimitsExceeded()
             : false;
 
         try {
