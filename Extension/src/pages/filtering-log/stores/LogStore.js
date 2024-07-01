@@ -164,6 +164,7 @@ const initEventTypesFilters = {
                 RequestType.Font,
                 RequestType.Websocket,
                 RequestType.Csp,
+                RequestType.PermissionsPolicy,
                 RequestType.Cookie,
                 RequestType.Ping,
                 RequestType.WebRTC,
@@ -429,6 +430,7 @@ class LogStore {
                     || filteringEvent.requestRule?.cssRule
                     || filteringEvent.requestRule?.scriptRule
                     || filteringEvent.requestRule?.cspRule
+                    || filteringEvent.requestRule?.permissionsRule
                     || filteringEvent.replaceRules
                     || filteringEvent.removeParam
                     || filteringEvent.removeHeader);
