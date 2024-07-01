@@ -1,9 +1,9 @@
-! Checksum: gdPN2Vmh+nXq177KX2VoRg
-! Diff-Path: ../patches/8/8-s-1718984089-3600.patch
+! Checksum: 2xztQ6E82Nj0TUJ5BhXTPw
+! Diff-Path: ../patches/8/8-s-1719585277-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.7
-! TimeUpdated: 2024-06-21T15:32:24+00:00
+! Version: 2.0.7.10
+! TimeUpdated: 2024-06-28T14:32:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -155,6 +155,7 @@ _advertentieleaderboardhome.
 ||infotalia.com/worktalia_promo_
 ||jobat.be/extra/trackuityhn/ticker_new.html$third-party
 ||jobfish.nl/widget/$third-party
+||kjdsfjisdfjr23.azurewebsites.net^
 ||mmcdn.nl/tags/
 ||nextdaymedia-ads.s3.amazonaws.com^
 ||ouders.nl/uploads/alt/$domain=viafora.nl
@@ -1479,6 +1480,7 @@ vakantieplaats.nl#@#.topAds
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||kjdsfjisdfjr23.azurewebsites.net^
 ||content2.nrc.nl^
 ||aa.hwigroup.com^
 ||ab.hwigroup.com^
@@ -1666,6 +1668,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+npo.nl#%#//scriptlet('json-prune-fetch-response', 'assets.preroll assets.prerollDebug', '', '/stream-link')
 ||biernet.nl/site/plugins/bja_new/redirect.php
 biernet.nl##.bja-cont
 biernet.nl###ban_blok

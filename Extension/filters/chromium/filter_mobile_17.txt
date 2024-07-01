@@ -1,9 +1,9 @@
-! Checksum: 6fS3O44Ta+mgAFUNCFRtdg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1718901299-3600.patch
+! Checksum: iO6lRp9igQplOnIXioAgPQ
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1719664489-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.62
-! TimeUpdated: 2024-06-20T16:33:10+00:00
+! Version: 2.0.8.71
+! TimeUpdated: 2024-06-29T12:32:50+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=cstrackid
 /?affijet-click=$removeparam
@@ -229,10 +229,37 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||jpsk.jp^$removeparam=click
+||savefrom.net^$removeparam=from
+$removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
+||temu.com^$removeparam=_bg_fs
+||temu.com^$removeparam=_x_sessn_id
+||temu.com^$removeparam=refer_page_name
+||temu.com^$removeparam=refer_page_id
+||temu.com^$removeparam=sku_id
+||temu.com^$removeparam=refer_share_channel
+||temu.com^$removeparam=refer_share_id
+||temu.com^$removeparam=_oak_page_source
+||temu.com^$removeparam=_oak_region
+||temu.com^$removeparam=refer_share_suin
+||temu.com^$removeparam=_oak_mp_inf
+||temu.com^$removeparam=top_gallery_url
+||temu.com^$removeparam=spec_gallery_id
+||temu.com^$removeparam=refer_source
+||temu.com^$removeparam=freesia_scene
+||temu.com^$removeparam=_oak_freesia_scene
+||temu.com^$removeparam=_oak_rec_ext_1
+||temu.com^$removeparam=_oak_gallery_order
+||temu.com^$removeparam=_x_channel_scene
+||temu.com^$removeparam=_x_channel_src
+||temu.com^$removeparam=share_img
+||temu.com^$removeparam=from_share
+||videoproc.com/*install/$removeparam
+||m.otenki.com^$removeparam=af
+||carseven.co.jp^$removeparam=from
 ||email1.io^$removeparam=aid
 ||blogmura.com^$removeparam=p_cid
 ||nvidia.com^$removeparam=jso
-||booking.com^$removeparam=aid
 ||nytimes.com^$removeparam=smid
 ||nytimes.com^$removeparam=referringSource
 ||nytimes.com^$removeparam=sgrp
@@ -384,6 +411,8 @@ $removeparam=fb_source
 ||stacksocial.com/*/*&partnerid=$removeparam=partnerid
 ||gillian-guide.github.io^$removeparam=ref
 ||pcmag.com^$removeparam=taid
+$removeparam=trackcode,domain=vk.com|vk.ru
+$removeparam=recom,domain=vk.com|vk.ru
 ||vkplay.ru$removeparam=_1ld
 ||vkplay.ru$removeparam=_1lp
 ||incogni.com^$removeparam=transaction_id
