@@ -1,9 +1,8 @@
-! Checksum: 9Q8D0+AyOu+FzIY/QEdybA
-! Diff-Path: ../patches/6/6-s-1719225467-3600.patch
+! Checksum: 5wdCdy3v8RKfT3adGvwH+Q
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.42.52
-! TimeUpdated: 2024-06-24T10:34:51+00:00
+! Version: 2.0.42.64
+! TimeUpdated: 2024-06-28T11:33:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -570,6 +569,8 @@ southpark.de#%#(()=>{const e=new Map,t=function(){},o=t;o.prototype.dispose=t,o.
 southpark.de#%#//scriptlet('prevent-fetch', 'imasdk.googleapis.com')
 ||imasdk.googleapis.com/pal/sdkloader/pal.js$script,redirect=noopjs,domain=southpark.de
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=southpark.de
+!+ NOT_PLATFORM(windows, mac, android, ext_chromium, ext_opera)
+@@||mssl.fwmrm.net/libs/adm/*/AdManager.js$domain=southpark.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/156446
 @@||imagenetz.de/werbebanner-ad.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/154040
@@ -670,6 +671,8 @@ sinoptik.de#$?#body > iframe[name]:not([class]):not([id]):not([src])[style="disp
 @@||trafficfabrik.com/mine.js
 ! zappn.tv - antiadblock
 zappn.tv#%#!function(){window.somtag={cmd:function(){}};}();
+!+ NOT_PLATFORM(windows, mac, android, ext_chromium)
+@@||ad.71i.de/somtag/loader/loader.js$domain=zappn.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/80181
 sport1.de##div[class^="s1-thanks-for-turning-off-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/76105
@@ -1546,8 +1549,6 @@ lkz.de##.nfy-ar-ad
 lkz.de##.nfy-row-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157906
 ! 20min.ch - video player is fixed by JS rule, so advertisement script can be blocked
-!+ PLATFORM(windows, mac, android, ext_chromium)
-||tdn.da-services.ch/current/20min_durable.js$domain=20min.ch,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/117868
 ! Blocked service worker to fix filtering in apps
 ||proaurum.de/sw.js
@@ -1625,6 +1626,17 @@ formel1.de,krautundrueben.de,motorsport-total.com,traktorpool.de,fnweb.de,laborj
 !
 !
 !
+docfinder.at##.search-results > .search-result:has(> a > .top > .base-info > .sub > .advert)
+gutekueche.at##div[id^="gkf-adslot"]
+t-online.de##div:has(> div[data-commercial-format]:only-child)
+promobil.de##div[class*="announcement_border"]:has(> div:only-child > a[is-digitarista-widget] .va-teaser-badges > span[class*="teaserBadge_ad"])
+promobil.de##.va-teaser-list:has(> div[class]:only-child > div[style="display: none !important;"]:first-child + div[style="display: none !important;"]:last-child)
+promobil.de##div[class]:has(> a[is-digitarista-widget] > div[class] .va-teaser-badges > span[class*="teaserBadge_ad"])
+promobil.de##.va-sponsored
+promobil.de##.va-commercial-container
+focus.de##div[id*="AdSlot"]
+focus.de##.Ad-Slot
+t-online.de#?#div[data-tb-region-item]:has(> article:only-child > .grid > span:contains(ANZEIGE))
 chip.de##aside[role="complementary"]:has(> .Ad:only-child)
 nordbayern.de##.modul--newsticker-more:has(> div[id^="traffective-ad-"]:first-child + div[id^="traffective-ad-"]:last-child)
 nordbayern.de###traffective-ad-Billboard
@@ -9502,6 +9514,7 @@ kostenlosspielen.net##.content-main-box-728x90
 kostenlosspielen.net##.content-right-box-300x250right
 tourispo.de##.content-teaser-small
 help.ch##.content-teaser-tabs
+futurezone.de##.contentAd--pos1
 buffed.de,gamezone.de,pcgames.de,pcgameshardware.de##.contentFrameEddie
 koeln.de##.contentRect
 tourispo.de##.contentRefsAside
@@ -9583,7 +9596,7 @@ radioholiday.de##.elementor-element-f3e9036
 spielen-slots.at,spielen-slots.com,spielen-slots.de##.end-to-end-banner
 etcg.de##.eral_wrapper
 marina.ch##.et_pb_row_0_tb_header
-kaufland.de##.exp-vision
+kaufland.de##.exp-vision__ext-wrapper--spad
 immobilienscout24.de##.expose-ad-placeholder
 cannabis-medic.eu##.externalURL
 news.de##.extraContentContainer
@@ -11046,6 +11059,7 @@ mobile.de##div[style="min-height:250px"]:has(#SRP_BILLBOARD_ADSENSE)
 jungefreiheit.de##div[style="text-align: center;"]:has(.adsbygoogle)
 windowspro.de##div[style]:has(> a[onclick*="://www.windows-pro.net/"])
 windowspro.de##div[style]:has(a[onclick*="/pcs/click"])
+windowspro.de##div[style]:has(a[onclick*="://windows-pro.net/"])
 windowspro.de##div[style]:has(div[style] > p > a[onclick*="://www.windows-pro.net/"])
 mein-mmo.de##li.article:has([data-type="sponsored"])
 dogforum.de##li:has(.wbbXdLocationAfter1stPostAsPost)

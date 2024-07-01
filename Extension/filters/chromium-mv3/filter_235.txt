@@ -1,9 +1,8 @@
-! Checksum: wMCEZJun4Ion6shmtChkRw
-! Diff-Path: ../patches/235/235-s-1719176655-14400.patch
+! Checksum: UXZju0aGPN5/RJIsoDDnJg
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.49
-! TimeUpdated: 2024-06-23T21:01:44+00:00
+! Version: 2.0.4.52
+! TimeUpdated: 2024-06-30T21:01:46+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -70,6 +69,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 !-------------------------^ Experimental Generic Filters ^-----------------------!
 !-------------------------v Persian Ads/Trackers/Annoyances Filters v-----------------------!
 ! >> A <<
+||adtodate.ir^
 ||anetwork.ir^
 ||alaqsastorm.com/aqsa/ads.php^$image,third-party
 ||adverge.ir^
@@ -374,7 +374,6 @@ anaj.ir,salamatnews.com#%#//scriptlet('ubo-set.js', 'document.referrer', 'undefi
 !-------------------------^ Persian Ads/Trackers/Annoyances Filters ^-----------------------!
 !-------------------------v Non-Persian Ads/Trackers/Annoyances Filters Used In Persian Websites v-----------------------!
 ! >> A <<
-||adtodate.net^$third-party
 ! >> B <<
 ! >> C <<
 ! >> D <<
@@ -1570,7 +1569,7 @@ mohandescenter.ir##div.col-12 div#ctl00_topModule1_pnlTop:has(> div.divleftmod >
 ! https://github.com/MasterKia/PersianBlocker/issues/211
 mediat.ir##div.widget-ad-image
 mediat.ir##div.ad-wrap
-! TODO: Remove "لینک های کاربردی"
+mediat.ir##div.elementor > section > div.elementor-container:has(h2.heading-title:has-text(لینک‌های کاربردی))
 musicdel.ir#%#//scriptlet('ubo-set.js', 'runScript', 'false')
 ||danialtaherifar.ir^$third-party,domain=musicdel.ir
 ||musicdel.ir/danga4.js^$script,~third-party
@@ -1988,18 +1987,10 @@ rozblog.com###middle-ads
 rozup.ir##.txtad
 rozup.ir##.center.body_c > div:nth-of-type(2)
 rozup.ir##.center.body_c > div > div
-||rokna.net/rss-files.php^
-rokna.net##.zxc
-rokna.net##.zxc-header-zxc
-rokna.net##.home-zxc
-rokna.net##.adv-cnt
-rokna.net##.zxc-padding-custom
-rokna.net##.side_txt_zxc
-rokna.net##.sanjagh
-rokna.net##.padding-bottom-8
-rokna.net##.box-doc > .documentary-news-cnt > header:has-text(بازرگانی):upward(.box-doc)
-rokna.net##.various-cnt > header:has-text(بازرگانی):upward(.various-cnt)
-rokna.net##.news-col-1 #rssbank:upward(.container)
+rokna.net##div.margin-bottom-16 > section.various-cnt:has(> header.default-header > h2.title:has-text(بازرگانی))
+rokna.net##div.side_txt_zxc
+rokna.net##header.default-header-2 > h2.title:has-text(وبگردی)
+rokna.net##ul#rssbank
 ||irancarpet.net^$image,domain=rouzegar.com
 rouzegar.com##.widget_better-ads
 rouzegar.com##.adloc-is-banner
@@ -2490,9 +2481,10 @@ tasnimnews.com##.ad-item
 tasnimnews.com##.ads-footer
 tasnimnews.com#$#.col-md-9 { width: 100% !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88769
-||tarafdari.com/advertise^
-||tarafdari.com/modules/statistics^
-tarafdari.com##.column-side > .block > .block-title:has-text(وبگردی):upward(.block)
+||tarafdari.com/advertise^$xmlhttprequest,~third-party
+||tarafdari.com/sites/all/themes/hope/images/ad_home_page.jpg^$image,~third-party
+||tarafdari.com/sites/all/themes/hope/images/advertise^$image,~third-party
+tarafdari.com##aside.column-side > div.block:has(> div.block-title:has-text(وبگردی))
 ! ||adservice.google.com/adsid/integrator.js?domain=tamasha.com
 talab.org##.Topadver
 taktemp.com##.link-ads
@@ -2510,10 +2502,12 @@ taknaz.ir##section#RightPanel > div.RBC > div.CCTS:has-text(تبلیغات مت�
 tamin.ir#@#.ads2
 @@||tamin.ir/content/ads/
 ! >> U <<
+upsara.com##img[alt="ads"]
+upsara.com##div.ads
 ! To counter Online Malicious URL Blocklist
 ||uploadkon.ir^$badfilter
-||uploadkon.ir/styles/UploadKon/assets/img/ad.png^$image,~third-party
-uploadkon.ir##.ad-link
+uploadkon.ir##div.ads
+uploadkon.ir##li.ad-link
 uploadgoogle.ir#%#//scriptlet('ubo-nowoif.js')
 uptrack.ir#%#//scriptlet('ubo-nowoif.js')
 uptrack.ir##a[href*="utm_source=uptrack"]
@@ -2818,6 +2812,8 @@ zoomtech.org##div.zoomtech-banner
 ||mogo-crypto.net^$all
 ! https://github.com/Webamoozcom/warning-list/discussions/174
 ||tinancefa.org^$all
+! https://github.com/Webamoozcom/warning-list/discussions/184
+||chancx.io^$all
 ! https://github.com/MasterKia/PersianBlocker/pull/201
 ! https://webamooz.com/1402/06/25/%D9%84%D8%A7%DA%A9%D8%B3%D9%88%D9%86-laxxson-%DA%A9%D9%84%D8%A7%D9%87%D8%A8%D8%B1%D8%AF%D8%A7%D8%B1%DB%8C-%D9%BE%D8%A7%D9%86%D8%B2%DB%8C-%D8%A7%D8%B3%D8%AA/
 ||laxsson.com^$all

@@ -1,14 +1,13 @@
-! Checksum: TyjIDnOLfeaGAYfFOGytiQ
-! Diff-Path: ../patches/227/227-s-1719219833-14400.patch
+! Checksum: mAlaewZLxtJQU+OxioCrmg
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.18.68
-! TimeUpdated: 2024-06-24T09:01:30+00:00
+! Version: 2.0.18.71
+! TimeUpdated: 2024-06-30T21:01:40+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.0624.2
+! OriginalVersion: 2024.0630.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://community.list-kr.com/docs/
@@ -246,6 +245,7 @@
 !
 ! DOMAIN-REFRESHER: START
 !
+||ttse.b-cdn.net^
 ||i.keezip.com^
 ||awd.spochak.com^
 !
@@ -1297,7 +1297,8 @@
 !
 ! DOMAIN-REFRESHER: START
 !
-||images.request-support.com/br/$domain=tv40.wiki|tv41.wiki|tv42.wiki|tv43.wiki|tv44.wiki|tv45.wiki|tv46.wiki|tv47.wiki|tv48.wiki|tv49.wiki|tv50.wiki|tv51.wiki|tv52.wiki|tv53.wiki
+/^https:\/\/avpink[0-9]+\.com\/wp-content\/uploads\/[0-9]+\/[0-9]+\/[0-9-%A-Z]+x[0-9]+/$domain=avpink365.com|avpink366.com|avpink367.com|avpink368.com|avpink369.com|avpink370.com|avpink371.com|avpink372.com|avpink373.com
+/^https:\/\/avpink[0-9]+\.com\/wp-content\/uploads\/[0-9]+\/[0-9]+\/[0-9]+-[0-9]+-[0-9]+\./$domain=avpink365.com|avpink366.com|avpink367.com|avpink368.com|avpink369.com|avpink370.com|avpink371.com|avpink372.com|avpink373.com
 ||cdn.ksportscdn.com/data/editor/
 ||xn--h10b90b998c.site/img/
 /^https:\/\/v[0-9]+\.dasibogo\.net\/wp-content\/uploads\/sites\/[0-9]+\/[0-9]+\/[0-9]+\/[a-z0-9]+\./$domain=dasibogo.net
@@ -1308,13 +1309,13 @@
 ||anilife.*/assets/images/banner/$domain=anilife.*
 ||tvzone.*/data/banner/$domain=tvzone.*
 ||xvideos-kr.com/img/banner/
-/__/nuevo.min.js$domain=avguri3.com|avguri4.com|avguri5.com|avguri6.com|avguri7.com|avguri8.com|avguri9.com|avguri10.com|avguri11.com|avguri12.com|avguri13.com|avguri14.com
+||telegra.ph/file/$domain=avguri4.com|avguri5.com|avguri6.com|avguri7.com|avguri8.com|avguri9.com|avguri10.com|avguri11.com|avguri12.com|avguri13.com|avguri14.com|avguri15.com
 ||ohli365.*/data/apms/$domain=ohli365.*
 ||bbongtv.*/img/*.gif$domain=bbongtv.*
 /^https:\/\/www\.ygy[0-9]+\.com\/upload_files\/banner\//$domain=ygy48.com|ygy49.com|ygy50.com|ygy51.com|ygy52.com|ygy53.com|ygy54.com|ygy55.com|ygy56.com|ygy57.com|ygy58.com|ygy59.com|ygy60.com|ygy61.com
 /^https:\/\/www\.ygy[0-9]+\.com\/upload_files\/popup\//$domain=ygy48.com|ygy49.com|ygy50.com|ygy51.com|ygy52.com|ygy53.com|ygy54.com|ygy55.com|ygy56.com|ygy57.com|ygy58.com|ygy59.com|ygy60.com|ygy61.com
 /^https:\/\/linkssakda\.com\/upload\/images\/[0-9]+\./$domain=linkssakda.com
-||i.imgur.com^$domain=avguri3.com|avguri4.com|avguri5.com|avguri6.com|avguri7.com|avguri8.com|avguri9.com|avguri10.com|avguri11.com|avguri12.com|avguri13.com|avguri14.com
+||i.imgur.com^$domain=avguri4.com|avguri5.com|avguri6.com|avguri7.com|avguri8.com|avguri9.com|avguri10.com|avguri11.com|avguri12.com|avguri13.com|avguri14.com|avguri15.com
 ||moeni.net/img/sp/
 ||cdnbuzz.buzz//banner/
 /^https:\/\/avjoa[0-9]+\.com\/wp-content\/uploads\/[0-9]+\/[0-9]+\/.+\.gif$/
@@ -2651,8 +2652,12 @@ www.erdcloud.com##.erd-ads-area
 !
 ! DOMAIN-REFRESHER: START
 !
+avguri4.com,avguri5.com,avguri6.com,avguri7.com,avguri8.com,avguri9.com,avguri10.com,avguri11.com,avguri12.com,avguri13.com,avguri14.com,avguri15.com##div[id$="_bn"]
+avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-3
+avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-12
+avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-13
 tv25.co##.code-block
-tv40.wiki,tv41.wiki,tv42.wiki,tv43.wiki,tv44.wiki,tv45.wiki,tv46.wiki,tv47.wiki,tv48.wiki,tv49.wiki,tv50.wiki,tv51.wiki,tv52.wiki,tv53.wiki##img[src*="images.request-support.com/br/"]
+tv46.wiki,tv47.wiki,tv48.wiki,tv49.wiki,tv50.wiki,tv51.wiki,tv52.wiki,tv53.wiki,tv54.wiki,tv55.wiki,tv56.wiki,tv57.wiki,tv58.wiki,tv59.wiki##.partner-banner-flex
 xn--vv4b11c.com##.mp4-banner-view
 xn--vv4b11c.com###xcontent-goodsite
 anilife.*##.MainBnnWrap
@@ -2661,7 +2666,7 @@ tvzone.*##.main_banner
 xvideos-kr.com##.thumb-ad
 torrentnx17.com,torrentnx18.com,torrentnx19.com,torrentnx20.com,torrentnx21.com,torrentnx22.com,torrentnx23.com,torrentnx24.com,torrentnx25.com,torrentnx26.com,torrentnx27.com##a[href*="/bbs/link.php"]
 coktv.*##.custom_banner_wrap
-avguri3.com,avguri4.com,avguri5.com,avguri6.com,avguri7.com,avguri8.com,avguri9.com,avguri10.com,avguri11.com,avguri12.com,avguri13.com,avguri14.com###hd_pop
+avguri4.com,avguri5.com,avguri6.com,avguri7.com,avguri8.com,avguri9.com,avguri10.com,avguri11.com,avguri12.com,avguri13.com,avguri14.com,avguri15.com###hd_pop
 bbongtv.*##img[src^="/img/"][src*=".gif"]
 ygy48.com,ygy49.com,ygy50.com,ygy51.com,ygy52.com,ygy53.com,ygy54.com,ygy55.com,ygy56.com,ygy57.com,ygy58.com,ygy59.com,ygy60.com,ygy61.com##.popup_wrap
 moeni.net##img[src^="/img/sp/"]
@@ -3412,7 +3417,7 @@ naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
 srank.kr#%#//scriptlet('prevent-fetch', 'doubleclick.net')
-klauncher.kr#%#//scriptlet('set-constant', 'detectAdBlock', 'noopFunc')
+klauncher.kr#%#//scriptlet('prevent-addEventListener', 'load', 'AdBlock')
 chmodi.tistory.com##.floatdiv
 svrforum.com##body > div[class][style*="box-shadow:"]
 luckyquiz3.blogspot.com#%#//scriptlet('prevent-xhr', 'adsbygoogle')

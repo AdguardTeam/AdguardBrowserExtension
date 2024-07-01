@@ -1,14 +1,13 @@
-! Checksum: X+KlbU4xhPSl9+1qMJP6vw
-! Diff-Path: ../patches/249/249-s-1718874290-14400.patch
+! Checksum: ARfhu5RuUfHBJQ1ZXGLcmg
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.52
-! TimeUpdated: 2024-06-20T09:02:16+00:00
+! Version: 2.0.7.55
+! TimeUpdated: 2024-06-26T13:01:48+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! OriginalVersion: 20June2024v1
+! OriginalVersion: 26June2024v3
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -1628,6 +1627,7 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||verktoy24.no/wp-content/uploads/*_300px-scaled.jpg^
 ||vf.is/media/1/*2000x616.jpg^
 ||vf.is/media/1/geysir-dekkjaskipti.jpg^
+||elton.app/widget/$domain=tek.no
 ||viasport-assets.mtg-api.com/*/prod/comScore-*.js$script
 ||vikari.is/skjol/frjalsi-lif*.png^
 ||viralefilmer.no/wp-content/uploads/*slot-
@@ -1872,6 +1872,8 @@ vafo.dk##.adform-flexblock
 ###adBlinkContainer:not(html,body,:empty)
 ###innocode-ad:not(html,body,:empty)
 ! https://www.brannmannen.no/brann/store-utfordringer-ved-togulykken-pa-asta/
+!+ NOT_PLATFORM(windows, mac, android)
+||85.17.76.181^$all
 ! krs247.no
 ##div[id^=webbannernetboard]:not(body,:empty)
 ! lsk.no
@@ -1997,6 +1999,18 @@ baadmagasinet.dk##.article-bottom .qx-inner > .qx-section:last-of-type
 ! 🇳🇴🏞: Huvudsakleg for AdGuard
 ! 🇮🇸: Aðallega fyrir AdGuard
 ! 🇬🇧: Mostly for AdGuard
+!+ NOT_PLATFORM(windows, mac, android)
+||3.248.18.175^$all
+!+ NOT_PLATFORM(windows, mac, android)
+! [excluded by ||35.] ||35.227.231.163^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||45.58.146.154^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||82.196.13.38^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||82.221.81.9^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||178.79.136.45^$all
 ! 🇳🇴/🇩🇰: ——— Sporingsfiler ———
 ! 🇳🇴🏞: ——— Sporingsfilar ———
 ! ❄: ——— Guorrafiilaid ———
@@ -2305,6 +2319,10 @@ triplx.dk##.aff-inner-col
 /finn.no/finno.htm$document,domain=~facebook.com
 .gratis-reisebilletter.$document
 ||102.112.2o7.net^$document
+!+ NOT_PLATFORM(windows, mac, android)
+||52.216.146.90^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||92.42.104.146^$all
 ||appleid.*.no^$domain=~en-svindelside-som-ikke-er-apple.*
 ||coop.no.$document,domain=~en-svindelside-som-ikke-er-coop.*
 ||danskebank.no.$document,domain=~en-svindelside-som-ikke-er-danskebank.*
@@ -2358,6 +2376,51 @@ triplx.dk##.aff-inner-col
 ||galerijajava.ba^$all
 ||p-stn.net^$all
 ! Fake Gymshark webshops
+||altrasgshoes.com^$all,domain=~en-falsk-svindelbutikk.*
+||altrask.com^$all,domain=~en-falsk-svindelbutikk.*
+||brunateskonorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||g-ymsharknorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||gantdanmark.com^$all,domain=~en-falsk-svindelbutik.*
+||gantnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymshark-danmarkudsalg.com^$all,domain=~en-falsk-svindelbutik.*
+||gymshark-no.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharkbutikdanmark.com^$all,domain=~en-falsk-svindelbutik.*
+||gymsharkbutikkoslo.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharkdanmark.com^$all,domain=~en-falsk-svindelbutik.*
+||gymsharkidanmark.com^$all,domain=~en-falsk-svindelbutik.*
+||gymsharkiesale.com^$all,domain=~en-falsk-svindelbutikk.*
+||xn--gymsharkklrnorge-3ob.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharkldanmark.com^$all,domain=~en-falsk-svindelbutik.*
+||gymsharklnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharkno.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharknorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharkoutletsnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharksalg.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharktightsnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||gymsharnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||hilfigerdenmark.com^$all,domain=~en-falsk-svindelbutikk.*
+||hilfigernorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||hugobossbutikk.com^$all,domain=~en-falsk-svindelbutikk.*
+||hunterstovlerbutikk.com^$all,domain=~en-falsk-svindelbutikk.*
+||josefseibeloutletnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||joyaskobutikk.com^$all,domain=~en-falsk-svindelbutikk.*
+||kybunskodanmark.com^$all,domain=~en-falsk-svindelbutik.*
+||louboutinnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||montec-danmark.com^$all,domain=~en-falsk-svindelbutik.*
+||montecnorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||montecsalg.com^$all,domain=~en-falsk-svindelbutikk.*
+||nauticadanmark.com^$all,domain=~en-falsk-svindelbutik.*
+||nauticanorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||salgvejanorge.com^$all,domain=~en-falsk-svindelbutikk.*
+||sanukdk.com^$all,domain=~en-falsk-svindelbutik.*
+||sanuksandaler.com^$all,domain=~en-falsk-svindelbutikk.*
+||umbrodk.com^$all,domain=~en-falsk-svindelbutik.*
+||umbrono.com^$all,domain=~en-falsk-svindelbutikk.*
+||underarmourdk.com^$all,domain=~en-falsk-svindelbutik.*
+||underarmourdks.com^$all,domain=~en-falsk-svindelbutik.*
+||vejadanmarkudsalg.com^$all,domain=~en-falsk-svindelbutik.*
+||xeroshoes-danmark.com^$all,domain=~en-falsk-svindelbutik.*
+||xeroshoesdanmark.com^$all,domain=~en-falsk-svindelbutik.*
 -norgesalg.com^$document,domain=~en-falsk-svindelbutikk.*
 *danmarks.com^$document,domain=~en-falsk-svindelbutik.*
 *norgno.com^$document,domain=~en-falsk-svindelbutikk.*
@@ -2371,6 +2434,8 @@ triplx.dk##.aff-inner-col
 ! E-mail tips
 ||s.free.fr^$all
 ||trmff.wpengine.com^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||212.27.60.108^$all
 ! Overly dedicated E-mail spambots
 ||wirexapp.africa.com^$all
 ||tachyoniums.eu.com^$all
@@ -2393,6 +2458,7 @@ triplx.dk##.aff-inner-col
 ! https://www.nrk.no/livsstil/1.14732503
 ||elkjop*.club^$document,domain=~en-falsk-svindelbutikk.*
 ! https://www.datahjelperne.no/sparebank1-kortet-ditt-er-blokkert-mail-phishing/
+/css/*sparebank1.no^$document,domain=~en-svindelside-som-ikke-er-sparebank1.*
 ! https://www.facebook.com/viralspiralen/posts/2494251397311027
 ||addmoviesnow.com^$document
 ! https://www.mm.dk/tjekdet/artikel/faarup-sommerland-advarer-mod-gratis-billetter-det-er-spam-og-fup
@@ -2597,9 +2663,43 @@ triplx.dk##.aff-inner-col
 ||my-altinn*$all,domain=~no
 ||no-oppdatere.$all
 ||no-oppdatert.$all,domain=~no
+!+ NOT_PLATFORM(windows, mac, android)
+||179.43.189.62^$all
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-7694946
 ||easypark-$document,popup
+!+ NOT_PLATFORM(windows, mac, android)
+||74.119.239.234^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||162.241.194.206^$all
 ! IP addresses of servers notorious for hosting many of the sites above
+!+ NOT_PLATFORM(windows, mac, android)
+||51.195.133.131^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||66.206.3.34^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||82.118.242.69^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||136.243.73.30^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||138.201.126.227^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||156.236.126.173^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||196.196.230.76^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||167.71.49.177^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||134.209.82.119^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||154.213.16.136^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||158.247.212.220^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||165.227.168.212^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||132.148.220.142^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||167.99.196.225^$all
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-7872103
 ||betzykrisesenter.no^$document
 ||citra2010oslo.no^$document
@@ -2617,6 +2717,8 @@ triplx.dk##.aff-inner-col
 ||yttersiden.no^$document
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-7873648
 ||monetrizer*.$all
+!+ NOT_PLATFORM(windows, mac, android)
+||38.180.96.244^$all
 ! 🇳🇴: Falske nett-"butikker" som er så dårlige, at de står oppført på Forbrukertilsynet egen svarteliste.
 ! 🇩🇰: Forbrukertilsynets black-list over falske netbutikker (Norges svar på Forbrugerombudsmanden).
 ! 🇬🇧: Fake and fraudulent web-"stores" that are so bad, that they're listed on the blacklist of the Norwegian state-sponsored Consumer Authority.
@@ -2652,6 +2754,12 @@ triplx.dk##.aff-inner-col
 ||nodrakts.com^$document
 ||dkfodboldstore.com^$document
 ||vmfodboldtoj.com^$document
+!+ NOT_PLATFORM(windows, mac, android)
+||5.39.217.206^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||5.39.221.180^$all
+!+ NOT_PLATFORM(windows, mac, android)
+||193.148.70.153^$all
 ! 🇳🇴: Falske nettapoteker
 ! 🇬🇧: Fake online pharmacies
 -med.footeo.com^$document,domain=~falskt-svindelapotek.*
@@ -2680,6 +2788,8 @@ triplx.dk##.aff-inner-col
 ||hagebakken.no^
 ||mdb.nu^
 ||idj.no^
+!+ NOT_PLATFORM(windows, mac, android)
+||1.14.61.188^$all
 ||smarthouseforum.ru^
 ||trafikkskoleapp.no^
 !+ NOT_OPTIMIZED
@@ -2687,7 +2797,7 @@ triplx.dk##.aff-inner-col
 fla.de###top-banner
 fla.de##.index-banner
 ! Generic entries that seem like they'd apply to the internet as a whole (Nordic sites included) that aren't in EasyList or AdGuard Base Filter, but which are in either uBlock Filters Ads, uBlock Filters Unbreak, or uBlock Filters Badware Risks.
-! OriginalVersion: 18May2024v1-Extension
+! OriginalVersion: 26June2024v1-Extension
 ###ad_feature:not(:empty)
 ###ad_img:not(:empty)
 ###adContext:not(:empty)

@@ -1,9 +1,9 @@
-! Checksum: G6TECE6lMdf6sA1QCQb0Bw
-! Diff-Path: ../patches/9/9-s-1718865267-3600.patch
+! Checksum: 27PhO8zwO/doaeKSg0SkDw
+! Diff-Path: ../patches/9/9-s-1719840952-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.25.51
-! TimeUpdated: 2024-06-20T06:32:25+00:00
+! Version: 2.0.25.64
+! TimeUpdated: 2024-07-01T13:33:28+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -277,6 +277,10 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/182228
+r7.com#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
+! https://github.com/AdguardTeam/AdguardFilters/issues/181874
+cerisetoon.com#%#//scriptlet('prevent-fetch', 'adskeeper.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181679
 daemon-hentai.com#%#//scriptlet('remove-node-text', 'script', '/function.*adblock/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181341
@@ -2098,9 +2102,9 @@ http://adw.
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cdn.cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net|mangatigre.net|darkmahou.org
+/^(?!.*(authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net|mangatigre.net|darkmahou.org
 ! Similar to regexp above, but using the denyallow modifier
-$script,third-party,denyallow=rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|cdn.cloudflare.net|x.com,_____,domain=anroll.net|monoschinos2.com|animeyt.es|leercapitulo.com|pelisflix2.green|darkmahou.org|comandotorrents.to|comandoplay.com
+$script,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|cloudflare.net|x.com,_____,domain=anroll.net|monoschinos2.com|animeyt.es|leercapitulo.com|pelisflix2.green|darkmahou.org|comandotorrents.to|comandoplay.com
 !
 ! ##.ad
 conjur.com.br,meups.com.br,elcorreogallego.es,3djuegos.lat,xatakandroid.com,nsctotal.com.br,noticiasdenavarra.com,informacion.es,applesfera.com,xatakamovil.com,espinof.com,mundoxiaomi.com,vidaextra.com,mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##.ad
@@ -2109,6 +2113,11 @@ globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.c
 ! ##body .banner
 meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.*,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+otvfoco.com.br##div[id*="ZONA_IAB_"]
+otvfoco.com.br##.row > div:has(> div.ads-bg)
+eltiempo.es##.mods-box
+tvn-2.com##aside[data-ad-type]
+portaldozacarias.com.br##.publicidade-esq
 mundodonghua.com##.container > .col-md-9 > .pl-15:has(> h4 > .fa-ad)
 hobbyconsolas.com###megaad-wrapper
 hobbyconsolas.com##.lazyload-wrapper:has(> div[class^="embed-card"] > a.product-button)
@@ -2117,7 +2126,8 @@ otakustv.com##div[id^="public_"]
 homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#%#//scriptlet('set-cookie', 'player', '1')
 homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#$##playx { display: none !important; }
 homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#$##plays { display: block !important; }
-guiadasemana.com.br###content-column div[class*=" min-"].placement
+guiadasemana.com.br#$#main#site-main { margin-top: 0px !important; }
+guiadasemana.com.br###content-column div[class].placement
 spanish.visorsmr.com##div[id^="ad-container"]
 bajalogratis.com##a[href*="/redirect?tid="]
 bajalogratis.com##.separator > a[target="_blank"] > img
@@ -2382,7 +2392,7 @@ biologianet.com##div[class^="area-publi"]
 uol.com.br,biologianet.com##div[class^="publi-"]
 biologianet.com##div[class^="pub_insert_content"]
 receitasdodia.fun##div[id^="el-02"]
-noticiasaominuto.com##.placeholder
+eltiempo.es,noticiasaominuto.com##.placeholder
 gamestorrents.fm##.landar center > a[target="_blank"] > img
 gamestorrents.fm#?#.tab-pane > div[class*="-movie-gride-agile"]:has(> a[href*="?offer_id="][target="_blank"] > img)
 juegosonlinegratis.com.mx,juegosonline.com.co,juegosonline.cl,jeuxgratuitjeux.com,culga.com,juegosonlinegratis.com.es,jogosnainternet.com.br##.horizontal-pub
@@ -4120,7 +4130,7 @@ muyzorras.com##.pd.pbf
 videospornosos.com##.publicidadactriz
 okdiario.com##.aux-col > .widget_aawp_widget_bestseller
 pornogratisdiario.com##.bnfo
-mundoeducacao.uol.com.br,pornogratisdiario.com##.bnr
+henaojara.com,mundoeducacao.uol.com.br,pornogratisdiario.com##.bnr
 embed.videosdemadurasx.com###floating-bn
 3dgames.com.ar###sponsor_image
 cine-online.eu##body #expandirBotones
@@ -4546,7 +4556,7 @@ lanacion.cl##.advs3
 thephoneclub.net##.angular_advertisement
 todoanimes.com##.anime-pub
 tecnologia.ig.com.br##.anugoogle.ver
-redesuldenoticias.com.br,cbnmaringa.com.br,melissabenoist.com.br,botinnifit.com,engeplus.com.br,libertaddigital.tv##.anuncio
+tvgazeta.com.br,redesuldenoticias.com.br,cbnmaringa.com.br,melissabenoist.com.br,botinnifit.com,engeplus.com.br,libertaddigital.tv##.anuncio
 elcolombiano.com##.anuncioPrincipal
 desenhosanimados.site,esradio.fm,libertaddigital.com,libertaddigital.tv##.anuncios
 futnet.com.br##.area_anuncios_topo
@@ -5375,6 +5385,12 @@ uol.com.br##ul.produtos
 ||uol.com.br/*/sortear_
 ! END: uol.com.br
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/182579
+animeonline.ninja#%#//scriptlet('abort-on-property-read', 'area51')
+! https://github.com/AdguardTeam/AdguardFilters/issues/182433
+! https://github.com/AdguardTeam/AdguardFilters/issues/182434
+player.seriesgod.com,player.pelisgod.com#%#//scriptlet('prevent-window-open')
+player.seriesgod.com,player.pelisgod.com#%#//scriptlet('trusted-replace-node-text', 'script', 'function iframeOn()', 'function openUp()', 'try{iframeOn();}catch(e){};function openUp()')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165937
 ! Rule $referrerpolicy is required for apps, becasue source of vast.js is not detected and due to this it's not blocked
 ! https://github.com/AdguardTeam/AdguardFilters/issues/38330
@@ -5418,6 +5434,7 @@ visortmo.com#@#.book
 @@||googleads.github.io/videojs-ima/node_modules/video.js/dist/video-js.min.css$domain=cultura.uol.com.br
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175517
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=terra.com.br
+||amazon-adsystem.com/aax2/apstag.js$script,redirect=amazon-apstag,domain=terra.com.br
 ! dimed.com.br - broken own images
 @@||dimed.com.br/banners/$image
 @@||images.colombo.com.br/banners/$image

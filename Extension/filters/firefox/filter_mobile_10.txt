@@ -1,9 +1,9 @@
-! Checksum: uRWVN7nv9Hc226Y46tSH8g
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1718958905-3600.patch
+! Checksum: Mj/Ep9o6GN0wXvp5sxT/jA
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1719689717-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.40
-! TimeUpdated: 2024-06-21T08:32:40+00:00
+! Version: 2.0.3.42
+! TimeUpdated: 2024-06-29T19:33:08+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -151,6 +151,7 @@ amazon.*#@##dp-container > #px-profile_feature_div[data-csa-c-type="widget"]
 amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
 amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
+docfinder.at#@#.search-results > .search-result:has(> a > .top > .base-info > .sub > .advert)
 search.brave.com#@#div[data-advertiser-id]
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
 @@||developer.mozilla.org/pong/
@@ -162,6 +163,7 @@ ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored)
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
+aliexpress.com#@#.search-item-card-wrapper-list:has( > div:only-child > div:only-child > a + div[class*="multi"])
 [$path=/jobs]linkedin.com#@##ember33
 [$path=/jobs]linkedin.com#@#.discovery-templates-entity-item:has(> div[data-job-id="search"] > div > .job-card-list__footer-wrapper > .job-card-container__footer-item.align-items-center:first-child)
 startpage.com#@?##main > div[class^="css-"]:has(> div[class^="css-"] > p[class^="css-"]:contains(/Annoncer|Anzeigen|Ads|Anuncios|Publicités|Advertenties|Annonser|Reklamy|Anúncios/))

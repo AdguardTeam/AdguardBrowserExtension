@@ -1,9 +1,8 @@
-! Checksum: DFk27Zn4eTJ8iOYmqYT6dA
-! Diff-Path: ../patches/11/11-s-1719207297-3600.patch
+! Checksum: 1CHhK6tJ0E5oA6lvxrfWeQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.52.34
-! TimeUpdated: 2024-06-24T05:33:01+00:00
+! Version: 2.0.52.56
+! TimeUpdated: 2024-07-01T16:03:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1185,6 +1184,7 @@ turbopages.org##.page__result > div[class*="type_native"]
 ! Good: ##.adv
 ! Bad: example.org##.adv (should be in specific.txt)
 !
+###mobile-adhesion:not(#style_important)
 ##.gnt_xmst
 ###ad-300x250_mid_mobile
 ##amp-iframe[src^="https://ad.vidverto.io/"]
@@ -1383,6 +1383,8 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/182180
+balarm.it#$#.main-container#top[style^="margin-top:"] { margin-top: 110px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181367
 subito.it#$#div[id^="index-module_mobile-navigation"] { height: auto !important; }
 ! leftover
@@ -1851,6 +1853,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158370
 ! https://play.google.com/store/apps/details?id=fm.tokfm.android
 ! Fixes radio
+! https://play.google.com/store/apps/details?id=pl.tvp.tvp_sport
 ! https://play.google.com/store/apps/details?id=pl.tvp.info
 ! https://play.google.com/store/apps/details?id=pl.tvp.stream
 ! https://play.google.com/store/apps/details?id=com.tvp.vodtv.mobile
@@ -2365,10 +2368,32 @@ livechat-ero.net,kingautos.net,ranky-ranking.net,memo.onl.jp,daily-sun.com,home.
 ! ##.Ad
 chip.de,gamesworld.de,fnn.jp##.Ad
 ! ##body .banner
-otakei.otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,goblintvfree.com,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com,m.yingshidaquan.cc##body .banner
+otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,goblintvfree.com,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com,m.yingshidaquan.cc##body .banner
+!
+! TODO: Replace by class rule when https://github.com/AdguardTeam/FiltersCompiler/issues/221 is resolved.
+sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+vook.vc##.note-sp-spnsr
+blogtag.ameba.jp##ul > div[class]:has(> div > div[id^="div-gpt-ad-"])
+blogtag.ameba.jp##aside > div[class]:has(> div > div[id^="div-gpt-ad-"])
+namaeuranai.biz#$#body { padding-bottom: 0 !important; }
+namaeuranai.biz###imobile_overlay_inner
+namaeuranai.biz###instream-ads
+corriere.it###pno-in-article-abbonato
+appmedia.jp###recommend_posts_ad
+apkmoddone.com###sn-AnchorAd
+timesofindia.indiatimes.com,m.timesofindia.com##div[id^="inpage_interstitial"]
+timesofindia.indiatimes.com##.taboola_ad_mid
+kurashiru.com##.AdsWrapper
+m.economictimes.com##.wdt-taboola
+unwire.hk##.google-ad:not(#style_important)
+s.minkabu.jp###ad9102
+sp.manga.nicovideo.jp##div[data-ads-name]
+balarm.it##.main-container .text-container > .row > div[style*="position: relative; left:"]:has(> :is(.inarticle-banner, .adsbygoogle))
+mantan-web.jp##.article__inner > aside[style="width:100%; padding:10px 0; background:#f3f3f3;"]
+mantan-web.jp##div[style^="text-align:center; margin-top:"][style$="color: #595757; font-size:0.7em; height:15px;"]
 diamond.jp##.list-box > div:has(> div.ad-related2)
 emuokunmaster.com##div[style$="width: 300px; height: 500px;"]
 ddd-smart.net##iframe[width="100%"][height="300px"]
@@ -2411,7 +2436,6 @@ sport24.ru###adfox_Sport24_branding
 ortacizgi.com##div.display:has(> div.post-ad-title)
 mynet.com##.body-banner-block
 article.auone.jp##.appeal__text-lower
-sp.seiga.nicovideo.jp##div[style^="--ads-width:"]
 news.livedoor.com###BrowsiVideo
 meiobit.com##.ad-container-discrete
 meiobit.com###ad-mobile-sticky-container
@@ -2477,8 +2501,8 @@ adacomi.com##a[href][target] > .bbs_box
 adacomi.com##body > div[style*="min-height:"][align="center"]
 forum.donanimhaber.com##article > div[style]:has(> div[style] > div.empower-ad)
 estadao.com.br##.house-ads-container
-estadao.com.br#$#@media only screen and (max-width: 576px) { .navbar-header-estadao.--not-subscriber { top: 0 !important; } }
-estadao.com.br#$#@media only screen and (max-width: 576px) { .nav-bar-reserved-area { height: 48px !important; } }
+estadao.com.br#$#.navbar-header-estadao.--not-subscriber { top: 0 !important; }
+estadao.com.br#$#.nav-bar-reserved-area { height: 48px !important; }
 mwed.jp##.displayable[data-controller="bottom-fixed-advertisement"]
 motorauthority.com##.adv-spacer-top-wraper
 motorauthority.com##.adv-spacer
@@ -2989,7 +3013,6 @@ engadget.com##.caas-sda-benji-ad
 vesti.kz##.xbet-mob-index
 vesti.kz##amp-iframe[src^="https://smi24.kz/"]
 trendyporn.com##div[style^="height:"][style$="width:auto"]
-m.timesofindia.com##div[id^="inpage_interstitial_wrapper_"]
 notebookcheck.com,notebookcheck.it,notebookcheck.nl,notebookcheck.info,notebookcheck.biz##aside.nbc-right-float
 carro-groce.com###text-50
 worldcrunch.com###wc_leaderboard
@@ -3171,7 +3194,6 @@ my-best.com##.l-wrapper > div > a[href^="https://hb.afl.rakuten.co.jp/ichiba"][t
 the-ans.jp##.banner-list-item > a:not([href*="the-ans.jp"])
 baseball.yahoo.co.jp,soccer.yahoo.co.jp,sports.yahoo.co.jp##.sn-videoEmbed__banner
 baseball.yahoo.co.jp,soccer.yahoo.co.jp,sports.yahoo.co.jp##.sn-videoEmbed__credit
-baseball.yahoo.co.jp,soccer.yahoo.co.jp,sports.yahoo.co.jp##.sn-modAppText
 sports.yahoo.co.jp##div[class^="yf-modCommon"]
 itc.ua,ain.ua##amp-wordpress-embed
 comic.pixiv.net##.bottom-0.fixed[style="bottom:env\(safe-area-inset-bottom\)"] > div.w-screen
@@ -3672,7 +3694,7 @@ books.rakuten.co.jp##.pushAd
 m.republicworld.com##div[style*="justify-content: center;"][style*="text-align: center;"]
 calcus.ru##div[style="height:300px"]
 smpt.webrental.org##.toppagefix
-missav.com##.under_player
+myav.com,missav.*,missav123.com,missav789.com,missav888.com##.under_player
 publico.es##.pb-mobile-ads
 pogoda.meta.ua##.main__banner-bottom
 okdiario.com###okd-catfish
@@ -4109,7 +4131,6 @@ eromanga-numa.com##.picad2row
 yomiuri.co.jp##.home-2021-ad-head-sp
 yomiuri.co.jp,lurenewsr.com##.sp_ad_banner
 ero-comic-hunter.net,eromanga-castle.com,nukerumannga.com,ero-mangasokuhou.com,ero-mangalife.com,eromanga-cafe.com,doujincafe.com##.archive > div[style="margin:0 auto;"]:not([class])
-missav.com##div[style="width: 300px; height: 100px;"]
 augsburger-allgemeine.de##.aa-ad-frame
 mobile.baidu.com##.detail-banner
 psychologies.ru###div-hb-low-wrap
@@ -4277,7 +4298,6 @@ delivery.rakuten.co.jp##.promArea
 koro-pokemon.com##.ad_int
 transit.yahoo.co.jp###posNM
 amazon.*##.csm-widget-type-sponsored-products-mobile-list-card
-seiga.nicovideo.jp##div[data-ads-name]
 businessinsider.de##.bi-banner
 epaper.freepressjournal.in##.ad-bx
 epaper.freepressjournal.in###ad-code-footer
@@ -4337,13 +4357,12 @@ heise.de##.article-body > .visible-xs > .visible-xs[style*="min-height:"]
 eromanga-pon.com##.ad_big
 ||eromanga-castle.com/famsiro1.html
 erocomic-hunter.net,eromanga-life.com,ero-mangacafe.com,dojin-pandemic.com,dojinwatch.com,eromanga-castle.com,eromanga-cafe.com,doujincafe.com,nukerumannga.com,ero-mangalife.com,ero-mangasokuhou.com,ero-manga-platinum.net,erodoujinjohoukan.com,erodoujinshi-world.com,ero-comic-hunter.net,eromanga-cafe.com,eromanga-sevendays.net,moeero-library.com##.cntiframe
-pe.com##body #mobile-adhesion
 bfm.ru##.banner-mobile-wrap
 spieletipps.de,kino.de##.alice-root-topmobile2-container
 m.chinaz.com##div[class="article-suggest bd-keywords"]
 m.ensonhaber.com##.bot > a[href^="https://bit.ly/"]
-otakei.otakuma.net##body .banner-adsense
-boom-app.wiki,otakei.otakuma.net##body .banner-header
+otakuma.net##body .banner-adsense
+boom-app.wiki,otakuma.net##body .banner-header
 boom-app.wiki,game.boom-app.com##.banner-footer
 game.boom-app.com##div[style^="width: 300px;height: 110px"]
 accuweather.com##.adhesion-header
@@ -4391,7 +4410,6 @@ laopiniondemurcia.es##._mo_recs
 oniyomediary.com,news4wide.net##.advertisement-position
 ||seesaa.net/common/under.html$domain=news4wide.net
 realsound.jp##.paragraphAd
-ero-nuki.net,javynow.com##.banner-player
 jpnumber.com##.frame-300-gray
 jpnumber.com##.sponsor-link1
 abcbourse.com###div-ad-pave-haut2
@@ -5840,7 +5858,6 @@ cnn.com###social-share_gig_containerParent .PartnerZone
 mobile.donanimhaber.com##body > div[style="float: left;width:100%;"] > div[style="margin:10px auto; text-align:center; width:300px; height:250px;"]
 techrum.vn###revive_banner_mobile_div
 usatooday.com##.partner-placement
-twincities.com,denverpost.com##body #mobile-adhesion
 analdin.com,tubewolf.com##.banner-top
 yahoo.com##.stream-sm-ad
 zerohedge.com##iframe[src^="//www.dianomi.com"]
@@ -7253,7 +7270,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! https://github.com/AdguardTeam/AdguardFilters/issues/99488
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97770 (analytics request passes from facebook.com )
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97849
-! https://github.com/AdguardTeam/AdguardFilters/issues/95110
 ! https://github.com/AdguardTeam/AdguardFilters/issues/94781
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88275
 ! https://github.com/AdguardTeam/AdguardFilters/issues/61705
