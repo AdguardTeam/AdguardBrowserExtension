@@ -105,14 +105,14 @@ export const Warning = ({
                 </div>
                 <div className="rules-limits__section">
                     <div className="rules-limits__section-title">
-                        {
-                            actuallyEnabledFilterNames.trim().length === 0
-                                ? translator.getMessage('options_rule_limits_warning_nothing_enabled_now_title')
-                                : translator.getMessage('options_rule_limits_warning_list_enabled_now_title')
-                        }
+                        {translator.getMessage('options_rule_limits_warning_list_enabled_now_title')}
                     </div>
                     <div className="rules-limits__group rules-limits__text--gray">
-                        {actuallyEnabledFilterNames}
+                        {
+                            actuallyEnabledFilterNames.trim().length === 0
+                                ? translator.getMessage('options_filters_no_enabled')
+                                : actuallyEnabledFilterNames
+                        }
                     </div>
                 </div>
                 <div className="rules-limits__section">
