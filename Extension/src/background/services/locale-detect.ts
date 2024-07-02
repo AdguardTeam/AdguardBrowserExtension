@@ -340,7 +340,8 @@ export class LocaleDetect {
             return;
         }
 
-        await FiltersApi.loadAndEnableFilters(disabledFiltersIds, true);
+        const remote = !__IS_MV3__;
+        await FiltersApi.loadAndEnableFilters(disabledFiltersIds, remote);
         engine.debounceUpdate();
 
         const filters: RegularFilterMetadata[] = [];

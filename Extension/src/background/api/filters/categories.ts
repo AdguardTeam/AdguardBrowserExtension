@@ -112,16 +112,25 @@ export class Categories {
      * that will be loaded end enabled before update checking.
      *
      * @param groupId Id of group of filters.
-     * @param recommendedFiltersIds Array of filters ids to enable on first time the group has been activated.
+     * @param update Whether to download metadata and filter rules from remote
+     * resources or from local resources and should it to check for updates.
+     * @param recommendedFiltersIds Array of filters ids to enable on first time
+     * the group has been activated after enabling.
      */
-    public static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
+    public static async enableGroup(
+        groupId: number,
+        update: boolean,
+        recommendedFiltersIds: number[] = [],
+    ): Promise<void> {
         if (recommendedFiltersIds.length > 0) {
-            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds, true);
+            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds, update);
         }
 
-        // Always checks updates for enabled filters of the group.
-        const enabledFiltersIds = Categories.getEnabledFiltersIdsByGroupId(groupId);
-        await FilterUpdateApi.checkForFiltersUpdates(enabledFiltersIds);
+        if (update) {
+            // Always checks updates for enabled filters of the group.
+            const enabledFiltersIds = Categories.getEnabledFiltersIdsByGroupId(groupId);
+            await FilterUpdateApi.checkForFiltersUpdates(enabledFiltersIds);
+        }
 
         groupStateStorage.enableGroups([groupId]);
     }

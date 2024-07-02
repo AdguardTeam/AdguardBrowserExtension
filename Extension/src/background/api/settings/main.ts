@@ -570,13 +570,15 @@ export class SettingsApi {
         }
 
         if (stripTrackingParam) {
-            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.UrlTrackingFilterId]);
+            const remote = !__IS_MV3__;
+            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.UrlTrackingFilterId], remote);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.UrlTrackingFilterId]);
         }
 
         if (blockKnownTrackers) {
-            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.TrackingFilterId]);
+            const remote = !__IS_MV3__;
+            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.TrackingFilterId], remote);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.TrackingFilterId]);
         }

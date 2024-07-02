@@ -238,7 +238,7 @@ export class FiltersService {
      * @param recommendedFiltersIds Array of filters ids to enable on first time the group has been activated.
      */
     private static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
-        await Categories.enableGroup(groupId, recommendedFiltersIds);
+        await Categories.enableGroup(groupId, false, recommendedFiltersIds);
         await engine.update();
     }
 
@@ -252,6 +252,6 @@ export class FiltersService {
      * @param shouldEnableGroup Flag for enabling the filter group if it has not been touched before.
      */
     private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
-        await FiltersApi.loadAndEnableFilters([filterId], true, shouldEnableGroup);
+        await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
     }
 }

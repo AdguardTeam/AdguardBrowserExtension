@@ -279,7 +279,7 @@ export class FiltersService {
      * @param recommendedFiltersIds Array of filters ids to enable on first time the group has been activated.
      */
     private static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
-        await Categories.enableGroup(groupId, recommendedFiltersIds);
+        await Categories.enableGroup(groupId, true, recommendedFiltersIds);
         engine.debounceUpdate();
     }
 
