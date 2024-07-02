@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
+import isString from 'lodash-es/isString';
+import isUndefined from 'lodash-es/isUndefined';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
@@ -39,6 +41,7 @@ import {
     type SafebrowsingCacheData,
     type SafebrowsingStorageData,
     SchemaPreprocessor,
+    SettingOption,
 } from '../../schema';
 import type { RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
@@ -224,6 +227,50 @@ export class UpdateApi {
         await browserStorage.removeMultiple([...rawFilterKeys, ...filterKeys]);
 
         logger.debug('Filters successfully migrated from storage to hybrid storage');
+
+        const filterVersionDataValidatorV3 = zod.object({
+            version: zod.string(),
+            lastCheckTime: zod.number(),
+            lastUpdateTime: zod.number(),
+            expires: zod.number(),
+            lastScheduledCheckTime: zod.number().optional(),
+        });
+
+        const filtersVersionDataValidatorV3 = zod.record(
+            SchemaPreprocessor.numberValidator,
+            filterVersionDataValidatorV3,
+        );
+
+        const storageData = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+        const settings = zod.record(zod.unknown()).parse(storageData);
+        const rawFiltersVersion = settings[SettingOption.FiltersVersion];
+
+        if (isString(rawFiltersVersion)) {
+            const filtersVersionParsed = filtersVersionDataValidatorV3.safeParse(JSON.parse(rawFiltersVersion));
+
+            if (filtersVersionParsed.success) {
+                const filtersVersion = filtersVersionParsed.data;
+
+                Object.values(filtersVersion).forEach((filterData) => {
+                    if (isUndefined(filterData.lastScheduledCheckTime)) {
+                        filterData.lastScheduledCheckTime = filterData.lastCheckTime;
+                    }
+                });
+
+                settings[SettingOption.FiltersVersion] = JSON.stringify(filtersVersion);
+
+                await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+
+                logger.debug('Filters version data successfully migrated from the old storage');
+            } else {
+                logger.debug(
+                    // eslint-disable-next-line max-len
+                    `Failed to parse filters version data from the old storage: ${getErrorMessage(filtersVersionParsed.error)}`,
+                );
+            }
+        } else {
+            logger.debug('Filters version data is not a string, skipping migration');
+        }
     }
 
     /**
