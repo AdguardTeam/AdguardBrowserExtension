@@ -44,6 +44,25 @@ import {
  */
 export class Experimental {
     /**
+     * AdGuard Annoyances filters group id.
+     */
+    static readonly ANNOYANCES_GROUP_ID = 4;
+
+    /**
+     * AdGuard Annoyances filter has been splitted into 5 other filters:
+     * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+     * and Widgets - which we should enable if the Annoyances filter is enabled.
+     */
+    static readonly COMBINED_DEPRECATED_ANNOYANCES_FILTER_ID = 14;
+
+    /**
+     * AdGuard Annoyances filter has been splitted into 5 other filters:
+     * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+     * and Widgets - which we should enable if the Annoyances filter is enabled.
+     */
+    static readonly SEPARATED_NEW_ANNOYANCES_FILTERS_IDS = [18, 19, 20, 21, 22];
+
+    /**
      * Checks if the passed data comes from the experimental extension.
      *
      * @param dataFromStorage Data from the storage.
@@ -126,7 +145,12 @@ export class Experimental {
         ruleResources: RuleResource[],
     ): FilterInfo[] {
         return filters.filter((filter) => {
-            if (Experimental.isCustomFilter(filter)) {
+            // AdGuard Annoyances filter is excluded since 5.0.0 version (MV3),
+            // but we return true to enable its parts.
+            if (
+                Experimental.isCustomFilter(filter)
+                || filter.id === Experimental.COMBINED_DEPRECATED_ANNOYANCES_FILTER_ID
+            ) {
                 return true;
             }
 
@@ -185,6 +209,7 @@ export class Experimental {
             if (filter.enabled) {
                 filtersState[filter.id] = {
                     enabled: filter.enabled,
+                    // We don't store filters in MV3 in browser storage.
                     installed: false,
                     loaded: !!filter.url,
                 };
@@ -201,9 +226,16 @@ export class Experimental {
                         touched: true,
                     };
                 } else {
-                    const filterMetadata = metadata.filters[filter.id];
+                    const filterMetadata = metadata.filters.find(f => f.filterId === filter.id);
                     if (filterMetadata !== undefined) {
                         groupsState[filterMetadata.groupId] = {
+                            enabled: true,
+                            touched: true,
+                        };
+                    }
+
+                    if (filter.id === Experimental.COMBINED_DEPRECATED_ANNOYANCES_FILTER_ID) {
+                        groupsState[Experimental.ANNOYANCES_GROUP_ID] = {
                             enabled: true,
                             touched: true,
                         };
@@ -232,6 +264,22 @@ export class Experimental {
                 });
             }
         });
+
+        const annoyancesFilter = filtersState[Experimental.COMBINED_DEPRECATED_ANNOYANCES_FILTER_ID];
+        if (annoyancesFilter?.enabled) {
+            Experimental.SEPARATED_NEW_ANNOYANCES_FILTERS_IDS.forEach((id) => {
+                filtersState[id] = {
+                    enabled: true,
+                    // We don't store filters in MV3 in browser storage.
+                    installed: false,
+                    loaded: false,
+                };
+            });
+
+            // Remove the original Annoyances filter itself because it is not
+            // included since 5.0.0 (MV3).
+            delete filtersState[Experimental.COMBINED_DEPRECATED_ANNOYANCES_FILTER_ID];
+        }
 
         return {
             filtersState,

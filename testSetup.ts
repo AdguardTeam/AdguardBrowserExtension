@@ -80,9 +80,6 @@ declare global {
     }
 }
 
-// FIXME different tests should require different values
-(global as any).__IS_MV3__ = false;
-
 // mock chrome webextension api
 global.chrome = chrome;
 

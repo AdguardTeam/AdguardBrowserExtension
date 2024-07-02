@@ -254,11 +254,12 @@ export class FiltersApi {
         // Ignore loaded filters
         // Custom filters always have loaded state, so we don't need additional check
         const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
+        const alreadyLoadedFilterIds = filterIds.filter((id) => FiltersApi.isFilterRulesIsLoaded(id));
 
         const loadedFilters = await FiltersApi.loadFilters(unloadedFiltersIds, remote);
 
         // Concatenate filters loaded just now with already loaded filters.
-        loadedFilters.push(...filterIds.filter((id) => FiltersApi.isFilterRulesIsLoaded(id)));
+        loadedFilters.push(...alreadyLoadedFilterIds);
 
         filterStateStorage.enableFilters(loadedFilters);
 
