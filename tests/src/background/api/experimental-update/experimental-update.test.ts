@@ -8,6 +8,11 @@ import { getMetadataFixture } from '../../../../helpers';
 describe('experimental update', () => {
     const metadata = getMetadataFixture();
 
+    if (!__IS_MV3__) {
+        it('SKIP FOR MV2', () => { expect(true).toBe(true); });
+        return;
+    }
+
     it('checks if the data is from the experimental extension', () => {
         expect(Experimental.isExperimental(null)).toBe(false);
         expect(Experimental.isExperimental(undefined)).toBe(false);
@@ -73,10 +78,11 @@ describe('experimental update', () => {
                 .toEqual({
                     customFiltersState: [],
                     groupsState: {
-                        2: {
+                        // Ad Blocking.
+                        1: {
                             enabled: true,
                             touched: true,
-                        }, // notice group is 2, not 3
+                        },
                     },
                     filtersState: {
                         2: {
@@ -84,6 +90,39 @@ describe('experimental update', () => {
                             loaded: false,
                             installed: false,
                         },
+                    },
+                });
+        });
+
+        it('include AdGuard Annoyances filter parts if it was enabled', () => {
+            expect(Experimental.getFiltersSettings([{
+                'description': 'Remove pop-ups and floating elements',
+                'enabled': true,
+                'groupId': 3,
+                'iconId': 'ANNOYANCES',
+                'id': 14,
+                'title': 'Block annoyances',
+            }], metadata, []))
+                .toEqual({
+                    customFiltersState: [],
+                    groupsState: {
+                        // Annoyances group.
+                        4: {
+                            enabled: true,
+                            touched: true,
+                        },
+                    },
+                    filtersState: {
+                        // AdGuard Cookie Notices.
+                        18: { enabled: true, installed: false, loaded: false },
+                        // AdGuard Popups.
+                        19: { enabled: true, installed: false, loaded: false },
+                        // AdGuard Mobile App Banners.
+                        20: { enabled: true, installed: false, loaded: false },
+                        // AdGuard Other Annoyances.
+                        21: { enabled: true, installed: false, loaded: false },
+                        // AdGuard Widgets.
+                        22: { enabled: true, installed: false, loaded: false },
                     },
                 });
         });
@@ -131,12 +170,13 @@ describe('experimental update', () => {
                         },
                     ],
                     groupsState: {
-                        // notice groupId is 2 not 3
-                        2: {
+                        // Custom filters.
+                        0: {
                             enabled: true,
                             touched: true,
                         },
-                        0: {
+                        // Ad Blocking.
+                        1: {
                             enabled: true,
                             touched: true,
                         },
@@ -150,7 +190,7 @@ describe('experimental update', () => {
                         1000: {
                             enabled: true,
                             installed: false,
-                            // notice custom filters always should be true
+                            // Note: custom filters always should be true.
                             loaded: true,
                         },
                     },
@@ -179,14 +219,66 @@ describe('experimental update', () => {
                 .toEqual({
                     customFiltersState: [],
                     groupsState: {
-                        // notice group id is 3, as in the metadata
-                        2: {
+                        // Ad Blocking.
+                        1: {
                             enabled: true,
                             touched: true,
                         },
                     },
                     filtersState: {
                         2: {
+                            enabled: true,
+                            loaded: false,
+                            installed: false,
+                        },
+                    },
+                });
+            expect(Experimental.getFiltersSettings([{
+                'enabled': true,
+                'groupId': 3,
+                'iconId': 'AD_BLOCKING',
+                'id': 2,
+                'title': 'Block ads',
+            }, {
+                'description': 'Filter that enables ad blocking on websites in the Japanese language.',
+                'enabled': true,
+                'groupId': 7,
+                'id': 7,
+                'localeCodes': [
+                    'ja',
+                    'ja_JP',
+                ],
+                'title': 'Japanese',
+            }], metadata, [{
+                'id': 'ruleset_2',
+                'enabled': false,
+                'path': 'filters/declarative/ruleset_2/ruleset_2.json',
+            }, {
+                'id': 'ruleset_7',
+                'enabled': false,
+                'path': 'filters/declarative/ruleset_7/ruleset_7.json',
+            }]))
+                .toEqual({
+                    customFiltersState: [],
+                    groupsState: {
+                        // Ad Blocking.
+                        1: {
+                            enabled: true,
+                            touched: true,
+                        },
+                        // Language-specific.
+                        7: {
+                            enabled: true,
+                            touched: true,
+                        },
+                    },
+                    filtersState: {
+                        2: {
+                            enabled: true,
+                            loaded: false,
+                            installed: false,
+                        },
+                        7: {
                             enabled: true,
                             loaded: false,
                             installed: false,
