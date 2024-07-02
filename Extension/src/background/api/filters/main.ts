@@ -243,6 +243,10 @@ export class FiltersApi {
      * @param filterIds Filter ids.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
+     * **IMPORTANT NOTE:** We don't want to update the filters in MV3 version,
+     * because it will lead to situation, where extension will use old rulesets
+     * from local resources, but newest filter with text rules from remote resources
+     * (which will be loaded to tsurlfilter for cosmetic rules).
      * @param enableGroups Should enable groups that were not touched by users
      * or by code.
      */

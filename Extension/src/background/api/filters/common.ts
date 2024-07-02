@@ -233,7 +233,8 @@ export class CommonFilterApi {
         // module to reduce the risk of cyclic dependency, since FiltersApi
         // depends on CommonFilterApi and CustomFilterApi.
         // On the first run, we update the common filters from the backend.
-        await FiltersApi.loadAndEnableFilters(filterIds, true, enableUntouchedGroups);
+        const remote = !__IS_MV3__;
+        await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
     }
 
     /**
