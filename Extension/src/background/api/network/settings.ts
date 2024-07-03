@@ -65,6 +65,8 @@ export class NetworkSettings {
     readonly redirectSourcesFolder = 'assets/libs/scriptlets';
 
     // Array of filter identifiers, that have local file with rules.
+    // We don't use this check for MV3, because all filters in MV3 already
+    // packed in the extension.
     readonly localFilterIds = ADGUARD_FILTERS_IDS;
 
     /**
