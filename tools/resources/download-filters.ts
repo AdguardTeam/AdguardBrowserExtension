@@ -233,7 +233,7 @@ const getAllFiltersIds = (metadataContent: string): string[] => {
  * 3. Downloads all chromium-mv3 filters (parsed from the metadata (1)) and stores them in the chromium-mv3 folder.
  */
 const downloadAndPrepareMv3Filters = async () => {
-    const metadata = await downloadFilter(
+    const metadataMv3 = await downloadFilter(
         getFiltersMetadataDownloadData(AssetsFiltersBrowser.ChromiumMv3),
         AssetsFiltersBrowser.ChromiumMv3,
     );
@@ -243,7 +243,7 @@ const downloadAndPrepareMv3Filters = async () => {
         AssetsFiltersBrowser.ChromiumMv3,
     );
 
-    const filtersIds = getAllFiltersIds(metadata);
+    const filtersIds = getAllFiltersIds(metadataMv3);
 
     for (let i = 0; i < filtersIds.length; i += 1) {
         const filterId = filtersIds[i];
@@ -258,7 +258,8 @@ const downloadAndPrepareMv3Filters = async () => {
             fileName: `filter_${filterId}.txt`,
             validate: true,
         };
-        // and store them in the chromium-mv3 folder
+
+        // Store them in the chromium-mv3 folder.
         // eslint-disable-next-line no-await-in-loop
         await downloadFilter(downloadData, AssetsFiltersBrowser.ChromiumMv3);
     }
