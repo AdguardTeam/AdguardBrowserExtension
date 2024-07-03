@@ -272,19 +272,23 @@ export const General = observer(() => {
                         handler={settingChangeHandler}
                     />
                 )}
-                <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
-                    title={translator.getMessage('options_enable_autodetect_filter')}
-                    description={translator.getMessage('options_enable_autodetect_filter_desc')}
-                    disabled={settings.values[DisableDetectFilters]}
-                    id={DisableDetectFilters}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    inverted
-                    label={translator.getMessage('options_enable_autodetect_filter')}
-                    handler={settingChangeHandler}
-                    value={settings.values[DisableDetectFilters]}
-                />
+                {
+                    addPopoverForComingSoonElement(
+                        <SettingsSetCheckbox
+                            // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                            // @ts-ignore
+                            title={translator.getMessage('options_enable_autodetect_filter')}
+                            description={translator.getMessage('options_enable_autodetect_filter_desc')}
+                            disabled={settings.values[DisableDetectFilters]}
+                            id={DisableDetectFilters}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            inverted
+                            label={translator.getMessage('options_enable_autodetect_filter')}
+                            handler={settingChangeHandler}
+                            value={settings.values[DisableDetectFilters]}
+                        />,
+                    )
+                }
                 {!__IS_MV3__ && (
                     <SettingSetSelect
                         title={translator.getMessage('options_set_update_interval')}
