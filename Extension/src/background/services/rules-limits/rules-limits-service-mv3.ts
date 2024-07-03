@@ -285,16 +285,31 @@ export class RulesLimitsService {
     }
 
     /**
-     * Returns filters which marked as enabled in storage.
+     * Returns filters which where enabled in the last configuration
+     * before exceeding limits.
      *
-     * @returns Filters which marked as enabled in storage.
+     * @returns Filters which where enabled in the last configuration
+     * before exceeding limits.
      */
     public static getExpectedEnabledFilters(): number[] {
-        return FiltersApi.getEnabledFiltersWithMetadata()
+        return rulesLimitsStorage.getData();
+    }
+
+    /**
+     * Returns filters which marked as enabled in the last configuration
+     * (current settings in the storage).
+     *
+     * @returns Filters which marked as enabled in the last configuration
+     * (current settings in the storage).
+     */
+    public static getCurrentConfigurationEnabledFilters(): number[] {
+        const ids = FiltersApi.getEnabledFiltersWithMetadata()
             // Ignore custom filters because they are user-defined and conversion
             // of them is going via dynamic part of DNR rules.
             .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId))
             .map((filter) => filter.filterId);
+
+        return ids;
     }
 
     /**
@@ -343,12 +358,16 @@ export class RulesLimitsService {
     }
 
     /**
-     * Checks whether the filter limits are exceeded.
+     * Checks whether the filter limits are exceeded:
+     * - if we have cached enabled filters and they are not equal to the actually enabled filters
+     * (when state was broken once before);
+     * - if filters from current configuration are not equal to the actually enabled filters
+     * (when state became broken right now).
      *
      * @returns True if the filter limits are exceeded, false otherwise.
      */
     public static async areFilterLimitsExceeded(): Promise<boolean> {
-        const cachedEnabledFilters = rulesLimitsStorage.getData();
+        const cachedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
         const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
 
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
@@ -369,7 +388,7 @@ export class RulesLimitsService {
         // Else we do a full check of the current configuration: if filters from
         // configuration are not same as enabled filters - it means that browser
         // declined update of the configuration and we should notify user about it.
-        const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
+        const expectedEnabledFilters = RulesLimitsService.getCurrentConfigurationEnabledFilters();
 
         return !arraysAreEqual(actuallyEnabledFilters, expectedEnabledFilters);
     }
@@ -393,14 +412,16 @@ export class RulesLimitsService {
 
         // If state is broken - disable filters that were expected to be enabled
         // and configure tswebextension without them to activate minimal possible
-        // defense.
+        // defense via saving last enabled filters in the separate storage to
+        // show them in the UI.
         if (isStateBroken) {
-            const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
+            const expectedEnabledFilters = RulesLimitsService.getCurrentConfigurationEnabledFilters();
             const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
 
             const filtersToDisable = expectedEnabledFilters.filter((id) => !actuallyEnabledFilters.includes(id));
 
-            // Save last expected to be enabled filters to notify UI about them.
+            // Save last expected to be enabled filters to notify UI about them,
+            // because we will disable them to run minimal possible configuration.
             await rulesLimitsStorage.setData(expectedEnabledFilters);
 
             filterStateStorage.enableFilters(actuallyEnabledFilters);
@@ -411,7 +432,7 @@ export class RulesLimitsService {
             await update(true);
         } else {
             // If state is not broken - clear list of "broken" filters
-            const prevExpectedEnabledFilters = rulesLimitsStorage.getData();
+            const prevExpectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
             if (prevExpectedEnabledFilters.length > 0) {
                 await this.cleanExpectedEnabledFilters();
             }
