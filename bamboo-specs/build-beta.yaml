@@ -40,7 +40,7 @@ Build:
 
             ls -la
 
-            # don't use --ignore-optional flag, because swc requires optional deps 
+            # don't use --ignore-optional flag, because swc requires optional deps
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
             yarn beta
 
@@ -53,6 +53,9 @@ Build:
             cp build/beta/edge.zip artifacts/
             cp build/beta/chrome.crx artifacts/
             cp build/beta/update.xml artifacts/
+
+            # Create an empty artifact in master branch which will be filled in v5.0 branch
+            echo "empty" > artifacts/chrome-mv3.zip
     - inject-variables:
         file: artifacts/build.txt
         scope: RESULT
@@ -87,6 +90,11 @@ Build:
     - name: chrome.zip
       location: artifacts
       pattern: chrome.zip
+      shared: true
+      required: true
+    - name: chrome-mv3.zip
+      location: artifacts
+      pattern: chrome-mv3.zip
       shared: true
       required: true
     - name: edge.zip
