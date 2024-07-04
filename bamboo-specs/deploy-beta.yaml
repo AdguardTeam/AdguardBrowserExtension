@@ -6,7 +6,7 @@ deployment:
 release-naming: ${bamboo.inject.version}-beta
 environments:
   - static.adtidy.org
-  - Chrome WebStore MV2
+  - Chrome WebStore
   - Chrome WebStore MV3
 static.adtidy.org:
   triggers: []
@@ -47,7 +47,7 @@ static.adtidy.org:
             name: Deploy webhook
             url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
-Chrome WebStore MV2:
+Chrome WebStore:
   triggers: []
   tasks:
     - clean
