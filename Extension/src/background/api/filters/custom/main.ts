@@ -29,7 +29,6 @@ import {
     filterVersionStorage,
     groupStateStorage,
 } from '../../../storages';
-import { engine } from '../../../engine';
 import { network } from '../../network';
 import type { FilterUpdateOptions } from '../update';
 import { FilterParsedData, FilterParser } from '../parser';
@@ -320,14 +319,17 @@ export class CustomFilterApi {
     }
 
     /**
-     * Remove custom filter data from storages.
+     * Removes custom filter data from storages,
+     * and returns boolean value whether the filter was enabled.
      *
-     * If custom filter was enabled, reload filter engine after removing.
+     * Note: this method **does not update the engine**.
      *
      * @param filterId Custom filter id.
+     *
+     * @returns True if removed filter was enabled, otherwise false.
      */
-    public static async removeFilter(filterId: number): Promise<void> {
-        logger.info(`Remove Custom filter ${filterId} ...`);
+    public static async removeFilter(filterId: number): Promise<boolean> {
+        logger.info(`Removing a custom filter ${filterId}...`);
 
         customFilterMetadataStorage.remove(filterId);
         filterVersionStorage.delete(filterId);
@@ -339,9 +341,9 @@ export class CustomFilterApi {
         await FiltersStorage.remove(filterId);
         await RawFiltersStorage.remove(filterId);
 
-        if (filterState?.enabled) {
-            engine.debounceUpdate();
-        }
+        logger.info('Custom filter removed');
+
+        return filterState?.enabled ?? false;
     }
 
     /**

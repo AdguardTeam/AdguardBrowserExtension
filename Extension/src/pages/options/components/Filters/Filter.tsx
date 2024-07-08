@@ -189,7 +189,16 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
 
     const handleRemoveFilterConfirm = async () => {
         await settingsStore.removeCustomFilter(filterId);
+
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
     };
+
+    const handleRemoveFilterConfirmWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        handleRemoveFilterConfirm,
+    );
 
     const renderRemoveButton = () => {
         if (customUrl) {
@@ -201,7 +210,7 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                             subtitle={name}
                             isOpen={isOpenRemoveFilterModal}
                             setIsOpen={setIsOpenRemoveFilterModal}
-                            onConfirm={handleRemoveFilterConfirm}
+                            onConfirm={handleRemoveFilterConfirmWrapper}
                             customConfirmTitle={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
                         />
                     )}

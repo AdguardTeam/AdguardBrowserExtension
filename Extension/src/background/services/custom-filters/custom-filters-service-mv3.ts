@@ -90,14 +90,19 @@ export class CustomFiltersService {
     }
 
     /**
-     * Remove custom filter.
+     * Removes a custom filter.
+     *
+     * If the filter was enabled, the engine will be updated.
      *
      * @param message Message data.
      */
     static async onCustomFilterRemove(message: RemoveAntiBannerFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
-        await CustomFilterApi.removeFilter(filterId);
+        const wasEnabled = await CustomFilterApi.removeFilter(filterId);
+        if (wasEnabled) {
+            await engine.update();
+        }
     }
 
     /**
