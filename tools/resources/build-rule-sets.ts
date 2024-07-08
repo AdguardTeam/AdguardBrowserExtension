@@ -28,7 +28,10 @@ const convert = async (browser: string) => {
         filtersDir,
         `/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`,
         declarativeFiltersDir,
-        true,
+        {
+            debug: true,
+            prettifyJson: false,
+        },
     );
 };
 
