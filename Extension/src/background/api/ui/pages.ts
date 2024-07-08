@@ -338,10 +338,12 @@ export class PagesApi {
         const tab = await TabsApi.findOne({ url: `${PagesApi.settingsUrl}*` });
 
         if (!tab) {
-            return browser.tabs.create({ url });
+            const newTab = await browser.tabs.create({ url });
+            return newTab;
         }
 
-        return browser.tabs.update(tab.id, { url });
+        const updatedTab = await browser.tabs.update(tab.id, { url });
+        return updatedTab;
     }
 
     /**
@@ -363,11 +365,11 @@ export class PagesApi {
 
         const tab = await PagesApi.openTabOnSettingsPage(path);
 
+        await TabsApi.focus(tab);
+
         // Reload option page for force modal window rerender
         // TODO: track url update in frontend and remove force reloading via webextension API
         await TabsApi.reload(tab.id);
-
-        await TabsApi.focus(tab);
     }
 
     /**
