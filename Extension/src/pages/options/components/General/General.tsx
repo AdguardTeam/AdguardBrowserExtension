@@ -285,7 +285,10 @@ export const General = observer(() => {
                             inverted
                             label={translator.getMessage('options_enable_autodetect_filter')}
                             handler={settingChangeHandler}
-                            value={settings.values[DisableDetectFilters]}
+                            // eslint-disable-next-line react/jsx-boolean-value
+                            value={__IS_MV3__ ? true : settings.values[DisableDetectFilters]}
+                            // TODO: revert after the implementation for mv3
+                            // value={settings.values[DisableDetectFilters]}
                         />,
                     )
                 }
