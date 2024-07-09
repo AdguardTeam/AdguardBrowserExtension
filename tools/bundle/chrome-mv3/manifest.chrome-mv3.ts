@@ -33,7 +33,7 @@ export const chromeMv3Manifest = {
     'host_permissions': [
         '<all_urls>',
     ],
-    'minimum_chrome_version': '88.0',
+    'minimum_chrome_version': '118.0',
     'web_accessible_resources': [
         {
             'resources': ['web-accessible-resources/*'],
@@ -57,7 +57,6 @@ export const chromeMv3Manifest = {
         'declarativeNetRequest',
         'declarativeNetRequestFeedback',
         'scripting',
-        'alarms',
     ],
     'optional_permissions': [
         'privacy',

@@ -300,11 +300,23 @@ To show locales info run:
 
 <a id="minimum-supported-browser-versions"></a>
 
+## Permissions required
+- `tabs`                          - this permission is required in order to get the URL of the options page tab
+- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
+- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
+- `contextMenus`                  - this permission is required in order to create a context menu
+- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
+- `storage`                       - this permission is required in order to save user settings, user rules and custom filters
+- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
+- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
+- `unlimitedStorage`              - this permission is required in order to save large filters
+- `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+
 ## Minimum supported browser versions
 
 | Browser                  | Version  |
 |------------------------- |:--------:|
-| Chromium Based Browsers  |  80      |
+| Chromium Based Browsers  |  118     |
 | Firefox                  |  78      |
 | Firefox Mobile           | 113      |
 | Opera                    |  67      |
