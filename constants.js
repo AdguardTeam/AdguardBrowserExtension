@@ -43,6 +43,7 @@ export const TSURLFILTER_VENDOR_OUTPUT = 'vendors/tsurlfilter';
 export const AGTREE_VENDOR_OUTPUT = 'vendors/agtree';
 export const CSS_TOKENIZER_VENDOR_OUTPUT = 'vendors/css-tokenizer';
 export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
+export const TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT = 'vendors/text-encoding-polyfill';
 
 // Placed here to use in the node environment and in the browser
 // Important: extensions '.js' used for correct work of Cloudflare cache, but
