@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v4.3.63] - 2024-07-09
+
+### Fixed
+- Popup menu does not open in Firefox Nightly [#2817].
+
+[#2817]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2817
+
+
+## [4.3.53] - 2024-05-28
 
 ### Changed
 - Updated [@adguard/tswebextension] to v1.0.24.
@@ -14,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not throw an error during cookie setting if a cookie domain mismatches a request URL [#2683].
 - Script rules are not applied in Firefox due to CSP [#1733].
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.46...HEAD
+[4.3.53]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.46...v4.3.53
 [#2683]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2683
 [#1733]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1733
 
