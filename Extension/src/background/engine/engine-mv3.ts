@@ -170,6 +170,9 @@ export class Engine implements TsWebExtensionEngine {
             userrules = Array.from(new Set(userrules));
 
             // Convert user rules.
+            // TODO: For user rules we will have twice conversion check: here
+            // and in tswebextension. But we cannot remove it here, because
+            // conversion needed before pass to tsurlfilter cosmetic engine.
             userrules = UserRulesApi.convertRules(userrules);
         }
 
