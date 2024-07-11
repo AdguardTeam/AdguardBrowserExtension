@@ -135,6 +135,10 @@ const Filters = observer(() => {
             }
 
             await settingsStore.updateGroupSetting(groupId, enabled);
+
+            if (__IS_MV3__) {
+                await settingsStore.checkLimitations();
+            }
         },
     );
 

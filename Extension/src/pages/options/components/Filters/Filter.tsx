@@ -118,9 +118,7 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
             // for custom filters, we can't check limits before applying,
             // so we need to check the after applying
             await settingsStore.updateFilterSetting(filterId, enabled);
-            if (__IS_MV3__) {
-                await settingsStore.checkLimitations();
-            }
+            await settingsStore.checkLimitations();
             return;
         }
 
@@ -180,6 +178,10 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
         }
 
         await updateFilterSettingWrapper(filterId, data);
+
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
     };
 
     const handleRemoveFilterClick = async (e: React.MouseEvent) => {
