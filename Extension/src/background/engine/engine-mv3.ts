@@ -132,10 +132,11 @@ export class Engine implements TsWebExtensionEngine {
 
         if (!skipLimitsCheck) {
             await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
-        }
 
-        if (await RulesLimitsService.areFilterLimitsExceeded()) {
-            toasts.showRuleLimitsAlert();
+            // show the alert only if limits checking is not skipped and limits are exceeded
+            if (await RulesLimitsService.areFilterLimitsExceeded()) {
+                toasts.showRuleLimitsAlert();
+            }
         }
     }
 

@@ -33,19 +33,41 @@ import { Elements } from './elements';
 export type AppendAlertPopupProps = Omit<AppendAlertElementProps, 'target'>;
 
 export type AppendPopupProps = {
-    // content css string
+    /**
+     * Content css string.
+     */
     alertStyles: string,
-    // iframe container html string
+
+    /**
+     * Iframe container html string.
+     */
     iframeHtml: string,
-    // iframe container css string
+
+    /**
+     * Iframe container css string.
+     */
     iframeStyles: string,
-    // iframe container css class name
+
+    /**
+     * Iframe container css class name.
+     */
     iframeClassName: string,
-    // Is Adguard tab
+
+    /**
+     * Is Adguard tab.
+     */
     isAdguardTab: boolean,
-    // Is we need to show promo notification
+
+    /**
+     * Should show promo notification.
+     */
     showPromoNotification: boolean,
-    // Callback after iframe is injected
+
+    /**
+     * Callback to execute after iframe is injected.
+     *
+     * @param iframe Iframe element.
+     */
     onIframeInjected?: (iframe: HTMLIFrameElement) => void,
 };
 
@@ -55,7 +77,10 @@ export type AppendPopupProps = {
 export class Popups {
     private static triesCount = 10;
 
-    private static hideTimeoutMs = 4000;
+    /**
+     * Time to live for alert popup.
+     */
+    private static HIDE_TIMEOUT_MS = 1000 * 4;
 
     private static retryTimeoutMs = 500;
 
@@ -237,6 +262,23 @@ export class Popups {
                         Popups.handleOpenRulesLimitsPage(iframe);
                     });
                 }
+
+                // iframe should be hidden after some time
+                const removeTimeout = setTimeout(() => {
+                    iframe.parentNode?.removeChild(iframe);
+                }, Popups.HIDE_TIMEOUT_MS);
+
+                /**
+                 * Mouseover event listener:
+                 * - clear timeout to prevent iframe from closing if user hovers over the iframe;
+                 * - remove event listener after first hover.
+                 */
+                const focusListener = () => {
+                    clearTimeout(removeTimeout);
+                    iframe.removeEventListener('mouseover', focusListener);
+                };
+
+                iframe.addEventListener('mouseover', focusListener);
             },
         });
 
@@ -271,7 +313,7 @@ export class Popups {
                 if (alertElement && alertElement.parentNode) {
                     alertElement.parentNode.removeChild(alertElement);
                 }
-            }, Popups.hideTimeoutMs);
+            }, Popups.HIDE_TIMEOUT_MS);
         } else {
             setTimeout(() => {
                 Popups.appendAlertPopup(
@@ -421,15 +463,20 @@ export class Popups {
             return false;
         }
 
-        link.addEventListener('click', () => {
+        const clickHandler = () => {
             // Open rules limits settings page.
             sendMessage({ type: MessageType.OpenRulesLimitsTab });
 
             // After redirect to settings page, close iframe.
-            setTimeout(() => {
+            const removeTimeout = setTimeout(() => {
                 iframe.parentNode?.removeChild(iframe);
+                clearTimeout(removeTimeout);
             }, Popups.removeFrameTimeoutMs);
-        });
+
+            link.removeEventListener('click', clickHandler);
+        };
+
+        link.addEventListener('click', clickHandler);
 
         return true;
     }

@@ -38,7 +38,7 @@ export const PromoNotification = observer(() => {
         openPromoNotificationUrl,
     } = useContext(popupStore);
 
-    const [notificationOnClose, setNotificationOnClose] = useState(false);
+    const [notificationIsClosed, setNotificationIsClosed] = useState(false);
 
     // schedule notification removal
     useEffect(() => {
@@ -54,7 +54,7 @@ export const PromoNotification = observer(() => {
     const closeTimeoutMs = 300;
 
     const handleNotificationClose = (e) => {
-        setNotificationOnClose(true);
+        setNotificationIsClosed(true);
         setTimeout(() => {
             e.preventDefault();
             closePromoNotification();
@@ -73,8 +73,8 @@ export const PromoNotification = observer(() => {
     };
 
     const notificationClassnames = classnames('promo-notification', {
-        // TODO: Check how it works, because this class is not exist in css.
-        'promo-notification--close': notificationOnClose,
+        // TODO: Check how it works, because this class does not exist in css.
+        'promo-notification--close': notificationIsClosed,
     });
 
     return (

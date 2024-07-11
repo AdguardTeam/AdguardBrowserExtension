@@ -42,7 +42,7 @@ interface NotificationProps {
  * @param props Notification component props
  */
 export const Notification = (props: NotificationProps) => {
-    const [notificationOnClose, setNotificationOnClose] = useState(false);
+    const [notificationIsClosed, setNotificationIsClosed] = useState(false);
 
     const { id, title, description } = props;
 
@@ -53,7 +53,7 @@ export const Notification = (props: NotificationProps) => {
 
     useEffect(() => {
         const displayTimeoutAnimationId = setTimeout(() => {
-            setNotificationOnClose(true);
+            setNotificationIsClosed(true);
         }, displayTimeoutAnimationMs);
 
         const displayTimeout = setTimeout(() => {
@@ -67,11 +67,11 @@ export const Notification = (props: NotificationProps) => {
     }, [id, uiStore]);
 
     const notificationClassnames = classnames('notification', {
-        'notification--close': notificationOnClose,
+        'notification--close': notificationIsClosed,
     });
 
     const close = () => {
-        setNotificationOnClose(true);
+        setNotificationIsClosed(true);
         setTimeout(() => {
             uiStore.removeNotification(id);
         }, 300);

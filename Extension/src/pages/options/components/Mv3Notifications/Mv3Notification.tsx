@@ -43,41 +43,49 @@ interface NotificationProps {
  * @param props Notification component props
  */
 export const Mv3Notification = (props: NotificationProps) => {
-    const [notificationOnClose, setNotificationOnClose] = useState(false);
+    const [notificationIsClosed, setNotificationIsClosed] = useState(false);
+
+    const [shouldCloseOnTimeout, setShouldCloseOnTimeout] = useState(true);
 
     const { uiStore } = useContext(rootStore);
 
     const { id, description, extra } = props;
     const isNotificationWithLink = extra?.link && typeof extra?.link === 'string';
 
-    const displayTimeoutAnimationMs = 5000;
-    const displayTimeoutMs = 5300;
+    const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
+
+    const NOTIFICATION_TTL_MS = 4000;
 
     useEffect(() => {
-        const displayTimeoutAnimationId = setTimeout(() => {
-            setNotificationOnClose(true);
-        }, displayTimeoutAnimationMs);
+        const closeTimeout = setTimeout(() => {
+            if (shouldCloseOnTimeout) {
+                setNotificationIsClosed(true);
+            }
+        }, NOTIFICATION_TTL_MS);
 
-        const displayTimeout = setTimeout(() => {
-            uiStore.removeMv3Notification(id);
-        }, displayTimeoutMs);
+        const removeTimeout = setTimeout(() => {
+            if (shouldCloseOnTimeout) {
+                uiStore.removeMv3Notification(id);
+            }
+        }, NOTIFICATION_TTL_MS + TIME_TO_REMOVE_NOTIFICATION_MS);
 
         return () => {
-            clearTimeout(displayTimeoutAnimationId);
-            clearTimeout(displayTimeout);
+            clearTimeout(closeTimeout);
+            clearTimeout(removeTimeout);
         };
-    }, [id, uiStore]);
+    }, [id, uiStore, shouldCloseOnTimeout]);
 
     const notificationClassnames = classnames(
         'mv3-notification',
-        { 'mv3-notification--close': notificationOnClose },
+        { 'mv3-notification--close': notificationIsClosed },
     );
 
     const handleCloseClick = () => {
-        setNotificationOnClose(true);
-        setTimeout(() => {
+        setNotificationIsClosed(true);
+        const removeTimeout = setTimeout(() => {
             uiStore.removeMv3Notification(id);
-        }, 300);
+            clearTimeout(removeTimeout);
+        }, TIME_TO_REMOVE_NOTIFICATION_MS);
     };
 
     // TODO: Refactor this code and extract click handler from general
@@ -88,8 +96,18 @@ export const Mv3Notification = (props: NotificationProps) => {
         handleCloseClick();
     };
 
+    /**
+     * Handles mouse over event which prevents notification from closing.
+     */
+    const handleMouseOver = () => {
+        setShouldCloseOnTimeout(false);
+    };
+
     return (
-        <div className={notificationClassnames}>
+        <div
+            className={notificationClassnames}
+            onMouseEnter={handleMouseOver}
+        >
             <Icon
                 id="#info"
                 classname="icon--24 left-icon"
