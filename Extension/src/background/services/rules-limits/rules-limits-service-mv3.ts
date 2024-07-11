@@ -422,7 +422,11 @@ export class RulesLimitsService {
 
             // Save last expected to be enabled filters to notify UI about them,
             // because we will disable them to run minimal possible configuration.
-            await rulesLimitsStorage.setData(expectedEnabledFilters);
+            // It should be done only if there are no filters in the storage,
+            // otherwise previous filters list will be overwritten on successful filter enabling (AG-34194).
+            if (RulesLimitsService.getExpectedEnabledFilters().length === 0) {
+                await rulesLimitsStorage.setData(expectedEnabledFilters);
+            }
 
             filterStateStorage.enableFilters(actuallyEnabledFilters);
             filterStateStorage.disableFilters(filtersToDisable);
