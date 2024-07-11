@@ -161,8 +161,8 @@ export class Engine implements TsWebExtensionEngine {
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
         return {
-            verbose: false,
-            logLevel: LogLevel.Info,
+            verbose: !!(IS_RELEASE || IS_BETA),
+            logLevel: IS_RELEASE || IS_BETA ? LogLevel.Info : LogLevel.Debug,
             filters,
             userrules,
             allowlist,

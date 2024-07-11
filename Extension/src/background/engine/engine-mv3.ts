@@ -193,8 +193,8 @@ export class Engine implements TsWebExtensionEngine {
         return {
             filteringLogEnabled: false,
             customFilters,
-            verbose: false,
-            logLevel: LogLevel.Info,
+            verbose: !!(IS_RELEASE || IS_BETA),
+            logLevel: IS_RELEASE || IS_BETA ? LogLevel.Info : LogLevel.Debug,
             staticFiltersIds,
             userrules,
             allowlist,
