@@ -15,70 +15,37 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import browser from 'webextension-polyfill';
 
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
     MessageType,
-    ChangeUserSettingMessage,
-    ApplySettingsJsonMessage,
-} from '../../common/messages';
-import { logger } from '../../common/logger';
-import { SettingOption } from '../schema';
-import { messageHandler } from '../message-handler';
-import { UserAgent } from '../../common/user-agent';
-import { AntiBannerFiltersId } from '../../common/constants';
-import { engine } from '../engine';
+    type ChangeUserSettingMessage,
+    type ApplySettingsJsonMessage,
+} from '../../../common/messages';
+import { logger } from '../../../common/logger';
+import { SettingOption } from '../../schema';
+import { messageHandler } from '../../message-handler';
+import { UserAgent } from '../../../common/user-agent';
+import { AntiBannerFiltersId } from '../../../common/constants';
+import { engine } from '../../engine';
 import {
     Categories,
-    CategoriesData,
-    SafebrowsingApi,
     SettingsApi,
-    SettingsData,
     TabsApi,
-} from '../api';
-import { Prefs } from '../prefs';
-import { listeners } from '../notifier';
+} from '../../api';
+import { Prefs } from '../../prefs';
+import { listeners } from '../../notifier';
 import {
     ContextMenuAction,
     contextMenuEvents,
     settingsEvents,
-} from '../events';
+} from '../../events';
+import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
 
-import { fullscreenUserRulesEditor } from './fullscreen-user-rules-editor';
-
-export type ExportMessageResponse = {
-    content: string,
-    appVersion: string,
-};
-
-export type GetOptionsDataResponse = {
-    settings: SettingsData,
-    appVersion: string,
-    libVersions: {
-        tswebextension: string,
-        tsurlfilter: string,
-        scriptlets: string,
-        extendedCss: string,
-    },
-    environmentOptions: {
-        isChrome: boolean,
-    },
-    constants: {
-        AntiBannerFiltersId: typeof AntiBannerFiltersId,
-    },
-    filtersInfo: {
-        rulesCount: number,
-    },
-    filtersMetadata: CategoriesData,
-    fullscreenUserRulesEditorIsOpen: boolean,
-    /**
-     * Whether the limit of rules in the user filter is exceeded and browser
-     * changed list of enabled filters.
-     */
-    areFilterLimitsExceeded: boolean,
-};
+import type { ExportMessageResponse, GetOptionsDataResponse } from './types';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -107,22 +74,25 @@ export class SettingsService {
         settingsEvents.addListener(SettingOption.SendDoNotTrack, SettingsService.onSendDoNotTrackStateChange);
         settingsEvents.addListener(SettingOption.RemoveXClientData, SettingsService.onRemoveXClientDataStateChange);
         settingsEvents.addListener(SettingOption.BlockWebRTC, SettingsService.onBlockWebRTCStateChange);
-        settingsEvents.addListener(
-            SettingOption.SelfDestructThirdPartyCookies,
-            SettingsService.onSelfDestructThirdPartyCookiesStateChange,
-        );
-        settingsEvents.addListener(
-            SettingOption.SelfDestructThirdPartyCookiesTime,
-            SettingsService.onSelfDestructThirdPartyCookiesTimeStateChange,
-        );
-        settingsEvents.addListener(
-            SettingOption.SelfDestructFirstPartyCookies,
-            SettingsService.onSelfDestructFirstPartyCookiesStateChange,
-        );
-        settingsEvents.addListener(
-            SettingOption.SelfDestructFirstPartyCookiesTime,
-            SettingsService.onSelfDestructFirstPartyCookiesTimeStateChange,
-        );
+
+        // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
+        // settingsEvents.addListener(
+        //     SettingOption.SelfDestructThirdPartyCookies,
+        //     SettingsService.onSelfDestructThirdPartyCookiesStateChange,
+        // );
+        // settingsEvents.addListener(
+        //     SettingOption.SelfDestructThirdPartyCookiesTime,
+        //     SettingsService.onSelfDestructThirdPartyCookiesTimeStateChange,
+        // );
+        // settingsEvents.addListener(
+        //     SettingOption.SelfDestructFirstPartyCookies,
+        //     SettingsService.onSelfDestructFirstPartyCookiesStateChange,
+        // );
+        // settingsEvents.addListener(
+        //     SettingOption.SelfDestructFirstPartyCookiesTime,
+        //     SettingsService.onSelfDestructFirstPartyCookiesTimeStateChange,
+        // );
+
         settingsEvents.addListener(
             SettingOption.DisableFiltering,
             SettingsService.onDisableFilteringStateChange,
@@ -139,9 +109,7 @@ export class SettingsService {
      * @returns Item of {@link GetOptionsDataResponse}.
      */
     static async getOptionsData(): Promise<GetOptionsDataResponse> {
-        const areFilterLimitsExceeded = __IS_MV3__
-            ? await RulesLimitsService.areFilterLimitsExceeded()
-            : false;
+        const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
 
         return {
             settings: SettingsApi.getData(),
@@ -181,7 +149,7 @@ export class SettingsService {
         try {
             // Should enable default filters and their groups.
             await SettingsApi.reset(true);
-            engine.debounceUpdate();
+            await engine.update();
 
             return true;
         } catch (e) {
@@ -199,7 +167,7 @@ export class SettingsService {
 
         const isImported = await SettingsApi.import(json);
 
-        engine.debounceUpdate();
+        await engine.update();
 
         // TODO: Looks like not using. Maybe lost listener in refactoring.
         listeners.notifyListeners(listeners.SettingsUpdated, isImported);
@@ -227,10 +195,6 @@ export class SettingsService {
         try {
             await engine.setFilteringState(!isFilteringDisabled);
 
-            if (isFilteringDisabled && !__IS_MV3__) {
-                await SafebrowsingApi.clearCache();
-            }
-
             const activeTab = await TabsApi.getActive();
 
             if (activeTab) {
@@ -243,11 +207,10 @@ export class SettingsService {
 
     /**
      * Called when {@link SettingOption.DisableStealthMode} setting changed.
-     *
      */
     static async onDisableStealthModeStateChange(): Promise<void> {
         try {
-            engine.debounceUpdate();
+            await engine.update();
         } catch (e) {
             logger.error('Failed to change stealth mode state', e);
         }
@@ -319,44 +282,52 @@ export class SettingsService {
     }
 
     // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
-    /**
-     * Called when {@link SettingOption.SelfDestructThirdPartyCookies} setting changed.
-     *
-     * {@link SettingOption.SelfDestructThirdPartyCookies} Setting value.
-     */
-    static onSelfDestructThirdPartyCookiesStateChange(): void {
-        engine.debounceUpdate();
-    }
+    // /**
+    //  * Called when {@link SettingOption.SelfDestructThirdPartyCookies} setting changed.
+    //  *
+    //  * {@link SettingOption.SelfDestructThirdPartyCookies} Setting value.
+    //  *
+    //  * @throws Error for mv3.
+    //  */
+    // static onSelfDestructThirdPartyCookiesStateChange(): void {
+    //     throw new Error('onSelfDestructThirdPartyCookiesStateChange not implemented for mv3');
+    // }
 
     // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
-    /**
-     * Called when {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting changed.
-     *
-     * {@link SettingOption.SelfDestructThirdPartyCookiesTime} Setting value.
-     */
-    static onSelfDestructThirdPartyCookiesTimeStateChange(): void {
-        engine.debounceUpdate();
-    }
+    // /**
+    //  * Called when {@link SettingOption.SelfDestructThirdPartyCookiesTime} setting changed.
+    //  *
+    //  * {@link SettingOption.SelfDestructThirdPartyCookiesTime} Setting value.
+    //  *
+    //  * @throws Error for mv3.
+    //  */
+    // static onSelfDestructThirdPartyCookiesTimeStateChange(): void {
+    //     throw new Error('onSelfDestructThirdPartyCookiesTimeStateChange not implemented for mv3');
+    // }
 
     // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
-    /**
-     * Called when {@link SettingOption.SelfDestructFirstPartyCookies} setting changed.
-     *
-     * {@link SettingOption.SelfDestructFirstPartyCookies} Setting value.
-     */
-    static onSelfDestructFirstPartyCookiesStateChange(): void {
-        engine.debounceUpdate();
-    }
+    // /**
+    //  * Called when {@link SettingOption.SelfDestructFirstPartyCookies} setting changed.
+    //  *
+    //  * {@link SettingOption.SelfDestructFirstPartyCookies} Setting value.
+    //  *
+    //  * @throws Error for mv3.
+    //  */
+    // static onSelfDestructFirstPartyCookiesStateChange(): void {
+    //     throw new Error('onSelfDestructFirstPartyCookiesStateChange not implemented for mv3');
+    // }
 
     // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
-    /**
-     * Called when {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting changed.
-     *
-     * {@link SettingOption.SelfDestructFirstPartyCookiesTime} Setting value.
-     */
-    static onSelfDestructFirstPartyCookiesTimeStateChange(): void {
-        engine.debounceUpdate();
-    }
+    // /**
+    //  * Called when {@link SettingOption.SelfDestructFirstPartyCookiesTime} setting changed.
+    //  *
+    //  * {@link SettingOption.SelfDestructFirstPartyCookiesTime} Setting value.
+    //  *
+    //  * @throws Error for mv3.
+    //  */
+    // static onSelfDestructFirstPartyCookiesTimeStateChange(): void {
+    //     throw new Error('onSelfDestructFirstPartyCookiesTimeStateChange not implemented for mv3');
+    // }
 
     /**
      * Called when protection enabling is requested.

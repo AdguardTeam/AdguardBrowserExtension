@@ -79,7 +79,6 @@ export class Toasts {
                 return;
             }
 
-            const tab = await TabsApi.getActive();
             const alertStyles = this.styles.get(StylesAssetsPath.RulesLimitsPopup);
             const alertContainerStyles = this.styles.get(StylesAssetsPath.RulesLimitsContainer);
 
@@ -88,6 +87,7 @@ export class Toasts {
                 return;
             }
 
+            const tab = await TabsApi.getActive();
             if (tab?.id) {
                 const mainText = translator.getMessage('popup_limits_exceeded_warning');
                 const linkText = translator.getMessage('options_rule_limits');

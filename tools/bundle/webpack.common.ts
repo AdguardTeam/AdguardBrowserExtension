@@ -327,6 +327,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig): Configuration => 
                     // eslint-disable-next-line max-len
                     `../../Extension/src/background/services/experimental-update/experimental-update-service-mv${manifestVersion}.ts`,
                 ),
+                'settings-service': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/services/settings/settings-service-mv${manifestVersion}.ts`,
+                ),
                 'filters-service': path.resolve(
                     __dirname,
                     `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`,

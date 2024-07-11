@@ -90,7 +90,16 @@ export const Miscellaneous = observer(() => {
         } else {
             uiStore.addNotification({ description: translator.getMessage('options_reset_settings_error') });
         }
+
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
     };
+
+    const handleResetSettingsConfirmWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        handleResetSettingsConfirm,
+    );
 
     const {
         UseOptimizedFilters,
@@ -238,7 +247,7 @@ export const Miscellaneous = observer(() => {
                                 title={translator.getMessage('options_reset_settings_confirm_modal_title')}
                                 isOpen={isOpenResetSettingsModal}
                                 setIsOpen={setIsOpenResetSettingsModal}
-                                onConfirm={handleResetSettingsConfirm}
+                                onConfirm={handleResetSettingsConfirmWrapper}
                                 customConfirmTitle={translator.getMessage('options_reset_settings_confirm_modal_clear_button')}
                             />
                         )
