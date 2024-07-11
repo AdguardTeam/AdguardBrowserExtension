@@ -167,7 +167,7 @@ const initEventTypesFilters = {
                 RequestType.PermissionsPolicy,
                 RequestType.Cookie,
                 RequestType.Ping,
-                RequestType.WebRTC,
+                RequestType.WebRtc,
                 RequestType.CspReport,
             ],
             enabled: true,
@@ -422,6 +422,7 @@ class LogStore {
                     && !filteringEvent.requestRule.cssRule
                     && !filteringEvent.requestRule.scriptRule
                     && !filteringEvent.requestRule.cspRule
+                    && !filteringEvent.requestRule.permissionsRule
                     && !filteringEvent.replaceRules
                     && !filteringEvent.removeParam
                     && !filteringEvent.removeHeader);
