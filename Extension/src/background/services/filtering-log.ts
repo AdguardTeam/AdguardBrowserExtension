@@ -567,8 +567,6 @@ export class FilteringLogService {
                 cspRule: rule.isCsp,
                 cookieRule: rule.isCookie,
                 modifierValue: rule.advancedModifier ?? undefined,
-                // TODO: Remove getText completely
-                appliedRuleText: rule.appliedRuleText,
             })),
         });
 

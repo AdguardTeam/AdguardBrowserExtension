@@ -27,6 +27,7 @@ import {
     getRuleSourceIndex,
     PreprocessedFilterList,
 } from '@adguard/tswebextension';
+import { RuleParser } from '@adguard/agtree';
 
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
@@ -214,15 +215,29 @@ export class FilteringLogApi {
      * @returns Rule text or null if the rule is not found.
      */
     public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
-        // Note: We do not store rule texts for stealth / allowlist rules in the browser storage,
-        // so we can't get the original rule text for them.
-        // For stealth rules, we send appliedRuleText directly from the engine.
-        // TODO: Resolve this issue in the future.
+        // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
+        // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
         if (
             filterId === AntiBannerFiltersId.StealthModeFilterId
             || filterId === AntiBannerFiltersId.AllowlistFilterId
         ) {
-            return null;
+            const ruleNode = Engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
+
+            if (!ruleNode) {
+                logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
+                return null;
+            }
+
+            const ruleText = RuleParser.generate(ruleNode);
+
+            if (!ruleText) {
+                logger.error(`Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
+                return null;
+            }
+
+            return {
+                appliedRuleText: ruleText,
+            };
         }
 
         const filterData = await this.getFilterData(filterId);
@@ -503,13 +518,9 @@ export class FilteringLogApi {
         // Get rule text based on filter id and rule index
         if (data.requestRule) {
             const { filterId, ruleIndex } = data.requestRule;
-            // TODO: Remove sending getText for stealth rules
-            // Special case: do not get rule text for stealth rules - they already have appliedRuleText
-            if (filterId !== AntiBannerFiltersId.StealthModeFilterId) {
-                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                if (ruleTextData) {
-                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
-                }
+            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+            if (ruleTextData) {
+                data.requestRule = Object.assign(data.requestRule, ruleTextData);
             }
         }
 
@@ -548,13 +559,9 @@ export class FilteringLogApi {
         if (event) {
             if (data.requestRule) {
                 const { filterId, ruleIndex } = data.requestRule;
-                // TODO: Remove sending getText for stealth rules
-                // Special case: do not get rule text for stealth rules - they already have appliedRuleText
-                if (filterId !== AntiBannerFiltersId.StealthModeFilterId) {
-                    const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                    if (ruleTextData) {
-                        data.requestRule = Object.assign(data.requestRule, ruleTextData);
-                    }
+                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+                if (ruleTextData) {
+                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
                 }
             }
 
