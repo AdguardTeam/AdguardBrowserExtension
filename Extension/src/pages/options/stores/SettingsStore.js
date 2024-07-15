@@ -248,6 +248,8 @@ class SettingsStore {
                 },
             });
         }
+
+        return currentLimitsMv3;
     }
 
     @action
