@@ -40,11 +40,24 @@ Build:
 
             ls -la
 
-            # don't use --ignore-optional flag, because swc requires optional deps 
+            # don't use --ignore-optional flag, because swc requires optional deps
             yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
             yarn beta
+
+            # Create artifacts directory if it doesn't exist
+            mkdir -p artifacts
+
+            # Copy all artifacts to the artifacts directory
+            cp build/beta/build.txt artifacts/
+            cp build/beta/chrome.zip artifacts/
+            cp build/beta/edge.zip artifacts/
+            cp build/beta/chrome.crx artifacts/
+            cp build/beta/update.xml artifacts/
+
+            # Create an empty artifact in master branch which will be filled in v5.0 branch
+            echo "empty" > artifacts/chrome-mv3.zip
     - inject-variables:
-        file: build/beta/build.txt
+        file: artifacts/build.txt
         scope: RESULT
         namespace: inject
     - any-task:
@@ -66,31 +79,36 @@ Build:
             ls -la
 
             echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules
+            rm -rf node_modules build
             echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
-      location: build/beta
+      location: artifacts
       pattern: build.txt
       shared: true
       required: true
     - name: chrome.zip
-      location: build/beta
+      location: artifacts
       pattern: chrome.zip
       shared: true
       required: true
+    - name: chrome-mv3.zip
+      location: artifacts
+      pattern: chrome-mv3.zip
+      shared: true
+      required: true
     - name: edge.zip
-      location: build/beta
+      location: artifacts
       pattern: edge.zip
       shared: true
       required: true
     - name: chrome.crx
-      location: build/beta
+      location: artifacts
       pattern: chrome.crx
       shared: true
       required: true
     - name: update.xml
-      location: build/beta
+      location: artifacts
       pattern: update.xml
       shared: true
       required: true

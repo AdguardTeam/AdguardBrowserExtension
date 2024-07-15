@@ -40,6 +40,17 @@ Test:
             yarn check-types
             yarn test
             yarn dev
+
+            # Create artifacts directory if it doesn't exist
+            mkdir -p artifacts
+
+            # Copy all artifacts to the artifacts directory
+            cp build/dev/build.txt artifacts/
+            cp build/dev/chrome.zip artifacts/
+            cp build/dev/edge.zip artifacts/
+            cp build/dev/firefox-amo.zip artifacts/
+            cp build/dev/firefox-standalone.zip artifacts/
+            cp build/dev/opera.zip artifacts/
   final-tasks:
     - script:
         interpreter: SHELL
@@ -54,31 +65,31 @@ Test:
             ls -la
 
             echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules
+            rm -rf node_modules build
             echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
-      location: build/dev
+      location: artifacts
       pattern: build.txt
       required: true
     - name: chrome.zip
-      location: build/dev
+      location: artifacts
       pattern: chrome.zip
       required: true
     - name: edge.zip
-      location: build/dev
+      location: artifacts
       pattern: edge.zip
       required: true
     - name: firefox-amo.zip
-      location: build/dev
+      location: artifacts
       pattern: firefox-amo.zip
       required: true
     - name: firefox-standalone.zip
-      location: build/dev
+      location: artifacts
       pattern: firefox-standalone.zip
       required: true
     - name: opera.zip
-      location: build/dev
+      location: artifacts
       pattern: opera.zip
       required: true
   requirements:
