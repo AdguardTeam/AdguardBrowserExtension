@@ -6,7 +6,8 @@ deployment:
 release-naming: ${bamboo.inject.version}-beta
 environments:
   - static.adtidy.org
-  - Chrome WebStore
+  - Chrome WebStore MV2
+  - Chrome WebStore MV3
 static.adtidy.org:
   triggers: []
   tasks:
@@ -17,7 +18,6 @@ static.adtidy.org:
         force-clean-build: 'true'
     - artifact-download:
         artifacts:
-          - name: edge.zip
           - name: chrome.zip
           - name: build.txt
           - name: chrome.crx
@@ -47,7 +47,7 @@ static.adtidy.org:
             name: Deploy webhook
             url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
-Chrome WebStore:
+Chrome WebStore MV2:
   triggers: []
   tasks:
     - clean
@@ -57,11 +57,7 @@ Chrome WebStore:
         force-clean-build: 'true'
     - artifact-download:
         artifacts:
-          - name: edge.zip
           - name: chrome.zip
-          - name: build.txt
-          - name: chrome.crx
-          - name: update.xml
     - script:
         interpreter: SHELL
         scripts:
@@ -75,6 +71,43 @@ Chrome WebStore:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+
+Chrome WebStore MV3:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: 'true'
+    - artifact-download:
+        artifacts:
+          - name: chrome-mv3.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            # Publish MV3 Beta to Experimental MV3 item
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-mv3
   final-tasks: []
   variables: {}
   requirements:
