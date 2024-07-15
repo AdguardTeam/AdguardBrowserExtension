@@ -146,9 +146,23 @@ export const General = observer(() => {
             }
 
             const result = await messenger.applySettingsJson(content);
+
             if (result) {
-                const successMessage = translator.getMessage('options_popup_import_success_title');
-                uiStore.addNotification({ description: successMessage });
+                if (!__IS_MV3__) {
+                    const successMessage = translator.getMessage('options_popup_import_success_title');
+                    uiStore.addNotification({ description: successMessage });
+                } else {
+                    const limitsCheckResult = await settingsStore.checkLimitations();
+                    if (!limitsCheckResult.ok) {
+                        // FIXME probably we need to show a different message here
+                        // Like "We have imported but due to limits we can't apply all settings"
+                        const message = translator.getMessage('options_popup_import_error_title');
+                        uiStore.addNotification({ description: message });
+                    } else {
+                        const successMessage = translator.getMessage('options_popup_import_success_title');
+                        uiStore.addNotification({ description: successMessage });
+                    }
+                }
             } else {
                 const errorMessage = translator.getMessage('options_popup_import_error_file_description');
                 uiStore.addNotification({ description: errorMessage });
@@ -304,38 +318,34 @@ export const General = observer(() => {
                 )}
             </SettingsSection>
             <div className="links-menu links-menu--section">
-                {addPopoverForComingSoonElement(
-                    <button
-                        type="button"
+                <button
+                    type="button"
+                    className="links-menu__item"
+                    onClick={handleExportSettings}
+                >
+                    {translator.getMessage('options_export_settings')}
+                </button>
+                <div className="links-menu__item--wrapper">
+                    <input
+                        id="inputEl"
+                        type="file"
+                        accept="application/json"
+                        onChange={inputChangeHandler}
+                        className="actions__input-file"
+                    />
+                    <label
+                        htmlFor="inputEl"
                         className="links-menu__item"
-                        onClick={handleExportSettings}
                     >
-                        {translator.getMessage('options_export_settings')}
-                    </button>,
-                )}
-                {addPopoverForComingSoonElement(
-                    <div className="links-menu__item--wrapper">
                         <input
-                            id="inputEl"
                             type="file"
                             accept="application/json"
                             onChange={inputChangeHandler}
                             className="actions__input-file"
                         />
-                        <label
-                            htmlFor="inputEl"
-                            className="links-menu__item"
-                        >
-                            <input
-                                type="file"
-                                accept="application/json"
-                                onChange={inputChangeHandler}
-                                className="actions__input-file"
-                            />
-                            {translator.getMessage('options_import_settings')}
-                        </label>
-                    </div>,
-                )}
+                        {translator.getMessage('options_import_settings')}
+                    </label>
+                </div>
                 <a
                     target="_blank"
                     rel="noopener noreferrer"

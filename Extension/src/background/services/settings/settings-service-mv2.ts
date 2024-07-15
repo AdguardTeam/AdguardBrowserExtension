@@ -36,7 +36,6 @@ import {
     TabsApi,
 } from '../../api';
 import { Prefs } from '../../prefs';
-import { listeners } from '../../notifier';
 import {
     ContextMenuAction,
     contextMenuEvents,
@@ -164,8 +163,6 @@ export class SettingsService {
 
         engine.debounceUpdate();
 
-        // TODO: Looks like not using. Maybe lost listener in refactoring.
-        listeners.notifyListeners(listeners.SettingsUpdated, isImported);
         return isImported;
     }
 
