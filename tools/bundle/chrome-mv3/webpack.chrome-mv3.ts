@@ -48,6 +48,11 @@ export const RULESET_NAME_PREFIX = 'ruleset_';
 const GPC_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/gpc');
 const HIDE_DOCUMENT_REFERRER_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/hide-document-referrer');
 
+/**
+ * Base filter id - it is the main filter that is enabled by default.
+ */
+const BASE_FILTER_ID = 2;
+
 const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
     const filtersDir = FILTERS_DEST.replace('%browser', 'chromium-mv3');
 
@@ -66,7 +71,9 @@ const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
                 const id = `${RULESET_NAME_PREFIX}${rulesetIndex}`;
                 return {
                     id,
-                    enabled: false,
+                    // By default, we set the base filter enabled,
+                    // so that the browser tries to enable it if we are over limits
+                    enabled: rulesetIndex === BASE_FILTER_ID,
                     path: `filters/declarative/${name}/${name}.json`,
                 };
             }),
