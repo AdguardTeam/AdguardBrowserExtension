@@ -1,8 +1,8 @@
-! Checksum: gO9dSANnILVsxAE73b/VrQ
+! Checksum: lxNAj9V8Die3o2BoPsq3Eg
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.71
-! TimeUpdated: 2024-06-29T12:32:50+00:00
+! Version: 2.0.8.80
+! TimeUpdated: 2024-07-16T12:35:46+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -193,6 +193,7 @@ $removeparam=_sgm_action
 ! so to make it less problematic, it will be blocked only if contains at least 6 characters - numbers and letters
 $removeparam=/^__s=[A-Za-z0-9]{6\,}/,domain=~univis.uni-erlangen.de|~univis.uni-bamberg.de|~univis.uni-luebeck.de|~univis.uni-kiel.de|~univis.th-koeln.de
 ! MailChimp click tracking
+$removeparam=mc_cid
 $removeparam=mc_eid
 ! moshimo affiliate
 $removeparam=maf
@@ -357,6 +358,28 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/183694
+||hoyoverse.com/branding$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/183361
+||cloud.baidu.com^$removeparam=from
+||qianfan.cloud.baidu.com^$removeparam=track
+! https://github.com/AdguardTeam/AdguardFilters/issues/183278
+||hepsiburada.com^$removeparam=wt_inf
+! https://github.com/AdguardTeam/AdguardFilters/issues/183138
+||qjweb.jp^$removeparam=from
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-9964278
+||sport.sky.it^$removeparam=social
+||sport.sky.it^$removeparam=share_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/182791
+||tokopedia.com^$removeparam=extParam
+||tokopedia.com^$removeparam=refined
+! https://github.com/AdguardTeam/AdguardFilters/issues/182681
+||darkfans.com^$removeparam=ref
+||darkfans.com^$removeparam=af
+! https://github.com/AdguardTeam/AdguardFilters/issues/182682
+||porntube.com^$removeparam=cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/182683
+||3movs.com^$removeparam=site_id
 ! https://jpsk.jp/articles/kanoa2.html?click=popup
 ||jpsk.jp^$removeparam=click
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182402
@@ -1678,7 +1701,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ! https://github.com/uBlockOrigin/uAssets/issues/10867
 ||adweek.com^$removeparam=traffic_source
 ! AdGuard
-$removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adguardvpn-help.com
 ! https://github.com/AdguardTeam/AdguardFilters/pull/102144
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
@@ -1949,9 +1972,9 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ! ||amazon.*$removeparam=sr - breaks automatic jump to review details
 ! ||amazon.*$removeparam=s - breaks URLs which includes it to sort
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-5867802
-$removeparam=asc_campaign,domain=aboutamazon.com|amazon.*|amzn.to
-$removeparam=asc_refurl,domain=aboutamazon.com|amazon.*|amzn.to
-$removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
+$removeparam=asc_campaign,domain=aboutamazon.com|amazon.com|amazon.ru|amazon.net|amazon.org|amazon.ir|amazon.in|amazon.com.au|amazon.com.tr|amazon.co.uk|amazon.co|amazon.gr|amazon.ca|amazon.com.ua|amazon.vn|amazon.info|amazon.de|amazon.fr|amazon.me|amazon.by|amazon.jp|amazon.ua|amazon.com.tw|amazon.co.za|amazon.co.il|amazon.eu|amazon.it|amazon.tv|amazon.id|amazon.com.br|amazon.es|amazon.ch|amazon.co.in|amazon.com.vn|amazon.biz|amazon.app|amazon.nl|amazon.us|amazon.pl|amazon.cl|amazon.com.mx|amazon.ro|amazon.co.jp|amazon.co.nz|amazon.ma|amazon.com.ar|amazon.cc|amazon.rs|amazon.cn|amazon.ae|amazon.co.kr|amazon.mx|amazon.pk|amazon.se|amazon.cz|amazon.tw|amazon.ai|amazon.com.sg|amazon.com.co|amazon.co.th|amazon.be|amazon.dk|amazon.hu|amazon.az|amazon.com.pk|amazon.md|amazon.tech|amazon.ge|amazon.com.cn|amazon.sg|amazon.no|amazon.com.bd|amazon.to|amazon.dev|amazon.mk|amazon.com.ng|amazon.ie|amazon.at|amazon.co.ke|amazon.com.np|amazon.ph|amazon.fi|amazon.lv|amazon.space|amazon.life|amazon.pe|amazon.ng|amazon.lt|amazon.hk|amazon.cloud|amazon.gov.bd|amazon.sa|amazon.pt|amazon.gg|amazon.hr|amazon.mobi|amazon.fun|amazon.bg|amazon.com.sa|amazon.mn|amazon.ws|amazon.ee|amazon.uk|amazon.com.pe|amazon.ml|amazon.dz|amazon.org.il|amazon.world|amazon.is|amazon.gov.np|amazon.si|amazon.org.in|amazon.digital|amazon.work|amazon.agency|amazon.sh|amzn.to
+$removeparam=asc_refurl,domain=aboutamazon.com|amazon.com|amazon.ru|amazon.net|amazon.org|amazon.ir|amazon.in|amazon.com.au|amazon.com.tr|amazon.co.uk|amazon.co|amazon.gr|amazon.ca|amazon.com.ua|amazon.vn|amazon.info|amazon.de|amazon.fr|amazon.me|amazon.by|amazon.jp|amazon.ua|amazon.com.tw|amazon.co.za|amazon.co.il|amazon.eu|amazon.it|amazon.tv|amazon.id|amazon.com.br|amazon.es|amazon.ch|amazon.co.in|amazon.com.vn|amazon.biz|amazon.app|amazon.nl|amazon.us|amazon.pl|amazon.cl|amazon.com.mx|amazon.ro|amazon.co.jp|amazon.co.nz|amazon.ma|amazon.com.ar|amazon.cc|amazon.rs|amazon.cn|amazon.ae|amazon.co.kr|amazon.mx|amazon.pk|amazon.se|amazon.cz|amazon.tw|amazon.ai|amazon.com.sg|amazon.com.co|amazon.co.th|amazon.be|amazon.dk|amazon.hu|amazon.az|amazon.com.pk|amazon.md|amazon.tech|amazon.ge|amazon.com.cn|amazon.sg|amazon.no|amazon.com.bd|amazon.to|amazon.dev|amazon.mk|amazon.com.ng|amazon.ie|amazon.at|amazon.co.ke|amazon.com.np|amazon.ph|amazon.fi|amazon.lv|amazon.space|amazon.life|amazon.pe|amazon.ng|amazon.lt|amazon.hk|amazon.cloud|amazon.gov.bd|amazon.sa|amazon.pt|amazon.gg|amazon.hr|amazon.mobi|amazon.fun|amazon.bg|amazon.com.sa|amazon.mn|amazon.ws|amazon.ee|amazon.uk|amazon.com.pe|amazon.ml|amazon.dz|amazon.org.il|amazon.world|amazon.is|amazon.gov.np|amazon.si|amazon.org.in|amazon.digital|amazon.work|amazon.agency|amazon.sh|amzn.to
+$removeparam=asc_source,domain=aboutamazon.com|amazon.com|amazon.ru|amazon.net|amazon.org|amazon.ir|amazon.in|amazon.com.au|amazon.com.tr|amazon.co.uk|amazon.co|amazon.gr|amazon.ca|amazon.com.ua|amazon.vn|amazon.info|amazon.de|amazon.fr|amazon.me|amazon.by|amazon.jp|amazon.ua|amazon.com.tw|amazon.co.za|amazon.co.il|amazon.eu|amazon.it|amazon.tv|amazon.id|amazon.com.br|amazon.es|amazon.ch|amazon.co.in|amazon.com.vn|amazon.biz|amazon.app|amazon.nl|amazon.us|amazon.pl|amazon.cl|amazon.com.mx|amazon.ro|amazon.co.jp|amazon.co.nz|amazon.ma|amazon.com.ar|amazon.cc|amazon.rs|amazon.cn|amazon.ae|amazon.co.kr|amazon.mx|amazon.pk|amazon.se|amazon.cz|amazon.tw|amazon.ai|amazon.com.sg|amazon.com.co|amazon.co.th|amazon.be|amazon.dk|amazon.hu|amazon.az|amazon.com.pk|amazon.md|amazon.tech|amazon.ge|amazon.com.cn|amazon.sg|amazon.no|amazon.com.bd|amazon.to|amazon.dev|amazon.mk|amazon.com.ng|amazon.ie|amazon.at|amazon.co.ke|amazon.com.np|amazon.ph|amazon.fi|amazon.lv|amazon.space|amazon.life|amazon.pe|amazon.ng|amazon.lt|amazon.hk|amazon.cloud|amazon.gov.bd|amazon.sa|amazon.pt|amazon.gg|amazon.hr|amazon.mobi|amazon.fun|amazon.bg|amazon.com.sa|amazon.mn|amazon.ws|amazon.ee|amazon.uk|amazon.com.pe|amazon.ml|amazon.dz|amazon.org.il|amazon.world|amazon.is|amazon.gov.np|amazon.si|amazon.org.in|amazon.digital|amazon.work|amazon.agency|amazon.sh|amzn.to
 !
 ||amazon.*$removeparam=tag
 ||amazon.*$removeparam=ref

@@ -1,8 +1,8 @@
-! Checksum: 4jREqyTiyvfG536tkBmHyg
+! Checksum: uFRoi2hbAm8D+dIou8B/+g
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.91.96
-! TimeUpdated: 2024-07-01T15:59:30+00:00
+! Version: 2.0.92.33
+! TimeUpdated: 2024-07-17T13:31:17+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1487,6 +1487,9 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||srvd2204.com^
+||miradres.com^
+||ufouxbwn.com^
 ||cdn.tameti.com^
 ||eehhabacgieacfjeaacg.world^
 ||bidmatic.io^$third-party
@@ -4429,7 +4432,7 @@ pikabu.ru#%#//scriptlet('abort-on-property-write', 'Ya')
 ||pikabu.ru^$cookie=_MCID
 pikabu.ru#%#//scriptlet('prevent-setTimeout', '_sendAnalytics')
 pikabu.ru#%#//scriptlet('json-prune', 'data', 'errors')
-pikabu.ru#%#//scriptlet("remove-node-text", "script", "/.innerHTML.*cancelAnimationFrame/")
+pikabu.ru#%#//scriptlet("remove-node-text", "script", "/.innerHTML.*cancelAnimationFrame|\(new A_D\(/")
 ! sports.ru
 sports.ru#%#//scriptlet('json-prune', 'direct rtbAuctionInfo')
 sports.ru#%#//scriptlet('set-constant', 'Ya.adfoxCode.create', 'noopFunc')
@@ -5138,6 +5141,7 @@ $cookie=/blcrm|bltsr|zmFQeXtI|JPIqApiY|computer/,domain=dzen.ru|baby.ru|business
 dzen.ru#%#//scriptlet('remove-cookie', '/blcrm|bltsr|zmFQeXtI|JPIqApiY|computer/')
 !
 ! Dzen main page
+dzen.ru###ya-dist-popup
 dzen.ru###ya-dist-teaser
 dzen.ru#%#//scriptlet('abort-current-inline-script', 'XMLHttpRequest', 'cookieOfTheDay')
 dzen.ru##div[class*="bannerMain"]
@@ -5197,8 +5201,6 @@ mail.ru##.mailru-visibility-check
 mail.ru##div[class*="rb-slot_plug"]
 mail.ru,sportmail.ru##div[class*="m-fixed-panel__box"]
 mail.ru,sportmail.ru,~e.mail.ru,~my.mail.ru,~touch.mail.ru#%#//scriptlet('set-constant', 'Object.prototype.mimic', 'null')
-! mail.ru main page - under the search
-mail.ru#$?#div[slot="main-column"] > [class]:matches-css(height : /^89\..*px/) { remove: true; }
 ! ad on main page
 [$path=/^\/$|mail\.ru\/\?/]mail.ru##div[slot="main-column"] > div.tgb-wrapper
 !
@@ -5212,8 +5214,6 @@ love.mail.ru#?##app-wrapper > div:has(> div[class] > div[class] > div[class] > a
 love.mail.ru###adblock-in-browser
 !
 e.mail.ru##.layout__column_right:has(> div > div.advert-column)
-e.mail.ru,octavius.mail.ru#%#//scriptlet('prevent-setTimeout', 'SMOKESCREEN')
-e.mail.ru,octavius.mail.ru#%#//scriptlet('json-prune', '[].slot')
 ! kino.mail.ru
 kino.mail.ru##.block_ad-text
 kino.mail.ru##button[class*="adv-marker"]
@@ -5230,10 +5230,9 @@ minigames.mail.ru#%#//scriptlet("abort-current-inline-script", "$", "showAd")
 !
 otvet.mail.ru#%#//scriptlet('json-prune', 'baits css direct *.slot')
 !
-e.mail.ru,octavius.mail.ru#%#//scriptlet('prevent-setTimeout', '())),v.Z.themes.on("themes:')
 @@||e.mail.ru^$generichide
 @@||octavius.mail.ru^$generichide
-! Fix for the mobile version, when used #%#//scriptlet('prevent-setTimeout', '())),v.Z.themes.on("themes:')
+! Fixing the first letter for the mobile version
 !
 ! ok.ru
 ok.ru#%#//scriptlet('json-prune', 'result.body.direct')
@@ -5276,8 +5275,9 @@ forums.overclockers.ru#%#AG_onLoad(function() { window.chkA = function() {}; win
 forums.overclockers.ru#@##yandex_ad_1
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/87125
+apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,naylo.top,zannn.top,innal.top###chess
 apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,naylo.top,zannn.top,innal.top###chessday
-apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,naylo.top,zannn.top,innal.top###ads_script
+apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,naylo.top,zannn.top,innal.top###as_script
 rustorka.com,rustorka.net,rustorkacom.lib##body > div[style*="background-color:"][style*="max-width:"][style*="height:"]
 $cookie=/[0-9a-f]{32}/,domain=games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|zannn.top|innal.top|apad2.top
 $removeheader=location,domain=zannn.top|innal.top
@@ -5287,6 +5287,7 @@ apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,naylo.top,zannn
 apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,naylo.top,zannn.top,innal.top#$##e7af0de8b4 { height: 16px !important; }
 !
 ! rustorka.com
+@@/sponsored-links.js$~third-party,domain=games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
 @@/ads-admin.js$~third-party,domain=games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
 @@/sidead$~third-party,domain=games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
 @@/punder-rotate.$~third-party,domain=games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
@@ -5577,120 +5578,125 @@ ya.ru,yandex.com##.banner
 !
 ! Yandex.Search
 ya.ru##.Skeleton_type_ad_search
-[$path=/search]ya.ru,yandex.*##.AdvMedia
-ya.ru,yandex.*##li[class*="mini-suggest__item"] > a[href^="http://yabs."][href*="/count/"]
-ya.ru,yandex.*##li[class*="mini-suggest__item"] > a[href^="https://yabs."][href*="/count/"]
-ya.ru,yandex.*##li[class*="mini-suggest__item"] > a[href^="http://yandex"][href*="/clck/"]
-yandex.*##body:not([data-bem*="pogoda"]) .mini-suggest__popup-content > li[data-type="nav"]
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.AdvMedia
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##li[class*="mini-suggest__item"] > a[href^="http://yabs."][href*="/count/"]
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##li[class*="mini-suggest__item"] > a[href^="https://yabs."][href*="/count/"]
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##li[class*="mini-suggest__item"] > a[href^="http://yandex"][href*="/clck/"]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##body:not([data-bem*="pogoda"]) .mini-suggest__popup-content > li[data-type="nav"]
 ! inline search ads
-[$path=/search]ya.ru,yandex.*###search-result > [class][data-cid]:has(> div.Organic > div a[href][data-event-required])
-[$path=/search]ya.ru,yandex.*###search-result > .serp-item:has(> div.Organic > div.VanillaReact > a[href][data-event-required])
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work###search-result > [class][data-cid]:has(> div.Organic > div a[href][data-event-required])
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work###search-result > .serp-item:has(> div.Organic > div.VanillaReact > a[href][data-event-required])
 ! the ad is on the right side, which is mostly non-reproducible
-[$path=/search]ya.ru,yandex.*##.content__right div[class][data-bem]:has(> div[class] div[class] > button[data-maukl*="advertiser"])
-[$path=/search]ya.ru,yandex.*##.content__right div[class][data-cid]:has(> div[data-vnl*='"renderTo"'])
-[$path=/search]ya.ru,yandex.*##.content__right div.serp-item:has(> div[data-state-id] span.LabelDirect)
-[$path=/search]ya.ru,yandex.*##.content__right div.serp-item:has(> div[data-vnl*='"nonceId"'])
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.content__right div[class][data-bem]:has(> div[class] div[class] > button[data-maukl*="advertiser"])
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.content__right div[class][data-cid]:has(> div[data-vnl*="\"renderTo\""])
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.content__right div.serp-item:has(> div[data-state-id] span.LabelDirect)
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.content__right div.serp-item:has(> div[data-vnl*="\"nonceId\""])
 ! In the search suggestions when typing
 ya.ru##.mini-suggest__popup-content > div.mini-suggest__group_layout_separated:has(> div > a[target="_blank"])
 ! Right side, where usually shown useful content
 ! The rule must be checked also another with search requests to not break the page
 ! For example, pills, specific electrinics, searcf for definition of a word
-ya.ru,yandex.*###search-result-aside > div[class*="_right_yes"] > div[data-cid] div[data-vnl*="R-I-"]
-ya.ru,yandex.*###search-result-aside > div[class*="_right_yes"]:not([aria-label]) > div[data-cid] > div.Root_lazy > div[class$="-Slot"]
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work###search-result-aside > div[class*="_right_yes"] > div[data-cid] div[data-vnl*="R-I-"]
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work###search-result-aside > div[class*="_right_yes"]:not([aria-label]) > div[data-cid] > div.Root_lazy > div[class$="-Slot"]
 ! Breaks useful content
 ! https://github.com/AdguardTeam/AdguardFilters/issues/168382
 ! ya.ru,yandex.*##.content__right .serp-item > *
 !
 ! Yandex.Images
-ya.ru,yandex.*##div[style^="max-width:"] > svg[width="100%"]
-ya.ru,yandex.*##.serp-list > div.incut
-ya.ru,yandex.*##.DirectInline
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.ImagesViewer-SidebarAdv
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##div[style^="max-width:"] > svg[width="100%"]
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.serp-list > div.incut
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.DirectInline
 !
 ! Yandex.Maps
-[$path=/maps]yandex.*##.search-list-view__advert-offer-banner
-[$path=/maps]yandex.*##div[class^="business"][class*="advert-"]
-[$path=/maps]yandex.*##.business-card-view__section:has(> div > .business-advert-offer-banner-view)
-[$path=/maps]yandex.*##.media-gallery > div.media-gallery__frame-wrapper:has(> div.media-gallery__frame > div > div[data-chunk="promo"])
-yandex.*##.banner-placeholder-view
-yandex.*##._advert
-yandex.*##.search-advert-badge
-yandex.*##.card-header-media-view__list > div.card-header-media-view__advert-wrap
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.search-filters-bar a[href*="/tinkoff_has_offer/"]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.search-list-view__advert-offer-banner
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.search-list-view__list a[href^="https://yabs.yandex.ru/count/"]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.maillist-form-view
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.search-list-view__advert-offer-banner
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##div[class^="business"][class*="advert-"]
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.business-card-view__section:has(> div > .business-advert-offer-banner-view)
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.media-gallery > div.media-gallery__frame-wrapper:has(> div.media-gallery__frame > div > div[data-chunk="promo"])
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.banner-placeholder-view
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##._advert
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.search-advert-badge
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.card-header-media-view__list > div.card-header-media-view__advert-wrap
 yandex.*#?#.business-card-title-view__actions > div.business-card-title-view__advert
 yandex.*#?#.business-card-title-view__actions > div.business-card-title-view__advert + div.business-card-title-view__call-to-action
 [$path=/maps]yandex.*#?#.toponym-card-view__overview > div.toponym-card-view__section:has(> div.banner-placeholder-view)
 [$path=/maps]yandex.*#?#.business-card-view__overview > div.business-card-view__section > div.business-card-view__offers:upward(1)
-[$path=/maps]yandex.*##.promo-button
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.promo-button
 !
 ! Yandex.Pogoda
 !
 ! Yandex.Market
 !
 ! Yandex.Video
-[$path=/video]ya.ru,yandex.*##.Viewer-Content div[class$="Block_bottomRounded"]
+[$path=/video]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.Viewer-Content div[class$="Block_bottomRounded"]
 ! Video ad
 ! ads near the player
-[$path=/video]ya.ru,yandex.*##.Viewer > div[style^="height:"]
-[$path=/video]ya.ru,yandex.*##.Viewer-ScrollContainer > div[class$="Block"] > div[class*="_placement_"]
-[$path=/video]ya.ru,yandex.*##.DirectStripe
+[$path=/video]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.Viewer > div[style^="height:"]
+[$path=/video]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.Viewer-ScrollContainer > div[class$="Block"] > div[class*="_placement_"]
+[$path=/video]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.DirectStripe
 !
 ! Yandex.Afisha
-afisha.yandex.*##div[style="width:100%;height:250px;display:block"]
-afisha.yandex.*##div[style="width:100%;height:240px;display:block"]
-afisha.yandex.*##.adfox
+afisha.yandex.com,afisha.yandex.ru,afisha.yandex.net,afisha.yandex.org,afisha.yandex.in,afisha.yandex.com.tr,afisha.yandex.co.uk,afisha.yandex.io,afisha.yandex.co,afisha.yandex.ca,afisha.yandex.com.ua,afisha.yandex.de,afisha.yandex.fr,afisha.yandex.me,afisha.yandex.by,afisha.yandex.jp,afisha.yandex.xyz,afisha.yandex.ua,afisha.yandex.com.tw,afisha.yandex.co.za,afisha.yandex.co.il,afisha.yandex.eu,afisha.yandex.it,afisha.yandex.es,afisha.yandex.ch,afisha.yandex.kz,afisha.yandex.nl,afisha.yandex.pro,afisha.yandex.us,afisha.yandex.pl,afisha.yandex.cl,afisha.yandex.ro,afisha.yandex.su,afisha.yandex.site,afisha.yandex.cc,afisha.yandex.rs,afisha.yandex.cn,afisha.yandex.ae,afisha.yandex.mx,afisha.yandex.top,afisha.yandex.gov,afisha.yandex.ac.id,afisha.yandex.be,afisha.yandex.dk,afisha.yandex.hu,afisha.yandex.az,afisha.yandex.uz,afisha.yandex.md,afisha.yandex.ge,afisha.yandex.no,afisha.yandex.com.bd,afisha.yandex.ie,afisha.yandex.asia,afisha.yandex.at,afisha.yandex.com.np,afisha.yandex.fi,afisha.yandex.lv,afisha.yandex.sk,afisha.yandex.lt,afisha.yandex.cloud,afisha.yandex.gov.bd,afisha.yandex.website,afisha.yandex.pt,afisha.yandex.blog,afisha.yandex.mobi,afisha.yandex.ee,afisha.yandex.uk,afisha.yandex.kg,afisha.yandex.ba,afisha.yandex.al,afisha.yandex.fm,afisha.yandex.gov.np,afisha.yandex.org.in,afisha.yandex.work##div[style="width:100%;height:250px;display:block"]
+afisha.yandex.com,afisha.yandex.ru,afisha.yandex.net,afisha.yandex.org,afisha.yandex.in,afisha.yandex.com.tr,afisha.yandex.co.uk,afisha.yandex.io,afisha.yandex.co,afisha.yandex.ca,afisha.yandex.com.ua,afisha.yandex.de,afisha.yandex.fr,afisha.yandex.me,afisha.yandex.by,afisha.yandex.jp,afisha.yandex.xyz,afisha.yandex.ua,afisha.yandex.com.tw,afisha.yandex.co.za,afisha.yandex.co.il,afisha.yandex.eu,afisha.yandex.it,afisha.yandex.es,afisha.yandex.ch,afisha.yandex.kz,afisha.yandex.nl,afisha.yandex.pro,afisha.yandex.us,afisha.yandex.pl,afisha.yandex.cl,afisha.yandex.ro,afisha.yandex.su,afisha.yandex.site,afisha.yandex.cc,afisha.yandex.rs,afisha.yandex.cn,afisha.yandex.ae,afisha.yandex.mx,afisha.yandex.top,afisha.yandex.gov,afisha.yandex.ac.id,afisha.yandex.be,afisha.yandex.dk,afisha.yandex.hu,afisha.yandex.az,afisha.yandex.uz,afisha.yandex.md,afisha.yandex.ge,afisha.yandex.no,afisha.yandex.com.bd,afisha.yandex.ie,afisha.yandex.asia,afisha.yandex.at,afisha.yandex.com.np,afisha.yandex.fi,afisha.yandex.lv,afisha.yandex.sk,afisha.yandex.lt,afisha.yandex.cloud,afisha.yandex.gov.bd,afisha.yandex.website,afisha.yandex.pt,afisha.yandex.blog,afisha.yandex.mobi,afisha.yandex.ee,afisha.yandex.uk,afisha.yandex.kg,afisha.yandex.ba,afisha.yandex.al,afisha.yandex.fm,afisha.yandex.gov.np,afisha.yandex.org.in,afisha.yandex.work##div[style="width:100%;height:240px;display:block"]
+afisha.yandex.com,afisha.yandex.ru,afisha.yandex.net,afisha.yandex.org,afisha.yandex.in,afisha.yandex.com.tr,afisha.yandex.co.uk,afisha.yandex.io,afisha.yandex.co,afisha.yandex.ca,afisha.yandex.com.ua,afisha.yandex.de,afisha.yandex.fr,afisha.yandex.me,afisha.yandex.by,afisha.yandex.jp,afisha.yandex.xyz,afisha.yandex.ua,afisha.yandex.com.tw,afisha.yandex.co.za,afisha.yandex.co.il,afisha.yandex.eu,afisha.yandex.it,afisha.yandex.es,afisha.yandex.ch,afisha.yandex.kz,afisha.yandex.nl,afisha.yandex.pro,afisha.yandex.us,afisha.yandex.pl,afisha.yandex.cl,afisha.yandex.ro,afisha.yandex.su,afisha.yandex.site,afisha.yandex.cc,afisha.yandex.rs,afisha.yandex.cn,afisha.yandex.ae,afisha.yandex.mx,afisha.yandex.top,afisha.yandex.gov,afisha.yandex.ac.id,afisha.yandex.be,afisha.yandex.dk,afisha.yandex.hu,afisha.yandex.az,afisha.yandex.uz,afisha.yandex.md,afisha.yandex.ge,afisha.yandex.no,afisha.yandex.com.bd,afisha.yandex.ie,afisha.yandex.asia,afisha.yandex.at,afisha.yandex.com.np,afisha.yandex.fi,afisha.yandex.lv,afisha.yandex.sk,afisha.yandex.lt,afisha.yandex.cloud,afisha.yandex.gov.bd,afisha.yandex.website,afisha.yandex.pt,afisha.yandex.blog,afisha.yandex.mobi,afisha.yandex.ee,afisha.yandex.uk,afisha.yandex.kg,afisha.yandex.ba,afisha.yandex.al,afisha.yandex.fm,afisha.yandex.gov.np,afisha.yandex.org.in,afisha.yandex.work##.adfox
 !
 ! Yandex.Music
-||content.adfox.ru/*/branding*.html$domain=music.yandex.*
-||strm.yandex.*/get/$media,domain=vh.yandex.*
-||strm.yandex.*/get/$script,xmlhttprequest,other,redirect=noopvast-3.0,domain=yastatic.net|kinopoisk.ru|frontend.vh.yandex.*
+||content.adfox.ru/*/branding*.html$domain=music.yandex.com|music.yandex.ru|music.yandex.net|music.yandex.org|music.yandex.in|music.yandex.com.tr|music.yandex.co.uk|music.yandex.io|music.yandex.co|music.yandex.ca|music.yandex.com.ua|music.yandex.de|music.yandex.fr|music.yandex.me|music.yandex.by|music.yandex.jp|music.yandex.xyz|music.yandex.ua|music.yandex.com.tw|music.yandex.co.za|music.yandex.co.il|music.yandex.eu|music.yandex.it|music.yandex.es|music.yandex.ch|music.yandex.kz|music.yandex.nl|music.yandex.pro|music.yandex.us|music.yandex.pl|music.yandex.cl|music.yandex.ro|music.yandex.su|music.yandex.site|music.yandex.cc|music.yandex.rs|music.yandex.cn|music.yandex.ae|music.yandex.mx|music.yandex.top|music.yandex.gov|music.yandex.ac.id|music.yandex.be|music.yandex.dk|music.yandex.hu|music.yandex.az|music.yandex.uz|music.yandex.md|music.yandex.ge|music.yandex.no|music.yandex.com.bd|music.yandex.ie|music.yandex.asia|music.yandex.at|music.yandex.com.np|music.yandex.fi|music.yandex.lv|music.yandex.sk|music.yandex.lt|music.yandex.cloud|music.yandex.gov.bd|music.yandex.website|music.yandex.pt|music.yandex.blog|music.yandex.mobi|music.yandex.ee|music.yandex.uk|music.yandex.kg|music.yandex.ba|music.yandex.al|music.yandex.fm|music.yandex.gov.np|music.yandex.org.in|music.yandex.work
+||strm.yandex.*/get/$media,domain=vh.yandex.com|vh.yandex.ru|vh.yandex.net|vh.yandex.org|vh.yandex.in|vh.yandex.com.tr|vh.yandex.co.uk|vh.yandex.io|vh.yandex.co|vh.yandex.ca|vh.yandex.com.ua|vh.yandex.de|vh.yandex.fr|vh.yandex.me|vh.yandex.by|vh.yandex.jp|vh.yandex.xyz|vh.yandex.ua|vh.yandex.com.tw|vh.yandex.co.za|vh.yandex.co.il|vh.yandex.eu|vh.yandex.it|vh.yandex.es|vh.yandex.ch|vh.yandex.kz|vh.yandex.nl|vh.yandex.pro|vh.yandex.us|vh.yandex.pl|vh.yandex.cl|vh.yandex.ro|vh.yandex.su|vh.yandex.site|vh.yandex.cc|vh.yandex.rs|vh.yandex.cn|vh.yandex.ae|vh.yandex.mx|vh.yandex.top|vh.yandex.gov|vh.yandex.ac.id|vh.yandex.be|vh.yandex.dk|vh.yandex.hu|vh.yandex.az|vh.yandex.uz|vh.yandex.md|vh.yandex.ge|vh.yandex.no|vh.yandex.com.bd|vh.yandex.ie|vh.yandex.asia|vh.yandex.at|vh.yandex.com.np|vh.yandex.fi|vh.yandex.lv|vh.yandex.sk|vh.yandex.lt|vh.yandex.cloud|vh.yandex.gov.bd|vh.yandex.website|vh.yandex.pt|vh.yandex.blog|vh.yandex.mobi|vh.yandex.ee|vh.yandex.uk|vh.yandex.kg|vh.yandex.ba|vh.yandex.al|vh.yandex.fm|vh.yandex.gov.np|vh.yandex.org.in|vh.yandex.work
+||strm.yandex.*/get/$script,xmlhttprequest,other,redirect=noopvast-3.0,domain=yastatic.net|kinopoisk.ru|frontend.vh.yandex.com|frontend.vh.yandex.ru|frontend.vh.yandex.net|frontend.vh.yandex.org|frontend.vh.yandex.in|frontend.vh.yandex.com.tr|frontend.vh.yandex.co.uk|frontend.vh.yandex.io|frontend.vh.yandex.co|frontend.vh.yandex.ca|frontend.vh.yandex.com.ua|frontend.vh.yandex.de|frontend.vh.yandex.fr|frontend.vh.yandex.me|frontend.vh.yandex.by|frontend.vh.yandex.jp|frontend.vh.yandex.xyz|frontend.vh.yandex.ua|frontend.vh.yandex.com.tw|frontend.vh.yandex.co.za|frontend.vh.yandex.co.il|frontend.vh.yandex.eu|frontend.vh.yandex.it|frontend.vh.yandex.es|frontend.vh.yandex.ch|frontend.vh.yandex.kz|frontend.vh.yandex.nl|frontend.vh.yandex.pro|frontend.vh.yandex.us|frontend.vh.yandex.pl|frontend.vh.yandex.cl|frontend.vh.yandex.ro|frontend.vh.yandex.su|frontend.vh.yandex.site|frontend.vh.yandex.cc|frontend.vh.yandex.rs|frontend.vh.yandex.cn|frontend.vh.yandex.ae|frontend.vh.yandex.mx|frontend.vh.yandex.top|frontend.vh.yandex.gov|frontend.vh.yandex.ac.id|frontend.vh.yandex.be|frontend.vh.yandex.dk|frontend.vh.yandex.hu|frontend.vh.yandex.az|frontend.vh.yandex.uz|frontend.vh.yandex.md|frontend.vh.yandex.ge|frontend.vh.yandex.no|frontend.vh.yandex.com.bd|frontend.vh.yandex.ie|frontend.vh.yandex.asia|frontend.vh.yandex.at|frontend.vh.yandex.com.np|frontend.vh.yandex.fi|frontend.vh.yandex.lv|frontend.vh.yandex.sk|frontend.vh.yandex.lt|frontend.vh.yandex.cloud|frontend.vh.yandex.gov.bd|frontend.vh.yandex.website|frontend.vh.yandex.pt|frontend.vh.yandex.blog|frontend.vh.yandex.mobi|frontend.vh.yandex.ee|frontend.vh.yandex.uk|frontend.vh.yandex.kg|frontend.vh.yandex.ba|frontend.vh.yandex.al|frontend.vh.yandex.fm|frontend.vh.yandex.gov.np|frontend.vh.yandex.org.in|frontend.vh.yandex.work
 ! Audio ad + popup
-||storage.mds.yandex.net/get-music/*/ad-exp/$media,domain=music.yandex.*
-/public/prerolls/*.mp3$domain=music.yandex.*
-music.yandex.*##.audio-advert__block
+||storage.mds.yandex.net/get-music/*/ad-exp/$media,domain=music.yandex.com|music.yandex.ru|music.yandex.net|music.yandex.org|music.yandex.in|music.yandex.com.tr|music.yandex.co.uk|music.yandex.io|music.yandex.co|music.yandex.ca|music.yandex.com.ua|music.yandex.de|music.yandex.fr|music.yandex.me|music.yandex.by|music.yandex.jp|music.yandex.xyz|music.yandex.ua|music.yandex.com.tw|music.yandex.co.za|music.yandex.co.il|music.yandex.eu|music.yandex.it|music.yandex.es|music.yandex.ch|music.yandex.kz|music.yandex.nl|music.yandex.pro|music.yandex.us|music.yandex.pl|music.yandex.cl|music.yandex.ro|music.yandex.su|music.yandex.site|music.yandex.cc|music.yandex.rs|music.yandex.cn|music.yandex.ae|music.yandex.mx|music.yandex.top|music.yandex.gov|music.yandex.ac.id|music.yandex.be|music.yandex.dk|music.yandex.hu|music.yandex.az|music.yandex.uz|music.yandex.md|music.yandex.ge|music.yandex.no|music.yandex.com.bd|music.yandex.ie|music.yandex.asia|music.yandex.at|music.yandex.com.np|music.yandex.fi|music.yandex.lv|music.yandex.sk|music.yandex.lt|music.yandex.cloud|music.yandex.gov.bd|music.yandex.website|music.yandex.pt|music.yandex.blog|music.yandex.mobi|music.yandex.ee|music.yandex.uk|music.yandex.kg|music.yandex.ba|music.yandex.al|music.yandex.fm|music.yandex.gov.np|music.yandex.org.in|music.yandex.work
+/public/prerolls/*.mp3$domain=music.yandex.com|music.yandex.ru|music.yandex.net|music.yandex.org|music.yandex.in|music.yandex.com.tr|music.yandex.co.uk|music.yandex.io|music.yandex.co|music.yandex.ca|music.yandex.com.ua|music.yandex.de|music.yandex.fr|music.yandex.me|music.yandex.by|music.yandex.jp|music.yandex.xyz|music.yandex.ua|music.yandex.com.tw|music.yandex.co.za|music.yandex.co.il|music.yandex.eu|music.yandex.it|music.yandex.es|music.yandex.ch|music.yandex.kz|music.yandex.nl|music.yandex.pro|music.yandex.us|music.yandex.pl|music.yandex.cl|music.yandex.ro|music.yandex.su|music.yandex.site|music.yandex.cc|music.yandex.rs|music.yandex.cn|music.yandex.ae|music.yandex.mx|music.yandex.top|music.yandex.gov|music.yandex.ac.id|music.yandex.be|music.yandex.dk|music.yandex.hu|music.yandex.az|music.yandex.uz|music.yandex.md|music.yandex.ge|music.yandex.no|music.yandex.com.bd|music.yandex.ie|music.yandex.asia|music.yandex.at|music.yandex.com.np|music.yandex.fi|music.yandex.lv|music.yandex.sk|music.yandex.lt|music.yandex.cloud|music.yandex.gov.bd|music.yandex.website|music.yandex.pt|music.yandex.blog|music.yandex.mobi|music.yandex.ee|music.yandex.uk|music.yandex.kg|music.yandex.ba|music.yandex.al|music.yandex.fm|music.yandex.gov.np|music.yandex.org.in|music.yandex.work
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##.audio-advert__block
 music.yandex.*#%#//scriptlet('abort-on-property-read', 'Object.prototype.videoAdvertPopup')
-music.yandex.*##div[class^="d-overhead"]
-music.yandex.*##.audio-advert__block
-music.yandex.*##.sidebar__placeholder .teaser ~ div
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##div[class^="d-overhead"]
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##.audio-advert__block
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##.sidebar__placeholder .teaser ~ div
 !
 ! Yandex.Disk
-disk.yandex.*##.direct
+disk.yandex.com,disk.yandex.ru,disk.yandex.net,disk.yandex.org,disk.yandex.in,disk.yandex.com.tr,disk.yandex.co.uk,disk.yandex.io,disk.yandex.co,disk.yandex.ca,disk.yandex.com.ua,disk.yandex.de,disk.yandex.fr,disk.yandex.me,disk.yandex.by,disk.yandex.jp,disk.yandex.xyz,disk.yandex.ua,disk.yandex.com.tw,disk.yandex.co.za,disk.yandex.co.il,disk.yandex.eu,disk.yandex.it,disk.yandex.es,disk.yandex.ch,disk.yandex.kz,disk.yandex.nl,disk.yandex.pro,disk.yandex.us,disk.yandex.pl,disk.yandex.cl,disk.yandex.ro,disk.yandex.su,disk.yandex.site,disk.yandex.cc,disk.yandex.rs,disk.yandex.cn,disk.yandex.ae,disk.yandex.mx,disk.yandex.top,disk.yandex.gov,disk.yandex.ac.id,disk.yandex.be,disk.yandex.dk,disk.yandex.hu,disk.yandex.az,disk.yandex.uz,disk.yandex.md,disk.yandex.ge,disk.yandex.no,disk.yandex.com.bd,disk.yandex.ie,disk.yandex.asia,disk.yandex.at,disk.yandex.com.np,disk.yandex.fi,disk.yandex.lv,disk.yandex.sk,disk.yandex.lt,disk.yandex.cloud,disk.yandex.gov.bd,disk.yandex.website,disk.yandex.pt,disk.yandex.blog,disk.yandex.mobi,disk.yandex.ee,disk.yandex.uk,disk.yandex.kg,disk.yandex.ba,disk.yandex.al,disk.yandex.fm,disk.yandex.gov.np,disk.yandex.org.in,disk.yandex.work##.direct
 ||docviewer.yandex.*/sw.js
 !
 ! Yandex.Docs
 docviewer.yandex.*#%#//scriptlet('json-prune', 'seatbid rtbAuctionInfo')
-docviewer.yandex.*##.js-doc-html > div[class^="pages_"] > div[class*=" "]:empty
-docviewer.yandex.*##div[class^="pages_"] > div > div[style="width: 100%;"]
+docviewer.yandex.com,docviewer.yandex.ru,docviewer.yandex.net,docviewer.yandex.org,docviewer.yandex.in,docviewer.yandex.com.tr,docviewer.yandex.co.uk,docviewer.yandex.io,docviewer.yandex.co,docviewer.yandex.ca,docviewer.yandex.com.ua,docviewer.yandex.de,docviewer.yandex.fr,docviewer.yandex.me,docviewer.yandex.by,docviewer.yandex.jp,docviewer.yandex.xyz,docviewer.yandex.ua,docviewer.yandex.com.tw,docviewer.yandex.co.za,docviewer.yandex.co.il,docviewer.yandex.eu,docviewer.yandex.it,docviewer.yandex.es,docviewer.yandex.ch,docviewer.yandex.kz,docviewer.yandex.nl,docviewer.yandex.pro,docviewer.yandex.us,docviewer.yandex.pl,docviewer.yandex.cl,docviewer.yandex.ro,docviewer.yandex.su,docviewer.yandex.site,docviewer.yandex.cc,docviewer.yandex.rs,docviewer.yandex.cn,docviewer.yandex.ae,docviewer.yandex.mx,docviewer.yandex.top,docviewer.yandex.gov,docviewer.yandex.ac.id,docviewer.yandex.be,docviewer.yandex.dk,docviewer.yandex.hu,docviewer.yandex.az,docviewer.yandex.uz,docviewer.yandex.md,docviewer.yandex.ge,docviewer.yandex.no,docviewer.yandex.com.bd,docviewer.yandex.ie,docviewer.yandex.asia,docviewer.yandex.at,docviewer.yandex.com.np,docviewer.yandex.fi,docviewer.yandex.lv,docviewer.yandex.sk,docviewer.yandex.lt,docviewer.yandex.cloud,docviewer.yandex.gov.bd,docviewer.yandex.website,docviewer.yandex.pt,docviewer.yandex.blog,docviewer.yandex.mobi,docviewer.yandex.ee,docviewer.yandex.uk,docviewer.yandex.kg,docviewer.yandex.ba,docviewer.yandex.al,docviewer.yandex.fm,docviewer.yandex.gov.np,docviewer.yandex.org.in,docviewer.yandex.work##.js-doc-html > div[class^="pages_"] > div[class*=" "]:empty
+docviewer.yandex.com,docviewer.yandex.ru,docviewer.yandex.net,docviewer.yandex.org,docviewer.yandex.in,docviewer.yandex.com.tr,docviewer.yandex.co.uk,docviewer.yandex.io,docviewer.yandex.co,docviewer.yandex.ca,docviewer.yandex.com.ua,docviewer.yandex.de,docviewer.yandex.fr,docviewer.yandex.me,docviewer.yandex.by,docviewer.yandex.jp,docviewer.yandex.xyz,docviewer.yandex.ua,docviewer.yandex.com.tw,docviewer.yandex.co.za,docviewer.yandex.co.il,docviewer.yandex.eu,docviewer.yandex.it,docviewer.yandex.es,docviewer.yandex.ch,docviewer.yandex.kz,docviewer.yandex.nl,docviewer.yandex.pro,docviewer.yandex.us,docviewer.yandex.pl,docviewer.yandex.cl,docviewer.yandex.ro,docviewer.yandex.su,docviewer.yandex.site,docviewer.yandex.cc,docviewer.yandex.rs,docviewer.yandex.cn,docviewer.yandex.ae,docviewer.yandex.mx,docviewer.yandex.top,docviewer.yandex.gov,docviewer.yandex.ac.id,docviewer.yandex.be,docviewer.yandex.dk,docviewer.yandex.hu,docviewer.yandex.az,docviewer.yandex.uz,docviewer.yandex.md,docviewer.yandex.ge,docviewer.yandex.no,docviewer.yandex.com.bd,docviewer.yandex.ie,docviewer.yandex.asia,docviewer.yandex.at,docviewer.yandex.com.np,docviewer.yandex.fi,docviewer.yandex.lv,docviewer.yandex.sk,docviewer.yandex.lt,docviewer.yandex.cloud,docviewer.yandex.gov.bd,docviewer.yandex.website,docviewer.yandex.pt,docviewer.yandex.blog,docviewer.yandex.mobi,docviewer.yandex.ee,docviewer.yandex.uk,docviewer.yandex.kg,docviewer.yandex.ba,docviewer.yandex.al,docviewer.yandex.fm,docviewer.yandex.gov.np,docviewer.yandex.org.in,docviewer.yandex.work##div[class^="pages_"] > div > div[style="width: 100%;"]
 !
 ! Yandex.Mail
-mail.yandex.*##.ComposeDoneScreen-Ads
+mail.yandex.com,mail.yandex.ru,mail.yandex.net,mail.yandex.org,mail.yandex.in,mail.yandex.com.tr,mail.yandex.co.uk,mail.yandex.io,mail.yandex.co,mail.yandex.ca,mail.yandex.com.ua,mail.yandex.de,mail.yandex.fr,mail.yandex.me,mail.yandex.by,mail.yandex.jp,mail.yandex.xyz,mail.yandex.ua,mail.yandex.com.tw,mail.yandex.co.za,mail.yandex.co.il,mail.yandex.eu,mail.yandex.it,mail.yandex.es,mail.yandex.ch,mail.yandex.kz,mail.yandex.nl,mail.yandex.pro,mail.yandex.us,mail.yandex.pl,mail.yandex.cl,mail.yandex.ro,mail.yandex.su,mail.yandex.site,mail.yandex.cc,mail.yandex.rs,mail.yandex.cn,mail.yandex.ae,mail.yandex.mx,mail.yandex.top,mail.yandex.gov,mail.yandex.ac.id,mail.yandex.be,mail.yandex.dk,mail.yandex.hu,mail.yandex.az,mail.yandex.uz,mail.yandex.md,mail.yandex.ge,mail.yandex.no,mail.yandex.com.bd,mail.yandex.ie,mail.yandex.asia,mail.yandex.at,mail.yandex.com.np,mail.yandex.fi,mail.yandex.lv,mail.yandex.sk,mail.yandex.lt,mail.yandex.cloud,mail.yandex.gov.bd,mail.yandex.website,mail.yandex.pt,mail.yandex.blog,mail.yandex.mobi,mail.yandex.ee,mail.yandex.uk,mail.yandex.kg,mail.yandex.ba,mail.yandex.al,mail.yandex.fm,mail.yandex.gov.np,mail.yandex.org.in,mail.yandex.work##.ComposeDoneScreen-Ads
 !
 ! Yandex.Raspisanie
-rasp.yandex.*##.Direct
+rasp.yandex.com,rasp.yandex.ru,rasp.yandex.net,rasp.yandex.org,rasp.yandex.in,rasp.yandex.com.tr,rasp.yandex.co.uk,rasp.yandex.io,rasp.yandex.co,rasp.yandex.ca,rasp.yandex.com.ua,rasp.yandex.de,rasp.yandex.fr,rasp.yandex.me,rasp.yandex.by,rasp.yandex.jp,rasp.yandex.xyz,rasp.yandex.ua,rasp.yandex.com.tw,rasp.yandex.co.za,rasp.yandex.co.il,rasp.yandex.eu,rasp.yandex.it,rasp.yandex.es,rasp.yandex.ch,rasp.yandex.kz,rasp.yandex.nl,rasp.yandex.pro,rasp.yandex.us,rasp.yandex.pl,rasp.yandex.cl,rasp.yandex.ro,rasp.yandex.su,rasp.yandex.site,rasp.yandex.cc,rasp.yandex.rs,rasp.yandex.cn,rasp.yandex.ae,rasp.yandex.mx,rasp.yandex.top,rasp.yandex.gov,rasp.yandex.ac.id,rasp.yandex.be,rasp.yandex.dk,rasp.yandex.hu,rasp.yandex.az,rasp.yandex.uz,rasp.yandex.md,rasp.yandex.ge,rasp.yandex.no,rasp.yandex.com.bd,rasp.yandex.ie,rasp.yandex.asia,rasp.yandex.at,rasp.yandex.com.np,rasp.yandex.fi,rasp.yandex.lv,rasp.yandex.sk,rasp.yandex.lt,rasp.yandex.cloud,rasp.yandex.gov.bd,rasp.yandex.website,rasp.yandex.pt,rasp.yandex.blog,rasp.yandex.mobi,rasp.yandex.ee,rasp.yandex.uk,rasp.yandex.kg,rasp.yandex.ba,rasp.yandex.al,rasp.yandex.fm,rasp.yandex.gov.np,rasp.yandex.org.in,rasp.yandex.work##.Direct
 rasp.yandex.ru##.ThreadLayout__topDirect
 !
 ! Yandex.TV
 ! the rule also relates to Afisha, Realty, Video
 !
 ! Yandex.Realty
-realty.ya.*##div[class*="PostBlocks__ad"]
+realty.ya.com,realty.ya.ru,realty.ya.net,realty.ya.org,realty.ya.co,realty.ya.ca,realty.ya.de,realty.ya.me,realty.ya.ua,realty.ya.eu,realty.ya.tv,realty.ya.com.br,realty.ya.kz,realty.ya.com.vn,realty.ya.nl,realty.ya.pl,realty.ya.ro,realty.ya.ma,realty.ya.cc,realty.ya.cn,realty.ya.se,realty.ya.cz,realty.ya.be,realty.ya.org.ua,realty.ya.dk,realty.ya.am,realty.ya.md,realty.ya.sg,realty.ya.org.uk,realty.ya.my,realty.ya.no,realty.ya.com.bd,realty.ya.to,realty.ya.mk,realty.ya.ie,realty.ya.at,realty.ya.com.np,realty.ya.fi,realty.ya.lv,realty.ya.lt,realty.ya.tn,realty.ya.gov.bd,realty.ya.sa,realty.ya.ee,realty.ya.fm,realty.ya.guru,realty.ya.is,realty.ya.gov.np,realty.ya.si,realty.ya.ga##div[class*="PostBlocks__ad"]
 realty.ya.ru##.OffersSerpPromoItem
 !
 ! Yandex.Travel
 !
 ! Turbopages
 turbopages.org,yandex.*#?#.unit_rect[data-log-node]:has(> div[class*="_type_partner "])
-turbopages.org,yandex.*##.unit_rect[data-log-node] > div[class*="_type_partner "]
-yandex.*##.advert
+turbopages.org,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.unit_rect[data-log-node] > div[class*="_type_partner "]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.advert
 yandex.*#$?#.advert { remove: true; }
 ! Yandex.Turbo (https://yandex.ru/turbo/***)
-yandex.*##body[data-bem*="turbo"] div[class*="_type_"][class*="aside-"][data-name][data-log-node]
-yandex.*##body[data-bem*="turbo"] div[class*="auto"][data-name][data-log-node]
-yandex.*##body[data-bem*="turbo"] div.turbo-advert
-yandex.*##body[data-bem*="turbo"] div[data-name="advert"]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##body[data-bem*="turbo"] div[class*="_type_"][class*="aside-"][data-name][data-log-node]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##body[data-bem*="turbo"] div[class*="auto"][data-name][data-log-node]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##body[data-bem*="turbo"] div.turbo-advert
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##body[data-bem*="turbo"] div[data-name="advert"]
 !
 ! Yandex.Games
-yandex.*##div[class*="-R-A-"]
-yandex.*##.stack > div[class^="sticky-"]
-[$path=/games]yandex.*##div[style="width: 240px; margin-top: -32px; height: 100vh;"]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##div[class*="-R-A-"]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.stack > div[class^="sticky-"]
+[$path=/games]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##div[style="width: 240px; margin-top: -32px; height: 100vh;"]
 [$path=/games]yandex.*#%#//scriptlet('trusted-click-element', '.play-app div.promo-popup__close')
 [$path=/games]yandex.*#?#.play-app div.promo
 !
@@ -5701,12 +5707,12 @@ yandex.*##.stack > div[class^="sticky-"]
 [$path=/sport]yandex.*#?#.mg-grid__row > div.mg-grid__col:has(> div.neo-advert)
 !
 ! Yandex.Q
-[$path=/q]yandex.*##header ~ div#page > div[class]:not([id]) > div[class*=" "]:first-child + div[class*=" "] + div[class*=" "] > div[class] > div[style^="will-change:"] > div:not([class]) > div[class]:last-child
+[$path=/q]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##header ~ div#page > div[class]:not([id]) > div[class*=" "]:first-child + div[class*=" "] + div[class*=" "] > div[class] > div[style^="will-change:"] > div:not([class]) > div[class]:last-child
 [$path=/q]yandex.*#$?#body.page_qArticleRoute header ~ div#page > div[class]:not([id]) > div[class*=" "]:first-child + div[class*=" "] > section[class*=" "] > div[class] + div + div > span ~ div:not(:has(> div[class] button[data-role="button"] > svg)) { height: 0 !important; }
 [$path=/q]yandex.*#$?#body.page_qQuestionRoute header ~ div#page > div[class]:not([id]) > div[class*=" "]:first-child + div[class*=" "] > section[class*=" "] > div[class] + div + div > div[class] > span ~ div:not(:has(> div[class] button[data-role="button"] > svg)) { height: 0 !important; }
 !
 ! Yandex.Internet
-yandex.*##.layout__banner
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.layout__banner
 yandex.*#?#div[class^="layout__top"] > div[class^="layout_"]:has(> div[style] > div[id^="R-I-"])
 !
 ! Yandex Browser start page
@@ -5867,9 +5873,6 @@ sdamgia.ru#%#//scriptlet('abort-on-property-read', 'new_rotator_changed')
 softslot.com,torrent-soft.pro#%#//scriptlet('set-cookie', 'sm-view', '1')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/148496
 viks.tv#%#//scriptlet('prevent-window-open')
-! https://github.com/AdguardTeam/AdguardFilters/issues/141785
-!+ NOT_PLATFORM(windows, mac, android)
-e.mail.ru,octavius.mail.ru#%#//scriptlet('trusted-replace-xhr-response', '/\[{"json":{"result":{"status":200\,"body":{"direct".+/', '/\[{"json":{"result":{"status":200\,"body":{"direct":{}}}}}\]/', '/api/v1')
 ! https://forum.adguard.com/index.php?threads/51458/
 ip.tivix.co#%#//scriptlet('prevent-window-open')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/140602
@@ -5956,8 +5959,6 @@ scrin.org#%#//scriptlet("abort-on-property-read", "windowprops")
 scrin.org#%#//scriptlet('remove-attr', 'onclick', '#view-full-image > a[target="_blank"][onclick]')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/65645
 4rl.ru#%#//scriptlet("prevent-window-open")
-! https://github.com/AdguardTeam/AdguardFilters/issues/65168
-e.mail.ru#%#//scriptlet('remove-class', 'b-viewer_advert-line')
 ! playground.ru - clickunder
 playground.ru#%#//scriptlet('remove-attr', 'data-settings', 'body[id="userNotAuthorized"]')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64994
@@ -7142,8 +7143,6 @@ gameguru.ru#$#body { padding-top: 0!important; background: none!important; }
 game2day.org#$#body > div.container { margin-top: 150px !important; }
 ! kinotochka.net - удаление отступа сверху
 kinotochka.net#$#.center-box2 { margin-top: 0!important; }
-! fanserials.tv - удаление отступа сверху
-fanserials.tv#$#.serial-page { margin: 0!important; }
 ! csgo-v.ru - удаление брендированного фона, отступа сверху
 csgo-v.ru#$##wrapper > nav[class="nav-container group"][id="nav-header"]{ margin-top: 0!important; }
 csgo-v.ru#$#body{ background: #0a0a0a!important; }
@@ -7469,13 +7468,13 @@ theblueprint.ru,hellomagrussia.ru,unian.ua,uaportal.com,nebogach.ru,text.ru,tvra
 ! ##.advert
 ufacitynews.ru,sevastopol.su,zn.ua,pravo.ru,lubertsyriamo.ru,kommersant.ru,dvnovosti.ru,kubnews.ru,turbopages.org,chernozem.info,flashgames.ru,footballreview.ru,inforesist.org,msgforum.ru,newsland.com,province.ru,tenews.org.ua,tltorrent.ru,zab.ru##.advert
 ! ##div[id^="unit_"]
-ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,sobesednik.com,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
+ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,sobesednik.com,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.com,baltnews.eu,baltnews.com.bd,baltnews.com.np,baltnews.lt,baltnews.gov.bd,baltnews.ee,baltnews.gov.np,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
 ! ##div[id^="adfox_"]
 mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,gorodche.ru,smartpress.by,raenza.ru,eadaily.com,zakon.kz,svpressa.ru,udf.name,udf.by,baby.ru,pikabu.ru,thequestion.ru##div[id^="adfox_"]
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=rsload.net|pornosuk.com|ebalovo.pro|yarnews.net|pornohype.mobi|pornomoll.net|4ertik.mobi|mobila.guru|manesu.com|sovetov.su|krot.info|sad24.ru|web-shpargalka.ru|pornona.me|crast.ru|sobytiya.net|bazliter.ru|maximp3.ru|carlasart.ru|dv-gazeta.info|tiviha.ru|great-tv.tv|ovgorskiy.ru|next.2yxa.mobi|xxxlatinki.com|rybkies.ru|doctorhouse.tv|ruspornvideos.net|agronomu.com|gorodarmavir.ru|kormushka-burg.ru|ua.news|uniondht.org|hdxclub.tv|inspectrum.su|zavtra.ru|newsyou.info|infohome.com.ua|tdnu.ru|ruspolitnews.ru|4rl.ru|tolknews.ru|tvvse.my1.ru|lifedon.com.ua|pornogolod.net|seksvideo.tv|volkovysk.by|pro100tv.my1.ru|bestweapon.ru|pronpic.org|mosgorsait.ru|apnews.com.ua|tipsforyou.ru|peoples.ru|nudecelebs.pro|vchaspik.ua|sekreta.net|chelny-izvest.ru|newsbel.by|theageoffootball.com|iptvmaster.ru|kztarif.ru|4systems.ru|rus24.tv|homesantehnica.ru|xpmuxznuxcuxcxyczczxcxb.lupka.ru|kinovideo.tv|torren.eu|kriminal.net.ua|obmenvsem.org|ero-top.info|vazhno.ru|stars-top.ru|srrb.ru|sosalkino.art|imag.one|socportal.info|vashynogi.com|ria-m.tv|porno-chiks.org|kontrakty.ua|glavpost.ua|sex-studentki.pro|poleznii-site.ru|slavinfo.dn.ua|saucyintruder.org|pravoslavy.ru|kinovilka.ru|trans.firm.in|coronavirus-monitor.ru|zbirna.com|showdream.org|actual.today|real-vin.com|tksilver.ru|z-torrents.ru|hd01.ru|my-calend.ru|parnuha.video|nbnews.com.ua|nocopyright.ru|e-news.su|mister-robot.online|blackpantera.ru|waysi.ru|freehat.cc|kuhniclub.ru|mirvdochnovenia.ru|altyn-orda.kz|voyeyrist.com|mashmaster.ru|medsovukrpro.ru|ringtondom.ru|math-prosto.ru|ebalovo.porn|vteple.xyz|sharij.net|headphone-review.ru|kraj.by|7ogorod.ru|nashbryansk.ru|porno-island.*|xn--80axn1a.xn--p1ai|greensotka.ru|rivnepost.rv.ua|xn--29-6kcd5bg.xn--p1ai|programmy-dlya-android.ru|relasko.ru|molitvy.guru|selomoe.ru|slavasozidatelyam.ru|livekavkaz.ru|100popugaev.ru|huaweidevices.ru|recepti24.ru|moser-zoo.ru|cherepah.ru|proautomarki.ru|cheb-live.ru|zrelki.top|sdelairukami.ru|gtorra.pw|hostboard.ru|politnavigator.net|torlook.info|cooksy.ru|dewka.com|pornoakt.video|picklik.ru|2recepta.com|torrent-stop.org|xcelebs.ru|new-rutor.org|porno90.online|porno90.top|felomena.com|niceporn.space|tunnel.ru|vsedoramy.*|chelseablues.ru|kaluga-poisk.ru|kinozal.*|webspoon.ru|internet-olimpiada.ru|nickgen.ru|hd9.hdgo.site|gastrot.ru|yadelus.ru|tizam.pw|eropron.com|youxxx.cc|xn----8sbabr6ahc3e.xn--p1ai|pornonarik.net|fastpic.org
+/^(?!.*(authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=rsload.net|pornosuk.com|ebalovo.pro|yarnews.net|pornohype.mobi|pornomoll.net|4ertik.mobi|mobila.guru|manesu.com|sovetov.su|krot.info|sad24.ru|web-shpargalka.ru|pornona.me|crast.ru|sobytiya.net|bazliter.ru|maximp3.ru|carlasart.ru|dv-gazeta.info|tiviha.ru|great-tv.tv|ovgorskiy.ru|next.2yxa.mobi|xxxlatinki.com|rybkies.ru|doctorhouse.tv|ruspornvideos.net|agronomu.com|gorodarmavir.ru|kormushka-burg.ru|ua.news|uniondht.org|hdxclub.tv|inspectrum.su|zavtra.ru|newsyou.info|infohome.com.ua|tdnu.ru|ruspolitnews.ru|4rl.ru|tolknews.ru|tvvse.my1.ru|lifedon.com.ua|pornogolod.net|seksvideo.tv|volkovysk.by|pro100tv.my1.ru|bestweapon.ru|pronpic.org|mosgorsait.ru|apnews.com.ua|tipsforyou.ru|peoples.ru|nudecelebs.pro|vchaspik.ua|sekreta.net|chelny-izvest.ru|newsbel.by|theageoffootball.com|iptvmaster.ru|kztarif.ru|4systems.ru|rus24.tv|homesantehnica.ru|xpmuxznuxcuxcxyczczxcxb.lupka.ru|kinovideo.tv|torren.eu|kriminal.net.ua|obmenvsem.org|ero-top.info|vazhno.ru|stars-top.ru|srrb.ru|sosalkino.art|imag.one|socportal.info|vashynogi.com|ria-m.tv|porno-chiks.org|kontrakty.ua|glavpost.ua|sex-studentki.pro|poleznii-site.ru|slavinfo.dn.ua|saucyintruder.org|pravoslavy.ru|kinovilka.ru|trans.firm.in|coronavirus-monitor.ru|zbirna.com|showdream.org|actual.today|real-vin.com|tksilver.ru|z-torrents.ru|hd01.ru|my-calend.ru|parnuha.video|nbnews.com.ua|nocopyright.ru|e-news.su|mister-robot.online|blackpantera.ru|waysi.ru|freehat.cc|kuhniclub.ru|mirvdochnovenia.ru|altyn-orda.kz|voyeyrist.com|mashmaster.ru|medsovukrpro.ru|ringtondom.ru|math-prosto.ru|ebalovo.porn|vteple.xyz|sharij.net|headphone-review.ru|kraj.by|7ogorod.ru|nashbryansk.ru|porno-island.org|porno-island.site|porno-island.com.bd|porno-island.com.np|porno-island.gov.bd|porno-island.gov.np|xn--80axn1a.xn--p1ai|greensotka.ru|rivnepost.rv.ua|xn--29-6kcd5bg.xn--p1ai|programmy-dlya-android.ru|relasko.ru|molitvy.guru|selomoe.ru|slavasozidatelyam.ru|livekavkaz.ru|100popugaev.ru|huaweidevices.ru|recepti24.ru|moser-zoo.ru|cherepah.ru|proautomarki.ru|cheb-live.ru|zrelki.top|sdelairukami.ru|gtorra.pw|hostboard.ru|politnavigator.net|torlook.info|cooksy.ru|dewka.com|pornoakt.video|picklik.ru|2recepta.com|torrent-stop.org|xcelebs.ru|new-rutor.org|porno90.online|porno90.top|felomena.com|niceporn.space|tunnel.ru|vsedoramy.com|vsedoramy.net|vsedoramy.top|vsedoramy.com.bd|vsedoramy.com.np|vsedoramy.gov.bd|vsedoramy.gov.np|chelseablues.ru|kaluga-poisk.ru|kinozal.com|kinozal.me|kinozal.online|kinozal.tv|kinozal.pro|kinozal.site|kinozal.cc|kinozal.top|kinozal.com.bd|kinozal.com.np|kinozal.lt|kinozal.gov.bd|kinozal.website|kinozal.mobi|kinozal.ws|kinozal.one|kinozal.win|kinozal.guru|kinozal.gov.np|kinozal.best|webspoon.ru|internet-olimpiada.ru|nickgen.ru|hd9.hdgo.site|gastrot.ru|yadelus.ru|tizam.pw|eropron.com|youxxx.cc|xn----8sbabr6ahc3e.xn--p1ai|pornonarik.net|fastpic.org|kinob.net
 ! !+ PLATFORM(ios, ext_safari, ext_android_cb)
 ! $third-party,script,domain=
 ! Similar to regexp above, but using the denyallow modifier
@@ -7488,6 +7487,7 @@ $script,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com|fastly.
 !
 !
 !
+meteopost.com##td[valign="top"] > div[align="center"]:has(> ins.adsbygoogle)
 goloskarpat.info##.gkad
 newsarmenia.am##.partner
 inkorr.com##.tg-box
@@ -7734,7 +7734,33 @@ ivanovonews.ru,gorodn.ru,bits.media,devyatka.ru,gazeta-n1.ru,gorod48.ru,hi-fi.ru
 !
 !
 !
-||redheadsound.studio/templates/rhs_main_player_test_prod/images/pacany.jpg
+||avatars.mds.yandex.net/get-adfox-content/$domain=abw.by
+abw.by##.ad-branding
+||effect.habr.com/a|
+softportal.com##.TblOBan
+||i38.ru/images/banners/$image
+||i38.ru/images/stories/vidget/$image
+rosbalt.ru##div[data-provider="adfox"]
+cq.ru#%#//scriptlet("set-constant", "initBanners", "noopFunc")
+vidak.icu,pb.wtf###page_contents > div > a[target="_blank"] > img
+vidak.icu,pb.wtf###main_content > div > a[target="_blank"] > img
+vidak.icu,pb.wtf##table > tbody[id^="post_"]:has(.post_pp > a[target="_blank"])
+regnum.ru#$#.page-column > div[class*="-adv-container"][style^="top:"] { top: auto !important; }
+regnum.ru##.articles-list-wrapper > div.news-wrapper.feed-item
+zelenograd.ru##noindex > div.row:has(> div.row__col > div.news-item > div[id^="adfox_"])
+zelenograd.ru##noindex > div.row:has(> div.row__col > div.news-item_theme_advertising)
+zelenograd.ru##.content__news > div.row:has(> div.row__col > div.news-item  noindex > div[id^="adfox_"])
+myfanserials.net##div[data-dlebid]
+cheb.ru##body .topbanpda
+||afisha21.ru/*/ban/*.$image
+zr.ru#$?#div[class^="styled__SuspendableElement-"]:has(> div[data-relap-id]) { remove: true; }
+zr.ru#$?#div[class^="styled__SuspendableElement-"]:has(> div[id^="unit_"]) { remove: true; }
+senkuro.com##div[id^="R-A-"]
+afisha.ru#?#div[data-test="PAGE-BLOCK"] > div > section:has(> div[data-test="SECTION-CONTENT"] > div > div:contains(Реклама))
+doramiru.org##.speedbar + div:has(> div[id^="adfox_"])
+lostfilm.tv##.lstfml > a[style^="display:block;width:100%;padding-top:"]
+/\/images\/(hod|pacany)\.jpg/$domain=redheadsound.studio
+redheadsound.studio##div[class^="dle_b_"]
 5koleso.ru##.right-col:has(> div[class*="banner-"])
 ru.savefrom.net#%#//scriptlet('prevent-window-open')
 ru.savefrom.net#%#//scriptlet('set-constant', 'clickAds.init', 'noopFunc')
@@ -7800,7 +7826,7 @@ lumpics.ru#?#article div[class^="block"]:has(> div[class^="flat_"])
 m-strana.ru##.blog_right_ad
 m-strana.ru##.sidebar-module:has(div[id^="adfox_"])
 m-strana.ru##.posts-grid > li:has(div[id^="adfox_"])
-kinokordon.*##.page__col-left > a[target="_blank"] > img
+kinokordon.com,kinokordon.pro,kinokordon.club,kinokordon.live,kinokordon.top,kinokordon.com.bd,kinokordon.com.np,kinokordon.vip,kinokordon.gov.bd,kinokordon.gov.np##.page__col-left > a[target="_blank"] > img
 football.by##.bookgDiv
 klerk.ru###__layout > div > div.flex:has(> div.promotion)
 blisch.by##.menu > li.menu-item > a[href*="utm_medium"]
@@ -7819,7 +7845,7 @@ anti-malware.ru##.region > section:has(> ins[data-revive-zoneid])
 anti-malware.ru##.region > section.block:has(> div[style] > div.img-apple > a[href^="https://garda.ai/"])
 vitbichi.by##a[href^="https://www.belinvestbank.by/"] > img
 vitbichi.by##a[href="https://www.kurodom.by"] > img
-flicksbar.*##.topAdPad
+flicksbar.info,flicksbar.pro,flicksbar.club,flicksbar.site,flicksbar.cc,flicksbar.com.bd,flicksbar.com.np,flicksbar.gov.bd,flicksbar.fun,flicksbar.gov.np##.topAdPad
 ||apitelesputnik.ru/storage/images/ads/
 media-polesye.com##.sidebar-mostread
 mat6tube.com##.container > div[style^="width:"]
@@ -7932,7 +7958,7 @@ sakhalife.ru,montecarlo.ru,esquire.ru,skisport.ru,zhitomir.info,sletat.ru##.bann
 sletat.ru###banners-before-news
 sletat.ru##.uis-popup_r2-banner
 ||s-cdn.sportbox.ru/i/wi-fi.ru/mtt_banners_libs_
-vsedoramy.*##.dc_container
+vsedoramy.com,vsedoramy.net,vsedoramy.top,vsedoramy.com.bd,vsedoramy.com.np,vsedoramy.gov.bd,vsedoramy.gov.np##.dc_container
 ||milfvideo.top/click_pr.js
 ||milfvideo.top/baner/
 ||progorod58.ru/userfiles/b/
@@ -8102,7 +8128,7 @@ myfreesoft.ru#?##singlepost > div.post:has(> [id^="id-C-A-"])
 tochka.by##.l-section > a[href="/articles/sport/"]
 tochka.by#?#.brand-header
 zrelki.link##.content-block__left-col > div.video + div[style^="margin-bottom: 20px;"]
-||frfetchme.com^$domain=flibusta.*
+||frfetchme.com^$domain=flibusta.com|flibusta.net|flibusta.org|flibusta.in|flibusta.io|flibusta.info|flibusta.me|flibusta.xyz|flibusta.biz|flibusta.app|flibusta.us|flibusta.club|flibusta.su|flibusta.site|flibusta.com.bd|flibusta.com.np|flibusta.space|flibusta.life|flibusta.gov.bd|flibusta.website|flibusta.one|flibusta.is|flibusta.gov.np
 chislennost.com###stickblock
 hi-tech.mail.ru##div[data-qa="Box"]
 russian-seriali.ru##.mixmob
@@ -8112,15 +8138,13 @@ shazoo.ru#?#.aside > div > b:contains(Партнерский стрим)
 audit-it.ru##.opadv
 stavka.tv##.Sidebar
 doramatv.live##div[class*=" "]:has(> noindex > script)
-vidak.icu,pb.wtf,piratbit.*##a[href^="https://gamesell.icu/"] > img
-vidak.icu,pb.wtf,piratbit.*#?##topocs_maine > tbody[id^="post_"]:has(> tr > td > div > div.post_pp > span > div[style] > a[href^="https://gamesell.icu/"])
 podolyaka.su#?##content > div[id]:has(> div[class] > div:contains(Реклама))
 podolyaka.su#$#.wrp { margin-top: 0 !important; }
 apad2.top##.post_wrap > center#rkn > center
 apad2.top##.post_wrap > center > a[href^="/go2.php"]
 youandme.chat###play-banner
 sharlib.com##.abs_row
-rulaws.ru##.adfox
+zelenograd.ru,rulaws.ru##.adfox
 kanobu.ru##aside[class^="AgGamesOnline_"]
 wday.ru#?#section > div[class^="article"]:has(div.product-set-block)
 wday.ru#?#section > div[class^="article"]:has(div[data-block-after="productSet"])
@@ -8135,7 +8159,6 @@ kino-teatr.ru#?#.content_block:has(> div.block_okkko)
 aptekirls.ru###top-b
 aptekirls.ru###top-banner-info
 ||aptekirls.ru/images/banners/$image
-pb.wtf###page_contents > div.active > a[href^="https://gamesell.icu/"][target="_blank"]
 cursorinfo.co.il##div[data-dest="placeholder"]
 ||cdn.botanichka.ru/pics/brand/
 /jquery.js|$domain=cc-fan.tv|cn-fan.tv|fox-fan.tv|nf-fan.tv
@@ -8209,8 +8232,6 @@ golos-naroda.kz##.xbet-top-btn
 rubrikator.org###a-bottom
 rubrikator.org##.panel__banner
 rubrikator.org##.panel__container.a-bg
-zr.ru#?#div[class^="styled__SuspendableElement-"]:has(> div[data-relap-id])
-zr.ru#?#div[class^="styled__SuspendableElement-"]:has(> div[id^="unit_"])
 cpa.rip##.eriuue-widget
 ||afftimes.com/wp-content/themes/*/brand_banners$image
 afftimes.com##div[data-banner_id]
@@ -8678,8 +8699,6 @@ uniondht.org#$?#html:has(> body) > body { padding: 0!important; }
 fclmnews.ru#$?#html:has(> body) > body > div.main { margin-top: 0!important; }
 ixbt.com#$?#body > div.b-content { margin-top: 0!important; }
 seasonvar.re#$?#html:has(> body) > body { padding-top: 0!important; }
-vidak.icu,pb.wtf,piratbit.*#?#.table > tbody[id^="post_"]:has(a[title*="всю рекламу"])
-vidak.icu,pb.wtf,piratbit.*#?##main_content .tLeft > div[style="text-align: left;"] > a[href*="x"][href*="i"][href*="t"][href*="="][target="_blank"]:upward(2)
 shostka.info#?##news-inside > div.ni-content:has(> div.MIXADVERT_NET)
 shostka.info#?#.media:has(> a[target="_blank"] > img)
 otzyvua.net#?##chart_banner > div[class]:has(> div.ch_banner)
@@ -9460,7 +9479,7 @@ tribuna.com##div[class^="Main_main-layout__empty-block__"]
 ~games.academic.ru,academic.ru##a[href="https://games.academic.ru"]
 kinonews.ru##div[style^="text-align:"][style$="height:305px;"]
 footballua.tv##.news-popular
-sslkn.*##.sticker_wrap
+sslkn.com,sslkn.ru,sslkn.net,sslkn.org,sslkn.me,sslkn.xyz,sslkn.online,sslkn.tv,sslkn.biz,sslkn.pro,sslkn.club,sslkn.site,sslkn.cc,sslkn.com.bd,sslkn.com.np,sslkn.space,sslkn.gov.bd,sslkn.mobi,sslkn.fun,sslkn.gov.np##.sticker_wrap
 ukrrudprom.com##div[id^="textads"]
 ||booblex.org/static/bnrs2/brand
 tattoo-mall.ru##.code-block-12
@@ -9825,7 +9844,6 @@ blitz.center##.smi24-wrap
 profile.ru##.alm-btn-wrap
 euronews.com##.u-margin-y-0.u-width-full
 kun.uz##.adv-btn
-vidak.icu,pb.wtf,piratbit.*###main_content > div[style="height: 35px;font-size: 16px; background: #F5F1E9; padding-top: 8px;"]
 newsru.co.il##.news-caption.links
 otkritkiok.ru##.adsPreloader
 ru.kinokordon.love##.d-nt-container
@@ -9930,7 +9948,7 @@ classicalmusicnews.ru###before-post
 lsgeotar.ru##.wrap-right-banners
 pozdravim.net##.sidebar > section.widget_text
 tvzvezda.ru##.banner_925x240
-blitz.*##div[data-ad-xofda]
+blitz.com,blitz.net,blitz.co.uk,blitz.io,blitz.com.ua,blitz.fr,blitz.it,blitz.com.br,blitz.es,blitz.ch,blitz.kz,blitz.nl,blitz.com.mx,blitz.ro,blitz.club,blitz.co.jp,blitz.ae,blitz.mx,blitz.pk,blitz.se,blitz.live,blitz.com.sg,blitz.be,blitz.org.ua,blitz.no,blitz.com.bd,blitz.com.np,blitz.life,blitz.gov.bd,blitz.pt,blitz.gg,blitz.hr,blitz.bg,blitz.ws,blitz.ee,blitz.uk,blitz.ba,blitz.gov.np,blitz.net.au##div[data-ad-xofda]
 givee.club##.definetelynotanad
 1000.menu##.as-ad-step
 apteka.103.by##div[class^="adfoxBanner"]
@@ -9949,7 +9967,7 @@ people.onliner.by##img[alt*="z.cdn.adpool.bet"]
 ||novayagazeta.ru/NativeRollScript.js
 daily.afisha.ru##.rambler-widget__wrapper
 afisha.ru##div[data-ad-fallback]
-blitz.*##.block-smi24-code-block
+blitz.com,blitz.net,blitz.co.uk,blitz.io,blitz.com.ua,blitz.fr,blitz.it,blitz.com.br,blitz.es,blitz.ch,blitz.kz,blitz.nl,blitz.com.mx,blitz.ro,blitz.club,blitz.co.jp,blitz.ae,blitz.mx,blitz.pk,blitz.se,blitz.live,blitz.com.sg,blitz.be,blitz.org.ua,blitz.no,blitz.com.bd,blitz.com.np,blitz.life,blitz.gov.bd,blitz.pt,blitz.gg,blitz.hr,blitz.bg,blitz.ws,blitz.ee,blitz.uk,blitz.ba,blitz.gov.np,blitz.net.au##.block-smi24-code-block
 ren.tv##body .adfox-wrapper
 android-kino-tv.ru###custom_html-24
 android-kino-tv.ru###custom_html-23
@@ -9969,7 +9987,7 @@ ucrazy.ru##div[style="background-color:#fff; padding: 10px"]
 kinoafisha.info##.aka39peb
 ||assets.ficbook.net/assets/dist/advertisement.*.js
 ||kupichic.ru/scotuny.js
-filmix.*##.page-buffer
+filmix.com,filmix.net,filmix.ir,filmix.io,filmix.co,filmix.com.ua,filmix.info,filmix.de,filmix.me,filmix.jp,filmix.eu,filmix.tv,filmix.com.br,filmix.es,filmix.ch,filmix.biz,filmix.nl,filmix.pro,filmix.us,filmix.pl,filmix.su,filmix.site,filmix.cc,filmix.cz,filmix.live,filmix.tw,filmix.top,filmix.store,filmix.news,filmix.tech,filmix.pw,filmix.com.bd,filmix.to,filmix.com.np,filmix.life,filmix.vip,filmix.cloud,filmix.gov.bd,filmix.website,filmix.fun,filmix.ws,filmix.one,filmix.today,filmix.net.ua,filmix.guru,filmix.world,filmix.gov.np,filmix.agency,filmix.sh##.page-buffer
 censor.net##.row > div.left-page-block + div.col-lg-auto
 punkt-a.info##.detail-news-page  > div:not([class]) > .line
 radiokp.ru##.kp-ad-place
@@ -10303,7 +10321,7 @@ comedy-radio.ru##.footer__banners
 cq.ru##.match-square-item__odd
 cq.ru##.match-square-item__book
 cq.ru##div[data-abdbc]
-ebalovo.*##.pad
+ebalovo.com,ebalovo.net,ebalovo.co,ebalovo.info,ebalovo.me,ebalovo.xyz,ebalovo.online,ebalovo.tv,ebalovo.pro,ebalovo.cc,ebalovo.com.bd,ebalovo.com.np,ebalovo.gov.bd,ebalovo.mobi,ebalovo.world,ebalovo.gov.np,ebalovo.best##.pad
 pogoda.by##div[class^="adss"]
 mysekret.ru##div[style^="margin:10px 0;"][style*="min-height:312px"]
 sb.by##a[href^="https://www.godedinstva.by/"] > img
@@ -10455,7 +10473,7 @@ tourister.ru##.sk1100_right_adv
 sport.ru##.article-content > hr
 sport.ru##.article-details > hr
 old-games.ru##li[data-author='Ads Master']
-/\/\/cq.ru\/\d{3}\w{1}\d{1}$/$domain=cq.ru
+/\/\/cq.ru\/\w{2}\d{2}\w{2}$/$domain=cq.ru
 ||storage.pravo.ru/file/banner/
 ||service.pravo.ru/pravo/banner/
 ||footboom.com/js/ab-ignore.js
@@ -11125,7 +11143,7 @@ allbasketball.org##div[class^="block-catfish"]
 ||allbasketball.org/templates/AB2014/images/catfish/
 ||allbasketball.org/templates/AB2014/front/js/block-catfish*.js
 allmmorpg.ru##a[href^="https://allmmorpg.ru/index"][target="_blank"]
-tgstat.com,tgstat.ru##.mg-aors
+tgstat.com,tgstat.ru##.slick-slider
 avito.ru##.avito-ads-placeholder
 avito.ru##.item-price-banner
 lostpix.com##.infotext
@@ -11538,10 +11556,10 @@ tvboryspil.com##div[class^="articles-list__item relative xl:h-160px lg:h-125px"]
 tv.pokaz.me,online.viks.tv###reclamanemoya
 brodude.ru##.single__banner
 ||nv-online.info/wp-content/uploads/*/darida_banner_desktop.png
-kinoafisha.info,onlinestreams.ru,gamemag.ru##a[href^="https://ads.adfox.ru/"]
+gastronom.ru,kinoafisha.info,onlinestreams.ru,gamemag.ru##a[href^="https://ads.adfox.ru/"]
 ||cdn.leon.ru/*/*banners/$image
 ||prostoporno.*/img/brand-
-porno-island.*,torrent-soft.net##a[href^="https://is.gd/"]
+porno-island.org,porno-island.site,porno-island.com.bd,porno-island.com.np,porno-island.gov.bd,porno-island.gov.np,torrent-soft.net##a[href^="https://is.gd/"]
 afanasy.biz##.partners-news__title
 /load_zahav.js$domain=zahav.ru
 fanat1k.ru##.advblock
@@ -12501,7 +12519,6 @@ yogatrain.ru###adsense_bottom
 lan23.ru,okolotok.ru###adsense_firstpost
 mirsexy.com###adstickers
 altwall.net,cheboksary.ru,cornery.ru,mods-inside.ru,opennet.ru,torrent-igruha.org###adv
-fanserials.tv###adv-block
 inbox.lv###adv-center
 v102.ru###adv-tizer
 pesni-tut.com###adv1
@@ -13586,7 +13603,6 @@ docs.cntd.ru,newslab.ru##.bottom-banner
 csgo-v.ru##.bottom-content-banner
 factroom.ru##.bottom-drct
 kartaslov.ru##.bottom-hero
-fanserials.tv##.bottom_serial_reklama
 wincore.ru##.box > div[style="background:#fff; padding:20px;"]
 bravopornru.com##.box-left
 driveroff.net##.box.main > div[style^="text-align: center; line-height: 100%;"]
@@ -13791,7 +13807,6 @@ kinozadrot.club##.film-item > div[align="center"] > div[style$="width: 510px;hei
 vesti.ru##.film-pro-wrapper
 rgmechanics.ru##.finfo > a[target="_blank"] > img
 xcelebs.ru##.fiolet_block
-fanserials.tv##.fix_reklama
 torrent-igri.com##.fixad
 fishki.net##.fixed-promo
 naurfo.ru##.fl_right a > img[src^="/images/banners/"]
@@ -14408,8 +14423,6 @@ diabethelp.org##.section.gmp_widget
 subscribe.ru##.sendsay_adv
 myfin.by##.seo_wrap.background > a[onclick^="ga('send', 'event', 'DeskAdv'"]
 realybiz.ru##.seolink_target
-fanserials.tv##.serial-adv-cont
-fanserials.tv##.serial-box-promo
 mmovote.ru##.server-banner
 soft-file.ru##.sfk
 evrazia.org##.shadow2
@@ -14502,7 +14515,7 @@ kudago.com##.special_links
 freelansim.ru##.specials__item-link
 spb.tricolor.tv##.specs
 newkaliningrad.ru##.pr-side-240
-shikimori.*##.spns_advrtr_240x400
+shikimori.org,shikimori.co.uk,shikimori.me,shikimori.com.bd,shikimori.com.np,shikimori.gov.bd,shikimori.one,shikimori.gov.np##.spns_advrtr_240x400
 reibert.info##.sponsorBanner
 erocadr.com,masturbationgirl.com,porn0sex.net##.spot
 101android.ru,yablyk.com##.spu-bg
@@ -15476,8 +15489,8 @@ mediametrics.ru##div[class^="result "][aid="-5"]
 prikol.ru##div[class^="sidebar-advert"]
 rusplt.ru##div[class^="sk_header_"]
 ng.ru##div[class^="smi_"]
-shikimori.*##div[class^="spns_special_"]
-shikimori.*##div[class^="spnsrs"]
+shikimori.org,shikimori.co.uk,shikimori.me,shikimori.com.bd,shikimori.com.np,shikimori.gov.bd,shikimori.one,shikimori.gov.np##div[class^="spns_special_"]
+shikimori.org,shikimori.co.uk,shikimori.me,shikimori.com.bd,shikimori.com.np,shikimori.gov.bd,shikimori.one,shikimori.gov.np##div[class^="spnsrs"]
 yodnews.ru##div[class^="spu-"]
 dlltop.ru##div[class^="tm-article-banner"]
 lrnews.ru##div[class^="top_banner"]
@@ -16440,7 +16453,6 @@ webware.ru/*/clients/
 ||f.xyu.tv^
 ||f1comp.ru/banner_
 ||f1comp.ru/wp-content/uploads/*/banner-
-||fanserials.tv/templates/Serials_new/assets/images/bg*^$image
 ||fantasy-dream.ru/*.php$third-party
 ||fastpic.ru^$domain=pics-money.ru
 ||favicon.yandex.net/favicon/$domain=open-server.ru
@@ -17681,7 +17693,7 @@ zemliak.com##.branding_link
 vsetop.org,drochunov.net##noindex div[align="center"] > a > img
 rapsinews.ru,1ul.ru##.main-banner
 onetorrent.ru,agrostory.com,fullfilmhd.space,hotcharts.xyz,ruinformer.com##noindex > a[rel="nofollow"] > img
-nnovosti.info,ok-tv.org,uniondht.org,womanel.com,magazilla.ru,economics-prorok.com,ua-football.com,uniongang.org,horlab.com,rutorgames.info,abc-people.com,abook.fm,agrimpasa.com,bigbangtv.ru,bigcinema.to,bigpicture.ru,bobfilm.club,comedy-portal.net,coollib.net,cwer.me,cwer.ru,cwer.ws,dnevniki-vampira.net,electroandi.ru,ex-fs.com,fanserials.tv,fast-torrent.ru,filin.tv,filmpotok.ru,firebit.net,fizrukoff.net,goodkino.biz,hd-720.ucoz.ru,hdfilms.tv,hdkinomax.com,hdserials.tv,hlamer.ru,hronika.info,ikinohd.com,informator.news,kadu.ru,kin4ik.online,kino-dom.tv,kino-france.net,kino-hd720.net,kino-na-xati.com,kinobos.net,kinoclips.net,kinoflux.org,kinogb.net,kinogo.cc,kinogo.eu,kinogo1.club,kinogoonline.club,kinoklad.net,kinokrad.net,kinoprostor.com,kinorai.net,kinosklad.com,kinotan.ru,kinotop.pw,kinotrek.co,kinovhod.online,klipzona.co,knijky.ru,kriminal.tv,lib.sale,linecinema.org,lostfilm-hd720.ru,lostfilm-online.ru,lotzon.co,lotzon.com,maccentre.ru,mskd-ru.net,musico.ru,my-tfile.org,navkolonas.com,new-team.org,newsyou.info,nowa.cc,od-news.com,online-kinopokaz.ru,onlineboevik.com,onlinefilm-hd.club,onlinefilm-hd.com,pgcity.net,pslan.com,rapidzona.com,real-vin.com,ru-serial.com,rubooks.org,russiapost.su,rustorrents.info,rutorka.net,scibook.net,scribble.su,seasonvar.re,serialbox.org,serialguru.ru,serialu.tv,serialytut.tv,sezon-hd.ru,show-online.tv,skidows.com,smotri-filmi.net,sochinyshka.ru,swordmaster.org,tfile-music.org,tfile.co,tfile.me,timehd.org,topcinema.tv,torrent-soft.net,tree.tv,trialeset.ru,tryhdrezka.com,tuchkatv.ru,turboserial.net,tushkan.club,tv-torrent.org,tvcok.ru,uainfo.org,ukrlit.net,uniongang.net,vinnitsa.info,vuzlib.su,zfilm-hd.club,zhd.life,zserials.cc##div[id^="bn_"]
+nnovosti.info,ok-tv.org,uniondht.org,womanel.com,magazilla.ru,economics-prorok.com,ua-football.com,uniongang.org,horlab.com,rutorgames.info,abc-people.com,abook.fm,agrimpasa.com,bigbangtv.ru,bigcinema.to,bigpicture.ru,bobfilm.club,comedy-portal.net,coollib.net,cwer.me,cwer.ru,cwer.ws,dnevniki-vampira.net,electroandi.ru,ex-fs.com,fast-torrent.ru,filin.tv,filmpotok.ru,firebit.net,fizrukoff.net,goodkino.biz,hd-720.ucoz.ru,hdfilms.tv,hdkinomax.com,hdserials.tv,hlamer.ru,hronika.info,ikinohd.com,informator.news,kadu.ru,kin4ik.online,kino-dom.tv,kino-france.net,kino-hd720.net,kino-na-xati.com,kinobos.net,kinoclips.net,kinoflux.org,kinogb.net,kinogo.cc,kinogo.eu,kinogo1.club,kinogoonline.club,kinoklad.net,kinokrad.net,kinoprostor.com,kinorai.net,kinosklad.com,kinotan.ru,kinotop.pw,kinotrek.co,kinovhod.online,klipzona.co,knijky.ru,kriminal.tv,lib.sale,linecinema.org,lostfilm-hd720.ru,lostfilm-online.ru,lotzon.co,lotzon.com,maccentre.ru,mskd-ru.net,musico.ru,my-tfile.org,navkolonas.com,new-team.org,newsyou.info,nowa.cc,od-news.com,online-kinopokaz.ru,onlineboevik.com,onlinefilm-hd.club,onlinefilm-hd.com,pgcity.net,pslan.com,rapidzona.com,real-vin.com,ru-serial.com,rubooks.org,russiapost.su,rustorrents.info,rutorka.net,scibook.net,scribble.su,seasonvar.re,serialbox.org,serialguru.ru,serialu.tv,serialytut.tv,sezon-hd.ru,show-online.tv,skidows.com,smotri-filmi.net,sochinyshka.ru,swordmaster.org,tfile-music.org,tfile.co,tfile.me,timehd.org,topcinema.tv,torrent-soft.net,tree.tv,trialeset.ru,tryhdrezka.com,tuchkatv.ru,turboserial.net,tushkan.club,tv-torrent.org,tvcok.ru,uainfo.org,ukrlit.net,uniongang.net,vinnitsa.info,vuzlib.su,zfilm-hd.club,zhd.life,zserials.cc##div[id^="bn_"]
 ||ad.admitad.com^$domain=1track.ru|24warez.ru|2x2forum.ru|3porosenka.ru|alive-ua.com|audioknigi.club|bdobase.info|bloknot-novocherkassk.ru|comodity.ru|dentv.ru|etika-education.ru|gameru.net|gooool.org|goroskop.ru|igri-2012.ru|igui.mobi|ilenta.com|inform-ua.info|kritika24.ru|mywishlist.ru|ogribax.ru|outsidethebox.ms|pluggedin.ru|privatbankrf.ru|rus-game.net|samelectric.ru|sovetremont.com|sshut.ru|superg.ru|torrentigri.xyz|torrentum.ru
 1istochnik.ru,paradisehill.cc##div[data-ride="carousel"]
 torrentbay.co,rustorka.com,rustorka.net,rustorkacom.lib,naylo.top,filmtor.net,torrent-am.net,torrent-shyter.net,torrento-games.net,zserials.cc##div[align="center"] > a[rel="nofollow"] > img
@@ -17765,7 +17777,7 @@ ozon.ru##img[elementtiming*="Banner"]
 ! https://2gis.ru/spb/station/5348810536518887/30.317814%2C59.926834?m=30.327652%2C59.923113%2F15.2
 2gis.ru#?#div[data-scroll="true"] > div[style] div._3hmsj:has(> div > header:contains(Реклама))
 ! https://2gis.ru/spb/firm/5348552838480972/30.447979%2C59.910561?floor=1&m=30.447983%2C59.910026%2F18.6
-2gis.*##div[data-scroll="true"] > div[style] div._1xza2sg
+2gis.com,2gis.ru,2gis.io,2gis.by,2gis.ua,2gis.it,2gis.kz,2gis.biz,2gis.app,2gis.pro,2gis.cl,2gis.site,2gis.ae,2gis.cz,2gis.az,2gis.uz,2gis.tech,2gis.my,2gis.com.bd,2gis.dev,2gis.com.np,2gis.gov.bd,2gis.one,2gis.kg,2gis.gov.np##._1xza2sg
 !
 ! pikabu.ru
 pikabu.ru##.b-page-story__bf-cmments > header.story__header + div.story__user
@@ -17850,11 +17862,11 @@ liveresult.ru##iframe[src^="https://static.liveresult.ru/files/fonbet/"]
 ||static.liveresult.ru/files/fonbet/
 ||avatars.mds.yandex.net/get-adfox-content/$domain=liveresult.ru
 !
-24video.*##.rbox
-24video.*##body > a
-24video.*##a[class$="-landing-page-link"]
-24video.*##.xb-wrapper
-24video.*##a[href][target][style]
+24video.com,24video.org,24video.in,24video.info,24video.online,24video.club,24video.site,24video.live,24video.top,24video.pw,24video.com.bd,24video.com.np,24video.vip,24video.gov.bd,24video.ws,24video.one,24video.guru,24video.gov.np,24video.icu##.rbox
+24video.com,24video.org,24video.in,24video.info,24video.online,24video.club,24video.site,24video.live,24video.top,24video.pw,24video.com.bd,24video.com.np,24video.vip,24video.gov.bd,24video.ws,24video.one,24video.guru,24video.gov.np,24video.icu##body > a
+24video.com,24video.org,24video.in,24video.info,24video.online,24video.club,24video.site,24video.live,24video.top,24video.pw,24video.com.bd,24video.com.np,24video.vip,24video.gov.bd,24video.ws,24video.one,24video.guru,24video.gov.np,24video.icu##a[class$="-landing-page-link"]
+24video.com,24video.org,24video.in,24video.info,24video.online,24video.club,24video.site,24video.live,24video.top,24video.pw,24video.com.bd,24video.com.np,24video.vip,24video.gov.bd,24video.ws,24video.one,24video.guru,24video.gov.np,24video.icu##.xb-wrapper
+24video.com,24video.org,24video.in,24video.info,24video.online,24video.club,24video.site,24video.live,24video.top,24video.pw,24video.com.bd,24video.com.np,24video.vip,24video.gov.bd,24video.ws,24video.one,24video.guru,24video.gov.np,24video.icu##a[href][target][style]
 !
 24smi.org##.adfox-side
 24smi.org##.ads-headline
@@ -17925,6 +17937,7 @@ kg-portal.ru##div[class] > a.paralink
 kg-portal.ru##[class^="ten_frontrow_"]
 kg-portal.ru##.ten_footer_wrap
 !
+||nnmstatic.win/forum/ads/
 ||alicdn.com/*/725x90$image,domain=nnmclub.to
 ||nnmclub.ch/forum/images/ads
 ||semi-cod.nnmclub.ch^
@@ -18167,6 +18180,7 @@ meduza.global.ssl.fastly.net,meduza.io##.DFPBanner-root
 meduza.global.ssl.fastly.net,meduza.io##div.App-banner
 !
 ! fontanka.ru
+fontanka.ru###app > div > div:has(> div[id^="adv_"])
 fontanka.ru##a[href^="https://www.fontanka.ru/"][href*="#lenta-btn"]
 fontanka.ru##article ~ div:has(div.flickity-slider)
 fontanka.ru##div[class]:has(> a[href^="https://people.sovcombank.ru/"])
@@ -18220,7 +18234,7 @@ rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutr
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org###main_content_wrap > table.vf-tor > tbody > tr:not([class]) td[style="padding: 6px 4px 8px;"]
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.ref-topic-guest
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org###main-nav > ul.floatR
-rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org#?#.attach td[colspan="3"] > ul.middot-separated > li:has(> a[href^="https://go.nordvpn.net/"])
+rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.attach td[colspan="3"] > ul.middot-separated > li:has(> a[href="viewtopic.php?t=6529617"])
 rutracker.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net,rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org###page_header > div#main-nav + div[style] > a[target="_blank"][style]
 rutracker.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net,rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.t-body-txt-ad
 rutracker.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net,rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.attach > tbody > tr[class="row3 tCenter"]:last-child
@@ -18338,7 +18352,6 @@ e.mail.ru,octavius.mail.ru##.layer-sent-page__banner
 e.mail.ru,octavius.mail.ru#?##app-canvas div.layout__overflow-container div.slot > :not(img) > :not(img)
 e.mail.ru,octavius.mail.ru#?#.layer-sent-page__banner
 !
-finance.mail.ru,news.mail.ru##aside div[style^="min-height:"]:has(> div[data-rb-slot])
 finance.mail.ru##div[data-module="SlotModel"]
 !
 games.mail.ru##.navigation__promo
@@ -18358,6 +18371,7 @@ hi-tech.mail.ru##.cols__inner > div.spring
 hi-tech.mail.ru##.cols__inner > div[class*="rb_"]
 hi-tech.mail.ru##.daynews__inner > tbody > tr > td.daynews__spring
 !
+horo.mail.ru##div[id][data-closewrap-container]
 horo.mail.ru##div[data-module="SlotModel"]
 horo.mail.ru##.cols__column_sidebar
 horo.mail.ru##.pc-branding-full
@@ -18392,6 +18406,7 @@ my.mail.ru##.trg-b-wrap
 my.mail.ru#?#.l-app__wrap > div.l-app__canvas + div[class]:has(> div[class^="mm_right_block_media-promo-"])
 my.mail.ru#?#.b-column-right > div.b-right-column__block > script[data-mru-fragment="app/banners"]:upward(1)
 !
+news.mail.ru##.rb--recommendation-link
 news.mail.ru##.rb-slot
 news.mail.ru##div[data-logger="partnerNews"]
 news.mail.ru##.p-directhack
@@ -18437,6 +18452,8 @@ tv.mail.ru##.rb_right
 tv.mail.ru##.rb_body
 tv.mail.ru##div[data-module="SlotModel"][data-adq-id]
 !
+vfokuse.mail.ru,finance.mail.ru##aside > div.p-fixed-panel > div:has(> div[data-rb-slot])
+vfokuse.mail.ru,finance.mail.ru,news.mail.ru##aside div[style^="min-height:"]:has(> div[data-rb-slot])
 /mimic/v1/ws$domain=mail.ru
 ||mail.ru/r/js/rb_flash
 ||r.mail.ru/b$subdocument
@@ -18639,6 +18656,8 @@ gazeta.ru##.smi2_incut
 sports.ru###branding-layout>.page-layout:empty
 ! start background images (no other way to get rid of them in Safari
 ! we need to update this list from time to time
+||dumpster.cdn.sports.ru/d/0d/0a7f418ea4ce61f1070bb186f88c0.webp
+||dumpster.cdn.sports.ru/f/12/58a6c2d10270bbd4b54fcf107e185.svg
 ||dumpster.cdn.sports.ru/4/73/88d781ce68174f5e2c800639520e1.webp
 ||s5o.ru/storage/simple/ru/edt/43/11/82/bc/rue92b5aab321.jpg
 ||s5o.ru/storage/simple/ru/edt/e3/9d/ce/42/ruea3735fad78.jpg
@@ -18650,6 +18669,9 @@ sports.ru###branding-layout>.page-layout:empty
 ||s5o.ru/storage/simple/ru/edt/ea/bd/3c/ef/rue20c480ea77.jpg
 ||s5o.ru/storage/simple/ru/edt/bd/05/61/db/ruee04afced56.jpg
 ! end of background images
+sports.ru##.columns-layout__main > div > div.carousel-of-cards:has(div[data-link])
+sports.ru#$#body[class] > div[class^="br-lt"] { background: #e5e7e9 !important; margin-top: 0 !important; padding-top: 120px !important; }
+sports.ru#$?#div[class^="br-lt"] > div[class]:not(:has(div)) { remove: true; }
 sports.ru##.frame:has(> div[data-banner-type])
 sports.ru##div[data-content-name="banner-static"]
 ||senoval.sports.ru/adblock-checker/analyticSender.es.js
@@ -18790,14 +18812,14 @@ kp.ru,kp.by,kp.kg,kp.kz###adwrap
 kp.ru,kp.by,kp.kg,kp.kz#?#div[data-gtm-el="content-body"] ~ div > div:has(> div.smi24__informer)
 !
 ! spaces.ru/spcs.me/ - PC
-spaces.im,spcs.*,strip2.in##div > div:has(> a[title="Отключить рекламу"])
-/resources/js/sticker.js$domain=spaces.im|spcs.*|strip2.in
-spaces.im,spcs.*,strip2.in###siteContent > div.relative ~ div[class]:has(> table[style] > tbody > tr > td[class] > div[class] > a[title="Отключить рекламу"])
-spaces.im,spcs.*,strip2.in##.wrapper > div:has(> div > a[title="Отключить рекламу"])
-spaces.im,spcs.*,strip2.in###main_content_block > div.content_wrap > div[id="page_rightbar"] > div.widgets-group ~ div[class]:has(> div.widgets-group > a[target="_blank"][rel="noopener"])
-spaces.im,spcs.*,strip2.in###main_content > div.widgets-group:has(> a.ico_close_btn)
-spaces.im,spcs.*,strip2.in##.wrapper > div[class]:has(> div > b.darkblue)
-spaces.im,spcs.*,strip2.in##div:has(> a[title="Отключить рекламу"])
+spaces.im,spcs.net,spcs.org,spcs.com.au,spcs.co.uk,spcs.info,spcs.me,spcs.co.za,spcs.eu,spcs.ch,spcs.co.in,spcs.pro,spcs.us,spcs.pl,spcs.club,spcs.site,spcs.cc,spcs.se,spcs.lk,spcs.top,spcs.news,spcs.pw,spcs.com.bd,spcs.at,spcs.com.np,spcs.life,spcs.gov.bd,spcs.sa,spcs.mobi,spcs.com.sa,spcs.gov.np,spcs.network,strip2.in##div > div:has(> a[title="Отключить рекламу"])
+/resources/js/sticker.js$domain=spaces.im|spcs.net|spcs.org|spcs.com.au|spcs.co.uk|spcs.info|spcs.me|spcs.co.za|spcs.eu|spcs.ch|spcs.co.in|spcs.pro|spcs.us|spcs.pl|spcs.club|spcs.site|spcs.cc|spcs.se|spcs.lk|spcs.top|spcs.news|spcs.pw|spcs.com.bd|spcs.at|spcs.com.np|spcs.life|spcs.gov.bd|spcs.sa|spcs.mobi|spcs.com.sa|spcs.gov.np|spcs.network|strip2.in
+spaces.im,spcs.net,spcs.org,spcs.com.au,spcs.co.uk,spcs.info,spcs.me,spcs.co.za,spcs.eu,spcs.ch,spcs.co.in,spcs.pro,spcs.us,spcs.pl,spcs.club,spcs.site,spcs.cc,spcs.se,spcs.lk,spcs.top,spcs.news,spcs.pw,spcs.com.bd,spcs.at,spcs.com.np,spcs.life,spcs.gov.bd,spcs.sa,spcs.mobi,spcs.com.sa,spcs.gov.np,spcs.network,strip2.in###siteContent > div.relative ~ div[class]:has(> table[style] > tbody > tr > td[class] > div[class] > a[title="Отключить рекламу"])
+spaces.im,spcs.net,spcs.org,spcs.com.au,spcs.co.uk,spcs.info,spcs.me,spcs.co.za,spcs.eu,spcs.ch,spcs.co.in,spcs.pro,spcs.us,spcs.pl,spcs.club,spcs.site,spcs.cc,spcs.se,spcs.lk,spcs.top,spcs.news,spcs.pw,spcs.com.bd,spcs.at,spcs.com.np,spcs.life,spcs.gov.bd,spcs.sa,spcs.mobi,spcs.com.sa,spcs.gov.np,spcs.network,strip2.in##.wrapper > div:has(> div > a[title="Отключить рекламу"])
+spaces.im,spcs.net,spcs.org,spcs.com.au,spcs.co.uk,spcs.info,spcs.me,spcs.co.za,spcs.eu,spcs.ch,spcs.co.in,spcs.pro,spcs.us,spcs.pl,spcs.club,spcs.site,spcs.cc,spcs.se,spcs.lk,spcs.top,spcs.news,spcs.pw,spcs.com.bd,spcs.at,spcs.com.np,spcs.life,spcs.gov.bd,spcs.sa,spcs.mobi,spcs.com.sa,spcs.gov.np,spcs.network,strip2.in###main_content_block > div.content_wrap > div[id="page_rightbar"] > div.widgets-group ~ div[class]:has(> div.widgets-group > a[target="_blank"][rel="noopener"])
+spaces.im,spcs.net,spcs.org,spcs.com.au,spcs.co.uk,spcs.info,spcs.me,spcs.co.za,spcs.eu,spcs.ch,spcs.co.in,spcs.pro,spcs.us,spcs.pl,spcs.club,spcs.site,spcs.cc,spcs.se,spcs.lk,spcs.top,spcs.news,spcs.pw,spcs.com.bd,spcs.at,spcs.com.np,spcs.life,spcs.gov.bd,spcs.sa,spcs.mobi,spcs.com.sa,spcs.gov.np,spcs.network,strip2.in###main_content > div.widgets-group:has(> a.ico_close_btn)
+spaces.im,spcs.net,spcs.org,spcs.com.au,spcs.co.uk,spcs.info,spcs.me,spcs.co.za,spcs.eu,spcs.ch,spcs.co.in,spcs.pro,spcs.us,spcs.pl,spcs.club,spcs.site,spcs.cc,spcs.se,spcs.lk,spcs.top,spcs.news,spcs.pw,spcs.com.bd,spcs.at,spcs.com.np,spcs.life,spcs.gov.bd,spcs.sa,spcs.mobi,spcs.com.sa,spcs.gov.np,spcs.network,strip2.in##.wrapper > div[class]:has(> div > b.darkblue)
+spaces.im,spcs.net,spcs.org,spcs.com.au,spcs.co.uk,spcs.info,spcs.me,spcs.co.za,spcs.eu,spcs.ch,spcs.co.in,spcs.pro,spcs.us,spcs.pl,spcs.club,spcs.site,spcs.cc,spcs.se,spcs.lk,spcs.top,spcs.news,spcs.pw,spcs.com.bd,spcs.at,spcs.com.np,spcs.life,spcs.gov.bd,spcs.sa,spcs.mobi,spcs.com.sa,spcs.gov.np,spcs.network,strip2.in##div:has(> a[title="Отключить рекламу"])
 !
 ! adme.media
 ! top banner
@@ -18810,6 +18832,7 @@ adme.media##div[data-test-id="article-content"] > div[class*=" "]:not([tabindex]
 adme.media#?#div[data-test-id="article-bottom-recommended"] > div > div > div[style="position:relative"] > div > div:has(div:empty + div:empty + div:empty)
 !
 ! Start: vc.ru, dtf.ru, spark.ru
+vc.ru#?#.content-list > div.rotator:has(> div[class] > div[class] > a[href="/plus/Close%20Ad"])
 vc.ru##.entry-rotator
 vc.ru##.dstr-fl
 dtf.ru##.supbar--top
@@ -18952,6 +18975,8 @@ player.ex.co#@##ad-container
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/181701#issuecomment-2211292350
+@@||yandex.ru/ads/system/context.js$domain=dzen.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181584
 @@||yandex.ru/ads/$domain=magnit.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178590
@@ -19876,7 +19901,7 @@ geomar.ru#@##advert2
 geomar.ru#@#.advert2
 ! http://forum.adguard.com/showthread.php?3068
 @@||amvnews.ru/images/banner/amvnews*_88x31.gif
-@@||animespirit.*/banners/myvi_logo.png$domain=animespirit.*
+@@||animespirit.*/banners/myvi_logo.png$domain=animespirit.com|animespirit.ru|animespirit.net|animespirit.online|animespirit.tv|animespirit.com.br|animespirit.com.bd|animespirit.com.np|animespirit.gov.bd|animespirit.gov.np
 ! http://forum.adguard.com/showthread.php?3030
 @@||myradio24.com/informer.php
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/201
@@ -20056,6 +20081,8 @@ knigipofoto.ru#@#.wrapad
 ! NOTE: Advanced rules (JS, CSS, HTML)
 !
 ! NOTE: Specific
+zerkalo.io##div[style="text-align: center; height: 250px;"]
+zerkalo.io##div[style="height:250px; text-align: center;"]
 ||ex-press.live/images/*_1920x1080
 ex-press.live###bottom-layout
 ex-press.live#$#div[data-content-hero-id="app-layout"] { background-image: none !important; background-color: unset !important; padding-top: 0 !important; cursor: default !important; }

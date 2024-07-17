@@ -1,8 +1,8 @@
-! Checksum: I1BYzJ54ZtDcqzNtoSNPQg
+! Checksum: S6gVu3kGMCVdUxb+ulOQcQ
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.23.84
-! TimeUpdated: 2024-07-01T06:33:37+00:00
+! Version: 2.0.24.36
+! TimeUpdated: 2024-07-17T13:33:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -107,10 +107,26 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/182947
+ctvnews.ca#%#//scriptlet('trusted-click-element', 'button[id="playPauseButtonId"][aria-label="Pause"]', '', '1000')
+! https://github.com/AdguardTeam/AdguardFilters/issues/183421
+rozrywka.radiozet.pl##article div.embed.embed-article-articles
+! https://github.com/AdguardTeam/AdguardFilters/issues/183344
+gamesindustry.biz##.jobs-widget
+! https://github.com/AdguardTeam/AdguardFilters/issues/183143
+vogue.co.th##section.daily_right_player
+vogue.co.th##div.vdo-show-only-mobile-size
+! winfuture.de - annoying user engagement text at end of article
+winfuture.de#?#.content_wrap > #news_content > br + br + b:contains(?)
+winfuture.de#?#.content_wrap > #news_content > br + br + i > b:contains(?)
+m.winfuture.de#?##articleBody > br + br + i > b:contains(?)
+m.winfuture.de#?##articleBody > br + br + b:contains(?)
+! https://github.com/AdguardTeam/AdguardFilters/issues/182678
+utaten.com###philippines_banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182476
 kotaku.com##div[class^="sc-"] > div[class^="sc-"]:has(> div.related-stories-inset-video)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182473
-newyorker.com#$?#figure[data-testid="cne-interlude-container"] { remove: true; }
+vogue.*,newyorker.com#$?#figure[data-testid="cne-interlude-container"] { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182413
 futurebeat.pl##body > .f2size > .fbt-f5-cc:has(> #outsider2 > #insider2 > .fbt-prod-box)
 ! Steam autoplay trailer
@@ -856,10 +872,8 @@ football-tribe.com##.dugout_video_cont
 ||embed.dugout.com^$script,third-party,domain=~sportowefakty.wp.pl|~ultra-soccer.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/117432
 cureco.jp##object[width="640"][height="480"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/177619
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172712
-! https://github.com/AdguardTeam/AdguardFilters/issues/116423
-vogue.*,wired.com#$?#.grid-layout__aside > .sticky-box > .sticky-box__primary > div[data-in-view] > figure[data-testid="cne-interlude-container-right-rail"]:has(> .cne-video-embed) { remove: true; }
+wired.com#$?#.grid-layout__aside > .sticky-box > .sticky-box__primary > div[data-in-view] > figure[data-testid="cne-interlude-container-right-rail"]:has(> .cne-video-embed) { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/116397
 ais.th##.container_float_shop
 ||ais.th/asset_index2020/js/chat_and_shop.js
@@ -925,7 +939,7 @@ maquia.hpplus.jp##.section-fireworkTag
 fudge.jp##.ratio-wrapper
 blogto.com##.fire_video_style
 roomie.jp,gizmodo.jp##fw-storyblock
-||fireworkapi1.com/embed/v2/playlists/5m1wZ5/feeds?page_size=10
+||fireworkapi1.com/embed/v2/playlists/*/feeds?page_size=10
 ||fireworkapi1.com/embed/v2/channels/whats_trending
 ||fireworkapi.com/embed/v2/publisher_clients/
 ||fireworkapi1.com^$domain=jj-jj.net|mensnonno.jp|olive-hitomawashi.com|gizmodo.jp|final-inc.com|roomie.jp|gendai.media|as-web.jp|boldsky.com|blogto.com|getnews.jp|lp.p.pia.jp|fudge.jp|motor-fan.jp|madamefigaro.jp|forzastyle.com|maquia.hpplus.jp|web.gekisaka.jp
@@ -1236,7 +1250,7 @@ smt-cinema.com##.tieupBanner
 transtutors.com###pnlAskSimilarQuestionBanner
 transtutors.com##.serve-better
 ! https://github.com/AdguardTeam/AdguardFilters/issues/91024
-neonime.*##.tampilan_tambahan > a[href^="https://bit.ly/"] > img
+neonime.net,neonime.org,neonime.co,neonime.me,neonime.biz,neonime.site,neonime.cc,neonime.live,neonime.com.bd,neonime.com.np,neonime.vip,neonime.cloud,neonime.gov.bd,neonime.website,neonime.fun,neonime.is,neonime.gov.np##.tampilan_tambahan > a[href^="https://bit.ly/"] > img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90985
 andro-news.com##img[title="telegram__banner.png"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90783
@@ -1274,20 +1288,6 @@ fandom.com#?##WikiaBar:has(> #WikiaBarWrapper > .wikia-bar-anon > .message[data-
 cartoonprn.com##a[href="https://cartoonprn.com/link/prngames/"] > img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88649
 netdoktor.de###newsletter-abonnieren
-! habr.com
-habr.com##.tm-stories-block
-habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Ближайшие события))
-habr.com##.tm-project-block
-habr.com##.tm-feature
-habr.com###companies_rating
-habr.com###effect-sidebar
-habr.com##.promo-block_freelansim-tasks
-habr.com##.tm-company-widgets
-habr.com##div.tm-articles-list > div.tm-articles-list__after-article:has(#promo_block_4)
-habr.com##section.tm-block_spacing-bottom:has(> div.tm-block__body > div.tm-vacancies-block__item)
-habr.com##section.tm-block_spacing-around:has(> div.tm-block__body > div.tm-promo-block__content-wrapper)
-habr.com##ul.tm-article-list-block__list > li.tm-article-list-block__item:has(> div.tm-promo-post-link)
-habr.com##.tm-article-card-list > li.tm-article-card-list__item:has(> div.tm-promo-post-link)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/87867
 xchina.co#?#.aside > div.center:has(> a[href="/tg.html"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/87972
@@ -1320,7 +1320,7 @@ testbook.com##a[class*="banner-link"]
 careerkarma.com##.ck_box_1
 careerkarma.com##.code-block > div#container > div.border-form-ajax
 ! https://github.com/AdguardTeam/AdguardFilters/issues/86883
-books.google.*###gb-ogen-opt-in-banner
+books.google.com,books.google.ru,books.google.net,books.google.org,books.google.in,books.google.com.au,books.google.com.tr,books.google.co.uk,books.google.io,books.google.co,books.google.gr,books.google.ca,books.google.com.ua,books.google.vn,books.google.info,books.google.de,books.google.fr,books.google.me,books.google.by,books.google.jp,books.google.xyz,books.google.ua,books.google.com.tw,books.google.co.za,books.google.co.il,books.google.eu,books.google.it,books.google.id,books.google.com.br,books.google.es,books.google.ch,books.google.co.in,books.google.kz,books.google.com.vn,books.google.biz,books.google.co.id,books.google.nl,books.google.us,books.google.pl,books.google.cl,books.google.com.mx,books.google.ro,books.google.co.jp,books.google.co.nz,books.google.ma,books.google.com.ar,books.google.site,books.google.cc,books.google.rs,books.google.cn,books.google.ae,books.google.co.kr,books.google.mx,books.google.pk,books.google.se,books.google.com.my,books.google.cz,books.google.lk,books.google.tw,books.google.ai,books.google.com.sg,books.google.top,books.google.gov,books.google.com.co,books.google.co.th,books.google.be,books.google.store,books.google.dk,books.google.hu,books.google.az,books.google.am,books.google.uz,books.google.com.pk,books.google.news,books.google.md,books.google.com.hk,books.google.ge,books.google.sg,books.google.my,books.google.no,books.google.com.bd,books.google.to,books.google.dev,books.google.mk,books.google.com.ng,books.google.ie,books.google.asia,books.google.at,books.google.co.ke,books.google.com.np,books.google.ph,books.google.fi,books.google.tk,books.google.lv,books.google.pe,books.google.sk,books.google.ng,books.google.lt,books.google.tn,books.google.hk,books.google.link,books.google.cloud,books.google.gov.bd,books.google.website,books.google.kr,books.google.sa,books.google.pt,books.google.gg,books.google.com.ph,books.google.hr,books.google.bg,books.google.com.sa,books.google.mn,books.google.ws,books.google.ee,books.google.one,books.google.uk,books.google.kg,books.google.ba,books.google.com.pe,books.google.al,books.google.fm,books.google.ml,books.google.dz,books.google.org.il,books.google.is,books.google.com.uy,books.google.gov.np,books.google.or.id,books.google.si,books.google.gen.tr,books.google.ga,books.google.sh###gb-ogen-opt-in-banner
 ! https://github.com/uBlockOrigin/uAssets/issues/9535
 bimiacg.net#$#body { cursor: auto!important; }
 bimiacg.net#$#a:hover { cursor: auto!important; }
@@ -1636,7 +1636,7 @@ ml5js.org##.modal-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/69138
 xsport.ua##.google_news
 ! https://github.com/AdguardTeam/AdguardFilters/issues/69103
-animeworld.*###cookieAcceptBar
+animeworld.com,animeworld.ru,animeworld.org,animeworld.in,animeworld.de,animeworld.it,animeworld.tv,animeworld.ch,animeworld.com.ar,animeworld.cc,animeworld.cz,animeworld.live,animeworld.com.bd,animeworld.to,animeworld.asia,animeworld.com.np,animeworld.space,animeworld.gov.bd,animeworld.media,animeworld.gov.np###cookieAcceptBar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/69102
 mangaworld.cc#?#.container > div.row > div.col-sm-12 > div.row:has(> div.col-md-12 > div.socials-banner a[href] > img.social-tg-banner)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/69013
@@ -1934,7 +1934,7 @@ minsknews.by##.telegram-promo
 ! https://github.com/AdguardTeam/AdguardFilters/issues/44026
 bizimyaka.com##.block-fan
 ! https://github.com/AdguardTeam/AdguardFilters/issues/43632
-soap2day.*##div[class^="col-sm-"] > .alert.alert-warning
+soap2day.com,soap2day.ru,soap2day.org,soap2day.in,soap2day.io,soap2day.co,soap2day.me,soap2day.co.za,soap2day.tv,soap2day.id,soap2day.es,soap2day.ch,soap2day.co.in,soap2day.biz,soap2day.app,soap2day.pro,soap2day.us,soap2day.com.mx,soap2day.club,soap2day.su,soap2day.cc,soap2day.mx,soap2day.se,soap2day.top,soap2day.com.co,soap2day.store,soap2day.md,soap2day.com.bd,soap2day.to,soap2day.at,soap2day.com.np,soap2day.ph,soap2day.pe,soap2day.cloud,soap2day.gov.bd,soap2day.gg,soap2day.blog,soap2day.mobi,soap2day.fun,soap2day.mn,soap2day.ws,soap2day.win,soap2day.is,soap2day.gov.np,soap2day.network,soap2day.icu,soap2day.sh##div[class^="col-sm-"] > .alert.alert-warning
 ! https://github.com/AdguardTeam/AdguardFilters/issues/43168
 hesgoal.com##.twitter-follow-button
 ! https://github.com/AdguardTeam/AdguardFilters/issues/43526
@@ -1951,7 +1951,7 @@ belaruspartisan.by#?#.left_block > div:has(> a[href="https://t.me/belaruspartisa
 dobreprogramy.pl##.wppwidget > #Player0.FloatingPlayer.floating
 ! https://github.com/AdguardTeam/AdguardFilters/issues/52501#issuecomment-606636283
 ! zoom-link.com,educationvilla.xyz - annoyances text
-link.paid4link.com,galaxy-link.space,linkshorts.*,shrinkforearn.in,ccurl.net,fotodovana.com##.blog-item
+link.paid4link.com,galaxy-link.space,linkshorts.me,linkshorts.com.bd,linkshorts.com.np,linkshorts.gov.bd,linkshorts.gov.np,shrinkforearn.in,ccurl.net,fotodovana.com##.blog-item
 link.paid4link.com,dz-linkk.com,ccurl.net,zoom-link.com##.banner
 zoom-link.com##form#link-view > ol
 zoom-link.com##form#link-view > p
@@ -2129,7 +2129,7 @@ genius.com##div[class^="AppleMusicPlayer__"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/29612
 ltn.com.tw#%#AG_onLoad(function() { $('div[class^="photo picbox 1 photoOn"] > a[href="//draw.ltn.com.tw/slot_v8/"]').closest('div.picbox.\\31').remove(); });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28313
-shikimori.*##.about-ads
+shikimori.org,shikimori.co.uk,shikimori.me,shikimori.com.bd,shikimori.com.np,shikimori.gov.bd,shikimori.one,shikimori.gov.np##.about-ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/29802
 last.fm##.nag-bar--language-mismatch-prompt
 ! https://github.com/AdguardTeam/AdguardFilters/issues/29341
@@ -2252,10 +2252,10 @@ mangovideo.pw##.fp-brand
 ! https://github.com/AdguardTeam/AdguardFilters/issues/62372
 quora.com#?#.qu-zIndex--blocking_wall:not(:has(> div.q-box > div.q-box > div[class*="qu-top--tiny"]))
 ! quora.com#$#.signup_wall_prevent_scroll div[id*="_signup_wall_wrapper"] { display:none !important; } - breaks login
+! https://github.com/AdguardTeam/AdguardFilters/issues/182897
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24339
-cooking.nytimes.com#$#body.nytc---modal-window---noScroll { overflow: visible!important; }
-cooking.nytimes.com#$#html.nytc---modal-window---noScroll { overflow: visible!important; }
-cooking.nytimes.com#?#.nytc---modal-window---isShown:not(:has(.nytc---largepicturemodal---contentBody > .nytc---x---x.nytc---largepicturemodal---xBtn[role="button"], .nytc---grocerylistmodal---groceryListContentContainer))
+cooking.nytimes.com#$#body[class*="mask_no-scroll"] { overflow: auto !important; }
+cooking.nytimes.com#$#div[class^="modal_modal-window-container"]:not(:has(div[class^="omaregiwall_c"] > button[class*="omaregiwall_close"])) { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24235
 banana.by###footer
 ! https://github.com/AdguardTeam/AdguardFilters/issues/24413
@@ -2868,10 +2868,10 @@ yandex.ru##.Warning_type_roskomnadzor
 [$path=/search]yandex.ru#$#body[style="padding-right: 17px; overflow: hidden;"] { overflow: auto !important; padding-right: 0 !important; }
 !
 ! Yandex.Video
-yandex.*##.b-page__content > div.prevention
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.b-page__content > div.prevention
 !
 ! Yandex.Travel
-travel.yandex.*##noindex[id^="gzab"][class*=" "]
+travel.yandex.com,travel.yandex.ru,travel.yandex.net,travel.yandex.org,travel.yandex.in,travel.yandex.com.tr,travel.yandex.co.uk,travel.yandex.io,travel.yandex.co,travel.yandex.ca,travel.yandex.com.ua,travel.yandex.de,travel.yandex.fr,travel.yandex.me,travel.yandex.by,travel.yandex.jp,travel.yandex.xyz,travel.yandex.ua,travel.yandex.com.tw,travel.yandex.co.za,travel.yandex.co.il,travel.yandex.eu,travel.yandex.it,travel.yandex.es,travel.yandex.ch,travel.yandex.kz,travel.yandex.nl,travel.yandex.pro,travel.yandex.us,travel.yandex.pl,travel.yandex.cl,travel.yandex.ro,travel.yandex.su,travel.yandex.site,travel.yandex.cc,travel.yandex.rs,travel.yandex.cn,travel.yandex.ae,travel.yandex.mx,travel.yandex.top,travel.yandex.gov,travel.yandex.ac.id,travel.yandex.be,travel.yandex.dk,travel.yandex.hu,travel.yandex.az,travel.yandex.uz,travel.yandex.md,travel.yandex.ge,travel.yandex.no,travel.yandex.com.bd,travel.yandex.ie,travel.yandex.asia,travel.yandex.at,travel.yandex.com.np,travel.yandex.fi,travel.yandex.lv,travel.yandex.sk,travel.yandex.lt,travel.yandex.cloud,travel.yandex.gov.bd,travel.yandex.website,travel.yandex.pt,travel.yandex.blog,travel.yandex.mobi,travel.yandex.ee,travel.yandex.uk,travel.yandex.kg,travel.yandex.ba,travel.yandex.al,travel.yandex.fm,travel.yandex.gov.np,travel.yandex.org.in,travel.yandex.work##noindex[id^="gzab"][class*=" "]
 !
 ! END: Yandex
 ! NOTE: Other annoyances - Yandex end ⬆️
@@ -2966,6 +2966,7 @@ yasir252.com#%#AG_onLoad(function(){setTimeout(function(){var a=document.querySe
 ||trimay.ru/?
 !
 !
+||php.co.jp/image/sns_tw.jpg
 inkorr.com##.content--main div.sub-tg-wrapper
 krymr.com###GR-1872-nar
 gazeta.ru###_id_telegram_subscriber
@@ -3343,74 +3344,76 @@ ya.ru##.search3__inner > div.link-bro
 ya.ru##.promo-gallery
 ! Yandex Browser promo
 ! "a"
-ya.ru,yandex.*##.simple-popup_direction_center:has(> div > div > div.dist-overlay__description)
-ya.ru,yandex.*##.simple-popup__overlay_shown_true
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.simple-popup_direction_center:has(> div > div > div.dist-overlay__description)
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.simple-popup__overlay_shown_true
 !
 ! Yandex.Search
-[$path=/search]ya.ru,yandex.*##.AdvOffers
-[$path=/search]ya.ru,yandex.*##.EContent.SearchPage-RMG
-[$path=/search]ya.ru,yandex.*##.serp-item[data-fast-subtype="product_tiles_adv"]
-[$path=/search]ya.ru,yandex.*##.serp-item:has(> div[data-state-id] > article > div[class*="-"] span[id*="-PriceDisclaimer"])
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.AdvOffers
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.EContent.SearchPage-RMG
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.serp-item[data-fast-subtype="product_tiles_adv"]
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.serp-item:has(> div[data-state-id] > article > div[class*="-"] span[id*="-PriceDisclaimer"])
 ! popup
-[$path=/search]ya.ru,yandex.*##.Distribution-Popup
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.Distribution-Popup
 [$path=/search]ya.ru,yandex.*#$#div[class*="Distribution-SplashScreenModal"][outercrosstitle="Нет, спасибо"] { display: none !important; }
-[$path=/search]ya.ru,yandex.*##div.Root[id]:has(> button.Distribution-SplashScreenModalCloseButtonOuter)
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##div.Root[id]:has(> button.Distribution-SplashScreenModalCloseButtonOuter)
 [$path=/search]ya.ru,yandex.*#$#body[style] { padding-right: 0 !important; overflow: auto !important; }
 !
-[$path=/search]ya.ru,yandex.*##.HeaderDesktopActions-Distribution
-ya.ru,yandex.*##.AliceFabPromo
+[$path=/search]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.HeaderDesktopActions-Distribution
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.AliceFabPromo
 !
 ! Yandex.Disk
+disk.yandex.com,disk.yandex.ru,disk.yandex.net,disk.yandex.org,disk.yandex.in,disk.yandex.com.tr,disk.yandex.co.uk,disk.yandex.io,disk.yandex.co,disk.yandex.ca,disk.yandex.com.ua,disk.yandex.de,disk.yandex.fr,disk.yandex.me,disk.yandex.by,disk.yandex.jp,disk.yandex.xyz,disk.yandex.ua,disk.yandex.com.tw,disk.yandex.co.za,disk.yandex.co.il,disk.yandex.eu,disk.yandex.it,disk.yandex.es,disk.yandex.ch,disk.yandex.kz,disk.yandex.nl,disk.yandex.pro,disk.yandex.us,disk.yandex.pl,disk.yandex.cl,disk.yandex.ro,disk.yandex.su,disk.yandex.site,disk.yandex.cc,disk.yandex.rs,disk.yandex.cn,disk.yandex.ae,disk.yandex.mx,disk.yandex.top,disk.yandex.gov,disk.yandex.ac.id,disk.yandex.be,disk.yandex.dk,disk.yandex.hu,disk.yandex.az,disk.yandex.uz,disk.yandex.md,disk.yandex.ge,disk.yandex.no,disk.yandex.com.bd,disk.yandex.ie,disk.yandex.asia,disk.yandex.at,disk.yandex.com.np,disk.yandex.fi,disk.yandex.lv,disk.yandex.sk,disk.yandex.lt,disk.yandex.cloud,disk.yandex.gov.bd,disk.yandex.website,disk.yandex.pt,disk.yandex.blog,disk.yandex.mobi,disk.yandex.ee,disk.yandex.uk,disk.yandex.kg,disk.yandex.ba,disk.yandex.al,disk.yandex.fm,disk.yandex.gov.np,disk.yandex.org.in,disk.yandex.work##.direct-public__bottom-direct-wrapper
 disk.yandex.by,disk.yandex.com,disk.yandex.com.tr,disk.yandex.fr,disk.yandex.kz,disk.yandex.ru,yadi.sk#$#html { overflow: auto !important; padding-right: 0 !important; }
 disk.yandex.by,disk.yandex.com,disk.yandex.com.tr,disk.yandex.fr,disk.yandex.kz,disk.yandex.ru,yadi.sk#$#body { overflow: auto !important; padding-right: 0 !important; }
 disk.yandex.by,disk.yandex.com,disk.yandex.com.tr,disk.yandex.fr,disk.yandex.kz,disk.yandex.ru,yadi.sk#$#body[style="padding-right: 0px; overflow: hidden;"] > div[class*="Fullscreen_root_"] { display: none !important; }
 disk.yandex.ru#$#.InfoSpace__Footer > button.InfoSpace__Button { display: none !important; }
 disk.yandex.ru#%#//scriptlet('remove-attr', 'href', '.InfoSpace[href^="https://360.yandex."][href*="/premium-plans?"]')
 !
+! Yandex.Images
+[$path=/images]ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.ImagesViewer-Products
+!
 ! Yandex.Pogoda
-[$path=/pogoda]yandex.*##a[class^="BannerHobbies_promo"]
-yandex.*##.meteum-promo
+[$path=/pogoda]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##a[class^="BannerHobbies_promo"]
+yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.meteum-promo
 !
 ! Yandex.Maps
-[$path=/maps]yandex.*##.business-card-view__section:has(> .business-ownership-view)
-[$path=/maps]yandex.*##.card-special-offers-view
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.business-card-view__section:has(> .business-ownership-view)
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.card-special-offers-view
 [$path=/maps]yandex.*#?#.toponym-service-orgs > div[data-chunk="search-snippet"]:has(> a.search-lavka-view)
 [$path=/maps]yandex.*#?#.business-card-view__orgpage-actions div.carousel__item > div._type_action_button > a[role] > span:contains(Скачать приложение)
-[$path=/maps]yandex.*##.business-card-view__main-wrapper div.card-offer-view
-[$path=/maps]yandex.*##.business-card-title-view__advert
-[$path=/maps]yandex.*##.business-card-title-view__actions .button._view_advertisement
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.business-card-view__main-wrapper div.card-offer-view
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.business-card-title-view__advert
+[$path=/maps]yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.business-card-title-view__actions .button._view_advertisement
 !
 ! Yandex.Music
 music.yandex.*#$#html > body.no-scroll { overflow: auto !important; }
 music.yandex.*#$#.pay-promo-popup { display: none !important; }
-music.yandex.*##.fullscreen-popup.deco-pane-popup
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##.fullscreen-popup.deco-pane-popup
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##.bookmate-banner
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##.sidebar__sticky div.sidebar__under > div.teaser
+music.yandex.com,music.yandex.ru,music.yandex.net,music.yandex.org,music.yandex.in,music.yandex.com.tr,music.yandex.co.uk,music.yandex.io,music.yandex.co,music.yandex.ca,music.yandex.com.ua,music.yandex.de,music.yandex.fr,music.yandex.me,music.yandex.by,music.yandex.jp,music.yandex.xyz,music.yandex.ua,music.yandex.com.tw,music.yandex.co.za,music.yandex.co.il,music.yandex.eu,music.yandex.it,music.yandex.es,music.yandex.ch,music.yandex.kz,music.yandex.nl,music.yandex.pro,music.yandex.us,music.yandex.pl,music.yandex.cl,music.yandex.ro,music.yandex.su,music.yandex.site,music.yandex.cc,music.yandex.rs,music.yandex.cn,music.yandex.ae,music.yandex.mx,music.yandex.top,music.yandex.gov,music.yandex.ac.id,music.yandex.be,music.yandex.dk,music.yandex.hu,music.yandex.az,music.yandex.uz,music.yandex.md,music.yandex.ge,music.yandex.no,music.yandex.com.bd,music.yandex.ie,music.yandex.asia,music.yandex.at,music.yandex.com.np,music.yandex.fi,music.yandex.lv,music.yandex.sk,music.yandex.lt,music.yandex.cloud,music.yandex.gov.bd,music.yandex.website,music.yandex.pt,music.yandex.blog,music.yandex.mobi,music.yandex.ee,music.yandex.uk,music.yandex.kg,music.yandex.ba,music.yandex.al,music.yandex.fm,music.yandex.gov.np,music.yandex.org.in,music.yandex.work##.deco-pane-overlay
 !
 ! Yandex.Market
-market.yandex.*###banner-streamer
-market.yandex.*##div[data-apiary-widget-name*="@marketfront/HeroBanner"]
-market.yandex.*##div[data-apiary-widget-id*="/headerPromo"]
-market.yandex.*##div[data-apiary-widget-name="@marketfront/CreativeBanner"]
-[$path=/^\/$|\/\?/]market.yandex.*##div[data-zone-data*="bannerUrl"]:not([data-zone-name="deals-banner"])
-market.yandex.*##.mediaBanner
-market.yandex.*##.main > noindex:not([data-tid])
-market.yandex.*##div[data-apiary-widget-id^="/content/cms/CmsPageLayout-"] div[data-apiary-widget-name="@marketfront/MediaCarousel"]
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work###banner-streamer
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[data-apiary-widget-name*="@marketfront/HeroBanner"]
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[data-apiary-widget-id*="/headerPromo"]
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[data-apiary-widget-name="@marketfront/CreativeBanner"]
+[$path=/^\/$|\/\?/]market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[data-zone-data*="bannerUrl"]:not([data-zone-name="deals-banner"])
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##.mediaBanner
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##.main > noindex:not([data-tid])
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[data-apiary-widget-id^="/content/cms/CmsPageLayout-"] div[data-apiary-widget-name="@marketfront/MediaCarousel"]
 !
-! Yandex.Music
-music.yandex.*##.bookmate-banner
-music.yandex.*##.sidebar__sticky  div.sidebar__under > div.teaser
-music.yandex.*##.deco-pane-overlay
 !
 ! Yandex.Mail
-mail.yandex.*##div[class^="DisableAdsButton"]
+mail.yandex.com,mail.yandex.ru,mail.yandex.net,mail.yandex.org,mail.yandex.in,mail.yandex.com.tr,mail.yandex.co.uk,mail.yandex.io,mail.yandex.co,mail.yandex.ca,mail.yandex.com.ua,mail.yandex.de,mail.yandex.fr,mail.yandex.me,mail.yandex.by,mail.yandex.jp,mail.yandex.xyz,mail.yandex.ua,mail.yandex.com.tw,mail.yandex.co.za,mail.yandex.co.il,mail.yandex.eu,mail.yandex.it,mail.yandex.es,mail.yandex.ch,mail.yandex.kz,mail.yandex.nl,mail.yandex.pro,mail.yandex.us,mail.yandex.pl,mail.yandex.cl,mail.yandex.ro,mail.yandex.su,mail.yandex.site,mail.yandex.cc,mail.yandex.rs,mail.yandex.cn,mail.yandex.ae,mail.yandex.mx,mail.yandex.top,mail.yandex.gov,mail.yandex.ac.id,mail.yandex.be,mail.yandex.dk,mail.yandex.hu,mail.yandex.az,mail.yandex.uz,mail.yandex.md,mail.yandex.ge,mail.yandex.no,mail.yandex.com.bd,mail.yandex.ie,mail.yandex.asia,mail.yandex.at,mail.yandex.com.np,mail.yandex.fi,mail.yandex.lv,mail.yandex.sk,mail.yandex.lt,mail.yandex.cloud,mail.yandex.gov.bd,mail.yandex.website,mail.yandex.pt,mail.yandex.blog,mail.yandex.mobi,mail.yandex.ee,mail.yandex.uk,mail.yandex.kg,mail.yandex.ba,mail.yandex.al,mail.yandex.fm,mail.yandex.gov.np,mail.yandex.org.in,mail.yandex.work##div[class^="DisableAdsButton"]
 !
 ! Yandex.Raspisanie
-!
-rasp.yandex.*##.TravelHotelsBanner
+rasp.yandex.com,rasp.yandex.ru,rasp.yandex.net,rasp.yandex.org,rasp.yandex.in,rasp.yandex.com.tr,rasp.yandex.co.uk,rasp.yandex.io,rasp.yandex.co,rasp.yandex.ca,rasp.yandex.com.ua,rasp.yandex.de,rasp.yandex.fr,rasp.yandex.me,rasp.yandex.by,rasp.yandex.jp,rasp.yandex.xyz,rasp.yandex.ua,rasp.yandex.com.tw,rasp.yandex.co.za,rasp.yandex.co.il,rasp.yandex.eu,rasp.yandex.it,rasp.yandex.es,rasp.yandex.ch,rasp.yandex.kz,rasp.yandex.nl,rasp.yandex.pro,rasp.yandex.us,rasp.yandex.pl,rasp.yandex.cl,rasp.yandex.ro,rasp.yandex.su,rasp.yandex.site,rasp.yandex.cc,rasp.yandex.rs,rasp.yandex.cn,rasp.yandex.ae,rasp.yandex.mx,rasp.yandex.top,rasp.yandex.gov,rasp.yandex.ac.id,rasp.yandex.be,rasp.yandex.dk,rasp.yandex.hu,rasp.yandex.az,rasp.yandex.uz,rasp.yandex.md,rasp.yandex.ge,rasp.yandex.no,rasp.yandex.com.bd,rasp.yandex.ie,rasp.yandex.asia,rasp.yandex.at,rasp.yandex.com.np,rasp.yandex.fi,rasp.yandex.lv,rasp.yandex.sk,rasp.yandex.lt,rasp.yandex.cloud,rasp.yandex.gov.bd,rasp.yandex.website,rasp.yandex.pt,rasp.yandex.blog,rasp.yandex.mobi,rasp.yandex.ee,rasp.yandex.uk,rasp.yandex.kg,rasp.yandex.ba,rasp.yandex.al,rasp.yandex.fm,rasp.yandex.gov.np,rasp.yandex.org.in,rasp.yandex.work##.TravelHotelsBanner
 !
 ! Yandex.TV
-tv.yandex.*##.recommended-ott
+tv.yandex.com,tv.yandex.ru,tv.yandex.net,tv.yandex.org,tv.yandex.in,tv.yandex.com.tr,tv.yandex.co.uk,tv.yandex.io,tv.yandex.co,tv.yandex.ca,tv.yandex.com.ua,tv.yandex.de,tv.yandex.fr,tv.yandex.me,tv.yandex.by,tv.yandex.jp,tv.yandex.xyz,tv.yandex.ua,tv.yandex.com.tw,tv.yandex.co.za,tv.yandex.co.il,tv.yandex.eu,tv.yandex.it,tv.yandex.es,tv.yandex.ch,tv.yandex.kz,tv.yandex.nl,tv.yandex.pro,tv.yandex.us,tv.yandex.pl,tv.yandex.cl,tv.yandex.ro,tv.yandex.su,tv.yandex.site,tv.yandex.cc,tv.yandex.rs,tv.yandex.cn,tv.yandex.ae,tv.yandex.mx,tv.yandex.top,tv.yandex.gov,tv.yandex.ac.id,tv.yandex.be,tv.yandex.dk,tv.yandex.hu,tv.yandex.az,tv.yandex.uz,tv.yandex.md,tv.yandex.ge,tv.yandex.no,tv.yandex.com.bd,tv.yandex.ie,tv.yandex.asia,tv.yandex.at,tv.yandex.com.np,tv.yandex.fi,tv.yandex.lv,tv.yandex.sk,tv.yandex.lt,tv.yandex.cloud,tv.yandex.gov.bd,tv.yandex.website,tv.yandex.pt,tv.yandex.blog,tv.yandex.mobi,tv.yandex.ee,tv.yandex.uk,tv.yandex.kg,tv.yandex.ba,tv.yandex.al,tv.yandex.fm,tv.yandex.gov.np,tv.yandex.org.in,tv.yandex.work##.recommended-ott
 !
-! Yandex.eda
+! Yandex.Eda
 eda.yandex.ru##.TrackingBanner_root
 !
 ! Kinopoisk
@@ -3419,6 +3422,32 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 ! END: Yandex
 !
 !
+! habr.com
+habr.com##.tm-voice-article
+habr.com##div[data-test-id="promo-block-with-specials"]
+habr.com##.tm-stories-block
+habr.com##.tm-project-block
+habr.com##.tm-feature
+habr.com##.tm-promo-post-link
+habr.com##.tm-top-link
+habr.com##.tm-company-widgets
+habr.com##.promo-block_freelansim-tasks
+habr.com###companies_rating
+habr.com###effect-sidebar
+habr.com##div.tm-articles-list > div.tm-articles-list__after-article:has(#promo_block_4)
+habr.com##section.tm-block_spacing-bottom:has(> div.tm-block__body > div.tm-vacancies-block__item)
+habr.com##section.tm-block_spacing-around:has(> div.tm-block__body > div.tm-promo-block__content-wrapper)
+habr.com##ul.tm-article-list-block__list > li.tm-article-list-block__item:has(> div.tm-promo-post-link)
+habr.com##.tm-article-card-list > li.tm-article-card-list__item:has(> div.tm-promo-post-link)
+habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Ближайшие события))
+!
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/183200
+igg-games.com##.uk-article div[style^="display:"][style*="justify-content:"]:has(> a[href] > img[src])
+! https://github.com/AdguardTeam/AdguardFilters/issues/183121
+mirage.ru##.top-bnr-wrapper
+! https://github.com/AdguardTeam/AdguardFilters/issues/183122
+cinema5.ru##.promo__slider
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182425
 dealmoon.com##.dm-event-tip-wrap
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182223
@@ -4052,7 +4081,7 @@ yahoo.co.jp##.MtoCLink
 ! https://github.com/AdguardTeam/AdguardFilters/issues/109122
 pc-koubou.jp##.banner-side
 ! https://github.com/easylist/easylist/pull/10675
-amazon.*##.maple-banner
+amazon.com,amazon.ru,amazon.net,amazon.org,amazon.ir,amazon.in,amazon.com.au,amazon.com.tr,amazon.co.uk,amazon.co,amazon.gr,amazon.ca,amazon.com.ua,amazon.vn,amazon.info,amazon.de,amazon.fr,amazon.me,amazon.by,amazon.jp,amazon.ua,amazon.com.tw,amazon.co.za,amazon.co.il,amazon.eu,amazon.it,amazon.tv,amazon.id,amazon.com.br,amazon.es,amazon.ch,amazon.co.in,amazon.com.vn,amazon.biz,amazon.app,amazon.nl,amazon.us,amazon.pl,amazon.cl,amazon.com.mx,amazon.ro,amazon.co.jp,amazon.co.nz,amazon.ma,amazon.com.ar,amazon.cc,amazon.rs,amazon.cn,amazon.ae,amazon.co.kr,amazon.mx,amazon.pk,amazon.se,amazon.cz,amazon.tw,amazon.ai,amazon.com.sg,amazon.com.co,amazon.co.th,amazon.be,amazon.dk,amazon.hu,amazon.az,amazon.com.pk,amazon.md,amazon.tech,amazon.ge,amazon.com.cn,amazon.sg,amazon.no,amazon.com.bd,amazon.to,amazon.dev,amazon.mk,amazon.com.ng,amazon.ie,amazon.at,amazon.co.ke,amazon.com.np,amazon.ph,amazon.fi,amazon.lv,amazon.space,amazon.life,amazon.pe,amazon.ng,amazon.lt,amazon.hk,amazon.cloud,amazon.gov.bd,amazon.sa,amazon.pt,amazon.gg,amazon.hr,amazon.mobi,amazon.fun,amazon.bg,amazon.com.sa,amazon.mn,amazon.ws,amazon.ee,amazon.uk,amazon.com.pe,amazon.ml,amazon.dz,amazon.org.il,amazon.world,amazon.is,amazon.gov.np,amazon.si,amazon.org.in,amazon.digital,amazon.work,amazon.agency,amazon.sh##.maple-banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/108442
 make-up-solution.com###footerSpbanner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/106163
@@ -4898,21 +4927,21 @@ geoguessr.com#$#.game-usps { display: none!important; }
 mayoclinic.org##.mayoad
 !
 ! xhamster.com
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.creator-promo-bg
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.heading-promo
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##a[class*="promoMessageBanner-"]
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.earning-block
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.creator-promo-bg
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.heading-promo
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##a[class*="promoMessageBanner-"]
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.earning-block
 ! promo banner
 xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com#$#header.promo { min-height: auto !important; }
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.promo-message__banner
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.recomm-promo-banner
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhtab2.com,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.promo-message__banner
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster17.com,xhamster17.com.bd,xhamster17.com.np,xhamster17.gov.bd,xhamster17.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.recomm-promo-banner
 ! cameras in category/movie pages
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.cams-overlay
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##[class*="cams-widget"]
-xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.*,xhamster17.*,hamsterix.*,xhamster13.*,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##div[class*="cams-thumb-"]
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster17.com,xhamster17.com.bd,xhamster17.com.np,xhamster17.gov.bd,xhamster17.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##.cams-overlay
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster17.com,xhamster17.com.bd,xhamster17.com.np,xhamster17.gov.bd,xhamster17.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##[class*="cams-widget"]
+xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,xhtab2.com,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster17.com,xhamster17.com.bd,xhamster17.com.np,xhamster17.gov.bd,xhamster17.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster5.desi,xhamster9.com,xhamster.desi,xhamster.one,xhamster.com##div[class*="cams-thumb-"]
 ||img.stripst.com/*/previews$domain=xhamster.com
 ||xhamsterpremium.com^$third-party
-xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster4.*,xhamster2.com,xhamster10.com,xhamster.com##iframe[src^="https://xhamsterpremium.com/"]
+xhamster20.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster2.com,xhamster10.com,xhamster.com##iframe[src^="https://xhamsterpremium.com/"]
 xhamster.com##.premium-overlay
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/78407
@@ -4959,7 +4988,7 @@ amazon.de###search span[data-component-type="s-footer-slot"] .amzn-safe-frame-co
 amazon.de###search span[data-component-type="s-top-slot"]
 amazon.de##div[data-cel-widget="desktop-rhf_SponsoredProductsRemoteRHFSearchEXPSubsK2ClickPagination"]
 amazon.co.jp##span[class*="slot_adPlacements"]
-amazon.*##div[data-slot="auto-sparkle-hsa-tetris"]
+amazon.com,amazon.ru,amazon.net,amazon.org,amazon.ir,amazon.in,amazon.com.au,amazon.com.tr,amazon.co.uk,amazon.co,amazon.gr,amazon.ca,amazon.com.ua,amazon.vn,amazon.info,amazon.de,amazon.fr,amazon.me,amazon.by,amazon.jp,amazon.ua,amazon.com.tw,amazon.co.za,amazon.co.il,amazon.eu,amazon.it,amazon.tv,amazon.id,amazon.com.br,amazon.es,amazon.ch,amazon.co.in,amazon.com.vn,amazon.biz,amazon.app,amazon.nl,amazon.us,amazon.pl,amazon.cl,amazon.com.mx,amazon.ro,amazon.co.jp,amazon.co.nz,amazon.ma,amazon.com.ar,amazon.cc,amazon.rs,amazon.cn,amazon.ae,amazon.co.kr,amazon.mx,amazon.pk,amazon.se,amazon.cz,amazon.tw,amazon.ai,amazon.com.sg,amazon.com.co,amazon.co.th,amazon.be,amazon.dk,amazon.hu,amazon.az,amazon.com.pk,amazon.md,amazon.tech,amazon.ge,amazon.com.cn,amazon.sg,amazon.no,amazon.com.bd,amazon.to,amazon.dev,amazon.mk,amazon.com.ng,amazon.ie,amazon.at,amazon.co.ke,amazon.com.np,amazon.ph,amazon.fi,amazon.lv,amazon.space,amazon.life,amazon.pe,amazon.ng,amazon.lt,amazon.hk,amazon.cloud,amazon.gov.bd,amazon.sa,amazon.pt,amazon.gg,amazon.hr,amazon.mobi,amazon.fun,amazon.bg,amazon.com.sa,amazon.mn,amazon.ws,amazon.ee,amazon.uk,amazon.com.pe,amazon.ml,amazon.dz,amazon.org.il,amazon.world,amazon.is,amazon.gov.np,amazon.si,amazon.org.in,amazon.digital,amazon.work,amazon.agency,amazon.sh##div[data-slot="auto-sparkle-hsa-tetris"]
 ! amazon self-promo in item descriptions
 amazon.de,amazon.co.uk###detail-ilm_div
 amazon.de,amazon.co.uk###heroQuickPromo_feature_div
@@ -5103,6 +5132,10 @@ mail.yahoo.com#?#div[style="width:640px;height:360px"][id="video-player"]:upward
 ! new interface 'mail.yahoo.com/d/folders/2'
 mail.yahoo.com#?#div[data-test-id="efv-header"] > div[data-test-id="efv-subheader"]:matches-css(font-size:13px)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/182833
+123pan.com#$#.verifyBox { background: none !important; }
+123pan.com##.bg_svip_block_ads
+||app.123pan.com/manager/share_background/*.png
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10746
 sakh.com##.promo-popup
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10455
@@ -5195,15 +5228,53 @@ experts-exchange.com##.ctaSolutionStickyWrapper
 theguardian.com##.contributions__adblock
 ||contributions.guardianapis.com^
 !
+! Amazon Pay promos (Japan)
+##a[href^="https://apay-up-banner.com?merchantId="] > img
+||apay-up-banner.com^$image,third-party
+!
 ! SECTION: Self-promo - Regular rules
 !
+||site.pfm.moneyforward.com/prod/appstorage/pfm/web_banner/
+pixiv.net##div[style^="margin-left: 0px; --columns"] div[class^="sc-"] > div[class^="sc-"] > section[class^="sc-"]:has(> div[class^="sc-"] > a[href^="/premium/lead/lp/?"])
+pixiv.net##.banner-ad-footer-scale
+prospectmagazine.co.uk###piano_ribbon_collapsible_container
+myupchar.com##a[class^="ad_slot_"]
+myupchar.com##.banner_section
+1024terabox.com##.seo-banner-box
+jfrog.com##.top-fixed-stripe
+jfrog.com##.cta-div
+jfrog.com##div.sidebar-banner[data-bg]
+thangs.com##.list-view > div[class] > div[class^="SearchMembershipsBanner"]
+tenor.com##.GifListItem > a[href*="/gif-maker?"]
+dhbr.diamond.jp#$#.g-header-ad { display: none !important; }
+dhbr.diamond.jp#$#header { margin-top: 0 !important; }
+dhbr.diamond.jp#$#.g-nav__list { top: 87px !important; }
+romptn.com##.banner-container
+myfanserials.net##noindex > div[style="text-align: center;"]
+world-tt.com##.column_pin.mobile_width100
+/\/image_pdf\/Ad\/1-News\/1-0_(%E5%88%A5%E5%86%8A%E4%BA%94%E8%BC%AA%E3%82%B5%E3%83%A0%E3%83%8D%E3%82%A4%E3%83%AB%E3%83%8F%E3%82%99%E3%83%8A%E3%83%BC|tk_goods_3AD220921|jasupo_3AD210113)\.(jpg|gif)/$domain=world-tt.com
+cloud.baidu.com##div[class*="width"][class$="-center"] a[href^="https://cloud.baidu.com/product/wenxinworkshop?"]
+||bce.bdstatic.com/p3m/common-service/uploads/dibu_edc2214.png
+cloud.baidu.com##a[data-track-value="右侧banner"]
+dh-online.ru##.left_sidebar > div[style] > a[href^="http://shop.dh-online.ru/"]
+livemint.com##div[id^="signInStoryBoxId"]
+gamespark.jp##.news-list > section.item--special
+afisha.ru###root > a
+topics.r25.jp##img[alt="あなたの企業トピックスを新R25で発信しませんか？"]
+||fitnesslove.net/wp0901/wp-content/uploads/2023/12/kyuin
+news-postseven.com##.st-Block > div[style="margin-top: 10px; text-align: center;"] > a[target="_blank"] > img
+gq.com.tw###main-content > div[class^="EventBannerWrapper"]
+goo-net.com##.custom-html-widget > div[class*="_bnr_"]
+eikaiwa.dmm.com##.banner-default
+eikaiwa.dmm.com##.banner-single-top
+vook.vc##[class*="-spnsr"]
 finance.sina.com.cn##.wrap > div[style^="margin-top:"]:has(> a[href][target="_blank"] > img)
 ||camonster.io/streams/streams_live.php$domain=nsfwmonster.com
-||player.cnevids.com/interlude/$domain=wired.it|wired.com|vogue.de
+||player.cnevids.com/interlude/$domain=wired.it|wired.com|vogue.de|gq.com|revistagq.com|gqmagazine.fr|gq-magazin.de|gqitalia.it|gqindia.com|gq.com.tw|gq.com.mx|gq-magazine.co.uk
 ||creative.cams.gifsauce.com/widgets/
 gifsauce.com##.sm\:block:has(> div.hidden > div.sticky > iframe[src^="https://creative.cams.gifsauce.com/widgets/"])
-faselhds.*##.alert-danger
-faselhds.*##body > div[id]:has(> div > a[href^="https://www.faselplus.com/onboarding?"])
+faselhds.com.bd,faselhds.com.np,faselhds.gov.bd,faselhds.world,faselhds.gov.np##.alert-danger
+faselhds.com.bd,faselhds.com.np,faselhds.gov.bd,faselhds.world,faselhds.gov.np##body > div[id]:has(> div > a[href^="https://www.faselplus.com/onboarding?"])
 hesgoal.watch###block-9
 email1.io##.browser-card
 thetimes.com#$#html { overflow: auto !important; }
@@ -5265,7 +5336,7 @@ duckduckgo.com##.footer > div.footer__left:has(> div.footer_cards > div.footer__
 gamer.ne.jp##.card-list__item:has(> div > div > span.card-list__ad)
 klerk.ru###__layout > div.h-full > footer ~ div > div.w-full.fixed
 ||xhamster.*/mlxhl/
-xhamster.*##div[data-testid="right-banner-section"]
+xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##div[data-testid="right-banner-section"]
 navitime.co.jp##.kyujin-control-banner-container
 navitime.co.jp###kyujin-banner-offer-container
 h178.com###banner div.panel:has(> div.panel-body > div.text-center > a[href="https://j-baseball.club/"])
@@ -5377,7 +5448,7 @@ investorgain.com##.position-fixed.bottom-0
 investorgain.com###right > div.sticky-xl-top
 12ft.io###ad
 banggood.com##.top-item
-2gis.*##div[class^="_im"]
+2gis.com,2gis.ru,2gis.io,2gis.by,2gis.ua,2gis.it,2gis.kz,2gis.biz,2gis.app,2gis.pro,2gis.cl,2gis.site,2gis.ae,2gis.cz,2gis.az,2gis.uz,2gis.tech,2gis.my,2gis.com.bd,2gis.dev,2gis.com.np,2gis.gov.bd,2gis.one,2gis.kg,2gis.gov.np##div[class^="_im"]
 ficbook.net##section.fanfic-promo-carousel
 mlbtraderumors.com###tr-rotate-ads
 auf1.tv#?#.w-full:has(> div.text-sm:contains(Werbung))
@@ -5549,7 +5620,6 @@ deepl.com##aside[data-testid="pro_ad_content"]
 new-123movies.live#?#online + section > script + div[class]:has(> div[style] > a[href="/user/profile/premium-membership"])
 fly.io#?#section > figure.post-cta:has(> div.image-container > img[src="/static/images/cta-kitty.webp"])
 dzone.com##.signin-prompt
-pb.wtf#?##topocs_maine > tbody[id^="post_"]:has(> tr > td.poster_info + td a[title^="Oтключить всю вcю реклaмy"])
 uchi.ru##.wrapper > div.banner
 uchi.ru##main div.template_v2__content + div.template_v2__sidebar
 biglobe.ne.jp##.h_bar
@@ -5929,7 +5999,7 @@ ivoox.com#$#body { overflow: auto !important; padding-right: 0 !important; }
 ivoox.com#$##promo-starter { display: none !important; }
 ivoox.com#$#.modal-backdrop { display: none !important; }
 contents.fc2.com#?#.ichioshi > ul > li.sell_block:has(a[href^="https://media.fc2.com/clicks.php"])
-sslkn.*##.stiker_wrap
+sslkn.com,sslkn.ru,sslkn.net,sslkn.org,sslkn.me,sslkn.xyz,sslkn.online,sslkn.tv,sslkn.biz,sslkn.pro,sslkn.club,sslkn.site,sslkn.cc,sslkn.com.bd,sslkn.com.np,sslkn.space,sslkn.gov.bd,sslkn.mobi,sslkn.fun,sslkn.gov.np##.stiker_wrap
 cinemacafe.net##div.inner_bfb
 apartmenttherapy.com,thekitchn.com,cubbyathome.com##.PromotionalRibbon
 tonarinoyj.jp#?#.image-container > div.page-area:has(> div.page > div.link-page-content > div.link-slot  > a[href="https://ynjn.jp"])
@@ -6048,7 +6118,7 @@ litcharts.com##.banner-promo
 tuoitre.vn##.boxraovat_catedetail
 ranking.rakuten.co.jp###pageTop > div#rnkWrapper > div > div[style^="background-color: #FF008C;"][style$="height: 50px;"]
 ||error.fc2.com/web/image/bnr_kantan_404.png
-amazon.*##article[data-automation-id="hero-quick-promo"]
+amazon.com,amazon.ru,amazon.net,amazon.org,amazon.ir,amazon.in,amazon.com.au,amazon.com.tr,amazon.co.uk,amazon.co,amazon.gr,amazon.ca,amazon.com.ua,amazon.vn,amazon.info,amazon.de,amazon.fr,amazon.me,amazon.by,amazon.jp,amazon.ua,amazon.com.tw,amazon.co.za,amazon.co.il,amazon.eu,amazon.it,amazon.tv,amazon.id,amazon.com.br,amazon.es,amazon.ch,amazon.co.in,amazon.com.vn,amazon.biz,amazon.app,amazon.nl,amazon.us,amazon.pl,amazon.cl,amazon.com.mx,amazon.ro,amazon.co.jp,amazon.co.nz,amazon.ma,amazon.com.ar,amazon.cc,amazon.rs,amazon.cn,amazon.ae,amazon.co.kr,amazon.mx,amazon.pk,amazon.se,amazon.cz,amazon.tw,amazon.ai,amazon.com.sg,amazon.com.co,amazon.co.th,amazon.be,amazon.dk,amazon.hu,amazon.az,amazon.com.pk,amazon.md,amazon.tech,amazon.ge,amazon.com.cn,amazon.sg,amazon.no,amazon.com.bd,amazon.to,amazon.dev,amazon.mk,amazon.com.ng,amazon.ie,amazon.at,amazon.co.ke,amazon.com.np,amazon.ph,amazon.fi,amazon.lv,amazon.space,amazon.life,amazon.pe,amazon.ng,amazon.lt,amazon.hk,amazon.cloud,amazon.gov.bd,amazon.sa,amazon.pt,amazon.gg,amazon.hr,amazon.mobi,amazon.fun,amazon.bg,amazon.com.sa,amazon.mn,amazon.ws,amazon.ee,amazon.uk,amazon.com.pe,amazon.ml,amazon.dz,amazon.org.il,amazon.world,amazon.is,amazon.gov.np,amazon.si,amazon.org.in,amazon.digital,amazon.work,amazon.agency,amazon.sh##article[data-automation-id="hero-quick-promo"]
 ||kashi-mo.com/media/wp-content/themes/kashimo/img/kashimo_wimax/220625_
 llbean.ca###pc5
 atida.fr##header .cmpt_flash_info
@@ -6077,8 +6147,6 @@ tripadvisor.com##footer ~ div[class^="Su"][style="bottom: 284px;"]
 tokyo-np.co.jp##.koudoku_annai
 hepsiburada.com##div[id^="sponProduct"]
 live.kufu.co.jp##.ad_list_block
-habr.com##.tm-promo-post-link
-habr.com##.tm-top-link
 ||player.cnevids.com/interlude/gq*&rightRail=true$script
 thesource.com###custom_html-8
 yomiuri.co.jp##div[style="height:150px;text-align:center; margin-bottom: 16px;"]
@@ -6160,7 +6228,7 @@ nissen.co.jp##.hdr-obi-banner
 vancouversun.com##aside[aria-labelledby="header-breaking-title"]
 hotline.ua##.promo-list-item
 mumsnet.com#?#main > div[class] > div.hidden:has(> div[aria-live="polite"])
-atlasformen.*##.discount-container
+atlasformen.com,atlasformen.ru,atlasformen.co.uk,atlasformen.ca,atlasformen.de,atlasformen.fr,atlasformen.ch,atlasformen.nl,atlasformen.pl,atlasformen.cz,atlasformen.be,atlasformen.hu,atlasformen.com.bd,atlasformen.com.np,atlasformen.sk,atlasformen.gov.bd,atlasformen.gov.np##.discount-container
 superjob.ru#?#div[class^="_"] > div.f-test-search-result-item:has(> div[class] + div:not([class]) > div[class^="_"] > div[style^="width"] > div[class^="_"] > a[href^="https://realty.superjob.ru"])
 blog.avast.com##.blog-sidebar-ad
 ldmnq.com##.ld-download-zuanban
@@ -6268,7 +6336,7 @@ saisoncard.co.jp##section.sec-content > div.content-txt > p > a[target="_blank"]
 protonvpn.com##.entry > div.text-center > a[href="https://protonvpn.com/pricing"]
 ||ec.geo-online.co.jp/img/usr/cotegory/risumaho_
 ||smafi.info/assets/images/advertising/
-autodesk.*##.cmp-experiencefragment[data-ef-variation-path*="/Promotions/"]
+autodesk.com,autodesk.ru,autodesk.net,autodesk.org,autodesk.in,autodesk.com.au,autodesk.com.tr,autodesk.co.uk,autodesk.io,autodesk.co,autodesk.ca,autodesk.de,autodesk.fr,autodesk.by,autodesk.jp,autodesk.com.tw,autodesk.eu,autodesk.it,autodesk.com.br,autodesk.es,autodesk.ch,autodesk.nl,autodesk.pl,autodesk.co.jp,autodesk.co.nz,autodesk.ae,autodesk.co.kr,autodesk.mx,autodesk.se,autodesk.com.my,autodesk.cz,autodesk.com.sg,autodesk.be,autodesk.dk,autodesk.com.hk,autodesk.com.cn,autodesk.com.bd,autodesk.dev,autodesk.at,autodesk.com.np,autodesk.fi,autodesk.gov.bd,autodesk.pt,autodesk.com.uy,autodesk.gov.np##.cmp-experiencefragment[data-ef-variation-path*="/Promotions/"]
 ecogolik.ru##div[data-code="drevnerusskiy_test_s_prizami"]
 ancient-origins.net##.top-banner-wrapper
 heise.de##div[data-component="PreisvergleichModule"]
@@ -6302,7 +6370,7 @@ masterclass.com#?#main > div > section:has(> div > h2:contains(Learn From the Be
 lazada.com.ph#$#.card-platform-campaign-banner { display: none!important; }
 lazada.com.ph#$##J_LzdSiteNav { margin-top: 0!important; }
 universalis.fr###bandeau-footer
-paperpaper.*##.stk-post > p.stk-reset + div.stk-grid
+paperpaper.com,paperpaper.ru,paperpaper.org,paperpaper.co.uk,paperpaper.io,paperpaper.co,paperpaper.info,paperpaper.online,paperpaper.site,paperpaper.cn,paperpaper.live,paperpaper.com.bd,paperpaper.com.np,paperpaper.space,paperpaper.gov.bd,paperpaper.gov.np##.stk-post > p.stk-reset + div.stk-grid
 universalis.fr###cta-col
 luminam.ro##.unibody.Head-TopLine
 thebellmirror.com,myfin.by,thebell.io##.adfox-container
@@ -6584,7 +6652,7 @@ avg.com##.green-rebranding
 videoconverterfactory.com##.down-bannerbg
 cybrhome.com###listPromotedWebsiteSidebar
 kom-dir.ru,firesticktricks.com##.warning
-kaspersky.*##div[class^="RepositoryArticle_articleContent"] p ~ a[href^="https://www.kaspersky.ru/total-security?"]
+kaspersky.com,kaspersky.ru,kaspersky.net,kaspersky.ir,kaspersky.in,kaspersky.com.au,kaspersky.com.tr,kaspersky.co.uk,kaspersky.gr,kaspersky.ca,kaspersky.de,kaspersky.fr,kaspersky.xyz,kaspersky.ua,kaspersky.com.tw,kaspersky.co.za,kaspersky.eu,kaspersky.it,kaspersky.com.br,kaspersky.es,kaspersky.co.in,kaspersky.kz,kaspersky.com.vn,kaspersky.nl,kaspersky.us,kaspersky.pl,kaspersky.cl,kaspersky.com.mx,kaspersky.ro,kaspersky.co.jp,kaspersky.ma,kaspersky.rs,kaspersky.cn,kaspersky.ae,kaspersky.co.kr,kaspersky.se,kaspersky.com.my,kaspersky.cz,kaspersky.shop,kaspersky.com.sg,kaspersky.top,kaspersky.co.th,kaspersky.be,kaspersky.dk,kaspersky.hu,kaspersky.com.hk,kaspersky.com.cn,kaspersky.no,kaspersky.com.bd,kaspersky.to,kaspersky.ie,kaspersky.com.np,kaspersky.fi,kaspersky.tn,kaspersky.gov.bd,kaspersky.pt,kaspersky.com.ph,kaspersky.one,kaspersky.dz,kaspersky.world,kaspersky.gov.np##div[class^="RepositoryArticle_articleContent"] p ~ a[href^="https://www.kaspersky.ru/total-security?"]
 receive.shamimomo.net##.alert-info
 hetmanrecovery.com##._header-banner
 doremizone.com##a[id^="headerAd"]
@@ -6616,7 +6684,7 @@ americanexpress.com###btiInlineBanner
 ipvm.com##.desktop-promo
 analyticsvidhya.com###custom_html-5
 ebay.de###gh-topl a#gh-doodleS
-kinogo.*##.kreativ
+kinogo.ru,kinogo.net,kinogo.org,kinogo.in,kinogo.io,kinogo.co,kinogo.gr,kinogo.ca,kinogo.fr,kinogo.me,kinogo.xyz,kinogo.online,kinogo.eu,kinogo.it,kinogo.id,kinogo.es,kinogo.ch,kinogo.co.in,kinogo.kz,kinogo.biz,kinogo.app,kinogo.nl,kinogo.pro,kinogo.club,kinogo.site,kinogo.cc,kinogo.shop,kinogo.live,kinogo.ai,kinogo.top,kinogo.be,kinogo.store,kinogo.dk,kinogo.uz,kinogo.news,kinogo.tech,kinogo.ge,kinogo.no,kinogo.pw,kinogo.com.bd,kinogo.dev,kinogo.at,kinogo.com.np,kinogo.ph,kinogo.fi,kinogo.life,kinogo.lt,kinogo.vip,kinogo.cloud,kinogo.gov.bd,kinogo.website,kinogo.media,kinogo.mobi,kinogo.fun,kinogo.mn,kinogo.one,kinogo.uk,kinogo.fm,kinogo.net.ua,kinogo.win,kinogo.guru,kinogo.is,kinogo.gov.np,kinogo.si,kinogo.network,kinogo.work,kinogo.best,kinogo.icu,kinogo.sh##.kreativ
 lemonde.fr##.message--register
 edureka.co##div[class^="myMock-interview-banner-"]
 ozon.ru##div[data-widget="skuAdvSearchShelf"]
@@ -6763,7 +6831,7 @@ thebreakdown.xyz##.mtsnb-top
 kitapyurdu.com#$#.ad-large { visibility: hidden !important; }
 tinypulse.com#?#.row-fluid > div.widget-span > div.widget-type-linked_image:upward(1)
 vedantu.com#?#div[class^="Main_automatedSideBar"] > div[class^="AutomatedModules_common_data_box_right"]:not(:has(div[itemprop="articleSection"][class]))
-kaspersky.*##.promo-card
+kaspersky.com,kaspersky.ru,kaspersky.net,kaspersky.ir,kaspersky.in,kaspersky.com.au,kaspersky.com.tr,kaspersky.co.uk,kaspersky.gr,kaspersky.ca,kaspersky.de,kaspersky.fr,kaspersky.xyz,kaspersky.ua,kaspersky.com.tw,kaspersky.co.za,kaspersky.eu,kaspersky.it,kaspersky.com.br,kaspersky.es,kaspersky.co.in,kaspersky.kz,kaspersky.com.vn,kaspersky.nl,kaspersky.us,kaspersky.pl,kaspersky.cl,kaspersky.com.mx,kaspersky.ro,kaspersky.co.jp,kaspersky.ma,kaspersky.rs,kaspersky.cn,kaspersky.ae,kaspersky.co.kr,kaspersky.se,kaspersky.com.my,kaspersky.cz,kaspersky.shop,kaspersky.com.sg,kaspersky.top,kaspersky.co.th,kaspersky.be,kaspersky.dk,kaspersky.hu,kaspersky.com.hk,kaspersky.com.cn,kaspersky.no,kaspersky.com.bd,kaspersky.to,kaspersky.ie,kaspersky.com.np,kaspersky.fi,kaspersky.tn,kaspersky.gov.bd,kaspersky.pt,kaspersky.com.ph,kaspersky.one,kaspersky.dz,kaspersky.world,kaspersky.gov.np##.promo-card
 timesofindia.indiatimes.com##.article_content br ~ a[href^="https://timesofindia.indiatimes.com/most-searched-products/"]
 analytics.twitter.com##.home-columns div[data-type="advertiser"]
 byjus.com#?#.sidebar > div.bgc-white:has(> div.relatedlinks-widget > div.widget-content > a[target="_blank"] > img)
@@ -6831,7 +6899,7 @@ handwritter.ru##.donate_alert
 indianexpress.com#$?#.premium-calloutpopup { display: none !important; }
 indianexpress.com#$?#body { overflow: auto !important; }
 icourse163.org##div[id*="activity"][id*="Banner"]
-123movies.*###infoAsk
+123movies.com,123movies.net,123movies.org,123movies.co.uk,123movies.io,123movies.co,123movies.gr,123movies.info,123movies.fr,123movies.jp,123movies.online,123movies.id,123movies.cc,123movies.cn,123movies.mx,123movies.pk,123movies.ai,123movies.top,123movies.com.co,123movies.store,123movies.com.pk,123movies.com.bd,123movies.to,123movies.asia,123movies.com.np,123movies.lv,123movies.life,123movies.pe,123movies.ng,123movies.link,123movies.gov.bd,123movies.website,123movies.media,123movies.fun,123movies.ws,123movies.ee,123movies.ba,123movies.today,123movies.is,123movies.gov.np,123movies.work,123movies.best###infoAsk
 wallstreetmojo.com###topbar
 macwelt.de##.liquid-shop
 psprices.com##.promo__ads_off
@@ -7072,7 +7140,6 @@ send.firefox.com##body > send-promo
 userstyles.org#?#.us-stylecards__container > div[class^="us-stylecard"]:has(> div.fallbackDiv)
 kimovil.com##.hotdeals-block
 theglobeandmail.com##.fixedpencil
-vidak.icu,pb.wtf,piratbit.*###main_content > div[style="padding-top: 10px;padding-bottom: 10px;padding-left: 5px;border: 4px dotted  red;"]
 ||abeagle-public.buzzfeed.com/public/v2/experiment_variants?
 buzzfeednews.com##.newsblock-support-cta
 nakedsecurity.sophos.com##.sophos-inline-ad
@@ -7137,7 +7204,7 @@ myshows.me##a[href^="https://myshows.me/pro/?from=banner"] > img
 loveser.ru###search_form > a[href^="https://upet.com"]
 keengamer.com##.bannerTOP
 chess.com###special-upgrade-sidebar
-youporn.*##.ad-remove
+youporn.com,youporn.ru,youporn.net,youporn.org,youporn.in,youporn.co,youporn.gr,youporn.ca,youporn.info,youporn.de,youporn.fr,youporn.me,youporn.jp,youporn.co.il,youporn.online,youporn.eu,youporn.it,youporn.tv,youporn.es,youporn.ch,youporn.us,youporn.com.mx,youporn.ro,youporn.club,youporn.cn,youporn.mx,youporn.se,youporn.cz,youporn.store,youporn.dk,youporn.news,youporn.no,youporn.pw,youporn.com.bd,youporn.ie,youporn.at,youporn.com.np,youporn.space,youporn.sk,youporn.hk,youporn.gov.bd,youporn.kr,youporn.media,youporn.pt,youporn.mobi,youporn.fun,youporn.bg,youporn.mn,youporn.ee,youporn.uk,youporn.today,youporn.fm,youporn.gov.np,youporn.work,youporn.net.au##.ad-remove
 sozcu.com.tr##.promote-wrapper
 ||1pornoxxx.com/templates/1pornoxxx/images/rkl300.png
 pochta.ru##.tracking-card--banner
@@ -7260,6 +7327,14 @@ eiga.com##.header-pure-banner
 !##############################
 ! SECTION: Tweaks - CSS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/183581 - copy/right text
+||i38.ru/templates/teleinform/js/cprgt.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/182950
+abplive.com#%#//scriptlet('trusted-click-element', '#read-full-article')
+! https://github.com/AdguardTeam/AdguardFilters/issues/183012
+beautifulfashionnailart.com,crewbase.net,batmanfactor.com#%#//scriptlet('remove-attr', 'disabled', 'button')
+beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#.text-center > div[id][style^="display:"] { display: block !important; }
+beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#form[id][style^="display:"] { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179738 (left-over)
 forbes.com##.for-you__component:empty
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177560
@@ -7275,9 +7350,10 @@ tudogostoso.com.br,cumhuriyet.com.tr,lepoint.fr,lpnt.fr#$#.dailymotion-player-wr
 tudogostoso.com.br#%#//scriptlet('remove-class', 'js-header-is-sticky|js-is-sticky--change', '.header-stickable')
 hobbyconsolas.com###dailymotion-pip-large-viewport
 ! https://go.tinys.click/jzEDHsQHbNTokEJrRorG timer
-tinys.click#$##wpsafe-link { display: block !important; }
-tinys.click#$##wpsafe-generate { display: block !important; }
-tinys.click#$#div[id^="wpsafe-wait"] { display: none !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/183825
+metode.my.id,sigaptech.com,tutorialsaya.com,tinys.click#$##wpsafe-link { display: block !important; }
+metode.my.id,sigaptech.com,tutorialsaya.com,tinys.click#$##wpsafe-generate { display: block !important; }
+metode.my.id,sigaptech.com,tutorialsaya.com,tinys.click#$#div[id^="wpsafe-wait"] { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167083
 novelas-brasilieras.ru#$#.header { margin-bottom: 0px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166077
@@ -7432,8 +7508,6 @@ tech.bloggertheme.xyz#$##timer { display: none !important; }
 tech.bloggertheme.xyz#$##getlink { display: block !important; }
 tech.bloggertheme.xyz#$##pop-button { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123316
-work.ink#$#span#popup { display: none !important; }
-work.ink#$#span#notification-blackout { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/127474
 abcnews.go.com#$#.SingleVideo .MediaPlaceholder .StickyVideoPlayer { position: absolute !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122755
@@ -7791,6 +7865,20 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/183664
+tech5s.co,yoshare.net#%#//scriptlet('adjust-setInterval', 'timer', '*', '0.001')
+tech5s.co,yoshare.net#$##go_d { display: none !important; }
+tech5s.co,yoshare.net#$##tp-snp1 { display: none !important; }
+tech5s.co,yoshare.net#%#//scriptlet('trusted-click-element', '#t_modal_close_x')
+! https://github.com/AdguardTeam/AdguardFilters/issues/166635
+tech5s.co,yoshare.net,tanytech.com,themezon.net#%#//scriptlet('adjust-setInterval', 'tp-time', '*', '0.001')
+! https://github.com/AdguardTeam/AdguardFilters/issues/183044
+torrentgalaxy.to#%#//scriptlet('adjust-setInterval', 'loader', '*', '0.001')
+! https://github.com/AdguardTeam/AdguardFilters/issues/182815
+nayisahara.com#%#//scriptlet('adjust-setInterval', 'counter', '*', '0.001')
+! https://github.com/AdguardTeam/AdguardFilters/issues/182737
+oceantogames.com#%#//scriptlet('adjust-setTimeout', 'showText', '*', '0.001')
+oceantogames.com#%#//scriptlet('adjust-setInterval', 'downloadTimer', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182533
 emturbovid.com#%#//scriptlet('adjust-setInterval', 'download', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181695
@@ -7803,8 +7891,9 @@ dl.apkmoddone.com#%#//scriptlet('adjust-setTimeout', 'tick()', '*', '0.001')
 dl.apkmoddone.com#%#//scriptlet('adjust-setInterval', 'clearInterval', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/180944
 webhostsec.com,livenewsflix.com,apekite.com#%#//scriptlet("set-constant", "timeSec", "0")
+! https://github.com/AdguardTeam/AdguardFilters/issues/183075
 ! https://github.com/AdguardTeam/AdguardFilters/issues/180583
-onworks.net#%#//scriptlet('adjust-setTimeout', 'rewritebutton', '*', '0.002')
+myandroid.org,onworks.net#%#//scriptlet('adjust-setTimeout', 'rewritebutton', '*', '0.002')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/180144
 ndtv.com#%#//scriptlet('trusted-click-element', '.story__content > div > a.expand-btn__link')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/180127
@@ -7823,8 +7912,6 @@ wdho.ru#%#//scriptlet('set-constant', 'window.c', '1')
 dwgshare.com#%#//scriptlet('adjust-setInterval', 'secounds', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176233
 shortix.co,learnmany.in#%#//scriptlet('adjust-setInterval', 'count', '*', '0.001')
-! https://github.com/AdguardTeam/AdguardFilters/issues/175668
-exuce.com#%#//scriptlet('adjust-setInterval', '/wpsafe|counter/', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175031
 mp4upload.com#%#//scriptlet('adjust-setTimeout', 'tick', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/174343
@@ -7836,7 +7923,7 @@ bfmtv.com#%#//scriptlet('set-attr', '.video_block', 'autoplay', 'false')
 kuncomic.com#%#//scriptlet('adjust-setInterval', 'countdownTime', '1500', '0.001')
 ! gplinks - gplinks.co/fi3p
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170980
-khabaritimes.in#%#//scriptlet('adjust-setInterval', 'myTimer', '*', '0.02')
+npmanagerapk.com#%#//scriptlet('adjust-setInterval', 'myTimer', '*', '0.02')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172260
 imgdrive.net#%#//scriptlet('trusted-click-element', '#redirect-close > a[onclick="closeOverlay()"]', '', '500')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171810
@@ -7869,8 +7956,6 @@ infidrive.net#%#//scriptlet('adjust-setTimeout', '-1', '*', '0.001')
 file-upload.in#%#//scriptlet('adjust-setInterval', 'timer', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166721
 urlcut.ninja#%#//scriptlet('adjust-setInterval', 'pleasewait', '*', '0.001')
-! https://github.com/AdguardTeam/AdguardFilters/issues/166635
-tanytech.com,themezon.net#%#//scriptlet('adjust-setInterval', 'tp-time', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165861
 tutwuri.id#%#//scriptlet('adjust-setInterval', 'innerHTML=`Wait')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165773
@@ -8038,9 +8123,10 @@ androidecuatoriano.xyz#%#//scriptlet('adjust-setInterval', 'downloadButton', '*'
 sinonimos.de#%#//scriptlet('adjust-setInterval', 'waitTime', '*', '0.02')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/144866
 technicalatg.com#%#//scriptlet('adjust-setInterval', 'timer', '*', '0.02')
+! https://github.com/AdguardTeam/AdguardFilters/issues/182679
 ! https://github.com/AdguardTeam/AdguardFilters/issues/144410
-blogtechh.com#%#//scriptlet('adjust-setInterval', 'timeSec--', '*', '0.02')
-blogtechh.com#%#//scriptlet('adjust-setTimeout', 'countdowntimer', '*', '0.02')
+wp2host.com,blogtechh.com#%#//scriptlet('adjust-setInterval', 'timeSec--', '*', '0.001')
+wp2host.com,blogtechh.com#%#//scriptlet('adjust-setTimeout', 'countdowntimer', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143996
 coins-town.com#%#//scriptlet('adjust-setTimeout', 'updateClock', '', '0.02')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143935
@@ -8205,10 +8291,6 @@ criarjogosandroid.com#%#//scriptlet("set-constant", "segundos", "0")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123887
 gawbne.com,forex-trnd.com,forex-golds.com#%#//scriptlet("adjust-setInterval", "count", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123316
-work.ink#%#AG_defineProperty('Notification.permission', {value: "granted"});
-work.ink#%#//scriptlet("set-constant", "document.hidden", "true")
-work.ink#%#//scriptlet('prevent-window-open', '/youtube\.com|discord\.gg/', '1')
-work.ink#%#(()=>{window.addEventListener("load",()=>{const a=function(){fetch("/api/redirection/extension/confirmInstalled.php",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"c="+btoa(navigator.userAgent)+"&tid="+window.transaction_id})},b=function(){d.forEach(a=>{a.click();const b=a.querySelector(".todo .description");b&&(b.textContent="Please wait...")})},c=function(){const a=document.querySelectorAll(".todos > .todo[onclick]"),b=new MutationObserver(function(){a.forEach(a=>{if(a.classList.contains("todo-done")){const b=a.querySelector(".todo .description");b.textContent="Done"}})}),c={subtree:!0,childList:!0,attributes:!0,attributeFilter:["class"]};a.forEach(a=>{b.observe(a,c)})},d=document.querySelectorAll(".todos > .todo[onclick]"),e=function(){let a=!1;return d.forEach(b=>{b.textContent.includes("Browser extension")&&(a=!0)}),a};d.length&&setTimeout(()=>{try{e()&&a(),b(),c()}catch(a){}},2e3)})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122844
 healthy4pepole.com#%#//scriptlet("adjust-setInterval", "counter", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122833
@@ -9093,7 +9175,7 @@ filerio.in#%#//scriptlet("adjust-setTimeout", "tick()", "", "0.02")
 retrostic.com#%#//scriptlet("adjust-setInterval", "timeLeft--", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53145
 ! #%#//scriptlet("set-constant", "blurred", "false")
-clk.kim,olkuj.com,zalbik.com,ijvam.com,adpaylink.com,exuce.com,yoykp.com,pwrpa.cc,tinys.click,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,forextrader.site,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,viewfr.com,news.speedynews.xyz,exeurl.com,panyshort.link,casperhd.com,short2url.xyz,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,cybertechng.com,animerigel.com,gainl.ink,megaurl.in,megafly.in,linx.cc,bitlk.com,reqlinks.net,rgl.vn,youlink.ga,wu8.in,qlinks.eu,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,techsguy.com,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,enit.in,veganab.co,kinemaster.cc,short.freeltc.top,faucetcrypto.net,download.windowslite.net,oko.sh,ckk.ai,ovlinks.com,ier.ai,links.medipost.org,forex-trnd.com,paylinnk.com,adpps.com,baicho.xyz,technemo.xyz,adshorti.co,loptelink.com,link-yz.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,mozlink.net,haonguyen.top,pandaznetwork.com,bestcash2020.com,dash-free.com,cekip.xyz,cryptoon.xyz,btcwalk.com,vhorizads.com,theconomy.me,wealthystyle.online,easysky.in,techgeek.digital,csd.xmod.in,link.tokenoto.com,skincarie.com,defaultfreeshort.in,adsafelink.com,linkshortify.site,akashort.com,rocklink.in,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,linkszia.co,usanewstoday.club,tlin.me,shorthero.site,cutp.in,clk.asia,cookdov.com,wplink.*,aylink.info,usdshort.com,onroid.com,filmyzilla-in.xyz,sohexo.org,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,shorte.anxcinema.com,nini08.com,linkjust.com,crazyblog.in,shortlink.prz.pw,swzz.xyz,mixfaucet.com,try2link.com,gameen.xyz,linkbr.xyz,meulynk.com,myad.biz,baominh.tech,bblink.com,shortz.one,newsalret.com,clickscoin.com,za.uy,toptap.website,gtlink.co,upshrink.com,upfiles.io,link.turkdown.com,beingtek.com,automotur.club,insuranceblog.xyz,linkfly.*,coinadfly.com,link1s.com,enagato.com,dl.tech-story.net,cpm10.org,123link.biz,rancah.com,kingurls.com,download.sharenulled.net,go.gets4link.com,lucidcam.com,clikern.com,musicc.xyz,pix4link.com,zipurls.com,theblissempire.com,xfiles.io,upfiles.com,filezipa.com,arab-chat.club,dz-linkk.com,cslink.in,jp88.xyz,shrink.icu,hoastie.com,fclcc.com,ptc.wtf,tei.ai,exey.*,url4cut.xyz,birdurls.com,claimfreebits.com,allcryptoz.net,shrlink.top,webshort.in,coinsparty.mcrypto.club,zshort.io,eririo.club,nerdy.vn,jameeltips.us,payskip.org,freshi.site,yxoshort.com,pewgame.com,shrinke.me,foxseotools.com,oncehelp.com,earnwithshortlink.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,link.ltc24.com,kiiw.icu,vshort.link,adnit.xyz,fwarycash.moviestar.fun,linkebr.com,bloggingguidance.com,smoner.com,charexempire.com,cut-fly.com,gplinks.co,adomainscan.com,linkshorts.*,cuts-url.com,gainbtc.click,profitlink.info,artipedia.id,gonety.com,viraloc.com,beautyram.info,cashearn.cc,cryptoads.space,adcorto.me,modapk.link,holaurl.com,adbl.live,gplinks.co,miklpro.com,kutt.io,sanoybonito.club,afly.pro,cutlink.link,short88.com,pngit.live,exe.app,adcorto.xyz,cuturl.in,womenhaircolors.review,paidtomoney.com,lite-link.xyz,apkshrt.com,linkshorts.me,pureshort.link,recipestutorials.com,droplink.co,tawiia.com,exy.ai,lite-link.com,bdnewsx.com,eio.io,mealip.com,earnfasts.com,linksfire.co,internewstv.com,ivn3.com,pslfive.com,linksly.co,illink.net,trinddz.com,ilinks.in,techupme.com,bitfly.io,earnguap.com,news.techrfour.com,asiashort.link,imagenesderopaparaperros.com,c-ut.com,toroox.com,saungfirmware.id,shrinkme.in,fir3.net,softairbay.com,link1s.net,cashurl.in,doctor-groups.com,bitcoinly.in,clk.ink,abdeo8.com,apksvip.com,gibit.xyz,claimcrypto.cc,pkr.pw,shrinkbtc.cc,todaynewspk.win,try2link.net,stfly.me,dz4win.com,real-sky.com,bolssc.com,short2.cash,fx4vip.com,cutdl.xyz,shrinkurl.org,mediumarticles.com,exee.io,srt.leechpremium.link,adsrt.live,cheappath.com,shorthitz.com,savelink.site,tmearn.com,samapro.me,adsy.pw,owllink.net,mondainai.moe,2ota.com,popimed.com,aii.sh,sekilastekno.com,miuiku.com,intothelink.com,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,adsrt.net,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,bestearnonline.com,gamesrs.com,ouofly.com,clicksbee.com,shorterall.com,dutchycorp.space,linkshrnk.com,linkad.in,fc.lc,adslinkfly.online,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
+iir.la,oei.la,clk.kim,olkuj.com,zalbik.com,ijvam.com,adpaylink.com,exuce.com,yoykp.com,pwrpa.cc,tinys.click,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,forextrader.site,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,viewfr.com,news.speedynews.xyz,exeurl.com,panyshort.link,casperhd.com,short2url.xyz,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,cybertechng.com,animerigel.com,gainl.ink,megaurl.in,megafly.in,linx.cc,bitlk.com,reqlinks.net,rgl.vn,youlink.ga,wu8.in,qlinks.eu,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,techsguy.com,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,enit.in,veganab.co,kinemaster.cc,short.freeltc.top,faucetcrypto.net,download.windowslite.net,oko.sh,ckk.ai,ovlinks.com,ier.ai,links.medipost.org,forex-trnd.com,paylinnk.com,adpps.com,baicho.xyz,technemo.xyz,adshorti.co,loptelink.com,link-yz.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,mozlink.net,haonguyen.top,pandaznetwork.com,bestcash2020.com,dash-free.com,cekip.xyz,cryptoon.xyz,btcwalk.com,vhorizads.com,theconomy.me,wealthystyle.online,easysky.in,techgeek.digital,csd.xmod.in,link.tokenoto.com,skincarie.com,defaultfreeshort.in,adsafelink.com,linkshortify.site,akashort.com,rocklink.in,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,linkszia.co,usanewstoday.club,tlin.me,shorthero.site,cutp.in,clk.asia,cookdov.com,wplink.*,aylink.info,usdshort.com,onroid.com,filmyzilla-in.xyz,sohexo.org,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,shorte.anxcinema.com,nini08.com,linkjust.com,crazyblog.in,shortlink.prz.pw,swzz.xyz,mixfaucet.com,try2link.com,gameen.xyz,linkbr.xyz,meulynk.com,myad.biz,baominh.tech,bblink.com,shortz.one,newsalret.com,clickscoin.com,za.uy,toptap.website,gtlink.co,upshrink.com,upfiles.io,link.turkdown.com,beingtek.com,automotur.club,insuranceblog.xyz,linkfly.*,coinadfly.com,link1s.com,enagato.com,dl.tech-story.net,cpm10.org,123link.biz,rancah.com,kingurls.com,download.sharenulled.net,go.gets4link.com,lucidcam.com,clikern.com,musicc.xyz,pix4link.com,zipurls.com,theblissempire.com,xfiles.io,upfiles.com,filezipa.com,arab-chat.club,dz-linkk.com,cslink.in,jp88.xyz,shrink.icu,hoastie.com,fclcc.com,ptc.wtf,tei.ai,exey.*,url4cut.xyz,birdurls.com,claimfreebits.com,allcryptoz.net,shrlink.top,webshort.in,coinsparty.mcrypto.club,zshort.io,eririo.club,nerdy.vn,jameeltips.us,payskip.org,freshi.site,yxoshort.com,pewgame.com,shrinke.me,foxseotools.com,oncehelp.com,earnwithshortlink.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,link.ltc24.com,kiiw.icu,vshort.link,adnit.xyz,fwarycash.moviestar.fun,linkebr.com,bloggingguidance.com,smoner.com,charexempire.com,cut-fly.com,gplinks.co,adomainscan.com,linkshorts.*,cuts-url.com,gainbtc.click,profitlink.info,artipedia.id,gonety.com,viraloc.com,beautyram.info,cashearn.cc,cryptoads.space,adcorto.me,modapk.link,holaurl.com,adbl.live,gplinks.co,miklpro.com,kutt.io,sanoybonito.club,afly.pro,cutlink.link,short88.com,pngit.live,exe.app,adcorto.xyz,cuturl.in,womenhaircolors.review,paidtomoney.com,lite-link.xyz,apkshrt.com,linkshorts.me,pureshort.link,recipestutorials.com,droplink.co,tawiia.com,exy.ai,lite-link.com,bdnewsx.com,eio.io,mealip.com,earnfasts.com,linksfire.co,internewstv.com,ivn3.com,pslfive.com,linksly.co,illink.net,trinddz.com,ilinks.in,techupme.com,bitfly.io,earnguap.com,news.techrfour.com,asiashort.link,imagenesderopaparaperros.com,c-ut.com,toroox.com,saungfirmware.id,shrinkme.in,fir3.net,softairbay.com,link1s.net,cashurl.in,doctor-groups.com,bitcoinly.in,clk.ink,abdeo8.com,apksvip.com,gibit.xyz,claimcrypto.cc,pkr.pw,shrinkbtc.cc,todaynewspk.win,try2link.net,stfly.me,dz4win.com,real-sky.com,bolssc.com,short2.cash,fx4vip.com,cutdl.xyz,shrinkurl.org,mediumarticles.com,exee.io,srt.leechpremium.link,adsrt.live,cheappath.com,shorthitz.com,savelink.site,tmearn.com,samapro.me,adsy.pw,owllink.net,mondainai.moe,2ota.com,popimed.com,aii.sh,sekilastekno.com,miuiku.com,intothelink.com,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,adsrt.net,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,bestearnonline.com,gamesrs.com,ouofly.com,clicksbee.com,shorterall.com,dutchycorp.space,linkshrnk.com,linkad.in,fc.lc,adslinkfly.online,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53141
 4shared.com#%#(function(){-1==document.cookie.indexOf("exUserId")&&(document.cookie="exUserId=1; domain=.4shared.com; path=/;")})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/52771
@@ -9347,8 +9429,6 @@ dailypost.co.uk#%#//scriptlet('trusted-click-element', 'span.autoplay-cancel', '
 rutracker.org#%#window.self = window.top;
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4440
 raptu.com#%#AG_onLoad(function(){var el=document.querySelector('body > #normalmsg > form[action="#"]');if(el)el.submit()});
-! https://forum.adguard.com/index.php?threads/resolved-watchseries-cr.19055/#post-126304
-watchseries.cr#%#AG_onLoad(function(){buildPlayer();});
 ! bleacherreport.com - https://github.com/AdguardTeam/AdguardFilters/issues/3561
 bleacherreport.com#%#var mt=window.MutationObserver||window.WebkitMutationObserver,ob=new mt(function(a){a&&a.length&&a.forEach(function(b){if(b&&b.addedNodes&&b.addedNodes.length)for(var a=0;a<b.addedNodes.length;a++)(c=b.addedNodes[i])&&c.id&&"social-promo-flyin"==c.id&&c.parentNode.removeChild(c)})});AG_onLoad(function(){ob.observe(document.body,{childList:!0,subtree:!0})});
 ! gboxes.com - disable timeout for showing buttons
@@ -9492,7 +9572,7 @@ mediafire.com#$#.nonDLContentWrap { min-height: 1300px !important; }
 lanacion.com.ar#$#.sidebar__aside { background: none!important; }
 gamegame.kr#$#body div { -webkit-touch-callout: default!important; -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; -khtml-user-select: text!important; }
 world4.eu,tunovelaligera.com,jstranslations1.com#$#body.unselectable * { -webkit-touch-callout: default!important; -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; -khtml-user-select: text!important; }
-mangaflame.org,exlyrics.com,plantaomaringa.com,omgkpop.top#$#html > body *:not(input):not(textarea)::selection { background-color: #3297FD!important; }
+proserialkey.com,mangaflame.org,exlyrics.com,plantaomaringa.com,omgkpop.top#$#html > body *:not(input):not(textarea)::selection { background-color: #3297FD!important; }
 plantaomaringa.com,omgkpop.top#$#html > body *:not(input):not(textarea):not(button) { -webkit-touch-callout: default!important; -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; -khtml-user-select: text!important; }
 visortmo.com,lectortmo.com#$#.element { -webkit-touch-callout: default!important; -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; -khtml-user-select: text!important; }
 amp.n-tv.de#$#.wrapper-page { min-height: calc(100%) !important; }
@@ -9515,7 +9595,7 @@ quotev.com#$#body #res_area ::selection { background-color: #3297FD!important; }
 ! #%#//scriptlet('abort-current-inline-script', 'document.oncontextmenu')
 mostrodifirenze.com,rightrasta.com,daotranslate.com,habuteru.com,ufchgu.ru,mangahentai.me,themodellingnews.com,senpaiediciones.com,descopera.ro,amantecod.it,volt-index.ru,universaladbdriver.com,firmwarefile.com,bg-gledai.co,victorytale.com,clujust.ro,mysports.to,mi-faq.ru,mathbang.net,seriesgratis.biz,mangacrab.com,metalnaveia66.com,bollywoodhindi.in,legionscans.com,footy.to,osomatsusan.hatenablog.com,flinsetyadi.com,bingotingo.com,carfixer.co.kr,urbanbrush.net,now.rememberapp.co.kr,untitle.org,tecnoprogramas.com,animeactua.com,creativestudio.kr,onna.kr,info-beihilfe.de,audiobookcup.com,funfunhan.com,blofinder.com,bookpost.kr,ex-nihil0.com,donghun.kr,zoommastory.com,deutschaj.com,kokone.co.kr,stevenh.net,ideas0419.com,raycat.net,hosii.info,blahblah.pe.kr,geniusjw.com,blog.esherloon.com,centrair.kr,softwarebits.net,tunovelaligera.com,krtopic.com,healthfeed.co.kr,my-expert.ru,bimiacg.net,solidfile.net,promocode99.in,downloadtutorials.net,nawalakarsa.id,tecnomusic-evolution.com,jpopsingles.eu,wartaterkini.news,pcprogramasymas.net,tistory.com,ghostspectre.the-ninja.jp,eduardo-monica.com,foxaholic.com,koreanaddict.net,omgkpop.top,gamegame.kr,eoreuni.com,jstranslations1.com,animeuniverse.it,baltasar5010purohentai.com,aihristdreamtranslations.com,tipslab.info,indcit.com,audio-sound-premium.com,filmboxoffice.web.id,kakpishem.ru,teepr.com,texte.work,sysnettechsolutions.com,reinodekovel.com,elektrikmen.com,world4.eu,activationkeys.co,secondlifetranslations.com,samuraiscan.com,globaledu.jp,lazytranslations.com#%#//scriptlet('abort-current-inline-script', 'document.oncontextmenu')
 ! #%#//scriptlet('prevent-addEventListener', 'contextmenu')
-roberteachfinal.com,loriwithinfamily.com,rebeccaneverbase.com,brucevotewithin.com,sethniceletter.com,michaelapplysome.com,cindyeyefinal.com,nikkatsu.com,shannonpersonalcost.com,graceaddresscommunity.com,jasonresponsemeasure.com,ryanagoinvolve.com,jamesstartstudent.com,brookethoughi.com,vincentincludesuccessful.com,sharonwhiledemocratic.com,jayservicestuff.com,sandrataxeight.com,markstyleall.com,d0000d.com,morganoperationface.com,johntryopen.com,do0od.com,edwardarriveoften.com,paulkitchendark.com,stevenimaginelittle.com,ds2play.com,doods.pro,dooood.com,dood.yt,dood.re,dood.wf,dood.la,dood.pm,dood.so,dood.to,dood.watch,dood.ws,guiasaude.info,gaz.com.br,relevantmagazine.com,camcaps.*,fakazaduo.com,gimy.app,ruyashoujo.com,nhk.or.jp,mangabtt.com,careet.net,contents.premium.naver.com,r114.com,app.kartra.com,box-manga.com,leouve.com.br,comico.jp,tappytoon.com,toonnbook.nate.com,tapas.io,kakaowebtoon.com,lapandilladelarejilla.es,lezhinus.com,lezhin.com,grafolio.naver.com,webtoon.kakao.com,page.kakao.com#%#//scriptlet('prevent-addEventListener', 'contextmenu')
+jasminetesttry.com,erikcoldperson.com,roberteachfinal.com,loriwithinfamily.com,rebeccaneverbase.com,brucevotewithin.com,sethniceletter.com,michaelapplysome.com,cindyeyefinal.com,nikkatsu.com,shannonpersonalcost.com,graceaddresscommunity.com,jasonresponsemeasure.com,ryanagoinvolve.com,jamesstartstudent.com,brookethoughi.com,vincentincludesuccessful.com,sharonwhiledemocratic.com,jayservicestuff.com,sandrataxeight.com,markstyleall.com,d0000d.com,morganoperationface.com,johntryopen.com,do0od.com,edwardarriveoften.com,paulkitchendark.com,stevenimaginelittle.com,ds2play.com,doods.pro,dooood.com,dood.yt,dood.re,dood.wf,dood.la,dood.pm,dood.so,dood.to,dood.watch,dood.ws,guiasaude.info,gaz.com.br,relevantmagazine.com,camcaps.*,fakazaduo.com,gimy.app,ruyashoujo.com,nhk.or.jp,mangabtt.com,careet.net,contents.premium.naver.com,r114.com,app.kartra.com,box-manga.com,leouve.com.br,comico.jp,tappytoon.com,toonnbook.nate.com,tapas.io,kakaowebtoon.com,lapandilladelarejilla.es,lezhinus.com,lezhin.com,grafolio.naver.com,webtoon.kakao.com,page.kakao.com#%#//scriptlet('prevent-addEventListener', 'contextmenu')
 ! #%#//scriptlet('set-constant', 'document.oncontextmenu', 'null')
 filmzone.com,interface31.ru,ktv.jp,releasewitch.com,news.ntv.co.jp,novatoscans.top,7days2die.info,flying-lines.com,fssp.gov.ru,ilife97.com,rdsong.com,lubedk.com,itempage3.auction.co.kr,cdramalove.com,10000recipe.com,nike.com,a2zapk.com,fully-fundedscholarships.com,shoneekapoor.com,cda-hd.cc,studysolve.online,animeindia.in,bufftoon.plaync.com,studyguideindia.com,codedosa.com,newslibrary.naver.com,insight.co.kr,gamefinity.id,cafe.naver.com#%#//scriptlet('set-constant', 'document.oncontextmenu', 'null')
 ! #%#//scriptlet('set-constant', 'document.onselectstart', 'null')
@@ -9688,7 +9768,7 @@ teepr.com#%#//scriptlet("abort-current-inline-script", "jQuery", "document.oncon
 utorrentgamesps2.blogspot.com#%#//scriptlet("remove-attr", "onselectstart", "body")
 utorrentgamesps2.blogspot.com#%#//scriptlet("abort-current-inline-script", "document.onkeyup")
 software-on.com#%#//scriptlet("prevent-addEventListener", "/selectstart|dragstart|keydown/", "preventDefault")
-exlyrics.com,skidrowcodex.net#%#//scriptlet("abort-on-property-read", "stopPrntScr")
+proserialkey.com,exlyrics.com,skidrowcodex.net#%#//scriptlet("abort-on-property-read", "stopPrntScr")
 ahstudios.net,crunchyscan.fr,picallow.com,thecustomrom.com#%#//scriptlet("abort-on-property-read", "addMultiEventListener")
 lectortmo.com#%#//scriptlet("remove-attr", "oncontextmenu", ".img-container > img[oncontextmenu]")
 quotev.com#%#//scriptlet("remove-attr", "onselectstart|ondragstart|unselectable", "#rescontent")

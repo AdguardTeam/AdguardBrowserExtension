@@ -1,8 +1,8 @@
-! Checksum: 8tUyFOxRKFnYGKJYKfljvQ
+! Checksum: qpihMZXB3IcqXV+46UlL/A
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.8.70
-! TimeUpdated: 2024-07-01T16:04:10+00:00
+! Version: 2.0.8.85
+! TimeUpdated: 2024-07-16T15:34:01+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -91,6 +91,7 @@
 ! SECTION: Widgets (sougo RSS) - Blogroll
 !
 ! NOTE: Blogroll generic
+||rcm.shinobi.jp^
 ||nullpoantenna.com/scripts/parts/blog/
 ||matomeantena.com/scripts/parts/blog/
 ||moviegate4.net/fukugansan/
@@ -245,6 +246,12 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 ! NOTE: Blogroll specific rules
 !
+eroangle.club##.article > h3.frontTitle:last-of-type ~ article.excerpt_pick
+eroangle.club##article.excerpt_pick:has(> a[href*="new"])
+eroangle.club##.table_pickup2
+ero-shame.club##.kanren > dl:has(> dt > a[href*="://new"][target="_blank"])
+newmofu.doorblog.jp###comic-jp-footer
+eromanga-select.com#?##container > div#out_header:contains(今週のおすすめ記事)
 tousatu-ch.net###side-fixed > div.widget_custom_html:not(:first-child):not(:last-child)
 tousatu-ch.net##.head-under.widget_custom_html
 tousatu-ch.net##.video-container
@@ -1459,7 +1466,7 @@ pornoaffe.net,xnxx-porno.com###chati_frame
 ||cdn.solvvy.com/deflect/customization^$domain=stridehealth.com
 medonet.pl#?#div > div#medonet__healthcare__window:upward(1)
 quora.com##.qu-pt--medium > .q-box[style="box-sizing: border-box;"] > div:not([class]) > div:not([class]) > div.q-box.qu-overflow--hidden[style="box-sizing: border-box;"] > div.qu-borderColor--blue
-amazon.*###customer-survey_feature_div
+amazon.com,amazon.ru,amazon.net,amazon.org,amazon.ir,amazon.in,amazon.com.au,amazon.com.tr,amazon.co.uk,amazon.co,amazon.gr,amazon.ca,amazon.com.ua,amazon.vn,amazon.info,amazon.de,amazon.fr,amazon.me,amazon.by,amazon.jp,amazon.ua,amazon.com.tw,amazon.co.za,amazon.co.il,amazon.eu,amazon.it,amazon.tv,amazon.id,amazon.com.br,amazon.es,amazon.ch,amazon.co.in,amazon.com.vn,amazon.biz,amazon.app,amazon.nl,amazon.us,amazon.pl,amazon.cl,amazon.com.mx,amazon.ro,amazon.co.jp,amazon.co.nz,amazon.ma,amazon.com.ar,amazon.cc,amazon.rs,amazon.cn,amazon.ae,amazon.co.kr,amazon.mx,amazon.pk,amazon.se,amazon.cz,amazon.tw,amazon.ai,amazon.com.sg,amazon.com.co,amazon.co.th,amazon.be,amazon.dk,amazon.hu,amazon.az,amazon.com.pk,amazon.md,amazon.tech,amazon.ge,amazon.com.cn,amazon.sg,amazon.no,amazon.com.bd,amazon.to,amazon.dev,amazon.mk,amazon.com.ng,amazon.ie,amazon.at,amazon.co.ke,amazon.com.np,amazon.ph,amazon.fi,amazon.lv,amazon.space,amazon.life,amazon.pe,amazon.ng,amazon.lt,amazon.hk,amazon.cloud,amazon.gov.bd,amazon.sa,amazon.pt,amazon.gg,amazon.hr,amazon.mobi,amazon.fun,amazon.bg,amazon.com.sa,amazon.mn,amazon.ws,amazon.ee,amazon.uk,amazon.com.pe,amazon.ml,amazon.dz,amazon.org.il,amazon.world,amazon.is,amazon.gov.np,amazon.si,amazon.org.in,amazon.digital,amazon.work,amazon.agency,amazon.sh###customer-survey_feature_div
 infranken.de###singlewidget_standalone
 /motchat/design/defaulttheme/js/widgetv*/index.js$domain=incredibleindia.org
 24.rakuten.co.jp##.WidgetForm-Form > div.Nps
@@ -1657,6 +1664,8 @@ indoxxi.show##.tawkto-btn
 !
 !   SECTION: Widgets - Suggestion widgets
 !
+otv.co.jp##.o_recommend__together
+otv.co.jp##.o_recommend
 webznam.ru###topalfaweb
 businesstoday.com.tw##iframe[src^="https://api.popin.cc/"]
 digitalspy.com##div[data-embed="embed-gallery"]
@@ -1698,6 +1707,9 @@ newsee-media.com,saitama-np.co.jp,htb.co.jp,oricon.co.jp,maidonanews.jp##.uz-ny
 ||gacraft.jp^$third-party
 houyhnhnm.jp##.section-similer-post
 ! popIn recommendations
+otonano-shumatsu.com##.popin-block
+tss-tv.co.jp##.hns_bottomadbox
+news.audee.jp###popinBox
 yamakei-online.com##.ad-pop-nw3-nw4
 projectdesign.jp###mainCont > aside.c-box-link:has(> div#_popIn_recommend)
 ryukyushimpo.jp#?#article ~ .flex-col:has(.items-center > #_popIn_recommend)
@@ -2187,7 +2199,7 @@ miningclub.info#?#.p-body-sidebar > div.block:has(> div.block-container > h3.blo
 !
 !   NOTE: Weather widgets
 !
-irliepaja.lv##.weather-widget
+abplive.com,irliepaja.lv##.weather-widget
 syzran-small.ru##.pogoda
 ||money.hu/assets-new/js/calculator-widget-init.js
 mind.ua##.block_archive
@@ -2218,6 +2230,17 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+roskomsvoboda.org##.donate
+roskomsvoboda.org###donate
+themoscowtimes.com#$#body { overflow: auto !important; }
+themoscowtimes.com#$#.contribute-popup { display: none !important; }
+themoscowtimes.com##.contribute-article
+vox.com##aside:has(> div > a[href^="https://vox.memberful.com/checkout"])
+freetp.org##noindex:has(> a[href="/donat.html"])
+veved.ru##.donating-top
+theins.ru###app-root main > div[class] > div[class] > div[class]:has(> div[class] > p > a[href="https://donate.theins.ru"])
+theins.ru###articleContainer > div:has(a[href^="https://donate.theins.ru/"])
+||paypal.com/giving/campaigns$domain=xboxera.com
 nashaniva.com##.article__content > div[style]:has(> a[href="https://patreon.com/nashaniva"])
 jam-news.net###donationPopup
 proekt.media##proekt-group > proekt-block:has(> proekt-columns span#donateButton)
@@ -2273,7 +2296,6 @@ cavalierdaily.com#$#.modal-backdrop { display: none !important; }
 cavalierdaily.com#$##cav-generic-modal { display: none !important; }
 cavalierdaily.com#$#body { overflow-y: auto !important; padding-right: 0 !important; }
 smilepolitely.com##.foobar-cta
-theins.*###articleContainer > div:has(a[href^="https://donate.theins.ru/"])
 kcrw.com###cta-get-involved-large-news-cta
 semnasem.org##.adcampaign
 semnasem.org##.adcampaign-inject-banner
@@ -2297,7 +2319,6 @@ novayagazeta.eu#?##materialBlock_0 > div:has(> h3:contains(/^Поддержат�
 ||pidru4niki.com/images/zsu_help.png
 prosleduet.media##.post-template-default section.donate
 istories.media##div[class^="DonateEmbed-module-"]
-theins.ru#?##articleContainer > div:not([class]):has(> div[class] > a[href="http://donate.theins.ru/"])
 ||m4ex.com/m4ex_box/frame/choice*.html
 m4ex.com##div[class^="rssframe"]
 diletant.media##.donations-coin
@@ -2332,7 +2353,7 @@ osboxes.org#$##popuppress-7080 { display: none !important; }
 holod.media##.support-block
 discours.io##.donate-container
 kill-the-hero.com##.kofi-button
-paperpaper.*##.post-info-block
+paperpaper.com,paperpaper.ru,paperpaper.org,paperpaper.co.uk,paperpaper.io,paperpaper.co,paperpaper.info,paperpaper.online,paperpaper.site,paperpaper.cn,paperpaper.live,paperpaper.com.bd,paperpaper.com.np,paperpaper.space,paperpaper.gov.bd,paperpaper.gov.np##.post-info-block
 paperpaper.*#?#.stk-grid > div[class^="stk-theme"] > a[href^="http://paperpaper.site"]:upward(2)
 tsargrad.tv##.article__content > div.form
 unian.ua,unian.net##.support-post
@@ -2347,7 +2368,7 @@ delo.ua##.c-support
 meduza.global.ssl.fastly.net,meduza.io##.SaveMeduza-root
 texty.org.ua###the-only-donate-banner
 birgun.net##.support-box
-paperpaper.*##.bottom-block > div.post-info-block
+paperpaper.com,paperpaper.ru,paperpaper.org,paperpaper.co.uk,paperpaper.io,paperpaper.co,paperpaper.info,paperpaper.online,paperpaper.site,paperpaper.cn,paperpaper.live,paperpaper.com.bd,paperpaper.com.np,paperpaper.space,paperpaper.gov.bd,paperpaper.gov.np##.bottom-block > div.post-info-block
 mediazona.online,fourth-sphere-302420.appspot.com,zona.media##.mz-agent-banner
 mediazona.online,fourth-sphere-302420.appspot.com,zona.media##.tools__support_container
 histmag.org##div[evergreen-portal-container=""]
