@@ -33,13 +33,16 @@
         "message": "Aktifkan"
     },
     "popup_header_cta_link": {
-        "message": "Ingin memblokir lebih banyak?"
+        "message": "Cara meningkatkan perlindungan"
     },
     "popup_header_update_filters": {
         "message": "Periksa pembaruan filter"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "Ekstensi berkas harus %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "Perbaiki"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard untuk iOS"
@@ -60,10 +63,10 @@
         "message": "Nonaktifkan notifikasi"
     },
     "popup_adguard_footer_title": {
-        "message": "Dapatkan AdGuard diponsel Anda"
+        "message": "Lindungi perangkat seluler Anda"
     },
     "options_popup_call_to_action": {
-        "message": "Masukkan URL atau lokasi file dari filter yang benar pada kotak isian diatas."
+        "message": "Masukkan URL atau lokasi berkas filter yang valid ke dalam kolom di atas."
     },
     "options_popup_description": {
         "message": "Anda akan berlangganan filter tersebut."
@@ -132,7 +135,7 @@
         "message": "Jangan blokir iklan apapun kecuali untuk daftar putih."
     },
     "options_allowlist_alert_invert": {
-        "message": "Daftar yang diizinkan dibalik. Iklan diblokir hanya di situs web yang ditambahkan ke dalamnya. <a>Nonaktifkan<\/a>"
+        "message": "Daftar yang diizinkan dibalik. Iklan hanya diblokir di situs web yang ditambahkan ke dalamnya. <a>Nonaktifkan<\/a>"
     },
     "options_userfilter": {
         "message": "Penyaring pengguna"
@@ -141,10 +144,10 @@
         "message": "Aturan yang diubah: %rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "Aturan Mode Siluman: %rules_count%"
+        "message": "Aturan perlindungan pelacakan: %rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "Mode siluman diterapkan"
+        "message": "Perlindungan pelacakan diterapkan"
     },
     "filtering_log_in_allowlist": {
         "message": "Situs ini diizinkan"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "Anda memilih untuk mempercayai filter ini."
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "Total aturan: %num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "Spesifikasi di Github"
+    },
     "options_add_custom_filter": {
         "message": "Tambahkan filter kustom"
     },
     "options_empty_custom_filter": {
         "message": "Anda belum memiliki filter kustom"
+    },
+    "options_loader_applying_changes": {
+        "message": "Menerapkan perubahan..."
     },
     "options_editor_indicator_saving": {
         "message": "Menyimpan..."
@@ -356,8 +368,8 @@
     "popup_security_report": {
         "message": "Periksa keamanan situs"
     },
-    "popup_reset_custom_rules": {
-        "message": "Hapus semua aturan pengguna untuk halaman ini"
+    "popup_reset_page_user_rules": {
+        "message": "Hapus aturan pengguna untuk situs web ini"
     },
     "context_block_site_ads": {
         "message": "Blokir iklan pada situs web ini..."
@@ -483,7 +495,7 @@
         "message": "Aturan:"
     },
     "filtering_modal_privacy": {
-        "message": "Mode Siluman:"
+        "message": "Perlindungan pelacakan:"
     },
     "filtering_modal_filter": {
         "message": "Filter:"
@@ -648,7 +660,7 @@
         "message": "Beri masukan"
     },
     "options_privacy": {
-        "message": "Mode Siluman"
+        "message": "Perlindungan pelacakan"
     },
     "options_update_antibanner_filters": {
         "message": "Periksa pembaruan filter"
@@ -707,6 +719,90 @@
     "options_miscellaneous_settings": {
         "message": "Pengaturan tambahan"
     },
+    "options_rule_limits": {
+        "message": "Batas aturan"
+    },
+    "options_rule_limits_description": {
+        "message": "Ekstensi ini sesuai dengan aturan Manifest V3"
+    },
+    "options_rule_limits_description_link": {
+        "message": "Pelajari lebih lanjut tentang Manifest V3"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "Aturan dinamis"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "Aturan yang ditambahkan pengguna, seperti aturan pengguna dan filter kustom"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "Aturan Regex — termasuk di atas"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "Aturan statis"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "Filter bawaan, seperti blokir gangguan atau filter bahasa-spesifik"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "Aturan statis"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "Aturan dari filter bawaan"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "Aturan Regex — termasuk di atas"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current% dari %maximum%"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "Peramban telah memodifikasi daftar filter aktif"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "Apa yang terjadi?"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "Batas aturan bawaan aktif terlampaui setelah pembaruan atau penambahan ekstensi baru. Sesuai Manifest V3, peramban Chrome Anda bereaksi dengan menonaktifkan semua filter bawaan ekstensi kecuali filter standar."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "Filter diaktifkan sebelum pembaruan"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "Filter diaktifkan sekarang"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "Kemungkinan tindakan Anda"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "Opsi 1. Hapus ekstensi pemblokiran iklan yang tidak perlu dari peramban Anda. Untuk mengaktifkan kembali filter yang disebutkan di bagian \"Filter diaktifkan sebelum pembaruan\", klik <a>aktifkan kembali filter.<\/a>"
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "Opsi 2. Pasang aplikasi Pemblokir Iklan AdGuard: aplikasi ini tidak memiliki batasan pada aturan pemfilteran. <a>Dapatkan aplikasi AdGuard<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "Opsi 3. Jika Anda puas dengan filter standar yang aktif saat ini, <a>tutup peringatan ini.<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "Opsi 3. Jika Anda puas dengan filter standar yang aktif saat ini, <a>tutup peringatan ini.<\/a>"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "Anda telah mencapai batas aturan bawaan yang aktif. Peramban Anda telah mengubah daftar filter bawaan yang aktif. Jumlah filter yang diaktifkan telah berubah dari %expected% menjadi %current%."
+    },
+    "options_limits_warning_static_filters": {
+        "message": "Anda telah mencapai batas filter bawaan yang aktif. %maximum% dari %current% filter aktif. Untuk mengaktifkan aturan baru, nonaktifkan beberapa filter bawaan."
+    },
+    "options_limits_warning_static_rules": {
+        "message": "Anda telah mencapai batas aturan bawaan yang aktif. %maximum% dari %current% aturan aktif. Untuk mengaktifkan aturan baru, nonaktifkan beberapa filter bawaan."
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "Anda telah mencapai batas aturan regex bawaan yang aktif. %maximum% dari %current% aturan regex aktif. Untuk mengaktifkan aturan baru, nonaktifkan beberapa filter bawaan."
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "Anda telah mencapai batas aturan yang ditambahkan pengguna. %maximum% dari %current% aturan aktif."
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "Anda telah mencapai batas aturan regex yang ditambahkan pengguna. %maximum% dari %current% aturan regex aktif."
+    },
     "options_show_adguard_full_version_title": {
         "message": "Tampilkan informasi pada versi penuh AdGuard"
     },
@@ -747,13 +843,13 @@
         "message": "Menggunakan versi filter yang lebih pendek hanya dengan aturan yang paling populer untuk menghemat lalu lintas. Lebih cocok untuk peramban seluler"
     },
     "options_privacy_title": {
-        "message": "Mode Siluman"
+        "message": "Perlindungan pelacakan"
     },
     "options_privacy_desc": {
         "message": "Lindungi identitas dan informasi sensitif pribadi anda dari ribuan pelacak daring dengan memblokir metode pelacak yang paling populer."
     },
     "options_hide_referrer_title": {
-        "message": "Sembunyikan Perujuk dari pihak ketiga"
+        "message": " Sembunyikan perujuk dari pihak ketiga"
     },
     "options_hide_referrer_desc": {
         "message": "Cegah pihak ketiga mengetahui situs web apa yang Anda kunjungi."
@@ -801,16 +897,19 @@
         "message": "Blokir pelacak"
     },
     "options_block_known_trackers_description": {
-        "message": "Blokir pelacak dan alat analisis web dengan filter Pelindung Pelacakan AdGuard."
+        "message": "Blokir pelacak dan alat analitik web dengan filter perlindungan pelacakan AdGuard."
     },
     "options_third_party_title": {
         "message": "Penghancuran sendiri cookie pihak ketiga"
     },
     "options_third_party_desc": {
-        "message": "Batasi umur kuki pihak ketiga (menit)."
+        "message": "Batasi umur cookie pihak ketiga (menit)."
     },
     "options_first_party_title": {
         "message": "Penghancuran sendiri cookie pihak pertama (tidak disarankan)"
+    },
+    "options_first_party_desc": {
+        "message": "Batasi umur cookie pihak pertama (menit)."
     },
     "popup_abuse_site": {
         "message": "Laporkan masalah"
@@ -838,6 +937,9 @@
     },
     "popup_switch_button": {
         "message": "Sakelar perlindungan"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "Peramban Anda telah memodifikasi daftar filter bawaan yang aktif"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1000,6 +1102,9 @@
     },
     "options_stealth_miscellaneous_title": {
         "message": "Lain-lain"
+    },
+    "options_coming_soon": {
+        "message": "Segera hadir"
     },
     "blocking_pages_malware": {
         "message": "Halaman web di <strong>%host%<\/strong> ini telah dilaporkan sebagai halaman malware dan telah diblokir berdasarkan preferensi keamanan Anda."

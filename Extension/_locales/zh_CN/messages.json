@@ -33,13 +33,16 @@
         "message": "启用"
     },
     "popup_header_cta_link": {
-        "message": "想要拦截更多内容？"
+        "message": "如何加强保护"
     },
     "popup_header_update_filters": {
         "message": "检查过滤器更新"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "文件扩展名应为 %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "修复"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard for iOS"
@@ -60,7 +63,7 @@
         "message": "禁用通知"
     },
     "popup_adguard_footer_title": {
-        "message": "为您的移动设备获取 AdGuard"
+        "message": "保护移动设备"
     },
     "options_popup_call_to_action": {
         "message": "输入过滤器的有效 URL 或文件路径到以上字段。"
@@ -141,10 +144,10 @@
         "message": "已修改规则：%rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "隐身模式规则：%rules_count%"
+        "message": "跟踪保护规则：%rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "隐身模式已应用"
+        "message": "应用跟踪保护功能"
     },
     "filtering_log_in_allowlist": {
         "message": "该网站已在白名单内"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "您选择信任此过滤器。"
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "总规则数：%num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "GitHub 的规格"
+    },
     "options_add_custom_filter": {
         "message": "添加自定义过滤器"
     },
     "options_empty_custom_filter": {
         "message": "您还没有任何自定义过滤器"
+    },
+    "options_loader_applying_changes": {
+        "message": "正在应用变更…"
     },
     "options_editor_indicator_saving": {
         "message": "保存..."
@@ -356,8 +368,8 @@
     "popup_security_report": {
         "message": "检测网站安全性"
     },
-    "popup_reset_custom_rules": {
-        "message": "移除用于此网页上的所有用户规则"
+    "popup_reset_page_user_rules": {
+        "message": "删除用于此网站上的用户规则"
     },
     "context_block_site_ads": {
         "message": "拦截此网站上的广告..."
@@ -483,7 +495,7 @@
         "message": "规则："
     },
     "filtering_modal_privacy": {
-        "message": "隐身模式："
+        "message": "跟踪保护："
     },
     "filtering_modal_filter": {
         "message": "过滤器："
@@ -648,7 +660,7 @@
         "message": "留下反馈"
     },
     "options_privacy": {
-        "message": "隐身模式"
+        "message": "跟踪保护"
     },
     "options_update_antibanner_filters": {
         "message": "检查过滤器更新"
@@ -707,6 +719,90 @@
     "options_miscellaneous_settings": {
         "message": "附加设置"
     },
+    "options_rule_limits": {
+        "message": "规则限制"
+    },
+    "options_rule_limits_description": {
+        "message": "此扩展符合 Chromium Manifest V3 的要求"
+    },
+    "options_rule_limits_description_link": {
+        "message": "了解有关 Manifest V3 的更多信息"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "动态规则"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "用户添加的规则，例如用户规则和自定义过滤器"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "正则表达式规则（包含在上述内容中）"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "静态规则集"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "内置过滤器，如拦截烦人内容或特定语言过滤器"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "静态规则"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "内置过滤器的规则"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "正则表达式规则（包含在上述内容中）"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current% 个，共 %maximum% 个"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "浏览器已修改活跃过滤器列表"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "出现了什么问题？"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "在更新或添加新扩展后，活跃的内置规则已超出限制。根据 Manifest V3，Chrome 浏览器已禁用除默认过滤器之外的所有扩展程序的内置过滤器。"
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "更新前启用的过滤器"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "当前已启用的过滤器"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "您可以进行的操作"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "选项 1：从浏览器中删除不必要的广告拦截扩展。要重新激活「更新前启用的过滤器」部分中提到的过滤器，请单击「<a>重新激活过滤器<\/a>」。"
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "选项 2：安装 AdGuard 广告拦截程序。该应用程序没有过滤规则的数量限制。<a>获取 AdGuard 广告拦截程序<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "选项 3：如果您可以接受当前启用的默认过滤器，即可<a>关闭此警告<\/a>。"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "选项 3：如果您可以接受当前启用的默认过滤器，即可<a>关闭此警告<\/a>。"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "您已达到内置规则激活上限。 浏览器已修改了内置规则过滤器列表。 启用的过滤器数量已从 %expected% 个更改为 %current% 个。"
+    },
+    "options_limits_warning_static_filters": {
+        "message": "您已达到内置过滤器的限制。 %maximum% 个过滤器（共 %current% 个）已启用。要激活新规则，请禁用一些内置过滤器。"
+    },
+    "options_limits_warning_static_rules": {
+        "message": "您已达到内置规则的限制。 %maximum% 个规则（共 %current% 个）已启用。要激活新规则，请禁用一些内置过滤器。"
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "您已达到内置正则表达式规则的限制。 %maximum% 个正则表达式规则（共 %current% 个）已启用。要激活新规则，请禁用一些内置过滤器。"
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "您已达到用户添加规则的限制。 %maximum% 条规则中的 %current% 条已启用。"
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "您已达到用户添加正则表达式规则的限制。 %maximum% 个正则表达式规则中的 %current% 个已启用。"
+    },
     "options_show_adguard_full_version_title": {
         "message": "显示关于 AdGuard 完整版本的信息"
     },
@@ -747,13 +843,13 @@
         "message": "使用较短的过滤器，仅包含最流行的规则以节省流量。更适合移动浏览器"
     },
     "options_privacy_title": {
-        "message": "隐身模式"
+        "message": "跟踪保护"
     },
     "options_privacy_desc": {
         "message": "通过拦截大部分流行的跟踪方式，保护您的身份和敏感个人信息，远离成千上万的在线跟踪器。"
     },
     "options_hide_referrer_title": {
-        "message": "隐藏网页引荐，防止第三方可视"
+        "message": "对第三方隐藏 Referer"
     },
     "options_hide_referrer_desc": {
         "message": "防止第三方知道您在访问的网站。"
@@ -801,7 +897,7 @@
         "message": "拦截跟踪器"
     },
     "options_block_known_trackers_description": {
-        "message": "启用 AdGuard 跟踪保护过滤器拦截跟踪器和网络分析工具"
+        "message": "启用 AdGuard 跟踪保护过滤器拦截跟踪器和网络分析工具。"
     },
     "options_third_party_title": {
         "message": "自销毁第三方 cookie"
@@ -841,6 +937,9 @@
     },
     "popup_switch_button": {
         "message": "保护开关"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "浏览器已修改激活的内置过滤器列表。"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1003,6 +1102,9 @@
     },
     "options_stealth_miscellaneous_title": {
         "message": "其它"
+    },
+    "options_coming_soon": {
+        "message": "即将推出"
     },
     "blocking_pages_malware": {
         "message": "位于 <strong>%host%<\/strong> 的网页已被报告为恶意网站，根据您的安全设置，我们拦截了与此网站的连接。"
