@@ -134,6 +134,10 @@ export const General = observer(() => {
         event.persist();
         const file = event.target.files?.[0];
 
+        if (!file) {
+            return;
+        }
+
         try {
             const content = await handleFileUpload(file, 'json');
             const success = await handlePrivacyPermissionForWebRtc(content);

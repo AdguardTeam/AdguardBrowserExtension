@@ -21,152 +21,193 @@ import { observer } from 'mobx-react';
 
 import { logger } from '../../../../common/logger';
 import { translator } from '../../../../common/translators/translator';
-import { Icon } from '../../../common/components/ui/Icon';
 import { popupStore } from '../../stores/PopupStore';
+import { AppState } from '../../state-machines/app-state-machine';
+import { COMPARE_URL, SpecificPopupState } from '../../constants';
+
 import {
-    PopupState,
-    COMPARE_URL,
-    MainSwitcherMode,
-} from '../../constants';
-import { addMinDelayLoader } from '../../../common/components/helpers';
+    MainSwitch,
+    NoFiltering,
+    ResumeButton,
+} from './StateComponents';
 
 import './main.pcss';
+
+/**
+ * Fields for the app state data to render.
+ */
+enum AppStateField {
+    Title = 'Title',
+    Subtitle = 'Subtitle',
+    ButtonHandler = 'ButtonHandler',
+    SwitcherOn = 'SwitcherOn',
+}
+
+/**
+ * Data for each state to render.
+ */
+type AppStateData = {
+    /**
+     * State title.
+     */
+    [AppStateField.Title]: string;
+
+    /**
+     * State subtitle.
+     */
+    [AppStateField.Subtitle]?: string | null;
+
+    /**
+     * Handler for the button.
+     */
+    [AppStateField.ButtonHandler]?: () => void;
+
+    /**
+     * Flag for the main switcher. If it's not defined, the switcher is not shown.
+     */
+    [AppStateField.SwitcherOn]?: boolean;
+};
 
 export const Main = observer(() => {
     const store = useContext(popupStore);
 
     const {
+        isInitialDataReceived,
         currentSite,
-        currentStatus,
-        popupState,
+        currentEnabledTitle,
+        currentDisabledTitle,
+        specificPopupState,
         showInfoAboutFullVersion,
         areFilterLimitsExceeded,
+        appState,
+        toggleAllowlisted,
+        resumeApplicationFiltering,
     } = store;
 
-    if (!currentStatus) {
-        logger.error('Popup status message is not defined');
-        return null;
+    if (!isInitialDataReceived) {
+        // FIXME: splash screen should be displayed in this case AG-34497
+        return <div className="main" />;
     }
 
     if (!currentSite) {
         logger.debug('Current site is not defined yet');
     }
 
-    const toggleAllowlistedHandler = __IS_MV3__
-        ? addMinDelayLoader(
-            store.setShowLoader,
-            store.toggleAllowlistedMv3,
-        )
-        : store.toggleAllowlisted;
-
-    const enableFilteringHandler = addMinDelayLoader(
-        store.setShowLoader,
-        async () => {
-            await store.changeApplicationFilteringDisabled(false);
+    const statesMap: Record<AppState, AppStateData> = {
+        [AppState.Loading]: {
+            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_loading'),
         },
-    );
-
-    const switchersMap = {
-        [PopupState.ApplicationEnabled]: {
-            handler: toggleAllowlistedHandler,
-            mode: MainSwitcherMode.Enabled,
+        [AppState.Disabling]: {
+            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_disabling'),
+            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.SwitcherOn]: false,
         },
-        [PopupState.ApplicationFilteringDisabled]: {
-            handler: enableFilteringHandler,
-            mode: MainSwitcherMode.Disabled,
+        [AppState.Disabled]: {
+            [AppStateField.Title]: currentDisabledTitle,
+            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.ButtonHandler]: toggleAllowlisted,
+            [AppStateField.SwitcherOn]: false,
         },
-        [PopupState.ApplicationUnavailable]: {
-            mode: MainSwitcherMode.Unavailable,
+        [AppState.Enabling]: {
+            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_enabling'),
+            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.SwitcherOn]: true,
         },
-        [PopupState.SiteInException]: {
-            mode: MainSwitcherMode.InException,
+        [AppState.Enabled]: {
+            [AppStateField.Title]: currentEnabledTitle,
+            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.ButtonHandler]: toggleAllowlisted,
+            [AppStateField.SwitcherOn]: true,
         },
-        [PopupState.SiteAllowlisted]: {
-            handler: toggleAllowlistedHandler,
-            mode: MainSwitcherMode.Allowlisted,
+        [AppState.Pausing]: {
+            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_pausing'),
+            [AppStateField.Subtitle]: translator.getMessage('popup_site_filtering_state_subtitle_all_websites'),
+        },
+        [AppState.Paused]: {
+            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_paused'),
+            [AppStateField.Subtitle]: translator.getMessage('popup_site_filtering_state_subtitle_all_websites'),
+            [AppStateField.ButtonHandler]: resumeApplicationFiltering,
+        },
+        [AppState.Resuming]: {
+            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_resuming'),
+            [AppStateField.Subtitle]: translator.getMessage('popup_site_filtering_state_subtitle_all_websites'),
         },
     };
 
-    const switcher = switchersMap[popupState];
+    const state = statesMap[appState];
 
-    if (!switcher) {
-        logger.error(`Unknown popup state: ${popupState}`);
+    if (!state) {
+        logger.error(`Unknown state: ${appState}`);
         return null;
     }
 
-    const mainClassNames = `main main--${switcher.mode}`;
+    const isResumeButtonVisible = appState === AppState.Paused
+        || appState === AppState.Pausing
+        || appState === AppState.Resuming;
 
-    if (!store.isInitialDataReceived) {
-        return <div className={mainClassNames} />;
-    }
+    /**
+     * Returns a component for the current app state.
+     *
+     * @returns Current state component.
+     */
+    const getCentralControlByState = () => {
+        if (typeof state[AppStateField.SwitcherOn] !== 'undefined') {
+            return (
+                <MainSwitch
+                    isEnabled={state[AppStateField.SwitcherOn]}
+                    clickHandler={state[AppStateField.ButtonHandler]}
+                />
+            );
+        }
+
+        if (isResumeButtonVisible) {
+            return <ResumeButton clickHandler={state[AppStateField.ButtonHandler]} />;
+        }
+
+        if (
+            specificPopupState === SpecificPopupState.FilteringUnavailable
+            || specificPopupState === SpecificPopupState.SiteInException
+        ) {
+            return <NoFiltering specificPopupState={specificPopupState} />;
+        }
+
+        logger.debug('No component for the current app state');
+        return null;
+    };
 
     return (
-        <div className={mainClassNames}>
+        <div className="main">
             <div className="main__header">
-                <div className="main__header--current-status--title">
-                    {currentStatus.title}
+                <div
+                    className="main__header--current-status--title"
+                    title={state[AppStateField.Title]}
+                >
+                    {state[AppStateField.Title]}
                 </div>
                 <div
                     className="main__header--current-site"
-                    title={currentSite || ''}
+                    // FIXME: needs to be updated for loading AG-34497, probably it will be redundant here
+                    title={state[AppStateField.Subtitle] || ''}
                 >
-                    {currentSite}
+                    {state[AppStateField.Subtitle] || ''}
                 </div>
-                {currentStatus?.description && (
-                    <div className="main__header--current-status--description">
-                        {currentStatus.description}
-                    </div>
-                )}
-                { areFilterLimitsExceeded && __IS_MV3__ && (
+                {
+                    specificPopupState === SpecificPopupState.SiteInException
+                    && !isResumeButtonVisible
+                    && (
+                        <div className="main__header--current-status--description">
+                            {translator.getMessage('popup_site_exception_information')}
+                        </div>
+                    )
+                }
+                {areFilterLimitsExceeded && __IS_MV3__ && (
                     <div className="main__header--limits-exceeded">
                         {translator.getMessage('popup_limits_exceeded_warning')}
                     </div>
                 )}
             </div>
 
-            <div className="switcher__wrapper">
-                <button
-                    type="button"
-                    className="switcher"
-                    // TODO: handle later
-                    // @ts-ignore
-                    onClick={switcher.handler}
-                    title={translator.getMessage('popup_switch_button')}
-                >
-                    <div className={`switcher__center switcher__center--${switcher.mode}`} />
-                    <div className="switcher__btn">
-                        {/* enabled switcher state */}
-                        <Icon id="#checkmark" classname="icon--24 switcher__icon switcher__icon--checkmark" />
-                        {/* disabled switcher state */}
-                        <Icon id="#circle" classname="icon--24 switcher__icon switcher__icon--circle" />
-                    </div>
-                </button>
-            </div>
-
-            {popupState === PopupState.ApplicationFilteringDisabled && (
-                <div className="switcher__resume--wrapper">
-                    <button
-                        type="button"
-                        className="button switcher__resume--btn"
-                        onClick={enableFilteringHandler}
-                        title={translator.getMessage('popup_resume_protection_button')}
-                    >
-                        {translator.getMessage('popup_resume_protection_button')}
-                    </button>
-                </div>
-            )}
-
-            {popupState === PopupState.ApplicationUnavailable && (
-                <div className="switcher__no-filtering">
-                    <Icon id="#secure-page" classname="icon--no-filtering" />
-                </div>
-            )}
-
-            {popupState === PopupState.SiteInException && (
-                <div className="switcher__no-filtering">
-                    <Icon id="#lock" classname="icon--no-filtering" />
-                </div>
-            )}
+            {getCentralControlByState()}
 
             {showInfoAboutFullVersion && (
                 <div className="main__cta">

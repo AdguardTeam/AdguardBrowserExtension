@@ -23,42 +23,34 @@ import {
     action,
     computed,
     configure,
+    makeObservable,
     observable,
     runInAction,
-    makeObservable,
 } from 'mobx';
 import punycode from 'punycode/';
 
 import type { GetStatisticsDataResponse, SettingsData } from '../../../background/api';
+import { type GetTabInfoForPopupResponse } from '../../../background/services';
 import type { PageStatsDataItem } from '../../../background/schema';
 import { messenger } from '../../services/messenger';
 import {
-    PopupState,
+    SpecificPopupState,
     TIME_RANGES,
     ViewState,
 } from '../constants';
 import { MessageType } from '../../../common/messages';
 import { translator } from '../../../common/translators/translator';
 import { type PromoNotification } from '../../../background/storages';
+import {
+    AppState,
+    appStateActor,
+    AppStateEvent,
+} from '../state-machines/app-state-machine';
+import { asyncWrapper } from '../../filtering-log/stores/helpers';
 
 type BlockedStatsInfo = {
     totalBlocked: number;
     totalBlockedTab: number;
-};
-
-/**
- * Popup status data.
- */
-type PopupStatus = {
-    /**
-     * Status title.
-     */
-    title: string;
-
-    /**
-     * Status description.
-     */
-    description?: string;
 };
 
 // Do not allow property change outside of store actions
@@ -71,17 +63,28 @@ class PopupStore {
     @observable
     isInitialDataReceived = false;
 
+    /**
+     * Flag that indicates whether the application filtering is **paused**.
+     */
     @observable
-    applicationFilteringDisabled: boolean | null = null;
+    applicationFilteringPaused: boolean | null = null;
 
+    /**
+     * Flag that indicates whether the filtering is possible or not (e.g. secure pages).
+     */
     @observable
-    applicationAvailable = true;
+    isFilteringPossible = true;
 
+    /**
+     * Flag that indicates whether the filtering on a website is disabled
+     * by a document exception rule — `@@||example.com^$document` in some filter, **not user rules**,
+     * so it cannot be undone by the user.
+     */
     @observable
     canAddRemoveRule = true;
 
     @observable
-    url = null;
+    url: string | null = null;
 
     @observable
     viewState = ViewState.Actions;
@@ -127,21 +130,36 @@ class PopupStore {
 
     currentTabId?: number | null = null;
 
-    domainName = null;
+    domainName: string | null = null;
 
-    /**
-     * Loader visibility state. **Used for mv3**.
-     */
-    @observable showLoader = false;
+    @observable
+    appState: AppState = appStateActor.getSnapshot().value;
 
     constructor() {
         makeObservable(this);
 
-        this.setShowLoader = this.setShowLoader.bind(this);
+        appStateActor.subscribe((state) => {
+            runInAction(() => {
+                this.appState = state.value;
+            });
+        });
     }
 
+    /**
+     * Sets the initial state of the app state machine actor based on the current popup data.
+     */
+    setActorInitState = () => {
+        if (this.applicationFilteringPaused) {
+            appStateActor.send({ type: AppStateEvent.Pause });
+        } else if (this.documentAllowlisted) {
+            appStateActor.send({ type: AppStateEvent.Disable });
+        } else {
+            appStateActor.send({ type: AppStateEvent.Enable });
+        }
+    };
+
     @action
-    getPopupData = async () => {
+    getPopupData = async (): Promise<GetTabInfoForPopupResponse | undefined> => {
         // get current tab id
         const tabs = await browser.tabs.query({
             active: true,
@@ -149,7 +167,11 @@ class PopupStore {
         });
         const currentTab = tabs?.[0];
 
-        const response = await messenger.getTabInfoForPopup(currentTab?.id);
+        if (!currentTab?.id) {
+            return;
+        }
+
+        const response = await messenger.getTabInfoForPopup(currentTab.id);
 
         if (!response) {
             return;
@@ -165,8 +187,8 @@ class PopupStore {
             } = response;
 
             // frame info
-            this.applicationFilteringDisabled = frameInfo.applicationFilteringDisabled;
-            this.applicationAvailable = frameInfo.applicationAvailable;
+            this.applicationFilteringPaused = frameInfo.applicationFilteringDisabled;
+            this.isFilteringPossible = frameInfo.isFilteringPossible;
             this.url = frameInfo.url;
             this.totalBlocked = frameInfo.totalBlocked;
             this.totalBlockedTab = frameInfo.totalBlockedTab;
@@ -190,16 +212,73 @@ class PopupStore {
             this.areFilterLimitsExceeded = areFilterLimitsExceeded;
 
             this.isInitialDataReceived = true;
-            this.currentTabId = currentTab?.id;
+            this.currentTabId = currentTab.id;
+
+            this.setActorInitState();
         });
     };
 
+    /**
+     * Sends a message to the background to set the application filtering paused state to the specified value.
+     *
+     * @param state Whether the application filtering is paused or not.
+     */
     @action
-    changeApplicationFilteringDisabled = async (state: boolean) => {
-        await messenger.changeApplicationFilteringDisabled(state);
+    changeApplicationFilteringPaused = async (state: boolean) => {
+        await messenger.changeApplicationFilteringPaused(state);
 
         runInAction(() => {
-            this.applicationFilteringDisabled = state;
+            this.applicationFilteringPaused = state;
+        });
+    };
+
+    /**
+     * Pauses the application filtering.
+     */
+    pauseApplicationFiltering = async () => {
+        appStateActor.send({
+            type: AppStateEvent.Pause,
+        });
+
+        await this.changeApplicationFilteringPaused(true);
+
+        appStateActor.send({
+            type: AppStateEvent.PauseSuccess,
+        });
+    };
+
+    /**
+     * Resumes the application filtering.
+     */
+    resumeApplicationFiltering = async () => {
+        appStateActor.send({
+            type: AppStateEvent.Resume,
+        });
+
+        await this.changeApplicationFilteringPaused(false);
+
+        // `canAddRemoveRule` is `true` if there is no a global exception for a website
+        // and the filtering can be disabled for a website (allowlisted).
+        // BUT it also may happen so when a global exception is present for a website,
+        // and the filtering is _paused_ (which means mainFrameRule is null) as the same time,
+        // so the background will send `canAddRemoveRule` as `true` as well.
+        // That's why getting the popup data should be done — we need `canAddRemoveRule` to be re-calculated
+        // after the filtering is resumed in the background.
+        await this.getPopupData();
+
+        // Due to the updated `canAddRemoveRule` value, if site is in exceptions, consider resuming successful.
+        if (!this.canAddRemoveRule) {
+            appStateActor.send({
+                type: AppStateEvent.ResumeSuccess,
+            });
+            return;
+        }
+
+        // If the site is not in exceptions and can possibly be allowlisted, send the event based on this value.
+        appStateActor.send({
+            type: this.documentAllowlisted
+                ? AppStateEvent.ResumeFail
+                : AppStateEvent.ResumeSuccess,
         });
     };
 
@@ -210,84 +289,77 @@ class PopupStore {
 
     @computed
     get currentSite() {
-        if (this.applicationAvailable) {
+        if (this.isFilteringPossible) {
             return this.domainName ? punycode.toUnicode(this.domainName) : this.url;
         }
         return this.url;
     }
 
     /**
-     * Returns the current status message data for MV2.
+     * Returns a popup main title for enabled state for MV2.
      *
-     * @returns Popup status data.
+     * @returns Enabled popup title.
      */
-    private getCurrentStatusMv2 = (): PopupStatus | null => {
-        let status: PopupStatus | null = null;
+    private getCurrentEnabledTitleMv2 = (): string => {
+        let title = translator.getMessage('popup_tab_blocked_count', {
+            num: this.totalBlockedTab.toLocaleString(),
+        });
 
-        if (!this.applicationAvailable) {
-            status = {
-                title: translator.getMessage('popup_site_filtering_state_secure_page'),
-            };
+        if (!this.isFilteringPossible) {
+            title = translator.getMessage('popup_site_filtering_state_secure_page');
         } else if (!this.canAddRemoveRule) {
-            status = {
-                title: translator.getMessage('popup_site_filtering_state_disabled'),
-                description: translator.getMessage('popup_site_exception_information'),
-            };
-        } else {
-            status = {
-                title: translator.getMessage('popup_tab_blocked_count', {
-                    num: this.totalBlockedTab.toLocaleString(),
-                }),
-            };
+            title = translator.getMessage('popup_site_filtering_state_disabled');
         }
 
-        return status;
+        return title;
     };
 
     /**
-     * Returns the current status message data for MV3.
+     * Returns a popup main title for enabled state for MV3.
      *
-     * @returns Popup status data.
+     * @returns Enabled popup title.
      */
-    private getCurrentStatusMv3 = (): PopupStatus | null => {
-        let status: PopupStatus | null = null;
+    private getCurrentEnabledTitleMv3 = (): string => {
+        let title = translator.getMessage('popup_site_filtering_state_enabled');
 
-        if (!this.applicationAvailable) {
-            status = {
-                title: translator.getMessage('popup_site_filtering_state_secure_page'),
-            };
+        if (!this.isFilteringPossible) {
+            title = translator.getMessage('popup_site_filtering_state_secure_page');
         } else if (!this.canAddRemoveRule) {
-            status = {
-                title: translator.getMessage('popup_site_filtering_state_disabled'),
-                description: translator.getMessage('popup_site_exception_information'),
-            };
-        } else if (this.applicationFilteringDisabled) {
-            status = {
-                title: translator.getMessage('popup_site_filtering_state_paused'),
-            };
-        } else if (this.documentAllowlisted) {
-            status = {
-                title: translator.getMessage('popup_site_filtering_state_disabled'),
-            };
-        } else {
-            status = {
-                title: translator.getMessage('popup_site_filtering_state_enabled'),
-            };
+            title = translator.getMessage('popup_site_filtering_state_disabled');
         }
 
-        return status;
+        return title;
     };
 
-    @computed
-    get currentStatus(): PopupStatus | null {
+    /**
+     * Returns a popup main title for enabled state.
+     *
+     * @returns Enabled popup title.
+     */
+    get currentEnabledTitle(): string {
         return __IS_MV3__
-            ? this.getCurrentStatusMv3()
-            : this.getCurrentStatusMv2();
+            ? this.getCurrentEnabledTitleMv3()
+            : this.getCurrentEnabledTitleMv2();
+    }
+
+    /**
+     * Returns a popup main title for disabled state.
+     *
+     * @returns Disabled popup title.
+     */
+    get currentDisabledTitle(): string {
+        let title = translator.getMessage('popup_site_filtering_state_disabled');
+
+        if (!this.isFilteringPossible) {
+            title = translator.getMessage('popup_site_filtering_state_secure_page');
+        }
+
+        return title;
     }
 
     @action
-    toggleAllowlisted = () => {
-        if (!this.applicationAvailable || this.applicationFilteringDisabled) {
+    toggleAllowlisted = async () => {
+        if (!this.isFilteringPossible || this.applicationFilteringPaused) {
             return;
         }
         if (!this.canAddRemoveRule) {
@@ -296,12 +368,17 @@ class PopupStore {
 
         let isAllowlisted = this.documentAllowlisted;
 
+        appStateActor.send({
+            type: isAllowlisted
+                ? AppStateEvent.Enable
+                : AppStateEvent.Disable,
+        });
+
         if (isAllowlisted) {
-            messenger.removeAllowlistDomain(this.currentTabId, true);
+            await asyncWrapper(messenger.removeAllowlistDomain, this.currentTabId, true);
             isAllowlisted = false;
         } else {
-            // do not wait for the result for mv2 since there is no loader for it
-            messenger.addAllowlistDomain(this.currentTabId);
+            await asyncWrapper(messenger.addAllowlistDomain, this.currentTabId);
             isAllowlisted = true;
         }
 
@@ -309,59 +386,31 @@ class PopupStore {
             this.documentAllowlisted = isAllowlisted;
             this.userAllowlisted = isAllowlisted;
             this.totalBlockedTab = 0;
+        });
+
+        appStateActor.send({
+            type: isAllowlisted
+                ? AppStateEvent.DisableSuccess
+                : AppStateEvent.EnableSuccess,
         });
     };
 
     /**
-     * Async version of the {@link toggleAllowlisted} method that waits for the result.
+     * Returns the specific popup state based on {@link isFilteringPossible} and {@link canAddRemoveRule} values.
      *
-     * **Used for mv3**.
+     * For other states of the popup, a state machine is used.
      */
-    @action
-    toggleAllowlistedMv3 = async () => {
-        if (!this.applicationAvailable || this.applicationFilteringDisabled) {
-            return;
-        }
-        if (!this.canAddRemoveRule) {
-            return;
-        }
-
-        let isAllowlisted = this.documentAllowlisted;
-
-        if (isAllowlisted) {
-            await messenger.removeAllowlistDomain(this.currentTabId, true);
-            isAllowlisted = false;
-        } else {
-            await messenger.addAllowlistDomain(this.currentTabId);
-            isAllowlisted = true;
-        }
-
-        runInAction(() => {
-            this.documentAllowlisted = isAllowlisted;
-            this.userAllowlisted = isAllowlisted;
-            this.totalBlockedTab = 0;
-        });
-    };
-
     @computed
-    get popupState(): PopupState {
-        if (this.applicationFilteringDisabled) {
-            return PopupState.ApplicationFilteringDisabled;
-        }
-
-        if (!this.applicationAvailable) {
-            return PopupState.ApplicationUnavailable;
+    get specificPopupState(): SpecificPopupState | null {
+        if (!this.isFilteringPossible) {
+            return SpecificPopupState.FilteringUnavailable;
         }
 
         if (!this.canAddRemoveRule) {
-            return PopupState.SiteInException;
+            return SpecificPopupState.SiteInException;
         }
 
-        if (this.documentAllowlisted) {
-            return PopupState.SiteAllowlisted;
-        }
-
-        return PopupState.ApplicationEnabled;
+        return null;
     }
 
     @action
@@ -490,16 +539,6 @@ class PopupStore {
         await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
         await browser.tabs.create({ url });
     };
-
-    /**
-     * Sets the loader visibility state. **Used for mv3**
-     *
-     * @param {boolean} value Loader visibility state. Default value is false.
-     */
-    @action
-    setShowLoader(value = false) {
-        this.showLoader = value;
-    }
 
     @action
     updateBlockedStats = (tabInfo: BlockedStatsInfo) => {

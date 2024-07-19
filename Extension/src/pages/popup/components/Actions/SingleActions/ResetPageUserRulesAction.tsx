@@ -28,7 +28,7 @@ import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
-export const ResetPageUserRulesAction = ({ className, applicationAvailable, url }: SingleActionParams) => {
+export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
     const [removingUserRules, clearingUserRules] = useState(false);
 
     /**
@@ -43,7 +43,7 @@ export const ResetPageUserRulesAction = ({ className, applicationAvailable, url 
      * Handle reset page user rules action click.
      */
     const handlePageUserRulesReset = async () => {
-        if (!applicationAvailable) {
+        if (!isFilteringPossible) {
             return;
         }
         clearingUserRules(true);

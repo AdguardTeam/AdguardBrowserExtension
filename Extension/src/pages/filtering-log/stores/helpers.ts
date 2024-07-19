@@ -49,3 +49,19 @@ export const matchesSearch = (filteringEvent: UIFilteringLogEvent, search: strin
 
     return matches;
 };
+
+/**
+ * Calls a callback function with async/await if the extension is MV3.
+ * Otherwise, calls the callback function without async/await.
+ *
+ * @param callback Callback to execute.
+ * @param args Arguments to pass to the callback.
+ */
+export const asyncWrapper = async (callback: (...args: any) => void, ...args: any[]) => {
+    if (__IS_MV3__) {
+        await callback(...args);
+        return;
+    }
+
+    callback(...args);
+};

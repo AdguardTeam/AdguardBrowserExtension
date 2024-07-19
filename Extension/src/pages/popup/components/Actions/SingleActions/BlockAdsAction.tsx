@@ -26,12 +26,12 @@ import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
-export const BlockAdsAction = ({ className, applicationAvailable }: SingleActionParams) => {
+export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionParams) => {
     /**
      * Handle block ads action click.
      */
     const handleBlockAds = () => {
-        if (!applicationAvailable) {
+        if (!isFilteringPossible) {
             return;
         }
         messenger.openAssistant();

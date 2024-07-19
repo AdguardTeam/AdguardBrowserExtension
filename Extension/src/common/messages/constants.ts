@@ -56,7 +56,7 @@ export enum MessageType {
     SubscribeToCustomFilter = 'subscribeToCustomFilter',
     RemoveAntiBannerFilter = 'removeAntiBannerFilter',
     GetTabInfoForPopup = 'getTabInfoForPopup',
-    ChangeApplicationFilteringDisabled = 'changeApplicationFilteringDisabled',
+    ChangeApplicationFilteringPaused = 'changeApplicationFilteringPaused',
     OpenRulesLimitsTab = 'openRulesLimitsTab',
     OpenSettingsTab = 'openSettingsTab',
     OpenAssistant = 'openAssistant',
@@ -154,8 +154,8 @@ export type GetTabInfoForPopupMessage = {
   };
 };
 
-export type ChangeApplicationFilteringDisabledMessage = {
-  type: MessageType.ChangeApplicationFilteringDisabled;
+export type ChangeApplicationFilteringPausedMessage = {
+  type: MessageType.ChangeApplicationFilteringPaused;
   data: {
     state: boolean;
   };
@@ -493,7 +493,7 @@ export type Message = (
     | ApplySettingsJsonMessage
     | AddFilteringSubscriptionMessage
     | GetTabInfoForPopupMessage
-    | ChangeApplicationFilteringDisabledMessage
+    | ChangeApplicationFilteringPausedMessage
     | OpenRulesLimitsTabMessage
     | OpenSettingsTabMessage
     | OpenAssistantMessage

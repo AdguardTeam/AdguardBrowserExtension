@@ -19,6 +19,9 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import cn from 'classnames';
+
+import { isTransitionAppState } from '../../../state-machines/app-state-machine';
 import { popupStore } from '../../../stores/PopupStore';
 
 import { Filters } from './Filters';
@@ -29,14 +32,18 @@ import './stats-chart.pcss';
 export const StatsChart = observer(() => {
     const store = useContext(popupStore);
 
-    const { stats } = store;
+    const { stats, appState } = store;
 
     if (!stats) {
         return null;
     }
 
     return (
-        <div className="stats-chart">
+        <div
+            className={cn('stats-chart', {
+                'stats-chart--non-active': isTransitionAppState(appState),
+            })}
+        >
             <Filters />
             <Chart
                 stats={stats}

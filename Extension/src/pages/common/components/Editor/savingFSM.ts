@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { interpret, Machine } from 'xstate';
+import {
+    createActor,
+    fromPromise,
+    setup,
+} from 'xstate';
 
 import { logger } from '../../../../common/logger';
 
@@ -36,44 +40,29 @@ export type SavingFSMStateType = SavingFSMState.Idle | SavingFSMState.Saving | S
  */
 export const enum SavingFSMEvent {
     Save = 'save',
-    Success = 'success',
-    Error = 'error',
-    Timeout = 'timeout',
 }
 
-const SAVED_DISPLAY_TIMEOUT_MS = 1000;
+/**
+ * Save data parameters.
+ */
+type SaveDataParams = {
+    /**
+     * Event.
+     */
+    event: {
+        /**
+         * Value to be saved.
+         */
+        value: string,
 
-const savingStateMachine = {
-    initial: SavingFSMState.Idle,
-    states: {
-        [SavingFSMState.Idle]: {
-            on: {
-                [SavingFSMEvent.Save]: SavingFSMState.Saving,
-            },
-        },
-        [SavingFSMState.Saving]: {
-            invoke: {
-                src: 'saveData',
-                onDone: {
-                    target: SavingFSMState.Saved,
-                },
-                onError: {
-                    target: SavingFSMState.Saved,
-                    // @ts-ignore
-                    actions: (context, event) => {
-                        const { data: error } = event;
-                        logger.error(error.message);
-                    },
-                },
-            },
-        },
-        [SavingFSMState.Saved]: {
-            after: [{
-                delay: SAVED_DISPLAY_TIMEOUT_MS, target: SavingFSMState.Idle,
-            }],
-        },
+        /**
+         * Callback to be called afterwards.
+         */
+        callback: () => void,
     },
 };
+
+const SAVED_DISPLAY_TIMEOUT_MS = 1000;
 
 type SavingServiceParams = {
     /**
@@ -85,21 +74,63 @@ type SavingServiceParams = {
      * Services to be used in the state machine.
      */
     services: {
-        // TODO: Actual type of event is { value: any, callback: Promise<void> }
-        // but it's not possible to define it in xstate.
-        saveData: (context: any, event: any) => Promise<void>,
+        /**
+         * Save data service.
+         *
+         * @param params Save data parameters.
+         */
+        saveData: (params: SaveDataParams) => Promise<void>,
     },
-
 };
+
+const SAVE_DATA_ACTOR_NAME = 'saveDataActor';
 
 // TODO: Maybe we can remove this service?
 export const createSavingService = ({ id, services }: SavingServiceParams) => {
-    return interpret(Machine({ ...savingStateMachine, id }, { services }))
-        .start()
-        .onEvent((event) => {
-            logger.debug(id, event);
-        })
-        .onTransition((state) => {
-            logger.debug(id, { currentState: state.value });
-        });
+    const workflow = setup({
+        actors: {
+            [SAVE_DATA_ACTOR_NAME]: fromPromise(async ({ input }: any) => {
+                await services.saveData(input);
+            }),
+        },
+    }).createMachine({
+        id,
+        initial: SavingFSMState.Idle,
+        states: {
+            [SavingFSMState.Idle]: {
+                on: {
+                    [SavingFSMEvent.Save]: SavingFSMState.Saving,
+                },
+            },
+            [SavingFSMState.Saving]: {
+                invoke: {
+                    src: SAVE_DATA_ACTOR_NAME,
+                    input: ({ event }) => ({ event }),
+                    onDone: {
+                        target: SavingFSMState.Saved,
+                    },
+                    onError: {
+                        target: SavingFSMState.Saved,
+                        actions: ({ event }) => {
+                            const { error } = event;
+                            logger.error(error);
+                        },
+                    },
+                },
+            },
+            [SavingFSMState.Saved]: {
+                after: {
+                    [SAVED_DISPLAY_TIMEOUT_MS]: SavingFSMState.Idle,
+                },
+            },
+        },
+    });
+
+    const actor = createActor(workflow);
+
+    actor.subscribe((snapshot) => {
+        logger.debug(id, { currentState: snapshot.value });
+    });
+
+    return actor.start();
 };

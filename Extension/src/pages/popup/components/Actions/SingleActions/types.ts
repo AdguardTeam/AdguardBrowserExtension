@@ -23,9 +23,9 @@ export type SingleActionParams = {
     className: string,
 
     /**
-     * Is the application available.
+     * Is filtering possible.
      */
-    applicationAvailable?: boolean,
+    isFilteringPossible?: boolean,
 
     /**
      * Action click handler url.

@@ -49,22 +49,24 @@ class UserRulesEditorStore {
     savingService = createSavingService({
         id: 'userRules',
         services: {
-            saveData: async (_, e) => {
-                await messenger.saveUserRules(e.value);
+            saveData: async ({ event }) => {
+                const { value, callback } = event;
 
-                await e.callback();
+                await messenger.saveUserRules(value);
+
+                await callback();
             },
         },
     });
 
-    @observable savingUserRulesState = this.savingService.initialState.value;
+    @observable savingUserRulesState = this.savingService.getSnapshot().value;
 
     constructor() {
         makeObservable(this);
 
         this.updateSetting = this.updateSetting.bind(this);
 
-        this.savingService.onTransition((state) => {
+        this.savingService.subscribe((state) => {
             runInAction(() => {
                 this.savingUserRulesState = state.value;
                 if (state.value === SavingFSMState.Saving) {
@@ -149,7 +151,11 @@ class UserRulesEditorStore {
     saveUserRules(value) {
         return new Promise((resolve, reject) => {
             try {
-                this.savingService.send(SavingFSMEvent.Save, { value, callback: resolve });
+                this.savingService.send({
+                    type: SavingFSMEvent.Save,
+                    value,
+                    callback: resolve,
+                });
             } catch (e) {
                 reject(e);
             }

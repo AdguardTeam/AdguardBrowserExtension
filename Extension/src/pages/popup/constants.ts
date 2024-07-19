@@ -42,20 +42,22 @@ export const enum ViewState {
     Stats = 'stats',
 }
 
-export const enum MainSwitcherMode {
-    Enabled = 'enabled',
-    Disabled = 'disabled',
-    Unavailable = 'unavailable',
-    InException = 'in-exception',
-    Allowlisted = 'allowlisted',
-}
+/**
+ * Describes specific popup states for:
+ * - secure pages where filtering is unavailable;
+ * - websites with exceptions in filters.
+ */
+export const enum SpecificPopupState {
+    /**
+     * Protection is unavailable, e.g. secure page.
+     */
+    FilteringUnavailable = 'filtering.unavailable',
 
-export const enum PopupState {
-    ApplicationEnabled = 'application.enabled',
-    ApplicationFilteringDisabled = 'application.filtering.disabled',
-    ApplicationUnavailable = 'application.unavailable',
+    /**
+     * Protection is disabled for a website due to an exception in filters,
+     * i.e. document exception rule — `@@||example.com^$document` in some filter, **not used rules**.
+     */
     SiteInException = 'site.in.exception',
-    SiteAllowlisted = 'site.allowlisted',
 }
 
 export const TIME_RANGES = {

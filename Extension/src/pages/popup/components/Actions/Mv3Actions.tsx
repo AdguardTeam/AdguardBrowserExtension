@@ -35,27 +35,27 @@ import './actions.pcss';
 const Mv3Actions = observer(() => {
     const store = useContext(popupStore);
 
-    const { applicationAvailable, url } = store;
+    const { isFilteringPossible, url } = store;
 
-    const actionChangingClassname = cn('action', { 'action--disabled': !applicationAvailable });
+    const actionChangingClassname = cn('action', { 'action--disabled': !isFilteringPossible });
 
     return (
         <div className="actions actions--mv3">
-            <BlockAdsAction applicationAvailable={applicationAvailable} className={actionChangingClassname} />
+            <BlockAdsAction isFilteringPossible={isFilteringPossible} className={actionChangingClassname} />
             <ReportIssueAction
                 className={actionChangingClassname}
-                applicationAvailable={applicationAvailable}
+                isFilteringPossible={isFilteringPossible}
                 url={url}
             />
             <CheckSiteSecurityAction
                 className={actionChangingClassname}
-                applicationAvailable={applicationAvailable}
+                isFilteringPossible={isFilteringPossible}
                 url={url}
             />
             {
                 store.hasUserRulesToReset && (
                     <ResetPageUserRulesAction
-                        applicationAvailable={applicationAvailable}
+                        isFilteringPossible={isFilteringPossible}
                         className={actionChangingClassname}
                         url={url}
                     />

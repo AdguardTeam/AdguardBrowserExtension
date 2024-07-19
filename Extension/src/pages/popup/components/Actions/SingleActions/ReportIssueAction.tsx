@@ -27,12 +27,12 @@ import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
-export const ReportIssueAction = ({ className, applicationAvailable, url }: SingleActionParams) => {
+export const ReportIssueAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
     /**
      * Handle issue reporting action click.
      */
     const handleAbuseSite = () => {
-        if (!applicationAvailable) {
+        if (!isFilteringPossible) {
             return;
         }
         messenger.openAbuseSite(url, ForwardFrom.Popup);
