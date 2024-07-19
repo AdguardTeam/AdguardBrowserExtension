@@ -69,7 +69,7 @@ type GetFilteringLogDataResponse = {
     preserveLogEnabled: boolean,
 };
 
-// FIXME (David, v4.4): Add function to preprocess rule event data
+// TODO (David): Add function to preprocess rule event data
 
 /**
  * FilteringLogService collects all actions that extension doing to web requests
