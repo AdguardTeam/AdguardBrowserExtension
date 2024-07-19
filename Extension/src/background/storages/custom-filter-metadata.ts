@@ -42,7 +42,7 @@ export class CustomFilterMetadataStorage extends StringStorage<
      * @returns Custom filter metadata.
      */
     public getById(filterId: number): CustomFilterMetadata | undefined {
-        return this.getData().find(f => f.filterId === filterId);
+        return this.getData().find((f) => f.filterId === filterId);
     }
 
     /**
@@ -52,7 +52,7 @@ export class CustomFilterMetadataStorage extends StringStorage<
      * @returns Custom filter metadata or undefined, if metadata is not found.
      */
     public getByUrl(url: string): CustomFilterMetadata | undefined {
-        return this.getData().find(f => f.customUrl === url);
+        return this.getData().find((f) => f.customUrl === url);
     }
 
     /**
@@ -61,7 +61,7 @@ export class CustomFilterMetadataStorage extends StringStorage<
      * @param filter Custom filter metadata.
      */
     public set(filter: CustomFilterMetadata): void {
-        const data = this.getData().filter(f => f.filterId !== filter.filterId);
+        const data = this.getData().filter((f) => f.filterId !== filter.filterId);
 
         data.push(filter);
 
@@ -74,7 +74,7 @@ export class CustomFilterMetadataStorage extends StringStorage<
      * @param filterId Filter id.
      */
     public remove(filterId: number): void {
-        const data = this.getData().filter(f => f.filterId !== filterId);
+        const data = this.getData().filter((f) => f.filterId !== filterId);
         this.setData(data);
     }
 }

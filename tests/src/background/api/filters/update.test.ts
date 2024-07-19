@@ -52,7 +52,7 @@ describe('Filter Update API should', () => {
     // existing mock
     // Add fake filters to local metadata
     const newFilterIdx = metadata.filters.push(fakeFilter999);
-    const filterId3Index = metadata.filters.findIndex(f => f.filterId === 3);
+    const filterId3Index = metadata.filters.findIndex((f) => f.filterId === 3);
     metadata.filters[filterId3Index]!.version = '1.0.0.0';
     // Fake local metadata
     server.respondWith('GET', /\/filters.js(on)?/, [

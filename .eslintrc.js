@@ -126,7 +126,6 @@ module.exports = {
         'dot-notation': 'off',
         'quote-props': 'off',
         'arrow-body-style': 'off',
-        'arrow-parens': 'off',
         'no-use-before-define': 'off',
         'no-useless-escape': 'off',
         'no-param-reassign': 'off',

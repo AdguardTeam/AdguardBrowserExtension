@@ -330,7 +330,7 @@ export class LocaleDetect {
             return;
         }
 
-        const disabledFiltersIds = filterIds.filter(filterId => !FiltersApi.isFilterEnabled(filterId));
+        const disabledFiltersIds = filterIds.filter((filterId) => !FiltersApi.isFilterEnabled(filterId));
 
         // Always enable language filters group.
         groupStateStorage.enableGroups([AntibannerGroupsId.LanguageFiltersGroupId]);
@@ -344,7 +344,7 @@ export class LocaleDetect {
 
         const filters: RegularFilterMetadata[] = [];
 
-        disabledFiltersIds.forEach(filterId => {
+        disabledFiltersIds.forEach((filterId) => {
             const filter = CommonFilterApi.getFilterMetadata(filterId);
 
             if (filter) {

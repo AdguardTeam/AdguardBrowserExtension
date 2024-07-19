@@ -343,11 +343,11 @@ export class FilteringLogService {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            replaceRules: rules.map(rule => FilteringLogApi.createNetworkRuleEventData(rule)),
+            replaceRules: rules.map((rule) => FilteringLogApi.createNetworkRuleEventData(rule)),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            rules.forEach(rule => {
+            rules.forEach((rule) => {
                 HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
             });
         }

@@ -301,7 +301,7 @@ export class FiltersApi {
         const filterIds = FiltersApi.getEnabledFilters();
 
         // Ignore custom filters
-        const commonFiltersIds = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
+        const commonFiltersIds = filterIds.filter((id) => CommonFilterApi.isCommonFilter(id));
 
         const loadedFiltersIds = await FiltersApi.loadFilters(commonFiltersIds, true);
 
@@ -350,10 +350,10 @@ export class FiltersApi {
         const enabledFilters = filterStateStorage.getEnabledFilters();
         const enabledGroups = groupStateStorage.getEnabledGroups();
 
-        return enabledFilters.filter(id => {
+        return enabledFilters.filter((id) => {
             const filterMetadata = FiltersApi.getFilterMetadata(id);
 
-            return enabledGroups.some(groupId => groupId === filterMetadata?.groupId);
+            return enabledGroups.some((groupId) => groupId === filterMetadata?.groupId);
         });
     }
 
@@ -578,8 +578,8 @@ export class FiltersApi {
         const metadataFiltersIds = FiltersApi.getFiltersMetadata().map(({ filterId }) => filterId);
 
         const tasks = installedFiltersIds
-            .filter(id => !metadataFiltersIds.includes(id))
-            .map(async id => {
+            .filter((id) => !metadataFiltersIds.includes(id))
+            .map(async (id) => {
                 filterVersionStorage.delete(id);
                 filterStateStorage.delete(id);
                 await FiltersStorage.remove(id);

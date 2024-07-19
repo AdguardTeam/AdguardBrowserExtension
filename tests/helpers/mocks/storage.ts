@@ -35,7 +35,7 @@ export class EmulatedLocalStorage implements Storage.StorageArea {
         if (typeof keys === 'string') {
             delete this.data[keys];
         } else {
-            keys.forEach(key => {
+            keys.forEach((key) => {
                 delete this.data[key];
             });
         }

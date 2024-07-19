@@ -99,11 +99,13 @@ const getOptionsDataWithRetry = async () => {
         }
         try {
             const data = await messenger.getOptionsData();
-            if (!data) {
-                await sleep(RETRY_DELAY_MS);
-                return innerRetry(retryTimes - 1);
+
+            if (data) {
+                return data;
             }
-            return data;
+
+            await sleep(RETRY_DELAY_MS);
+            return innerRetry(retryTimes - 1);
         } catch (e) {
             logger.error(e);
             await sleep(RETRY_DELAY_MS);
@@ -461,7 +463,7 @@ class SettingsStore {
 
     @action
     updateGroupStateUI(groupId, enabled) {
-        this.categories.forEach(category => {
+        this.categories.forEach((category) => {
             if (category.groupId === groupId) {
                 if (enabled) {
                     category.enabled = true;
@@ -474,7 +476,7 @@ class SettingsStore {
 
     @action
     updateFilterStateUI(filterId, enabled) {
-        this.filters.forEach(filter => {
+        this.filters.forEach((filter) => {
             if (filter.filterId === filterId) {
                 if (enabled) {
                     filter.enabled = true;

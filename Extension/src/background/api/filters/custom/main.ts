@@ -161,7 +161,7 @@ export class CustomFilterApi {
             name: parsedData.name ? parsedData.name : title as string,
             timeUpdated: parsedData.timeUpdated ? parsedData.timeUpdated : new Date().toISOString(),
             customUrl: url,
-            rulesCount: rules.filter.filter(rule => rule.trim().indexOf('!') !== 0).length,
+            rulesCount: rules.filter.filter((rule) => rule.trim().indexOf('!') !== 0).length,
         };
 
         return { filter };
@@ -262,7 +262,7 @@ export class CustomFilterApi {
      * @param filtersData Array of {@link CustomFilterDTO}.
      */
     public static async createFilters(filtersData: CustomFilterDTO[]): Promise<void> {
-        const tasks = filtersData.map(filterData => CustomFilterApi.createFilter(filterData));
+        const tasks = filtersData.map((filterData) => CustomFilterApi.createFilter(filterData));
 
         const promises = await Promise.allSettled(tasks);
 

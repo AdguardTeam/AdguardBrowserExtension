@@ -69,7 +69,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
             throw MetadataStorage.createNotInitializedError();
         }
 
-        return this.data.filters.find(el => el.filterId === filterId);
+        return this.data.filters.find((el) => el.filterId === filterId);
     }
 
     /**
@@ -98,7 +98,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
             throw MetadataStorage.createNotInitializedError();
         }
 
-        return this.data.groups.find(el => el.groupId === groupId);
+        return this.data.groups.find((el) => el.groupId === groupId);
     }
 
     /**
@@ -127,7 +127,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
             throw MetadataStorage.createNotInitializedError();
         }
 
-        return this.data.tags.find(el => el.tagId === tagId);
+        return this.data.tags.find((el) => el.tagId === tagId);
     }
 
     /**

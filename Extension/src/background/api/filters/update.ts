@@ -137,7 +137,7 @@ export class FilterUpdateApi {
 
         // If it is a force check - updates all installed and enabled filters.
         let filterUpdateDetailsToUpdate = installedAndEnabledFilters.map(
-            id => ({ filterId: id, ignorePatches: forceUpdate }),
+            (id) => ({ filterId: id, ignorePatches: forceUpdate }),
         );
 
         // If not a force check - updates only outdated filters.
@@ -156,7 +156,7 @@ export class FilterUpdateApi {
 
             const uniqueFiltersMap = new Map();
 
-            combinedFilters.forEach(filter => {
+            combinedFilters.forEach((filter) => {
                 if (!uniqueFiltersMap.has(filter.filterId) || filter.ignorePatches) {
                     uniqueFiltersMap.set(filter.filterId, filter);
                 }
@@ -171,7 +171,7 @@ export class FilterUpdateApi {
         // which where updated with force
         filterVersionStorage.refreshLastCheckTime(
             filterUpdateDetailsToUpdate
-                .filter(filterUpdateOptions => filterUpdateOptions.ignorePatches)
+                .filter((filterUpdateOptions) => filterUpdateOptions.ignorePatches)
                 .map(({ filterId }) => filterId),
         );
 
@@ -199,7 +199,7 @@ export class FilterUpdateApi {
          * version matching on update check.
          * We do not update metadata on each check if there are no filters or only custom filters.
          */
-        const shouldLoadMetadata = filterUpdateOptionsList.some(filterUpdateOptions => {
+        const shouldLoadMetadata = filterUpdateOptionsList.some((filterUpdateOptions) => {
             return filterUpdateOptions.ignorePatches && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
         });
 
