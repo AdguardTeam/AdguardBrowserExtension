@@ -149,7 +149,7 @@ export class Engine {
             userrules = await UserRulesApi.getUserRules();
 
             // Remove empty strings.
-            userrules = userrules.filter(rule => !!rule);
+            userrules = userrules.filter((rule) => !!rule);
 
             // Remove duplicates.
             userrules = Array.from(new Set(userrules));

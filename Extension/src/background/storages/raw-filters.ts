@@ -21,7 +21,7 @@ import { logger } from '../../common/logger';
 
 import { storage } from './main';
 
-const stringArraySchema = zod.string().optional().transform(data => data ?? undefined);
+const stringArraySchema = zod.string().optional().transform((data) => data ?? undefined);
 
 /**
  * Encapsulates interaction with stored filter rules before applying directives.

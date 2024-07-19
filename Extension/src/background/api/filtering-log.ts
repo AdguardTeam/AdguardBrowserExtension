@@ -280,7 +280,7 @@ export class FilteringLogApi {
 
         // As Object.keys() returns strings we convert them to integers,
         // because tabId is integer in extension API
-        const tabIdsToRemove = Object.keys(this.tabsInfoMap).map(id => Number(id));
+        const tabIdsToRemove = Object.keys(this.tabsInfoMap).map((id) => Number(id));
 
         for (let i = 0; i < tabs.length; i += 1) {
             const openTab = tabs[i];
@@ -374,7 +374,7 @@ export class FilteringLogApi {
 
         const { filteringEvents } = tabInfo;
 
-        let event = filteringEvents.find(e => e.eventId === eventId);
+        let event = filteringEvents.find((e) => e.eventId === eventId);
 
         if (event) {
             event = Object.assign(event, data);
@@ -407,7 +407,7 @@ export class FilteringLogApi {
             return false;
         }
 
-        return filteringEvents.some(event => {
+        return filteringEvents.some((event) => {
             return event.frameDomain === frameDomain
                 && event.cookieName === cookieName
                 && event.cookieValue === cookieValue;
