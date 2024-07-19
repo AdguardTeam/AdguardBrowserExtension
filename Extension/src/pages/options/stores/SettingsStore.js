@@ -99,11 +99,13 @@ const getOptionsDataWithRetry = async () => {
         }
         try {
             const data = await messenger.getOptionsData();
-            if (!data) {
-                await sleep(RETRY_DELAY_MS);
-                return innerRetry(retryTimes - 1);
+
+            if (data) {
+                return data;
             }
-            return data;
+
+            await sleep(RETRY_DELAY_MS);
+            return innerRetry(retryTimes - 1);
         } catch (e) {
             logger.error(e);
             await sleep(RETRY_DELAY_MS);
