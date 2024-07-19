@@ -19,7 +19,10 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import cn from 'classnames';
+
 import { translator } from '../../../../common/translators/translator';
+import { isTransitionAppState } from '../../state-machines/app-state-machine';
 import { Actions } from '../Actions';
 import { StatsTable } from '../Stats/StatsTable';
 import { ViewState } from '../../constants';
@@ -32,7 +35,7 @@ import './tabs.pcss';
 const Mv2Tabs = observer(() => {
     const store = useContext(popupStore);
 
-    const { viewState } = store;
+    const { viewState, appState } = store;
 
     const contentMapMv2 = {
         [ViewState.Actions]: Actions,
@@ -50,7 +53,11 @@ const Mv2Tabs = observer(() => {
     };
 
     return (
-        <div className="tabs">
+        <div
+            className={cn('tabs', {
+                'tabs--non-active': isTransitionAppState(appState),
+            })}
+        >
             <div className="tabs__panel">
                 <Tab
                     title={translator.getMessage('popup_tab_actions')}

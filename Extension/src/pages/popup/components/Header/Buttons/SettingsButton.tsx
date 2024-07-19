@@ -19,38 +19,27 @@
 import React from 'react';
 
 import { translator } from '../../../../../common/translators/translator';
-import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { messenger } from '../../../../services/messenger';
 
-import { type SingleActionParams } from './types';
-
-import '../actions.pcss';
-
-export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionParams) => {
-    /**
-     * Handle block ads action click.
-     */
-    const handleBlockAds = () => {
-        if (!isFilteringPossible) {
-            return;
-        }
-        messenger.openAssistant();
+export const SettingsButton = () => {
+    const handleSettingsClick = (event: React.MouseEvent | React.KeyboardEvent) => {
+        event.preventDefault();
+        messenger.openSettingsTab();
         window.close();
     };
 
     return (
         <button
+            className="button popup-header__button"
             type="button"
-            className={className}
-            onClick={handleBlockAds}
+            onClick={handleSettingsClick}
+            title={translator.getMessage('options_settings')}
         >
             <Icon
-                id="#block-ad"
+                id="#settings"
                 classname="icon--24"
             />
-            <div className="action__title">
-                {translator.getMessage('popup_block_site_ads_option')}
-            </div>
         </button>
     );
 };

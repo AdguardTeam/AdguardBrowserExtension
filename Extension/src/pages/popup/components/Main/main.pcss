@@ -22,6 +22,9 @@
                 text-align: center;
                 max-width: 280px;
                 margin-top: 48px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
 
             &--description {
@@ -64,6 +67,11 @@
         }
     }
 
+    &__no-filtering {
+        height: 84px;
+        padding-top: 24px;
+    }
+
     &__cta {
         display: flex;
         flex-direction: column;
@@ -101,44 +109,6 @@
         text-align: center;
         font-size: 16px;
     }
-
-    &--allowlisted {
-        & .switcher {
-            &__wrapper {
-                opacity: 1;
-            }
-
-            &__btn {
-                right: 36px;
-
-                & .switcher__icon--checkmark {
-                    display: none;
-                }
-
-                & .switcher__icon--circle {
-                    display: block;
-                }
-            }
-        }
-    }
-
-    &--in-exception,
-    &--unavailable,
-    &--disabled {
-        & .switcher {
-            &__wrapper {
-                display: none;
-            }
-        }
-    }
-
-    &--enabled {
-        & .switcher {
-            &__wrapper {
-                opacity: 1;
-            }
-        }
-    }
 }
 
 .switcher {
@@ -149,30 +119,27 @@
     padding: 0 5px;
 
     &__wrapper {
-        opacity: 0;
         height: 84px;
         padding-top: 24px;
     }
 
-    &__center {
+    &__track {
         width: 80px;
         height: 30px;
         border-radius: 100px;
 
-        &--enabled {
-            background-image: var(--switch-field-enabled);
-        }
+        /* consider enabled by default */
+        background-image: var(--switch-field-enabled);
 
-        &--allowlisted {
+        &--disabled {
             background-image: var(--switch-field-disabled);
         }
     }
 
-    &__btn {
+    &__handle {
         position: absolute;
         width: 50px;
         height: 50px;
-        right: 5px;
         top: 5px;
         border-radius: 50%;
         box-shadow: var(--switch-btn-shadow);
@@ -180,6 +147,17 @@
         padding: 4px;
         cursor: pointer;
         transition: var(--t3) box-shadow;
+
+        /* consider enabled by default */
+        right: 5px;
+
+        & .switcher__icon--on {
+            display: block;
+        }
+
+        & .switcher__icon--off {
+            display: none;
+        }
 
         &:before {
             content: '';
@@ -189,10 +167,22 @@
             border-radius: 50%;
             background-color: var(--white);
         }
+
+        &--disabled {
+            right: 36px;
+
+            & .switcher__icon--on {
+                display: none;
+            }
+
+            & .switcher__icon--off {
+                display: block;
+            }
+        }
     }
 
     &:hover {
-        & .switcher__btn {
+        & .switcher__handle {
             box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
 
             @media (prefers-color-scheme: dark) {
@@ -201,43 +191,36 @@
         }
     }
 
-    &__resume {
-        &--wrapper{
-            height: 84px;
-            display: flex;
-            align-items: flex-end;
-        }
-
-        &--btn {
-            color: var(--white);
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 24px;
-            background-color: var(--green400);
-            padding: 16px 48px;
-            min-width: 168px;
-            border: 0;
-            border-radius: 8px;
-        }
-    }
-
-    &__no-filtering {
-        padding-top: 24px;
-    }
-
     &__icon {
         position: absolute;
         left: 13px;
         top: 13px;
-
-        &--circle {
-            display: none;
-        }
-
-        &--checkmark {
-            display: block;
-        }
     }
+}
+
+.resume {
+    &__wrapper{
+        height: 84px;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    &__btn {
+        color: var(--white);
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+        background-color: var(--green400);
+        padding: 16px 48px;
+        min-width: 168px;
+        border: 0;
+        border-radius: 8px;
+    }
+}
+
+.non-active {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .light-mode {
@@ -264,7 +247,7 @@
 
     .switcher {
         &:hover {
-            & .switcher__btn {
+            & .switcher__handle {
                 box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
             }
         }
@@ -294,7 +277,7 @@
 
     .switcher {
         &:hover {
-            & .switcher__btn {
+            & .switcher__handle {
                 box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
             }
         }

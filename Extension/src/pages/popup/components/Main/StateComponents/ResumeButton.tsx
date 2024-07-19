@@ -21,35 +21,47 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
+import { translator } from '../../../../../common/translators/translator';
 import { isTransitionAppState } from '../../../state-machines/app-state-machine';
 import { popupStore } from '../../../stores/PopupStore';
+import { logger } from '../../../../../common/logger';
 
-import { Filters } from './Filters';
-import { Chart } from './Chart';
+/**
+ * Resume button component props.
+ */
+type ResumeButtonProps = {
+    /**
+     * Click handler for the button.
+     */
+    clickHandler?: () => void;
+};
 
-import './stats-chart.pcss';
+export const ResumeButton = observer(({ clickHandler }: ResumeButtonProps) => {
+    const { appState } = useContext(popupStore);
 
-export const StatsChart = observer(() => {
-    const store = useContext(popupStore);
+    const isTransition = isTransitionAppState(appState);
 
-    const { stats, appState } = store;
-
-    if (!stats) {
+    // click handler is not needed during the transition
+    // but in other cases it is required
+    if (!isTransition && !clickHandler) {
+        logger.error('Click handler should be defined for the main switcher');
         return null;
     }
 
     return (
         <div
-            className={cn('stats-chart', {
-                'stats-chart--non-active': isTransitionAppState(appState),
+            className={cn('resume__wrapper', {
+                'non-active': isTransitionAppState(appState),
             })}
         >
-            <Filters />
-            <Chart
-                stats={stats}
-                range={store.selectedTimeRange}
-                type={store.selectedBlockedType}
-            />
+            <button
+                type="button"
+                className="button resume__btn"
+                onClick={clickHandler}
+                title={translator.getMessage('popup_resume_protection_button')}
+            >
+                {translator.getMessage('popup_resume_protection_button')}
+            </button>
         </div>
     );
 });

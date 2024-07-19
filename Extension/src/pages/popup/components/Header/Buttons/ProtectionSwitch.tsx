@@ -16,41 +16,42 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
 import { translator } from '../../../../../common/translators/translator';
-import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { popupStore } from '../../../stores/PopupStore';
 
-import { type SingleActionParams } from './types';
+/**
+ * Pause/Resume button component.
+ */
+export const ProtectionSwitch = observer(() => {
+    const store = useContext(popupStore);
 
-import '../actions.pcss';
+    const { applicationFilteringPaused, pauseApplicationFiltering, resumeApplicationFiltering } = store;
 
-export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionParams) => {
-    /**
-     * Handle block ads action click.
-     */
-    const handleBlockAds = () => {
-        if (!isFilteringPossible) {
-            return;
-        }
-        messenger.openAssistant();
-        window.close();
-    };
+    let title = translator.getMessage('context_disable_protection');
+    let iconId = '#pause';
+    let buttonHandler = pauseApplicationFiltering;
+
+    if (applicationFilteringPaused) {
+        title = translator.getMessage('context_enable_protection');
+        iconId = '#start';
+        buttonHandler = resumeApplicationFiltering;
+    }
 
     return (
         <button
+            className="button popup-header__button"
             type="button"
-            className={className}
-            onClick={handleBlockAds}
+            onClick={buttonHandler}
+            title={title}
         >
             <Icon
-                id="#block-ad"
+                id={iconId}
                 classname="icon--24"
             />
-            <div className="action__title">
-                {translator.getMessage('popup_block_site_ads_option')}
-            </div>
         </button>
     );
-};
+});

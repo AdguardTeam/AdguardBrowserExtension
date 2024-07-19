@@ -16,4 +16,34 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { Loader } from './Loader';
+import React from 'react';
+
+import { SpecificPopupState } from '../../../constants';
+import { Icon } from '../../../../common/components/ui/Icon';
+
+/**
+ * No-filtering component props.
+ */
+type NoFilteringProps = {
+    /**
+     * Specific popup state.
+     */
+    specificPopupState: SpecificPopupState;
+};
+
+export const NoFiltering = ({ specificPopupState }: NoFilteringProps) => {
+    let iconId = '#lock';
+
+    if (specificPopupState === SpecificPopupState.FilteringUnavailable) {
+        iconId = '#secure-page';
+    }
+
+    return (
+        <div className="main__no-filtering">
+            <Icon
+                id={iconId}
+                classname="icon--no-filtering"
+            />
+        </div>
+    );
+};

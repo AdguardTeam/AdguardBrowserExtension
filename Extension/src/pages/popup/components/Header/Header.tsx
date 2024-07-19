@@ -21,28 +21,40 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
-import { isTransitionAppState } from '../../state-machines/app-state-machine';
+import { Icon } from '../../../common/components/ui/Icon';
 import { popupStore } from '../../stores/PopupStore';
-import { Actions } from '../Actions';
+import { isTransitionAppState } from '../../state-machines/app-state-machine';
 
-import './tabs.pcss';
+import {
+    ProtectionSwitch,
+    SettingsButton,
+    UpdateButton,
+} from './Buttons';
 
-const Mv3Tabs = observer(() => {
+import './header.pcss';
+
+export const Header = observer(() => {
     const store = useContext(popupStore);
 
     const { appState } = store;
 
     return (
-        <div
-            className={cn('tabs', {
-                'tabs--non-active': isTransitionAppState(appState),
-            })}
-        >
-            <div className="tabs__content--mv3">
-                <Actions />
+        <div className="popup-header">
+            <Icon
+                id="#logo"
+                classname="icon--logo"
+            />
+            <div
+                className={cn('popup-header__buttons', {
+                    'popup-header__buttons--non-active': isTransitionAppState(appState),
+                })}
+            >
+                {!__IS_MV3__ && (
+                    <UpdateButton />
+                )}
+                <ProtectionSwitch />
+                <SettingsButton />
             </div>
         </div>
     );
 });
-
-export { Mv3Tabs as Tabs };

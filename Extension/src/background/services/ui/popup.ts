@@ -19,7 +19,7 @@ import { RulesLimitsService } from 'rules-limits-service';
 
 import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
 import {
-    ChangeApplicationFilteringDisabledMessage,
+    ChangeApplicationFilteringPausedMessage,
     GetTabInfoForPopupMessage,
     MessageType,
 } from '../../../common/messages';
@@ -38,6 +38,10 @@ import {
     UserRulesApi,
 } from '../../api';
 
+// TODO: describe all properties
+/**
+ * Tab info for the popup.
+ */
 export type GetTabInfoForPopupResponse = {
     frameInfo: FrameData,
     stats: GetStatisticsDataResponse,
@@ -65,8 +69,8 @@ export class PopupService {
     static init(): void {
         messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
         messageHandler.addListener(
-            MessageType.ChangeApplicationFilteringDisabled,
-            PopupService.onChangeFilteringDisable,
+            MessageType.ChangeApplicationFilteringPaused,
+            PopupService.onChangeFilteringPaused,
         );
     }
 
@@ -114,12 +118,12 @@ export class PopupService {
     }
 
     /**
-     * Called when protection enabling or disabling is requested.
+     * Called when protection pausing or resuming is requested.
      *
-     * @param message Message of {@link ChangeApplicationFilteringDisabledMessage}.
+     * @param message Message of {@link ChangeApplicationFilteringPausedMessage}.
      * @param message.data State of protection.
      */
-    private static async onChangeFilteringDisable({ data }: ChangeApplicationFilteringDisabledMessage): Promise<void> {
+    private static async onChangeFilteringPaused({ data }: ChangeApplicationFilteringPausedMessage): Promise<void> {
         const { state } = data;
 
         await SettingsApi.setSetting(SettingOption.DisableFiltering, state);

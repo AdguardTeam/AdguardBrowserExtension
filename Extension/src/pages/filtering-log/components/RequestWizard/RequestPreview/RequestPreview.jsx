@@ -23,6 +23,7 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
+import { fromPromise } from 'xstate';
 import { useMachine } from '@xstate/react';
 
 import { ContentType as RequestType } from '@adguard/tswebextension';
@@ -70,20 +71,28 @@ export const RequestPreview = observer(() => {
         return null;
     };
 
-    const [previewState, send] = useMachine(fetchMachine, {
-        services: {
-            fetchData: getFetcher(),
-        },
-    });
+    const [previewState, send] = useMachine(
+        fetchMachine.provide({
+            actors: {
+                fetchData: fromPromise(getFetcher()),
+            },
+        }),
+    );
 
     const [beautify, setBeautify] = useState(false);
 
     useEffect(() => {
-        send(FetchEvents.FETCH, { url: requestUrl });
+        send({
+            type: FetchEvents.FETCH,
+            data: { url: requestUrl },
+        });
     }, [requestUrl, send]);
 
     const onRetry = () => {
-        send(FetchEvents.RETRY, { url: requestUrl });
+        send({
+            type: FetchEvents.RETRY,
+            data: { url: requestUrl },
+        });
     };
 
     const handleBackToRequestClick = () => {

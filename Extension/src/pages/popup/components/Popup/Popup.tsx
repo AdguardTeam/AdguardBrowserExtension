@@ -30,8 +30,7 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
-import { Message, MessageType } from '../../../../common/messages';
-import { Loader } from '../Loader';
+import { type Message, MessageType } from '../../../../common/messages';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
@@ -39,7 +38,6 @@ import './popup.pcss';
 export const Popup = observer(() => {
     const {
         appearanceTheme,
-        showLoader,
         getPopupData,
         areFilterLimitsExceeded,
         updateBlockedStats,
@@ -82,7 +80,6 @@ export const Popup = observer(() => {
         <div className="popup">
             <CommonIcons />
             <Icons />
-            <Loader showLoader={showLoader} />
             <Header />
             <MainContainer />
             <Tabs />

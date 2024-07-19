@@ -27,12 +27,12 @@ import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
-export const CheckSiteSecurityAction = ({ className, applicationAvailable, url }: SingleActionParams) => {
+export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
     /**
      * Handle site security check action click.
      */
     const handleCheckSiteSecurity = () => {
-        if (!applicationAvailable) {
+        if (!isFilteringPossible) {
             return;
         }
         messenger.checkSiteSecurity(url, ForwardFrom.Popup);

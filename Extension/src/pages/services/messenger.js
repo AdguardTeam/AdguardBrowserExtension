@@ -46,12 +46,18 @@ import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../../common/messages';
  * @typedef {import('../../background/services/rules-limits/interface').Mv3LimitsCheckResult} Mv3LimitsCheckResult
  */
 
+/**
+ * @typedef {import('../../background/services').GetTabInfoForPopupResponse} GetTabInfoForPopupResponse
+ */
+
 class Messenger {
     onMessage = browser.runtime.onMessage;
 
     constructor() {
         this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
         this.updateFilters = this.updateFilters.bind(this);
+        this.removeAllowlistDomain = this.removeAllowlistDomain.bind(this);
+        this.addAllowlistDomain = this.addAllowlistDomain.bind(this);
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -298,12 +304,19 @@ class Messenger {
         await this.sendMessage(MessageType.RemoveAntiBannerFilter, { filterId });
     }
 
+    /**
+     * Sends a message to the background to get the tab info for the popup.
+     *
+     * @param {number} tabId Tab id.
+     *
+     * @returns {Promise<GetTabInfoForPopupResponse | undefined>} Tab info.
+     */
     async getTabInfoForPopup(tabId) {
         return this.sendMessage(MessageType.GetTabInfoForPopup, { tabId });
     }
 
-    async changeApplicationFilteringDisabled(state) {
-        return this.sendMessage(MessageType.ChangeApplicationFilteringDisabled, { state });
+    async changeApplicationFilteringPaused(state) {
+        return this.sendMessage(MessageType.ChangeApplicationFilteringPaused, { state });
     }
 
     async openRulesLimitsTab() {

@@ -16,33 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
-
-import cn from 'classnames';
-
-import { isTransitionAppState } from '../../state-machines/app-state-machine';
-import { popupStore } from '../../stores/PopupStore';
-import { Actions } from '../Actions';
-
-import './tabs.pcss';
-
-const Mv3Tabs = observer(() => {
-    const store = useContext(popupStore);
-
-    const { appState } = store;
-
-    return (
-        <div
-            className={cn('tabs', {
-                'tabs--non-active': isTransitionAppState(appState),
-            })}
-        >
-            <div className="tabs__content--mv3">
-                <Actions />
-            </div>
-        </div>
-    );
-});
-
-export { Mv3Tabs as Tabs };
+export { ProtectionSwitch } from './ProtectionSwitch';
+export { SettingsButton } from './SettingsButton';
+export { UpdateButton } from './UpdateButton';

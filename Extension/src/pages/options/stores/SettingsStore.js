@@ -126,7 +126,7 @@ class SettingsStore {
     savingAllowlistService = createSavingService({
         id: 'allowlist',
         services: {
-            saveData: async (_, e) => {
+            saveData: async ({ event }) => {
                 /**
                  * If saveAllowlist executes faster than MIN_EXECUTION_TIME_REQUIRED_MS we increase
                  * execution time for smoother user experience.
@@ -135,9 +135,10 @@ class SettingsStore {
                  * saveAllowlist as in the user rules section?
                  */
                 const MIN_EXECUTION_TIME_REQUIRED_MS = 500;
+                const { value, callback } = event;
                 const start = Date.now();
 
-                await messenger.saveAllowlist(e.value);
+                await messenger.saveAllowlist(value);
 
                 const end = Date.now();
                 const timePassed = end - start;
@@ -145,7 +146,7 @@ class SettingsStore {
                     await sleep(MIN_EXECUTION_TIME_REQUIRED_MS - timePassed);
                 }
 
-                await e.callback();
+                await callback();
             },
         },
     });
@@ -174,7 +175,7 @@ class SettingsStore {
 
     @observable allowlist = '';
 
-    @observable savingAllowlistState = this.savingAllowlistService.initialState.value;
+    @observable savingAllowlistState = this.savingAllowlistService.getSnapshot().value;
 
     @observable filtersUpdating = false;
 
@@ -211,7 +212,7 @@ class SettingsStore {
         this.updateGroupSetting = this.updateGroupSetting.bind(this);
         this.setAllowAcceptableAdsState = this.setAllowAcceptableAdsState.bind(this);
 
-        this.savingAllowlistService.onTransition((state) => {
+        this.savingAllowlistService.subscribe((state) => {
             runInAction(() => {
                 this.savingAllowlistState = state.value;
                 if (state.value === SavingFSMState.Saving) {
@@ -721,7 +722,11 @@ class SettingsStore {
     saveAllowlist = async (value) => {
         return new Promise((resolve, reject) => {
             try {
-                this.savingAllowlistService.send(SavingFSMEvent.Save, { value, callback: resolve });
+                this.savingAllowlistService.send({
+                    type: SavingFSMEvent.Save,
+                    value,
+                    callback: resolve,
+                });
             } catch (e) {
                 reject(e);
             }
