@@ -23,23 +23,53 @@ import {
     PageStatsStorage,
 } from '../../storages';
 import {
-    GroupMetadata,
-    PageStatsDataItem,
+    type GroupMetadata,
+    type PageStatsDataItem,
     pageStatsValidator,
 } from '../../schema';
 
 import { Categories } from './categories';
 
+/**
+ * Statistics data.
+ */
 export type GetStatisticsDataResponse = {
+    /**
+     * Statistics for today.
+     */
     today: PageStatsDataItem[],
+
+    /**
+     * Statistics for the last week.
+     */
     lastWeek: PageStatsDataItem[],
+
+    /**
+     * Statistics for the last month.
+     */
     lastMonth: PageStatsDataItem[],
+
+    /**
+     * Statistics for the last year.
+     */
     lastYear: PageStatsDataItem[],
+
+    /**
+     * Overall statistics.
+     */
     overall: PageStatsDataItem[],
+
+    /**
+     * Blocked groups data.
+     */
     blockedGroups: GetGroupsResponse,
 };
 
-export type GetGroupsResponse = (GroupMetadata | {
+// FIXME: remove as should be replaced with companiesData
+/**
+ * Groups data.
+ */
+type GetGroupsResponse = (GroupMetadata | {
     groupId: string;
     groupName: string;
 })[];
