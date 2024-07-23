@@ -22,7 +22,14 @@ export const enum AppContextKey {
 }
 
 export type AppContextData = {
+    /**
+     * Whether the engine is started.
+     */
     [AppContextKey.IsInit]: boolean,
+
+    /**
+     * Client ID.
+     */
     [AppContextKey.ClientId]?: string,
 };
 

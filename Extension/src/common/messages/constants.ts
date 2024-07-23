@@ -32,7 +32,7 @@ import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from './schem
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 
 export type MessageCommonProps = {
-  handlerName: typeof APP_MESSAGE_HANDLER_NAME;
+    handlerName: typeof APP_MESSAGE_HANDLER_NAME;
 };
 
 export enum MessageType {
@@ -55,6 +55,7 @@ export enum MessageType {
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
     SubscribeToCustomFilter = 'subscribeToCustomFilter',
     RemoveAntiBannerFilter = 'removeAntiBannerFilter',
+    GetIsEngineStarted = 'getIsEngineStarted',
     GetTabInfoForPopup = 'getTabInfoForPopup',
     ChangeApplicationFilteringPaused = 'changeApplicationFilteringPaused',
     OpenRulesLimitsTab = 'openRulesLimitsTab',
@@ -119,194 +120,198 @@ export enum MessageType {
 }
 
 export type ApplySettingsJsonMessage = {
-  type: MessageType.ApplySettingsJson,
-  data: {
-    json: string,
-  },
+    type: MessageType.ApplySettingsJson,
+    data: {
+        json: string,
+    },
 };
 
 export type AddFilteringSubscriptionMessage = {
-  type: MessageType.AddFilteringSubscription,
-  data: {
-    url: string,
-    title?: string,
-  }
+    type: MessageType.AddFilteringSubscription,
+    data: {
+        url: string,
+        title?: string,
+    }
 };
 
 export type CreateEventListenerMessage = {
-  type: MessageType.CreateEventListener,
-  data: {
-    events: NotifierType[]
-  }
+    type: MessageType.CreateEventListener,
+    data: {
+        events: NotifierType[]
+    }
 };
 
 export type RemoveListenerMessage = {
-  type: MessageType.RemoveListener,
-  data: {
-    listenerId: number,
-  }
+    type: MessageType.RemoveListener,
+    data: {
+        listenerId: number,
+    }
+};
+
+export type GetIsEngineStartedMessage = {
+    type: MessageType.GetIsEngineStarted,
 };
 
 export type GetTabInfoForPopupMessage = {
-  type: MessageType.GetTabInfoForPopup;
-  data: {
-    tabId: number;
-  };
+    type: MessageType.GetTabInfoForPopup;
+    data: {
+        tabId: number;
+    };
 };
 
 export type ChangeApplicationFilteringPausedMessage = {
-  type: MessageType.ChangeApplicationFilteringPaused;
-  data: {
-    state: boolean;
-  };
+    type: MessageType.ChangeApplicationFilteringPaused;
+    data: {
+        state: boolean;
+    };
 };
 
 export type OpenRulesLimitsTabMessage = {
-  type: MessageType.OpenRulesLimitsTab;
+    type: MessageType.OpenRulesLimitsTab;
 };
 
 export type OpenSettingsTabMessage = {
-  type: MessageType.OpenSettingsTab;
+    type: MessageType.OpenSettingsTab;
 };
 
 export type OpenAssistantMessage = {
-  type: MessageType.OpenAssistant;
+    type: MessageType.OpenAssistant;
 };
 
 export type OpenFilteringLogMessage = {
-  type: MessageType.OpenFilteringLog;
+    type: MessageType.OpenFilteringLog;
 };
 
 export type OpenAbuseTabMessage = {
-  type: MessageType.OpenAbuseTab;
-  data: {
-    url: string;
-    from: ForwardFrom;
-  };
+    type: MessageType.OpenAbuseTab;
+    data: {
+        url: string;
+        from: ForwardFrom;
+    };
 };
 
 export type OpenSiteReportTabMessage = {
-  type: MessageType.OpenSiteReportTab;
-  data: {
-    url: string;
-    from: ForwardFrom;
-  };
+    type: MessageType.OpenSiteReportTab;
+    data: {
+        url: string;
+        from: ForwardFrom;
+    };
 };
 
 export type GetOptionsDataMessage = {
-  type: MessageType.GetOptionsData;
+    type: MessageType.GetOptionsData;
 };
 
 export type ChangeUserSettingMessage<T extends SettingOption = SettingOption> = {
-  type: MessageType.ChangeUserSettings;
-  data: {
-    key: T,
-    value: Settings[T]
-  }
+    type: MessageType.ChangeUserSettings;
+    data: {
+        key: T,
+        value: Settings[T]
+    }
 };
 
 export type ResetSettingsMessage = {
-  type: MessageType.ResetSettings
+    type: MessageType.ResetSettings
 };
 
 export type AddAndEnableFilterMessage = {
-  type: MessageType.AddAndEnableFilter
-  data: {
-    filterId: number
-  }
+    type: MessageType.AddAndEnableFilter
+    data: {
+        filterId: number
+    }
 };
 
 export type DisableFilterMessage = {
-  type: MessageType.DisableFilter
-  data: {
-    filterId: number,
-    remove: boolean
-  }
+    type: MessageType.DisableFilter
+    data: {
+        filterId: number,
+        remove: boolean
+    }
 };
 
 export type RemoveAntiBannerFilterMessage = {
-  type: MessageType.RemoveAntiBannerFilter
-  data: {
-    filterId: number
-  }
+    type: MessageType.RemoveAntiBannerFilter
+    data: {
+        filterId: number
+    }
 };
 
 export type SaveAllowlistDomainsMessage = {
-  type: MessageType.SaveAllowlistDomains
-  data: {
-    value: string,
-  }
+    type: MessageType.SaveAllowlistDomains
+    data: {
+        value: string,
+    }
 };
 
 export type SaveUserRulesMessage = {
-  type: MessageType.SaveUserRules
-  data: {
-    value: string,
-  }
+    type: MessageType.SaveUserRules
+    data: {
+        value: string,
+    }
 };
 
 export type GetUserRulesMessage = {
-  type: MessageType.GetUserRules
+    type: MessageType.GetUserRules
 };
 
 export type GetUserRulesEditorDataMessage = {
-  type: MessageType.GetUserRulesEditorData
+    type: MessageType.GetUserRulesEditorData
 };
 
 export type AddUserRuleMessage = {
-  type: MessageType.AddUserRule
-  data: {
-    ruleText: string,
-  }
+    type: MessageType.AddUserRule
+    data: {
+        ruleText: string,
+    }
 };
 
 export type RemoveUserRuleMessage = {
-  type: MessageType.RemoveUserRule
-  data: {
-    ruleText: string,
-  }
+    type: MessageType.RemoveUserRule
+    data: {
+        ruleText: string,
+    }
 };
 
 export type ResetUserRulesForPageMessage = {
-  type: MessageType.ResetUserRulesForPage
-  data: {
-    url: string,
-    tabId: number,
-  }
+    type: MessageType.ResetUserRulesForPage
+    data: {
+        url: string,
+        tabId: number,
+    }
 };
 
 export type GetEditorStorageContentMessage = {
-  type: MessageType.GetEditorStorageContent
+    type: MessageType.GetEditorStorageContent
 };
 
 export type SetEditorStorageContentMessage = {
-  type: MessageType.SetEditorStorageContent
-  data: {
-    content: string,
-  }
+    type: MessageType.SetEditorStorageContent
+    data: {
+        content: string,
+    }
 };
 
 export type AddAllowlistDomainPopupMessage = {
-  type: MessageType.AddAllowlistDomainPopup
-  data: {
-    tabId: number,
-  }
+    type: MessageType.AddAllowlistDomainPopup
+    data: {
+        tabId: number,
+    }
 };
 
 export type RemoveAllowlistDomainMessage = {
-  type: MessageType.RemoveAllowlistDomain
-  data: {
-    tabId: number,
-    tabRefresh: boolean,
-  }
+    type: MessageType.RemoveAllowlistDomain
+    data: {
+        tabId: number,
+        tabRefresh: boolean,
+    }
 };
 
 export type LoadCustomFilterInfoMessage = {
-  type: MessageType.LoadCustomFilterInfo
-  data: {
-    url: string,
-    title: string,
-  }
+    type: MessageType.LoadCustomFilterInfo
+    data: {
+        url: string,
+        title: string,
+    }
 };
 
 export type CustomFilterSubscriptionData = {
@@ -323,166 +328,166 @@ export type SubscribeToCustomFilterMessage = {
 };
 
 export type AppInitializedMessage = {
-  type: MessageType.AppInitialized
+    type: MessageType.AppInitialized
 };
 
 export type UpdateTotalBlockedMessage = {
-  type: MessageType.UpdateTotalBlocked
-  data: {
-    totalBlocked: number,
-    totalBlockedTab: number,
-  }
+    type: MessageType.UpdateTotalBlocked
+    data: {
+        totalBlocked: number,
+        totalBlockedTab: number,
+    }
 };
 
 export type CheckRequestFilterReadyMessage = {
-  type: MessageType.CheckRequestFilterReady
+    type: MessageType.CheckRequestFilterReady
 };
 
 export type GetFilteringLogDataMessage = {
-  type: MessageType.GetFilteringLogData,
+    type: MessageType.GetFilteringLogData,
 };
 
 export type SynchronizeOpenTabsMessage = {
-  type: MessageType.SynchronizeOpenTabs,
+    type: MessageType.SynchronizeOpenTabs,
 };
 
 export type OpenFilteringLogPageMessage = {
-  type: MessageType.OnOpenFilteringLogPage
+    type: MessageType.OnOpenFilteringLogPage
 };
 
 export type CloseFilteringLogPageMessage = {
-  type: MessageType.OnCloseFilteringLogPage
+    type: MessageType.OnCloseFilteringLogPage
 };
 
 export type ClearEventsByTabIdMessage = {
-  type: MessageType.ClearEventsByTabId
-  data: {
-    tabId: number,
-    ignorePreserveLog: boolean,
-  }
+    type: MessageType.ClearEventsByTabId
+    data: {
+        tabId: number,
+        ignorePreserveLog: boolean,
+    }
 };
 
 export type SetPreserveLogStateMessage = {
-  type: MessageType.SetPreserveLogState
-  data: {
-    state: boolean,
-  }
+    type: MessageType.SetPreserveLogState
+    data: {
+        state: boolean,
+    }
 };
 
 export type SetFilteringLogWindowStateMessage = {
-  type: MessageType.SetFilteringLogWindowState,
-  data: {
-    windowState: Windows.CreateCreateDataType
-  }
+    type: MessageType.SetFilteringLogWindowState,
+    data: {
+        windowState: Windows.CreateCreateDataType
+    }
 };
 
 export type PageRefreshMessage = {
-  type: MessageType.RefreshPage,
-  data: {
-    tabId: number,
-  }
+    type: MessageType.RefreshPage,
+    data: {
+        tabId: number,
+    }
 };
 
 export type GetFilteringInfoByTabIdMessage = {
-  type: MessageType.GetFilteringInfoByTabId,
-  data: {
-    tabId: number,
-  }
+    type: MessageType.GetFilteringInfoByTabId,
+    data: {
+        tabId: number,
+    }
 };
 
 export type EnableFiltersGroupMessage = {
-  type: MessageType.EnableFiltersGroup,
-  data: {
-    groupId: number,
-  }
+    type: MessageType.EnableFiltersGroup,
+    data: {
+        groupId: number,
+    }
 };
 
 export type DisableFiltersGroupMessage = {
-  type: MessageType.DisableFiltersGroup,
-  data: {
-    groupId: number,
-  }
+    type: MessageType.DisableFiltersGroup,
+    data: {
+        groupId: number,
+    }
 };
 
 export type SetConsentedFiltersMessage = {
-  type: MessageType.SetConsentedFilters,
-  data: {
-    filterIds: number[],
-  }
+    type: MessageType.SetConsentedFilters,
+    data: {
+        filterIds: number[],
+    }
 };
 
 export type GetIsConsentedFilterMessage = {
-  type: MessageType.GetIsConsentedFilter,
-  data: {
-    filterId: number,
-  }
+    type: MessageType.GetIsConsentedFilter,
+    data: {
+        filterId: number,
+    }
 };
 
 export type OpenSafebrowsingTrustedMessage = {
-  type: MessageType.OpenSafebrowsingTrusted,
-  data: {
-    url: string,
-  }
+    type: MessageType.OpenSafebrowsingTrusted,
+    data: {
+        url: string,
+    }
 };
 
 export type AddUrlToTrustedMessage = {
-  type: MessageType.AddUrlToTrusted,
-  data: {
-    url: string,
-  }
+    type: MessageType.AddUrlToTrusted,
+    data: {
+        url: string,
+    }
 };
 
 export type SetNotificationViewedMessage = {
-  type: MessageType.SetNotificationViewed,
-  data: {
-    withDelay: boolean,
-  }
+    type: MessageType.SetNotificationViewed,
+    data: {
+        withDelay: boolean,
+    }
 };
 
 export type ScriptletCloseWindowMessage = {
-  type: MessageType.ScriptletCloseWindow,
+    type: MessageType.ScriptletCloseWindow,
 };
 
 export type ShowAlertPopupMessage = {
-  type: MessageType.ShowAlertPopup,
-  data: {
-    isAdguardTab: boolean,
-    title: string,
-    text: string | string[],
-    alertStyles: string,
-    alertContainerStyles: string,
-  }
+    type: MessageType.ShowAlertPopup,
+    data: {
+        isAdguardTab: boolean,
+        title: string,
+        text: string | string[],
+        alertStyles: string,
+        alertContainerStyles: string,
+    }
 };
 
 export type ShowRuleLimitsAlertMessage = {
-  type: MessageType.ShowRuleLimitsAlert,
-  data: {
-    isAdguardTab: boolean,
-    mainText: string,
-    linkText: string,
-    alertStyles: string,
-    alertContainerStyles: string,
-  }
+    type: MessageType.ShowRuleLimitsAlert,
+    data: {
+        isAdguardTab: boolean,
+        mainText: string,
+        linkText: string,
+        alertStyles: string,
+        alertContainerStyles: string,
+    }
 };
 
 export type ShowVersionUpdatedPopupMessage = {
-  type: MessageType.ShowVersionUpdatedPopup,
-  data: {
-    isAdguardTab: boolean,
-    title: string,
-    description: string,
-    changelogHref: string,
-    changelogText: string,
-    showPromoNotification: boolean,
-    offer: string,
-    offerDesc: string,
-    offerButtonText: string,
-    offerButtonHref: string,
-    offerBgImage: string,
-    disableNotificationText: string,
-    alertStyles: string,
-    iframeStyles: string,
-  }
+    type: MessageType.ShowVersionUpdatedPopup,
+    data: {
+        isAdguardTab: boolean,
+        title: string,
+        description: string,
+        changelogHref: string,
+        changelogText: string,
+        showPromoNotification: boolean,
+        offer: string,
+        offerDesc: string,
+        offerButtonText: string,
+        offerButtonHref: string,
+        offerBgImage: string,
+        disableNotificationText: string,
+        alertStyles: string,
+        iframeStyles: string,
+    }
 };
 
 export type CanEnableStaticFilterMessageMv3 = z.infer<typeof canEnableStaticFilterSchema>;
@@ -492,6 +497,7 @@ export type CanEnableStaticGroupMessageMv3 = z.infer<typeof canEnableStaticGroup
 export type Message = (
     | ApplySettingsJsonMessage
     | AddFilteringSubscriptionMessage
+    | GetIsEngineStartedMessage
     | GetTabInfoForPopupMessage
     | ChangeApplicationFilteringPausedMessage
     | OpenRulesLimitsTabMessage
