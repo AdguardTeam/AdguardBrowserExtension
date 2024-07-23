@@ -59,10 +59,6 @@ configure({ enforceActions: 'observed' });
 class PopupStore {
     TOTAL_BLOCKED_GROUP_ID = 'total';
 
-    // need for render blocking before first data retrieving
-    @observable
-    isInitialDataReceived = false;
-
     /**
      * Flag that indicates whether the application filtering is **paused**.
      */
@@ -74,6 +70,19 @@ class PopupStore {
      */
     @observable
     isFilteringPossible = true;
+
+    /**
+     * Flag that indicates whether the filtering engine is started.
+     *
+     * Needed for splash screen displaying.
+     *
+     * If not set, equals to `null` which means that the engine state is unknown
+     * and empty screen (splash screen with no logo) should be displayed.
+     * If set to `true`, the engine is started and the splash screen should not be displayed.
+     * If set to `false`, the engine is not started and the splash screen should be displayed.
+     */
+    @observable
+    isEngineStarted: boolean | null = null;
 
     /**
      * Flag that indicates whether the filtering on a website is disabled
@@ -146,6 +155,18 @@ class PopupStore {
     }
 
     /**
+     * Checks whether the filtering engine is started.
+     */
+    @action
+    checkIsEngineStarted = async () => {
+        const res = await messenger.sendMessage(MessageType.GetIsEngineStarted);
+
+        runInAction(() => {
+            this.isEngineStarted = res;
+        });
+    };
+
+    /**
      * Sets the initial state of the app state machine actor based on the current popup data.
      */
     setActorInitState = () => {
@@ -157,6 +178,16 @@ class PopupStore {
             appStateActor.send({ type: AppStateEvent.Enable });
         }
     };
+
+    /**
+     * Flag that indicates whether the popup is loading
+     * and a splash screen should be displayed.
+     */
+    @computed
+    get isLoading(): boolean {
+        return this.appState === AppState.Loading
+            && !this.isEngineStarted;
+    }
 
     @action
     getPopupData = async (): Promise<GetTabInfoForPopupResponse | undefined> => {
@@ -211,7 +242,6 @@ class PopupStore {
 
             this.areFilterLimitsExceeded = areFilterLimitsExceeded;
 
-            this.isInitialDataReceived = true;
             this.currentTabId = currentTab.id;
 
             this.setActorInitState();
@@ -287,12 +317,14 @@ class PopupStore {
         this.viewState = state;
     };
 
+    /**
+     * Returns the current site URL or domain name.
+     */
     @computed
-    get currentSite() {
-        if (this.isFilteringPossible) {
-            return this.domainName ? punycode.toUnicode(this.domainName) : this.url;
-        }
-        return this.url;
+    get currentSite(): string | undefined {
+        return this.isFilteringPossible && this.domainName
+            ? punycode.toUnicode(this.domainName)
+            : this.url || undefined;
     }
 
     /**

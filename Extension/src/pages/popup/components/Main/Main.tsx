@@ -55,7 +55,7 @@ type AppStateData = {
     /**
      * State subtitle.
      */
-    [AppStateField.Subtitle]?: string | null;
+    [AppStateField.Subtitle]?: string;
 
     /**
      * Handler for the button.
@@ -72,7 +72,6 @@ export const Main = observer(() => {
     const store = useContext(popupStore);
 
     const {
-        isInitialDataReceived,
         currentSite,
         currentEnabledTitle,
         currentDisabledTitle,
@@ -84,19 +83,12 @@ export const Main = observer(() => {
         resumeApplicationFiltering,
     } = store;
 
-    if (!isInitialDataReceived) {
-        // FIXME: splash screen should be displayed in this case AG-34497
-        return <div className="main" />;
-    }
-
     if (!currentSite) {
         logger.debug('Current site is not defined yet');
     }
 
-    const statesMap: Record<AppState, AppStateData> = {
-        [AppState.Loading]: {
-            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_loading'),
-        },
+    const statesMap: Record<AppState, AppStateData | null> = {
+        [AppState.Loading]: null,
         [AppState.Disabling]: {
             [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_disabling'),
             [AppStateField.Subtitle]: currentSite,
@@ -137,7 +129,7 @@ export const Main = observer(() => {
     const state = statesMap[appState];
 
     if (!state) {
-        logger.error(`Unknown state: ${appState}`);
+        logger.debug(`No info state: ${appState}`);
         return null;
     }
 
@@ -186,10 +178,9 @@ export const Main = observer(() => {
                 </div>
                 <div
                     className="main__header--current-site"
-                    // FIXME: needs to be updated for loading AG-34497, probably it will be redundant here
-                    title={state[AppStateField.Subtitle] || ''}
+                    title={state[AppStateField.Subtitle]}
                 >
-                    {state[AppStateField.Subtitle] || ''}
+                    {state[AppStateField.Subtitle]}
                 </div>
                 {
                     specificPopupState === SpecificPopupState.SiteInException
