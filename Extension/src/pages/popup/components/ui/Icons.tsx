@@ -117,6 +117,12 @@ export const Icons = () => {
                     <path clipRule="evenodd" d="M24 6c-6 0-12 1-18 4 0 6 0 22 18 32 18-10 18-26 18-32-6-3-12-4-18-4v0Z" stroke="#67B279" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
             </symbol>
+
+            <symbol id="logo-splash" viewBox="0 0 48 48">
+                <path fill="#67B279" fillRule="evenodd" clipRule="evenodd" d="M24 0C16.5 0 7.45 1.72 0 5.5 0 13.7-.1 34.08 24 48 48.1 34.07 48 13.7 48 5.5 40.55 1.73 31.5 0 24 0Z" />
+                <path fill="#5B9F6B" fillRule="evenodd" clipRule="evenodd" d="M24 0C16.5 0 7.45 1.72 0 5.5v.11C0 13.86 0 34.13 24 48V0Z" />
+                <path fill="#fff" fillRule="evenodd" clipRule="evenodd" d="M23.79 30.86 37.7 12.4c-1.02-.8-1.91-.24-2.4.2h-.02L23.68 24.48l-4.38-5.17c-2.09-2.37-4.92-.56-5.59-.09L23.8 30.86Z" />
+            </symbol>
         </svg>
     );
 };

@@ -305,6 +305,16 @@ class Messenger {
     }
 
     /**
+     * Sends a message to the background page to check if the engine is started.
+     *
+     * @returns {Promise<boolean>} Promise that resolves to a boolean value:
+     * true if the engine is started, false otherwise.
+     */
+    async getIsEngineStarted() {
+        return this.sendMessage(MessageType.GetIsEngineStarted);
+    }
+
+    /**
      * Sends a message to the background to get the tab info for the popup.
      *
      * @param {number} tabId Tab id.

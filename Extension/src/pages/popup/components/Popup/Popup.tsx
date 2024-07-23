@@ -26,6 +26,7 @@ import { Icons } from '../ui/Icons';
 import { MainContainer } from '../MainContainer';
 import { Notification } from '../Notification';
 import { PromoNotification } from '../PromoNotification';
+import { SplashScreen } from '../SplashScreen';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
@@ -38,6 +39,9 @@ import './popup.pcss';
 export const Popup = observer(() => {
     const {
         appearanceTheme,
+        isLoading,
+        isEngineStarted,
+        checkIsEngineStarted,
         getPopupData,
         areFilterLimitsExceeded,
         updateBlockedStats,
@@ -48,9 +52,10 @@ export const Popup = observer(() => {
     // retrieve init data
     useEffect(() => {
         (async () => {
+            await checkIsEngineStarted();
             await getPopupData();
         })();
-    }, [getPopupData]);
+    }, [checkIsEngineStarted, getPopupData]);
 
     // subscribe to stats change
     useEffect(() => {
@@ -76,10 +81,8 @@ export const Popup = observer(() => {
         };
     }, [updateBlockedStats, getPopupData]);
 
-    return (
-        <div className="popup">
-            <CommonIcons />
-            <Icons />
+    const LoadedPopup = (
+        <>
             <Header />
             <MainContainer />
             <Tabs />
@@ -87,6 +90,18 @@ export const Popup = observer(() => {
             {/* Promo should be rendered in top of other notifications */}
             { areFilterLimitsExceeded && __IS_MV3__ && <Notification />}
             <PromoNotification />
+        </>
+    );
+
+    const PopupContent = isLoading
+        ? <SplashScreen isEngineStarted={isEngineStarted} />
+        : LoadedPopup;
+
+    return (
+        <div className="popup">
+            <CommonIcons />
+            <Icons />
+            {PopupContent}
         </div>
     );
 });

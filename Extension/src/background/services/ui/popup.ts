@@ -26,7 +26,12 @@ import {
 import { messageHandler } from '../../message-handler';
 import { SettingOption } from '../../schema';
 import { UserAgent } from '../../../common/user-agent';
-import { settingsStorage, type PromoNotification } from '../../storages';
+import {
+    appContext,
+    AppContextKey,
+    settingsStorage,
+    type PromoNotification,
+} from '../../storages';
 import {
     type FrameData,
     FramesApi,
@@ -67,11 +72,21 @@ export class PopupService {
      * Creates listeners for getter of tab info and for popup.
      */
     static init(): void {
+        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupService.getIsAppInitialized);
         messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
         messageHandler.addListener(
             MessageType.ChangeApplicationFilteringPaused,
             PopupService.onChangeFilteringPaused,
         );
+    }
+
+    /**
+     * Returns the state of the application initialization.
+     *
+     * @returns True if the application is initialized, false otherwise.
+     */
+    static getIsAppInitialized(): boolean {
+        return appContext.get(AppContextKey.IsInit);
     }
 
     /**

@@ -137,8 +137,8 @@ type EventType = {
 const APP_STATE_MACHINE_ID = 'appState';
 
 /**
- * Minimal delay for the `pausing` state (make it seen by the user)
- * because the `paused` state is shown too fast.
+ * Minimal delay for the `pausing` state to make it seen by the user
+ * because the `paused` state may be shown too fast.
  */
 const MIN_PAUSING_DELAY_MS = 500;
 
@@ -152,7 +152,6 @@ const appStateMachine = setup({
     },
 }).createMachine({
     id: APP_STATE_MACHINE_ID,
-    // FIXME: add component for loading state. AG-34497
     initial: AppState.Loading,
     states: {
         [AppState.Loading]: {
