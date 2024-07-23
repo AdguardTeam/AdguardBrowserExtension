@@ -65,7 +65,10 @@ export class Engine implements TsWebExtensionEngine {
      * Creates new Engine.
      */
     constructor() {
-        this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`);
+        this.api = new TsWebExtension(
+            `/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`,
+            // FIXME(Slava): pass a companiesdb trackers.json file path
+        );
 
         this.handleMessage = this.api.getMessageHandler();
     }
