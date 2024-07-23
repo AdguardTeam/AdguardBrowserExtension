@@ -17,12 +17,16 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import fs from 'fs';
+import path from 'path';
+
 import OpenAI from 'openai';
 import 'dotenv/config';
 
 import { dangerousRules } from './samples/dangerous';
 import { safeRules } from './samples/safe';
 import { RuleSample } from './samples/samples-types';
+import { SCANNER_CONFIG } from './config';
 
 /**
  * Result type.
@@ -65,6 +69,72 @@ const DANGEROUS_RULES_COUNT = 5;
 const SAFE_RULES_COUNT = 20;
 
 /**
+ * Absolute path to the local cache file dir.
+ */
+const CACHE_DIR = path.join(__dirname, '../../../tmp');
+
+/**
+ * Absolute path to the local cache file.
+ */
+const LOCAL_CACHE_FILE_PATH = path.join(CACHE_DIR, 'script-rules-cache.json');
+
+/**
+ * Cache type.
+ */
+type Cache = Map<string, SafetyCheckResult>;
+
+/**
+ * Local cache type.
+ */
+type LocalCache = {
+    /**
+     * Cache version.
+     *
+     * Needed to invalidate the cache when the config changes.
+     */
+    version: number;
+
+    /**
+     * Cache data.
+     */
+    data: Cache;
+};
+
+/**
+ * Returns the script rules cache.
+ *
+ * @param cachePath Absolute path to the cache file.
+ *
+ * @returns The script rules cache or null if the cache file cannot be retrieved.
+ */
+const getScriptRulesCache = (cachePath: string): LocalCache | null => {
+    try {
+        return JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+    } catch (e) {
+        return null;
+    }
+};
+
+/**
+ * Saves the cache to the local cache file.
+ *
+ * @param cache Cache to save.
+ */
+const saveCache = (cache: Cache): void => {
+    if (!fs.existsSync(CACHE_DIR)) {
+        fs.mkdirSync(CACHE_DIR, { recursive: true });
+    }
+
+    fs.writeFileSync(
+        LOCAL_CACHE_FILE_PATH,
+        JSON.stringify({
+            version: SCANNER_CONFIG.version,
+            data: Object.fromEntries(cache),
+        }, null, 2),
+    );
+};
+
+/**
  * Safety checker class
  * Uses OpenAI API to check if a rule is safe or dangerous.
  */
@@ -81,7 +151,7 @@ class SafetyChecker {
      *
      * @private
      */
-    private cache: Map<string, SafetyCheckResult> = new Map();
+    private cache: Cache;
 
     /**
      * Constructor.
@@ -91,6 +161,15 @@ class SafetyChecker {
      */
     constructor(apiKey: string) {
         this.openai = new OpenAI({ apiKey });
+
+        const localCache = getScriptRulesCache(LOCAL_CACHE_FILE_PATH);
+
+        if (localCache && localCache.version === SCANNER_CONFIG.version) {
+            console.log('Local cache is available, some rules may not require remote checking.');
+            this.cache = new Map(Object.entries(localCache.data));
+        } else {
+            this.cache = new Map();
+        }
     }
 
     /**
@@ -153,7 +232,9 @@ class SafetyChecker {
                 type: checkResult.type,
                 reason: checkResult.reason,
             };
+
             this.cache.set(scriptText, result);
+            saveCache(this.cache);
 
             return result;
         } catch (error) {
@@ -163,7 +244,10 @@ class SafetyChecker {
                 type: 'error',
                 reason: 'Error analyzing the rule',
             };
+
             this.cache.set(scriptText, errorResult);
+            saveCache(this.cache);
+
             return errorResult;
         }
     }

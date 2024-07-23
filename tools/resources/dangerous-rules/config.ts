@@ -16,20 +16,27 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { convertFiltersToRulesets } from './resources/build-rule-sets';
-import { findDangerousRules } from './resources/dangerous-rules';
-import { downloadFilters } from './resources/download-filters';
-import { updateLocalScriptRules } from './resources/update-local-script-rules';
-
-const resources = async () => {
-    // await downloadFilters();
-    // await updateLocalScriptRules();
-    await findDangerousRules();
-
-    // converting filters to rulesets should be done after all filters are downloaded
-    // await convertFiltersToRulesets();
+/**
+ * Config for scanner.
+ *
+ * IMPORTANT: during any changes, increment the version number as local cache may be outdated.
+ */
+export const SCANNER_CONFIG = {
+    version: 1,
+    searchTerms: [
+        /createElement/,
+        /setAttribute/,
+        /\.src/,
+        /eval/,
+    ],
+    includePatterns: [
+        '#%#',
+        '#@%#',
+    ],
+    excludePatterns: [
+        '//scriptlet',
+        '#%#var AG_abortInlineScript',
+    ],
+    fileExtension: '.txt',
+    excludeFileName: 'optimized',
 };
-
-(async () => {
-    await resources();
-})();

@@ -20,27 +20,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-/**
- * Config for scanner.
- */
-const config = {
-    searchTerms: [
-        /createElement/,
-        /setAttribute/,
-        /\.src/,
-        /eval/,
-    ],
-    includePatterns: [
-        '#%#',
-        '#@%#',
-    ],
-    excludePatterns: [
-        '//scriptlet',
-        '#%#var AG_abortInlineScript',
-    ],
-    fileExtension: '.txt',
-    excludeFileName: 'optimized',
-};
+import { SCANNER_CONFIG } from './config';
 
 /**
  * Scan's result type.
@@ -65,17 +45,17 @@ export function isMatchingCriteria(rowLine: string): boolean {
         return false;
     }
 
-    const include = config.includePatterns.some((pattern) => line.includes(pattern));
+    const include = SCANNER_CONFIG.includePatterns.some((pattern) => line.includes(pattern));
     if (!include) {
         return false;
     }
 
-    const exclude = config.excludePatterns.some((pattern) => line.includes(pattern));
+    const exclude = SCANNER_CONFIG.excludePatterns.some((pattern) => line.includes(pattern));
     if (exclude) {
         return false;
     }
 
-    return config.searchTerms.some((regex) => regex.test(line));
+    return SCANNER_CONFIG.searchTerms.some((regex) => regex.test(line));
 }
 
 /**
@@ -118,7 +98,10 @@ async function scanDirectory(directory: string): Promise<ScanResult[]> {
         if (stat.isDirectory()) {
             const directoryMatches = await scanDirectory(fullPath);
             allMatches = allMatches.concat(directoryMatches);
-        } else if (fullPath.endsWith(config.fileExtension) && !fullPath.includes(config.excludeFileName)) {
+        } else if (
+            fullPath.endsWith(SCANNER_CONFIG.fileExtension)
+            && !fullPath.includes(SCANNER_CONFIG.excludeFileName)
+        ) {
             const fileMatches = await searchInFile(fullPath);
             allMatches = allMatches.concat(fileMatches);
         }
