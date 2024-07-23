@@ -18,11 +18,8 @@
 
 /**
  * Config for scanner.
- *
- * IMPORTANT: during any changes, increment the version number as local cache may be outdated.
  */
 export const SCANNER_CONFIG = {
-    version: 1,
     searchTerms: [
         /createElement/,
         /setAttribute/,

@@ -20,6 +20,7 @@
 import fs from 'fs';
 import path from 'path';
 
+import MD5 from 'crypto-js/md5';
 import OpenAI from 'openai';
 import 'dotenv/config';
 
@@ -79,6 +80,13 @@ const CACHE_DIR = path.join(__dirname, '../../../tmp');
 const LOCAL_CACHE_FILE_PATH = path.join(CACHE_DIR, 'script-rules-cache.json');
 
 /**
+ * Hash of the current scanner config.
+ *
+ * Used to invalidate the cache when the config changes.
+ */
+const currentConfigHash = MD5(JSON.stringify(SCANNER_CONFIG)).toString();
+
+/**
  * Cache type.
  */
 type Cache = Map<string, SafetyCheckResult>;
@@ -88,11 +96,11 @@ type Cache = Map<string, SafetyCheckResult>;
  */
 type LocalCache = {
     /**
-     * Cache version.
+     * Hash of a config used to generate the cache.
      *
      * Needed to invalidate the cache when the config changes.
      */
-    version: number;
+    hash: string;
 
     /**
      * Cache data.
@@ -128,7 +136,7 @@ const saveCache = (cache: Cache): void => {
     fs.writeFileSync(
         LOCAL_CACHE_FILE_PATH,
         JSON.stringify({
-            version: SCANNER_CONFIG.version,
+            hash: currentConfigHash,
             data: Object.fromEntries(cache),
         }, null, 2),
     );
@@ -164,7 +172,7 @@ class SafetyChecker {
 
         const localCache = getScriptRulesCache(LOCAL_CACHE_FILE_PATH);
 
-        if (localCache && localCache.version === SCANNER_CONFIG.version) {
+        if (localCache && localCache.hash === currentConfigHash) {
             console.log('Local cache is available, some rules may not require remote checking.');
             this.cache = new Map(Object.entries(localCache.data));
         } else {
