@@ -22,12 +22,12 @@ import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRules } from './resources/update-local-script-rules';
 
 const resources = async () => {
-    // await downloadFilters();
-    // await updateLocalScriptRules();
+    await downloadFilters();
+    await updateLocalScriptRules();
     await findDangerousRules();
 
     // converting filters to rulesets should be done after all filters are downloaded
-    // await convertFiltersToRulesets();
+    await convertFiltersToRulesets();
 };
 
 (async () => {
