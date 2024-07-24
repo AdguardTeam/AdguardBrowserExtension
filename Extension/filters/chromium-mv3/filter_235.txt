@@ -1,8 +1,8 @@
-! Checksum: jLxvOnf58F4tCMf3de7lng
+! Checksum: 9Bq3StaRxBt/cpfnFuXEfw
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.57
-! TimeUpdated: 2024-07-15T21:01:45+00:00
+! Version: 2.0.4.62
+! TimeUpdated: 2024-07-23T13:02:00+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -25,7 +25,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 !! basirat.ir, khootoot.ir, didarnews.ir, 598.ir
 /files/adv^$image,~third-party,domain=ir|asrkhabar.com|bultannews.com|yektapress.com|roozno.com|fararu.com|iraneconomist.com|khordad.news
 ! digiro.ir, gahar.ir, jobsacademy.ir, mihand.ir, modirnameh.ir, pedal.ir, softsaaz.ir, technet24.ir
-/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com
+/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com|techtik.com
 ! itna.ir, migna.ir
 /images/advertise^$image,~third-party,domain=ir|bazimag.com|jahannews.com
 ! https://publicwww.com/websites/%22var+socketAccess+%3D%22/
@@ -944,8 +944,10 @@ digikala.com#$#.user-select-none { -webkit-touch-callout: default !important; -w
 ||actionlog.divar.ir^$~third-party
 ||divar.ir/g-scripts^$script,~third-party
 ||open-platform-redirect.divar.ir^$document,removeparam=source
+||divarcdn.com/ssp/ads^$image,third-party,domain=divar.ir
 divar.ir#$#div.kt-modal__contents > div.kt-modal__body a.button-row-item[href^="https://open-platform-redirect.divar.ir?app_slug=karnameh_price_evaluation"] > div.kt-button > span.kt-text-truncate::after { content: ' (۱۰ هزار تومان)' !important; }
 divar.ir##div#post-list-container-id a[href^="https://a-banners.divar.ir/auction/?ext_link_data="]:has(> div.kt-inset-banner > picture.kt-image-block > source[data-srcset^="https://a-banners.divarcdn.com/ssp/ads/media/image"])
+divar.ir##main > div[class^="item"]:has(img[src*="divarcdn.com/ssp/ads/"])
 doostihaa.com##div.adsfix_box
 doostihaa.com##aside.lefts_sides:has(> div.txt_letfs > ul.ads_txtcv)
 ! TODO: Change upera.shop/ref/3m8/ckAdbr90 to upera.shop/ckAdbr90 using urltransform to prevent tracking
@@ -1051,6 +1053,8 @@ estekhtam.com#@#.ads-bottom
 ||api.enama.ir/demo//vast.js^$script
 enama.ir##div.avdDiv
 ! >> F <<
+||analytics.fam.ir^$~third-party
+||fam.ir/ngx_pagespeed_beacon^$xmlhttprequest,~third-party,method=post
 fileboro.com#%#//scriptlet('ubo-acis.js', 'document.onselectstart', 'killCopy')
 fileboro.com#%#//scriptlet('ubo-aopw.js', 'document.oncopy')
 fileboro.com##div.ads-content
@@ -1070,6 +1074,7 @@ footofan.com##div.ad-cat:not(div.ad-custom-size)
 filimo.com##section.player-container div.filimo-logo-filimo
 filmnet.ir#%#//scriptlet('ubo-json-prune.js', 'trace data.vast_url data.ads')
 ||vast.filmnet.ir^$xmlhttprequest,~third-party
+||sentry.filmnet.ir^$~third-party
 filmnet.ir##div#player-container svg[width="48"][height="48"][viewBox="0 0 64 64"] > g[opacity="0.6"]:upward(svg)
 fontyab.com#%#//scriptlet('ubo-set.js', 'time1', '0')
 fontyab.com#%#//scriptlet('ubo-set.js', 'time30', '0')
@@ -1534,6 +1539,9 @@ k2cod.com###table10 > tbody > tr > .textBoldColor
 k2cod.com##.bgleftmenu > div > div
 k2cod.com###table10
 ! >> L <<
+lenz.ir#%#//scriptlet('ubo-aeld.js', 'contextmenu', 'preventDefault', 'elements', 'div#rmpPlayer')
+||lenz.ir/api/v3/frequents/playrecord^$xmlhttprequest,~third-party,method=post
+||lenz.ir/api/v3/frequents/playheartbit^$xmlhttprequest,~third-party,method=post
 ! https://github.com/MasterKia/PersianBlocker/issues/147
 learnparsi.com##a[href^="https://bit.ly/"]
 lordroid.com##.lnk > center > a > img[alt="ADS"]:upward(center)
@@ -2811,6 +2819,8 @@ zoomtech.org##div.zoomtech-banner
 ||tinancefa.org^$all
 ! https://github.com/Webamoozcom/warning-list/discussions/184
 ||chancx.io^$all
+! https://github.com/Webamoozcom/warning-list/discussions/185
+||falixa.com^$all
 ! https://github.com/MasterKia/PersianBlocker/pull/201
 ! https://webamooz.com/1402/06/25/%D9%84%D8%A7%DA%A9%D8%B3%D9%88%D9%86-laxxson-%DA%A9%D9%84%D8%A7%D9%87%D8%A8%D8%B1%D8%AF%D8%A7%D8%B1%DB%8C-%D9%BE%D8%A7%D9%86%D8%B2%DB%8C-%D8%A7%D8%B3%D8%AA/
 ||laxsson.com^$all

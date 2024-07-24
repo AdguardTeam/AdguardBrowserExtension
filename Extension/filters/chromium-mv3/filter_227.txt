@@ -1,13 +1,13 @@
-! Checksum: bzqE5QcapWGXHu8bOP5FLA
+! Checksum: AjIACBZhiFEQ0eF82d289Q
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.18.77
-! TimeUpdated: 2024-07-16T13:01:38+00:00
+! Version: 2.0.18.80
+! TimeUpdated: 2024-07-20T09:01:41+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.0716.0
+! OriginalVersion: 2024.0720.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://community.list-kr.com/docs/
@@ -1196,6 +1196,7 @@
 ||mdjournal.kr/banner/
 ||nts.go.kr/images/ad/lgnm/popup/popup_img_openinfo_high.jpg
 ||dogdrip.net/addons/ddnetspt/js/ddnetspt_ad.js
+||dogdrip.net/addons/ddnetspt/js/ddnetspt_uf.js
 ||allyearcdn.com/img/guanggo/new/
 ||ppomppu.co.kr/inform_ad_click.php$document
 ||dogdrip.net/common/dload.php
@@ -2764,6 +2765,8 @@ manatoki338.net,manatoki339.net,manatoki340.net,manatoki341.net,manatoki342.net,
 103.204.13.68##div[class^="mobile-m ad720_"]
 !
 ! DOMAIN-REFRESHER: END
+@@||ssl.pstatic.net/tveta/libs/glad/prod/gfp-core.js$domain=weather.naver.com
+@@||ssl.pstatic.net/tveta/libs/glad/prod/*/gfp-sdk.js$domain=weather.naver.com
 @@||ssl.pstatic.net/tveta/libs/ssp-video/prod/ssp.web.sdk_$script,domain=tv.naver.com
 08dragon.com#@#[data-ez-name]
 @@||cdn.kbmaeil.com/bannerpop/uploads/js/976.js
@@ -3404,7 +3407,7 @@ naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
 srank.kr#%#//scriptlet('prevent-fetch', 'doubleclick.net')
-@@||doubleclick.net^|$xmlhttprequest,domain=klauncher.kr
+@@||adservice.google.com^|$xmlhttprequest,domain=klauncher.kr
 chmodi.tistory.com##.floatdiv
 svrforum.com##body > div[class][style*="box-shadow:"]
 luckyquiz3.blogspot.com#%#//scriptlet('prevent-xhr', 'adsbygoogle')

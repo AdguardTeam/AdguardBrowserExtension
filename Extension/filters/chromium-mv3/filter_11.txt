@@ -1,8 +1,8 @@
-! Checksum: VZyhUox7eD5Y1indP1EGFA
+! Checksum: 4n0q9ATQS6ci/bxNJzsFdQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.52.98
-! TimeUpdated: 2024-07-17T13:33:26+00:00
+! Version: 2.0.53.17
+! TimeUpdated: 2024-07-24T09:33:30+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -218,6 +218,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||ahoy-internal-ads-hv.b-cdn.net^
 ||ad.iwhop.cn^
 ||s-odx.oleads.com^
 ||mediation.unity3d.com^
@@ -1126,7 +1127,7 @@ ya.ru##services-feed div.banner
 ! Update unblocking rule for the search ads in usefulads.txt
 yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##div[class^="Direct "]
 ya.ru,yandex.*#$?##search-result > li:has(span:contains(/[PРeеkклaаmмaа]{7}/)) { remove: true; }
-ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="Organic"] > div[class^="VanillaReact"] > a[data-event-required])
+ya.ru,yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.content__left > ul#search-result > li:has(> div.organic > div.OrganicTitle > a[href^="https://ya.ru/search/_crpd/"])
 !
 ! Yandex.Images
 yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,yandex.io,yandex.co,yandex.ca,yandex.com.ua,yandex.de,yandex.fr,yandex.me,yandex.by,yandex.jp,yandex.xyz,yandex.ua,yandex.com.tw,yandex.co.za,yandex.co.il,yandex.eu,yandex.it,yandex.es,yandex.ch,yandex.kz,yandex.nl,yandex.pro,yandex.us,yandex.pl,yandex.cl,yandex.ro,yandex.su,yandex.site,yandex.cc,yandex.rs,yandex.cn,yandex.ae,yandex.mx,yandex.top,yandex.gov,yandex.ac.id,yandex.be,yandex.dk,yandex.hu,yandex.az,yandex.uz,yandex.md,yandex.no,yandex.com.bd,yandex.ie,yandex.asia,yandex.at,yandex.com.np,yandex.fi,yandex.lv,yandex.sk,yandex.lt,yandex.cloud,yandex.gov.bd,yandex.website,yandex.pt,yandex.blog,yandex.mobi,yandex.ee,yandex.uk,yandex.kg,yandex.ba,yandex.al,yandex.fm,yandex.gov.np,yandex.org.in,yandex.work##.justifier__col > div.incut
@@ -1989,6 +1990,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !
 !
+! fix swipe
+@@||www.exploader.net/js/swipe-right-20171229.js|$script,~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179429
 @@||cmp.inmobi.com/GVL-v2/$domain=express.co.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177593
@@ -2379,6 +2382,20 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+as-web.jp##.ASW_sp_header
+botanica-media.jp##div[id^="BOTANICA_SP_"]
+financefeeds.com##div[id^="tdm-popup-modal-td"]
+epey.com###mobil_masthead
+exploader.net###firstpop
+m.winfuture.de##img[alt="test"]
+umamusume.net###ad-first
+umamusume.net##div[style^="margin-bottom: 10px; min-height: 280px;"]
+echofm.online###echo-main > div:has(> div[id^="div-gpt-"])
+filmvandaag.nl##body #preload-ad-billboard.is-preload-ad
+s.minkabu.jp##.relative.justify-center.overflow-hidden
+figsoku.net###comment-form > a[target="_blank"] > img
+fontech.startitup.sk##div[id^="MOB_fon_art_"]
+fontech.startitup.sk##div[class^="code-block code-block-"][style]
 search.goo.ne.jp###direct_bottom
 sp.macour.jp##.ad_macour
 toyokeizai.net###latest > div.articles-lists__item:has(> div[id^="div-gpt-ad-"])
@@ -2917,9 +2934,9 @@ smbc-comics.com##div[id^="mobad"]
 ||cdn.thehiveworks.com/images/bees/mobile$image,domain=smbc-comics.com
 idnes.cz##div[data-redistribute="ad"]
 crictracker.com##div[class*="style_sticky__"][class*="position-fixed"]
-m.winfuture.de#?#div:has(> .adsbygoogle:only-child)
-m.winfuture.de#?#div:has(> .adsbygoogle:only-child) + br
-m.winfuture.de#?#.teaser_big:has(> .teaser_img > .anzeige)
+m.winfuture.de##div:has(> .adsbygoogle:only-child)
+m.winfuture.de##div:has(> .adsbygoogle:only-child) + br
+m.winfuture.de##.teaser_big:has(> .teaser_img > .anzeige)
 freebeacon.com##.advertising-top-mobile
 ||shfsdvc.com/*/banner/html/zone
 toy-people.com##.listAD
@@ -3266,7 +3283,6 @@ fc1adult.com##.sp_300_spc
 summary.fc2.com##iframe[src^="/sp/friendlyAd.php"]
 telugu360.com##.td-visible-phone > a[target="_blank"]
 zvukogram.com##div[id^="banner-mobile"]
-thecubexguide.com###closebtn_Mobile_Only
 fc1adult.com##a[href^="https://a-trade.jp/redirect/"][href*="&banner="]
 asahi.co.jp###jp_abc_sp_article_underarticle
 asahi.co.jp###js-smpBnr
@@ -4366,7 +4382,6 @@ gazeta.uz##.adv-placeholder
 fanbyte.com###fanbyte_sticky-unit
 natgeo.nikkeibp.co.jp##.contentsAd
 m.fitforfun.de##.adsd_contentad
-news24.jp##.adText > ul
 watch.impress.co.jp##.ad.under
 watch.impress.co.jp##.ad.movie
 watch.impress.co.jp###sp-floating-layer
@@ -4968,7 +4983,6 @@ rennrad-news.de,mtb-news.de##.mtbnews-top
 mtb-news.de##.mtbnews-forum__centered
 mtb-news.de##.mtbnews-mobile-sticky
 mtb-news.de##div[class*="incontent__container"]
-news.tbs.co.jp##.cp-spAd
 yamareco.com##div[style^="position: fixed; bottom: 0; width: 100%; height: 50px; z-index: 9999"]
 yamareco.com##div[style="min-height: 280px;"]
 animego.org##div[class^="mb-"][style="min-height: 210px"]
@@ -5138,7 +5152,7 @@ jbbs.shitaraba.net,chronicle.wiki,ff4psp.jp,game-info.wiki,memo.wiki,playing.wik
 m.vz.ru,chronicle.wiki,ff4psp.jp,game-info.wiki,memo.wiki,playing.wiki,pokemasujikaku.com,seesaawiki.jp,sokuhou.wiki,sougouwiki.com,st12.jp##.header-banner
 sammobile.com##.g-29
 virtualbrest.ru##body > div.rounded + div[style^="width:"] > a[target="_blank"] > img
-cleantechnica.com,proandroid.com,dkoding.in,iheartintelligence.com,revistaforum.com.br##.mrf-sticky-wrapper
+gizchina.com,cleantechnica.com,proandroid.com,dkoding.in,iheartintelligence.com,revistaforum.com.br##.mrf-sticky-wrapper
 cleantechnica.com,proandroid.com,iheartintelligence.com,fortressofsolitude.co.za,aysetolga.com,revistaforum.com.br,diariodocentrodomundo.com.br,01net.com,gizchina.com,pocketpc.ch##.mrf-adv__wrapper
 ||googleadservices.com/pagead/conversion_async.js$script,redirect=noopjs,domain=orcd.co
 wonderzine.com,the-village.com.ua##.banners
@@ -5499,7 +5513,7 @@ newsweekjapan.jp,m.sweclockers.com###topBanner
 expressen.se##body div.bam-ad-slot[data-slot-name]
 yasehub.com###app > div.top-banner + fieldset
 yasehub.com##.aasd-text
-ficbook.net##.rkl-stick-to-bottom
+ficbook.com,ficbook.net##.rkl-stick-to-bottom
 m.republicworld.com##div[style^="perspective: 1000px; position: relative; height: 250px; width: 300px;"]
 www-tomsguide-com.cdn.ampproject.org,www-digitalcameraworld-com.cdn.ampproject.org,digitalcameraworld.com##.hawk-widget[data-model-name]
 vxjbdagjdec-eviewporn-com.cdn.ampproject.org###popups
@@ -5773,7 +5787,7 @@ novinky.cz##.ogm-advert-static
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion##.BannerAd__320x50
 tabletowo.pl##.amp_widget_below_the_header a[data-bid] > amp-img
 www-buzzfeednews-com.cdn.ampproject.org##.ad-dest--news
-ficbook.net##.jsHideStickyRkl
+ficbook.com,ficbook.net##.jsHideStickyRkl
 vse-shutochki.ru##body > div[class="hidden-desktop post"]
 koinmedya.com##.amp-sticky-ads
 ubr.ua##body > div[style*="height: 300px;"][style*="text-align: center;"]
@@ -6543,7 +6557,7 @@ nordbayern.de##div[id*="-mobile-ad-"]
 m.ynet.co.il##div[id^="GoogleAdStrip"]
 xda-developers.com##div[id^="edit"][class="postbit-wrapper "] > div[style="margin:10px 0;min-height:250px;max-height:250px;overflow:hidden;"]
 piluli.ru##div[id^="medads_banner"]
-bash.im##div[style*="width: 300px; height: 250px;"]
+doujinantena.top,bash.im##div[style*="width: 300px; height: 250px;"]
 sports.ru##iframe[src^="http://www.sports.ru/desktop/special"]
 livestrong.com##section[class*="js-mobile_adsense"]
 pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
@@ -7267,6 +7281,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! Yandex ads in mobile apps
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/183979
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161152
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181356
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181178

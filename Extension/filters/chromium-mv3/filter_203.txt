@@ -1,14 +1,14 @@
-! Checksum: 70RpQdqdFlqANpPxUK6+iw
+! Checksum: bAKgY2vdbqgLwyif/+dD0g
 ! Title: Hungarian filter
 ! Description: Hufilter. Filter list that specifically removes ads on websites in the Hungarian language.
-! Version: 2.0.2.99
-! TimeUpdated: 2024-07-15T21:01:32+00:00
+! Version: 2.0.3.0
+! TimeUpdated: 2024-07-24T09:01:28+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: W/ReisQtqy+ItZyLuT+uxQ
-! OriginalVersion: 202407150933
+! Checksum: 3aZVKnR/eRqCRGuv4N2iHw
+! OriginalVersion: 202407232215
 ! Title: Hufilter for AdGuard
-! Last modified: 15 Jul 2024 09:33 UTC
+! Last modified: 23 Jul 2024 22:15 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://github.com/hufilter/hufilter/wiki
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -259,8 +259,10 @@ borsonline.hu##A[href="/nyarimagazin"]
 borsonline.hu##a[target="_blank"][class="videa-wrapper"]
 borsonline.hu##iframe[src*="koponyeg.hu"]
 bpiautosok.hu###wpgtr_stickyads_textcss_container
-bpiautosok.hu##body > center:first-child
-bpiautosok.hu##body > center:first-child + br
+bpiautosok.hu##body > br:first-child
+bpiautosok.hu##body > br:first-child + center
+bpiautosok.hu##body > br:first-child + center + br
+bpiautosok.hu##footer + font, footer ~ br
 bpiautosok.hu##font + center
 budapestkornyeke.hu###custom_html-10
 budapestkornyeke.hu###custom_html-11
