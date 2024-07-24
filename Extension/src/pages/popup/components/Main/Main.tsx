@@ -143,6 +143,15 @@ export const Main = observer(() => {
      * @returns Current state component.
      */
     const getCentralControlByState = () => {
+        // specific popup states should be checked first
+        // because whether the filtering is enabled (or not) is not relevant in these cases
+        if (
+            specificPopupState === SpecificPopupState.FilteringUnavailable
+            || specificPopupState === SpecificPopupState.SiteInException
+        ) {
+            return <NoFiltering specificPopupState={specificPopupState} />;
+        }
+
         if (typeof state[AppStateField.SwitcherOn] !== 'undefined') {
             return (
                 <MainSwitch
@@ -154,13 +163,6 @@ export const Main = observer(() => {
 
         if (isResumeButtonVisible) {
             return <ResumeButton clickHandler={state[AppStateField.ButtonHandler]} />;
-        }
-
-        if (
-            specificPopupState === SpecificPopupState.FilteringUnavailable
-            || specificPopupState === SpecificPopupState.SiteInException
-        ) {
-            return <NoFiltering specificPopupState={specificPopupState} />;
         }
 
         logger.debug('No component for the current app state');
