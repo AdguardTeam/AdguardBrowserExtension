@@ -24,6 +24,7 @@ import { getLocaleTranslations, areArraysEqual } from '../helpers';
 import {
     BASE_LOCALE,
     LANGUAGES,
+    LOCALE_PAIRS,
     REQUIRED_LOCALES,
     THRESHOLD_PERCENTAGE,
 } from './locales-constants';
@@ -86,25 +87,45 @@ const printCriticalResults = (criticals) => {
 };
 
 /**
+ * Normalizes locale code before validation.
+ *
+ * @param {string} rawLocale Locale code to normalize.
+ *
+ * @example
+ * 'pt_BR' -> 'pt_br'
+ * 'es_419' -> 'es'
+ *
+ * @returns {string} Normalized locale code.
+ */
+const normalizeLocale = (rawLocale) => {
+    // locale should be lowercase, e.g. 'pt_br', not 'pt_BR'
+    const locale = rawLocale.toLowerCase();
+
+    return LOCALE_PAIRS[locale] || locale;
+};
+
+/**
  * Validates that localized string correspond by structure to base locale string.
  *
  * @param {string} baseKey Key of the base locale string.
  * @param {object} baseLocaleTranslations Translations of the base locale.
- * @param {string} locale Locale to validate.
+ * @param {string} rawLocale Locale to validate.
  * @param {object} localeTranslations Translations of the locale to validate.
  *
  * @returns {object} Validation result if error occurred, otherwise undefined.
  */
-const validateMessage = (baseKey, baseLocaleTranslations, locale, localeTranslations) => {
+const validateMessage = (baseKey, baseLocaleTranslations, rawLocale, localeTranslations) => {
     const baseMessageValue = baseLocaleTranslations[baseKey].message;
     const localeMessageValue = localeTranslations[baseKey].message;
+
+    const locale = normalizeLocale(rawLocale);
+
     let validation;
     try {
         if (!validator.isTranslationValid(
             baseMessageValue,
             localeMessageValue,
-            // locale should be lowercase, e.g. 'pt_br', not 'pt_BR'
-            locale.toLowerCase(),
+            locale,
         )) {
             throw new Error('Invalid translation');
         }
