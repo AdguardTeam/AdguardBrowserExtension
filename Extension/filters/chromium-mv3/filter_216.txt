@@ -1,8 +1,8 @@
-! Checksum: /WQa75N045a8QJbCoL2FPg
+! Checksum: dKSkC04DjkyXgKuwF3StbQ
 ! Title: Official Polish filters for AdBlock, uBlock Origin & AdGuard
 ! Description: Additional filter list for websites in Polish.
-! Version: 2.0.15.54
-! TimeUpdated: 2024-06-28T13:01:38+00:00
+! Version: 2.0.15.56
+! TimeUpdated: 2024-07-24T09:01:32+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Official Polish Filters for AdBlock, uBlock Origin & AdGuard
@@ -13,9 +13,9 @@
 ! Works best with EasyList - be sure to subscribe it as well!
 ! Działa najlepiej z EasyList - pamiętaj aby zasubskrybować!
 !   Patronite ==> https://patronite.pl/polskiefiltry
-! Last modified: 28 June 2024
+! Last modified: 24 July 2024
 ! Expires: 1 day
-! OriginalVersion: 2024062801
+! OriginalVersion: 2024072401
 ! Support:
 !   Email >> errorsfilters@certyficate.it
 !   Github >> https://github.com/MajkiIT/polish-ads-filter/issues
@@ -23,7 +23,7 @@
 ! License: https://creativecommons.org/licenses/by-nc-sa/4.0/
 ! Copyright © 2024 Certyficate IT
 ! Najnowsza wersja zawsze na: https://www.certyficate.it/adblock
-! v.2024062801 aktualizacja: ptk, 28 czerwca 2024, 12:05:00
+! v.2024072401 aktualizacja: sr, 24 lipca 2024, 09:15:00
 !
 !
 !1#-----------------------General advert blocking filters-----------------------!
@@ -4123,6 +4123,7 @@ www.ps4site.pl,www.golfpl.com###text-12
 www.rynekelektryczny.pl##[id^="glownaPoziomyBaner"], #PanelBoczny1Baner, #WpisyBaner1
 www.sandomierztv.pl,korso.pl##.bgad
 scigacz.pl##[id^="clickTag"]
+scigacz.pl##[href^="https://www.scigacz.pl/codeboard/__click.php"]
 www.se.pl#?#.article__placement:-abp-has(> div[class^="zpr_m_inside"])
 www.skapiec.pl##.creation-corner
 www.skionline.pl###bbs, #popup_mini
@@ -4847,6 +4848,8 @@ zywiecinfo.pl##[href*="/component/banners/click/"]
 ||www.scigacz.pl/codeimgs/*/screening_$image
 ||www.scigacz.pl/codeimgs/20*/*_tlo_1600x900*.jpg$image
 ||www.scigacz.pl/codeimgs/202*_screening/*_tlo.jpg$image
+||www.scigacz.pl/codeimgs/*_screening/*.jpg$image
+||www.scigacz.pl/codeboard/__delivery.php?creation=logobrand_main/_defaultCreation$image,domain=www.scigacz.pl
 ||www.sfd.pl/sklep/program-partnerski/$subdocument
 ||www.strefawalkingdead.pl/graf/$image
 ||www.suwalki.info/flash/$image
@@ -5818,6 +5821,7 @@ avanti24.pl,czterykaty.pl,edziecko.pl,g.pl,gazeta.pl,haps.pl,hapsvod.pl,magazyn-
 @@||googletagmanager.com^$script,domain=www.aptekarska.pl|aptekarski.com
 @@||google-analytics.com^$domain=www.aptekarska.pl|aptekarski.com
 @@||www.googletagmanager.com/gtm.js$script,domain=geselle.pl
+@@||www.cloudflare.com/cdn-cgi/trace$domain=plus.pl|polsatbox.pl
 !
 !50#--------------------------Video Players------------!
 ||vidoza.net/dl?op=view&*adb=$xmlhttprequest

@@ -1,14 +1,14 @@
-! Checksum: 6m20pZx2oUPoVOwt8ixH9g
+! Checksum: YgzssEFQSI/JeRWaamuP5A
 ! Title: Adblock List for Finland
 ! Description: Finnish ad blocking filter list.
-! Version: 2.0.11.6
-! TimeUpdated: 2024-06-21T18:57:25+00:00
+! Version: 2.0.11.8
+! TimeUpdated: 2024-07-23T17:01:42+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Adblock List for Finland
 ! Description: Finnish adblock list
 ! Expires: 4 days
-! Last modified: Fri, 21 Jun 2024 18:47:28 +0000
+! Last modified: Tue, 23 Jul 2024 13:52:29 +0000
 ! Homepage: https://github.com/finnish-easylist-addition/finnish-easylist-addition
 ! License: https://unlicense.org/
 ! Raportoi mainoksenestoon liittyvistä ongelmista tai estämättömistä mainoksista täällä / Please report adblocking related issues or unblocked ads at:
@@ -407,6 +407,7 @@ etlehti.fi,hyvaterveys.fi,soppa365.fi#?#.views-row:has(.is-commercial)
 etn.fi###annonsspalt
 etn.fi###leaderboard
 etn.fi##.annonspekare
+etuovi.com###spotlight-container-id
 etuovi.com,mikrobitti.fi,rantapallo.fi,talouselama.fi##div[id|=almad]
 etusuora.com#?#.pb30:has(.adsbygoogle)
 f1-forum.fi##.sponsoredrow
@@ -1555,6 +1556,9 @@ iltalehti.fi#@#.ad-placement
 ruutu.fi##.RuutuPlayer__Error-sc-1o2b3la-0
 ! -----UNSORTED END-----
 ! -----UNBREAK-----
+! Unbreak kampanjat.hs.fi, the breaking filter should be checked
+! https://kampanjat.hs.fi/opiskelijatilaukset/
+kampanjat.hs.fi#@#div[class] > a[href^="https://tilaa.sanoma.fi/"]
 ! Exception to Lowe's list - it removes some boxes
 @@||conductrics.com^$script,domain=elisa.fi
 ! Lowe's list and Easyprivacy prevent opening thread replys via email
