@@ -43,7 +43,7 @@ export enum SettingOption {
     AllowlistEnabled = 'allowlist-enabled',
     DefaultAllowlistMode = 'default-allowlist-mode',
 
-    // Stealth mode.
+    // Tracking protection (formerly Stealth mode).
     DisableStealthMode = 'stealth-disable-stealth-mode',
     HideReferrer = 'stealth-hide-referrer',
     HideSearchQueries = 'stealth-hide-search-queries',
