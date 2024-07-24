@@ -32,14 +32,14 @@
     "options_filters_annoyances_consent_enable_button": {
         "message": "تمكين"
     },
-    "popup_header_cta_link": {
-        "message": "هل تريد حظر المزيد؟"
-    },
     "popup_header_update_filters": {
         "message": "التحقق من وجود تحديثات التصفية"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "يجب أن يكون امتداد الملف %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "استئناف"
     },
     "popup_adguard_for_ios": {
         "message": "iOS لنظام AdGuard"
@@ -58,9 +58,6 @@
     },
     "options_popup_version_update_disable_notification": {
         "message": "أوقف التنبيهات"
-    },
-    "popup_adguard_footer_title": {
-        "message": "لهاتفك النقالAdGuardاحصل على"
     },
     "options_popup_call_to_action": {
         "message": "أدخل عنوان صالحاً أو مسار ملف عامل تصفية في الحقل أعلاه"
@@ -140,17 +137,8 @@
     "filtering_log_modified_rules": {
         "message": "القواعد المعدلة: %rules_count%"
     },
-    "filtering_log_stealth_rules": {
-        "message": "قواعد وضع التخفي: %rules_count%"
-    },
-    "filtering_log_privacy_applied_rules": {
-        "message": "تطبيق وضع التخفي"
-    },
     "filtering_log_in_allowlist": {
         "message": "الموقع مسموح به"
-    },
-    "filtering_log_hide_referrer": {
-        "message": "المُحيل مخفي من جهات خارجية"
     },
     "filtering_log_hide_search_queries": {
         "message": "استعلامات البحث الخاصة بك مخفيه"
@@ -212,6 +200,9 @@
     "options_empty_custom_filter": {
         "message": "عذرًا ، ولكن ليس لديك أي فلاتر مخصصة حتى الآن"
     },
+    "options_loader_applying_changes": {
+        "message": "جاري تطبيق التغييرات..."
+    },
     "options_editor_indicator_saving": {
         "message": "حفظ..."
     },
@@ -239,6 +230,9 @@
     "popup_site_filtering_state_secure_page": {
         "message": "صفحة آمنة"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "جار التحميل..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "تم تمكين الحماية"
     },
@@ -247,6 +241,9 @@
     },
     "popup_site_filtering_state_paused": {
         "message": "الحماية متوقفة"
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "لجميع المواقع الإلكترونية"
     },
     "popup_site_exception_information": {
         "message": "ألغيت الفلترة لهذا الموقع لانها قد تتداخل مع عمله بشكل طبيعي."
@@ -355,9 +352,6 @@
     },
     "popup_security_report": {
         "message": "تحقق من أمان الموقع"
-    },
-    "popup_reset_custom_rules": {
-        "message": "إزالة جميع قواعد المستخدم لهذه الصفحة"
     },
     "context_block_site_ads": {
         "message": "...حظر الإعلانات على هذا الموقع"
@@ -481,9 +475,6 @@
     },
     "filtering_modal_rules": {
         "message": "القواعد:"
-    },
-    "filtering_modal_privacy": {
-        "message": "وضع التخفي"
     },
     "filtering_modal_filter": {
         "message": "فلتر"
@@ -648,7 +639,7 @@
         "message": "اترك ملاحظة"
     },
     "options_privacy": {
-        "message": "وضع التخفي"
+        "message": "الحماية من التتبع"
     },
     "options_update_antibanner_filters": {
         "message": "التحقق من وجود تحديثات للفلتر"
@@ -707,6 +698,42 @@
     "options_miscellaneous_settings": {
         "message": "إعدادات إضافية"
     },
+    "options_rule_limits": {
+        "message": "حدود القاعدة"
+    },
+    "options_rule_limits_description_link": {
+        "message": "تعرف إلى المزيد حول Manifest V3"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "القواعد الديناميكية"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "القواعد التي يضيفها المستخدم، مثل قواعد المستخدم والمرشحات المخصصة"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "مجموعات القواعد الثابتة"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "القواعد الثابتة"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "قام المتصفح بتعديل قائمة المرشحات النشطة"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "ماذا حدث؟"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "تم تجاوز حد القواعد المضمنة النشطة بعد تحديث أو إضافة امتداد جديد. وفقًا لـ Manifest V3، تفاعل متصفح Chrome الخاص بك عن طريق تعطيل جميع الفلاتر المضمنة في الامتداد باستثناء المرشحات الافتراضية."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "تم تمكين الفلاتر قبل التحديث"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "تم تمكين الفلاتر الآن"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "إجراءاتك المحتملة"
+    },
     "options_show_adguard_full_version_title": {
         "message": "عرض المعلومات عن النسخة الكاملة من AdGuard"
     },
@@ -747,13 +774,13 @@
         "message": "يستخدم إصدارات أقصر من الفلاتر مع القواعد الأكثر شيوعًا فقط لتوفير حركة المرور. أكثر ملاءمة لمتصفحات الجوال"
     },
     "options_privacy_title": {
-        "message": "وضع التخفي"
+        "message": "الحماية من التتبع"
     },
     "options_privacy_desc": {
         "message": "قم بحماية هويتك ومعلوماتك الشخصية الحساسة من آلاف المتتبعين عبر الإنترنت من خلال حظر طرق التتبع الأكثر شيوعًا"
     },
     "options_hide_referrer_title": {
-        "message": "إخفاء التوجية من تطبيقات الطرف الثالث"
+        "message": "إخفاء المرجع من برامج الطرف الثالث"
     },
     "options_hide_referrer_desc": {
         "message": "منع تطبيقات الطرف الثالث من معرفة موقع الويب التي تزورها."
@@ -801,7 +828,7 @@
         "message": "منع المتتبعون المعروفون"
     },
     "options_block_known_trackers_description": {
-        "message": "حظر أدوات التتبع وأدوات تحليلات الويب باستخدام فلتر AdGuard للحماية من التتبع."
+        "message": "حظر المتعقبون وأدوات تحليل الويب باستخدام فلتر الحماية من التتبع من AdGuard."
     },
     "options_third_party_title": {
         "message": "التدمير الذاتي لملفات تعريف الارتباط للجهات الخارجية"

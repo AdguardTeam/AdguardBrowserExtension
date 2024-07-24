@@ -532,7 +532,7 @@ export class FilteringLogService {
     }
 
     /**
-     * Records the application of an action from Stealth Mode.
+     * Records the application of an action from Tracking protection (formerly Stealth Mode).
      *
      * @param event Event with type {@link StealthActionEvent}.
      * @param event.data Destructed data from {@link StealthActionEvent}:
@@ -546,7 +546,7 @@ export class FilteringLogService {
     }
 
     /**
-     * Records prevention of an action from Stealth Mode.
+     * Records prevention of an action from Tracking protection (formerly Stealth Mode).
      *
      * @param event Event with type {@link StealthAllowlistActionEvent}.
      * @param event.data Destructed data from {@link StealthAllowlistActionEvent}:

@@ -511,7 +511,7 @@ export class SettingsApi {
     }
 
     /**
-     * Imports stealth mode settings from object of {@link StealthConfig}.
+     * Imports Tracking protection (formerly Stealth mode) settings from object of {@link StealthConfig}.
      */
     private static async importStealth({
         [StealthOption.DisableStealthMode]: disableStealthMode,
@@ -565,7 +565,7 @@ export class SettingsApi {
     }
 
     /**
-     * Exports stealth mode settings to object of {@link StealthConfig}.
+     * Exports Tracking protection (formerly Stealth mode) settings to object of {@link StealthConfig}.
      *
      * @returns Object of {@link StealthConfig}.
      */

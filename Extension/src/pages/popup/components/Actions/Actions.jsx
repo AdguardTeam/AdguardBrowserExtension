@@ -152,9 +152,9 @@ export const Actions = observer(() => {
                     />
                     <div
                         className="action-title"
-                        title={reactTranslator.getMessage('popup_reset_custom_rules')}
+                        title={reactTranslator.getMessage('popup_reset_page_user_rules')}
                     >
-                        {reactTranslator.getMessage('popup_reset_custom_rules')}
+                        {reactTranslator.getMessage('popup_reset_page_user_rules')}
                     </div>
                 </button>
             )}

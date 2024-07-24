@@ -33,13 +33,16 @@
         "message": "啟用"
     },
     "popup_header_cta_link": {
-        "message": "想要封鎖更多嗎？"
+        "message": "如何加強保護"
     },
     "popup_header_update_filters": {
         "message": "檢查過濾器更新"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "該副檔名必須為 %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "恢復"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard for iOS"
@@ -60,7 +63,7 @@
         "message": "禁用通知"
     },
     "popup_adguard_footer_title": {
-        "message": "為您的行動裝置取得 AdGuard"
+        "message": "保護行動裝置"
     },
     "options_popup_call_to_action": {
         "message": "輸入該過濾器之有效的網址或檔案路徑到上面的欄位裡。"
@@ -141,10 +144,10 @@
         "message": "已修改的規則：%rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "隱匿模式規則：%rules_count%"
+        "message": "追蹤保護規則：%rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "隱匿模式被套用"
+        "message": "套用追蹤保護功能"
     },
     "filtering_log_in_allowlist": {
         "message": "該網站被允許"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "您選擇去信任此過濾器了。"
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "總規則數：%num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "GitHub 的規格"
+    },
     "options_add_custom_filter": {
         "message": "新增自訂的過濾器"
     },
     "options_empty_custom_filter": {
         "message": "您尚無任何自訂的過濾器"
+    },
+    "options_loader_applying_changes": {
+        "message": "正在套用更改…"
     },
     "options_editor_indicator_saving": {
         "message": "正在儲存…"
@@ -239,14 +251,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "安全的頁面"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "正在載入…"
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "正在啟用防護…"
+    },
     "popup_site_filtering_state_enabled": {
         "message": "防護被啟用"
+    },
+    "popup_site_filtering_state_disabling": {
+        "message": "正在禁用防護…"
     },
     "popup_site_filtering_state_disabled": {
         "message": "防護被禁用"
     },
+    "popup_site_filtering_state_pausing": {
+        "message": "正在暫停防護…"
+    },
     "popup_site_filtering_state_paused": {
         "message": "防護被暫停"
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "正在恢復防護…"
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "對於所有的網站"
     },
     "popup_site_exception_information": {
         "message": "過濾被禁用，因為它可能妨礙此網站的運作。"
@@ -356,8 +386,8 @@
     "popup_security_report": {
         "message": "檢查網站安全性"
     },
-    "popup_reset_custom_rules": {
-        "message": "移除關於此頁面之所有的使用者規則"
+    "popup_reset_page_user_rules": {
+        "message": "刪除用於此網站上的使用者規則"
     },
     "context_block_site_ads": {
         "message": "封鎖於此網站上之廣告…"
@@ -483,7 +513,7 @@
         "message": "規則："
     },
     "filtering_modal_privacy": {
-        "message": "隱匿模式："
+        "message": "追蹤保護："
     },
     "filtering_modal_filter": {
         "message": "過濾器："
@@ -648,7 +678,7 @@
         "message": "留下回饋意見"
     },
     "options_privacy": {
-        "message": "隱匿模式"
+        "message": "追蹤防護"
     },
     "options_update_antibanner_filters": {
         "message": "檢查過濾器更新"
@@ -707,6 +737,90 @@
     "options_miscellaneous_settings": {
         "message": "額外的設定"
     },
+    "options_rule_limits": {
+        "message": "規則限制"
+    },
+    "options_rule_limits_description": {
+        "message": "此擴充功能符合 Chromium Manifest V3 的要求"
+    },
+    "options_rule_limits_description_link": {
+        "message": "了解有關 Manifest V3 的更多資訊"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "動態規則"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "使用者自行新增的規則，例如使用者規則和自訂過濾器"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "正規表達式規則（包含在上述內容中）"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "靜態規則集"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "內置過濾器，如封鎖煩人內容或語言特定過濾器"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "靜態規則"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "內置過濾器的規則"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "正規表達式規則（包含在上述內容中）"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current% 個，共 %maximum% 個"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "瀏覽器已修改啟用的過濾器清單"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "出現了什麼問題？"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "根據 Manifest V3，在更新或新增新擴充功能後，已超過內建規則的啟用上限。根據 Chrome 瀏覽器的反應，除了預設規則，它停用了該擴充功能的所有內建過濾器。"
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "更新前已啟用的過濾器"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "已啟用的過濾器"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "您可以執行的操作"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "選項 1：從瀏覽器中刪除不必要的廣告封鎖擴充套件。要重新啟用「更新前已啟用的過濾器」部分中提到的過濾器，請點選「<a>重新啟用過濾器<\/a>」。"
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "選項 2：安裝 AdGuard 廣告封鎖程式。該應用程式沒有過濾規則的數量限制。<a>取得 AdGuard 廣告封鎖程式<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "選項 3：如果您對已啟用的預設過濾器感到滿意，請「<a>關閉此警告<\/a>」。"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "選項 3：如果您對已啟用的預設過濾器感到滿意，請「<a>關閉此警告<\/a>」。"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "您已達到內置規則啟動上限。 瀏覽器已修改了內置規則過濾器清單。 啟用的過濾器數量已從 %expected% 個更改為 %current% 個。"
+    },
+    "options_limits_warning_static_filters": {
+        "message": "您已達到內置過濾器的限制。 %maximum% 個過濾器（共 %current% 個）已啟用。要啟動新規則，請禁用一些內置過濾器。"
+    },
+    "options_limits_warning_static_rules": {
+        "message": "您已達到內置規則的限制。 %maximum% 個規則（共 %current% 個）已啟用。要啟動新規則，請禁用一些內置過濾器。"
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "您已達到內置正規表達式規則的限制。 %maximum% 個正規表達式規則（共 %current% 個）已啟用。要啟動新規則，請禁用一些內置過濾器。"
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "您已達到使用者新增規則的限制。 %maximum% 個規則中的 %current% 個已啟用。"
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "您已達到使用者新增正規表達式規則的限制。 %maximum% 個正規表達式規則中的 %current% 個已啟用。"
+    },
     "options_show_adguard_full_version_title": {
         "message": "顯示關於 AdGuard 完整的版本之資訊"
     },
@@ -747,13 +861,13 @@
         "message": "使用較簡短版本的過濾器，僅包含最受歡迎的規則，以節省流量。更適用於行動瀏覽器"
     },
     "options_privacy_title": {
-        "message": "隱匿模式"
+        "message": "追蹤防護"
     },
     "options_privacy_desc": {
         "message": "透過封鎖最普遍的追蹤方式，保護您的身分和敏感的個人資料免於大量的線上追蹤器。"
     },
     "options_hide_referrer_title": {
-        "message": "隱藏參照位址免於第三方"
+        "message": "對第三方隱藏 Referer"
     },
     "options_hide_referrer_desc": {
         "message": "防止第三方知道您正在訪問什麼網站。"
@@ -841,6 +955,9 @@
     },
     "popup_switch_button": {
         "message": "防護開關"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "瀏覽器修改了啟用的內建過濾器的清單。"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1004,6 +1121,9 @@
     "options_stealth_miscellaneous_title": {
         "message": "雜項的"
     },
+    "options_coming_soon": {
+        "message": "即將推出"
+    },
     "blocking_pages_malware": {
         "message": "於 <strong>%host%<\/strong> 之網頁已被報告為惡意軟體頁面，且根據您的安全性偏好設定，已被封鎖。"
     },
@@ -1042,5 +1162,13 @@
     },
     "close_button_title": {
         "message": "關閉"
+    },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| 已套用的規則"
+    },
+    "filtering_modal_original_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| 原始規則"
     }
 }
