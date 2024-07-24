@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_enable_button": {
         "message": "有効にする"
     },
+    "popup_header_cta_link": {
+        "message": "保護機能を強化する方法"
+    },
     "popup_header_update_filters": {
         "message": "フィルタの更新を確認する"
     },
@@ -58,6 +61,9 @@
     },
     "options_popup_version_update_disable_notification": {
         "message": "通知を無効にする"
+    },
+    "popup_adguard_footer_title": {
+        "message": "スマホ・iPhoneも保護しよう"
     },
     "options_popup_call_to_action": {
         "message": "有効なURLまたはフィルタのファイルパスを上の欄に入力してください。"
@@ -137,6 +143,12 @@
     "filtering_log_modified_rules": {
         "message": "変更されたルール数: %rules_count%"
     },
+    "filtering_log_stealth_rules": {
+        "message": "トラッキング防止ルールの数: %rules_count%"
+    },
+    "filtering_log_privacy_applied_rules": {
+        "message": "トラッキング防止適用済み"
+    },
     "filtering_log_in_allowlist": {
         "message": "このサイトはホワイトリストに入っています"
     },
@@ -197,6 +209,12 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "あなたはこのフィルタを「信頼できる」とマークしたため、このフィルタはより強力なフィルタルール修飾子を使用できます。"
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "ルール総数: %num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "仕様（GitHub）"
+    },
     "options_add_custom_filter": {
         "message": "カスタムフィルタを追加する"
     },
@@ -233,14 +251,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "セキュアページ"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "読み込み中…"
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "保護機能を起動中…..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "保護が有効になっています"
+    },
+    "popup_site_filtering_state_disabling": {
+        "message": "保護機能を無効化中…"
     },
     "popup_site_filtering_state_disabled": {
         "message": "保護は無効になっています"
     },
+    "popup_site_filtering_state_pausing": {
+        "message": "保護を一時停止中..."
+    },
     "popup_site_filtering_state_paused": {
         "message": "保護は一時停止中です"
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "保護を再開中..."
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "対象：全てのウェブサイト"
     },
     "popup_site_exception_information": {
         "message": "このサイトの動作を邪魔する可能性があるため、フィルタリングを無効にしています。"
@@ -349,6 +385,9 @@
     },
     "popup_security_report": {
         "message": "サイトの安全性を確認する"
+    },
+    "popup_reset_page_user_rules": {
+        "message": "このサイトに対するユーザールールを削除する"
     },
     "context_block_site_ads": {
         "message": "このウェブサイトの広告をブロックする..."
@@ -472,6 +511,9 @@
     },
     "filtering_modal_rules": {
         "message": "ルール:"
+    },
+    "filtering_modal_privacy": {
+        "message": "トラッキング防止:"
     },
     "filtering_modal_filter": {
         "message": "フィルタ名:"
@@ -695,6 +737,90 @@
     "options_miscellaneous_settings": {
         "message": "追加設定"
     },
+    "options_rule_limits": {
+        "message": "ルール数の上限"
+    },
+    "options_rule_limits_description": {
+        "message": "本拡張機能は Manifest V3 に準拠しています。"
+    },
+    "options_rule_limits_description_link": {
+        "message": "Manifest V3 について詳しくはこちら"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "動的ルール"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "ユーザーによって追加されたルール（ユーザールールやカスタムフィルタなど）"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "正規表現ルール（上記に含まれるもの）"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "静的ルールセット"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "迷惑要素ブロックや言語特化フィルタなどの組み込みフィルタ"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "静的ルール"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "組み込みフィルタからのルール"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "正規表現ルール（上記に含まれるもの）"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current%\/%maximum%"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "ブラウザが、有効な組み込みフィルタのリストを変更しました。"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "何が起きたのか"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "アップデートまたは新しい拡張機能を追加した後に、有効な組み込みルール数の上限を超えました。Manifest V3 に従って、お使いのChromeブラウザは、拡張機能の組み込みフィルタ（デフォルトのフィルタを除く）を全て無効にすることで反応しました。"
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "更新前に有効化されたフィルタ"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "現在有効になっているフィルタ"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "あなたにできること"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "オプション 1. ブラウザから不要な広告ブロック拡張機能を削除します。 「更新前に有効化されたフィルタ」セクションに記載されているフィルタを再度有効化するには、「<a>フィルタを再有効化<\/a>」をクリックします。"
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "オプション 2. AdGuard アプリをインストールすることで、フィルタリングルールは無制限になります。。 <a>AdGuard アプリを入手する<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "オプション 3. 現在有効になっているデフォルトフィルタで十分な場合は、 <a>この警告を閉じ<\/a>て結構です。"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "オプション 3. 現在有効になっているデフォルトフィルタで十分な場合は、 <a>この警告を閉じ<\/a>て結構です。"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "有効な組み込みルール数の上限に達しました。お使いのブラウザは有効な組み込みフィルタのリストを変更しました。有効になっているフィルタの数が %expected% から %current% に変更されました。"
+    },
+    "options_limits_warning_static_filters": {
+        "message": "有効な組み込みフィルタ数の上限に達しました。 %current% 個のフィルタのうち %maximum% 個が有効になっています。新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
+    },
+    "options_limits_warning_static_rules": {
+        "message": "有効な組み込みルール数の上限に達しました。 %current% 個のルールのうち %maximum% 個が有効になっています。新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "有効な組み込み正規表現ルールの数の上限に達しました。 %current% 個の正規表現ルールのうち %maximum% 個が有効になっています。新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "ユーザー追加ルールの数の上限に達しました。 %current% 個のルールのうち %maximum% 個が有効になっています。"
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "ユーザー追加の正規表現ルール数の上限に達しました。 %current% 個の正規表現ルールのうち %maximum% 個が有効になっています。"
+    },
     "options_show_adguard_full_version_title": {
         "message": "AdGuardフルバージョンの情報を表示する"
     },
@@ -788,6 +914,9 @@
     "options_block_known_trackers_title": {
         "message": "トラッカー（個人情報追跡）をブロックする"
     },
+    "options_block_known_trackers_description": {
+        "message": "「AdGuard 追跡防止フィルタ」を使ってトラッカー（個人情報追跡ソフトウェア）とウェブ分析ツールをブロックします。"
+    },
     "options_third_party_title": {
         "message": "サードパーティクッキーの自動削除"
     },
@@ -826,6 +955,9 @@
     },
     "popup_switch_button": {
         "message": "保護スイッチ"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "お使いのブラウザが有効な組み込みフィルタのリストを変更しました。"
     },
     "short_name": {
         "message": "AdGuard"
@@ -989,6 +1121,9 @@
     "options_stealth_miscellaneous_title": {
         "message": "その他"
     },
+    "options_coming_soon": {
+        "message": "まもなく公開予定"
+    },
     "blocking_pages_malware": {
         "message": "<strong>%host%<\/strong> はマルウェアのページとして報告されていますので、ユーザー様のセキュリティ設定に基づいてブロックしました。"
     },
@@ -1027,5 +1162,13 @@
     },
     "close_button_title": {
         "message": "閉じる"
+    },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| 適用済みルール"
+    },
+    "filtering_modal_original_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| オリジナルルール"
     }
 }
