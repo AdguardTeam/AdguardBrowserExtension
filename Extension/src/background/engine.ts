@@ -35,6 +35,7 @@ import {
     SettingsApi,
     DocumentBlockApi,
     network,
+    filteringLogApi,
 } from './api';
 
 export type { Message as EngineMessage } from '@adguard/tswebextension';
@@ -105,6 +106,8 @@ export class Engine {
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
+
+        filteringLogApi.onEngineUpdated();
     }
 
     /**

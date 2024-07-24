@@ -27,7 +27,6 @@ import {
     settingsStorage,
     editorStorage,
 } from '../../storages';
-import { filteringLogApi } from '../filtering-log';
 
 /**
  * API for managing user rules list.
@@ -46,7 +45,6 @@ export class UserRulesApi {
 
             if (!userRules) {
                 await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
-                filteringLogApi.onFiltersChanged([AntiBannerFiltersId.UserFilterId]);
             }
         } catch (e) {
             if (!isInstall) {
@@ -56,7 +54,6 @@ export class UserRulesApi {
                 );
             }
             await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
-            filteringLogApi.onFiltersChanged([AntiBannerFiltersId.UserFilterId]);
         }
     }
 
@@ -164,7 +161,6 @@ export class UserRulesApi {
         await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rules);
 
         listeners.notifyListeners(listeners.UserFilterUpdated);
-        filteringLogApi.onFiltersChanged([AntiBannerFiltersId.UserFilterId]);
     }
 
     /**
