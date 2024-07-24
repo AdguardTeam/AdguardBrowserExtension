@@ -1,8 +1,8 @@
-! Checksum: qpihMZXB3IcqXV+46UlL/A
+! Checksum: Ln8w5Y9bGNobzdmNGXEkgw
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.8.85
-! TimeUpdated: 2024-07-16T15:34:01+00:00
+! Version: 2.0.8.90
+! TimeUpdated: 2024-07-22T10:34:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -246,6 +246,13 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 ! NOTE: Blogroll specific rules
 !
+etude000.com##.textwidget > div.top-ad:has(> div > ul[class^="other_rss"])
+umamusume.net##.rss-box
+tousatu-club.com###text-51
+||vipsister23.com/vipsister.html
+vipsister23.com###share2
+vipsister23.com###share3
+vipsister23.com##blockquote
 eroangle.club##.article > h3.frontTitle:last-of-type ~ article.excerpt_pick
 eroangle.club##article.excerpt_pick:has(> a[href*="new"])
 eroangle.club##.table_pickup2
@@ -1664,6 +1671,7 @@ indoxxi.show##.tawkto-btn
 !
 !   SECTION: Widgets - Suggestion widgets
 !
+fontech.startitup.sk##div[class^="fon-plista_widget_"]
 otv.co.jp##.o_recommend__together
 otv.co.jp##.o_recommend
 webznam.ru###topalfaweb
@@ -2230,6 +2238,7 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+euromaidanpress.com###pa_banner_code
 roskomsvoboda.org##.donate
 roskomsvoboda.org###donate
 themoscowtimes.com#$#body { overflow: auto !important; }

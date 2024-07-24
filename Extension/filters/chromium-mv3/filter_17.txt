@@ -1,8 +1,8 @@
-! Checksum: lxNAj9V8Die3o2BoPsq3Eg
+! Checksum: eHNntc9Ni9tZVdvHk0zkgA
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.80
-! TimeUpdated: 2024-07-16T12:35:46+00:00
+! Version: 2.0.8.84
+! TimeUpdated: 2024-07-24T10:35:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -358,6 +358,13 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! lumosvpn.com promo
+||lumosvpn.com/?cep=$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/184386
+||shop.adidas.jp^$removeparam=source_caller
+||shop.adidas.jp^$removeparam=shortlink
+! https://github.com/AdguardTeam/AdguardFilters/issues/184272
+||daohang.qq.com^$removeparam=fr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183694
 ||hoyoverse.com/branding$removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183361
@@ -647,9 +654,12 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
 ! VKontakte
 $removeparam=trackcode,domain=vk.com|vk.ru
 $removeparam=recom,domain=vk.com|vk.ru
-! https://github.com/AdguardTeam/AdguardFilters/issues/166382
+! vkplay.ru
 ||vkplay.ru$removeparam=_1ld
 ||vkplay.ru$removeparam=_1lp
+||vkplay.ru^$removeparam=mt_adset
+||vkplay.ru^$removeparam=mt_sub1
+||vkplay.ru^$removeparam=mt_sub2
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166050
 ||incogni.com^$removeparam=transaction_id
 ||incogni.com^$removeparam=offer_id
@@ -698,7 +708,6 @@ keepstreams.com^$removeparam=downloadmode
 ||ozon.ru^$removeparam=from_url
 ||ozon.ru^$removeparam=from_sku
 ||ozon.ru^$removeparam=keywords
-||ozon.ru^$removeparam=oos_search
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164394
 ||stvkr.com/v*/click-$removeparam=sa
 ||stvkr.com/v*/click-$removeparam=rfr

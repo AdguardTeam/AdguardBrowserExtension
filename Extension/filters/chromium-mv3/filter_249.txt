@@ -1,13 +1,13 @@
-! Checksum: HxFjvHzeh4I28U7a/M12Rw
+! Checksum: 2i8ajaReMLjZq5Ud057Plw
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.58
-! TimeUpdated: 2024-07-13T17:01:46+00:00
+! Version: 2.0.7.60
+! TimeUpdated: 2024-07-22T13:02:01+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! OriginalVersion: 11July2024v1
+! OriginalVersion: 22July2024v1
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -1217,6 +1217,13 @@ gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,
 gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##.ad_interscroller:upward(.wrapper)
 sjoborg.no##div[data-debuglabel=_app]
 gulesider.no##div.place-items-center.grid:has([data-adunitid])
+favoritlinks.dk##table:has([align=center] > [class*=box_sponsor])
+sn.dk###bannerStuff
+sn.dk##.locked-template-block
+jyllands-posten.dk##.my-2:has(ins[id*=noconsent])
+jyllands-posten.dk##div[class*=adnm-]
+nyheder24.dk##.generic-widget:has(.annonce)
+nyheder24.dk##div[class*=inArticleBanner i]
 ! — — — — — — — — —
 ! 🇳🇴: Oppføringer for minst 3 nettsteder
 ! 🇬🇧: Entries for at least 3 websites
@@ -1413,6 +1420,8 @@ _visittkortannonse_$image
 ! https://www.minmote.no/interioer/gjoer-det-selv/a/EQBava/slik-faar-du-den-perfekte-uteplassen-til-vaarsesongen
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-8408727
 ||tize.no^$subdocument,third-party
+! sn.dk (19/07/2024)
+/annoncer/scripts/*
 ! — — — — —
 ! 🇳🇴: Domenefokuserte blokkeringsoppføringer
 ! 🇳🇴🏞: Domenefokuserande bloknadsoppføringar
@@ -2369,7 +2378,6 @@ triplx.dk##.aff-inner-col
 ||srilanka.no^$document
 ||innboks.info^$all
 ||pearlandcarpetcleaner.com^$all
-||logg-inn.online^$all
 !+ NOT_OPTIMIZED
 /?finn.no/login$document
 ! 🇬🇧: Copied over from «Dandelion Sprout's Anti-Malware List»
@@ -2915,7 +2923,7 @@ fla.de##.index-banner
 /zone?pub
 ! Various Android apps
 ! Other entries that are «AdGuard syntax»-specific
-! Last updated: 20June2024v2-Extension
+! Last updated: 15July2024v2-Extension
 ! 🇳🇴: ——— Vindusviskere for betalte artikler (sånn at de nederste linjene i en forhåndsvisning ikke toner ut) ———
 ! Takk til THEtomaso (https://github.com/THEtomaso) for de fleste av disse oppføringene.
 ! 🇩🇰: ——— Vinduesviskere for betalte artikler (så de sidste par linjer i en forhåndsvisning ikke falder ud) ———
@@ -3011,6 +3019,8 @@ findroommate.dk###frm-ablo-message
 ! 🇬🇧: ——— Not actually AAB, but would've caused fatal breakage in ABP ———
 playpilot.com##.takeover.modals
 playpilot.com#$#html[lang] > body { overflow: auto !important }
+! 🇬🇧: ——— An unusual entry, but a needed entry: Aims to prevents NRK's login system on Google Translate-d pages from forcing readers who were logged in to their regular site, from being redirected from a translated page to the non-translated frontpage. ———
+||innlogging.nrk.no^$subdocument,domain=www-nrk-no.translate.goog
 !¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤=☆=¤!
 ! 🇳🇴/🇩🇰: ——— Ikke for Brave Browser ———
 ! 🇬🇧: ——— Not for Brave Browser ———
