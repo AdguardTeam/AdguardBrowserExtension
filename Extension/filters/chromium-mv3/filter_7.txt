@@ -1,8 +1,8 @@
-! Checksum: i3ob+uhULQx6yw5bYXk2yw
+! Checksum: hmICbxvFdINsP/a8SP3Y6w
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.54.67
-! TimeUpdated: 2024-07-24T10:34:48+00:00
+! Version: 2.0.54.70
+! TimeUpdated: 2024-07-24T15:33:15+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -509,10 +509,7 @@
 !
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183252
-exploader.net#%#//scriptlet('trusted-replace-node-text', 'script', 'window', '/(if \(\! window\.[0-9A-z]+\) \n?\{\n?window[\S\s]+?\})/g', 'if(!window.canRunAds){throw new Error()};$1')
-||exploader.net/js/$script,redirect=prebid-ads
-||exploader.net/js/$xmlhttprequest,redirect=prebid-ads
-!exploader.net#%#//scriptlet('prevent-xhr', '.js')
+@@||daotag.com/tag/$script,domain=exploader.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181591
 iwb.jp#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'getComputedStyle(a).height')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179614
@@ -1748,6 +1745,8 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 !
 !
+minnano-av.com##.bn250
+minnano-av.com##.main-column > div.slider
 at-s.com###bnr_underarticle
 musicman.co.jp###header_top_banner
 musicman.co.jp#$##is_header_banner { margin-top: 0px !important; }
@@ -6350,12 +6349,12 @@ ichimame.com,tvanimemuryoudouga.com,hmd.site,corocoro-tabi.com,moqlog.jp###custo
 tousatu-club.com,namba-osaka.com,virtualgorillaplus.com###custom_html-22
 ichimame.com,koikatsu-portal.com,tvanimemuryoudouga.com,sanabo.com###custom_html-23
 tvanimemuryoudouga.com,designoma.com,tech-biz-eng.com,naga-ken.info,sanabo.com###custom_html-24
-dennosokuho.com,tipstour.net,e-countries.com,4thsight.xyz###custom_html-25
+vtuberseason.com,dennosokuho.com,tipstour.net,e-countries.com,4thsight.xyz###custom_html-25
 you1news.com###custom_html-26
 holosoku.com,erokune.com,sukesuke-mile-kojiki.net###custom_html-27
 vtuberseason.com,news2019.biz,sukesuke-mile-kojiki.net,daeudaeu.com,bodymate.jp###custom_html-28
 sumahodata.com,sanabo.com###custom_html-29
-news2019.biz,dennosokuho.com,designoma.com,sanabo.com###custom_html-30
+vtuberseason.com,news2019.biz,dennosokuho.com,designoma.com,sanabo.com###custom_html-30
 news2019.biz,suresuta.jp,dennosokuho.com,sasebo2.com###custom_html-31
 dennosokuho.com,ff14.playguide2.net###custom_html-32
 uma-log.net,e-countries.com,momojirinouen.com###custom_html-33
@@ -7755,6 +7754,7 @@ fx-koryaku.com##.textwidget > center > a[target="_blank"]
 ||dmm.co.jp^$domain=exploader.net
 ||exploader.net/d/$image
 ||dmm.co.jp^$popup,domain=exploader.net
+exploader.net###preview_images > span[class^="tracking_"] > div[style="position: fixed;"] > div[data-pr]
 exploader.net#$#div[style*="1120px;"][style*="450px;"] { height: 0 !important; overflow: hidden !important; }
 exploader.net###newfiles > ul.list > li[style*="height: 120px;"]
 exploader.net###wrapper > div[data-style][style*="fixed"]
