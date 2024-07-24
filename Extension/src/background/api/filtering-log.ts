@@ -117,6 +117,15 @@ type CachedFilterData = Pick<PreprocessedFilterList, 'rawFilterList' | 'conversi
 export class FilteringLogApi {
     private static readonly REQUESTS_SIZE_PER_TAB = 1000;
 
+    /**
+     * Filter lists that are generated dynamically by TSWebExtension.
+     * We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
+     */
+    private static readonly DYNAMIC_FILTER_LISTS = new Set([
+        AntiBannerFiltersId.StealthModeFilterId,
+        AntiBannerFiltersId.AllowlistFilterId,
+    ]);
+
     private preserveLogEnabled = false;
 
     private openedFilteringLogsPages = 0;
@@ -140,6 +149,20 @@ export class FilteringLogApi {
     private filtersCache = new Map<number, CachedFilterData>();
 
     /**
+     * Map of filter sync attempts. The key is the filter list id and the value is the last attempt time.
+     * In some rare edge cases (but maybe never), the filters cache may be become outdated,
+     * so we need to sync the filter again.
+     * We only try this sync if we encounter an error while getting rule text.
+     */
+    private filterSyncAttempts = new Map<number, number>();
+
+    /**
+     * Interval for sync attempts in milliseconds.
+     * We should try to sync the filter only once per 10 seconds.
+     */
+    private static readonly SYNC_ATTEMPTS_INTERVAL_MS = 10000;
+
+    /**
      * Purges filters cache.
      *
      * @param filterIds Filter ids to remove from cache. If not provided, the whole cache will be purged.
@@ -147,22 +170,41 @@ export class FilteringLogApi {
     private purgeFiltersCache(filterIds?: number[]): void {
         if (filterIds) {
             filterIds.forEach((filterId) => this.filtersCache.delete(filterId));
+
+            logger.info(`Filtering log filters cache purged for filter ids: ${filterIds.join(', ')}`);
             return;
         }
 
         this.filtersCache.clear();
+
+        logger.info('Filtering log filters cache purged');
     }
 
     /**
-     * Called when filters are changed.
+     * Purges filter sync attempts.
      *
-     * @param filterIds Filter ids that were changed.
+     * @param filterIds Filter ids to remove from cache. If not provided, the whole cache will be purged.
      */
-    public onFiltersChanged(filterIds: number[]): void {
-        // The cache is only relevant if the filtering log is open
-        if (this.isOpen()) {
-            this.purgeFiltersCache(filterIds);
+    private purgeFilterSyncAttempts(filterIds?: number[]): void {
+        if (filterIds) {
+            filterIds.forEach((filterId) => this.filterSyncAttempts.delete(filterId));
+            return;
         }
+
+        this.filterSyncAttempts.clear();
+    }
+
+    /**
+     * Called when the engine is updated.
+     */
+    public onEngineUpdated(): void {
+        if (!this.isOpen()) {
+            return;
+        }
+
+        // We need to purge the filters cache, because the filters data may be changed after the engine update
+        this.purgeFiltersCache();
+        this.purgeFilterSyncAttempts();
     }
 
     /**
@@ -206,6 +248,28 @@ export class FilteringLogApi {
     }
 
     /**
+     * Tries to sync the cached filter data with the storage.
+     *
+     * @param filterId Filter id.
+     * @returns Returns false if the filter was synced within the last {@link SYNC_ATTEMPTS_INTERVAL_MS} milliseconds.
+     * Otherwise, returns true.
+     */
+    private attemptToSyncFilter(filterId: number): boolean {
+        const lastAttemptTime = this.filterSyncAttempts.get(filterId) || 0;
+
+        if (Date.now() - lastAttemptTime < FilteringLogApi.SYNC_ATTEMPTS_INTERVAL_MS) {
+            return false;
+        }
+
+        // Delete filter from the cache to force a new request next time
+        this.purgeFiltersCache([filterId]);
+
+        this.filterSyncAttempts.set(filterId, Date.now());
+
+        return true;
+    }
+
+    /**
      * Gets rule text for the specified filter id and rule index.
      * If the rule is not found, returns null.
      * It handles a cache internally to speed up requests for the same filter next time.
@@ -217,10 +281,7 @@ export class FilteringLogApi {
     public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
         // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
         // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
-        if (
-            filterId === AntiBannerFiltersId.StealthModeFilterId
-            || filterId === AntiBannerFiltersId.AllowlistFilterId
-        ) {
+        if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {
             const ruleNode = Engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
 
             if (!ruleNode) {
@@ -253,14 +314,30 @@ export class FilteringLogApi {
         const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
 
         if (lineStartIndex === -1) {
-            logger.error(`Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`);
+            const baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            // If the rule is not found, try to sync the filter and try again
+            if (this.attemptToSyncFilter(filterId)) {
+                logger.warn(`${baseMessage}, trying to sync the filter`);
+                return this.getRuleText(filterId, ruleIndex);
+            }
+
+            logger.error(baseMessage);
             return null;
         }
 
         const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
 
         if (!appliedRuleText) {
-            logger.error(`Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
+            const baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            // If the rule is not found, try to sync the filter and try again
+            if (this.attemptToSyncFilter(filterId)) {
+                logger.warn(`${baseMessage}, trying to sync the filter`);
+                return this.getRuleText(filterId, ruleIndex);
+            }
+
+            logger.error(baseMessage);
             return null;
         }
 
@@ -329,6 +406,7 @@ export class FilteringLogApi {
         if (this.openedFilteringLogsPages === 0) {
             // Purge filters cache to free up memory
             this.purgeFiltersCache();
+            this.purgeFilterSyncAttempts();
 
             // Clear events
             this.tabsInfoMap.forEach((tabInfo) => {
