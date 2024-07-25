@@ -40,8 +40,9 @@ const Mv3Actions = observer(() => {
     const actionChangingClassname = cn('action', { 'action--disabled': !isFilteringPossible });
 
     return (
-        <div className="actions actions--mv3">
+        <div className="actions">
             <BlockAdsAction isFilteringPossible={isFilteringPossible} className={actionChangingClassname} />
+            {/* FIXME: add filtering log action */}
             <ReportIssueAction
                 className={actionChangingClassname}
                 isFilteringPossible={isFilteringPossible}
