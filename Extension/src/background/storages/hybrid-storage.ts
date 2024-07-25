@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @file This file implements a hybrid storage solution that abstracts over different storage mechanisms,
  * providing a unified API for storage operations. It automatically chooses between IndexedDB storage and
@@ -6,6 +7,7 @@
 
 import { nanoid } from 'nanoid';
 import * as idb from 'idb';
+import { isObject } from 'lodash-es';
 
 import { ExtendedStorageInterface } from '../../common/storage';
 
@@ -28,6 +30,15 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
      * Holds the instance of the selected storage mechanism.
      */
     private storage: ExtendedStorageInterface<string, unknown, 'async'> | null = null;
+
+    /**
+     * Returns true if the selected storage mechanism is IndexedDB.
+     *
+     * @returns True if the selected storage mechanism is IndexedDB, false otherwise.
+     */
+    private isIdb(): boolean {
+        return this.storage instanceof IDBStorage;
+    }
 
     /**
      * Determines the appropriate storage mechanism to use. If IndexedDB is supported, it uses IDBStorage;
@@ -69,6 +80,66 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
     }
 
     /**
+     * Helper function to serialize Uint8Array members of an object.
+     * This workaround is needed because by default chrome.storage API doesn't support Uint8Array,
+     * and we use it to store serialized filter lists.
+     *
+     * @param value Object to serialize.
+     * @returns Serialized object.
+     */
+    private serialize = (value: unknown): unknown => {
+        if (value instanceof Uint8Array) {
+            return { __type: 'Uint8Array', data: Array.from(value) };
+        }
+
+        if (Array.isArray(value)) {
+            return value.map(this.serialize);
+        }
+
+        if (isObject(value)) {
+            const serializedObject: { [key: string]: unknown } = {};
+            // eslint-disable-next-line no-restricted-syntax
+            for (const [key, val] of Object.entries(value)) {
+                serializedObject[key] = this.serialize(val);
+            }
+            return serializedObject;
+        }
+
+        return value;
+    };
+
+    /**
+     * Helper function to deserialize Uint8Array members of an object.
+     * This workaround is needed because by default chrome.storage API doesn't support Uint8Array,
+     * and we use it to store serialized filter lists.
+     *
+     * @param value Object to deserialize.
+     * @returns Deserialized object.
+     */
+    private deserialize = (value: unknown): unknown => {
+        const isObj = isObject(value);
+
+        if (isObj && (value as any).__type === 'Uint8Array') {
+            return new Uint8Array((value as any).data);
+        }
+
+        if (Array.isArray(value)) {
+            return value.map(this.deserialize);
+        }
+
+        if (isObj) {
+            const deserializedObject: { [key: string]: unknown } = {};
+            // eslint-disable-next-line no-restricted-syntax
+            for (const [key, val] of Object.entries(value)) {
+                deserializedObject[key] = this.deserialize(val);
+            }
+            return deserializedObject;
+        }
+
+        return value;
+    };
+
+    /**
      * Asynchronously sets a value for a given key in the selected storage mechanism.
      *
      * @param key The key under which the value is stored.
@@ -77,7 +148,13 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
      */
     async set(key: string, value: unknown): Promise<void> {
         const storage = await this.getStorage();
-        return storage.set(key, value);
+
+        if (this.isIdb()) {
+            return storage.set(key, value);
+        }
+
+        const rawValue = this.serialize(value);
+        return storage.set(key, rawValue);
     }
 
     /**
@@ -88,7 +165,13 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
      */
     async get(key: string): Promise<unknown> {
         const storage = await this.getStorage();
-        return storage.get(key);
+        const value = await storage.get(key);
+
+        if (this.isIdb()) {
+            return value;
+        }
+
+        return this.deserialize(value);
     }
 
     /**
@@ -121,7 +204,15 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
      */
     public async setMultiple(data: Record<string, unknown>): Promise<boolean> {
         const storage = await this.getStorage();
-        return (await storage.setMultiple(data)) ?? false;
+        if (this.isIdb()) {
+            return (await storage.setMultiple(data)) ?? false;
+        }
+
+        const cloneData = { ...data };
+        Object.entries(cloneData).forEach(([key, value]) => {
+            cloneData[key] = this.serialize(value);
+        });
+        return (await storage.setMultiple(cloneData)) ?? false;
     }
 
     /**
