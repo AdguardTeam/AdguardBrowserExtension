@@ -445,14 +445,6 @@ class PopupStore {
         return null;
     }
 
-    @action
-    getStatisticsData = async () => {
-        const { stats } = await messenger.getStatisticsData();
-        runInAction(() => {
-            this.stats = stats;
-        });
-    };
-
     getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
         switch (range) {
             case TIME_RANGES.DAY:
