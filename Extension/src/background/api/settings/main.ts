@@ -45,7 +45,7 @@ import {
     filterStateStorage,
     groupStateStorage,
     settingsStorage,
-    storage,
+    browserStorage,
 } from '../../storages';
 import {
     CommonFilterApi,
@@ -89,7 +89,7 @@ export class SettingsApi {
      */
     public static async init(): Promise<void> {
         try {
-            const data = await storage.get(ADGUARD_SETTINGS_KEY);
+            const data = await browserStorage.get(ADGUARD_SETTINGS_KEY);
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
@@ -436,10 +436,10 @@ export class SettingsApi {
 
         // Disable groups not listed in the imported list.
         const allGroups = groupStateStorage.getData();
-        const allGroupsIds = Object.keys(allGroups).map(id => Number(id));
+        const allGroupsIds = Object.keys(allGroups).map((id) => Number(id));
 
         const groupIdsToDisable = allGroupsIds
-            .filter(groupId => !enabledGroups.includes(groupId));
+            .filter((groupId) => !enabledGroups.includes(groupId));
 
         // Disable all other groups and mark them as untouched.
         groupStateStorage.disableGroups(groupIdsToDisable, false);
@@ -484,7 +484,7 @@ export class SettingsApi {
     private static async exportUserFilter(): Promise<UserFilterConfig> {
         return {
             [UserFilterOption.Enabled]: settingsStorage.get(SettingOption.UserFilterEnabled),
-            [UserFilterOption.Rules]: (await UserRulesApi.getUserRules()).join('\n'),
+            [UserFilterOption.Rules]: (await UserRulesApi.getOriginalUserRules()).join('\n'),
             [UserFilterOption.DisabledRules]: '',
         };
     }
@@ -529,7 +529,7 @@ export class SettingsApi {
     }
 
     /**
-     * Imports stealth mode settings from object of {@link StealthConfig}.
+     * Imports Tracking protection (formerly Stealth mode) settings from object of {@link StealthConfig}.
      */
     private static async importStealth({
         [StealthOption.DisableStealthMode]: disableStealthMode,
@@ -585,7 +585,7 @@ export class SettingsApi {
     }
 
     /**
-     * Exports stealth mode settings to object of {@link StealthConfig}.
+     * Exports Tracking protection (formerly Stealth mode) settings to object of {@link StealthConfig}.
      *
      * @returns Object of {@link StealthConfig}.
      */

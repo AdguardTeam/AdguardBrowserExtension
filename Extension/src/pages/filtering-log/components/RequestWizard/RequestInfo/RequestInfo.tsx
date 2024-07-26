@@ -33,9 +33,8 @@ import React, {
 import { identity } from 'lodash-es';
 import cn from 'classnames';
 
-import { StealthActions, ContentType as RequestType } from '@adguard/tswebextension';
+import { StealthActions, ContentType as RequestType } from 'tswebextension';
 
-import type { FilteringEventRuleData } from '../../../../../background/api';
 import { translator } from '../../../../../common/translators/translator';
 import {
     getFilterName,
@@ -53,7 +52,8 @@ import { optionsStorage } from '../../../../options/options-storage';
 import { DEFAULT_MODAL_WIDTH_PX, LINE_COUNT_LIMIT } from '../constants';
 import { TextCollapser } from '../../../../common/components/TextCollapser/TextCollapser';
 import { AddedRuleState } from '../../../constants';
-import type { UIFilteringLogEvent } from '../../../types';
+import { type FilteringLogEvent, type FilteringEventRuleData } from '../../../../../background/api/filtering-log';
+import { FilterMetadata } from '../../../../../background/api';
 
 import './request-info.pcss';
 
@@ -146,63 +146,122 @@ const getStealthActionNames = (actions: number | undefined): string | null => {
  * @param selectedEvent
  * @returns {string}
  */
-const getType = (selectedEvent: UIFilteringLogEvent) => {
+const getType = (selectedEvent: FilteringLogEvent) => {
     return getRequestEventType(selectedEvent);
 };
 
 /**
- * Returns rule text with conversion info
+ * Gets rules text data for the selected event.
  *
- * @param rule
+ * @param {FilteringEvent} event Event object to get the rule(s) from.
+ * @param {RegularFilterMetadata} filtersMetadata Filters metadata.
+ * @returns An object with the following properties:
+ * - `appliedRuleTexts` - an array of rule texts that were applied to the request.
+ *   If there are multiple rules, each rule text is followed by the filter name in parentheses.
+ * - `originalRuleTexts` - an array of original rule texts that were converted to the applied rule texts (if any)
+ *   If the rule was not converted, `appliedRuleTexts` contains the original rule text and `originalRuleTexts` is empty.
+ *   If there are multiple rules, each rule text is followed by the filter name in parentheses.
  */
-const getRuleText = (rule: FilteringEventRuleData | undefined) => {
-    if (!rule) {
-        return null;
+const getRulesData = (event: FilteringLogEvent, filtersMetadata: FilterMetadata[] | null) => {
+    const {
+        requestRule,
+        replaceRules,
+        stealthAllowlistRules,
+    } = event;
+
+    const result = {
+        appliedRuleTexts: [] as string[],
+        originalRuleTexts: [] as string[],
+    };
+
+    const addRule = (rule: FilteringEventRuleData, filterName?: string | null) => {
+        const { appliedRuleText, originalRuleText } = rule;
+
+        if (appliedRuleText) {
+            result.appliedRuleTexts.push(filterName ? `${appliedRuleText} (${filterName})` : appliedRuleText);
+        }
+
+        if (originalRuleText) {
+            result.originalRuleTexts.push(filterName ? `${originalRuleText} (${filterName})` : originalRuleText);
+        }
+    };
+
+    const addRuleGroup = (rules: FilteringEventRuleData[]) => {
+        if (!rules) {
+            return;
+        }
+
+        if (rules.length === 1 && rules[0]) {
+            addRule(rules[0]);
+            return;
+        }
+
+        // in this case add rule texts with filter name
+        rules.forEach((rule) => {
+            const filterName = filtersMetadata
+                ? getFilterName(rule.filterId, filtersMetadata)
+                : null;
+
+            addRule(rule, filterName);
+        });
+    };
+
+    if (replaceRules) {
+        addRuleGroup(replaceRules);
+        return result;
     }
 
-    if (!rule.appliedRuleText) {
-        return rule.ruleText;
+    if (stealthAllowlistRules) {
+        addRuleGroup(stealthAllowlistRules);
+        return result;
     }
 
-    return `${rule.ruleText} (${translator.getMessage('filtering_modal_converted_to')} ${rule.appliedRuleText})`;
-};
-
-/**
- * Returns rule text
- *
- * @param selectedEvent
- * @returns {string|null}
- */
-const getRule = (selectedEvent: UIFilteringLogEvent) => {
-    const replaceRules = selectedEvent?.replaceRules;
-    if (replaceRules && replaceRules.length > 0) {
-        return replaceRules.map((rule) => getRuleText(rule)).join('\n');
+    if (!requestRule) {
+        return result;
     }
 
-    const requestRule = selectedEvent?.requestRule;
+    // Handle allowlist rules
     if (
         requestRule?.allowlistRule
         && requestRule?.documentLevelRule
         && requestRule?.filterId === AntiBannerFiltersId.AllowlistFilterId
     ) {
-        return null;
+        // Empty result
+        return result;
     }
-    return getRuleText(requestRule);
+
+    addRule(requestRule);
+
+    return result;
 };
 
 /**
- * Returns field title for one rule or many rules.
+ * Returns filter name for a rule
  *
- * @param selectedEvent Selected filtering log event.
- *
- * @returns Title for rule field.
+ * @param selectedEvent filtering event
+ * @param {RegularFilterMetadata} filtersMetadata filters metadata
+ * @returns {string|null} filter name or null, if filter is not found or there are multiple rules
  */
-const getRuleFieldTitle = (selectedEvent: UIFilteringLogEvent): string => {
-    const replaceRules = selectedEvent?.replaceRules;
-    if (replaceRules && replaceRules.length > 1) {
-        return translator.getMessage('filtering_modal_rules');
+const getRuleFilterName = (selectedEvent: FilteringLogEvent, filtersMetadata: FilterMetadata[] | null) => {
+    const {
+        requestRule,
+        replaceRules,
+        stealthAllowlistRules,
+    } = selectedEvent;
+
+    if (requestRule) {
+        return getFilterName(requestRule.filterId, filtersMetadata);
     }
-    return translator.getMessage('filtering_modal_rule');
+
+    if (replaceRules?.length === 1) {
+        return getFilterName(replaceRules[0]?.filterId, filtersMetadata);
+    }
+
+    if (stealthAllowlistRules?.length === 1) {
+        return getFilterName(stealthAllowlistRules[0]?.filterId, filtersMetadata);
+    }
+
+    return null;
 };
 
 const PARTS = {
@@ -211,7 +270,8 @@ const PARTS = {
     COOKIE: 'COOKIE',
     TYPE: 'TYPE',
     SOURCE: 'SOURCE',
-    RULE: 'RULE',
+    APPLIED_RULE: 'APPLIED_RULE',
+    ORIGINAL_RULE: 'ORIGINAL_RULE',
     FILTER: 'FILTER',
     STEALTH: 'STEALTH',
 };
@@ -263,14 +323,10 @@ const RequestInfo = observer(() => {
             title: translator.getMessage('filtering_modal_source'),
             data: selectedEvent.frameDomain,
         },
-        [PARTS.RULE]: {
-            title: getRuleFieldTitle(selectedEvent),
-            data: getRule(selectedEvent),
-        },
         // TODO add converted rule text
         [PARTS.FILTER]: {
             title: translator.getMessage('filtering_modal_filter'),
-            data: getFilterName(selectedEvent.requestRule?.filterId, filtersMetadata),
+            data: getRuleFilterName(selectedEvent, filtersMetadata),
         },
         [PARTS.STEALTH]: {
             title: translator.getMessage('filtering_modal_privacy'),
@@ -278,13 +334,32 @@ const RequestInfo = observer(() => {
         },
     };
 
+    // Handle rule texts
+    const rulesData = getRulesData(selectedEvent, filtersMetadata);
+
+    eventPartsMap[PARTS.APPLIED_RULE] = {
+        title: translator.getPlural('filtering_modal_applied_rules', Math.max(rulesData.appliedRuleTexts.length, 1)),
+        data: rulesData.appliedRuleTexts.length > 0
+            ? rulesData.appliedRuleTexts.join('\n')
+            : null,
+    };
+
+    // Original rule texts contains elements only if the rule was converted
+    if (rulesData.originalRuleTexts.length > 0) {
+        eventPartsMap[PARTS.ORIGINAL_RULE] = {
+            title: translator.getPlural('filtering_modal_original_rules', Math.max(rulesData.originalRuleTexts.length, 1)),
+            data: rulesData.originalRuleTexts.join('\n'),
+        };
+    }
+
     let infoElements = [
         PARTS.URL,
         PARTS.ELEMENT,
         PARTS.COOKIE,
         PARTS.TYPE,
         PARTS.SOURCE,
-        PARTS.RULE,
+        PARTS.APPLIED_RULE,
+        PARTS.ORIGINAL_RULE,
         PARTS.FILTER,
         PARTS.STEALTH,
     ];
@@ -296,7 +371,8 @@ const RequestInfo = observer(() => {
             PARTS.SOURCE,
             // TODO: determine first/third-party
             PARTS.STEALTH,
-            PARTS.RULE,
+            PARTS.APPLIED_RULE,
+            PARTS.ORIGINAL_RULE,
             PARTS.FILTER,
         ];
     }
@@ -306,7 +382,7 @@ const RequestInfo = observer(() => {
         await WindowsApi.create({ url, focused: true });
     };
 
-    const renderInfoUrlButtons = (event: UIFilteringLogEvent) => {
+    const renderInfoUrlButtons = (event: FilteringLogEvent) => {
         // there is nothing to open if log event reveals blocked element or cookie
         const showOpenInNewTabButton = !(
             event.element
@@ -330,6 +406,8 @@ const RequestInfo = observer(() => {
 
     const renderedInfo = infoElements
         .map((elementId) => eventPartsMap[elementId])
+        // original rule text can be undefined which cause runtime error while destructuring
+        .filter((el) => !!el)
         .map((eventPart) => {
             if (!eventPart) {
                 return null;
@@ -341,7 +419,7 @@ const RequestInfo = observer(() => {
             }
 
             const isRequestUrl = data === selectedEvent.requestUrl;
-            const isRule = data === selectedEvent.ruleText;
+            const isRule = data === selectedEvent.appliedRuleText;
             const isFilterName = data === selectedEvent.filterName;
             const isElement = data === selectedEvent.element;
             const canCopyToClipboard = isRequestUrl || isRule || isFilterName;
@@ -395,7 +473,7 @@ const RequestInfo = observer(() => {
         wizardStore.setUnblockState();
     };
 
-    const removeFromUserFilterHandler = (event: UIFilteringLogEvent) => {
+    const removeFromUserFilterHandler = (event: FilteringLogEvent) => {
         wizardStore.removeFromUserFilterHandler(event);
     };
 
@@ -425,7 +503,7 @@ const RequestInfo = observer(() => {
         );
     };
 
-    const renderControlButtons = (event: UIFilteringLogEvent) => {
+    const renderControlButtons = (event: FilteringLogEvent) => {
         const { requestRule } = event;
 
         const BUTTON_MAP = {

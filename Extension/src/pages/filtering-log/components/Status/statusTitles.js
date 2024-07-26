@@ -38,6 +38,7 @@ const titleMap = {
     [StatusMode.MODIFIED]: StatusTitle.MODIFIED,
     [StatusMode.BLOCKED]: StatusTitle.BLOCKED,
     [StatusMode.ALLOWED]: StatusTitle.UNBLOCKED,
+    [StatusMode.ALLOWED_STEALTH]: StatusTitle.PROCESSED,
 };
 
 export const getStatusTitle = (mode) => {

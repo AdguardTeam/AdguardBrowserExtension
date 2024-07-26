@@ -16,8 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { type UIFilteringLogEvent } from '../../../background/api/filtering-log';
 import { containsIgnoreCase } from '../../helpers';
-import type { UIFilteringLogEvent } from '../types';
 
 export const matchesSearch = (filteringEvent: UIFilteringLogEvent, search: string) => {
     let matches = !search
@@ -26,10 +26,10 @@ export const matchesSearch = (filteringEvent: UIFilteringLogEvent, search: strin
         || containsIgnoreCase(filteringEvent.cookieName, search)
         || containsIgnoreCase(filteringEvent.cookieValue, search);
 
-    const { ruleText, filterName } = filteringEvent;
+    const { appliedRuleText, filterName } = filteringEvent;
 
-    if (ruleText) {
-        matches = matches || containsIgnoreCase(ruleText, search);
+    if (appliedRuleText) {
+        matches = matches || containsIgnoreCase(appliedRuleText, search);
     }
 
     if (filterName) {

@@ -90,6 +90,8 @@ export type FrameData = {
     totalBlocked: number,
 };
 
+type MainFrameDataInfo = Pick<TabContext, 'info' | 'frames' | 'blockedRequestCount' | 'mainFrameRule'>;
+
 /**
  * Helper class for retrieving main frame data from both tswebextension and app state.
  */
@@ -112,7 +114,7 @@ export class FramesApi {
         frames,
         blockedRequestCount,
         mainFrameRule,
-    }: TabContext): FrameData {
+    }: MainFrameDataInfo): FrameData {
         const mainFrame = frames.get(MAIN_FRAME_ID);
 
         const url = info?.url

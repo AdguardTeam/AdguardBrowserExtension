@@ -24,7 +24,7 @@ import {
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import { defaultSettings } from '../../../common/settings';
-import { storage } from '../../storages';
+import { browserStorage } from '../../storages';
 import { RunInfo } from '../../utils';
 
 /**
@@ -51,11 +51,11 @@ export class InstallApi {
      */
     public static async install({ currentSchemaVersion }: RunInfo): Promise<void> {
         const clientId = InstallApi.genClientId();
-        await storage.set(CLIENT_ID_KEY, clientId);
+        await browserStorage.set(CLIENT_ID_KEY, clientId);
 
-        await storage.set(SCHEMA_VERSION_KEY, currentSchemaVersion);
+        await browserStorage.set(SCHEMA_VERSION_KEY, currentSchemaVersion);
 
-        await storage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
     }
 
     /**
@@ -69,6 +69,6 @@ export class InstallApi {
      * @param currentAppVersion Current extension version.
      */
     public static async postSuccessInstall(currentAppVersion: string): Promise<void> {
-        await storage.set(APP_VERSION_KEY, currentAppVersion);
+        await browserStorage.set(APP_VERSION_KEY, currentAppVersion);
     }
 }

@@ -27,7 +27,7 @@ import {
     ForwardParams,
 } from '../../../common/forward';
 import { UrlUtils } from '../../utils/url';
-import { storage, settingsStorage } from '../../storages';
+import { browserStorage, settingsStorage } from '../../storages';
 import { SettingOption } from '../../schema';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
@@ -39,7 +39,7 @@ import {
     FULLSCREEN_USER_RULES_OUTPUT,
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
-import { FiltersApi } from '../filters';
+import { CustomFilterApi, FiltersApi } from '../filters';
 import { OptionsPageSections } from '../../../common/nav';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
@@ -165,7 +165,7 @@ export class PagesApi {
             return;
         }
 
-        const windowStateString = await storage.get(FILTERING_LOG_WINDOW_STATE);
+        const windowStateString = await browserStorage.get(FILTERING_LOG_WINDOW_STATE);
 
         try {
             const options = typeof windowStateString === 'string'
@@ -194,6 +194,7 @@ export class PagesApi {
 
     /**
      * Opens abuse page tab.
+     * Query parameters are described here: https://github.com/AdguardTeam/ReportsWebApp.
      *
      * @param siteUrl Target site url.
      * @param from UI which user is forwarded from.
@@ -207,7 +208,12 @@ export class PagesApi {
             browserName = 'Other';
         }
 
-        const filterIds = FiltersApi.getEnabledFilters();
+        const commonFilterIds = FiltersApi.getEnabledFilters()
+            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
+
+        const customFilterUrls = CustomFilterApi.getFiltersData()
+            .filter(({ enabled }) => !!enabled)
+            .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
 
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
@@ -230,13 +236,17 @@ export class PagesApi {
             params.browser_detail = encodeURIComponent(browserDetails);
         }
 
-        if (filterIds.length > 0) {
-            params.filters = encodeURIComponent(filterIds.join('.'));
+        if (commonFilterIds.length > 0) {
+            params.filters = encodeURIComponent(commonFilterIds.join('.'));
+        }
+
+        if (customFilterUrls.length > 0) {
+            params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
         }
 
         Object.assign(
             params,
-            PagesApi.getStealthParams(filterIds),
+            PagesApi.getStealthParams(commonFilterIds),
             PagesApi.getBrowserSecurityParams(),
         );
 

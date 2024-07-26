@@ -109,7 +109,7 @@ export class CommonFilterApi {
             }
         }
 
-        logger.info(`Filter ${filterUpdateOptions.filterId} is need to updated`);
+        logger.info(`Filter ${filterUpdateOptions.filterId} needs to be updated`);
 
         try {
             const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateOptions, true);
@@ -197,6 +197,7 @@ export class CommonFilterApi {
             expires: nextExpires,
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: nextLastCheckTime,
+            lastScheduledCheckTime: filterVersion?.lastScheduledCheckTime || Date.now(),
             // Unaccessible status may be returned during patch update
             // which is considered as a fatal error https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717.
             // And if it happens, isPatchUpdateFailed is returned as true,

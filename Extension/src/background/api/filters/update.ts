@@ -48,7 +48,7 @@ export type FilterUpdateOptions = {
 /**
  * List of filter update details.
  */
-type FilterUpdateOptionsList = FilterUpdateOptions[];
+export type FilterUpdateOptionsList = FilterUpdateOptions[];
 
 /**
  * API for manual and automatic (by period) filter rules updates.
@@ -84,12 +84,11 @@ export class FilterUpdateApi {
 
         const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filterIds);
 
-        const updatedFilters = await FilterUpdateApi.updateFilters(
-            // We update filters without patches when we enable groups.
-            filtersToCheck.map((id) => ({ filterId: id, ignorePatches: true })),
-        );
+        // We update filters without patches when we enable groups.
+        const filterDetails = filtersToCheck.map((id) => ({ filterId: id, ignorePatches: true }));
 
-        filterVersionStorage.refreshLastCheckTime(filtersToCheck);
+        const updatedFilters = await FilterUpdateApi.updateFilters(filterDetails);
+        filterVersionStorage.refreshLastCheckTime(filterDetails);
 
         return updatedFilters;
     }
@@ -119,7 +118,7 @@ export class FilterUpdateApi {
      * @param forceUpdate Is it a force manual check by user action or first run
      * or not.
      */
-    public static async autoUpdateFilters(forceUpdate: boolean = false): Promise<FilterMetadata[]> {
+    public static async autoUpdateFilters(forceUpdate = false): Promise<FilterMetadata[]> {
         const startUpdateLogMessage = forceUpdate
             ? 'Update filters forced by user.'
             : 'Update filters by scheduler.';
@@ -143,26 +142,34 @@ export class FilterUpdateApi {
 
         // If it is a force check - updates all installed and enabled filters.
         let filterUpdateDetailsToUpdate = installedAndEnabledFilters.map(
-            id => ({ filterId: id, ignorePatches: forceUpdate }),
+            (id) => ({ filterId: id, ignorePatches: forceUpdate }),
         );
 
         // If not a force check - updates only outdated filters.
         if (!forceUpdate) {
             // Select filters with diff paths and mark them for no force update
-            const filtersToPatchUpdate = FilterUpdateApi.selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate);
+            const filtersToPatchUpdate = FilterUpdateApi
+                .selectFiltersToPatchUpdate(filterUpdateDetailsToUpdate)
+                .map((filterData) => ({ ...filterData, ignorePatches: false }));
 
-            // Select filters for a forced update and mark them accordingly
+            /**
+             * Select filters for a forced update and mark them accordingly.
+             *
+             * Filters with diff path must be also full updated from time to time.
+             * Full update period for such full (forced) update is determined by FiltersUpdateTime,
+             * which is set in extension settings.
+             */
             const filtersToFullUpdate = FilterUpdateApi.selectFiltersToFullUpdate(
                 filterUpdateDetailsToUpdate,
                 updatePeriod,
-            );
+            ).map((filter) => ({ ...filter, ignorePatches: true }));
 
             // Combine both arrays
             const combinedFilters = [...filtersToPatchUpdate, ...filtersToFullUpdate];
 
             const uniqueFiltersMap = new Map();
 
-            combinedFilters.forEach(filter => {
+            combinedFilters.forEach((filter) => {
                 if (!uniqueFiltersMap.has(filter.filterId) || filter.ignorePatches) {
                     uniqueFiltersMap.set(filter.filterId, filter);
                 }
@@ -175,11 +182,7 @@ export class FilterUpdateApi {
 
         // Updates last check time of all installed and enabled filters,
         // which where updated with force
-        filterVersionStorage.refreshLastCheckTime(
-            filterUpdateDetailsToUpdate
-                .filter(filterUpdateOptions => filterUpdateOptions.ignorePatches)
-                .map(({ filterId }) => filterId),
-        );
+        filterVersionStorage.refreshLastCheckTime(filterUpdateDetailsToUpdate);
 
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
@@ -205,7 +208,7 @@ export class FilterUpdateApi {
          * version matching on update check.
          * We do not update metadata on each check if there are no filters or only custom filters.
          */
-        const shouldLoadMetadata = filterUpdateOptionsList.some(filterUpdateOptions => {
+        const shouldLoadMetadata = filterUpdateOptionsList.some((filterUpdateOptions) => {
             return filterUpdateOptions.ignorePatches && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
         });
 
@@ -300,8 +303,7 @@ export class FilterUpdateApi {
                     // and wait until full update
                     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
                     && !filterVersion?.shouldWaitFullUpdate;
-            })
-            .map(({ filterId }) => ({ filterId, ignorePatches: false }));
+            });
     }
 
     /**
@@ -338,7 +340,7 @@ export class FilterUpdateApi {
             // Check, if the renewal period of each filter has passed.
             // If it is time to check the renewal, add to the array.
             return lastCheckTime + updatePeriod <= Date.now();
-        }).map(({ filterId }) => ({ filterId, ignorePatches: true }));
+        });
     }
 }
 

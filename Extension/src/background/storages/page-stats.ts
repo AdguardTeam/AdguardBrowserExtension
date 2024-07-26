@@ -32,7 +32,7 @@ import {
     PageStatsDataItem,
 } from '../schema';
 
-import { storage } from './main';
+import { browserStorage } from './shared-instances';
 
 /**
  * Class for asynchronous control {@link PageStats} storage data,
@@ -289,10 +289,10 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
 
 /**
  * {@link PageStatsStorage} Instance, that stores
- * stringified {@link PageStats} in {@link storage} under
+ * stringified {@link PageStats} in {@link browserStorage} under
  * {@link PAGE_STATISTIC_KEY} key.
  */
 export const pageStatsStorage = new PageStatsStorage(
     PAGE_STATISTIC_KEY,
-    storage,
+    browserStorage,
 );

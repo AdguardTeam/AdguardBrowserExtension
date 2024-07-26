@@ -1,6 +1,7 @@
 import { type Storage } from 'webextension-polyfill';
 
-// FIXME: Use alias for mv2/mv3 versions
+import { NetworkRuleParser } from '@adguard/agtree';
+// FIXME: Use 'tswebextension' alias to work with mv3 version.
 import {
     TabContext,
     NetworkRule,
@@ -59,11 +60,9 @@ describe('Frames Api', () => {
             incognito: false,
         };
         const tabContext = new TabContext(info, documentApi);
-        tabContext.mainFrameRule = new NetworkRule(rule, AntiBannerFiltersId.UserFilterId);
+        tabContext.mainFrameRule = new NetworkRule(NetworkRuleParser.parse(rule), AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
-        // FIXME: Remove when aliases for tests will be configured.
-        // @ts-ignore
         const frameData = FramesApi.getMainFrameData(tabContext);
         const { documentAllowlisted, canAddRemoveRule } = frameData;
 

@@ -15,28 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { HybridStorage } from './hybrid-storage';
+import { BrowserStorage } from './browser-storage';
 
-// entry point of `storages` layer
-// `storages` contains app data storage models based on `schema` layer
+/**
+ * Storage instance for accessing `browser.storage.local`.
+ */
+export const browserStorage = new BrowserStorage();
 
-export * from './app';
-export * from './allowlist';
-export * from './custom-filter-metadata';
-export * from './editor';
-export * from './filter-state';
-export * from './filter-version';
-export * from './filters';
-export * from './raw-filters';
-export * from './group-state';
-export * from './i18n-metadata';
-export * from './inverted-allowlist';
-export * from './browser-storage';
-export * from './metadata';
-export * from './settings';
-export * from './safebrowsing';
-export * from './page-stats';
-export * from './notification';
-export * from './trusted-domains';
-export * from './hit-stats';
-export * from './annoyances-consent';
-export * from './shared-instances';
+/**
+ * Storage instance for accessing `IndexedDB` with fallback to `browser.storage.local`.
+ */
+export const hybridStorage = new HybridStorage();

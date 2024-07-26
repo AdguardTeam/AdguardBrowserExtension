@@ -195,6 +195,7 @@ export class FiltersService {
         const { groupId } = message.data;
 
         Categories.disableGroup(groupId);
+
         engine.debounceUpdate();
     }
 
