@@ -21,6 +21,8 @@
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT = 'web-accessible-resources';
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS = `${WEB_ACCESSIBLE_RESOURCES_OUTPUT}/redirects`;
 
+export const COMPANIES_DB_OUTPUT_FILE = 'companies-db/trackers-min.json';
+
 export const BACKGROUND_OUTPUT = 'pages/background';
 export const OPTIONS_OUTPUT = 'pages/options';
 export const POPUP_OUTPUT = 'pages/popup';

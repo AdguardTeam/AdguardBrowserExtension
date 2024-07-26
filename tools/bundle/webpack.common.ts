@@ -37,6 +37,7 @@ import {
 } from '../constants';
 import { updateLocalesMSGName } from '../helpers';
 import {
+    COMPANIES_DB_OUTPUT_FILE,
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
     SUBSCRIBE_OUTPUT,
     CONTENT_SCRIPT_START_OUTPUT,
@@ -261,6 +262,11 @@ export const genCommonPlugins = (browserConfig: BrowserConfig): WebpackPluginIns
                     context: 'Extension',
                     from: 'web-accessible-resources',
                     to: WEB_ACCESSIBLE_RESOURCES_OUTPUT,
+                },
+                {
+                    context: 'Extension',
+                    from: COMPANIES_DB_OUTPUT_FILE,
+                    to: COMPANIES_DB_OUTPUT_FILE,
                 },
             ],
         }),

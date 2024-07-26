@@ -27,7 +27,7 @@ import {
 } from '@adguard/tswebextension/mv3';
 
 import { logger, LogLevel } from '../../common/logger';
-import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
+import { COMPANIES_DB_OUTPUT_FILE, WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
 import { listeners } from '../notifier';
 import {
     FiltersApi,
@@ -67,7 +67,7 @@ export class Engine implements TsWebExtensionEngine {
     constructor() {
         this.api = new TsWebExtension(
             `/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`,
-            // FIXME(Slava): pass a companiesdb trackers.json file path
+            `/${COMPANIES_DB_OUTPUT_FILE}`,
         );
 
         this.handleMessage = this.api.getMessageHandler();
