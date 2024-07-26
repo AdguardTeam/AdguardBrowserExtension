@@ -17,7 +17,7 @@
  */
 
 import { FilterUpdateApi } from '../api';
-import { storage } from '../storages';
+import { browserStorage } from '../storages';
 import { isNumber } from '../../common/guards';
 import { logger } from '../../common/logger';
 
@@ -72,7 +72,7 @@ export class FilterUpdateService {
      * should be updated with setTimeout which saved to {@link schedulerTimerId}.
      */
     private async update(): Promise<void> {
-        const prevCheckTimeMs = await storage.get(FilterUpdateService.STORAGE_KEY);
+        const prevCheckTimeMs = await browserStorage.get(FilterUpdateService.STORAGE_KEY);
 
         /**
          * Check updates if prevCheckTimeMs is not set or
@@ -91,7 +91,7 @@ export class FilterUpdateService {
             // Saving current time to storage is required in the cases
             // when background page is often unloaded,
             // for example, in the cases of service workers.
-            await storage.set(FilterUpdateService.STORAGE_KEY, Date.now());
+            await browserStorage.set(FilterUpdateService.STORAGE_KEY, Date.now());
         }
 
         this.schedulerTimerId = window.setTimeout(async () => {

@@ -34,7 +34,7 @@ import {
     appContext,
     AppContextKey,
     settingsStorage,
-    storage,
+    browserStorage,
 } from '../storages';
 import {
     toasts,
@@ -44,6 +44,7 @@ import {
     SettingsApi,
     UpdateApi,
     InstallApi,
+    UiApi,
 } from '../api';
 import {
     UiService,
@@ -125,6 +126,8 @@ export class App {
 
         // Initializes Settings storage data
         await SettingsApi.init();
+
+        await UiApi.init();
 
         /**
          * When the extension is enabled, disabled and re-enabled during the user session,
@@ -294,7 +297,7 @@ export class App {
      * Initializes App storage data.
      */
     private static async initClientId(): Promise<void> {
-        const storageClientId = await storage.get(CLIENT_ID_KEY);
+        const storageClientId = await browserStorage.get(CLIENT_ID_KEY);
         let clientId: string;
 
         try {
@@ -302,7 +305,7 @@ export class App {
         } catch (e) {
             logger.warn('Error while parsing client id, generating a new one');
             clientId = InstallApi.genClientId();
-            await storage.set(CLIENT_ID_KEY, clientId);
+            await browserStorage.set(CLIENT_ID_KEY, clientId);
         }
 
         appContext.set(AppContextKey.ClientId, clientId);

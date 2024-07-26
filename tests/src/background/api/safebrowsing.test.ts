@@ -5,7 +5,7 @@ import { UrlUtils } from '../../../../Extension/src/background/utils/url';
 import { SafebrowsingApi } from '../../../../Extension/src/background/api/safebrowsing';
 import { SB_LRU_CACHE_KEY } from '../../../../Extension/src/common/constants';
 import { SbCache, sbCache } from '../../../../Extension/src/background/storages';
-import { SettingsApi } from '../../../../Extension/src/background/api';
+import { SettingsApi } from '../../../../Extension/src/background/api/settings/main';
 import { type SafebrowsingStorageData } from '../../../../Extension/src/background/schema';
 import { mockLocalStorage } from '../../../helpers';
 

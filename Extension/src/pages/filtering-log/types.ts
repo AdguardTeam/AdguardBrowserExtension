@@ -16,23 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FilteringLogEvent } from '../../background/api';
-
-/**
- * Filtering log event with additional fields for UI.
- */
-export type UIFilteringLogEvent = FilteringLogEvent & {
-    /**
-     * Rule text.
-     */
-    ruleText?: string;
-
-    /**
-     * Filter name.
-     */
-    filterName?: string | null;
-};
-
 /**
  * Single rule creation option.
  */

@@ -23,7 +23,7 @@ import {
     makeObservable,
 } from 'mobx';
 
-import { ContentType } from '@adguard/tswebextension';
+import { ContentType } from 'tswebextension';
 
 import { RULE_CREATION_OPTION } from '../components/RequestWizard/constants';
 import {
@@ -40,7 +40,8 @@ import {
 } from '../components/RequestWizard/ruleCreators';
 import { messenger } from '../../services/messenger';
 import { AddedRuleState, WizardRequestState } from '../constants';
-import type { RuleCreationOptions, UIFilteringLogEvent } from '../types';
+import type { RuleCreationOptions } from '../types';
+import type { FilteringLogEvent } from '../../../background/api/filtering-log';
 
 import type { RootStore } from './RootStore';
 
@@ -168,7 +169,7 @@ class WizardStore {
     };
 
     @action
-    removeFromUserFilterHandler = async (filteringEvent: UIFilteringLogEvent) => {
+    removeFromUserFilterHandler = async (filteringEvent: FilteringLogEvent) => {
         this.setActionSubmitted(true);
         const { requestRule } = filteringEvent;
 
@@ -176,7 +177,7 @@ class WizardStore {
             return;
         }
 
-        await messenger.removeUserRule(requestRule.ruleText);
+        await messenger.removeUserRule(requestRule.originalRuleText ?? requestRule.appliedRuleText);
 
         this.closeModal();
     };

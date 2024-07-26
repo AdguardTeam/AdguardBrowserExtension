@@ -36,6 +36,7 @@ import {
     SettingsApi,
     DocumentBlockApi,
     network,
+    filteringLogApi,
 } from '../api';
 
 import { TsWebExtensionEngine } from './interface';
@@ -105,6 +106,8 @@ export class Engine implements TsWebExtensionEngine {
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
+
+        filteringLogApi.onEngineUpdated();
     }
 
     /**
@@ -116,17 +119,22 @@ export class Engine implements TsWebExtensionEngine {
         const filters: ConfigurationMV2['filters'] = [];
 
         const tasks = enabledFilters.map(async (filterId) => {
-            const rules = await FiltersStorage.get(filterId);
+            try {
+                const [content, sourceMap] = await Promise.all([
+                    FiltersStorage.get(filterId),
+                    FiltersStorage.getSourceMap(filterId),
+                ]);
+                const trusted = FiltersApi.isFilterTrusted(filterId);
 
-            const trusted = FiltersApi.isFilterTrusted(filterId);
-
-            const rulesTexts = rules.join('\n');
-
-            filters.push({
-                filterId,
-                content: rulesTexts,
-                trusted,
-            });
+                filters.push({
+                    filterId,
+                    content,
+                    trusted,
+                    sourceMap,
+                });
+            } catch (e) {
+                logger.error(`Failed to get filter ${filterId}`, e);
+            }
         });
 
         await Promise.all(tasks);
@@ -143,32 +151,29 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
 
-        let userrules: string[] = [];
-
-        if (UserRulesApi.isEnabled()) {
-            userrules = await UserRulesApi.getUserRules();
-
-            // Remove empty strings.
-            userrules = userrules.filter(rule => !!rule);
-
-            // Remove duplicates.
-            userrules = Array.from(new Set(userrules));
-
-            // Convert user rules.
-            userrules = UserRulesApi.convertRules(userrules);
-        }
-
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
-        return {
+        const result: ConfigurationMV2 = {
             verbose: !!(IS_RELEASE || IS_BETA),
             logLevel: IS_RELEASE || IS_BETA ? LogLevel.Info : LogLevel.Debug,
             filters,
-            userrules,
+            userrules: {
+                content: [],
+                sourceMap: {},
+            },
             allowlist,
             settings,
             trustedDomains,
         };
+
+        if (UserRulesApi.isEnabled()) {
+            const { filterList, sourceMap } = await UserRulesApi.getUserRules();
+
+            result.userrules.content = filterList;
+            result.userrules.sourceMap = sourceMap;
+        }
+
+        return result;
     }
 
     /**

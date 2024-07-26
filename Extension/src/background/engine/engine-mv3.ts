@@ -36,7 +36,7 @@ import {
     SettingsApi,
     CustomFilterApi,
     toasts,
-    network,
+    filteringLogApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { FiltersStorage } from '../storages';
@@ -74,23 +74,11 @@ export class Engine implements TsWebExtensionEngine {
 
     /**
      * Starts the tswebextension and updates the counter of active rules.
+     *
+     * TODO: Set local script rules for MV3 version if we decided
+     * to use MV3 in Firefox.
      */
     async start(): Promise<void> {
-        /**
-         * By the rules of Firefox AMO we cannot use remote scripts (and our JS rules can be counted as such).
-         * Because of that we use the following approach (that was accepted by AMO reviewers):
-         *
-         * 1. We pre-build JS rules from AdGuard filters into the JSON file.
-         * 2. At runtime we check every JS rule if it's included into JSON.
-         *  If it is included we allow this rule to work since it's pre-built. Other rules are discarded.
-         * 3. We also allow "User rules" to work since those rules are added manually by the user.
-         *  This way filters maintainers can test new rules before including them in the filters.
-         */
-        if (IS_FIREFOX_AMO) {
-            const localScriptRules = await network.getLocalScriptRules();
-            this.api.setLocalScriptRules(localScriptRules);
-        }
-
         const configuration = await Engine.getConfiguration();
 
         logger.info('Start tswebextension...');
@@ -138,6 +126,8 @@ export class Engine implements TsWebExtensionEngine {
                 toasts.showRuleLimitsAlert();
             }
         }
+
+        filteringLogApi.onEngineUpdated();
     }
 
     /**
@@ -162,7 +152,7 @@ export class Engine implements TsWebExtensionEngine {
         let userrules: string[] = [];
 
         if (UserRulesApi.isEnabled()) {
-            userrules = await UserRulesApi.getUserRules();
+            userrules = (await UserRulesApi.getUserRules()).rawFilterList.split('\n');
 
             // Remove empty strings.
             userrules = userrules.filter(rule => !!rule);
@@ -174,7 +164,8 @@ export class Engine implements TsWebExtensionEngine {
             // TODO: For user rules we will have twice conversion check: here
             // and in tswebextension. But we cannot remove it here, because
             // conversion needed before pass to tsurlfilter cosmetic engine.
-            userrules = UserRulesApi.convertRules(userrules);
+            // FIXME: (David) this waits until AGTree integration is done.
+            // userrules = UserRulesApi.convertRules(userrules);
         }
 
         const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()

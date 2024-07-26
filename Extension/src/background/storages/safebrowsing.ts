@@ -21,7 +21,7 @@ import { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from '..
 import { SB_LRU_CACHE_KEY } from '../../common/constants';
 import { logger } from '../../common/logger';
 
-import { storage } from './main';
+import { browserStorage } from './shared-instances';
 
 /**
  * Class for control persisted {@link LRUMap} safebrowsing cache.
@@ -41,13 +41,13 @@ export class SbCache {
     private cache = new LRUMap<string, SafebrowsingCacheData>(1000);
 
     /**
-     * Reads safebrowsing {@link LRUMap} stringified entries from {@link storage},
+     * Reads safebrowsing {@link LRUMap} stringified entries from {@link browserStorage},
      * parse it and sets to {@link cache}.
      *
      * @returns Promise, resolved when data successfully initialized.
      */
     public async init(): Promise<void> {
-        const storageData = await storage.get(SB_LRU_CACHE_KEY);
+        const storageData = await browserStorage.get(SB_LRU_CACHE_KEY);
 
         if (typeof storageData !== 'string') {
             return;
@@ -68,10 +68,10 @@ export class SbCache {
     }
 
     /**
-     * Saves stringified safebrowsing {@link cache} entries in {@link storage}.
+     * Saves stringified safebrowsing {@link cache} entries in {@link browserStorage}.
      */
     public async save(): Promise<void> {
-        await storage.set(SB_LRU_CACHE_KEY, JSON.stringify(this.cache.toJSON()));
+        await browserStorage.set(SB_LRU_CACHE_KEY, JSON.stringify(this.cache.toJSON()));
     }
 
     /**
@@ -115,7 +115,7 @@ export class SbCache {
     }
 
     /**
-     * Clear {@link cache} and {@link storage} data.
+     * Clear {@link cache} and {@link browserStorage} data.
      */
     public async clear(): Promise<void> {
         this.cache.clear();

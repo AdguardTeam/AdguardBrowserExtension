@@ -19,6 +19,42 @@ import browser from 'webextension-polyfill';
 
 import { Forward, ForwardAction } from '../../common/forward';
 import { NotificationTextRecord } from '../schema';
+import { defaultIconVariants } from '../api/ui/icons';
+
+/**
+ * Icon data for different sizes.
+ */
+export type IconData = {
+    /**
+     * 19x19 icon size.
+     */
+    '19': string;
+
+    /**
+     * 38x38 icon size.
+     */
+    '38': string;
+};
+
+/**
+ * Icon variants for different states.
+ */
+export type IconVariants = {
+    /**
+     * Enabled state icon variants (when AdGuard is enabled).
+     */
+    enabled: IconData;
+
+    /**
+     * Disabled state icon variants (when AdGuard is disabled).
+     */
+    disabled: IconData;
+
+    /**
+     * State icon variants when MV3 limitations are exceeded.
+     */
+    warning: IconData;
+};
 
 export type PromoNotification = {
     id: string,
@@ -43,7 +79,7 @@ export type PromoNotification = {
     textColor?: string,
     badgeBgColor?: string,
     badgeText?: string,
-    icons?: Record<string, Record<string, string>>,
+    icons?: IconVariants,
 };
 
 const BIRTHDAY_24_ID = 'birthday24';
@@ -236,14 +272,15 @@ const birthday24Notification: PromoNotification = {
     bgImage: browser.runtime.getURL('assets/images/birthday24.svg'),
     bgImageOnUpdate: browser.runtime.getURL('assets/images/birthday24-on-update.svg'),
     icons: {
-        ICON_GREEN: {
+        enabled: {
             '19': browser.runtime.getURL('assets/icons/birthday24-on-19.png'),
             '38': browser.runtime.getURL('assets/icons/birthday24-on-38.png'),
         },
-        ICON_GRAY: {
+        disabled: {
             '19': browser.runtime.getURL('assets/icons/birthday24-off-19.png'),
             '38': browser.runtime.getURL('assets/icons/birthday24-off-38.png'),
         },
+        warning: defaultIconVariants.warning,
     },
 };
 

@@ -23,7 +23,7 @@
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 3;
+export const APP_SCHEMA_VERSION = 4;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -122,7 +122,7 @@ export const TRUSTED_TAG_ID = 999 as const;
 export const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99 as const;
 
 /**
- * Custom filters identifier starts from this number
+ * Custom filters identifiers starts from this number
  */
 export const CUSTOM_FILTERS_START_ID = 1000 as const;
 
@@ -151,3 +151,5 @@ export const NEWLINE_CHAR_UNIX = '\n';
 export const NEWLINE_CHAR_REGEX = /\r?\n/;
 
 export const OPTIONS_PAGE = 'pages/options.html';
+
+export const FILTER_LIST_EXTENSION = '.txt';

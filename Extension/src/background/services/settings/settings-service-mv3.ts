@@ -209,7 +209,7 @@ export class SettingsService {
         try {
             await engine.update();
         } catch (e) {
-            logger.error('Failed to change stealth mode state', e);
+            logger.error('Failed to change Tracking protection state', e);
         }
     }
 
