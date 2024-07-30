@@ -43,7 +43,7 @@ describe('Frames Api', () => {
     });
 
     beforeAll(() => {
-        appContext.set(AppContextKey.IsInit, true);
+        appContext.set(AppContextKey.IsEngineStarted, true);
     });
 
     it('getMainFrameData calculates documentAllowlisted and canAddRemoveRule', () => {

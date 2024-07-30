@@ -23,8 +23,8 @@ import {
     type TabContext,
 } from '../../tswebextension';
 import { AntiBannerFiltersId } from '../../../common/constants';
+import { isEngineStarted } from '../../utils/is-engine-started';
 import { SettingOption } from '../../schema';
-import { appContext, AppContextKey } from '../../storages';
 import { PageStatsApi } from '../filters';
 import { SettingsApi } from '../settings';
 
@@ -125,7 +125,7 @@ export class FramesApi {
 
         const urlFilteringDisabled = !url || !isHttpRequest(url);
 
-        const isFilteringPossible = appContext.get(AppContextKey.IsInit) && !urlFilteringDisabled;
+        const isFilteringPossible = isEngineStarted() && !urlFilteringDisabled;
 
         let frameRule: FrameRule | null = null;
         let documentAllowlisted = false;

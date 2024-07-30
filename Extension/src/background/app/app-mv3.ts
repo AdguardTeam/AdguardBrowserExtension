@@ -251,7 +251,7 @@ export class App {
         // Runs tswebextension
         await engine.start();
 
-        appContext.set(AppContextKey.IsInit, true);
+        appContext.set(AppContextKey.IsEngineStarted, true);
 
         await sendMessage({ type: MessageType.AppInitialized });
     }

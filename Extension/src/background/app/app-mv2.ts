@@ -244,7 +244,7 @@ export class App {
         // Runs tswebextension
         await engine.start();
 
-        appContext.set(AppContextKey.IsInit, true);
+        appContext.set(AppContextKey.IsEngineStarted, true);
 
         // Initialize filters updates, after engine started, so that it won't mingle with engine
         // initialization from current rules

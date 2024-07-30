@@ -26,12 +26,7 @@ import {
 import { messageHandler } from '../../message-handler';
 import { SettingOption } from '../../schema';
 import { UserAgent } from '../../../common/user-agent';
-import {
-    appContext,
-    AppContextKey,
-    settingsStorage,
-    type PromoNotification,
-} from '../../storages';
+import { settingsStorage, type PromoNotification } from '../../storages';
 import {
     type FrameData,
     FramesApi,
@@ -42,6 +37,7 @@ import {
     type SettingsData,
     UserRulesApi,
 } from '../../api';
+import { isEngineStarted } from '../../utils/is-engine-started';
 
 // TODO: describe all properties
 /**
@@ -72,7 +68,7 @@ export class PopupService {
      * Creates listeners for getter of tab info and for popup.
      */
     static init(): void {
-        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupService.getIsAppInitialized);
+        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupService.getIsEngineStarted);
         messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
         messageHandler.addListener(
             MessageType.ChangeApplicationFilteringPaused,
@@ -81,12 +77,12 @@ export class PopupService {
     }
 
     /**
-     * Returns the state of the application initialization.
+     * Returns the state whether the engine started.
      *
-     * @returns True if the application is initialized, false otherwise.
+     * @returns True if the engine started, false otherwise.
      */
-    static getIsAppInitialized(): boolean {
-        return appContext.get(AppContextKey.IsInit);
+    static getIsEngineStarted(): boolean {
+        return isEngineStarted();
     }
 
     /**

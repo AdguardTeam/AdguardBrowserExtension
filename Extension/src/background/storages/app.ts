@@ -17,7 +17,7 @@
  */
 
 export const enum AppContextKey {
-    IsInit = 'isInit',
+    IsEngineStarted = 'isEngineStarted',
     ClientId = 'clientId',
 }
 
@@ -25,7 +25,7 @@ export type AppContextData = {
     /**
      * Whether the engine is started.
      */
-    [AppContextKey.IsInit]: boolean,
+    [AppContextKey.IsEngineStarted]: boolean,
 
     /**
      * Client ID.
@@ -39,7 +39,7 @@ export type AppContextData = {
 export class AppContext {
     // Initialize with default data
     private data: AppContextData = {
-        [AppContextKey.IsInit]: false,
+        [AppContextKey.IsEngineStarted]: false,
     };
 
     /**

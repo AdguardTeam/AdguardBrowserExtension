@@ -15,11 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './browser-utils';
-export * from './i18n';
-export * from './is-engine-started';
-export * from './string-storage';
-export * from './url';
-export * from './version';
-export * from './run-info';
-export * from '../../common/unknown';
+
+import { appContext, AppContextKey } from '../storages';
+
+/**
+ * Returns whether the engine is started.
+ *
+ * @returns True if the engine is started, false otherwise.
+ */
+export const isEngineStarted = (): boolean => {
+    return appContext.get(AppContextKey.IsEngineStarted);
+};
