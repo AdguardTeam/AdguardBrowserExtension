@@ -61,11 +61,11 @@ import {
     AllowlistService,
     UserRulesService,
     CustomFiltersService,
+    FilteringLogService,
     eventService,
     DocumentBlockService,
     localeDetect,
     PromoNotificationService,
-    FilteringLogService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
