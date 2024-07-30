@@ -32,12 +32,12 @@ import { Tab } from './Tab';
 
 import './tabs.pcss';
 
-const Mv2Tabs = observer(() => {
+export const Tabs = observer(() => {
     const store = useContext(popupStore);
 
     const { viewState, appState } = store;
 
-    const contentMapMv2 = {
+    const contentMap = {
         [ViewState.Actions]: Actions,
         [ViewState.Stats]: StatsTable,
     };
@@ -46,7 +46,7 @@ const Mv2Tabs = observer(() => {
         ? 'tabs__content--stats'
         : 'tabs__content';
 
-    const TabContentMv2 = contentMapMv2[store.viewState];
+    const TabContent = contentMap[viewState];
 
     const handleTabClick = (viewState: ViewState) => () => {
         store.setViewState(viewState);
@@ -61,23 +61,23 @@ const Mv2Tabs = observer(() => {
             <div className="tabs__panel">
                 <Tab
                     title={translator.getMessage('popup_tab_actions')}
+                    id={ViewState.Actions}
                     active={viewState === ViewState.Actions}
                     onClick={handleTabClick(ViewState.Actions)}
                 />
                 <Tab
                     title={translator.getMessage('popup_tab_statistics')}
+                    id={ViewState.Stats}
                     active={viewState === ViewState.Stats}
                     onClick={handleTabClick(ViewState.Stats)}
                 />
             </div>
             <div
                 className={tabContentClassName}
-                tabIndex={TabContentMv2 === contentMapMv2[ViewState.Stats] ? 0 : -1}
+                tabIndex={TabContent === contentMap[ViewState.Stats] ? 0 : -1}
             >
-                <TabContentMv2 />
+                <TabContent />
             </div>
         </div>
     );
 });
-
-export { Mv2Tabs as Tabs };

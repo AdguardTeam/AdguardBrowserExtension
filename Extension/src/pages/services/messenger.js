@@ -365,10 +365,6 @@ class Messenger {
         return this.sendMessage(MessageType.AddAllowlistDomainPopup, { tabId });
     }
 
-    async getStatisticsData() {
-        return this.sendMessage(MessageType.GetStatisticsData);
-    }
-
     /**
      * Works only in mv2, since mv3 doesn't support filtering log yet.
      */

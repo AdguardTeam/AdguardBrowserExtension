@@ -6,20 +6,14 @@
     }
 
     &__content {
-        min-height: 136px;
+        min-height: 176px;
         overflow: auto;
         scrollbar-width: thin;
 
         &--stats {
-            min-height: 176px;
             max-height: 176px;
             overflow-y: scroll;
             scrollbar-width: thin;
-        }
-
-        &--mv3 {
-            /* the height of the tabs_panel */
-            padding-top: 40px;
         }
 
         &::-webkit-scrollbar {
@@ -43,10 +37,6 @@
                 background-color: var(--gray700);
                 border: 3px solid var(--grayDark);
             }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--black);
         }
     }
 
@@ -100,8 +90,6 @@
 .light-mode {
     .tabs {
         &__content {
-            background-color: var(--white);
-
             &::-webkit-scrollbar-track {
                 background: var(--gray100);
             }
@@ -136,8 +124,6 @@
 .dark-mode {
     .tabs {
         &__content {
-            background-color: var(--black);
-
             &::-webkit-scrollbar-track {
                 background: var(--grayDark);
             }

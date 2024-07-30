@@ -21,11 +21,13 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
+import { addPopoverForComingSoonElement } from '../../../common/components/react-helpers';
 import { popupStore } from '../../stores/PopupStore';
 
 import {
     BlockAdsAction,
     CheckSiteSecurityAction,
+    OpenFilteringLogAction,
     ReportIssueAction,
     ResetPageUserRulesAction,
 } from './SingleActions';
@@ -40,8 +42,13 @@ const Mv3Actions = observer(() => {
     const actionChangingClassname = cn('action', { 'action--disabled': !isFilteringPossible });
 
     return (
-        <div className="actions actions--mv3">
+        <div className="actions">
             <BlockAdsAction isFilteringPossible={isFilteringPossible} className={actionChangingClassname} />
+            {
+                addPopoverForComingSoonElement(
+                    <OpenFilteringLogAction className="action" />,
+                )
+            }
             <ReportIssueAction
                 className={actionChangingClassname}
                 isFilteringPossible={isFilteringPossible}
