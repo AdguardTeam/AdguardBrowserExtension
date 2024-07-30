@@ -26,6 +26,8 @@ import { AttachmentPortal } from '../../AttachmentPortal';
 import { Tooltip } from '../Tooltip';
 import { Position } from '../../types';
 
+import './popover.pcss';
+
 const TOOLTIP_SHOW_DELAY_MS = 1000;
 
 type TooltipState = {

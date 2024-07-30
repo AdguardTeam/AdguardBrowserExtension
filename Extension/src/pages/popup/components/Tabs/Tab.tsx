@@ -18,13 +18,21 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
+import cn from 'classnames';
+
+import { ViewState } from '../../constants';
+import { addPopoverForComingSoonElement } from '../../../common/components/react-helpers';
 
 type TabParams = {
     /**
      * Tab title.
      */
     title: string,
+
+    /**
+     * Tab id.
+     */
+    id: string,
 
     /**
      * Whether the tab is active.
@@ -37,10 +45,15 @@ type TabParams = {
     onClick: () => void,
 };
 
-export const Tab = ({ title, active, onClick }: TabParams) => {
-    const tabClass = classnames('tabs__tab', { 'tabs__tab--active': active });
+export const Tab = ({
+    title,
+    id,
+    active,
+    onClick,
+}: TabParams) => {
+    const tabClass = cn('tabs__tab', { 'tabs__tab--active': active });
 
-    return (
+    const Tab = (
         <button
             type="button"
             className={tabClass}
@@ -49,4 +62,9 @@ export const Tab = ({ title, active, onClick }: TabParams) => {
             {title}
         </button>
     );
+
+    return __IS_MV3__ && id === ViewState.Stats
+        // FIXME: remove when companiesdb stats are implemented for mv3
+        ? addPopoverForComingSoonElement(Tab)
+        : Tab;
 };

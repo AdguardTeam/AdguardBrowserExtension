@@ -16,33 +16,31 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
+import React from 'react';
 
-import cn from 'classnames';
+import { translator } from '../../../common/translators/translator';
 
-import { isTransitionAppState } from '../../state-machines/app-state-machine';
-import { popupStore } from '../../stores/PopupStore';
-import { Actions } from '../Actions';
+import { Popover } from './ui/Popover';
 
-import './tabs.pcss';
+/**
+ * Returns the same element for MV2,
+ * adds a popover with 'Coming soon' text for MV3 and disables the element.
+ *
+ * @param element Element to handle.
+ *
+ * @returns Disabled element with popover for MV3 or the same element for MV2.
+ */
+export const addPopoverForComingSoonElement = (element: React.JSX.Element): React.JSX.Element => {
+    if (!__IS_MV3__) {
+        return element;
+    }
 
-const Mv3Tabs = observer(() => {
-    const store = useContext(popupStore);
-
-    const { appState } = store;
+    const comingSoonText = translator.getMessage('options_coming_soon');
+    const disabledClassName = `disabled ${element.props.className}`;
 
     return (
-        <div
-            className={cn('tabs', {
-                'tabs--non-active': isTransitionAppState(appState),
-            })}
-        >
-            <div className="tabs__content--mv3">
-                <Actions />
-            </div>
-        </div>
+        <Popover text={comingSoonText} comingSoon>
+            {React.cloneElement(element, { className: disabledClassName })}
+        </Popover>
     );
-});
-
-export { Mv3Tabs as Tabs };
+};
