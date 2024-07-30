@@ -18,7 +18,8 @@
     "lint-staged": "lint-staged",
     "check-types": "tsc --project tsconfig.with_types_mv2.json --noEmit && tsc --project tsconfig.with_types_mv3.json --noEmit",
     "disclaimer": "yarn lint | node -r @swc-node/register tools/insert-disclaimer.js",
-    "copy-external": "tswebextension war Extension/web-accessible-resources"
+    "copy-external": "tswebextension war Extension/web-accessible-resources",
+    "convert-declarative": "node -r @swc-node/register tools/converter.ts"
   },
   "repository": {
     "type": "git",
