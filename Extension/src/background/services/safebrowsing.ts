@@ -18,6 +18,7 @@
 import browser, { WebRequest } from 'webextension-polyfill';
 
 import { RequestType } from '@adguard/tsurlfilter/es/request-type';
+// Note: we don't use alias here, because we don't use safebrowsing service in MV3.
 import {
     type RequestData,
     RequestEvents,

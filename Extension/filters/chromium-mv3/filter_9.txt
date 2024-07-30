@@ -1,8 +1,8 @@
-! Checksum: pZ4WWW47S6Ak3uMP1SChoA
+! Checksum: 0j3X004nygX4hpZiNuUAOQ
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.25.80
-! TimeUpdated: 2024-07-22T14:33:15+00:00
+! Version: 2.0.25.81
+! TimeUpdated: 2024-07-24T12:33:31+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -799,6 +799,10 @@ seriesretro.com#%#//scriptlet("abort-on-property-read", "gothamBatAdblock")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/80724
 audiotools.in##div[id^="chp_ads_blocker-"]
 audiotools.in#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', 'blocker_detector')
+! https://github.com/AdguardTeam/AdguardFilters/issues/184038
+||anitube.vip/asb1.js
+anitube.vip#%#//scriptlet('set-constant', 'detectedAdblock', 'noopFunc')
+anitube.vip#%#//scriptlet('prevent-fetch', '/pagead2\.googlesyndication\.com|outbrain\.com|adligature\.com|quantserve\.com|srvtrck\.com/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157756
 ! Link from anitube.vip
 dicasgostosas.com#%#//scriptlet('prevent-setTimeout', 'hasAdblock')

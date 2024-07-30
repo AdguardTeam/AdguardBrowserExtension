@@ -19,7 +19,7 @@ import { HIT_STATISTIC_KEY } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
 import { HitStatsStorageData } from '../schema';
 
-import { storage } from './main';
+import { browserStorage } from './shared-instances';
 
 /**
  * Class for asynchronous control {@link HitStats} storage data,
@@ -31,13 +31,13 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
     /**
      * Add 1 rule hit to stats.
      *
-     * @param ruleText Rule test.
      * @param filterId Filter id.
+     * @param ruleIndex Rule index.
      * @throws Error, if storage is not initialized.
      */
     addRuleHitToCache(
-        ruleText: string,
         filterId: number,
+        ruleIndex: number,
     ): void {
         if (!this.data) {
             throw HitStatsStorage.createNotInitializedError();
@@ -59,7 +59,7 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
             rules = {};
         }
 
-        rules[ruleText] = (rules[ruleText] || 0) + 1;
+        rules[ruleIndex] = (rules[ruleIndex] || 0) + 1;
         this.data.stats.filters[id] = rules;
         this.data.totalHits = (this.data.totalHits || 0) + 1;
     }
@@ -76,10 +76,10 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
 
 /**
  * Instance of {@link HitStatsStorage}, that stores
- * stringified {@link HitStats} in {@link storage} under
+ * stringified {@link HitStats} in {@link browserStorage} under
  * {@link HIT_STATISTIC_KEY} key.
  */
 export const hitStatsStorage = new HitStatsStorage(
     HIT_STATISTIC_KEY,
-    storage,
+    browserStorage,
 );

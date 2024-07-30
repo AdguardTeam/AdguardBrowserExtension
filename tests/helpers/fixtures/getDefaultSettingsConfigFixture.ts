@@ -1,4 +1,4 @@
-// FIXME: Use alias for mv2/mv3 versions
+// FIXME: Use 'tswebextension' alias to work with mv3 version.
 import { SettingsConfig } from '@adguard/tswebextension';
 
 import { SettingOption } from '../../../Extension/src/background/schema';

@@ -36,7 +36,7 @@ export const enum StealthOption {
 
 export const stealthConfigValidator = zod.object({
     /**
-     * Whether Stealth mode is disabled or not.
+     * Whether Tracking protection (formerly Stealth mode) is disabled or not.
      */
     [StealthOption.DisableStealthMode]: zod.boolean(),
     /**

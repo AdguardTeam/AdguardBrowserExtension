@@ -19,7 +19,7 @@ import zod from 'zod';
 
 const filterRulesHitsValidator = zod.record(
     /**
-     * Text of rule.
+     * Index of rule.
      */
     zod.string(),
     /**

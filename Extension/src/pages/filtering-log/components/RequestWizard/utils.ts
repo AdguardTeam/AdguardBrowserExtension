@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { ContentType as RequestType } from '@adguard/tswebextension';
+import { ContentType as RequestType } from 'tswebextension';
 
 import { AntiBannerFiltersId } from '../../../../common/constants';
 import { strings } from '../../../../common/strings';
 import { translator } from '../../../../common/translators/translator';
-import type { FilterMetadata } from '../../../../background/api';
-import type { UIFilteringLogEvent } from '../../types';
+import type { FilteringLogEvent, FilterMetadata } from '../../../../background/api';
 
 /**
  * Url utils
@@ -83,7 +82,7 @@ export const UrlUtils = {
      *
      * @returns Domain for cookie rule.
      */
-    getCookieDomain(frameDomain: string | null): string {
+    getCookieDomain(frameDomain: string | undefined): string {
         if (!frameDomain) {
             return '';
         }
@@ -130,7 +129,7 @@ export const getFilterName = (
  *
  * @returns Request type for the given event.
  */
-export const getRequestEventType = (event: UIFilteringLogEvent): string => {
+export const getRequestEventType = (event: FilteringLogEvent): string => {
     const {
         requestType,
         requestRule,
@@ -181,6 +180,8 @@ export const getRequestEventType = (event: UIFilteringLogEvent): string => {
             return 'CSP';
         case RequestType.CspReport:
             return 'CSP report';
+        case RequestType.PermissionsPolicy:
+            return 'Permissions Policy';
         case RequestType.Cookie:
             return 'Cookie';
         case RequestType.Ping:
@@ -199,7 +200,7 @@ export const getRequestEventType = (event: UIFilteringLogEvent): string => {
  *
  * @returns Cookie data as a string or null.
  */
-export const getCookieData = (event: UIFilteringLogEvent): string | null => {
+export const getCookieData = (event: FilteringLogEvent): string | null => {
     if (!event.requestRule?.cookieRule || !event?.cookieName) {
         return null;
     }

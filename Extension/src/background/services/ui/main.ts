@@ -241,7 +241,12 @@ export class UiService {
      * @param event.data Event data.
      */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
-        const { isAllowlist, tabId } = data;
+        const {
+            filterId,
+            isAllowlist,
+            tabId,
+            companyCategory,
+        } = data;
 
         // If rule is not blocking, ignore it
         if (isAllowlist) {
@@ -249,14 +254,12 @@ export class UiService {
         }
 
         if (__IS_MV3__) {
-            const { companyCategory } = data;
             if (!companyCategory) {
                 throw new Error('companyCategory is required for MV3');
             }
             await PageStatsApiMv3.updateStats(companyCategory, UiService.blockedCountIncrement);
             PageStatsApiMv3.incrementTotalBlocked(UiService.blockedCountIncrement);
         } else {
-            const { filterId } = data;
             await PageStatsApiMv2.updateStats(filterId, UiService.blockedCountIncrement);
             PageStatsApiMv2.incrementTotalBlocked(UiService.blockedCountIncrement);
         }
