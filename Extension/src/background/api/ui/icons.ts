@@ -27,6 +27,7 @@ import { logger } from '../../../common/logger';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
+import { browserAction } from './browser-action';
 
 export const defaultIconVariants: IconVariants = {
     enabled: {
@@ -103,9 +104,6 @@ export class IconsApi {
         try {
             await IconsApi.setActionIcon(icon, tabId);
 
-            // TODO abstract to two different modules for mv3 and mv2 extensions
-            const browserAction = __IS_MV3__ ? browser.action : browser.browserAction;
-
             if (badgeText.length !== 0) {
                 await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
                 await browserAction.setBadgeText({ tabId, text: badgeText });
@@ -145,7 +143,7 @@ export class IconsApi {
      * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
      */
     private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
-        await browser.browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
+        await browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
     }
 
     /**
