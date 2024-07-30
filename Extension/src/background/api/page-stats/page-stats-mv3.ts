@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CompaniesDbStatsApi } from 'tswebextension';
+import { CompaniesDbApi } from 'tswebextension';
 
 import { COMPANIES_DB_OUTPUT_FILE } from '../../../../../constants';
 import { logger } from '../../../common/logger';
@@ -96,7 +96,7 @@ const CompaniesDbCategoriesMap: Record<number, number> = {
 export class PageStatsApiMv3 extends PageStatsApi {
     /**
      * Initializes page stats storage
-     * and starts CompaniesDbStatsApi to load categories data, and validates the data.
+     * and starts CompaniesDbApi to load categories data, and validates the data.
      */
     public static async init(): Promise<void> {
         try {
@@ -116,13 +116,15 @@ export class PageStatsApiMv3 extends PageStatsApi {
             pageStatsStorage.setData({});
         }
 
-        await CompaniesDbStatsApi.start(COMPANIES_DB_OUTPUT_FILE);
+        // FIXME(Slava): may be removed as CompaniesDbApi.start is called in tswebextension's innerStart()
+        // check if it is needed
+        await CompaniesDbApi.start(COMPANIES_DB_OUTPUT_FILE);
 
         PageStatsApiMv3.validateCategoriesData();
     }
 
     /**
-     * Validates categories data from CompaniesDbStatsApi.
+     * Validates categories data from CompaniesDbApi.
      *
      * @throws Error if categories data is invalid.
      */
@@ -130,22 +132,22 @@ export class PageStatsApiMv3 extends PageStatsApi {
         let rawCategoriesData = null;
 
         try {
-            rawCategoriesData = CompaniesDbStatsApi.getCategories();
+            rawCategoriesData = CompaniesDbApi.getCategories();
         } catch (e) {
             logger.warn(
-                'Cannot load categories data from CompaniesDbStatsApi. Origin error: ',
+                'Cannot load categories data from CompaniesDbApi. Origin error: ',
                 e,
             );
         }
 
         if (!rawCategoriesData) {
-            throw new Error('Cannot load categories data from CompaniesDbStatsApi');
+            throw new Error('Cannot load categories data from CompaniesDbApi');
         }
 
         const categoryIds = Object.keys(rawCategoriesData).map((key) => Number(key));
 
         if (categoryIds.length === 0) {
-            throw new Error('CompaniesDbStatsApi returned empty categories');
+            throw new Error('CompaniesDbApi returned empty categories');
         }
 
         const unknownCompaniesDbCategoryIds = Object.values(CompaniesDbCategories)
@@ -154,7 +156,7 @@ export class PageStatsApiMv3 extends PageStatsApi {
 
         if (unknownCompaniesDbCategoryIds.length > 0) {
             throw new Error(
-                `CompaniesDbStatsApi returned unrecognizable category ids: ${unknownCompaniesDbCategoryIds.join(', ')}`,
+                `CompaniesDbApi returned unrecognizable category ids: ${unknownCompaniesDbCategoryIds.join(', ')}`,
             );
         }
     }
