@@ -48,6 +48,9 @@ import {
     UpdateApi,
     InstallApi,
     network,
+    PageStatsApiMv2,
+    PageStatsApiMv3,
+    HitStatsApi,
 } from '../api';
 import {
     UiService,
@@ -57,11 +60,11 @@ import {
     AllowlistService,
     UserRulesService,
     CustomFiltersService,
-    FilteringLogService,
     eventService,
     DocumentBlockService,
     localeDetect,
     PromoNotificationService,
+    FilteringLogService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -163,6 +166,16 @@ export class App {
          */
         await FiltersApi.init(isInstall);
 
+        if (__IS_MV3__) {
+            await PageStatsApiMv3.init();
+            // FIXME: support hits counter for mv3 AG-33733
+        } else {
+            // should be initialized or started after FiltersApi.init()
+            // because PageStatsApiMv2 uses groups metadata
+            await PageStatsApiMv2.init();
+            await HitStatsApi.init();
+        }
+
         /**
          * Initializes promo notifications:
          * - Initializes notifications storage
@@ -185,7 +198,7 @@ export class App {
         // Adds listeners for userrules list events
         await UserRulesService.init();
 
-        // Adds listeners for filtering log (in MV3 needed for at least count total blocked requests)
+        // Adds listeners for filtering log (in MV3 is needed for total blocked requests count and popup stats)
         FilteringLogService.init();
 
         /**

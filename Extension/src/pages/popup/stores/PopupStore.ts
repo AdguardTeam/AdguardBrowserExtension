@@ -47,6 +47,7 @@ import {
     AppStateEvent,
 } from '../state-machines/app-state-machine';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
+import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 
 type BlockedStatsInfo = {
     totalBlocked: number;
@@ -57,7 +58,7 @@ type BlockedStatsInfo = {
 configure({ enforceActions: 'observed' });
 
 class PopupStore {
-    TOTAL_BLOCKED_GROUP_ID = 'total';
+    TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     /**
      * Flag that indicates whether the application filtering is **paused**.
@@ -530,7 +531,7 @@ class PopupStore {
     }
 
     @action
-    setSelectedBlockedType = (value: string) => {
+    setSelectedBlockedType = (value: number) => {
         this.selectedBlockedType = value;
     };
 

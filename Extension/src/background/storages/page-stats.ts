@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import {
     isSameHour,
     isSameDay,
@@ -24,7 +25,7 @@ import {
     differenceInMonths,
 } from 'date-fns';
 
-import { PAGE_STATISTIC_KEY } from '../../common/constants';
+import { PAGE_STATISTIC_KEY, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
 import {
     PageStats,
@@ -41,7 +42,7 @@ import { storage } from './main';
  * @see {@link StringStorage}
  */
 export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, PageStats, 'async'> {
-    public static TOTAL_GROUP_ID = 'total';
+    public static TOTAL_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     public static MAX_HOURS_HISTORY = 24;
 

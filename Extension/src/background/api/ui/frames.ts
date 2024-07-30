@@ -25,7 +25,7 @@ import {
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';
-import { PageStatsApi } from '../filters';
+import { PageStatsApiMv2, PageStatsApiMv3 } from '../page-stats';
 import { SettingsApi } from '../settings';
 
 export type FrameRule = {
@@ -130,7 +130,9 @@ export class FramesApi {
         let userAllowlisted = false;
         let canAddRemoveRule = false;
 
-        const totalBlocked = PageStatsApi.getTotalBlocked();
+        const totalBlocked = __IS_MV3__
+            ? PageStatsApiMv3.getTotalBlocked()
+            : PageStatsApiMv2.getTotalBlocked();
 
         const totalBlockedTab = blockedRequestCount;
         const applicationFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);

@@ -15,69 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { translator } from '../../../common/translators/translator';
+
 import { logger } from '../../../common/logger';
+import { translator } from '../../../common/translators/translator';
+import { pageStatsValidator } from '../../schema';
 import {
     metadataStorage,
-    pageStatsStorage,
     PageStatsStorage,
+    pageStatsStorage,
 } from '../../storages';
-import {
-    type GroupMetadata,
-    type PageStatsDataItem,
-    pageStatsValidator,
-} from '../../schema';
+import { Categories } from '../filters/categories';
 
-import { Categories } from './categories';
-
-/**
- * Statistics data.
- */
-export type GetStatisticsDataResponse = {
-    /**
-     * Statistics for today.
-     */
-    today: PageStatsDataItem[],
-
-    /**
-     * Statistics for the last week.
-     */
-    lastWeek: PageStatsDataItem[],
-
-    /**
-     * Statistics for the last month.
-     */
-    lastMonth: PageStatsDataItem[],
-
-    /**
-     * Statistics for the last year.
-     */
-    lastYear: PageStatsDataItem[],
-
-    /**
-     * Overall statistics.
-     */
-    overall: PageStatsDataItem[],
-
-    /**
-     * Blocked groups data.
-     */
-    blockedGroups: GetGroupsResponse,
-};
-
-// FIXME: remove as should be replaced with companiesData
-/**
- * Groups data.
- */
-type GetGroupsResponse = (GroupMetadata | {
-    groupId: string;
-    groupName: string;
-})[];
+import { PageStatsApi } from './page-stats-abstract';
+import type { GetGroupsResponse, GetStatisticsDataResponse } from './types';
 
 /**
  * Page Stats API is responsible for storing statistics of blocked requests.
+ *
+ * Based on filter groups, used for MV2.
  */
-export class PageStatsApi {
+export class PageStatsApiMv2 extends PageStatsApi {
     /**
      * Initializes page stats storage.
      */
@@ -97,38 +54,6 @@ export class PageStatsApi {
             );
             pageStatsStorage.setData({});
         }
-    }
-
-    /**
-     * Returns total count of blocked requests.
-     *
-     * @returns Total count of blocked requests.
-     */
-    public static getTotalBlocked(): number {
-        return pageStatsStorage.getTotalBlocked() || 0;
-    }
-
-    /**
-     * Increment total count of blocked requests.
-     *
-     * @param value Increment value.
-     *
-     * @returns Incremented total blocked value.
-     */
-    public static incrementTotalBlocked(value: number): number {
-        let totalBlocked = PageStatsApi.getTotalBlocked();
-
-        totalBlocked += value;
-
-        pageStatsStorage.setTotalBlocked(totalBlocked);
-        return totalBlocked;
-    }
-
-    /**
-     * Resets stats.
-     */
-    public static async reset(): Promise<void> {
-        await pageStatsStorage.setData({});
     }
 
     /**
@@ -176,23 +101,27 @@ export class PageStatsApi {
             lastMonth: stats.days.slice(-30),
             lastYear: stats.months.slice(-12),
             overall: stats.months,
-            blockedGroups: PageStatsApi.getGroups(),
+            blockedGroups: PageStatsApiMv2.getGroups(),
         };
     }
 
     /**
-     * Returns groups data from storage and add synthetic 'total' group for popup statistics section.
+     * Returns groups data from storage,
+     * and adds a synthetic _total_ group with id `999` for combined popup statistics.
      *
      * @returns Groups data.
      */
     private static getGroups(): GetGroupsResponse {
         const groups = metadataStorage.getGroups();
 
-        return [{
-            groupId: PageStatsStorage.TOTAL_GROUP_ID,
-            groupName: translator.getMessage('popup_statistics_total'),
-        }, ...groups.sort((prevGroup, nextGroup) => {
-            return prevGroup.displayNumber - nextGroup.displayNumber;
-        })];
+        return [
+            {
+                groupId: PageStatsStorage.TOTAL_GROUP_ID,
+                groupName: translator.getMessage('popup_statistics_total'),
+            },
+            ...groups.sort((prevGroup, nextGroup) => {
+                return prevGroup.displayNumber - nextGroup.displayNumber;
+            }),
+        ];
     }
 }

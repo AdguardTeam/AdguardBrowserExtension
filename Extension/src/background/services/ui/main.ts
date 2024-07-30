@@ -45,7 +45,8 @@ import {
     FilterMetadata,
     ContextMenuApi,
     UiApi,
-    PageStatsApi,
+    PageStatsApiMv2,
+    PageStatsApiMv3,
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
@@ -132,6 +133,7 @@ export class UiService {
         tsWebExtTabsApi.onUpdate.subscribe(UiApi.update);
         tsWebExtTabsApi.onActivate.subscribe(UiApi.update);
 
+        // FIXME(Slava): check when filtering log is supported in MV3
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
 
@@ -239,15 +241,25 @@ export class UiService {
      * @param event.data Event data.
      */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
-        const { rule, tabId } = data;
+        const { isAllowlist, tabId } = data;
 
         // If rule is not blocking, ignore it
-        if (rule.isAllowlist()) {
+        if (isAllowlist) {
             return;
         }
 
-        await PageStatsApi.updateStats(rule.getFilterListId(), UiService.blockedCountIncrement);
-        PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
+        if (__IS_MV3__) {
+            const { companyCategory } = data;
+            if (!companyCategory) {
+                throw new Error('companyCategory is required for MV3');
+            }
+            await PageStatsApiMv3.updateStats(companyCategory, UiService.blockedCountIncrement);
+            PageStatsApiMv3.incrementTotalBlocked(UiService.blockedCountIncrement);
+        } else {
+            const { filterId } = data;
+            await PageStatsApiMv2.updateStats(filterId, UiService.blockedCountIncrement);
+            PageStatsApiMv2.incrementTotalBlocked(UiService.blockedCountIncrement);
+        }
 
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 

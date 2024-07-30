@@ -35,7 +35,8 @@ import {
 import {
     type FrameData,
     FramesApi,
-    PageStatsApi,
+    PageStatsApiMv2,
+    PageStatsApiMv3,
     SettingsApi,
     promoNotificationApi,
     type GetStatisticsDataResponse,
@@ -90,7 +91,8 @@ export class PopupService {
     }
 
     /**
-     * Returns tab info: frame info, stats form {@link PageStatsApi},
+     * Returns tab info: frame info,
+     * stats form {@link PageStatsApiMv2} or {@link PageStatsApiMv3} (depending on the manifest version),
      * current settings and some other options.
      *
      * @param message Message of type {@link GetTabInfoForPopupMessage}.
@@ -115,7 +117,9 @@ export class PopupService {
 
             return {
                 frameInfo: FramesApi.getMainFrameData(tabContext),
-                stats: PageStatsApi.getStatisticsData(),
+                stats: __IS_MV3__
+                    ? PageStatsApiMv3.getStatisticsData()
+                    : PageStatsApiMv2.getStatisticsData(),
                 settings: SettingsApi.getData(),
                 areFilterLimitsExceeded,
                 options: {

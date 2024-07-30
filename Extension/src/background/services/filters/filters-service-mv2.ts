@@ -36,7 +36,7 @@ import {
     FiltersApi,
     FilterUpdateApi,
     HitStatsApi,
-    PageStatsApi,
+    PageStatsApiMv2,
     toasts,
 } from '../../api';
 import {
@@ -238,7 +238,7 @@ export class FiltersService {
      * Called on a request to reset the counters of blocked ads.
      */
     private static async resetBlockedAdsCount(): Promise<void> {
-        await PageStatsApi.reset();
+        await PageStatsApiMv2.reset();
     }
 
     /**

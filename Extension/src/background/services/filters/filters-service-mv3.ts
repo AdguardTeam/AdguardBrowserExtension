@@ -34,7 +34,7 @@ import {
     annoyancesConsent,
     Categories,
     FiltersApi,
-    PageStatsApi,
+    PageStatsApiMv3,
 } from '../../api';
 
 /**
@@ -197,7 +197,7 @@ export class FiltersService {
      * Called on a request to reset the counters of blocked ads.
      */
     private static async resetBlockedAdsCount(): Promise<void> {
-        await PageStatsApi.reset();
+        await PageStatsApiMv3.reset();
     }
 
     /**

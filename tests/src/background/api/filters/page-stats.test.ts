@@ -1,7 +1,7 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
 
-import { PageStatsApi } from '../../../../../Extension/src/background/api/filters/page-stats';
+import { PageStatsApiMv2 } from '../../../../../Extension/src/background/api/page-stats/page-stats-mv2';
 import { App } from '../../../../../Extension/src/background/app';
 import { PageStatsStorage } from '../../../../../Extension/src/background/storages';
 import {
@@ -25,7 +25,7 @@ describe('Page Stats Api', () => {
     });
 
     it('inits', async () => {
-        await PageStatsApi.init();
+        await PageStatsApiMv2.init();
 
         expect(await browser.storage.local.get(PAGE_STATISTIC_KEY))
             .toStrictEqual({ [PAGE_STATISTIC_KEY]: JSON.stringify({}) });
@@ -34,34 +34,34 @@ describe('Page Stats Api', () => {
     it('gets total blocked count', async () => {
         await storage.set({ [PAGE_STATISTIC_KEY]: JSON.stringify({ totalBlocked: 42 }) });
 
-        await PageStatsApi.init();
+        await PageStatsApiMv2.init();
 
-        expect(PageStatsApi.getTotalBlocked()).toBe(42);
+        expect(PageStatsApiMv2.getTotalBlocked()).toBe(42);
     });
 
     it('increments total blocked count', async () => {
         await storage.set({ [PAGE_STATISTIC_KEY]: JSON.stringify({ totalBlocked: 41 }) });
 
-        await PageStatsApi.init();
+        await PageStatsApiMv2.init();
 
-        PageStatsApi.incrementTotalBlocked(1);
+        PageStatsApiMv2.incrementTotalBlocked(1);
 
-        expect(PageStatsApi.getTotalBlocked()).toBe(42);
+        expect(PageStatsApiMv2.getTotalBlocked()).toBe(42);
     });
 
     it('resets page stats data', async () => {
         await storage.set({ [PAGE_STATISTIC_KEY]: JSON.stringify({ totalBlocked: 42 }) });
 
-        await PageStatsApi.init();
+        await PageStatsApiMv2.init();
 
-        await PageStatsApi.reset();
+        await PageStatsApiMv2.reset();
 
         expect(await storage.get(PAGE_STATISTIC_KEY)).toStrictEqual({ [PAGE_STATISTIC_KEY]: JSON.stringify({}) });
     });
 
     it('updates stats', async () => {
         await App.init();
-        await PageStatsApi.init();
+        await PageStatsApiMv2.init();
 
         const updated = Date.now();
 
@@ -82,7 +82,7 @@ describe('Page Stats Api', () => {
 
         jest.spyOn(Date, 'now').mockImplementation(() => updated);
 
-        await PageStatsApi.updateStats(AntiBannerFiltersId.EnglishFilterId, 1);
+        await PageStatsApiMv2.updateStats(AntiBannerFiltersId.EnglishFilterId, 1);
 
         expect(await storage.get(PAGE_STATISTIC_KEY))
             .toStrictEqual({ [PAGE_STATISTIC_KEY]: JSON.stringify({ data: pageStatsData }) });
@@ -90,8 +90,8 @@ describe('Page Stats Api', () => {
 
     it('gets stats', async () => {
         await App.init();
-        await PageStatsApi.init();
+        await PageStatsApiMv2.init();
 
-        expect(PageStatsApi.getStatisticsData()).toStrictEqual(getEmptyStatisticDataFixture());
+        expect(PageStatsApiMv2.getStatisticsData()).toStrictEqual(getEmptyStatisticDataFixture());
     });
 });

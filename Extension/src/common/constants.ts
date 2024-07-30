@@ -134,6 +134,8 @@ export const SCROLLBAR_WIDTH = 12 as const;
 
 export const BACKGROUND_TAB_ID = -1 as const;
 
+export const TOTAL_BLOCKED_STATS_GROUP_ID = 999;
+
 /**
  *  Time interval between filter updates.
  */

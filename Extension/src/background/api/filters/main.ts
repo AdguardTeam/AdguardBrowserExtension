@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { logger } from '../../../common/logger';
 import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
 import { getErrorMessage } from '../../../common/error';
@@ -50,8 +51,6 @@ import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
 import { CommonFilterApi } from './common';
 import { CustomFilterApi } from './custom';
-import { PageStatsApi } from './page-stats';
-import { HitStatsApi } from './hit-stats';
 import { FilterUpdateApi } from './update';
 import { Categories } from './categories';
 
@@ -74,8 +73,6 @@ export class FiltersApi {
         await FiltersApi.initI18nMetadata();
         await FiltersApi.initMetadata();
 
-        await PageStatsApi.init();
-        await HitStatsApi.init();
         CustomFilterApi.init();
         AllowlistApi.init();
         await UserRulesApi.init(isInstall);
