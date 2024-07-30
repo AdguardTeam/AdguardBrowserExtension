@@ -16,15 +16,29 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * This component is needed to be replaced during webpack compilation
- * with NormalModuleReplacementPlugin to proper implementation
- * from './Mv2Tabs' or './Mv3Tabs'.
- *
- * @throws An error if the component is not replaced.
- */
-const AbstractTabs = () => {
-    throw new Error('Seems like webpack did not inject proper Tabs component');
-};
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
-export { AbstractTabs as Tabs };
+import { Main } from '../Main';
+import { ViewState } from '../../constants';
+import { StatsChart } from '../Stats/StatsChart';
+import { popupStore } from '../../stores/PopupStore';
+
+import './main-container.pcss';
+
+export const MainContainer = observer(() => {
+    const store = useContext(popupStore);
+
+    const contentMap = {
+        [ViewState.Actions]: Main,
+        [ViewState.Stats]: StatsChart,
+    };
+
+    const Content = contentMap[store.viewState];
+
+    return (
+        <div className="main-container">
+            <Content />
+        </div>
+    );
+});

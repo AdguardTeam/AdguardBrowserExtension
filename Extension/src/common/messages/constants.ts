@@ -67,7 +67,6 @@ export enum MessageType {
     ResetUserRulesForPage = 'resetUserRulesForPage',
     RemoveAllowlistDomain = 'removeAllowlistDomainPopup',
     AddAllowlistDomainPopup = 'addAllowlistDomainPopup',
-    GetStatisticsData = 'getStatisticsData',
     OnOpenFilteringLogPage = 'onOpenFilteringLogPage',
     GetFilteringLogData = 'getFilteringLogData',
     InitializeFrameScript = 'initializeFrameScript',
