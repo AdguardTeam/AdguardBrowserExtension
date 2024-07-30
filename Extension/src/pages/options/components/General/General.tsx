@@ -37,7 +37,7 @@ import {
     BUG_REPORT_MV3_URL,
 } from '../../constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
-import { Popover } from '../../../common/components/ui/Popover';
+import { addPopoverForComingSoonElement } from '../../../common/components/react-helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getErrorMessage } from '../../../../common/error';
 import { SettingHandler } from '../../types';
@@ -201,29 +201,6 @@ export const General = observer(() => {
         DisableSafebrowsing,
         AppearanceTheme,
     } = settings.names;
-
-    /**
-     * Returns the same element for MV2,
-     * adds a popover with 'Coming soon' text for MV3 and disables the element.
-     *
-     * @param element Element to handle.
-     *
-     * @returns Disabled element with popover for MV3 or the same element for MV2.
-     */
-    const addPopoverForComingSoonElement = (element: React.JSX.Element) => {
-        if (!__IS_MV3__) {
-            return element;
-        }
-
-        const comingSoonText = translator.getMessage('options_coming_soon');
-        const disabledClassName = `disabled ${element.props.className}`;
-
-        return (
-            <Popover text={comingSoonText} comingSoon>
-                {React.cloneElement(element, { className: disabledClassName })}
-            </Popover>
-        );
-    };
 
     return (
         <>

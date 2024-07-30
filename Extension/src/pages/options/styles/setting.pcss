@@ -93,10 +93,15 @@
     }
 
     &__info {
-        max-width: 530px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        max-width: 530px;
+        min-width: 530px;
+
+        @media (max-width: 640px) {
+            min-width: 40%;
+        }
     }
 
     &__title {
