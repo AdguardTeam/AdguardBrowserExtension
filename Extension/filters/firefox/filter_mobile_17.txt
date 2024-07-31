@@ -1,9 +1,9 @@
-! Checksum: QEUNHajIZN6sbFa8a5KDug
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1718275122-3600.patch
+! Checksum: QXhh17jHXwIIh37aTQpbwA
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1722361066-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.60
-! TimeUpdated: 2024-06-13T10:36:10+00:00
+! Version: 2.0.8.91
+! TimeUpdated: 2024-07-30T17:34:23+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=cstrackid
 /?affijet-click=$removeparam
@@ -113,6 +113,7 @@ $removeparam=_sgm_campaign
 $removeparam=_sgm_source
 $removeparam=_sgm_action
 $removeparam=/^__s=[A-Za-z0-9]{6\,}/,domain=~univis.uni-erlangen.de|~univis.uni-bamberg.de|~univis.uni-luebeck.de|~univis.uni-kiel.de|~univis.th-koeln.de
+$removeparam=mc_cid
 $removeparam=mc_eid
 $removeparam=maf
 $removeparam=_clde
@@ -229,9 +230,68 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||windscribe.com^$removeparam=pcpid
+||windscribe.com^$removeparam=temp_session
+||hepsiburada.com^$removeparam=wt_ds
+||hepsiburada.com^$removeparam=url_src
+||samsung.com^$removeparam=cid
+||nikkansports.com^$removeparam=nsgid
+||game.hiroba.dpoint.docomo.ne.jp^$removeparam=mks_referer_event
+||news.yahoo.co.jp^$removeparam=source
+||news.yahoo.co.jp^$removeparam=dv
+||news.yahoo.co.jp^$removeparam=mid
+||news.yahoo.co.jp^$removeparam=date
+||news.yahoo.co.jp^$removeparam=ctg
+||news.yahoo.co.jp^$removeparam=bt
+||lumosvpn.com/?cep=$removeparam
+||shop.adidas.jp^$removeparam=source_caller
+||shop.adidas.jp^$removeparam=shortlink
+||daohang.qq.com^$removeparam=fr
+||hoyoverse.com/branding$removeparam
+||cloud.baidu.com^$removeparam=from
+||qianfan.cloud.baidu.com^$removeparam=track
+||hepsiburada.com^$removeparam=wt_inf
+||qjweb.jp^$removeparam=from
+||sport.sky.it^$removeparam=social
+||sport.sky.it^$removeparam=share_id
+||tokopedia.com^$removeparam=src
+||tokopedia.com^$removeparam=extParam
+||tokopedia.com^$removeparam=refined
+||darkfans.com^$removeparam=ref
+||darkfans.com^$removeparam=af
+||porntube.com^$removeparam=cid
+||3movs.com^$removeparam=site_id
+||jpsk.jp^$removeparam=click
+||savefrom.net^$removeparam=from
+$removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
+||temu.com^$removeparam=_bg_fs
+||temu.com^$removeparam=_x_sessn_id
+||temu.com^$removeparam=refer_page_name
+||temu.com^$removeparam=refer_page_id
+||temu.com^$removeparam=sku_id
+||temu.com^$removeparam=refer_share_channel
+||temu.com^$removeparam=refer_share_id
+||temu.com^$removeparam=_oak_page_source
+||temu.com^$removeparam=_oak_region
+||temu.com^$removeparam=refer_share_suin
+||temu.com^$removeparam=_oak_mp_inf
+||temu.com^$removeparam=top_gallery_url
+||temu.com^$removeparam=spec_gallery_id
+||temu.com^$removeparam=refer_source
+||temu.com^$removeparam=freesia_scene
+||temu.com^$removeparam=_oak_freesia_scene
+||temu.com^$removeparam=_oak_rec_ext_1
+||temu.com^$removeparam=_oak_gallery_order
+||temu.com^$removeparam=_x_channel_scene
+||temu.com^$removeparam=_x_channel_src
+||temu.com^$removeparam=share_img
+||temu.com^$removeparam=from_share
+||videoproc.com/*install/$removeparam
+||m.otenki.com^$removeparam=af
+||carseven.co.jp^$removeparam=from
+||email1.io^$removeparam=aid
 ||blogmura.com^$removeparam=p_cid
 ||nvidia.com^$removeparam=jso
-||booking.com^$removeparam=aid
 ||nytimes.com^$removeparam=smid
 ||nytimes.com^$removeparam=referringSource
 ||nytimes.com^$removeparam=sgrp
@@ -383,8 +443,13 @@ $removeparam=fb_source
 ||stacksocial.com/*/*&partnerid=$removeparam=partnerid
 ||gillian-guide.github.io^$removeparam=ref
 ||pcmag.com^$removeparam=taid
+$removeparam=trackcode,domain=vk.com|vk.ru
+$removeparam=recom,domain=vk.com|vk.ru
 ||vkplay.ru$removeparam=_1ld
 ||vkplay.ru$removeparam=_1lp
+||vkplay.ru^$removeparam=mt_adset
+||vkplay.ru^$removeparam=mt_sub1
+||vkplay.ru^$removeparam=mt_sub2
 ||incogni.com^$removeparam=transaction_id
 ||incogni.com^$removeparam=offer_id
 ||incogni.com^$removeparam=affiliate_id
@@ -424,7 +489,6 @@ keepstreams.com^$removeparam=downloadmode
 ||ozon.ru^$removeparam=from_url
 ||ozon.ru^$removeparam=from_sku
 ||ozon.ru^$removeparam=keywords
-||ozon.ru^$removeparam=oos_search
 ||stvkr.com/v*/click-$removeparam=sa
 ||stvkr.com/v*/click-$removeparam=rfr
 ||stvkr.com/v*/click-$removeparam=widht
@@ -729,6 +793,10 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||tiktok.com^$removeparam=share_app_id
 ||tiktok.com^$removeparam=share_author_id
 ||tiktok.com^$removeparam=tt_from
+||tiktok.com^$removeparam=_d
+||tiktok.com^$removeparam=share_link_id
+||tiktok.com^$removeparam=u_code
+||tiktok.com^$removeparam=_r
 ||tiktok.com/@*/video/*$removeparam=is_from_webapp
 ||tiktok.com/@*/video/*$removeparam=sender_device
 ||tiktok.com$removeparam=enter_method
@@ -819,10 +887,12 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||thumbs4.redgifs.com/*&for=$removeparam=for
 ||thumbs4.redgifs.com/*&for=$image,removeparam=for
 ||politica.com.ua^$removeparam=isUser
-$removeparam=sp_atk,domain=shopee.ph|shopee.co.th
-$removeparam=xptdk,domain=shopee.ph|shopee.co.th
-||shopee.ph^$removeparam=stm_medium
-||shopee.ph^$removeparam=stm_source
+$removeparam=sp_atk,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=xptdk,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=publish_id,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=promotionId,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||adguard.$removeparam=clid
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
@@ -1103,7 +1173,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||nordvpn.com^$removeparam=data1
 ||upgrad.com^$removeparam=UTM_MEDIUM
 ||adweek.com^$removeparam=traffic_source
-$removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adguardvpn-help.com
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
 ||web.vstat.info^$removeparam=guid
