@@ -295,3 +295,14 @@ export const getStorageFixturesV4 = (expires: number): StorageData[] => {
         return result;
     });
 };
+
+export const getStorageFixturesV5 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV4 = getStorageFixturesV4(expires);
+
+    return storageSettingsFixturesV4.map(settings => {
+        settings['rules-limits'] = JSON.stringify([]);
+        settings['schema-version'] = 5;
+
+        return settings;
+    });
+};

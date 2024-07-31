@@ -35,10 +35,11 @@ import {
 } from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
-    AntiBannerFiltersId,
     APP_VERSION_KEY,
+    AntiBannerFiltersId,
     CLIENT_ID_KEY,
     NEWLINE_CHAR_REGEX,
+    RULES_LIMITS_KEY,
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import {
@@ -63,6 +64,7 @@ export class UpdateApi {
         '1': UpdateApi.migrateFromV1toV2,
         '2': UpdateApi.migrateFromV2toV3,
         '3': UpdateApi.migrateFromV3toV4,
+        '4': UpdateApi.migrateFromV4toV5,
     };
 
     /**
@@ -191,6 +193,13 @@ export class UpdateApi {
 
             throw new Error(errMessage, { cause: e });
         }
+    }
+
+    /**
+     * Run data migration from schema v4 to schema v5.
+     */
+    private static async migrateFromV4toV5(): Promise<void> {
+        await browserStorage.set(RULES_LIMITS_KEY, JSON.stringify([]));
     }
 
     /**
