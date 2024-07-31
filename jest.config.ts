@@ -17,6 +17,7 @@
  */
 import type { Config } from 'jest';
 import { pathsToModuleNameMapper } from 'ts-jest';
+import escapeStringRegexp from 'escape-string-regexp';
 
 import { MANIFEST_ENV } from './tools/constants';
 
@@ -45,7 +46,7 @@ const config: Config = {
         './testSetup.ts',
     ],
     transformIgnorePatterns: [
-        `<rootDir>/node_modules/(?!(${transformedModules.join('|')}))`,
+        `<rootDir>/node_modules/(?!(${transformedModules.map(escapeStringRegexp).join('|')}))`,
         '.*\\.json',
     ],
     // Use same aliases as in tsconfig.

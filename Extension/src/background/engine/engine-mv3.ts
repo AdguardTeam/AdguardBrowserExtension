@@ -95,6 +95,8 @@ export class Engine implements TsWebExtensionEngine {
         if (await RulesLimitsService.areFilterLimitsExceeded()) {
             toasts.showRuleLimitsAlert();
         }
+
+        filteringLogApi.onEngineUpdated(configuration);
     }
 
     /**
@@ -127,7 +129,7 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
 
-        filteringLogApi.onEngineUpdated();
+        filteringLogApi.onEngineUpdated(configuration);
     }
 
     /**
@@ -155,7 +157,7 @@ export class Engine implements TsWebExtensionEngine {
             userrules = (await UserRulesApi.getUserRules()).rawFilterList.split('\n');
 
             // Remove empty strings.
-            userrules = userrules.filter(rule => !!rule);
+            userrules = userrules.filter((rule) => !!rule);
 
             // Remove duplicates.
             userrules = Array.from(new Set(userrules));

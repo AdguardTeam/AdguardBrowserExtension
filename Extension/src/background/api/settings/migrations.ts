@@ -57,7 +57,7 @@ export class SettingsMigrations {
 
         const migrations = this.settingsMigrationMap;
 
-        let currentMigrationIdx = migrations.findIndex(migration => {
+        let currentMigrationIdx = migrations.findIndex((migration) => {
             return migration.from === protocolVersion;
         });
 

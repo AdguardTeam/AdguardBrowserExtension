@@ -54,8 +54,12 @@ import {
     FILTERING_LOG_OUTPUT,
     DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT,
     DEVTOOLS_OUTPUT,
+    AGTREE_VENDOR_OUTPUT,
+    CSS_TOKENIZER_VENDOR_OUTPUT,
+    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
 } from '../../constants';
 
+import { megabytesToBytes, SizeLimitPlugin } from './size-limit-plugin';
 import {
     ASSISTANT_INJECT_PATH,
     type BrowserConfig,
@@ -74,7 +78,17 @@ import { getEnvConf } from './helpers';
 
 const config = getEnvConf(BUILD_ENV);
 
+const TEXT_ENCODER_POLYFILL_PATH = path.resolve(
+    __dirname,
+    '../../node_modules/@adguard/tswebextension/dist/text-encoding-polyfill.js',
+);
+
 const OUTPUT_PATH = config.outputPath;
+
+const SIZE_LIMITS_MB = {
+    // Need to be less than 4 MB, because Firefox Extensions Store has a limit of 5 MB for .js files.
+    '.js': megabytesToBytes(4),
+};
 
 export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = false): Configuration => {
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
@@ -139,7 +153,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 import: FILTERING_LOG_PATH,
                 dependOn: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
+                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -155,10 +172,16 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             [MOBX_VENDOR_OUTPUT]: ['mobx'],
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
             [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
+            [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
+            [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
+            [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: {
+                import: TEXT_ENCODER_POLYFILL_PATH,
+            },
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
                 dependOn: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                 ],
             },
         },
@@ -299,6 +322,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -323,6 +348,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -336,7 +363,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
+                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                     REACT_VENDOR_OUTPUT,
                     MOBX_VENDOR_OUTPUT,
                     XSTATE_VENDOR_OUTPUT,
@@ -377,6 +407,9 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 IS_BETA: BUILD_ENV === BuildTargetEnv.Beta,
                 __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
             }),
+            // Check the size of the output JS files and fail the build if any file exceeds the limit
+            // (but not in the development mode)
+            new SizeLimitPlugin(isDev ? {} : SIZE_LIMITS_MB),
         ],
     };
 

@@ -21,7 +21,15 @@ import path from 'path';
 import { NormalModuleReplacementPlugin, type Configuration } from 'webpack';
 import merge from 'webpack-merge';
 
-import { BACKGROUND_OUTPUT, CONTENT_SCRIPT_START_OUTPUT } from '../../constants';
+import {
+    AGTREE_VENDOR_OUTPUT,
+    BACKGROUND_OUTPUT,
+    CONTENT_SCRIPT_START_OUTPUT,
+    CSS_TOKENIZER_VENDOR_OUTPUT,
+    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+    TSURLFILTER_VENDOR_OUTPUT,
+    TSWEBEXTENSION_VENDOR_OUTPUT,
+} from '../../constants';
 
 import {
     BACKGROUND_PATH,
@@ -38,6 +46,13 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: bo
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
                 runtime: false,
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+                ],
             },
             [CONTENT_SCRIPT_START_OUTPUT]: {
                 import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv3.ts'),

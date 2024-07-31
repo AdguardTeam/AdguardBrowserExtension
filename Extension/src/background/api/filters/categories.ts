@@ -214,7 +214,7 @@ export class Categories {
 
         const langSuitableFilters = CommonFilterApi.getLangSuitableFilters();
 
-        const group = categories.find(category => category.groupId === groupId);
+        const group = categories.find((category) => category.groupId === groupId);
 
         if (!group?.filters) {
             return [];
@@ -224,7 +224,7 @@ export class Categories {
 
         const result: number[] = [];
 
-        filters.forEach(filter => {
+        filters.forEach((filter) => {
             if (Categories.isRecommendedFilter(filter) && Categories.isFilterMatchPlatform(filter)) {
                 // get ids intersection to enable recommended filters matching the lang tag
                 // only if filter has language
@@ -256,7 +256,7 @@ export class Categories {
         for (let i = 0; i < tagsIds.length; i += 1) {
             const tagId = tagsIds[i];
 
-            const tagDetails = tagsMetadata.find(tag => tag.tagId === tagId);
+            const tagDetails = tagsMetadata.find((tag) => tag.tagId === tagId);
 
             if (tagDetails) {
                 if (tagDetails.keyword.startsWith('reference:')) {
