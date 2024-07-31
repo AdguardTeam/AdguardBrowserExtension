@@ -1,8 +1,8 @@
-! Checksum: eHNntc9Ni9tZVdvHk0zkgA
+! Checksum: ncQpAl3QRrWKo1J53GMnGA
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.84
-! TimeUpdated: 2024-07-24T10:35:11+00:00
+! Version: 2.0.8.91
+! TimeUpdated: 2024-07-30T17:34:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -358,6 +358,25 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/185036
+||windscribe.com^$removeparam=pcpid
+||windscribe.com^$removeparam=temp_session
+! https://github.com/AdguardTeam/AdguardFilters/issues/185037
+||hepsiburada.com^$removeparam=wt_ds
+||hepsiburada.com^$removeparam=url_src
+! https://github.com/AdguardTeam/AdguardFilters/issues/184903
+||samsung.com^$removeparam=cid
+! https://www.nikkansports.com/premium/baseball/news/202407140001516.html?nsgid=(random char)
+||nikkansports.com^$removeparam=nsgid
+! https://github.com/AdguardTeam/AdguardFilters/issues/184837
+||game.hiroba.dpoint.docomo.ne.jp^$removeparam=mks_referer_event
+! https://news.yahoo.co.jp/articles/ca5b45b1e27e871071e6fd94be02f630884371c8?source=sns&dv=pc&mid=other&date=20240728&ctg=it&bt=tw_up
+||news.yahoo.co.jp^$removeparam=source
+||news.yahoo.co.jp^$removeparam=dv
+||news.yahoo.co.jp^$removeparam=mid
+||news.yahoo.co.jp^$removeparam=date
+||news.yahoo.co.jp^$removeparam=ctg
+||news.yahoo.co.jp^$removeparam=bt
 ! lumosvpn.com promo
 ||lumosvpn.com/?cep=$removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/184386
@@ -378,6 +397,7 @@ $removeparam=fb_source
 ||sport.sky.it^$removeparam=social
 ||sport.sky.it^$removeparam=share_id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182791
+||tokopedia.com^$removeparam=src
 ||tokopedia.com^$removeparam=extParam
 ||tokopedia.com^$removeparam=refined
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182681
@@ -1300,13 +1320,16 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||thumbs4.redgifs.com/*&for=$image,removeparam=for
 ! politica.com.ua - links click counter
 ||politica.com.ua^$removeparam=isUser
+! https://github.com/AdguardTeam/AdguardFilters/issues/184902
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164592
-! https://github.com/AdguardTeam/AdguardFilters/issues/131139
-$removeparam=sp_atk,domain=shopee.ph|shopee.co.th
-$removeparam=xptdk,domain=shopee.ph|shopee.co.th
 ! https://github.com/AdguardTeam/AdguardFilters/issues/144898
-||shopee.ph^$removeparam=stm_medium
-||shopee.ph^$removeparam=stm_source
+! https://github.com/AdguardTeam/AdguardFilters/issues/131139
+$removeparam=sp_atk,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=xptdk,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=publish_id,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=promotionId,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131093
 ||adguard.$removeparam=clid
 ! Cognativex
