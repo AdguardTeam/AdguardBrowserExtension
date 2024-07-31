@@ -17,6 +17,9 @@
  */
 import { Tabs } from 'webextension-polyfill';
 
+import { RuleParser } from '@adguard/agtree';
+import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
+
 import {
     BACKGROUND_TAB_ID,
     ContentType,
@@ -26,11 +29,7 @@ import {
     getRuleSourceText,
     getRuleSourceIndex,
     PreprocessedFilterList,
-    type ConfigurationMV2,
-    type ConfigurationMV3,
-} from '@adguard/tswebextension';
-import { RuleParser } from '@adguard/agtree';
-import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
+} from 'tswebextension';
 
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
@@ -221,11 +220,10 @@ export class FilteringLogApi {
     /**
      * Called when the engine is updated.
      *
-     * @param configuration TSWebExtension configuration.
-     * @param configuration.settings TSWebExtension configuration settings.
+     * @param allowlistInverted Whether allowlist mode is inverted.
      */
-    public onEngineUpdated({ settings: allowlistInverted }: ConfigurationMV2 | ConfigurationMV3): void {
-        this.allowlistInverted = allowlistInverted ?? false;
+    public onEngineUpdated(allowlistInverted: boolean): void {
+        this.allowlistInverted = allowlistInverted;
 
         if (!this.isOpen()) {
             return;
