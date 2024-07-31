@@ -37,6 +37,7 @@ import type {
 import { translator } from '../../../common/translators/translator';
 import { messenger } from '../../services/messenger';
 import { getFilterName } from '../components/RequestWizard/utils';
+import { BACKGROUND_TAB_ID } from '../../../common/constants';
 
 import { matchesSearch } from './helpers';
 import type { RootStore } from './RootStore';
@@ -400,14 +401,18 @@ class LogStore {
         // to stop select from re-rendering during selection
         if (this.selectIsOpen) {
             if (!this.prevTabs) {
-                this.prevTabs = this.getTabs();
+                runInAction(() => {
+                    this.prevTabs = this.getTabs();
+                });
             }
             return this.prevTabs;
         }
 
         const tabs = this.getTabs();
 
-        this.prevTabs = tabs;
+        runInAction(() => {
+            this.prevTabs = tabs;
+        });
         return tabs;
     }
 
@@ -575,7 +580,7 @@ class LogStore {
 
     @action
     refreshPage = async () => {
-        if (this.selectedTabId === -1) {
+        if (this.selectedTabId === BACKGROUND_TAB_ID) {
             await messenger.clearEventsByTabId(this.selectedTabId);
             return;
         }

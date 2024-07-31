@@ -25,19 +25,11 @@ import type { Manifest } from 'webextension-polyfill';
 import type { Configuration } from 'webpack';
 
 import { genMv3CommonConfig } from '../webpack.common-mv3';
-import {
-    CHROMIUM_DEVTOOLS_ENTRIES,
-    CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
-    genChromiumZipPlugin,
-} from '../webpack.common';
+import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { BUILD_ENV, FILTERS_DEST } from '../../constants';
-import { BACKGROUND_PATH, type BrowserConfig } from '../common-constants';
-import {
-    BACKGROUND_OUTPUT,
-    GPC_SCRIPT_OUTPUT,
-    HIDE_DOCUMENT_REFERRER_OUTPUT,
-} from '../../../constants';
+import { type BrowserConfig } from '../common-constants';
+import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
@@ -88,20 +80,16 @@ const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
     throw new Error("Declarative rulesets directory doesn't exist");
 };
 
-export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = false) => {
-    const commonConfig = genMv3CommonConfig(browserConfig);
+export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: boolean) => {
+    const commonConfig = genMv3CommonConfig(browserConfig, isWatchMode);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
     }
 
-    const chromeConfig: Configuration = {
+    const chromeMv3Config: Configuration = {
         devtool: BUILD_ENV === 'dev' ? 'inline-source-map' : false,
         entry: {
-            [BACKGROUND_OUTPUT]: {
-                import: BACKGROUND_PATH,
-                runtime: false,
-            },
             [GPC_SCRIPT_OUTPUT]: {
                 import: GPC_SCRIPT_PATH,
                 runtime: false,
@@ -139,10 +127,5 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
         ],
     };
 
-    // Run the archive only if it is not a watch mode
-    if (!isWatchMode && chromeConfig.plugins) {
-        chromeConfig.plugins.push(genChromiumZipPlugin(browserConfig.browser));
-    }
-
-    return merge(commonConfig, chromeConfig);
+    return merge(commonConfig, chromeMv3Config);
 };

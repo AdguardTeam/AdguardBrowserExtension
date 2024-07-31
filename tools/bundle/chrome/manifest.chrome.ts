@@ -15,6 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import {
+    BACKGROUND_OUTPUT,
+    DEVTOOLS_OUTPUT,
+    POPUP_OUTPUT,
+} from '../../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
 
 export const chromeManifest = {
@@ -24,17 +29,17 @@ export const chromeManifest = {
             '38': 'assets/icons/on-38.png',
         },
         'default_title': '__MSG_name__',
-        'default_popup': 'pages/popup.html',
+        'default_popup': `${POPUP_OUTPUT}.html`,
     },
     'web_accessible_resources': [
         '/web-accessible-resources/*',
     ],
     'background': {
-        'page': 'pages/background.html',
+        'page': `${BACKGROUND_OUTPUT}.html`,
         'persistent': true,
     },
     'options_page': OPTIONS_PAGE,
-    'devtools_page': 'pages/devtools.html',
+    'devtools_page': `${DEVTOOLS_OUTPUT}.html`,
     'permissions': [
         'tabs',
         '<all_urls>',

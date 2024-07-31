@@ -80,21 +80,16 @@ export class FilteringLogService {
      * Creates handlers for all possible actions.
      */
     public static init(): void {
+        /* eslint-disable max-len */
         messageHandler.addListener(MessageType.GetFilteringLogData, FilteringLogService.onGetFilteringLogData);
         messageHandler.addListener(MessageType.SynchronizeOpenTabs, FilteringLogService.onSyncOpenTabs);
-        messageHandler.addListener(
-            MessageType.GetFilteringInfoByTabId,
-            FilteringLogService.onGetFilteringLogInfoById,
-        );
+        messageHandler.addListener(MessageType.GetFilteringInfoByTabId, FilteringLogService.onGetFilteringLogInfoById);
         messageHandler.addListener(MessageType.OnOpenFilteringLogPage, filteringLogApi.onOpenFilteringLogPage);
         messageHandler.addListener(MessageType.OnCloseFilteringLogPage, filteringLogApi.onCloseFilteringLogPage);
         messageHandler.addListener(MessageType.ClearEventsByTabId, FilteringLogService.onClearEventsByTabId);
         messageHandler.addListener(MessageType.RefreshPage, FilteringLogService.onRefreshPage);
         messageHandler.addListener(MessageType.SetPreserveLogState, FilteringLogService.onSetPreserveLogState);
-        messageHandler.addListener(
-            MessageType.SetFilteringLogWindowState,
-            FilteringLogService.onSetFilteringLogWindowState,
-        );
+        messageHandler.addListener(MessageType.SetFilteringLogWindowState, FilteringLogService.onSetFilteringLogWindowState);
 
         tsWebExtTabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
         tsWebExtTabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
@@ -102,53 +97,23 @@ export class FilteringLogService {
 
         defaultFilteringLog.addEventListener(FilteringEventType.SendRequest, FilteringLogService.onSendRequest);
         defaultFilteringLog.addEventListener(FilteringEventType.TabReload, FilteringLogService.onTabReload);
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ReceiveResponse,
-            FilteringLogService.onReceiveResponse,
-        );
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyBasicRule,
-            FilteringLogService.onApplyBasicRule,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyCspRule,
-            FilteringLogService.onApplyCspRule,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyPermissionsRule,
-            FilteringLogService.onApplyPermissionsRule,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyCosmeticRule,
-            FilteringLogService.onApplyCosmeticRule,
-        );
+        defaultFilteringLog.addEventListener(FilteringEventType.ReceiveResponse, FilteringLogService.onReceiveResponse);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, FilteringLogService.onApplyBasicRule);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyCspRule, FilteringLogService.onApplyCspRule);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyPermissionsRule, FilteringLogService.onApplyPermissionsRule);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyCosmeticRule, FilteringLogService.onApplyCosmeticRule);
         defaultFilteringLog.addEventListener(FilteringEventType.RemoveParam, FilteringLogService.onRemoveParam);
         defaultFilteringLog.addEventListener(FilteringEventType.RemoveHeader, FilteringLogService.onRemoveheader);
-
         defaultFilteringLog.addEventListener(FilteringEventType.Cookie, FilteringLogService.onCookie);
-
         defaultFilteringLog.addEventListener(FilteringEventType.JsInject, FilteringLogService.onScriptInjection);
-
         defaultFilteringLog.addEventListener(FilteringEventType.StealthAction, FilteringLogService.onStealthAction);
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.StealthAllowlistAction,
-            FilteringLogService.onStealthAllowlistAction,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.CspReportBlocked,
-            FilteringLogService.onCspReportBlocked,
-        );
+        defaultFilteringLog.addEventListener(FilteringEventType.StealthAllowlistAction, FilteringLogService.onStealthAllowlistAction);
+        defaultFilteringLog.addEventListener(FilteringEventType.CspReportBlocked, FilteringLogService.onCspReportBlocked);
 
         if (UserAgent.isFirefox) {
-            defaultFilteringLog.addEventListener(
-                FilteringEventType.ReplaceRuleApply,
-                FilteringLogService.onReplaceRuleApply,
-            );
+            defaultFilteringLog.addEventListener(FilteringEventType.ReplaceRuleApply, FilteringLogService.onReplaceRuleApply);
         }
+        /* eslint-enable max-len */
     }
 
     /**
