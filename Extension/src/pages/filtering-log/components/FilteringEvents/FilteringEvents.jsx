@@ -150,7 +150,14 @@ const ruleAccessor = (props) => {
         ruleText = reactTranslator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
     }
 
-    return ruleText;
+    return ruleText === requestRule?.appliedRuleText
+        ? (
+            <>
+                <span className="red-dot">*</span>
+                {ruleText}
+            </>
+        )
+        : ruleText;
 };
 
 const statusAccessor = (props) => {

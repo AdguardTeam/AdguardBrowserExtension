@@ -18,68 +18,34 @@
 
 import path from 'path';
 
+import { NormalModuleReplacementPlugin, type Configuration } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { type Configuration, NormalModuleReplacementPlugin } from 'webpack';
+import { merge } from 'webpack-merge';
 
 import {
+    BACKGROUND_OUTPUT,
+    CONTENT_SCRIPT_START_OUTPUT,
+    DOCUMENT_BLOCK_OUTPUT,
     REACT_VENDOR_OUTPUT,
-    MOBX_VENDOR_OUTPUT,
-    XSTATE_VENDOR_OUTPUT,
+    SAFEBROWSING_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
-    FILTERING_LOG_OUTPUT,
-    BACKGROUND_OUTPUT,
 } from '../../constants';
 
 import {
-    type BrowserConfig,
+    AD_BLOCKED_PATH,
     BACKGROUND_PATH,
+    CONTENT_SCRIPT_START_PATH,
     htmlTemplatePluginCommonOptions,
+    SAFEBROWSING_PATH,
+    type BrowserConfig,
 } from './common-constants';
-import {
-    genCommonConfig,
-    genCommonEntry,
-    genCommonPlugins,
-    replacementMatchRegexp,
-} from './webpack.common';
+import { genCommonConfig } from './webpack.common';
 
-const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
+export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = false): Configuration => {
+    const commonConfig = genCommonConfig(browserConfig, isWatchMode);
 
-const FILTERING_LOG_ENTRY = {
-    import: FILTERING_LOG_PATH,
-    dependOn: [
-        TSURLFILTER_VENDOR_OUTPUT,
-        TSWEBEXTENSION_VENDOR_OUTPUT,
-        REACT_VENDOR_OUTPUT,
-        MOBX_VENDOR_OUTPUT,
-        XSTATE_VENDOR_OUTPUT,
-    ],
-};
-
-export const filteringLogHtmlPlugin = new HtmlWebpackPlugin({
-    ...htmlTemplatePluginCommonOptions,
-    template: path.join(FILTERING_LOG_PATH, 'index.html'),
-    filename: `${FILTERING_LOG_OUTPUT}.html`,
-    chunks: [
-        TSURLFILTER_VENDOR_OUTPUT,
-        TSWEBEXTENSION_VENDOR_OUTPUT,
-        REACT_VENDOR_OUTPUT,
-        MOBX_VENDOR_OUTPUT,
-        XSTATE_VENDOR_OUTPUT,
-        FILTERING_LOG_OUTPUT,
-    ],
-});
-
-const Mv2ReplacementPlugin = new NormalModuleReplacementPlugin(
-    replacementMatchRegexp,
-    ((resource: any) => {
-        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv2$1');
-    }),
-);
-
-export const genMv2CommonConfig = (browserConfig: BrowserConfig): Configuration => {
-    return {
-        ...genCommonConfig(browserConfig),
+    return merge(commonConfig, {
         entry: {
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
@@ -88,13 +54,68 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig): Configuration 
                     TSWEBEXTENSION_VENDOR_OUTPUT,
                 ],
             },
-            [FILTERING_LOG_OUTPUT]: FILTERING_LOG_ENTRY,
-            ...genCommonEntry(browserConfig),
+            [SAFEBROWSING_OUTPUT]: {
+                import: SAFEBROWSING_PATH,
+                dependOn: [
+                    REACT_VENDOR_OUTPUT,
+                ],
+            },
+            [DOCUMENT_BLOCK_OUTPUT]: {
+                import: AD_BLOCKED_PATH,
+                dependOn: [
+                    REACT_VENDOR_OUTPUT,
+                ],
+            },
+            [CONTENT_SCRIPT_START_OUTPUT]: {
+                import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv2.ts'),
+                runtime: false,
+            },
         },
         plugins: [
-            Mv2ReplacementPlugin,
-            filteringLogHtmlPlugin,
-            ...genCommonPlugins(browserConfig),
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
+                template: path.join(BACKGROUND_PATH, 'index.html'),
+                templateParameters: {
+                    browser: process.env.BROWSER,
+                },
+                filename: `${BACKGROUND_OUTPUT}.html`,
+                chunks: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                    TSWEBEXTENSION_VENDOR_OUTPUT,
+                    BACKGROUND_OUTPUT,
+                ],
+            }),
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
+                template: path.join(AD_BLOCKED_PATH, 'index.html'),
+                filename: `${DOCUMENT_BLOCK_OUTPUT}.html`,
+                chunks: [REACT_VENDOR_OUTPUT, DOCUMENT_BLOCK_OUTPUT],
+            }),
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
+                template: path.join(SAFEBROWSING_PATH, 'index.html'),
+                filename: `${SAFEBROWSING_OUTPUT}.html`,
+                chunks: [REACT_VENDOR_OUTPUT, SAFEBROWSING_OUTPUT],
+            }),
+            // FIXME: (v5.0) If there are no manifest-dependant components,
+            // remove this plugin.
+            // Replace manifest-dependant components with the ones
+            // for the current build target manifest version.
+            new NormalModuleReplacementPlugin(
+            // Regexp to match the path to the abstract components that should
+            // be replaced for mv2 and mv3.
+                new RegExp(
+                    `\\.\\/Abstract(${
+                        [].join('|') // TODO: Add the list of abstract components
+                    })`,
+                ),
+                ((resource: any) => {
+                    resource.request = resource.request.replace(
+                        /\.\/Abstract(.*)/,
+                        './Mv2$1',
+                    );
+                }),
+            ),
         ],
-    };
+    });
 };

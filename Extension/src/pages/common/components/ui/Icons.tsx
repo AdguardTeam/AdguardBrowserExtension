@@ -117,6 +117,11 @@ export const Icons = () => {
             <symbol id="cross" width="24" height="24">
                 <path stroke="currentColor" d="M6.429 6.796 17.604 18.61M6.429 18.576 17.605 6.76" />
             </symbol>
+
+            <symbol id="question" width="24" height="24">
+                <path clipRule="evenodd" d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                <path d="M10 9.3c0-.8 1-1.5 2-1.5s1.6.4 2 1.2c.3.7 0 1.5-1 2.3-1 .5-1.2 1.1-1.2 2.2M11.8 15.9v-.2" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </symbol>
         </svg>
     );
 };

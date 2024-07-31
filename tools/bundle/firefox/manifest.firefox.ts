@@ -22,6 +22,7 @@ import {
     FIREFOX_WEBEXT_UPDATE_URL,
 } from '../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
+import { BACKGROUND_OUTPUT, POPUP_OUTPUT } from '../../../constants';
 
 const appId = FIREFOX_APP_IDS_MAP[BUILD_ENV];
 
@@ -31,7 +32,7 @@ if (appId === undefined) {
 
 export const firefoxManifest = {
     'background': {
-        'page': 'pages/background.html',
+        'page': `${BACKGROUND_OUTPUT}.html`,
         'persistent': false,
     },
     'browser_action': {
@@ -40,7 +41,7 @@ export const firefoxManifest = {
             '38': 'assets/icons/on-38.png',
         },
         'default_title': '__MSG_name__',
-        'default_popup': 'pages/popup.html',
+        'default_popup': `${POPUP_OUTPUT}.html`,
     },
     'web_accessible_resources': [
         '/web-accessible-resources/*',

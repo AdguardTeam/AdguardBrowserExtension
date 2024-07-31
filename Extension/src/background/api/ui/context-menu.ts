@@ -142,9 +142,7 @@ export class ContextMenuApi {
                 if (!isOptionsPage) {
                     await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
                 }
-                if (!__IS_MV3__) {
-                    await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
-                }
+                await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
                 await ContextMenuApi.addMenuItem(ContextMenuAction.DisableProtection);
             }
         } catch (e) {

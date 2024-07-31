@@ -61,6 +61,8 @@ export const enum ForwardAction {
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',
     Birthday24 = 'birthday_24',
+    // FIXME: (Dima, v5.0) Add in TDS when article about MV3 will be ready
+    FilteringLogAssumedRule = 'filtering_log_assumed_rule',
 }
 
 export const enum ForwardFrom {
@@ -72,6 +74,7 @@ export const enum ForwardFrom {
     Safebrowsing = 'safebrowsing',
     Adblocker = 'adblocked',
     VersionPopup = 'version_popup',
+    FilteringLog = 'filtering_log',
 }
 
 export const enum ForwardApp {

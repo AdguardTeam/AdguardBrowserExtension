@@ -16,30 +16,54 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type Configuration, NormalModuleReplacementPlugin } from 'webpack';
+import path from 'path';
 
-import { type BrowserConfig } from './common-constants';
+import { NormalModuleReplacementPlugin, type Configuration } from 'webpack';
+import merge from 'webpack-merge';
+
+import { BACKGROUND_OUTPUT, CONTENT_SCRIPT_START_OUTPUT } from '../../constants';
+
 import {
-    genCommonConfig,
-    genCommonEntry,
-    genCommonPlugins,
-    replacementMatchRegexp,
-} from './webpack.common';
+    BACKGROUND_PATH,
+    CONTENT_SCRIPT_START_PATH,
+    type BrowserConfig,
+} from './common-constants';
+import { genCommonConfig } from './webpack.common';
 
-const Mv3ReplacementPlugin = new NormalModuleReplacementPlugin(
-    replacementMatchRegexp,
-    ((resource: any) => {
-        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv3$1');
-    }),
-);
+export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: boolean): Configuration => {
+    const commonConfig = genCommonConfig(browserConfig, isWatchMode);
 
-export const genMv3CommonConfig = (browserConfig: BrowserConfig): Configuration => {
-    return {
-        ...genCommonConfig(browserConfig),
-        entry: genCommonEntry(browserConfig),
+    return merge(commonConfig, {
+        entry: {
+            [BACKGROUND_OUTPUT]: {
+                import: BACKGROUND_PATH,
+                runtime: false,
+            },
+            [CONTENT_SCRIPT_START_OUTPUT]: {
+                import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv3.ts'),
+                runtime: false,
+            },
+        },
         plugins: [
-            Mv3ReplacementPlugin,
-            ...genCommonPlugins(browserConfig),
+            // FIXME: (v5.0) If there are no manifest-dependant components,
+            // remove this plugin.
+            // Replace manifest-dependant components with the ones
+            // for the current build target manifest version.
+            new NormalModuleReplacementPlugin(
+                // Regexp to match the path to the abstract components that should
+                // be replaced for mv2 and mv3.
+                new RegExp(
+                    `\\.\\/Abstract(${
+                        [].join('|') // TODO: Add the list of abstract components
+                    })`,
+                ),
+                ((resource: any) => {
+                    resource.request = resource.request.replace(
+                        /\.\/Abstract(.*)/,
+                        './Mv3$1',
+                    );
+                }),
+            ),
         ],
-    };
+    });
 };

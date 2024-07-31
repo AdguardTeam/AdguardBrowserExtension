@@ -21,7 +21,6 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
-import { addPopoverForComingSoonElement } from '../../../common/components/react-helpers';
 import { popupStore } from '../../stores/PopupStore';
 
 import {
@@ -34,7 +33,7 @@ import {
 
 import './actions.pcss';
 
-const Mv3Actions = observer(() => {
+const Actions = observer(() => {
     const store = useContext(popupStore);
 
     const { isFilteringPossible, url } = store;
@@ -44,11 +43,7 @@ const Mv3Actions = observer(() => {
     return (
         <div className="actions">
             <BlockAdsAction isFilteringPossible={isFilteringPossible} className={actionChangingClassname} />
-            {
-                addPopoverForComingSoonElement(
-                    <OpenFilteringLogAction className="action" />,
-                )
-            }
+            <OpenFilteringLogAction className="action" />
             <ReportIssueAction
                 className={actionChangingClassname}
                 isFilteringPossible={isFilteringPossible}
@@ -72,4 +67,4 @@ const Mv3Actions = observer(() => {
     );
 });
 
-export { Mv3Actions as Actions };
+export { Actions };

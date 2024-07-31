@@ -188,7 +188,7 @@ export class App {
         // Adds listeners for userrules list events
         await UserRulesService.init();
 
-        // Adds listeners for filtering log (in MV3 needed for at least count total blocked requests)
+        // Adds listeners for filtering log
         FilteringLogService.init();
 
         /**

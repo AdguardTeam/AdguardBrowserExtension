@@ -39,7 +39,7 @@ export const HIDE_DOCUMENT_REFERRER_OUTPUT = 'pages/hide-document-referrer';
 export const DEVTOOLS_OUTPUT = 'pages/devtools';
 export const DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT = 'pages/devtools-elements-sidebar';
 
-export const EDITOR_OUTPUT = 'shared/editor';
+export const SHARED_EDITOR_OUTPUT = 'shared/editor';
 
 export const REACT_VENDOR_OUTPUT = 'vendors/react';
 export const MOBX_VENDOR_OUTPUT = 'vendors/mobx';

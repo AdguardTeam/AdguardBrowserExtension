@@ -25,7 +25,7 @@ import { genOperaConfig } from './opera/webpack.opera';
 import { genChromeMv3Config } from './chrome-mv3/webpack.chrome-mv3';
 import { getBrowserConf } from './helpers';
 
-export const getWebpackConfig = (browser, isWatchMode = false) => {
+export const getWebpackConfig = (browser: Browser, isWatchMode = false) => {
     const browserConf = getBrowserConf(browser);
 
     switch (browser) {
