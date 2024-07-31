@@ -20,7 +20,7 @@ import { StorageInterface } from '../../common/storage';
 /**
  * Class for managing data that is persisted as string in another key value storage.
  */
-export class StringStorage<K, V, Mode extends 'sync' | 'async'> {
+export class StringStorage<K extends string | number | symbol, V, Mode extends 'sync' | 'async'> {
     // parent storage key
     public key: K;
 

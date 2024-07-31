@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { logger } from '../../common/logger';
 import {
     SettingOption,
     Metadata,
@@ -22,6 +23,7 @@ import {
     FilterVersionData,
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
+import type { FilterUpdateOptionsList } from '../api';
 
 import { settingsStorage } from './settings';
 
@@ -87,27 +89,36 @@ export class FilterVersionStorage extends StringStorage<
     /**
      * Update last check time stamp for specified filters with current time.
      *
-     * @param filterIds List of filter ids.
+     * @param filterDetails List of filter details to update check time for.
      * @throws Error if filter version data is not initialized.
      */
-    public refreshLastCheckTime(filterIds: number[]): void {
+    public refreshLastCheckTime(filterDetails: FilterUpdateOptionsList): void {
         if (!this.data) {
             throw FilterVersionStorage.createNotInitializedError();
         }
 
         const now = Date.now();
 
-        for (let i = 0; i < filterIds.length; i += 1) {
-            const filterId = filterIds[i];
+        for (let i = 0; i < filterDetails.length; i += 1) {
+            const filterDetail = filterDetails[i];
 
-            if (!filterId) {
+            if (!filterDetail) {
                 continue;
             }
 
+            const { filterId, ignorePatches } = filterDetail;
+
             const data = this.data[filterId];
 
-            if (data) {
+            if (!data) {
+                logger.warn(`Failed to refresh last check time for filter ${filterId}.`);
+                continue;
+            }
+
+            if (ignorePatches) {
                 data.lastCheckTime = now;
+            } else {
+                data.lastScheduledCheckTime = now;
             }
         }
 
@@ -139,6 +150,7 @@ export class FilterVersionStorage extends StringStorage<
                     expires,
                     lastUpdateTime: new Date(timeUpdated).getTime(),
                     lastCheckTime: Date.now(),
+                    lastScheduledCheckTime: Date.now(),
                 };
             }
         });

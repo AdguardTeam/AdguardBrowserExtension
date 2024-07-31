@@ -85,6 +85,10 @@ export const UrlUtils = {
  * @returns {string}
  */
 export const getFilterName = (filterId, filtersMetadata) => {
+    if (typeof filterId !== 'number') {
+        return null;
+    }
+
     if (filterId === AntiBannerFiltersId.UserFilterId) {
         return reactTranslator.getMessage('options_userfilter');
     }
@@ -152,6 +156,8 @@ export const getRequestEventType = (event) => {
             return 'WebRTC';
         case RequestType.Csp:
             return 'CSP';
+        case RequestType.PermissionsPolicy:
+            return 'Permissions Policy';
         case RequestType.CspReport:
             return 'CSP report';
         case RequestType.Cookie:

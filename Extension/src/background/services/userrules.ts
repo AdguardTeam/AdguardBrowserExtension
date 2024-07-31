@@ -76,7 +76,7 @@ export class UserRulesService {
      * @returns All user rules concatenated via '\n' divider.
      */
     private static async getUserRules(): Promise<GetUserRulesResponse> {
-        const userRules = await UserRulesApi.getUserRules();
+        const userRules = await UserRulesApi.getOriginalUserRules();
 
         const content = userRules.join('\n');
 
@@ -87,7 +87,7 @@ export class UserRulesService {
      * Returns all user rules concatenated via '\n' divider for the editor.
      */
     private static async getUserRulesEditorData(): Promise<GetUserRulesEditorDataResponse> {
-        const userRules = await UserRulesApi.getUserRules();
+        const userRules = await UserRulesApi.getOriginalUserRules();
 
         const content = userRules.join('\n');
 

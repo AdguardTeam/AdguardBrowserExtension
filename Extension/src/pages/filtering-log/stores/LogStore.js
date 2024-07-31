@@ -164,9 +164,10 @@ const initEventTypesFilters = {
                 RequestType.Font,
                 RequestType.Websocket,
                 RequestType.Csp,
+                RequestType.PermissionsPolicy,
                 RequestType.Cookie,
                 RequestType.Ping,
-                RequestType.WebRTC,
+                RequestType.WebRtc,
                 RequestType.CspReport,
             ],
             enabled: true,
@@ -257,18 +258,36 @@ class LogStore {
     }
 
     formatEvent = (filteringEvent) => {
-        const { requestRule } = filteringEvent;
+        const {
+            requestRule,
+            replaceRules,
+            stealthAllowlistRules,
+        } = filteringEvent;
 
-        const ruleText = requestRule?.ruleText;
+        const { originalRuleText, appliedRuleText } = requestRule ?? {};
 
-        if (ruleText) {
-            filteringEvent.ruleText = ruleText;
+        // For $replace and $stealth rules, which will be grouped in RequestInfo with filter names specified,
+        // we only show filter name on a main log screen for a single rule.
+        if (requestRule) {
+            filteringEvent.filterName = getFilterName(requestRule?.filterId, this.filtersMetadata);
         }
 
-        const filterId = requestRule?.filterId;
+        const { filterName } = filteringEvent;
 
-        if (filterId !== undefined) {
-            filteringEvent.filterName = getFilterName(filterId, this.filtersMetadata);
+        if (!filterName && replaceRules && replaceRules.length === 1) {
+            filteringEvent.filterName = getFilterName(replaceRules[0]?.filterId, this.filtersMetadata);
+        }
+
+        if (originalRuleText) {
+            filteringEvent.originalRuleText = originalRuleText;
+        }
+
+        if (appliedRuleText) {
+            filteringEvent.appliedRuleText = appliedRuleText;
+        }
+
+        if (!filterName && stealthAllowlistRules && stealthAllowlistRules.length === 1) {
+            filteringEvent.filterName = getFilterName(stealthAllowlistRules[0]?.filterId, this.filtersMetadata);
         }
 
         return filteringEvent;
@@ -403,6 +422,7 @@ class LogStore {
                     && !filteringEvent.requestRule.cssRule
                     && !filteringEvent.requestRule.scriptRule
                     && !filteringEvent.requestRule.cspRule
+                    && !filteringEvent.requestRule.permissionsRule
                     && !filteringEvent.replaceRules
                     && !filteringEvent.removeParam
                     && !filteringEvent.removeHeader);
@@ -411,6 +431,7 @@ class LogStore {
                     || filteringEvent.requestRule?.cssRule
                     || filteringEvent.requestRule?.scriptRule
                     || filteringEvent.requestRule?.cspRule
+                    || filteringEvent.requestRule?.permissionsRule
                     || filteringEvent.replaceRules
                     || filteringEvent.removeParam
                     || filteringEvent.removeHeader);

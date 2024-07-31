@@ -35,7 +35,7 @@ import {
     appContext,
     AppContextKey,
     settingsStorage,
-    storage,
+    browserStorage,
 } from './storages';
 import {
     toasts,
@@ -295,7 +295,7 @@ export class App {
      * Initializes App storage data.
      */
     private static async initClientId(): Promise<void> {
-        const storageClientId = await storage.get(CLIENT_ID_KEY);
+        const storageClientId = await browserStorage.get(CLIENT_ID_KEY);
         let clientId: string;
 
         try {
@@ -303,7 +303,7 @@ export class App {
         } catch (e) {
             logger.warn('Error while parsing client id, generating a new one');
             clientId = InstallApi.genClientId();
-            await storage.set(CLIENT_ID_KEY, clientId);
+            await browserStorage.set(CLIENT_ID_KEY, clientId);
         }
 
         appContext.set(AppContextKey.ClientId, clientId);

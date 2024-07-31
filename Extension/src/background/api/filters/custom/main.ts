@@ -235,6 +235,7 @@ export class CustomFilterApi {
             expires: filterMetadata.expires,
             lastUpdateTime: filterMetadata.timeUpdated,
             lastCheckTime: Date.now(),
+            lastScheduledCheckTime: Date.now(),
         });
 
         filterStateStorage.set(filterId, {
@@ -430,6 +431,7 @@ export class CustomFilterApi {
             expires: Number(expires),
             lastUpdateTime: new Date(timeUpdated).getTime(),
             lastCheckTime: Date.now(),
+            lastScheduledCheckTime: Date.now(),
         });
 
         const newFilterMetadata = {
@@ -493,7 +495,17 @@ export class CustomFilterApi {
     ): boolean {
         logger.info(`Check if custom filter ${filter.filterId} need to update`);
 
-        if (BrowserUtils.isSemver(filter.version) && BrowserUtils.isSemver(parsed.version)) {
+        // If filter has version, we simply compare it with the new one.
+        // Sometimes version field is not available (e.g. for some custom filters),
+        // in this case, we should check only checksum.
+        // If checksum is also not available, we should update filter anyway.
+        if (
+            // If version is not available or empty, we don't need to check it deeply
+            typeof filter.version === 'string'
+            && filter.version.length > 0
+            && BrowserUtils.isSemver(filter.version)
+            && BrowserUtils.isSemver(parsed.version)
+        ) {
             return !BrowserUtils.isGreaterOrEqualsVersion(filter.version, parsed.version);
         }
 

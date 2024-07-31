@@ -33,13 +33,16 @@
         "message": "Включить"
     },
     "popup_header_cta_link": {
-        "message": "Хотите блокировать больше?"
+        "message": "Как усилить защиту"
     },
     "popup_header_update_filters": {
         "message": "Проверить обновления фильтров"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "Расширение файла должно быть %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "Возобновить"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard для iOS"
@@ -60,7 +63,7 @@
         "message": "Отключить уведомления"
     },
     "popup_adguard_footer_title": {
-        "message": "AdGuard для мобильных устройств"
+        "message": "Защитите смартфон или планшет"
     },
     "options_popup_call_to_action": {
         "message": "Введите корректный URL фильтра или путь к локальному файлу в строку выше."
@@ -69,7 +72,7 @@
         "message": "Вы будете подписаны на этот фильтр."
     },
     "options_popup_url_title": {
-        "message": "Новая подписка на фильтр"
+        "message": "Добавление нового фильтра"
     },
     "options_popup_url_placeholder": {
         "message": "Путь или ссылка:"
@@ -141,16 +144,16 @@
         "message": "Изменённые правила: %rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "Правила Защиты от трекинга: %rules_count%"
+        "message": "Правила защиты от трекинга: %rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "Применена Защита от трекинга"
+        "message": "Использовалась Защита от трекинга"
     },
     "filtering_log_in_allowlist": {
         "message": "Этот сайт в белом списке"
     },
     "filtering_log_hide_referrer": {
-        "message": "Referrer скрыт от сторонних ресурсов"
+        "message": "Referer скрыт от сторонних ресурсов"
     },
     "filtering_log_hide_search_queries": {
         "message": "Ваши поисковые запросы скрыты"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "Вы решили доверять этому фильтру."
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "Всего правил: %num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "Спецификации на Github"
+    },
     "options_add_custom_filter": {
         "message": "Добавить фильтр"
     },
     "options_empty_custom_filter": {
         "message": "У вас пока нет пользовательских фильтров"
+    },
+    "options_loader_applying_changes": {
+        "message": "Сохранение изменений..."
     },
     "options_editor_indicator_saving": {
         "message": "Сохранение..."
@@ -239,14 +251,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "Защищённая страница"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "Загрузка..."
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "Включение защиты..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "Защита включена"
+    },
+    "popup_site_filtering_state_disabling": {
+        "message": "Отключение защиты..."
     },
     "popup_site_filtering_state_disabled": {
         "message": "Защита отключена"
     },
+    "popup_site_filtering_state_pausing": {
+        "message": "Приостановка защиты..."
+    },
     "popup_site_filtering_state_paused": {
         "message": "Защита приостановлена"
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "Возобновление защиты..."
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "для всех сайтов"
     },
     "popup_site_exception_information": {
         "message": "На этом сайте фильтрация отключена, так как она может мешать его работе."
@@ -356,8 +386,8 @@
     "popup_security_report": {
         "message": "Проверить безопасность сайта"
     },
-    "popup_reset_custom_rules": {
-        "message": "Удалить все пользовательские правила для этой страницы"
+    "popup_reset_page_user_rules": {
+        "message": "Удалить правила для этого сайта"
     },
     "context_block_site_ads": {
         "message": "Заблокировать рекламу на сайте..."
@@ -707,6 +737,90 @@
     "options_miscellaneous_settings": {
         "message": "Дополнительные настройки"
     },
+    "options_rule_limits": {
+        "message": "Лимит правил"
+    },
+    "options_rule_limits_description": {
+        "message": "Это расширение соответствует Manifest V3"
+    },
+    "options_rule_limits_description_link": {
+        "message": "Узнать больше о Manifest V3"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "Динамические правила"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "Правила, которые добавляете вы — пользовательские правила и фильтры"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "Правила регулярных выражений. Входят в лимит динамических правил"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "Статические наборы правил"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "Встроенные фильтры, например Блокировка раздражителей или Языковые"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "Статические правила"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "Правила из встроенных фильтров"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "Правила регулярных выражений. Входят в лимит динамических правил"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current% из %maximum%"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "Браузер изменил список активных фильтров"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "Что произошло?"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "Лимит активных встроенных правил был превышен: возможно, обновилось расширение AdGuard или вы установили новое расширение. Согласно Manifest V3 Chrome отключил все фильтры, кроме фильтров по умолчанию."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "Фильтры до обновления"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "Фильтры сейчас"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "Что можно сделать"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "Вариант 1. Удалите ненужные расширения, блокирующие рекламу. Чтобы заново включить фильтры из раздела «Фильтры до обновления», нажмите <a>включить<\/a>."
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "Вариант 2. Установите приложение AdGuard: у него нет ограничений по правилам фильтрации. <a>Скачать AdGuard<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "Вариант 3. Если текущие фильтры вас устраивают, <a>закройте это предупреждение<\/a>."
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "Вариант 3. Если текущие фильтры вас устраивают, <a>закройте это предупреждение<\/a>."
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "Достигнут лимит активных встроенных правил. Браузер изменил список включённых фильтров. Количество фильтров изменено с %expected% на %current%."
+    },
+    "options_limits_warning_static_filters": {
+        "message": "Достигнут лимит активных встроенных фильтров. Включено %maximum% из %current%. Чтобы новые правила применялись, отключите некоторые фильтры."
+    },
+    "options_limits_warning_static_rules": {
+        "message": "Достигнут лимит активных встроенных правил. Включено %maximum% из %current%. Чтобы новые правила применялись, отключите некоторые фильтры."
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "Достигнут лимит активных встроенных правил регулярных выражений. Включено %maximum% из %current%. Чтобы новые правила применялись, отключите некоторые фильтры."
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "Достигнут лимит активных пользовательских правил. Включено %maximum% из %current%."
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "Достигнут лимит активных правил регулярных выражений. Включено %maximum% из %current%."
+    },
     "options_show_adguard_full_version_title": {
         "message": "Показывать информацию о полной версии AdGuard"
     },
@@ -753,7 +867,7 @@
         "message": "Защищает ваши данные от тысяч онлайн-трекеров, блокируя наиболее популярные методы отслеживания."
     },
     "options_hide_referrer_title": {
-        "message": "Скрывать Referrer от сторонних ресурсов"
+        "message": "Скрыть Referer от сторонних ресурсов"
     },
     "options_hide_referrer_desc": {
         "message": "Не позволяет сторонним ресурсам узнать, какой сайт вы посещаете"
@@ -841,6 +955,9 @@
     },
     "popup_switch_button": {
         "message": "Переключение защиты"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "Браузер изменил список активных встроенных фильтров"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1004,6 +1121,9 @@
     "options_stealth_miscellaneous_title": {
         "message": "Разное"
     },
+    "options_coming_soon": {
+        "message": "Скоро"
+    },
     "blocking_pages_malware": {
         "message": "Данная веб-страница <strong>%host%<\/strong> может содержать вредоносное ПО. Она была заблокирована в соответствии с вашими настройками безопасности."
     },
@@ -1042,5 +1162,13 @@
     },
     "close_button_title": {
         "message": "Закрыть"
+    },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| Применённое правило | Применённые правила | Применённые правила"
+    },
+    "filtering_modal_original_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| Оригинальное правило | Оригинальные правила | Оригинальные правила"
     }
 }

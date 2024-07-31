@@ -39,7 +39,7 @@ describe('ruleCreators', () => {
     describe('createDocumentLevelBlockRule', () => {
         it('creates document level block rule', () => {
             const rule = {
-                ruleText: '@@||example.org^$urlblock',
+                appliedRuleText: '@@||example.org^$urlblock',
             };
 
             const result = createDocumentLevelBlockRule(rule);
@@ -49,8 +49,8 @@ describe('ruleCreators', () => {
 
     describe('createExceptionCssRule', () => {
         it('creates exception rule for css cosmetic rules', () => {
-            const ruleText = 'example.org#$#body { background-color: #333!important; }';
-            const rule = { ruleText };
+            const appliedRuleText = 'example.org#$#body { background-color: #333!important; }';
+            const rule = { appliedRuleText };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionCssRule(rule, event);
             expect(result).toBe('example.org#@$#body { background-color: #333!important; }');
@@ -58,7 +58,7 @@ describe('ruleCreators', () => {
 
         it('creates exception rule for element hiding rules', () => {
             const rule = {
-                ruleText: 'example.org###adblock',
+                appliedRuleText: 'example.org###adblock',
             };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionCssRule(rule, event);
@@ -67,7 +67,7 @@ describe('ruleCreators', () => {
 
         it('creates exception rule for extcss element hiding rules', () => {
             const rule = {
-                ruleText: 'example.org#?#.banner:matches-css(width: 360px)',
+                appliedRuleText: 'example.org#?#.banner:matches-css(width: 360px)',
             };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionCssRule(rule, event);
@@ -76,7 +76,7 @@ describe('ruleCreators', () => {
 
         it('creates exception rule for extcss cosmetic rules', () => {
             const rule = {
-                ruleText: 'example.org#$?#h3:contains(cookies) { display: none!important; }',
+                appliedRuleText: 'example.org#$?#h3:contains(cookies) { display: none!important; }',
             };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionCssRule(rule, event);
@@ -85,7 +85,7 @@ describe('ruleCreators', () => {
 
         it('creates exception rule for html filtering rules', () => {
             const rule = {
-                ruleText: 'example.org$$script[data-src="banner"]',
+                appliedRuleText: 'example.org$$script[data-src="banner"]',
             };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionCssRule(rule, event);
@@ -114,7 +114,7 @@ describe('ruleCreators', () => {
     describe('createExceptionScriptRule', () => {
         it('creates exception js rule', () => {
             const rule = {
-                ruleText: 'example.org#%#window.__gaq = undefined;',
+                appliedRuleText: 'example.org#%#window.__gaq = undefined;',
             };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionScriptRule(rule, event);
@@ -123,7 +123,7 @@ describe('ruleCreators', () => {
 
         it('creates exception js rule for ubo syntax', () => {
             const rule = {
-                ruleText: 'example.org##+js(nobab)',
+                appliedRuleText: 'example.org##+js(nobab)',
             };
             const event = { frameDomain: 'example.org' };
             const result = createExceptionScriptRule(rule, event);
@@ -200,13 +200,13 @@ describe('ruleCreators', () => {
                 timestamp: 1694175957526,
                 requestRule: {
                     filterId: 1000,
-                    ruleText: '||example.com$csp=style-src *',
+                    appliedRuleText: '||example.com$csp=style-src *',
                     allowlistRule: false,
                     cspRule: true,
                     cookieRule: false,
                     modifierValue: 'style-src *',
                 },
-                ruleText: '||example.com$csp=style-src *',
+                appliedRuleText: '||example.com$csp=style-src *',
             };
             const ruleOptions = {
                 ruleDomain: {

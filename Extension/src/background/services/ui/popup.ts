@@ -38,7 +38,7 @@ import {
 } from '../../api';
 
 export type GetTabInfoForPopupResponse = {
-    frameInfo: FrameData,
+    frameInfo?: FrameData,
     stats: GetStatisticsDataResponse,
     settings: SettingsData,
     options: {
@@ -80,28 +80,33 @@ export class PopupService {
      */
     static async getTabInfoForPopup(
         { data }: GetTabInfoForPopupMessage,
-    ): Promise<GetTabInfoForPopupResponse | undefined> {
+    ): Promise<GetTabInfoForPopupResponse> {
         const { tabId } = data;
 
         const tabContext = tsWebExtTabApi.getTabContext(tabId);
 
+        const tabInfo: GetTabInfoForPopupResponse = {
+            stats: PageStatsApi.getStatisticsData(),
+            settings: SettingsApi.getData(),
+            options: {
+                showStatsSupported: true,
+                isFirefoxBrowser: UserAgent.isFirefox,
+                showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                isMacOs: UserAgent.isMacOs,
+                isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
+                notification: await promoNotificationApi.getCurrentNotification(),
+                isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                hasCustomRulesToReset: false,
+            },
+        };
+
         if (tabContext) {
-            return {
-                frameInfo: FramesApi.getMainFrameData(tabContext),
-                stats: PageStatsApi.getStatisticsData(),
-                settings: SettingsApi.getData(),
-                options: {
-                    showStatsSupported: true,
-                    isFirefoxBrowser: UserAgent.isFirefox,
-                    showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    isMacOs: UserAgent.isMacOs,
-                    isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                    notification: await promoNotificationApi.getCurrentNotification(),
-                    isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasCustomRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
-                },
-            };
+            tabInfo.frameInfo = FramesApi.getMainFrameData(tabContext);
+            tabInfo.options.hasCustomRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
+            return tabInfo;
         }
+
+        return tabInfo;
     }
 
     /**

@@ -44,7 +44,7 @@ import {
     filterStateStorage,
     groupStateStorage,
     settingsStorage,
-    storage,
+    browserStorage,
 } from '../../storages';
 import {
     CommonFilterApi,
@@ -83,7 +83,7 @@ export class SettingsApi {
      */
     public static async init(): Promise<void> {
         try {
-            const data = await storage.get(ADGUARD_SETTINGS_KEY);
+            const data = await browserStorage.get(ADGUARD_SETTINGS_KEY);
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
@@ -466,7 +466,7 @@ export class SettingsApi {
     private static async exportUserFilter(): Promise<UserFilterConfig> {
         return {
             [UserFilterOption.Enabled]: settingsStorage.get(SettingOption.UserFilterEnabled),
-            [UserFilterOption.Rules]: (await UserRulesApi.getUserRules()).join('\n'),
+            [UserFilterOption.Rules]: (await UserRulesApi.getOriginalUserRules()).join('\n'),
             [UserFilterOption.DisabledRules]: '',
         };
     }
@@ -511,7 +511,7 @@ export class SettingsApi {
     }
 
     /**
-     * Imports stealth mode settings from object of {@link StealthConfig}.
+     * Imports Tracking protection (formerly Stealth mode) settings from object of {@link StealthConfig}.
      */
     private static async importStealth({
         [StealthOption.DisableStealthMode]: disableStealthMode,
@@ -565,7 +565,7 @@ export class SettingsApi {
     }
 
     /**
-     * Exports stealth mode settings to object of {@link StealthConfig}.
+     * Exports Tracking protection (formerly Stealth mode) settings to object of {@link StealthConfig}.
      *
      * @returns Object of {@link StealthConfig}.
      */

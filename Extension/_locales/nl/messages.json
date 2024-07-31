@@ -33,13 +33,16 @@
         "message": "Inschakelen"
     },
     "popup_header_cta_link": {
-        "message": "Wilt u meer blokkeren?"
+        "message": "Hoe de bescherming te verbeteren"
     },
     "popup_header_update_filters": {
         "message": "Controleren op filterupdates"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "De bestandsextensie moet %extension% zijn"
+    },
+    "popup_resume_protection_button": {
+        "message": "Hervatten"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard voor iOS"
@@ -60,7 +63,7 @@
         "message": "Meldingen uitschakelen"
     },
     "popup_adguard_footer_title": {
-        "message": "AdGuard mobile aanschaffen"
+        "message": "Jouw mobiele apparaat beschermen"
     },
     "options_popup_call_to_action": {
         "message": "Vul een geldig URL of bestandspad van de filter in het vak hierboven."
@@ -141,10 +144,10 @@
         "message": "Aangepaste regels: %rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "Stealth-modus regels: %rules_count%"
+        "message": "Volgersbeveiliging regels: %rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "Incognito modus toegepast"
+        "message": "Volgersbeveiliging toegepast"
     },
     "filtering_log_in_allowlist": {
         "message": "De website staat op de toelatingslijst"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "Je kiest ervoor dit filter te vertrouwen."
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "Totaal aantal regels: %num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "Specificaties op Github"
+    },
     "options_add_custom_filter": {
         "message": "Aangepast filter toevoegen"
     },
     "options_empty_custom_filter": {
         "message": "Je hebt nog geen aangepaste filters"
+    },
+    "options_loader_applying_changes": {
+        "message": "Wijzigingen toepassen..."
     },
     "options_editor_indicator_saving": {
         "message": "Bewaren..."
@@ -239,14 +251,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "Beveiligde pagina"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "Laden..."
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "Bescherming inschakelen..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "Bescherming is ingeschakeld"
+    },
+    "popup_site_filtering_state_disabling": {
+        "message": "Bescherming uitschakelen..."
     },
     "popup_site_filtering_state_disabled": {
         "message": "Bescherming is uitgeschakeld"
     },
+    "popup_site_filtering_state_pausing": {
+        "message": "Bescherming pauzeren..."
+    },
     "popup_site_filtering_state_paused": {
         "message": "Bescherming is gepauzeerd"
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "Bescherming hervatten..."
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "voor alle websites"
     },
     "popup_site_exception_information": {
         "message": "Het filteren is uitgeschakeld omdat het de werking van deze website kan verstoren."
@@ -356,8 +386,8 @@
     "popup_security_report": {
         "message": "Beveiliging van website controleren"
     },
-    "popup_reset_custom_rules": {
-        "message": "Alle gebruikersregels voor deze website verwijderen"
+    "popup_reset_page_user_rules": {
+        "message": "Gebruikersregels voor deze website verwijderen"
     },
     "context_block_site_ads": {
         "message": "Advertenties blokkeren op deze website..."
@@ -483,7 +513,7 @@
         "message": "Regels:"
     },
     "filtering_modal_privacy": {
-        "message": "Incognito modus"
+        "message": "Bescherming tegen volgen:"
     },
     "filtering_modal_filter": {
         "message": "Filter:"
@@ -648,7 +678,7 @@
         "message": "Feedback geven"
     },
     "options_privacy": {
-        "message": "Incognito modus"
+        "message": "Bescherming tegen volgen"
     },
     "options_update_antibanner_filters": {
         "message": "Controleren op filter-updates"
@@ -707,6 +737,90 @@
     "options_miscellaneous_settings": {
         "message": "Overig"
     },
+    "options_rule_limits": {
+        "message": "Regellimieten"
+    },
+    "options_rule_limits_description": {
+        "message": "Deze uitbreiding voldoet aan Manifest V3"
+    },
+    "options_rule_limits_description_link": {
+        "message": "Meer informatie over Manifest V3"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "Dynamische regels"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "Door de gebruiker toegevoegde regels, zoals gebruikersregels en aangepaste filters"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "Regex-regels — inbegrepen in het bovenstaande"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "Statische regelsets"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "Ingebouwde filters, zoals Ergernissen blokkeren of Taalspecifieke filters"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "Statische regels"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "Regels van ingebouwde filters"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "Regex-regels — inbegrepen in het bovenstaande"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current% van %maximum%"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "De browser heeft de lijst met actieve filters gewijzigd"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "Wat is er gebeurd?"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "De limiet van actieve ingebouwde regels is overschreden na een update of het toevoegen van een nieuwe uitbreiding. Volgens Manifest V3 reageerde je Chrome-browser door alle ingebouwde filters van de uitbreiding uit te schakelen, behalve de standaardfilters."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "Ingeschakelde filters vóór de update"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "Filters nu ingeschakeld"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "Je mogelijke acties"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "Optie 1. Verwijder onnodige advertentieblokkerende uitbreidingen uit je browser. Om de filters die worden genoemd in het gedeelte 'Filters ingeschakeld vóór de update' opnieuw te activeren, klik je op <a>filters opnieuw activeren.<\/a>"
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "Optie 2. Installeer de AdGuard Advertentieblokkeerder-app: deze heeft geen beperkingen op filterregels. <a>de AdGuard-app downloaden<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "Optie 3. Als je tevreden bent met het momenteel ingeschakelde standaardfilter, sluit dan <a>deze waarschuwing.<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "Optie 3. Als je tevreden bent met de momenteel ingeschakelde standaardfilters, sluit dan <a>deze waarschuwing.<\/a>"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "Je hebt de limiet van actieve ingebouwde regels bereikt. Je browser heeft de lijst met actieve ingebouwde filters gewijzigd. Het aantal ingeschakelde filters is gewijzigd van %expected% in %current%."
+    },
+    "options_limits_warning_static_filters": {
+        "message": "Je hebt de limiet van actieve ingebouwde filters bereikt. %maximum% van %current% filters zijn ingeschakeld. Schakel enkele ingebouwde filters uit om nieuwe regels te activeren."
+    },
+    "options_limits_warning_static_rules": {
+        "message": "Je hebt de limiet van actieve ingebouwde regels bereikt. %maximum% van %current% regels zijn ingeschakeld. Schakel enkele ingebouwde filters uit om nieuwe regels te activeren."
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "Je hebt de limiet van actieve ingebouwde RegEx-regels bereikt. %maximum% van %current% RegEx-regels zijn ingeschakeld. Schakel enkele ingebouwde filters uit om nieuwe regels te activeren."
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "Je hebt de limiet van door de gebruiker toegevoegde regels bereikt. %maximum% van %current% regels zijn ingeschakeld."
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "Je hebt de limiet van door de gebruiker toegevoegde RegEx-regels bereikt. %maximum% van %current% RegEx-regels zijn ingeschakeld."
+    },
     "options_show_adguard_full_version_title": {
         "message": "Informatie weergeven over de volledige versie van AdGuard"
     },
@@ -747,13 +861,13 @@
         "message": "Gebruikt kortere versies van filters met alleen de meest populaire regels om verkeer te besparen. Beter geschikt voor mobiele browsers"
     },
     "options_privacy_title": {
-        "message": "Incognito modus"
+        "message": "Bescherming tegen volgen"
     },
     "options_privacy_desc": {
         "message": "Je identiteit en gevoelige persoonlijke informatie beschermen tegen duizenden online volgers door de meest populaire volgmethodes te blokkeren."
     },
     "options_hide_referrer_title": {
-        "message": "Verwijzing verbergen voor derde partijen"
+        "message": " Verwijzing verbergen voor derde partijen"
     },
     "options_hide_referrer_desc": {
         "message": "Voorkomen dat derden weten welke website je bezoekt."
@@ -841,6 +955,9 @@
     },
     "popup_switch_button": {
         "message": "Bescherming schakelaar"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "Je browser heeft de lijst met actieve ingebouwde filters gewijzigd"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1004,6 +1121,9 @@
     "options_stealth_miscellaneous_title": {
         "message": "Diversen"
     },
+    "options_coming_soon": {
+        "message": "Binnenkort beschikbaar"
+    },
     "blocking_pages_malware": {
         "message": "Deze pagina op <strong>%host%<\/strong> is gerapporteerd als een malware-pagina en is geblokkeerd op basis van je beveiligingsinstellingen."
     },
@@ -1042,5 +1162,13 @@
     },
     "close_button_title": {
         "message": "Sluiten"
+    },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| Toegepaste regel | Toegepaste regels"
+    },
+    "filtering_modal_original_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| Oorspronkelijke regel | Oorspronkelijke regels"
     }
 }

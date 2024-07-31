@@ -174,7 +174,7 @@ class WizardStore {
         this.setActionSubmitted(true);
         const { requestRule } = filteringEvent;
 
-        await messenger.removeUserRule(requestRule.ruleText);
+        await messenger.removeUserRule(requestRule.originalRuleText ?? requestRule.appliedRuleText);
 
         this.closeModal();
     };

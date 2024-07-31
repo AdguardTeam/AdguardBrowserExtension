@@ -35,6 +35,7 @@ import {
     SettingsApi,
     DocumentBlockApi,
     network,
+    filteringLogApi,
 } from './api';
 
 export type { Message as EngineMessage } from '@adguard/tswebextension';
@@ -89,6 +90,8 @@ export class Engine {
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
+
+        filteringLogApi.onEngineUpdated(configuration);
     }
 
     /**
@@ -105,6 +108,8 @@ export class Engine {
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
+
+        filteringLogApi.onEngineUpdated(configuration);
     }
 
     /**
@@ -116,17 +121,22 @@ export class Engine {
         const filters: ConfigurationMV2['filters'] = [];
 
         const tasks = enabledFilters.map(async (filterId) => {
-            const rules = await FiltersStorage.get(filterId);
+            try {
+                const [content, sourceMap] = await Promise.all([
+                    FiltersStorage.get(filterId),
+                    FiltersStorage.getSourceMap(filterId),
+                ]);
+                const trusted = FiltersApi.isFilterTrusted(filterId);
 
-            const trusted = FiltersApi.isFilterTrusted(filterId);
-
-            const rulesTexts = rules.join('\n');
-
-            filters.push({
-                filterId,
-                content: rulesTexts,
-                trusted,
-            });
+                filters.push({
+                    filterId,
+                    content,
+                    trusted,
+                    sourceMap,
+                });
+            } catch (e) {
+                logger.error(`Failed to get filter ${filterId}`, e);
+            }
         });
 
         await Promise.all(tasks);
@@ -143,31 +153,29 @@ export class Engine {
             }
         }
 
-        let userrules: string[] = [];
-
-        if (UserRulesApi.isEnabled()) {
-            userrules = await UserRulesApi.getUserRules();
-
-            // Remove empty strings.
-            userrules = userrules.filter((rule) => !!rule);
-
-            // Remove duplicates.
-            userrules = Array.from(new Set(userrules));
-
-            // Convert user rules.
-            userrules = UserRulesApi.convertRules(userrules);
-        }
-
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
-        return {
+        const result: ConfigurationMV2 = {
             verbose: false,
             logLevel: LogLevel.Info,
             filters,
-            userrules,
+            userrules: {
+                content: [],
+                sourceMap: {},
+            },
             allowlist,
             settings,
             trustedDomains,
         };
+
+        if (UserRulesApi.isEnabled()) {
+            const { filterList, sourceMap } = await UserRulesApi.getUserRules();
+            result.userrules = {
+                content: filterList,
+                sourceMap,
+            };
+        }
+
+        return result;
     }
 }

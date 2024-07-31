@@ -21,7 +21,7 @@ import SHA256 from 'crypto-js/sha256';
 import { logger } from '../../common/logger';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
 import {
-    storage,
+    browserStorage,
     sbCache,
     sbRequestCache,
     SbCache,
@@ -127,7 +127,7 @@ export class SafebrowsingApi {
 
         // check safebrowsing is active
         const now = Date.now();
-        const suspendedFrom = Number(await storage.get(SB_SUSPENDED_CACHE_KEY));
+        const suspendedFrom = Number(await browserStorage.get(SB_SUSPENDED_CACHE_KEY));
         if (suspendedFrom && (now - suspendedFrom) < SafebrowsingApi.SUSPEND_TTL_MS) {
             return null;
         }
@@ -291,14 +291,14 @@ export class SafebrowsingApi {
      * Resumes previously suspended work of SafebrowsingFilter.
      */
     private static async resumeSafebrowsing(): Promise<void> {
-        await storage.remove(SB_SUSPENDED_CACHE_KEY);
+        await browserStorage.remove(SB_SUSPENDED_CACHE_KEY);
     }
 
     /**
      * Suspend work of SafebrowsingFilter (in case of backend error).
      */
     private static async suspendSafebrowsing(): Promise<void> {
-        await storage.set(SB_SUSPENDED_CACHE_KEY, Date.now());
+        await browserStorage.set(SB_SUSPENDED_CACHE_KEY, Date.now());
     }
 
     /**

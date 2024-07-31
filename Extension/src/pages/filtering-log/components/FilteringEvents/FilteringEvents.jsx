@@ -69,18 +69,21 @@ const filterNameAccessor = (props) => {
  * @property {string} YELLOW
  * @property {string} RED
  * @property {string} GREEN
+ * @property {string} LIGHT_GREEN
  */
 const RowClassName = {
     YELLOW: 'yellow',
     RED: 'red',
     GREEN: 'green',
+    LIGHT_GREEN: 'light-green',
 };
 
 const rowClassNameMap = {
     [StatusMode.REGULAR]: null,
     [StatusMode.MODIFIED]: RowClassName.YELLOW,
     [StatusMode.BLOCKED]: RowClassName.RED,
-    [StatusMode.ALLOWED]: RowClassName.GREEN,
+    [StatusMode.ALLOWED]: RowClassName.LIGHT_GREEN,
+    [StatusMode.ALLOWED_STEALTH]: RowClassName.GREEN,
 };
 
 const getRowClassName = (event) => {
@@ -119,6 +122,7 @@ const ruleAccessor = (props) => {
     const {
         requestRule,
         replaceRules,
+        stealthAllowlistRules,
     } = props;
 
     let ruleText = '';
@@ -126,7 +130,7 @@ const ruleAccessor = (props) => {
         if (requestRule.filterId === AntiBannerFiltersId.AllowlistFilterId) {
             ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
         } else {
-            ruleText = requestRule.ruleText;
+            ruleText = requestRule.appliedRuleText;
         }
     }
 
@@ -135,6 +139,15 @@ const ruleAccessor = (props) => {
         ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules', {
             rules_count: rulesCount,
         })}`;
+    }
+
+    if (stealthAllowlistRules && stealthAllowlistRules.length > 0) {
+        const rulesCount = stealthAllowlistRules.length;
+        if (rulesCount === 1) {
+            return stealthAllowlistRules[0].ruleText;
+        }
+
+        ruleText = reactTranslator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
     }
 
     return ruleText;

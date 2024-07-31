@@ -25,9 +25,9 @@ export const matchesSearch = (filteringEvent, search) => {
     || containsIgnoreCase(filteringEvent.cookieName, search)
     || containsIgnoreCase(filteringEvent.cookieValue, search);
 
-    const { ruleText, filterName } = filteringEvent;
-    if (ruleText) {
-        matches = matches || containsIgnoreCase(ruleText, search);
+    const { appliedRuleText, filterName } = filteringEvent;
+    if (appliedRuleText) {
+        matches = matches || containsIgnoreCase(appliedRuleText, search);
     }
 
     if (filterName) {

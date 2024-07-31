@@ -1,5 +1,6 @@
 import { type Storage } from 'webextension-polyfill';
 
+import { NetworkRuleParser } from '@adguard/agtree';
 import {
     TabContext,
     NetworkRule,
@@ -58,7 +59,7 @@ describe('Frames Api', () => {
             incognito: false,
         };
         const tabContext = new TabContext(info, documentApi);
-        tabContext.mainFrameRule = new NetworkRule(rule, AntiBannerFiltersId.UserFilterId);
+        tabContext.mainFrameRule = new NetworkRule(NetworkRuleParser.parse(rule), AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
         const frameData = FramesApi.getMainFrameData(tabContext);

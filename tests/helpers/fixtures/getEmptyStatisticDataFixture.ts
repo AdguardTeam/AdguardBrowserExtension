@@ -1,5 +1,5 @@
 import { GetStatisticsDataResponse } from '../../../Extension/src/background/api';
-import { PageStatsStorage } from '../../../Extension/src/background/storages';
+import { PageStatsStorage } from '../../../Extension/src/background/storages/page-stats';
 
 export const getEmptyStatisticDataFixture = (): GetStatisticsDataResponse => {
     const emptyStats = { [PageStatsStorage.TOTAL_GROUP_ID]: 0 };

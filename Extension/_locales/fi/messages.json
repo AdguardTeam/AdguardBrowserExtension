@@ -27,19 +27,19 @@
         "message": "Ota suodattimet käyttöön?"
     },
     "options_filters_annoyances_consent_filter_policy": {
-        "message": "Ärsykesuodattimen yksityiskohtaisista estetyistä asioista lisätietoja löytyy AdGuardin <a>ärsykesuodattimen käytännöstä<\/a>"
+        "message": "Saat lisätietoja AdGuardin ärsykesuodattimen estämästä sisällöstä AdGuardin <a>Suodatinkäytännöstä<\/a>."
     },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Ota käyttöön"
-    },
-    "popup_header_cta_link": {
-        "message": "Haluatko estää enemmän?"
     },
     "popup_header_update_filters": {
         "message": "Tarkista suodatinpäivitykset"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "Tiedostopäätteen on oltava %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "Käynnistä"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard iOS:lle"
@@ -58,9 +58,6 @@
     },
     "options_popup_version_update_disable_notification": {
         "message": "Poista ilmoitukset"
-    },
-    "popup_adguard_footer_title": {
-        "message": "AdGuard mobiililaitteellesi"
     },
     "options_popup_call_to_action": {
         "message": "Syötä yllä olevaan kenttään suodattimen toimiva URL-osoite tai tiedostosijainti."
@@ -140,17 +137,11 @@
     "filtering_log_modified_rules": {
         "message": "Muokattuja sääntöjä: %rules_count%"
     },
-    "filtering_log_stealth_rules": {
-        "message": "Häivetilan sääntöjä: %rules_count%"
-    },
-    "filtering_log_privacy_applied_rules": {
-        "message": "Häivetila käytössä"
-    },
     "filtering_log_in_allowlist": {
         "message": "Sivusto on sallittu"
     },
     "filtering_log_hide_referrer": {
-        "message": "Referrer-tieto piilotettiin kolmansilta osapuolilta"
+        "message": "Viittaaja piilotettu kolmansilta osapuolilta"
     },
     "filtering_log_hide_search_queries": {
         "message": "Hakulausekkeet piilotettiin"
@@ -212,6 +203,9 @@
     "options_empty_custom_filter": {
         "message": "Sinulla ei vielä ole omia suodattimia"
     },
+    "options_loader_applying_changes": {
+        "message": "Muutoksia otetaan käyttöön..."
+    },
     "options_editor_indicator_saving": {
         "message": "Tallennetaan..."
     },
@@ -239,14 +233,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "Salattu sivu"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "Ladataan..."
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "Suojausta otetaan käyttöön..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "Suojaus on käytössä"
     },
+    "popup_site_filtering_state_disabling": {
+        "message": "Suojausta poistetaan käytöstä..."
+    },
     "popup_site_filtering_state_disabled": {
-        "message": "Suojaus ei ole käytössä"
+        "message": "Suojaus on pysäytetty"
+    },
+    "popup_site_filtering_state_pausing": {
+        "message": "Suojausta pysäytetään..."
     },
     "popup_site_filtering_state_paused": {
-        "message": "Suojaus on keskeytetty"
+        "message": "Suojaus on pysäytetty"
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "Suojausta jatketaan..."
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "kaikilla verkkosivustoilla"
     },
     "popup_site_exception_information": {
         "message": "Suodatus on poistettu käytöstä, koska se saattaa vaikuttaa sivuston toimintaan."
@@ -356,9 +368,6 @@
     "popup_security_report": {
         "message": "Sivuston suojausraportti"
     },
-    "popup_reset_custom_rules": {
-        "message": "Tyhjennä sivulle luodut käyttäjän säännöt"
-    },
     "context_block_site_ads": {
         "message": "Estä mainoksia tältä sivustolta..."
     },
@@ -378,7 +387,7 @@
         "message": "Palauta AdGuardin suojaus"
     },
     "context_site_protection_disabled": {
-        "message": "AdGuardin suojaus on keskeytetty"
+        "message": "AdGuardin suojaus on pysäytetty"
     },
     "context_open_settings": {
         "message": "AdGuardin asetukset..."
@@ -481,9 +490,6 @@
     },
     "filtering_modal_rules": {
         "message": "Säännöt:"
-    },
-    "filtering_modal_privacy": {
-        "message": "Häivetila:"
     },
     "filtering_modal_filter": {
         "message": "Suodatin:"
@@ -648,7 +654,7 @@
         "message": "Lähetä palautetta"
     },
     "options_privacy": {
-        "message": "Häivetila"
+        "message": "Seurantaesto"
     },
     "options_update_antibanner_filters": {
         "message": "Tarkista suodatinpäivitykset"
@@ -707,6 +713,42 @@
     "options_miscellaneous_settings": {
         "message": "Muut asetukset"
     },
+    "options_rule_limits": {
+        "message": "Sääntörajoitukset"
+    },
+    "options_rule_limits_description_link": {
+        "message": "Lue lisää Manifest V3 -määrityksistä"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "Dynaamiset säännöt"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "Käyttäjän lisäämät säännöt, kuten omat säännöt ja suodattimet"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "Staattiset sääntöjoukot"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "Staattiset säännöt"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "Selain on muokannut aktiivisten suodattimien luetteloa"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "Mitä tapahtui?"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "Aktiivisten sisäänrakennettujen sääntöjen raja ylittyi päivityksen tai uuden laajennuksen asennuksen jälkeen. Manifest V3 -määritysten mukaisesti Chrome-selaimesi reagoi poistamalla käytöstä oletussuodattimia lukuun ottamatta kaikki laajennuksen sisäänrakennetut suodattimet."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "Suodattimet, jotka olivat käytössä ennen päivitystä"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "Suodattimet, jotka ovat nyt käytössä"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "Mahdolliset toiminnot"
+    },
     "options_show_adguard_full_version_title": {
         "message": "Näytä tietoja AdGuardin täysversiosta"
     },
@@ -747,13 +789,13 @@
         "message": "Käyttää lyhyempiä suodatinversioita, jotka sisältävät vain suosituimmat säännöt tietoliikenteen säästöön. Sopii paremmin mobiiliselaimille."
     },
     "options_privacy_title": {
-        "message": "Häivetila"
+        "message": "Seurantaesto"
     },
     "options_privacy_desc": {
         "message": "Suojaa identiteettiäsi ja arkaluontoisia henkilötietoja tuhansilta verkkoseurannoilta estämällä yleisimmät seurantakäytännöt."
     },
     "options_hide_referrer_title": {
-        "message": "Piilota Referer-tieto 3. osapuolilta"
+        "message": "Piilota Referer-viitetieto ulkopuolisilta"
     },
     "options_hide_referrer_desc": {
         "message": "Estä ulkopuolisia tahoja näkemästä mitä sivustoja olet käyttänyt."

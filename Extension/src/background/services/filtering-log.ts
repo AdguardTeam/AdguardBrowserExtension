@@ -33,8 +33,10 @@ import {
     JsInjectEvent,
     ReplaceRuleApplyEvent,
     StealthActionEvent,
+    StealthAllowlistActionEvent,
     CspReportBlockedEvent,
     getDomain,
+    ApplyPermissionsRuleEvent,
 } from '@adguard/tswebextension';
 
 import { messageHandler } from '../message-handler';
@@ -47,19 +49,18 @@ import {
     SetPreserveLogStateMessage,
 } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
-import { FILTERING_LOG_WINDOW_STATE } from '../../common/constants';
+import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../common/constants';
 import {
     FiltersApi,
     FilterMetadata,
-    FilteringLogApi,
     filteringLogApi,
     SettingsApi,
     SettingsData,
     FilteringLogTabInfo,
-    HitStatsApi,
     TabsApi,
+    HitStatsApi,
 } from '../api';
-import { storage } from '../storages';
+import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
 
 type GetFilteringLogDataResponse = {
@@ -67,6 +68,8 @@ type GetFilteringLogDataResponse = {
     settings: SettingsData,
     preserveLogEnabled: boolean,
 };
+
+// TODO (David): Add function to preprocess rule event data
 
 /**
  * FilteringLogService collects all actions that extension doing to web requests
@@ -114,6 +117,11 @@ export class FilteringLogService {
         );
 
         defaultFilteringLog.addEventListener(
+            FilteringEventType.ApplyPermissionsRule,
+            FilteringLogService.onApplyPermissionsRule,
+        );
+
+        defaultFilteringLog.addEventListener(
             FilteringEventType.ApplyCosmeticRule,
             FilteringLogService.onApplyCosmeticRule,
         );
@@ -125,6 +133,10 @@ export class FilteringLogService {
         defaultFilteringLog.addEventListener(FilteringEventType.JsInject, FilteringLogService.onScriptInjection);
 
         defaultFilteringLog.addEventListener(FilteringEventType.StealthAction, FilteringLogService.onStealthAction);
+        defaultFilteringLog.addEventListener(
+            FilteringEventType.StealthAllowlistAction,
+            FilteringLogService.onStealthAllowlistAction,
+        );
 
         defaultFilteringLog.addEventListener(
             FilteringEventType.CspReportBlocked,
@@ -149,7 +161,9 @@ export class FilteringLogService {
     private static onSendRequest({ data }: SendRequestEvent): void {
         const { tabId, ...eventData } = data;
 
-        filteringLogApi.addEventData(tabId, eventData);
+        // TODO: fix `string | null` vs `string | undefined` inconsistency
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        filteringLogApi.addEventData(tabId, eventData as any);
     }
 
     /**
@@ -170,19 +184,36 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link ApplyBasicRuleEvent}.
      * @param ruleEvent.data Data for this event: tabId, eventId and applied rule.
      */
-    private static onApplyBasicRule({ data }: ApplyBasicRuleEvent): void {
+    private static async onApplyBasicRule({ data }: ApplyBasicRuleEvent): Promise<void> {
         const {
             tabId,
             eventId,
-            rule,
+            filterId,
+            ruleIndex,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
         } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: {
+                filterId,
+                ruleIndex,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
     }
 
@@ -192,20 +223,30 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link ApplyCosmeticRuleEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onApplyCosmeticRule({ data }: ApplyCosmeticRuleEvent): void {
+    private static async onApplyCosmeticRule({ data }: ApplyCosmeticRuleEvent): Promise<void> {
         const {
             tabId,
-            rule,
+            filterId,
+            ruleIndex,
+            cssRule,
+            scriptRule,
+            contentRule,
             ...eventData
         } = data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createCosmeticRuleEventData(rule),
+            requestRule: {
+                filterId,
+                ruleIndex,
+                cssRule,
+                scriptRule,
+                contentRule,
+            },
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
     }
 
@@ -215,22 +256,86 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link ApplyCspRuleEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onApplyCspRule({ data }: ApplyCspRuleEvent): void {
+    private static async onApplyCspRule({ data }: ApplyCspRuleEvent): Promise<void> {
         const {
             tabId,
-            rule,
+            filterId,
+            ruleIndex,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
+            frameDomain,
             ...eventData
         } = data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            // TODO refactor log event scheme to use requestDomain as string | null
+            // TODO: Fix `string | null` vs `string | undefined` inconsistency
+            frameDomain: frameDomain ?? undefined,
             requestDomain: getDomain(eventData.requestUrl) ?? undefined,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: {
+                filterId,
+                ruleIndex,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
+        }
+    }
+
+    /**
+     * Records the application of the rule with $permissions modifier.
+     *
+     * @param ruleEvent Item of {@link ApplyPermissionsRuleEvent}.
+     * @param ruleEvent.data Data for this event.
+     */
+    private static async onApplyPermissionsRule({ data }: ApplyPermissionsRuleEvent): Promise<void> {
+        const {
+            tabId,
+            filterId,
+            ruleIndex,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
+            frameDomain,
+            ...eventData
+        } = data;
+
+        filteringLogApi.addEventData(tabId, {
+            ...eventData,
+            // TODO: Fix `string | null` vs `string | undefined` inconsistency
+            frameDomain: frameDomain ?? undefined,
+            requestDomain: getDomain(eventData.requestUrl) ?? undefined,
+            requestRule: {
+                filterId,
+                ruleIndex,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                permissionsRule: true,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
+        });
+
+        if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
     }
 
@@ -240,21 +345,38 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link RemoveParamEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onRemoveParam({ data }: RemoveParamEvent): void {
+    private static async onRemoveParam({ data }: RemoveParamEvent): Promise<void> {
         const {
             tabId,
-            rule,
+            filterId,
+            ruleIndex,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
             ...eventData
         } = data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
             requestDomain: getDomain(eventData.requestUrl) ?? undefined,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: {
+                filterId,
+                ruleIndex,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
     }
 
@@ -264,17 +386,38 @@ export class FilteringLogService {
      * @param ruleEvent Item of {@link RemoveHeaderEvent}.
      * @param ruleEvent.data Data for this event.
      */
-    private static onRemoveheader({ data }: RemoveHeaderEvent): void {
-        const { tabId, rule, ...eventData } = data;
+    private static async onRemoveheader({ data }: RemoveHeaderEvent): Promise<void> {
+        const {
+            tabId,
+            filterId,
+            ruleIndex,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
+            ...eventData
+        } = data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
             requestDomain: getDomain(eventData.requestUrl) ?? undefined,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: {
+                filterId,
+                ruleIndex,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
     }
 
@@ -297,20 +440,41 @@ export class FilteringLogService {
      *
      * @param event Event with type {@link CookieEvent}.
      */
-    private static onCookie(event: CookieEvent): void {
+    private static async onCookie(event: CookieEvent): Promise<void> {
         if (filteringLogApi.isExistingCookieEvent(event)) {
             return;
         }
 
-        const { tabId, rule, ...eventData } = event.data;
+        const {
+            tabId,
+            filterId,
+            ruleIndex,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
+            ...eventData
+        } = event.data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createNetworkRuleEventData(rule),
+            requestRule: {
+                filterId,
+                ruleIndex,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
     }
 
@@ -320,16 +484,30 @@ export class FilteringLogService {
      * @param event Event with type {@link JsInjectEvent}.
      * @param event.data Destructed data from {@link JsInjectEvent}.
      */
-    private static onScriptInjection({ data }: JsInjectEvent): void {
-        const { tabId, rule, ...eventData } = data;
+    private static async onScriptInjection({ data }: JsInjectEvent): Promise<void> {
+        const {
+            tabId,
+            filterId,
+            ruleIndex,
+            cssRule,
+            scriptRule,
+            contentRule,
+            ...eventData
+        } = data;
 
         filteringLogApi.addEventData(tabId, {
             ...eventData,
-            requestRule: FilteringLogApi.createCosmeticRuleEventData(rule),
+            requestRule: {
+                filterId,
+                ruleIndex,
+                cssRule,
+                scriptRule,
+                contentRule,
+            },
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
     }
 
@@ -339,25 +517,25 @@ export class FilteringLogService {
      * @param event Event with type {@link ReplaceRuleApplyEvent}.
      * @param event.data Destructed data from {@link ReplaceRuleApplyEvent}.
      */
-    private static onReplaceRuleApply({ data }: ReplaceRuleApplyEvent): void {
+    private static async onReplaceRuleApply({ data }: ReplaceRuleApplyEvent): Promise<void> {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            replaceRules: rules.map((rule) => FilteringLogApi.createNetworkRuleEventData(rule)),
+            replaceRules: rules,
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            rules.forEach((rule) => {
-                HitStatsApi.addRuleHit(rule.getText(), rule.getFilterListId());
+            rules.forEach(({ filterId, ruleIndex }) => {
+                HitStatsApi.addRuleHit(filterId, ruleIndex);
             });
         }
     }
 
     /**
-     * Records the application of an action from Stealth Mode.
+     * Records the application of an action from Tracking protection (formerly Stealth Mode).
      *
-     * @param event Event with type {@link ReplaceRuleApplyEvent}.
-     * @param event.data Destructed data from {@link ReplaceRuleApplyEvent}:
+     * @param event Event with type {@link StealthActionEvent}.
+     * @param event.data Destructed data from {@link StealthActionEvent}:
      * tab id, event id and stealthActions - last one is the bit-mask
      * of applied {@link StealthActions} from tswebextension.
      */
@@ -365,6 +543,38 @@ export class FilteringLogService {
         const { tabId, eventId, stealthActions } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, { stealthActions });
+    }
+
+    /**
+     * Records prevention of an action from Tracking protection (formerly Stealth Mode).
+     *
+     * @param event Event with type {@link StealthAllowlistActionEvent}.
+     * @param event.data Destructed data from {@link StealthAllowlistActionEvent}:
+     * tab id, event id and allowlisting stealth network rule which
+     * cancel application of {@link StealthActions} from tswebextension.
+     */
+    private static onStealthAllowlistAction({ data }: StealthAllowlistActionEvent): void {
+        const { tabId, rules, eventId } = data;
+
+        filteringLogApi.updateEventData(tabId, eventId, {
+            stealthAllowlistRules: rules.map((rule) => ({
+                filterId: rule.filterId,
+                ruleIndex: rule.ruleIndex,
+                allowlistRule: rule.isAllowlist,
+                isImportant: rule.isImportant,
+                documentLevelRule: rule.isDocumentLevel,
+                isStealthModeRule: true,
+                cspRule: rule.isCsp,
+                cookieRule: rule.isCookie,
+                modifierValue: rule.advancedModifier ?? undefined,
+            })),
+        });
+
+        if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+            rules.forEach(({ filterId, ruleIndex }) => {
+                HitStatsApi.addRuleHit(filterId, ruleIndex);
+            });
+        }
     }
 
     /**
@@ -500,6 +710,6 @@ export class FilteringLogService {
     ): Promise<void> {
         const { windowState } = data;
 
-        await storage.set(FILTERING_LOG_WINDOW_STATE, JSON.stringify(windowState));
+        await browserStorage.set(FILTERING_LOG_WINDOW_STATE, JSON.stringify(windowState));
     }
 }

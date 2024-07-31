@@ -1,9 +1,9 @@
-! Checksum: uyjbZlGwL2pgZUf0rnLo5Q
-! Diff-Path: ../patches/17/17-s-1711964218-3600.patch
+! Checksum: 7QNk7j8nU0n0GuFxMSXb7Q
+! Diff-Path: ../patches/17/17-s-1718275106-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.25
-! TimeUpdated: 2024-04-01T09:32:10+00:00
+! Version: 2.0.8.60
+! TimeUpdated: 2024-06-13T10:36:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,13 @@
 ! Good: $removeparam=utm_id
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
+!
+! channelsight.com
+$removeparam=cstrackid
+! Tracking in casino links
+/?affijet-click=$removeparam
+! https://theaffiliateplatform.com/affiliate-custom-links/
+$removeparam=btag
 ! jmty.jp
 $removeparam=jmtyClId
 ! TCS
@@ -155,6 +162,7 @@ $removeparam=s_cid
 ! awin.com
 $removeparam=awc
 ! Hubspot tracking https://knowledge.hubspot.com/ads/ad-tracking-in-hubspot
+$removeparam=_hsmi
 $removeparam=__hsfp
 $removeparam=__hssc
 $removeparam=__hstc
@@ -246,6 +254,7 @@ $removeparam=utm_siteid
 $removeparam=utm_social
 $removeparam=utm_social-type
 $removeparam=utm_source
+$removeparam=utm_source_platform
 $removeparam=utm_supplier
 $removeparam=utm_swu
 $removeparam=utm_term
@@ -349,14 +358,63 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/181404
+||blogmura.com^$removeparam=p_cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/181299
+||nvidia.com^$removeparam=jso
+! https://github.com/AdguardTeam/AdguardFilters/issues/181125
+||booking.com^$removeparam=aid
+! https://github.com/AdguardTeam/AdguardFilters/issues/180304
+||nytimes.com^$removeparam=smid
+||nytimes.com^$removeparam=referringSource
+||nytimes.com^$removeparam=sgrp
+||nytimes.com^$removeparam=impression_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/180890
+||shimotsuke.co.jp^$removeparam=rankinghour
+||shimotsuke.co.jp^$removeparam=top
+||shimotsuke.co.jp^$removeparam=newsletter
+||shimotsuke.co.jp^$removeparam=relatedarticle
+||shimotsuke.co.jp^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/180896
+||boncharge.com^$removeparam=shpxid
+! https://github.com/AdguardTeam/AdguardFilters/issues/180000
+||plarium.com/landings/$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/180785
+||lancasterarchery.com^$removeparam=af_lnk
+||lancasterarchery.com^$removeparam=dt_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/179379
+||lenta.ru^$removeparam=es
+! https://github.com/AdguardTeam/AdguardFilters/issues/179934
+||finance.yahoo.co.jp^$removeparam=cpt_m
+||finance.yahoo.co.jp^$removeparam=cpt_n
+||finance.yahoo.co.jp^$removeparam=cpt_s
+||sbisec.co.jp^$removeparam=waad
+! https://github.com/AdguardTeam/AdguardFilters/issues/179524
+||ejje.weblio.jp^$removeparam=erl
+! https://qjweb.jp/news/105411/?from=sidebar
+||qjweb.jp^$removeparam=from
+! https://map.yahoo.co.jp/v2/place/ihEL4xYIVAo?from_srv=loco_web
+||map.yahoo.co.jp^$removeparam=from_srv
+! https://github.com/AdguardTeam/AdguardFilters/issues/178806
+||protonvpn.com^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/178786
+||quora.com^$removeparam=share
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-9264793
+||tcgplayer.com^$removeparam=source
+! https://github.com/AdguardTeam/AdguardFilters/issues/178109
+||kyujin.navitime.co.jp^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/178001
+||avira.com^$removeparam=track
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-9118227
+||foodpanda.$removeparam=src
+! https://github.com/AdguardTeam/AdguardFilters/issues/176856
+||plusgaming.yandex.ru^$removeparam=clckid
+! https://github.com/AdguardTeam/AdguardFilters/issues/176307
+||iotransfer.itopvpn.com^$removeparam=ref
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175941
 ||tradingview.com^$removeparam=exchange
 ||tradingview.com^$removeparam=aff_id
 ||tradingview.com^$removeparam=aff_sub
-! https://github.com/AdguardTeam/AdguardFilters/issues/175707
-||music.amazon.com^$removeparam=tag
-||music.amazon.com^$removeparam=ref
-||music.amazon.com^$removeparam=ie
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-8834544
 ||tmz.com^$removeparam=adid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/174921
@@ -450,12 +508,14 @@ $removeparam=fb_source
 ! https://mora.jp/special/bigsale/?fmid=mora.jack_202312_bigsale
 ||mora.jp^$removeparam=fmid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169585
+! https://github.com/AdguardTeam/AdguardFilters/issues/178863
 ||dvdfab.org^$removeparam=soft
 ||dvdfab.org^$removeparam=ad
 ||dvdfab.org^$removeparam=ver
 ||dvdfab.org^$removeparam=clientusertype
 ||dvdfab.org^$removeparam=client_e
 ||dvdfab.org^$removeparam=c_ex
+||dvdfab.org^$removeparam=c_id
 ! go2jump.org / tr.rdrtr.com
 ||rdrtr.com^$removeparam=source
 ||rdrtr.com^$removeparam=aff_sub
@@ -1180,6 +1240,7 @@ $removeparam=xptdk,domain=shopee.ph|shopee.co.th
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=exc_ads
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_adids
 ! https://github.com/AdguardTeam/AdguardFilters/issues/129287
+||dzen.ru/api/*/launcher/stats/$image,xmlhttprequest,removeparam
 ||dzen.ru^$document,removeparam=clid
 ||dzen.ru^$removeparam=yredirect
 ||dzen.ru^$removeparam=stid
@@ -1731,6 +1792,14 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ||digikey.com^$removeparam=/^utm_cid/
 !
 ! NicoNico (nicovideo.jp)
+! Keep subdomain
+$removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
+||commons.nicovideo.jp^$removeparam=transit_from
+||live.nicovideo.jp^$removeparam=ch_anime_ref
+||seiga.nicovideo.jp^$removeparam=track
+||sp.nicovideo.jp^$removeparam=ss_id
+||sp.nicovideo.jp^$removeparam=ss_pos
+||sp.nicovideo.jp^$removeparam=cp_in
 ||nicovideo.jp^$removeparam=news_ref
 ||nicovideo.jp^$removeparam=cmnhd_ref
 ||nicovideo.jp^$removeparam=ref
@@ -1771,7 +1840,8 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ! Yandex.Docs
 ||docs.yandex.$removeparam=uid
 ! Yandex.Disk
-||disk.yandex.$removeparam=sk
+! Do not remove `sk` parameter - https://github.com/AdguardTeam/AdguardFilters/issues/178459
+!
 ! Baidu search - statictics
 ||www.baidu.com^$removeparam=rsv_pq
 ||www.baidu.com^$removeparam=rsv_t
@@ -1840,6 +1910,9 @@ $removeparam=asc_campaign,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_refurl,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 !
+||amazon.*$removeparam=tag
+||amazon.*$removeparam=ref
+||amazon.*$removeparam=ie
 ||amazon.*$removeparam=adgrpid
 ||amazon.*$removeparam=ascsubtag
 ||amazon.*$removeparam=AssociateTag
@@ -1934,6 +2007,7 @@ $removeparam=ns_fee,domain=bbc.com|bbc.co.uk
 ||office.com^$removeparam=ocid
 ! Embedded tweets
 $removeparam=refsrc,domain=twitter.com|x.com
+||x.com^$removeparam=ref_src
 $removeparam=ref_src,domain=twitter.com|x.com
 $removeparam=ref_url,domain=twitter.com|x.com
 ! Twitter
@@ -1993,7 +2067,7 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||www.lidl.de^$removeparam=msktc
 ||www.pricezilla.de^$removeparam=bid
 !
-||boomstore.de*.html$removeparam=campaign
+||boomstore.de/*.html$removeparam=campaign
 ||www.alternate.de^$removeparam=campaign
 !
 ||cosse.de^$removeparam=sPartner
@@ -2019,7 +2093,6 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||visit.digidip.net^$removeparam=/^(ppref|ref|pid)=/
 ||ad.admitad.com^$removeparam=/^subid/
 ||mvideo.ru^$removeparam=/^(_requestid|reff)=/
-||nytimes.com^$removeparam=impression_id
 !
 ||websearch.rakuten.co.jp/Web?$removeparam=ref
 ||rakuten.co.jp^*&trflg=$removeparam=trflg
@@ -2086,6 +2159,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 ! Detect of using AdGuard products
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+! Detect HTTPS filtering
+! Detect Advanced Protection of AdGuard for iOS
 !
 !---------------------------------------------------------------------------!
 !-------------- Fixing filtration errors (false-positive) ------------------!
@@ -2098,6 +2173,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/178856 reader broken
+@@||gaugau.futabanet.jp^$removeparam=utm_content
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169890
 @@||lifehacker.ru^$removeparam=erid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/168271
