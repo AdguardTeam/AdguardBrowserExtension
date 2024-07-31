@@ -86,8 +86,7 @@ const getOptionsDataWithRetry = async () => {
                 return innerRetry(retryTimes - 1);
             }
 
-            await sleep(RETRY_DELAY_MS);
-            return await innerRetry(retryTimes - 1);
+            return data;
         } catch (e) {
             logger.error(e);
             await sleep(RETRY_DELAY_MS);

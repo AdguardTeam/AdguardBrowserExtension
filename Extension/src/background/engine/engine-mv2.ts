@@ -91,7 +91,7 @@ export class Engine implements TsWebExtensionEngine {
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
 
-        filteringLogApi.onEngineUpdated(configuration);
+        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -109,7 +109,7 @@ export class Engine implements TsWebExtensionEngine {
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
 
-        filteringLogApi.onEngineUpdated(configuration);
+        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**

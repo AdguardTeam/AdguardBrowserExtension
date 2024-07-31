@@ -96,7 +96,7 @@ export class Engine implements TsWebExtensionEngine {
             toasts.showRuleLimitsAlert();
         }
 
-        filteringLogApi.onEngineUpdated(configuration);
+        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -129,7 +129,7 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
 
-        filteringLogApi.onEngineUpdated(configuration);
+        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
