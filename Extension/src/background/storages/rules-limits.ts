@@ -20,7 +20,7 @@ import { RULES_LIMITS_KEY } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
 import { RulesLimitsStorageData } from '../schema/rules-limits/rules-limits';
 
-import { storage } from './main';
+import { browserStorage } from './shared-instances';
 
 /**
  * Instance of {@link StringStorage} that stores filter enabled before chrome decided to disable them
@@ -30,4 +30,4 @@ export const rulesLimitsStorage = new StringStorage<
     typeof RULES_LIMITS_KEY,
     RulesLimitsStorageData,
     'async'
->(RULES_LIMITS_KEY, storage);
+>(RULES_LIMITS_KEY, browserStorage);

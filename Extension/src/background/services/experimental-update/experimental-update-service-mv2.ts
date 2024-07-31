@@ -115,3 +115,5 @@ export class Experimental {
         throw new Error('migrateSettings not implemented');
     }
 }
+
+/* eslint-enable @typescript-eslint/no-unused-vars */

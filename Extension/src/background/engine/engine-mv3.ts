@@ -206,7 +206,6 @@ export class Engine implements TsWebExtensionEngine {
      * settings already changed and tswebextension will generate configuration
      * itself based on the current settings.
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async setFilteringState(isFilteringEnabled: boolean): Promise<void> {
         // Configure tswebextension with the new settings without checking limits
         // if we paused filtering.

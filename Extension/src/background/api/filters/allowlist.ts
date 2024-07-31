@@ -154,7 +154,6 @@ export class AllowlistApi {
      * @param tabId Tab id.
      * @param tabRefresh Tab refresh flag.
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async enableTabFiltering(tabId: number, tabRefresh: boolean = false): Promise<void> {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
