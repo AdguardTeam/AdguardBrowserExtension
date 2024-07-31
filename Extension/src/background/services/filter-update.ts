@@ -72,6 +72,8 @@ export class FilterUpdateService {
      * should be updated with setTimeout which saved to {@link schedulerTimerId}.
      */
     private async update(): Promise<void> {
+        window.clearTimeout(this.schedulerTimerId);
+
         const prevCheckTimeMs = await browserStorage.get(FilterUpdateService.STORAGE_KEY);
 
         /**

@@ -85,7 +85,9 @@ const getOptionsDataWithRetry = async () => {
                 // eslint-disable-next-line @typescript-eslint/return-await
                 return innerRetry(retryTimes - 1);
             }
-            return data;
+
+            await sleep(RETRY_DELAY_MS);
+            return await innerRetry(retryTimes - 1);
         } catch (e) {
             logger.error(e);
             await sleep(RETRY_DELAY_MS);
@@ -490,7 +492,11 @@ class SettingsStore {
      */
     @computed
     get latestCheckTime() {
-        return Math.max(...this.filters.map((filter) => filter.lastCheckTime || 0));
+        return Math.max(...this.filters
+            .map(({ lastScheduledCheckTime, lastCheckTime }) => Math.max(
+                lastScheduledCheckTime || 0,
+                lastCheckTime || 0,
+            )));
     }
 
     @action
@@ -532,7 +538,7 @@ class SettingsStore {
 
     @action
     updateGroupStateUI(groupId, enabled) {
-        this.categories.forEach(category => {
+        this.categories.forEach((category) => {
             if (category.groupId === groupId) {
                 if (enabled) {
                     category.enabled = true;
@@ -545,7 +551,7 @@ class SettingsStore {
 
     @action
     updateFilterStateUI(filterId, enabled) {
-        this.filters.forEach(filter => {
+        this.filters.forEach((filter) => {
             if (filter.filterId === filterId) {
                 if (enabled) {
                     filter.enabled = true;

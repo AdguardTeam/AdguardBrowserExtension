@@ -90,6 +90,8 @@ export class Engine implements TsWebExtensionEngine {
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
+
+        filteringLogApi.onEngineUpdated(configuration);
     }
 
     /**
@@ -107,7 +109,7 @@ export class Engine implements TsWebExtensionEngine {
         // TODO: remove after frontend refactoring
         listeners.notifyListeners(listeners.RequestFilterUpdated);
 
-        filteringLogApi.onEngineUpdated();
+        filteringLogApi.onEngineUpdated(configuration);
     }
 
     /**

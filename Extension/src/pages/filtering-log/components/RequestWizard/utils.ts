@@ -178,10 +178,10 @@ export const getRequestEventType = (event: FilteringLogEvent): string => {
             return 'WebRTC';
         case RequestType.Csp:
             return 'CSP';
-        case RequestType.CspReport:
-            return 'CSP report';
         case RequestType.PermissionsPolicy:
             return 'Permissions Policy';
+        case RequestType.CspReport:
+            return 'CSP report';
         case RequestType.Cookie:
             return 'Cookie';
         case RequestType.Ping:

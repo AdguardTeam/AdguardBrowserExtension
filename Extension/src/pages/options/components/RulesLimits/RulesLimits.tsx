@@ -83,7 +83,7 @@ export const RulesLimits = observer(() => {
      */
     const getFiltersNames = (filterIds: number[]): string[] => {
         return filterIds.map((filterId: number) => {
-            return settingsStore.filters.find(f => f.filterId === filterId)?.name;
+            return settingsStore.filters.find((f) => f.filterId === filterId)?.name;
         });
     };
 

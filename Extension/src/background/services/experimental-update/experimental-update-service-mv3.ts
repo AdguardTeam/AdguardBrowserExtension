@@ -205,7 +205,7 @@ export class Experimental {
         const parsedFilters = Experimental.filterExistingRules(result.data, ruleResources);
 
         const filtersState: FilterStateStorageData = {};
-        parsedFilters.forEach(filter => {
+        parsedFilters.forEach((filter) => {
             if (filter.enabled) {
                 filtersState[filter.id] = {
                     enabled: filter.enabled,
@@ -217,7 +217,7 @@ export class Experimental {
         });
 
         const groupsState: GroupStateStorageData = {};
-        parsedFilters.forEach(filter => {
+        parsedFilters.forEach((filter) => {
             if (filter.enabled) {
                 // special case for custom filters
                 if (Experimental.isCustomFilter(filter)) {
@@ -226,7 +226,7 @@ export class Experimental {
                         touched: true,
                     };
                 } else {
-                    const filterMetadata = metadata.filters.find(f => f.filterId === filter.id);
+                    const filterMetadata = metadata.filters.find((f) => f.filterId === filter.id);
                     if (filterMetadata !== undefined) {
                         groupsState[filterMetadata.groupId] = {
                             enabled: true,
@@ -245,7 +245,7 @@ export class Experimental {
         });
 
         const customFiltersState: CustomFilterMetadataStorageData = [];
-        parsedFilters.forEach(filter => {
+        parsedFilters.forEach((filter) => {
             if (Experimental.isCustomFilter(filter)) {
                 customFiltersState.push({
                     filterId: filter.id,

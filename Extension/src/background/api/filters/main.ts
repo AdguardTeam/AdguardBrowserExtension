@@ -127,7 +127,7 @@ export class FiltersApi {
      *
      * @returns True, if filter is loaded, else returns false.
      */
-    public static isFilterRulesIsLoaded(filterId: number): boolean {
+    public static isFilterLoaded(filterId: number): boolean {
         const filterState = filterStateStorage.get(filterId);
 
         return !!filterState?.loaded;
@@ -237,10 +237,10 @@ export class FiltersApi {
      * Loads and enables specified filters. Once the filters are enabled,
      * the untouched groups belonging to those filters will be enabled too.
      *
-     * If method called in offline mode, some filters may not be loaded,
+     * If the method is called in offline mode, some filters may not be loaded
      * because we have local copies only for our built-in filters.
      *
-     * @param filterIds Filter ids.
+     * @param filterIds Array of filter ids to load and enable.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
      * **IMPORTANT NOTE:** We don't want to update the filters in MV3 version,
@@ -255,26 +255,31 @@ export class FiltersApi {
         remote = false,
         enableGroups = false,
     ): Promise<void> {
-        // Ignore loaded filters
-        // Custom filters always have loaded state, so we don't need additional check
-        const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterRulesIsLoaded(id));
-        const alreadyLoadedFilterIds = filterIds.filter((id) => FiltersApi.isFilterRulesIsLoaded(id));
+        // Ignore already loaded filters
+        // Custom filters always have a loaded state, so we don't need additional checks
+        const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterLoaded(id));
+        const alreadyLoadedFilterIds = filterIds.filter((id) => FiltersApi.isFilterLoaded(id));
 
         const loadedFilters = await FiltersApi.loadFilters(unloadedFiltersIds, remote);
 
-        // Concatenate filters loaded just now with already loaded filters.
+        // Concatenate filters loaded just now with already loaded filters
         loadedFilters.push(...alreadyLoadedFilterIds);
 
         filterStateStorage.enableFilters(loadedFilters);
 
         if (!remote) {
-            // Update the enabled filters only if loading from local resources,
-            // because when loading from remote resources, the filters are already up-to-date.
+            // Update the enabled filters only if loading happens from local resources
+            // When loading from remote resources, the filters are already up-to-date,
+            // except for the previously loaded filters, which we update below
             await FilterUpdateApi.checkForFiltersUpdates(loadedFilters);
+        } else if (alreadyLoadedFilterIds.length > 0) {
+            // Update previously loaded filters because they won't be loaded,
+            // but still need to be updated to the latest versions
+            await FilterUpdateApi.checkForFiltersUpdates(alreadyLoadedFilterIds);
         }
 
         if (enableGroups) {
-            // we enable filters groups if it was never enabled or disabled early
+            // Enable filter groups if they were never enabled or disabled earlier
             FiltersApi.enableGroupsWereNotTouched(loadedFilters);
         }
     }
@@ -302,7 +307,7 @@ export class FiltersApi {
         const filterIds = FiltersApi.getEnabledFilters();
 
         // Ignore custom filters
-        const commonFiltersIds = filterIds.filter(id => CommonFilterApi.isCommonFilter(id));
+        const commonFiltersIds = filterIds.filter((id) => CommonFilterApi.isCommonFilter(id));
 
         const loadedFiltersIds = await FiltersApi.loadFilters(commonFiltersIds, true);
 
@@ -351,10 +356,10 @@ export class FiltersApi {
         const enabledFilters = filterStateStorage.getEnabledFilters();
         const enabledGroups = groupStateStorage.getEnabledGroups();
 
-        return enabledFilters.filter(id => {
+        return enabledFilters.filter((id) => {
             const filterMetadata = FiltersApi.getFilterMetadata(id);
 
-            return enabledGroups.some(groupId => groupId === filterMetadata?.groupId);
+            return enabledGroups.some((groupId) => groupId === filterMetadata?.groupId);
         });
     }
 
@@ -365,7 +370,7 @@ export class FiltersApi {
      */
     public static getEnabledFiltersWithMetadata(): FilterMetadata[] {
         return FiltersApi.getEnabledFilters()
-            .map(f => FiltersApi.getFilterMetadata(f))
+            .map((f) => FiltersApi.getFilterMetadata(f))
             .filter((f): f is FilterMetadata => f !== undefined);
     }
 
@@ -590,8 +595,8 @@ export class FiltersApi {
         const metadataFiltersIds = FiltersApi.getFiltersMetadata().map(({ filterId }) => filterId);
 
         const tasks = installedFiltersIds
-            .filter(id => !metadataFiltersIds.includes(id))
-            .map(async id => {
+            .filter((id) => !metadataFiltersIds.includes(id))
+            .map(async (id) => {
                 filterVersionStorage.delete(id);
                 filterStateStorage.delete(id);
                 await FiltersStorage.remove(id);

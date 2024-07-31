@@ -329,7 +329,7 @@ export class LocaleDetect {
             return;
         }
 
-        const disabledFiltersIds = filterIds.filter(filterId => !FiltersApi.isFilterEnabled(filterId));
+        const disabledFiltersIds = filterIds.filter((filterId) => !FiltersApi.isFilterEnabled(filterId));
 
         // TODO: Check, do we really need always enable language group,
         // even if user disabled it manually?
@@ -346,7 +346,7 @@ export class LocaleDetect {
 
         const filters: RegularFilterMetadata[] = [];
 
-        disabledFiltersIds.forEach(filterId => {
+        disabledFiltersIds.forEach((filterId) => {
             const filter = CommonFilterApi.getFilterMetadata(filterId);
 
             if (filter) {

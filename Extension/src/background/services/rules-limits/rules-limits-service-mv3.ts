@@ -150,7 +150,7 @@ export class RulesLimitsService {
     ): RuleSetCounter[] {
         return filters
             .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId))
-            .map(filter => ruleSetsCounters[filter.filterId])
+            .map((filter) => ruleSetsCounters[filter.filterId])
             .filter((ruleSet): ruleSet is RuleSetCounter => ruleSet !== undefined);
     }
 

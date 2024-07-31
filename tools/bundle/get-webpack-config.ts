@@ -16,6 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import path from 'path';
+
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+
 import { Browser } from '../constants';
 
 import { genChromeConfig } from './chrome/webpack.chrome';
@@ -25,28 +29,51 @@ import { genOperaConfig } from './opera/webpack.opera';
 import { genChromeMv3Config } from './chrome-mv3/webpack.chrome-mv3';
 import { getBrowserConf } from './helpers';
 
+const ANALYZE_REPORTS_DIR = '../../analyze-reports';
+
 export const getWebpackConfig = (browser: Browser, isWatchMode = false) => {
     const browserConf = getBrowserConf(browser);
 
+    let webpackConfig;
+
     switch (browser) {
         case Browser.Chrome: {
-            return genChromeConfig(browserConf, isWatchMode);
+            webpackConfig = genChromeConfig(browserConf, isWatchMode);
+            break;
         }
         case Browser.ChromeMv3: {
-            return genChromeMv3Config(browserConf, isWatchMode);
+            webpackConfig = genChromeMv3Config(browserConf, isWatchMode);
+            break;
         }
         case Browser.FirefoxStandalone:
         case Browser.FirefoxAmo: {
-            return genFirefoxConfig(browserConf);
+            webpackConfig = genFirefoxConfig(browserConf);
+            break;
         }
         case Browser.Opera: {
-            return genOperaConfig(browserConf);
+            webpackConfig = genOperaConfig(browserConf);
+            break;
         }
         case Browser.Edge: {
-            return genEdgeConfig(browserConf);
+            webpackConfig = genEdgeConfig(browserConf);
+            break;
         }
         default: {
             throw new Error(`Unknown browser: "${browser}"`);
         }
     }
+
+    if (process.env.ANALYZE === 'true' && webpackConfig.plugins) {
+        const reportFilename = process.env.BUILD_ENV
+            ? path.join(ANALYZE_REPORTS_DIR, `${browser}-${process.env.BUILD_ENV}.html`)
+            : path.join(ANALYZE_REPORTS_DIR, `${browser}.html`);
+
+        webpackConfig.plugins.push(new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            reportFilename,
+            openAnalyzer: true,
+        }));
+    }
+
+    return webpackConfig;
 };

@@ -23,11 +23,14 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 
 import {
+    AGTREE_VENDOR_OUTPUT,
     BACKGROUND_OUTPUT,
     CONTENT_SCRIPT_START_OUTPUT,
+    CSS_TOKENIZER_VENDOR_OUTPUT,
     DOCUMENT_BLOCK_OUTPUT,
     REACT_VENDOR_OUTPUT,
     SAFEBROWSING_OUTPUT,
+    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
 } from '../../constants';
@@ -51,7 +54,10 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
                 import: BACKGROUND_PATH,
                 dependOn: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
+                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                 ],
             },
             [SAFEBROWSING_OUTPUT]: {
@@ -81,7 +87,10 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
                 filename: `${BACKGROUND_OUTPUT}.html`,
                 chunks: [
                     TSURLFILTER_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
+                    AGTREE_VENDOR_OUTPUT,
                     TSWEBEXTENSION_VENDOR_OUTPUT,
+                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                     BACKGROUND_OUTPUT,
                 ],
             }),

@@ -33,13 +33,13 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
 import { Prefs } from '../../prefs';
+import { CustomFilterApi, FiltersApi } from '../filters';
 import {
     FILTERING_LOG_OUTPUT,
     POST_INSTALL_OUTPUT,
     FULLSCREEN_USER_RULES_OUTPUT,
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
-import { CustomFilterApi, FiltersApi } from '../filters';
 import { OptionsPageSections } from '../../../common/nav';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.

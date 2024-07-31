@@ -51,6 +51,10 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 - [Development](#development)
   - [Requirements](#requirements)
   - [How to build](#how-to-build)
+    - [Tests and dev build](#tests-and-dev-build)
+    - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
+    - [Building the beta and release versions](#building-the-beta-and-release-versions)
+    - [Analyzing bundle size](#analyzing-bundle-size)
   - [Linter](#linter)
   - [Update localizations](#update-localizations)
 - [Minimum supported browser versions](#minimum-supported-browser-versions)
@@ -255,6 +259,33 @@ See [dangerous rules](tools/resources/dangerous-rules/README.md)
 
 You will need to put certificate.pem file to the `./private` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
+
+#### Analyzing bundle size
+
+If you want to analyze the bundle size, run build with the `ANALYZE` environment:
+
+```shell
+  yarn cross-env ANALYZE=true yarn <build command>
+```
+
+So, for example, if you want to analyze the beta build for Chrome, run:
+
+```shell
+  yarn cross-env ANALYZE=true yarn beta chrome
+```
+
+Or if you want to analyze all beta builds, run:
+
+```shell
+  yarn cross-env ANALYZE=true yarn beta
+```
+
+Analyzer will generate reports to the `./build/analyze-reports` directory in the following format:
+
+```shell
+  build/analyze-reports
+  ├── <browser-name>-<build-type>.html
+```
 
 <a id="dev-linter"></a>
 
