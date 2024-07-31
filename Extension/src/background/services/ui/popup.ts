@@ -48,7 +48,7 @@ import {
  * Tab info for the popup.
  */
 export type GetTabInfoForPopupResponse = {
-    frameInfo?: FrameData,
+    frameInfo: FrameData,
     stats: GetStatisticsDataResponse,
     settings: SettingsData,
     areFilterLimitsExceeded: boolean,
@@ -101,53 +101,31 @@ export class PopupService {
      */
     static async getTabInfoForPopup(
         { data }: GetTabInfoForPopupMessage,
-    ): Promise<GetTabInfoForPopupResponse> {
+    ): Promise<GetTabInfoForPopupResponse | undefined> {
         const { tabId } = data;
 
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
-        const defaultTabInfo: GetTabInfoForPopupResponse = {
-            stats: PageStatsApi.getStatisticsData(),
-            settings: SettingsApi.getData(),
-            areFilterLimitsExceeded: false,
-            options: {
-                showStatsSupported: true,
-                isFirefoxBrowser: UserAgent.isFirefox,
-                showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                isMacOs: UserAgent.isMacOs,
-                isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                notification: await promoNotificationApi.getCurrentNotification(),
-                isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                hasUserRulesToReset: false,
-            },
-        };
-
-        if (!tabContext) {
-            return defaultTabInfo;
+        if (tabContext) {
+            return {
+                frameInfo: FramesApi.getMainFrameData(tabContext),
+                stats: PageStatsApi.getStatisticsData(),
+                settings: SettingsApi.getData(),
+                areFilterLimitsExceeded: __IS_MV3__
+                    ? await RulesLimitsService.areFilterLimitsExceeded()
+                    : false,
+                options: {
+                    showStatsSupported: true,
+                    isFirefoxBrowser: UserAgent.isFirefox,
+                    showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                    isMacOs: UserAgent.isMacOs,
+                    isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
+                    notification: await promoNotificationApi.getCurrentNotification(),
+                    isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                    hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
+                },
+            };
         }
-
-        const hasUserRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
-
-        const areFilterLimitsExceeded = __IS_MV3__
-            ? await RulesLimitsService.areFilterLimitsExceeded()
-            : false;
-
-        return {
-            frameInfo: FramesApi.getMainFrameData(tabContext),
-            stats: PageStatsApi.getStatisticsData(),
-            settings: SettingsApi.getData(),
-            areFilterLimitsExceeded,
-            options: {
-                showStatsSupported: true,
-                isFirefoxBrowser: UserAgent.isFirefox,
-                showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                isMacOs: UserAgent.isMacOs,
-                isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                notification: await promoNotificationApi.getCurrentNotification(),
-                isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                hasUserRulesToReset,
-            },
-        };
     }
 
     /**
