@@ -17,18 +17,14 @@
  */
 import browser from 'webextension-polyfill';
 
-import { tabsApi as tsWebExtTabsApi } from '@adguard/tswebextension';
-
 import { UserAgent } from '../../../common/user-agent';
 import {
     notificationStorage,
     Notification,
-    storage,
+    browserStorage,
 } from '../../storages';
 import { NotificationTextRecord } from '../../schema';
-import { TabsApi } from '../../../common/api/extension';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
-import { logger } from '../../../common/logger';
 import { I18n } from '../../utils';
 
 import { UiApi } from './main';
@@ -76,6 +72,10 @@ export class PromoNotificationApi {
      * @param withDelay If true, do this after a 30 sec delay.
      */
     public async setNotificationViewed(withDelay: boolean): Promise<void> {
+        if (!this.currentNotification) {
+            return;
+        }
+
         if (withDelay) {
             window.clearTimeout(this.timeoutId);
 
@@ -86,30 +86,17 @@ export class PromoNotificationApi {
             return;
         }
 
-        if (this.currentNotification) {
-            const { id } = this.currentNotification;
+        const { id } = this.currentNotification;
 
-            const viewedNotifications = await storage.get(VIEWED_NOTIFICATIONS_KEY) || [];
+        const viewedNotifications = await browserStorage.get(VIEWED_NOTIFICATIONS_KEY) || [];
 
-            if (Array.isArray(viewedNotifications) && !viewedNotifications.includes(id)) {
-                viewedNotifications.push(id);
-                await storage.set(VIEWED_NOTIFICATIONS_KEY, viewedNotifications);
+        if (Array.isArray(viewedNotifications) && !viewedNotifications.includes(id)) {
+            viewedNotifications.push(id);
+            await browserStorage.set(VIEWED_NOTIFICATIONS_KEY, viewedNotifications);
 
-                const tab = await TabsApi.getActive();
+            this.currentNotification = null;
 
-                if (!tab?.id) {
-                    logger.error('Cannot get active tab');
-                    return;
-                }
-
-                const tabContext = tsWebExtTabsApi.getTabContext(tab.id);
-
-                if (tabContext) {
-                    await UiApi.update(tabContext);
-                }
-
-                this.currentNotification = null;
-            }
+            await UiApi.dismissPromo();
         }
     }
 
@@ -130,12 +117,12 @@ export class PromoNotificationApi {
         const currentTime = Date.now();
         const timeSinceLastNotification = currentTime - await PromoNotificationApi.getLastNotificationTime();
 
-        // Just a check to not show the notification too often
+        //  Do not show notification too often
         if (timeSinceLastNotification < PromoNotificationApi.MIN_PERIOD_MS) {
             return null;
         }
 
-        // Check not often than once in 10 minutes
+        // Check no more than every 10 minutes
         const timeSinceLastCheck = currentTime - this.notificationCheckTime;
         if (this.notificationCheckTime > 0 && timeSinceLastCheck <= PromoNotificationApi.CHECK_TIMEOUT_MS) {
             return this.currentNotification;
@@ -146,7 +133,7 @@ export class PromoNotificationApi {
 
         const notificationsValues = Array.from(notificationStorage.values());
 
-        const viewedNotifications = await storage.get(VIEWED_NOTIFICATIONS_KEY) || [];
+        const viewedNotifications = await browserStorage.get(VIEWED_NOTIFICATIONS_KEY) || [];
 
         for (let i = 0; i < notificationsValues.length; i += 1) {
             const notification = notificationsValues[i];
@@ -228,11 +215,11 @@ export class PromoNotificationApi {
      * If it was not shown yet, initialized with the current time.
      */
     private static async getLastNotificationTime(): Promise<number> {
-        let lastTime = Number(await storage.get(LAST_NOTIFICATION_TIME_KEY) || 0);
+        let lastTime = Number(await browserStorage.get(LAST_NOTIFICATION_TIME_KEY) || 0);
 
         if (lastTime === 0) {
             lastTime = Date.now();
-            await storage.set(LAST_NOTIFICATION_TIME_KEY, lastTime);
+            await browserStorage.set(LAST_NOTIFICATION_TIME_KEY, lastTime);
         }
 
         return lastTime;

@@ -33,13 +33,16 @@
         "message": "Povolit"
     },
     "popup_header_cta_link": {
-        "message": "Chcete dále blokovat?"
+        "message": "Jak zlepšit ochranu"
     },
     "popup_header_update_filters": {
         "message": "Vyhledat aktualizace filtrů"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "Přípona souboru rozšíření musí být %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "Obnovit"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard pro iOS"
@@ -60,7 +63,7 @@
         "message": "Zakázat oznámení"
     },
     "popup_adguard_footer_title": {
-        "message": "Získat AdGuard pro mobilní zařízení"
+        "message": "Chraňte své mobilní zařízení"
     },
     "options_popup_call_to_action": {
         "message": "Zadejte platnou adresu URL nebo cestu k souboru filtru do výše uvedeného vstupního pole."
@@ -141,16 +144,16 @@
         "message": "Modifikovaná pravidla: %rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "Pravidla režimu utajení: %rules_count%"
+        "message": "Pravidla ochrany před sledováním: %rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "Režim utajení"
+        "message": "Ochrana před sledováním zapnuta"
     },
     "filtering_log_in_allowlist": {
         "message": "Stránka je povolena"
     },
     "filtering_log_hide_referrer": {
-        "message": "Referenční ID je skryto třetím stranám"
+        "message": "Referenční ID skryto před třetími stranami"
     },
     "filtering_log_hide_search_queries": {
         "message": "Vyhledávací dotazy skryty"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "Zvolili jste si důvěřovat tomuto filtru."
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "Celkem pravidel: %num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "Specifikace na GitHubu"
+    },
     "options_add_custom_filter": {
         "message": "Přidat vlastní filtr"
     },
     "options_empty_custom_filter": {
         "message": "Zatím nemáte žádné vlastní filtry"
+    },
+    "options_loader_applying_changes": {
+        "message": "Aplikuji změny..."
     },
     "options_editor_indicator_saving": {
         "message": "Ukládání..."
@@ -239,14 +251,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "Zabezpečená stránka"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "Načítání..."
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "Spouštění ochrany..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "Ochrana je zapnuta"
+    },
+    "popup_site_filtering_state_disabling": {
+        "message": "Ukončování ochrany..."
     },
     "popup_site_filtering_state_disabled": {
         "message": "Ochrana je vypnuta"
     },
+    "popup_site_filtering_state_pausing": {
+        "message": "Pozastavuji ochranu..."
+    },
     "popup_site_filtering_state_paused": {
         "message": "Ochrana je pozastavena"
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "Obnovuji ochranu..."
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "pro všechny webové stránky"
     },
     "popup_site_exception_information": {
         "message": "Filtrování je vypnuto, protože může narušit provoz tohoto webu."
@@ -356,8 +386,8 @@
     "popup_security_report": {
         "message": "Zkontrolovat bezpečnost webové stránky"
     },
-    "popup_reset_custom_rules": {
-        "message": "Vymazat všechna vlastní pravidla pro tuto stránku"
+    "popup_reset_page_user_rules": {
+        "message": "Vymazat uživatelská pravidla pro tento web"
     },
     "context_block_site_ads": {
         "message": "Zablokovat reklamy na této stránce..."
@@ -483,7 +513,7 @@
         "message": "Pravidla:"
     },
     "filtering_modal_privacy": {
-        "message": "Soukromí:"
+        "message": "Ochrana před sledováním:"
     },
     "filtering_modal_filter": {
         "message": "Filtr:"
@@ -648,7 +678,7 @@
         "message": "Zanechat zpětnou vazbu"
     },
     "options_privacy": {
-        "message": "Soukromí"
+        "message": "Ochrana před sledováním"
     },
     "options_update_antibanner_filters": {
         "message": "Vyhledat aktualizace filtrů"
@@ -707,6 +737,90 @@
     "options_miscellaneous_settings": {
         "message": "Další nastavení"
     },
+    "options_rule_limits": {
+        "message": "Limity pravidel"
+    },
+    "options_rule_limits_description": {
+        "message": "Toto rozšíření je v souladu s Manifest V3"
+    },
+    "options_rule_limits_description_link": {
+        "message": "Další informace o Manifest V3"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "Dynamická pravidla"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "Pravidla přidaná uživatelem, například uživatelská pravidla a vlastní filtry"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "Pravidla regex — zahrnuta výše"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "Statické sady pravidel"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "Vestavěné filtry, například Blokování obtěžování nebo Jazykově specifické filtry"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "Statická pravidla"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "Pravidla z vestavěných filtrů"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "Pravidla regex — zahrnuta výše"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current% z %maximum%"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "Prohlížeč upravil seznam aktivních filtrů"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "Co se stalo?"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "Po aktualizaci nebo přidání nového rozšíření byl překročen limit aktivních vestavěných pravidel. Podle Manifest V3 prohlížeč Chrome reagoval tak, že zakázal všechny vestavěné filtry rozšíření kromě výchozích."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "Filtry povolené před aktualizací"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "Filtry jsou nyní aktivovány"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "Vaše možné akce"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "Možnost 1. Odstraňte z prohlížeče nepotřebná rozšíření blokování reklam. Chcete-li znovu aktivovat filtry uvedené v části \"Filtry povolené před aktualizací\", klikněte na tlačítko <a>znovu aktivovat filtry.<\/a>"
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "Možnost 2. Nainstalujte si aplikaci blokátor reklam AdGuard: nemá žádná omezení pravidel filtrování. <a>Získat aplikaci AdGuard<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "Možnost 3. Pokud vám vyhovují aktuálně povolené výchozí filtry, <a>zavřete toto upozornění.<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "Možnost 3. Pokud vám vyhovují aktuálně povolené výchozí filtry, <a>zavřete toto upozornění.<\/a>"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel. Váš prohlížeč upravil seznam aktivních vestavěných filtrů. Počet povolených filtrů se změnil z %expected% na %current%."
+    },
+    "options_limits_warning_static_filters": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných filtrů. Je povoleno %maximum% z %current% filtrů. Chcete-li aktivovat nová pravidla, zakažte některé vestavěné filtry."
+    },
+    "options_limits_warning_static_rules": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel. Je povoleno %maximum% z %current% pravidel. Chcete-li aktivovat nová pravidla, zakažte některé vestavěné filtry."
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel regex. Je povoleno %maximum% z %current% pravidel regex. Chcete-li aktivovat nová pravidla, zakažte některé vestavěné filtry."
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "Dosáhli jste limitu počtu pravidel přidaných uživateli. Je povoleno %maximum% z %current% pravidel."
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "Dosáhli jste limitu počtu pravidel regex přidaných uživateli. Je povoleno %maximum% z %current% pravide regexl."
+    },
     "options_show_adguard_full_version_title": {
         "message": "Zobrazit informace o plné verzi AdGuard"
     },
@@ -747,13 +861,13 @@
         "message": "Používá kratší verze filtrů pouze s nejoblíbenějšími pravidly, aby se ušetřil datový provoz. Vhodnější pro mobilní prohlížeče"
     },
     "options_privacy_title": {
-        "message": "Soukromí"
+        "message": "Ochrana před sledováním"
     },
     "options_privacy_desc": {
         "message": "Režim utajení chrání vaši identitu a citlivé osobní informace od tisíců online slídičů."
     },
     "options_hide_referrer_title": {
-        "message": "Skrýt třetím stranám referenční ID"
+        "message": " Skrýt třetím stranám referenční ID"
     },
     "options_hide_referrer_desc": {
         "message": "Zabraňuje třetím stranám rozpoznat, které webové stránky jste navštívili."
@@ -841,6 +955,9 @@
     },
     "popup_switch_button": {
         "message": "Přepínač ochrany"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "Váš prohlížeč upravil seznam aktivních vestavěných filtrů"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1003,6 +1120,9 @@
     },
     "options_stealth_miscellaneous_title": {
         "message": "Různé"
+    },
+    "options_coming_soon": {
+        "message": "Již brzy"
     },
     "blocking_pages_malware": {
         "message": "Webová stránka <strong>%host%<\/strong> byla ohlášena jako škodlivá a na základě Vašich bezpečnostních nastavení byla zablokována."

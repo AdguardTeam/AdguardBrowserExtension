@@ -16,20 +16,32 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
+import isString from 'lodash-es/isString';
+import isUndefined from 'lodash-es/isUndefined';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
-import { SbCache, storage } from '../../storages';
+import {
+    RAW_FILTER_KEY_PREFIX,
+    FILTER_KEY_PREFIX,
+    FiltersStorage,
+    SbCache,
+    hybridStorage,
+    browserStorage,
+    RawFiltersStorage,
+} from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,
     CLIENT_ID_KEY,
+    NEWLINE_CHAR_REGEX,
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import {
     type SafebrowsingCacheData,
     type SafebrowsingStorageData,
     SchemaPreprocessor,
+    SettingOption,
 } from '../../schema';
 import type { RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
@@ -45,6 +57,7 @@ export class UpdateApi {
         '0': UpdateApi.migrateFromV0toV1,
         '1': UpdateApi.migrateFromV1toV2,
         '2': UpdateApi.migrateFromV2toV3,
+        '3': UpdateApi.migrateFromV3toV4,
     };
 
     /**
@@ -64,14 +77,14 @@ export class UpdateApi {
     }: RunInfo): Promise<void> {
         // check clientId existence
         if (clientId) {
-            await storage.set(CLIENT_ID_KEY, clientId);
+            await browserStorage.set(CLIENT_ID_KEY, clientId);
         } else {
-            await storage.set(CLIENT_ID_KEY, InstallApi.genClientId());
+            await browserStorage.set(CLIENT_ID_KEY, InstallApi.genClientId());
         }
 
         // set actual schema and app version
-        await storage.set(SCHEMA_VERSION_KEY, currentSchemaVersion);
-        await storage.set(APP_VERSION_KEY, currentAppVersion);
+        await browserStorage.set(SCHEMA_VERSION_KEY, currentSchemaVersion);
+        await browserStorage.set(APP_VERSION_KEY, currentAppVersion);
 
         // run migrations, if they needed.
         await UpdateApi.runMigrations(currentSchemaVersion, previousSchemaVersion);
@@ -103,7 +116,7 @@ export class UpdateApi {
         } catch (e) {
             logger.error('Error while migrate: ', e);
             logger.info('Reset settings...');
-            await storage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
+            await browserStorage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
         }
     }
 
@@ -131,6 +144,136 @@ export class UpdateApi {
     }
 
     /**
+     * Run data migration from schema v3 to schema v4.
+     *
+     * @throws If previous data schema is invalid or saving data to the hybrid storage fails.
+     */
+    private static async migrateFromV3toV4(): Promise<void> {
+        // Get all entries from the `browser.storage.local`.
+        const entries = await browserStorage.entries();
+
+        // Find all keys that are related to filters.
+        const keys = Object.keys(entries);
+        const rawFilterKeys = keys.filter((key) => key.startsWith(RAW_FILTER_KEY_PREFIX));
+        const filterKeys = keys.filter((key) => key.startsWith(FILTER_KEY_PREFIX));
+
+        // Check if there are no filters to migrate.
+        if (rawFilterKeys.length === 0 && filterKeys.length === 0) {
+            logger.debug('No filters to migrate from storage to hybrid storage');
+            return;
+        }
+
+        // Prepare data to migrate.
+        const migrationData: Record<string, string> = {};
+
+        const filterSchema = zod.union([
+            zod.string(),
+            zod.array(zod.string()),
+        ]);
+
+        // Migrate filters.
+        filterKeys.forEach((key) => {
+            const filterId = FiltersStorage.extractFilterIdFromFilterKey(key);
+            if (filterId === null) {
+                logger.debug(`Failed to extract filter ID from the key: ${key}, skipping`);
+                return;
+            }
+
+            const filterParsingResult = filterSchema.safeParse(entries[key]);
+
+            if (!filterParsingResult.success) {
+                logger.debug(
+                    // eslint-disable-next-line max-len
+                    `Failed to parse data from filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
+                );
+                return;
+            }
+
+            const lines = Array.isArray(filterParsingResult.data)
+                ? filterParsingResult.data
+                : filterParsingResult.data.split(NEWLINE_CHAR_REGEX);
+
+            Object.assign(migrationData, FiltersStorage.prepareFilterForStorage(filterId, lines));
+        });
+
+        // Migrate raw filters.
+        rawFilterKeys.forEach((key) => {
+            const filterId = RawFiltersStorage.extractFilterIdFromFilterKey(key);
+            if (filterId === null) {
+                logger.debug(`Failed to extract raw filter ID from the key: ${key}, skipping`);
+                return;
+            }
+
+            const filterParsingResult = zod.string().safeParse(entries[key]);
+
+            if (!filterParsingResult.success) {
+                logger.debug(
+                    // eslint-disable-next-line max-len
+                    `Failed to parse data from raw filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
+                );
+                return;
+            }
+
+            migrationData[key] = filterParsingResult.data;
+        });
+
+        // Save migrated data to the hybrid storage with a single transaction.
+        const transactionResult = await hybridStorage.setMultiple(migrationData);
+        if (!transactionResult) {
+            throw new Error('Failed to migrate filters from storage to hybrid storage, transaction failed');
+        }
+
+        // Delete filters from the `browser.storage.local` after successful migration.
+        await browserStorage.removeMultiple([...rawFilterKeys, ...filterKeys]);
+
+        logger.debug('Filters successfully migrated from storage to hybrid storage');
+
+        const filterVersionDataValidatorV3 = zod.object({
+            version: zod.string(),
+            lastCheckTime: zod.number(),
+            lastUpdateTime: zod.number(),
+            expires: zod.number(),
+            lastScheduledCheckTime: zod.number().optional(),
+        });
+
+        const filtersVersionDataValidatorV3 = zod.record(
+            SchemaPreprocessor.numberValidator,
+            filterVersionDataValidatorV3,
+        );
+
+        const storageData = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+        const settings = zod.record(zod.unknown()).parse(storageData);
+        const rawFiltersVersion = settings[SettingOption.FiltersVersion];
+
+        if (isString(rawFiltersVersion)) {
+            const filtersVersionParsed = filtersVersionDataValidatorV3.safeParse(JSON.parse(rawFiltersVersion));
+
+            if (filtersVersionParsed.success) {
+                const filtersVersion = filtersVersionParsed.data;
+
+                Object.values(filtersVersion).forEach((filterData) => {
+                    if (isUndefined(filterData.lastScheduledCheckTime)) {
+                        filterData.lastScheduledCheckTime = filterData.lastCheckTime;
+                    }
+                });
+
+                settings[SettingOption.FiltersVersion] = JSON.stringify(filtersVersion);
+
+                await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+
+                logger.debug('Filters version data successfully migrated from the old storage');
+            } else {
+                logger.debug(
+                    // eslint-disable-next-line max-len
+                    `Failed to parse filters version data from the old storage: ${getErrorMessage(filtersVersionParsed.error)}`,
+                );
+            }
+        } else {
+            logger.debug('Filters version data is not a string, skipping migration');
+        }
+    }
+
+    /**
      * Run data migration from schema v2 to schema v3.
      */
     private static async migrateFromV2toV3(): Promise<void> {
@@ -154,7 +297,7 @@ export class UpdateApi {
                 .parse(data);
 
             const results = await Promise.allSettled(
-                lists.map(async ({ key, value }) => storage.set(key, value.split(/\r?\n/))),
+                lists.map(async ({ key, value }) => browserStorage.set(key, value.split(/\r?\n/))),
             );
 
             results.forEach((result) => {
@@ -173,7 +316,7 @@ export class UpdateApi {
         /**
          * Add missed trusted flags for custom filters.
          */
-        const storageData = await storage.get('adguard-settings');
+        const storageData = await browserStorage.get('adguard-settings');
         const settings = zod.record(zod.unknown()).parse(storageData);
         const customFilters = settings['custom-filters'];
 
@@ -192,7 +335,7 @@ export class UpdateApi {
             const customFiltersData = JSON.parse(customFilters);
             settings['custom-filters'] = JSON.stringify(customFiltersDataTransformer.parse(customFiltersData));
 
-            await storage.set('adguard-settings', settings);
+            await browserStorage.set('adguard-settings', settings);
         }
     }
 
@@ -201,7 +344,7 @@ export class UpdateApi {
      */
     private static async migrateFromV1toV2(): Promise<void> {
         // From v4.2.135 we store timestamp of expiration time for safebrowsing cache records.
-        const storageData = await storage.get('sb-lru-cache');
+        const storageData = await browserStorage.get('sb-lru-cache');
 
         if (typeof storageData !== 'string') {
             return;
@@ -233,7 +376,7 @@ export class UpdateApi {
             };
         });
 
-        await storage.set('sb-lru-cache', JSON.stringify(sbStorageDataV2));
+        await browserStorage.set('sb-lru-cache', JSON.stringify(sbStorageDataV2));
     }
 
     /**
@@ -249,7 +392,7 @@ export class UpdateApi {
         // In the v4.2.0 we are refactoring storage data structure
 
         // get current settings
-        const storageData = await storage.get('adguard-settings');
+        const storageData = await browserStorage.get('adguard-settings');
 
         // check if current settings is record
         const currentSettings = zod
@@ -440,7 +583,7 @@ export class UpdateApi {
         const settings = settingsValidator.parse({ ...defaultSettings, ...currentSettings });
 
         // set new settings to storage
-        await storage.set('adguard-settings', settings);
+        await browserStorage.set('adguard-settings', settings);
     }
 
     /**
@@ -457,7 +600,7 @@ export class UpdateApi {
 
         if (data) {
             delete currentSettings[key];
-            await storage.set(key, data);
+            await browserStorage.set(key, data);
         }
     }
 }

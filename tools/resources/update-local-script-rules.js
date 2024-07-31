@@ -28,50 +28,63 @@
  */
 import { promises as fs } from 'fs';
 
+import * as _ from 'lodash';
+
+import {
+    CosmeticRuleParser,
+    FilterListParser,
+    defaultParserOptions,
+} from '@adguard/agtree';
+
 import { FILTERS_DEST, LOCAL_SCRIPT_RULES_COMMENT } from '../constants';
 import { ADGUARD_FILTERS_IDS } from '../../constants';
-
-/**
- * @param arr - array with elements [{domains: '', script: ''}, ...]
- * @param domainsToCheck String
- * @param scriptToCheck String
- * @returns {boolean}
- */
-const isInArray = (arr, domainsToCheck, scriptToCheck) => {
-    for (let i = 0; i < arr.length; i += 1) {
-        const element = arr[i];
-        const { domains, script } = element;
-        if (domains === domainsToCheck && script === scriptToCheck) {
-            return true;
-        }
-    }
-    return false;
-};
 
 const updateLocalScriptRulesForBrowser = async (browser) => {
     const folder = FILTERS_DEST.replace('%browser', browser);
     const rules = {
         comment: LOCAL_SCRIPT_RULES_COMMENT,
-        rules: [],
+        rules: {},
     };
 
     // eslint-disable-next-line no-restricted-syntax
     for (const filterId of ADGUARD_FILTERS_IDS) {
         // eslint-disable-next-line no-await-in-loop
-        const filters = (await fs.readFile(`${folder}/filter_${filterId}.txt`)).toString();
-        const lines = filters.split('\n');
+        const rawFilterList = (await fs.readFile(`${folder}/filter_${filterId}.txt`)).toString();
+        const filterListNode = FilterListParser.parse(rawFilterList, {
+            ...defaultParserOptions,
+            includeRaws: false,
+            isLocIncluded: false,
+            tolerant: true,
+        });
 
-        lines.forEach((line) => {
-            line = line.trim();
-            if (line && line[0] !== '!' && line.indexOf('#%#') > -1) {
-                const m = line.split('#%#');
-                m[0] = m[0] === '' ? '<any>' : m[0];
-                // check that rule is not in array already
-                if (!isInArray(rules.rules, m[0], m[1])) {
-                    rules.rules.push({
-                        domains: m[0],
-                        script: m[1],
-                    });
+        filterListNode.children.forEach((ruleNode) => {
+            if (
+                ruleNode.category === 'Cosmetic'
+                && (ruleNode.type === 'ScriptletInjectionRule' || ruleNode.type === 'JsInjectionRule')
+            ) {
+                // Re-generate raw body to make it consistent with TSUrlFilter rule instances
+                // (TSUrlFilter also re-generates body from AST in the cosmetic rule constructor)
+                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
+                const permittedDomains = [];
+                const restrictedDomains = [];
+
+                ruleNode.domains.children.forEach((domainNode) => {
+                    if (domainNode.exception) {
+                        restrictedDomains.push(domainNode.value);
+                    } else {
+                        permittedDomains.push(domainNode.value);
+                    }
+                });
+
+                const toPush = {
+                    permittedDomains,
+                    restrictedDomains,
+                };
+
+                if (rules.rules[rawBody] === undefined) {
+                    rules.rules[rawBody] = [toPush];
+                } else if (!_.some(rules.rules[rawBody], toPush)) {
+                    rules.rules[rawBody].push(toPush);
                 }
             }
         });

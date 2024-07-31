@@ -26,16 +26,29 @@ export const localScriptRulesValidator = zod.object({
      * JS rules from all of our filters are pre-assembled into this object to be
      * checked in Firefox AMO to see if they can be executed.
      */
-    rules: zod.object({
+    rules: zod.record(
         /**
-         * Domains in which the rule should be applied.
+         * Key is the cosmetic rule body.
          */
-        domains: zod.string(),
+        zod.string(),
+
         /**
-         * The text of the script rule.
+         * Value is the array of cosmetic rule scope (on which domains it should be applied).
+         * If multiple rules are using the same body, their scopes are pushed to this array,
+         * if they are not already there.
          */
-        script: zod.string(),
-    }).array(),
+        zod.object({
+            /**
+             * The array of domains on which the rule can be executed.
+             */
+            permittedDomains: zod.array(zod.string()),
+
+            /**
+             * The array of domains on which the rule cannot be executed.
+             */
+            restrictedDomains: zod.array(zod.string()),
+        }).array(),
+    ),
 }).strict();
 
 /**

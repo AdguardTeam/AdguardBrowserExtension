@@ -1,9 +1,9 @@
-! Checksum: f/HTr9o3amifC0aHzbthKg
-! Diff-Path: ../patches/5/5-s-1711964243-3600.patch
+! Checksum: caNiARXNbtEZlXW3qn5Kkg
+! Diff-Path: ../patches/5/5-s-1718465678-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.40
-! TimeUpdated: 2024-04-01T09:33:27+00:00
+! Version: 2.0.1.54
+! TimeUpdated: 2024-06-15T15:32:17+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -142,10 +142,11 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! Fix for new ads
+! TODO: move to the Base filter if it doesn't break anything
+youtube.com#%#//scriptlet('adjust-setTimeout', '[native code]', '17000', '0.001')
+youtube.com#%#(()=>{let t=document.location.href,e=[],n=[],o=!1;const r=Array.prototype.push,i={apply:(t,i,a)=>(window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id&&a[0]&&a[0]!==window&&"number"==typeof a[0].start&&a[0].end&&"ssap"===a[0].namespace&&a[0].id&&(o||0!==a[0]?.start||n.includes(a[0].id)||(e.length=0,n.length=0,o=!0,r.call(e,a[0]),r.call(n,a[0].id)),o&&0!==a[0]?.start&&!n.includes(a[0].id)&&(r.call(e,a[0]),r.call(n,a[0].id))),Reflect.apply(t,i,a))};window.Array.prototype.push=new Proxy(window.Array.prototype.push,i),AG_onLoad((function(){if(!window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id)return;const r=()=>{const t=document.querySelector("video");if(t&&e.length){const r=Math.round(t.duration),i=Math.round(e.at(-1).end/1e3);if(0===t.currentTime&&r&&r===i){const r=Math.ceil(e.at(-1).start/1e3);t.currentTime<r&&(t.currentTime=r,o=!1,e.length=0,n.length=0)}}};r();new MutationObserver((()=>{t!==document.location.href?(t=document.location.href,e.length=0,n.length=0,o=!1,r()):r()})).observe(document,{childList:!0,subtree:!0})}))})();
 ! remove anti-adb
-! Fix ads on https://www.youtube.com/shorts/
-! TODO: If it does not cause any problems, move it to the Base filter
-www.youtube.com#%#(()=>{window.JSON.parse=new Proxy(JSON.parse,{apply(r,e,t){const n=Reflect.apply(r,e,t);if(!location.pathname.startsWith("/shorts/"))return n;const a=n?.entries;return a&&Array.isArray(a)&&(n.entries=n.entries.filter((r=>{if(!r?.command?.reelWatchEndpoint?.adClientParams?.isAd)return r}))),n}});})();
 ! main youtube page - changing view for the first row of elements
 www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) > #contents:first-child { max-width: unset !important; }
 www.youtube.com#$##contents ytd-rich-grid-row:has(> div[id="contents"] > ytd-rich-item-renderer[style="display: none !important;"]) ytd-rich-grid-media { max-width: unset !important; }
@@ -270,6 +271,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_experimental
 ! Detect of using AdGuard products
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+! Detect HTTPS filtering
+! Detect Advanced Protection of AdGuard for iOS
 !
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!

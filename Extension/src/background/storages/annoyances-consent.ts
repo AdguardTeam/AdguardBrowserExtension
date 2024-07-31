@@ -20,14 +20,14 @@ import { ANNOYANCES_CONSENT_KEY } from '../../common/constants';
 import { AnnoyancesConsentStorageData } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 
-import { storage } from './main';
+import { browserStorage } from './shared-instances';
 
 /**
  * Instance of {@link StringStorage} that stores filter ids for granted consent of
- * annoyances filters in {@link storage} under {@link ANNOYANCES_CONSENT_KEY} key.
+ * annoyances filters in {@link browserStorage} under {@link ANNOYANCES_CONSENT_KEY} key.
  */
 export const annoyancesConsentStorage = new StringStorage<
     typeof ANNOYANCES_CONSENT_KEY,
     AnnoyancesConsentStorageData,
     'async'
->(ANNOYANCES_CONSENT_KEY, storage);
+>(ANNOYANCES_CONSENT_KEY, browserStorage);

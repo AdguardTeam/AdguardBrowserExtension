@@ -7,13 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- `HybridStorage` for storing data via IndexedDB with fallback to `chrome.storage.local`.
+- Syntax highlighting for `$permissions` modifier in the rule editor.
+- [@adguard/agtree] for working with rules tree.
+
 ### Changed
-- Updated [@adguard/tswebextension] to v1.0.25.
+- Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607].
+- Filter lists are now stored in a pre-processed format, which makes the engine start more efficiently,
+  since the engine does not need to convert or parse the rules.
+- Updated [@adguard/tswebextension] to v2.0.0.
+- Updated [@adguard/tsurlfilter] to v3.0.0.
+- Updated [@adguard/scriptlets] to v1.11.6.
 
 ### Fixed
+- Filtering log gets refreshed when navigating yandex maps [#2519].
+- Filtering log is broken by `history.replaceState` [#2598].
+- Style filter is applied, but scriptlet filter is not in Firefox [#2782].
+- Missing info on custom filters when reporting issues [#2793].
 - Some filters are not updated when enabled [#2818].
+- Can't set notifications viewed.
+- Console errors on the background page when opening `chrome://new-tab-page/`.
+- `$permissions` rules are not shown in the filtering log.
+- Extension's action icon flickering on tab change.
+- Filters auto updates not refreshing `last updated date` field [#2726].
+- Extension's action icon flickering on tab change.
 
-[#2817]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2817
+[4.4.7]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.64...v4.4.7
+[#2519]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2519
+[#2598]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2598
+[#2607]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607
+[#2726]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2726
+[#2782]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2782
+[#2793]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2793
 [#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
 
 
@@ -122,13 +148,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Detecting dangerous rules.
 
 ### Fixed
-- Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693)
+- Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693).
 
 
 ## [4.3.10] - 2024-01-20
 
 ### Fixed
-- Automatic filters update does not work in mobile browsers [#2423](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2423)
+- Automatic filters update does not work in mobile browsers [#2423](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2423).
 
 ## Changed
 - Updated [@adguard/filters-downloader] to v2.0.7.
@@ -140,8 +166,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Getting user consent on annoyances filter enabling.
 
 ### Fixed
-- Fixed compatibility for minimum supported versions [#2661](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2661)
-- Filters group not opening if some text is selected on the page [#2662](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2662)
+- Fixed compatibility for minimum supported versions [#2661](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2661).
+- Filters group not opening if some text is selected on the page [#2662](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2662).
 
 ### Changed
 - Download and apply differential updates [2586](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2586)
@@ -154,7 +180,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.2.240] - 2023-12-15
 
 ### Added
-- Info about `@adguard/tswebextension`, `@adguard/tsurlfilter`, `@adguard/extended-css` and `@adguard/scriptlets` versions to the options page's About tab [#2237](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2237)
+- Info about `@adguard/tswebextension`, `@adguard/tsurlfilter`, `@adguard/extended-css` and `@adguard/scriptlets` versions to the options page's About tab [#2237](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2237).
 
 ### Changed
 - Updated [@adguard/tswebextension] to v1.0.5.
@@ -317,5 +343,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
+[@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/tswebextension]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
 [@adguard/tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md

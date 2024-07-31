@@ -302,12 +302,14 @@ export class Categories {
                 // Sometimes filter version data might be missing https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
                 // so we set it to values from metadata
                 logger.info(`Cannot find filter ${filterId} version data, restoring it from metadata`);
+                const dayAgoMs = Date.now() - 1000 * 60 * 60 * 24; // 24 hours
                 filterVersion = {
                     version,
                     expires,
                     lastUpdateTime: (new Date(timeUpdated)).getTime(),
                     // this is set in the past to force update check
-                    lastCheckTime: Date.now() - 1000 * 60 * 60 * 24, // 24 hours
+                    lastCheckTime: dayAgoMs,
+                    lastScheduledCheckTime: dayAgoMs,
                     diffPath,
                 };
                 filterVersionStorage.set(filterId, filterVersion);
@@ -369,7 +371,7 @@ export class Categories {
      *
      * @returns List of filters ids.
      */
-    private static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
+    public static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
         const filtersMetadata = FiltersApi.getFiltersMetadata();
 
         return filtersMetadata

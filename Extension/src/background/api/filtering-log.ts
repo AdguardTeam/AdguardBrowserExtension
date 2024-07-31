@@ -22,32 +22,35 @@ import {
     ContentType,
     CookieEvent,
     isExtensionUrl,
-    CosmeticRule,
-    NetworkRule,
-    CosmeticRuleType,
-    NetworkRuleOption,
     StealthActionEvent,
+    getRuleSourceText,
+    getRuleSourceIndex,
+    PreprocessedFilterList,
+    ConfigurationMV2,
 } from '@adguard/tswebextension';
+import { RuleParser } from '@adguard/agtree';
+import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
-import { AntiBannerFiltersId } from '../../common/constants';
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
 import { Engine } from '../engine';
-import { settingsStorage } from '../storages';
+import { FiltersStorage, settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
-
-import { UserRulesApi } from './filters';
+import { AntiBannerFiltersId } from '../../common/constants';
 
 export type FilteringEventRuleData = {
     filterId: number,
-    ruleText: string,
+    ruleIndex: number,
+    originalRuleText?: string,
     isImportant?: boolean,
     documentLevelRule?: boolean,
     isStealthModeRule?: boolean,
     allowlistRule?: boolean,
+    allowlistStealthRule?: boolean,
     cspRule?: boolean,
+    permissionsRule?: boolean,
     modifierValue?: string,
     cookieRule?: boolean,
     contentRule?: boolean,
@@ -77,6 +80,7 @@ export type FilteringLogEvent = {
     isModifyingCookieRule?: boolean,
     cspReportBlocked?: boolean,
     replaceRules?: FilteringEventRuleData[],
+    stealthAllowlistRules?: FilteringEventRuleData[],
     stealthActions?: StealthActionEvent['data']['stealthActions'],
 };
 
@@ -88,11 +92,41 @@ export type FilteringLogTabInfo = {
 };
 
 /**
+ * Interface for representing applied rule text and original rule text.
+ */
+interface RuleText {
+    /**
+     * Applied rule text, always present.
+     */
+    appliedRuleText: string;
+
+    /**
+     * Original rule text. Present if the applied rule is a converted rule.
+     * If not present, the applied rule text is the same as the original rule text.
+     */
+    originalRuleText?: string;
+}
+
+/**
+ * Cached filter data.
+ */
+type CachedFilterData = Pick<PreprocessedFilterList, 'rawFilterList' | 'conversionMap' | 'sourceMap'>;
+
+/**
  * The filtering log collects all available information about requests
  * and the rules applied to them.
  */
 export class FilteringLogApi {
     private static readonly REQUESTS_SIZE_PER_TAB = 1000;
+
+    /**
+     * Filter lists that are generated dynamically by TSWebExtension.
+     * We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
+     */
+    private static readonly DYNAMIC_FILTER_LISTS = new Set([
+        AntiBannerFiltersId.StealthModeFilterId,
+        AntiBannerFiltersId.AllowlistFilterId,
+    ]);
 
     private preserveLogEnabled = false;
 
@@ -106,6 +140,239 @@ export class FilteringLogApi {
             filteringEvents: [],
         }],
     ]);
+
+    /**
+     * Cache for filters data.
+     *
+     * The key is the filter list id and the value is the filter data.
+     * This cache is used to avoid unnecessary requests to the storage while filtering log is opened.
+     * After closing the filtering log, the cache is purged to free up memory.
+     */
+    private filtersCache = new Map<number, CachedFilterData>();
+
+    /**
+     * Map of filter sync attempts. The key is the filter list id and the value is the last attempt time.
+     * In some rare edge cases (but maybe never), the filters cache may be become outdated,
+     * so we need to sync the filter again.
+     * We only try this sync if we encounter an error while getting rule text.
+     */
+    private filterSyncAttempts = new Map<number, number>();
+
+    /**
+     * Interval for sync attempts in milliseconds.
+     * We should try to sync the filter only once per 10 seconds.
+     */
+    private static readonly SYNC_ATTEMPTS_INTERVAL_MS = 10000;
+
+    /**
+     * Flag to invert allowlist mode.
+     */
+    private allowlistInverted = false;
+
+    /**
+     * Purges filters cache.
+     *
+     * @param filterIds Filter ids to remove from cache. If not provided, the whole cache will be purged.
+     */
+    private purgeFiltersCache(filterIds?: number[]): void {
+        if (filterIds) {
+            filterIds.forEach((filterId) => this.filtersCache.delete(filterId));
+
+            logger.info(`Filtering log filters cache purged for filter ids: ${filterIds.join(', ')}`);
+            return;
+        }
+
+        this.filtersCache.clear();
+
+        logger.info('Filtering log filters cache purged');
+    }
+
+    /**
+     * Purges filter sync attempts.
+     *
+     * @param filterIds Filter ids to remove from cache. If not provided, the whole cache will be purged.
+     */
+    private purgeFilterSyncAttempts(filterIds?: number[]): void {
+        if (filterIds) {
+            filterIds.forEach((filterId) => this.filterSyncAttempts.delete(filterId));
+            return;
+        }
+
+        this.filterSyncAttempts.clear();
+    }
+
+    /**
+     * Called when the engine is updated.
+     *
+     * @param configuration TSWebExtension configuration.
+     */
+    public onEngineUpdated(configuration: ConfigurationMV2): void {
+        this.allowlistInverted = configuration.settings.allowlistInverted ?? false;
+
+        if (!this.isOpen()) {
+            return;
+        }
+
+        // We need to purge the filters cache, because the filters data may be changed after the engine update
+        this.purgeFiltersCache();
+        this.purgeFilterSyncAttempts();
+    }
+
+    /**
+     * Helper method to get filter data.
+     * It handles a cache internally to speed up requests for the same filter next time.
+     *
+     * @param filterId Filter id.
+     * @returns Filter data or undefined if the filter is not found.
+     */
+    private async getFilterData(filterId: number): Promise<CachedFilterData | undefined> {
+        if (this.filtersCache.has(filterId)) {
+            return this.filtersCache.get(filterId);
+        }
+
+        try {
+            const [rawFilterList, conversionMap, sourceMap] = await Promise.all([
+                FiltersStorage.getPreprocessedFilterList(filterId),
+                FiltersStorage.getConversionMap(filterId),
+                FiltersStorage.getSourceMap(filterId),
+            ]);
+
+            // Raw filter list and source map are required to get rule texts
+            if (!rawFilterList || !sourceMap) {
+                return undefined;
+            }
+
+            const filterData: CachedFilterData = {
+                rawFilterList,
+                conversionMap,
+                sourceMap,
+            };
+
+            this.filtersCache.set(filterId, filterData);
+
+            return filterData;
+        } catch (e) {
+            logger.error(`Failed to get filter data for filter id ${filterId}`, e);
+        }
+
+        return undefined;
+    }
+
+    /**
+     * Tries to sync the cached filter data with the storage.
+     *
+     * @param filterId Filter id.
+     * @returns Returns false if the filter was synced within the last {@link SYNC_ATTEMPTS_INTERVAL_MS} milliseconds.
+     * Otherwise, returns true.
+     */
+    private attemptToSyncFilter(filterId: number): boolean {
+        const lastAttemptTime = this.filterSyncAttempts.get(filterId) || 0;
+
+        if (Date.now() - lastAttemptTime < FilteringLogApi.SYNC_ATTEMPTS_INTERVAL_MS) {
+            return false;
+        }
+
+        // Delete filter from the cache to force a new request next time
+        this.purgeFiltersCache([filterId]);
+
+        this.filterSyncAttempts.set(filterId, Date.now());
+
+        return true;
+    }
+
+    /**
+     * Gets rule text for the specified filter id and rule index.
+     * If the rule is not found, returns null.
+     * It handles a cache internally to speed up requests for the same filter next time.
+     *
+     * @param filterId Filter id.
+     * @param ruleIndex Rule index.
+     * @returns Rule text or null if the rule is not found.
+     */
+    public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
+        // Special case: when inverted allowlist mode is enabled, we generate rules dynamically without rule index,
+        // and we don't need to show them, so we return null.
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2883
+        if (
+            this.allowlistInverted
+            && filterId === AntiBannerFiltersId.AllowlistFilterId
+            && ruleIndex === RULE_INDEX_NONE
+        ) {
+            return null;
+        }
+
+        // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
+        // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
+        if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {
+            const ruleNode = Engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
+
+            if (!ruleNode) {
+                logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
+                return null;
+            }
+
+            const ruleText = RuleParser.generate(ruleNode);
+
+            if (!ruleText) {
+                logger.error(`Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
+                return null;
+            }
+
+            return {
+                appliedRuleText: ruleText,
+            };
+        }
+
+        const filterData = await this.getFilterData(filterId);
+
+        if (!filterData) {
+            logger.error(`Failed to get filter data for filter id ${filterId}`);
+            return null;
+        }
+
+        const { rawFilterList, conversionMap, sourceMap } = filterData;
+
+        // Get line start index in the source file by rule start index in the byte array
+        const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
+
+        if (lineStartIndex === -1) {
+            const baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            // If the rule is not found, try to sync the filter and try again
+            if (this.attemptToSyncFilter(filterId)) {
+                logger.warn(`${baseMessage}, trying to sync the filter`);
+                return this.getRuleText(filterId, ruleIndex);
+            }
+
+            logger.error(baseMessage);
+            return null;
+        }
+
+        const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
+
+        if (!appliedRuleText) {
+            const baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            // If the rule is not found, try to sync the filter and try again
+            if (this.attemptToSyncFilter(filterId)) {
+                logger.warn(`${baseMessage}, trying to sync the filter`);
+                return this.getRuleText(filterId, ruleIndex);
+            }
+
+            logger.error(baseMessage);
+            return null;
+        }
+
+        const result: RuleText = {
+            appliedRuleText,
+        };
+
+        if (conversionMap && conversionMap[lineStartIndex]) {
+            result.originalRuleText = conversionMap[lineStartIndex];
+        }
+
+        return result;
+    }
 
     /**
      * Checks if filtering log page is opened.
@@ -137,7 +404,7 @@ export class FilteringLogApi {
     /**
      * We collect filtering events if opened at least one page of log.
      */
-    public onOpenFilteringLogPage(): void {
+    public async onOpenFilteringLogPage(): Promise<void> {
         this.openedFilteringLogsPages += 1;
 
         try {
@@ -159,6 +426,10 @@ export class FilteringLogApi {
     public onCloseFilteringLogPage(): void {
         this.openedFilteringLogsPages = Math.max(this.openedFilteringLogsPages - 1, 0);
         if (this.openedFilteringLogsPages === 0) {
+            // Purge filters cache to free up memory
+            this.purgeFiltersCache();
+            this.purgeFilterSyncAttempts();
+
             // Clear events
             this.tabsInfoMap.forEach((tabInfo) => {
                 tabInfo.filteringEvents = [];
@@ -338,10 +609,19 @@ export class FilteringLogApi {
      * @param tabId Tab id.
      * @param data {@link FilteringLogEvent} Event data.
      */
-    public addEventData(tabId: number, data: FilteringLogEvent): void {
+    public async addEventData(tabId: number, data: FilteringLogEvent): Promise<void> {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
         if (!tabInfo || !this.isOpen()) {
             return;
+        }
+
+        // Get rule text based on filter id and rule index
+        if (data.requestRule) {
+            const { filterId, ruleIndex } = data.requestRule;
+            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+            if (ruleTextData) {
+                data.requestRule = Object.assign(data.requestRule, ruleTextData);
+            }
         }
 
         tabInfo.filteringEvents.push(data);
@@ -362,11 +642,11 @@ export class FilteringLogApi {
      * @param eventId Event id.
      * @param data Event data.
      */
-    public updateEventData(
+    public async updateEventData(
         tabId: number,
         eventId: string,
         data: Partial<FilteringLogEvent>,
-    ): void {
+    ): Promise<void> {
         const tabInfo = this.getFilteringInfoByTabId(tabId);
         if (!tabInfo || !this.isOpen()) {
             return;
@@ -377,6 +657,27 @@ export class FilteringLogApi {
         let event = filteringEvents.find((e) => e.eventId === eventId);
 
         if (event) {
+            if (data.requestRule) {
+                const { filterId, ruleIndex } = data.requestRule;
+                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+                if (ruleTextData) {
+                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
+                }
+            }
+
+            if (data.replaceRules) {
+                data.replaceRules = await Promise.all(
+                    data.replaceRules.map(async (rule) => {
+                        const { filterId, ruleIndex } = rule;
+                        const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+                        if (ruleTextData) {
+                            return Object.assign(rule, ruleTextData);
+                        }
+                        return rule;
+                    }),
+                );
+            }
+
             event = Object.assign(event, data);
 
             // TODO: Looks like not using. Maybe lost listener in refactoring.
@@ -412,90 +713,6 @@ export class FilteringLogApi {
                 && event.cookieName === cookieName
                 && event.cookieValue === cookieValue;
         });
-    }
-
-    /**
-     * Creates {@link FilteringEventRuleData} from {@link NetworkRule}.
-     *
-     * @param rule Network rule.
-     * @returns Object of {@link FilteringEventRuleData}.
-     */
-    public static createNetworkRuleEventData(rule: NetworkRule): FilteringEventRuleData {
-        const filterId = rule.getFilterListId();
-        const ruleText = rule.getText();
-
-        const data: FilteringEventRuleData = {
-            filterId,
-            ruleText,
-        };
-
-        if (rule.isOptionEnabled(NetworkRuleOption.Important)) {
-            data.isImportant = true;
-        }
-
-        if (rule.isDocumentLevelAllowlistRule()) {
-            data.documentLevelRule = true;
-        }
-
-        if (rule.getFilterListId() === AntiBannerFiltersId.StealthModeFilterId) {
-            data.isStealthModeRule = true;
-        }
-
-        data.allowlistRule = rule.isAllowlist();
-        data.cspRule = rule.isOptionEnabled(NetworkRuleOption.Csp);
-        data.cookieRule = rule.isOptionEnabled(NetworkRuleOption.Cookie);
-
-        const advancedModifiedValue = rule.getAdvancedModifierValue();
-        if (advancedModifiedValue !== null) {
-            data.modifierValue = advancedModifiedValue;
-        }
-
-        if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const originalRule = UserRulesApi.getSourceRule(rule.getText());
-            if (originalRule) {
-                data.ruleText = originalRule;
-                data.appliedRuleText = rule.getText();
-            }
-        }
-
-        return data;
-    }
-
-    /**
-     * Creates {@link FilteringEventRuleData} from {@link CosmeticRule}.
-     *
-     * @param rule Cosmetic rule.
-     * @returns Object of {@link FilteringEventRuleData}.
-     */
-    public static createCosmeticRuleEventData(rule: CosmeticRule): FilteringEventRuleData {
-        const data: FilteringEventRuleData = Object.create(null);
-
-        const filterId = rule.getFilterListId();
-        const ruleText = rule.getText();
-
-        data.filterId = filterId;
-        data.ruleText = ruleText;
-
-        const ruleType = rule.getType();
-
-        if (ruleType === CosmeticRuleType.Html) {
-            data.contentRule = true;
-        } else if (ruleType === CosmeticRuleType.ElementHiding
-            || ruleType === CosmeticRuleType.Css) {
-            data.cssRule = true;
-        } else if (ruleType === CosmeticRuleType.Js) {
-            data.scriptRule = true;
-        }
-
-        if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const originalRule = UserRulesApi.getSourceRule(rule.getText());
-            if (originalRule) {
-                data.ruleText = originalRule;
-                data.appliedRuleText = rule.getText();
-            }
-        }
-
-        return data;
     }
 }
 

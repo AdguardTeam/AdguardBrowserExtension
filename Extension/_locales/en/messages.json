@@ -33,13 +33,16 @@
         "message": "Enable"
     },
     "popup_header_cta_link": {
-        "message": "Want to block more?"
+        "message": "How to enhance protection"
     },
     "popup_header_update_filters": {
         "message": "Check for filter updates"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "The file extension must be %extension%"
+    },
+    "popup_resume_protection_button": {
+        "message": "Resume"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard for iOS"
@@ -60,7 +63,7 @@
         "message": "Disable notifications"
     },
     "popup_adguard_footer_title": {
-        "message": "Get AdGuard for your mobile"
+        "message": "Protect your mobile device"
     },
     "options_popup_call_to_action": {
         "message": "Enter the valid URL or file path of the filter into the field above."
@@ -141,16 +144,16 @@
         "message": "Modified rules: %rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "Stealth Mode rules: %rules_count%"
+        "message": "Tracking protection rules: %rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "Stealth Mode applied"
+        "message": "Tracking protection applied"
     },
     "filtering_log_in_allowlist": {
         "message": "The site is allowed"
     },
     "filtering_log_hide_referrer": {
-        "message": "Referrer hidden from third-parties"
+        "message": "Referer hidden from third-parties"
     },
     "filtering_log_hide_search_queries": {
         "message": "Your search queries hidden"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "You chose to trust this filter."
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "Total rules: %num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "Specs on Github"
+    },
     "options_add_custom_filter": {
         "message": "Add custom filter"
     },
     "options_empty_custom_filter": {
         "message": "You don't have any custom filters yet"
+    },
+    "options_loader_applying_changes": {
+        "message": "Applying changes..."
     },
     "options_editor_indicator_saving": {
         "message": "Saving..."
@@ -239,14 +251,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "Secure page"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "Loading..."
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "Enabling protection..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "Protection is enabled"
+    },
+    "popup_site_filtering_state_disabling": {
+        "message": "Disabling protection..."
     },
     "popup_site_filtering_state_disabled": {
         "message": "Protection is disabled"
     },
+    "popup_site_filtering_state_pausing": {
+        "message": "Pausing protection..."
+    },
     "popup_site_filtering_state_paused": {
         "message": "Protection is paused"
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "Resuming protection..."
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "for all websites"
     },
     "popup_site_exception_information": {
         "message": "Filtering is disabled because it can interfere with this website's operation."
@@ -356,8 +386,8 @@
     "popup_security_report": {
         "message": "Check website security"
     },
-    "popup_reset_custom_rules": {
-        "message": "Remove all user rules for this page"
+    "popup_reset_page_user_rules": {
+        "message": "Delete user rules for this website"
     },
     "context_block_site_ads": {
         "message": "Block ads on this website..."
@@ -483,7 +513,7 @@
         "message": "Rules:"
     },
     "filtering_modal_privacy": {
-        "message": "Stealth Mode:"
+        "message": "Tracking protection:"
     },
     "filtering_modal_filter": {
         "message": "Filter:"
@@ -648,7 +678,7 @@
         "message": "Leave feedback"
     },
     "options_privacy": {
-        "message": "Stealth Mode"
+        "message": "Tracking protection"
     },
     "options_update_antibanner_filters": {
         "message": "Check for filter updates"
@@ -707,6 +737,90 @@
     "options_miscellaneous_settings": {
         "message": "Additional settings"
     },
+    "options_rule_limits": {
+        "message": "Rule limits"
+    },
+    "options_rule_limits_description": {
+        "message": "This extension complies with Manifest V3"
+    },
+    "options_rule_limits_description_link": {
+        "message": "Learn more about Manifest V3"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "Dynamic rules"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "User-added rules, such as user rules and custom filters"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "Regex rules — included in the above"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "Static rulesets"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "Built-in filters, such as Block annoyances or Language-specific filters"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "Static rules"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "Rules from built-in filters"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "Regex rules — included in the above"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%current% of %maximum%"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "The browser has modified the list of active filters"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "What happened?"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "The limit of active built-in rules was exceeded after an update or adding a new extension. As per Manifest V3, your Chrome browser reacted by disabling all the extension's built-in filters except the default ones."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "Filters enabled before the update"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "Filters enabled now"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "Your possible actions"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "Option 1. Delete unnecessary ad-blocking extensions from your browser. To reactivate the filters mentioned in the \"Filters enabled before the update\" section, click <a>reactivate filters.<\/a>"
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "Option 2. Install the AdGuard Ad Blocker app: it has no restrictions on filtering rules. <a>Get the AdGuard app<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "Option 3. If you're satisfied with the currently enabled default filter, <a>close this warning.<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "Option 3. If you're satisfied with the currently enabled default filters, <a>close this warning.<\/a>"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "You've reached the limit of active built-in rules. Your browser has modified the list of active built-in filters. The number of filters enabled has changed from %expected% to %current%."
+    },
+    "options_limits_warning_static_filters": {
+        "message": "You've reached the limit of active built-in filters. %maximum% of %current% filters are enabled. To activate new rules, disable some built-in filters."
+    },
+    "options_limits_warning_static_rules": {
+        "message": "You've reached the limit of active built-in rules. %maximum% of %current% rules are enabled. To activate new rules, disable some built-in filters."
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "You've reached the limit of active built-in regex rules. %maximum% of %current% regex rules are enabled. To activate new rules, disable some built-in filters."
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "You've reached the limit of user-added rules. %maximum% of %current% rules are enabled."
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "You've reached the limit of user-added regex rules. %maximum% of %current% regex rules are enabled."
+    },
     "options_show_adguard_full_version_title": {
         "message": "Show information on the AdGuard full version"
     },
@@ -747,13 +861,13 @@
         "message": "Uses shorter versions of filters with only the most popular rules to save traffic. Better suited to mobile browsers"
     },
     "options_privacy_title": {
-        "message": "Stealth Mode"
+        "message": "Tracking protection"
     },
     "options_privacy_desc": {
         "message": "Protect your identity and sensitive personal information from thousands of online trackers by blocking the most popular tracking methods."
     },
     "options_hide_referrer_title": {
-        "message": "Hide Referrer from third parties"
+        "message": "Hide Referer from third parties"
     },
     "options_hide_referrer_desc": {
         "message": "Prevent third parties from knowing what website you are visiting."
@@ -841,6 +955,9 @@
     },
     "popup_switch_button": {
         "message": "Protection switch"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "Your browser has modified the list of active built-in filters"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1004,6 +1121,9 @@
     "options_stealth_miscellaneous_title": {
         "message": "Miscellaneous"
     },
+    "options_coming_soon": {
+        "message": "Coming soon"
+    },
     "blocking_pages_malware": {
         "message": "This web page at <strong>%host%<\/strong> has been reported as a malware page and has been blocked based on your security preferences."
     },
@@ -1042,5 +1162,13 @@
     },
     "close_button_title": {
         "message": "Close"
+    },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| Applied rule | Applied rules"
+    },
+    "filtering_modal_original_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| Original rule | Original rules"
     }
 }

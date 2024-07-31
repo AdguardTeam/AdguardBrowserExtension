@@ -33,13 +33,16 @@
         "message": "활성화"
     },
     "popup_header_cta_link": {
-        "message": "더 많은 차단을 원하시나요?"
+        "message": "보호 강화 방법"
     },
     "popup_header_update_filters": {
         "message": "필터 업데이트 확인"
     },
     "options_popup_import_settings_wrong_file_ext": {
         "message": "파일 확장자가 %extension% 형식이어야만 합니다"
+    },
+    "popup_resume_protection_button": {
+        "message": "수리"
     },
     "popup_adguard_for_ios": {
         "message": "iOS용 AdGuard"
@@ -60,7 +63,7 @@
         "message": "알림 비활성화"
     },
     "popup_adguard_footer_title": {
-        "message": "모바일용 AdGuard 설치"
+        "message": "모바일 기기 보호"
     },
     "options_popup_call_to_action": {
         "message": "필터의 올바른 URL 또는 파일 경로를 위의 필드에 입력하세요."
@@ -141,10 +144,10 @@
         "message": "수정된 규칙: %rules_count%"
     },
     "filtering_log_stealth_rules": {
-        "message": "스텔스 모드 규칙: %rules_count%"
+        "message": "추적 보호 규칙: %rules_count%"
     },
     "filtering_log_privacy_applied_rules": {
-        "message": "스텔스 모드 적용됨"
+        "message": "추적 보호 적용됨"
     },
     "filtering_log_in_allowlist": {
         "message": "사이트가 허용 목록에 추가됨"
@@ -206,11 +209,20 @@
     "options_filters_filter_trusted_tag_desc": {
         "message": "이 필터를 신뢰하셨습니다."
     },
+    "options_filters_info_mv3_total_rules": {
+        "message": "전체 규칙: %num%"
+    },
+    "options_filters_info_mv3_specs": {
+        "message": "Github의 사양"
+    },
     "options_add_custom_filter": {
         "message": "사용자 정의 필터 추가"
     },
     "options_empty_custom_filter": {
         "message": "아직 사용자 지정 필터가 없습니다"
+    },
+    "options_loader_applying_changes": {
+        "message": "변경 사항을 적용하는 중..."
     },
     "options_editor_indicator_saving": {
         "message": "저장중..."
@@ -239,14 +251,32 @@
     "popup_site_filtering_state_secure_page": {
         "message": "보안 페이지"
     },
+    "popup_site_filtering_state_loading": {
+        "message": "로딩중..."
+    },
+    "popup_site_filtering_state_enabling": {
+        "message": "보호를 활성화하는 중..."
+    },
     "popup_site_filtering_state_enabled": {
         "message": "보호 사용중"
+    },
+    "popup_site_filtering_state_disabling": {
+        "message": "보호를 비활성화하는 중..."
     },
     "popup_site_filtering_state_disabled": {
         "message": "보호가 비활성화 되었습니다."
     },
+    "popup_site_filtering_state_pausing": {
+        "message": "보호를 일시중지하는 중..."
+    },
     "popup_site_filtering_state_paused": {
         "message": "보호가 일시정지 되었습니다."
+    },
+    "popup_site_filtering_state_resuming": {
+        "message": "보호를 재개하는 중..."
+    },
+    "popup_site_filtering_state_subtitle_all_websites": {
+        "message": "모든 웹사이트에 대해"
     },
     "popup_site_exception_information": {
         "message": "이 웹 사이트의 동작을 방해할 수 있어서 필터링이 해제됐습니다."
@@ -356,8 +386,8 @@
     "popup_security_report": {
         "message": "웹사이트 보안 확인"
     },
-    "popup_reset_custom_rules": {
-        "message": "이 페이지에 대한 모든 사용자 규칙 제거"
+    "popup_reset_page_user_rules": {
+        "message": "이 웹사이트에 대한 사용자 규칙 삭제"
     },
     "context_block_site_ads": {
         "message": "이 웹사이트에서 광고 차단..."
@@ -366,7 +396,7 @@
         "message": "웹사이트 보안 확인..."
     },
     "context_complaint_website": {
-        "message": "문제 제보하기..."
+        "message": "문제 신고하기..."
     },
     "context_site_filtering_disabled": {
         "message": "이 도메인에서 AdGuard 실행할 수 없음"
@@ -483,7 +513,7 @@
         "message": "규칙:"
     },
     "filtering_modal_privacy": {
-        "message": "스텔스 모드:"
+        "message": "추적 보호:"
     },
     "filtering_modal_filter": {
         "message": "필터:"
@@ -648,7 +678,7 @@
         "message": "피드백 남기기"
     },
     "options_privacy": {
-        "message": "스텔스 모드"
+        "message": "추적 보호"
     },
     "options_update_antibanner_filters": {
         "message": "필터 업데이트 확인"
@@ -707,6 +737,90 @@
     "options_miscellaneous_settings": {
         "message": "추가 설정"
     },
+    "options_rule_limits": {
+        "message": "규칙 제한"
+    },
+    "options_rule_limits_description": {
+        "message": "이 확장 프로그램은 매니페스트 V3를 따릅니다."
+    },
+    "options_rule_limits_description_link": {
+        "message": "매니페스트 V3에 대해 자세히 알아보기"
+    },
+    "options_rule_limits_dynamic": {
+        "message": "동적 규칙"
+    },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "사용자 정의 규칙이나 필터처럼 사용자가 추가한 규칙"
+    },
+    "options_rule_limits_dynamic_regex": {
+        "message": "정규 표현식 규칙 (위에 포함되어 있음)"
+    },
+    "options_rule_limits_static_rulesets": {
+        "message": "정적 규칙 집합"
+    },
+    "options_rule_limits_static_rulesets_builtin": {
+        "message": "방해 요소 차단 또는 언어별 필터와 같은 내장된 필터"
+    },
+    "options_rule_limits_static_rules": {
+        "message": "정적 규칙"
+    },
+    "options_rule_limits_static_rules_all": {
+        "message": "내장 필터의 규칙"
+    },
+    "options_rule_limits_static_rules_regex": {
+        "message": "정규 표현식 규칙 (위에 포함되어 있음)"
+    },
+    "options_rule_limits_numbers": {
+        "message": "%maximum%개 중 %current%개"
+    },
+    "options_rule_limits_warning_title": {
+        "message": "브라우저에서 활성화된 필터 목록을 수정했습니다"
+    },
+    "options_rule_limits_warning_explanation_title": {
+        "message": "무슨 일이 발생했나요?"
+    },
+    "options_rule_limits_warning_explanation_description": {
+        "message": "새 확장 프로그램을 추가 또는 업데이트한 뒤 활성화된 내장 규칙 수의 제한을 초과했습니다. Chrome 브라우저가 매니페스트 V3에 따라 기본 필터를 제외한 확장 프로그램의 모든 내장 필터를 비활성화했습니다."
+    },
+    "options_rule_limits_warning_list_enabled_before_title": {
+        "message": "업데이트 전 활성화되었던 필터"
+    },
+    "options_rule_limits_warning_list_enabled_now_title": {
+        "message": "현재 활성화된 필터"
+    },
+    "options_rule_limits_warning_actions_title": {
+        "message": "할 수 있는 동작"
+    },
+    "options_rule_limits_warning_actions_delete_filters": {
+        "message": "옵션 1. 브라우저에서 불필요한 광고 차단 확장 프로그램을 삭제하세요. '업데이트 전 활성화되었던 필터' 섹션에 언급된 필터를 다시 활성화하려면 <a>필터 다시 활성화<\/a>를 클릭하세요."
+    },
+    "options_rule_limits_warning_actions_install_app": {
+        "message": "옵션 2. AdGuard 광고 차단기 앱을 설치하세요. 필터링 규칙에 제한이 없습니다. <a>AdGuard 앱 다운로드<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_one_filter": {
+        "message": "옵션 3. 현재 활성화된 기본 필터에 만족하는 경우 <a>이 경고를 닫습니다.<\/a>"
+    },
+    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
+        "message": "옵션 3. 현재 활성화된 기본 필터에 만족하는 경우 <a>이 경고를 닫습니다.<\/a>"
+    },
+    "options_all_limits_exceeded_warning": {
+        "message": "활성 내장 규칙의 한도에 도달했습니다. 브라우저에서 활성 내장 필터 목록을 수정했습니다. 활성화된 필터 수가 %expected%에서 %current%로 변경되었습니다."
+    },
+    "options_limits_warning_static_filters": {
+        "message": "활성 내장 필터의 한도에 도달했습니다. %current% 중 %maximum% 필터가 활성화되었습니다. 새 규칙을 활성화하려면 일부 내장 필터를 비활성화하세요."
+    },
+    "options_limits_warning_static_rules": {
+        "message": "활성 내장 규칙의 한도에 도달했습니다. %current% 중 %maximum% 규칙이 활성화되었습니다. 새 규칙을 활성화하려면 일부 내장 필터를 비활성화하세요."
+    },
+    "options_limits_warning_static_regex_rules": {
+        "message": "활성 내장 정규식 규칙의 한도에 도달했습니다. %current% 중 %maximum% 정규식 규칙이 활성화되었습니다. 새 규칙을 활성화하려면 일부 내장 필터를 비활성화하세요."
+    },
+    "options_limits_warning_dynamic_rules": {
+        "message": "사용자가 추가한 규칙의 한도에 도달했습니다. %current% 중 %maximum% 규칙이 활성화되었습니다."
+    },
+    "options_limits_warning_dynamic_regex_rules": {
+        "message": "사용자가 추가한 정규식 규칙의 한도에 도달했습니다. %current% 중 %maximum% 정규식 규칙이 활성화되었습니다."
+    },
     "options_show_adguard_full_version_title": {
         "message": "AdGuard 전체 버전 정보 보기"
     },
@@ -747,7 +861,7 @@
         "message": "트래픽 절약용으로 가장 인기있는 규칙들만 포함된 간소화된 버전의 필터를 사용합니다. 모바일 브라우저에 더 적합."
     },
     "options_privacy_title": {
-        "message": "스텔스 모드"
+        "message": "추적 보호"
     },
     "options_privacy_desc": {
         "message": "다수의 추적 장치들을 차단함으로써 수천 개의 온라인 추적 장치로부터 당신의 신원과 민감한 개인정보를 보호합니다."
@@ -816,7 +930,7 @@
         "message": "퍼스트 파티 쿠키 유지 제한 시간 (분)."
     },
     "popup_abuse_site": {
-        "message": "문제 제보하기"
+        "message": "문제 신고하기"
     },
     "popup_open_filtering_log": {
         "message": "필터링 로그 열기"
@@ -841,6 +955,9 @@
     },
     "popup_switch_button": {
         "message": "보호 스위치"
+    },
+    "popup_limits_exceeded_warning": {
+        "message": "브라우저에서 활성 내장 필터 목록을 수정했습니다."
     },
     "short_name": {
         "message": "AdGuard"
@@ -1004,6 +1121,9 @@
     "options_stealth_miscellaneous_title": {
         "message": "기타"
     },
+    "options_coming_soon": {
+        "message": "출시 예정"
+    },
     "blocking_pages_malware": {
         "message": "<strong>%host%<\/strong> 페이지는 멀웨어 페이지로 보고되어, 설정하신 보안 설정에 따라 차단되었습니다."
     },
@@ -1042,5 +1162,13 @@
     },
     "close_button_title": {
         "message": "닫기"
+    },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| 적용된 규칙"
+    },
+    "filtering_modal_original_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| 원본 규칙"
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -20,10 +21,29 @@ import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRules } from './resources/update-local-script-rules';
 import { findDangerousRules } from './resources/dangerous-rules';
 
+const DEFAULT_OPENAI_API_TOKEN = '<openai_api_key>';
+
+const isOpenAiTokenProvided = () => {
+    const token = process.env.OPENAI_API_KEY;
+    return token !== undefined && token !== DEFAULT_OPENAI_API_TOKEN;
+};
+
 const resources = async () => {
+    console.log('Downloading resources...');
     await downloadFilters();
+    console.log('Resources downloaded');
+
+    console.log('Updating local script rules...');
     await updateLocalScriptRules();
-    await findDangerousRules();
+    console.log('Local script rules updated');
+
+    if (isOpenAiTokenProvided()) {
+        console.log('Finding dangerous rules...');
+        await findDangerousRules();
+        console.log('Dangerous rules check completed');
+    } else {
+        console.log('OpenAI API key is not provided, skipping dangerous rules check');
+    }
 };
 
 (async () => {

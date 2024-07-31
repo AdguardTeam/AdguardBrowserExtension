@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+// TODO (David): Build rules with AGTree
 
 import {
     SimpleRegex,
-    CosmeticRuleMarker,
     NetworkRule,
     NETWORK_RULE_OPTIONS,
     OPTIONS_DELIMITER,
@@ -29,6 +29,18 @@ import { logger } from '../../../../common/logger';
 
 import { COMMA_DELIMITER } from './constants';
 import { UrlUtils } from './utils';
+
+/**
+ * Possible cosmetic rule markers.
+ */
+const CosmeticRuleMarker = {
+    Css: '#$#',
+    ElementHidingExtCSS: '#?#',
+    CssExtCSS: '#$?#',
+    ElementHiding: '##',
+    Js: '#%#',
+    Html: '$$',
+};
 
 /**
  * Splits request url by backslash to block or allow patterns
@@ -103,11 +115,11 @@ export const splitToPatterns = (requestUrl, domain, isAllowlist) => {
  * @returns {string}
  */
 export const createDocumentLevelBlockRule = (rule) => {
-    const { ruleText } = rule;
-    if (ruleText.indexOf(NetworkRule.OPTIONS_DELIMITER) > -1) {
-        return `${ruleText},${NetworkRule.OPTIONS.BADFILTER}`;
+    const { appliedRuleText } = rule;
+    if (appliedRuleText.indexOf(NetworkRule.OPTIONS_DELIMITER) > -1) {
+        return `${appliedRuleText},${NetworkRule.OPTIONS.BADFILTER}`;
     }
-    return ruleText + NetworkRule.OPTIONS_DELIMITER + NetworkRule.OPTIONS.BADFILTER;
+    return appliedRuleText + NetworkRule.OPTIONS_DELIMITER + NetworkRule.OPTIONS.BADFILTER;
 };
 
 /**
@@ -136,28 +148,28 @@ const generateExceptionRule = (ruleText, mask) => {
  * @returns {string}
  */
 export const createExceptionCssRule = (rule, event) => {
-    const { ruleText } = rule;
+    const { appliedRuleText } = rule;
     const domainPart = event.frameDomain;
-    if (ruleText.indexOf(CosmeticRuleMarker.Css) > -1) {
-        return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Css);
+    if (appliedRuleText.indexOf(CosmeticRuleMarker.Css) > -1) {
+        return domainPart + generateExceptionRule(appliedRuleText, CosmeticRuleMarker.Css);
     }
-    if (ruleText.indexOf(CosmeticRuleMarker.ElementHidingExtCSS) > -1) {
+    if (appliedRuleText.indexOf(CosmeticRuleMarker.ElementHidingExtCSS) > -1) {
         return domainPart + generateExceptionRule(
-            ruleText,
+            appliedRuleText,
             CosmeticRuleMarker.ElementHidingExtCSS,
         );
     }
-    if (ruleText.indexOf(CosmeticRuleMarker.CssExtCSS) > -1) {
+    if (appliedRuleText.indexOf(CosmeticRuleMarker.CssExtCSS) > -1) {
         return domainPart + generateExceptionRule(
-            ruleText, CosmeticRuleMarker.CssExtCSS,
+            appliedRuleText, CosmeticRuleMarker.CssExtCSS,
         );
     }
-    if (ruleText.indexOf(CosmeticRuleMarker.ElementHiding) > -1) {
-        return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.ElementHiding);
+    if (appliedRuleText.indexOf(CosmeticRuleMarker.ElementHiding) > -1) {
+        return domainPart + generateExceptionRule(appliedRuleText, CosmeticRuleMarker.ElementHiding);
     }
 
-    if (ruleText.indexOf(CosmeticRuleMarker.Html) > -1) {
-        return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Html);
+    if (appliedRuleText.indexOf(CosmeticRuleMarker.Html) > -1) {
+        return domainPart + generateExceptionRule(appliedRuleText, CosmeticRuleMarker.Html);
     }
 
     logger.error('Cannot createExceptionCssRule for the rule:', rule);
@@ -173,16 +185,16 @@ export const createExceptionCssRule = (rule, event) => {
  * @returns {string}
  */
 export const createExceptionScriptRule = (rule, event) => {
-    const { ruleText } = rule;
+    const { appliedRuleText } = rule;
     const domainPart = event.frameDomain;
 
-    if (ruleText.indexOf(CosmeticRuleMarker.Js) > -1) {
-        return domainPart + generateExceptionRule(ruleText, CosmeticRuleMarker.Js);
+    if (appliedRuleText.indexOf(CosmeticRuleMarker.Js) > -1) {
+        return domainPart + generateExceptionRule(appliedRuleText, CosmeticRuleMarker.Js);
     }
 
     const MASK_SCRIPT_RULE_UBO = '##';
-    if (ruleText.indexOf(MASK_SCRIPT_RULE_UBO) > -1) {
-        return domainPart + generateExceptionRule(ruleText, MASK_SCRIPT_RULE_UBO);
+    if (appliedRuleText.indexOf(MASK_SCRIPT_RULE_UBO) > -1) {
+        return domainPart + generateExceptionRule(appliedRuleText, MASK_SCRIPT_RULE_UBO);
     }
 
     return '';
