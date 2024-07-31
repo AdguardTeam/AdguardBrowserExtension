@@ -420,7 +420,7 @@ export class FilteringLogApi {
     /**
      * We collect filtering events if opened at least one page of log.
      */
-    public async onOpenFilteringLogPage(): Promise<void> {
+    public onOpenFilteringLogPage(): void {
         this.openedFilteringLogsPages += 1;
 
         try {
