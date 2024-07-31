@@ -9,14 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `HybridStorage` for storing data via IndexedDB with fallback to `chrome.storage.local`.
+- Syntax highlighting for `$permissions` modifier in the rule editor.
+- [@adguard/agtree] for working with rules tree.
 
 ### Changed
-- Updated [@adguard/tswebextension] to v1.0.25.
+- Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607].
+- Filter lists are now stored in a pre-processed format, which makes the engine start more efficiently,
+  since the engine does not need to convert or parse the rules.
+- Updated [@adguard/tswebextension] to v2.0.0.
+- Updated [@adguard/tsurlfilter] to v3.0.0.
+- Updated [@adguard/scriptlets] to v1.11.6.
 
 ### Fixed
+- Filtering log gets refreshed when navigating yandex maps [#2519].
+- Filtering log is broken by `history.replaceState` [#2598].
+- Style filter is applied, but scriptlet filter is not in Firefox [#2782].
+- Missing info on custom filters when reporting issues [#2793].
 - Some filters are not updated when enabled [#2818].
+- Can't set notifications viewed.
+- Console errors on the background page when opening `chrome://new-tab-page/`.
+- `$permissions` rules are not shown in the filtering log.
+- Extension's action icon flickering on tab change.
+- Filters auto updates not refreshing `last updated date` field [#2726].
+- Extension's action icon flickering on tab change.
 
-[#2817]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2817
+[4.4.7]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.64...v4.4.7
+[#2519]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2519
+[#2598]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2598
+[#2607]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607
+[#2726]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2726
+[#2782]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2782
+[#2793]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2793
 [#2818]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2818
 
 
@@ -50,7 +73,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Raw filters are stored as strings.
-- Exported settings file name to standardized way to make it consistent with other AdGuard products [#2607].
 - Updated [@adguard/filters-downloader] to v2.2.0.
 - Updated [@adguard/tsurlfilter] to v2.2.18.
 - Updated [@adguard/tswebextension] to v1.0.22.
@@ -63,19 +85,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Assistant iframe styles are affected by cosmetic rules specific for websites [#1848].
 - Applying of modifiers `$popup` and `$all` [#2620], [#2728].
 - Update recommended filters on enabling group of filters and on locale detection [#2714].
-- Extension's action icon flickering on tab change.
-- Missing info on custom filters when reporting issues [#2793].
 
 [4.3.46]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...v4.3.46
-[#2793]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2793
 [#2761]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
 [#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 [#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
 [#2714]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
 [#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
-[#2607]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607
 [#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
+
 
 ## [4.3.35] - 2024-03-28
 
@@ -130,8 +149,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Not all Custom filters shown [#2693](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693).
-- Filters auto updates not refreshing `last updated date` field [#2726](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2726).
-- Extension's action icon flickering on tab change.
 
 
 ## [4.3.10] - 2024-01-20
@@ -326,5 +343,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
+[@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/tswebextension]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
 [@adguard/tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md
