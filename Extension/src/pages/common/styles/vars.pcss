@@ -1,15 +1,12 @@
 :root {
     /*GRAYSCALE*/
-    --white: #ffffff;
     --gray100: #f3f3f3;
     --gray300: #d8d8d8;
-    --gray400: #a4a4a4;
     --gray700: #888888;
     --gray900: #4d4d4d;
     --grayDark: #2a2a2a;
     --black: #131313;
     /*FEEDBACK*/
-    --red300: #bf4829;
     --red400: #c23814;
     --orange400: #eb9300;
     /*BRAND*/
@@ -82,19 +79,11 @@
     --switch-field-disabled: linear-gradient(90deg, #732613 0%, #BF4829 100%);
 
     --greyf7: #f7f7f7;
-    --gray1f: #1f1f1f;
     --gray05: rgba(239, 239, 239, 0.5);
     --greye7: #e7e7e7;
     --gey6a: #d1d1d1;
     --grayd8: var(--gray700);
     --grey78: #787878;
-    --gray7f: #7f7f7f;
-    --grayc0: #c0c0c0;
-    --gray3d: #3d3d3d;
-    --gray5b: #5b5b5b;
-    --graye4: #e4e4e4;
-    --grayd2: #d2d2d2;
-    --grayf6: #f6f6f6;
     --gray-base: var(--gray900);
     --gray4a: #4a4a4a;
     --gray88: var(--gray700);
@@ -111,6 +100,87 @@
     --z-idx7: 7;
     --z-idx8: 8;
     --z-idx10-options-notifications: 10;
+
+    --shadow-0-1: rgba(0, 0, 0, 0.1);
+
+    /* NEW VARS */
+
+    /* Base colors */
+    --product-primary-0: #f7fbf8;
+    --product-primary-10: #d9ecde;
+    --product-primary-20: #bedfc6;
+    --product-primary-30: #a2d0ad;
+    --product-primary-40: #84c193;
+    --product-primary-50: #67b279;
+    --product-primary-60: #5b9f6b;
+    --product-primary-70: #4e8c5d;
+    --product-primary-80: #42794f;
+    --product-primary-90: #366642;
+    --gray-0: #ffffff;
+    --gray-10: #f6f6f6;
+    --gray-20: #e4e4e4;
+    --gray-30: #d2d2d2;
+    --gray-40: #c0c0c0;
+    --gray-50: #a4a4a4;
+    --gray-60: #7f7f7f;
+    --gray-70: #5b5b5b;
+    --gray-80: #3d3d3d;
+    --gray-90: #1f1f1f;
+    --red-0: #fcece6;
+    --red-10: #f6c2b1;
+    --red-20: #f2a288;
+    --red-30: #ef9071;
+    --red-40: #ec7b55;
+    --red-50: #e9653a;
+    --red-60: #e75727;
+    --red-70: #dc4918;
+    --red-80: #bc3f15;
+    --red-90: #a13612;
+
+    /* Context colors */
+    /* vars that DO NOT change depand on the mode — same for light and dark mode */
+    --fills-buttons-danger-button-default: var(--red-50);
+    --fills-buttons-danger-button-hovered: var(--red-60);
+    --fills-buttons-main-button-default: var(--product-primary-50);
+    --fills-buttons-main-button-hovered: var(--product-primary-60);
+    --stroke-icons-error-icon-default: var(--red-50);
+    --stroke-icons-product-icon-default: var(--product-primary-50);
+    --text-buttons-primary-default: var(--gray-0);
+    --text-links-error-link-default: var(--red-50);
+    --text-links-link-default: var(--product-primary-50);
+
+    /* vars that change depand on the mode */
+    --fills-backgrounds-page-background-default: var(--gray-0);
+    --fills-backgrounds-page-background-hovered: var(--gray-10);
+    --fills-backgrounds-page-background-additional-default: var(--gray-10);
+    --fills-backgrounds-page-background-additional-hovered: var(--gray-20);
+    --fills-inputs-input-background-disabled: var(--gray-10);
+    --fills-menus-dropdown-menu-background-default: var(--gray-0);
+    --fills-menus-dropdown-menu-background-hovered: var(--gray-10);
+    --stroke-buttons-secondary-default: var(--gray-80);
+    --stroke-dividers-item-divider-default: var(--gray-30);
+    --stroke-icons-gray-icons-default: var(--gray-60);
+    --stroke-inputs-inactive-input-stroke-disabled: var(--gray-20);
+    --text-description-description-default: var(--gray-60);
+    --text-main-text-main-default: var(--gray-80);
+    --text-placeholder-placeholder-disabled: var(--gray-40);
+
+    @media (prefers-color-scheme: dark) {
+        --fills-backgrounds-page-background-default: var(--gray-90);
+        --fills-backgrounds-page-background-hovered: var(--gray-80);
+        --fills-backgrounds-page-background-additional-default: var(--gray-80);
+        --fills-backgrounds-page-background-additional-hovered: var(--gray-70);
+        --fills-inputs-input-background-disabled: var(--gray-80);
+        --fills-menus-dropdown-menu-background-default: var(--gray-80);
+        --fills-menus-dropdown-menu-background-hovered: var(--gray-70);
+        --stroke-buttons-secondary-default: var(--gray-20);
+        --stroke-dividers-item-divider-default: var(--gray-70);
+        --stroke-icons-gray-icons-default: var(--gray-40);
+        --stroke-inputs-inactive-input-stroke-disabled: var(--gray-80);
+        --text-description-description-default: var(--gray-40);
+        --text-main-text-main-default: var(--gray-20);
+        --text-placeholder-placeholder-disabled: var(--gray-60);
+    }
 }
 
 .dark-mode {
@@ -130,6 +200,21 @@
     --orange-row-active: #744c0a;
     --blue-selection: #556a86;
     --outline: #99c9ff;
+
+    --fills-backgrounds-page-background-default: var(--gray-90);
+    --fills-backgrounds-page-background-hovered: var(--gray-80);
+    --fills-backgrounds-page-background-additional-default: var(--gray-80);
+    --fills-backgrounds-page-background-additional-hovered: var(--gray-70);
+    --fills-inputs-input-background-disabled: var(--gray-80);
+    --fills-menus-dropdown-menu-background-default: var(--gray-80);
+    --fills-menus-dropdown-menu-background-hovered: var(--gray-70);
+    --stroke-buttons-secondary-default: var(--gray-20);
+    --stroke-dividers-item-divider-default: var(--gray-70);
+    --stroke-icons-gray-icons-default: var(--gray-40);
+    --stroke-inputs-inactive-input-stroke-disabled: var(--gray-80);
+    --text-description-description-default: var(--gray-40);
+    --text-main-text-main-default: var(--gray-20);
+    --text-placeholder-placeholder-disabled: var(--gray-60);
 }
 
 .light-mode {
@@ -149,4 +234,19 @@
     --orange-row-active: #ffcf7d;
     --blue-selection: rgb(181, 213, 255);
     --outline: #005ecc;
+
+    --fills-backgrounds-page-background-default: var(--gray-0);
+    --fills-backgrounds-page-background-hovered: var(--gray-10);
+    --fills-backgrounds-page-background-additional-default: var(--gray-10);
+    --fills-backgrounds-page-background-additional-hovered: var(--gray-20);
+    --fills-inputs-input-background-disabled: var(--gray-10);
+    --fills-menus-dropdown-menu-background-default: var(--gray-0);
+    --fills-menus-dropdown-menu-background-hovered: var(--gray-10);
+    --stroke-buttons-secondary-default: var(--gray-80);
+    --stroke-dividers-item-divider-default: var(--gray-30);
+    --stroke-icons-gray-icons-default: var(--gray-60);
+    --stroke-inputs-inactive-input-stroke-disabled: var(--gray-20);
+    --text-description-description-default: var(--gray-60);
+    --text-main-text-main-default: var(--gray-80);
+    --text-placeholder-placeholder-disabled: var(--gray-40);
 }

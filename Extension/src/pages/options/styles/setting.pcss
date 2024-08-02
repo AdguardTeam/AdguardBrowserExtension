@@ -46,11 +46,7 @@
         }
 
         &:hover {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
-            }
+            background-color: var(--fills-backgrounds-page-background-hovered);
         }
     }
 
@@ -97,7 +93,6 @@
         flex-direction: column;
         justify-content: center;
         max-width: 530px;
-        min-width: 530px;
 
         @media (max-width: 640px) {
             min-width: 40%;
@@ -107,13 +102,9 @@
     &__title {
         font-weight: 500;
         font-size: 16px;
-        color: var(--gray-base);
+        color: var(--text-main-text-main-default);
         line-height: 21px;
         word-break: break-word;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300)
-        }
 
         &--search {
             line-height: 24px;
@@ -123,14 +114,14 @@
     &__desc {
         line-height: 18px;
         padding: 4px 0 0;
-        color: var(--gray700);
+        color: var(--text-description-description-default);
         font-size: 14px;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-word;
 
         & a {
-            color: var(--green400);
+            color: var(--text-links-link-default);
             text-decoration: underline;
 
             &:focus-visible {
@@ -155,12 +146,12 @@
     }
 
     &__icon {
-        color: var(--green400);
+        color: var(--stroke-icons-product-icon-default);
         margin-right: 20px;
     }
 
     &__back {
-        color: var(--gray700);
+        color: var(--stroke-icons-gray-icons-default);
         position: absolute;
         padding-top: 14px;
         left: -18px;
@@ -173,7 +164,7 @@
 
     &__alert-desc,
     &__alert-link {
-        color: var(--red400);
+        color: var(--text-links-error-link-default);
     }
 
     &__checkbox {
@@ -186,6 +177,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: var(--t3) background-color;
+    width: 100%;
 
     &--button {
         background-color: transparent;
@@ -201,66 +193,10 @@
     }
 
     &:hover {
-        background-color: var(--gray100);
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--gray900);
-        }
+        background-color: var(--fills-backgrounds-page-background-hovered);
     }
 
     .checkbox__label:hover {
         background-color: transparent;
-    }
-}
-
-.light-mode {
-    .setting {
-        &--checkbox {
-            &:hover {
-                background-color: var(--gray100);
-            }
-        }
-
-        &__title {
-            color: var(--gray-base);
-        }
-
-        &__area {
-            &:hover {
-                background-color: var(--gray100);
-            }
-        }
-    }
-
-    .setting-checkbox {
-        &:hover {
-            background-color: var(--gray100);
-        }
-    }
-}
-
-.dark-mode {
-    .setting {
-        &--checkbox {
-            &:hover {
-                background-color: var(--gray900);
-            }
-        }
-
-        &__title {
-            color: var(--gray300)
-        }
-
-        &__area {
-            &:hover {
-                background-color: var(--gray900);
-            }
-        }
-    }
-
-    .setting-checkbox {
-        &:hover {
-            background-color: var(--gray900);
-        }
     }
 }

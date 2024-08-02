@@ -7,7 +7,7 @@
     top: 0;
     bottom: 0;
     left: auto;
-    background: var(--white);
+    background: var(--gray-0);
     color: var(--gray700);
     font-size: 14px;
     box-sizing: border-box;
@@ -19,7 +19,7 @@
     background: linear-gradient(white, rgba(255, 255, 255, 0)), radial-gradient(rgba(0, 0, 0, .2), rgba(0, 0, 0, 0));
     background-size: 100% var(--title-height), 100% 2px;
     background-repeat: no-repeat;
-    background-color: var(--white);
+    background-color: var(--gray-0);
     background-attachment: local, scroll;
     background-position-y: var(--title-height);
     display: flex;
@@ -31,14 +31,14 @@
 
     @media (prefers-color-scheme: dark) {
         background: var(--black);
-        color: var(--gray400);
+        color: var(--gray-50);
         border-left: 1px solid var(--gray900);
     }
 
     &__content {
         flex: 1;
         overflow-y: auto;
-        background-color: var(--white);
+        background-color: var(--gray-0);
 
         @media (prefers-color-scheme: dark) {
             background: var(--black);
@@ -53,7 +53,7 @@
         display: flex;
         align-items: center;
         padding: 32px 28px 32px;
-        background: var(--white);
+        background: var(--gray-0);
 
         @media (prefers-color-scheme: dark) {
             background: var(--black);
@@ -70,7 +70,7 @@
 
         &_fixed {
             z-index: 1;
-            box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 32px var(--shadow-0-1);
             border: none;
         }
     }
@@ -101,7 +101,7 @@
             color: var(--gray700);
 
             @media (prefers-color-scheme: dark) {
-                color: var(--gray400);
+                color: var(--gray-50);
             }
         }
 
@@ -122,7 +122,7 @@
 
         &_fixed {
             z-index: 1;
-            box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 32px var(--shadow-0-1);
             border: none;
 
             @media (prefers-color-scheme: dark) {
@@ -137,7 +137,7 @@
         padding: 9px 7px;
         cursor: pointer;
         font-size: 13px;
-        color: var(--white);
+        color: var(--gray-0);
         line-height: 8px;
         background: var(--btnGreen);
         border-radius: 8px;
@@ -163,20 +163,20 @@
         }
 
         &--white {
-            background-color: var(--white);
+            background-color: var(--gray-0);
             color: var(--gray900);
             border: 1px solid var(--gray700);
 
             @media (prefers-color-scheme: dark) {
                 color: var(--gray300);
                 background-color: var(--black);
-                border: 1px solid var(--gray400);
+                border: 1px solid var(--gray-50);
             }
         }
 
         &--red {
             background-color: var(--red400);
-            color: var(--white);
+            color: var(--gray-0);
         }
 
         &:disabled {
@@ -230,25 +230,25 @@
 .light-mode {
     & .request-modal {
         border-left: 0;
-        background: var(--white);
+        background: var(--gray-0);
         color: var(--gray700);
 
         &__content {
-            background-color: var(--white);
+            background-color: var(--gray-0);
         }
 
         &__title {
-            background: var(--white);
+            background: var(--gray-0);
 
             &_fixed {
-                box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+                box-shadow: 0px 0px 32px var(--shadow-0-1);
                 border: none;
             }
         }
 
         &__controls {
             &_fixed {
-                box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.1);
+                box-shadow: 0px 0px 32px var(--shadow-0-1);
                 border: none;
             }
         }
@@ -271,7 +271,7 @@
         &__button {
             &--white {
                 color: var(--gray900);
-                background-color: var(--white);
+                background-color: var(--gray-0);
                 border: 1px solid var(--gray700);
             }
         }
@@ -281,7 +281,7 @@
 .dark-mode {
     .request-modal {
         background: var(--black);
-        color: var(--gray400);
+        color: var(--gray-50);
         border-left: 1px solid var(--gray900);
 
         &__content {
@@ -314,7 +314,7 @@
             }
 
             &--back {
-                color: var(--gray400);
+                color: var(--gray-50);
             }
         }
 
@@ -322,7 +322,7 @@
             &--white {
                 color: var(--gray300);
                 background-color: var(--black);
-                border: 1px solid var(--gray400);
+                border: 1px solid var(--gray-50);
             }
         }
     }

@@ -22,22 +22,32 @@ import PropTypes from 'prop-types';
 
 import { Icon } from '../../../../common/components/ui/Icon';
 
-const ModalContentWrapper = ({ closeModalHandler, children, title }) => {
+const ModalContentWrapper = ({
+    closeModalHandler,
+    title,
+    actions,
+    children,
+}) => {
     return (
         <div className="modal">
-            <div className="modal__header">
-                <button
-                    type="button"
-                    className="button modal__close"
-                    onClick={closeModalHandler}
-                >
-                    <Icon id="#cross" />
-                </button>
+            <div className="modal__content">
+                <div className="modal__header">
+                    {title && (
+                        <div className="modal__title">
+                            {title}
+                        </div>
+                    )}
+                    <button
+                        type="button"
+                        className="button modal__close"
+                        onClick={closeModalHandler}
+                    >
+                        <Icon id="#cross" />
+                    </button>
+                </div>
+                {children}
             </div>
-            <div className="modal__title">
-                {title}
-            </div>
-            {children}
+            {actions}
         </div>
     );
 };

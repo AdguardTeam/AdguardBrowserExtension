@@ -157,7 +157,7 @@ export const Select = ({
             </button>
             <Icon
                 id="#select"
-                classname="icon--select select__ico"
+                classname="icon--select icon--gray-default select__ico"
             />
             {!hidden && (
                 <div
