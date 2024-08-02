@@ -297,6 +297,38 @@ export class FiltersApi {
     }
 
     /**
+     * Reload filters and their metadata from local storage.
+     */
+    public static async reloadFiltersFromLocal(): Promise<number[]> {
+        try {
+            await FiltersApi.loadI18nMetadataFromBackend(false);
+            await FiltersApi.loadMetadataFromFromBackend(false);
+        } catch (e) {
+            logger.error('Cannot load local metadata due to: ', getErrorMessage(e));
+        }
+
+        FiltersApi.loadFilteringStates();
+
+        await FiltersApi.removeObsoleteFilters();
+
+        const filterIds = filterStateStorage.getLoadFilters();
+
+        // Ignore custom filters, user-rules and allowlist.
+        const commonFiltersIds = filterIds.filter((id) => CommonFilterApi.isCommonFilter(id));
+
+        try {
+            // Only re-load filters without changed their states: enabled or disabled.
+            const loadedFiltersIds = await FiltersApi.loadFilters(commonFiltersIds, false);
+
+            return loadedFiltersIds;
+        } catch (e) {
+            logger.error('Cannot load local filters due to: ', getErrorMessage(e));
+
+            return [];
+        }
+    }
+
+    /**
      * Force reload enabled common filters metadata and rules from backend.
      * Called on "use optimized filters" setting switch.
      *

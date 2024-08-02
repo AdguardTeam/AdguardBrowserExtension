@@ -166,6 +166,15 @@ export class App {
          */
         await FiltersApi.init(isInstall);
 
+        // Update the filters in the MV3 version for each extension update,
+        // even for patches, because MV3 does not support remote filter updates
+        // (either full or through diffs) and filters are updated only with
+        // the update of the entire extension.
+        if (isUpdate && __IS_MV3__) {
+            const filtersIds = await FiltersApi.reloadFiltersFromLocal();
+            logger.debug('Following filters has been updated from local resources:', filtersIds);
+        }
+
         /**
          * Initializes promo notifications:
          * - Initializes notifications storage

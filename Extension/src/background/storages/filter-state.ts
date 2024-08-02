@@ -116,6 +116,23 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
+     * Returns list of loaded into browserStorage filters ids.
+     *
+     * @returns List of loaded into browserStorage filters ids.
+     * @throws Error if filter state data is not initialized.
+     */
+    public getLoadFilters(): number[] {
+        if (!this.data) {
+            throw FilterStateStorage.createNotInitializedError();
+        }
+
+        return Object
+            .entries(this.data)
+            .filter(([,state]) => state.loaded)
+            .map(([id]) => Number(id));
+    }
+
+    /**
      * Returns list of installed filters ids.
      *
      * @returns List of installed filters ids.

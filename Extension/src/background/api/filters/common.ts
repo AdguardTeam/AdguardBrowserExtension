@@ -69,7 +69,7 @@ export class CommonFilterApi {
     }
 
     /**
-     * Checks if filter is common.
+     * Checks if filter is built-in: not custom, not user-rules and not allowlist.
      *
      * @param filterId Filter id.
      *
