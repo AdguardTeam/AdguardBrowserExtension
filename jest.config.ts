@@ -62,6 +62,7 @@ const config: Config = {
         IS_FIREFOX_AMO: false,
         // For run tests like it's release.
         IS_RELEASE: true,
+        IS_BETA: false,
         __IS_MV3__: MANIFEST_ENV === '3',
     },
 };

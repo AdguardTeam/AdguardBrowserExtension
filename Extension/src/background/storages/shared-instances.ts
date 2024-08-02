@@ -27,3 +27,12 @@ export const browserStorage = new BrowserStorage();
  * Storage instance for accessing `IndexedDB` with fallback to `browser.storage.local`.
  */
 export const hybridStorage = new HybridStorage();
+
+// Expose storage instances to the global scope for debugging purposes,
+// because it's hard to access them from the console in the background
+// page or impossible from Application tab -> IndexedDB (showing empty page).
+if (!IS_BETA && !IS_RELEASE) {
+    // @ts-ignore
+    // eslint-disable-next-line no-restricted-globals
+    self.hybridStorage = hybridStorage;
+}
