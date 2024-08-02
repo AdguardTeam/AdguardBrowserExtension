@@ -17,12 +17,12 @@
  */
 
 import path from 'path';
-import fs from 'fs';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import type { Manifest } from 'webextension-polyfill';
 import type { Configuration } from 'webpack';
+
+import { addDeclarativeNetRequestToManifest } from '@adguard/dnr-rulesets';
 
 import { genMv3CommonConfig } from '../webpack.common-mv3';
 import {
@@ -41,8 +41,6 @@ import {
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
-type WebExtensionManifest = Manifest.WebExtensionManifest;
-
 export const RULESET_NAME_PREFIX = 'ruleset_';
 
 const GPC_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/gpc');
@@ -51,42 +49,7 @@ const HIDE_DOCUMENT_REFERRER_SCRIPT_PATH = path.resolve(__dirname, '../../../Ext
 /**
  * Base filter id - it is the main filter that is enabled by default.
  */
-const BASE_FILTER_ID = 2;
-
-const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
-    const filtersDir = FILTERS_DEST.replace('%browser', 'chromium-mv3');
-
-    const filtersDirPath = path.resolve(__dirname, '../../../', filtersDir, 'declarative/');
-
-    if (fs.existsSync(filtersDir)) {
-        const nameList = fs.readdirSync(filtersDirPath);
-        const rules = {
-            rule_resources: nameList.map((name) => {
-                const nameMatch = name.match(/\d+/);
-                if (!nameMatch) {
-                    throw new Error(`Invalid ruleset name: ${name}`);
-                }
-
-                const rulesetIndex = Number.parseInt(nameMatch[0], 10);
-                const id = `${RULESET_NAME_PREFIX}${rulesetIndex}`;
-                return {
-                    id,
-                    // By default, we set the base filter enabled,
-                    // so that the browser tries to enable it if we are over limits
-                    enabled: rulesetIndex === BASE_FILTER_ID,
-                    path: `filters/declarative/${name}/${name}.json`,
-                };
-            }),
-        };
-
-        return {
-            ...manifest,
-            declarative_net_request: rules,
-        };
-    }
-
-    throw new Error("Declarative rulesets directory doesn't exist");
-};
+const BASE_FILTER_ID = '2';
 
 export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = false) => {
     const commonConfig = genMv3CommonConfig(browserConfig);
@@ -121,12 +84,24 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode = f
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifestBuffer(
-                            BUILD_ENV,
-                            browserConfig.browser,
-                            content,
-                            addDeclarativeNetRequest(chromeMv3Manifest),
-                        ),
+                        transform: (content) => {
+                            const filtersDir = FILTERS_DEST.replace('%browser', 'chromium-mv3');
+
+                            return updateManifestBuffer(
+                                BUILD_ENV,
+                                browserConfig.browser,
+                                content,
+                                addDeclarativeNetRequestToManifest(
+                                    chromeMv3Manifest,
+                                    path.resolve(__dirname, '../../../', filtersDir, 'declarative/'),
+                                    (ruleSetName) => `filters/declarative/${ruleSetName}/${ruleSetName}.json`,
+                                    {
+                                        forceUpdate: true,
+                                        enabled: [BASE_FILTER_ID],
+                                    },
+                                ),
+                            );
+                        },
                     },
                     {
                         context: 'Extension',
