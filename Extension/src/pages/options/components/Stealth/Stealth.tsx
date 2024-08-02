@@ -313,19 +313,22 @@ const Stealth = observer(() => {
                 mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
-                <SettingsSetCheckbox
+                {/* TODO revert this option when will be found a way to disable referrer rule with stealth exclusion AG-34765 */}
+                {!__IS_MV3__ && (
+                    <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_hide_referrer_title')}
-                    description={reactTranslator.getMessage('options_hide_referrer_desc')}
-                    disabled={!settings.values[HideReferrer]}
-                    sectionDisabled={isStealthModeDisabled}
-                    id={HideReferrer}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_hide_referrer_title')}
-                    value={settings.values[HideReferrer]}
-                    handler={settingChangeHandler}
-                />
+                        title={reactTranslator.getMessage('options_hide_referrer_title')}
+                        description={reactTranslator.getMessage('options_hide_referrer_desc')}
+                        disabled={!settings.values[HideReferrer]}
+                        sectionDisabled={isStealthModeDisabled}
+                        id={HideReferrer}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_hide_referrer_title')}
+                        value={settings.values[HideReferrer]}
+                        handler={settingChangeHandler}
+                    />
+                )}
 
                 {settingsStore.isChrome && (
                     <SettingsSetCheckbox
