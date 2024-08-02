@@ -17,12 +17,8 @@ body {
     margin: 0;
     height: 100%;
     font-size: 16px;
-    color: var(--gray-base);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--black);
-        color: var(--gray300)
-    }
+    color: var(--text-main-text-main-default);
+    background-color: var(--fills-backgrounds-page-background-default);
 }
 
 .options {
@@ -83,17 +79,15 @@ label.checkbox-label {
         width: 20px;
         height: 20px;
         background-color: transparent;
-        border: 2px solid var(--gray700);
+        border: 2px solid var(--stroke-icons-gray-icons-default);
         border-radius: 2px;
-        margin-right: 10px;
+        margin-right: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-
-        @media (prefers-color-scheme: dark) {
-            border: 2px solid var(--gray400);
-        }
+        font-size: 16px;
+        line-height: 24px;
 
         & .icon {
             display: none;
@@ -155,7 +149,7 @@ label.checkbox-label {
     }
 
     &__item {
-        color: var(--green400);
+        color: var(--text-links-link-default);
         margin: 16px 0;
         font-size: 16px;
         line-height: 21px;
@@ -180,17 +174,13 @@ label.checkbox-label {
 }
 
 .title {
-    color: var(--gray-base);
+    color: var(--text-main-text-main-default);
     font-size: 24px;
     font-weight: 700;
     padding: 0;
     padding-right: 8px;
     margin-top: -5px;
     line-height: 30px;
-
-    @media (prefers-color-scheme: dark) {
-        color: var(--gray300)
-    }
 
     &__container {
         position: relative;
@@ -207,7 +197,7 @@ label.checkbox-label {
             cursor: pointer;
             transition: var(--t3) background-color;
 
-            .checkbox__label:hover {
+            & .checkbox__label:hover {
                 background-color: transparent;
             }
 
@@ -267,11 +257,7 @@ label.checkbox-label {
         font-size: 14px;
         font-weight: 400;
         padding-top: 8px;
-        color: var(--gray7f);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--grayc0);
-        }
+        color: var(--text-description-description-default);
 
         &--back {
             cursor: pointer;
@@ -281,7 +267,7 @@ label.checkbox-label {
             margin-top: 4px;
 
             &-link {
-                color: var(--green400);
+                color: var(--text-links-link-default);
             }
         }
     }
@@ -318,7 +304,7 @@ label.checkbox-label {
     }
 
     &--link {
-        color: var(--green400);
+        color: var(--text-links-link-default);
     }
 }
 
@@ -448,11 +434,6 @@ select:focus {
 .light-mode {
     color-scheme: light;
 
-    body {
-        background-color: var(--transparent);
-        color: var(--gray-base);
-    }
-
     label.checkbox-label {
         color: var(--gray900);
 
@@ -460,15 +441,9 @@ select:focus {
             background-color: var(--green400);
             border-color: var(--green400);
         }
-
-        & .custom-checkbox {
-            border: 2px solid var(--gray700);
-        }
     }
 
     .title {
-        color: var(--gray-base);
-
         &__container {
             &--control {
                 &:hover {
@@ -476,14 +451,10 @@ select:focus {
                 }
             }
         }
-
-        &__desc {
-            color: var(--gray7f);
-        }
     }
 
     .ReactModal__Content--after-open {
-        background-color: var(--white)!important;
+        background-color: var(--gray-0)!important;
         border: 0!important;
     }
 
@@ -509,11 +480,6 @@ select:focus {
 .dark-mode {
     color-scheme: dark;
 
-    body {
-        background-color: var(--black);
-        color: var(--gray300)
-    }
-
     label.checkbox-label {
         color: var(--gray300);
 
@@ -521,25 +487,15 @@ select:focus {
             background-color: var(--green700);
             border-color: var(--green700);
         }
-
-        & .custom-checkbox {
-            border: 2px solid var(--gray400);
-        }
     }
 
     .title {
-        color: var(--gray300);
-
         &__container {
             &--control {
                 &:hover {
                     background-color: var(--gray900);
                 }
             }
-        }
-
-        &__desc {
-            color: var(--grayc0);
         }
     }
 

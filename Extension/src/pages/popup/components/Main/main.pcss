@@ -53,10 +53,10 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            color: var(--gray7f);
+            color: var(--gray-60);
 
             @media (prefers-color-scheme: dark) {
-                color: var(--grayc0);
+                color: var(--gray-40);
             }
         }
 
@@ -82,18 +82,18 @@
         &--link {
             font-size: 14px;
             line-height: 18px;
-            color: var(--gray7f);
+            color: var(--gray-60);
             transition: var(--t3) color;
 
             @media (prefers-color-scheme: dark) {
-                color: var(--grayc0);
+                color: var(--gray-40);
             }
 
             &:hover {
-                color: var(--gray3d);
+                color: var(--gray-80);
 
                 @media (prefers-color-scheme: dark) {
-                    color: var(--graye4);
+                    color: var(--gray-20);
                 }
             }
         }
@@ -143,7 +143,7 @@
         top: 5px;
         border-radius: 50%;
         box-shadow: var(--switch-btn-shadow);
-        background-color: var(--white);
+        background-color: var(--gray-0);
         padding: 4px;
         cursor: pointer;
         transition: var(--t3) box-shadow;
@@ -165,7 +165,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background-color: var(--white);
+            background-color: var(--gray-0);
         }
 
         &--disabled {
@@ -183,7 +183,7 @@
 
     &:hover {
         & .switcher__handle {
-            box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0 6px var(--shadow-0-1);
 
             @media (prefers-color-scheme: dark) {
                 box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
@@ -206,7 +206,7 @@
     }
 
     &__btn {
-        color: var(--white);
+        color: var(--gray-0);
         font-weight: 600;
         font-size: 16px;
         line-height: 24px;
@@ -229,16 +229,16 @@
 
         &__header {
             &--current-site {
-                color: var(--gray7f);
+                color: var(--gray-60);
             }
         }
 
         &__cta {
             &--link {
-                color: var(--gray7f);
+                color: var(--gray-60);
 
                 &:hover {
-                    color: var(--gray3d);
+                    color: var(--gray-80);
                 }
             }
 
@@ -248,7 +248,7 @@
     .switcher {
         &:hover {
             & .switcher__handle {
-                box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 0 0 6px var(--shadow-0-1);
             }
         }
     }
@@ -260,16 +260,16 @@
 
         &__header {
             &--current-site {
-                color: var(--grayc0);
+                color: var(--gray-40);
             }
         }
 
         &__cta {
             &--link {
-                color: var(--grayc0);
+                color: var(--gray-40);
 
                 &:hover {
-                    color: var(--graye4);
+                    color: var(--gray-20);
                 }
             }
         }

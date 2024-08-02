@@ -76,8 +76,9 @@ export const SavingButton = ({ onClick, savingState, contentChanged }: SavingBut
             {!__IS_MV3__ && renderSavingState(savingState)}
             <button
                 type="button"
-                className="button button--m button--green actions__btn"
+                className="button button--l button--green actions__btn"
                 onClick={onClick}
+                title={translator.getMessage('options_editor_save')}
                 disabled={!contentChanged}
             >
                 {translator.getMessage('options_editor_save')}

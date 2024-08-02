@@ -256,10 +256,10 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                             </div>
 
                             <div className="filter__desc">
-                                <div className="filter__desc-item">
+                                <div>
                                     {description}
                                 </div>
-                                <div className="filter__desc-item">
+                                <div>
                                     {
                                         version
                                             ? `${translator.getMessage('options_filters_filter_version')} ${version} `

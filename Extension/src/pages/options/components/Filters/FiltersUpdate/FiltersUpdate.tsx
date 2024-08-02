@@ -53,7 +53,7 @@ const FiltersUpdate = observer(() => {
             <button
                 type="button"
                 onClick={updateClickHandler}
-                className="button button--m button--transparent filters-update__btn"
+                className="button button--l button--transparent filters-update__btn"
                 title={translator.getMessage('options_update_antibanner_filters')}
                 disabled={!isUpdateFiltersButtonActive || filtersUpdating}
             >

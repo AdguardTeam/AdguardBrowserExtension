@@ -185,14 +185,14 @@ const Allowlist = observer(() => {
                     />
                     <button
                         type="button"
-                        className="button button--m button--transparent actions__btn"
+                        className="button button--l button--transparent actions__btn"
                         onClick={importClickHandler}
                     >
                         {reactTranslator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
-                        className="button button--m button--transparent actions__btn"
+                        className="button button--l button--transparent actions__btn"
                         onClick={exportClickHandler}
                         disabled={!settingsStore.allowlist}
                     >

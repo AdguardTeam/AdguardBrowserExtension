@@ -7,16 +7,12 @@
         white-space: nowrap;
         font-size: 16px;
         text-align-last: right;
-        color: var(--gray-base);
+        color: var(--text-main-text-main-default);
         padding-right: 25px;
         cursor: pointer;
         border: 0;
         background-color: transparent;
         -webkit-appearance: none;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
     }
 
     &__ico {
@@ -30,20 +26,15 @@
         position: absolute;
         right: 0;
         z-index: 10;
-        border: 1px solid var(--gray700);
         border-radius: 8px;
         max-height: 265px;
         min-width: 160px;
         max-width: 220px;
         overflow-y: auto;
-        box-shadow: 0 0 7px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 8px 8px 24px 0px var(--shadow-0-1);
         margin: 12px 0 0 0;
-        background-color: var(--white);
+        background-color: var(--fills-menus-dropdown-menu-background-default);
         scrollbar-width: thin;
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--black);
-        }
 
         &[hidden] {
             display: none;
@@ -69,7 +60,7 @@
         cursor: pointer;
         border: 0;
         background-color: transparent;
-        color: var(--gray900);
+        color: var(--text-main-text-main-default);
         width: 100%;
         text-align: left;
 
@@ -78,16 +69,8 @@
             box-shadow: inset 0 0 0 2px var(--outline);
         }
 
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
-
         &:hover {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
-            }
+            background-color: var(--fills-menus-dropdown-menu-background-hovered);
         }
     }
 
@@ -116,10 +99,10 @@
             left: 0;
             right: initial;
             margin-top: 20px;
-            background-color: var(--white);
+            background-color: var(--gray-0);
 
             @media (prefers-color-scheme: dark) {
-                background-color: var(--gray1f);
+                background-color: var(--gray-90);
             }
         }
     }
@@ -127,26 +110,9 @@
 
 .light-mode {
     .select {
-        &__value {
-            color: var(--gray-base);
-        }
-
-        &__list {
-            background-color: var(--white);
-        }
-
-        &__item {
-            color: var(--gray900);
-
-            &:hover {
-                background-color: var(--gray100);
-                color: var(--gray900);
-            }
-        }
-
         &.popup-modification {
             .select__list {
-                background-color: var(--white);
+                background-color: var(--gray-0);
             }
         }
     }
@@ -154,25 +120,9 @@
 
 .dark-mode {
     .select {
-        &__value {
-            color: var(--gray300);
-        }
-
-        &__list {
-            background-color: var(--black);
-        }
-
-        &__item {
-            color: var(--gray300);
-
-            &:hover {
-                background-color: var(--gray900);
-            }
-        }
-
         &.popup-modification {
             .select__list {
-                background-color: var(--gray1f);
+                background-color: var(--gray-90);
             }
         }
     }
