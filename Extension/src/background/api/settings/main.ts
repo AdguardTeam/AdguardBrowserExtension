@@ -171,7 +171,10 @@ export class SettingsApi {
             filteringEnabled: !settingsStorage.get(SettingOption.DisableFiltering),
             stealth: {
                 blockChromeClientData: settingsStorage.get(SettingOption.RemoveXClientData),
-                hideReferrer: settingsStorage.get(SettingOption.HideReferrer),
+                // TODO revert when will be found a better way to add exclusions for $stealth=referrer
+                // AG-34765
+                // setting to false so that it will remove already added session rules
+                hideReferrer: isMV3 ? false : settingsStorage.get(SettingOption.HideReferrer),
                 hideSearchQueries: settingsStorage.get(SettingOption.HideSearchQueries),
                 sendDoNotTrack: settingsStorage.get(SettingOption.SendDoNotTrack),
                 blockWebRTC: settingsStorage.get(SettingOption.BlockWebRTC),
