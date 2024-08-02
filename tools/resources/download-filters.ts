@@ -26,8 +26,7 @@ import crypto from 'crypto';
 import fse from 'fs-extra';
 import axios from 'axios';
 
-import { loadAssets } from '@adguard/dnr-rulesets';
-
+import { type RegularFilterMetadata } from '../../Extension/src/background/schema';
 import { cliLog } from '../cli-log';
 import {
     METADATA_DOWNLOAD_URL_FORMAT,
@@ -209,6 +208,23 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
 
     return content;
 };
+/**
+ * Returns all filter ids from the metadata file.
+ *
+ * @param metadataContent Metadata file content.
+ *
+ * @returns Array of filter ids as strings.
+ */
+const getAllFiltersIds = (metadataContent: string): string[] => {
+    let filters: RegularFilterMetadata[] = [];
+    try {
+        filters = JSON.parse(metadataContent).filters;
+    } catch (e) {
+        cliLog.error('Failed to parse filters metadata');
+    }
+
+    return filters.map((filter) => String(filter.filterId));
+};
 
 /**
  * Prepares filters for chromium-mv3:
@@ -217,7 +233,36 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
  * 3. Downloads all chromium-mv3 filters (parsed from the metadata (1)) and stores them in the chromium-mv3 folder.
  */
 const downloadAndPrepareMv3Filters = async () => {
-    return loadAssets(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3));
+    const metadataMv3 = await downloadFilter(
+        getFiltersMetadataDownloadData(AssetsFiltersBrowser.ChromiumMv3),
+        AssetsFiltersBrowser.ChromiumMv3,
+    );
+
+    await downloadFilter(
+        getFiltersI18nMetadataDownloadData(AssetsFiltersBrowser.ChromiumMv3),
+        AssetsFiltersBrowser.ChromiumMv3,
+    );
+
+    const filtersIds = getAllFiltersIds(metadataMv3);
+
+    for (let i = 0; i < filtersIds.length; i += 1) {
+        const filterId = filtersIds[i];
+        if (!filterId) {
+            continue;
+        }
+
+        const downloadData = {
+            url: FILTER_DOWNLOAD_URL_FORMAT
+                .replace('%browser', AssetsFiltersBrowser.ChromiumMv3)
+                .replace('%filter', filterId),
+            fileName: `filter_${filterId}.txt`,
+            validate: true,
+        };
+
+        // Store them in the chromium-mv3 folder.
+        // eslint-disable-next-line no-await-in-loop
+        await downloadFilter(downloadData, AssetsFiltersBrowser.ChromiumMv3);
+    }
 };
 
 /**
