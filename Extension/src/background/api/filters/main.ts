@@ -298,6 +298,8 @@ export class FiltersApi {
 
     /**
      * Reload filters and their metadata from local storage.
+     *
+     * @returns List of loaded filter IDs.
      */
     public static async reloadFiltersFromLocal(): Promise<number[]> {
         try {
