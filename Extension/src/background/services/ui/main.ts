@@ -258,7 +258,8 @@ export class UiService {
                 throw new Error(`MV3-required companyCategory missed for url: ${requestUrl}`);
             }
             await PageStatsApiMv3.updateStats(companyCategory, UiService.blockedCountIncrement);
-            PageStatsApiMv3.incrementTotalBlocked(UiService.blockedCountIncrement);
+            // FIXME: consider reverting a total blocked number to the popup as it is supported in MV3 now
+            // PageStatsApiMv3.incrementTotalBlocked(UiService.blockedCountIncrement);
         } else {
             await PageStatsApiMv2.updateStats(filterId, UiService.blockedCountIncrement);
             PageStatsApiMv2.incrementTotalBlocked(UiService.blockedCountIncrement);
