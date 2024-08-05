@@ -83,7 +83,7 @@ export class Engine implements TsWebExtensionEngine {
 
         logger.info('Start tswebextension...');
         const result = await this.api.start(configuration);
-        rulesLimitsService.set(result);
+        rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
@@ -113,7 +113,7 @@ export class Engine implements TsWebExtensionEngine {
             logger.info('With skip limits check.');
         }
         const result = await this.api.configure(configuration);
-        rulesLimitsService.set(result);
+        rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
@@ -184,6 +184,8 @@ export class Engine implements TsWebExtensionEngine {
             }));
 
         return {
+            // TODO: Maybe should be removed or somehow used in AG-34437
+            // This one is for separative declarative filtering log.
             filteringLogEnabled: false,
             customFilters,
             verbose: !!(IS_RELEASE || IS_BETA),

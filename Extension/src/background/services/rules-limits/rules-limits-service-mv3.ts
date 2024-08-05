@@ -84,6 +84,12 @@ export class RulesLimitsService {
     configurationResult: ConfigurationResult | null = null;
 
     /**
+     * Is filtering enabled or not. If disabled - service will turn off all
+     * checks for limitations.
+     */
+    isFilteringEnabled: boolean = true;
+
+    /**
      * Subscribes to messages from the options' page.
      */
     public async init(): Promise<void> {
@@ -397,9 +403,12 @@ export class RulesLimitsService {
      * Set configuration result to the service.
      *
      * @param result Configuration result.
+     * @param isFilteringEnabled Is filtering enabled or not. If disabled -
+     * service will turn off all checks for limitations.
      */
-    public set(result: ConfigurationResult): void {
+    public updateConfigurationResult(result: ConfigurationResult, isFilteringEnabled: boolean): void {
         this.configurationResult = result;
+        this.isFilteringEnabled = isFilteringEnabled;
     }
 
     /**
@@ -479,7 +488,7 @@ export class RulesLimitsService {
      * @returns Promise that resolves with possible limitations.
      */
     private async getRulesLimits(): Promise<Mv3LimitsCheckResult> {
-        const staticFiltersCheck = await RulesLimitsService.getStaticFiltersLimitations();
+        const staticFiltersCheck = await this.getStaticFiltersLimitations();
         const dynamicRulesCheck = await this.getDynamicRulesLimitations();
 
         return {
@@ -494,7 +503,11 @@ export class RulesLimitsService {
      *
      * @returns Promise that resolves with possible limitations.
      */
-    private static async getStaticFiltersLimitations(): Promise<StaticLimitsCheckResult> {
+    private async getStaticFiltersLimitations(): Promise<StaticLimitsCheckResult> {
+        if (!this.isFilteringEnabled) {
+            return { ok: true };
+        }
+
         const enabledFiltersCount = RulesLimitsService.getStaticEnabledFiltersCount();
         if (enabledFiltersCount === MAX_NUMBER_OF_ENABLED_STATIC_RULESETS) {
             return {
@@ -536,6 +549,10 @@ export class RulesLimitsService {
         const result = this.configurationResult;
         if (!result) {
             logger.error('[canEnableDynamicRules] Configuration result is not ready yet');
+            return { ok: true };
+        }
+
+        if (!this.isFilteringEnabled) {
             return { ok: true };
         }
 
@@ -595,6 +612,10 @@ export class RulesLimitsService {
          */
         if (!result) {
             logger.error('[doesStaticFilterFitsInLimits]: configuration result is not ready yet');
+            return { ok: true };
+        }
+
+        if (!this.isFilteringEnabled) {
             return { ok: true };
         }
 
@@ -682,6 +703,10 @@ export class RulesLimitsService {
          */
         if (!result) {
             logger.error('[doStaticFiltersFitInLimits]: Configuration result is not ready yet.');
+            return { ok: true };
+        }
+
+        if (!this.isFilteringEnabled) {
             return { ok: true };
         }
 
