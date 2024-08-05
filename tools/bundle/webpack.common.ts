@@ -36,7 +36,6 @@ import {
 } from '../constants';
 import { updateLocalesMSGName } from '../helpers';
 import {
-    COMPANIES_DB_OUTPUT_FILE,
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
     SUBSCRIBE_OUTPUT,
     CONTENT_SCRIPT_END_OUTPUT,

@@ -20,8 +20,13 @@ import path from 'path';
 
 import { NormalModuleReplacementPlugin, type Configuration } from 'webpack';
 import merge from 'webpack-merge';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-import { BACKGROUND_OUTPUT, CONTENT_SCRIPT_START_OUTPUT } from '../../constants';
+import {
+    BACKGROUND_OUTPUT,
+    COMPANIES_DB_OUTPUT_FILE,
+    CONTENT_SCRIPT_START_OUTPUT,
+} from '../../constants';
 
 import {
     BACKGROUND_PATH,
@@ -64,6 +69,15 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: bo
                     );
                 }),
             ),
+            new CopyWebpackPlugin({
+                patterns: [
+                    {
+                        context: 'Extension',
+                        from: COMPANIES_DB_OUTPUT_FILE,
+                        to: COMPANIES_DB_OUTPUT_FILE,
+                    },
+                ],
+            }),
         ],
     });
 };
