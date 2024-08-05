@@ -245,6 +245,7 @@ export class UiService {
             isAllowlist,
             tabId,
             companyCategory,
+            requestUrl,
         } = data;
 
         // If rule is not blocking, ignore it
@@ -254,7 +255,7 @@ export class UiService {
 
         if (__IS_MV3__) {
             if (!companyCategory) {
-                throw new Error('companyCategory is required for MV3');
+                throw new Error(`MV3-required companyCategory missed for url: ${requestUrl}`);
             }
             await PageStatsApiMv3.updateStats(companyCategory, UiService.blockedCountIncrement);
             PageStatsApiMv3.incrementTotalBlocked(UiService.blockedCountIncrement);
