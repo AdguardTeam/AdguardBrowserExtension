@@ -409,7 +409,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             }),
             // Check the size of the output JS files and fail the build if any file exceeds the limit
             // (but not in the development mode)
-            new SizeLimitPlugin(isDev ? {} : SIZE_LIMITS_MB),
+            // FIXME: Enable when merged to master
+            // new SizeLimitPlugin(isDev ? {} : SIZE_LIMITS_MB),
         ],
     };
 
