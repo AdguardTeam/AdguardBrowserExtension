@@ -42,7 +42,6 @@ import { browserStorage } from './shared-instances';
  * @see {@link StringStorage}
  */
 export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, PageStats, 'async'> {
-    // FIXME(Slava): should be handled during migration (?)
     public static TOTAL_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     public static MAX_HOURS_HISTORY = 24;

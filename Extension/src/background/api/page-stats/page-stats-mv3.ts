@@ -33,11 +33,10 @@ import { PageStatsApi } from './page-stats-abstract';
  */
 enum PopupStatsCategoriesMv3 {
     Advertising = 0,
-    SocialMedia = 1,
-    Cdn = 2,
-    WebHosting = 3,
-    Trackers = 4,
-    Other = 5,
+    Trackers = 1,
+    SocialMedia = 2,
+    Cdn = 3,
+    Other = 4,
 }
 
 /**
@@ -67,11 +66,13 @@ enum CompaniesDbCategories {
 
 /**
  * Map of corresponding categories between companiesdb categories and popup stats categories.
+ *
+ * The same categories are used in the DNS (check comments in AG-33728).
  */
 const CompaniesDbCategoriesMap: Record<number, number> = {
-    [CompaniesDbCategories.AudioVideoPlayer]: PopupStatsCategoriesMv3.Cdn,
-    [CompaniesDbCategories.Comments]: PopupStatsCategoriesMv3.Cdn,
-    [CompaniesDbCategories.Customer]: PopupStatsCategoriesMv3.Cdn,
+    [CompaniesDbCategories.AudioVideoPlayer]: PopupStatsCategoriesMv3.Other,
+    [CompaniesDbCategories.Comments]: PopupStatsCategoriesMv3.Other,
+    [CompaniesDbCategories.Customer]: PopupStatsCategoriesMv3.Other,
     [CompaniesDbCategories.Pornvertising]: PopupStatsCategoriesMv3.Advertising,
     [CompaniesDbCategories.Advertising]: PopupStatsCategoriesMv3.Advertising,
     [CompaniesDbCategories.Essential]: PopupStatsCategoriesMv3.Other,
@@ -79,12 +80,12 @@ const CompaniesDbCategoriesMap: Record<number, number> = {
     [CompaniesDbCategories.SocialMedia]: PopupStatsCategoriesMv3.SocialMedia,
     [CompaniesDbCategories.Misc]: PopupStatsCategoriesMv3.Other,
     [CompaniesDbCategories.Cdn]: PopupStatsCategoriesMv3.Cdn,
-    [CompaniesDbCategories.Hosting]: PopupStatsCategoriesMv3.WebHosting,
+    [CompaniesDbCategories.Hosting]: PopupStatsCategoriesMv3.Other,
     [CompaniesDbCategories.Unknown]: PopupStatsCategoriesMv3.Other,
     [CompaniesDbCategories.Extensions]: PopupStatsCategoriesMv3.Other,
     [CompaniesDbCategories.Email]: PopupStatsCategoriesMv3.Other,
-    [CompaniesDbCategories.Consent]: PopupStatsCategoriesMv3.Trackers,
-    [CompaniesDbCategories.Telemetry]: PopupStatsCategoriesMv3.Trackers,
+    [CompaniesDbCategories.Consent]: PopupStatsCategoriesMv3.Other,
+    [CompaniesDbCategories.Telemetry]: PopupStatsCategoriesMv3.Other,
     [CompaniesDbCategories.MobileAnalytics]: PopupStatsCategoriesMv3.Trackers,
 };
 
@@ -116,8 +117,6 @@ export class PageStatsApiMv3 extends PageStatsApi {
             pageStatsStorage.setData({});
         }
 
-        // FIXME(Slava): may be removed as CompaniesDbApi.start is called in tswebextension's innerStart()
-        // check if it is needed
         await CompaniesDbApi.start(COMPANIES_DB_OUTPUT_FILE);
 
         PageStatsApiMv3.validateCategoriesData();
@@ -226,20 +225,16 @@ export class PageStatsApiMv3 extends PageStatsApi {
                 groupName: translator.getMessage('popup_statistics_category_advertising'),
             },
             {
+                groupId: PopupStatsCategoriesMv3.Trackers,
+                groupName: translator.getMessage('popup_statistics_category_trackers'),
+            },
+            {
                 groupId: PopupStatsCategoriesMv3.SocialMedia,
                 groupName: translator.getMessage('popup_statistics_category_social_media'),
             },
             {
                 groupId: PopupStatsCategoriesMv3.Cdn,
                 groupName: translator.getMessage('popup_statistics_category_cdn'),
-            },
-            {
-                groupId: PopupStatsCategoriesMv3.WebHosting,
-                groupName: translator.getMessage('popup_statistics_category_web_hosting'),
-            },
-            {
-                groupId: PopupStatsCategoriesMv3.Trackers,
-                groupName: translator.getMessage('popup_statistics_category_trackers'),
             },
             {
                 groupId: PopupStatsCategoriesMv3.Other,

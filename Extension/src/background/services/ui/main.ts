@@ -132,7 +132,6 @@ export class UiService {
         tsWebExtTabsApi.onUpdate.subscribe(UiApi.update);
         tsWebExtTabsApi.onActivate.subscribe(UiApi.update);
 
-        // FIXME(Slava): check when filtering log is supported in MV3
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
 
@@ -259,7 +258,7 @@ export class UiService {
             }
             await PageStatsApiMv3.updateStats(companyCategory, UiService.blockedCountIncrement);
             // FIXME: consider reverting a total blocked number to the popup as it is supported in MV3 now
-            // PageStatsApiMv3.incrementTotalBlocked(UiService.blockedCountIncrement);
+            PageStatsApiMv3.incrementTotalBlocked(UiService.blockedCountIncrement);
         } else {
             await PageStatsApiMv2.updateStats(filterId, UiService.blockedCountIncrement);
             PageStatsApiMv2.incrementTotalBlocked(UiService.blockedCountIncrement);
