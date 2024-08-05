@@ -1,8 +1,8 @@
-! Checksum: 9Bq3StaRxBt/cpfnFuXEfw
+! Checksum: oVr9V823OK9n7zmD6SyZxw
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.62
-! TimeUpdated: 2024-07-23T13:02:00+00:00
+! Version: 2.0.4.63
+! TimeUpdated: 2024-08-02T09:01:49+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -111,6 +111,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 ||1abzar.ir/abzar/tools/post-view^$script,third-party
 ||1abzaar.ir/abzar/tools/no-selects.js^$script,third-party
 ||1abzaar.ir/abzar/tools/no-rightclick.js^$script,third-party
+||1abzar.ir/abzar/tools/behesht/?mod=$script,third-party
 ||abzarfa.com/services/minicounter^$script
 ||abzarfa.com/services/onlineusres^$script
 ||abzarfa.com/tools/ip^$script
@@ -1565,6 +1566,9 @@ lahzeakhar.com#%#//scriptlet('ubo-set.js', 'customnotify', 'noopFunc')
 ||lahzeakhar.com/ShowAds
 ! ||lahzeakhar.com/sw.js
 ! >> M <<
+! https://github.com/MasterKia/PersianBlocker/pull/243
+||mihantrader.com/media/images/ad^$image,~third-party
+mihantrader.com##div.text-white:has(> div:has-text(AD))
 musictag.ir#%#//scriptlet('ubo-nowoif.js')
 ||counter.musictag.ir^$~third-party
 musictag.ir#$#body { cursor: revert !important; }

@@ -1,8 +1,8 @@
-! Checksum: /omWDqbC99Ck3dARnkTSZg
+! Checksum: oJ5GhF27bslt++LARMsPpw
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.19.91
-! TimeUpdated: 2024-07-31T15:33:41+00:00
+! Version: 2.1.19.98
+! TimeUpdated: 2024-08-04T00:33:51+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1138,6 +1138,14 @@ $script,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com|fastly.
 !
 !
 !
+||acg.youku.com/webfile/*.jpg
+v.youku.com##.youku-advertise-layer
+v.youku.com###player-advertise
+pansci.asia##.ad-container
+pansci.asia##div[class^="pansc-"]
+137.175.73.220,xnxxw.net##a[target="_blank"][rel="nofollow"] > img
+/as/d/*.js$~third-party,domain=xnxxw.net|137.175.73.220
+huya.com#%#//scriptlet('set-constant', 'adInfo', 'emptyObj')
 le.com#%#//scriptlet('set-constant', 'isAdLoaded', 'true')
 le.com#%#//scriptlet('set-constant', 'Object.prototype.noAD', 'true')
 huya.com##a[class^="Ad--"]
@@ -4811,7 +4819,17 @@ newduba.cn###jq_youxi
 ||38.33.15.*.gif
 ||67.21.92.*.gif
 ||cupfox.app^$third-party
+||letlwsl.top^
+||twerilxi.top^
+||eyyngo.xyz^
+||ttad125.com^
+||tzyzlow.cn^
 ||script302.top^
+||vecggfp.icu^
+||ubeaui.xyz^
+||shbzlkj.cn^
+||ewerilxw.top^
+||uetlwst.top^
 ||sgwsss.xyz^
 ||uqcktxp.icu^
 ||vhzivz.xyz^

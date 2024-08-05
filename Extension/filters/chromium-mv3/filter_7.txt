@@ -1,8 +1,8 @@
-! Checksum: m+/uAa52yVB5xaXhnT4vRA
+! Checksum: /RImzwizruG55aBaef6gNg
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.55.3
-! TimeUpdated: 2024-07-31T13:33:18+00:00
+! Version: 2.0.55.10
+! TimeUpdated: 2024-08-05T05:33:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1536,6 +1536,7 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 /wp-content/themes/CashLINESystem/js/modal.$script
 !
 ! Malware/Phishing
+.com/smbc.co.jp/*/?cmd=_identifier_Demarrer_ID=$document
 /W08Myr0hotline0JP07/*$document
 /?Rfunccode=*&nextfunc=$document,domain=cn
 .one/Sign|$document
@@ -1745,6 +1746,10 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 !
 !
+akiba-souken.com##.middleBnr
+fukuishimbun.co.jp##.headline > li:has(> div[id^="div-gpt-ad-"])
+saikomangaraw.net##.text-center[style^=" height: 300px; overflow: hidden; max-width:"]:empty
+qiita.com##.style-uaiz0z
 qiita.com##article ~ div > section[class^="style-"]:has(div[id^="logly-lift-"])
 marushin-magazine.com###custom_html-1
 chichi-pui.com##.p-advertisement
@@ -7777,6 +7782,7 @@ fx-koryaku.com##.textwidget > center > a[target="_blank"]
 ||dmm.co.jp^$domain=exploader.net
 ||exploader.net/d/$image
 ||dmm.co.jp^$popup,domain=exploader.net
+exploader.net###preview_images > div[style="max-width: 560px; position: relative; height: 302px;"] > div.h_items[style="margin-bottom: 10px;"]
 exploader.net###preview_images > span[class^="tracking_"] > div[style="position: fixed;"] > div[data-pr]
 exploader.net###newfiles > ul.list > li[style*="height: 120px;"]
 exploader.net###wrapper > div[data-style][style*="fixed"]

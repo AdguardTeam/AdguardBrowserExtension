@@ -1,8 +1,8 @@
-! Checksum: dG55LZrOds+/f55YS7JgLA
+! Checksum: 1WCKGioU5ZxnnJmM//uxDw
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.72.87
-! TimeUpdated: 2024-07-31T13:33:04+00:00
+! Version: 2.0.73.4
+! TimeUpdated: 2024-08-05T09:33:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -166,10 +166,12 @@ firmwaredrive.com#%#setTimeout(function() { var el = document.querySelector('inp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167963
 wirkaufens.de#%#//scriptlet('trusted-replace-fetch-response', '/"ip":".*?"/', '"ip":""', 'api.ipify.org')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167885
-pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505', 'emptyObj')
-pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.init', 'noopFunc')
-pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.track', 'noopFunc')
-pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.registerPage', 'noopFunc')
+cib.com.cn,pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505', 'emptyObj')
+cib.com.cn,pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.use', 'noopFunc')
+cib.com.cn,pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.init', 'noopFunc')
+cib.com.cn,pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.track', 'noopFunc')
+cib.com.cn,pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.quick', 'noopFunc')
+cib.com.cn,pconline.pcvideo.com.cn#%#//scriptlet('set-constant', 'sensorsDataAnalytic201505.registerPage', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166258
 yourstory.com#%#(()=>{const n=function(){};window.pa={avInsights:{Media:function(){return{set:n}}},setConfigurations:n,sendEvent:n,refresh:n,getVisitorId:n}})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165757
@@ -590,6 +592,12 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !
 !
 !
+||tr.dec-connect.decsuite.com^
+||yatr.ru^
+||analytics-fe.digital-cloud.medallia.eu^
+||umami.aigenerations.net^
+||brilliantcollector.com^$third-party
+||flag.lab.amplitude.com^$third-party
 ||pop.devil.services^$third-party
 ||pixeltrack.clientgear.com^
 ||event.clientgear.com^
@@ -41050,6 +41058,7 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !
 ! Rule for detecting hidden trackers when the main domain cannot be blocked.
 ||d1udjti6mtxz9q.cloudfront.net^$third-party
+||e.truedata.co^
 !
 ! NOTE: CNAME disguised tracking networks end ⬆️
 ! !SECTION: CNAME disguised tracking networks
@@ -41079,6 +41088,10 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||web-analytics.lastpass.com^
+||tracking.aws.judge.me^
+||analytics.rev.iq^
+||error-tracking.reddit.com^
 ||c1-stats.shopifysvc.com^
 ||telemetry.stytch.com^
 ||stat.le.com^
@@ -75783,7 +75796,16 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 /analytics.js$domain=tokyometro.jp|resumes.breakdownexpress.com|techcult.com|inbox.lv|kopeda.com|freexcafe.com|rusvideos.tv|nakubani.ru|lun.com|songsara.net|newsmax.com|bolgehastanesi.com|ewtc.de|newsdig.tbs.co.jp|imore.com|city.kushiro.lg.jp|emeraldbridal.com.au|emarat-news.ae|imobie.jp|tikla.com.tr|rusvideos.porn|jrkyushu.co.jp|amiunique.org|edit.ing|konami.com
 ||assets.adobedtm.com^$domain=mcclatchydc.com|elnuevoherald.com|bellinghamherald.com|sacbee.com|charlotteobserver.com|newsobserver.com|miamiherald.com|ef.ru|algida.com.tr|bmw-motorrad.co.uk|cif.com.tr|clearhaircare.com|domestos.com|dove.com|elidor.com.tr|f1sport.autorevue.cz|geico.com|hellmanns.com.tr|herkessofraya.com|johnsonsbaby.com.tr|lipton.com|lnk.to|lux.com|magnumicecream.com|neutrogena.com.tr|omo.com|rexona.com|samsung.com|sap.com|schwarzkopf.com.tr|signalturkiye.com|msnbc.com|nbcnews.com|kbb.com|eurosport.ru|timgate.it|intermiles.com|oxfordmail.co.uk|spiegel.de|hp.com|deutschepost.de|thebay.com|s.shufoo.net|tsn.ca|tabelog.com|euronews.com|newshub.co.nz|fredmeyer.com|viabcp.com|carsales.com.au|falabella.com|aarp.org|thehill.com|realtor.com|nzherald.co.nz|aia.com.ph|baynews9.com|thesaurus.com|dhc.co.jp|0101.co.jp|staples.com|rikunabi.com|directscout.recruit.co.jp|r-agent.com|sephora.com|chronicle.com|channelnewsasia.com
+! lots of requests to those files when blocked normally
+/prod/dfm/fp.min.js$redirect=nooptext,important,domain=dailycamera.com
+/prod/dfm/g2i.min.js$redirect=nooptext,important,domain=dailycamera.com
+/prod/dfm/t8y9347t.min.js$redirect=nooptext,important,domain=dailycamera.com
 !
+||turbovpn.com/api/mms/analytics/v1/events|
+||cdn.amplitude.com/libs/analytics-browser-*-min.js
+||cdp.ems.onet.pl/*/me?domain=
+||yandex.*/an/rtbcount/
+||yandex.*/an/tracking/
 ||web.telemetric.dk/t/$image
 ||stytch.com/sdk/v1/events
 ||unifyintent.com/analytics/
@@ -76267,7 +76289,7 @@ sinoptik.ua##img[src^="//counter.ukr.net/"]
 ||nius.de/monitoring
 ||expert.it/js/omni/tracking/
 ||gobankingrates.com/analytics/latest/ct.bundle.js
-||scv-cafe.io.naver.com/jackpotlog/*/logs$xmlhttprequest
+||scv-cafe.io.naver.com/jackpotlog/*/logs$xmlhttprequest,redirect=noopjson
 ||digiturk.com.tr/_Scripts/AnalyticsEvents.js
 ||apps.nhk.or.jp/assets/dtm/launch-
 ||img.syosetu.org/js/c_
@@ -82339,7 +82361,17 @@ inapps.appsflyersdk.com^
 !
 ! For platforms which do not support $redirect rules
 !
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/185302
+! TODO: change hint to !+ PLATFORM(ios, ext_safari, ext_android_cb)
+! when this issue will be fixed - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2855
+!+ NOT_PLATFORM(windows, mac, android)
+@@||cib.com.cn/cn/*/js/*/sensorsdata.min.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/185398
+mustar.meitetsu.co.jp#$#body[style="opacity: 0;"] { opacity: 1 !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/184637
+@@||cdn.sophi.io/assets/demeter/*/stable/*.js$domain=nationalpost.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/185135
+@@||mailingtechnology.com/tracking/tracking_$~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/184980
 @@||cdn.pubnub.com/pubnub-3.14.5.min.js$domain=my.pltw.org
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185038
@@ -82858,9 +82890,6 @@ login.coupang.com#%#//scriptlet('prevent-element-src-loading', 'script', 'app-co
 @@||js-agent.newrelic.com/async-api$domain=northwell.edu
 ! https://github.com/AdguardTeam/AdguardFilters/issues/154231
 @@||shenlongruanjian.com/website/js/fingerprint2.min.js
-! https://github.com/AdguardTeam/AdguardFilters/issues/154214
-@@||google-analytics.com/gtm/optimize.js$domain=turkcell.com.tr
-@@||googletagmanager.com/gtm.js$domain=turkcell.com.tr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/154110
 @@||img.segmentify.com^$domain=mediamarkt.com.tr
 @@||cdn.segmentify.com^$domain=mediamarkt.com.tr
