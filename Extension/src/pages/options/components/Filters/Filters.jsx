@@ -275,7 +275,7 @@ const Filters = observer(() => {
     }, [urlToSubscribe, openModalHandler]);
 
     const renderAddFilterBtn = (isEmpty) => {
-        const buttonClass = classNames('button button--m button--green', {
+        const buttonClass = classNames('button button--l button--green', {
             'button--empty-custom-filter': isEmpty,
             'button--add-custom-filter': !isEmpty,
         });

@@ -69,7 +69,7 @@ export class CommonFilterApi {
     }
 
     /**
-     * Checks if filter is common.
+     * Checks if filter is built-in: not custom, not user-rules and not allowlist.
      *
      * @param filterId Filter id.
      *
@@ -253,7 +253,7 @@ export class CommonFilterApi {
         // Get all used languages
         const languages = BrowserUtils.getNavigatorLanguages();
 
-        languages.forEach(language => {
+        languages.forEach((language) => {
             localeFilterIds = metadataStorage.getFilterIdsForLanguage(language);
             filterIds = filterIds.concat(localeFilterIds);
         });

@@ -86,7 +86,7 @@ export class Engine implements TsWebExtensionEngine {
 
         logger.info('Start tswebextension...');
         const result = await this.api.start(configuration);
-        rulesLimitsService.set(result);
+        rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
@@ -98,6 +98,8 @@ export class Engine implements TsWebExtensionEngine {
         if (await RulesLimitsService.areFilterLimitsExceeded()) {
             toasts.showRuleLimitsAlert();
         }
+
+        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -114,7 +116,7 @@ export class Engine implements TsWebExtensionEngine {
             logger.info('With skip limits check.');
         }
         const result = await this.api.configure(configuration);
-        rulesLimitsService.set(result);
+        rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
@@ -130,7 +132,7 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
 
-        filteringLogApi.onEngineUpdated();
+        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -158,7 +160,7 @@ export class Engine implements TsWebExtensionEngine {
             userrules = (await UserRulesApi.getUserRules()).rawFilterList.split('\n');
 
             // Remove empty strings.
-            userrules = userrules.filter(rule => !!rule);
+            userrules = userrules.filter((rule) => !!rule);
 
             // Remove duplicates.
             userrules = Array.from(new Set(userrules));
@@ -185,6 +187,8 @@ export class Engine implements TsWebExtensionEngine {
             }));
 
         return {
+            // TODO: Maybe should be removed or somehow used in AG-34437
+            // This one is for separative declarative filtering log.
             filteringLogEnabled: false,
             customFilters,
             verbose: !!(IS_RELEASE || IS_BETA),
@@ -207,7 +211,6 @@ export class Engine implements TsWebExtensionEngine {
      * settings already changed and tswebextension will generate configuration
      * itself based on the current settings.
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async setFilteringState(isFilteringEnabled: boolean): Promise<void> {
         // Configure tswebextension with the new settings without checking limits
         // if we paused filtering.

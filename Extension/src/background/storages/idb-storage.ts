@@ -166,9 +166,16 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
      */
     public async entries(): Promise<Record<string, unknown>> {
         const db = await this.getOpenedDb();
-        const entries = await db.getAll(this.store);
+        const entries: Record<string, unknown> = {};
+        const tx = db.transaction(this.store, 'readonly');
 
-        return Object.fromEntries(entries.map((entry) => [entry.key, entry.value]));
+        // eslint-disable-next-line no-restricted-syntax
+        for await (const cursor of tx.store) {
+            const key = String(cursor.key);
+            entries[key] = cursor.value;
+        }
+
+        return entries;
     }
 
     /**

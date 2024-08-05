@@ -19,28 +19,14 @@
 import path from 'path';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { Configuration } from 'webpack';
 
 import { genMv2CommonConfig } from '../webpack.common-mv2';
-import {
-    CHROMIUM_DEVTOOLS_ENTRIES,
-    CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
-    genChromiumZipPlugin,
-} from '../webpack.common';
+import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import {
-    BACKGROUND_OUTPUT,
-    TSURLFILTER_VENDOR_OUTPUT,
-    TSWEBEXTENSION_VENDOR_OUTPUT,
-} from '../../../constants';
-import {
-    type BrowserConfig,
-    BACKGROUND_PATH,
-    htmlTemplatePluginCommonOptions,
-} from '../common-constants';
 import { BUILD_ENV } from '../../constants';
+import { type BrowserConfig } from '../common-constants';
 
 import { edgeManifest } from './manifest.edge';
 
@@ -52,9 +38,7 @@ export const genEdgeConfig = (browserConfig: BrowserConfig) => {
     }
 
     const edgeConfig: Configuration = {
-        entry: {
-            ...CHROMIUM_DEVTOOLS_ENTRIES,
-        },
+        entry: CHROMIUM_DEVTOOLS_ENTRIES,
         output: {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
@@ -78,21 +62,7 @@ export const genEdgeConfig = (browserConfig: BrowserConfig) => {
                     },
                 ],
             }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(BACKGROUND_PATH, 'index.html'),
-                templateParameters: {
-                    browser: process.env.BROWSER,
-                },
-                filename: `${BACKGROUND_OUTPUT}.html`,
-                chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    BACKGROUND_OUTPUT,
-                ],
-            }),
             ...CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
-            genChromiumZipPlugin(browserConfig.browser),
         ],
     };
 

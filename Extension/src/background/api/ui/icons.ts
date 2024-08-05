@@ -45,10 +45,9 @@ export const defaultIconVariants: IconVariants = {
 };
 
 /**
- * The Icons API is responsible for setting the icon that corresponds
- * to the current state of the background extension in the specified tab.
+ * The Icons API is responsible for managing the extension's action state.
  */
-export class IconsApi {
+class IconsApi {
     /**
      * Badge background color.
      */

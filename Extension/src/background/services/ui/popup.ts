@@ -109,19 +109,15 @@ export class PopupService {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         if (tabContext) {
-            const hasUserRulesToReset = await UserRulesApi.hasRulesForUrl(tabContext.info.url);
-
-            const areFilterLimitsExceeded = __IS_MV3__
-                ? await RulesLimitsService.areFilterLimitsExceeded()
-                : false;
-
             return {
                 frameInfo: FramesApi.getMainFrameData(tabContext),
                 stats: __IS_MV3__
                     ? PageStatsApiMv3.getStatisticsData()
                     : PageStatsApiMv2.getStatisticsData(),
                 settings: SettingsApi.getData(),
-                areFilterLimitsExceeded,
+                areFilterLimitsExceeded: __IS_MV3__
+                    ? await RulesLimitsService.areFilterLimitsExceeded()
+                    : false,
                 options: {
                     showStatsSupported: true,
                     isFirefoxBrowser: UserAgent.isFirefox,
@@ -130,7 +126,7 @@ export class PopupService {
                     isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
                     notification: await promoNotificationApi.getCurrentNotification(),
                     isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasUserRulesToReset,
+                    hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
                 },
             };
         }

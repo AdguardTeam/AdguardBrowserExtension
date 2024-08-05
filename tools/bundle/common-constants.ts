@@ -23,6 +23,19 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Browser } from '../constants';
 
 export const BACKGROUND_PATH = path.resolve(__dirname, '../../Extension/pages/background');
+export const OPTIONS_PATH = path.resolve(__dirname, '../../Extension/pages/options');
+export const POPUP_PATH = path.resolve(__dirname, '../../Extension/pages/popup');
+export const FILTERING_LOG_PATH = path.resolve(__dirname, '../../Extension/pages/filtering-log');
+export const POST_INSTALL_PATH = path.resolve(__dirname, '../../Extension/pages/post-install');
+export const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-start');
+export const ASSISTANT_INJECT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant-inject');
+export const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
+export const SUBSCRIBE_PATH = path.resolve(__dirname, '../../Extension/pages/subscribe');
+export const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
+export const FULLSCREEN_USER_RULES_PATH = path.resolve(__dirname, '../../Extension/pages/fullscreen-user-rules');
+export const SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/safebrowsing');
+export const AD_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/ad-blocked');
+export const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/components/Editor');
 
 export const htmlTemplatePluginCommonOptions: Partial<HtmlWebpackPlugin.Options> = {
     cache: false,

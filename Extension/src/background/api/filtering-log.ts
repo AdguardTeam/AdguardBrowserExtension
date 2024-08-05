@@ -18,6 +18,7 @@
 import { Tabs } from 'webextension-polyfill';
 
 import { RuleParser } from '@adguard/agtree';
+import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
 import {
     BACKGROUND_TAB_ID,
@@ -180,6 +181,11 @@ export class FilteringLogApi {
     private static readonly SYNC_ATTEMPTS_INTERVAL_MS = 10000;
 
     /**
+     * Flag to invert allowlist mode.
+     */
+    private allowlistInverted = false;
+
+    /**
      * Purges filters cache.
      *
      * @param filterIds Filter ids to remove from cache. If not provided, the whole cache will be purged.
@@ -213,8 +219,12 @@ export class FilteringLogApi {
 
     /**
      * Called when the engine is updated.
+     *
+     * @param allowlistInverted Whether allowlist mode is inverted.
      */
-    public onEngineUpdated(): void {
+    public onEngineUpdated(allowlistInverted: boolean): void {
+        this.allowlistInverted = allowlistInverted;
+
         if (!this.isOpen()) {
             return;
         }
@@ -296,6 +306,17 @@ export class FilteringLogApi {
      * @returns Rule text or null if the rule is not found.
      */
     public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
+        // Special case: when inverted allowlist mode is enabled, we generate rules dynamically without rule index,
+        // and we don't need to show them, so we return null.
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2883
+        if (
+            this.allowlistInverted
+            && filterId === AntiBannerFiltersId.AllowlistFilterId
+            && ruleIndex === RULE_INDEX_NONE
+        ) {
+            return null;
+        }
+
         // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
         // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
         if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {

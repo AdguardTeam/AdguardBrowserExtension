@@ -1,46 +1,52 @@
 name: Tests Browser Extension
 
+env:
+  NODE_VERSION: 20
+  YARN_FLAGS: '--silent --ignore-engines --ignore-platform --ignore-scripts'
+
 on: push
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
 
       - name: yarn install
-        run: yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
+        run: yarn install ${{ env.YARN_FLAGS }}
 
       - name: yarn test
         run: yarn run test
 
   notify:
-    needs:
-      - test
-
+    needs: test
+    # Run this job only if the previous job failed and the event was triggered from the original repository
+    # Note: 'always()' is needed to run the notify job even if the test job was failed
     if:
-      ${{ always() &&
+      ${{
+        always() &&
+        needs.test.result == 'failure' &&
+        github.repository == 'AdguardTeam/AdguardBrowserExtension' &&
         (
           github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch' ||
           github.event.pull_request.head.repo.full_name == github.repository
         )
       }}
     runs-on: ubuntu-latest
     steps:
-      - name: Conclusion
-        uses: technote-space/workflow-conclusion-action@v3
-      - name: Send Slack notif
+      - name: Send Slack notification
         uses: 8398a7/action-slack@v3
         with:
-          status: ${{ env.WORKFLOW_CONCLUSION }}
-          fields: workflow, repo, message, commit, author, eventName, ref
+          status: failure
+          fields: workflow, repo, message, commit, author, eventName, ref, job
+          job_name: test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

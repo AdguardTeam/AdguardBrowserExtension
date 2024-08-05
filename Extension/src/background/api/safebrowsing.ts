@@ -141,7 +141,7 @@ export class SafebrowsingApi {
         const shortHashes = hashes
             .map((hash) => hash.substring(0, SafebrowsingApi.DOMAIN_HASH_LENGTH))
             // Filter already checked hashes
-            .filter(x => !sbRequestCache.get(x));
+            .filter((x) => !sbRequestCache.get(x));
 
         if (shortHashes.length === 0) {
             // In case we have not found anything in safebrowsingCache and all short hashes have been checked in
@@ -252,8 +252,8 @@ export class SafebrowsingApi {
 
             responseText.split('\n')
                 // filter empty lines
-                .filter(line => !!line)
-                .forEach(line => {
+                .filter((line) => !!line)
+                .forEach((line) => {
                     const row = line.split(':');
 
                     const hash = row[2];

@@ -86,10 +86,10 @@ export const ConfirmModal = ({
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
 
     const subtitleClassName = cn('modal__subtitle', {
-        'modal__subtitle--short': !isConsent,
+        'modal__subtitle--one-line': !isConsent,
     });
 
-    const okBtnClassName = cn('button button--m modal__btn button--green', {
+    const okBtnClassName = cn('button button--l modal__btn button--green', {
         'button--red-bg': !isConsent,
     });
 
@@ -114,28 +114,46 @@ export const ConfirmModal = ({
             <Modal
                 isOpen={isOpen}
                 onRequestClose={handleCancel}
-                // reset default padding
-                style={{ content: { padding: 0 } }}
+                // re-define default styles
+                style={{
+                    content: {
+                        padding: 0,
+                        borderRadius: 8,
+                    },
+                }}
             >
-                <div className="modal">
-                    <div className="modal__header">
-                        <button
-                            type="button"
-                            className="button modal__close"
-                            aria-label={translator.getMessage('close_button_title')}
-                            onClick={handleCancel}
-                        >
-                            <Icon id="#cross" />
-                        </button>
-                    </div>
-                    <div className="modal__title">
-                        {title}
-                    </div>
-                    {subtitle && (
-                        <div className={subtitleClassName}>
-                            {subtitle}
+                <div
+                    // there are no specific styles for 'modal--scrollable' class
+                    // BUT it is needed for ':has(.modal--scrollable)' selector to work
+                    className={cn('modal', {
+                        'modal--scrollable': isConsent,
+                    })}
+                >
+                    <div className="modal__content">
+                        <div className="modal__header">
+                            <div className="modal__title">
+                                {title}
+                            </div>
+                            {!isConsent && (
+                                <button
+                                    type="button"
+                                    className="button modal__close"
+                                    aria-label={translator.getMessage('close_button_title')}
+                                    onClick={handleCancel}
+                                >
+                                    <Icon id="#cross" />
+                                </button>
+                            )}
                         </div>
-                    )}
+                        {subtitle && (
+                            <div
+                                className={subtitleClassName}
+                                title={subtitle}
+                            >
+                                {subtitle}
+                            </div>
+                        )}
+                    </div>
                     <div className="modal__actions">
                         <button
                             className={okBtnClassName}
@@ -145,7 +163,7 @@ export const ConfirmModal = ({
                             {confirmTitle}
                         </button>
                         <button
-                            className="button button--m button--transparent modal__btn modal__btn--confirm"
+                            className="button button--l button--transparent modal__btn modal__btn--confirm"
                             type="button"
                             onClick={handleCancel}
                         >

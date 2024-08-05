@@ -154,7 +154,6 @@ export class AllowlistApi {
      * @param tabId Tab id.
      * @param tabRefresh Tab refresh flag.
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async enableTabFiltering(tabId: number, tabRefresh: boolean = false): Promise<void> {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
@@ -314,7 +313,7 @@ export class AllowlistApi {
     private static removeDomain(domain: string, storage: DomainsStorage): void {
         const domains = storage.getData();
 
-        AllowlistApi.setDomains(domains.filter(d => d !== domain), storage);
+        AllowlistApi.setDomains(domains.filter((d) => d !== domain), storage);
     }
 
     /**
@@ -336,7 +335,7 @@ export class AllowlistApi {
      */
     private static setDomains(domains: string[], storage: DomainsStorage): void {
         // remove empty strings
-        domains = domains.filter(domain => !!domain);
+        domains = domains.filter((domain) => !!domain);
 
         // remove duplicates
         domains = Array.from(new Set(domains));

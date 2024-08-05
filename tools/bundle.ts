@@ -26,7 +26,7 @@ import {
     BUILD_ENV,
     BuildTargetEnv,
 } from './constants';
-import { getWebpackConfig } from './bundle/webpack-config';
+import { getWebpackConfig } from './bundle/get-webpack-config';
 import { crx } from './bundle/crx';
 import { buildInfo } from './bundle/build-info';
 import { buildUpdateJson } from './bundle/firefox/updateJson';

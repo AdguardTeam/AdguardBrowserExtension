@@ -9,8 +9,10 @@ on:
 jobs:
   stale:
     runs-on: ubuntu-latest
+    # Do not run this action on forks
+    if: ${{ github.repository == 'AdguardTeam/AdguardBrowserExtension' }}
     steps:
-      - uses: actions/stale@v4
+      - uses: actions/stale@v9
         with:
           stale-issue-message: >
             This issue has been automatically marked as stale because it has not had

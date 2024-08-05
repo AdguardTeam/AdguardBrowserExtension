@@ -86,9 +86,7 @@ export class ConnectionHandler {
     private static onPortConnection(port: Runtime.Port): void {
         switch (true) {
             case port.name.startsWith(FILTERING_LOG): {
-                if (!__IS_MV3__) {
-                    filteringLogApi.onOpenFilteringLogPage();
-                }
+                filteringLogApi.onOpenFilteringLogPage();
                 break;
             }
 
@@ -120,9 +118,7 @@ export class ConnectionHandler {
     private static onPortDisconnection(port: Runtime.Port): void {
         switch (true) {
             case port.name.startsWith(FILTERING_LOG): {
-                if (!__IS_MV3__) {
-                    filteringLogApi.onCloseFilteringLogPage();
-                }
+                filteringLogApi.onCloseFilteringLogPage();
                 break;
             }
 

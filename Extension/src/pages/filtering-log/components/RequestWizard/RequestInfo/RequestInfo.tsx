@@ -35,7 +35,9 @@ import cn from 'classnames';
 
 import { StealthActions, ContentType as RequestType } from 'tswebextension';
 
+import { FILTERING_LOG_ASSUMED_RULE_URL } from '../../../../options/constants';
 import { translator } from '../../../../../common/translators/translator';
+import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import {
     getFilterName,
     getRequestEventType,
@@ -54,6 +56,7 @@ import { TextCollapser } from '../../../../common/components/TextCollapser/TextC
 import { AddedRuleState } from '../../../constants';
 import { type FilteringLogEvent, type FilteringEventRuleData } from '../../../../../background/api/filtering-log';
 import { FilterMetadata } from '../../../../../background/api';
+import { Popover } from '../../../../common/components/ui/Popover/Popover';
 
 import './request-info.pcss';
 
@@ -105,7 +108,7 @@ type EventPartData = {
     /**
      * Part data.
      */
-    data?: string | null,
+    data?: string | string[] | null,
 };
 
 /**
@@ -270,7 +273,7 @@ const PARTS = {
     COOKIE: 'COOKIE',
     TYPE: 'TYPE',
     SOURCE: 'SOURCE',
-    APPLIED_RULE: 'APPLIED_RULE',
+    ASSUMED_RULE: 'ASSUMED_RULE',
     ORIGINAL_RULE: 'ORIGINAL_RULE',
     FILTER: 'FILTER',
     STEALTH: 'STEALTH',
@@ -337,10 +340,10 @@ const RequestInfo = observer(() => {
     // Handle rule texts
     const rulesData = getRulesData(selectedEvent, filtersMetadata);
 
-    eventPartsMap[PARTS.APPLIED_RULE] = {
-        title: translator.getPlural('filtering_modal_applied_rules', Math.max(rulesData.appliedRuleTexts.length, 1)),
+    eventPartsMap[PARTS.ASSUMED_RULE] = {
+        title: translator.getPlural('filtering_modal_assumed_rules', Math.max(rulesData.appliedRuleTexts.length, 1)),
         data: rulesData.appliedRuleTexts.length > 0
-            ? rulesData.appliedRuleTexts.join('\n')
+            ? rulesData.appliedRuleTexts
             : null,
     };
 
@@ -358,7 +361,7 @@ const RequestInfo = observer(() => {
         PARTS.COOKIE,
         PARTS.TYPE,
         PARTS.SOURCE,
-        PARTS.APPLIED_RULE,
+        PARTS.ASSUMED_RULE,
         PARTS.ORIGINAL_RULE,
         PARTS.FILTER,
         PARTS.STEALTH,
@@ -371,7 +374,7 @@ const RequestInfo = observer(() => {
             PARTS.SOURCE,
             // TODO: determine first/third-party
             PARTS.STEALTH,
-            PARTS.APPLIED_RULE,
+            PARTS.ASSUMED_RULE,
             PARTS.ORIGINAL_RULE,
             PARTS.FILTER,
         ];
@@ -419,7 +422,7 @@ const RequestInfo = observer(() => {
             }
 
             const isRequestUrl = data === selectedEvent.requestUrl;
-            const isRule = data === selectedEvent.appliedRuleText;
+            const isRule = data === selectedEvent.appliedRuleText || data === rulesData.appliedRuleTexts;
             const isFilterName = data === selectedEvent.filterName;
             const isElement = data === selectedEvent.element;
             const canCopyToClipboard = isRequestUrl || isRule || isFilterName;
@@ -446,12 +449,16 @@ const RequestInfo = observer(() => {
                 hideMessage,
             };
 
-            return (
-                <div key={title} className="request-info">
-                    <div className="request-info__key">{title}</div>
-                    <div className="request-info__value">
+            const texts = Array.isArray(data)
+                ? data
+                : [data];
+
+            const textsWithCollapsers = texts.map((text) => {
+                return (
+                    <div className="text" key="text">
+                        {isRule && <span className="red-dot">*</span>}
                         <TextCollapser
-                            text={data}
+                            text={text}
                             ref={isRequestUrl || isRule ? requestTextRef : null}
                             width={textMaxWidth}
                             lineCountLimit={lineCountLimit}
@@ -460,6 +467,37 @@ const RequestInfo = observer(() => {
                         >
                             {isRequestUrl && renderInfoUrlButtons(selectedEvent)}
                         </TextCollapser>
+                    </div>
+                );
+            });
+
+            const infoAboutAssumedRule = () => {
+                const text = reactTranslator.getMessage('filtering_log_assumed_rule_description', {
+                    dot: () => <span className="red-dot">*</span>,
+                    a: (text: string) => (
+                        <a
+                            href={FILTERING_LOG_ASSUMED_RULE_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {text}
+                        </a>
+                    ),
+                });
+
+                return (
+                    <Popover text={text as string}>
+                        <Icon id="#question" classname="icon--24" />
+                    </Popover>
+                );
+            };
+
+            return (
+                <div key={title} className="request-info">
+                    <div className="request-info__key">{title}</div>
+                    <div className="request-info__value">
+                        {textsWithCollapsers}
+                        {isRule && infoAboutAssumedRule()}
                     </div>
                 </div>
             );

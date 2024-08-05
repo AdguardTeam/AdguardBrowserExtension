@@ -3,22 +3,14 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background-color: var(--gray100);
     border-radius: 8px;
+    background-color: var(--fills-inputs-input-background-disabled);
+    border: 1px solid var(--stroke-inputs-inactive-input-stroke-disabled);
     margin: 16px;
     padding: 0 16px 0 0;
 
-    @media (prefers-color-scheme: dark) {
-        border: 1px solid var(--gray900);
-        background-color: var(--black);
-    }
-
     &--focused {
-        background-color: var(--gray300);
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--gray900);
-        }
+        background-color: var(--fills-inputs-input-background-disabled);
     }
 
     &__label {
@@ -40,7 +32,7 @@
 
         &::placeholder {
             opacity: 1;
-            color: var(--gray700);
+            color: var(--text-placeholder-placeholder-disabled);
             font-size: 14px;
 
             @media (min-width: 640px) {
@@ -51,35 +43,27 @@
         &:focus {
             outline: none;
         }
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
     }
 
     &__select {
         @media (min-width: 640px) {
             padding-left: 16px;
             margin-left: 20px;
-            border-left: 1px solid var(--gray700);
+            border-left: 1px solid var(--stroke-dividers-item-divider-default);
         }
 
-        & .select__ico,
-        .select__value,
+        & .select__value,
         option {
-            color: var(--gray700);
+            color: var(--text-main-text-main-default);
             font-size: 14px;
+            line-height: 24px;
             font-weight: 400;
-
-            @media (min-width: 640px) {
-                font-size: 16px;
-            }
         }
     }
 
     &__cross {
         position: relative;
-        color: var(--gray400);
+        color: var(--stroke-icons-gray-icons-default);
     }
 }
 
@@ -89,35 +73,5 @@
     &--disabled {
         opacity: 0.5;
         pointer-events: none;
-    }
-}
-
-.light-mode {
-    .search {
-        border: 0;
-        background-color: var(--gray100);
-
-        &__input {
-            color: var(--gray-base);
-        }
-
-        &--focused {
-            background-color: var(--gray300);
-        }
-    }
-}
-
-.dark-mode {
-    .search {
-        border: 1px solid var(--gray900);
-        background-color: var(--black);
-
-        &__input {
-            color: var(--gray300);
-        }
-
-        &--focused {
-            background-color: var(--gray900);
-        }
     }
 }
