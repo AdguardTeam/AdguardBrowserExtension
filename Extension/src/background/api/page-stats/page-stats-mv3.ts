@@ -175,7 +175,7 @@ export class PageStatsApiMv3 extends PageStatsApi {
     ): Promise<void> {
         let statsCategoryId = CompaniesDbCategoriesMap[companyCategory];
 
-        if (!statsCategoryId) {
+        if (typeof statsCategoryId === 'undefined') {
             logger.debug(`Not mapped category id: ${companyCategory}, set to "Other"`);
             statsCategoryId = PopupStatsCategoriesMv3.Other;
         }
