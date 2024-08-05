@@ -1,8 +1,8 @@
-! Checksum: ncQpAl3QRrWKo1J53GMnGA
+! Checksum: 6oUEnOfigC9b4vZK6MDAmg
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.91
-! TimeUpdated: 2024-07-30T17:34:23+00:00
+! Version: 2.0.8.95
+! TimeUpdated: 2024-08-05T09:33:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -358,6 +358,15 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! igromania.ru
+||igromania.ru^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/185179
+||fikfapcams.com^$removeparam=referrer
+||fikfapcams.com^$removeparam=realDomain
+||fikfapcams.com^$removeparam=affiliateId
+||go.xliirdr.com/?*&targetDomain=$removeparam=p
+||go.xliirdr.com/?*&targetDomain=$removeparam=userId
+||go.xliirdr.com/?*&targetDomain=$removeparam=campaignId
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185036
 ||windscribe.com^$removeparam=pcpid
 ||windscribe.com^$removeparam=temp_session
@@ -1376,6 +1385,8 @@ $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||nationalgeographic.com^$removeparam=utm_rd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128339
 ||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
+||ficbook.com^$removeparam=/premiumVisit|utm_compaign/
+||ficbook.me^$removeparam=/premiumVisit|utm_compaign/
 ! stripchat.com
 ||stripchat.com^$removeparam=campaignId
 ||stripchat.com^$removeparam=sourceId
@@ -1567,6 +1578,7 @@ $removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.lived
 ||wizcase.com/?$removeparam=vid
 ||microsoft.msafflnk.net^$removeparam=sharedid
 ||microsoft.msafflnk.net^$removeparam=/^subid/
+||ojrq.net/p/$removeparam=tpsync
 ||ojrq.net/p/$removeparam=cid
 ||click.linksynergy.com/fs-bin/click?id=$removeparam=u1
 ||click.linksynergy.com/fs-bin/click?id=$removeparam=u2

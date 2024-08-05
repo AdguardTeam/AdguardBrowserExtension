@@ -1,8 +1,8 @@
-! Checksum: /SkgAD//8mTmUoMAb6b1BQ
+! Checksum: xaXaFrzX2tApUTs00SlZvQ
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.8.95
-! TimeUpdated: 2024-07-31T12:33:39+00:00
+! Version: 2.0.8.98
+! TimeUpdated: 2024-08-02T13:33:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2001,6 +2001,7 @@ hltv.org##.leftCol > aside > div.a-reset
 hltv.org##.mid-container > div[class]:has(> div.featured-matches-top-next-slider)
 ! truestory widget
 ||thetruestory.news/widget-top.iife.js$domain=echofm.online|zona.media|thebell.io
+istories.media##.swiper-wrapper > div.swiper-slide:has(div[class^="TheTrueStory-module-"] > thetruestory-widget-top)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/140015
 telegram.hr##.offers-widget
 ! https://github.com/AdguardTeam/AdguardFilters/issues/139316
@@ -2238,6 +2239,9 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+novayagazeta.ru###asideBlock_0 > aside > div[style="height:100%"] > div[style^="padding-top:"]
+||thunderbird.net/*/thank-you/$removeparam=form
+apnews.com###desktop-entitlements
 istories.media##div[class^="BeltsGrid-module-"] > div[class^="BeltOfThree-module-"]:has(> div[class^="BeltOfThree-module-"] > div[class^="DonationCard-module"])
 tvrain.tv##.article_paid__info:has(> a.article_paid__btn--donate)
 euromaidanpress.com###pa_banner_code

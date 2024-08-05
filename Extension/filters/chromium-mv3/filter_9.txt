@@ -1,8 +1,8 @@
-! Checksum: ej0fX9QYYqhFlUcqLmOUNw
+! Checksum: 7+qS3qkgRKFBi6dIW5KsNw
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.25.90
-! TimeUpdated: 2024-07-31T06:33:17+00:00
+! Version: 2.0.25.94
+! TimeUpdated: 2024-08-02T15:33:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -814,9 +814,15 @@ anitube.vip,hinatasoul.com#%#//scriptlet('set-constant', 'detectedAdblock', 'noo
 anitube.vip,hinatasoul.com#%#//scriptlet('adjust-setTimeout', 'asdFHqwe', '*', '0.001')
 anitube.vip,hinatasoul.com#%#//scriptlet('prevent-xhr', '/pagead2\.googlesyndication\.com|outbrain\.com|adligature\.com|quantserve\.com|srvtrck\.com/')
 anitube.vip,hinatasoul.com#%#//scriptlet('prevent-fetch', '/pagead2\.googlesyndication\.com|outbrain\.com|adligature\.com|quantserve\.com|srvtrck\.com/')
+! Scriptlets are injected too late - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2855
+! and $redirect rule doesn't work because responseURL is checked and it doesn't return original URL
+! TODO: change hint to PLATFORM(ios, ext_android_cb, ext_safari) when issue will be fixed
+!+ NOT_PLATFORM(windows, mac, android, ext_ublock)
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157756
 ! Link from anitube.vip
 dicasgostosas.com#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
+dicasgostosas.com#%#//scriptlet('prevent-xhr', 'popads.net')
 dicasgostosas.com#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79720
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79653
@@ -2135,6 +2141,9 @@ globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.c
 ! ##body .banner
 meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.info,lapoliticaonline.com.mx,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.gov.bd,lapoliticaonline.gov.np,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+portalbsd.com.br##div[style="height: 130px;"]
+portalbsd.com.br##.table-bordered:has(> tbody > tr > td[style="color: #993366; font-size:12px; font-weight:bold;"] > center > a[target="_blank"] > img)
+sussytoons.com##a[href^="https://api.whatsapp.com/"]
 visortmo.com##.pbk
 metropoles.com##section[class^="PublicidadesWrapper"]
 cinelatino.net###rotator
@@ -4150,7 +4159,7 @@ europafm.com,atresplayer.com##.mod_roba
 atresplayer.com##.mod_blanco
 infojobs.com.br##.bottomBannerInside
 infojobs.com.br##.advisor-banner-container
-futeboltvgratis.com,aovivo.gratis,futeboltv.com###anuncio
+sussytoons.com,futeboltvgratis.com,aovivo.gratis,futeboltv.com###anuncio
 futeboltvgratis.com,futeboltv.com###adstab01
 extremotv.info##iframe[src^="http://extremotv"][src*=".php"]:not([src*="lateral.php"])
 eusouandroid.co##body .td-header-style-10 .td-g-rec-id-header .adsbygoogle
@@ -4494,7 +4503,7 @@ imperiodefamosas.com,animeflv.net###publi
 antena3.com###publi1
 imperiodefamosas.com###publi3
 emprendedores.es###publiBottom
-cope.es###publiHeader
+trucoswindows.com,cope.es###publiHeader
 emprendedores.es###publiRight
 as.com###publi_3columnas
 marca.com###publi_sup

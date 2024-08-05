@@ -68,7 +68,7 @@
 				"name": "Блокирање на реклами"
 			},
 			"nl": {
-				"name": "Reclame blokkeren"
+				"name": "Advertentie blokkering"
 			},
 			"no": {
 				"name": "Annonseblokkeringer"
@@ -2347,8 +2347,8 @@
 				"name": "AdGuardrekommendation"
 			},
 			"tr": {
-				"description": "AdGuard reklam engelleyici ile kullanılması tavsiye edilir",
-				"name": "AdGuard'ın tavsiyesi"
+				"description": "AdGuard reklam engelleyici ile kullanılması önerilir",
+				"name": "AdGuard'ın önerisi"
 			},
 			"uk": {
 				"description": "Рекомендовано до використання з AdGuard",
@@ -10716,6 +10716,10 @@
 				"description": "Dizajniran posebno za blokiranje reklama na web stranicama na makedonskom jeziku",
 				"name": "Blokiranje oglasa specifično za makedonski jezik"
 			},
+			"hu": {
+				"description": "Kifejezetten a macedón nyelvű weboldalakon megjelenő hirdetések blokkolására tervezték",
+				"name": "Macedón nyelvspecifikus blokkolás"
+			},
 			"it": {
 				"description": "Progettato specificatamente per il blocco degli annunci su pagine web in lingua macedone",
 				"name": "Blocco degli annunci specifico per lingua macedone"
@@ -15109,7 +15113,7 @@
 				"description": "Filtar koji blokira oglase na tajlandskim web stranicama."
 			},
 			"hu": {
-				"name": "EasyList Thaiföld",
+				"name": "EasyList Thailand",
 				"description": "Szűrőlista, amely blokkolja a hirdetéseket a thai nyelvű webhelyeken."
 			},
 			"id": {
@@ -15247,7 +15251,7 @@
 				"description": "Popis filtara posebno dizajniranih za blokiranje oglasa na mađarskom jeziku."
 			},
 			"hu": {
-				"name": "Magyar szűrő",
+				"name": "Hungarian filter",
 				"description": "Hufilter. Szűrőlista, amely lehetővé teszi a hirdetések blokkolását a magyar nyelvű webhelyeken."
 			},
 			"id": {
@@ -15385,7 +15389,7 @@
 				"description": "Blokira domene za koje se zna da se koriste za širenje zlonamjernog i špijunskog softvera."
 			},
 			"hu": {
-				"name": "Rosszindulatú URL-ek tiltólistája",
+				"name": "Online Malicious URL Blocklist",
 				"description": "Blokkolja azokat a domaineket, amelyeket köztudottan rosszindulatú programok és kémprogramok terjesztésére használnak."
 			},
 			"id": {
@@ -15523,8 +15527,8 @@
 				"description": "Vietnamese adblock filter list."
 			},
 			"hu": {
-				"name": "ABPVN Lista",
-				"description": "Vietnami hirdetésszűrő lista."
+				"name": "ABPVN List",
+				"description": "Vietnamese adblock filter list."
 			},
 			"id": {
 				"name": "ABPVN List",
@@ -15661,7 +15665,7 @@
 				"description": "Poljski dodatak za EasyList."
 			},
 			"hu": {
-				"name": "Hivatalos lengyel szűrők az AdBlock, uBlock Origin &AdGuard számára",
+				"name": "Official Polish filters for AdBlock, uBlock Origin & AdGuard",
 				"description": "További szűrőlista lengyel nyelvű weboldalakhoz."
 			},
 			"id": {
@@ -15799,7 +15803,7 @@
 				"description": "Filtar za blokiranje oglasa na estonskim web stranicama."
 			},
 			"hu": {
-				"name": "Észt lista",
+				"name": "Estonian List",
 				"description": "Szűrőlista, amely blokkolja a hirdetéseket az észt nyelvű webhelyeken."
 			},
 			"id": {
@@ -16233,7 +16237,7 @@
 				"description": "Finnish ad blocking filter list."
 			},
 			"hu": {
-				"name": "Finn hirdetésszűrő",
+				"name": "Adblock List for Finland",
 				"description": "Finn hirdetésblokkoló lista."
 			},
 			"id": {
@@ -16513,7 +16517,7 @@
 				"description": "Službeni poljski filtri protiv AdBlock upozorenja."
 			},
 			"hu": {
-				"name": "Lengyel Anti Adblock Szűrők",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Hivatalos lengyel szűrők, amelyek a hirdetésblokkolók elleni figyelmeztetéseket tiltják."
 			},
 			"id": {
@@ -16943,7 +16947,7 @@
 				"description": "Popis filtara za web stranice na srpskom, crnogorskom, hrvatskom i bosanskom jeziku."
 			},
 			"hu": {
-				"name": "Dandelion Sprout szerb-horvát listája",
+				"name": "Dandelion Sprout's Serbo-Croatian List",
 				"description": "Szűrőlista szerb, montenegrói, horvát és bosnyák nyelvű webhelyekhez."
 			},
 			"id": {
@@ -17169,6 +17173,10 @@
 			"ar": {
 				"name": "مرشحات adBlock المقدونية",
 				"description": "يحظر الإعلانات وأدوات التتبع على مختلف المواقع الإلكترونية المقدونية."
+			},
+			"be": {
+				"name": "Macedonian adBlock Filters",
+				"description": "Блакіруе рэкламу і трэкеры на розных македонскіх сайтах."
 			},
 			"cs": {
 				"name": "Makedonské filtry adBlokc",
@@ -17487,7 +17495,7 @@
 				"description": "Popis blokova za zaštitu korisnika od nepouzdanih web-mjesta."
 			},
 			"hu": {
-				"name": "DurableNapkin átverések elleni listája",
+				"name": "Scam Blocklist by DurableNapkin",
 				"description": "A megbízhatatlan webhelyek blokkolásának listája."
 			},
 			"id": {

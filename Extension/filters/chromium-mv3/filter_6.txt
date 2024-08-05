@@ -1,8 +1,8 @@
-! Checksum: La1OW9rgnoz6W0LyB2rLwQ
+! Checksum: 78r3H26pcu7KNm7CG7OeVw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.42.99
-! TimeUpdated: 2024-07-31T00:33:17+00:00
+! Version: 2.0.43.2
+! TimeUpdated: 2024-08-03T21:33:03+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -223,6 +223,8 @@ n-tv.de#%#//scriptlet("set-constant", "embedAddefend", "noopFunc")
 ! spiegel.de https://github.com/AdguardTeam/AdguardFilters/issues/42200
 !+ NOT_OPTIMIZED
 @@||newsletter2go.com/
+!+ NOT_OPTIMIZED
+@@||cdn.prod.www.spiegel.de/images/
 !+ NOT_OPTIMIZED
 @@||feadrope.net^
 !+ NOT_OPTIMIZED
@@ -1641,6 +1643,8 @@ formel1.de,krautundrueben.de,motorsport-total.com,traktorpool.de,fnweb.de,laborj
 !
 !
 !
+sir-apfelot.de##.entry-content > .code-block:has(> div[style] > a:contains(Werbung))
+sir-apfelot.de##a[rel*="sponsored"]
 chip.de##.Button--Clickout
 ||watchmdh.to/banners^
 watchdirty.to##.block-video > .table:first-child
@@ -9267,6 +9271,7 @@ fitbook.de,myhomebook.de,stylebook.de,techbook.de,travelbook.de##.affiliate-o2
 fitbook.de,myhomebook.de,stylebook.de,techbook.de,travelbook.de##.affiliate-saturn
 fitbook.de,myhomebook.de,stylebook.de,techbook.de,travelbook.de##.affiliate-tink
 pcgames.de##.affiliateBelowArticle
+t-online.de##.afl-widget-root
 radiodeutsch.com##.ai-placement
 nachbelichtet.com##.ai-track
 genialetricks.de,leckerschmecker.me,veggieboom.com##.ai-viewport-1
@@ -10832,6 +10837,7 @@ ibooks.to##form[method="get"][action]:not([role="search"])
 reimmaschine.de##iframe[src="/more"]
 190.115.18.20,aniworld.to,s.to##iframe[style*="z-index: 2147483647"]
 windowspro.de##iframe[style="height:250px;overflow: hidden;"]
+t-online.de##iframe[title="Top Partner"] + span
 ibooks.to##img[alt="Download kostenlos"]
 ibooks.to##img[alt="Kostenlos Download"]
 rbleipzig.com##img[alt="Logo Partner"]
