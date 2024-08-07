@@ -123,8 +123,8 @@ export const ConfirmModal = ({
                 }}
             >
                 <div
-                    // there are no specific styles for 'modal--scrollable' class
-                    // BUT it is needed for ':has(.modal--scrollable)' selector to work
+                    // 'modal--scrollable' is needed for ':has(.modal--scrollable)' selector to work
+                    // and for scrollbar to display properly (AG-34984)
                     className={cn('modal', {
                         'modal--scrollable': isConsent,
                     })}
