@@ -20,6 +20,7 @@ import { StringStorage } from '../utils/string-storage';
 import { HitStatsStorageData } from '../schema';
 
 import { browserStorage } from './shared-instances';
+import { filterVersionStorage } from './filter-version';
 
 /**
  * Class for asynchronous control {@link HitStats} storage data,
@@ -28,6 +29,33 @@ import { browserStorage } from './shared-instances';
  * @see {@link StringStorage}
  */
 export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, HitStatsStorageData, 'async'> {
+    /**
+     * Caches filter version if it is not cached yet.
+     *
+     * @param filterId Filter id.
+     *
+     * @throws Error, if storage is not initialized.
+     */
+    private cacheFilterVersionIfNeeded(filterId: number): void {
+        if (!this.data) {
+            throw HitStatsStorage.createNotInitializedError();
+        }
+
+        if (!this.data.versions) {
+            this.data.versions = {};
+        }
+
+        const id = String(filterId);
+
+        if (!this.data.versions[id]) {
+            const data = filterVersionStorage.get(filterId);
+
+            if (data) {
+                this.data.versions[id] = data.version;
+            }
+        }
+    }
+
     /**
      * Add 1 rule hit to stats.
      *
@@ -52,6 +80,8 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
         }
 
         const id = String(filterId);
+
+        this.cacheFilterVersionIfNeeded(filterId);
 
         let rules = this.data.stats.filters[id];
 
