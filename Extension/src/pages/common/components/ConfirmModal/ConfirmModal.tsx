@@ -69,6 +69,11 @@ type ConfirmModalParams = {
      * Flag to show consent modal.
      */
     isConsent?: boolean,
+
+    /**
+     * Flag to make modal content scrollable. Default is false.
+     */
+    isScrollable?: boolean,
 };
 
 export const ConfirmModal = ({
@@ -81,6 +86,7 @@ export const ConfirmModal = ({
     customConfirmTitle,
     customCancelTitle,
     isConsent,
+    isScrollable = false,
 }: ConfirmModalParams) => {
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
@@ -126,7 +132,7 @@ export const ConfirmModal = ({
                     // 'modal--scrollable' is needed for ':has(.modal--scrollable)' selector to work
                     // and for scrollbar to display properly (AG-34984)
                     className={cn('modal', {
-                        'modal--scrollable': isConsent,
+                        'modal--scrollable': isScrollable,
                     })}
                 >
                     <div className="modal__content">
@@ -134,21 +140,18 @@ export const ConfirmModal = ({
                             <div className="modal__title">
                                 {title}
                             </div>
-                            {!isConsent && (
-                                <button
-                                    type="button"
-                                    className="button modal__close"
-                                    aria-label={translator.getMessage('close_button_title')}
-                                    onClick={handleCancel}
-                                >
-                                    <Icon id="#cross" />
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                className="button modal__close"
+                                aria-label={translator.getMessage('close_button_title')}
+                                onClick={handleCancel}
+                            >
+                                <Icon id="#cross" />
+                            </button>
                         </div>
                         {subtitle && (
                             <div
                                 className={subtitleClassName}
-                                title={subtitle}
                             >
                                 {subtitle}
                             </div>

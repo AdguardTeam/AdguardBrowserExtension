@@ -73,19 +73,21 @@
     }
 
     &--scrollable {
+        overflow-y: hidden;
+
         /* show scrollbar only for scrollable content. AG-34984 */
         & .modal__content {
-            overflow-y: scroll;
+            overflow-y: auto;
             scrollbar-width: thin;
         }
     }
 
     &__actions {
+        /* height: 112px; */
         width: 100%;
         padding: 24px 32px 32px;
         display: flex;
-        align-items: flex-end;
-        margin: auto 0 0 0;
+        align-items: center;
 
         &--centered {
             width: 100%;
@@ -132,6 +134,7 @@
 
     &__btn {
         width: 50%;
+        max-width: 300px;
         margin: 0 24px 0 0;
 
         &--confirm {
