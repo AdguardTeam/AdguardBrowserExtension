@@ -148,9 +148,6 @@ export class CommonFilterApi {
             oldRawFilter,
         );
 
-        await FiltersStorage.set(filterUpdateOptions.filterId, filter);
-        await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
-
         const currentFilterState = filterStateStorage.get(filterUpdateOptions.filterId);
         filterStateStorage.set(filterUpdateOptions.filterId, {
             installed: true,
@@ -204,6 +201,9 @@ export class CommonFilterApi {
             // and we should set shouldWaitFullUpdate flag to true for the filter so it will be checked later
             shouldWaitFullUpdate: isPatchUpdateFailed,
         });
+
+        await FiltersStorage.set(filterUpdateOptions.filterId, filter);
+        await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
 
         return filterMetadata;
     }
