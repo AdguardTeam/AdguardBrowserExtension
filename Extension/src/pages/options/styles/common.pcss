@@ -105,7 +105,7 @@ label.checkbox-label {
 
 .content {
     position: relative;
-    padding: 50px 16px;
+    padding: 40px 16px;
     width: 100%;
     max-width: 100%;
 
@@ -327,7 +327,7 @@ label.checkbox-label {
         @media (min-width: 500px) {
             display: flex;
             justify-content: space-between;
-            padding: 24px 5px 24px;
+            padding: 24px 4px 24px;
         }
     }
 
@@ -397,7 +397,6 @@ select:focus {
 .ReactModal__Overlay {
     z-index: 10;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5)!important;
@@ -406,14 +405,26 @@ select:focus {
 .ReactModal__Content--after-open {
     position: static!important;
     min-width: 300px;
+    background-color: var(--fills-backgrounds-page-background-default)!important;
+
+    &:has(.modal--scrollable) {
+        height: 100%;
+
+        @media (min-height: 1090px) {
+            height: auto;
+        }
+    }
 
     @media (prefers-color-scheme: dark) {
-        background-color: var(--black)!important;
         border: 1px solid var(--gray900)!important;
     }
 
     @media (min-width: 640px) {
-        width: 560px;
+        width: 600px;
+
+        &:has(.modal--scrollable) {
+            max-height: 80%;
+        }
     }
 }
 
@@ -454,7 +465,6 @@ select:focus {
     }
 
     .ReactModal__Content--after-open {
-        background-color: var(--gray-0)!important;
         border: 0!important;
     }
 
@@ -500,7 +510,6 @@ select:focus {
     }
 
     .ReactModal__Content--after-open {
-        background-color: var(--black)!important;
         border: 1px solid var(--gray700)!important;
     }
 
