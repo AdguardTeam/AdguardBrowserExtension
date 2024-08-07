@@ -53,8 +53,6 @@
         width: 100%;
         padding: 32px 32px 0;
         overflow-x: hidden;
-        overflow-y: scroll;
-        scrollbar-width: thin;
 
         background:
             /* shadow cover bottom */
@@ -72,6 +70,14 @@
         background-repeat: no-repeat;
         background-size: 100% 24px, 100% 16px;
         background-attachment: local, scroll;
+    }
+
+    &--scrollable {
+        /* show scrollbar only for scrollable content. AG-34984 */
+        & .modal__content {
+            overflow-y: scroll;
+            scrollbar-width: thin;
+        }
     }
 
     &__actions {
