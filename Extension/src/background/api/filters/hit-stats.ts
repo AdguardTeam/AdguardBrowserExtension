@@ -15,14 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { debounce } from 'lodash-es';
+import { debounce, isEmpty } from 'lodash-es';
 
 import { getRuleSourceIndex, getRuleSourceText } from '@adguard/tswebextension';
 
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { hitStatsStorageDataValidator } from '../../schema';
-import { FiltersStorage, hitStatsStorage } from '../../storages';
+import {
+    FiltersStorage,
+    filterVersionStorage,
+    hitStatsStorage,
+} from '../../storages';
 import { network } from '../network';
 
 /**
@@ -115,7 +119,18 @@ export class HitStatsApi {
             filterId: string,
             stats: Record<string, number>,
         ): Promise<[string, Record<string, number>]> => {
-            const filterData = await FiltersStorage.getAllFilterData(Number(filterId));
+            // If the filter version is not cached or it is outdated, we do not send the stats for this filter
+            // (we store the version of the filter on the first hit).
+            // When saving hits, we do not analyze the source map, as that would be too heavy,
+            // but at this point we need to ensure consistency between the saved hits and the source map in storage
+            const cachedFilterVersion = hitStats.versions?.[filterId];
+            const filterIdNumber = Number(filterId);
+
+            if (!cachedFilterVersion || cachedFilterVersion !== filterVersionStorage.get(filterIdNumber)?.version) {
+                return [filterId, {}];
+            }
+
+            const filterData = await FiltersStorage.getAllFilterData(filterIdNumber);
 
             if (!filterData) {
                 return [filterId, {}];
@@ -128,48 +143,48 @@ export class HitStatsApi {
                 return [filterId, {}];
             }
 
-            const ruleTexts = (await Promise.all(
-                Object.entries(stats).map(async ([ruleIndex, hits]): Promise<[string, number] | null> => {
-                    // Get line start index in the source file by rule start index in the byte array
-                    const lineStartIndex = getRuleSourceIndex(Number(ruleIndex), sourceMap);
+            const ruleTexts = Object.entries(stats).map(([ruleIndex, hits]): [string, number] | null => {
+                // Get line start index in the source file by rule start index in the byte array
+                const lineStartIndex = getRuleSourceIndex(Number(ruleIndex), sourceMap);
 
-                    // During normal operation, this should not happen
-                    if (lineStartIndex === -1) {
-                        return null;
+                // During normal operation, this should not happen
+                if (lineStartIndex === -1) {
+                    return null;
+                }
+
+                const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
+
+                // During normal operation, this should not happen
+                if (!appliedRuleText) {
+                    return null;
+                }
+
+                // In statistics, we need the original rule text which can be found in the filter list
+                if (conversionMap) {
+                    const originalRuleText = conversionMap[lineStartIndex];
+                    if (originalRuleText) {
+                        return [originalRuleText, hits];
                     }
+                }
 
-                    const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
-
-                    // During normal operation, this should not happen
-                    if (!appliedRuleText) {
-                        return null;
-                    }
-
-                    // In statistics, we need the original rule text which can be found in the filter list
-                    if (conversionMap) {
-                        const originalRuleText = conversionMap[lineStartIndex];
-                        if (originalRuleText) {
-                            return [originalRuleText, hits];
-                        }
-                    }
-
-                    return [appliedRuleText, hits];
-                }),
-            )).filter((entry): entry is [string, number] => entry !== null);
+                return [appliedRuleText, hits];
+            }).filter((entry): entry is [string, number] => entry !== null);
 
             return [filterId, Object.fromEntries(ruleTexts)];
         };
 
         const hitStatsData: Record<string, Record<string, number>> = Object.fromEntries(
-            await Promise.all(
+            (await Promise.all(
                 affectedFilterIds.map(async (filterId) => {
                     const stats = hitStats.stats?.filters?.[filterId] || {};
                     return transformFilterHits(filterId, stats);
                 }),
-            ),
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            )).filter(([_, stats]) => !isEmpty(stats)),
         );
 
         network.sendHitStats(JSON.stringify(hitStatsData));
+
         await HitStatsApi.cleanup();
     }
 

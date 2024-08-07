@@ -50,11 +50,34 @@ export const hitStatsValidator = zod.object({
  */
 export type HitStats = zod.infer<typeof hitStatsValidator>;
 
+export const filtersVersionsValidator = zod.record(
+    /**
+     * Filter's id.
+     */
+    zod.string(),
+
+    /**
+     * Version of the filter.
+     */
+    zod.string(),
+);
+
+/**
+ * Contains an object with filter IDs as keys and their versions as values.
+ */
+export type FiltersVersions = zod.infer<typeof filtersVersionsValidator>;
+
 export const hitStatsStorageDataValidator = zod.object({
     /**
      * The number of hits in relation to the hit rule.
      */
     stats: hitStatsValidator.optional(),
+
+    /**
+     * Contains an object with filter IDs as keys and their versions as values.
+     */
+    versions: filtersVersionsValidator.optional(),
+
     /**
      * The total number of hits with no link to the rules.
      */
