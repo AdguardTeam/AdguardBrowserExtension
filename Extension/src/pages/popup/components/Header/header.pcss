@@ -5,10 +5,6 @@
     min-height: 65px;
     padding: 0 16px 0 24px;
 
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--gray-90);
-    }
-
     &__buttons {
         display: flex;
 
@@ -24,48 +20,11 @@
         margin-left: 16px;
         padding: 0;
         border-radius: 4px;
-        color: var(--gray-60);
         transition: var(--t3) color, var(--t3) background-color;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray-40);
-        }
-
-        &:hover {
-            color: var(--green400);
-        }
     }
 }
 
 @keyframes spin {
     0% {transform: rotate(0)}
     100% {transform: rotate(360deg)}
-}
-
-.light-mode {
-    .popup-header {
-        background-color: var(--gray-0);
-
-        &__button {
-            color: var(--gray-60);
-
-            &:hover {
-                color: var(--green400);
-            }
-        }
-    }
-}
-
-.dark-mode {
-    .popup-header {
-        background-color: var(--gray-90);
-
-        &__button {
-            color: var(--gray-40);
-
-            &:hover {
-                color: var(--green400);
-            }
-        }
-    }
 }

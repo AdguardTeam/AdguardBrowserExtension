@@ -90,28 +90,23 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="line-break-on" viewBox="0 0 24 24">
-                <path fillRule="evenodd" clipRule="evenodd" d="M4.08398 4.73584C3.66977 4.73584 3.33398 5.07163 3.33398 5.48584C3.33398 5.90005 3.66977 6.23584 4.08398 6.23584H19.6176C20.0318 6.23584 20.3676 5.90005 20.3676 5.48584C20.3676 5.07163 20.0318 4.73584 19.6176 4.73584H4.08398ZM4 8.95654C3.58579 8.95654 3.25 9.29233 3.25 9.70654C3.25 10.1208 3.58579 10.4565 4 10.4565H12C12.026 10.4565 12.0517 10.4552 12.077 10.4526H15.5396C17.3324 10.4526 18.7857 11.906 18.7857 13.6987C18.7857 15.4833 17.3456 16.9316 15.5641 16.9447L16.2941 16.2144C16.5869 15.9215 16.5868 15.4466 16.2939 15.1538C16.0009 14.861 15.5261 14.8611 15.2332 15.154L13.2915 17.0966C12.9988 17.3894 12.9988 17.8641 13.2915 18.157L15.2332 20.0996C15.5261 20.3925 16.0009 20.3926 16.2939 20.0998C16.5868 19.807 16.5869 19.3321 16.2941 19.0391L15.6975 18.4422C18.2456 18.359 20.2857 16.2671 20.2857 13.6987C20.2857 11.0775 18.1608 8.95264 15.5396 8.95264H10V8.95654H4ZM3.33398 13.7417C3.33398 13.3275 3.66977 12.9917 4.08398 12.9917H10.8799C11.2941 12.9917 11.6299 13.3275 11.6299 13.7417C11.6299 14.1559 11.2941 14.4917 10.8799 14.4917H4.08398C3.66977 14.4917 3.33398 14.1559 3.33398 13.7417ZM3.33398 17.6265C3.33398 17.2123 3.66977 16.8765 4.08398 16.8765H10.8799C11.2941 16.8765 11.6299 17.2123 11.6299 17.6265C11.6299 18.0407 11.2941 18.3765 10.8799 18.3765H4.08398C3.66977 18.3765 3.33398 18.0407 3.33398 17.6265Z" fill="currentColor" />
+                <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M4.08 4.74a.75.75 0 0 0 0 1.5h15.54a.75.75 0 0 0 0-1.5H4.08ZM4 8.96a.75.75 0 0 0 0 1.5h11.54a3.25 3.25 0 0 1 .02 6.48l.73-.73a.75.75 0 0 0-1.06-1.06L13.3 17.1c-.3.29-.3.76 0 1.06l1.94 1.94a.75.75 0 0 0 1.06-1.06l-.6-.6a4.75 4.75 0 0 0-.15-9.49H4Zm-.67 4.78c0-.41.34-.75.75-.75h6.8a.75.75 0 0 1 0 1.5h-6.8a.75.75 0 0 1-.75-.75Zm0 3.89c0-.42.34-.75.75-.75h6.8a.75.75 0 0 1 0 1.5h-6.8a.75.75 0 0 1-.75-.75Z" />
             </symbol>
 
             <symbol id="line-break-off" viewBox="0 0 24 24">
-                <path d="M4 6H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M4 18H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M4 14H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M4 10H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path stroke="currentColor" d="M4 6h16M4 18h16M4 14h16M4 10h16" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
 
             <symbol id="info" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12 16V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M11.997 7.59552C12.009 7.59745 11.997 7.40446 11.997 7.40446" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <circle stroke="currentColor" fill="none" cx="12" cy="12" r="9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path stroke="currentColor" d="M12 16V10" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path stroke="currentColor" d="M11.997 7.59552C12.009 7.59745 11.997 7.40446 11.997 7.40446" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
 
             <symbol id="reduce" viewBox="0 0 24 24">
-                <rect width="24" height="24" fill="none" />
-                <path d="M10 6V10H6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M10 18V14H6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M14 6V10H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M14 18V14H18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <g fill="none" fillRule="evenodd">
+                    <path stroke="currentColor" d="M10 6v4H6M10 18v-4H6M14 6v4h4M14 18v-4h4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
             </symbol>
 
             <symbol id="cross" width="24" height="24">

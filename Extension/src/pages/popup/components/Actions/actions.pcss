@@ -1,5 +1,4 @@
 .actions {
-    background-color: transparent;
     border: 0;
     min-height: 120px;
     width: 100%;
@@ -8,10 +7,6 @@
     flex-direction: column;
     justify-content: space-around;
     max-width: 320px;
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--gray-90);
-    }
 
     .action {
         width: 100%;
@@ -23,11 +18,7 @@
         height: 40px;
 
         &:hover {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray-80);
-            }
+            background-color: var(--fills-backgrounds-page-background-hovered);
         }
 
         &--disabled {
@@ -35,7 +26,7 @@
             opacity: 0.5;
 
             &:hover {
-                background-color: inherit;
+                background-color: transparent;
                 cursor: not-allowed;
             }
         }
@@ -44,47 +35,10 @@
             padding-left: 12px;
             font-size: 14px;
             line-height: 18px;
-            color: var(--gray900);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 100%;
-
-            @media (prefers-color-scheme: dark) {
-                color: var(--gray300);
-            }
-        }
-    }
-}
-
-.light-mode {
-    & .actions {
-        background-color: var(--gray-0);
-
-        .action {
-            &:hover {
-                background-color: var(--gray100);
-            }
-
-            &__title {
-                color: var(--gray900);
-            }
-        }
-    }
-}
-
-.dark-mode {
-    & .actions {
-        background-color: var(--gray-90);
-
-        .action {
-            &:hover {
-                background-color: var(--gray-80);
-            }
-
-            &__title {
-                color: var(--gray300);
-            }
         }
     }
 }
