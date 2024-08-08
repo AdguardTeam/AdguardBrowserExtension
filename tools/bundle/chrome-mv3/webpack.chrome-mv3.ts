@@ -16,13 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import type { Manifest } from 'webextension-polyfill';
 import type { Configuration } from 'webpack';
+
+import { RulesetsInjector } from '@adguard/dnr-rulesets';
 
 import { genMv3CommonConfig } from '../webpack.common-mv3';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
@@ -33,8 +34,6 @@ import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../const
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
-type WebExtensionManifest = Manifest.WebExtensionManifest;
-
 export const RULESET_NAME_PREFIX = 'ruleset_';
 
 const GPC_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/gpc');
@@ -43,42 +42,9 @@ const HIDE_DOCUMENT_REFERRER_SCRIPT_PATH = path.resolve(__dirname, '../../../Ext
 /**
  * Base filter id - it is the main filter that is enabled by default.
  */
-const BASE_FILTER_ID = 2;
+const BASE_FILTER_ID = '2';
 
-const addDeclarativeNetRequest = (manifest: Partial<WebExtensionManifest>) => {
-    const filtersDir = FILTERS_DEST.replace('%browser', 'chromium-mv3');
-
-    const filtersDirPath = path.resolve(__dirname, '../../../', filtersDir, 'declarative/');
-
-    if (fs.existsSync(filtersDir)) {
-        const nameList = fs.readdirSync(filtersDirPath);
-        const rules = {
-            rule_resources: nameList.map((name) => {
-                const nameMatch = name.match(/\d+/);
-                if (!nameMatch) {
-                    throw new Error(`Invalid ruleset name: ${name}`);
-                }
-
-                const rulesetIndex = Number.parseInt(nameMatch[0], 10);
-                const id = `${RULESET_NAME_PREFIX}${rulesetIndex}`;
-                return {
-                    id,
-                    // By default, we set the base filter enabled,
-                    // so that the browser tries to enable it if we are over limits
-                    enabled: rulesetIndex === BASE_FILTER_ID,
-                    path: `filters/declarative/${name}/${name}.json`,
-                };
-            }),
-        };
-
-        return {
-            ...manifest,
-            declarative_net_request: rules,
-        };
-    }
-
-    throw new Error("Declarative rulesets directory doesn't exist");
-};
+const rulesetsInjector = new RulesetsInjector();
 
 export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: boolean) => {
     const commonConfig = genMv3CommonConfig(browserConfig, isWatchMode);
@@ -109,12 +75,27 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifestBuffer(
-                            BUILD_ENV,
-                            browserConfig.browser,
-                            content,
-                            addDeclarativeNetRequest(chromeMv3Manifest),
-                        ),
+                        transform: (content) => {
+                            const filters = fs
+                                .readdirSync(FILTERS_DEST.replace('%browser', 'chromium-mv3'))
+                                .filter((filter) => filter.match(/filter_\d+\.txt/));
+
+                            return updateManifestBuffer(
+                                BUILD_ENV,
+                                browserConfig.browser,
+                                content,
+                                rulesetsInjector.applyRulesets(
+                                    (id) => `filters/declarative/${id}/${id}.json`,
+                                    chromeMv3Manifest,
+                                    filters,
+                                    {
+                                        forceUpdate: false,
+                                        enable: [BASE_FILTER_ID],
+                                        rulesetPrefix: RULESET_NAME_PREFIX,
+                                    },
+                                ),
+                            );
+                        },
                     },
                     {
                         context: 'Extension',
