@@ -6,19 +6,34 @@
     border: 0;
     background-color: transparent;
     padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
     &--s {
-        padding: 0 29px;
-        height: 32px;
-        border-radius: 4px;
         font-size: 16px;
+        line-height: 22px;
+        padding: 5px 28px;
+        border-radius: 4px;
+        max-height: 32px;
     }
 
     &--m {
-        padding: 10px 35px;
-        line-height: 20px;
-        border-radius: 8px;
         font-size: 16px;
+        line-height: 24px;
+        padding: 12px 24px;
+        border-radius: 8px;
+        max-height: 56px;
+    }
+
+    &--l {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+        padding: 16px 48px;
+        border-radius: 8px;
+        max-width: 222px;
+        max-height: 56px;
     }
 
     &:disabled {
@@ -28,54 +43,39 @@
     }
 
     &--green {
-        color: var(--white);
-        background-color: var(--green400);
+        color: var(--text-buttons-primary-default);
+        background-color: var(--fills-buttons-main-button-default);
         transition: 0.3s ease background-color;
 
         &:hover {
-            background-color: var(--green75);
-        }
-    }
-
-    &--green-bd {
-        color: var(--green86);
-        box-shadow: inset 0 0 0 1px var(--green86);
-        transition: 0.3s ease background-color;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--white);
-            box-shadow: inset 0 0 0 1px var(--white);
-        }
-
-        &:hover {
-            background-color: var(--gray05);
+            background-color: var(--fills-buttons-main-button-hovered);
         }
     }
 
     &--red-bg {
-        color: var(--white);
-        background-color: var(--red300);
+        color: var(--text-buttons-primary-default);
+        background-color: var(--fills-buttons-danger-button-default);
         transition: 0.3s ease background-color;
 
         &:hover {
-            background-color: var(--red400);
+            background-color: var(--fills-buttons-danger-button-hovered);
         }
     }
 
     &--transparent {
-        box-shadow: 0 0 0 1px var(--gray700);
-        color: var(--gray700);
+        box-shadow: 0 0 0 1px var(--stroke-buttons-secondary-default);
+        color: var(--text-main-text-main-default);
         background-color: transparent;
         transition: var(--t3) box-shadow, var(--t3) color;
 
         &:hover {
-            box-shadow: 0 0 0 1px var(--gray400);
-            color: var(--gray400);
+            box-shadow: 0 0 0 1px var(--gray-50);
+            color: var(--gray-50);
         }
     }
 
     &--add-custom-filter {
-        margin: 20px 0 0 15px;
+        margin: 16px;
     }
 
     &--empty-custom-filter {
@@ -84,7 +84,8 @@
     }
 
     &--compare {
-        padding: 12px 32px;
+        width: 100%;
+        padding: 12px 24px;
         word-break: break-word;
     }
 
@@ -98,75 +99,7 @@
         overflow: hidden;
     }
 
-    &--list {
-        display: block;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 20px;
-        color: var(--gray-base);
-        width: 100%;
-        text-align: left;
-        min-height: 52px;
-        padding: 16px;
-        border-radius: 8px;
-        transition: var(--t3) background-color;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300)
-        }
-
-        &:hover {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
-            }
-        }
-    }
-
     &--red {
-        color: var(--red400);
-    }
-}
-
-.light-mode {
-    .button {
-        &--green-bd {
-            color: var(--green86);
-            box-shadow: inset 0 0 0 1px var(--green86);
-        }
-
-        &--list {
-            color: var(--gray-base);
-
-            &:hover {
-                background-color: var(--gray100);
-            }
-        }
-
-        &--red {
-            color: var(--red400);
-        }
-    }
-}
-
-.dark-mode {
-    .button {
-        &--green-bd {
-            color: var(--white);
-            box-shadow: inset 0 0 0 1px var(--white);
-        }
-
-        &--list {
-            color: var(--gray300);
-
-            &:hover {
-                background-color: var(--gray900);
-            }
-        }
-
-        &--red {
-            color: var(--red400);
-        }
+        color: var(--text-links-error-link-default);
     }
 }

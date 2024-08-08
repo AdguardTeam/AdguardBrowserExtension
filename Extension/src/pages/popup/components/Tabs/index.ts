@@ -16,9 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// !IMPORTANT!
-// export './Tabs' will be replaced during webpack compilation
-// with NormalModuleReplacementPlugin to proper implementation
-// from './Mv2Tabs' or './Mv3Tabs'
-
-export { Tabs } from './AbstractTabs';
+export { Tabs } from './Tabs';

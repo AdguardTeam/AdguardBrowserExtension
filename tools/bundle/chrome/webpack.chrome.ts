@@ -19,42 +19,26 @@
 import path from 'path';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { Configuration } from 'webpack';
 
 import { genMv2CommonConfig } from '../webpack.common-mv2';
-import {
-    CHROMIUM_DEVTOOLS_ENTRIES,
-    CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
-    genChromiumZipPlugin,
-} from '../webpack.common';
+import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { BUILD_ENV } from '../../constants';
-import {
-    BACKGROUND_OUTPUT,
-    TSURLFILTER_VENDOR_OUTPUT,
-    TSWEBEXTENSION_VENDOR_OUTPUT,
-} from '../../../constants';
-import {
-    type BrowserConfig,
-    BACKGROUND_PATH,
-    htmlTemplatePluginCommonOptions,
-} from '../common-constants';
+import { type BrowserConfig } from '../common-constants';
 
 import { chromeManifest } from './manifest.chrome';
 
-export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = false) => {
-    const commonConfig = genMv2CommonConfig(browserConfig);
+export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode: boolean) => {
+    const commonConfig = genMv2CommonConfig(browserConfig, isWatchMode);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
     }
 
     const chromeConfig: Configuration = {
-        entry: {
-            ...CHROMIUM_DEVTOOLS_ENTRIES,
-        },
+        entry: CHROMIUM_DEVTOOLS_ENTRIES,
         output: {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
@@ -78,27 +62,9 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     },
                 ],
             }),
-            new HtmlWebpackPlugin({
-                ...htmlTemplatePluginCommonOptions,
-                template: path.join(BACKGROUND_PATH, 'index.html'),
-                templateParameters: {
-                    browser: process.env.BROWSER,
-                },
-                filename: `${BACKGROUND_OUTPUT}.html`,
-                chunks: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    BACKGROUND_OUTPUT,
-                ],
-            }),
             ...CHROMIUM_DEVTOOLS_PAGES_PLUGINS,
         ],
     };
-
-    // Run the archive only if it is not a watch mode
-    if (!isWatchMode && chromeConfig.plugins) {
-        chromeConfig.plugins.push(genChromiumZipPlugin(browserConfig.browser));
-    }
 
     return merge(commonConfig, chromeConfig);
 };

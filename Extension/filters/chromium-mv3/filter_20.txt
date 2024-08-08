@@ -1,8 +1,8 @@
-! Checksum: 3L83POSj+6OMBbipQxsGbg
+! Checksum: zeSaSokpEFaiIfIT69AR9g
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.15.42
-! TimeUpdated: 2024-07-24T10:35:13+00:00
+! Version: 2.0.15.67
+! TimeUpdated: 2024-08-05T09:33:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -107,7 +107,7 @@
 ! Note, that the file consists of multiple sections for different purposes. For instance, there is a section for exceptions and some platform-specific sections.
 !
 ! Good: any type of the rules will be good
-! Bad:  example.org#@##smartbanner.ios (should be in mobile-app_allowlist.txt)
+! Bad: example.org#@##smartbanner.ios (should be in mobile-app_allowlist.txt)
 !
 ! HINTS are at the end of Specific section
 !
@@ -124,16 +124,39 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161301
 temu.com#?#div[role="main"] div[style] > div[style]:has(> div[style] div[js-selector="mobile-download-ui"])
 !
+!
+potreningu.pl##.mobile-popup-window
+donanimhaber.com##.open-with-app-popup
+testbook.com##.continue-app-btn
+retrip.jp##footer-induction:has( > div[class]:only-child > section:only-child > ul > li:only-child > a[href*="redirect_app"])
+olympics.com##div[data-cy="section-viewed-tracking-wrapper"]:has(> section[data-cy="call-to-action"] a[href^="https://olympics.app.link/"])
+startpage.com##.serp-sidebar-app-promo-widget
+startpage.com##.serp-toast-container > div[class^="css-"] > .serp-toast:has(> a[href^="https://app.startpage.com/"])
+lemanapro.ru##div[data-qa-header-mobile-app]
+clubd.co.jp##.app-dl-banner
+kkb.co.jp##a[href="http://www.kkb.co.jp/kapli/"]
+voyce.me##div[id^="adnewappbanner_"]
+bestmovie.it###bestmovie-store-apps
+just-eat.*##section[data-qa="download-app-section"]
+club.autodoc.*##.section.section-apps
+menulog.com.au##div[data-test-id="appsBannerContainer"]
+74.ru##article > div[class^="wrapper"]:has(> a[href^="https://redirect.appmetrica.yandex.com/serve/"])
+foodistnote.recipe-blog.jp##.block-app-side-banner
+m.facebook.com##div[data-status-bar-color]:not(.vscroller) > div[data-is-pull-to-refresh-allowed="true"] + .fixed-container.bottom
+tagesspiegel.de##a[href*="tagesspiegel-app"]
+m.sporx.com###wrapper > a.me-auto[onclick]
+m.sporx.com###pAd > a[href^="https://app.adjust.com/"]
+m.sporx.com#%#//scriptlet('set-constant', 'showPopupInts', 'noopFunc')
 homes.co.jp##.mod-smartAppBanner
 jp.investing.com#?##__next > div > div.fixed:has(> div.flex > div.shadow-button:contains(アプリへ切り替える))
 jp.investing.com#?#.flex-col > div.flex:has(> div.flex-1 > div > nav > ul[data-test="footer-mobile-links"])
+news18.com##div[class*="install_app"]
 suumo.jp###js-app-banner
 ||myhome.nifty.com/cms_image/myhome/rent-banner/*/banner_rent_left_sidemenu_pc.png
 hotpepper.jp##.hatena-module.hatena-module-html:has(a[href^="https://app.adjust.com/"])
 ||insightsonindia.com/wp-content/uploads/*/App_Banner_
 2gis.ru##div[data-rack="true"] > div[class^="_"]:has(> div > div[class^="_"] > div[class^="_"] > a[href^="https://2gis.onelink.me/"])
 2gis.ru###root div[class^="_"]:has(> div[class^="_"] > a[href^="https://2gis.onelink.me/"])
-live.leisu.com##.app-banner
 cepteteb.com.tr#$#html #smartbanner { display: none !important; }
 cepteteb.com.tr#$#html { margin-top: 0px !important; }
 duckduckgo.com##.footer section[class]:has(> div[class] > a[href^="https://duckduckgo.com"][href$="funnel_serp___footercard"])
@@ -227,7 +250,6 @@ bushikaku.net##.index__app
 ||img.taishurx.jp/static/qr.jpg
 chita.ru##article > div[class^="wrapper_"]:has(> a[href^="https://redirect.appmetrica.yandex.com/"])
 substack.com#?#.container > .pencraft:has(> .pencraft + button:contains(Install the app))
-m.facebook.com##div[data-status-bar-color] > div[data-is-pull-to-refresh-allowed="true"] + .fixed-container.bottom
 substack.com##div[class*="_signInAppUpsell_"]
 boosty.to#%#//scriptlet('set-session-storage-item', 'preventShowAppBanner', 'true')
 krymr.com##.col-xs-12 > div.slide-in-wg:has(> div.wg-hiding-area a[href="/mobilnoye-prilozheniye"])
@@ -266,7 +288,6 @@ kakuyomu.jp##div[class^="CompactWorkFooter_openInAppLink"]
 ya.ru###search-result > div.serp-item:has(> div.Organic-App)
 zeflix.online##noindex > div[id]:has(> div > a[href="https://zetflix.app/"])
 manga-up.com##footer > section.select-none
-rausgegangen.de##.app-banner
 pracazarogiem.pl,pracezarohem.cz,pracazarohom.sk##div[class*="MobileBannerDownloadApp_mobileBanner_"]
 search.brave.com##.download-button
 upstreamonline.com##.dn-promobox
@@ -598,6 +619,7 @@ m.shein.com###branch-app
 anime-sharing.com##.js-installPromptContainer
 ||tvcdn.netkeiba.com/img.dir/common/img/keibamatome/banner/
 m.k24klik.com###app-download-container
+epocacosmeticos.com##div[data-testid="baixe-app"]
 keirin.netkeiba.com###tipstarApeal_wrap
 [$path=/maps]google.com##div[jsaction*="promotion"]
 maps.google.com##div[jsaction*="promotion"]
@@ -997,7 +1019,7 @@ typhoon.yahoo.co.jp##a[id$="_typhoon_banner_a"][href^="https://app.adjust.com/"]
 ||menu.mt.co.kr/m_starnews_n/images/bg_starnews2.png
 m.starnewskorea.com##.banner_rolling
 comico.jp##.shortcuts_layer
-jd.co.th#$##arouseApp {  display: none !important; }
+jd.co.th#$##arouseApp { display: none !important; }
 jd.co.th#$##arouseApp + .x-carousel { padding-top: 0 !important; }
 jd.co.th#$##js-header[style^="top"] { top: 0 !important; }
 jd.co.th#?##app > div[class]:has(> #js-openapp-top:only-child)
@@ -1049,7 +1071,7 @@ uphold.com#?#main > div[class^="sc-"]:has(> div[class^="sc-"] > a[aria-label$="a
 japantaxi.jp##p[style="margin-bottom: 20px;text-align:center;"]
 japantaxi.jp###banner-go-app
 ||japantaxi.jp/assets/images/*/bnr-go
-j-sen.jp#?#.page-container  > div > div.card:has(> img[src^="/assets/images/sp/common/go_to_app"])
+j-sen.jp#?#.page-container > div > div.card:has(> img[src^="/assets/images/sp/common/go_to_app"])
 minimodel.jp###scrollad
 hon-hikidashi.jp###contents_body_main > p > a[href^="https://www.nippan.co.jp/honlove/?utm_source=banner"]
 news.sky.com##div[data-component-name="sdc-article-custom-markup"]
@@ -1092,7 +1114,7 @@ magaseek.com###appArea
 meetup.com##div[class="px-6 sm:px-4 xl:px-0 md:max-w-screen w-full space-y-20 py-20 pb-40 relative m-auto"]
 cobak.co.kr##div[class^="Popup__popup"]
 woman.excite.co.jp###parts-article-lovebanner
-drive.google.com#?##drive_mobile_main_page > div.a-N-qc-La > div:not([class]):has(> div.a-N-Fa  table div#drive-mobile-promo-download)
+drive.google.com#?##drive_mobile_main_page > div.a-N-qc-La > div:not([class]):has(> div.a-N-Fa table div#drive-mobile-promo-download)
 alphacoders.com##.google-play
 kinopoisk.ru##div[id$="touch_mobile_app_promo_footer"]
 kinopoisk.ru##div[id$="touch_bottom_banner"]
@@ -1125,7 +1147,6 @@ taobao.com#?#body > button[style*="position: fixed;"][style*="z-index: 1000000;"
 mathsolver.microsoft.com##div[class^="MobileUpsellBanner_"]
 sina.cn##.callApp_fl_btn
 s.shufoo.net###appOffer
-map.goo.ne.jp##.house_app
 mangatoon.mobi##[class$="-download-bg"]
 wear.jp#?##__next > div.bg-white > div.relative:has( p > a[href="/sp/app/download.html"])
 seiga.nicovideo.jp##.mg_rightside_top_promotion > li > div[style^="overflow: hidden; background: url"]
@@ -1629,7 +1650,7 @@ lazada.co.th###module_guide_app
 getpocket.com##div[data-cy="reader-flyaway-apps"]
 operanewsapp.com##.footer-wrapper
 navitime.co.jp###appli-dl-frame
-ficbook.com,ficbook.net##.install-app-container
+ficbook.me,ficbook.com,ficbook.net##.install-app-container
 translate.google.com,translate.google.ru,translate.google.net,translate.google.org,translate.google.in,translate.google.com.au,translate.google.com.tr,translate.google.co.uk,translate.google.io,translate.google.co,translate.google.gr,translate.google.ca,translate.google.com.ua,translate.google.vn,translate.google.info,translate.google.de,translate.google.fr,translate.google.me,translate.google.by,translate.google.jp,translate.google.xyz,translate.google.ua,translate.google.com.tw,translate.google.co.za,translate.google.co.il,translate.google.eu,translate.google.it,translate.google.id,translate.google.com.br,translate.google.es,translate.google.ch,translate.google.co.in,translate.google.kz,translate.google.com.vn,translate.google.biz,translate.google.co.id,translate.google.nl,translate.google.us,translate.google.pl,translate.google.cl,translate.google.com.mx,translate.google.ro,translate.google.co.jp,translate.google.co.nz,translate.google.ma,translate.google.com.ar,translate.google.site,translate.google.cc,translate.google.rs,translate.google.cn,translate.google.ae,translate.google.co.kr,translate.google.mx,translate.google.pk,translate.google.se,translate.google.com.my,translate.google.cz,translate.google.lk,translate.google.tw,translate.google.ai,translate.google.com.sg,translate.google.top,translate.google.gov,translate.google.com.co,translate.google.co.th,translate.google.be,translate.google.store,translate.google.dk,translate.google.hu,translate.google.az,translate.google.am,translate.google.uz,translate.google.com.pk,translate.google.news,translate.google.md,translate.google.com.hk,translate.google.ge,translate.google.sg,translate.google.my,translate.google.no,translate.google.com.bd,translate.google.to,translate.google.dev,translate.google.mk,translate.google.com.ng,translate.google.ie,translate.google.asia,translate.google.at,translate.google.co.ke,translate.google.com.np,translate.google.ph,translate.google.fi,translate.google.tk,translate.google.lv,translate.google.pe,translate.google.sk,translate.google.ng,translate.google.lt,translate.google.tn,translate.google.hk,translate.google.link,translate.google.cloud,translate.google.gov.bd,translate.google.website,translate.google.kr,translate.google.sa,translate.google.pt,translate.google.gg,translate.google.com.ph,translate.google.hr,translate.google.bg,translate.google.com.sa,translate.google.mn,translate.google.ws,translate.google.ee,translate.google.one,translate.google.uk,translate.google.kg,translate.google.ba,translate.google.com.pe,translate.google.al,translate.google.fm,translate.google.ml,translate.google.dz,translate.google.org.il,translate.google.is,translate.google.com.uy,translate.google.gov.np,translate.google.or.id,translate.google.si,translate.google.gen.tr,translate.google.ga,translate.google.sh##div[class][jsname] > div[class] > c-wiz > div[class][jsname][style^="transform: matrix("]
 budzdorov.ru##.popup-metadata-popup__paranja
 selfmind.ai##.store-bannar-container
@@ -1845,7 +1866,7 @@ times.abema.tv##.c-footer__app
 smotrim.ru#$#.google-app { display: none !important; }
 delishkitchen.tv##.delish-recipe-app-launch-button
 delishkitchen.tv#$#aside[class^="footer-app-banner-wrap"] { margin: 1em 0 0 !important; visibility: hidden !important; height: 0 !important; }
-flowwow.com,theolognion.com,recipe-blog.jp,retty.me,haber.doviz.com,nuum.ru,vinmec.com,coinmarketcap.com,pass.auone.jp,pikabu.ru,makuake.com,low-ya.com,ticketjam.jp,douglas.de,substack.com,mapion.co.jp,amebaownd.com,prospektangebote.de,montecarlo.ru,autoscout24.de,stackoverflow.com,77onlineshop.de,nicovideo.jp,inpost.pl,aipa551.com,vivre.eu,thequestion.ru,mysterycircus.jp,globo.com,delishkitchen.tv##.app-banner
+kidsna.com,live.leisu.com,rausgegangen.de,flowwow.com,theolognion.com,recipe-blog.jp,retty.me,haber.doviz.com,nuum.ru,vinmec.com,coinmarketcap.com,pass.auone.jp,pikabu.ru,makuake.com,low-ya.com,ticketjam.jp,douglas.de,substack.com,mapion.co.jp,amebaownd.com,prospektangebote.de,montecarlo.ru,autoscout24.de,stackoverflow.com,77onlineshop.de,nicovideo.jp,inpost.pl,aipa551.com,vivre.eu,thequestion.ru,mysterycircus.jp,globo.com,delishkitchen.tv##.app-banner
 nana-music.com##.app_sec
 nana-music.com##.base-top
 nana-music.com##.footer__app
@@ -2202,7 +2223,7 @@ decrypt.co#?##__next > div[class^="sc-"] > div[class^="sc-"] > div[class^="sc-"]
 zhihu.com#$?#.ContentItem > div.ModalWrap:has(> div > div.ModalExp-content > div.ModalWrap-content > div:contains(继续浏览内容)) { display: none!important; }
 pinterest.com##div[style*="transition: transform 225ms ease-in-out 0s; transform: translateY(0%);"]
 nperf.com##.mobilePromoLogos
-kusurinomadoguchi.com,bleacherreport.com,tvbs.com.tw##.smart_banner
+house.goo.ne.jp,kusurinomadoguchi.com,bleacherreport.com,tvbs.com.tw##.smart_banner
 ||m.555duo.net/images/app.gif
 ||m.youwu333.com/images/app.gif
 thebetterindia.com##.adp-sticky-banner-item
@@ -2882,7 +2903,6 @@ rt.com###offers
 cnnbrasil.com.br#%#//scriptlet('set-cookie-reload', 'CNNsmartbanner', '1')
 bilyoner.com#%#//scriptlet('set-cookie', 'smartbanner-closed', 'true')
 izi.ua#%#//scriptlet('set-session-storage-item', 'hideMobilePopup', '1')
-leroymerlin.ru#%#//scriptlet('set-cookie', 'daysToHide', '14')
 protonmail.com#%#//scriptlet('set-cookie', 'ch.protonmail.android-smartbanner-closed', 'true')
 kompas.com#%#//scriptlet('set-cookie', 'cbapps_close', '1')
 kinopovtor1.online#%#//scriptlet("abort-on-property-read", "stickyConfig")
@@ -3054,6 +3074,7 @@ yandex.com,yandex.ru,yandex.net,yandex.org,yandex.in,yandex.com.tr,yandex.co.uk,
 !
 ! Yandex.Market
 market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[data-apiary-widget-name="@marketfront/DistributionLoader"]
+market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[data-apiary-widget-name*="/HeaderAppDistributionBanner"]
 !
 ! Yandex.Realty
 realty.ya.com,realty.ya.ru,realty.ya.net,realty.ya.org,realty.ya.co,realty.ya.ca,realty.ya.de,realty.ya.me,realty.ya.ua,realty.ya.eu,realty.ya.tv,realty.ya.com.br,realty.ya.kz,realty.ya.com.vn,realty.ya.nl,realty.ya.pl,realty.ya.ro,realty.ya.ma,realty.ya.cc,realty.ya.cn,realty.ya.se,realty.ya.cz,realty.ya.be,realty.ya.org.ua,realty.ya.dk,realty.ya.am,realty.ya.md,realty.ya.sg,realty.ya.org.uk,realty.ya.my,realty.ya.no,realty.ya.com.bd,realty.ya.to,realty.ya.mk,realty.ya.ie,realty.ya.at,realty.ya.com.np,realty.ya.fi,realty.ya.lv,realty.ya.lt,realty.ya.tn,realty.ya.gov.bd,realty.ya.sa,realty.ya.ee,realty.ya.fm,realty.ya.guru,realty.ya.is,realty.ya.gov.np,realty.ya.si,realty.ya.ga##aside > div.AddOfferAppPromo
@@ -3079,6 +3100,7 @@ bookmate.ru##.app-banner
 !
 fredmeyer.com#%#//scriptlet('trusted-set-local-storage-item', 'modal_boost_free_trial_p4w1', 'true')
 !
+reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#$#shreddit-async-loader[paint-group="xpromo"][bundlename="app_selector"].XPromoBlockingModal { display: none !important; }
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#%#//scriptlet('hide-in-shadow-dom', 'faceplate-tracker[source="xpromo"] #get-app')
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#$#body:not([style^="overflow:"]) { pointer-events: auto !important; overflow: auto !important; }
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#?##nsfw-qr-dialog:contains(Scan this QR code to download the app now)

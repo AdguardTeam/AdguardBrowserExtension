@@ -38,7 +38,7 @@ export const SettingsButton = () => {
         >
             <Icon
                 id="#settings"
-                classname="icon--24"
+                classname="icon--24 icon--header"
             />
         </button>
     );

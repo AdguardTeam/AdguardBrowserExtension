@@ -69,7 +69,7 @@ export class CommonFilterApi {
     }
 
     /**
-     * Checks if filter is common.
+     * Checks if filter is built-in: not custom, not user-rules and not allowlist.
      *
      * @param filterId Filter id.
      *
@@ -148,9 +148,6 @@ export class CommonFilterApi {
             oldRawFilter,
         );
 
-        await FiltersStorage.set(filterUpdateOptions.filterId, filter);
-        await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
-
         const currentFilterState = filterStateStorage.get(filterUpdateOptions.filterId);
         filterStateStorage.set(filterUpdateOptions.filterId, {
             installed: true,
@@ -205,6 +202,9 @@ export class CommonFilterApi {
             shouldWaitFullUpdate: isPatchUpdateFailed,
         });
 
+        await FiltersStorage.set(filterUpdateOptions.filterId, filter);
+        await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
+
         return filterMetadata;
     }
 
@@ -253,7 +253,7 @@ export class CommonFilterApi {
         // Get all used languages
         const languages = BrowserUtils.getNavigatorLanguages();
 
-        languages.forEach(language => {
+        languages.forEach((language) => {
             localeFilterIds = metadataStorage.getFilterIdsForLanguage(language);
             filterIds = filterIds.concat(localeFilterIds);
         });

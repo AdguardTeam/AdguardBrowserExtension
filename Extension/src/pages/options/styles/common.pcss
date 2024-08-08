@@ -17,12 +17,8 @@ body {
     margin: 0;
     height: 100%;
     font-size: 16px;
-    color: var(--gray-base);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--black);
-        color: var(--gray300)
-    }
+    color: var(--text-main-text-main-default);
+    background-color: var(--fills-backgrounds-page-background-default);
 }
 
 .options {
@@ -83,17 +79,15 @@ label.checkbox-label {
         width: 20px;
         height: 20px;
         background-color: transparent;
-        border: 2px solid var(--gray700);
+        border: 2px solid var(--stroke-icons-gray-icons-default);
         border-radius: 2px;
-        margin-right: 10px;
+        margin-right: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-
-        @media (prefers-color-scheme: dark) {
-            border: 2px solid var(--gray400);
-        }
+        font-size: 16px;
+        line-height: 24px;
 
         & .icon {
             display: none;
@@ -111,7 +105,7 @@ label.checkbox-label {
 
 .content {
     position: relative;
-    padding: 50px 16px;
+    padding: 40px 16px;
     width: 100%;
     max-width: 100%;
 
@@ -155,7 +149,7 @@ label.checkbox-label {
     }
 
     &__item {
-        color: var(--green400);
+        color: var(--text-links-link-default);
         margin: 16px 0;
         font-size: 16px;
         line-height: 21px;
@@ -180,17 +174,13 @@ label.checkbox-label {
 }
 
 .title {
-    color: var(--gray-base);
+    color: var(--text-main-text-main-default);
     font-size: 24px;
     font-weight: 700;
     padding: 0;
     padding-right: 8px;
     margin-top: -5px;
     line-height: 30px;
-
-    @media (prefers-color-scheme: dark) {
-        color: var(--gray300)
-    }
 
     &__container {
         position: relative;
@@ -207,7 +197,7 @@ label.checkbox-label {
             cursor: pointer;
             transition: var(--t3) background-color;
 
-            .checkbox__label:hover {
+            & .checkbox__label:hover {
                 background-color: transparent;
             }
 
@@ -267,11 +257,7 @@ label.checkbox-label {
         font-size: 14px;
         font-weight: 400;
         padding-top: 8px;
-        color: var(--gray7f);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--grayc0);
-        }
+        color: var(--text-description-description-default);
 
         &--back {
             cursor: pointer;
@@ -281,7 +267,7 @@ label.checkbox-label {
             margin-top: 4px;
 
             &-link {
-                color: var(--green400);
+                color: var(--text-links-link-default);
             }
         }
     }
@@ -318,7 +304,7 @@ label.checkbox-label {
     }
 
     &--link {
-        color: var(--green400);
+        color: var(--text-links-link-default);
     }
 }
 
@@ -341,7 +327,7 @@ label.checkbox-label {
         @media (min-width: 500px) {
             display: flex;
             justify-content: space-between;
-            padding: 24px 5px 24px;
+            padding: 24px 4px 24px;
         }
     }
 
@@ -364,13 +350,15 @@ label.checkbox-label {
             border: 0;
             padding: 0;
             cursor: pointer;
+
+            &:hover {
+                background-color: var(--fills-backgrounds-page-background-hovered);
+            }
         }
 
         &--active {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
+            & .icon {
+                background-color: var(--fills-backgrounds-page-background-pressed);
             }
         }
     }
@@ -411,7 +399,6 @@ select:focus {
 .ReactModal__Overlay {
     z-index: 10;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5)!important;
@@ -420,14 +407,26 @@ select:focus {
 .ReactModal__Content--after-open {
     position: static!important;
     min-width: 300px;
+    background-color: var(--fills-backgrounds-page-background-default)!important;
+
+    &:has(.modal--scrollable) {
+        height: 100%;
+
+        @media (min-height: 1090px) {
+            height: auto;
+        }
+    }
 
     @media (prefers-color-scheme: dark) {
-        background-color: var(--black)!important;
         border: 1px solid var(--gray900)!important;
     }
 
     @media (min-width: 640px) {
-        width: 560px;
+        width: 600px;
+
+        &:has(.modal--scrollable) {
+            max-height: 80%;
+        }
     }
 }
 
@@ -448,11 +447,6 @@ select:focus {
 .light-mode {
     color-scheme: light;
 
-    body {
-        background-color: var(--transparent);
-        color: var(--gray-base);
-    }
-
     label.checkbox-label {
         color: var(--gray900);
 
@@ -460,15 +454,9 @@ select:focus {
             background-color: var(--green400);
             border-color: var(--green400);
         }
-
-        & .custom-checkbox {
-            border: 2px solid var(--gray700);
-        }
     }
 
     .title {
-        color: var(--gray-base);
-
         &__container {
             &--control {
                 &:hover {
@@ -476,14 +464,9 @@ select:focus {
                 }
             }
         }
-
-        &__desc {
-            color: var(--gray7f);
-        }
     }
 
     .ReactModal__Content--after-open {
-        background-color: var(--white)!important;
         border: 0!important;
     }
 
@@ -499,20 +482,10 @@ select:focus {
     .ace_cursor {
         color: var(--black)!important;
     }
-
-
-    .actions__btn--active {
-        background-color: var(--gray100);
-    }
 }
 
 .dark-mode {
     color-scheme: dark;
-
-    body {
-        background-color: var(--black);
-        color: var(--gray300)
-    }
 
     label.checkbox-label {
         color: var(--gray300);
@@ -521,15 +494,9 @@ select:focus {
             background-color: var(--green700);
             border-color: var(--green700);
         }
-
-        & .custom-checkbox {
-            border: 2px solid var(--gray400);
-        }
     }
 
     .title {
-        color: var(--gray300);
-
         &__container {
             &--control {
                 &:hover {
@@ -537,14 +504,9 @@ select:focus {
                 }
             }
         }
-
-        &__desc {
-            color: var(--grayc0);
-        }
     }
 
     .ReactModal__Content--after-open {
-        background-color: var(--black)!important;
         border: 1px solid var(--gray700)!important;
     }
 
@@ -559,9 +521,5 @@ select:focus {
 
     .ace_cursor {
         color: var(--gray300)!important;
-    }
-
-    .actions__btn--active {
-        background-color: var(--gray900);
     }
 }

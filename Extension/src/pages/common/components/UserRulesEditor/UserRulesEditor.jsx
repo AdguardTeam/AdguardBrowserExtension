@@ -422,14 +422,14 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     />
                     <button
                         type="button"
-                        className="button button--m button--transparent actions__btn"
+                        className="button button--l button--transparent actions__btn"
                         onClick={importClickHandler}
                     >
                         {translator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
-                        className="button button--m button--transparent actions__btn"
+                        className="button button--l button--transparent actions__btn"
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
                     >
@@ -447,7 +447,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                                     onClick={closeEditorFullscreen}
                                     aria-label={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
                                 >
-                                    <Icon classname="icon--gray700 icon--24" id="#reduce" />
+                                    <Icon
+                                        id="#reduce"
+                                        classname="icon--24 icon--gray-default"
+                                    />
                                 </button>
                             ) : (
                                 <button
@@ -456,7 +459,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                                     onClick={openEditorFullscreen}
                                     aria-label={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
                                 >
-                                    <Icon classname="icon--gray700 icon--24" id="#extend" />
+                                    <Icon
+                                        id="#extend"
+                                        classname="icon--24 icon--gray-default"
+                                    />
                                 </button>
                             )
                         }

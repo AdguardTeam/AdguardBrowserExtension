@@ -207,15 +207,13 @@ export const Miscellaneous = observer(() => {
                     />
                 </div>
                 <div className="links-menu links-menu--section">
-                    {!__IS_MV3__ && (
-                        <button
-                            type="button"
-                            className="links-menu__item"
-                            onClick={handleFilteringLogClick}
-                        >
-                            {translator.getMessage('options_open_log')}
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="links-menu__item"
+                        onClick={handleFilteringLogClick}
+                    >
+                        {translator.getMessage('options_open_log')}
+                    </button>
 
                     {
                         isOpenResetStatsModal

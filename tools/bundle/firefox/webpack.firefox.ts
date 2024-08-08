@@ -21,7 +21,6 @@ import path from 'path';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { merge } from 'webpack-merge';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { WebpackPluginInstance } from 'webpack';
 
 import { genMv2CommonConfig } from '../webpack.common-mv2';
@@ -31,16 +30,7 @@ import {
     BUILD_ENV,
     BuildTargetEnv,
 } from '../../constants';
-import {
-    BACKGROUND_OUTPUT,
-    TSURLFILTER_VENDOR_OUTPUT,
-    TSWEBEXTENSION_VENDOR_OUTPUT,
-} from '../../../constants';
-import {
-    type BrowserConfig,
-    BACKGROUND_PATH,
-    htmlTemplatePluginCommonOptions,
-} from '../common-constants';
+import { type BrowserConfig } from '../common-constants';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
 
@@ -52,8 +42,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
     }
 
     let zipFilename = `${browserConfig.browser}.zip`;
-    if (BUILD_ENV === BuildTargetEnv.Beta
-        || BUILD_ENV === BuildTargetEnv.Release) {
+    if (BUILD_ENV === BuildTargetEnv.Beta || BUILD_ENV === BuildTargetEnv.Release) {
         zipFilename = 'firefox.zip';
     }
 
@@ -86,19 +75,6 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
                     from: 'filters/firefox',
                     to: 'filters',
                 },
-            ],
-        }),
-        new HtmlWebpackPlugin({
-            ...htmlTemplatePluginCommonOptions,
-            template: path.join(BACKGROUND_PATH, 'index.html'),
-            templateParameters: {
-                browser: process.env.BROWSER,
-            },
-            filename: `${BACKGROUND_OUTPUT}.html`,
-            chunks: [
-                TSURLFILTER_VENDOR_OUTPUT,
-                TSWEBEXTENSION_VENDOR_OUTPUT,
-                BACKGROUND_OUTPUT,
             ],
         }),
     ];

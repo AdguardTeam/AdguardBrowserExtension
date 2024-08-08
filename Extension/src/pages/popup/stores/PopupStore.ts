@@ -322,9 +322,17 @@ class PopupStore {
      */
     @computed
     get currentSite(): string | undefined {
-        return this.isFilteringPossible && this.domainName
-            ? punycode.toUnicode(this.domainName)
-            : this.url || undefined;
+        let res;
+
+        if (this.url) {
+            res = this.url;
+        }
+
+        if (this.isFilteringPossible && this.domainName) {
+            res = punycode.toUnicode(this.domainName);
+        }
+
+        return res;
     }
 
     /**
@@ -444,14 +452,6 @@ class PopupStore {
 
         return null;
     }
-
-    @action
-    getStatisticsData = async () => {
-        const { stats } = await messenger.getStatisticsData();
-        runInAction(() => {
-            this.stats = stats;
-        });
-    };
 
     getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
         switch (range) {

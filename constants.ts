@@ -39,13 +39,16 @@ export const HIDE_DOCUMENT_REFERRER_OUTPUT = 'pages/hide-document-referrer';
 export const DEVTOOLS_OUTPUT = 'pages/devtools';
 export const DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT = 'pages/devtools-elements-sidebar';
 
-export const EDITOR_OUTPUT = 'shared/editor';
+export const SHARED_EDITOR_OUTPUT = 'shared/editor';
 
 export const REACT_VENDOR_OUTPUT = 'vendors/react';
 export const MOBX_VENDOR_OUTPUT = 'vendors/mobx';
 export const XSTATE_VENDOR_OUTPUT = 'vendors/xstate';
 export const TSURLFILTER_VENDOR_OUTPUT = 'vendors/tsurlfilter';
+export const AGTREE_VENDOR_OUTPUT = 'vendors/agtree';
+export const CSS_TOKENIZER_VENDOR_OUTPUT = 'vendors/css-tokenizer';
 export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
+export const TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT = 'vendors/text-encoding-polyfill';
 
 // Placed here to use in the node environment and in the browser
 // Important: extensions '.js' used for correct work of Cloudflare cache, but

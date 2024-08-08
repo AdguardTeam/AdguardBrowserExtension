@@ -143,6 +143,7 @@ const Search = observer(() => {
                     onBlur={onSearchInputBlur}
                     className="search__input"
                     type="text"
+                    autoComplete="off"
                     placeholder={reactTranslator.getMessage('options_filters_search')}
                     ref={searchInputRef}
                     onChange={searchInputHandler}

@@ -6,47 +6,31 @@
     }
 
     &__content {
-        min-height: 136px;
+        min-height: 176px;
         overflow: auto;
         scrollbar-width: thin;
 
         &--stats {
-            min-height: 176px;
             max-height: 176px;
+            min-height: 176px;
             overflow-y: scroll;
             scrollbar-width: thin;
-        }
-
-        &--mv3 {
-            /* the height of the tabs_panel */
-            padding-top: 40px;
+            scrollbar-color: var(--fills-loaders-background-default) var(--fills-backgrounds-page-background-default);
         }
 
         &::-webkit-scrollbar {
-            width: 12px;
+            width: 6px;
         }
 
+        /* TODO: check if needed */
         &::-webkit-scrollbar-track {
-            background: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background: var(--grayDark);
-            }
+            background: var(--fills-loaders-background-default);
         }
 
+        /* TODO: check if needed */
         &::-webkit-scrollbar-thumb {
-            background-color: var(--gray300);
-            border-radius: 20px;
-            border: 3px solid var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray700);
-                border: 3px solid var(--grayDark);
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--black);
+            background-color: var(--fills-loaders-background-default);
+            border-radius: 4px;
         }
     }
 
@@ -59,31 +43,18 @@
         cursor: pointer;
         text-align: center;
         transition: var(--t3) color;
-        color: var(--gray7f);
-        border-bottom: 1px solid var(--grayd2);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--grayc0);
-            border-bottom: 1px solid var(--gray5b);
-        }
+        color: var(--text-description-description-default);
+        border-bottom: 1px solid var(--stroke-dividers-item-divider-default);
 
         &:hover {
-            background-color: var(--grayf6);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray3d);
-            }
+            background-color: var(--fills-backgrounds-page-background-hovered);
         }
 
         &--active {
             cursor: default;
             font-weight: 600;
-            border-bottom: 2px solid var(--green400);
-            color: var(--gray3d);
-
-            @media (prefers-color-scheme: dark) {
-                color: var(--graye4);
-            }
+            color: var(--text-main-text-main-default);
+            border-bottom: 2px solid var(--stroke-dividers-item-divider-green-default);
 
             &:hover {
                 background-color: transparent;
@@ -94,77 +65,5 @@
     &--non-active {
         opacity: 0.5;
         pointer-events: none;
-    }
-}
-
-.light-mode {
-    .tabs {
-        &__content {
-            background-color: var(--white);
-
-            &::-webkit-scrollbar-track {
-                background: var(--gray100);
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background-color: var(--gray300);
-                border-radius: 20px;
-                border: 3px solid var(--gray100);
-            }
-        }
-
-        &__tab {
-            color: var(--gray7f);
-            border-bottom: 1px solid var(--grayd2);
-
-            &:hover {
-                background-color: var(--grayf6);
-            }
-
-            &--active {
-                border-bottom: 2px solid var(--green400);
-                color: var(--gray3d);
-
-                &:hover {
-                    background-color: transparent;
-                }
-            }
-        }
-    }
-}
-
-.dark-mode {
-    .tabs {
-        &__content {
-            background-color: var(--black);
-
-            &::-webkit-scrollbar-track {
-                background: var(--grayDark);
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background-color: var(--gray700);
-                border-radius: 20px;
-                border: 3px solid var(--grayDark);
-            }
-        }
-
-        &__tab {
-            color: var(--grayc0);
-            border-bottom: 1px solid var(--gray5b);
-
-            &:hover {
-                background-color: var(--gray3d);
-            }
-
-            &--active {
-                border-bottom: 2px solid var(--green400);
-                color: var(--graye4);
-
-                &:hover {
-                    background-color: transparent;
-                }
-            }
-        }
     }
 }
