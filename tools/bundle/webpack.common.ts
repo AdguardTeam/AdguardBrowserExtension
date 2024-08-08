@@ -194,6 +194,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             fallback: {
                 crypto: require.resolve('crypto-browserify'),
                 stream: require.resolve('stream-browserify'),
+                vm: require.resolve('vm-browserify'),
             },
             extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
             symlinks: false,
