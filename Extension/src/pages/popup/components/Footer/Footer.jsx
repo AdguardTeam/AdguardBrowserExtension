@@ -19,10 +19,10 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { IOS_URL, ANDROID_URL } from '../../constants';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { popupStore } from '../../stores/PopupStore';
+import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
+import { IOS_URL, ANDROID_URL } from '../../constants';
+import { popupStore } from '../../stores/PopupStore';
 
 import './footer.pcss';
 
@@ -31,18 +31,18 @@ export const Footer = observer(() => {
 
     let footerContent = (
         <>
-            <div className="footer__text">{reactTranslator.getMessage('popup_adguard_footer_title')}</div>
+            <div className="footer__text">{translator.getMessage('popup_adguard_footer_title')}</div>
             <div className="footer__platforms">
                 <a
                     href={IOS_URL}
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
-                    title={reactTranslator.getMessage('popup_adguard_for_ios')}
+                    title={translator.getMessage('popup_adguard_for_ios')}
                 >
                     <Icon
                         id="#apple"
-                        classname="footer__icon"
+                        classname="icon--24 icon--footer"
                     />
                 </a>
                 <a
@@ -50,11 +50,11 @@ export const Footer = observer(() => {
                     target="_blank"
                     rel="noreferrer"
                     className="footer__link"
-                    title={reactTranslator.getMessage('popup_adguard_for_android')}
+                    title={translator.getMessage('popup_adguard_for_android')}
                 >
                     <Icon
                         id="#android"
-                        classname="footer__icon"
+                        classname="icon--24 icon--footer"
                     />
                 </a>
             </div>

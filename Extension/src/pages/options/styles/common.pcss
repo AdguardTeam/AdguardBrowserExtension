@@ -350,13 +350,15 @@ label.checkbox-label {
             border: 0;
             padding: 0;
             cursor: pointer;
+
+            &:hover {
+                background-color: var(--fills-backgrounds-page-background-hovered);
+            }
         }
 
         &--active {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
+            & .icon {
+                background-color: var(--fills-backgrounds-page-background-pressed);
             }
         }
     }
@@ -480,11 +482,6 @@ select:focus {
     .ace_cursor {
         color: var(--black)!important;
     }
-
-
-    .actions__btn--active {
-        background-color: var(--gray100);
-    }
 }
 
 .dark-mode {
@@ -524,9 +521,5 @@ select:focus {
 
     .ace_cursor {
         color: var(--gray300)!important;
-    }
-
-    .actions__btn--active {
-        background-color: var(--gray900);
     }
 }

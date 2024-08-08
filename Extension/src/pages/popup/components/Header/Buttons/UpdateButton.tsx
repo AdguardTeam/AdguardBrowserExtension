@@ -54,7 +54,7 @@ export const UpdateButton = () => {
         >
             <Icon
                 id="#reload"
-                classname="icon--24"
+                classname="icon--24 icon--header"
                 animationCondition={filtersUpdating}
                 animationClassname="icon--loading"
             />

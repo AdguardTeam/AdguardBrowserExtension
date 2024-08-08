@@ -72,6 +72,10 @@
         &:hover {
             background-color: var(--fills-menus-dropdown-menu-background-hovered);
         }
+
+        &:active {
+            background-color: var(--fills-menus-dropdown-menu-background-pressed);
+        }
     }
 
     /* Reverse order of icon, smaller text, using full space of parent element */
@@ -99,31 +103,6 @@
             left: 0;
             right: initial;
             margin-top: 20px;
-            background-color: var(--gray-0);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray-90);
-            }
-        }
-    }
-}
-
-.light-mode {
-    .select {
-        &.popup-modification {
-            .select__list {
-                background-color: var(--gray-0);
-            }
-        }
-    }
-}
-
-.dark-mode {
-    .select {
-        &.popup-modification {
-            .select__list {
-                background-color: var(--gray-90);
-            }
         }
     }
 }

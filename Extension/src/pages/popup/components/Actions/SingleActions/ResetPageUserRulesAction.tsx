@@ -51,7 +51,13 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
         window.close();
     };
 
-    const removeUserRulesIconId = removingUserRules ? '#popup-loading' : '#small-cross';
+    let removeUserRulesIconId = '#small-cross';
+    let removeUserRulesIconClassname = 'icon--24 icon--action--small-cross';
+
+    if (removingUserRules) {
+        removeUserRulesIconId = '#popup-loading';
+        removeUserRulesIconClassname = 'icon--24 icon--action--loading';
+    }
 
     return (
         <button
@@ -62,7 +68,7 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
         >
             <Icon
                 id={removeUserRulesIconId}
-                classname="icon--24"
+                classname={removeUserRulesIconClassname}
                 animationCondition={removingUserRules}
                 animationClassname="icon--loading"
             />

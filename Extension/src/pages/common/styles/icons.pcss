@@ -14,11 +14,7 @@
     &--logo {
         width: 107px;
         height: 24px;
-        color: var(--gray-90);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray-10);
-        }
+        color: var(--fills-logo-key-color-default);
     }
 
     &--select {
@@ -35,14 +31,6 @@
         color: var(--stroke-icons-gray-icons-default);
     }
 
-    &--gray700 {
-        color: var(--gray700);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
-    }
-
     &--loading {
         pointer-events: none;
         animation: loader-spin 1s infinite linear;
@@ -55,30 +43,6 @@
         }
         to {
             -webkit-transform: rotate(360deg);
-        }
-    }
-}
-
-.light-mode {
-    .icon {
-        &--logo {
-            color: var(--gray-90);
-        }
-
-        &--gray700 {
-            color: var(--gray700);
-        }
-    }
-}
-
-.dark-mode {
-    .icon {
-        &--logo {
-            color: var(--gray-10);
-        }
-
-        &--gray700 {
-            color: var(--gray300);
         }
     }
 }
