@@ -25,6 +25,7 @@ import type { Manifest } from 'webextension-polyfill';
 import { redirects } from '@adguard/scriptlets';
 
 import packageJson from '../package.json';
+import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
 
 import { BuildTargetEnv, Browser } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
@@ -49,7 +50,7 @@ const { Redirects } = redirects;
  * @returns Hash of click2load.html redirect resource.
  */
 const getClickToLoadSha = () => {
-    const redirectsYamlPath = path.resolve(__dirname, '../Extension/assets/libs/scriptlets/redirects.yml');
+    const redirectsYamlPath = path.resolve(__dirname, `../Extension/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}.yml`);
     const rawYaml = fs.readFileSync(redirectsYamlPath);
     const redirects = new Redirects(rawYaml.toString());
     const click2loadSource = redirects.getRedirect('click2load.html');

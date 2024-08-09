@@ -123,7 +123,7 @@ export class FiltersStorage {
      * @returns Promise, resolved with preprocessed filter list.
      * @throws Error, if filter list data is not valid.
      */
-    static async getPreprocessedFilterList(filterId: number): Promise<string> {
+    static async getRawPreprocessedFilterList(filterId: number): Promise<string> {
         const filterKey = FiltersStorage.getFilterKey(filterId);
         const data = await hybridStorage.get(filterKey);
         return zod.string().parse(data);
@@ -164,7 +164,7 @@ export class FiltersStorage {
      */
     static async getOriginalRules(filterId: number): Promise<string[]> {
         const [rawFilterList, conversionMap] = await Promise.all([
-            FiltersStorage.getPreprocessedFilterList(filterId),
+            FiltersStorage.getRawPreprocessedFilterList(filterId),
             FiltersStorage.getConversionMap(filterId),
         ]);
 
@@ -183,7 +183,7 @@ export class FiltersStorage {
      */
     static async getOriginalFilterListText(filterId: number): Promise<string> {
         const [rawFilterList, conversionMap] = await Promise.all([
-            FiltersStorage.getPreprocessedFilterList(filterId),
+            FiltersStorage.getRawPreprocessedFilterList(filterId),
             FiltersStorage.getConversionMap(filterId),
         ]);
 
@@ -203,7 +203,7 @@ export class FiltersStorage {
     static async getAllFilterData(filterId: number): Promise<PreprocessedFilterList | null> {
         const [filterList, rawFilterList, conversionMap, sourceMap] = await Promise.all([
             FiltersStorage.get(filterId),
-            FiltersStorage.getPreprocessedFilterList(filterId),
+            FiltersStorage.getRawPreprocessedFilterList(filterId),
             FiltersStorage.getConversionMap(filterId),
             FiltersStorage.getSourceMap(filterId),
         ]);

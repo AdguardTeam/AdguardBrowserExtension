@@ -248,7 +248,7 @@ export class FilteringLogApi {
 
         try {
             const [rawFilterList, conversionMap, sourceMap] = await Promise.all([
-                FiltersStorage.getPreprocessedFilterList(filterId),
+                FiltersStorage.getRawPreprocessedFilterList(filterId),
                 FiltersStorage.getConversionMap(filterId),
                 FiltersStorage.getSourceMap(filterId),
             ]);
