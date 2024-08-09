@@ -105,7 +105,7 @@ export const getFilterName = (
     filterId: number | undefined,
     filtersMetadata: FilterMetadata[] | null,
 ): string | null => {
-    if (!filterId) {
+    if (filterId === undefined) {
         return null;
     }
 

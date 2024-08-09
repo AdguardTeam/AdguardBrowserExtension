@@ -24,6 +24,7 @@ import {
     Configuration,
     TsWebExtension,
     type MessagesHandlerMV3,
+    type PreprocessedFilterList,
 } from '@adguard/tswebextension/mv3';
 
 import { logger, LogLevel } from '../../common/logger';
@@ -46,6 +47,17 @@ import { TsWebExtensionEngine } from './interface';
 // Because this file is already MV3 replacement module, we can import directly
 // from mv3 tswebextension without using aliases.
 export type { Message as EngineMessage } from '@adguard/tswebextension/mv3';
+
+/**
+ * This is just a syntax sugar for setting default value if we not have
+ * preprocessed list for user rules or for custom filters.
+ */
+const emptyPreprocessedFilterList: PreprocessedFilterList = {
+    filterList: [],
+    sourceMap: {},
+    rawFilterList: '',
+    conversionMap: {},
+};
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -151,23 +163,21 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
 
-        let userrules: string[] = [];
+        const userrules: Configuration['userrules'] = {
+            ...emptyPreprocessedFilterList,
+            /**
+             * User rules are always trusted.
+             */
+            trusted: true,
+        };
 
         if (UserRulesApi.isEnabled()) {
-            userrules = (await UserRulesApi.getUserRules()).rawFilterList.split('\n');
+            const res = await UserRulesApi.getUserRules();
 
-            // Remove empty strings.
-            userrules = userrules.filter((rule) => !!rule);
-
-            // Remove duplicates.
-            userrules = Array.from(new Set(userrules));
-
-            // Convert user rules.
-            // TODO: For user rules we will have twice conversion check: here
-            // and in tswebextension. But we cannot remove it here, because
-            // conversion needed before pass to tsurlfilter cosmetic engine.
-            // FIXME: (David) this waits until AGTree integration is done.
-            // userrules = UserRulesApi.convertRules(userrules);
+            userrules.filterList = res.filterList;
+            userrules.sourceMap = res.sourceMap;
+            userrules.rawFilterList = res.rawFilterList;
+            userrules.conversionMap = res.conversionMap;
         }
 
         const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
@@ -175,11 +185,12 @@ export class Engine implements TsWebExtensionEngine {
 
         const customFilters = await Promise.all(customFiltersWithMetadata
             .map(async ({ filterId, trusted }) => {
-                const filterLines = await FiltersStorage.get(filterId);
+                const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
+
                 return {
                     filterId,
-                    content: filterLines.join('\n'),
                     trusted,
+                    ...(preprocessedFilterList || emptyPreprocessedFilterList),
                 };
             }));
 

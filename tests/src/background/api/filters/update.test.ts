@@ -321,7 +321,7 @@ describe('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV1);
+            expect(await FiltersStorage.getRawPreprocessedFilterList(1)).toEqual(fakeFilterV1);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1);
 
             returnMetadataWithVersion(filterId, '4.0.0.0');
@@ -346,7 +346,7 @@ describe('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStorage.getRawPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             await FilterUpdateApi.autoUpdateFilters(false);
@@ -360,7 +360,7 @@ describe('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStorage.getRawPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
         });
 
