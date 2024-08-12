@@ -42,6 +42,18 @@ export const Icons = () => {
                 <path stroke="currentColor" fill="currentColor" d="M9.5 12a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0Z" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                 <circle stroke="currentColor" fill="none" cx="12" cy="12" r="8.33" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
+
+            <symbol id="empty-box" viewBox="0 0 64 64">
+                <g fill="none" fillRule="evenodd">
+                    <path stroke="currentColor" d="M55.5 49.39a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path fill="currentColor" d="M55.5 39.28v4.67-4.67Z" />
+                    <path stroke="currentColor" d="M55.5 39.28v4.67" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path fill="currentColor" d="M55.5 45.8v.16-.15Z" />
+                    <path stroke="currentColor" d="M55.5 45.8v.16M10.8 22.8v21.54h35.34M53.28 33.1v-10M10.8 14H53.28M36.09 14v30.34" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path stroke="currentColor" d="m36.28 14-8.8 8.8H2l8.8-8.8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path stroke="currentColor" d="m35.98 14.3 8.8 8.8h17.6l-9.1-9.1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
+            </symbol>
         </svg>
     );
 };

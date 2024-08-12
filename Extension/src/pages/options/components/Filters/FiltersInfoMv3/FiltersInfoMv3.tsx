@@ -53,7 +53,7 @@ export const FiltersInfoMv3 = observer(() => {
                     num: staticRulesEnabledCount + dynamicRulesEnabledCount,
                 })}
             </div>
-            <div className="filters-info-mv3--specs">
+            <div className="filters-info-mv3--specs button--link--green">
                 <a
                     target="_blank"
                     rel="noopener noreferrer"

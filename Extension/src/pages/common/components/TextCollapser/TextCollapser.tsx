@@ -21,7 +21,7 @@ import React, { forwardRef } from 'react';
 import cn from 'classnames';
 
 import { useTextCollapse } from '../../hooks/useTextCollapse';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import { CopyToClipboard } from '../CopyToClipboard';
 
 import './text-collapser.pcss';
@@ -75,8 +75,8 @@ export const TextCollapser = forwardRef((
     } = collapserButtonMessages;
 
     const collapserButtonText = isCollapsed
-        ? reactTranslator.getMessage(showMessage)
-        : reactTranslator.getMessage(hideMessage);
+        ? translator.getMessage(showMessage)
+        : translator.getMessage(hideMessage);
 
     // Pick required text style
     const hasCollapsedStyle = isCollapsed && isOverflown;
@@ -112,18 +112,20 @@ export const TextCollapser = forwardRef((
                 </div>
             )}
 
-            {isOverflown && (
-                <div
-                    role="button"
-                    className="request-modal__url-button"
-                    tabIndex={0}
-                    onClick={handleClick}
-                    onKeyUp={handleKeyUp}
-                >
-                    {collapserButtonText}
-                </div>
-            )}
-            {children}
+            <div className="request-modal__text-actions">
+                {isOverflown && (
+                    <div
+                        role="button"
+                        className="button button--link--green request-modal__url-button"
+                        tabIndex={0}
+                        onClick={handleClick}
+                        onKeyUp={handleKeyUp}
+                    >
+                        {collapserButtonText}
+                    </div>
+                )}
+                {children}
+            </div>
         </>
     );
 });

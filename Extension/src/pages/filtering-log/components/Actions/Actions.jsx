@@ -21,8 +21,8 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
+import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { Popover } from '../../../common/components/ui/Popover';
 import { EventsSearch } from '../Filters/EventsSearch';
@@ -58,29 +58,17 @@ const Actions = observer(() => {
     );
 
     const preserveLogTooltipText = preserveLogEnabled
-        ? reactTranslator.getMessage('filtering_log_preserve_log_on')
-        : reactTranslator.getMessage('filtering_log_preserve_log_off');
+        ? translator.getMessage('filtering_log_preserve_log_on')
+        : translator.getMessage('filtering_log_preserve_log_off');
 
     const preserveLogInputId = 'preserveLog';
 
     return (
         <div className="actions">
-            <div className="actions__col">
+            <div className="actions__col actions__tab-selector">
                 <TabSelector />
             </div>
             <div className="actions__col actions__buttons">
-                <div className="actions__action">
-                    <Popover text={reactTranslator.getMessage('filtering_clear_log_events')}>
-                        <button
-                            type="button"
-                            className="actions__clear"
-                            aria-label={reactTranslator.getMessage('filtering_clear_log_events')}
-                            onClick={clearLogHandler}
-                        >
-                            <Icon id="#trash" classname="icon--24 actions__del" />
-                        </button>
-                    </Popover>
-                </div>
                 <div className="actions__action actions__preserve">
                     <input
                         className="checkbox-input"
@@ -104,6 +92,18 @@ const Actions = observer(() => {
                     </label>
                 </div>
                 <div className="actions__action">
+                    <Popover text={translator.getMessage('filtering_clear_log_events')}>
+                        <button
+                            type="button"
+                            className="actions__clear"
+                            aria-label={translator.getMessage('filtering_clear_log_events')}
+                            onClick={clearLogHandler}
+                        >
+                            <Icon id="#trash" classname="icon--24 icon--red-default" />
+                        </button>
+                    </Popover>
+                </div>
+                <div className="actions__action">
                     <button
                         className="actions__refresh"
                         type="button"
@@ -111,7 +111,7 @@ const Actions = observer(() => {
                     >
                         <Icon id="#reload" classname="icon--24 actions__refresh--icon" />
                         <span className="actions__refresh--text">
-                            {reactTranslator.getMessage('filtering_refresh_tab_short')}
+                            {translator.getMessage('filtering_refresh_tab_short')}
                         </span>
                     </button>
                 </div>

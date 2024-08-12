@@ -18,8 +18,8 @@
 
 import React from 'react';
 
+import { translator } from '../../../../common/translators/translator';
 import { Popover } from '../../../common/components/ui/Popover';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 
 import { getBadgeClassNames, StatusColor } from './statusStyles';
 
@@ -29,14 +29,14 @@ export const NetworkStatus = ({ method, statusCode, isThirdParty }) => {
     return (
         <div className="status">
             <div className="status__item">
-                <Popover text={reactTranslator.getMessage('filtering_log_badge_tooltip_http_status_code')}>
+                <Popover text={translator.getMessage('filtering_log_badge_tooltip_http_status_code')}>
                     <div className={badgeClassNames}>
-                        {statusCode || '---'}
+                        {statusCode || '----'}
                     </div>
                 </Popover>
             </div>
             <div className="status__item">
-                <Popover text={reactTranslator.getMessage('filtering_log_badge_tooltip_http_req_method')}>
+                <Popover text={translator.getMessage('filtering_log_badge_tooltip_http_req_method')}>
                     <div className="status__badge status__badge--transparent">
                         {method}
                     </div>
@@ -44,8 +44,8 @@ export const NetworkStatus = ({ method, statusCode, isThirdParty }) => {
             </div>
             {isThirdParty && (
                 <div className="status__item">
-                    <Popover text={reactTranslator.getMessage('filtering_log_badge_tooltip_third_party')}>
-                        <div className="tag tag--third_party tag--party">
+                    <Popover text={translator.getMessage('filtering_log_badge_tooltip_third_party')}>
+                        <div className="tag tag--third_party tag--party tag--third_party--info">
                             3P
                         </div>
                     </Popover>

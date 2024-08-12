@@ -4,6 +4,9 @@
     position: relative;
     z-index: 20;
     width: 100%;
+    background-color: var(--fills-inputs-input-background-disabled);
+    border: 1px solid var(--stroke-inputs-inactive-input-stroke-default);
+    border-radius: 8px;
 
     @media (max-width: 640px) {
         margin-right: 0;
@@ -12,19 +15,17 @@
     & input {
         border: none;
         width: 100%;
-        height: 32px;
-        padding: 0 25px 0 34px;
-        background-color: transparent;
+        height: 40px;
+        padding: 0 24px 0 56px;
+        background: none;
         text-overflow: ellipsis;
-        color: var(--gray900);
+        color: var(--text-main-text-main-default);
+        font-size: 14px;
+        line-height: 18px;
 
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
-
-        &::placeholder {
+        &:placeholder {
             opacity: 1;
-            color: var(--gray700);
+            color: var(--text-placeholder-placeholder-default);
         }
     }
 
@@ -33,11 +34,6 @@
 
         &:focus {
             outline: none;
-            background-color: var(--gray300);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
-            }
         }
     }
 
@@ -46,26 +42,13 @@
         background-color: transparent;
         cursor: pointer;
         position: absolute;
-        left: -3px;
-        top: calc(50% - 13px);
-    }
-
-    &__cross {
-        width: 24px;
-        height: 24px;
-        color: var(--gray700);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray-50);
-        }
+        left: 16px;
+        max-height: 24px;
     }
 
     &__ico {
-        width: 24px;
-        height: 24px;
-        color: var(--gray700);
         position: absolute;
-        left: 4px;
+        left: 16px;
         top: calc(50% - 12px);
     }
 
@@ -78,41 +61,5 @@
         background-color: transparent;
         border: 0;
         padding: 0;
-    }
-}
-
-.light-mode {
-    .search {
-        & input {
-            color: var(--gray-base);
-        }
-
-        &__cross {
-            color: var(--gray700);
-        }
-
-        &__input {
-            &:focus {
-                background-color: var(--gray300);
-            }
-        }
-    }
-}
-
-.dark-mode {
-    .search {
-        & input {
-            color: var(--gray300);
-        }
-
-        &__cross {
-            color: var(--gray-50);
-        }
-
-        &__input {
-            &:focus {
-                background-color: var(--gray900);
-            }
-        }
     }
 }

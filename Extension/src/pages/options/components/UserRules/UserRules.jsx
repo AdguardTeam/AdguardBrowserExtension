@@ -80,7 +80,7 @@ const UserRules = observer(() => {
                         </div>
                         <button
                             type="button"
-                            className="button button--l button--green actions__btn"
+                            className="button button--l button--green-bg actions__btn"
                             onClick={handleGoToEditorClick}
                         >
                             {translator.getMessage('options_user_rules_editor_stub_go_to_editor_button')}

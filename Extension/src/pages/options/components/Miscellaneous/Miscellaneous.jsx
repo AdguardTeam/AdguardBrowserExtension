@@ -209,7 +209,7 @@ export const Miscellaneous = observer(() => {
                 <div className="links-menu links-menu--section">
                     <button
                         type="button"
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                         onClick={handleFilteringLogClick}
                     >
                         {translator.getMessage('options_open_log')}
@@ -231,7 +231,7 @@ export const Miscellaneous = observer(() => {
                     {!__IS_MV3__ && (
                         <button
                             type="button"
-                            className="links-menu__item button--red"
+                            className="links-menu__item button--link--red"
                             onClick={handleResetStatisticsClick}
                         >
                             {translator.getMessage('options_reset_stats')}
@@ -252,7 +252,7 @@ export const Miscellaneous = observer(() => {
                     }
                     <button
                         type="button"
-                        className="links-menu__item button--red"
+                        className="links-menu__item button--link--red"
                         onClick={handleResetSettingsClick}
                     >
                         {translator.getMessage('options_reset_settings')}

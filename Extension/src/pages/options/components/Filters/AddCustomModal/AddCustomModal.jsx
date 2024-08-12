@@ -139,7 +139,7 @@ const AddCustomModal = observer(({
             actions={(
                 <div className="modal__actions">
                     <button
-                        className="button button--l button--green modal__btn"
+                        className="button button--l button--green-bg modal__btn"
                         type="button"
                         onClick={handleSendUrlToCheck}
                         disabled={customUrlToAddIsEmpty}
@@ -214,7 +214,7 @@ const AddCustomModal = observer(({
                             disabled={isLoading}
                             type="button"
                             onClick={handleApproveWrapper}
-                            className="button button--l button--green modal__btn"
+                            className="button button--l button--green-bg modal__btn"
                         >
                             {translator.getMessage('options_add_custom_filter_modal_add_button')}
                         </button>
@@ -341,7 +341,7 @@ const AddCustomModal = observer(({
                             <button
                                 type="button"
                                 onClick={tryAgainHandler}
-                                className="button button--l button--green modal__btn"
+                                className="button button--l button--green-bg modal__btn"
                             >
                                 {translator.getMessage('options_popup_try_again_button')}
                             </button>
