@@ -95,7 +95,7 @@ export const ConfirmModal = ({
         'modal__subtitle--one-line': !isConsent,
     });
 
-    const okBtnClassName = cn('button button--l modal__btn button--green', {
+    const okBtnClassName = cn('button button--l modal__btn button--green-bg', {
         'button--red-bg': !isConsent,
     });
 
@@ -162,6 +162,7 @@ export const ConfirmModal = ({
                             className={okBtnClassName}
                             type="button"
                             onClick={handleConfirm}
+                            title={confirmTitle}
                         >
                             {confirmTitle}
                         </button>
@@ -169,6 +170,7 @@ export const ConfirmModal = ({
                             className="button button--l button--transparent modal__btn modal__btn--confirm"
                             type="button"
                             onClick={handleCancel}
+                            title={cancelTitle}
                         >
                             {cancelTitle}
                         </button>

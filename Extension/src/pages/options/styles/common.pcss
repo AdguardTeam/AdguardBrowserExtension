@@ -50,22 +50,18 @@ select {
 /* custom checkbox */
 label.checkbox-label {
     cursor: pointer;
-    color: var(--gray900);
+    color: var(--text-main-text-main-default);
     display: flex;
     align-items: center;
     flex-shrink: 0;
-
-    @media (prefers-color-scheme: dark) {
-        color: var(--gray300);
-    }
 
     & input[type="checkbox"] {
         display: none;
 
         &:checked {
             & + .custom-checkbox {
-                background-color: var(--green400);
-                border-color: var(--green400);
+                background-color: var(--stroke-icons-product-icon-default);
+                border-color: var(--stroke-icons-product-icon-default);
 
                 & .icon {
                     display: block;
@@ -149,7 +145,6 @@ label.checkbox-label {
     }
 
     &__item {
-        color: var(--text-links-link-default);
         margin: 16px 0;
         font-size: 16px;
         line-height: 21px;
@@ -203,11 +198,7 @@ label.checkbox-label {
 
             &:hover {
                 @media (min-width: 1024px) {
-                    background-color: var(--gray100);
-
-                    @media (prefers-color-scheme: dark) {
-                        background-color: var(--gray900);
-                    }
+                    background-color: var(--fills-backgrounds-page-background-hovered);
                 }
             }
         }
@@ -285,7 +276,7 @@ label.checkbox-label {
 
 .subtitle {
     padding: 0 15px;
-    color: var(--gray4a);
+    color: var(--text-description-description-default);
     font-size: 20px;
     font-weight: normal;
     line-height: 28px;
@@ -437,42 +428,16 @@ select:focus {
 }
 
 .ace_content {
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--black)!important;
-        color: var(--gray300)!important;
-    }
+    color: var(--text-main-text-main-default)!important;
+    background-color: var(--fills-backgrounds-page-background-default)!important;
 }
 
 
 .light-mode {
     color-scheme: light;
 
-    label.checkbox-label {
-        color: var(--gray900);
-
-        & input[type="checkbox"] {
-            background-color: var(--green400);
-            border-color: var(--green400);
-        }
-    }
-
-    .title {
-        &__container {
-            &--control {
-                &:hover {
-                    background-color: var(--gray100);
-                }
-            }
-        }
-    }
-
     .ReactModal__Content--after-open {
         border: 0!important;
-    }
-
-    .ace_content {
-        background-color: var(--transparent)!important;
-        color: var(--gray-base)!important;
     }
 
     .desc {
@@ -487,32 +452,8 @@ select:focus {
 .dark-mode {
     color-scheme: dark;
 
-    label.checkbox-label {
-        color: var(--gray300);
-
-        & input[type="checkbox"] {
-            background-color: var(--green700);
-            border-color: var(--green700);
-        }
-    }
-
-    .title {
-        &__container {
-            &--control {
-                &:hover {
-                    background-color: var(--gray900);
-                }
-            }
-        }
-    }
-
     .ReactModal__Content--after-open {
         border: 1px solid var(--gray700)!important;
-    }
-
-    .ace_content {
-        background-color: var(--black)!important;
-        color: var(--gray300)!important;
     }
 
     .desc {

@@ -301,7 +301,7 @@ export const General = observer(() => {
             <div className="links-menu links-menu--section">
                 <button
                     type="button"
-                    className="links-menu__item"
+                    className="links-menu__item button--link--green"
                     onClick={handleExportSettings}
                 >
                     {translator.getMessage('options_export_settings')}
@@ -316,7 +316,7 @@ export const General = observer(() => {
                     />
                     <label
                         htmlFor="inputEl"
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                     >
                         <input
                             type="file"
@@ -331,13 +331,13 @@ export const General = observer(() => {
                     target="_blank"
                     rel="noopener noreferrer"
                     href={__IS_MV3__ ? BUG_REPORT_MV3_URL : BUG_REPORT_URL}
-                    className="links-menu__item"
+                    className="links-menu__item button--link--green"
                 >
                     {translator.getMessage('options_report_bug')}
                 </a>
                 <button
                     type="button"
-                    className="links-menu__item"
+                    className="links-menu__item button--link--green"
                     onClick={handleLeaveFeedback}
                 >
                     {translator.getMessage('options_leave_feedback')}

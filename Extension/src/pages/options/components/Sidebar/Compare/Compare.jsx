@@ -31,7 +31,7 @@ export const Compare = ({ click, hide }) => {
             </div>
             <button
                 type="button"
-                className="button button--green button--m button--compare"
+                className="button button--green-bg button--m button--compare"
                 title={translator.getMessage('options_nav_compare')}
                 onClick={click}
             >

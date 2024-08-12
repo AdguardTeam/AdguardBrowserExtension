@@ -94,7 +94,7 @@ export const SafeBrowsing = () => {
                         <button
                             type="button"
                             onClick={handleGoBack}
-                            className="button button--green alert__btn"
+                            className="button button--green-bg alert__btn"
                         >
                             {reactTranslator.getMessage('blocking_pages_btn_go_back')}
                         </button>

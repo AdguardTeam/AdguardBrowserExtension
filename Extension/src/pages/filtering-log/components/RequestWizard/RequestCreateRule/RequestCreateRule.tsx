@@ -215,38 +215,47 @@ const RequestCreateRule = observer(() => {
                 <button
                     type="button"
                     onClick={handleBackClick}
-                    className="request-modal__navigation request-modal__navigation--button"
+                    className="request-modal__navigation"
                 >
-                    <Icon classname="icon--24" id="#arrow-left" />
+                    <Icon
+                        id="#arrow-left"
+                        classname="icon--24 icon--gray-default"
+                    />
                     <span className="request-modal__header">{title}</span>
                 </button>
             </div>
             <div ref={ref} className="request-modal__content">
                 <div className="request-info">
-                    <div className="request-info__key">
-                        {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
+                    <div className="request-info__main">
+                        <div className="request-info__key">
+                            {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
+                        </div>
+                        <textarea
+                            disabled={wizardStore.isActionSubmitted}
+                            className="request-info__value request-modal__rule-text"
+                            onChange={handleRuleChange}
+                            value={wizardStore.rule}
+                        />
                     </div>
-                    <textarea
-                        disabled={wizardStore.isActionSubmitted}
-                        className="request-info__value request-modal__rule-text"
-                        onChange={handleRuleChange}
-                        value={wizardStore.rule}
-                    />
                 </div>
                 {showPatterns && (
                     <div className="request-info patterns">
-                        <div className="request-info__key">
-                            {translator.getMessage('filtering_modal_patterns_desc')}
+                        <div className="request-info__main">
+                            <div className="request-info__key">
+                                {translator.getMessage('filtering_modal_patterns_desc')}
+                            </div>
+                            {rulePatterns}
                         </div>
-                        {rulePatterns}
                     </div>
                 )}
                 {showOptions && (
                     <div className="request-info options">
-                        <div className="request-info__key">
-                            {translator.getMessage('filtering_modal_options_desc')}
+                        <div className="request-info__main">
+                            <div className="request-info__key">
+                                {translator.getMessage('filtering_modal_options_desc')}
+                            </div>
+                            {options}
                         </div>
-                        {options}
                     </div>
                 )}
             </div>
@@ -254,7 +263,7 @@ const RequestCreateRule = observer(() => {
                 <button
                     disabled={wizardStore.isActionSubmitted}
                     type="button"
-                    className="request-modal__button"
+                    className="button button--l button--green-bg request-modal__button"
                     onClick={handleAddRuleClick}
                     title={translator.getMessage('filtering_modal_add_rule')}
                 >

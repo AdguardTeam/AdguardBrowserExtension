@@ -38,7 +38,7 @@ import { WizardRequestState } from '../../../constants';
 import { RequestPreview } from '../RequestPreview';
 import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
 
-import './RequestModal.pcss';
+import './request-modal.pcss';
 
 Modal.setAppElement('#root');
 

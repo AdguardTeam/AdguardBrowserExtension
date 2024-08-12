@@ -72,11 +72,14 @@ const Search = forwardRef(({
             return (
                 <button
                     type="button"
-                    className="search__clear"
+                    className="button search__clear"
                     aria-label={reactTranslator.getMessage('close_button_title')}
                     onClick={onClear}
                 >
-                    <Icon id="#cross" classname="search__cross" />
+                    <Icon
+                        id="#cross"
+                        classname="icon--24 icon--gray-default"
+                    />
                 </button>
             );
         }
@@ -91,7 +94,7 @@ const Search = forwardRef(({
                     <Icon
                         id="#arrow-down"
                         classname={cn(
-                            'search__ico',
+                            'icon--24 icon--gray-default search__ico',
                             onOpenSelect ? 'search__arrow-up' : 'search__arrow-down',
                         )}
                     />
@@ -99,7 +102,12 @@ const Search = forwardRef(({
             );
         }
 
-        return <Icon id="#magnifying" classname="search__ico" />;
+        return (
+            <Icon
+                id="#magnifying"
+                classname="icon--24 icon--gray-default search__ico"
+            />
+        );
     };
 
     return (

@@ -296,7 +296,7 @@ const FilteringEventsRows = observer(({
     return (
         /**
          * FixedSizeList does not support passing props to innerElementType component
-         * We use React Context API to bypass this limatation
+         * We use React Context API to bypass this limitation
          *
          * https://github.com/bvaughn/react-window/issues/404
          */

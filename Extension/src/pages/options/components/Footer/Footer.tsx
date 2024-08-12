@@ -48,7 +48,7 @@ export const Footer = observer(() => {
                         </div>
                         <button
                             type="button"
-                            className="button button--green button--s"
+                            className="button button--green-bg button--s"
                             onClick={handleRateClick}
                         >
                             {translator.getMessage('options_footer_like_us_cta')}

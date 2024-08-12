@@ -41,14 +41,17 @@ export const FilteringEventsEmpty = observer(() => {
     return (
         <div className="filtering-log__empty">
             <div className="filtering-log__empty-in">
-                <Icon id="#magnifying" classname="filtering-log__empty-img" />
+                <Icon
+                    id="#empty-box"
+                    classname="icon--gray-default filtering-log__empty-img"
+                />
                 <div className="filtering-log__desc">
                     {reactTranslator.getMessage(
                         'filtering_table_empty_reload_page_desc',
                         {
                             reset: (chunks) => (
                                 <button
-                                    className="filtering-log__refresh"
+                                    className="button button--link button--link--green"
                                     type="button"
                                     onClick={resetFilters}
                                 >
@@ -57,7 +60,7 @@ export const FilteringEventsEmpty = observer(() => {
                             ),
                             refresh: (chunks) => (
                                 <button
-                                    className="filtering-log__refresh"
+                                    className="button button--link button--link--green"
                                     type="button"
                                     onClick={refreshPage}
                                 >

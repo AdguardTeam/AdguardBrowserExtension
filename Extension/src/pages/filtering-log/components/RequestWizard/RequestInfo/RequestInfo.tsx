@@ -397,7 +397,9 @@ const RequestInfo = observer(() => {
             <>
                 {showOpenInNewTabButton && (
                     <div
-                        className="request-modal__url-button"
+                        role="button"
+                        tabIndex={0}
+                        className="button button--link--green request-modal__url-button"
                         onClick={openInNewTabHandler}
                     >
                         {translator.getMessage('filtering_modal_open_in_new_tab')}
@@ -479,6 +481,7 @@ const RequestInfo = observer(() => {
                             href={FILTERING_LOG_ASSUMED_RULE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
+                            className="button button--link button--link--green"
                         >
                             {text}
                         </a>
@@ -494,11 +497,17 @@ const RequestInfo = observer(() => {
 
             return (
                 <div key={title} className="request-info">
-                    <div className="request-info__key">{title}</div>
-                    <div className="request-info__value">
-                        {textsWithCollapsers}
-                        {isRule && infoAboutAssumedRule()}
+                    <div className="request-info__main">
+                        <div className="request-info__key">{title}</div>
+                        <div className="request-info__value">
+                            {textsWithCollapsers}
+                        </div>
                     </div>
+                    {isRule && (
+                        <div className="request-info__details">
+                            {infoAboutAssumedRule()}
+                        </div>
+                    )}
                 </div>
             );
         });
@@ -524,7 +533,7 @@ const RequestInfo = observer(() => {
     };
 
     const renderButton = ({ buttonTitleKey, onClick, className }: ButtonProps): JSX.Element => {
-        const buttonClass = cn('request-modal__button', className);
+        const buttonClass = cn('button button--l request-modal__button', className);
 
         const title = translator.getMessage(buttonTitleKey);
 
@@ -548,37 +557,41 @@ const RequestInfo = observer(() => {
             BLOCK: {
                 buttonTitleKey: 'filtering_modal_block',
                 onClick: blockHandler,
-                className: 'request-modal__button--red',
+                className: 'button--red-bg',
             },
             UNBLOCK: {
                 buttonTitleKey: 'filtering_modal_unblock',
                 onClick: unblockHandler,
+                className: 'button--green-bg',
             },
             ALLOWLIST: {
                 buttonTitleKey: 'filtering_modal_remove_allowlist',
                 onClick: removeFromAllowlistHandler,
+                className: 'button--green-bg',
             },
             USER_FILTER: {
                 buttonTitleKey: 'filtering_modal_remove_user',
                 onClick: () => removeFromUserFilterHandler(event),
+                className: 'button--red-bg',
             },
             REMOVE_ADDED_BLOCK_RULE: {
                 buttonTitleKey: 'filtering_modal_remove_user',
                 onClick: () => {
                     wizardStore.removeAddedRuleFromUserFilter();
                 },
+                className: 'button--red-bg',
             },
             REMOVE_ADDED_UNBLOCK_RULE: {
                 buttonTitleKey: 'filtering_modal_block_again',
                 onClick: () => {
                     wizardStore.removeAddedRuleFromUserFilter();
                 },
-                className: 'request-modal__button--red',
+                className: 'button--red-bg',
             },
             PREVIEW: {
                 buttonTitleKey: 'filtering_modal_preview_request_button',
                 onClick: previewClickHandler,
-                className: 'request-modal__button--white',
+                className: 'button--transparent',
             },
         };
 
@@ -657,10 +670,13 @@ const RequestInfo = observer(() => {
                 <button
                     type="button"
                     onClick={closeModal}
-                    className="request-modal__navigation request-modal__navigation--button"
+                    className="request-modal__navigation"
                     aria-label={translator.getMessage('close_button_title')}
                 >
-                    <Icon id="#cross" classname="icon--24" />
+                    <Icon
+                        id="#cross"
+                        classname="icon--24 icon--gray-default"
+                    />
                 </button>
                 <span className="request-modal__header">
                     {translator.getMessage('filtering_modal_info_title')}
@@ -669,25 +685,29 @@ const RequestInfo = observer(() => {
             <div ref={contentRef} className="request-modal__content">
                 {selectedEvent.method && (
                     <div className="request-info">
-                        <div className="request-info__key">
-                            {translator.getMessage('filtering_modal_status_text_desc')}
+                        <div className="request-info__main">
+                            <div className="request-info__key">
+                                {translator.getMessage('filtering_modal_status_text_desc')}
+                            </div>
+                            <NetworkStatus
+                                method={selectedEvent.method}
+                                statusCode={selectedEvent.statusCode}
+                                isThirdParty={selectedEvent.requestThirdParty}
+                            />
                         </div>
-                        <NetworkStatus
-                            method={selectedEvent.method}
-                            statusCode={selectedEvent.statusCode}
-                            isThirdParty={selectedEvent.requestThirdParty}
-                        />
                     </div>
                 )}
                 <div className="request-info">
-                    <div className="request-info__key">
-                        {translator.getMessage('filtering_modal_filtering_status_text_desc')}
+                    <div className="request-info__main">
+                        <div className="request-info__key">
+                            {translator.getMessage('filtering_modal_filtering_status_text_desc')}
+                        </div>
+                        <FilterStatus
+                            mode={getFilterStatusMode()}
+                            statusCode={selectedEvent.statusCode}
+                            method={selectedEvent.method}
+                        />
                     </div>
-                    <FilterStatus
-                        mode={getFilterStatusMode()}
-                        statusCode={selectedEvent.statusCode}
-                        method={selectedEvent.method}
-                    />
                 </div>
                 {renderedInfo}
             </div>
