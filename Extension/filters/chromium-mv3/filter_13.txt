@@ -1,8 +1,8 @@
-! Checksum: ue/qPENy+gGS7BEg8PSl7g
+! Checksum: 1tLYaEbq8DKzxfw+XGImzA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.52.65
-! TimeUpdated: 2024-08-05T09:33:35+00:00
+! Version: 2.0.52.70
+! TimeUpdated: 2024-08-08T11:33:47+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -741,6 +741,8 @@ dizipal700.com,dizipal701.com,dizipal702.com,dizipal703.com,dizipal704.com,dizip
 ##.fuck-ivr
 ##.fuck-ivr ~ p[style^="background-color:"]
 !
+###footer_fad
+##.play_ust_txt
 ##.g-title > div.containerAds
 ##.pageskin > div.mbl_psc
 ##div[class^="menu_alti_reklam"]
@@ -961,13 +963,6 @@ dizikral.com#%#//scriptlet('trusted-replace-node-text', 'script', 'manageAds', '
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177389
 dizigom1.tv#%#//scriptlet('prevent-setTimeout', '/img[\s\S]*?\.gif/')
 dizigom1.tv#%#//scriptlet('abort-current-inline-script', 'document.write', '_blank')
-! https://github.com/AdguardTeam/AdguardFilters/issues/182211
-! https://github.com/AdguardTeam/AdguardFilters/issues/177159
-! https://github.com/AdguardTeam/AdguardFilters/issues/174577
-! https://github.com/AdguardTeam/AdguardFilters/issues/173741
-fullhdfilmizletv.*,filmizletv.*,filmizlehdfilm.com,hdfilmcehennemi.*,hdfilmizlesene.org#%#//scriptlet('set-constant', 'reklamsayisi', '1')
-fullhdfilmizletv.*,filmizletv.*,filmizlehdfilm.com,hdfilmcehennemi.*,hdfilmizlesene.org#%#//scriptlet('adjust-setInterval', 'sec--', '*', '0.001')
-fullhdfilmizletv.*,filmizletv.*,filmizlehdfilm.com,hdfilmcehennemi.*,hdfilmizlesene.org#%#//scriptlet('trusted-replace-node-text', 'script', 'var checkReady', 'var checkReady', 'try{window.parent.ilk_part_getir();}catch(ex){};var checkReady')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178808
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171861
 filmizlehdizle.com,fullfilmizlesene.net#%#//scriptlet('set-constant', 'app.ads', 'emptyObj')
@@ -1793,6 +1788,12 @@ $xmlhttprequest,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
 !
+forum.donanimarsivi.com##.focus-ad
+teknosa.com##.products > ul:has(> li > div#product-item > div.prd-inner > div.prd-body > div.prd-features > span.plp-badge-text)
+fullfilmizle.cc#$#body { margin-top: 0 !important; background-image: none !important; }
+||hdfilmcix.org/Hdfilmcix-pop.js
+hdfilmcix.org###reklamCode
+erotikhdfilmx3.shop#%#//scriptlet('abort-on-property-write', 'getLink')
 koinfinans.com#$#.fixed-header-promo { display: none !important; }
 koinfinans.com#$##main { margin-top: 0px !important; }
 ||i1.wp.com/koinfinans.com/app/uploads/*/binance-register-new.png
@@ -1868,6 +1869,7 @@ dizigom1.tv###div[onclick="openIt()"]
 canlidoviz.com##div[class*="max-h-[300px]"]:has(> .empower-ad)
 tv100.com##body .desktop-ad
 tv100.com##.content-inside-ad
+dizifox1.com###footer ~ center > a[href]
 dizipal.org##.footerleft > br ~ a[href]
 ||hdfilmcehennemi2.cx/uploads/*.mp4
 hdfilmcehennemi2.cx##.reklam-link
@@ -2513,11 +2515,6 @@ ensonhaber.com###top-adbar
 ensonhaber.com##.esx-home-mansetalt
 ||dizilost.com/popunderxx.js
 turkiyegazetesi.com.tr###random-ads
-.mp4$~third-party,domain=filmizletv.info|filmizletv.me|filmizletv.com.bd|filmizletv.com.np|filmizletv.vip|filmizletv.gov.bd|filmizletv.gov.np|fullhdfilmizletv.net|fullhdfilmizletv.com.bd|fullhdfilmizletv.com.np|fullhdfilmizletv.gov.bd|fullhdfilmizletv.gov.np
-filmizletv.cx,fullhdfilmizletv.net,fullhdfilmizletv.com.bd,fullhdfilmizletv.com.np,fullhdfilmizletv.gov.bd,fullhdfilmizletv.gov.np##.video_content > a[target="_blank"]
-fullhdfilmizletv.net,fullhdfilmizletv.com.bd,fullhdfilmizletv.com.np,fullhdfilmizletv.gov.bd,fullhdfilmizletv.gov.np,filmizletv.info,filmizletv.me,filmizletv.com.bd,filmizletv.com.np,filmizletv.vip,filmizletv.gov.bd,filmizletv.gov.np,filmizlehdfilm.com,sinema.cx,fullhdfilmizle.com,fullhdfilmizle.net,fullhdfilmizle.org,fullhdfilmizle.xyz,fullhdfilmizle.online,fullhdfilmizle.biz,fullhdfilmizle.top,fullhdfilmizle.com.bd,fullhdfilmizle.to,fullhdfilmizle.com.np,fullhdfilmizle.vip,fullhdfilmizle.gov.bd,fullhdfilmizle.gov.np##div[class^="r_header_"]
-fullhdfilmizletv.net,fullhdfilmizletv.com.bd,fullhdfilmizletv.com.np,fullhdfilmizletv.gov.bd,fullhdfilmizletv.gov.np,filmizletv.info,filmizletv.me,filmizletv.com.bd,filmizletv.com.np,filmizletv.vip,filmizletv.gov.bd,filmizletv.gov.np,filmizlehdfilm.com,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh,hdfilmizlesene.org,fullhdfilm.pro,fullhdfilmizle.com,fullhdfilmizle.net,fullhdfilmizle.org,fullhdfilmizle.xyz,fullhdfilmizle.online,fullhdfilmizle.biz,fullhdfilmizle.top,fullhdfilmizle.com.bd,fullhdfilmizle.to,fullhdfilmizle.com.np,fullhdfilmizle.vip,fullhdfilmizle.gov.bd,fullhdfilmizle.gov.np###footer_fad
-filmizletv.info,filmizletv.me,filmizletv.com.bd,filmizletv.com.np,filmizletv.vip,filmizletv.gov.bd,filmizletv.gov.np##.play_ust_txt
 n11.com##.header-banner-cover
 search.donanimhaber.com###searchForm > .bottomcontainer > #products
 trdoktor.com##a[href^="core.php?ajax=reklam_say"]
@@ -3082,7 +3079,7 @@ inegolonline.com##.boxStyle[style^="height:"]
 inegolonline.com##iframe[src^="https://ads.inegolonline.com/"]
 41saat.com##.genel > div[style^="width: 980px; height: auto; margin:"]
 ||41saat.com/wp-content/uploads/*/*/toraman-reklam-980.jpg
-dizikorea.com,dizikorea.org,dizikorea.tv,dizikorea.com.bd,dizikorea.com.np,dizikorea.vip,dizikorea.gov.bd,dizikorea.gov.np,dizivap.com.bd,dizivap.com.np,dizivap.gov.bd,dizivap.gov.np,dizivid.co,diziday1.com,filmzal.com,filmzal.org,filmzal.me,filmzal.com.bd,filmzal.com.np,filmzal.gov.bd,filmzal.gov.np##.player-top-ad a
+diziplus.co,dizikorea.com,dizikorea.org,dizikorea.tv,dizikorea.com.bd,dizikorea.com.np,dizikorea.vip,dizikorea.gov.bd,dizikorea.gov.np,dizivap.com.bd,dizivap.com.np,dizivap.gov.bd,dizivap.gov.np,dizivid.co,diziday1.com,filmzal.com,filmzal.org,filmzal.me,filmzal.com.bd,filmzal.com.np,filmzal.gov.bd,filmzal.gov.np##.player-top-ad a
 arabamkacyakar.com##.ads_aky
 memurlar.net##.widget-970x250
 memurlar.net##.widget-336x280
@@ -5493,6 +5490,14 @@ isguc.org##td[width="200"] a[target="_blank"] img[width="200"][alt]
 ||ulasimonline.com/*/banner/
 ||vidout.net/vidoutMedia/ads/
 ||bolununsesi.com/ilangorsel/
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/173741
+.mp4$~third-party,domain=filmizlehdfilm.com|filmizletv.info|filmizletv.me|filmizletv.com.bd|filmizletv.com.np|filmizletv.vip|filmizletv.gov.bd|filmizletv.gov.np|fullfilmizle.com|fullfilmizle.net|fullfilmizle.org|fullfilmizle.co|fullfilmizle.tv|fullfilmizle.pro|fullfilmizle.pw|fullfilmizle.com.bd|fullfilmizle.com.np|fullfilmizle.gov.bd|fullfilmizle.gov.np|fullfilmizle.cc|fullhdfilmizle.com|fullhdfilmizle.net|fullhdfilmizle.org|fullhdfilmizle.xyz|fullhdfilmizle.online|fullhdfilmizle.biz|fullhdfilmizle.top|fullhdfilmizle.com.bd|fullhdfilmizle.to|fullhdfilmizle.com.np|fullhdfilmizle.vip|fullhdfilmizle.gov.bd|fullhdfilmizle.gov.np|fullhdfilmizletv.net|fullhdfilmizletv.com.bd|fullhdfilmizletv.com.np|fullhdfilmizletv.gov.bd|fullhdfilmizletv.gov.np|hdfilmcehennemi.com|hdfilmcehennemi.net|hdfilmcehennemi.org|hdfilmcehennemi.io|hdfilmcehennemi.info|hdfilmcehennemi.de|hdfilmcehennemi.me|hdfilmcehennemi.online|hdfilmcehennemi.tv|hdfilmcehennemi.app|hdfilmcehennemi.us|hdfilmcehennemi.cc|hdfilmcehennemi.mx|hdfilmcehennemi.live|hdfilmcehennemi.top|hdfilmcehennemi.pw|hdfilmcehennemi.com.bd|hdfilmcehennemi.asia|hdfilmcehennemi.com.np|hdfilmcehennemi.life|hdfilmcehennemi.gov.bd|hdfilmcehennemi.mobi|hdfilmcehennemi.fun|hdfilmcehennemi.one|hdfilmcehennemi.guru|hdfilmcehennemi.gov.np|hdfilmcehennemi.gen.tr|hdfilmcehennemi.icu|hdfilmcehennemi.sh|hdfilmcix.org|hdfilmizlesene.org|sinema.cx
+filmizlehdfilm.com,filmizletv.info,filmizletv.me,filmizletv.com.bd,filmizletv.com.np,filmizletv.vip,filmizletv.gov.bd,filmizletv.gov.np,fullfilmizle.com,fullfilmizle.net,fullfilmizle.org,fullfilmizle.co,fullfilmizle.tv,fullfilmizle.pro,fullfilmizle.pw,fullfilmizle.com.bd,fullfilmizle.com.np,fullfilmizle.gov.bd,fullfilmizle.gov.np,fullfilmizle.cc,fullhdfilmizle.com,fullhdfilmizle.net,fullhdfilmizle.org,fullhdfilmizle.xyz,fullhdfilmizle.online,fullhdfilmizle.biz,fullhdfilmizle.top,fullhdfilmizle.com.bd,fullhdfilmizle.to,fullhdfilmizle.com.np,fullhdfilmizle.vip,fullhdfilmizle.gov.bd,fullhdfilmizle.gov.np,fullhdfilmizletv.net,fullhdfilmizletv.com.bd,fullhdfilmizletv.com.np,fullhdfilmizletv.gov.bd,fullhdfilmizletv.gov.np,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh,hdfilmcix.org,hdfilmizlesene.org,sinema.cx##.video_content > a[target="_blank"]
+filmizlehdfilm.com,filmizletv.info,filmizletv.me,filmizletv.com.bd,filmizletv.com.np,filmizletv.vip,filmizletv.gov.bd,filmizletv.gov.np,fullfilmizle.com,fullfilmizle.net,fullfilmizle.org,fullfilmizle.co,fullfilmizle.tv,fullfilmizle.pro,fullfilmizle.pw,fullfilmizle.com.bd,fullfilmizle.com.np,fullfilmizle.gov.bd,fullfilmizle.gov.np,fullfilmizle.cc,fullhdfilmizle.com,fullhdfilmizle.net,fullhdfilmizle.org,fullhdfilmizle.xyz,fullhdfilmizle.online,fullhdfilmizle.biz,fullhdfilmizle.top,fullhdfilmizle.com.bd,fullhdfilmizle.to,fullhdfilmizle.com.np,fullhdfilmizle.vip,fullhdfilmizle.gov.bd,fullhdfilmizle.gov.np,fullhdfilmizletv.net,fullhdfilmizletv.com.bd,fullhdfilmizletv.com.np,fullhdfilmizletv.gov.bd,fullhdfilmizletv.gov.np,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh,hdfilmcix.org,hdfilmizlesene.org,sinema.cx##div[class^="r_header_"]
+filmizlehdfilm.com,filmizletv.*,fullfilmizle.*,fullfilmizle.cc,fullhdfilmizle.*,fullhdfilmizletv.*,hdfilmcehennemi.*,hdfilmcix.org,hdfilmizlesene.org,sinema.cx#%#//scriptlet('set-constant', 'reklamsayisi', '1')
+filmizlehdfilm.com,filmizletv.*,fullfilmizle.*,fullfilmizle.cc,fullhdfilmizle.*,fullhdfilmizletv.*,hdfilmcehennemi.*,hdfilmcix.org,hdfilmizlesene.org,sinema.cx#%#//scriptlet('adjust-setInterval', 'sec--', '*', '0.001')
+filmizlehdfilm.com,filmizletv.*,fullfilmizle.*,fullfilmizle.cc,fullhdfilmizle.*,fullhdfilmizletv.*,hdfilmcehennemi.*,hdfilmcix.org,hdfilmizlesene.org,sinema.cx#%#//scriptlet('trusted-replace-node-text', 'script', 'var checkReady', 'var checkReady', 'try{window.parent.ilk_part_getir();}catch(ex){};var checkReady')
 !
 ! yabancidizi - frequently changed domains
 yabancidizi.*#%#//scriptlet("adjust-setInterval", "timeleft", "*", "0.02")

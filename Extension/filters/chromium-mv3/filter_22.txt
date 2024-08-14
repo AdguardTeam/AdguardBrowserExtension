@@ -1,8 +1,8 @@
-! Checksum: xaXaFrzX2tApUTs00SlZvQ
+! Checksum: +SXP+EUyoknvAv4vGTWzdw
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.8.98
-! TimeUpdated: 2024-08-02T13:33:38+00:00
+! Version: 2.0.9.4
+! TimeUpdated: 2024-08-08T11:34:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -91,6 +91,7 @@
 ! SECTION: Widgets (sougo RSS) - Blogroll
 !
 ! NOTE: Blogroll generic
+/blogparts_iframe.php?sc=$subdocument,third-party
 ||rcm.shinobi.jp^
 ||nullpoantenna.com/scripts/parts/blog/
 ||matomeantena.com/scripts/parts/blog/
@@ -246,6 +247,9 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 ! NOTE: Blogroll specific rules
 !
+erogazoo.net##header > div#t_area
+erogazoo.net##a[href^="https://newmofu.doorblog.jp/"]
+natuero-dougakan.com##.side-menu:has(iframe.elogch_blogparts_iframe)
 etude000.com##.textwidget > div.top-ad:has(> div > ul[class^="other_rss"])
 umamusume.net##.rss-box
 tousatu-club.com###text-51
@@ -903,7 +907,6 @@ nogizaka46matomenoma.blog.jp###more > b
 morikinoko.com###headline-wrap
 mutyun.com###chuukan
 sk2ch.net##.recommend
-/blogparts_iframe.php?sc=$subdocument,third-party
 crx7601.com###main > div.column-inner > div.column-inner-2 > div[align="center"] + table
 ||moez-m.com/top-rssnews1.html
 moez-m.com#?#.widget-content-top table.has-fixed-layout td:has(> div > div#moe_blog_parts_000)
@@ -946,7 +949,7 @@ ssimas72.blog.jp##div[style^="width:990px;height:300px;"]
 tokimeki-s.com,rabitsokuhou.2chblog.jp###rss
 xn--gmq92kd2rm1kx34a.com###rssrole
 vtuber-matomeblog.com###custom_html-44
-kijyomatome.com###top-rss
+vtuber-matomeblog.com,kijyomatome.com###top-rss
 kijomatomelog.com,kijyomatome.com##.ga-rss
 meshinews.blog.jp###rsstop
 meshinews.blog.jp##.article-sub-popular
@@ -1431,6 +1434,8 @@ beasoku.com##.l-rss-header
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+||globalso.site/form.js
+||globalso.site/livechat.js
 support.apple.com##.accsoffer-wrapper
 ||zchnk.ru/*/zao-order-chat.js
 surabaya.tribunnews.com###jualbeli2022
@@ -2000,7 +2005,8 @@ web.ultra-soccer.jp###kindle-side-banner
 hltv.org##.leftCol > aside > div.a-reset
 hltv.org##.mid-container > div[class]:has(> div.featured-matches-top-next-slider)
 ! truestory widget
-||thetruestory.news/widget-top.iife.js$domain=echofm.online|zona.media|thebell.io
+||thetruestory.news/widget-top.iife.js$domain=echofm.online|zona.media|thebell.io|agents.media
+agents.media##.site-footer__true-stories
 istories.media##.swiper-wrapper > div.swiper-slide:has(div[class^="TheTrueStory-module-"] > thetruestory-widget-top)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/140015
 telegram.hr##.offers-widget
@@ -2239,6 +2245,7 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+medyascope.tv##.elementor-330147
 novayagazeta.ru###asideBlock_0 > aside > div[style="height:100%"] > div[style^="padding-top:"]
 ||thunderbird.net/*/thank-you/$removeparam=form
 apnews.com###desktop-entitlements
@@ -2267,7 +2274,6 @@ suntimes.com##.piano_group_banner
 suntimes.com##.piano-after-body
 suntimes.com##.piano_article_sidebar
 nycpokemap.com,londonpogomap.com,vanpokemap.com,sgpokemap.com,sydneypogomap.com###overlay
-gameinformer.com##.gi5-dynamic-block-fieldnode-block-lfte-subscribe
 5pillarsuk.com##.ulp-bounceIn
 5pillarsuk.com##.ulp-overlay
 efsyn.gr##.donation

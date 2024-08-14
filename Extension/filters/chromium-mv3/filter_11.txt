@@ -1,8 +1,8 @@
-! Checksum: ltOi60MdnNo4CWeyNSeJtA
+! Checksum: 6DiqPUK4l9OzbbMjDYF5uw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.53.42
-! TimeUpdated: 2024-08-05T09:33:33+00:00
+! Version: 2.0.53.58
+! TimeUpdated: 2024-08-08T12:33:54+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1990,6 +1990,9 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/185597
+zeenews.india.com#@#div[class^="ads-"]
+zeenews.india.com#@#div[class^="ads-box-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179429
 @@||cmp.inmobi.com/GVL-v2/$domain=express.co.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177593
@@ -2380,6 +2383,23 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+mynet.com##.stickyFooterAdContainer
+game-kouryaku.info##.ado3
+forum.donanimhaber.com##div[style^="width: 100%; float: left;"]:has(> div[style] > div.empower-ad)
+pcguru.hu##.top-mobile-banner-holder
+gtplanet.net##div[style="text-align:center;margin:30px 0 0;"] > a > img
+11880.com##body .search-result-list-item--topad
+||m.xianqihaotianmi.org/4ENSM9hu/*.js
+pornpics.com##.adss-mob
+forbes.ru##.JkVE-
+dic.pixiv.net##.gArUpx
+news18.com##.LiveBlog_outer > div[style]:has(> div[style] > div.nw18-dfp-ad)
+india.com##.taboola-code
+zeenews.india.com##.ads-placeholder-internal
+zeenews.india.com##.first-ad
+zeenews.india.com##.ads-box-300x250::before
+st.benesse.ne.jp##.text_c
+rawstory.com##div[id^="banner-"]
 mama.smt.docomo.ne.jp##div[class^="ads-"]
 news.audee.jp###mainColumn > section#intro_tagInner:has(> div.appnone)
 news.audee.jp##section[class="appnone"][style="text-align: center; margin-top: 5px"]
@@ -2671,7 +2691,7 @@ m.foodingredientsfirst.com##.supplier_banner
 m.foodingredientsfirst.com##div[data-category="MobileTopBanner"]
 newluxe.jp##.post-content > div[style="height: 500px;"]
 zozovideo.com##.cactus-single-content > div.content-top-sidebar-wrap:has(> .zozov-widget)
-uniladtech.com,gamingbible.com,sportbible.com,unilad.com,ladbible.com##div[class^="article-observer_bottomAd"]
+uniladtech.com,gamingbible.com,sportbible.com,unilad.com,ladbible.com##div[class*="-observer_bottomAd"]
 comic.pixiv.net#$#.bottom-\[100px\][class^="jsx-"] { bottom: 0 !important; }
 nukistream.com#?#.article_list .w100:has(a[target="_blank"]:contains(PR))
 video.fc2.com#?#iframe[src^="/a/pagead/"]:upward(1)
@@ -4123,7 +4143,7 @@ mapfan.com##.bottom-ad-mobile
 fashion-press.net##.mobile_only_ad
 yukawanet.com###custom_html-34
 otona-life.com##.ad_minh_sp
-prinz.de,stylight.de,cleverdialer.de##.h5-sticky-ad
+11880.com,prinz.de,stylight.de,cleverdialer.de##.h5-sticky-ad
 withonline.jp###contents > div[style="text-align:center; margin-top: 10px;"]
 spur.hpplus.jp###ADHeader
 spur.hpplus.jp##.bnr_super
@@ -6007,7 +6027,7 @@ ck101.com###mobileFloat
 ck101.com##.mobileAD_responsive
 gamespark.jp##div[style^="min-height:280px;"]
 s.inside-games.jp##.sp-ifad
-s.response.jp,gamespark.jp,s.inside-games.jp##.aside-box-ad
+manetatsu.com,s.response.jp,gamespark.jp,s.inside-games.jp##.aside-box-ad
 gamespark.jp,s.inside-games.jp##div[style^="text-align"][style*="min-height:2"]
 s.inside-games.jp##a[href^="https://deliver.ads2.iid.jp"]
 chosunonline.com##.wrap_ad_inner
@@ -7093,6 +7113,8 @@ dzen.ru#?#.feed-item article:matches-attr("/data[a-z-]+/"="/^card-[a-zA-Z]{3,}/"
 dzen.ru##.zenad-card-rtb
 [$path=/media]dzen.ru##div[class^="article-render-mobile"][class$="type_yandex-direct"]
 zen.yandex.by,zen.yandex.com,zen.yandex.kz,zen.yandex.ru##.article-render-mobile__block_embed
+! Dzen Video
+dzen.ru##.video-feed__doc2doc div[class$="__feed"] > div[class*="-video-card "] ~ div:not([class*="-video-card "])
 ! Dzen Weather
 [$path=/pogoda]dzen.ru##div[class^="Card_container"][class*="Advert"]
 ! Rambler
