@@ -1,8 +1,8 @@
-! Checksum: 5hx/qB8+xp5YePUOYlvSdw
+! Checksum: KmhmJ9V+1KRlF9ItOA0Tlw
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.24.80
-! TimeUpdated: 2024-08-05T09:33:52+00:00
+! Version: 2.0.24.90
+! TimeUpdated: 2024-08-08T11:34:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -107,6 +107,14 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/185581
+luciferdonghua.in##.wrapper > div.announ:contains(No one like ads)
+! https://github.com/AdguardTeam/AdguardFilters/issues/185502
+cyberleninka.ru###content > div.viewer-similars
+! https://github.com/AdguardTeam/AdguardFilters/issues/185549
+themoscowtimes.com##.preheader_advert
+! https://github.com/AdguardTeam/AdguardFilters/issues/184333
+kakuchopurei.com##.live-news-widget
 ! https://github.com/AdguardTeam/AdguardFilters/issues/184763
 rockpapershotgun.com##.poll_wrapper
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182947
@@ -2770,8 +2778,6 @@ gismeteo.ru###soft-promo
 ! https://forum.adguard.com/index.php?threads/13087/
 ctc.ru##.widget.special-block[data-trackable]
 ||mts.ctc.ru/?nowrap=
-! kinokong.net - полоса с популярными фильмами
-kinokong.net###hotnewsline
 ! https://forum.adguard.com/index.php?threads/13001/
 grammarly.com#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("ch:overlay.closed.time", "5000000000000") } } catch (ex) {} })();
 ! focus.ua - плавающее окно с соц. ссылками
@@ -2969,6 +2975,7 @@ yasir252.com#%#AG_onLoad(function(){setTimeout(function(){var a=document.querySe
 ||trimay.ru/?
 !
 !
+tverigrad.ru##.soc_giant
 ||php.co.jp/image/sns_tw.jpg
 inkorr.com##.content--main div.sub-tg-wrapper
 krymr.com###GR-1872-nar
@@ -3121,7 +3128,6 @@ ndtv.com,www-ndtv-com.cdn.ampproject.org##.story_ft-nav
 ichip.ru##.float-subscribe
 ichip.ru##.subscribe-content
 ||nallihanhaber.com/wp-content/uploads/2020/09/nallihansondakika-min.gif
-gameinformer.com##.gi5-social-share
 pixivision.net##._floated-bottom-bar
 news18.com##.newftrshare-fixed
 news18.com##.story-social-share-fix
@@ -3445,6 +3451,8 @@ habr.com##.tm-article-card-list > li.tm-article-card-list__item:has(> div.tm-pro
 habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Ближайшие события))
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/184333
+kakuchopurei.com##.layout-sidebar > div.widget_media_image
 ! https://github.com/AdguardTeam/AdguardFilters/issues/184600
 dtf.ru#$#.distribution { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183200
@@ -5239,6 +5247,8 @@ theguardian.com##.contributions__adblock
 !
 ! SECTION: Self-promo - Regular rules
 !
+||hachiraw.net/01.png
+2gis.ru#?#div[style="justify-content:flex-end"] button:has(> div:contains(Ваши друзья на карте))
 ||ichiba.faq.rakuten.net/resource/*/RakutenMobile_Banner/
 tempestfansub.com##a[href="https://tempestfansub.com/blog/reklamsiz-uyelik/"] > img
 eldorado.ru##.gr-top-banner
@@ -7905,6 +7915,8 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/185579
+arahdrive.com#%#//scriptlet('adjust-setInterval', 'Number', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182950
 abplive.com#%#//scriptlet('trusted-click-element', '#read-full-article')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/184901
@@ -9419,6 +9431,7 @@ surfsees.com#%#//scriptlet("set-constant", "count", "0")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34918
 win10.vn#%#//scriptlet("set-constant", "fiveSecs", "0")
 ! link-to.net - skip timer
+linkvertise.com#%#//scriptlet('trusted-replace-xhr-response', '/"remaining_waiting_time": ?\d+/', '"remaining_waiting_time": 0', '/graphql')
 linkvertise.com,link-to.net#%#!function(){if(-1<window.location.href.indexOf("dynamic?r=")&&!/https?:\/\/(www\.)?h-gen\.xyz\//.test(document.referrer)){var a=location.href.split("?r=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();
 link-to.net#%#AG_onLoad(function(){if(window.location.href.match(/https?:\/\/link-to\.net\/\d+\//)){var a=document.body.textContent.match(/window\.location\.href = \("([\s\S]*?)"\);/);if(a&&a[1])location=a[1];}});
 linkvertise.com#%#//scriptlet("json-prune", "data.meta.require_addon data.meta.require_video data.meta.require_notifications data.meta.require_og_ads data.meta.require_web data.meta.require_countdown data.meta.require_related_topics data.meta.require_custom_ad_step data.meta.og_ads_offers data.displayAds data.linkCustomAdOffers")

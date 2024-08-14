@@ -1,8 +1,8 @@
-! Checksum: oVr9V823OK9n7zmD6SyZxw
+! Checksum: BeWcfu9bXsbLdY6WzyLoUQ
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.63
-! TimeUpdated: 2024-08-02T09:01:49+00:00
+! Version: 2.0.4.65
+! TimeUpdated: 2024-08-05T21:01:53+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -20,7 +20,7 @@
 ! Popup: needpop (vc_url)
 artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,musichi.ir,likeemusic.ir#%#//scriptlet('ubo-nowoif.js')
 ! rouydad24.ir, ibena.ir, tejaratemrouz.ir, irdc.ir
-/files/fa/adv^$image,~third-party,domain=ir|asriran.com|parsine.com|ana.press|niniban.com|vananews.com|barghnews.com
+/files/fa/adv^$image,~third-party,domain=ir|asriran.com|parsine.com|ana.press|niniban.com|vananews.com|barghnews.com|niniban.com|eghtesadonline.com
 ! meliyat.ir, aftabnews.ir, eghtesadgardan.ir, entekhab.ir, nabzefanavari.ir, boursenews.ir, snn.ir,
 !! basirat.ir, khootoot.ir, didarnews.ir, 598.ir
 /files/adv^$image,~third-party,domain=ir|asrkhabar.com|bultannews.com|yektapress.com|roozno.com|fararu.com|iraneconomist.com|khordad.news
@@ -247,13 +247,12 @@ niloblog.com##bloglinksblock
 ||my-pishvaz.com^$third-party
 ||pooye-ads.com^
 ||promizer.com^
-! ^ Example: eghtesadonline.com
 ||phonroid.com^
 ||popina.ir^
 ||popupdl.ir^
 ||popland.info^
 ||peyvandha.ir^$third-party
-||10.10.34.$subdocument,third-party
+||10.10.34.$all
 ! ^ Example: imovie-dl.org
 ||phoenixad.io^
 ||partclick.ir^
@@ -1017,9 +1016,9 @@ ezp30.com###ynpos-10831
 e-teb.com##.ads
 brain.be-teb.com##.medicaldirectory-sidebar:nth-of-type(5) > .claims.sidebar-content > .cbp-l-project-details-title > span
 ravan.e-teb.com##div.medicaldirectory-sidebar:nth-of-type(6) > .claims.sidebar-content > .cbp-l-project-details-title > span
-entekhab.ir##.attention > header:has-text(وبگردی):upward(.attention)
-entekhab.ir##.news-web
 entekhab.ir##div.tabligh
+entekhab.ir##div.sp_ln_box_title:has-text(نیازمندیها)
+entekhab.ir##div.txt_adv_content
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104314
 ||eghtesadnews.com^$removeparam=rssRedirect
 eghtesadnews.com##[href^="/advertisements/"]
@@ -1028,9 +1027,10 @@ eghtesadnews.com##.advs-wrapper
 ! https://github.com/AdguardTeam/AdguardFilters/issues/95321
 ! https://github.com/MasterKia/PersianBlocker/issues/85
 ! https://github.com/MasterKia/PersianBlocker/issues/223
-||media.eghtesadonline.com/d/*.gif^$image,~third-party
-eghtesadonline.com##section.ads
-eghtesadonline.com##section.box.list:has(> header > h2:has-text(وبگردی))
+eghtesadonline.com##div.ads-sec
+eghtesadonline.com##div.heightAds
+eghtesadonline.com##div.bottomTextAdv
+eghtesadonline.com##div.ads-sec-web
 elmefarda.com#%#//scriptlet('ubo-aeld.js', 'contextmenu')
 elmefarda.com#$#div#post p { -webkit-touch-callout: default !important; -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
 elmefarda.com##div#sidebar300 > div.mywidget > div.titles:has-text(تبلیغات)
@@ -1566,6 +1566,7 @@ lahzeakhar.com#%#//scriptlet('ubo-set.js', 'customnotify', 'noopFunc')
 ||lahzeakhar.com/ShowAds
 ! ||lahzeakhar.com/sw.js
 ! >> M <<
+mastertest.ir##div.post-content > div.fusion-builder-row-1 > div.fusion-row:has(> div.fusion-layout-column a[data-wpel-link="external"])
 ! https://github.com/MasterKia/PersianBlocker/pull/243
 ||mihantrader.com/media/images/ad^$image,~third-party
 mihantrader.com##div.text-white:has(> div:has-text(AD))
@@ -1752,7 +1753,6 @@ namayesh.com###promotion
 nab-music.com#%#//scriptlet('ubo-aopr.js', 'vc_url')
 ! https://github.com/MasterKia/PersianBlocker/issues/72
 ! https://github.com/MasterKia/PersianBlocker/pull/81
-||niniban.com/files/fa/adv^$image,~third-party
 ||niniban.com/DaartAds.min$script,stylesheet,~third-party
 niniban.com##div.all_adv_mrg
 niniban.com##div.padding_news_right_adv

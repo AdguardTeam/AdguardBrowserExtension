@@ -1,8 +1,8 @@
-! Checksum: X8nOxNqnjhwFNcZYdTnwRg
+! Checksum: QQJhy80aKOEV84VXH+vXiQ
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.45.91
-! TimeUpdated: 2024-08-04T13:33:34+00:00
+! Version: 2.0.45.98
+! TimeUpdated: 2024-08-08T11:34:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -174,7 +174,7 @@ france.tv#%#//scriptlet('prevent-fetch', 'fwmrm')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159263
 lameteoagricole.net#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ! https://github.com/uBlockOrigin/uAssets/issues/19339
-empire-streaming.*,empire-stream.net#%#//scriptlet('set-constant', 'navigator.brave', 'undefined')
+empire-streamz.fr,empire-streaming.*,empire-stream.net#%#//scriptlet('set-constant', 'navigator.brave', 'undefined')
 @@||e-player-stream.app/player/assets/js/ads.js?$~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158428
 meteo-grenoble.com#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
@@ -211,16 +211,12 @@ japscan.lol#@#.ad_slot
 japscan.lol#@##ad-img-slot
 japscan.lol#@##banner-top-right
 japscan.lol##.blur-background
-japscan.lol##.notice-message
 japscan.lol###promo.sticky-top
 japscan.lol##.text-center > a[target="_blank"] > img
 ||japscan.lol/imgs/jopy/best.gif
-japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', ')();}')
-japscan.lol#%#//scriptlet("remove-node-text", "script", "/ApoZow|'(map'|\/imgs\/|ads?-\d+|ad-img-slot|ad_inview_area|div-leader-ad)|\['style'\]\['display'\]|\.length;var|\.substr\(0|\.reduce\(\(acc, curr\)|g1hnttodBEe8apl|_adbn_|adheader|\"\/00|DklzSoz|Countdown|mpl=kdel|String.fromCharCode\(127\)|\"getComputedStyle\"|newImg|interstitial|&utm_medium/")
+japscan.lol#%#//scriptlet('abort-current-inline-script', 'addEventListener', 'String.fromCharCode')
 japscan.lol#%#(()=>{const n={construct:(n,o,t)=>{const e=o[0];if(e&&e.includes("return typeof"))throw new ReferenceError;return Reflect.construct(n,o,t)}};window.Function=new Proxy(window.Function,n)})();
 japscan.lol#%#!function(){const t={apply:(t,n,o)=>{if(n&&n.match?.(/_\$_|DklzSoz|_adbn_/))throw Error();return Reflect.apply(t,n,o)}};window.String.prototype.split=new Proxy(window.String.prototype.split,t)}();
-! Fixes popups
-japscan.lol#%#//scriptlet("prevent-addEventListener", "DOMContentLoaded", "/\['classList'\][\s\S]*?\['target'\]/")
 ! Fixes incorrect blocking - search does not work
 ||japscan.lol/ujs/$script,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147701
@@ -674,21 +670,22 @@ occasions.decathlon.fr#%#//scriptlet('set-constant', 'FastClick.attach', 'noopFu
 lessentiel.lu,20min.ch#%#//scriptlet('adjust-setTimeout', 'setTimeoutIds_', '*', '0.001')
 lessentiel.lu,20min.ch#%#(()=>{window.TATM=window.TATM||{},TATM.init=()=>{},TATM.initAdUnits=()=>{},TATM.pageReady=()=>{},TATM.getVast=function(n){return new Promise((n=>{n()}))},TATM.push=function(n){if("function"==typeof n)try{n()}catch(n){console.debug(n)}};})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182538
-empire-stream.net#%#//scriptlet('trusted-create-element', 'body', 'iframe')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.pop', 'undefined')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.direct', 'undefined')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.isAdbActive', 'false')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.directHideAds', 'undefined')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.film', '0')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.serie', '0')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.film', '0')
-empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.serie', '0')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('trusted-create-element', 'body', 'iframe')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.pop', 'undefined')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.direct', 'undefined')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.isAdbActive', 'false')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.directHideAds', 'undefined')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.film', '0')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.serie', '0')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.film', '0')
+empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.serie', '0')
 ! https://github.com/uBlockOrigin/uAssets/issues/19339
 e-player-stream.*#%#//scriptlet('set-constant', 'adsConfig', 'emptyArr')
-empire-streaming.*,empire-stream.net#%#//scriptlet('prevent-window-open')
+empire-streamz.fr,empire-streaming.*,empire-stream.net#%#//scriptlet('prevent-window-open')
 ! https://github.com/uBlockOrigin/uAssets/issues/18840#issuecomment-1623546469
 e-player-stream.app#%#//scriptlet('set-constant', 'isSetupAccess', 'true')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/153795
+[$path=/iframe_ad]empire-streamz.fr#%#//scriptlet('set-constant', 'empire.data', 'emptyArr')
 [$path=/iframe_ad]empire-stream.net#%#//scriptlet('set-constant', 'empire.data', 'emptyArr')
 [$path=/iframe_ad]empire-streaming.*#%#//scriptlet('set-constant', 'empire.data', 'emptyArr')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/153700
@@ -777,7 +774,7 @@ tf1info.fr#%#//scriptlet('set-constant', '__NEXT_DATA__.runtimeConfig.playerTF1.
 !--------------------------------------!
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182538
-empire-stream.net#$#body > iframe:not([src]) { position: absolute !important; left: -3000px !important; }
+empire-streamz.fr,empire-stream.net#$#body > iframe:not([src]) { position: absolute !important; left: -3000px !important; }
 ! https://github.com/uBlockOrigin/uAssets/issues/22958
 rustica.fr#$#@media (min-width: 992px) { html > body.hasHabillage { padding-top: 0 !important; } }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172925
@@ -802,9 +799,9 @@ amomama.fr#$#.nb { padding-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/139744
 dna.fr#$#body.ContentDetailComponent #p6GalleryWrapper.showed { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/137309
-empire-stream.net,empire-streaming.*#$##donation { display: none !important; }
-empire-stream.net,empire-streaming.*#$##msg_ads { display: none !important; }
-empire-stream.net,empire-streaming.*#$#body { overflow: auto !important; }
+empire-streamz.fr,empire-stream.net,empire-streaming.*#$##donation { display: none !important; }
+empire-streamz.fr,empire-stream.net,empire-streaming.*#$##msg_ads { display: none !important; }
+empire-streamz.fr,empire-stream.net,empire-streaming.*#$#body { overflow: auto !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/127367
 journaldesfemmes.fr#$#@media (min-width: 768px) { body .layout.layout--offcanvas:not(#style_important) { margin-top: -200px !important; } }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/118970
@@ -885,6 +882,8 @@ $script,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com|fastly.
 !
 !
 !
+futura-sciences.com##.ad-parent-billboard
+futura-sciences.com##.ad-parent-halfpage
 tvaplus.ca##div[data-testid="ad-container"]
 tesla-mag.com##.sidebar-inner-wrap > section[id^="block-"]
 dealabs.com##div[id$="FuseZonePortal"]
@@ -1101,7 +1100,7 @@ rustica.fr###stickMe
 youwatch-serie.com##.buttonO
 youwatch-serie.com##.buttonrm
 youwatch-serie.com##body > #card
-empire-stream.net,empire-streaming.com,empire-streaming.co,empire-streaming.info,empire-streaming.de,empire-streaming.fr,empire-streaming.eu,empire-streaming.tv,empire-streaming.app,empire-streaming.pro,empire-streaming.com.bd,empire-streaming.dev,empire-streaming.com.np,empire-streaming.life,empire-streaming.gov.bd,empire-streaming.gov.np##.hide-ads
+empire-streamz.fr,empire-stream.net,empire-streaming.com,empire-streaming.co,empire-streaming.info,empire-streaming.de,empire-streaming.fr,empire-streaming.eu,empire-streaming.tv,empire-streaming.app,empire-streaming.pro,empire-streaming.com.bd,empire-streaming.dev,empire-streaming.com.np,empire-streaming.life,empire-streaming.gov.bd,empire-streaming.gov.np##.hide-ads
 cosmopolitan.fr##.Gallery-top-external
 lhebdoduvendredi.com##.b-lazy-ads
 systemed.fr##div[style="min-height: 250px;"]
@@ -1622,6 +1621,8 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/185291
+@@||sonar.viously.com/*/js$script,domain=futura-sciences.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185148
 !+ NOT_PLATFORM(windows, mac, android, ext_chromium, ext_opera)
 @@||tdn.da-services.ch/current/lessentiel_durable.js$domain=lessentiel.lu
@@ -1844,7 +1845,7 @@ cifraclub.com.br#@#.pub_header
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136986
 @@||search.cctv.com/js/pub.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136537
-@@||downdetector.com/*/dist/adscript.js$domain=downdetector.com|downdetector.ru|downdetector.in|downdetector.com.au|downdetector.co.uk|downdetector.co|downdetector.gr|downdetector.ca|downdetector.fr|downdetector.jp|downdetector.xyz|downdetector.co.za|downdetector.co.il|downdetector.eu|downdetector.it|downdetector.id|downdetector.com.br|downdetector.es|downdetector.ch|downdetector.pl|downdetector.cl|downdetector.ro|downdetector.co.nz|downdetector.com.ar|downdetector.su|downdetector.ae|downdetector.mx|downdetector.pk|downdetector.se|downdetector.cz|downdetector.tw|downdetector.com.co|downdetector.dk|downdetector.hu|downdetector.sg|downdetector.my|downdetector.no|downdetector.com.bd|downdetector.ie|downdetector.com.np|downdetector.ph|downdetector.fi|downdetector.pe|downdetector.sk|downdetector.hk|downdetector.gov.bd|downdetector.website|downdetector.pt|downdetector.hr|downdetector.gov.np
+@@||downdetector.com/*/dist/adscript.js$domain=allestoringen.be|allestoringen.nl|xn--allestrungen-9ib.at|xn--allestrungen-9ib.ch|xn--allestrungen-9ib.de|downdetector.com|downdetector.ru|downdetector.in|downdetector.com.au|downdetector.co.uk|downdetector.co|downdetector.gr|downdetector.ca|downdetector.fr|downdetector.jp|downdetector.xyz|downdetector.co.za|downdetector.co.il|downdetector.eu|downdetector.it|downdetector.id|downdetector.com.br|downdetector.es|downdetector.ch|downdetector.pl|downdetector.cl|downdetector.ro|downdetector.co.nz|downdetector.com.ar|downdetector.su|downdetector.ae|downdetector.mx|downdetector.pk|downdetector.se|downdetector.cz|downdetector.tw|downdetector.com.co|downdetector.dk|downdetector.hu|downdetector.sg|downdetector.my|downdetector.no|downdetector.com.bd|downdetector.ie|downdetector.com.np|downdetector.ph|downdetector.fi|downdetector.pe|downdetector.sk|downdetector.hk|downdetector.gov.bd|downdetector.website|downdetector.pt|downdetector.hr|downdetector.gov.np
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136841
 ! TODO: remove when it will be fixed in Liste FR
 ||klaviyo.com^$badfilter
@@ -7735,11 +7736,13 @@ _siteunder/$popup
 ||akenegappier.com^
 ||akikegbdiutg.com^
 ||akinwrecking.com^
+||akjoyjkrwaoam.top^
 ||akjoyjkrwaomj.top^
 ||aklmjylwvkarb.top^
 ||aklmjylwvklyw.top^
 ||aklmjylwvkovj.top^
 ||akusafla.com^
+||akvvkmrqokjab.top^
 ||akvvkmrqokjkv.top^
 ||akvvkmrqokqam.top^
 ||akyldpjmlh.com^
@@ -7817,6 +7820,7 @@ _siteunder/$popup
 ||alphabetmondayfowl.com^
 ||alrightkindergarten.com^
 ||alriytkcqkaaf.com^
+||alrootlist.top^
 ||alsoexplain.com^
 ||alsowhirl.com^
 ||altairceleb.com^
@@ -7915,6 +7919,7 @@ _siteunder/$popup
 ||anconespulpier.top^
 ||andamqhoiqmpo.xyz^
 ||anddalu7si4an.com^
+||andiafanweed.top^
 ||andirapoops.com^
 ||andrewtens.guru^
 ||andriasmaximus.com^
@@ -7956,6 +7961,7 @@ _siteunder/$popup
 ||anourtotems.com^
 ||anpqbngtbvyyx.com^
 ||anqnbzyjlkmba.top^
+||anqnbzyjlknmn.top^
 ||anqnbzyjlkymw.top^
 ||ansariebezzo.com^
 ||antarcticdashedscuffle.com^
@@ -8162,6 +8168,7 @@ _siteunder/$popup
 ||assaultdiotic.life^
 ||asseizeenl.com^
 ||assertacould.space^
+||assesssyun.shop^
 ||assignlabor.com^
 ||assistimplemented.com^
 ||asslakothchan.com^
@@ -8188,6 +8195,7 @@ _siteunder/$popup
 ||atflojand.com^
 ||athbashara.com^
 ||atheismcard.com^
+||athletepietose.com^
 ||athrobpottur.com^
 ||atimaze.com^
 ||atmospherefragmentiris.com^
@@ -8507,6 +8515,7 @@ _siteunder/$popup
 ||bebotchdatives.shop^
 ||becamemayhemunderstood.com^
 ||becamesprinkle.com^
+||becassestaffer.top^
 ||becivetcupulae.top^
 ||beclogsbryce.com^
 ||beclosecods.com^
@@ -8702,6 +8711,7 @@ _siteunder/$popup
 ||blqwovxjibbauwm.xyz^
 ||blueberrydanelarger.com^
 ||blueberrywaistcoat.com^
+||bluelygopher.click^
 ||bluerrhaphae.website^
 ||bluffforester.com^
 ||bluffobdurategoodbye.com^
@@ -8757,6 +8767,7 @@ _siteunder/$popup
 ||boomarmoryscattered.com^
 ||boratedtwinge.guru^
 ||boraxesmerging.digital^
+||bordageaccable.top^
 ||borderoffenseantenna.com^
 ||bortscharmed.com^
 ||bosscrystudious.com^
@@ -8792,6 +8803,7 @@ _siteunder/$popup
 ||boxfishhammock.top^
 ||boxingweaver.com^
 ||boygcranage.com^
+||boyshipatwist.com^
 ||bqltphcdmuu.xyz^
 ||br3ackandhack.com^
 ||bracecherry.com^
@@ -8834,6 +8846,7 @@ _siteunder/$popup
 ||broggerneven.com^
 ||brominemilages.com^
 ||bronzerkevil.com^
+||broodyeonisms.top^
 ||brookserenity.com^
 ||broommeeting.com^
 ||bropopian.top^
@@ -8898,6 +8911,7 @@ _siteunder/$popup
 ||burkingelapids.com^
 ||burntjewelsquarterback.com^
 ||buroorgi.com^
+||bushidobusing.top^
 ||bushitmas.live^
 ||bushpoutquest.com^
 ||businessmencrib.com^
@@ -8965,6 +8979,7 @@ _siteunder/$popup
 ||cachazaswatter.space^
 ||cacmatch.com^
 ||caesarporch.com^
+||caicbedways.top^
 ||cainianprober.com^
 ||cajhnhsuv.xyz^
 ||cakesdenyconventional.com^
@@ -9050,6 +9065,7 @@ _siteunder/$popup
 ||casksguest.com^
 ||casksthiazol.com^
 ||cassockknyazi.com^
+||cataianviruela.top^
 ||catchyannual.com^
 ||catfallalgid.com^
 ||cathyimemediate.com^
@@ -9193,6 +9209,7 @@ _siteunder/$popup
 ||clobberkiliare.com^
 ||clochancanyon.com^
 ||clodderpickmaw.com^
+||clodletcomby.top^
 ||clodsplit.com^
 ||clofferap.com^
 ||cloudgallery.net^
@@ -9280,6 +9297,7 @@ _siteunder/$popup
 ||coryljanty.cam^
 ||coseyssumacs.top^
 ||coshogken.live^
+||costeryaks.top^
 ||costranchill.com^
 ||courapaguish.website^
 ||couridakeleh.com^
@@ -9288,12 +9306,14 @@ _siteunder/$popup
 ||covetousencumber.com^
 ||cowlfoot.com^
 ||cowslippiercer.com^
+||cowtailcomitje.top^
 ||coxbunban.live^
 ||cpcstdploqqh.com^
 ||cpfwffke.com^
 ||cpmterra.com^
 ||cpndz.space^
 ||cptstaller.space^
+||cpusfocused.top^
 ||cranyundue.com^
 ||crapulalisere.com^
 ||crawlcoxed.com^
@@ -9430,6 +9450,7 @@ _siteunder/$popup
 ||darienorients.top^
 ||daroptiy.com^
 ||darshandesmose.com^
+||dartledbailed.click^
 ||dashingdirt.com^
 ||dashingdrop.com^
 ||dashingsweater.com^
@@ -9512,6 +9533,7 @@ _siteunder/$popup
 ||departmentstestify.com^
 ||depechearshine.com^
 ||depftfwkj.com^
+||deplaceshowily.shop^
 ||deplorablefaintest.com^
 ||depotporn.com^
 ||depsirra.com^
@@ -9588,6 +9610,7 @@ _siteunder/$popup
 ||dimensionvegana.com^
 ||dimmersribskin.com^
 ||dimmosit.live^
+||dinaricarrear.com^
 ||dinesdurr.com^
 ||dinesvistlik.top^
 ||dinnerysatient.digital^
@@ -9678,6 +9701,7 @@ _siteunder/$popup
 ||downtowndirection.com^
 ||dowveatolls.com^
 ||doxiescramble.website^
+||dozilyboorish.top^
 ||dpjsfrhklu.top^
 ||dpkdyluq.com^
 ||dpoivvnuljquvgj.com^
@@ -9889,6 +9913,7 @@ _siteunder/$popup
 ||eliatestier.com^
 ||elkdomshute.com^
 ||elmkrljayazlw.top^
+||elmkrljyaaarv.top^
 ||elmkrljyaaqlq.top^
 ||eloinrakily.com^
 ||eloperyatigan.com^
@@ -9907,6 +9932,7 @@ _siteunder/$popup
 ||empireunnaive.top^
 ||employedmarital.com^
 ||employsisomery.digital^
+||emqrjjvalneav.top^
 ||emzlbqqnnbmwm.top^
 ||enaenatoitish.guru^
 ||enamimoder.life^
@@ -9944,10 +9970,12 @@ _siteunder/$popup
 ||enthusiasticdad.com^
 ||entrecjuang.uno^
 ||enviousthread.com^
+||enwerzablbwnj.top^
 ||enwrapquai.com^
 ||eogvldpoeecdsi.com^
 ||eombyspell.uno^
 ||eonads.com^
+||epicelepollux.top^
 ||epilreoffer.com^
 ||epirotedrayman.guru^
 ||epitelahistone.shop^
@@ -9970,17 +9998,21 @@ _siteunder/$popup
 ||estureporkies.com^
 ||etherinlocator.com^
 ||ethfw0370q.com^
+||etiqueteyebolt.top^
 ||etonfatties.com^
 ||etpsn.com^
 ||euamonudes.com^
 ||eucleidseemly.fun^
+||euconemusky.top^
 ||eugeniekleig.com^
 ||euklnsxcgkx.com^
 ||eukworektobe.pics^
 ||eumenesgigsman.com^
 ||eunbmkatjb.xyz^
+||euphoryklva.top^
 ||europeanbubblyclosed.com^
 ||euukauopyxmn.com^
+||evacueetackers.top^
 ||evaluateend.com^
 ||evancheetie.guru^
 ||evanescentedge.com^
@@ -10014,6 +10046,7 @@ _siteunder/$popup
 ||eygmwsbbh.com^
 ||eyihswfbtqb.com^
 ||eynecauk.com^
+||ezkaeybezjakv.top^
 ||ezkaeybzejejm.top^
 ||ezkaeybzejlaj.top^
 ||ezqbbqywbjrlw.top^
@@ -10084,8 +10117,10 @@ _siteunder/$popup
 ||falsefeet.com^
 ||falseframe.com^
 ||faltchecattle.com^
+||faltchedumber.top^
 ||falusquease.com^
 ||fameuseterns.top^
+||familicantics.click^
 ||faminespooks.com^
 ||famitaa.com^
 ||fancilysattle.com^
@@ -10344,6 +10379,7 @@ _siteunder/$popup
 ||geezersrecusal.website^
 ||geggeewrossle.com^
 ||gemmykaraoke.com^
+||genetorpennons.com^
 ||gengenmegatest.top^
 ||genlamiloun.life^
 ||geographyhonourgoddess.com^
@@ -10480,6 +10516,7 @@ _siteunder/$popup
 ||guimpefesses.com^
 ||gulixattila.com^
 ||gummiteargues.com^
+||gunateamoeban.top^
 ||gunateddoucet.com^
 ||gunatewahabi.com^
 ||guntherservant.top^
@@ -10656,6 +10693,7 @@ _siteunder/$popup
 ||hoplitesedilia.com^
 ||hoppethamfare.top^
 ||hoptreeunburst.website^
+||horaleelery.top^
 ||hordingracquet.com^
 ||horimspeck.top^
 ||hormonelancer.com^
@@ -10710,6 +10748,7 @@ _siteunder/$popup
 ||hwucqkpdinfb.xyz^
 ||hxehinsocq.com^
 ||hxjpwumblcmhn.xyz^
+||hyahyalay.com^
 ||hydrax.net^
 ||hydroneobes.com^
 ||hylnbwdwajv.com^
@@ -10822,6 +10861,7 @@ _siteunder/$popup
 ||insanetrack.com^
 ||inseeeldrich.com^
 ||insideoftech.com^
+||insofarearlobe.com^
 ||insolvaccina.top^
 ||inspirationhistorical.com^
 ||installfree.pro^
@@ -10900,6 +10940,7 @@ _siteunder/$popup
 ||jakhoople.com^
 ||jakospoinds.com^
 ||jalbcmc.click^
+||jambertarry.com^
 ||jambonvergi.top^
 ||jamiwhomble.com^
 ||jammysubplat.guru^
@@ -11198,6 +11239,7 @@ _siteunder/$popup
 ||latchedspy.guru^
 ||latedateship.live^
 ||latenedcorcass.com^
+||lateradgag.top^
 ||latristupman.com^
 ||latticedoilies.life^
 ||laughedbegnaw.com^
@@ -11242,6 +11284,8 @@ _siteunder/$popup
 ||ligernervus.com^
 ||lightrdr.best^
 ||likely-interaction.com^
+||likenedtulwar.top^
+||lilackymusimon.click^
 ||lilavacatur.com^
 ||lilinstall11x.com^
 ||limbecksipers.digital^
@@ -11451,6 +11495,7 @@ _siteunder/$popup
 ||mesillaquotas.com^
 ||messard.com^
 ||messyfuck.com^
+||metalsflanch.com^
 ||metasyaxche.com^
 ||metminekit.live^
 ||metnyitveihpqe.com^
@@ -11562,6 +11607,7 @@ _siteunder/$popup
 ||moopsazijop.com^
 ||mordieubiopsy.com^
 ||moreinfo.support^
+||moreishstipule.top^
 ||morinavotarius.top^
 ||mors22.com^
 ||mortcord.top^
@@ -11572,6 +11618,7 @@ _siteunder/$popup
 ||motmanjack.com^
 ||moulinominate.top^
 ||mousheen.net^
+||moustocwides.shop^
 ||movementshereafter.com^
 ||moviessidlers.com^
 ||moyaculbute.com^
@@ -11592,6 +11639,7 @@ _siteunder/$popup
 ||muellfrei.de^
 ||muffermafioso.com^
 ||mufflesdisroot.digital^
+||muggarsocyroe.top^
 ||mughaymil.site^
 ||mugqaxwp.xyz^
 ||mugwumpquits.com^
@@ -11654,10 +11702,12 @@ _siteunder/$popup
 ||nahotseetsoo.com^
 ||nailyhexones.uno^
 ||nakishyfe.com^
+||namershills.com^
 ||nanaimostarkle.com^
 ||nannieslamaic.com^
 ||naphthawr.website^
 ||nashgoblabara.com^
+||nasieiamens.com^
 ||nastokit.com^
 ||native.com^
 ||nativeads.rocks^
@@ -11677,6 +11727,7 @@ _siteunder/$popup
 ||nergaukibe.com^
 ||neriumlimn.com^
 ||nerojimsee.xyz^
+||nerolistussahs.top^
 ||nerolitole.space^
 ||nervetoorie.com^
 ||nestedimpages.life^
@@ -11743,6 +11794,7 @@ _siteunder/$popup
 ||normalexchange.com^
 ||normour.com^
 ||noseculretab.xyz^
+||nosilytipula.com^
 ||notmining.org^
 ||notquiteso.buzz^
 ||notrobot.top^
@@ -11896,8 +11948,10 @@ _siteunder/$popup
 ||opsktp.com^$~subdocument
 ||optimuum.com^
 ||optionsdisk.com^
+||oratingnagmaal.com^
 ||orejontamale.space^
 ||oremantolsey.com^
+||orexiscede.top^
 ||orgalso.com^
 ||organaamnions.com^
 ||orhpvrrlw.top^
@@ -11969,6 +12023,7 @@ _siteunder/$popup
 ||paifouth.com^
 ||paitoucaum.com^
 ||pakrouci.net^
+||palleddipolar.com^
 ||pampopholf.com^
 ||pampreklamath.com^
 ||panaxive.com^
@@ -12058,6 +12113,7 @@ _siteunder/$popup
 ||pinnacerickle.top^
 ||pinrxvbznkvh.com^
 ||pintaentrep.com^
+||pinteblibe.top^
 ||piouslystarved.com^
 ||pipsidebailr.com^
 ||piqvblciqc.com^
@@ -12250,6 +12306,7 @@ _siteunder/$popup
 ||purebushesprop.com^
 ||purlsdecus.guru^
 ||purmogak.com^
+||purrshylism.top^
 ||puscomosca.com^
 ||pusher1.com^
 ||pushinkaa.com^
@@ -12509,6 +12566,7 @@ _siteunder/$popup
 ||rooterspopish.com^
 ||rootleoutplot.com^
 ||ropersdavyum.com^
+||rotdonis.top^
 ||rotiqucdne.me.uk^
 ||roubergmiteom.com^
 ||rougherdeplete.com^
@@ -12540,6 +12598,7 @@ _siteunder/$popup
 ||ruggownpolacca.com^
 ||rulersgrappa.guru^
 ||rummaringp.xyz^
+||rungbred.top^
 ||runpuredead.live^
 ||rusiuplj.top^
 ||russetspaper.com^
@@ -12618,6 +12677,7 @@ _siteunder/$popup
 ||sceggersilkman.uno^
 ||sceggerthingal.click^
 ||scentskilts.top^
+||scewingpudgy.com^
 ||scgalipot.com^
 ||schmalzgarniec.com^
 ||sckxppzdm.com^
@@ -12762,6 +12822,7 @@ _siteunder/$popup
 ||sidehaffit.com^
 ||sidenoteconcern.com^
 ||sidezaeta.live^
+||sievygault.top^
 ||sifflettreetop.com^
 ||sigilstimes.guru^
 ||signifyabruptly.com^
@@ -12784,6 +12845,7 @@ _siteunder/$popup
 ||siteverification.online^
 ||sithencicala.com^
 ||sitsaraubs.com^
+||situlatesty.top^
 ||sivaistails.com^
 ||sixfoldmarkeb.click^
 ||sixpurpart.com^
@@ -12875,6 +12937,7 @@ _siteunder/$popup
 ||sparechange.io^
 ||spareindexes.com^
 ||sparelli.com^
+||sparmsalving.top^
 ||sparoidcamus.uno^
 ||sparrowaboveaveragedefence.com^
 ||spathalbarmie.com^
@@ -12890,6 +12953,7 @@ _siteunder/$popup
 ||spiltcyathos.com^
 ||spinalmultiple.com^
 ||spinderirpe.com^
+||sploshgteau.top^
 ||spreement.com^
 ||sprightinamour.com^
 ||sprincipal.com^
@@ -12979,16 +13043,19 @@ _siteunder/$popup
 ||streamswedish.life^
 ||strepenboweled.com^
 ||strewviolently.com^
+||streydeplore.com^
 ||stripchat.com^
 ||stripeformism.com^
 ||strodesamani.com^
 ||stroyerveneres.com^
+||stuboyintice.shop^
 ||studabsently.com^
 ||stunnedcasaun.com^
 ||stuntoffer.com^
 ||styraxcyprine.com^
 ||subbedlugger.guru^
 ||subduedbulks.com^
+||subfaceupbank.top^
 ||subfuskwarabi.top^
 ||subpassacorea.shop^
 ||subzero6969.site^
@@ -13093,6 +13160,7 @@ _siteunder/$popup
 ||tauridbaun.com^
 ||tawersasocial.com^
 ||tawsejong.top^
+||tayassuboccies.com^
 ||tazichoothis.com^
 ||tc-clicks.com^
 ||tccqqskmd.com^
@@ -13111,6 +13179,8 @@ _siteunder/$popup
 ||teezoshou.com^
 ||telarlyfasels.guru^
 ||teleproff.com^
+||telergypensum.top^
+||telesiaplayer.com^
 ||telexhrzn.com^
 ||temiakazon.com^
 ||tempehnews.life^
@@ -13199,6 +13269,7 @@ _siteunder/$popup
 ||tmozs.com^
 ||tmska.com^
 ||tnkcvkgyrpgfqm.com^
+||tobiasinjun.com^
 ||tocontent.net^
 ||todidaedeboner.com^
 ||todigroup.com^
@@ -13209,6 +13280,7 @@ _siteunder/$popup
 ||togothitaa.com^
 ||tojinr.com^
 ||tokingsash.com^
+||tolowacrash.top^
 ||tomilotica.com^
 ||tonnersgrafts.website^
 ||tooklichair.com^
@@ -13268,6 +13340,7 @@ _siteunder/$popup
 ||trainsregardless.com^
 ||trannysexx.com^
 ||transfto.com^
+||trantalkes.top^
 ||trapfulgide.com^
 ||travelaudience.com^
 ||treasonmarshalimmortality.com^
@@ -13442,6 +13515,7 @@ _siteunder/$popup
 ||upburstunfence.guru^
 ||upcurltengu.com^
 ||updatedbut.com^
+||updatedshag.top^
 ||updatemobilee.com^
 ||updaterecomended.info^
 ||upflashlalo.com^
@@ -13741,6 +13815,7 @@ _siteunder/$popup
 ||woodiessnirl.digital^
 ||woolmancoiture.life^
 ||workmarrano.com^
+||worldsleds.shop^
 ||wouhaugiby.com^
 ||wowcon.net^
 ||wowconversions.com^
@@ -13871,6 +13946,7 @@ _siteunder/$popup
 ||zebecsbowers.guru^
 ||zeburrorissoid.com^
 ||zeissbezil.space^
+||zelatorgloving.top^
 ||zermafemora.top^
 ||zetheesug.com^
 ||zevaimsu.net^

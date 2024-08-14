@@ -1,8 +1,8 @@
-! Checksum: zeSaSokpEFaiIfIT69AR9g
+! Checksum: r+q0/6WICwSRnJuNhKCozA
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.15.67
-! TimeUpdated: 2024-08-05T09:33:52+00:00
+! Version: 2.0.15.76
+! TimeUpdated: 2024-08-08T12:34:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -125,6 +125,12 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 temu.com#?#div[role="main"] div[style] > div[style]:has(> div[style] div[js-selector="mobile-download-ui"])
 !
 !
+mynet.com##.mynet-kesfet-banner-box
+teller.jp##div[style*="/install-app-pc-banner/"]
+vaughn.live##.vs_mobileapp_promo
+medyascope.tv##.elementor-element-5bded82f
+thehindu.com##.read-in-app-floating-btn
+2gis.ru##._pzh6x0:has(> div > div[style*="d-assets.2gis.ru/images/daf4560904bc6dc14f90.png"])
 potreningu.pl##.mobile-popup-window
 donanimhaber.com##.open-with-app-popup
 testbook.com##.continue-app-btn
@@ -2380,7 +2386,7 @@ jmty.jp##.p-app-induction-link
 jmty.jp###header > .js_header_induction
 sanspo.com##.sanspoApp
 j-cast.com##.services-app
-donanimhaber.com##.uygulamayi-indir
+donanimhaber.com#$#.uygulamayi-indir { visibility: hidden !important; height: 0 !important; }
 donanimhaber.com##div[class="sosyal-ag boya-6"]
 news.yahoo.co.jp#?#.newsFeed_item-normal:has(> a[href^="https://app.adjust.com/"])
 news.yahoo.co.jp#?##PrimeCover-hide + aside[class^="sc-"]:has(> a[href*="adj.st/"])

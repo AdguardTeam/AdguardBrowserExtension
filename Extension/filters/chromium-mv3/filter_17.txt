@@ -1,8 +1,8 @@
-! Checksum: 6oUEnOfigC9b4vZK6MDAmg
+! Checksum: /0raHKegeoZAiPkKrHe3dQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.95
-! TimeUpdated: 2024-08-05T09:33:50+00:00
+! Version: 2.0.9.1
+! TimeUpdated: 2024-08-08T11:34:01+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,14 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! personaclick.com
+$removeparam=recommended_by
+$removeparam=recommended_code
+$removeparam=personaclick_search_query
+$removeparam=personaclick_input_query
+! Emarsys
+$removeparam=ems_dl
+$removeparam=emcs_t
 ! channelsight.com
 $removeparam=cstrackid
 ! Tracking in casino links
@@ -358,6 +366,12 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-10267760
+||audible.$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/185385
+||camcam.cc^$removeparam=ref
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-10238857
+ref=producthunt^$removeparam=ref
 ! igromania.ru
 ||igromania.ru^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185179
@@ -1904,16 +1918,25 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ! NicoNico (nicovideo.jp)
 ! Keep subdomain
 $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
-||commons.nicovideo.jp^$removeparam=transit_from
+||nicovideo.jp^$removeparam=transition_id
+||nicovideo.jp^$removeparam=transition_type
+||nicovideo.jp^$removeparam=rf
+||nicovideo.jp^$removeparam=rp
+||nicovideo.jp^$removeparam=ra
+||nicovideo.jp^$removeparam=rd
+||nicovideo.jp^$removeparam=transit_from
 ||live.nicovideo.jp^$removeparam=ch_anime_ref
 ||seiga.nicovideo.jp^$removeparam=track
+||manga.nicovideo.jp^$removeparam=track
 ||sp.nicovideo.jp^$removeparam=ss_id
 ||sp.nicovideo.jp^$removeparam=ss_pos
 ||sp.nicovideo.jp^$removeparam=cp_in
+||sp.nicovideo.jp^$removeparam=cnt_transit
 ||nicovideo.jp^$removeparam=news_ref
 ||nicovideo.jp^$removeparam=cmnhd_ref
 ||nicovideo.jp^$removeparam=ref
 ||nicoft.io^$removeparam=cmnhd_ref
+||nicoebook.jp^$removeparam=track
 ! Naver (naver.com) - tracking parameter
 ! https://github.com/AdguardTeam/AdguardFilters/pull/89838
 ||search.naver.com/search.naver$removeparam=tqi
