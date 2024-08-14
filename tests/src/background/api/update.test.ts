@@ -6,6 +6,7 @@ import {
     getStorageFixturesV2,
     getStorageFixturesV3,
     getStorageFixturesV4,
+    getStorageFixturesV5,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -25,6 +26,7 @@ describe('Update Api', () => {
         const v2 = getStorageFixturesV2(expires);
         const v3 = getStorageFixturesV3(expires);
         const v4 = getStorageFixturesV4(expires);
+        const v5 = getStorageFixturesV5(expires);
 
         let setMultipleSpy: jest.SpyInstance;
 
@@ -60,7 +62,29 @@ describe('Update Api', () => {
         }) => {
             const storage = mockLocalStorage(data.from);
             const runInfo = await getRunInfo();
-            const filterRelatedKeys = Object.keys(data.from).filter((key) => key.startsWith(FILTER_KEY_PREFIX));
+
+            await UpdateApi.update(runInfo);
+
+            // TODO: check equality of parsed data instead of strings
+            const settings = await storage.get();
+            expect(settings).toStrictEqual(data.to);
+        };
+
+        it.each(getCases(v0, v5))('should update from v0 to v5', runCase);
+        it.each(getCases(v1, v5))('should update from v1 to v5', runCase);
+        it.each(getCases(v2, v5))('should update from v2 to v5', runCase);
+        it.each(getCases(v3, v5))('should update from v3 to v5', runCase);
+        it.each(getCases(v4, v5))('should update from v4 to v5', runCase);
+
+        it('should move filter data to IDB', async () => {
+            const [data] = getStorageFixturesV3(expires);
+
+            if (!data) {
+                throw new Error('fixture is not defined');
+            }
+            mockLocalStorage(data);
+            const runInfo = await getRunInfo();
+            const filterRelatedKeys = Object.keys(data).filter((key) => key.startsWith(FILTER_KEY_PREFIX));
 
             await UpdateApi.update(runInfo);
 
@@ -75,15 +99,6 @@ describe('Update Api', () => {
                     }, {}),
                 ),
             );
-
-            // TODO: check equality of parsed data instead of strings
-            const settings = await storage.get();
-            expect(settings).toStrictEqual(data.to);
-        };
-
-        it.each(getCases(v0, v4))('should update from v0 to v4', runCase);
-        it.each(getCases(v1, v4))('should update from v1 to v4', runCase);
-        it.each(getCases(v2, v4))('should update from v2 to v4', runCase);
-        it.each(getCases(v3, v4))('should update from v3 to v4', runCase);
+        });
     });
 });

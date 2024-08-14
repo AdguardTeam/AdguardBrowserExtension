@@ -35,10 +35,11 @@ import {
 } from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
-    AntiBannerFiltersId,
     APP_VERSION_KEY,
+    AntiBannerFiltersId,
     CLIENT_ID_KEY,
     NEWLINE_CHAR_REGEX,
+    RULES_LIMITS_KEY,
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import {
@@ -63,6 +64,7 @@ export class UpdateApi {
         '1': UpdateApi.migrateFromV1toV2,
         '2': UpdateApi.migrateFromV2toV3,
         '3': UpdateApi.migrateFromV3toV4,
+        '4': UpdateApi.migrateFromV4toV5,
     };
 
     /**
@@ -191,6 +193,100 @@ export class UpdateApi {
 
             throw new Error(errMessage, { cause: e });
         }
+    }
+
+    /**
+     * Run data migration from schema v4 to schema v5.
+     */
+    private static async migrateFromV4toV5(): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = JSON.parse(filtersStateData);
+
+        if (!UpdateApi.isObject(filtersState)) {
+            throw new Error('Filters state is not an object');
+        }
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const groupsState = JSON.parse(groupsStateData);
+
+        if (!UpdateApi.isObject(groupsState)) {
+            throw new Error('Groups state is not an object');
+        }
+
+        // AdGuard Annoyances filters group id.
+        const annoyancesGroupId = '4';
+
+        /**
+         * AdGuard Annoyances filter has been splitted into 5 other filters:
+         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+         * and Widgets - which we should enable if the Annoyances filter is enabled.
+         */
+        const deprecatedAnnoyancesFilterId = '14';
+
+        /**
+         * AdGuard Annoyances filter has been splitted into 5 other filters:
+         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+         * and Widgets - which we should enable if the Annoyances filter is enabled.
+         */
+        const annoyancesFiltersIds = ['18', '19', '20', '21', '22'];
+
+        // AdGuard Annoyances filters group state.
+        const annoyancesGroup = {
+            enabled: false,
+            touched: false,
+        };
+
+        // AdGuard Annoyances filters states.
+        const annoyancesFiltersState = Object.fromEntries(
+            annoyancesFiltersIds.map((filterId) => ([filterId, {
+                loaded: false,
+                enabled: false,
+                installed: false,
+            }])),
+        );
+
+        const deprecatedAnnoyancesFilter = filtersState[deprecatedAnnoyancesFilterId];
+
+        if (UpdateApi.isObject(deprecatedAnnoyancesFilter)) {
+            // If the deprecated Annoyances filter is enabled, we should enable new groups and filters.
+            if (deprecatedAnnoyancesFilter.enabled) {
+                annoyancesGroup.enabled = true;
+                annoyancesFiltersIds.forEach((id) => {
+                    annoyancesFiltersState[id]!.enabled = true;
+                });
+            }
+            // delete deprecated filter state;
+            delete filtersState[deprecatedAnnoyancesFilterId];
+        }
+
+        // Set updated states and new metadata to the settings.
+
+        groupsState[annoyancesGroupId] = annoyancesGroup;
+        Object.assign(filtersState, annoyancesFiltersState);
+
+        settings['groups-state'] = JSON.stringify(groupsState);
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+
+        // Sets default rules limits.
+        await browserStorage.set(RULES_LIMITS_KEY, JSON.stringify([]));
     }
 
     /**
@@ -655,5 +751,15 @@ export class UpdateApi {
             delete currentSettings[key];
             await browserStorage.set(key, data);
         }
+    }
+
+    /**
+     * Checks if value is an object.
+     *
+     * @param value Unknown value to check.
+     * @returns True if value is an object, false otherwise.
+     */
+    private static isObject(value: unknown): value is Record<string, unknown> {
+        return value != null && value.constructor.name === 'Object';
     }
 }
