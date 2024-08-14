@@ -295,3 +295,43 @@ export const getStorageFixturesV4 = (expires: number): StorageData[] => {
         return result;
     });
 };
+
+export const getStorageFixturesV5 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV4 = getStorageFixturesV4(expires);
+
+    return storageSettingsFixturesV4.map((settings) => {
+        const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
+
+        const filtersState = JSON.parse(adgSettings['filters-state'] as string);
+        const groupsState = JSON.parse(adgSettings['groups-state'] as string);
+
+        const isAnnoyancesFilterEnabled = filtersState['14']?.enabled ?? false;
+
+        delete filtersState['14'];
+
+        groupsState['4'] = {
+            enabled: isAnnoyancesFilterEnabled,
+            touched: false,
+        };
+
+        Object.assign(
+            filtersState,
+            Object.fromEntries(
+                ['18', '19', '20', '21', '22'].map((id) => [id, {
+                    loaded: false,
+                    enabled: isAnnoyancesFilterEnabled,
+                    installed: false,
+                }]),
+            ),
+        );
+
+        adgSettings['filters-state'] = JSON.stringify(filtersState);
+        adgSettings['groups-state'] = JSON.stringify(groupsState);
+
+        settings['adguard-settings'] = adgSettings;
+        settings['rules-limits'] = JSON.stringify([]);
+        settings['schema-version'] = 5;
+
+        return settings;
+    });
+};
