@@ -23,16 +23,18 @@
     }
 
     &__list {
+        display: flex;
+        flex-direction: column;
         position: absolute;
         right: 0;
         z-index: 10;
         border-radius: 8px;
         max-height: 265px;
-        min-width: 160px;
-        max-width: 220px;
+        min-width: 240px;
+        max-width: 280px;
         overflow-y: auto;
         box-shadow: 8px 8px 24px 0px var(--shadow-0-1);
-        margin: 12px 0 0 0;
+        margin: 18px 0 0 0;
         background-color: var(--fills-menus-dropdown-menu-background-default);
         scrollbar-width: thin;
 
@@ -51,18 +53,28 @@
     }
 
     &__item {
-        font-size: 15px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         max-width: 100%;
-        padding: 16px 25px;
+        padding: 16px;
         cursor: pointer;
-        border: 0;
-        background-color: transparent;
-        color: var(--text-main-text-main-default);
-        width: 100%;
-        text-align: left;
+
+        &--text {
+            display: inline-block;
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &--active {
+                font-weight: 600;
+                padding-right: 16px;
+            }
+        }
 
         &:focus-visible {
             outline: none;
