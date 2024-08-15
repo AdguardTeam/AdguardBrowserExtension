@@ -96,22 +96,38 @@ export const Select = ({
     const renderItems = (options: SelectOption[]) => options.map((option) => {
         const { value: currentValue, title } = option;
 
-        const handleOptionClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const handleOptionClick = (e: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>) => {
             e.stopPropagation();
             handler(currentValue);
             setHidden(true);
         };
 
+        const isActive = currentValue === value;
+
+        const itemTextClassName = cn('select__item--text', {
+            'select__item--text--active': isActive,
+        });
+
         return (
-            <button
-                type="button"
+            <div
                 className="select__item"
                 onClick={handleOptionClick}
+                onKeyUp={handleOptionClick}
+                role="button"
+                tabIndex={0}
+                id={currentValue}
                 key={currentValue}
-                value={currentValue}
             >
-                {title}
-            </button>
+                <span className={itemTextClassName}>
+                    {title}
+                </span>
+                {isActive && (
+                    <Icon
+                        id="#tick"
+                        classname="icon icon--24 icon--green-default"
+                    />
+                )}
+            </div>
         );
     });
 

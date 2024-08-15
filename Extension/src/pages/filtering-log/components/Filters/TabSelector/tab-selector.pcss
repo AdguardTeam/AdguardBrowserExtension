@@ -3,7 +3,8 @@
     width: 100%;
 
     &__result {
-        display: block;
+        display: flex;
+        flex-direction: column;
         position: absolute;
         z-index: 21;
         top: 100%;
@@ -12,6 +13,7 @@
         box-shadow: 8px 8px 24px 0px var(--shadow-0-1);
         border-radius: 8px;
         width: 400px;
+        scrollbar-width: thin;
 
         @media (max-width: 640px) {
             width: 330px;
@@ -24,19 +26,24 @@
         border: 0;
         background-color: var(--fills-menus-dropdown-menu-background-default);
         height: 40px;
-        font-size: 14px;
-        font-weight: 400;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         max-width: 100%;
-        width: 100%;
-        text-align: left;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
 
-        /* FIXME: update the active item style when the desing is finalized */
-        &--active {
-            font-weight: 600;
-            background-color: var(--fills-menus-dropdown-menu-background-pressed);
+        &--text {
+            font-size: 14px;
+            line-height: 24px;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &--active {
+                font-weight: 600;
+                padding-right: 16px;
+            }
         }
 
         &:hover {

@@ -31,12 +31,13 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
+import { translator } from '../../../../../common/translators/translator';
+import { WASTE_CHARACTERS } from '../../../../../common/constants';
+import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
 import { useOutsideFocus } from '../../../../common/hooks/useOutsideFocus';
 import { useKeyDown } from '../../../../common/hooks/useKeyDown';
-import { WASTE_CHARACTERS } from '../../../../../common/constants';
 import { Search } from '../../Search';
 
 import './tab-selector.pcss';
@@ -157,22 +158,33 @@ const TabSelector = observer(() => {
         return tabs.map((tab) => {
             const { title, tabId } = tab;
 
-            const itemClassName = cn(
-                'tab-selector__result-item',
-                { 'tab-selector__result-item--active': tabId === selectedTabId },
+            const isActive = tabId === selectedTabId;
+
+            const itemTextClassName = cn(
+                'tab-selector__result-item--text',
+                { 'tab-selector__result-item--text--active': isActive },
             );
 
             if (title.match(searchQuery)) {
                 return (
-                    <button
+                    <div
                         key={tabId}
                         id={tabId}
-                        type="button"
-                        className={itemClassName}
+                        role="button"
+                        className="tab-selector__result-item"
                         onClick={() => { selectionHandlerSearch(tabId); }}
+                        tabIndex={0}
                     >
-                        {title}
-                    </button>
+                        <span className={itemTextClassName}>
+                            {title}
+                        </span>
+                        {isActive && (
+                            <Icon
+                                id="#tick"
+                                classname="icon icon--24 icon--green-default"
+                            />
+                        )}
+                    </div>
                 );
             }
 
@@ -211,7 +223,7 @@ const TabSelector = observer(() => {
                     ref={searchInputRef}
                     changeHandler={searchChangeHandler}
                     value={searchValue}
-                    placeholder={reactTranslator.getMessage('filtering_log_search_tabs_placeholder')}
+                    placeholder={translator.getMessage('filtering_log_search_tabs_placeholder')}
                     handleClear={handleClear}
                     onFocus={handleClear}
                     onOpenSelect={selectIsOpen}

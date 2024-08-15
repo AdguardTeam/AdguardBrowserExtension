@@ -61,7 +61,7 @@ export const Icons = () => {
 
             <symbol id="tick" viewBox="0 0 24 24">
                 <g fill="none" fillRule="evenodd">
-                    <path stroke="#67B279" d="m5 12 6 6 8-9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path stroke="currentColor" d="m5 12 6 6 8-9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
             </symbol>
 
