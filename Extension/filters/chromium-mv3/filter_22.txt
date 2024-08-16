@@ -1,8 +1,8 @@
-! Checksum: +SXP+EUyoknvAv4vGTWzdw
+! Checksum: HZRDHvyG8ZyJgoncGqPlqw
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.9.4
-! TimeUpdated: 2024-08-08T11:34:04+00:00
+! Version: 2.0.9.13
+! TimeUpdated: 2024-08-16T10:34:02+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -149,6 +149,8 @@ baynews.blog.jp,xresolutionx.livedoor.blog,kimamamatome.doorblog.jp,fgochaldeas.
 ! 2chblog.jp,blog.jp,blog.livedoor.jp,bloggeek.jp,blogism.jp,blogo.jp,blogstation.jp,blogto.jp,cafeblog.jp,corpblog.jp,diary.to,doorblog.jp,dreamlog.jp,gger.jp,golog.jp,ldblog.jp,liblo.jp,livedoor.biz,livedoor.blog,myjournal.jp,mynikki.jp,officeblog.jp,officialblog.jp,publog.jp,storeblog.jp,teamblog.jp,techblog.jp,weblog.to,xxxblog.jp,youblog.jp,seesaa.net,blog.fc2.com,blog.2nt.com
 ! specify subdomain or use unique and safe selector; for blog.livedoor.jp make your rule as specific as possible or use $path
 !
+workingnews117.com##.free_area
+workingnews117.com##div[class^="im_headerad"]
 [$path=/sekaiminzoku]blog.livedoor.jp##.main-column-inner > div[style^="width:720px;height:"][style*="border-bottom-style:groove"]
 [$path=/sekaiminzoku]blog.livedoor.jp##.article-body-more > div[style="margin:0px;padding:0px;"]
 blog.livedoor.jp##div[style^="width:"][style*="height:"][style*="overflow:auto;background-color:"][style$="scrollbar-arrow-color:#000;scrollbar-base-color:#ccc;border-top-style:groove;border-left-style:outset;border-bottom-style:groove"]
@@ -247,6 +249,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 ! NOTE: Blogroll specific rules
 !
+idle-girl.com###custom_html-41
 erogazoo.net##header > div#t_area
 erogazoo.net##a[href^="https://newmofu.doorblog.jp/"]
 natuero-dougakan.com##.side-menu:has(iframe.elogch_blogparts_iframe)
@@ -1070,7 +1073,6 @@ vtubernews.jp##.rss-sub
 kidanlog.com##.rss-flexbox
 kitimama-matome.net##.article-outer-2 > div.article-header
 kijosoku.com##.column-inner-2 > div[style^="border-style:dotted;border-color:#00BFFF;"]
-workingnews.blog117.fc2.com##div[class^="im_headerad"]
 pokemon-matome.net#$##content11 { padding-top:0 !important; }
 pokemon-matome.net#$##wrap-main { padding-top:0 !important; }
 pokemon-matome.net##div[class^="basehtml"]
@@ -1096,7 +1098,7 @@ warotanien.net,newsoku.blog##.rss_scroll_sp
 nmb48-mtm.com,dev904.blog.fc2.com,origin873.blog.fc2.com##.rss-area
 ddd-smart.net#?#aside > h4.card-panel:contains(色々な同人誌)
 ||doujincafe.com/doujincafe.$subdocument
-||feed.mikle.com^$domain=gensen5ch.blog.jp|blog.livedoor.jp|crx7601.com|hayamimi-gunpla.com|hdouga.com|ibarakinews.jp|obutu.com|totalwar.doorblog.jp|xn--bckadddb2a0d4dnc8dwhngdtb58aya0l4a2om843g5npczp7dwh5g.com
+||feed.mikle.com^$domain=news.railway-pressnet.com|gensen5ch.blog.jp|blog.livedoor.jp|crx7601.com|hayamimi-gunpla.com|hdouga.com|ibarakinews.jp|obutu.com|totalwar.doorblog.jp|xn--bckadddb2a0d4dnc8dwhngdtb58aya0l4a2om843g5npczp7dwh5g.com
 ||ero-mangalife.com/eromangalife.$subdocument
 ||otanew.jp^$subdocument,~third-party
 koe-koe.com##.rss_c
@@ -1614,6 +1616,7 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 ||s.9111s.ru/*/js/robot_chat/addQ_chat.js
 ||s.acquire.io/*/init.js
 ||s.blamper.ru/js/app/widgets/common/FakeChat/
+||my.salesforce.com/embeddedservice/*/esw.min.js
 ||salesforce.com/*/webpack-script-manifest-liveChat-js.*.js
 ||salesforceliveagent.com^$domain=liquidweb.com|intimissimi.com
 ||salesiq.zoho.com/widget
@@ -2114,6 +2117,7 @@ pesni-tut.com##.r_m_genre_songs + div[id] + div:not([id])
 ||youtube.com/embed/?enablejsapi=1&origin=*3dnews.ru&widgetid=1
 ! Voting widget
 ! specific
+vg247.com##.poll_wrapper
 aerzteblatt.de##iframe#civey
 t-online.de#?#div[data-testid="StageLayout.StreamItem"]:has(> figure:only-child > iframe[src*="civey"])
 t-online.de##iframe[src^="https://app.civey.com/embed/"]
@@ -2245,6 +2249,9 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+motherjones.com##section[id^="mj-article-bottom-membership"]
+gigazine.net##div[id^="donate"]
+spokesman.com##article > aside[class]:has(div.give-butter iframe[title="Give Butter Donations"])
 medyascope.tv##.elementor-330147
 novayagazeta.ru###asideBlock_0 > aside > div[style="height:100%"] > div[style^="padding-top:"]
 ||thunderbird.net/*/thank-you/$removeparam=form
@@ -2254,9 +2261,6 @@ tvrain.tv##.article_paid__info:has(> a.article_paid__btn--donate)
 euromaidanpress.com###pa_banner_code
 roskomsvoboda.org##.donate
 roskomsvoboda.org###donate
-themoscowtimes.com#$#body { overflow: auto !important; }
-themoscowtimes.com#$#.contribute-popup { display: none !important; }
-themoscowtimes.com##.contribute-article
 vox.com##aside:has(> div > a[href^="https://vox.memberful.com/checkout"])
 freetp.org##noindex:has(> a[href="/donat.html"])
 veved.ru##.donating-top
@@ -2324,7 +2328,7 @@ semnasem.org##.adcampaign-inject-banner
 semnasem.org##.article__footer-donate-row
 torrentinvites.org#?##sidebar > li:has(> div.block > div.blocksubhead > span.blocktitle:contains(DONATE))
 ||torrentinvites.org/64.gif
-klto9.com,klz9.com,baominh.tech##div[id^="kofi-widget"]
+anyipa.me,klto9.com,klz9.com,baominh.tech##div[id^="kofi-widget"]
 apkmody.io###fixed-donate
 ||static.fundraiseup.com$domain=gijn.org
 gijn.org##.donate-btn
@@ -2391,8 +2395,8 @@ meduza.global.ssl.fastly.net,meduza.io##.SaveMeduza-root
 texty.org.ua###the-only-donate-banner
 birgun.net##.support-box
 paperpaper.com,paperpaper.ru,paperpaper.org,paperpaper.co.uk,paperpaper.io,paperpaper.co,paperpaper.info,paperpaper.online,paperpaper.site,paperpaper.cn,paperpaper.live,paperpaper.com.bd,paperpaper.com.np,paperpaper.space,paperpaper.gov.bd,paperpaper.gov.np##.bottom-block > div.post-info-block
-mediazona.online,fourth-sphere-302420.appspot.com,zona.media##.mz-agent-banner
-mediazona.online,fourth-sphere-302420.appspot.com,zona.media##.tools__support_container
+mediazona.online,zona.media##.mz-agent-banner
+mediazona.online,zona.media##.tools__support_container
 histmag.org##div[evergreen-portal-container=""]
 meduza.global.ssl.fastly.net,meduza.io##div[class^="DonatesTeaser-module_root__"]
 ||static.theprint.in/wp-content/uploads/*/subscribe_*.png
@@ -2424,7 +2428,12 @@ fosshub.com##.download-dl-boxDN
 samlab.ws##iframe[src^="https://yoomoney.ru/"]
 ||yoomoney.ru/quickpay/shop-widget$domain=ovgorskiy.ru|blog.themarfa.name
 ||funding.webmoney.ru/widgets/$domain=ovgorskiy.ru|demek.ru|скачатьофис.рф
-!
+! The Moscow Times
+themoscowtimes.com##.preheader_advert
+themoscowtimes.com##.contribute-article
+themoscowtimes.com#$#body { overflow: auto !important; }
+themoscowtimes.com#$#.contribute-popup { display: none !important; }
+! hromadske.ua
 hromadske.ua#$#.DonateModal-overlay { display: none !important; }
 hromadske.ua#$#body { overflow: visible !important; }
 !
