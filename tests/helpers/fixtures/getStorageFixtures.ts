@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import zod from 'zod';
 
 const FILTER_KEY_PREFIX = 'filterrules_';
 
@@ -302,7 +303,16 @@ export const getStorageFixturesV5 = (expires: number): StorageData[] => {
     return storageSettingsFixturesV4.map((settings) => {
         const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
 
-        const filtersState = JSON.parse(adgSettings['filters-state'] as string);
+        // Parse with zod to sort fields
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(adgSettings['filters-state'] as string));
+
         const groupsState = JSON.parse(adgSettings['groups-state'] as string);
 
         const isAnnoyancesFilterEnabled = filtersState['14']?.enabled ?? false;
@@ -311,16 +321,16 @@ export const getStorageFixturesV5 = (expires: number): StorageData[] => {
 
         groupsState['4'] = {
             enabled: isAnnoyancesFilterEnabled,
-            touched: false,
+            touched: !!groupsState['4']?.touched,
         };
 
         Object.assign(
             filtersState,
             Object.fromEntries(
                 ['18', '19', '20', '21', '22'].map((id) => [id, {
-                    loaded: false,
                     enabled: isAnnoyancesFilterEnabled,
-                    installed: false,
+                    installed: !!filtersState[id]?.installed,
+                    loaded: !!filtersState[id]?.loaded,
                 }]),
             ),
         );
