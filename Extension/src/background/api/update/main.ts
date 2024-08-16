@@ -211,11 +211,14 @@ export class UpdateApi {
             throw new Error('Cannot read filters state data');
         }
 
-        const filtersState = JSON.parse(filtersStateData);
-
-        if (!UpdateApi.isObject(filtersState)) {
-            throw new Error('Filters state is not an object');
-        }
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
 
         const groupsStateData = settings['groups-state'];
 
@@ -223,11 +226,13 @@ export class UpdateApi {
             throw new Error('Cannot read groups state data');
         }
 
-        const groupsState = JSON.parse(groupsStateData);
-
-        if (!UpdateApi.isObject(groupsState)) {
-            throw new Error('Groups state is not an object');
-        }
+        const groupsState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                touched: zod.boolean(),
+            }),
+        ).parse(JSON.parse(groupsStateData));
 
         // AdGuard Annoyances filters group id.
         const annoyancesGroupId = '4';
@@ -247,18 +252,21 @@ export class UpdateApi {
         const annoyancesFiltersIds = ['18', '19', '20', '21', '22'];
 
         // AdGuard Annoyances filters group state.
-        const annoyancesGroup = {
+        const annoyancesGroup = groupsState[annoyancesGroupId] ?? {
             enabled: false,
             touched: false,
         };
 
         // AdGuard Annoyances filters states.
         const annoyancesFiltersState = Object.fromEntries(
-            annoyancesFiltersIds.map((filterId) => ([filterId, {
-                loaded: false,
-                enabled: false,
-                installed: false,
-            }])),
+            annoyancesFiltersIds.map((filterId) => {
+                const state = filtersState[filterId] ?? {
+                    loaded: false,
+                    enabled: false,
+                    touched: false,
+                };
+                return [filterId, state];
+            }),
         );
 
         const deprecatedAnnoyancesFilter = filtersState[deprecatedAnnoyancesFilterId];
