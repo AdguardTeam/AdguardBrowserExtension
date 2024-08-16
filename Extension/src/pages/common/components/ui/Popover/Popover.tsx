@@ -28,7 +28,10 @@ import { Position } from '../../types';
 
 import './popover.pcss';
 
-const TOOLTIP_SHOW_DELAY_MS = 1000;
+/**
+ * Default delay before showing popover.
+ */
+const POPOVER_SHOW_DELAY_MS = 500;
 
 type TooltipState = {
     visible: boolean;
@@ -37,12 +40,12 @@ type TooltipState = {
 
 type PopoverParams = {
     /**
-     * Tooltip text.
+     * Popover text.
      */
     text?: string;
 
     /**
-     * Delay before showing tooltip.
+     * Delay before showing popover.
      */
     delay?: number;
 
@@ -94,7 +97,7 @@ export const Popover = ({
                     y: bottom + window.scrollY,
                 },
             });
-        }, delay || TOOLTIP_SHOW_DELAY_MS);
+        }, delay || POPOVER_SHOW_DELAY_MS);
     };
 
     const handleMouseLeave = () => {
