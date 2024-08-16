@@ -1,8 +1,8 @@
-! Checksum: /0raHKegeoZAiPkKrHe3dQ
+! Checksum: SLq+h6Pa/ETfvg0quSDCYQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.1
-! TimeUpdated: 2024-08-08T11:34:01+00:00
+! Version: 2.0.9.4
+! TimeUpdated: 2024-08-16T09:35:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,10 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! Not identified. Popular on Japanese sites
+$removeparam=_bdadid
+! a8.net
+$removeparam=a8
 ! personaclick.com
 $removeparam=recommended_by
 $removeparam=recommended_code
@@ -743,6 +747,7 @@ keepstreams.com^$removeparam=downloadmode
 ||streamfab.jp^$removeparam=c_wh
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164060#issuecomment-1779661046
 ! https://github.com/AdguardTeam/AdguardFilters/issues/111997
+||ozon.ru^$removeparam=asb
 ||ozon.ru^$removeparam=advert
 ||ozon.ru^$removeparam=asb2
 ||ozon.ru^$removeparam=avtc
@@ -1960,6 +1965,9 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||yandex.*/sport/$removeparam=stid
 ||yandex.*/images/$removeparam=source-serpid
 ! Yandex.Market
+||market.yandex.$removeparam=offerid
+||market.yandex.$removeparam=show-uid
+||market.yandex.$removeparam=uniqueId
 ||market.yandex.$removeparam=do-waremd5
 ||market.yandex.$removeparam=vid
 ||market.yandex.$removeparam=mclid

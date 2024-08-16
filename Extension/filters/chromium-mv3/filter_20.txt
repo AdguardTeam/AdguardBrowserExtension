@@ -1,8 +1,8 @@
-! Checksum: r+q0/6WICwSRnJuNhKCozA
+! Checksum: Cno1XGY7sIaIhM8aIT/S+A
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.15.76
-! TimeUpdated: 2024-08-08T12:34:12+00:00
+! Version: 2.0.15.94
+! TimeUpdated: 2024-08-15T16:33:01+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -125,6 +125,15 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 temu.com#?#div[role="main"] div[style] > div[style]:has(> div[style] div[js-selector="mobile-download-ui"])
 !
 !
+m.aksam.com.tr##.footerSocials
+homerun.co.uk###appstore-desktop
+guidetoiceland.is##h2 ~ div[class^="x-"]:has(> aside[class^="x-"] > div[class^="x-"] > a[href^="https://apps.apple.com/ua/app/"])
+guidetoiceland.is###attractionContainer + div[style]:has(> div[class^="Container_container"] > div[class*="Section_notFirstSection__"])
+peakvisor.com#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'installAppDialog')
+63.ru,msk1.ru##article > div[class^="wrapper"]:has(> a[href^="https://redirect.appmetrica.yandex.com/"])
+copilot.microsoft.com##.cib-serp-main + #sac3p_popup_window
+moscowtimes.eu,moscowtimes.news,moscowtimes.ru##.button--app
+comic-walker.com##div[class^="AppPromotionSection_"]
 mynet.com##.mynet-kesfet-banner-box
 teller.jp##div[style*="/install-app-pc-banner/"]
 vaughn.live##.vs_mobileapp_promo
@@ -2969,9 +2978,7 @@ ecvip.pchome.com.tw,24h.m.pchome.com.tw#$##smartbanner[class*="shown"] + #WRAPPE
 9gag.com#$#body { overflow: auto !important; }
 adidas.ru#$#.mobile_app_baner_container { display: none!important; }
 adidas.ru#$#body > .sticky-wrapper { height: 61px!important; }
-aminoapps.com#$#.get-app { display: none!important; }
-aminoapps.com#$#.overlay { display: none!important; }
-aminoapps.com#$?#html:has(> body) { overflow: visible!important; }
+aminoapps.com#%#//scriptlet('trusted-set-cookie', 'call2action_closed', '1')
 atresplayer.com#?#div[class^="style__StyledGlobalWrapper-"] > div[class^="style__StyledGenericModal-"]:has(> a[title="Descargar la app"])
 bigbasket.com#$#.smart-banner .mdl-layout__drawer-button { top: 0!important; }
 bigbasket.com#$#smart-banner { display: none!important; }
