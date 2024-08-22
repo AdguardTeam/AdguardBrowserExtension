@@ -28,6 +28,7 @@ import {
     hitStatsStorage,
 } from '../../storages';
 import { network } from '../network';
+import { getErrorMessage } from '../../../common/error';
 
 /**
  * This API is used to store and track ad filters usage stats.
@@ -183,7 +184,11 @@ export class HitStatsApi {
             )).filter(([_, stats]) => !isEmpty(stats)),
         );
 
-        network.sendHitStats(JSON.stringify(hitStatsData));
+        try {
+            await network.sendHitStats(JSON.stringify(hitStatsData));
+        } catch (e: unknown) {
+            logger.error(getErrorMessage(e));
+        }
 
         await HitStatsApi.cleanup();
     }

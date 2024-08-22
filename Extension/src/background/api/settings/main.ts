@@ -160,10 +160,7 @@ export class SettingsApi {
                 gpcScriptUrl: `/${GPC_SCRIPT_OUTPUT}.js`,
                 hideDocumentReferrerScriptUrl: `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
             }),
-            collectStats: !isMV3
-                && (!settingsStorage.get(SettingOption.DisableCollectHits)
-                    || filteringLogApi.isOpen()
-                ),
+            collectStats: !settingsStorage.get(SettingOption.DisableCollectHits) || filteringLogApi.isOpen(),
             debugScriptlets: !isMV3 && filteringLogApi.isOpen(),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),

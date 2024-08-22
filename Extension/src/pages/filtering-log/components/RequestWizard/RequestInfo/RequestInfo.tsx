@@ -340,8 +340,15 @@ const RequestInfo = observer(() => {
     // Handle rule texts
     const rulesData = getRulesData(selectedEvent, filtersMetadata);
 
+    const isCosmeticRule = selectedEvent.requestRule?.cssRule
+        || selectedEvent.requestRule?.scriptRule;
+
+    const ruleTitle = isCosmeticRule
+        ? translator.getPlural('filtering_modal_applied_rules', Math.max(rulesData.appliedRuleTexts.length, 1))
+        : translator.getPlural('filtering_modal_assumed_rules', Math.max(rulesData.appliedRuleTexts.length, 1));
+
     eventPartsMap[PARTS.ASSUMED_RULE] = {
-        title: translator.getPlural('filtering_modal_assumed_rules', Math.max(rulesData.appliedRuleTexts.length, 1)),
+        title: ruleTitle,
         data: rulesData.appliedRuleTexts.length > 0
             ? rulesData.appliedRuleTexts
             : null,
@@ -458,7 +465,7 @@ const RequestInfo = observer(() => {
             const textsWithCollapsers = texts.map((text) => {
                 return (
                     <div className="text" key="text">
-                        {isRule && <span className="red-dot">*</span>}
+                        {(isRule && !isCosmeticRule) && <span className="red-dot">*</span>}
                         <TextCollapser
                             text={text}
                             ref={isRequestUrl || isRule ? requestTextRef : null}
@@ -503,7 +510,7 @@ const RequestInfo = observer(() => {
                             {textsWithCollapsers}
                         </div>
                     </div>
-                    {isRule && (
+                    {(isRule && !isCosmeticRule) && (
                         <div className="request-info__details">
                             {infoAboutAssumedRule()}
                         </div>
