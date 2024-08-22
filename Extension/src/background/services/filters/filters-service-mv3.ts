@@ -34,8 +34,11 @@ import {
     annoyancesConsent,
     Categories,
     FiltersApi,
+    HitStatsApi,
     PageStatsApi,
 } from '../../api';
+import { settingsEvents } from '../../events';
+import { SettingOption } from '../../schema';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
@@ -59,6 +62,8 @@ export class FiltersService {
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersService.setConsentedFilters);
         messageHandler.addListener(MessageType.GetIsConsentedFilter, FiltersService.getIsConsentedFilter);
+
+        settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
     }
 
     /**
@@ -253,5 +258,16 @@ export class FiltersService {
      */
     private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
         await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
+    }
+
+    /**
+     * Called when prompted to disable or enable hit collection.
+     *
+     * @param value Desired collecting status.
+     */
+    private static async onCollectHitsSwitch(value: boolean): Promise<void> {
+        if (value) {
+            HitStatsApi.cleanup();
+        }
     }
 }

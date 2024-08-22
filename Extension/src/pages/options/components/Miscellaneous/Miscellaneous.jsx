@@ -137,30 +137,27 @@ export const Miscellaneous = observer(() => {
                         handler={handleInvertAllowlistChange}
                         inverted
                     />
-
-                    {!__IS_MV3__ && (
-                        <SettingsSetCheckbox
-                            title={translator.getMessage('options_collect_hit_stats_title')}
-                            description={reactTranslator.getMessage('options_collect_hit_stats_desc', {
-                                a: (chunks) => (
-                                    <a
-                                        href={COLLECT_HITS_LEARN_MORE_URL}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {chunks}
-                                    </a>
-                                ),
-                            })}
-                            disabled={settings.values[DisableCollectHits]}
-                            id={DisableCollectHits}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            label={translator.getMessage('options_collect_hit_stats_title')}
-                            inverted
-                            value={settings.values[DisableCollectHits]}
-                            handler={settingChangeHandler}
-                        />
-                    )}
+                    <SettingsSetCheckbox
+                        title={translator.getMessage('options_collect_hit_stats_title')}
+                        description={reactTranslator.getMessage('options_collect_hit_stats_desc', {
+                            a: (chunks) => (
+                                <a
+                                    href={COLLECT_HITS_LEARN_MORE_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {chunks}
+                                </a>
+                            ),
+                        })}
+                        disabled={settings.values[DisableCollectHits]}
+                        id={DisableCollectHits}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={translator.getMessage('options_collect_hit_stats_title')}
+                        inverted
+                        value={settings.values[DisableCollectHits]}
+                        handler={settingChangeHandler}
+                    />
 
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_show_blocked_ads_count_title')}

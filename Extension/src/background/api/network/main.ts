@@ -360,27 +360,6 @@ export class Network {
     }
 
     /**
-     * Sends feedback from the user to our server.
-     *
-     * @param url URL.
-     * @param messageType Message type.
-     * @param comment Message text.
-     */
-    public sendUrlReport(url: string, messageType: string, comment: string): void {
-        let params = `url=${encodeURIComponent(url)}`;
-        params += `&messageType=${encodeURIComponent(messageType)}`;
-        if (comment) {
-            params += `&comment=${encodeURIComponent(comment)}`;
-        }
-        params = this.addKeyParameter(params);
-
-        const request = new XMLHttpRequest();
-        request.open('POST', this.settings.reportUrl);
-        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        request.send(params);
-    }
-
-    /**
      * Sends filter hits stats to backend server.
      * This method is used if user has enabled "Send statistics for ad filters usage".
      * More information about ad filters usage stats:
@@ -388,11 +367,14 @@ export class Network {
      *
      * @param stats Sent {@link HitStats}.
      */
-    public sendHitStats(stats: string): void {
-        const request = new XMLHttpRequest();
-        request.open('POST', this.settings.ruleStatsUrl);
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(stats);
+    public async sendHitStats(stats: string): Promise<void> {
+        await fetch(this.settings.ruleStatsUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: stats,
+        });
     }
 
     /**
@@ -420,14 +402,14 @@ export class Network {
     }
 
     /**
-     * Makes a request for json via fetch.
+     * Makes a request for json.
      *
      * @param url Url.
      *
      * @returns Response with type {@link ResponseLikeXMLHttpRequest} to be
      * compatible with XMLHttpRequest.
      */
-    private static async fetchJSON(url: string): Promise<ResponseLikeXMLHttpRequest> {
+    private static async fetchJson(url: string): Promise<ResponseLikeXMLHttpRequest> {
         const response = await fetch(url, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -435,54 +417,12 @@ export class Network {
 
         const responseText = await response.text();
 
+        // TODO: Use fetch response directly.
         return {
             ...response,
             mozBackgroundRequest: true,
             responseText,
         };
-    }
-
-    /**
-     * Executes async request.
-     *
-     * @param url Url.
-     */
-    private static async fetchJson(url: string): Promise<ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest> {
-        if (typeof XMLHttpRequest === 'undefined') {
-            return Network.fetchJSON(url);
-        }
-
-        return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest() as ExtensionXMLHttpRequest;
-            try {
-                request.open('GET', url);
-                request.setRequestHeader('Content-type', 'application/json');
-                request.setRequestHeader('Pragma', 'no-cache');
-                request.overrideMimeType('application/json');
-                request.mozBackgroundRequest = true;
-                request.onload = function (): void {
-                    resolve(request);
-                };
-
-                const errorCallbackWrapper = (errorMessage: string) => {
-                    return (e: unknown) => {
-                        let errorText = errorMessage;
-                        if (e instanceof Error) {
-                            errorText = `${errorText}: ${e?.message}`;
-                        }
-                        const error = new Error(`Error: "${errorText}", statusText: ${request.statusText}`);
-                        reject(error);
-                    };
-                };
-
-                request.onerror = errorCallbackWrapper('An error occurred');
-                request.onabort = errorCallbackWrapper('Request was aborted');
-                request.ontimeout = errorCallbackWrapper('Request stopped by timeout');
-                request.send(null);
-            } catch (ex) {
-                reject(ex);
-            }
-        });
     }
 
     /**
