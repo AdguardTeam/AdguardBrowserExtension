@@ -34,14 +34,17 @@ export const pageStatsDataValidator = zod.object({
      * Blocked requests grouped by hours.
      */
     hours: pageStatsDataItemValidator.array(),
+
     /**
      * Blocked requests grouped by days.
      */
     days: pageStatsDataItemValidator.array(),
+
     /**
      * Blocked requests grouped by months.
      */
     months: pageStatsDataItemValidator.array(),
+
     /**
      * The time stamp of the last update. In milliseconds.
      */

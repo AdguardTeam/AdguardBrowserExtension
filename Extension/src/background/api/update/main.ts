@@ -39,10 +39,13 @@ import {
     AntiBannerFiltersId,
     CLIENT_ID_KEY,
     NEWLINE_CHAR_REGEX,
+    PAGE_STATISTIC_KEY,
     RULES_LIMITS_KEY,
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import {
+    type PageStats,
+    pageStatsValidator,
     type SafebrowsingCacheData,
     type SafebrowsingStorageData,
     SchemaPreprocessor,
@@ -53,6 +56,7 @@ import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 import { network } from '../network';
+import { PopupStatsCategories } from '../page-stats';
 
 /**
  * Update API is a facade for handling migrations for the settings object from
@@ -65,6 +69,7 @@ export class UpdateApi {
         '2': UpdateApi.migrateFromV2toV3,
         '3': UpdateApi.migrateFromV3toV4,
         '4': UpdateApi.migrateFromV4toV5,
+        '5': UpdateApi.migrateFromV5toV6,
     };
 
     /**
@@ -193,6 +198,114 @@ export class UpdateApi {
 
             throw new Error(errMessage, { cause: e });
         }
+    }
+
+    /**
+     * Run data migration from schema v5 to schema v6.
+     */
+    private static async migrateFromV5toV6(): Promise<void> {
+        const rawOldPageStatistics = await browserStorage.get(PAGE_STATISTIC_KEY);
+
+        if (typeof rawOldPageStatistics !== 'string') {
+            logger.debug('Missing page statistics, nothing to migrate');
+            return;
+        }
+
+        let oldPageStatisticsStr = rawOldPageStatistics;
+        if (
+            (oldPageStatisticsStr.startsWith('"') && oldPageStatisticsStr.endsWith('"'))
+            || (oldPageStatisticsStr.startsWith("'") && oldPageStatisticsStr.endsWith("'"))
+        ) {
+            // beautify the string before parsing
+            oldPageStatisticsStr = oldPageStatisticsStr.slice(1, -1);
+        }
+
+        let oldPageStatistics: PageStats;
+        try {
+            const oldPageStatisticsObj = JSON.parse(oldPageStatisticsStr);
+            oldPageStatistics = pageStatsValidator.parse(oldPageStatisticsObj);
+        } catch (e: unknown) {
+            logger.debug('Nothing to migrate, since page statistics cannot be parsed:', getErrorMessage(e));
+            return;
+        }
+
+        if (!oldPageStatistics.data) {
+            logger.debug('No page statistics data to migrate');
+            return;
+        }
+
+        /**
+         * Mapping of old group ids to new categories: where
+         * - key — filters group id (old stats format),
+         * - value — category name (new stats format).
+         */
+        const STATS_CATEGORIES_MIGRATION_MAP: Record<string, string> = {
+            '0': PopupStatsCategories.Advertising,
+            '1': PopupStatsCategories.Advertising,
+            '2': PopupStatsCategories.Trackers,
+            '3': PopupStatsCategories.SocialMedia,
+            '4': PopupStatsCategories.Advertising,
+            '5': PopupStatsCategories.Advertising,
+            '6': PopupStatsCategories.Advertising,
+            '7': PopupStatsCategories.Advertising,
+        };
+
+        /**
+         * Migrate old stats data item (where filters group ids were used)
+         * to the new format (where stats categories are used based on companiesdb).
+         *
+         * @param oldDataItem Old stats data item for `hours`, `days`, and `months`.
+         *
+         * @returns Migrated stats data item.
+         *
+         * @example
+         * `{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}`
+         * ↓↓↓
+         * `{"Advertising":60,"Trackers":10,"SocialMedia":10,"total":80}`
+         */
+        const migrateStatsDataItem = (oldDataItem: Record<string, number>): Record<string, number> => {
+            let total = 0;
+            const newDataItem: Record<string, number> = {};
+
+            const oldKeys = Object.keys(oldDataItem);
+            oldKeys.forEach((key) => {
+                if (key !== 'total') {
+                    const statsCount = oldDataItem[key];
+                    if (typeof statsCount === 'undefined') {
+                        return;
+                    }
+
+                    const category = STATS_CATEGORIES_MIGRATION_MAP[key];
+                    if (category) {
+                        newDataItem[category] = (newDataItem[category] || 0) + statsCount;
+                    } else {
+                        logger.debug(`Unknown category for old group id: ${key}, migrated into "Other"`);
+                        // eslint-disable-next-line max-len
+                        newDataItem[PopupStatsCategories.Other] = (newDataItem[PopupStatsCategories.Other] || 0) + statsCount;
+                    }
+
+                    total += statsCount;
+                }
+            });
+
+            newDataItem.total = total;
+
+            return newDataItem;
+        };
+
+        const newPageStatisticsData = {
+            hours: oldPageStatistics.data.hours.map(migrateStatsDataItem),
+            days: oldPageStatistics.data.days.map(migrateStatsDataItem),
+            months: oldPageStatistics.data.months.map(migrateStatsDataItem),
+            updated: oldPageStatistics.data.updated,
+        };
+
+        const newPageStatistics = {
+            totalBlocked: oldPageStatistics.totalBlocked,
+            data: newPageStatisticsData,
+        };
+
+        await browserStorage.set(PAGE_STATISTIC_KEY, JSON.stringify(newPageStatistics));
     }
 
     /**

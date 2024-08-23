@@ -45,6 +45,8 @@ import {
     UpdateApi,
     InstallApi,
     UiApi,
+    PageStatsApi,
+    HitStatsApi,
 } from '../api';
 import {
     UiService,
@@ -150,6 +152,9 @@ export class App {
          * - Initializes storages for filters state, groups state and filters versions, based on app metadata.
          */
         await FiltersApi.init(isInstall);
+
+        await PageStatsApi.init();
+        await HitStatsApi.init();
 
         /**
          * Initializes promo notifications:

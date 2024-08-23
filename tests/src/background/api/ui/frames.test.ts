@@ -18,8 +18,8 @@ import { appContext, AppContextKey } from '../../../../../Extension/src/backgrou
 import { FramesApi } from '../../../../../Extension/src/background/api/ui/frames';
 import { AntiBannerFiltersId } from '../../../../../Extension/src/common/constants';
 
-jest.mock('../../../../../Extension/src/background/api/filters/page-stats', () => ({
-    ...(jest.requireActual('../../../../../Extension/src/background/api/filters/page-stats')),
+jest.mock('../../../../../Extension/src/background/api/page-stats', () => ({
+    ...(jest.requireActual('../../../../../Extension/src/background/api/page-stats')),
     PageStatsApi,
 }));
 

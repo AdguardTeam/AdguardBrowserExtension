@@ -61,13 +61,11 @@ export const Tabs = observer(() => {
             <div className="tabs__panel">
                 <Tab
                     title={translator.getMessage('popup_tab_actions')}
-                    id={ViewState.Actions}
                     active={viewState === ViewState.Actions}
                     onClick={handleTabClick(ViewState.Actions)}
                 />
                 <Tab
                     title={translator.getMessage('popup_tab_statistics')}
-                    id={ViewState.Stats}
                     active={viewState === ViewState.Stats}
                     onClick={handleTabClick(ViewState.Stats)}
                 />

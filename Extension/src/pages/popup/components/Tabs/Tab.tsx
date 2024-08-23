@@ -20,19 +20,11 @@ import React from 'react';
 
 import cn from 'classnames';
 
-import { ViewState } from '../../constants';
-import { addPopoverForComingSoonElement } from '../../../common/components/react-helpers';
-
 type TabParams = {
     /**
      * Tab title.
      */
     title: string,
-
-    /**
-     * Tab id.
-     */
-    id: string,
 
     /**
      * Whether the tab is active.
@@ -47,24 +39,19 @@ type TabParams = {
 
 export const Tab = ({
     title,
-    id,
     active,
     onClick,
 }: TabParams) => {
     const tabClass = cn('tabs__tab', { 'tabs__tab--active': active });
 
-    const Tab = (
+    return (
         <button
             type="button"
             className={tabClass}
             onClick={onClick}
+            title={title}
         >
             {title}
         </button>
     );
-
-    return __IS_MV3__ && id === ViewState.Stats
-        // FIXME: remove when companiesdb stats are implemented for mv3
-        ? addPopoverForComingSoonElement(Tab)
-        : Tab;
 };

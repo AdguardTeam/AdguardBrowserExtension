@@ -163,6 +163,10 @@ export class FilteringLogService {
             advancedModifier,
         } = data;
 
+        if (filterId === null || ruleIndex === null) {
+            return;
+        }
+
         filteringLogApi.updateEventData(tabId, eventId, {
             requestRule: {
                 filterId,
