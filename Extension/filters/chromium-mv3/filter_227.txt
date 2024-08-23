@@ -1,13 +1,13 @@
-! Checksum: 4yWLF62NMcZqMtf5124wtA
+! Checksum: 1JVSW9EouJHfOlDxMq6uRA
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.18.89
-! TimeUpdated: 2024-08-12T05:01:31+00:00
+! Version: 2.0.18.93
+! TimeUpdated: 2024-08-22T09:01:30+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.0812.0
+! OriginalVersion: 2024.0822.3
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://community.list-kr.com/docs/
@@ -519,6 +519,7 @@
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/bannerpop\/uploads\//
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/adManager\/(css|js)\/[A-z]+\.(css|js)$/
 !
+/studio_backend/adforus.
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/RealMedia\/ads\//
 /data/banner.json?$domain=~nintendo.com|~nintendo.ru|~nintendo.net|~nintendo.com.au|~nintendo.com.tr|~nintendo.co.uk|~nintendo.co|~nintendo.gr|~nintendo.ca|~nintendo.de|~nintendo.fr|~nintendo.me|~nintendo.by|~nintendo.jp|~nintendo.com.tw|~nintendo.co.za|~nintendo.co.il|~nintendo.eu|~nintendo.it|~nintendo.com.br|~nintendo.es|~nintendo.ch|~nintendo.co.in|~nintendo.nl|~nintendo.us|~nintendo.pl|~nintendo.cl|~nintendo.co.jp|~nintendo.co.nz|~nintendo.cn|~nintendo.co.kr|~nintendo.mx|~nintendo.se|~nintendo.cz|~nintendo.shop|~nintendo.tw|~nintendo.be|~nintendo.store|~nintendo.dk|~nintendo.hu|~nintendo.md|~nintendo.com.hk|~nintendo.no|~nintendo.pw|~nintendo.com.bd|~nintendo.ie|~nintendo.at|~nintendo.com.np|~nintendo.ph|~nintendo.fi|~nintendo.lv|~nintendo.pe|~nintendo.sk|~nintendo.hk|~nintendo.gov.bd|~nintendo.sa|~nintendo.pt|~nintendo.one|~nintendo.kg|~nintendo.com.pe|~nintendo.org.il|~nintendo.is|~nintendo.gov.np|~nintendo.work
 /ad-manager.min.js
@@ -1297,6 +1298,7 @@
 !
 ! DOMAIN-REFRESHER: START
 !
+||anilife.live/assets/banner/
 ||moeni.net/img/a/lula.gif
 /theme/basic/img/banner/*$domain=nunu4.tv|nunu5.tv|nunu6.tv|nunu7.tv|nunu8.tv|nunu9.tv|nunu10.tv|nunu11.tv
 ||torrentpi*.com/data/file/ad/$domain=torrentpi144.com|torrentpi145.com|torrentpi146.com|torrentpi147.com|torrentpi148.com|torrentpi149.com|torrentpi150.com|torrentpi151.com|torrentpi152.com|torrentpi153.com|torrentpi154.com|torrentpi155.com|torrentpi156.com
@@ -1471,7 +1473,7 @@
 /^https:\/\/bam[0-9]+co\.com\/_book\/_Contents\/banner\//
 ||imgsuperpower.com^$domain=hdhd344.net|hdhd345.net|hdhd346.net|hdhd347.net|hdhd348.net|hdhd349.net|hdhd350.net|hdhd351.net|hdhd352.net|hdhd353.net|hdhd354.net|hdhd355.net|hdhd356.net|hdhd357.net|hdhd358.net
 ||blogger.googleusercontent.com^$domain=hdhd344.net|hdhd345.net|hdhd346.net|hdhd347.net|hdhd348.net|hdhd349.net|hdhd350.net|hdhd351.net|hdhd352.net|hdhd353.net|hdhd354.net|hdhd355.net|hdhd356.net|hdhd357.net|hdhd358.net
-/^https:\/\/iabn[0-9]+\.net\//$domain=wfwf328.com|wfwf329.com|wfwf330.com|wfwf331.com|wfwf332.com|wfwf333.com|wfwf334.com|wfwf335.com|wfwf336.com|wfwf337.com|wfwf338.com|wfwf339.com|wfwf340.com
+/^https:\/\/iabn[0-9]+\.net\//$domain=wfwf345.com|wfwf346.com|wfwf347.com|wfwf348.com|wfwf349.com|wfwf350.com|wfwf351.com|wfwf352.com|wfwf353.com|wfwf354.com|wfwf355.com|wfwf356.com|wfwf357.com
 /^https:\/\/blacktoon[0-9]+\.com\/poster_js\/[0-9]+\.js/
 ||toonkor*.com/images/*.gif
 ||wwwimageup.angle777899.com/other/atoona/
@@ -1536,6 +1538,9 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+a-ha.io##main div[class*=" "]:has(> div[id^="div-gpt-"] + div[height])
+naver.com##a[href^="https://siape.veta.naver.com/"]
+m.dt.co.kr##div[data-slot^="adforus_"]
 fnnews.com##.col-300 > div[style^="height:"]
 hankookilbo.com##div[class*="-ad-"]:not(data-el)
 mininote.co.kr##rs-fullwidth-wrap[style^="margin-top:"]
@@ -2172,7 +2177,7 @@ search.naver.com##div[class*="_fashion"].more_prod
 m.search.naver.com##section[class*="ad_"]
 search.naver.com##li[data-nvmid]._ad
 ddaily.co.kr##.space_layout ~ div[class^="section_"] > div:not([style*="solid"]) + div[style]:not([class])
-view.nate.com,sportsseoul.com,enuri.com,newdaily.co.kr,koreatimes.net,nzkoreapost.com##div[class*="-ad-"]
+kr-weathernews.com,view.nate.com,sportsseoul.com,enuri.com,newdaily.co.kr,koreatimes.net,nzkoreapost.com##div[class*="-ad-"]
 loawa.com##a[target="_blank"][data-href][data-banner-statics]
 m.ppomppu.co.kr##.main-menu-group ~ .ct #board-cate ul[style] li[onclick^="location.href="][onclick*="/bbs_list.php?id=ppomppu2"]
 m.ppomppu.co.kr##.main-menu-group ~ .ct #board-cate ul[style] li[onclick^="location.href="][onclick*="/bbs_list.php?id=ppomppu7"]
@@ -3411,6 +3416,7 @@ naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
 @@||ssl.pstatic.net/tveta/libs/glad/prod/$script,domain=chzzk.naver.com
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
+||tistory1.daumcdn.net/tistory/3827361/skin/images/script3.js$domain=devjit.tistory.com
 hub.weirdhost.xyz#%#//scriptlet('prevent-fetch', 'adblockanalytics.com')
 hub.weirdhost.xyz#%#//scriptlet('prevent-fetch', 'adsbygoogle.js')
 srank.kr#%#//scriptlet('prevent-fetch', 'doubleclick.net')
