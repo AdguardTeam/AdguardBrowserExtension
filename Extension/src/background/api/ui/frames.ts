@@ -25,7 +25,7 @@ import {
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';
-import { PageStatsApi } from '../filters';
+import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
 
 export type FrameRule = {

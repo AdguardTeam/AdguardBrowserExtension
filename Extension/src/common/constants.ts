@@ -23,7 +23,7 @@
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 5;
+export const APP_SCHEMA_VERSION = 6;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -133,6 +133,8 @@ export const WASTE_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
 export const SCROLLBAR_WIDTH = 12 as const;
 
 export const BACKGROUND_TAB_ID = -1 as const;
+
+export const TOTAL_BLOCKED_STATS_GROUP_ID = 'total';
 
 /**
  *  Time interval between filter updates.

@@ -21,7 +21,7 @@ import {
     tabsApi as tsWebExtTabsApi,
     defaultFilteringLog,
     FilteringEventType,
-    ApplyBasicRuleEvent,
+    type ApplyBasicRuleEvent,
 } from '../../tswebextension';
 import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';
@@ -238,15 +238,21 @@ export class UiService {
      * @param event.data Event data.
      */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
-        const { filterId, isAllowlist, tabId } = data;
+        const {
+            isAllowlist,
+            tabId,
+            companyCategoryName,
+        } = data;
 
         // If rule is not blocking, ignore it
         if (isAllowlist) {
             return;
         }
 
-        await PageStatsApi.updateStats(filterId, UiService.blockedCountIncrement);
-        PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
+        if (companyCategoryName) {
+            await PageStatsApi.updateStats(companyCategoryName, UiService.blockedCountIncrement);
+            PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
+        }
 
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 

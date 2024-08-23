@@ -35,13 +35,13 @@ export const Filters = observer(() => {
 
     const statsData = store.statsDataByType;
 
-    const existingGroupsOptions = stats.blockedGroups
+    const existingGroupsOptions = stats.blockedCategories
         .filter((group) => {
-            return statsData.find((data) => data.groupId === group.groupId);
+            return statsData.find((data) => data.categoryId === group.categoryId);
         })
-        .map(({ groupId, groupName }) => ({
-            value: groupId,
-            title: groupName,
+        .map(({ categoryId, categoryName }) => ({
+            value: categoryId,
+            title: categoryName,
         }));
 
     const handleBlockedTypeChange = (value) => {

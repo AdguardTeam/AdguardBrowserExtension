@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import zod from 'zod';
 
+import { pageStatsValidator } from '../../../Extension/src/background/schema/page-stats';
+
 const FILTER_KEY_PREFIX = 'filterrules_';
 
 export type StorageData = Record<string, unknown>;
@@ -25,7 +27,7 @@ export const getStorageFixturesV0 = (): StorageData[] => ([{
         'groups-state': '{"0":{},"1":{"enabled":true},"2":{},"3":{},"4":{},"5":{},"6":{"enabled":true},"7":{"enabled":true}}',
         'hide-rate-block': 'false',
         'hits-count-disabled': 'true',
-        'page-statistic': '{"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"months":[{"total":0},{"total":0},{"total":0}],"updated":123456789}}',
+        'page-statistic': '{"totalBlocked":80,"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"months":[{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"updated":1724245200643}}',
         'safebrowsing-disabled': 'true',
         'sb-lru-cache': '[{"key":"7D5B0B1D213AEB4109A9EC26DA13B9F2F2C9D4DD5DDFE99891859940AB3E2C5F","value":"adguard-malware-shavar"}]',
         'show-app-updated-disabled': 'false',
@@ -79,7 +81,7 @@ export const getStorageFixturesV0 = (): StorageData[] => ([{
         'groups-state': '{"0":{"enabled":true},"1":{"enabled":true},"2":{"enabled":true},"3":{"enabled":true},"4":{"enabled":true},"5":{"enabled":true},"6":{"enabled":true},"7":{"enabled":true}}',
         'hide-rate-block': 'true',
         'hits-count-disabled': 'true',
-        'page-statistic': '{"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"months":[{"total":0},{"total":0},{"total":0}],"updated":123456789}}',
+        'page-statistic': '{"totalBlocked":80,"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"months":[{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"updated":1724245200643}}',
         'safebrowsing-disabled': 'false',
         'sb-lru-cache': '[]',
         'show-app-updated-disabled': 'false',
@@ -171,7 +173,7 @@ export const getStorageFixturesV1 = (): StorageData[] => ([{
     'sb-lru-cache': '[{"key":"7D5B0B1D213AEB4109A9EC26DA13B9F2F2C9D4DD5DDFE99891859940AB3E2C5F","value":"adguard-malware-shavar"}]',
     'schema-version': 1,
     'viewed-notification-time': 123456789,
-    'page-statistic': '{"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"months":[{"total":0},{"total":0},{"total":0}],"updated":123456789}}',
+    'page-statistic': '{"totalBlocked":80,"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"months":[{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"updated":1724245200643}}',
 }, {
     'adguard-settings': {
         'adguard-disabled': false,
@@ -227,7 +229,7 @@ export const getStorageFixturesV1 = (): StorageData[] => ([{
     'filterrules_1002.txt': [],
     'sb-lru-cache': '[]',
     'schema-version': 1,
-    'page-statistic': '{"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0}],"months":[{"total":0},{"total":0},{"total":0}],"updated":123456789}}',
+    'page-statistic': '{"totalBlocked":80,"data":{"hours":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"days":[{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"months":[{"total":0},{"total":0},{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}],"updated":1724245200643}}',
     'viewed-notification-time': 123456789,
 }]);
 
@@ -341,6 +343,76 @@ export const getStorageFixturesV5 = (expires: number): StorageData[] => {
         settings['adguard-settings'] = adgSettings;
         settings['rules-limits'] = JSON.stringify([]);
         settings['schema-version'] = 5;
+
+        return settings;
+    });
+};
+
+export const getStorageFixturesV6 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV5 = getStorageFixturesV5(expires);
+
+    return storageSettingsFixturesV5.map((settings) => {
+        let oldPageStatisticsStr = settings['page-statistic'] as string;
+
+        if (oldPageStatisticsStr.startsWith('"') && oldPageStatisticsStr.endsWith('"')) {
+            // beautify the string before parsing
+            oldPageStatisticsStr = oldPageStatisticsStr.slice(1, -1);
+        }
+
+        const oldPageStatistics = pageStatsValidator.parse(JSON.parse(oldPageStatisticsStr));
+
+        /**
+         * Represents a single data item with no specific group or category stats.
+         */
+        const NO_DATA = {
+            total: 0,
+        };
+
+        /**
+         * Generates an array of empty {@link NO_DATA} items.
+         *
+         * @param length Array length.
+         * @returns Array of empty {@link NO_DATA} items.
+         */
+        const generateEmptyData = (length: number) => Array.from({ length }, () => NO_DATA);
+
+        /**
+         * Expected result of the new data after migration of such old data:
+         * `{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}`.
+         */
+        const NEW_DATA_OBJ = {
+            Advertising: 60,
+            Trackers: 10,
+            SocialMedia: 10,
+            // there is no mapped old group id for 'Cdn' category so no data for it,
+            // and all group ids are known so no 'Other' category here as well
+            total: 80,
+        };
+
+        const newPageStatistics = {
+            totalBlocked: oldPageStatistics.totalBlocked,
+            data: {
+                // 24 hours
+                hours: [
+                    ...generateEmptyData(23),
+                    NEW_DATA_OBJ,
+                ],
+                // 30 days
+                days: [
+                    ...generateEmptyData(29),
+                    NEW_DATA_OBJ,
+                ],
+                // only last 3 months
+                months: [
+                    ...generateEmptyData(2),
+                    NEW_DATA_OBJ,
+                ],
+                updated: oldPageStatistics.data?.updated,
+            },
+        };
+
+        settings['page-statistic'] = JSON.stringify(newPageStatistics);
+        settings['schema-version'] = 6;
 
         return settings;
     });

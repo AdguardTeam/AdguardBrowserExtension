@@ -7,6 +7,7 @@ import {
     getStorageFixturesV3,
     getStorageFixturesV4,
     getStorageFixturesV5,
+    getStorageFixturesV6,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -27,6 +28,7 @@ describe('Update Api', () => {
         const v3 = getStorageFixturesV3(expires);
         const v4 = getStorageFixturesV4(expires);
         const v5 = getStorageFixturesV5(expires);
+        const v6 = getStorageFixturesV6(expires);
 
         let setMultipleSpy: jest.SpyInstance;
 
@@ -70,11 +72,12 @@ describe('Update Api', () => {
             expect(settings).toStrictEqual(data.to);
         };
 
-        it.each(getCases(v0, v5))('should update from v0 to v5', runCase);
-        it.each(getCases(v1, v5))('should update from v1 to v5', runCase);
-        it.each(getCases(v2, v5))('should update from v2 to v5', runCase);
-        it.each(getCases(v3, v5))('should update from v3 to v5', runCase);
-        it.each(getCases(v4, v5))('should update from v4 to v5', runCase);
+        it.each(getCases(v0, v6))('should update from v0 to v6', runCase);
+        it.each(getCases(v1, v6))('should update from v1 to v6', runCase);
+        it.each(getCases(v2, v6))('should update from v2 to v6', runCase);
+        it.each(getCases(v3, v6))('should update from v3 to v6', runCase);
+        it.each(getCases(v4, v6))('should update from v4 to v6', runCase);
+        it.each(getCases(v5, v6))('should update from v5 to v6', runCase);
 
         it('should move filter data to IDB', async () => {
             const [data] = getStorageFixturesV3(expires);

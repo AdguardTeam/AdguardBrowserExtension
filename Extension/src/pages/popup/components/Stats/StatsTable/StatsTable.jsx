@@ -34,20 +34,22 @@ export const StatsTable = observer(() => {
     }
 
     const statsDataByTypeWithoutTotal = statsDataByType
-        .filter((group) => group.groupId !== store.TOTAL_BLOCKED_GROUP_ID);
+        .filter((group) => group.categoryId !== store.TOTAL_BLOCKED_GROUP_ID);
 
     if (statsDataByTypeWithoutTotal.length === 0) {
         return null;
     }
 
-    const renderStatsByType = statsDataByTypeWithoutTotal.map((stats) => {
-        return (
-            <li className="stats__item" key={stats.groupId}>
-                <span className="stats__name">{stats.groupName}</span>
-                <span className="stats__value">{new Intl.NumberFormat().format(stats.blocked)}</span>
-            </li>
-        );
-    });
+    const renderStatsByType = statsDataByTypeWithoutTotal
+        .sort((a, b) => b.blocked - a.blocked)
+        .map((stats) => {
+            return (
+                <li className="stats__item" key={stats.categoryId}>
+                    <span className="stats__name">{stats.categoryName}</span>
+                    <span className="stats__value">{new Intl.NumberFormat().format(stats.blocked)}</span>
+                </li>
+            );
+        });
 
     return (
         <div className="stats">

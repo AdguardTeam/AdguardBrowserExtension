@@ -48,6 +48,7 @@ import {
     UpdateApi,
     InstallApi,
     network,
+    PageStatsApi,
     UiApi,
 } from '../api';
 import {
@@ -174,6 +175,10 @@ export class App {
             const filtersIds = await FiltersApi.reloadFiltersFromLocal();
             logger.debug('Following filters has been updated from local resources:', filtersIds);
         }
+
+        await PageStatsApi.init();
+
+        // FIXME: support hits counter for mv3. AG-33733
 
         /**
          * Initializes promo notifications:

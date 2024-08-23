@@ -225,15 +225,13 @@ export const Miscellaneous = observer(() => {
                             )
                     }
 
-                    {!__IS_MV3__ && (
-                        <button
-                            type="button"
-                            className="links-menu__item button--link--red"
-                            onClick={handleResetStatisticsClick}
-                        >
-                            {translator.getMessage('options_reset_stats')}
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="links-menu__item button--link--red"
+                        onClick={handleResetStatisticsClick}
+                    >
+                        {translator.getMessage('options_reset_stats')}
+                    </button>
 
                     {
                         isOpenResetSettingsModal

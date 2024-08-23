@@ -47,6 +47,7 @@ import {
     AppStateEvent,
 } from '../state-machines/app-state-machine';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
+import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 
 type BlockedStatsInfo = {
     totalBlocked: number;
@@ -57,7 +58,7 @@ type BlockedStatsInfo = {
 configure({ enforceActions: 'observed' });
 
 class PopupStore {
-    TOTAL_BLOCKED_GROUP_ID = 'total';
+    TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     /**
      * Flag that indicates whether the application filtering is **paused**.
@@ -512,28 +513,22 @@ class PopupStore {
             return null;
         }
 
-        const { blockedGroups } = stats;
+        const { blockedCategories } = stats;
 
-        return blockedGroups
+        return blockedCategories
             .slice()
-            .sort((groupA, groupB) => {
-                if ('displayNumber' in groupA && 'displayNumber' in groupB) {
-                    return groupA.displayNumber - groupB.displayNumber;
-                }
-                return 0;
-            })
-            .map((group) => {
-                const { groupId, groupName } = group;
-                const blocked = statsDataForCurrentRange[group.groupId];
+            .map((category) => {
+                const { categoryId, categoryName } = category;
+                const blocked = statsDataForCurrentRange[categoryId];
                 return {
-                    groupId,
+                    categoryId,
                     blocked,
-                    groupName,
+                    categoryName,
                 };
             })
-            .filter((group) => {
-                return group.blocked
-                    && (group.blocked > 0 || group.groupId === this.TOTAL_BLOCKED_GROUP_ID);
+            .filter((category) => {
+                return category.blocked
+                    && (category.blocked > 0 || category.categoryId === this.TOTAL_BLOCKED_GROUP_ID);
             });
     }
 

@@ -1,21 +1,17 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
 
-import { PageStatsApi } from '../../../../../Extension/src/background/api/filters/page-stats';
-import { App } from '../../../../../Extension/src/background/app';
-import { PageStatsStorage } from '../../../../../Extension/src/background/storages';
-import {
-    AntiBannerFiltersId,
-    AntibannerGroupsId,
-    PAGE_STATISTIC_KEY,
-} from '../../../../../Extension/src/common/constants';
+import { PageStatsApi } from '../../../../Extension/src/background/api/page-stats';
+import { App } from '../../../../Extension/src/background/app';
+import { PageStatsStorage } from '../../../../Extension/src/background/storages';
+import { PAGE_STATISTIC_KEY } from '../../../../Extension/src/common/constants';
 import {
     getEmptyPageStatsDataFixture,
     getEmptyStatisticDataFixture,
     mockLocalStorage,
-} from '../../../../helpers';
+} from '../../../helpers';
 
-jest.mock('../../../../../Extension/src/background/engine');
+jest.mock('../../../../Extension/src/background/engine');
 
 describe('Page Stats Api', () => {
     let storage: Storage.StorageArea;
@@ -63,6 +59,8 @@ describe('Page Stats Api', () => {
         await App.init();
         await PageStatsApi.init();
 
+        const OTHER_STATS_CATEGORY_ID = 'Other';
+
         const updated = Date.now();
 
         const pageStatsData = getEmptyPageStatsDataFixture(updated);
@@ -72,8 +70,8 @@ describe('Page Stats Api', () => {
         const expectedHits = 1;
 
         const expectedStatItem = {
-            [AntibannerGroupsId.AdBlockingFiltersGroupId]: expectedHits,
             [PageStatsStorage.TOTAL_GROUP_ID]: expectedHits,
+            [OTHER_STATS_CATEGORY_ID]: expectedHits,
         };
 
         hours[hours.length - 1] = expectedStatItem;
@@ -82,7 +80,7 @@ describe('Page Stats Api', () => {
 
         jest.spyOn(Date, 'now').mockImplementation(() => updated);
 
-        await PageStatsApi.updateStats(AntiBannerFiltersId.EnglishFilterId, 1);
+        await PageStatsApi.updateStats(OTHER_STATS_CATEGORY_ID, 1);
 
         expect(await storage.get(PAGE_STATISTIC_KEY))
             .toStrictEqual({ [PAGE_STATISTIC_KEY]: JSON.stringify({ data: pageStatsData }) });
@@ -92,6 +90,10 @@ describe('Page Stats Api', () => {
         await App.init();
         await PageStatsApi.init();
 
-        expect(PageStatsApi.getStatisticsData()).toStrictEqual(getEmptyStatisticDataFixture());
+        const stats = await PageStatsApi.getStatisticsData();
+
+        const expectedStats = getEmptyStatisticDataFixture();
+
+        expect(stats).toStrictEqual(expectedStats);
     });
 });

@@ -16,18 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-
-import { Main } from '../Main';
-
-import './main-container.pcss';
-
-const Mv3MainContainer = () => {
-    return (
-        <div className="main-container">
-            <Main />
-        </div>
-    );
-};
-
-export { Mv3MainContainer as MainContainer };
+export { PageStatsApi, PopupStatsCategories, type GetStatisticsDataResponse } from './page-stats';
