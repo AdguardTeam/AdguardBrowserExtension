@@ -1,8 +1,8 @@
-! Checksum: BD/sLHOVz4jS8WvhWw/60g
+! Checksum: R7yxmD9QCDKU2K0vlhSJzw
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.20.48
-! TimeUpdated: 2024-08-16T04:33:06+00:00
+! Version: 2.1.20.76
+! TimeUpdated: 2024-08-23T02:33:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1142,6 +1142,10 @@ $script,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com|fastly.
 !
 !
 !
+||goosedaily.com/advertise/
+goosedaily.com##div[class^="ad-area-"]
+goosedaily.com##.lightboxbnr
+laowangblog.com##img[src^="https://laowangblog.com/"][src*="-ad"]
 ||static.olelive.com/upload/site/*/*.gif
 ||olehdtv.com/index.php/index/userss|
 douyu.com##.layout-Main > section.layout-Customize
@@ -2813,8 +2817,6 @@ bilibili.com##.bili-video-card:has(.bili-video-card__info--ad) > .bili-video-car
 bilibili.com##.bili-video-card:has(.bili-video-card__info--creative-ad) > .bili-video-card__wrap
 bilibili.com#$#.bili-video-card:has(.bili-video-card__info--ad) > .bili-video-card__skeleton { visibility: visible !important; }
 bilibili.com#$#.bili-video-card:has(.bili-video-card__info--creative-ad) > .bili-video-card__skeleton { visibility: visible !important; }
-!+ NOT_PLATFORM(ext_ublock)
-bilibili.com#%#//scriptlet('spoof-css', '.__adblockhidden > a', 'display', 'block')
 !
 ! nivod.tv (pairs .tv + .com)
 nivod9.tv,nivod8.tv,nivod7.tv##.nav-ads
@@ -3137,6 +3139,7 @@ nfmovies.com#@?#div[id]:has(>img[onclick="openurl()"])
 -*-*-*-*.alpha^$script,third-party
 -*-*-*-*.as^$script,third-party
 -*-*-*-*.panda^$script,third-party
+=fitacg.com/static/other/
 -1316632262.cos.
 -1316899192.cos.
 -1321533417.cos.
@@ -4829,6 +4832,64 @@ newduba.cn###jq_youxi
 ||38.33.15.*.gif
 ||67.21.92.*.gif
 ||cupfox.app^$third-party
+||bvdenx.xyz^
+||tehxzz.xyz^
+||wfsmya.xyz^
+||eacdf119.cn^
+||kewrutd.top^
+||pwfqjp.xyz^
+||weacdf211.cn^
+||tufzdj.xyz^
+||kgubus.xyz^
+||reacdf311.cn^
+||jewruta.top^
+||uerbgnkas.com^
+||uftcfo.xyz^
+||55726zubo56686.com^
+||sauyv.top^
+||imgoss820.top^
+||6820tp1.com^
+||abcqq36q.vip^
+||tp1902abd.com^
+||ytghtq.xyz^
+||rkwxfi.xyz^
+||xmlgzr.xyz^
+||swarku.xyz^
+||iaindu.cn^
+||dqlrfmwp.icu^
+||cewrutf.top^
+||grihaith.com^
+||dabajd.xyz^
+||miycoc.xyz^
+||hewrutu.top^
+||jyjrbz.xyz^
+||kjxhd.cn^
+||doujs08.shop^
+||baijs08.shop^
+||lkdyft.xyz^
+||yuwqsk.xyz^
+||dkhffh.xyz^
+||iewruto.top^
+||myabcd.cc^
+||cb61190372.com^
+||uloscw.xyz^
+||gahejiao.com^
+||nbfsvreu.icu^
+||vwvatp.xyz^
+||shbzgkj.cn^
+||bumnxiev.top^
+||tui07.shop^
+||hasdjksndjk.com^
+||vgxbpf.xyz^
+||033ajy.xyz^
+||fingkndk.com^
+||lnnsvj.xyz^
+||gxcdgm.xyz^
+||fywaaox.icu^
+||mumnxiex.top^
+||shbzhgs.cn^
+||btvbnrwo.icu^
+||uusjaq.top^
 ||nmtcxz.xyz^
 ||doujs07.shop^
 ||izqeyo.xyz^
@@ -4838,6 +4899,8 @@ newduba.cn###jq_youxi
 ||npbtnl.xyz^
 ||ljzcawea.icu^
 ||lumnxiel.top^
+||baijs07.shop^
+||dasdujaosjdioad.com^
 ||wnstug.xyz^
 ||shbzhkj.cn^
 ||jrjtibez.icu^
@@ -13590,7 +13653,9 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||zzzyk.com/js/
 ||imgclh.com/imgs/2024/08/07/569cfb2f078e0c42.
 ||pfkgl.top/images/*.gif
+||laowangblog.com^*-ad
 szxx.com.cn###A0
+cn.bing.com##.b_bza_pole
 wenxuecity.com##DIV[class^="Inarticle_"]
 18183.com##.ad1
 supercloudsms.com##.container > div > a[id]
@@ -18277,7 +18342,7 @@ chinacsbs.com##a[href^="/plus/view.php?aid="]
 fx112.com##a[href^="/union."]
 jr22.xyz##a[href^="ad."]
 boniu123.cc##a[href^="http"] > img[src*="/bn_"]
-vikacg.com,vikacg.xyz##a[href^="http"] > img[src^="/assets/main/"]
+vikacg.com,vikacg.xyz##a[href^="http"] > img[src*="/assets/main/"]
 yigujin.cn##a[href^="http"]:not([href$=".html"]) > img[src*="/tp/"]
 55188.com##a[href^="http"]:not([href*=".55188."]) > img[src*="/portal/"]
 90oo.com##a[href^="http"]:not([href*=".90oo."]) > img[src*="/tp/"]
@@ -19939,7 +20004,7 @@ android-doc.com,apk.tw,chaojizhibo.net,chtoen.com,dizhishengcheng.com,doitwell.t
 @@||winwk.com^$generichide
 @@||wuyong.fun^$generichide
 @@||wuyou.com.cn/Js/ad.js
-@@||wwads.cn/js/makemoney.js$domain=nodejs.cn
+@@||wwads.cn/js/makemoney.js$domain=baomidou.com|nodejs.cn
 @@||www.google.*/adsense/$~third-party,domain=google.cn
 @@||wx.qq.com/c/=/mpres/*/video_ad_
 @@||wx.qq.com/mmbizwap/*/framead.
@@ -21197,7 +21262,7 @@ smjb.net##div[style*="height: 50%"]
 ||23qb.com/skin/xiu.js
 ||333uu.org/config/
 ||33yq.org/static/1.
-||360xs.com/templates/html5/js/djtop.js
+||x360xs.com/tops/
 ||477zw.com/js/nzm
 ||57577.live^$csp=script-src
 ||81book.com/static/scripts/1.js
