@@ -55,6 +55,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
     - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
     - [Building the beta and release versions](#building-the-beta-and-release-versions)
     - [Analyzing bundle size](#analyzing-bundle-size)
+    - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
   - [Linter](#linter)
   - [Update localizations](#update-localizations)
 - [Minimum supported browser versions](#minimum-supported-browser-versions)
@@ -148,17 +149,18 @@ are willing to contribute.
 - NPM v8
 - [yarn v1.22](https://yarnpkg.com/en/docs/install/)
 
-Install local dependencies by running:
-
-```shell
-  yarn install
-```
 
 <a id="dev-build"></a>
 
 ### How to build
 
 #### Tests and dev build
+
+Install local dependencies by running:
+
+```shell
+  yarn install
+```
 
 Running tests:
 
@@ -286,6 +288,70 @@ Analyzer will generate reports to the `./build/analyze-reports` directory in the
   build/analyze-reports
   ├── <browser-name>-<build-type>.html
 ```
+
+#### Debug MV3 declarative rules
+
+If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper section ([how to build](#how-to-build)), but for specified branch, in which we develop MV3 version.
+
+Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
+
+##### How to build MV3 extension
+
+1. Switch to the `v5.0` branch:
+
+    ```bash
+    git checkout v5.0
+    ```
+
+1. Run the following command in the terminal:
+
+    ```bash
+    yarn dev chrome-mv3
+    ```
+
+1. The built extension will be located in the directory:
+
+    ```bash
+    ./build/dev/chrome-mv3
+    ```
+
+##### How to install unpacked in the browser
+
+1. Turn on developer mode:
+
+    ![Developer mode](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/developer_mode.png)
+
+1. Click *Load unpacked*:
+
+    ![Load unacked](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/load_unpacked.png)
+
+1. Select the extension directory and click `Select`:
+
+    ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
+
+That’s it!
+
+##### How to debug rules
+
+1. Find and modify the rule you need in the `./Extension/filters/chromium-mv3` directory in the `.txt` files.
+
+1. Convert the rules from txt to declarative form:
+
+    ```bash
+    yarn convert-declarative
+    ```
+
+1. Build the extension again:
+
+    ```bash
+    yarn dev chrome-mv3
+    ```
+
+1. Reload the extension in the browser:
+
+    ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
+
+1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule (in text and declarative ways) will be shown.
 
 <a id="dev-linter"></a>
 

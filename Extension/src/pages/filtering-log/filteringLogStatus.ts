@@ -16,6 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { type DeclarativeRule, RuleActionType } from '@adguard/tsurlfilter/es/declarative-converter';
+
+import { type DeclarativeRuleInfo } from 'tswebextension';
+
+import { type UIFilteringLogEvent } from '../../background/api';
+
 /**
  * @typedef {object} StatusMode
  * @property {string} REGULAR
@@ -31,13 +37,45 @@ export const StatusMode = {
     ALLOWED_STEALTH: 'allowed-stealth',
 };
 
+export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInfo) => {
+    const rule = JSON.parse(declarativeRuleInfo.declarativeRuleJson) as DeclarativeRule;
+
+    // Small hack to show rules with $redirect as blocked for keep legacy logic.
+    if (rule.action.type === RuleActionType.REDIRECT
+        && declarativeRuleInfo.sourceRules.some(({ sourceRule }) => sourceRule.includes('$redirect=') || sourceRule.includes(',redirect='))
+    ) {
+        return StatusMode.BLOCKED;
+    }
+
+    switch (rule.action.type) {
+        case RuleActionType.BLOCK: {
+            return StatusMode.BLOCKED;
+        }
+
+        case RuleActionType.MODIFY_HEADERS:
+        case RuleActionType.REDIRECT: {
+            return StatusMode.MODIFIED;
+        }
+
+        case RuleActionType.ALLOW_ALL_REQUESTS:
+        case RuleActionType.UPGRADE_SCHEME:
+        case RuleActionType.ALLOW: {
+            return StatusMode.ALLOWED;
+        }
+
+        default: {
+            return StatusMode.REGULAR;
+        }
+    }
+};
+
 /**
  * Returns filtering log status
  *
  * @param {object} event - filtering log event
  * @returns {string}
  */
-export const getStatusMode = (event) => {
+export const getStatusMode = (event: UIFilteringLogEvent) => {
     const {
         cspReportBlocked,
         replaceRules,
@@ -46,7 +84,12 @@ export const getStatusMode = (event) => {
         removeParam,
         removeHeader,
         isModifyingCookieRule,
+        declarativeRuleInfo,
     } = event;
+
+    if (declarativeRuleInfo !== undefined) {
+        return getDeclarativeStatusMode(declarativeRuleInfo);
+    }
 
     let mode = StatusMode.REGULAR;
 

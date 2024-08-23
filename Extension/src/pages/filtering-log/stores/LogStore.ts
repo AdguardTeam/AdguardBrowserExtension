@@ -36,8 +36,9 @@ import type {
 } from '../../../background/api';
 import { translator } from '../../../common/translators/translator';
 import { messenger } from '../../services/messenger';
-import { getFilterName } from '../components/RequestWizard/utils';
+import { getFilterName, getRuleFilterName } from '../components/RequestWizard/utils';
 import { BACKGROUND_TAB_ID } from '../../../common/constants';
+import { getStatusMode, StatusMode } from '../filteringLogStatus';
 
 import { matchesSearch } from './helpers';
 import type { RootStore } from './RootStore';
@@ -334,12 +335,18 @@ class LogStore {
         }
     }
 
+    /**
+     * For each event tries to add filterName, originalRuleText and appliedRuleText,
+     * extracted from requestRule or replaceRules or stealthAllowlistRules.
+     * This is like helper to move rule's texts to upper level, inside event
+     * itself to make other code easier to access these rule's texts.
+     *
+     * @param filteringEvent Filtering event to format.
+     *
+     * @returns Same filtering event, but with extracted rules texts if found any.
+     */
     formatEvent = (filteringEvent: UIFilteringLogEvent): UIFilteringLogEvent => {
-        const {
-            requestRule,
-            replaceRules,
-            stealthAllowlistRules,
-        } = filteringEvent;
+        const { requestRule } = filteringEvent;
 
         const { originalRuleText, appliedRuleText } = requestRule ?? {};
 
@@ -351,10 +358,6 @@ class LogStore {
 
         const { filterName } = filteringEvent;
 
-        if (!filterName && replaceRules && replaceRules.length === 1) {
-            filteringEvent.filterName = getFilterName(replaceRules[0]?.filterId, this.filtersMetadata);
-        }
-
         if (originalRuleText) {
             filteringEvent.originalRuleText = originalRuleText;
         }
@@ -363,8 +366,8 @@ class LogStore {
             filteringEvent.appliedRuleText = appliedRuleText;
         }
 
-        if (!filterName && stealthAllowlistRules && stealthAllowlistRules.length === 1) {
-            filteringEvent.filterName = getFilterName(stealthAllowlistRules[0]?.filterId, this.filtersMetadata);
+        if (!filterName) {
+            filteringEvent.filterName = getRuleFilterName(filteringEvent, this.filtersMetadata);
         }
 
         return filteringEvent;
@@ -420,13 +423,8 @@ class LogStore {
     getEventsByTabId = async (tabId: number) => {
         const filteringInfo = await messenger.getFilteringInfoByTabId(tabId);
         runInAction(() => {
-            const filteringEvents = filteringInfo?.filteringEvents;
-            if (filteringEvents) {
-                this.filteringEvents = filteringEvents
-                    .map((filteringEvent) => this.formatEvent(filteringEvent));
-            } else {
-                this.filteringEvents = [];
-            }
+            this.filteringEvents = filteringInfo?.filteringEvents
+                .map((filteringEvent) => this.formatEvent(filteringEvent)) || [];
         });
     };
 
@@ -505,31 +503,20 @@ class LogStore {
                 return false;
             }
 
-            const isAllowlisted = !!filteringEvent.requestRule?.allowlistRule;
             // blocked CSP reports should be filtered as blocked requests in the filtering log. AG-24613
-            const isBlocked = !!(filteringEvent.cspReportBlocked
-                || (filteringEvent.requestRule
-                    && !filteringEvent.requestRule.allowlistRule
-                    && !filteringEvent.requestRule.cssRule
-                    && !filteringEvent.requestRule.scriptRule
-                    && !filteringEvent.requestRule.cspRule
-                    && !filteringEvent.requestRule.permissionsRule
-                    && !filteringEvent.replaceRules
-                    && !filteringEvent.removeParam
-                    && !filteringEvent.removeHeader));
-            const isModified = !!(!isAllowlisted
-                && (filteringEvent.isModifyingCookieRule
-                    || filteringEvent.requestRule?.cssRule
-                    || filteringEvent.requestRule?.scriptRule
-                    || filteringEvent.requestRule?.cspRule
-                    || filteringEvent.requestRule?.permissionsRule
-                    || filteringEvent.replaceRules
-                    || filteringEvent.removeParam
-                    || filteringEvent.removeHeader));
-            const isUserFilter = filteringEvent.requestRule?.filterId === 0;
-            const isFirstParty = !filteringEvent.requestThirdParty;
-            const isThirdParty = !!filteringEvent.requestThirdParty;
+            const filteringEventType = getStatusMode(filteringEvent);
+
+            const isAllowlisted = filteringEventType === StatusMode.ALLOWED || filteringEventType === StatusMode.ALLOWED_STEALTH;
+            const isBlocked = filteringEventType === StatusMode.BLOCKED;
+            const isModified = filteringEventType === StatusMode.MODIFIED;
             const isRegular = !isAllowlisted && !isBlocked && !isModified;
+
+            const { sourceRules } = filteringEvent?.declarativeRuleInfo || {};
+            const isUserFilter = filteringEvent.requestRule?.filterId === 0
+                // Here we assume that the set of triggered rules is always from one
+                // filter and therefore we extract the first one and based on it we
+                // get the filter name.
+                || !!(sourceRules && sourceRules.length > 0 && sourceRules[0]?.filterId === 0);
 
             // filter by miscellaneous filters
             const showByMiscellaneous = this.miscellaneousFilters.filters.every((f) => f.enabled)
@@ -542,6 +529,9 @@ class LogStore {
             if (!showByMiscellaneous) {
                 return false;
             }
+
+            const isFirstParty = !filteringEvent.requestThirdParty;
+            const isThirdParty = !!filteringEvent.requestThirdParty;
 
             // filter by request source filter
             const showByRequestSource = this.requestSourceFilters.filters.every((f) => f.enabled)

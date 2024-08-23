@@ -123,6 +123,7 @@ const ruleAccessor = (props) => {
         requestRule,
         replaceRules,
         stealthAllowlistRules,
+        declarativeRuleInfo,
     } = props;
 
     let ruleText = '';
@@ -150,8 +151,46 @@ const ruleAccessor = (props) => {
         ruleText = reactTranslator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
     }
 
+    // If this is a cosmetic rule - we should not check declarative source rules,
+    // because they works only with network part.
     const isCosmeticRule = requestRule?.cssRule || requestRule?.scriptRule;
-    const isAssumedRule = requestRule?.appliedRuleText && !isCosmeticRule;
+    if (isCosmeticRule) {
+        return ruleText;
+    }
+
+    // If we have exact matched rule - show it.
+    if (declarativeRuleInfo?.sourceRules.length > 0) {
+        const exactMatchedRules = declarativeRuleInfo.sourceRules
+            .map(({ sourceRule }) => sourceRule)
+            .join('; ');
+        if (!ruleText) {
+            return exactMatchedRules;
+        }
+
+        const { sourceRules } = declarativeRuleInfo;
+
+        // Note: source rules contains text from already preprocessed rules,
+        // that's why we checked appliedRuleText, but not originalRuleText.
+        const matchedRulesContainsAssumed = sourceRules.some(({ sourceRule }) => sourceRule === ruleText);
+
+        // If exactly matched rules do not contain assumed rule - we render
+        // attention mark for this request.
+        const attention = !matchedRulesContainsAssumed && (
+            <>
+                <span>❗</span>
+            </>
+        );
+
+        return (
+            <>
+                {attention}
+                {exactMatchedRules}
+            </>
+        );
+    }
+
+    // Otherwise show assumed rule, if found any.
+    const isAssumedRule = ruleText && !isCosmeticRule;
 
     return (
         <>
