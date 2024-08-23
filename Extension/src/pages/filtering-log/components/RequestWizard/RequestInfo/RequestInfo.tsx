@@ -42,6 +42,7 @@ import {
     getFilterName,
     getRequestEventType,
     getCookieData,
+    getRuleFilterName,
 } from '../utils';
 import { rootStore } from '../../../stores/RootStore';
 import { WindowsApi } from '../../../../../common/api/extension/windows';
@@ -238,35 +239,6 @@ const getRulesData = (event: FilteringLogEvent, filtersMetadata: FilterMetadata[
     return result;
 };
 
-/**
- * Returns filter name for a rule
- *
- * @param selectedEvent filtering event
- * @param {RegularFilterMetadata} filtersMetadata filters metadata
- * @returns {string|null} filter name or null, if filter is not found or there are multiple rules
- */
-const getRuleFilterName = (selectedEvent: FilteringLogEvent, filtersMetadata: FilterMetadata[] | null) => {
-    const {
-        requestRule,
-        replaceRules,
-        stealthAllowlistRules,
-    } = selectedEvent;
-
-    if (requestRule) {
-        return getFilterName(requestRule.filterId, filtersMetadata);
-    }
-
-    if (replaceRules?.length === 1) {
-        return getFilterName(replaceRules[0]?.filterId, filtersMetadata);
-    }
-
-    if (stealthAllowlistRules?.length === 1) {
-        return getFilterName(stealthAllowlistRules[0]?.filterId, filtersMetadata);
-    }
-
-    return null;
-};
-
 const PARTS = {
     URL: 'URL',
     ELEMENT: 'ELEMENT',
@@ -275,8 +247,10 @@ const PARTS = {
     SOURCE: 'SOURCE',
     ASSUMED_RULE: 'ASSUMED_RULE',
     ORIGINAL_RULE: 'ORIGINAL_RULE',
+    APPLIED_RULES: 'APPLIED_RULES',
     FILTER: 'FILTER',
     STEALTH: 'STEALTH',
+    DECLARATIVE_RULE: 'DECLARATIVE_RULE',
 };
 
 const RequestInfo = observer(() => {
@@ -331,9 +305,18 @@ const RequestInfo = observer(() => {
             title: translator.getMessage('filtering_modal_filter'),
             data: getRuleFilterName(selectedEvent, filtersMetadata),
         },
+        // TODO: determine first/third-party
         [PARTS.STEALTH]: {
             title: translator.getMessage('filtering_modal_privacy'),
-            data: getStealthActionNames(selectedEvent?.stealthActions),
+            data: getStealthActionNames(selectedEvent.stealthActions),
+        },
+        [PARTS.APPLIED_RULES]: {
+            title: translator.getPlural('filtering_modal_applied_rules', selectedEvent.declarativeRuleInfo?.sourceRules.length || 0),
+            data: selectedEvent.declarativeRuleInfo?.sourceRules.map((r) => r.sourceRule),
+        },
+        [PARTS.DECLARATIVE_RULE]: {
+            title: translator.getMessage('filtering_modal_declarative_rule'),
+            data: selectedEvent.declarativeRuleInfo?.declarativeRuleJson,
         },
     };
 
@@ -362,29 +345,21 @@ const RequestInfo = observer(() => {
         };
     }
 
-    let infoElements = [
-        PARTS.URL,
-        PARTS.ELEMENT,
-        PARTS.COOKIE,
-        PARTS.TYPE,
-        PARTS.SOURCE,
-        PARTS.ASSUMED_RULE,
-        PARTS.ORIGINAL_RULE,
-        PARTS.FILTER,
-        PARTS.STEALTH,
-    ];
+    let infoElementsToShow = Object.values(PARTS);
 
     if (selectedEvent.requestRule?.cookieRule) {
-        infoElements = [
-            PARTS.COOKIE,
-            PARTS.TYPE,
-            PARTS.SOURCE,
-            // TODO: determine first/third-party
-            PARTS.STEALTH,
-            PARTS.ASSUMED_RULE,
-            PARTS.ORIGINAL_RULE,
-            PARTS.FILTER,
-        ];
+        infoElementsToShow = infoElementsToShow.filter((p) => p !== PARTS.ELEMENT && p !== PARTS.URL);
+    }
+
+    // Note: source rules contains text from already preprocessed rules,
+    // that's why we checked appliedRuleText, but not originalRuleText.
+    const matchedRulesContainsAssumed = selectedEvent.declarativeRuleInfo?.sourceRules.some(({ sourceRule }) => {
+        return sourceRule === selectedEvent.appliedRuleText;
+    });
+    // If assumed and applied rules are the same - show only applied.
+    if (selectedEvent.appliedRuleText && matchedRulesContainsAssumed) {
+        // Hide assume rule and it's original (not preprocessed) version
+        infoElementsToShow = infoElementsToShow.filter((p) => p !== PARTS.ASSUMED_RULE && p !== PARTS.ORIGINAL_RULE);
     }
 
     const openInNewTabHandler = async () => {
@@ -416,7 +391,7 @@ const RequestInfo = observer(() => {
         );
     };
 
-    const renderedInfo = infoElements
+    const renderedInfo = infoElementsToShow
         .map((elementId) => eventPartsMap[elementId])
         // original rule text can be undefined which cause runtime error while destructuring
         .filter((el) => !!el)
@@ -432,6 +407,7 @@ const RequestInfo = observer(() => {
 
             const isRequestUrl = data === selectedEvent.requestUrl;
             const isRule = data === selectedEvent.appliedRuleText || data === rulesData.appliedRuleTexts;
+            const isDeclarativeRule = data === selectedEvent.declarativeRuleInfo?.declarativeRuleJson;
             const isFilterName = data === selectedEvent.filterName;
             const isElement = data === selectedEvent.element;
             const canCopyToClipboard = isRequestUrl || isRule || isFilterName;
@@ -502,12 +478,24 @@ const RequestInfo = observer(() => {
                 );
             };
 
+            const content = isDeclarativeRule && selectedEvent.declarativeRuleInfo?.declarativeRuleJson
+                ? (
+                    <pre>
+                        {JSON.stringify(JSON.parse(selectedEvent.declarativeRuleInfo.declarativeRuleJson), null, 2)}
+                    </pre>
+                )
+                : textsWithCollapsers;
+
+            const classNames = isDeclarativeRule && selectedEvent.declarativeRuleInfo?.declarativeRuleJson
+                ? cn('request-info__value', 'scrollable')
+                : cn('request-info__value');
+
             return (
                 <div key={title} className="request-info">
                     <div className="request-info__main">
                         <div className="request-info__key">{title}</div>
-                        <div className="request-info__value">
-                            {textsWithCollapsers}
+                        <div className={classNames}>
+                            {content}
                         </div>
                     </div>
                     {(isRule && !isCosmeticRule) && (

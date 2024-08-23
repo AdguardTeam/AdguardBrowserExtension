@@ -1658,7 +1658,7 @@ hardwareluxx.de##div[style="height:200px;width:100%;"]:empty
 hardwareluxx.de##html a[target="_blank"][href*="banner"]
 11880.com##.box-entry-detail--ad
 11880.com##div[id^="responsive-bhvr--ad-sidebar-"]
-sir-apfelot.de##.entry-content > .code-block:has(> div[style] > a:contains(Werbung))
+sir-apfelot.de#?#.entry-content > .code-block:has(> div[style] > a:contains(Werbung))
 sir-apfelot.de##a[rel*="sponsored"]
 chip.de##.Button--Clickout
 ||watchmdh.to/banners^
@@ -5560,7 +5560,7 @@ freenet.de#@##frnBanner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/125101
 @@||static.trbo.com/img/$domain=o2online.de
 ! berliner-zeitung.de - article hidden on main page which contains the word Anzeige in its header
-berliner-zeitung.de#@?#.m-article-teaser:-abp-has(div:-abp-contains(Anzeige))
+berliner-zeitung.de#@?#.m-article-teaser:has(div:contains(Anzeige))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122203
 mobile.de#@#[data-ad-id]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122120
@@ -5651,7 +5651,7 @@ urlaubspartner.net#@##werbung
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=player.motorsport-magazin.com
 @@||cdn.jsdelivr.net/combine/npm/video.js*/dist/video-js.min.css*/videojs-contrib-ads*/dist/videojs.ads.min.css$domain=player.motorsport-magazin.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79974
-saechsische.de#@?#article,div:-abp-has( > div > .article-section--nad > span:-abp-contains(Anzeige))
+saechsische.de#@?#article,div:has( > div > .article-section--nad > span:contains(Anzeige))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79115
 tarnkappe.info#@#.category-advertorial
 ! https://github.com/AdguardTeam/AdguardFilters/issues/74986
@@ -5675,13 +5675,13 @@ golem.de#@%#(function(b,d,e){function a(){}b={get:function(){return a},set:a},d=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/61906
 chip.de#@%#(function(o){function a(a){return{get:function(){return a},set:b}}function b(){}function c(){throw"Adguard: stopped a script execution.";}var d={},e=a(function(a){a(!1)}),f={},g=EventTarget.prototype.addEventListener;o(d,{spid_control_callback:a(b),content_control_callback:a(b),vid_control_callback:a(b)});o(f,{config:a(d),_setSpKey:{get:c,set:c},checkState:e,isAdBlocking:e,getSafeUri:a(function(a){return a}),pageChange:a(b),setupSmartBeacons:a(b)});Object.defineProperty(window,"_sp_",a(f));EventTarget.prototype.addEventListener=function(a){"sp.blocking"!=a&&"sp.not_blocking"!=a&&g.apply(this,arguments)}})(Object.defineProperties);
 ! saechsische.de - article hidden - https://www.saechsische.de/staatsanwalt-gegenueber-rechten-befangen-5247375.html
-saechsische.de#@?#article,div:-abp-has( > .article-fill__section > span:-abp-contains(Anzeige))
+saechsische.de#@?#article,div:has( > .article-fill__section > span:contains(Anzeige))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/70817
 turn-on.de#@#.noadblock
 ! rtl.de - video not showing
 @@||bilder-a.akamaihd.net/ip/js/ipdvdc/blockadblock.min.js$domain=rtl.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53752
-saechsische.de#@?#article,div:-abp-has(> .landingpage > span:-abp-contains(Anzeige))
+saechsische.de#@?#article,div:has(> .landingpage > span:contains(Anzeige))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/50079
 krone.at#@#.ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/49853
@@ -11119,7 +11119,7 @@ abendzeitung-muenchen.de##article[class^="teaser nummer-"]:has(span.specialfeatu
 futurezone.de##article[data-post-id]:has(.sponsor-byline)
 diegrenzgaenger.lu##article[id^=post-]:has(.sponsored-indicator)
 az.com.na##aside:has(img[src*="/adverts/"])
-berlinstadtservice.de#?#.row.block03:-abp-has(p:-abp-contains(ANZEIGE))
+berlinstadtservice.de#?#.row.block03:has(p:contains(ANZEIGE))
 hornoxe.com##div.post.hentry.ivycat-post:has(a[href^="https://amzn.to/"])
 hornoxe.com##div.post.hentry.ivycat-post:has(a[href^="https://www.amazon.de/"])
 douglas.de##div.product-grid-column:has(span.product-tile__sponsored)
@@ -11139,104 +11139,104 @@ dogforum.de##li:has(.wbbXdLocationPostList)
 jameda.de##li:has([data-testid="advertisementSign-flag"])
 baur.de##li:has(a[href^="https://b.fr3.eu.criteo.com/rm?"])
 golem.de##li[data-article-id]:has(.icon-addy)
-rewe.de#?#.rs-qa-product:-abp-contains(Gesponsert)
+rewe.de#?#.rs-qa-product:contains(Gesponsert)
 mein-mmo.de##section.post:has([data-type="sponsored"])
 finanznachrichten.de##tr:has(span.sprite.h-w-c)
 wallstreet-online.de##tr:has(td > .float-end > span[title="Anzeige"])
 wallstreet-online.de##tr:has(td.right:has(img[alt="Anzeige"]))
-stol.it#?##ContainerFull:-abp-has(a:-abp-contains(Anzeige))
-alles-mahlsdorf.de#?#.elementor-section:-abp-has(h2.elementor-heading-title:-abp-contains(Werbung))
-android-hilfe.de#?#article.message--post:-abp-has(span.username:-abp-contains(Anzeige))
-apfeltalk.de#?#div.wpb_text_column:-abp-contains(Werbung)
-avguide.ch#?#.avgrid_1_of_1.viewlet-bottom:-abp-has(h2:-abp-contains(Advertorials))
-avguide.ch#?#.gridteaser.gridteaser-m:-abp-has(h4:-abp-contains(Sponsored Post))
-back-intern.de#?#.cm-post-widget-three.cm-post-widget-section:-abp-has(.section-title:-abp-contains(Partner))
-baur.de#?#div[data-testid="card"]:-abp-has(span.MuiCardHeader-title:-abp-contains(Gesponserte Artikel))
-baur.de#?#div[data-testid="reco-wrapper"]:-abp-has(div[class^="indexesm__HeadlineElement-fragment-product-master__"]:-abp-contains(Gesponserte Artikel))
-baur.de#?#span:-abp-contains(Gesponserte Artikel)
-bergsteiger.de#?#.eight.columns.alpha.content:-abp-has(span:-abp-contains(Advertorial))
-berliner-kurier.de#?#.m-teaser:-abp-has(span:-abp-contains(Sponsored))
-berliner-zeitung.de#?#.m-article-teaser:-abp-has(div:-abp-contains(Anzeige))
-bitreporter.de#?#.code-block:-abp-has(span:-abp-contains(/ANZEIGE|Anzeige|Werbung|WERBUNG/))
-carpediem.life#?#.post-overview:-abp-has(div:-abp-contains(Anzeige))
-celleheute.de#?#div.YzqVVZ:-abp-has(span.wixui-rich-text__text:-abp-contains(Anzeigen))
-chip.de#?#a.secondary:-abp-has(.Badge__Content:-abp-contains(/anzeige|gesponsert/))
-chip.de#?#article.copy-sm:-abp-has(i:-abp-contains(Anzeige))
-chip.de#?#section > header + a + div + div:-abp-has(div:-abp-contains(Anzeige))
-computerbase.de#?#div.text-asset.text-width:-abp-has(p.text-width:-abp-contains(Anzeige))
-computerbild.de#?#article.gridArea__teaserM:-abp-has(div.teaserBlock__label:-abp-contains(Anzeige))
-cyclingmagazine.de#?#p:-abp-contains(Anzeige) > strong > a[target="_blank"][rel="noopener"] > picture
-dkamera.de#?#.node.teaser:-abp-has(a:-abp-contains(Anzeige))
-ebay.de#?#.b-module:-abp-has(h2:-abp-contains(Anzeigen))
-ebay.de#?#.mfe-lex:-abp-has(h2:-abp-contains(Anzeigen))
-emotion.de#?#.node--article:-abp-has(span:-abp-contains(Anzeige))
-fazemag.de#?#h4:-abp-has(span:-abp-contains(ANZEIGEN))
-finanzen.net#?#.mleft-10.small-font.light-grey:-abp-contains(Werbung) + .box + .border-blue-2
-finanzen.net#?#.mleft-10:-abp-contains(Werbung) + .box
-games.ch#?#.col4:-abp-has(h3:-abp-contains(Unterstützt durch:))
-gamestar.de#?#.content-item-medium:-abp-has(data:-abp-contains(Anzeige))
-gamestar.de#?#.content-item-small:-abp-has(h3:-abp-contains(Anzeige))
-gamestar.de#?#.contentnewsitem-box .box-reload .news-list:-abp-has(span.media-heading:-abp-contains([Anzeige]))
-gamestar.de#?#.contentnewsitem-box .box-reload > div:-abp-has(.news-list span.media-heading:-abp-contains([Anzeige])) + hr
-giga.de#?#.alice-teaser-list-item:-abp-has(.alice-teaser-meta-text:-abp-contains(Anzeige))
-gofeminin.de#?#.af-block-native:-abp-contains(Anzeige)
-gofeminin.de#?#.af-block-native:-abp-contains(Sponsored Post)
-handelszeitung.ch#?#.teaser-m-default:-abp-contains(Native Advertising)
-handelszeitung.ch#?#.teaser-m-default:-abp-contains(Publireportage)
-hardwareluxx.de#?#.bg-gray-light:-abp-has(div.text-right:-abp-contains(Werbung))
-heise.de#?#.px-4.md\:px-6.py-3.h-full.bg-gray-50:-abp-has(.mb-3.text-xs.leading-none.text-center:-abp-contains(Anzeige))
-heise.de#?#p:-abp-contains(=== Anzeige / Sponsorenhinweis ===)
-heise.de#?#p:-abp-contains(=== Anzeige / Sponsorenhinweis ===) + p
-heise.de#?#p:-abp-contains(=== Anzeige / Sponsorenhinweis ===) + p + p
-heise.de#?#p:-abp-contains(=== Anzeige / Sponsorenhinweis ende===)
-ibooks.to#?#form:-abp-has(button:-abp-contains(Download))
-imsueden.de#?#.swiper:-abp-has(.headline:-abp-contains(Partner))
-kajak-magazin.com#?#.custom:-abp-has(span:-abp-contains(Anzeige))
-kaufland.de#?#.recommender-wrapper:-abp-contains(Gesponsert)
-koeln.de#?#.gb-container:-abp-contains(Anzeige)
-la-palma24.info#?#article[class^="dvs-ad-tyblqtres-uno"]:-abp-has(div:-abp-contains(AD))
-la-palma24.info#?#div[class^="dvbloqbasic"]:-abp-has(div:-abp-contains(Ad))
-lausitz-tv.de#?#.small-12.column:-abp-contains(Anzeige)
-lessentiel.lu#?#div:-abp-has(+ span:-abp-contains(Werbung))
-linkedin.com#?#.core-rail > div > div[id^="ember"]:-abp-has(span:-abp-contains(Gesponsert))
-marbacher-zeitung.de#?#.appetizer:-abp-contains(Anzeige)
-mediamarkt.at,mediamarkt.de,saturn.de#?#li:-abp-has(div[data-test="mms-product-card"]:-abp-has(span:-abp-contains(Gesponsert)))
-mediamarkt.de#?#[data-test="mms-search-flagship-sba"]:-abp-contains(Gesponsert)
-mediamarkt.de#?#[data-test="mms-search-showcase"] + div:-abp-contains(Gesponsert)
-meissen-fernsehen.de#?#.text-center:-abp-contains(- Werbung -)
-mmnews.de#?#.sp-module:-abp-has(span:-abp-contains(Kleinanzeigen))
-motorsport-total.com#?#.teaser_container.teaser-htmlcode.relative.row:-abp-has(.f1de-container-title:-abp-contains(Die besten Leasing-Deals))
-notebookcheck.com#?#.introa_news:-abp-contains(Anzeige)
-nur-positive-nachrichten.de#?#.moduletable.text-center:-abp-has(.bildunterschrift:-abp-contains(Anzeige))
-o-sport.de#?#.card-body:-abp-contains(Sponsoren)
-onvista.de#?#.outer-spacing--xxlarge-top:-abp-contains(Werbung von)
-onvista.de#?#a[class*="ArticleTeaserBox"]:-abp-has(div.ov-subline:-abp-contains(Werbung))
-pctipp.ch#?#.list_item:-abp-has(.dachzeile:-abp-contains(Partnerzone))
-pcwelt.de#?#div.box:-abp-has(span.banner-text + h4:-abp-contains(/Partner-Angebot|Angebote/))
-pollenflug.de#?#.services-item:-abp-contains(bei Amazon)
-produktion.de#?#.postlist-item:-abp-has(.label:-abp-contains(Gesponsert))
-report-d.de#?#.content-view-containerbox:-abp-contains(SONDER-VERÖFFENTLICHUNG)
-satvision.de#?#.fc_bloglist_item:-abp-has(a:-abp-contains(Advertorial))
-satvision.de#?#.mod_flexicontent_standard_wrapper:-abp-has(span:-abp-contains(Advertorial))
-seo-suedwest.de#?#.moduletable:-abp-has(span:-abp-contains(Anzeige))
-skodacommunity.de#?#article.message--post:-abp-has(a:-abp-contains(Anzeige))
-smartphonemag.de#?#.td_module_wrap:-abp-has(.td-post-author-name:-abp-contains(Werbung))
-sportdeutschland.tv#?#.text-right.text-white.col-6:-abp-contains(präsentiert von)
-swz.it#?#.jeg_post.jeg_pl_md_2.pr.format-standard:-abp-has(span:-abp-contains(PR-INFO))
-t-online.de,www-t--online-de.cdn.ampproject.org#?#div[id^="T-"][onfocus^="A('zid="]:-abp-has(a:-abp-contains(Anzeige))
-tag24.de#?#article.article-tile:-abp-has(span.article-tile__badge2:-abp-contains(ANZEIGE))
-tiger.ch#?#div[id^="gridSuche_panRecord_"]:has([id^="gridSuche_lblUrl_"]:-abp-contains(Anzeige))
-tonight.de#?#.td_block_wrap:-abp-has(a:-abp-contains(Anzeige))
-um-tv.de#?#.small-12.column.space:-abp-has(p:-abp-contains(--Anzeige--))
-unicum.de#?#.artikel-preview-content:-abp-has(p:-abp-contains(-ANZEIGE-))
-wallstreet-online.de#?#.footnote:-abp-has(.headline-box:-abp-contains(Werbung))
-wallstreet-online.de#?#.module.c1.hidden-xs:-abp-has(span.issuerPromotionHint:-abp-contains(Werbung))
-wallstreet-online.de#?#.newsflash:-abp-has(span.suffix.wo-inline-block.pull-right:-abp-contains(Anzeige))
-wallstreet-online.de#?#.newsflash:-abp-has(span.wo-inline-block:-abp-contains(Anzeige))
-welt.de#?#div[id][data-qa]:-abp-has(.c-buelent-linkbox__label:-abp-contains(Anzeige))
-winfuture-forum.de#?#div.ExtraPostBlock:-abp-has(div.post_block:-abp-contains(Anzeige)):not(.with_rep)
-zentrum-der-gesundheit.de#?#span:-abp-contains(/ANZ|EIGE/) + button
-zentrum-der-gesundheit.de#?#span:-abp-contains(/ANZ|EIGE/) + div
+stol.it#?##ContainerFull:has(a:contains(Anzeige))
+alles-mahlsdorf.de#?#.elementor-section:has(h2.elementor-heading-title:contains(Werbung))
+android-hilfe.de#?#article.message--post:has(span.username:contains(Anzeige))
+apfeltalk.de#?#div.wpb_text_column:contains(Werbung)
+avguide.ch#?#.avgrid_1_of_1.viewlet-bottom:has(h2:contains(Advertorials))
+avguide.ch#?#.gridteaser.gridteaser-m:has(h4:contains(Sponsored Post))
+back-intern.de#?#.cm-post-widget-three.cm-post-widget-section:has(.section-title:contains(Partner))
+baur.de#?#div[data-testid="card"]:has(span.MuiCardHeader-title:contains(Gesponserte Artikel))
+baur.de#?#div[data-testid="reco-wrapper"]:has(div[class^="indexesm__HeadlineElement-fragment-product-master__"]:contains(Gesponserte Artikel))
+baur.de#?#span:contains(Gesponserte Artikel)
+bergsteiger.de#?#.eight.columns.alpha.content:has(span:contains(Advertorial))
+berliner-kurier.de#?#.m-teaser:has(span:contains(Sponsored))
+berliner-zeitung.de#?#.m-article-teaser:has(div:contains(Anzeige))
+bitreporter.de#?#.code-block:has(span:contains(/ANZEIGE|Anzeige|Werbung|WERBUNG/))
+carpediem.life#?#.post-overview:has(div:contains(Anzeige))
+celleheute.de#?#div.YzqVVZ:has(span.wixui-rich-text__text:contains(Anzeigen))
+chip.de#?#a.secondary:has(.Badge__Content:contains(/anzeige|gesponsert/))
+chip.de#?#article.copy-sm:has(i:contains(Anzeige))
+chip.de#?#section > header + a + div + div:has(div:contains(Anzeige))
+computerbase.de#?#div.text-asset.text-width:has(p.text-width:contains(Anzeige))
+computerbild.de#?#article.gridArea__teaserM:has(div.teaserBlock__label:contains(Anzeige))
+cyclingmagazine.de#?#p:contains(Anzeige) > strong > a[target="_blank"][rel="noopener"] > picture
+dkamera.de#?#.node.teaser:has(a:contains(Anzeige))
+ebay.de#?#.b-module:has(h2:contains(Anzeigen))
+ebay.de#?#.mfe-lex:has(h2:contains(Anzeigen))
+emotion.de#?#.node--article:has(span:contains(Anzeige))
+fazemag.de#?#h4:has(span:contains(ANZEIGEN))
+finanzen.net#?#.mleft-10.small-font.light-grey:contains(Werbung) + .box + .border-blue-2
+finanzen.net#?#.mleft-10:contains(Werbung) + .box
+games.ch#?#.col4:has(h3:contains(Unterstützt durch:))
+gamestar.de#?#.content-item-medium:has(data:contains(Anzeige))
+gamestar.de#?#.content-item-small:has(h3:contains(Anzeige))
+gamestar.de#?#.contentnewsitem-box .box-reload .news-list:has(span.media-heading:contains([Anzeige]))
+gamestar.de#?#.contentnewsitem-box .box-reload > div:has(.news-list span.media-heading:contains([Anzeige])) + hr
+giga.de#?#.alice-teaser-list-item:has(.alice-teaser-meta-text:contains(Anzeige))
+gofeminin.de#?#.af-block-native:contains(Anzeige)
+gofeminin.de#?#.af-block-native:contains(Sponsored Post)
+handelszeitung.ch#?#.teaser-m-default:contains(Native Advertising)
+handelszeitung.ch#?#.teaser-m-default:contains(Publireportage)
+hardwareluxx.de#?#.bg-gray-light:has(div.text-right:contains(Werbung))
+heise.de#?#.px-4.md\:px-6.py-3.h-full.bg-gray-50:has(.mb-3.text-xs.leading-none.text-center:contains(Anzeige))
+heise.de#?#p:contains(=== Anzeige / Sponsorenhinweis ===)
+heise.de#?#p:contains(=== Anzeige / Sponsorenhinweis ===) + p
+heise.de#?#p:contains(=== Anzeige / Sponsorenhinweis ===) + p + p
+heise.de#?#p:contains(=== Anzeige / Sponsorenhinweis ende===)
+ibooks.to#?#form:has(button:contains(Download))
+imsueden.de#?#.swiper:has(.headline:contains(Partner))
+kajak-magazin.com#?#.custom:has(span:contains(Anzeige))
+kaufland.de#?#.recommender-wrapper:contains(Gesponsert)
+koeln.de#?#.gb-container:contains(Anzeige)
+la-palma24.info#?#article[class^="dvs-ad-tyblqtres-uno"]:has(div:contains(AD))
+la-palma24.info#?#div[class^="dvbloqbasic"]:has(div:contains(Ad))
+lausitz-tv.de#?#.small-12.column:contains(Anzeige)
+lessentiel.lu#?#div:has(+ span:contains(Werbung))
+linkedin.com#?#.core-rail > div > div[id^="ember"]:has(span:contains(Gesponsert))
+marbacher-zeitung.de#?#.appetizer:contains(Anzeige)
+mediamarkt.at,mediamarkt.de,saturn.de#?#li:has(div[data-test="mms-product-card"]:has(span:contains(Gesponsert)))
+mediamarkt.de#?#[data-test="mms-search-flagship-sba"]:contains(Gesponsert)
+mediamarkt.de#?#[data-test="mms-search-showcase"] + div:contains(Gesponsert)
+meissen-fernsehen.de#?#.text-center:contains(- Werbung -)
+mmnews.de#?#.sp-module:has(span:contains(Kleinanzeigen))
+motorsport-total.com#?#.teaser_container.teaser-htmlcode.relative.row:has(.f1de-container-title:contains(Die besten Leasing-Deals))
+notebookcheck.com#?#.introa_news:contains(Anzeige)
+nur-positive-nachrichten.de#?#.moduletable.text-center:has(.bildunterschrift:contains(Anzeige))
+o-sport.de#?#.card-body:contains(Sponsoren)
+onvista.de#?#.outer-spacing--xxlarge-top:contains(Werbung von)
+onvista.de#?#a[class*="ArticleTeaserBox"]:has(div.ov-subline:contains(Werbung))
+pctipp.ch#?#.list_item:has(.dachzeile:contains(Partnerzone))
+pcwelt.de#?#div.box:has(span.banner-text + h4:contains(/Partner-Angebot|Angebote/))
+pollenflug.de#?#.services-item:contains(bei Amazon)
+produktion.de#?#.postlist-item:has(.label:contains(Gesponsert))
+report-d.de#?#.content-view-containerbox:contains(SONDER-VERÖFFENTLICHUNG)
+satvision.de#?#.fc_bloglist_item:has(a:contains(Advertorial))
+satvision.de#?#.mod_flexicontent_standard_wrapper:has(span:contains(Advertorial))
+seo-suedwest.de#?#.moduletable:has(span:contains(Anzeige))
+skodacommunity.de#?#article.message--post:has(a:contains(Anzeige))
+smartphonemag.de#?#.td_module_wrap:has(.td-post-author-name:contains(Werbung))
+sportdeutschland.tv#?#.text-right.text-white.col-6:contains(präsentiert von)
+swz.it#?#.jeg_post.jeg_pl_md_2.pr.format-standard:has(span:contains(PR-INFO))
+t-online.de,www-t--online-de.cdn.ampproject.org#?#div[id^="T-"][onfocus^="A('zid="]:has(a:contains(Anzeige))
+tag24.de#?#article.article-tile:has(span.article-tile__badge2:contains(ANZEIGE))
+tiger.ch#?#div[id^="gridSuche_panRecord_"]:has([id^="gridSuche_lblUrl_"]:contains(Anzeige))
+tonight.de#?#.td_block_wrap:has(a:contains(Anzeige))
+um-tv.de#?#.small-12.column.space:has(p:contains(--Anzeige--))
+unicum.de#?#.artikel-preview-content:has(p:contains(-ANZEIGE-))
+wallstreet-online.de#?#.footnote:has(.headline-box:contains(Werbung))
+wallstreet-online.de#?#.module.c1.hidden-xs:has(span.issuerPromotionHint:contains(Werbung))
+wallstreet-online.de#?#.newsflash:has(span.suffix.wo-inline-block.pull-right:contains(Anzeige))
+wallstreet-online.de#?#.newsflash:has(span.wo-inline-block:contains(Anzeige))
+welt.de#?#div[id][data-qa]:has(.c-buelent-linkbox__label:contains(Anzeige))
+winfuture-forum.de#?#div.ExtraPostBlock:has(div.post_block:contains(Anzeige)):not(.with_rep)
+zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + button
+zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + div
 @@||a.bf-ad.net/adengine/chip/adengine.js$xmlhttprequest,domain=chip.de
 @@||acdn.adnxs.com/ast/ast.js$script,domain=finanzen.ch
 @@||ad-ipd.sxp.smartclip.net/select?type=vast$xmlhttprequest,domain=toggo.de

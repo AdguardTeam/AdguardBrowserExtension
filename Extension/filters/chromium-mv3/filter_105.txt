@@ -596,26 +596,26 @@ zoznam.sk##a[href^="https://boxu.sk"]
 !
 ! ---------- ABP Extended filters ---------- !
 !
-brainee.hnonline.sk#?#.container--break:-abp-has(.ad--align)
-brainee.hnonline.sk#?#div[class^="position_"]:-abp-has(.ad--align)
-csfd.cz#?#.widget-group-2 li:-abp-has(div.ad-pmg)
-csfd.cz#?#.ct-related:-abp-contains(/^\s+Reklama/)
-doktorka.cz#?#.block-imageblock:-abp-contains(Reklama)
-dotekomanie.cz#?#div.box:-abp-contains(/^reklama/i)
-enigmaplus.cz,epochaplus.cz#?#.text-center:-abp-has(>span:-abp-contains(reklama))
-enigmaplus.cz,epochaplus.cz#?#div:-abp-has(>a[class^="glightbox"])
-enigmaplus.cz,epochaplus.cz#?#span:-abp-contains(reklama)
-konzolista.cz#?#.v-card--link:-abp-has(.ad)
-lupa.cz,root.cz#?#div.article--content:-abp-has(div.design-advert)
-motorkari.cz#?#div:-abp-has(> a[href*="?act=detail&f=8"])
-msmt.cz#?#.bcc:-abp-has(.banners)
-parabola.cz#?#h3:-abp-contains(/^Reklama$/)
-presovak.sk#?#.wrapper__list__article:-abp-has(.widget__form-subscribe)
-slovnik.aktuality.sk#?#.desktop-wrapper:-abp-has([id^="div-gpt-ad"])
-sports24.cz#?#.tdc-row:not(:-abp-has(>.tdc-element-style))
-tvtv.sk#?#.content-item:-abp-has(.header a[href^="/reklama/"])
-vtn-vranov.sk#?#.widget:-abp-has(img[src*="/ads/"])
-www.seznam.cz#?#div.dragging-enabled:-abp-has(div.gadget--reklama)
+brainee.hnonline.sk#?#.container--break:has(.ad--align)
+brainee.hnonline.sk#?#div[class^="position_"]:has(.ad--align)
+csfd.cz#?#.widget-group-2 li:has(div.ad-pmg)
+csfd.cz#?#.ct-related:contains(/^\s+Reklama/)
+doktorka.cz#?#.block-imageblock:contains(Reklama)
+dotekomanie.cz#?#div.box:contains(/^reklama/i)
+enigmaplus.cz,epochaplus.cz#?#.text-center:has(>span:contains(reklama))
+enigmaplus.cz,epochaplus.cz#?#div:has(>a[class^="glightbox"])
+enigmaplus.cz,epochaplus.cz#?#span:contains(reklama)
+konzolista.cz#?#.v-card--link:has(.ad)
+lupa.cz,root.cz#?#div.article--content:has(div.design-advert)
+motorkari.cz#?#div:has(> a[href*="?act=detail&f=8"])
+msmt.cz#?#.bcc:has(.banners)
+parabola.cz#?#h3:contains(/^Reklama$/)
+presovak.sk#?#.wrapper__list__article:has(.widget__form-subscribe)
+slovnik.aktuality.sk#?#.desktop-wrapper:has([id^="div-gpt-ad"])
+sports24.cz#?#.tdc-row:not(:has(>.tdc-element-style))
+tvtv.sk#?#.content-item:has(.header a[href^="/reklama/"])
+vtn-vranov.sk#?#.widget:has(img[src*="/ads/"])
+www.seznam.cz#?#div.dragging-enabled:has(div.gadget--reklama)
 !
 ! ---------- uBlock Extended filters ---------- !
 !
@@ -628,9 +628,9 @@ csfd.cz,csfd.sk#%#//scriptlet('ubo-acis.js', '$', 'Ads')
 ctrlv.link#%#//scriptlet('ubo-aopr.js', 'adsAllowed')
 drbna.cz#%#//scriptlet('ubo-acis.js', '$', 'fancyBanner')
 ||echo24.cz^$csp=child-src *
-enigmaplus.cz,epochaplus.cz##img[src^="/upload/data/"]:upward(3)
-enigmaplus.cz##img[src*="/img/atlas"]:upward(3)
-epochaplus.cz##img[alt="casopis"]:upward(3)
+enigmaplus.cz,epochaplus.cz#?#img[src^="/upload/data/"]:upward(3)
+enigmaplus.cz#?#img[src*="/img/atlas"]:upward(3)
+epochaplus.cz#?#img[alt="casopis"]:upward(3)
 epochaplus.cz#$#body { padding-top:0px !important; }
 games.tiscali.cz#%#//scriptlet('ubo-aopr.js', 'HTMLIFrameElement.prototype.contentWindow')
 ||h.seznam.cz^$badfilter
@@ -639,7 +639,7 @@ horoskopy.cz#%#//scriptlet('ubo-aopw.js', 'Fisher')
 ||idos.idnes.cz^$csp=child-src *
 impuls.cz#%#//scriptlet('ubo-set.js', 'first', 'false')
 ||indian-tv.cz/uploads/$document
-indian-tv.cz,nerdfix.cz##a:matches-css(background-image: /url/):matches-css(position: fixed):upward(1)
+indian-tv.cz,nerdfix.cz#?#a:matches-css(background-image: /url/):matches-css(position: fixed):upward(1)
 indian-tv.cz,nerdfix.cz#%#//scriptlet('ubo-aeld.js', 'click', 'location')
 kupi.cz#$#.top_bg_content { top: 0px !important; }
 letemsvetemapplem.eu,samsungmagazine.eu#$#.headerbanner-wrapper { min-height: 0 !important; }
@@ -676,7 +676,7 @@ tn.nova.cz#%#//scriptlet('ubo-set.js', 'useSeznamAds', 'false')
 ||trackad.cz/adtrack.php$domain=nova.cz,script,redirect=noopjs
 uloz.to#$#div.l-wrapper { padding-top: 0px !important; }
 uschovna.cz#$#body { background:none !important; }
-vranovske.sk#$?#style:has-text(::selection) { remove: true; }
+vranovske.sk#$?#style:contains(::selection) { remove: true; }
 vranovske.sk#$#div[class="advertisement-item-container"] { visibility: hidden !important; }
 youradio.cz#%#//scriptlet('ubo-nofab.js')
 ||media.actve.net/sads/$media,redirect=noopmp3-0.1s,domain=youradio.cz

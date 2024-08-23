@@ -133,7 +133,11 @@ export class Network {
                     force: true,
                     definedExpressions: this.filterCompilerConditionsConstants,
                     verbose: logger.isVerbose(),
-                    validateChecksum: true,
+                    // Disable checksum checking for local filters, because we
+                    // apply preprocessing for them, during which some rules may
+                    // be changed, and as a result, the filter checksum will
+                    // become invalid.
+                    validateChecksum: !isLocalFilter,
                     // use true because we know that our filters have checksums
                     validateChecksumStrict: true,
                 },

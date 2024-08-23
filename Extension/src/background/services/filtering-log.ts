@@ -37,6 +37,7 @@ import {
     CspReportBlockedEvent,
     getDomain,
     ApplyPermissionsRuleEvent,
+    DeclarativeRuleEvent,
 } from 'tswebextension';
 
 import { messageHandler } from '../message-handler';
@@ -109,6 +110,8 @@ export class FilteringLogService {
         defaultFilteringLog.addEventListener(FilteringEventType.StealthAction, FilteringLogService.onStealthAction);
         defaultFilteringLog.addEventListener(FilteringEventType.StealthAllowlistAction, FilteringLogService.onStealthAllowlistAction);
         defaultFilteringLog.addEventListener(FilteringEventType.CspReportBlocked, FilteringLogService.onCspReportBlocked);
+        // Will fire only in unpacked extension.
+        defaultFilteringLog.addEventListener(FilteringEventType.MatchedDeclarativeRule, FilteringLogService.onMatchedDeclarativeRule);
 
         if (UserAgent.isFirefox) {
             defaultFilteringLog.addEventListener(FilteringEventType.ReplaceRuleApply, FilteringLogService.onReplaceRuleApply);
@@ -163,6 +166,7 @@ export class FilteringLogService {
             advancedModifier,
         } = data;
 
+        // This can happened only if event fired from webRequest.onErrorOccurred
         if (filterId === null || ruleIndex === null) {
             return;
         }
@@ -184,6 +188,22 @@ export class FilteringLogService {
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
             HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
+    }
+
+    /**
+     * Records the application of declarative rule.
+     *
+     * @param ruleEvent Item of {@link matchedDeclarativeRule}.
+     * @param ruleEvent.data Data for this event: tabId, eventId and applied declarative rule in JSON.
+     */
+    private static async onMatchedDeclarativeRule({ data }: DeclarativeRuleEvent): Promise<void> {
+        const {
+            tabId,
+            eventId,
+            declarativeRuleInfo,
+        } = data;
+
+        filteringLogApi.attachDeclarativeRuleToEventData(tabId, eventId, declarativeRuleInfo);
     }
 
     /**

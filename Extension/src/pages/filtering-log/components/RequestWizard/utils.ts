@@ -208,3 +208,41 @@ export const getCookieData = (event: FilteringLogEvent): string | null => {
         ? `${event.cookieName} = ${event.cookieValue}`
         : event.cookieName;
 };
+
+/**
+ * Returns filter name for a rule
+ *
+ * @param selectedEvent filtering event
+ * @param {RegularFilterMetadata} filtersMetadata filters metadata
+ * @returns {string|null} filter name or null, if filter is not found or there are multiple rules
+ */
+export const getRuleFilterName = (selectedEvent: FilteringLogEvent, filtersMetadata: FilterMetadata[] | null) => {
+    const {
+        requestRule,
+        replaceRules,
+        stealthAllowlistRules,
+        declarativeRuleInfo,
+    } = selectedEvent;
+
+    if (declarativeRuleInfo?.sourceRules) {
+        // Here we assume that the set of triggered rules is always from one
+        // filter and therefore we extract the first one and based on it we
+        // get the filter name.
+        const firstRule = declarativeRuleInfo.sourceRules[0]?.filterId;
+        return getFilterName(firstRule, filtersMetadata);
+    }
+
+    if (requestRule) {
+        return getFilterName(requestRule.filterId, filtersMetadata);
+    }
+
+    if (replaceRules?.length === 1) {
+        return getFilterName(replaceRules[0]?.filterId, filtersMetadata);
+    }
+
+    if (stealthAllowlistRules?.length === 1) {
+        return getFilterName(stealthAllowlistRules[0]?.filterId, filtersMetadata);
+    }
+
+    return null;
+};

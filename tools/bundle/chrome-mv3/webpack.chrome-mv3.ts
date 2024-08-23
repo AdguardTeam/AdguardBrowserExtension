@@ -89,7 +89,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
                                     chromeMv3Manifest,
                                     filters,
                                     {
-                                        forceUpdate: false,
+                                        forceUpdate: true,
                                         enable: [BASE_FILTER_ID],
                                         rulesetPrefix: RULESET_NAME_PREFIX,
                                     },

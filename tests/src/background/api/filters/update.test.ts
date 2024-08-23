@@ -303,7 +303,10 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
-                    validateChecksum: true,
+                    // Local filters loaded without checking checksum, because
+                    // we store preprocessed filters and filter checksum can be
+                    // changed.
+                    validateChecksum: false,
                     validateChecksumStrict: true,
                 },
             );
@@ -382,7 +385,10 @@ describe('Filter Update API should', () => {
                 {
                     definedExpressions,
                     force: true,
-                    validateChecksum: true,
+                    // Local filters loaded without checking checksum, because
+                    // we store preprocessed filters and filter checksum can be
+                    // changed.
+                    validateChecksum: false,
                     validateChecksumStrict: true,
                 },
             );

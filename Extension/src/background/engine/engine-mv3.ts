@@ -195,8 +195,6 @@ export class Engine implements TsWebExtensionEngine {
             }));
 
         return {
-            // TODO: Maybe should be removed or somehow used in AG-34437
-            // This one is for separative declarative filtering log.
             declarativeLogEnabled: filteringLogApi.isOpen(),
             customFilters,
             verbose: !!(IS_RELEASE || IS_BETA),

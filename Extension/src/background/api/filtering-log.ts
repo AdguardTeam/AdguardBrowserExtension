@@ -29,6 +29,7 @@ import {
     getRuleSourceText,
     getRuleSourceIndex,
     PreprocessedFilterList,
+    type DeclarativeRuleInfo,
 } from 'tswebextension';
 
 import { logger } from '../../common/logger';
@@ -43,7 +44,6 @@ import { AntiBannerFiltersId } from '../../common/constants';
 export type FilteringEventRuleData = {
     filterId: number,
     ruleIndex: number,
-    originalRuleText?: string,
     isImportant?: boolean,
     documentLevelRule?: boolean,
     isStealthModeRule?: boolean,
@@ -56,9 +56,12 @@ export type FilteringEventRuleData = {
     contentRule?: boolean,
     cssRule?: boolean,
     scriptRule?: boolean,
-    appliedRuleText?: string,
-};
+} & Partial<RuleText>;
 
+/**
+ * This is raw filtering log event type which we added or update when received
+ * some filtering log event type from tswebextension.
+ */
 export type FilteringLogEvent = {
     eventId: string,
     requestUrl?: string,
@@ -83,7 +86,15 @@ export type FilteringLogEvent = {
     replaceRules?: FilteringEventRuleData[],
     stealthAllowlistRules?: FilteringEventRuleData[],
     stealthActions?: StealthActionEvent['data']['stealthActions'],
+    declarativeRuleInfo?: DeclarativeRuleInfo,
 };
+
+/**
+ * This is {@link FilteringLogEvent} type extended with added rules source texts.
+ */
+export type UIFilteringLogEvent = FilteringLogEvent
+    & RuleText
+    & { filterName?: string | null };
 
 export type FilteringLogTabInfo = {
     tabId: number,
@@ -95,34 +106,31 @@ export type FilteringLogTabInfo = {
 /**
  * Interface for representing applied rule text and original rule text.
  */
-export interface RuleText {
+interface RuleText {
     /**
-     * Applied rule text, always present.
+     * Applied rule text. Will be extracted from @see {@link FilteringLogEvent.requestRule}.
+     *
+     * NOTE:
+     * In MV3 it will be not "exactly applied", but "assumed applied" rule text,
+     * because exactly applied rule can be received only in unpacked extension with
+     * listener to matched declarative rules, from which we can extract source
+     * text rules.
      */
-    appliedRuleText: string;
+    appliedRuleText?: string;
 
     /**
      * Original rule text. Present if the applied rule is a converted rule.
      * If not present, the applied rule text is the same as the original rule text.
+     *
+     * NOTE:
+     * In MV3 it will be not "exactly  applied", but "assumed applied" rule text,
+     * because exactly applied rule can be received only in unpacked extension with
+     * listener to matched declarative rules, from which we can extract source
+     * text rules.
      */
     originalRuleText?: string;
 }
 
-// FIXME: Rewrite type better.
-export type UIFilteringLogEvent = FilteringLogEvent & {
-    /**
-     * Applied rule text, always present.
-     */
-    appliedRuleText?: string | null;
-
-    /**
-     * Original rule text. Present if the applied rule is a converted rule.
-     * If not present, the applied rule text is the same as the original rule text.
-     */
-    originalRuleText?: string | null;
-
-    filterName?: string | null;
-};
 /**
  * Cached filter data.
  */
@@ -303,6 +311,7 @@ export class FilteringLogApi {
      *
      * @param filterId Filter id.
      * @param ruleIndex Rule index.
+     *
      * @returns Rule text or null if the rule is not found.
      */
     public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
@@ -674,33 +683,66 @@ export class FilteringLogApi {
 
         let event = filteringEvents.find((e) => e.eventId === eventId);
 
-        if (event) {
-            if (data.requestRule) {
-                const { filterId, ruleIndex } = data.requestRule;
-                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                if (ruleTextData) {
-                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
-                }
-            }
-
-            if (data.replaceRules) {
-                data.replaceRules = await Promise.all(
-                    data.replaceRules.map(async (rule) => {
-                        const { filterId, ruleIndex } = rule;
-                        const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                        if (ruleTextData) {
-                            return Object.assign(rule, ruleTextData);
-                        }
-                        return rule;
-                    }),
-                );
-            }
-
-            event = Object.assign(event, data);
-
-            // TODO: Looks like not using. Maybe lost listener in refactoring.
-            listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
+        if (!event) {
+            logger.debug('Not found event in filtering log to update: ', eventId);
+            return;
         }
+
+        // To not overwrite appliedRuleText check if it is already exists.
+        if (data.requestRule && !event.requestRule?.appliedRuleText) {
+            const { filterId, ruleIndex } = data.requestRule;
+            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+            if (ruleTextData) {
+                data.requestRule = Object.assign(data.requestRule, ruleTextData);
+            }
+        }
+
+        if (data.replaceRules) {
+            data.replaceRules = await Promise.all(
+                data.replaceRules.map(async (rule) => {
+                    const { filterId, ruleIndex } = rule;
+                    const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+                    if (ruleTextData) {
+                        return Object.assign(rule, ruleTextData);
+                    }
+                    return rule;
+                }),
+            );
+        }
+
+        event = Object.assign(event, data);
+
+        // TODO: Looks like not using. Maybe lost listener in refactoring.
+        listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
+    }
+
+    /**
+     * Updates the event data for an already recorded event.
+     *
+     * @param tabId Tab id.
+     * @param eventId Event id.
+     * @param declarativeRuleInfo Applied declarative rule in JSON and it`s source rule and filter id.
+     */
+    public async attachDeclarativeRuleToEventData(
+        tabId: number,
+        eventId: string,
+        declarativeRuleInfo: DeclarativeRuleInfo,
+    ): Promise<void> {
+        const tabInfo = this.getFilteringInfoByTabId(tabId);
+        if (!tabInfo || !this.isOpen()) {
+            return;
+        }
+
+        const { filteringEvents } = tabInfo;
+
+        const event = filteringEvents.find((e) => e.eventId === eventId);
+
+        if (!event) {
+            logger.debug('Not found event in filtering log to update: ', eventId);
+            return;
+        }
+
+        event.declarativeRuleInfo = declarativeRuleInfo;
     }
 
     /**
