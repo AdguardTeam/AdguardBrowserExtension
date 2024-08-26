@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import { UpdateApi } from '../../../../Extension/src/background/api';
 import {
     mockLocalStorage,
@@ -13,6 +15,8 @@ import {
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { FILTER_KEY_PREFIX, SbCache } from '../../../../Extension/src/background/storages';
 import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
+import { SettingOption } from '../../../../Extension/src/background/schema';
+import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 
 jest.mock('../../../../Extension/src/background/engine');
 
@@ -64,30 +68,7 @@ describe('Update Api', () => {
         }) => {
             const storage = mockLocalStorage(data.from);
             const runInfo = await getRunInfo();
-
-            await UpdateApi.update(runInfo);
-
-            // TODO: check equality of parsed data instead of strings
-            const settings = await storage.get();
-            expect(settings).toStrictEqual(data.to);
-        };
-
-        it.each(getCases(v0, v6))('should update from v0 to v6', runCase);
-        it.each(getCases(v1, v6))('should update from v1 to v6', runCase);
-        it.each(getCases(v2, v6))('should update from v2 to v6', runCase);
-        it.each(getCases(v3, v6))('should update from v3 to v6', runCase);
-        it.each(getCases(v4, v6))('should update from v4 to v6', runCase);
-        it.each(getCases(v5, v6))('should update from v5 to v6', runCase);
-
-        it('should move filter data to IDB', async () => {
-            const [data] = getStorageFixturesV3(expires);
-
-            if (!data) {
-                throw new Error('fixture is not defined');
-            }
-            mockLocalStorage(data);
-            const runInfo = await getRunInfo();
-            const filterRelatedKeys = Object.keys(data).filter((key) => key.startsWith(FILTER_KEY_PREFIX));
+            const filterRelatedKeys = Object.keys(data.from).filter((key) => key.startsWith(FILTER_KEY_PREFIX));
 
             await UpdateApi.update(runInfo);
 
@@ -102,6 +83,29 @@ describe('Update Api', () => {
                     }, {}),
                 ),
             );
-        });
+
+            // Some properties in the data are stored as strings, but we need to compare them as objects, not as strings
+            const jsonStringSchema = z.string().transform((val) => JSON.parse(val)).optional();
+
+            const settingsSchema = z.object({
+                [ADGUARD_SETTINGS_KEY]: z.object({
+                    [SettingOption.I18nMetadata]: jsonStringSchema,
+                    [SettingOption.Metadata]: jsonStringSchema,
+                    [SettingOption.GroupsState]: jsonStringSchema,
+                    [SettingOption.FiltersVersion]: jsonStringSchema,
+                    [SettingOption.FiltersState]: jsonStringSchema,
+                }).passthrough(),
+            }).passthrough();
+
+            const settings = await storage.get();
+            expect(settingsSchema.parse(settings)).toStrictEqual(settingsSchema.parse(data.to));
+        };
+
+        it.each(getCases(v0, v6))('should update from v0 to v6', runCase);
+        it.each(getCases(v1, v6))('should update from v1 to v6', runCase);
+        it.each(getCases(v2, v6))('should update from v2 to v6', runCase);
+        it.each(getCases(v3, v6))('should update from v3 to v6', runCase);
+        it.each(getCases(v4, v6))('should update from v4 to v6', runCase);
+        it.each(getCases(v5, v6))('should update from v5 to v6', runCase);
     });
 });

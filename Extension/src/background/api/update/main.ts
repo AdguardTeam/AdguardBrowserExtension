@@ -495,13 +495,11 @@ export class UpdateApi {
 
         logger.debug('Filters successfully migrated from storage to hybrid storage');
 
+        // We use passthrough to keep all other data as is, in this case we only need to update check times.
         const filterVersionDataValidatorV3 = zod.object({
-            version: zod.string(),
             lastCheckTime: zod.number(),
-            lastUpdateTime: zod.number(),
-            expires: zod.number(),
             lastScheduledCheckTime: zod.number().optional(),
-        });
+        }).passthrough();
 
         const filtersVersionDataValidatorV3 = zod.record(
             SchemaPreprocessor.numberValidator,
