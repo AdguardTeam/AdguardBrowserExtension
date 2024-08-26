@@ -54,7 +54,6 @@ export const enum ForwardAction {
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
-    FiltersSpecsMv3 = 'filters_specs_mv3',
     LearnMoreAboutMv3 = 'learn_more_about_mv3',
     GetTheApp = 'get_the_app',
     GithubVersion = 'github_version_popup',
