@@ -15,7 +15,7 @@ import {
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { FILTER_KEY_PREFIX, SbCache } from '../../../../Extension/src/background/storages';
 import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
-import { SettingOption } from '../../../../Extension/src/background/schema';
+import { SettingOption } from '../../../../Extension/src/background/schema/settings/main';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 
 jest.mock('../../../../Extension/src/background/engine');
@@ -68,21 +68,8 @@ describe('Update Api', () => {
         }) => {
             const storage = mockLocalStorage(data.from);
             const runInfo = await getRunInfo();
-            const filterRelatedKeys = Object.keys(data.from).filter((key) => key.startsWith(FILTER_KEY_PREFIX));
 
             await UpdateApi.update(runInfo);
-
-            expect(setMultipleSpy).toHaveBeenCalledTimes(1);
-            expect(setMultipleSpy).toHaveBeenCalledWith(
-                // An object that contains all filter-related keys from the old data
-                // If this test passes, it means that data was passed to the hybrid storage
-                expect.objectContaining(
-                    filterRelatedKeys.reduce((acc: { [key: string]: any }, key) => {
-                        acc[key] = expect.anything();
-                        return acc;
-                    }, {}),
-                ),
-            );
 
             // Some properties in the data are stored as strings, but we need to compare them as objects, not as strings
             const jsonStringSchema = z.string().transform((val) => JSON.parse(val)).optional();
@@ -107,5 +94,32 @@ describe('Update Api', () => {
         it.each(getCases(v3, v6))('should update from v3 to v6', runCase);
         it.each(getCases(v4, v6))('should update from v4 to v6', runCase);
         it.each(getCases(v5, v6))('should update from v5 to v6', runCase);
+
+        // Separate test for migration from V3 storage, because after this
+        // version we moved from localStorage to hybridStorage.
+        it('should move filter data to IDB', async () => {
+            const [data] = getStorageFixturesV3(expires);
+
+            if (!data) {
+                throw new Error('fixture is not defined');
+            }
+            mockLocalStorage(data);
+            const runInfo = await getRunInfo();
+            const filterRelatedKeys = Object.keys(data).filter((key) => key.startsWith(FILTER_KEY_PREFIX));
+
+            await UpdateApi.update(runInfo);
+
+            expect(setMultipleSpy).toHaveBeenCalledTimes(1);
+            expect(setMultipleSpy).toHaveBeenCalledWith(
+                // An object that contains all filter-related keys from the old data
+                // If this test passes, it means that data was passed to the hybrid storage
+                expect.objectContaining(
+                    filterRelatedKeys.reduce((acc: { [key: string]: any }, key) => {
+                        acc[key] = expect.anything();
+                        return acc;
+                    }, {}),
+                ),
+            );
+        });
     });
 });
