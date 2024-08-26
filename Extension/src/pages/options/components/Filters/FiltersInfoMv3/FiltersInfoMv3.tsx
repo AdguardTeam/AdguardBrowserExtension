@@ -19,13 +19,7 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../../../../../common/forward';
 import { translator } from '../../../../../common/translators/translator';
-import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 
 import './filters-info-mv3.pcss';
@@ -41,33 +35,12 @@ export const FiltersInfoMv3 = observer(() => {
 
     const { staticRulesEnabledCount, dynamicRulesEnabledCount } = rulesLimits;
 
-    const specsUrl = Forward.get({
-        action: ForwardAction.FiltersSpecsMv3,
-        from: ForwardFrom.Options,
-    });
-
     return (
         <div className="filters-info-mv3">
             <div>
                 {translator.getMessage('options_filters_info_mv3_total_rules', {
                     num: staticRulesEnabledCount + dynamicRulesEnabledCount,
                 })}
-            </div>
-            <div className="filters-info-mv3--specs button--link--green">
-                <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={specsUrl}
-                    className="filters-info-mv3--specs-link"
-                >
-                    <span>
-                        {translator.getMessage('options_filters_info_mv3_specs')}
-                    </span>
-                    <Icon
-                        id="#link"
-                        classname="filters-info-mv3--specs-link-icon"
-                    />
-                </a>
             </div>
         </div>
     );
