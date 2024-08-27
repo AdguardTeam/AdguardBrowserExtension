@@ -33,6 +33,7 @@ import cn from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
+import { translator } from '../../../../common/translators/translator';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AntiBannerFiltersId, SCROLLBAR_WIDTH } from '../../../../common/constants';
 import { passiveEventSupported } from '../../../helpers';
@@ -129,7 +130,7 @@ const ruleAccessor = (props) => {
     let ruleText = '';
     if (requestRule) {
         if (requestRule.filterId === AntiBannerFiltersId.AllowlistFilterId) {
-            ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
+            ruleText = translator.getMessage('filtering_log_in_allowlist');
         } else {
             ruleText = requestRule.appliedRuleText;
         }
@@ -137,7 +138,7 @@ const ruleAccessor = (props) => {
 
     if (replaceRules) {
         const rulesCount = replaceRules.length;
-        ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules', {
+        ruleText = `${translator.getMessage('filtering_log_modified_rules', {
             rules_count: rulesCount,
         })}`;
     }
@@ -148,7 +149,7 @@ const ruleAccessor = (props) => {
             return stealthAllowlistRules[0].ruleText;
         }
 
-        ruleText = reactTranslator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
+        ruleText = translator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
     }
 
     // If this is a cosmetic rule - we should not check declarative source rules,
@@ -160,6 +161,12 @@ const ruleAccessor = (props) => {
 
     // If we have exact matched rule - show it.
     if (declarativeRuleInfo?.sourceRules.length > 0) {
+        // But for allowlisted sited we do not needed to show source rule,
+        // only show "this site is allowlisted".
+        if (declarativeRuleInfo.sourceRules[0].filterId === AntiBannerFiltersId.AllowlistFilterId) {
+            return translator.getMessage('filtering_log_in_allowlist');
+        }
+
         const exactMatchedRules = declarativeRuleInfo.sourceRules
             .map(({ sourceRule }) => sourceRule)
             .join('; ');
@@ -189,8 +196,9 @@ const ruleAccessor = (props) => {
         );
     }
 
-    // Otherwise show assumed rule, if found any.
-    const isAssumedRule = ruleText && !isCosmeticRule;
+    // Otherwise show assumed (for MV3, but for MV2 it will be exact) rule,
+    // if found any.
+    const isAssumedRule = __IS_MV3__ && ruleText && !isCosmeticRule;
 
     return (
         <>
