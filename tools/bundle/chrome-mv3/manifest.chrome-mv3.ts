@@ -42,11 +42,10 @@ export const chromeMv3Manifest = {
     'web_accessible_resources': [
         {
             'resources': ['web-accessible-resources/*'],
-            'matches': [
-                'http://*/*',
-                'https://*/*',
-            ],
-            'use_dynamic_url': true,
+            'matches': ['<all_urls>'],
+            // use_dynamic_url may cause redirects error
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2900
+            // 'use_dynamic_url': true,
         },
     ],
     'options_page': OPTIONS_PAGE,
