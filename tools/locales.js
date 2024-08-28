@@ -25,9 +25,7 @@ import { renewLocales } from './locales/renew-locales';
 import { checkTranslations } from './locales/validate';
 import { checkUnusedMessages } from './locales/unused';
 import { cliLog } from './cli-log';
-import { LANGUAGES } from './locales/locales-constants';
-
-const LOCALES = Object.keys(LANGUAGES);
+import { LOCALES } from './locales/locales-constants';
 
 const download = async (locales) => {
     try {
