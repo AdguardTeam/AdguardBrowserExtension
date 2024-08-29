@@ -29,6 +29,7 @@ import {
 import { engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
 import { AntiBannerFiltersId } from '../../../common/constants';
+import { UrlUtils } from '../../utils';
 
 import { UserRulesApi } from './userrules';
 
@@ -131,21 +132,52 @@ export class AllowlistApi {
     }
 
     /**
-     * Remove domain from {@link allowlistDomainsStorage}.
+     * Remove allowlist records for domain from {@link allowlistDomainsStorage}.
      *
      * @param domain - Domain string.
      */
     public static removeAllowlistDomain(domain: string): void {
-        AllowlistApi.removeDomain(domain, allowlistDomainsStorage);
+        AllowlistApi.findAndRemoveMatchedDomainsAndSubdomainMasks(domain, allowlistDomainsStorage);
     }
 
     /**
-     * Remove domain from {@link invertedAllowlistDomainsStorage}.
+     * Remove allowlist records for domain from {@link invertedAllowlistDomainsStorage}.
      *
      * @param domain - Domain string.
      */
     public static removeInvertedAllowlistDomain(domain: string): void {
-        AllowlistApi.removeDomain(domain, invertedAllowlistDomainsStorage);
+        AllowlistApi.findAndRemoveMatchedDomainsAndSubdomainMasks(domain, invertedAllowlistDomainsStorage);
+    }
+
+    /**
+     * Finds and removes any domains which can match provided domain by exactly
+     * same domain or by sub-domain mask.
+     *
+     * @param domain Domain which should be excluded from allowlist.
+     * @param storage Storage with allowlist domains.
+     */
+    private static findAndRemoveMatchedDomainsAndSubdomainMasks(domain: string, storage: DomainsStorage): void {
+        const domainsToCheck = AllowlistApi.getDomains(storage);
+
+        // Firstly check for exactly same domains in allowlist.
+        const domainsToRemove = domainsToCheck.filter((record) => record === domain);
+
+        // Make a copy of parameter before editing.
+        let domainToCheck = domain.split('').join('');
+        // While we have at least one dot, check for possible upper mask domains.
+        while (domainToCheck.indexOf('.') > -1) {
+            // Domain can be match by upper-domain mask.
+            domainToCheck = UrlUtils.getUpperLevelDomain(domainToCheck);
+
+            // eslint-disable-next-line @typescript-eslint/no-loop-func
+            const matchedSubDomainMasks = domainsToCheck.filter((record) => record === `*.${domainToCheck}`);
+
+            domainsToRemove.push(...matchedSubDomainMasks);
+        }
+
+        domainsToRemove.forEach((d) => {
+            AllowlistApi.removeDomain(d, storage);
+        });
     }
 
     /**
