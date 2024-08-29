@@ -41,7 +41,7 @@ export const chromeMv3Manifest = {
     'minimum_chrome_version': '118.0',
     'web_accessible_resources': [
         {
-            'resources': ['web-accessible-resources/*'],
+            'resources': ['web-accessible-resources/redirects/*'],
             'matches': ['<all_urls>'],
             // use_dynamic_url may cause redirects error
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2900
