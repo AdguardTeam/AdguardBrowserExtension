@@ -110,7 +110,7 @@ export const Mv3Notification = (props: NotificationProps) => {
         >
             <Icon
                 id="#info"
-                classname="icon--24 left-icon"
+                classname="icon--24 icon--red-default"
             />
             <div className="mv3-notification__content">
                 <p>{description}</p>
@@ -123,12 +123,12 @@ export const Mv3Notification = (props: NotificationProps) => {
             <button
                 aria-label="close"
                 type="button"
-                className="mv3-notification__close"
+                className="mv3-notification__btn-close"
                 onClick={handleCloseClick}
             >
                 <Icon
                     id="#cross"
-                    classname="icon--24"
+                    classname="icon--24 icon--gray-default"
                 />
             </button>
         </div>

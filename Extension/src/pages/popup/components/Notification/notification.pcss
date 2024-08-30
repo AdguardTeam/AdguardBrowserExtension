@@ -30,11 +30,7 @@
     display: flex;
     align-items: flex-start;
     padding: 12px;
-    background-color: var(--gray900);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--gray700);
-    }
+    background-color: var(--fills-snacks-mobile-snacks-default);
 
     &--closing {
         animation: notify-hide 0.3s ease-out;
@@ -42,10 +38,6 @@
 
     &--close {
         display: none;
-    }
-
-    .left-icon {
-        color: #E9653A;
     }
 
     &__content,
@@ -67,38 +59,12 @@
         button {
             padding: 0;
             margin-top: 8px;
-            color: #67B279;
+            color: var(--text-links-link-default);
         }
     }
 
-    &__close {
+    &__btn-close {
         cursor: pointer;
         padding: 0;
-
-        color: var(--gray700);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
-    }
-}
-
-.light-mode {
-    .notification {
-        background-color: var(--gray900);
-
-        &__close {
-            color: var(--gray700);
-        }
-    }
-}
-
-.dark-mode {
-    .notification {
-        background-color: var(--gray700);
-
-        &__close {
-            color: var(--gray300);
-        }
     }
 }

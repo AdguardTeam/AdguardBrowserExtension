@@ -89,7 +89,7 @@ export class Toasts {
 
             const tab = await TabsApi.getActive();
             if (tab?.id) {
-                const mainText = translator.getMessage('popup_limits_exceeded_warning');
+                const mainText = translator.getMessage('snack_on_websites_limits_exceeded_warning');
                 const linkText = translator.getMessage('options_rule_limits');
 
                 await sendTabMessage(tab.id, {

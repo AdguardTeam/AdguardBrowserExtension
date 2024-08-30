@@ -79,7 +79,10 @@ export const Notification = (props: NotificationProps) => {
 
     return (
         <div className={notificationClassnames}>
-            <Icon id="#info" classname="notification__icon notification__icon--info" />
+            <Icon
+                id="#info"
+                classname="icon icon--24 notification__icon"
+            />
             <div className="notification__message">
                 {title && <div className="notification__title">{title}</div>}
                 <div className="notification__description">{description}</div>
@@ -87,10 +90,13 @@ export const Notification = (props: NotificationProps) => {
             <button
                 type="button"
                 aria-label="Close"
-                className="button notification__close"
+                className="button notification__btn-close"
                 onClick={close}
             >
-                <Icon id="#cross" classname="notification__icon notification__icon--close" />
+                <Icon
+                    id="#cross"
+                    classname="icon icon--24 notification__icon"
+                />
             </button>
         </div>
     );

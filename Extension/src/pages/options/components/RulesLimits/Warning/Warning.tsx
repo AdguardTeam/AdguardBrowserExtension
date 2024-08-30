@@ -27,7 +27,6 @@ import {
 } from '../../../../../common/forward';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { translator } from '../../../../../common/translators/translator';
-import { Icon } from '../../../../common/components/ui/Icon';
 
 /**
  * Props for the Warning component
@@ -79,13 +78,7 @@ export const Warning = ({
         <>
             <div className="rules-limits rules-limits__warning">
                 <div className="rules-limits__warning-title">
-                    <Icon
-                        id="#info"
-                        classname="rules-limits__warning-title--icon"
-                    />
-                    <div className="rules-limits__warning-title--text">
-                        {translator.getMessage('options_rule_limits_warning_title')}
-                    </div>
+                    {translator.getMessage('options_rule_limits_warning_title')}
                 </div>
                 <div className="rules-limits__section">
                     <div className="rules-limits__section-title">
