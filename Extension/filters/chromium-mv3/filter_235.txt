@@ -1,8 +1,8 @@
-! Checksum: M2AFD2aja/RzXEEzfWddHw
+! Checksum: Q8OqdoIV2zLxwClKhKGpMw
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.74
-! TimeUpdated: 2024-08-22T17:01:28+00:00
+! Version: 2.0.4.78
+! TimeUpdated: 2024-08-27T09:01:51+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -566,6 +566,9 @@ aparat.com##.dsp-ad
 aparat.com##.side-ads
 aparat.com##.promote-puls
 ! TODO: Check for more possible filters
+||ads.asset.aparat.com^
+||aparatsport.com/sport_ads.xml^$xmlhttprequest
+||aparatsport.com/external/romeo^$xmlhttprequest
 ||aftabir.com/uploads/banners^
 ! ||aftabir.com/uploads/reportages^
 aftabir.com##.banner-container
@@ -610,6 +613,7 @@ apktops.ir#?#.post-article > .content > .row .entry-content:contains(اسپات�
 apktops.ir##[id^="linkcat"] > ul > li:not(:has(a[href*="apktops.ir"]))
 apktops.ir##.asiatech
 ! >> B <<
+babapart.com#$#body { -webkit-touch-callout: default !important; -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
 barcanews.org#%#//scriptlet('ubo-set.js', 'adsShow', 'true')
 barcanews.org##div.sidebar_ads
 ||binaopt.com/wp-content/uploads/*.webm^$media,~third-party
@@ -756,7 +760,8 @@ cooldl.net##.moreads.widget_text
 cooldl.net#@#.ads-box
 cooldl.net#@#.ads-content
 computeruser.ir##.after-post-ads
-||car.ir/najva
+||car.last-cdn.com/uploads/files/*.gif^$image,third-party,domain=car.ir
+car.ir##div.ads
 ||citna.ir/?q=simpleads
 ||citna.ir/sites/default/files/googleanalytics/analytics
 ||citna.ir/sites/default/files/images/ad
@@ -1155,6 +1160,10 @@ farsroid.com#$#li.ads-download { position: absolute !important; top: -10000px !i
 farsnews.ir##aside.ad-mobile-none
 farsnews.ir##div.ads-native
 ! >> G <<
+! https://github.com/uBlockOrigin/uAssets/issues/25012
+||gooya.com/ad/ads.php^$subdocument,~third-party
+||gooya.com/ad/banners^$image,~third-party
+||news.gooya.com/*.gif^$image,~third-party
 ! https://github.com/MasterKia/PersianBlocker/issues/233
 gameeroid.com#$?#span#is_count, span#is_not { remove: true; }
 gameeroid.com#$#a#is_link { display: inline-block !important; }
@@ -2114,6 +2123,7 @@ shomavaeghtesad.com#$#.column_1 { width: 70% !important; }
 shomavaeghtesad.com#$#.column_2 { width: 30% !important; }
 sheypoor.com#?#main.mainV2 div:has(> section > a > div > div > span:contains(تبلیغات))
 sheypoor.com#?#main.mainV2 div:has(> section > div > div > h2 > p:contains(/^Ad$/))
+sheypoor.com##main.mainV2 > section > div#serp-container > div > section > a[href^="https://www.sheypoor.com/banner/tapsell/"]
 shereno.com##.b_box
 shereno.com#?#.widget:has(.widget_title:contains(پیوند))
 ! https://github.com/MasterKia/PersianBlocker/issues/37
