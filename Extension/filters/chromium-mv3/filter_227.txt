@@ -1,13 +1,13 @@
-! Checksum: 1JVSW9EouJHfOlDxMq6uRA
+! Checksum: Q3bnVM3XZ7UHZoImA6XivQ
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.18.93
-! TimeUpdated: 2024-08-22T09:01:30+00:00
+! Version: 2.0.18.97
+! TimeUpdated: 2024-08-29T13:01:34+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.0822.3
+! OriginalVersion: 2024.0829.1
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://community.list-kr.com/docs/
@@ -1016,8 +1016,6 @@
 ||paxnet.co.kr/banner/
 ||image.paxnet.co.kr/rpan/common/js/mobile_ad.js
 ||paxnet.co.kr/common/*BannerAjax|
-||lol.ps/file/lol-ps/static/js/ad_script.js
-||lol.ps/file/lol-ps/static/img/topbanner/
 ||cfnews.kr/gears/banner_pds/
 ||ombudsmannews.com/data/designImages/BANNER_
 /^https?:\/\/www\.ombudsmannews\.com\/default\/image\/[a-z]+\.gif/$domain=ombudsmannews.com
@@ -1298,6 +1296,7 @@
 !
 ! DOMAIN-REFRESHER: START
 !
+/^https:\/\/cdn-[a-z]+-[0-9]+\.hasha\.in\/[a-zA-Z_0-9-]+\./$domain=hasha.in
 ||anilife.live/assets/banner/
 ||moeni.net/img/a/lula.gif
 /theme/basic/img/banner/*$domain=nunu4.tv|nunu5.tv|nunu6.tv|nunu7.tv|nunu8.tv|nunu9.tv|nunu10.tv|nunu11.tv
@@ -1538,6 +1537,8 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+lol.ps##div[class~="before:bg-psgr-disabled"]
+lol.ps##div[data-ad]
 a-ha.io##main div[class*=" "]:has(> div[id^="div-gpt-"] + div[height])
 naver.com##a[href^="https://siape.veta.naver.com/"]
 m.dt.co.kr##div[data-slot^="adforus_"]
@@ -2767,9 +2768,9 @@ newtoki338.com,newtoki339.com,newtoki340.com,newtoki341.com,newtoki342.com,newto
 booktoki338.com,booktoki339.com,booktoki340.com,booktoki341.com,booktoki342.com,booktoki343.com,booktoki344.com,booktoki345.com,booktoki346.com,booktoki347.com,booktoki348.com,booktoki349.com,booktoki350.com,booktoki351.com,booktoki352.com,booktoki353.com###hd_pop
 newtoki338.com,newtoki339.com,newtoki340.com,newtoki341.com,newtoki342.com,newtoki343.com,newtoki344.com,newtoki345.com,newtoki346.com,newtoki347.com,newtoki348.com,newtoki349.com##div[id].col-15
 booktoki338.com,booktoki339.com,booktoki340.com,booktoki341.com,booktoki342.com,booktoki343.com,booktoki344.com,booktoki345.com,booktoki346.com,booktoki347.com,booktoki348.com,booktoki349.com,booktoki350.com,booktoki351.com,booktoki352.com,booktoki353.com##img[src^="/tokinbtoki/"]
-manatoki338.net,manatoki339.net,manatoki340.net,manatoki341.net,manatoki342.net,manatoki343.net,manatoki344.net,manatoki345.net,manatoki346.net,manatoki347.net,manatoki348.net,manatoki349.net,manatoki350.net##[style="margin-bottom: 20px;"].row.row-15
-manatoki338.net,manatoki339.net,manatoki340.net,manatoki341.net,manatoki342.net,manatoki343.net,manatoki344.net,manatoki345.net,manatoki346.net,manatoki347.net,manatoki348.net,manatoki349.net,manatoki350.net##.basic-banner.row.row-10
-manatoki338.net,manatoki339.net,manatoki340.net,manatoki341.net,manatoki342.net,manatoki343.net,manatoki344.net,manatoki345.net,manatoki346.net,manatoki347.net,manatoki348.net,manatoki349.net,manatoki350.net##.board-tail-banner
+manatoki351.net,manatoki352.net,manatoki353.net,manatoki354.net,manatoki355.net,manatoki356.net,manatoki357.net,manatoki358.net,manatoki359.net,manatoki360.net,manatoki361.net,manatoki362.net,manatoki363.net##[style="margin-bottom: 20px;"].row.row-15
+manatoki351.net,manatoki352.net,manatoki353.net,manatoki354.net,manatoki355.net,manatoki356.net,manatoki357.net,manatoki358.net,manatoki359.net,manatoki360.net,manatoki361.net,manatoki362.net,manatoki363.net##.basic-banner.row.row-10
+manatoki351.net,manatoki352.net,manatoki353.net,manatoki354.net,manatoki355.net,manatoki356.net,manatoki357.net,manatoki358.net,manatoki359.net,manatoki360.net,manatoki361.net,manatoki362.net,manatoki363.net##.board-tail-banner
 103.204.13.68##.product-banner
 103.204.13.68##div[class^="mobile-m ad720_"]
 !
@@ -3173,7 +3174,7 @@ spochak.com#?#table .basic-info-alert:has(a[href="/marble/"])
 avsee.*#?#.widget-side-box > .main-box:has(img[src^="/imgs/"])
 zzzz.lol#?#.widget-side .widget-title:has(+ div a[href^="/bbs/link.php?bo_table="][target="_blank"])
 booktoki338.com,booktoki339.com,booktoki340.com,booktoki341.com,booktoki342.com,booktoki343.com,booktoki344.com,booktoki345.com,booktoki346.com,booktoki347.com,booktoki348.com,booktoki349.com,booktoki350.com,booktoki351.com,booktoki352.com,booktoki353.com#?#ul[class] > li:has(> a[href*="tokkiweb.com"])
-manatoki338.net,manatoki339.net,manatoki340.net,manatoki341.net,manatoki342.net,manatoki343.net,manatoki344.net,manatoki345.net,manatoki346.net,manatoki347.net,manatoki348.net,manatoki349.net,manatoki350.net#?#ul[class] > li:has(> a[href^="/guarantee.php"])
+manatoki351.net,manatoki352.net,manatoki353.net,manatoki354.net,manatoki355.net,manatoki356.net,manatoki357.net,manatoki358.net,manatoki359.net,manatoki360.net,manatoki361.net,manatoki362.net,manatoki363.net#?#ul[class] > li:has(> a[href^="/guarantee.php"])
 newtoki338.com,newtoki339.com,newtoki340.com,newtoki341.com,newtoki342.com,newtoki343.com,newtoki344.com,newtoki345.com,newtoki346.com,newtoki347.com,newtoki348.com,newtoki349.com#?#ul[class] > li:has(> a[href^="/guarantee.php"])
 yagong76.com,yagong77.com,yagong78.com,yagong79.com,yagong80.com,yagong81.com,yagong82.com,yagong83.com,yagong84.com,yagong85.com,yagong86.com,yagong87.com,yagong88.com,yagong89.com,yagong90.com,yagong91.com,yagong92.com,yagong93.com,yagong94.com,yagong95.com,yagong96.com,yagong97.com,yagong98.com#?#div[class*="border"]:has(> a[href][target*="_blank"])
 !
@@ -3269,9 +3270,6 @@ zum.com#%#//scriptlet('set-constant', '_ads_zum_main_initbanner_750_zum_main_br_
 ! PopMagic
 watchfreejavonline.co#%#//scriptlet('abort-current-inline-script', 'popMagic.init')
 ! m.humoruniv.com
-! !#if (adguard_app_ios || adguard_ext_safari)
-m.humoruniv.com#%#//scriptlet('abort-on-stack-trace', '$.prototype.html', 'ch')
-! !#endif
 m.humoruniv.com#%#//scriptlet('set-constant', 'list_end_run_read_top_boom', 'noopFunc')
 m.humoruniv.com#%#//scriptlet('set-constant', 'list_end_run_pds_notice_boom', 'noopFunc')
 m.humoruniv.com#%#//scriptlet('set-constant', 'list_end_run_comment_bottom_boom', 'noopFunc')
@@ -3482,6 +3480,8 @@ play.aidungeon.io,tamrieltradecentre.com,downloads.descendant.me,html5.gamedistr
 !
 ! DOMAIN-REFRESHER: START
 !
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=hasha.in
+@@||js.wpadmngr.com/static/adManager.js$xmlhttprequest,domain=hasha.in
 ||fundingchoicesmessages.google.com^$domain=tv25.co
 lover932.net,lover933.net,lover934.net,lover935.net,lover936.net,lover937.net,lover938.net,lover939.net,lover940.net,lover941.net#%#//scriptlet('prevent-setTimeout', 'document[_0x')
 !
