@@ -35,20 +35,12 @@
     display: flex;
     align-items: flex-start;
     border-radius: 4px;
-    background-color: var(--gray900);
-    color: var(--gray-0);
+    background-color: var(--fills-snacks-mobile-snacks-default);
+    color: var(--text-buttons-primary-default);
     animation: notify-show 0.3s ease-in;
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--gray700);
-    }
 
     &--close {
         animation: notify-hide 1s ease-out;
-    }
-
-    .left-icon {
-        color: #E9653A;
     }
 
     &__content,
@@ -76,40 +68,15 @@
         }
     }
 
-    &__close {
+    &__btn-close {
         cursor: pointer;
         padding: 0;
         background: transparent;
         outline: none;
         border: none;
-        color: var(--gray700);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
     }
 }
 
 .mv3-notification + .mv3-notification {
     margin-top: 16px;
-}
-
-.light-mode {
-    .mv3-notification {
-        background-color: var(--gray900);
-
-        &__close {
-            color: var(--gray700);
-        }
-    }
-}
-
-.dark-mode {
-    .mv3-notification {
-        background-color: var(--gray700);
-
-        &__close {
-            color: var(--gray300);
-        }
-    }
 }

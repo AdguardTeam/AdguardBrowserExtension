@@ -66,7 +66,7 @@ export const Notification = () => {
         <div className={notificationClassnames}>
             <Icon
                 id="#info"
-                classname="icon--24 left-icon"
+                classname="icon--24 icon--red-default"
             />
             <div className="notification__content">
                 <p>
@@ -79,12 +79,12 @@ export const Notification = () => {
             <button
                 aria-label="close"
                 type="button"
-                className="notification__close"
+                className="notification__btn-close"
                 onClick={handleCloseClick}
             >
                 <Icon
                     id="#cross"
-                    classname="icon--24"
+                    classname="icon icon--24 icon--gray-default"
                 />
             </button>
         </div>
