@@ -54,6 +54,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
     - [Tests and dev build](#tests-and-dev-build)
     - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
     - [Building the beta and release versions](#building-the-beta-and-release-versions)
+    - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
     - [Analyzing bundle size](#analyzing-bundle-size)
   - [Linter](#linter)
   - [Update localizations](#update-localizations)
@@ -257,6 +258,20 @@ See [dangerous rules](tools/resources/dangerous-rules/README.md)
 
 You will need to put certificate.pem file to the `./private` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
+
+#### Special building instructions for Firefox reviewers
+
+1. Ensure you have installed Node.js and Yarn.
+1. To build the **BETA** version, run:
+    ```
+    yarn beta firefox-standalone
+    ```
+1. Navigate to the build directory:
+    ```
+    cd ./build/beta
+    ```
+1. Compare the generated `firefox.zip` file with the uploaded one.
+
 
 #### Analyzing bundle size
 
