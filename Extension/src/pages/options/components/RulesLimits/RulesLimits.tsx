@@ -22,11 +22,6 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { SettingsSection } from '../Settings/SettingsSection';
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../../../../common/forward';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
@@ -68,11 +63,6 @@ export const RulesLimits = observer(() => {
         staticRulesRegexpsMaxCount,
         areFilterLimitsExceeded,
     } = rulesLimits;
-
-    const learnMoreAboutMv3Url = Forward.get({
-        action: ForwardAction.LearnMoreAboutMv3,
-        from: ForwardFrom.Options,
-    });
 
     /**
      * Returns names of filters by their ids.
@@ -122,21 +112,7 @@ export const RulesLimits = observer(() => {
     return (
         <SettingsSection
             title={translator.getMessage('options_rule_limits')}
-            description={(
-                <>
-                    <div>{translator.getMessage('options_rule_limits_description')}</div>
-                    <div className="title__desc--additional">
-                        <a
-                            target="_blank"
-                            rel="noreferrer"
-                            href={learnMoreAboutMv3Url}
-                            className="title__desc--additional-link"
-                        >
-                            {translator.getMessage('options_rule_limits_description_link')}
-                        </a>
-                    </div>
-                </>
-            )}
+            description={translator.getMessage('options_rule_limits_description')}
         >
             {areFilterLimitsExceeded && (
                 <Warning
