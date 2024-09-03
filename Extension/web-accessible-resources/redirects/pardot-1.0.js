@@ -1,4 +1,11 @@
 (function(source, args) {
+    const flag = "done";
+    const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+    if (source.uniqueId) {
+        if (Window.prototype.toString[uniqueIdentifier] === flag) {
+            return;
+        }
+    }
     function Pardot(source) {
         window.piVersion = "1.0.2";
         window.piScriptNum = 0;
@@ -62,6 +69,14 @@
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
         Pardot.apply(this, updatedArgs);
+        if (source.uniqueId) {
+            Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                value: flag,
+                enumerable: false,
+                writable: false,
+                configurable: false
+            });
+        }
     } catch (e) {
         console.log(e);
     }

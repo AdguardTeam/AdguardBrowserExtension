@@ -1,4 +1,11 @@
 (function(source, args) {
+    const flag = "done";
+    const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+    if (source.uniqueId) {
+        if (Window.prototype.toString[uniqueIdentifier] === flag) {
+            return;
+        }
+    }
     function Fingerprintjs2(source) {
         var browserId = "";
         for (var i = 0; i < 8; i += 1) {
@@ -52,6 +59,14 @@
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
         Fingerprintjs2.apply(this, updatedArgs);
+        if (source.uniqueId) {
+            Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                value: flag,
+                enumerable: false,
+                writable: false,
+                configurable: false
+            });
+        }
     } catch (e) {
         console.log(e);
     }

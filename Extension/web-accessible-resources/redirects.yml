@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.11.16
+#    Version 1.11.27
 #
 - title: 1x1-transparent.gif
   added: v1.0.4
@@ -176,6 +176,7 @@
     ||example.org/vmap01.xml$xmlhttprequest,redirect=noopvmap-1.0
     ```
   aliases:
+    - noop-vmap1.xml
     - noop-vmap1.0.xml
   file: noopvmap01.xml
   contentType: text/xml
@@ -193,6 +194,8 @@
     ```adblock
     ||example.org/vast02.xml^$xmlhttprequest,redirect=noopvast-2.0
     ```
+  aliases:
+    - noop-vast2.xml
   file: noopvast02.xml
   contentType: text/xml
   content: <VAST version="2.0"></VAST>
@@ -207,6 +210,8 @@
     ```adblock
     ||example.org/vast03.xml^$xmlhttprequest,redirect=noopvast-3.0
     ```
+  aliases:
+    - noop-vast3.xml
   file: noopvast03.xml
   contentType: text/xml
   content: <VAST version="3.0"></VAST>
@@ -221,6 +226,8 @@
     ```adblock
     ||example.org/vast04.xml^$xmlhttprequest,redirect=noopvast-4.0
     ```
+  aliases:
+    - noop-vast4.xml
   file: noopvast04.xml
   contentType: text/xml
   content: <VAST version="4.0"></VAST>
@@ -634,6 +641,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function AmazonApstag(source) {
             var apstagWrapper = {
                 fetchBids(a, b) {
@@ -680,6 +694,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             AmazonApstag.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -695,6 +717,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function ATInternetSmartTag(source) {
             var setNoopFuncWrapper = {
                 set: noopFunc
@@ -801,6 +830,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             ATInternetSmartTag.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -816,6 +853,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function DidomiLoader(source) {
             function UserConsentStatusForVendorSubscribe() {}
             UserConsentStatusForVendorSubscribe.prototype.filter = function() {
@@ -970,6 +1014,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             DidomiLoader.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -987,6 +1039,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function Fingerprintjs2(source) {
             var browserId = "";
             for (var i = 0; i < 8; i += 1) {
@@ -1040,6 +1099,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             Fingerprintjs2.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -1057,6 +1124,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function Fingerprintjs3(source) {
             var visitorId = function() {
                 var id = "";
@@ -1114,6 +1188,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             Fingerprintjs3.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -1129,6 +1211,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function Gemius(source) {
             var GemiusPlayer = function GemiusPlayer() {};
             GemiusPlayer.prototype = {
@@ -1173,6 +1262,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             Gemius.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -1190,6 +1287,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function GoogleAnalyticsGa(source) {
             function Gaq() {}
             Gaq.prototype.Na = noopFunc;
@@ -1310,6 +1414,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             GoogleAnalyticsGa.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -1330,6 +1442,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function GoogleAnalytics(source) {
             var _window$googleAnalyti;
             var Tracker = function Tracker() {};
@@ -1453,6 +1572,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             GoogleAnalytics.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -1470,6 +1597,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function GoogleIma3(source) {
             var _window$google$ima;
             var VERSION = "3.453.0";
@@ -2114,6 +2248,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             GoogleIma3.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -2131,6 +2273,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function GoogleSyndicationAdsByGoogle(source) {
             window.adsbygoogle = {
                 loaded: true,
@@ -2216,6 +2365,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             GoogleSyndicationAdsByGoogle.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -2233,6 +2390,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function GoogleTagServicesGpt(source) {
             var slots = new Map;
             var slotsById = new Map;
@@ -2652,6 +2816,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             GoogleTagServicesGpt.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -2667,6 +2839,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function Matomo(source) {
             var Tracker = function Tracker() {};
             Tracker.prototype.setDoNotTrack = noopFunc;
@@ -2714,6 +2893,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             Matomo.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -2729,6 +2916,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function metrikaYandexTag(source) {
             var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
                 var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
@@ -2830,6 +3024,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             metrikaYandexTag.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -2845,6 +3047,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function metrikaYandexWatch(source) {
             var cbName = "yandex_metrika_callbacks";
             var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
@@ -2933,6 +3142,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             metrikaYandexWatch.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -2948,6 +3165,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function NaverWcslog(source) {
             window.wcs_add = {};
             window.wcs_do = noopFunc;
@@ -2988,6 +3212,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             NaverWcslog.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3011,6 +3243,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function noeval(source) {
             window.eval = function evalWrapper(s) {
                 hit(source);
@@ -3062,6 +3301,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             noeval.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3077,6 +3324,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function Pardot(source) {
             window.piVersion = "1.0.2";
             window.piScriptNum = 0;
@@ -3140,6 +3394,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             Pardot.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3157,6 +3419,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function prebidAds(source) {
             window.canRunAds = true;
             window.isAdBlockActive = false;
@@ -3193,6 +3462,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             prebidAds.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3208,6 +3485,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function Prebid(source) {
             var pushFunction = function pushFunction(arg) {
                 if (typeof arg === "function") {
@@ -3285,6 +3569,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             Prebid.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3306,6 +3598,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function preventBab$1(source) {
             var nativeSetTimeout = window.setTimeout;
             var babRegex = /\.bab_elementid.$/;
@@ -3388,6 +3687,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             preventBab$1.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3404,6 +3711,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function preventBab2(source) {
             var script = document.currentScript;
             if (script === null) {
@@ -3453,6 +3767,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             preventBab2.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3473,6 +3795,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function preventFab(source) {
             hit(source);
             var Fab = function Fab() {};
@@ -3574,6 +3903,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             preventFab.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3594,6 +3931,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function preventPopadsNet(source) {
             var rid = randomId();
             var throwError = function throwError() {
@@ -3661,6 +4005,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             preventPopadsNet.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3678,6 +4030,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function ScoreCardResearchBeacon(source) {
             window.COMSCORE = {
                 purge() {
@@ -3718,6 +4077,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             ScoreCardResearchBeacon.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -3738,6 +4105,13 @@
   contentType: application/javascript
   content: |-
     (function(source, args) {
+        const flag = "done";
+        const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+        if (source.uniqueId) {
+            if (Window.prototype.toString[uniqueIdentifier] === flag) {
+                return;
+            }
+        }
         function setPopadsDummy(source) {
             delete window.PopAds;
             delete window.popns;
@@ -3787,6 +4161,14 @@
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
             setPopadsDummy.apply(this, updatedArgs);
+            if (source.uniqueId) {
+                Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
         } catch (e) {
             console.log(e);
         }
