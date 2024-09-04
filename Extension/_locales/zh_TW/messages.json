@@ -89,6 +89,30 @@
     "options_popup_check_false_description": {
         "message": "當新增您自訂的過濾器時出錯。"
     },
+    "options_add_custom_filter_modal_title": {
+        "message": "新增自訂的過濾器"
+    },
+    "options_add_custom_filter_modal_checking_filter": {
+        "message": "正在檢查您的過濾器..."
+    },
+    "options_add_custom_filter_modal_error_title": {
+        "message": "無法新增自訂的過濾器"
+    },
+    "options_add_custom_filter_modal_error_subtitle": {
+        "message": "請再次嘗試或與支援聯繫"
+    },
+    "options_add_custom_filter_modal_add_button": {
+        "message": "新增"
+    },
+    "options_add_custom_filter_modal_filter_name": {
+        "message": "過濾器名稱："
+    },
+    "options_add_custom_filter_modal_filter_trusted": {
+        "message": "受信任的"
+    },
+    "options_add_custom_filter_modal_filter_trusted_description": {
+        "message": "受信任的過濾器可以使用強大的規則修改器 —— 請確保使用的過濾器來自受信任的開發人員"
+    },
     "options_popup_try_again_button": {
         "message": "再次嘗試"
     },
@@ -117,6 +141,7 @@
         "message": "AdGuard 廣告封鎖器"
     },
     "description": {
+        "description": "TEXT MAX LENGTH: 132",
         "message": "防備廣告和彈出式視窗之無與倫比的廣告封鎖擴充功能。封鎖於 Facebook、YouTube 和所有其它的網站上之廣告。"
     },
     "background_tab_title": {
@@ -212,9 +237,6 @@
     "options_filters_info_mv3_total_rules": {
         "message": "總規則數：%num%"
     },
-    "options_filters_info_mv3_specs": {
-        "message": "GitHub 的規格"
-    },
     "options_add_custom_filter": {
         "message": "新增自訂的過濾器"
     },
@@ -289,6 +311,24 @@
     },
     "popup_statistics_total": {
         "message": "總計"
+    },
+    "popup_statistics_all_categories": {
+        "message": "所有的"
+    },
+    "popup_statistics_category_advertising": {
+        "message": "廣告"
+    },
+    "popup_statistics_category_trackers": {
+        "message": "追蹤器"
+    },
+    "popup_statistics_category_social_media": {
+        "message": "社群媒體"
+    },
+    "popup_statistics_category_cdn": {
+        "message": "內容傳遞網路（CDN）"
+    },
+    "popup_statistics_category_other": {
+        "message": "其它的"
     },
     "popup_statistics_week_days_mon": {
         "message": "週一"
@@ -440,6 +480,9 @@
     "filters_download_loading": {
         "message": "當過濾器資料庫正在載入時，請稍候…"
     },
+    "post_install_loading": {
+        "message": "正在加載延伸功能..."
+    },
     "filtering_modal_element": {
         "message": "元件："
     },
@@ -492,7 +535,7 @@
         "message": "過濾器"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "<reset>禁用過濾器<\/reset>或<refresh>重新載入頁面<\/refresh>以檢視過濾事件記錄。"
+        "message": "未找到。<reset>禁用過濾器<\/reset>或<refresh>重新載入頁面<\/refresh>以檢視日誌記錄。"
     },
     "filtering_modal_info_title": {
         "message": "請求細節"
@@ -543,7 +586,7 @@
         "message": "狀態："
     },
     "filtering_modal_status_text_error": {
-        "message": "無收到的回應"
+        "message": "無法加載預覽。請重試。"
     },
     "filtering_modal_status_text_loading": {
         "message": "正在載入…"
@@ -741,10 +784,7 @@
         "message": "規則限制"
     },
     "options_rule_limits_description": {
-        "message": "此擴充功能符合 Chromium Manifest V3 的要求"
-    },
-    "options_rule_limits_description_link": {
-        "message": "了解有關 Manifest V3 的更多資訊"
+        "message": "Chrome 瀏覽器限制可套用的規則數量"
     },
     "options_rule_limits_dynamic": {
         "message": "動態規則"
@@ -959,6 +999,9 @@
     "popup_limits_exceeded_warning": {
         "message": "瀏覽器修改了啟用的內建過濾器的清單。"
     },
+    "snack_on_websites_limits_exceeded_warning": {
+        "message": "AdGuard 瀏覽器擴充功能已超出規則數量限制。請檢查過濾器並禁用不需要的過濾器。"
+    },
     "short_name": {
         "message": "AdGuard"
     },
@@ -1112,6 +1155,10 @@
     "filtering_log_badge_tooltip_http_status_code": {
         "message": "HTTP 狀態碼"
     },
+    "filtering_log_assumed_rule_description": {
+        "description": "<dot><\/dot> is a placeholder for red-dot, do not insert text there - it will be ignored.",
+        "message": "<dot><\/dot> 表示預定的規則，詳細內容請參閱<a>文件<\/a>"
+    },
     "options_stealth_general_title": {
         "message": "一般的"
     },
@@ -1163,8 +1210,19 @@
     "close_button_title": {
         "message": "關閉"
     },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "已套用的規則： | 已套用的規則："
+    },
+    "filtering_modal_assumed_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "假設規則： | 假設的規則："
+    },
     "filtering_modal_original_rules": {
         "description": "WARNING: correct number of plural forms is required",
-        "message": "| 原始規則"
+        "message": "原始規則： | 原始規則："
+    },
+    "filtering_modal_declarative_rule": {
+        "message": "DNR 規則："
     }
 }

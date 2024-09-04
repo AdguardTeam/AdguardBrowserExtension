@@ -89,6 +89,30 @@
     "options_popup_check_false_description": {
         "message": "시용자 지정 필터 추가 중 오류가 발생했습니다."
     },
+    "options_add_custom_filter_modal_title": {
+        "message": "사용자 지정 필터 추가"
+    },
+    "options_add_custom_filter_modal_checking_filter": {
+        "message": "필터를 확인하는 중..."
+    },
+    "options_add_custom_filter_modal_error_title": {
+        "message": "사용자 정의 필터를 추가하지 못했습니다."
+    },
+    "options_add_custom_filter_modal_error_subtitle": {
+        "message": "다시 시도하거나 고객 지원에 문의해 주세요."
+    },
+    "options_add_custom_filter_modal_add_button": {
+        "message": "추가"
+    },
+    "options_add_custom_filter_modal_filter_name": {
+        "message": "필터 이름:"
+    },
+    "options_add_custom_filter_modal_filter_trusted": {
+        "message": "신뢰함"
+    },
+    "options_add_custom_filter_modal_filter_trusted_description": {
+        "message": "신뢰할 수 있는 필터는 강력한 규칙 수정자를 사용할 수 있습니다. 신뢰할 수 있는 개발자의 필터를 사용해야 합니다."
+    },
     "options_popup_try_again_button": {
         "message": "다시 시도해보세요"
     },
@@ -117,6 +141,7 @@
         "message": "AdGuard 광고차단기"
     },
     "description": {
+        "description": "TEXT MAX LENGTH: 132",
         "message": "광고, 팝업, Facebook이나 YouTube 등 사이트의 광고를 차단하는 타의 추종을 불허하는 광고 차단 확장 프로그램입니다."
     },
     "background_tab_title": {
@@ -212,9 +237,6 @@
     "options_filters_info_mv3_total_rules": {
         "message": "전체 규칙: %num%"
     },
-    "options_filters_info_mv3_specs": {
-        "message": "Github의 사양"
-    },
     "options_add_custom_filter": {
         "message": "사용자 정의 필터 추가"
     },
@@ -289,6 +311,24 @@
     },
     "popup_statistics_total": {
         "message": "합계"
+    },
+    "popup_statistics_all_categories": {
+        "message": "모두"
+    },
+    "popup_statistics_category_advertising": {
+        "message": "광고"
+    },
+    "popup_statistics_category_trackers": {
+        "message": "트래커"
+    },
+    "popup_statistics_category_social_media": {
+        "message": "SNS"
+    },
+    "popup_statistics_category_cdn": {
+        "message": "CDN"
+    },
+    "popup_statistics_category_other": {
+        "message": "기타"
     },
     "popup_statistics_week_days_mon": {
         "message": "월"
@@ -440,6 +480,9 @@
     "filters_download_loading": {
         "message": "필터 데이터베이스를 불러오는 동안 기다려주세요..."
     },
+    "post_install_loading": {
+        "message": "확장 프로그램 로딩 중..."
+    },
     "filtering_modal_element": {
         "message": "요소"
     },
@@ -492,7 +535,7 @@
         "message": "필터"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "필터링 이벤트 로그를 확인하려면 <reset>필터를 비활성화하거나<\/reset> 페이지를 <refresh>새로고침<\/refresh> 하세요."
+        "message": "찾을 수 없습니다. 로그 기록을 보려면 <reset>필터를 비활성화<\/reset>하거나 <refresh>페이지를 새로 고침<\/refresh>하세요."
     },
     "filtering_modal_info_title": {
         "message": "요청 세부 사항"
@@ -543,7 +586,7 @@
         "message": "상태:"
     },
     "filtering_modal_status_text_error": {
-        "message": "수신된 응답이 없습니다"
+        "message": "미리보기를 로드하는 데 실패했습니다. 다시 시도해 주세요."
     },
     "filtering_modal_status_text_loading": {
         "message": "로딩 중..."
@@ -741,10 +784,7 @@
         "message": "규칙 제한"
     },
     "options_rule_limits_description": {
-        "message": "이 확장 프로그램은 매니페스트 V3를 따릅니다."
-    },
-    "options_rule_limits_description_link": {
-        "message": "매니페스트 V3에 대해 자세히 알아보기"
+        "message": "Chrome은 적용할 수 있는 규칙의 수를 제한합니다."
     },
     "options_rule_limits_dynamic": {
         "message": "동적 규칙"
@@ -959,6 +999,9 @@
     "popup_limits_exceeded_warning": {
         "message": "브라우저에서 활성 내장 필터 목록을 수정했습니다."
     },
+    "snack_on_websites_limits_exceeded_warning": {
+        "message": "AdGuard 확장 프로그램에서 규칙 제한이 초과되었습니다. 필터를 확인하고 필요 없는 필터를 비활성화하세요."
+    },
     "short_name": {
         "message": "AdGuard"
     },
@@ -1112,6 +1155,10 @@
     "filtering_log_badge_tooltip_http_status_code": {
         "message": "HTTP 상태 코드"
     },
+    "filtering_log_assumed_rule_description": {
+        "description": "<dot><\/dot> is a placeholder for red-dot, do not insert text there - it will be ignored.",
+        "message": "<dot><\/dot>는 의도된 규칙을 의미하며, 자세한 내용은 <a>문서<\/a>에서 확인하세요."
+    },
     "options_stealth_general_title": {
         "message": "일반"
     },
@@ -1163,8 +1210,19 @@
     "close_button_title": {
         "message": "닫기"
     },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| 적용된 규칙:"
+    },
+    "filtering_modal_assumed_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| 가정 규칙:"
+    },
     "filtering_modal_original_rules": {
         "description": "WARNING: correct number of plural forms is required",
-        "message": "| 원본 규칙"
+        "message": "| 원본 규칙:"
+    },
+    "filtering_modal_declarative_rule": {
+        "message": "DNR 규칙:"
     }
 }
