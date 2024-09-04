@@ -12,6 +12,7 @@
     "test": "MANIFEST_ENV=2 jest && MANIFEST_ENV=3 jest",
     "locales": "node -r @swc-node/register tools/locales.js",
     "resources": "node -r @swc-node/register tools/resources.ts",
+    "resources:mv3": "yarn upgrade @adguard/dnr-rulesets && node -r @swc-node/register tools/resources-mv3.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && yarn check-types",
     "increment": "yarn version --patch --no-git-tag-version",
     "prepare": "husky install",

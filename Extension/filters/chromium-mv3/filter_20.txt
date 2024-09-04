@@ -1,8 +1,8 @@
-! Checksum: 4DocUFWjmTtzUUjmDRdGVg
+! Checksum: CQyTxrq6561iwR4KH5ucGw
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.16.23
-! TimeUpdated: 2024-08-29T17:33:23+00:00
+! Version: 2.0.16.32
+! TimeUpdated: 2024-09-03T11:33:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -125,6 +125,11 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 temu.com#?#div[role="main"] div[style] > div[style]:has(> div[style] div[js-selector="mobile-download-ui"])
 !
 !
+cloud.boosteroid.com##app-load-app-notification
+revolut.com#?##__next > div[class^="Box-rui__sc"]:has(> span[class^="Box-rui__sc"] > a[href^="https://get.revolut.com/"])
+finance.yahoo.co.jp##div[class^="AppBanner"]
+socket.dev##header + div[class^="css-"] > div[data-theme="dark"]:has(> div[data-theme="dark"] > div.chakra-stack > a[href="/github-app"])
+downdetector.com,downdetector.ru,downdetector.in,downdetector.com.au,downdetector.co.uk,downdetector.co,downdetector.gr,downdetector.ca,downdetector.fr,downdetector.jp,downdetector.xyz,downdetector.co.za,downdetector.co.il,downdetector.eu,downdetector.it,downdetector.id,downdetector.com.br,downdetector.es,downdetector.ch,downdetector.pl,downdetector.cl,downdetector.ro,downdetector.co.nz,downdetector.com.ar,downdetector.su,downdetector.ae,downdetector.mx,downdetector.pk,downdetector.se,downdetector.cz,downdetector.tw,downdetector.com.co,downdetector.dk,downdetector.hu,downdetector.sg,downdetector.my,downdetector.no,downdetector.com.bd,downdetector.ie,downdetector.com.np,downdetector.ph,downdetector.fi,downdetector.pe,downdetector.sk,downdetector.hk,downdetector.gov.bd,downdetector.website,downdetector.pt,downdetector.hr,downdetector.gov.np##.app-promo-card
 op.gg##header a[href^="https://itunes.apple.com/"]
 tbank.ru###lkmobile-base-banner-id
 developer.baidu.com##a[class^="articel_detail_block-item__"][data-track-value$="banner"]
@@ -994,6 +999,7 @@ st.benesse.ne.jp###regist
 wanjinty7.com##.right_banner_con
 instagram.com##main ~ div:not([style]) > div[class] > div[style="width: 100%;"]
 ||tenki.jp/images/icon/radar/radar48h-banner-
+tenki.jp##.lead-to-app-wrapper
 ||telnavi.jp/img/sf/app.png
 coolblue.be#?#.grid > div[class^="col"]:has(> div[class] > a[href^="https://www.coolblue.be/"][href$="/app.html"])
 ramendb.supleks.jp###app-info
@@ -1536,7 +1542,6 @@ locondo.jp###anime_sab
 swarmapp.com#%#//scriptlet("set-cookie", "hasShownSwarmUpsell", "true")
 swarmapp.com##.fixedUpsellTop
 swarmapp.com#%#//scriptlet('remove-class', 'pushDown', '#container.pushDown')
-downdetector.com,downdetector.ru,downdetector.in,downdetector.com.au,downdetector.co.uk,downdetector.co,downdetector.gr,downdetector.ca,downdetector.fr,downdetector.jp,downdetector.xyz,downdetector.co.za,downdetector.co.il,downdetector.eu,downdetector.it,downdetector.id,downdetector.com.br,downdetector.es,downdetector.ch,downdetector.pl,downdetector.cl,downdetector.ro,downdetector.co.nz,downdetector.com.ar,downdetector.su,downdetector.ae,downdetector.mx,downdetector.pk,downdetector.se,downdetector.cz,downdetector.tw,downdetector.com.co,downdetector.dk,downdetector.hu,downdetector.sg,downdetector.my,downdetector.no,downdetector.com.bd,downdetector.ie,downdetector.com.np,downdetector.ph,downdetector.fi,downdetector.pe,downdetector.sk,downdetector.hk,downdetector.gov.bd,downdetector.website,downdetector.pt,downdetector.hr,downdetector.gov.np###apps-card
 nefisyemektarifleri.com##.app-presentation
 bournemouthecho.co.uk,dorsetecho.co.uk,oxfordmail.co.uk###piano-floating-bottom-banner
 afternoon-tea.net#$#.header-app-banner { display: none!important; }
@@ -1908,10 +1913,8 @@ nana-music.com##.sidebar__app
 kikkoman.co.jp##.application-banner
 napbizblog.jp##.napbizapp
 napbizblog.jp##.napbiz-app-text
-nazology.net##.js-chase[data-content-piece="Googleニュース告知"]
-nazology.net##.post-googlenews
 ||united-arrows.co.jp/sp/js/smartbanner/
-rakuten-card.co.jp,sp.ch.nicovideo.jp,m.economictimes.com,skype.com###appBanner
+plus.nhk.jp,rakuten-card.co.jp,sp.ch.nicovideo.jp,m.economictimes.com,skype.com###appBanner
 ch.nicovideo.jp###chapplink
 ch.nicovideo.jp##.ads_nicovideo
 live.nicovideo.jp##a[class^="___app-download-banner"]
@@ -2817,7 +2820,7 @@ webaslan.com##a[href="http://www.webaslan.com/mobil"]
 opodo.de###new_app_layer
 opodo.de###app-layer
 wap.ithome.com###a_ad
-shufoo.net,gran-turismo.com,m.tv.naver.com,m.comic.naver.com,m.bombaytimes.com##.app_banner
+plus.nhk.jp,shufoo.net,gran-turismo.com,m.tv.naver.com,m.comic.naver.com,m.bombaytimes.com##.app_banner
 ||gamer-mods.ru/.s/src/jquery.smartbanner.js
 intellicast.com###promoAd
 intellicast.com###stormLink

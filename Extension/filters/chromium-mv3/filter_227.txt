@@ -1,13 +1,13 @@
-! Checksum: Q3bnVM3XZ7UHZoImA6XivQ
+! Checksum: RCS03SG6jGDEjXll1nuzXg
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.18.97
-! TimeUpdated: 2024-08-29T13:01:34+00:00
+! Version: 2.0.18.99
+! TimeUpdated: 2024-09-03T05:01:26+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.0829.1
+! OriginalVersion: 2024.0903.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://community.list-kr.com/docs/
@@ -519,6 +519,7 @@
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/bannerpop\/uploads\//
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/adManager\/(css|js)\/[A-z]+\.(css|js)$/
 !
+/gnetwork/adforus.
 /studio_backend/adforus.
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/RealMedia\/ads\//
 /data/banner.json?$domain=~nintendo.com|~nintendo.ru|~nintendo.net|~nintendo.com.au|~nintendo.com.tr|~nintendo.co.uk|~nintendo.co|~nintendo.gr|~nintendo.ca|~nintendo.de|~nintendo.fr|~nintendo.me|~nintendo.by|~nintendo.jp|~nintendo.com.tw|~nintendo.co.za|~nintendo.co.il|~nintendo.eu|~nintendo.it|~nintendo.com.br|~nintendo.es|~nintendo.ch|~nintendo.co.in|~nintendo.nl|~nintendo.us|~nintendo.pl|~nintendo.cl|~nintendo.co.jp|~nintendo.co.nz|~nintendo.cn|~nintendo.co.kr|~nintendo.mx|~nintendo.se|~nintendo.cz|~nintendo.shop|~nintendo.tw|~nintendo.be|~nintendo.store|~nintendo.dk|~nintendo.hu|~nintendo.md|~nintendo.com.hk|~nintendo.no|~nintendo.pw|~nintendo.com.bd|~nintendo.ie|~nintendo.at|~nintendo.com.np|~nintendo.ph|~nintendo.fi|~nintendo.lv|~nintendo.pe|~nintendo.sk|~nintendo.hk|~nintendo.gov.bd|~nintendo.sa|~nintendo.pt|~nintendo.one|~nintendo.kg|~nintendo.com.pe|~nintendo.org.il|~nintendo.is|~nintendo.gov.np|~nintendo.work
@@ -1537,6 +1538,7 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+a-ha.io##div[class*=" "]:has(> .gliaplayer-container)
 lol.ps##div[class~="before:bg-psgr-disabled"]
 lol.ps##div[data-ad]
 a-ha.io##main div[class*=" "]:has(> div[id^="div-gpt-"] + div[height])
@@ -3480,6 +3482,7 @@ play.aidungeon.io,tamrieltradecentre.com,downloads.descendant.me,html5.gamedistr
 !
 ! DOMAIN-REFRESHER: START
 !
+hasha.in#%#//scriptlet('prevent-fetch', 'adManager.js')
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=hasha.in
 @@||js.wpadmngr.com/static/adManager.js$xmlhttprequest,domain=hasha.in
 ||fundingchoicesmessages.google.com^$domain=tv25.co

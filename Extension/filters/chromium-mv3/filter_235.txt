@@ -1,8 +1,8 @@
-! Checksum: Q8OqdoIV2zLxwClKhKGpMw
+! Checksum: ybj3b44Aw46oMIydV0Ibqw
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.78
-! TimeUpdated: 2024-08-27T09:01:51+00:00
+! Version: 2.0.4.80
+! TimeUpdated: 2024-08-31T17:01:33+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -1753,12 +1753,8 @@ namayesh.com###promotion
 nab-music.com#%#//scriptlet('ubo-aopr.js', 'vc_url')
 ! https://github.com/MasterKia/PersianBlocker/issues/72
 ! https://github.com/MasterKia/PersianBlocker/pull/81
-||niniban.com/DaartAds.min$script,stylesheet,~third-party
-niniban.com##div.all_adv_mrg
-niniban.com##div.padding_news_right_adv
-niniban.com##div.box:has(img[alt="icon_ads"])
-niniban.com##div.fixed_box_adv
-niniban.com#$?#div.col-xs-36.col-md-24:not(:has(.gutter_xs)) { width: 83% !important; }
+||cdn.niniban.com/servev2/*.gif^$image,~third-party
+niniban.com#?#section:has(> header > h4:contains(تبلیغات متنی))
 ||netbarg.com/matomo.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/83080
 ||namasha.com/visit?id=
@@ -2135,7 +2131,12 @@ sedayiran.com##div[style="margin-bottom:10px"]:has(> .txt_adv_content)
 sedayiran.com##.adv_top
 searchline.ir#%#//scriptlet('ubo-acis.js', 'document.oncontextmenu')
 searchline.ir#$#* { -webkit-touch-callout: default !important; -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
-||snappfood.ir/*/track^
+||api.snapp.doctor/tweety/api/v1/journey^$xmlhttprequest,~third-party,method=post
+snapp.doctor#@#.ads-banner
+||ingest-data-afra.snappfood.dev^$third-party,domain=snappfood.ir
+||snappfood.ir/mobile/v2/user/load^$xmlhttprequest,~third-party,method=post
+! ||snappfood.ir^$xhr,1p,method=get,removeparam=optionalClient
+! ||snappfood.ir^$xhr,1p,method=get,removeparam=client
 sornamusic.ir##.textwidget
 sornamusic.ir##aside:nth-of-type(5)
 ! https://github.com/MasterKia/PersianBlocker/commit/b1113d568e008e898fe79226bc0c6e2dc82eaadd
