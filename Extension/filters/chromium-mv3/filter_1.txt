@@ -1,8 +1,8 @@
-! Checksum: KHgLj6XrDqYXN1mc3ZNdeQ
+! Checksum: wHQy1FMcZoKYPXK7aC9aqw
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.93.56
-! TimeUpdated: 2024-09-02T16:31:06+00:00
+! Version: 2.0.93.57
+! TimeUpdated: 2024-09-03T15:30:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -418,6 +418,7 @@ http://*.ru/leftunit.pl?
 ! Kadam ads
 /kadam.base.min.js?
 !
+/?bid=&sid=
 .bid/pjs/$script
 &adtype=
 &afftraf=
@@ -1487,6 +1488,8 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||paintejuke.com^
+||ipvertnet.com^
 ||cmcxmh.com^
 ||wisokykulas.bid^
 ||yxhouwezb.site^

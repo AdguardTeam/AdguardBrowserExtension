@@ -1,8 +1,8 @@
-! Checksum: PjCflaaW/oR4fSbL86wTVQ
+! Checksum: sBW4qLZYrUaY52me4Ze8gA
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.46.48
-! TimeUpdated: 2024-09-03T13:33:29+00:00
+! Version: 2.0.46.51
+! TimeUpdated: 2024-09-04T14:34:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -217,8 +217,10 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147842
-japscan.lol#%#//scriptlet('spoof-css', 'body > .container > .row > #main + #sidebar.col-md-3 > .card.mt-1 > .card[style="margin: 0px auto; display: block;"] > a.aikoi.donate[href^="http"][href*="/?utm_source=index&utm_"][target="_blank"][rel="noopener noreferrer nofollow"]:not([href^="http://japscan.lol"]) > img', 'display', 'inline')
-japscan.lol#%#//scriptlet('spoof-css', '.navbar-nav > li.nav-item > a[href^="https://www.origoclick.com/manga/?type=nav&"]', 'display', 'block')
+japscan.lol#%#//scriptlet('prevent-fetch', '/\/468[-x]60/')
+japscan.lol#%#//scriptlet('prevent-fetch', 'method:/HEAD|GET/')
+$script,xmlhttprequest,redirect-rule=noopjs,domain=japscan.lol
+japscan.lol#%#//scriptlet('spoof-css', '.navbar-nav > li.nav-item > a[href^="https://www.origoclick.com"]', 'display', 'block')
 @@||google.$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,~third-party
 japscan.lol#@#.tangoai
@@ -227,6 +229,9 @@ japscan.lol#@#[class^="copine"]
 @@||japscan.lol^$generichide
 japscan.lol#%#(()=>{const n={construct:(n,o,t)=>{const e=o[0];if(e&&e.includes("return typeof"))throw new ReferenceError;return Reflect.construct(n,o,t)}};window.Function=new Proxy(window.Function,n)})();
 japscan.lol#%#!function(){const t={apply:(t,n,o)=>{if(n&&n.match?.(/_\$_|DklzSoz|_adbn_/))throw Error();return Reflect.apply(t,n,o)}};window.String.prototype.split=new Proxy(window.String.prototype.split,t)}();
+@@||drive.google.com^$xmlhttprequest,domain=japscan.lol
+@@||postimg.cc^$xmlhttprequest,domain=japscan.lol
+@@||i.ibb.co^$xmlhttprequest,domain=japscan.lol
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147701
 trustmyscience.com##.adb-border
 ! https://github.com/AdguardTeam/AdguardFilters/issues/146165
@@ -949,8 +954,8 @@ h2-mobile.fr#?##main-container .blog__content:has(> .title-wrap--pr > h3:contain
 h2-mobile.fr###main-container .blog__content:has(> .col-md-4 > div[id^="optidigital-adslot-"])
 cosmopolitan.fr##.External
 japscan.lol##body > .container.text-center > div.mt-3[style="margin: 0px auto; display: block;"] > a.Aikoi.donate[target="_blank"][href^="https://www."][href*="/?utm_source=manga&utm_"]:not([href^="https://www.google"]):not([href^="https://www.japscan"]):not([href^="https://www.example"]) > img.img-fluid[src^="/imgs/onc/"]
-japscan.lol##.navbar-nav > li.nav-item > a[href^="https://www.origoclick.com/manga/?type=nav&"]
-japscan.lol##body > .container > .row > #main + #sidebar.col-md-3 > .card.mt-1 > .card[style="margin: 0px auto; display: block;"] > a.aikoi.donate[href^="http"][href*="/?utm_source=index&utm_"][target="_blank"][rel="noopener noreferrer nofollow"]:not([href^="http://japscan.lol"]) > img
+japscan.lol##.navbar-nav > li.nav-item > a[href^="https://www.origoclick.com"]
+[$path=/^\/$/]japscan.lol##body > style + .container:first-of-type > .row > #main + #sidebar.col-md-3 > .card.mt-1 > .card[style="margin: 0px auto; display: block;"] > a.aikoi.donate[href^="http"][href*="/?utm_source=index&utm_medium=extra_large&"][target="_blank"][rel="noopener noreferrer nofollow"]:not([href^="http://japscan.lol"]) > img
 femina.fr##.p-aside
 femina.fr##.p-inread
 femina.fr##.p-pave
