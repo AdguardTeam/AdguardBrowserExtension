@@ -89,6 +89,30 @@
     "options_popup_check_false_description": {
         "message": "Під час додавання власного фільтра сталась помилка."
     },
+    "options_add_custom_filter_modal_title": {
+        "message": "Додати власний фільтр"
+    },
+    "options_add_custom_filter_modal_checking_filter": {
+        "message": "Перевірка вашого фільтра..."
+    },
+    "options_add_custom_filter_modal_error_title": {
+        "message": "Не вдалося додати власний фільтр"
+    },
+    "options_add_custom_filter_modal_error_subtitle": {
+        "message": "Спробуйте ще раз або напишіть у службу підтримки"
+    },
+    "options_add_custom_filter_modal_add_button": {
+        "message": "Додати"
+    },
+    "options_add_custom_filter_modal_filter_name": {
+        "message": "Назва фільтру:"
+    },
+    "options_add_custom_filter_modal_filter_trusted": {
+        "message": "Довірений"
+    },
+    "options_add_custom_filter_modal_filter_trusted_description": {
+        "message": "Деякі правила фільтрації можуть суттєво змінити ваш досвід перегляду та поставити під загрозу вашу конфіденційність. Використовуйте лише фільтри розробників, яким довіряєте"
+    },
     "options_popup_try_again_button": {
         "message": "Спробувати знову"
     },
@@ -117,6 +141,7 @@
         "message": "AdGuard Антибанер"
     },
     "description": {
+        "description": "TEXT MAX LENGTH: 132",
         "message": "Неперевершений захист від реклами та спливних вікон. Блокує рекламу на Facebook, YouTube та усіх інших сайтах."
     },
     "background_tab_title": {
@@ -212,9 +237,6 @@
     "options_filters_info_mv3_total_rules": {
         "message": "Всього правил: %num%"
     },
-    "options_filters_info_mv3_specs": {
-        "message": "Подробиці на Github"
-    },
     "options_add_custom_filter": {
         "message": "Додати власний фільтр"
     },
@@ -289,6 +311,24 @@
     },
     "popup_statistics_total": {
         "message": "Усе"
+    },
+    "popup_statistics_all_categories": {
+        "message": "Усі"
+    },
+    "popup_statistics_category_advertising": {
+        "message": "Реклама"
+    },
+    "popup_statistics_category_trackers": {
+        "message": "Стеження"
+    },
+    "popup_statistics_category_social_media": {
+        "message": "Соціальні мережі"
+    },
+    "popup_statistics_category_cdn": {
+        "message": "CDN"
+    },
+    "popup_statistics_category_other": {
+        "message": "Інші"
     },
     "popup_statistics_week_days_mon": {
         "message": "ПН"
@@ -440,6 +480,9 @@
     "filters_download_loading": {
         "message": "Будь ласка, зачекайте доки завантажується база даних фільтрів..."
     },
+    "post_install_loading": {
+        "message": "Розширення завантажується..."
+    },
     "filtering_modal_element": {
         "message": "Елемент:"
     },
@@ -492,7 +535,7 @@
         "message": "Фільтр"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "<reset>Вимкніть фільтри<\/reset> або <refresh>перезавантажте сторінку<\/refresh>, щоб побачити журнал."
+        "message": "Нічого не знайдено. <reset>Вимкніть фільтри<\/reset> або <refresh>перезавантажте сторінку<\/refresh>, щоб переглянути записи журналу."
     },
     "filtering_modal_info_title": {
         "message": "Інформація про блокування"
@@ -543,7 +586,7 @@
         "message": "Статус:"
     },
     "filtering_modal_status_text_error": {
-        "message": "Не отримано жодної відповіді"
+        "message": "Не вдалося завантажити попередній перегляд. Будь ласка, спробуйте ще раз"
     },
     "filtering_modal_status_text_loading": {
         "message": "Завантаження..."
@@ -741,10 +784,7 @@
         "message": "Ліміти правил"
     },
     "options_rule_limits_description": {
-        "message": "Це розширення відповідає Маніфесту V3"
-    },
-    "options_rule_limits_description_link": {
-        "message": "Докладніше про Manifest V3"
+        "message": "Chrome обмежує кількість правил, які можна застосувати"
     },
     "options_rule_limits_dynamic": {
         "message": "Динамічні правила"
@@ -959,6 +999,9 @@
     "popup_limits_exceeded_warning": {
         "message": "Ваш браузер змінив список активних вбудованих фільтрів"
     },
+    "snack_on_websites_limits_exceeded_warning": {
+        "message": "Перевищено ліміт правил у браузерному розширенні AdGuard. Будь ласка, перевірте свої фільтри та вимкніть непотрібні"
+    },
     "short_name": {
         "message": "AdGuard"
     },
@@ -1169,14 +1212,17 @@
     },
     "filtering_modal_applied_rules": {
         "description": "WARNING: correct number of plural forms is required",
-        "message": "| Застосоване правило | Застосовані правила | Застосовані правила"
+        "message": "| Застосоване правило: | Застосовані правила: | Застосовані: правила:"
     },
     "filtering_modal_assumed_rules": {
         "description": "WARNING: correct number of plural forms is required",
-        "message": "| Потенційне правило | Потенційні правила | Потенційні правила"
+        "message": "| Потенційне правило: | Потенційні правила: | Потенційні правила:"
     },
     "filtering_modal_original_rules": {
         "description": "WARNING: correct number of plural forms is required",
-        "message": "| Первинне правило | Первинні правила | Первинні правила"
+        "message": "| Первинне правило: | Первинні правила: | Первинні правила:"
+    },
+    "filtering_modal_declarative_rule": {
+        "message": "Правило DNR:"
     }
 }

@@ -89,6 +89,30 @@
     "options_popup_check_false_description": {
         "message": "Ошибка при добавлении фильтра."
     },
+    "options_add_custom_filter_modal_title": {
+        "message": "Добавить свой"
+    },
+    "options_add_custom_filter_modal_checking_filter": {
+        "message": "Проверка фильтра..."
+    },
+    "options_add_custom_filter_modal_error_title": {
+        "message": "Не удалось добавить пользовательский фильтр"
+    },
+    "options_add_custom_filter_modal_error_subtitle": {
+        "message": "Попробуйте ещё раз или напишите в поддержку"
+    },
+    "options_add_custom_filter_modal_add_button": {
+        "message": "Добавить"
+    },
+    "options_add_custom_filter_modal_filter_name": {
+        "message": "Название фильтра:"
+    },
+    "options_add_custom_filter_modal_filter_trusted": {
+        "message": "Доверенный"
+    },
+    "options_add_custom_filter_modal_filter_trusted_description": {
+        "message": "Доверенные фильтры могут использовать мощные модификаторы правил — убедитесь, что вы используете фильтр от надёжных разработчиков"
+    },
     "options_popup_try_again_button": {
         "message": "Попробовать снова"
     },
@@ -117,7 +141,8 @@
         "message": "AdGuard Антибаннер"
     },
     "description": {
-        "message": "Непревзойденная защита от рекламы и всплывающих окон. Блокирует рекламу в VK (Вконтакте), Одноклассники, Facebook, на YouTube и других сайтах."
+        "description": "TEXT MAX LENGTH: 132",
+        "message": "Эффективное расширение для блокировки рекламы и всплывающих окон. Блокирует рекламу в VK, Одноклассниках, YouTube и других сайтах."
     },
     "background_tab_title": {
         "message": "Фоновая вкладка"
@@ -212,9 +237,6 @@
     "options_filters_info_mv3_total_rules": {
         "message": "Всего правил: %num%"
     },
-    "options_filters_info_mv3_specs": {
-        "message": "Спецификации на Github"
-    },
     "options_add_custom_filter": {
         "message": "Добавить фильтр"
     },
@@ -289,6 +311,24 @@
     },
     "popup_statistics_total": {
         "message": "Всего правил"
+    },
+    "popup_statistics_all_categories": {
+        "message": "Все"
+    },
+    "popup_statistics_category_advertising": {
+        "message": "Реклама"
+    },
+    "popup_statistics_category_trackers": {
+        "message": "Трекеры"
+    },
+    "popup_statistics_category_social_media": {
+        "message": "Социальные сети"
+    },
+    "popup_statistics_category_cdn": {
+        "message": "CDN"
+    },
+    "popup_statistics_category_other": {
+        "message": "Прочее"
     },
     "popup_statistics_week_days_mon": {
         "message": "Пн"
@@ -440,6 +480,9 @@
     "filters_download_loading": {
         "message": "Пожалуйста, подождите. Идёт загрузка базы данных фильтров..."
     },
+    "post_install_loading": {
+        "message": "Загрузка расширения..."
+    },
     "filtering_modal_element": {
         "message": "Элемент:"
     },
@@ -492,7 +535,7 @@
         "message": "Фильтр"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "<reset>Отключите фильтры<\/reset> или <refresh>перезагрузите страницу<\/refresh>, чтобы увидеть журнал событий."
+        "message": "Ничего не найдено. <reset>Отключите фильтры<\/reset> или <refresh>перезагрузите страницу<\/refresh>, чтобы просмотреть записи журнала."
     },
     "filtering_modal_info_title": {
         "message": "Информация о запросе"
@@ -543,7 +586,7 @@
         "message": "Статус:"
     },
     "filtering_modal_status_text_error": {
-        "message": "Ответа не получено"
+        "message": "Не удалось загрузить предварительный просмотр. Попробуйте ещё раз"
     },
     "filtering_modal_status_text_loading": {
         "message": "Загрузка..."
@@ -741,10 +784,7 @@
         "message": "Лимит правил"
     },
     "options_rule_limits_description": {
-        "message": "Это расширение соответствует Manifest V3"
-    },
-    "options_rule_limits_description_link": {
-        "message": "Узнать больше о Manifest V3"
+        "message": "Chrome ограничивает количество правил, которые можно применять"
     },
     "options_rule_limits_dynamic": {
         "message": "Динамические правила"
@@ -959,6 +999,9 @@
     "popup_limits_exceeded_warning": {
         "message": "Браузер изменил список активных встроенных фильтров"
     },
+    "snack_on_websites_limits_exceeded_warning": {
+        "message": "Превышен лимит правил в Браузерном расширении AdGuard. Проверьте фильтры и отключите те, которые вам не нужны"
+    },
     "short_name": {
         "message": "AdGuard"
     },
@@ -1112,6 +1155,10 @@
     "filtering_log_badge_tooltip_http_status_code": {
         "message": "Код состояния HTTP"
     },
+    "filtering_log_assumed_rule_description": {
+        "description": "<dot><\/dot> is a placeholder for red-dot, do not insert text there - it will be ignored.",
+        "message": "<dot><\/dot> означает предполагаемое правило, подробнее читайте <a>в документации<\/a>"
+    },
     "options_stealth_general_title": {
         "message": "Общие"
     },
@@ -1165,10 +1212,17 @@
     },
     "filtering_modal_applied_rules": {
         "description": "WARNING: correct number of plural forms is required",
-        "message": "| Применённое правило | Применённые правила | Применённые правила"
+        "message": "| Применённое правило: | Применённые правила: | Применённые правила:"
+    },
+    "filtering_modal_assumed_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "| Предполагаемое правило: | Предполагаемые правила: | Предполагаемые правила:"
     },
     "filtering_modal_original_rules": {
         "description": "WARNING: correct number of plural forms is required",
-        "message": "| Оригинальное правило | Оригинальные правила | Оригинальные правила"
+        "message": "| Оригинальное правило: | Оригинальные правила: | Оригинальные правила:"
+    },
+    "filtering_modal_declarative_rule": {
+        "message": "Правило DNR:"
     }
 }
