@@ -337,11 +337,11 @@ class PopupStore {
     }
 
     /**
-     * Returns a popup main title for enabled state for MV2.
+     * Returns a popup main title for enabled state.
      *
      * @returns Enabled popup title.
      */
-    private getCurrentEnabledTitleMv2 = (): string => {
+    get currentEnabledTitle(): string {
         let title = translator.getMessage('popup_tab_blocked_count', {
             num: this.totalBlockedTab.toLocaleString(),
         });
@@ -353,34 +353,6 @@ class PopupStore {
         }
 
         return title;
-    };
-
-    /**
-     * Returns a popup main title for enabled state for MV3.
-     *
-     * @returns Enabled popup title.
-     */
-    private getCurrentEnabledTitleMv3 = (): string => {
-        let title = translator.getMessage('popup_site_filtering_state_enabled');
-
-        if (!this.isFilteringPossible) {
-            title = translator.getMessage('popup_site_filtering_state_secure_page');
-        } else if (!this.canAddRemoveRule) {
-            title = translator.getMessage('popup_site_filtering_state_disabled');
-        }
-
-        return title;
-    };
-
-    /**
-     * Returns a popup main title for enabled state.
-     *
-     * @returns Enabled popup title.
-     */
-    get currentEnabledTitle(): string {
-        return __IS_MV3__
-            ? this.getCurrentEnabledTitleMv3()
-            : this.getCurrentEnabledTitleMv2();
     }
 
     /**
