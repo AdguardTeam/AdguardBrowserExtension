@@ -1,8 +1,8 @@
-! Checksum: mC7CtNB8jU+EFYoZRGczpw
+! Checksum: yg/vX93JaHL4Ggqdc3Qnng
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.42.63
-! TimeUpdated: 2024-09-03T13:33:32+00:00
+! Version: 2.0.42.69
+! TimeUpdated: 2024-09-04T13:33:59+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -439,6 +439,7 @@ reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#@#.InA
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#@#.SidebarAd
 !#safari_cb_affinity
 !
+||quantumshine.com^$third-party
 ||strangeclocks.com^$third-party
 ||brandsfive.com^$third-party
 ||washbanana.com^$third-party
@@ -1728,6 +1729,8 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+bilibili.com#$?#.bili-video-card > div[class]:only-child:matches-css(before, content: /Adblock/) { remove: true; }
+bilibili.com##.recommended-swipe-body div[class*="slide "]:has(> div.carousel-area > div > a[href*="cm.bilibili.com"][data-target-url]:not([data-target-url*=".bilibili.com/"]))
 xxtt.info##.popup
 codeshare.io##.sad-face
 wochenblitz.com#$#body { overflow: auto !important; }
@@ -1760,7 +1763,6 @@ lephoceen.fr#$#div[class^="paywall_modal_"][aria-labelledby^="Adblock"] { displa
 lephoceen.fr#%#//scriptlet('prevent-fetch', 'pips.taboola.com')
 playzone.cz##.aab-alert-wrap
 playzone.cz#%#//scriptlet('set-constant', 'clench3', 'true')
-bilibili.com##.recommended-swipe-body div.carousel-slide:has(> a[href*="cm.bilibili.com"][data-target-url]:not([data-target-url*=".bilibili.com/"]))
 neoseeker.com#%#//scriptlet('prevent-setTimeout', '.offsetHeight === 0')
 scimagojr.com##body #wrap-blocker
 myshows.me#%#//scriptlet('set-cookie', 'adBlockModal', 'true')
@@ -4310,9 +4312,14 @@ api.flocktory.com
 ! https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API
 ! Warning: check, if auth using Google is not broken
 ||accounts.google.com/gsi/client^$third-party,script,domain=dtf.ru|stackoverflow.com|vc.ru|pikabu.ru|nytimes.com|baltimoresun.com|rozetka.com.ua|estadao.com.br|medium.com|gzt.com|mercurynews.com|drukarnia.com.ua|diffchecker.com|kaystls.site|kaystls.site|overclock.net|nissanclub.com|crazygames.com|notion.so|usnews.com|nypost.com|etnownews.com|timesnownews.com|menshealth.com|themirror.com|cq.ru|voetbalzone.nl|perplexity.ai|lefigaro.fr|lifehacker.ru
+! The rule for sites, where URL blocking rule blocks also Google's log in button
+g123.jp,binance.com,boredpanda.com#%#//scriptlet('set-constant', 'navigator.credentials.get', 'noopPromiseReject')
 !
 ! SECTION: Popups - Regular rules
 !
+zielonyogrodek.pl##.popup-welcome
+estradaistudio.pl,audio.com.pl##.waitbox
+express.co.uk##.view-deal-sticky
 contents.premium.naver.com###_MP_LAYER_LOGIN
 media-hakase.com##.Bnr
 ||cifrus.ru/ruletka/widget_cifrus.png
@@ -11233,8 +11240,6 @@ labs.google.com#@##google-hats-survey
 @@||api.flocktory.com/v2/loader.js$domain=citilink.ru
 ! unblock featured content
 @@||sdk.*.braze.com^$domain=forum.paradoxplaza.com
-! Unblock "Sign in with your Google account" popup, where it is used as the only way to log in using Google account
-g123.jp,accounts.binance.com#@##credential_picker_container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164746
 @@||technode.com/wp-content/plugins/newspack-popups/dist/view.css
 ! https://github.com/uBlockOrigin/uAssets/issues/16321
@@ -11719,6 +11724,7 @@ macwelt.de,pcwelt.de#%#//scriptlet("set-constant", "firebase.messaging", "noopFu
 !
 ! SECTION: Push notifications - Regular rules
 !
+||assets.boredpanda.com/blog/wp-content/themes/boredpanda/push/main.js
 ||expat.com/serviceWorker.js
 ||1gr.cz/js/notifikace/notifikace-popup.min.js
 ||asset-1.tstatic.net/js/kgnotif_tribun.js$domain=tribunnews.com
@@ -12568,6 +12574,9 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 !
 ! SECTION: Subscriptions - Regular rules
 !
+canaltech.com.br##div[class*="phone"]
+estradaistudio.pl##.newsletter-custom
+mercafe.com.br##footer > section:has(> div > form input#newsletterInlineName)
 emlak.mitula.com.tr##div[class^="email-retention"]
 araba.mitula.com.tr###bannerUsuario
 nicematin.com###nm-newsletter-inread
