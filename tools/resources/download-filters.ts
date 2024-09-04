@@ -216,7 +216,7 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
  * 2. Downloads chromium-mv3 i18n metadata.
  * 3. Downloads all chromium-mv3 filters (parsed from the metadata (1)) and stores them in the chromium-mv3 folder.
  */
-const downloadAndPrepareMv3Filters = async () => {
+export const downloadAndPrepareMv3Filters = async () => {
     const loader = new AssetsLoader();
     return loader.load(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3));
 };

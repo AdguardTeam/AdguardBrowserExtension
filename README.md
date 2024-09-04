@@ -251,6 +251,9 @@ resources that will be included into the build: filters and public suffix list.
   yarn resources
 ```
 
+> [!TIP]
+> Run `yarn resources:mv3` to download resources for MV3 version.
+
 This command also checks if there are dangerous rules in the filters.
 See [dangerous rules](tools/resources/dangerous-rules/README.md)
 

@@ -1,8 +1,8 @@
-! Checksum: rg36Vx1VZFAazS4pjuIr0g
+! Checksum: yVJAfG1uU5Uon35hqKfX8w
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.9.28
-! TimeUpdated: 2024-08-29T21:33:38+00:00
+! Version: 2.0.9.35
+! TimeUpdated: 2024-09-03T13:33:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1023,7 +1023,6 @@ kidan-m.com,otakumix.doorblog.jp###rss1
 otakumix.doorblog.jp##iframe[src="http://otakumix.doorblog.jp/testrss.html"]
 huyosoku.com,kaigai-matome.net##.blogrolls
 pokemon-matome.net###header_rssbox
-pokemon-matome.net##div[class^="rssinline"]
 pokemon-matome.net##div[class^="rss_inner"]
 h-library.com,4545comics.com##.card-white__blue.padding8
 eromanga-castle.com##div[style^="overflow:auto;height:500px;"]
@@ -1440,6 +1439,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+cifrus.ru###pop_up_bl
 iguides.ru##.listing-mini
 biggeek.ru###callback-btn
 ||globalso.site/form.js
@@ -1652,6 +1652,8 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 !
 !   SECTION: Widgets - Marketing - Allowlist
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/187495
+@@||wchat.freshchat.com/js/widget.js$domain=livecrowd.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/174036
 @@||secure.livechatinc.com/customer/action/open_chat?$domain=kinguin.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170804
@@ -1904,7 +1906,6 @@ lenov.ru#?#.wrapper > div.col-md-3 > div.nav-side-menu > h2:contains(Мини ч
 lunafon.ru###us_fixed_contact_button
 mega.ru##.chatButton
 moluch.ru##.ask_out
-moretvtime.com##.cov
 narecza.com###header > div.wsc
 nexcess.net##.chatContainer
 nhentai.net###chatbanner
@@ -2257,7 +2258,9 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+birdlife.org##iframe[title="Donation Activity Popup"]
 novayagazeta.ru#?##article-body div[class]:has(> div[class] > p[class]:contains(Поддержите))
+novayagazeta.ru##div[id^="materialBlock"] > div[style="height: 100px;"]
 zona.media##body > a[href^="https://donate.zona.media/"][href$="utm_campaign=donate"]
 annas-archive.org##.js-fundraiser-banner
 moscowtimes.eu,moscowtimes.news,moscowtimes.ru##contribute-teaser-mobile
@@ -2341,7 +2344,7 @@ semnasem.org##.adcampaign-inject-banner
 semnasem.org##.article__footer-donate-row
 torrentinvites.org#?##sidebar > li:has(> div.block > div.blocksubhead > span.blocktitle:contains(DONATE))
 ||torrentinvites.org/64.gif
-anyipa.me,klto9.com,klz9.com,baominh.tech##div[id^="kofi-widget"]
+jestful.net,anyipa.me,klto9.com,klz9.com,baominh.tech##div[id^="kofi-widget"]
 apkmody.io###fixed-donate
 ||static.fundraiseup.com$domain=gijn.org
 gijn.org##.donate-btn
@@ -2461,6 +2464,8 @@ hromadske.ua#$#body { overflow: visible !important; }
 ! rules is to make test pages work so that users could verify that AdGuard
 ! is properly working.
 !
+!+ NOT_OPTIMIZED
+pokemon-matome.net##div[class^="rssinline"]
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_annoyances_widgets
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED

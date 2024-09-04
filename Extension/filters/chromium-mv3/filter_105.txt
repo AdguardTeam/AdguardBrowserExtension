@@ -1,8 +1,8 @@
-! Checksum: Hrq+kxOQyCQwB2DHlZPfQQ
+! Checksum: 7Zaj7RhjW8bq3ngIcKAPrQ
 ! Title: EasyList Czech and Slovak
 ! Description: Additional filter list for websites in Czech and Slovak.
-! Version: 2.0.2.67
-! TimeUpdated: 2024-07-24T21:01:35+00:00
+! Version: 2.0.2.68
+! TimeUpdated: 2024-08-30T09:06:16+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Homepage: http://adblock.sk
@@ -18,7 +18,6 @@
 !
 ! ---------- Czech & Slovak generic blocking rules ---------- !
 !
--reklama.
 .com/bannery/
 .cz/ads/
 .cz/BAN/
@@ -328,6 +327,7 @@ vranovske.sk#@#.advertising-content
 ! ---------- Czech Site Specific Element hiding rules ---------- !
 !
 365tipu.cz##.wpa.top
+aktualne.cz##[class^="advert__"]
 appliste.cz##.banner-header
 autobazar.cz###biglink
 autoforum.cz###content-right > div[style]:first-of-type
@@ -417,6 +417,7 @@ itnetwork.cz##.reklama-background
 jaknaletenky.cz###social
 kaloricketabulky.cz##.bannLead
 kamsdetmi.com##div.banner_position
+kinobox.cz##div[class*="Commercial_container"]
 kladenskelisty.cz##.rleft
 kladenskelisty.cz##.rright
 kladenskelisty.cz##.tree
@@ -620,7 +621,6 @@ www.seznam.cz#?#div.dragging-enabled:has(div.gadget--reklama)
 ! ---------- uBlock Extended filters ---------- !
 !
 ||a.cele.cz^$third-party
-||aktualne.cz^$csp=child-src *
 cc.cz#%#//scriptlet('ubo-aopr.js', 'App.branding')
 cdr.cz,diit.cz#$#body { background-image: none !important; padding-top: 0 !important; }
 csfd.cz,csfd.sk#$#div.body { padding-top: 0 !important; }
@@ -672,6 +672,8 @@ search.seznam.cz,clanky.seznam.cz##div[data-e-b-n*="advert"]
 sreality.cz#%#//scriptlet('ubo-nosiif.js', 'checkRods')
 super.cz#%#//scriptlet('ubo-ra.js', 'style', 'body')
 svetandroida.cz#%#//scriptlet('ubo-aopr.js', 'detectAdBlocker')
+titulky.com#%#//scriptlet('ubo-ra.js', 'style', 'div[id^="head"]')
+||titulky.com/banalter/
 tn.nova.cz#%#//scriptlet('ubo-set.js', 'useSeznamAds', 'false')
 ||trackad.cz/adtrack.php$domain=nova.cz,script,redirect=noopjs
 uloz.to#$#div.l-wrapper { padding-top: 0px !important; }

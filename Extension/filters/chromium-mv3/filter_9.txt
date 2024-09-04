@@ -1,8 +1,8 @@
-! Checksum: AXljEK+htTw2bPCsNlQ6Lw
+! Checksum: PhK+F4dIioJVDII7U/7zOA
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.26.43
-! TimeUpdated: 2024-08-30T06:32:56+00:00
+! Version: 2.0.26.47
+! TimeUpdated: 2024-09-03T13:33:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -889,8 +889,6 @@ deportealdia.live#%#//scriptlet("set-constant", "adblockDetector.init", "noopFun
 1i1.in#%#//scriptlet("abort-on-property-read", "mMCheckAgainBlock")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/71820
 @@||forum.outerspace.com.br/js/siropu/am/ads.min.js
-! https://github.com/AdguardTeam/AdguardFilters/issues/71853
-hobbugs.com#%#//scriptlet("abort-on-property-read", "adblockDetected")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/71147
 @@||adblockanalytics.com/ads.js$domain=manga-mx.com
 @@||adblockanalytics.com/adblocker.js$domain=manga-mx.com
@@ -1492,8 +1490,9 @@ pobreflix.do#%#//scriptlet('remove-attr', 'href', 'a[href]#clickfakeplayer')
 clickjogos.com.br#%#//scriptlet('set-constant', 'ShowRewards', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186166
 redecanais.in#%#//scriptlet('remove-attr', 'href', 'a[href]#clickfakeplayer')
+! https://github.com/AdguardTeam/AdguardFilters/issues/187722
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186078
-gamesperu2021.blogspot.com#%#//scriptlet('abort-current-inline-script', 'document.addEventListener', 'window.open')
+pelismx.lat,gamesperu2021.blogspot.com#%#//scriptlet('abort-current-inline-script', 'document.addEventListener', 'window.open')
 ! https://github.com/uBlockOrigin/uAssets/issues/24632
 cinelatino.net#%#//scriptlet('remove-attr', 'href', 'a[href]#clickfakeplayer')
 cinelatino.net#%#//scriptlet('trusted-set-constant', 'dtGonza.playeradstime', '"-1"')
@@ -2204,6 +2203,14 @@ globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.c
 ! ##body .banner
 meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.info,lapoliticaonline.com.mx,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.gov.bd,lapoliticaonline.gov.np,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+cnnbrasil.com.br##.sidebar__item--ad
+pelismx.lat##.botones-ads
+pelismx.lat###top-menu-movil
+ipadizate.com##.ad-div
+tvserieslatino.com##a[href*="?promote="]
+tvserieslatino.com##.ugaam-ad-wrapper-outer
+tvserieslatino.com##.the_content > div[style] > p:has(> a[href*="?promote="])
+tvserieslatino.com#?#.the_content span[style^="font-size:"]:not([style*="color"]):contains(/PERO ANTES TE RECOMIENDO|UENTAS COMPARTIDAS/)
 abc.es##.voc-wrapper > .voc-container-fw
 abc.es##.voc-wrapper > .voc-container--c-sponsor
 abc.es##.voc-discounts
@@ -2598,7 +2605,7 @@ ahnegao.com.br###global_topo
 megacanais.com,terrabrasilnoticias.com,psxbrasil.com.br,elrincondecabra.com,atelevisao.com,ahnegao.com.br##.code-block
 ahnegao.com.br##.sidebar-main > aside.ai_widget
 midiamax.uol.com.br###fixed-banner
-coleccionmovie.com##a[href*="?key="][target="_blank"]
+pelismx.lat,coleccionmovie.com##a[href*="?key="][target="_blank"]
 letras.com,letras.mus.br##.anSpaceTop
 newtral.es##div[class*="nwtpubli"]
 orchidcommerce.com##a[href^="https://ibest.vote/"]

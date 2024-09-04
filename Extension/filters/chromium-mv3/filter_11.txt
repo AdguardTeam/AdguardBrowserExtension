@@ -1,8 +1,8 @@
-! Checksum: ILBlBigq/SgcUwRGBvr6qQ
+! Checksum: QoQfvu+WTAs/ExcYWVU9zA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.53.99
-! TimeUpdated: 2024-08-29T16:32:58+00:00
+! Version: 2.0.54.11
+! TimeUpdated: 2024-09-03T13:33:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1047,8 +1047,8 @@ nan-net.jp,nan-net.com#%#//scriptlet('remove-node-text', 'script', 'adblock')
 nan-net.jp,nan-net.com###adblock_guide_mask
 nan-net.jp,nan-net.com##.adblock_guide_box
 ! nazology.net,nijimen.net anti-adb
-nazology.net,nijimen.net#%#//scriptlet('prevent-setTimeout', 'adBoxEl')
-||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=googlesyndication-adsbygoogle,domain=nazology.net|nijimen.net
+nazology.kusuguru.co.jp,nijimen.net#%#//scriptlet('prevent-setTimeout', 'adBoxEl')
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=googlesyndication-adsbygoogle,domain=nazology.kusuguru.co.jp|nijimen.net
 ! Rules for AdFender to block injected ads when AdGuard DNS is active
 ! https://github.com/AdguardTeam/AdguardFilters/issues/127712
 erozine.jp#%#//scriptlet("set-constant", "mobiles", "")
@@ -1385,6 +1385,10 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/187737
+unseki.co.jp#$##content_inner { margin-top: 0 !important; }
+unseki.co.jp#$##top { margin-top: 70px !important; }
+unseki.co.jp#$##header { top: 0px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186750
 depor.com#$#.st-sidebar__container { margin-top: 0 !important; }
 depor.com#$#.header-full { margin-top: 0 !important; }
@@ -2385,6 +2389,26 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+nikkansports.com##p[style="margin-bottom: 1em;"] > span[style="color:#333;font-weight:bold;display:block;margin-top:1em;font-size:16px;"]
+baseballking.jp##.txtarea > div[style="text-align:center; border-top: 1px solid #f3f3f3; border-bottom: 1px solid #f3f3f3; margin:20px -10px 0px -10px"]
+mainichikirei.jp##.article__inner > div[style^="text-align:center; margin-top:"][style*="margin-bottom:0px; color: #595757; font-size: 0.9em; height: 1"]
+fuqster.com,bigtitbitches.com##.sponsors-mobile
+fuqster.com,bigtitbitches.com##.header__nav-item--adv-link
+many.xxx##.avd_mob
+informator.ua##.inf_ua-content div[id][style^="min-height:"]:has(> ins)
+zozovideo.com##div[style^="position: absolute; width:"][style$=" top: 0px; left: 0px;"]
+||4gamer.net/css/pr/SP_topjack.css
+4gamer.net##.SP_JACK
+4gamer.net##.timeline_satellite_middle
+mantan-web.jp##div[style="height:58px; width:320px;"]
+bbsnet.info###ad_carousel
+bbsnet.info##div[id$="Box"] h2:has(+ script + #ad_carousel)
+anal.bbsnet.info###lcBox > div.aside:has(> div.asdr > div.siteshokai)
+anal.bbsnet.info###lcBox > h2.colorh2:has(+ div.mainBack > p > a.btn-square-soft2[href*="/go.php?"])
+anal.bbsnet.info###lcBox > h2:has(+ p > a.btn-square-soft[href^="https://ac.cross-system.com"])
+anal.bbsnet.info###lcBox p:has(> a[class^="btn-square"][target="_blank"])
+ms.bbsnet.info##div.randambtn001
+smpt.webrental.org##.dendou
 tiscali.it###wp-top
 cnbctv18.com##.inart-wrp
 cnbctv18.com##.inart-wrp + br
@@ -2519,7 +2543,7 @@ news.audee.jp###sp_UZOUSPbnr
 m.airporthaber1.com##.Banner
 utaten.com##div[style="height: 180px; margin-bottom: 10px;"]
 chosun.com##iframe[title="Advertisement"]
-porner.xxx,fullvideos.xxx,omg.xxx,4kporno.xxx,fullporn.xxx,fullporno.xxx,freepornvideos.xxx##.ft
+fullhd.xxx,many.xxx,porner.xxx,fullvideos.xxx,omg.xxx,4kporno.xxx,fullporn.xxx,fullporno.xxx,freepornvideos.xxx##.ft
 blogtag.ameba.jp##ul > div[class]:has(> div > div[id^="div-gpt-ad-"])
 blogtag.ameba.jp##aside > div[class]:has(> div > div[id^="div-gpt-ad-"])
 namaeuranai.biz#$#body { padding-bottom: 0 !important; }
@@ -3644,7 +3668,7 @@ front-row.jp##.ct-ad-under-parag
 front-row.jp##.ct-ad-content-bottom-wrap
 pulzo.com###spacer
 pulzo.com##.INREAD_HOME_CONTAINER
-mudainodocument.com,wikiru.jp,nknews.jp,keitaijoho.com,gorilife.com###slide_wrap
+motion.nowtice.net,mudainodocument.com,wikiru.jp,nknews.jp,keitaijoho.com,gorilife.com###slide_wrap
 live.kufu.co.jp##.banner_sp
 live.kufu.co.jp##.inner_ad_block
 fukuishimbun.co.jp##div[style="text-align: center; padding: 10px 0px; min-height: 100px;"]
@@ -5264,7 +5288,6 @@ tutudao.net##.m_adv > a[href="https://m.13xp.com/"]
 collectionofbestporn.com##.banner-mobile-header
 merlininkazani.com,javsubtitle##.header-ads
 ndtv.com##amp-iframe[src^="https://drop.ndtv.com/"]
-online.anidub.com###dle-content > div[style*="width: 300px;"][style*="height: 300px;"]
 india.com,india.com,bollywoodlife.com,bgr.in##.add-box
 mirtesen.ru##.footer-ad-block
 gadgetsnow.com##.dfp
