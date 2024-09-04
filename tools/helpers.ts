@@ -161,7 +161,7 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
                 return ' (MV3 Beta)';
             }
             if (buildEnv === BuildTargetEnv.Dev) {
-                return ' (MV3 Dev) - COPY';
+                return ' (MV3 Dev)';
             }
             break;
         }
