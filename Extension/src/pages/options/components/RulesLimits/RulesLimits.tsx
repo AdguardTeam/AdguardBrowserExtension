@@ -18,6 +18,7 @@
 
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -27,6 +28,7 @@ import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { MessageType } from '../../../../common/messages';
+import { OptionsPageSections } from '../../../../common/nav';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
@@ -131,7 +133,32 @@ export const RulesLimits = observer(() => {
                     </div>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
-                            {translator.getMessage('options_rule_limits_dynamic_user_rules')}
+                            {reactTranslator.getMessage('options_rule_limits_dynamic_user_rules', {
+                                user_rules: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.userFilter}`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                                allowlist: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.allowlist}`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                                custom_filters: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.filters}?group=0`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                            })}
                         </div>
                         <div className={getClassNamesForNumbers(dynamicRulesEnabledCount, dynamicRulesMaximumCount)}>
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
@@ -164,7 +191,16 @@ export const RulesLimits = observer(() => {
                     </div>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
-                            {translator.getMessage('options_rule_limits_static_rulesets_builtin')}
+                            {reactTranslator.getMessage('options_rule_limits_static_rulesets_builtin', {
+                                a: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.filters}`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                            })}
                         </div>
                         <div className={getClassNamesForNumbers(staticFiltersEnabledCount, staticFiltersMaximumCount)}>
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
@@ -182,7 +218,16 @@ export const RulesLimits = observer(() => {
                     </div>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
-                            {translator.getMessage('options_rule_limits_static_rules_all')}
+                            {reactTranslator.getMessage('options_rule_limits_static_rules_all', {
+                                a: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.filters}`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                            })}
                         </div>
                         <div className={getClassNamesForNumbers(staticRulesEnabledCount, staticRulesMaximumCount)}>
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
