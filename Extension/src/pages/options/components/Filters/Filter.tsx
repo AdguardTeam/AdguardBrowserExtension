@@ -218,10 +218,13 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                     )}
                     <button
                         type="button"
-                        className="filter__remove"
+                        className="button filter__remove"
                         onClick={handleRemoveFilterClick}
                     >
-                        <Icon id="#trash" classname="icon--24" />
+                        <Icon
+                            id="#trash"
+                            classname="icon icon--24 icon--red-default"
+                        />
                     </button>
                 </>
             );
@@ -250,9 +253,6 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                                         </span>
                                     </div>
                                 </Popover>
-                                <div className="filter__controls">
-                                    {renderRemoveButton()}
-                                </div>
                             </div>
 
                             <div className="filter__desc">
@@ -284,15 +284,18 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                             </div>
                             <FilterTags tags={tags} />
                         </div>
-                        <div className="setting__inline-control">
-                            <Setting
-                                id={prefixedFilterId}
-                                type={SETTINGS_TYPES.CHECKBOX}
-                                label={name}
-                                value={!!enabled}
-                                optimistic={!__IS_MV3__}
-                                handler={handleFilterSwitch}
-                            />
+                        <div className="filter__controls">
+                            {renderRemoveButton()}
+                            <div className="setting__inline-control">
+                                <Setting
+                                    id={prefixedFilterId}
+                                    type={SETTINGS_TYPES.CHECKBOX}
+                                    label={name}
+                                    value={!!enabled}
+                                    optimistic={!__IS_MV3__}
+                                    handler={handleFilterSwitch}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
