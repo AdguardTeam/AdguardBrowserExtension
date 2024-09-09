@@ -20,16 +20,16 @@ import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { MessageType } from '../../../../common/messages';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { HOW_TO_CREATE_RULES_URL } from '../../constants';
 import { DynamicRulesLimitsWarning } from '../Warnings';
+import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
+import { RuleSyntaxLink } from './RuleSyntaxLink';
 
 import './styles.pcss';
 
@@ -57,20 +57,13 @@ const UserRules = observer(() => {
                 title={translator.getMessage('options_userfilter')}
                 id={settingsStore.userFilterEnabledSettingId}
                 mode="smallContainer"
-                description={reactTranslator.getMessage('options_userfilter_description_key', {
-                    a: (chunks) => (
-                        <a
-                            className="desc--link"
-                            href={HOW_TO_CREATE_RULES_URL}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {chunks}
-                        </a>
-                    ),
-                })}
+                description={translator.getMessage('options_userfilter_subtitle_key')}
                 inlineControl={<UserRulesSwitcher />}
             />
+            <div className="settings__group__links">
+                <RuleSyntaxLink />
+                <RuleLimitsLink />
+            </div>
             <DynamicRulesLimitsWarning useWrapper />
             {settingsStore.isFullscreenUserRulesEditorOpen
                 ? (
