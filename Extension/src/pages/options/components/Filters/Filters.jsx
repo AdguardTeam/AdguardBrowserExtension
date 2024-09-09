@@ -39,6 +39,7 @@ import { AntibannerGroupsId } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnings';
 import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
+import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { getStaticWarningMessage } from '../Warnings/messages';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
@@ -342,6 +343,13 @@ const Filters = observer(() => {
                 )}
                 renderBackButton={renderBackButton}
             >
+                {
+                    isCustom && (
+                        <div className="settings__group__links">
+                            <RuleLimitsLink />
+                        </div>
+                    )
+                }
                 {
                     isCustom
                         ? <DynamicRulesLimitsWarning />

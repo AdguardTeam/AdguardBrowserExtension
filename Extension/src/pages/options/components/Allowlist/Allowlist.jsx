@@ -35,6 +35,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { OptionsPageSections } from '../../../../common/nav';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { exportData, ExportTypes } from '../../../common/utils/export';
+import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
@@ -162,6 +163,9 @@ const Allowlist = observer(() => {
                     )}
                 inlineControl={<AllowlistSwitcher />}
             />
+            <div className="settings__group__links">
+                <RuleLimitsLink />
+            </div>
             <DynamicRulesLimitsWarning useWrapper />
             <Editor
                 name="allowlist"
