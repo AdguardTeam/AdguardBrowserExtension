@@ -51,7 +51,6 @@ import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
 import { AddCustomModal } from './AddCustomModal';
 import { SEARCH_FILTERS } from './Search/constants';
-import { FiltersInfoMv3 } from './FiltersInfoMv3';
 
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',
@@ -393,11 +392,7 @@ const Filters = observer(() => {
         >
             <StaticFiltersLimitsWarning useWrapper />
             <DynamicRulesLimitsWarning useWrapper />
-            {__IS_MV3__ ? (
-                <FiltersInfoMv3 />
-            ) : (
-                <FiltersUpdate />
-            )}
+            {!__IS_MV3__ && <FiltersUpdate />}
             <Search />
             {settingsStore.isSearching
                 ? renderGroupsOnSearch(filtersToRender)
