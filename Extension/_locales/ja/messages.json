@@ -92,11 +92,20 @@
     "options_add_custom_filter_modal_title": {
         "message": "カスタムフィルタを追加"
     },
+    "options_add_custom_filter_modal_checking_filter": {
+        "message": "カスタムフィルタを確認中..."
+    },
+    "options_add_custom_filter_modal_error_title": {
+        "message": "カスタムフィルタを追加できませんでした"
+    },
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "もう一度試すか、サポートにご連絡ください。"
     },
     "options_add_custom_filter_modal_add_button": {
         "message": "追加する"
+    },
+    "options_add_custom_filter_modal_filter_name": {
+        "message": "フィルタ名:"
     },
     "options_add_custom_filter_modal_filter_trusted": {
         "message": "信頼できる"
@@ -471,6 +480,9 @@
     "filters_download_loading": {
         "message": "フィルタデータベースを読み込み中です。少々お待ちください…"
     },
+    "post_install_loading": {
+        "message": "拡張機能を読み込み中…"
+    },
     "filtering_modal_element": {
         "message": "要素："
     },
@@ -522,6 +534,9 @@
     "filtering_table_filter": {
         "message": "フィルタ"
     },
+    "filtering_table_empty_reload_page_desc": {
+        "message": "何も見つかりません。ログ記録を表示するには、<reset>フィルタを無効にする<\/reset>か、<refresh>ページを再読み込み<\/refresh>してみてください。"
+    },
     "filtering_modal_info_title": {
         "message": "詳細情報の確認"
     },
@@ -569,6 +584,9 @@
     },
     "filtering_modal_status_text_desc": {
         "message": "ステータス:"
+    },
+    "filtering_modal_status_text_error": {
+        "message": "プレビューを読み込めませんでした。もう一度お試しください。"
     },
     "filtering_modal_status_text_loading": {
         "message": "読み込み中…"
@@ -732,11 +750,14 @@
     "options_userfilter_description_key": {
         "message": "ここで独自のルールを追加することができます。このオプションは、HTML\/CSSに精通した上級ユーザーにお勧めです。独自のフィルタールールの書き方を学ぶには<a>こちらのフィルタールール作成方法説明<\/a> を読んでください。"
     },
+    "options_userfilter_subtitle_key": {
+        "message": "独自のフィルタリングルールで広告ブロックをカスタマイズできます。"
+    },
     "options_userfilter_line_break_off": {
-        "message": "改行: OFF"
+        "message": "改行（line break）: 無効"
     },
     "options_userfilter_line_break_on": {
-        "message": "改行: ON"
+        "message": "改行（line break）: 有効"
     },
     "options_open_changelog": {
         "message": "チェンジログ"
@@ -762,14 +783,20 @@
     "options_miscellaneous_settings": {
         "message": "追加設定"
     },
+    "options_rule_syntax": {
+        "message": "ルールの構文"
+    },
     "options_rule_limits": {
         "message": "ルール数の上限"
+    },
+    "options_rule_limits_description": {
+        "message": "Chromeは適用できるルールの数を制限しています。"
     },
     "options_rule_limits_dynamic": {
         "message": "動的ルール"
     },
     "options_rule_limits_dynamic_user_rules": {
-        "message": "ユーザーによって追加されたルール（ユーザールールやカスタムフィルタなど）"
+        "message": "ユーザーが追加したルール（<user_rules>ユーザールール<\/user_rules>、 <allowlist>ウェブサイトのホワイトリスト化<\/allowlist> 、 <custom_filters>カスタムフィルタ<\/custom_filters>など）"
     },
     "options_rule_limits_dynamic_regex": {
         "message": "正規表現ルール（上記に含まれるもの）"
@@ -778,13 +805,13 @@
         "message": "静的ルールセット"
     },
     "options_rule_limits_static_rulesets_builtin": {
-        "message": "迷惑要素ブロックや言語特化フィルタなどの組み込みフィルタ"
+        "message": "<a>組み込みフィルタ<\/a>（迷惑要素ブロックや言語特化フィルタなど）"
     },
     "options_rule_limits_static_rules": {
         "message": "静的ルール"
     },
     "options_rule_limits_static_rules_all": {
-        "message": "組み込みフィルタからのルール"
+        "message": "<a>組み込みフィルタ<\/a>からのルール"
     },
     "options_rule_limits_static_rules_regex": {
         "message": "正規表現ルール（上記に含まれるもの）"
@@ -978,6 +1005,9 @@
     "popup_limits_exceeded_warning": {
         "message": "お使いのブラウザが有効な組み込みフィルタのリストを変更しました。"
     },
+    "snack_on_websites_limits_exceeded_warning": {
+        "message": "AdGuard ブラウザ拡張機能のルール数上限を超えました。お使いのフィルタを確認し、不要なフィルタを無効にしてください。"
+    },
     "short_name": {
         "message": "AdGuard"
     },
@@ -1131,6 +1161,10 @@
     "filtering_log_badge_tooltip_http_status_code": {
         "message": "HTTP status code（HTTPステータスコード）"
     },
+    "filtering_log_assumed_rule_description": {
+        "description": "<dot><\/dot> is a placeholder for red-dot, do not insert text there - it will be ignored.",
+        "message": "<dot><\/dot> は意図したルールを意味します。詳細については、 <a>ドキュメンテーション<\/a>を参照してください。"
+    },
     "options_stealth_general_title": {
         "message": "一般"
     },
@@ -1181,5 +1215,20 @@
     },
     "close_button_title": {
         "message": "閉じる"
+    },
+    "filtering_modal_applied_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "適用ルール: | 適用ルール:"
+    },
+    "filtering_modal_assumed_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "想定ルール: | 想定ルール:"
+    },
+    "filtering_modal_original_rules": {
+        "description": "WARNING: correct number of plural forms is required",
+        "message": "元のルール: | 元のルール:"
+    },
+    "filtering_modal_declarative_rule": {
+        "message": "DNRルール:"
     }
 }
