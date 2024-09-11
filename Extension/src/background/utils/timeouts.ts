@@ -45,7 +45,8 @@ export async function createPromiseWithTimeout<T>(
  */
 async function rejectAfterTimeout(timeoutMs: number, message: string): Promise<never> {
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
+        // eslint-disable-next-line no-restricted-globals
+        self.setTimeout(() => {
             reject(new Error(message));
         }, timeoutMs);
     });

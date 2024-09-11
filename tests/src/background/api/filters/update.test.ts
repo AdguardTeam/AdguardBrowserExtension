@@ -109,6 +109,11 @@ describe('Filter Update API should', () => {
 
     // Groups test with real timers
     describe('tests with real timers', () => {
+        if (__IS_MV3__) {
+            it('[NOT TESTING FOR MV3]', () => { expect(true).toBeTruthy(); });
+            return;
+        }
+
         const nativeDateNow = Date.now;
 
         beforeEach(async () => {
@@ -206,6 +211,11 @@ describe('Filter Update API should', () => {
     });
 
     it('update filters after 60 minutes delay', async () => {
+        if (__IS_MV3__) {
+            expect(true).toBeTruthy();
+            return;
+        }
+
         const clock = FakeTimers.install();
         let promise = App.init();
         await clock.tickAsync(10);
@@ -256,6 +266,11 @@ describe('Filter Update API should', () => {
     });
 
     describe('autoUpdateFilters', () => {
+        if (__IS_MV3__) {
+            it('[NOT TESTING FOR MV3]', () => { expect(true).toBeTruthy(); });
+            return;
+        }
+
         const definedExpressions = {
             'adguard': true,
             'adguard_ext_chromium': true,

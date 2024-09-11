@@ -33,6 +33,7 @@ import {
 } from '../../../common/messages';
 import {
     Categories,
+    CommonFilterApi,
     CustomFilterApi,
     type FilterMetadata,
     FiltersApi,
@@ -47,6 +48,7 @@ import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from '../../.
 import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
 import { SettingOption } from '../../schema/settings/main';
+import { AntiBannerFiltersId } from '../../../common/constants';
 
 import type {
     StaticLimitsCheckResult,
@@ -130,7 +132,7 @@ export class RulesLimitsService {
      * @returns A map of ruleset counters.
      */
     private static getRuleSetsCountersMap = (result: ConfigurationResult): RuleSetCountersMap => {
-        return result.staticFilters.reduce((acc: { [key: number]: RuleSetCounter }, ruleset) => {
+        const counters = result.staticFilters.reduce((acc: { [key: number]: RuleSetCounter }, ruleset) => {
             const filterId = Number(ruleset.getId().slice(RULE_SET_NAME_PREFIX.length));
 
             acc[filterId] = {
@@ -141,6 +143,18 @@ export class RulesLimitsService {
 
             return acc;
         }, {});
+
+        // It is like "syntax sugar" for the quick fixes filter to emulate it
+        // like an "empty" ruleset, because it looks like usual filter
+        // in the UI, but it actually applied dynamically, so enabling it will
+        // never change quota of the used static rules.
+        counters[AntiBannerFiltersId.QuickFixesFilterId] = {
+            filterId: AntiBannerFiltersId.QuickFixesFilterId,
+            rulesCount: 0,
+            regexpRulesCount: 0,
+        };
+
+        return counters;
     };
 
     /**
@@ -310,9 +324,12 @@ export class RulesLimitsService {
      */
     public static getCurrentConfigurationEnabledFilters(): number[] {
         const ids = FiltersApi.getEnabledFiltersWithMetadata()
-            // Ignore custom filters because they are user-defined and conversion
+            // Ignore custom filters, user rules, allowlist and quick fixes lists
+            // because they are user-defined (except quick fixes - it loaded
+            // dynamically from the remote) and do not use quota of the static
+            // rules.
             // of them is going via dynamic part of DNR rules.
-            .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId))
+            .filter((f) => CommonFilterApi.isCommonFilter(f.filterId))
             .map((filter) => filter.filterId);
 
         return ids;

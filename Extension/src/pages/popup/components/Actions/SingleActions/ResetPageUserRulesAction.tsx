@@ -18,7 +18,7 @@
 
 import React, { useState } from 'react';
 
-import { addMinDurationTime } from '../../../../../common/common-script';
+import { addMinDurationTime } from '../../../../common/common-script';
 import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';

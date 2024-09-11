@@ -17,7 +17,7 @@
  */
 import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
-import { createPromiseWithTimeout } from '../../../utils/timers';
+import { createPromiseWithTimeout } from '../../../utils/timeouts';
 import { network } from '../../network';
 
 const emptyDownloadResult: DownloadResult = {

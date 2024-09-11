@@ -64,6 +64,7 @@ import {
     DocumentBlockService,
     localeDetect,
     PromoNotificationService,
+    filterUpdateService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -171,7 +172,7 @@ export class App {
         // even for patches, because MV3 does not support remote filter updates
         // (either full or through diffs) and filters are updated only with
         // the update of the entire extension.
-        if (isUpdate && __IS_MV3__) {
+        if (isUpdate) {
             const filtersIds = await FiltersApi.reloadFiltersFromLocal();
             logger.debug('Following filters has been updated from local resources:', filtersIds);
         }
@@ -266,6 +267,9 @@ export class App {
         await engine.start();
 
         appContext.set(AppContextKey.IsInit, true);
+
+        // In MV3 we need filters update service to update quick fixes filter.
+        filterUpdateService.init();
 
         await sendMessage({ type: MessageType.AppInitialized });
     }

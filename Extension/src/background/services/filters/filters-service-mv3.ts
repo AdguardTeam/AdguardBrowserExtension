@@ -36,9 +36,11 @@ import {
     FiltersApi,
     HitStatsApi,
     PageStatsApi,
+    QuickFixesRulesApi,
 } from '../../api';
 import { settingsEvents } from '../../events';
 import { SettingOption } from '../../schema';
+import { AntiBannerFiltersId } from '../../../common/constants';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
@@ -257,7 +259,13 @@ export class FiltersService {
      * @param shouldEnableGroup Flag for enabling the filter group if it has not been touched before.
      */
     private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
-        await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
+        // For quick fixes filter we have special logic with partially updating
+        // metadata and then load filter from remote.
+        if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
+            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+        } else {
+            await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
+        }
     }
 
     /**

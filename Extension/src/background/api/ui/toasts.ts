@@ -107,7 +107,8 @@ export class Toasts {
                 });
             }
         } catch (e) {
-            setTimeout(() => {
+            // eslint-disable-next-line no-restricted-globals
+            self.setTimeout(() => {
                 this.showRuleLimitsAlert(triesCount + 1);
             }, Toasts.TRIES_TIMEOUT_MS);
         }
@@ -155,7 +156,8 @@ export class Toasts {
                 });
             }
         } catch (e) {
-            setTimeout(() => {
+            // eslint-disable-next-line no-restricted-globals
+            self.setTimeout(() => {
                 this.showAlertMessage(title, text, triesCount + 1);
             }, Toasts.TRIES_TIMEOUT_MS);
         }
@@ -293,7 +295,8 @@ export class Toasts {
                 });
             }
         } catch (e) {
-            setTimeout(() => {
+            // eslint-disable-next-line no-restricted-globals
+            self.setTimeout(() => {
                 this.showApplicationUpdatedPopup(currentVersion, previousVersion, triesCount + 1);
             }, Toasts.TRIES_TIMEOUT_MS);
         }

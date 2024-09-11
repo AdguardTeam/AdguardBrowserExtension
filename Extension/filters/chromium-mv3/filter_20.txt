@@ -1,8 +1,8 @@
-! Checksum: pPv5huBBkzhggv+rGo0NbQ
+! Checksum: j8J+tx/y5BS9swcPH002xQ
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.16.36
-! TimeUpdated: 2024-09-04T11:36:04+00:00
+! Version: 2.0.16.47
+! TimeUpdated: 2024-09-10T07:33:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -114,7 +114,7 @@
 ! SECTION: Mobile apps - Regular rules
 !
 ! ##body .smartbanner
-turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-mail.org,ortobom.com.br,dicionarioinformal.com.br,5-fifth.com,news.sky.com,chat.babel.com,getwordly.com,school-turnup.com,naked-science.ru,vod.tvp.pl,tvn24.pl,m.lamoda.ru,lkfl2.nalog.ru,kocailem.com,dartworld.shopgate.com,m.alles10euro.de,dodopizza.ru,allo.ua,tempo.co,beymen.com,tvnmeteo.tvn24.pl,outsidetv.com,golfchannel.com,sportsnet.ca,euronews.com,pkobp.pl,tesco.hu,prima.hu,immobilienscout24.de,lcwaikiki.com,m.sigrun-woehr.com,transfermarkt.de,fragfinn.de,hh.ru,eraffe24.de,infranken.de,m.computeruniverse.net,m.emp.de,meduza.global.ssl.fastly.net,meduza.io##body .smartbanner
+turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-mail.org,ortobom.com.br,dicionarioinformal.com.br,5-fifth.com,news.sky.com,chat.babel.com,getwordly.com,school-turnup.com,naked-science.ru,vod.tvp.pl,tvn24.pl,m.lamoda.ru,lkfl2.nalog.ru,kocailem.com,dartworld.shopgate.com,m.alles10euro.de,dodopizza.ru,allo.ua,tempo.co,beymen.com,tvnmeteo.tvn24.pl,outsidetv.com,golfchannel.com,sportsnet.ca,euronews.com,pkobp.pl,tesco.hu,prima.hu,immobilienscout24.de,lcwaikiki.com,m.sigrun-woehr.com,transfermarkt.de,fragfinn.de,hh.ru,eraffe24.de,infranken.de,m.computeruniverse.net,m.emp.de,meduza.io##body .smartbanner
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/137819#issuecomment-1364610357
 ! notifications - part of the functionality
@@ -125,6 +125,14 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 temu.com#?#div[role="main"] div[style] > div[style]:has(> div[style] div[js-selector="mobile-download-ui"])
 !
 !
+wear.jp###app_info
+camp-fire.jp###main ~ section > div[class]:has(> img[src*="_app"])
+appli.jorudan.co.jp##.dl_bnr
+hromadske.radio##div[class^="ModalBanner_modalBanner"]
+yamap.com##.Posts__Download__Section
+colorblindnesstest.org##.rightcol > div.text16:has(> a[href^="https://chrome.google.com/"])
+navitime.co.jp##.inview-m8iDqk1XV9
+tribune.net.ph###sw-wrapper
 jeans-fritz.de###maincontent a[href="/fashion-app"]
 cloud.boosteroid.com##app-load-app-notification
 revolut.com#?##__next > div[class^="Box-rui__sc"]:has(> span[class^="Box-rui__sc"] > a[href^="https://get.revolut.com/"])
@@ -958,7 +966,6 @@ navitime.co.jp##.app_dl_banner_frame
 ganma.jp#%#//scriptlet('set-cookie', 'isAppClosed', '1')
 trello.com#?##chrome-container > div[class]:has(> div[class]> a[href^="https://apps.apple.com/"])
 welovemanga.one#?#div[class^="col-"] > div.card:has(> div.card-header > h3.card-title:contains(Application))
-prcm.jp##.footer-introduction
 realtime.yahoo.co.jp##div[id^="apppr"]
 izi.travel##.app_message
 izi.travel##.share_browse_app
@@ -1475,8 +1482,10 @@ mts.by##.main-slider__item[style*="/content/app"]
 news.nifty.com##.widget_official_full_app
 vk.sportsbull.jp##.banner-area
 livelaw.in###header_ad_mobile
-sports.smt.docomo.ne.jp#$##app_ad_bnr { display: none!important; }
+sports.smt.docomo.ne.jp#$##app_ad_bnr { display: none !important; }
 sports.smt.docomo.ne.jp#$##wrapper_low[style^="top:"] { top: 0 !important; }
+service.smt.docomo.ne.jp###app_ad_bnr
+service.smt.docomo.ne.jp#$##wrapper_low { padding-top: 0px !important; }
 kotobank.jp###ftInfo
 flightradar24.com##.overlay-open-in-app-button
 giphy.com##div[class*="OpenInAppContainer"]
@@ -1690,7 +1699,7 @@ lazada.co.th###module_guide_app
 getpocket.com##div[data-cy="reader-flyaway-apps"]
 operanewsapp.com##.footer-wrapper
 navitime.co.jp###appli-dl-frame
-ficbook.me,ficbook.com,ficbook.net##.install-app-container
+ficbook.me,ficbook.net##.install-app-container
 translate.google.com,translate.google.ru,translate.google.net,translate.google.org,translate.google.in,translate.google.com.au,translate.google.com.tr,translate.google.co.uk,translate.google.io,translate.google.co,translate.google.gr,translate.google.ca,translate.google.com.ua,translate.google.vn,translate.google.info,translate.google.de,translate.google.fr,translate.google.me,translate.google.by,translate.google.jp,translate.google.xyz,translate.google.ua,translate.google.com.tw,translate.google.co.za,translate.google.co.il,translate.google.eu,translate.google.it,translate.google.id,translate.google.com.br,translate.google.es,translate.google.ch,translate.google.co.in,translate.google.kz,translate.google.com.vn,translate.google.biz,translate.google.co.id,translate.google.nl,translate.google.us,translate.google.pl,translate.google.cl,translate.google.com.mx,translate.google.ro,translate.google.co.jp,translate.google.co.nz,translate.google.ma,translate.google.com.ar,translate.google.site,translate.google.cc,translate.google.rs,translate.google.cn,translate.google.ae,translate.google.co.kr,translate.google.mx,translate.google.pk,translate.google.se,translate.google.com.my,translate.google.cz,translate.google.lk,translate.google.tw,translate.google.ai,translate.google.com.sg,translate.google.top,translate.google.gov,translate.google.com.co,translate.google.co.th,translate.google.be,translate.google.store,translate.google.dk,translate.google.hu,translate.google.az,translate.google.am,translate.google.uz,translate.google.com.pk,translate.google.news,translate.google.md,translate.google.com.hk,translate.google.ge,translate.google.sg,translate.google.my,translate.google.no,translate.google.com.bd,translate.google.to,translate.google.dev,translate.google.mk,translate.google.com.ng,translate.google.ie,translate.google.asia,translate.google.at,translate.google.co.ke,translate.google.com.np,translate.google.ph,translate.google.fi,translate.google.tk,translate.google.lv,translate.google.pe,translate.google.sk,translate.google.ng,translate.google.lt,translate.google.tn,translate.google.hk,translate.google.link,translate.google.cloud,translate.google.gov.bd,translate.google.website,translate.google.kr,translate.google.sa,translate.google.pt,translate.google.gg,translate.google.com.ph,translate.google.hr,translate.google.bg,translate.google.com.sa,translate.google.mn,translate.google.ws,translate.google.ee,translate.google.one,translate.google.uk,translate.google.kg,translate.google.ba,translate.google.com.pe,translate.google.al,translate.google.fm,translate.google.ml,translate.google.dz,translate.google.org.il,translate.google.is,translate.google.com.uy,translate.google.gov.np,translate.google.or.id,translate.google.si,translate.google.gen.tr,translate.google.ga,translate.google.sh##div[class][jsname] > div[class] > c-wiz > div[class][jsname][style^="transform: matrix("]
 budzdorov.ru##.popup-metadata-popup__paranja
 selfmind.ai##.store-bannar-container
@@ -1764,7 +1773,6 @@ navitime.co.jp###footer-app-dl-frame
 navitime.co.jp##.footer-invite-app-section
 navitime.co.jp##.app-download-footer-frame
 brandavenue.rakuten.co.jp##.rf-banner-app
-delivery.rakuten.co.jp##.app-bnn
 pay.rakuten.co.jp###Smart_App_Banner
 pay.rakuten.co.jp###bt-download
 recipe.rakuten.co.jp##.rakuten_recipe_app
@@ -2406,7 +2414,7 @@ employment.en-japan.com##.appHeader
 gnavi.co.jp##.p-appli
 ||s3.amazonaws.com/uploads/image/505544/33ab86499a.png$domain=nishinippon.co.jp
 nishinippon.co.jp##.l-footer-middle-app
-mess-y.com,biz-journal.jp##.sns_apuri > a[href="http://www.cyzo.com/i/cyzoapp/"]
+biz-journal.jp##.sns_apuri > a[href="http://www.cyzo.com/i/cyzoapp/"]
 jmty.jp##.p-app-induction-link
 jmty.jp###header > .js_header_induction
 sanspo.com##.sanspoApp
@@ -2873,7 +2881,7 @@ obzor.press###meerkat-wrap
 tripadvisor.co.uk,tripadvisor.com.br,tripadvisor.jp###partialScreenInterrupter
 baidu.com###search-appPromote
 lifehacker.ru###sidebar-footer-3 > aside > div.textwidget > a > img
-services.clp.com.hk,pikabu.ru,prcm.jp,uol.com.br,m.netpincer.hu,m.yelp.com,opodo.de###smart-banner
+services.clp.com.hk,pikabu.ru,uol.com.br,m.netpincer.hu,m.yelp.com,opodo.de###smart-banner
 mobile01.com###smartbanner-area
 zona.plus,zona.mobi###zona-android
 m.imgur.com##.FloatingOIA

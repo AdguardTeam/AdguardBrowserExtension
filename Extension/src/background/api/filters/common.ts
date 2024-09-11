@@ -69,7 +69,8 @@ export class CommonFilterApi {
     }
 
     /**
-     * Checks if filter is built-in: not custom, not user-rules and not allowlist.
+     * Checks if filter is built-in: not custom, not user-rules, not allowlist
+     * and not quick fixes filter (used only for MV3 version).
      *
      * @param filterId Filter id.
      *
@@ -77,8 +78,9 @@ export class CommonFilterApi {
      */
     public static isCommonFilter(filterId: number): boolean {
         return !CustomFilterApi.isCustomFilter(filterId)
-        && filterId !== AntiBannerFiltersId.UserFilterId
-        && filterId !== AntiBannerFiltersId.AllowlistFilterId;
+            && filterId !== AntiBannerFiltersId.UserFilterId
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId
+            && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
 
     /**
@@ -128,6 +130,14 @@ export class CommonFilterApi {
      * @param forceRemote Whether to download filter rules from remote resources or
      * from local resources.
      *
+     * **IMPORTANT: `forceRemote` can't be used for MV3** except Quick Fixes
+     * filter, because we update filters, their metadata, and rulesets with
+     * whole extension update, because static ruleset cannot be updated
+     * dynamically.
+     * To prevent mismatch filters and rulesets version - we do not support load
+     * them from remote, except Quick Fixes Filter, because it will applied
+     * dynamically.
+     *
      * @returns Filter metadata — {@link RegularFilterMetadata}.
      */
     public static async loadFilterRulesFromBackend(
@@ -136,6 +146,10 @@ export class CommonFilterApi {
     ): Promise<RegularFilterMetadata> {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+
+        if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+            forceRemote = false;
+        }
 
         const {
             filter,
@@ -236,6 +250,16 @@ export class CommonFilterApi {
         // On the first run, we update the common filters from the backend.
         const remote = !__IS_MV3__;
         await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
+
+        // For MV3 version we have QuickFixes filter which does not have local
+        // version and always should be updated from the server.
+        if (__IS_MV3__) {
+            await FiltersApi.loadAndEnableFilters(
+                [AntiBannerFiltersId.QuickFixesFilterId],
+                true, // Install from remote.
+                enableUntouchedGroups,
+            );
+        }
     }
 
     /**

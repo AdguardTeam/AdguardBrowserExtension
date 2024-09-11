@@ -17,7 +17,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { convertFiltersToRulesets } from './resources/build-rule-sets';
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
 
@@ -46,9 +45,6 @@ const resourcesMv3 = async () => {
     } else {
         console.log('OpenAI API key is not provided, skipping dangerous rules check');
     }
-
-    // converting filters to rulesets should be done after all filters are downloaded
-    await convertFiltersToRulesets();
 };
 
 (async () => {

@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { addMinDurationTime } from '../../../common/common-script';
+import { addMinDurationTime } from '../common-script';
 import { MIN_LOADER_SHOWING_TIME_MS } from '../constants';
 
 /**

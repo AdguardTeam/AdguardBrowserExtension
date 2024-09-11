@@ -2477,8 +2477,8 @@
 				"name": "Referință la filtrul Bază AdGuard"
 			},
 			"ru": {
-				"description": "Имеет отсылки к Базовому фильтру AdGuard (например, часть правил взята оттуда)",
-				"name": "Отсылка к Базовому фильтру AdGuard"
+				"description": "Имеет отсылки к Базовому фильтру (например, часть правил взята оттуда)",
+				"name": "Отсылка к Базовому фильтру"
 			},
 			"sk": {
 				"description": "Obsahuje referencie na základný AdGuard filter",
@@ -11067,8 +11067,8 @@
 				"description": "EasyList + Filtru de bază AdGuard. Acest filtru este necesar pentru blocarea reclame de calitate."
 			},
 			"ru": {
-				"name": "Базовый фильтр AdGuard",
-				"description": "EasyList + Базовый фильтр AdGuard. Фильтр, позволяющий убрать рекламу с сайтов на английском языке."
+				"name": "Базовый фильтр",
+				"description": "EasyList + Базовый фильтр. Фильтр, позволяющий убрать рекламу с сайтов на английском языке."
 			},
 			"sk": {
 				"name": "AdGuard základný filter",
@@ -11700,7 +11700,7 @@
 			},
 			"ru": {
 				"name": "Немецкий фильтр",
-				"description": "EasyList Germany + Немецкий фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на немецком языке."
+				"description": "EasyList Germany + Немецкий фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на немецком языке."
 			},
 			"sk": {
 				"name": "AdGuard nemecký filter",
@@ -11858,7 +11858,7 @@
 			},
 			"ru": {
 				"name": "Японский фильтр",
-				"description": "Японский фильтр AdGuard. Фильтр, позволяющий убрать рекламу с сайтов на японском языке."
+				"description": "Фильтр, позволяющий убрать рекламу с сайтов на японском языке."
 			},
 			"sk": {
 				"name": "AdGuard japonský filter",
@@ -12016,7 +12016,7 @@
 			},
 			"ru": {
 				"name": "Голландский фильтр",
-				"description": "EasyList Dutch + Голландский фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на голландском языке."
+				"description": "EasyList Dutch + Голландский фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на голландском языке."
 			},
 			"sk": {
 				"name": "AdGuard holandský filter",
@@ -12648,7 +12648,7 @@
 			},
 			"ru": {
 				"name": "Турецкий фильтр",
-				"description": "Турецкий фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на турецком языке."
+				"description": "Фильтр, позволяющий блокировать рекламу на сайтах на турецком языке."
 			},
 			"sk": {
 				"name": "AdGuard turecký filter",
@@ -12806,7 +12806,7 @@
 			},
 			"ru": {
 				"name": "Французский фильтр",
-				"description": "Liste FR + Французский фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на французском языке."
+				"description": "Liste FR + Французский фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на французском языке."
 			},
 			"sk": {
 				"name": "AdGuard francúzsky filter",
@@ -13945,6 +13945,128 @@
 			"zh_TW": {
 				"name": "AdGuard 烏克蘭文過濾器",
 				"description": "啟用於烏克蘭語網站上的廣告封鎖之過濾器。"
+			}
+		},
+		"24": {
+			"ar": {
+				"name": "مرشح الإصلاحات السريعة AdGuard",
+				"description": "تصفية لحل مشكلات تصفية المحتوى بسرعة على مواقع الويب الشائعة دون تحديث الإضافة."
+			},
+			"cs": {
+				"name": "Filtr rychlých oprav AdGuard",
+				"description": "Filtr k rychlému řešení problémů s filtrováním obsahu na oblíbených webových stránkách bez nutnosti aktualizace rozšíření."
+			},
+			"da": {
+				"name": "AdGuard Quick Fixes-filter",
+				"description": "Filter til hurtig løsning af indholdsfiltreringsproblemer på populære websteder uden at opdatere udvidelsen."
+			},
+			"de": {
+				"name": "AdGuard Quick Fixes-Filter",
+				"description": "AdGuard-Filter, um Probleme mit der Inhaltsfilterung auf beliebten Websites schnell zu lösen, ohne die Erweiterung zu aktualisieren."
+			},
+			"el": {
+				"name": "Φίλτρο γρήγορων επιδιορθώσεων AdGuard",
+				"description": "Φίλτρο για γρήγορη επίλυση προβλημάτων φιλτραρίσματος περιεχομένου σε δημοφιλείς ιστότοπους χωρίς ενημέρωση της επέκτασης."
+			},
+			"en": {
+				"name": "AdGuard Quick Fixes filter",
+				"description": "Filter to quickly resolve content filtering issues on popular websites without updating the extension."
+			},
+			"es": {
+				"name": "Filtro AdGuard Quick Fixes",
+				"description": "Filtro para resolver rápidamente problemas de filtrado de contenido en sitios populares sin actualizar la extensión."
+			},
+			"es_ES": {
+				"name": "Filtro AdGuard Quick Fixes",
+				"description": "Filtro para resolver rápidamente problemas de filtrado de contenido en sitios populares sin actualizar la extensión."
+			},
+			"fa": {
+				"name": "پالایش سریع AdGuard",
+				"description": "پالایش برای به‌سرعت حل مسائل پالایش محتوا در تارنماهای محبوب بدون به‌روزرسانی افزونه."
+			},
+			"fi": {
+				"name": "AdGuard Quick Fixes -suodatin",
+				"description": "Suodatin ratkaisee nopeasti suosittujen verkkosivustojen sisällönsuodatusongelmat ilman laajennuksen päivittämistä."
+			},
+			"fr": {
+				"name": "Filtre de correctifs rapides AdGuard",
+				"description": "Filtre pour résoudre rapidement les problèmes de filtrage de contenu sur les sites Web populaires sans mettre à jour l'extension."
+			},
+			"id": {
+				"name": "Filter Perbaikan Cepat AdGuard",
+				"description": "Filter untuk menyelesaikan masalah penyaringan konten dengan cepat di situs web populer tanpa memperbarui ekstensi."
+			},
+			"it": {
+				"name": "Filtro correzioni rapide AdGuard",
+				"description": "Filtro per risolvere rapidamente i problemi di filtraggio dei contenuti nei siti web più popolari senza aggiornare l'estensione."
+			},
+			"ja": {
+				"name": "AdGuard クイックフィックスフィルター",
+				"description": "拡張機能を更新せずに、人気のある Web サイトのコンテンツ フィルタリングの問題をすばやく解決するフィルター。"
+			},
+			"ko": {
+				"name": "AdGuard 퀵픽스 필터",
+				"description": "확장 프로그램을 업데이트하지 않고도 인기 웹사이트의 콘텐츠 필터링 문제를 빠르게 해결할 수 있는 필터입니다."
+			},
+			"nl": {
+				"name": "AdGuard Quick Fixes filter",
+				"description": "Filter om snel problemen met het filteren van inhoud op populaire websites op te lossen zonder de uitbreiding bij te werken."
+			},
+			"pt": {
+				"name": "Filtro AdGuard Quick Fixes",
+				"description": "Filtro para resolver rapidamente problemas de filtragem de conteúdos em sítios populares sem atualizar a extensão."
+			},
+			"pt_BR": {
+				"name": "Filtro AdGuard Quick Fixes",
+				"description": "Filtro para resolver rapidamente problemas de filtragem de conteúdo em sites populares sem atualizar a extensão."
+			},
+			"pt_PT": {
+				"name": "Filtro AdGuard Quick Fixes",
+				"description": "Filtro para resolver rapidamente problemas de filtragem de conteúdos em sítios populares sem atualizar a extensão."
+			},
+			"ro": {
+				"name": "Filtrul de soluții rapide AdGuard",
+				"description": "Filtru pentru rezolvarea rapidă a problemelor de filtrare a conținutului pe site-uri web populare fără actualizarea extensiei."
+			},
+			"ru": {
+				"name": "Фильтр быстрых исправлений",
+				"description": "Фильтр для быстрого решения проблем с фильтрацией на популярных сайтах без обновления расширения."
+			},
+			"sk": {
+				"name": "Filter AdGuard Quick Fixes",
+				"description": "Filter na rýchle riešenie problémov s filtrovaním obsahu na obľúbených webových stránkach bez aktualizácie rozšírenia."
+			},
+			"sl": {
+				"name": "Filter hitrih popravkov AdGuard",
+				"description": "Filter za hitro reševanje težav s filtriranjem vsebine v priljubljenih spletnih mestih brez posodabljanja razširitve."
+			},
+			"sr": {
+				"name": "AdGuard filter brzih popravki",
+				"description": "Filter za brzo rešavanje problema filtriranja sadržaja na popularnim veb sajtovima bez ažuriranja proširenja."
+			},
+			"sv": {
+				"name": "AdGuard Snabbkorrigeringar filter",
+				"description": "Filter för att snabbt lösa problem med innehållsfiltrering på populära webbplatser utan att uppdatera tillägget."
+			},
+			"tr": {
+				"name": "AdGuard Hızlı Çözümler filtresi",
+				"description": "Uzantıyı güncellemeden popüler sitelerdeki içerik filtreleme sorunlarını hızlı bir şekilde çözmek için filtreleyin."
+			},
+			"uk": {
+				"name": "Фільтр швидких виправлень AdGuard",
+				"description": "Фільтр для швидкого розв'язання проблем з фільтруванням вмісту на популярних вебсайтах без оновлення розширення."
+			},
+			"vi": {
+				"name": "Bộ lọc Sửa lỗi nhanh AdGuard",
+				"description": "Bộ lọc để nhanh chóng giải quyết các vấn đề lọc nội dung trên các trang web phổ biến mà không cần cập nhật tiện ích mở rộng."
+			},
+			"zh": {
+				"name": "快速修复的 AdGuard 过滤器",
+				"description": "无需更新扩展即可快速解决网站过滤问题。"
+			},
+			"zh_TW": {
+				"name": "快速修復的 AdGuard 過濾器",
+				"description": "無需更新擴充功能即可快速解決網站過濾問題。"
 			}
 		},
 		"103": {
@@ -16006,7 +16128,7 @@
 			},
 			"ru": {
 				"name": "Китайский фильтр",
-				"description": "EasyList China + Китайский фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на китайском языке."
+				"description": "EasyList China + Китайский фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на китайском языке."
 			},
 			"sk": {
 				"name": "AdGuard čínsky filter",
@@ -16638,6 +16760,10 @@
 				"name": "Frellwit's Swedish Filter",
 				"description": "Filtro que tiene como objetivo eliminar los anuncios regionales suecos, rastreo, redes sociales, elementos molestos, artículos patrocinados, etc."
 			},
+			"fa": {
+				"name": "Frellwit's Swedish Filter",
+				"description": "فیلتری که هدف آن حذف تبلیغات سوئدی منطقه‌ای، ردیابی، رسانه‌های اجتماعی، مزاحمت‌ها، مقالات حمایت شده و غیره است."
+			},
 			"fi": {
 				"name": "Frellwit's Swedish Filter",
 				"description": "Suodatin, joka pyrkii poistamaan ruotsinkieliset mainokset, seurannat, ärsykkeet, sponsoroidut artikkelit yms."
@@ -16717,6 +16843,10 @@
 			"sr": {
 				"name": "Frellwit's Švedski Filter",
 				"description": "Filter za uBlock Origin namenjen za uklanjanje regionalnih švedskih reklama, praćenja, društvenih mreža, dosadnih stvari, sponzorisanih članaka idd."
+			},
+			"sv": {
+				"name": "Frellwit's Swedish Filter",
+				"description": "Filter som syftar till att ta bort regionala svenska annonser, spårning, sociala medier, irritationsmoment, sponsrade artiklar etc."
 			},
 			"tr": {
 				"name": "Frellwit's Swedish Filter",
@@ -16863,6 +16993,10 @@
 			"sr": {
 				"name": "Dandelion Sprout's nordijski Filters",
 				"description": "Ova lista pokriva sajtove u Norveškoj, Danskoj, Islandu, danskim teritorijama i Sami populaciju."
+			},
+			"sv": {
+				"name": "Dandelion Sprout's Nordic Filters",
+				"description": "Denna lista omfattar webbplatser för Norge, Danmark, Island, danska territorier och den samiska ursprungsbefolkningen."
 			},
 			"tr": {
 				"name": "Dandelion Sprout's Nordic Filters",
