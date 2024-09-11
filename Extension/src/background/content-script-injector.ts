@@ -32,7 +32,7 @@ import {
 } from '../../../constants';
 import { TabsApi } from '../common/api/extension/tabs';
 
-import { createPromiseWithTimeout } from './utils/timers';
+import { createPromiseWithTimeout } from './utils/timeouts';
 
 /**
  * Helper class for injecting content script into tabs, opened before extension initialization.

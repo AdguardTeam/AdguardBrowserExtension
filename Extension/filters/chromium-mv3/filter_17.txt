@@ -1,8 +1,8 @@
-! Checksum: tG8wo6T1TO955Qr2Xc1ftg
+! Checksum: KwJ3eJqJ6tMv1x7xRpRBMQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.13
-! TimeUpdated: 2024-09-04T14:34:28+00:00
+! Version: 2.0.9.33
+! TimeUpdated: 2024-09-09T20:33:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,10 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! https://docs.bemob.com/en/bemob-click-urls
+$removeparam=bemobdata
+! Unidentified email subscription system
+$removeparam=_bhlid
 ! Not identified. Popular on Japanese sites
 $removeparam=_bdadid
 ! a8.net
@@ -370,6 +374,50 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/188235
+||camp-fire.jp/projects/*/view$removeparam=list
+! privatbank.ua
+||privatbank.ua^$removeparam=utm_addrid
+||privatbank.ua^$removeparam=utm_jeref
+||privatbank.ua^$removeparam=utm_positionUrl
+! https://github.com/AdguardTeam/AdguardFilters/issues/188328
+||baseballchannel.jp^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/188015
+||money.smt.docomo.ne.jp^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187893
+||store.shopping.yahoo.co.jp^$removeparam=sc_i
+! https://github.com/AdguardTeam/AdguardFilters/issues/187866
+||kwiky.com^$removeparam=AFNO
+! https://github.com/AdguardTeam/AdguardFilters/issues/187874
+||ai-porn.ai^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187863
+||camsoda.com^$removeparam=id
+! https://github.com/AdguardTeam/AdguardFilters/issues/188010
+||aeza.net^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187850
+||gptgirlfriend.online^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187852
+||fantasygf.ai^$removeparam=linkId
+! https://github.com/AdguardTeam/AdguardFilters/issues/187859
+||pornjourney.ai^$removeparam=referral
+! https://github.com/AdguardTeam/AdguardFilters/issues/187861
+||land.muah.ai^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187870
+||getidol.com^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187871
+||pornx.ai^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187626
+||vodafone.com.tr^$removeparam=tracking_cid
+! https://github.com/AdguardTeam/AdguardFilters/issues/187868
+||juicy-ai.com^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/187873
+||angelgf.com^$removeparam=via
+! https://github.com/AdguardTeam/AdguardFilters/issues/187865
+||slushy.com^$removeparam=af
+! https://github.com/AdguardTeam/AdguardFilters/issues/187853
+||deepmode.com^$removeparam=fpr
+! https://github.com/AdguardTeam/AdguardFilters/issues/187846
+||candy.ai^$removeparam=cid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187917
 ||darkroomvr.com^$removeparam=nats
 ! rozetka.com.ua
@@ -1398,6 +1446,9 @@ $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_adids
 ! https://github.com/AdguardTeam/AdguardFilters/issues/129287
 ||dzen.ru/api/*/launcher/stats/$image,xmlhttprequest,removeparam
+||dzen.ru^$removeparam=from
+||dzen.ru^$removeparam=cl4url
+||dzen.ru^$removeparam=tst
 ||dzen.ru^$document,removeparam=clid
 ||dzen.ru^$removeparam=yredirect
 ||dzen.ru^$removeparam=stid
@@ -1435,7 +1486,6 @@ $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||nationalgeographic.com^$removeparam=utm_rd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128339
 ||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
-||ficbook.com^$removeparam=/premiumVisit|utm_compaign/
 ||ficbook.me^$removeparam=/premiumVisit|utm_compaign/
 ! stripchat.com
 ||stripchat.com^$removeparam=campaignId
@@ -2057,10 +2107,12 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||www.ebay.$removeparam=mkevt
 ||www.ebay.$removeparam=mkcid
 ||www.ebay.$removeparam=_trkparms
-||www.ebay.$removeparam=_trksid
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
+! https://github.com/uBlockOrigin/uAssets/issues/25247
+! ||www.ebay.$removeparam=_trksid
+!
 ! Amazon tracking IDs found on several subpages
 ! Disabled rules:
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157889#issuecomment-1660195416

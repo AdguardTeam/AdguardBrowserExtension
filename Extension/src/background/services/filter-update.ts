@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FilterUpdateApi } from '../api';
+import { FilterUpdateApi, QuickFixesRulesApi } from '../api';
 import { browserStorage } from '../storages';
 import { isNumber } from '../../common/guards';
 import { logger } from '../../common/logger';
@@ -72,7 +72,8 @@ export class FilterUpdateService {
      * should be updated with setTimeout which saved to {@link schedulerTimerId}.
      */
     private async update(): Promise<void> {
-        window.clearTimeout(this.schedulerTimerId);
+        // eslint-disable-next-line no-restricted-globals
+        self.clearTimeout(this.schedulerTimerId);
 
         const prevCheckTimeMs = await browserStorage.get(FilterUpdateService.STORAGE_KEY);
 
@@ -86,7 +87,11 @@ export class FilterUpdateService {
 
         if (shouldCheckUpdates) {
             try {
-                await FilterUpdateApi.autoUpdateFilters();
+                if (__IS_MV3__) {
+                    await QuickFixesRulesApi.updateQuickFixesFilter();
+                } else {
+                    await FilterUpdateApi.autoUpdateFilters();
+                }
             } catch (e) {
                 logger.error('An error occurred during filters update:', e);
             }
@@ -96,7 +101,8 @@ export class FilterUpdateService {
             await browserStorage.set(FilterUpdateService.STORAGE_KEY, Date.now());
         }
 
-        this.schedulerTimerId = window.setTimeout(async () => {
+        // eslint-disable-next-line no-restricted-globals
+        this.schedulerTimerId = self.setTimeout(async () => {
             await this.update();
         }, FilterUpdateService.CHECK_PERIOD_MS);
     }

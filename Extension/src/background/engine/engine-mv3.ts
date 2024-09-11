@@ -38,6 +38,8 @@ import {
     CustomFilterApi,
     toasts,
     filteringLogApi,
+    CommonFilterApi,
+    QuickFixesRulesApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { FiltersStorage } from '../storages';
@@ -149,7 +151,7 @@ export class Engine implements TsWebExtensionEngine {
      */
     private static async getConfiguration(): Promise<Configuration> {
         const staticFiltersIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
+            .filter((filterId) => CommonFilterApi.isCommonFilter(filterId));
 
         const settings = SettingsApi.getTsWebExtConfiguration(true);
 
@@ -172,31 +174,39 @@ export class Engine implements TsWebExtensionEngine {
         };
 
         if (UserRulesApi.isEnabled()) {
-            const res = await UserRulesApi.getUserRules();
+            Object.assign(userrules, await UserRulesApi.getUserRules());
+        }
 
-            userrules.filterList = res.filterList;
-            userrules.sourceMap = res.sourceMap;
-            userrules.rawFilterList = res.rawFilterList;
-            userrules.conversionMap = res.conversionMap;
+        const quickFixesRules: Configuration['quickFixesRules'] = {
+            ...emptyPreprocessedFilterList,
+            /**
+             * Quick fixes are always trusted because it is the one of
+             * AdGuard's filter.
+             */
+            trusted: true,
+        };
+
+        if (QuickFixesRulesApi.isEnabled()) {
+            Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
         }
 
         const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
             .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-        const customFilters = await Promise.all(customFiltersWithMetadata
-            .map(async ({ filterId, trusted }) => {
-                const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
+        const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
+            const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
 
-                return {
-                    filterId,
-                    trusted,
-                    ...(preprocessedFilterList || emptyPreprocessedFilterList),
-                };
-            }));
+            return {
+                filterId,
+                trusted,
+                ...(preprocessedFilterList || emptyPreprocessedFilterList),
+            };
+        }));
 
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
             customFilters,
+            quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA),
             logLevel: IS_RELEASE || IS_BETA ? LogLevel.Info : LogLevel.Debug,
             staticFiltersIds,

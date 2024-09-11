@@ -108,7 +108,7 @@ describe('Settings Api', () => {
         });
 
         it('Import settings', async () => {
-            const userConfig = getDefaultExportFixture();
+            const userConfig = getDefaultExportFixture(__IS_MV3__);
 
             // eslint-disable-next-line max-len
             userConfig[RootOption.ExtensionSpecificSettings][ExtensionSpecificSettingsOption.UseOptimizedFilters] = true;
@@ -122,7 +122,7 @@ describe('Settings Api', () => {
         it('Export settings', async () => {
             const exportedSettings = await SettingsApi.export();
 
-            expect(exportedSettings).toStrictEqual(JSON.stringify(getDefaultExportFixture()));
+            expect(exportedSettings).toStrictEqual(JSON.stringify(getDefaultExportFixture(__IS_MV3__)));
         });
 
         it('Imports exported settings for protocol v1', async () => {

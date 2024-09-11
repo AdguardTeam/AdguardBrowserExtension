@@ -20,6 +20,7 @@ import zod from 'zod';
 import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
 
 import { FILTER_LIST_EXTENSION } from '../../common/constants';
+import { logger } from '../../common/logger';
 
 import { hybridStorage } from './shared-instances';
 
@@ -197,23 +198,30 @@ export class FiltersStorage {
      * Get all filter data, including conversion map and source map.
      *
      * @param filterId Filter id.
-     * @returns Promise, resolved with filter data or `null` if filter is not found.
-     * @throws Error, if filter list data is not valid.
+     *
+     * @returns Promise, resolved with filter data or `null` if filter is not
+     * found or some part of the data is missing.
      */
     static async getAllFilterData(filterId: number): Promise<PreprocessedFilterList | null> {
-        const [filterList, rawFilterList, conversionMap, sourceMap] = await Promise.all([
-            FiltersStorage.get(filterId),
-            FiltersStorage.getRawPreprocessedFilterList(filterId),
-            FiltersStorage.getConversionMap(filterId),
-            FiltersStorage.getSourceMap(filterId),
-        ]);
+        try {
+            const [filterList, rawFilterList, conversionMap, sourceMap] = await Promise.all([
+                FiltersStorage.get(filterId),
+                FiltersStorage.getRawPreprocessedFilterList(filterId),
+                FiltersStorage.getConversionMap(filterId),
+                FiltersStorage.getSourceMap(filterId),
+            ]);
 
-        return {
-            filterList,
-            rawFilterList,
-            conversionMap,
-            sourceMap,
-        };
+            return {
+                filterList,
+                rawFilterList,
+                conversionMap,
+                sourceMap,
+            };
+        } catch (e) {
+            logger.error('Failed to get all filter data', e);
+
+            return null;
+        }
     }
 
     /**

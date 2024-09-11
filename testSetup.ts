@@ -96,6 +96,7 @@ jest.mock('webextension-polyfill', () => mockBrowser);
 
 jest.mock('nanoid', () => ({
     nanoid: jest.fn((): string => 'cTkoV5Vs'),
+    customAlphabet: jest.fn((): Function => (): string => 'cTkoV5Vs'),
 }));
 
 // Mock log to hide all logger message

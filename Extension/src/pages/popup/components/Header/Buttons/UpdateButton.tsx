@@ -20,7 +20,7 @@ import React, { useRef, useState } from 'react';
 
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { addMinDurationTime } from '../../../../../common/common-script';
+import { addMinDurationTime } from '../../../../common/common-script';
 import { messenger } from '../../../../services/messenger';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 

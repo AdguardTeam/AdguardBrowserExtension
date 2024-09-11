@@ -107,13 +107,13 @@ export class Network {
     ): Promise<DownloadResult> {
         let url: string;
 
-        if (!__IS_MV3__ && !forceRemote && this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
+        if (!forceRemote && this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
             // eslint-disable-next-line max-len
             throw new Error(`Cannot locally load filter with id ${filterUpdateOptions.filterId} because it is not build in the extension local resources.`);
         }
 
         let isLocalFilter = false;
-        if (!__IS_MV3__ && (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0)) {
+        if (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterUpdateOptions.filterId, useOptimizedFilters);
         } else {
             // eslint-disable-next-line max-len

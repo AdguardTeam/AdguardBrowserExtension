@@ -312,7 +312,8 @@ export class FiltersApi {
 
         const filterIds = filterStateStorage.getLoadFilters();
 
-        // Ignore custom filters, user-rules and allowlist.
+        // Ignore custom filters, user-rules, allowlist
+        // and quick fixes filter (used only in MV3).
         const commonFiltersIds = filterIds.filter((id) => CommonFilterApi.isCommonFilter(id));
 
         try {
@@ -445,11 +446,17 @@ export class FiltersApi {
     private static updateMetadataWithI18nMetadata(metadata: Metadata, i18nMetadata: I18nMetadata): void {
         const localizedMetadata = MetadataStorage.applyI18nMetadata(metadata, i18nMetadata);
 
-        localizedMetadata.groups.push({
-            groupId: AntibannerGroupsId.CustomFiltersGroupId,
-            displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
-            groupName: translator.getMessage('options_antibanner_custom_group'),
+        const customFiltersGroup = localizedMetadata.groups.find((group) => {
+            return group.groupId === AntibannerGroupsId.CustomFiltersGroupId;
         });
+
+        if (!customFiltersGroup) {
+            localizedMetadata.groups.push({
+                groupId: AntibannerGroupsId.CustomFiltersGroupId,
+                displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
+                groupName: translator.getMessage('options_antibanner_custom_group'),
+            });
+        }
 
         metadataStorage.setData(localizedMetadata);
     }
@@ -643,6 +650,43 @@ export class FiltersApi {
                 logger.error('Cannot remove obsoleted filter from storage due to: ', promise.reason);
             }
         });
+    }
+
+    /**
+     * Partially updates metadata and i18n metadata for one specified filter.
+     *
+     * @param filterId Filter id.
+     */
+    public static async partialUpdateMetadataFromRemoteForFilter(filterId: number): Promise<void> {
+        // Update i18n metadata with translations for the filter.
+        const i18nMetadata = await network.downloadI18nMetadataFromBackend();
+        if (!i18nMetadata.filters[filterId]) {
+            // eslint-disable-next-line max-len
+            logger.warn(`[partialUpdateMetadataFromRemoteForFilter]: cannot find i18n metadata for filter with id: ${filterId}`);
+            return;
+        }
+        const oldI18nMetadata = i18nMetadataStorage.getData();
+        oldI18nMetadata.filters[filterId] = i18nMetadata.filters[filterId];
+        i18nMetadataStorage.setData(oldI18nMetadata);
+
+        // Update general metadata with the newest filter metadata.
+        const metadata = await network.downloadMetadataFromBackend();
+        const filterMetadata = metadata.filters.find((f) => f.filterId === filterId);
+        if (!filterMetadata) {
+            // eslint-disable-next-line max-len
+            logger.warn(`[partialUpdateMetadataFromRemoteForFilter]: cannot find metadata for filter with id: ${filterId}`);
+            return;
+        }
+        const oldMetadata = metadataStorage.getData();
+        const oldMetadataFilterIdx = oldMetadata.filters.findIndex((f) => f.filterId === filterId);
+        if (oldMetadataFilterIdx !== -1) {
+            oldMetadata.filters[oldMetadataFilterIdx] = filterMetadata;
+        } else {
+            oldMetadata.filters.push(filterMetadata);
+        }
+
+        // Merge them and update general metadata.
+        FiltersApi.updateMetadataWithI18nMetadata(oldMetadata, oldI18nMetadata);
     }
 
     /**

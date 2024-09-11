@@ -417,3 +417,47 @@ export const getStorageFixturesV6 = (expires: number): StorageData[] => {
         return settings;
     });
 };
+
+export const getStorageFixturesV7 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV6 = getStorageFixturesV6(expires);
+
+    return storageSettingsFixturesV6.map((settings) => {
+        // For MV2 we don't need to change anything.
+        if (!__IS_MV3__) {
+            settings['schema-version'] = 7;
+
+            return settings;
+        }
+
+        const adgSettings = settings['adguard-settings'] as any;
+        const filtersStateData = adgSettings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // Added AdGuard Quick Fixes filter which should be enabled by default.
+        const addedAdGuardQuickFixesFilterId = 24;
+        filtersState[addedAdGuardQuickFixesFilterId] = {
+            // Enabled by default.
+            enabled: true,
+            installed: false,
+            loaded: false,
+        };
+
+        adgSettings['filters-state'] = JSON.stringify(filtersState);
+        settings['adguard-settings'] = adgSettings;
+        settings['schema-version'] = 7;
+
+        return settings;
+    });
+};
