@@ -1,8 +1,8 @@
-! Checksum: OJ57fgruWVXZWgxVCZ5adA
+! Checksum: BK23MEhJn1hsigE2Q6TeBQ
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.9.42
-! TimeUpdated: 2024-09-09T22:33:25+00:00
+! Version: 2.0.9.43
+! TimeUpdated: 2024-09-10T13:32:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -787,7 +787,6 @@ po-kaki-to.com##.top-site-andander
 huyosoku.com##.blog-cards
 moeimg.net###page-pickup-link_frame
 gundam-futab.info##[id^="modernImgRSS"]
-bi-girl.net##.top_link_text_sp
 npb-news.com##iframe[src="http://npb-news.blog.jp/matome.html"]
 ||npb-news.com/matome.html
 ||watarukiti.com/js/*permalink.js
@@ -2459,15 +2458,17 @@ hromadske.ua#$#body { overflow: visible !important; }
 ! NOTE: Widgets - Another end ⬆️
 ! !SECTION: Widgets - Another
 !
+!+ NOT_OPTIMIZED
+bi-girl.net##.top_link_text_sp
+!+ NOT_OPTIMIZED
+you1news.com###custom_html-10
+!+ NOT_OPTIMIZED
+pokemon-matome.net##div[class^="rssinline"]
 !
 ! Special rules for AdGuard websites' test pages. The only purpose of these
 ! rules is to make test pages work so that users could verify that AdGuard
 ! is properly working.
 !
-!+ NOT_OPTIMIZED
-you1news.com###custom_html-10
-!+ NOT_OPTIMIZED
-pokemon-matome.net##div[class^="rssinline"]
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_annoyances_widgets
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED

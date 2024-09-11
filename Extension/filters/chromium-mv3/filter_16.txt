@@ -1,8 +1,8 @@
-! Checksum: 9ITGG6hxBQCTOgIq49UwTQ
+! Checksum: ezQJaMMFzLp2iYioi8E3nA
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.46.64
-! TimeUpdated: 2024-09-09T14:33:26+00:00
+! Version: 2.0.46.66
+! TimeUpdated: 2024-09-11T10:33:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -217,6 +217,7 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147842
+japscan.lol#$#.navbar-nav > li.nav-item > a[href^="https://www.origoclick.com"] { position: absolute !important; right: 4000px !important; }
 $script,xmlhttprequest,redirect-rule=noopjs,domain=japscan.lol
 @@$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,script,~third-party
@@ -957,7 +958,6 @@ h2-mobile.fr###main-container .blog__content:has(> .col-md-4 > div[id^="optidigi
 cosmopolitan.fr##.External
 japscan.lol##div[style="position: fixed; inset: 0px; z-index: 2147483647; pointer-events: auto;"]:empty
 japscan.lol##body > .container.text-center > div.mt-3[style="margin: 0px auto; display: block;"] > a.Aikoi.donate[target="_blank"][href^="https://www."][href*="/?utm_source=manga&utm_"]:not([href^="https://www.google"]):not([href^="https://www.japscan"]):not([href^="https://www.example"]) > img.img-fluid[src^="/imgs/onc/"]
-japscan.lol#$?#.navbar-nav > li.nav-item > a[href^="https://www.origoclick.com"] { remove: true; }
 [$path=/^\/$/]japscan.lol##body > style + .container:first-of-type > .row > #main + #sidebar.col-md-3 > .card.mt-1 > .card[style="margin: 0px auto; display: block;"] > a.aikoi.donate[href^="http"][href*="/?utm_source=index&utm_medium=extra_large&"][target="_blank"][rel="noopener noreferrer nofollow"]:not([href^="http://japscan.lol"]) > img
 femina.fr##.p-aside
 femina.fr##.p-inread

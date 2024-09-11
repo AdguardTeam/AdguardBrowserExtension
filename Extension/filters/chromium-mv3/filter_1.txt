@@ -1,8 +1,8 @@
-! Checksum: ZkJR9xMJ+WPz8594RceYTA
+! Checksum: /S1p7y/6NdRC5m4noR3Zag
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.93.68
-! TimeUpdated: 2024-09-10T11:31:05+00:00
+! Version: 2.0.93.72
+! TimeUpdated: 2024-09-11T11:31:03+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -729,7 +729,6 @@ http://*.ru/leftunit.pl?
 /js/vk.php$third-party
 /label-advertisement.
 /linkexchange/*
-/linkshare/*
 /lp2/go.php?file=
 /mainbanner.gif
 /mirmaek/*.gif$image
@@ -7746,7 +7745,7 @@ ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru,motor.ru,progorod58.ru,74.ru,
 !
 !
 !
-ru.ldplayer.net##div[class^="support-install__ad"]
+anilibria.top#?#.mt-10 > div.mb-8:has(> div > div:contains(Спонсор озвучки))
 tproger.ru##div[class*="tp-post-page__container-"][class*="-end-content"]
 tproger.ru##.tp-layout-default__aside-right-widget--courses
 cont.ws##.main-fullwidth-banner
@@ -17825,6 +17824,8 @@ ozon.ru##img[elementtiming*="Banner"]
 ozon.ru##div[class] > div[data-widget="island"]:has(> div > div[data-widget="objectBannerList"])
 !
 ! 2gis
+2gis.ru##div[class^="_"] > div:not([class]) > ._mq2eit:has(> a[href*="/branches/"])
+2gis.ru##nav._aj9s2a > ul > li:has(> div > svg[width="70"][height="32"])
 2gis.ru##._mq2eit:has(> a[class="_x4ac6o"][href*="/firm/"] > div > img[src^="https://ams2-cdn.2gis.com/"])
 2gis.ru##iframe[width="336px"][srcdoc^="<html>"]
 ||2gis.*/ads/advise/
@@ -19051,6 +19052,8 @@ player.ex.co#@##ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164877
 @@||yandex.ru/ads/system/adsdk.js$domain=kino.tricolor.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187958
+||yandex.ru/ads/system/adsdk.js$script,redirect=noopjs,domain=rutube.ru
+!+ NOT_PLATFORM(windows, mac, android)
 @@||yandex.ru/ads/system/adsdk.js$domain=rutube.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187234
 @@||ads.mybsk.ru^$~third-party
@@ -20143,7 +20146,7 @@ knigipofoto.ru#@#.wrapad
 !-------------- Belarusian filter ----------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
-! This section contains the list of rules that are supposed to work on Bulgarian websites.
+! This section contains the list of rules that are supposed to work on Belarusian websites.
 !
 ! Good: any type of the rules will be good
 ! Bad: @@||example.org^$stealth
@@ -20167,7 +20170,7 @@ ex-press.live#$#div[data-content-hero-id="app-layout"] { background-image: none 
 !-------------- Kazakh filter --------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
-! This section contains the list of rules that are supposed to work on Bulgarian websites.
+! This section contains the list of rules that are supposed to work on Kazakh websites.
 !
 ! Good: any type of the rules will be good
 ! Bad: @@||example.org^$stealth
