@@ -75,6 +75,7 @@ export const Main = observer(() => {
         currentSite,
         currentEnabledTitle,
         currentDisabledTitle,
+        totalBlocked,
         specificPopupState,
         showInfoAboutFullVersion,
         areFilterLimitsExceeded,
@@ -87,27 +88,31 @@ export const Main = observer(() => {
         logger.debug('Current site is not defined yet');
     }
 
+    const totalBlockedSubtitle = translator.getMessage('popup_tab_blocked_all_count', {
+        num: totalBlocked.toLocaleString(),
+    });
+
     const statesMap: Record<AppState, AppStateData | null> = {
         [AppState.Loading]: null,
         [AppState.Disabling]: {
             [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_disabling'),
-            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.Subtitle]: totalBlockedSubtitle,
             [AppStateField.SwitcherOn]: false,
         },
         [AppState.Disabled]: {
             [AppStateField.Title]: currentDisabledTitle,
-            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.Subtitle]: totalBlockedSubtitle,
             [AppStateField.ButtonHandler]: toggleAllowlisted,
             [AppStateField.SwitcherOn]: false,
         },
         [AppState.Enabling]: {
             [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_enabling'),
-            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.Subtitle]: totalBlockedSubtitle,
             [AppStateField.SwitcherOn]: true,
         },
         [AppState.Enabled]: {
             [AppStateField.Title]: currentEnabledTitle,
-            [AppStateField.Subtitle]: currentSite,
+            [AppStateField.Subtitle]: totalBlockedSubtitle,
             [AppStateField.ButtonHandler]: toggleAllowlisted,
             [AppStateField.SwitcherOn]: true,
         },
@@ -173,13 +178,19 @@ export const Main = observer(() => {
         <div className="main">
             <div className="main__header">
                 <div
+                    className="main__header--current-site"
+                    title={currentSite}
+                >
+                    {currentSite}
+                </div>
+                <div
                     className="main__header--current-status--title"
                     title={state[AppStateField.Title]}
                 >
                     {state[AppStateField.Title]}
                 </div>
                 <div
-                    className="main__header--current-site"
+                    className="main__header--current-status--subtitle"
                     title={state[AppStateField.Subtitle]}
                 >
                     {state[AppStateField.Subtitle]}
