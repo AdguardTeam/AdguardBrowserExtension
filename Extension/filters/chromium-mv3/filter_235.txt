@@ -1,8 +1,8 @@
-! Checksum: ezFHY5YT/xIuYWGLKJ2wUA
+! Checksum: +/XkLzUUJ0JGCQZC2oLiQA
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.81
-! TimeUpdated: 2024-09-04T09:01:41+00:00
+! Version: 2.0.4.82
+! TimeUpdated: 2024-09-10T21:01:53+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -2703,30 +2703,23 @@ zibamoon.com##div[id^="BehinAva"]
 zibamoon.com##.DetailArea > .AdAreaDetail
 zibamoon.com#?#.LeftSide > .TableOfContent > div[style="text-align:center;"]:contains(صفحات مرتبط):upward(.TableOfContent)
 zohur12.ir##.sideads
-! https://github.com/AdguardTeam/AdguardFilters/issues/28759
-! https://github.com/AdguardTeam/AdguardFilters/issues/78626
-! https://github.com/AdguardTeam/AdguardFilters/issues/79988
-! https://github.com/AdguardTeam/AdguardFilters/issues/110569
-! https://github.com/MasterKia/PersianBlocker/issues/4
-! !#if !cap_html_filtering
-zoomg.ir#%#//scriptlet('ubo-aopr.js', 'banner')
-! !#endif
-||zoomg.ir/common/visitcount^$xmlhttprequest,~third-party
-||cdn.zoomg.ir/Themes/Zoomg.ir/Content/css/img/AD.svg$image,~third-party
-zoomg.ir##.main-top-ads
-zoomg.ir##.wide-ad-row
-zoomg.ir##div.a1-banner
-@@||cdn.zoomg.ir/banners/demo/advertise-zoomg.jpg$image,~third-party
+! zoomit.ir
 ! https://github.com/AdguardTeam/AdguardFilters/issues/78626
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79988
 ! https://github.com/MasterKia/PersianBlocker/issues/4
 ! https://github.com/MasterKia/PersianBlocker/issues/99
 ! https://github.com/MasterKia/PersianBlocker/issues/195
-||theforge.ir/intake/v2/rum/events^$xmlhttprequest,third-party,domain=zoomit.ir
-||zoomit.ir/ads^$xmlhttprequest,image,~third-party
-||zoomit.ir/editorial/api/articles/*/visit^$xmlhttprequest,~third-party
+! zoomg.ir
+! https://github.com/AdguardTeam/AdguardFilters/issues/28759
+! https://github.com/AdguardTeam/AdguardFilters/issues/78626
+! https://github.com/AdguardTeam/AdguardFilters/issues/79988
+! https://github.com/AdguardTeam/AdguardFilters/issues/110569
+! https://github.com/MasterKia/PersianBlocker/issues/4
 ||analytics.zoomit.ir^
-zoomit.ir##div[class^="AdvertisingParser"]
+||theforge.ir^
+/ads^$xmlhttprequest,~third-party,domain=zoomit.ir|zoomg.ir
+/editorial/api/articles/*/visit^$xmlhttprequest,~third-party,domain=zoomit.ir|zoomg.ir
+zoomit.ir,zoomg.ir##div[class^="AdvertisingParser"]
 zoomit.ir##div.price-sticky
 zoomit.ir##div.Product-BannerHeader
 zoomtech.org##div.zoomtech-banner
