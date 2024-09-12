@@ -112,7 +112,9 @@ describe('Update Api', () => {
 
             await UpdateApi.update(runInfo);
 
-            expect(setMultipleSpy).toHaveBeenCalledTimes(1);
+            // Once for migration filters from localStorage to hybridStorage
+            // and once for adding new Quick Fixes filter (added only in MV3).
+            expect(setMultipleSpy).toHaveBeenCalledTimes(__IS_MV3__ ? 2 : 1);
             expect(setMultipleSpy).toHaveBeenCalledWith(
                 // An object that contains all filter-related keys from the old data
                 // If this test passes, it means that data was passed to the hybrid storage

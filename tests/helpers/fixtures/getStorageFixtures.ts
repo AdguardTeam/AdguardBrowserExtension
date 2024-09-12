@@ -450,12 +450,16 @@ export const getStorageFixturesV7 = (expires: number): StorageData[] => {
         filtersState[addedAdGuardQuickFixesFilterId] = {
             // Enabled by default.
             enabled: true,
+            // Marked as not installed to not remove it as obsoleted
+            // (because after migration it would not have info in metadata).
             installed: false,
-            loaded: false,
+            // Marked as loaded to update it.
+            loaded: true,
         };
 
         adgSettings['filters-state'] = JSON.stringify(filtersState);
         settings['adguard-settings'] = adgSettings;
+        settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 7;
 
         return settings;

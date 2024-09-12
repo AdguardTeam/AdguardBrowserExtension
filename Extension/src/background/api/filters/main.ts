@@ -295,6 +295,8 @@ export class FiltersApi {
 
     /**
      * Reload filters and their metadata from local storage.
+     * Needed only in MV3 version because we don't update filters from remote,
+     * we use bundled filters from local resources and their converted rulesets.
      *
      * @returns List of loaded filter IDs.
      */

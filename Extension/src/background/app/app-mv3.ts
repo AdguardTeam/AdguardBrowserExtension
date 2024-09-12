@@ -175,7 +175,7 @@ export class App {
         // the update of the entire extension.
         if (isUpdate) {
             const filtersIds = await FiltersApi.reloadFiltersFromLocal();
-            logger.debug('Following filters has been updated from local resources:', filtersIds);
+            logger.info('Following filters has been updated from local resources:', filtersIds);
         }
 
         await PageStatsApi.init();
