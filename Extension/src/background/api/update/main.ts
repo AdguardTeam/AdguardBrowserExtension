@@ -216,7 +216,12 @@ export class UpdateApi {
             return;
         }
 
-        // Update QuickFixes filter metadata and load rules from the server.
+        // We cannot load and enable filter here, because filter's API is not
+        // initialized yet. So we just set the filter state to enabled
+        // and loaded.
+        // After that it will be renew from the local copy of filters
+        // - which will create all needed filter's objects in memory to correct
+        // work.
         const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
 
         if (!UpdateApi.isObject(settings)) {
@@ -238,19 +243,27 @@ export class UpdateApi {
             }),
         ).parse(JSON.parse(filtersStateData));
 
-        Object.assign(
-            filtersState,
-            {
+        // Little hack to mark filter as enabled before it is actually loaded.
+        Object.assign(filtersState, {
+            [AntiBannerFiltersId.QuickFixesFilterId]: {
                 // Enabled by default.
-                [AntiBannerFiltersId.QuickFixesFilterId]: {
-                    enabled: true,
-                    installed: false,
-                    loaded: false,
-                },
+                enabled: true,
+                // Installed is false, because otherwise this filter state
+                // will be marked as "obsoleted" (because this filter not
+                // exists in metadata yet) and will be removed from the memory.
+                installed: false,
+                // Mark as loaded to update filter from local resources and
+                // create filter object in memory.
+                loaded: true,
             },
-        );
+        });
 
         settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Set empty filter to create it in the memory.
+        // Right after launch it will be updated to the newest version from remote.
+        await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
     }
