@@ -50,6 +50,7 @@ import {
     network,
     PageStatsApi,
     UiApi,
+    HitStatsApi,
 } from '../api';
 import {
     UiService,
@@ -178,8 +179,7 @@ export class App {
         }
 
         await PageStatsApi.init();
-
-        // FIXME: support hits counter for mv3. AG-33733
+        await HitStatsApi.init();
 
         /**
          * Initializes promo notifications:
