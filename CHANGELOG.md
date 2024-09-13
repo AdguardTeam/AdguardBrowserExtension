@@ -5,7 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
+
+### Changed
+
+- Updated [@adguard/tsurlfilter] to v3.0.1.
+- Updated [@adguard/tswebextension] to v2.0.1.
+- Updated [@adguard/scriptlets] to v1.11.16.
+
+### Fixed
+
+- Negated domains in the `$to` modifier are not working as expected [#2910].
+- Redirect rule blocks request in the Spotify player instead of redirecting [#2913].
+
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...HEAD
+[#2910]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2910
+[#2913]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2913
+
+
+## [4.4.18] - 2024-08-19
 
 ### Added
 - `HybridStorage` for storing data via IndexedDB with fallback to `chrome.storage.local`.
@@ -33,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filters auto updates not refreshing `last updated date` field [#2726].
 - Extension's action icon flickering on tab change.
 
-[4.4.7]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.64...v4.4.7
+[4.4.18]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.64...v4.4.18
 [#2519]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2519
 [#2598]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2598
 [#2607]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2607
