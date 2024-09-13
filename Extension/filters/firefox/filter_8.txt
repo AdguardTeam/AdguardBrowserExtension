@@ -1,9 +1,9 @@
-! Checksum: VGKgAMuFeRzsyc5pkfab4Q
-! Diff-Path: ../patches/8/8-s-1719585284-3600.patch
+! Checksum: BNWeWYWsgiI9lQsoYdX+xw
+! Diff-Path: ../patches/8/8-s-1722278227-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.10
-! TimeUpdated: 2024-06-28T14:32:27+00:00
+! Version: 2.0.7.15
+! TimeUpdated: 2024-07-29T18:33:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -820,7 +820,7 @@ vlaamskijken.nl,voetbalvandaag.be##.adds
 beurs.nl##.addslot
 loemedia.nl##.adlead
 westerwoldeactueel.nl##.adr-wrapper
-cinenews.be,handbal.nl,openrotterdam.nl,viamichelin.be,viamichelin.nl,wegdamnieuws.nl##.ads
+cinenews.be,handbal.nl,openrotterdam.nl,viamichelin.be,viamichelin.nl,vkmag.com,wegdamnieuws.nl##.ads
 treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal
 treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal-5
 openingstijden.com,promootjesite.nl,radiofm.nl##.adsense
@@ -944,6 +944,7 @@ motorfietsblog.nl##.cbcontent
 autoscout24.be,autoscout24.nl##.cl-billboad-wrapper
 rd.nl##.codalt-container
 techgaming.nl##.code-block
+bol.com##.consideration-display
 twentefans.nl##.content-action
 juf-milou.nl##.content_blok_reclame
 iex.nl##.contentwidget
@@ -1150,7 +1151,7 @@ gamer.nl##.rs-banner
 racesport.nl##.rs_sponsorbanners_widget
 motorblog.nl##.sale
 oisterwijknieuws.nl##.sam-container
-androidworld.nl,dagelijksestandaard.nl,dartsnieuws.com,f1maximaal.nl,indeleiderstrui.nl##.sda
+androidworld.nl,dagelijksestandaard.nl,dartsnieuws.com,f1maximaal.nl,indeleiderstrui.nl,vkmag.com##.sda
 scholieren.com##.searchvertorial
 tvgids.nl##.section-banner
 deondernemer.nl##.section-branded
@@ -1676,6 +1677,10 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+voetbalzone.nl##div[class^="ad-wrapper"]
+voetbalzone.nl##.fco-openweb-ad
+gptoday.net###gptoday_ros_foxtrot_rectangle-halfpage
+etos.nl##div[class^="gam-banner--"]
 npo.nl#%#//scriptlet('json-prune-fetch-response', 'assets.preroll assets.prerollDebug', '', '/stream-link')
 ||biernet.nl/site/plugins/bja_new/redirect.php
 biernet.nl##.bja-cont

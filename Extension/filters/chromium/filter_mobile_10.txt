@@ -1,9 +1,9 @@
-! Checksum: BNuw5YH9uTzsh6eIhtp0VA
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1719689712-3600.patch
+! Checksum: 2er4xmpqxr7akN4HWEo7hg
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1724427392-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.42
-! TimeUpdated: 2024-06-29T19:33:08+00:00
+! Version: 2.0.3.45
+! TimeUpdated: 2024-08-23T15:32:56+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -32,6 +32,7 @@ bing.com#@?##b_results > li.b_algo:has(> .b_caption > p:matches-css(before, cont
 bing.com#@?##b_results > li:has(> h2 + .b_caption > div.b_attribution:not([u]) + p[class])
 bing.com#@?##b_results > .b_algo:has(> .b_caption > .b_attribution:matches-css(before, content: /url\(data:image/))
 bing.com#@#.b_spa_adblock
+bing.com#@#.b_bza_pole
 @@||r.bat.bing.com/?ld=
 carview.yahoo.co.jp#@##ad_SS
 search.yahoo.co.jp#@#.sw-Card.Ad
@@ -91,7 +92,7 @@ google.*#@#c-wiz[jsrenderer="YTTf6c"] > .bhapoc.oJeWuf[jsname="bN97Pc"][data-ved
 search.ask.com#@#.sponsoredTop
 search.ask.com#@##sponsoredTop
 yandex.*#@#body:not([data-bem*="pogoda"]) .mini-suggest__popup-content > li[data-type="nav"]
-yandex.*#@?#.content__left > ul#search-result > li:has(> div[data-bem*="organic"] > div.organic__title-wrapper > a[href][data-event-required])
+yandex.*#@#.content__left > ul#search-result > li:has(> div.organic > div.OrganicTitle > a[href^="https://ya.ru/search/_crpd/"])
 ya.ru,yandex.*#@$?##search-result > li:has(span:contains(/[PРeеkклaаmмaа]{7}/)) { remove: true; }
 ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="Organic"] > div[class^="VanillaReact"] > a[data-event-required])
 amazon.*#@#div[id^="dp-ads-"]
@@ -176,6 +177,7 @@ news.fresheye.com#@#.bk2.spsite
 websearch.rakuten.co.jp#@##ad-ichiba
 etsy.com#@?#.responsive-listing-grid > li:has( > div > a div > .ad-iindicator)
 etsy.com#@?#div[data-search-results-region] li:has( div[class*="merch-stash"]:only-child > a > div[class*="listing-card__info"] p > span:not([aria-hidden="true"]):contains(Etsy))
+@@||ad.doubleclick.net/searchads/link/click?$popup,domain=duckduckgo.com|duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.result--ad > .result__body
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.sponsored
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.highlight_sponsored

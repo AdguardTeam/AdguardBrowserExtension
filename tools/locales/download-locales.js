@@ -31,19 +31,17 @@ import { chunkArray, getLocaleTranslations } from '../helpers';
 import {
     PROJECT_ID,
     BASE_LOCALE,
-    LANGUAGES,
     LOCALE_PAIRS,
     API_URL,
     LOCALES_RELATIVE_PATH,
     FORMAT,
     LOCALE_DATA_FILENAME,
     PERSISTENT_MESSAGES,
+    LOCALES,
 } from './locales-constants';
 
 const LOCALES_DOWNLOAD_URL = `${API_URL}/download`;
 const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
-
-const locales = Object.keys(LANGUAGES);
 
 const getQueryString = (lang) => {
     const options = {
@@ -224,7 +222,7 @@ const checkRequiredFields = (locale, messages, baseMessages) => {
 
 const validateRequiredFields = async () => {
     const baseMessages = await getLocaleTranslations(BASE_LOCALE);
-    const promises = locales.map(async (locale) => {
+    const promises = LOCALES.map(async (locale) => {
         const pathToLocale = path.join(LOCALES_DIR, locale, LOCALE_DATA_FILENAME);
         const messages = JSON.parse(await fs.promises.readFile(pathToLocale, 'utf-8'));
         const checkedMessages = checkRequiredFields(locale, messages, baseMessages);

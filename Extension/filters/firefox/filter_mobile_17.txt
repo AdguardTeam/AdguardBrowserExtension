@@ -1,10 +1,18 @@
-! Checksum: NcOsnAi2fgADDobsgcFSYA
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1719664496-3600.patch
+! Checksum: /+aJU75thAl3zHmCMRKH/g
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1724409494-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.8.71
-! TimeUpdated: 2024-06-29T12:32:50+00:00
+! Version: 2.0.9.10
+! TimeUpdated: 2024-08-23T10:34:48+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=_bdadid
+$removeparam=a8
+$removeparam=recommended_by
+$removeparam=recommended_code
+$removeparam=personaclick_search_query
+$removeparam=personaclick_input_query
+$removeparam=ems_dl
+$removeparam=emcs_t
 $removeparam=cstrackid
 /?affijet-click=$removeparam
 $removeparam=btag
@@ -113,6 +121,7 @@ $removeparam=_sgm_campaign
 $removeparam=_sgm_source
 $removeparam=_sgm_action
 $removeparam=/^__s=[A-Za-z0-9]{6\,}/,domain=~univis.uni-erlangen.de|~univis.uni-bamberg.de|~univis.uni-luebeck.de|~univis.uni-kiel.de|~univis.th-koeln.de
+$removeparam=mc_cid
 $removeparam=mc_eid
 $removeparam=maf
 $removeparam=_clde
@@ -229,6 +238,65 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||temu.com^$removeparam=_p_jump_id
+||temu.com^$removeparam=_x_vst_scene
+||temu.com^$removeparam=_p_rfs
+||temu.com^$removeparam=_x_ads_channel
+||temu.com^$removeparam=_x_ads_sub_channel
+||temu.com^$removeparam=_x_campaign
+||temu.com^$removeparam=_x_cid
+||temu.com^$removeparam=g_site
+||temu.com^$removeparam=g_lg
+||temu.com^$removeparam=g_region
+||temu.com^$removeparam=g_ccy
+||temu.com^$removeparam=refer_page_el_sn
+||temu.com^$removeparam=refer_page_sn
+||vedomosti.ru^$removeparam=from
+||cyber.sports.ru^$removeparam=p_a
+||cyber.sports.ru^$removeparam=p_n
+||cyber.sports.ru^$removeparam=p_c
+||walmart.com^$removeparam=from
+||audible.$removeparam=ref
+||camcam.cc^$removeparam=ref
+ref=producthunt^$removeparam=ref
+||igromania.ru^$removeparam=from
+||fikfapcams.com^$removeparam=referrer
+||fikfapcams.com^$removeparam=realDomain
+||fikfapcams.com^$removeparam=affiliateId
+||go.xliirdr.com/?*&targetDomain=$removeparam=p
+||go.xliirdr.com/?*&targetDomain=$removeparam=userId
+||go.xliirdr.com/?*&targetDomain=$removeparam=campaignId
+||windscribe.com^$removeparam=pcpid
+||windscribe.com^$removeparam=temp_session
+||hepsiburada.com^$removeparam=wt_ds
+||hepsiburada.com^$removeparam=url_src
+||samsung.com^$removeparam=cid
+||nikkansports.com^$removeparam=nsgid
+||game.hiroba.dpoint.docomo.ne.jp^$removeparam=mks_referer_event
+||news.yahoo.co.jp^$removeparam=source
+||news.yahoo.co.jp^$removeparam=dv
+||news.yahoo.co.jp^$removeparam=mid
+||news.yahoo.co.jp^$removeparam=date
+||news.yahoo.co.jp^$removeparam=ctg
+||news.yahoo.co.jp^$removeparam=bt
+||lumosvpn.com/?cep=$removeparam
+||shop.adidas.jp^$removeparam=source_caller
+||shop.adidas.jp^$removeparam=shortlink
+||daohang.qq.com^$removeparam=fr
+||hoyoverse.com/branding$removeparam
+||cloud.baidu.com^$removeparam=from
+||qianfan.cloud.baidu.com^$removeparam=track
+||hepsiburada.com^$removeparam=wt_inf
+||qjweb.jp^$removeparam=from
+||sport.sky.it^$removeparam=social
+||sport.sky.it^$removeparam=share_id
+||tokopedia.com^$removeparam=src
+||tokopedia.com^$removeparam=extParam
+||tokopedia.com^$removeparam=refined
+||darkfans.com^$removeparam=ref
+||darkfans.com^$removeparam=af
+||porntube.com^$removeparam=cid
+||3movs.com^$removeparam=site_id
 ||jpsk.jp^$removeparam=click
 ||savefrom.net^$removeparam=from
 $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
@@ -415,6 +483,9 @@ $removeparam=trackcode,domain=vk.com|vk.ru
 $removeparam=recom,domain=vk.com|vk.ru
 ||vkplay.ru$removeparam=_1ld
 ||vkplay.ru$removeparam=_1lp
+||vkplay.ru^$removeparam=mt_adset
+||vkplay.ru^$removeparam=mt_sub1
+||vkplay.ru^$removeparam=mt_sub2
 ||incogni.com^$removeparam=transaction_id
 ||incogni.com^$removeparam=offer_id
 ||incogni.com^$removeparam=affiliate_id
@@ -446,6 +517,7 @@ keepstreams.com^$removeparam=downloadmode
 ||streamfab.jp^$removeparam=c_app_from
 ||streamfab.jp^$removeparam=c_dt
 ||streamfab.jp^$removeparam=c_wh
+||ozon.ru^$removeparam=asb
 ||ozon.ru^$removeparam=advert
 ||ozon.ru^$removeparam=asb2
 ||ozon.ru^$removeparam=avtc
@@ -454,7 +526,6 @@ keepstreams.com^$removeparam=downloadmode
 ||ozon.ru^$removeparam=from_url
 ||ozon.ru^$removeparam=from_sku
 ||ozon.ru^$removeparam=keywords
-||ozon.ru^$removeparam=oos_search
 ||stvkr.com/v*/click-$removeparam=sa
 ||stvkr.com/v*/click-$removeparam=rfr
 ||stvkr.com/v*/click-$removeparam=widht
@@ -507,6 +578,7 @@ $removeparam=wgexpiry,domain=ibood.com|decathlon.pl
 ||yahoo.co.jp^$removeparam=sc_e
 ||happymail.co.jp^$removeparam=Log
 $removeparam=embeds_referring_euri,domain=youtubekids.com|youtube-nocookie.com|youtube.com
+$removeparam=embeds_referring_origin,domain=youtubekids.com|youtube-nocookie.com|youtube.com
 ||youtube.com^$removeparam=pp
 ||gotanynudes.com^$removeparam=ref
 ||nitter.net^$removeparam=referer
@@ -853,10 +925,12 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||thumbs4.redgifs.com/*&for=$removeparam=for
 ||thumbs4.redgifs.com/*&for=$image,removeparam=for
 ||politica.com.ua^$removeparam=isUser
-$removeparam=sp_atk,domain=shopee.ph|shopee.co.th
-$removeparam=xptdk,domain=shopee.ph|shopee.co.th
-||shopee.ph^$removeparam=stm_medium
-||shopee.ph^$removeparam=stm_source
+$removeparam=sp_atk,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=xptdk,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=publish_id,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=promotionId,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
+$removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||adguard.$removeparam=clid
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
@@ -889,6 +963,8 @@ $removeparam=xptdk,domain=shopee.ph|shopee.co.th
 ||doctolib.de^$removeparam=utm_button
 ||nationalgeographic.com^$removeparam=utm_rd
 ||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
+||ficbook.com^$removeparam=/premiumVisit|utm_compaign/
+||ficbook.me^$removeparam=/premiumVisit|utm_compaign/
 ||stripchat.com^$removeparam=campaignId
 ||stripchat.com^$removeparam=sourceId
 ||stripchat.com^$removeparam=realDomain
@@ -1020,6 +1096,7 @@ $removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.lived
 ||wizcase.com/?$removeparam=vid
 ||microsoft.msafflnk.net^$removeparam=sharedid
 ||microsoft.msafflnk.net^$removeparam=/^subid/
+||ojrq.net/p/$removeparam=tpsync
 ||ojrq.net/p/$removeparam=cid
 ||click.linksynergy.com/fs-bin/click?id=$removeparam=u1
 ||click.linksynergy.com/fs-bin/click?id=$removeparam=u2
@@ -1137,7 +1214,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||nordvpn.com^$removeparam=data1
 ||upgrad.com^$removeparam=UTM_MEDIUM
 ||adweek.com^$removeparam=traffic_source
-$removeparam=aid,domain=adguard-vpn.com|adguard-dns.com|adguard.com
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adguardvpn-help.com
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
 ||web.vstat.info^$removeparam=guid
@@ -1242,16 +1319,26 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ||linkedin.com^$removeparam=/^trk/
 ||digikey.com^$removeparam=/^utm_cid/
 $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
-||commons.nicovideo.jp^$removeparam=transit_from
+||nicovideo.jp^$removeparam=transition_id
+||nicovideo.jp^$removeparam=transition_type
+||nicovideo.jp^$removeparam=rf
+||nicovideo.jp^$removeparam=rp
+||nicovideo.jp^$removeparam=ra
+||nicovideo.jp^$removeparam=rd
+||nicovideo.jp^$removeparam=transit_from
 ||live.nicovideo.jp^$removeparam=ch_anime_ref
 ||seiga.nicovideo.jp^$removeparam=track
+||manga.nicovideo.jp^$removeparam=track
 ||sp.nicovideo.jp^$removeparam=ss_id
 ||sp.nicovideo.jp^$removeparam=ss_pos
 ||sp.nicovideo.jp^$removeparam=cp_in
+||sp.nicovideo.jp^$removeparam=cnt_transit
+||sp.nicovideo.jp^$removeparam=viewing_source
 ||nicovideo.jp^$removeparam=news_ref
 ||nicovideo.jp^$removeparam=cmnhd_ref
 ||nicovideo.jp^$removeparam=ref
 ||nicoft.io^$removeparam=cmnhd_ref
+||nicoebook.jp^$removeparam=track
 ||search.naver.com/search.naver$removeparam=tqi
 ||cc.naver.com/cc?a$removeparam=bw
 ||cc.naver.com/cc?a$removeparam=px
@@ -1271,6 +1358,9 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||yandex.*/news/$removeparam=stid
 ||yandex.*/sport/$removeparam=stid
 ||yandex.*/images/$removeparam=source-serpid
+||market.yandex.$removeparam=offerid
+||market.yandex.$removeparam=show-uid
+||market.yandex.$removeparam=uniqueId
 ||market.yandex.$removeparam=do-waremd5
 ||market.yandex.$removeparam=vid
 ||market.yandex.$removeparam=mclid

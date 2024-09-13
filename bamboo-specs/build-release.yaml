@@ -55,6 +55,9 @@ Build:
             cp build/release/edge.zip artifacts/
             cp build/release/opera.zip artifacts/
             cp build/release/source.zip artifacts/
+
+            # Create an empty artifact in master branch which will be filled in v5.0 branch
+            echo "empty" > artifacts/chrome-mv3.zip
     - inject-variables:
         file: artifacts/build.txt
         scope: RESULT
@@ -89,6 +92,11 @@ Build:
     - name: chrome.zip
       location: artifacts
       pattern: chrome.zip
+      shared: true
+      required: true
+    - name: chrome-mv3.zip
+      location: artifacts
+      pattern: chrome-mv3.zip
       shared: true
       required: true
     - name: firefox.zip
