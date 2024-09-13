@@ -99,6 +99,7 @@ const firefoxStandalonePlan = [
 const releasePlan = [
     copyExternals,
     bundleChrome,
+    bundleChromeMv3,
     bundleFirefoxAmo,
     bundleEdge,
     bundleOpera,
