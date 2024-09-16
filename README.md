@@ -429,10 +429,11 @@ To show locales info run:
 
 ## Minimum supported browser versions
 
-| Browser                  | Version  |
-|------------------------- |:--------:|
-| Chromium Based Browsers  |  118     |
-| Firefox                  |  78      |
-| Firefox Mobile           | 113      |
-| Opera                    |  67      |
-| Edge                     |  80      |
+| Browser                     | Version |
+|---------------------------- |:-------:|
+| Chromium-based browsers MV2 | 79      |
+| Chromium-based browsers MV3 | 118     |
+| Firefox                     | 78      |
+| Firefox Mobile              | 113     |
+| Opera                       | 67      |
+| Edge                        | 80      |
