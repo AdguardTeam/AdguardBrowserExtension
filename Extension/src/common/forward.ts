@@ -49,8 +49,28 @@ export const enum ForwardAction {
     CollectHitsLearnMore = 'filter_rules',
     OperaStore = 'opera_store',
     FirefoxStore = 'firefox_store',
+
+    /**
+     * Main supported release version — "AdGuard AdBlocker".
+     */
     ChromeStore = 'chrome_store',
+
+    // TODO: can be removed in few months after v5.0 MV3 release
+    // since it will no longer be used
+    /**
+     * Supported MV3 beta version.
+     *
+     * Previously known as "AdGuard AdBlocker MV3 Experimental",
+     * currently — "AdGuard AdBlocker (MV3 Beta)".
+     */
     ChromeMv3Store = 'chrome_mv3_store',
+
+    /**
+     * Supported MV2 release version.
+     *
+     * Previously known as "AdGuard AdBlocker (Beta)".
+     */
+    ChromeMv2Store = 'chrome_mv2_store',
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',

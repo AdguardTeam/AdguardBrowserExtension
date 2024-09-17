@@ -427,8 +427,8 @@ export class PagesApi {
             action = ForwardAction.FirefoxStore;
         } else if (UserAgent.isEdge) {
             action = ForwardAction.EdgeStore;
-        } else if (__IS_MV3__) {
-            action = ForwardAction.ChromeMv3Store;
+        } else if (!__IS_MV3__) {
+            action = ForwardAction.ChromeMv2Store;
         }
 
         return Forward.get({
