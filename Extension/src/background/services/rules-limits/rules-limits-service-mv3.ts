@@ -22,7 +22,6 @@ import {
     TooManyRegexpRulesError,
     TooManyRulesError,
     RULE_SET_NAME_PREFIX,
-    type LimitationError,
     type ConfigurationResult,
 } from '@adguard/tswebextension/mv3';
 
@@ -231,7 +230,9 @@ export class RulesLimitsService {
      * @param result Configuration result.
      * @returns Limitation error.
      */
-    private static getRegexpRulesLimitExceedErr = (result: ConfigurationResult): LimitationError | undefined => {
+    private static getRegexpRulesLimitExceedErr = (
+        result: ConfigurationResult,
+    ): TooManyRegexpRulesError | undefined => {
         return result.dynamicRules?.limitations
             .find((e) => e instanceof TooManyRegexpRulesError);
     };
@@ -242,7 +243,9 @@ export class RulesLimitsService {
      * @param result Configuration result.
      * @returns Too many rules error.
      */
-    private static getRulesLimitExceedErr = (result: ConfigurationResult): LimitationError | undefined => {
+    private static getRulesLimitExceedErr = (
+        result: ConfigurationResult,
+    ): TooManyRulesError | undefined => {
         return result.dynamicRules?.limitations
             .find((e) => e instanceof TooManyRulesError);
     };
