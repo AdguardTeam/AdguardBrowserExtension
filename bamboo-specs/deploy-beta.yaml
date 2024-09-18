@@ -6,7 +6,6 @@ deployment:
 release-naming: ${bamboo.inject.version}-beta
 environments:
   - static.adtidy.org
-  - Chrome WebStore MV2
   - Chrome WebStore MV3
 static.adtidy.org:
   triggers: []
@@ -35,42 +34,6 @@ static.adtidy.org:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh chrome-extension-beta
-  final-tasks: []
-  variables: {}
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
-
-Chrome WebStore MV2:
-  triggers: []
-  tasks:
-    - clean
-    - checkout:
-        repository: bamboo-deploy-publisher
-        path: bamboo-deploy-publisher
-        force-clean-build: 'true'
-    - artifact-download:
-        artifacts:
-          - name: chrome.zip
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta
   final-tasks: []
   variables: {}
   requirements:
