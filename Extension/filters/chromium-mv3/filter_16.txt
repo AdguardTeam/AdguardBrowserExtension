@@ -1,8 +1,8 @@
-! Checksum: ezQJaMMFzLp2iYioi8E3nA
+! Checksum: J7nOVonZS23Xa6exZgXgzw
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.46.66
-! TimeUpdated: 2024-09-11T10:33:43+00:00
+! Version: 2.0.46.81
+! TimeUpdated: 2024-09-18T09:33:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -125,6 +125,8 @@ capital.fr#@#.plainAd
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/188979
+sekai.one###adblock-modal
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186309
 ||statics.liberation.fr/newsite/js/cmp/gtm.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185935
@@ -217,7 +219,9 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147842
-japscan.lol#$#.navbar-nav > li.nav-item > a[href^="https://www.origoclick.com"] { position: absolute !important; right: 4000px !important; }
+japscan.lol#%#//scriptlet('remove-attr', 'href', '.navbar-nav > li#navpromo2.nav-item > a[href^="https://www.origoclick.com"]')
+japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '/^_.+\+\'\);\'\)\( ?\);\}catch/')
+japscan.lol##.navbar-nav > li#navpromo2.nav-item > a[href^="https://www.origoclick.com"]
 $script,xmlhttprequest,redirect-rule=noopjs,domain=japscan.lol
 @@$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,script,~third-party
@@ -226,6 +230,7 @@ japscan.lol#@#[class^="copine"]
 @@||japscan.lol^$generichide
 japscan.lol#%#(()=>{const n={construct:(n,o,t)=>{const e=o[0];if(e&&e.includes("return typeof"))throw new ReferenceError;return Reflect.construct(n,o,t)}};window.Function=new Proxy(window.Function,n)})();
 japscan.lol#%#!function(){const t={apply:(t,n,o)=>{if(n&&n.match?.(/_\$_|DklzSoz|_adbn_/))throw Error();return Reflect.apply(t,n,o)}};window.String.prototype.split=new Proxy(window.String.prototype.split,t)}();
+@@||githack.com^$script,domain=japscan.lol
 @@||statically.io^$script,domain=japscan.lol
 @@||netlify.app^$script,domain=japscan.lol
 @@||iili.io^$xmlhttprequest,domain=japscan.lol
@@ -956,9 +961,8 @@ cookomix.com##.AdMB
 h2-mobile.fr#?##main-container .blog__content:has(> .title-wrap--pr > h3:contains(Annonces))
 h2-mobile.fr###main-container .blog__content:has(> .col-md-4 > div[id^="optidigital-adslot-"])
 cosmopolitan.fr##.External
-japscan.lol##div[style="position: fixed; inset: 0px; z-index: 2147483647; pointer-events: auto;"]:empty
 japscan.lol##body > .container.text-center > div.mt-3[style="margin: 0px auto; display: block;"] > a.Aikoi.donate[target="_blank"][href^="https://www."][href*="/?utm_source=manga&utm_"]:not([href^="https://www.google"]):not([href^="https://www.japscan"]):not([href^="https://www.example"]) > img.img-fluid[src^="/imgs/onc/"]
-[$path=/^\/$/]japscan.lol##body > style + .container:first-of-type > .row > #main + #sidebar.col-md-3 > .card.mt-1 > .card[style="margin: 0px auto; display: block;"] > a.aikoi.donate[href^="http"][href*="/?utm_source=index&utm_medium=extra_large&"][target="_blank"][rel="noopener noreferrer nofollow"]:not([href^="http://japscan.lol"]) > img
+japscan.lol##body > style + .container:first-of-type > .row > #main + #sidebar.col-md-3 > .card.mt-1 > .card[style="margin: 0px auto; display: block;"] > a.aikoi.donate[href^="http"][href*="/?utm_source=index&utm_medium=extra_large&"][target="_blank"][rel="noopener noreferrer nofollow"]:not([href^="http://japscan.lol"]) > img
 femina.fr##.p-aside
 femina.fr##.p-inread
 femina.fr##.p-pave
@@ -1643,6 +1647,8 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/188135
+comptoir-hardware.com#@#.cat_bons_plans_du_comptoir
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187802
 nicematin.com#@?#section:has(.brand:contains(sponsorisé))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187600

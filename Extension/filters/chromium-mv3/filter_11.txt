@@ -1,8 +1,8 @@
-! Checksum: gEBimoq4+Yjm/MS10RiRbg
+! Checksum: 5E//CQgjnsTEL/HMgl1htw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.54.34
-! TimeUpdated: 2024-09-11T10:33:27+00:00
+! Version: 2.0.54.64
+! TimeUpdated: 2024-09-18T13:33:05+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -587,7 +587,6 @@
 ||ad.daum.net^
 ||nickhel.com^
 ||redtram.com^
-||goyetteconnelly.bid^
 ||oconner.biz^
 ||et-code.ru^
 ||gynax.com^
@@ -611,7 +610,6 @@
 ||nycp-hlb.dvgtm.akadns.net^
 ||abbott.vo.llnwd.net^
 ||behance.vo.llnwd.net^
-||kjos.vo.llnwd.net^
 ||synthes.vo.llnwd.net^
 ||teachscape.vo.llnwd.net^
 ||tmz.vo.llnwd.net^
@@ -1384,6 +1382,8 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/188864
+cultura.uol.com.br#$##main-menu { margin-top: 0px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188106
 eiga.com#$#@media (max-width: 1024px) { .site-header__header-banner { margin-top: 5rem !important; } }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187947
@@ -2000,6 +2000,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/188534
+milk-key.com#@#.header-ads-area
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185597
 zeenews.india.com#@#div[class^="ads-"]
 zeenews.india.com#@#div[class^="ads-box-"]
@@ -2390,6 +2392,31 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+gamekillerapp.com###foot-banner
+gamekillerapp.com##.foot-banner-station
+gamekillerapp.com##body > a[href]:has(> img.minigame-adv)
+bushikaku.net##div[class*="ad-text"]
+bushikaku.net##[class*="-banner-"]
+mediafire.com#$#@media (max-width: 768px) { .content > div.center { margin-top: 110px !important; } }
+cyzowoman.jp##.section_common:has(> .entryad)
+ckworks.jp##.adbox310x100
+cyberdaily.au##.dfp-ticker
+zenless.gamerstand.net##.post > div[style="padding:20px 0px;"] > div.execphpwidget
+seikeidouga.blog.jp#%#//scriptlet('abort-current-inline-script', 'navigator.userAgent', '_rand')
+haberler.com##div[id^="ana_mobile_336x280_"]
+cyberdaily.au##.tabletSkinBlock
+nikkansports.com###photoScrollText
+koe-koe.com##.ad_min_height
+transtxxx.com##.video-content > div[class]:first-child > div[class]:first-child > div[class]:first-child:has(> div[class] > div[id][class]:empty)
+beauty.biglobe.ne.jp##.anchorAdBox
+ufret.jp##.list-group-flush > a.list-group-item-action[href^="https://shop.sococo.jp"]
+transfer.smt.docomo.ne.jp##.d2c_header[style="height:250px"]
+dengekionline.com##div[class^="BasicLayout"][class*="BannerForSp_"]
+itest.5ch.net#$#.ad_300x250 { position: absolute !important; left: -3000px !important; }
+eclat.hpplus.jp###dfp_overlay
+milk-key.com##.ams-place
+raenonx.cc##.grid:has(> .overflow-hidden > .absolute > .adsbygoogle)
+raenonx.cc##.min-h-40:empty
 hostlove.com###s_vip1
 hostlove.com###vip2_2
 buzzap.jp#$#@media (max-width: 570px) { #masthead { margin-top: 0 !important; } }
@@ -2555,7 +2582,7 @@ news.audee.jp###sp_UZOUSPbnr
 m.airporthaber1.com##.Banner
 utaten.com##div[style="height: 180px; margin-bottom: 10px;"]
 chosun.com##iframe[title="Advertisement"]
-fullhd.xxx,many.xxx,porner.xxx,fullvideos.xxx,omg.xxx,4kporno.xxx,fullporn.xxx,fullporno.xxx,freepornvideos.xxx##.ft
+wow.xxx,fullhd.xxx,many.xxx,porner.xxx,fullvideos.xxx,omg.xxx,4kporno.xxx,fullporn.xxx,fullporno.xxx,freepornvideos.xxx##.ft
 blogtag.ameba.jp##ul > div[class]:has(> div > div[id^="div-gpt-ad-"])
 blogtag.ameba.jp##aside > div[class]:has(> div > div[id^="div-gpt-ad-"])
 namaeuranai.biz#$#body { padding-bottom: 0 !important; }
@@ -4432,12 +4459,9 @@ game8.jp##.a-underIndex
 chat.smaero.jp###ad_mask
 chat.smaero.jp###adsense
 minkou.jp##.mod-ad-wrap
-koe-koe.com###ad2
-koe-koe.com##div[style="min-height:250px"]
 koe-koe.com###chumoku_ad
 koe-koe.com###third_ad
 koe-koe.com##.ad_list
-koe-koe.com##div[style*="width:300px;min-height:2"]
 eroita.net##.spadv
 smbiz.asahi.com##.ad-sp-side-rect
 ||a.adtng.com/get/$xmlhttprequest,redirect=noopvast-2.0,important,domain=mydaddy.cc
@@ -4602,6 +4626,7 @@ m.quoka.de##.qx_search-result__list-item:not([id])
 m.spox.com###content > .ct > .miksfh > div[style^="min-height:"]
 interia.pl##body .common-ad
 beauty.oricon.co.jp##aside[style="text-align:center;margin-top:3px;min-height:100px; margin-bottom: 20px;"]
+oricon.co.jp##.block-recommend-list-kjbox
 oricon.co.jp##.top-inline-banner
 oricon.co.jp##.top-inline-banner-wrapper
 oricon.co.jp##.break-ad-box
@@ -4652,7 +4677,6 @@ mi-mollet.com###MM_SP_Billboard
 mi-mollet.com###MM_SP_readmore
 usakgundem.com,halktv.com.tr##.fixed-pub
 tomsguide.com##.van_vid_carousel
-intex-press.by##.interscroller-ads-inside
 chansoku.com##.pcNone
 giga.de##.smb-gallery-ed-container
 m.vesty.co.il##.sticky-adunit
@@ -4675,7 +4699,7 @@ vokrug.tv###GPM_vokrugtv_M_300x250_Top
 tvjapan.net###bg-ad-mob
 sport.de###topbanner-mobile
 tabootube.xxx##.wrap-spot
-comichronicle.com,onlyporn.tube,watchporn.to,lifematome.blog,tora-kekkon.com,m.eprice.com.tw,dodoyo.jp,life-alright.com,bookwiz.me,yasasiikurasi.com,tabootube.xxx,ba-ro-4869.com,aquarium-suisou.net##.sponsor
+kimagurekizokunoadriatic.site,comichronicle.com,onlyporn.tube,watchporn.to,lifematome.blog,tora-kekkon.com,m.eprice.com.tw,dodoyo.jp,life-alright.com,bookwiz.me,yasasiikurasi.com,tabootube.xxx,ba-ro-4869.com,aquarium-suisou.net##.sponsor
 profile.ru##div[data-typeitem="ad"]
 rbc.ua##.adsens-wrap
 app.famitsu.com##.ad-agency-area
@@ -4895,8 +4919,6 @@ abendzeitung-muenchen.de##.artikel-detail-mobile-ad
 fpsjp.net,ryukyushimpo.jp###sp_top_header
 googirl.jp##.newentry_in > li.“cf”
 googirl.jp##.newentry_in > li:not([class])
-libae.jp##.gmossp_con
-libae.jp##.sp_display > div.pink-title
 m.mail.yahoo.co.jp###ad_container_top
 xgroovy.com,xxxshake.com,jizzberry.com##.in.is_mobile
 ||books.rakuten.co.jp/books/img/js/smart/sp-footer-ad-banner
@@ -5582,7 +5604,7 @@ hellosehat.com,helloyishi.com.tw,greatergood.berkeley.edu##.article-mobile-ad
 www-nytimes-com.cdn.ampproject.org##figure.margins-v.ad
 newsweekjapan.jp,m.sweclockers.com###topBanner
 expressen.se##body div.bam-ad-slot[data-slot-name]
-ficbook.me,ficbook.net##.rkl-stick-to-bottom
+ficbook.net##.rkl-stick-to-bottom
 m.republicworld.com##div[style^="perspective: 1000px; position: relative; height: 250px; width: 300px;"]
 www-tomsguide-com.cdn.ampproject.org,www-digitalcameraworld-com.cdn.ampproject.org,digitalcameraworld.com##.hawk-widget[data-model-name]
 vxjbdagjdec-eviewporn-com.cdn.ampproject.org###popups
@@ -5607,7 +5629,6 @@ perezhilton.com##.anchor-spot
 bangumi.org###mobile_ad_area
 komputerswiat.pl###page > article > div[style^="margin:"] > p[style="font-size:9px;color:#696969;font-family:Verdana;text-align:left;margin:0;padding:0;line-height:normal;width:100%"]
 m.haberler.com##.hbMain > input[type][value="manset"] + div[style]
-1reg.by##.article-content-inner > div:not([class]) > p ~ div[class][style]
 m.thepaper.cn##iframe[src^="https://adproject.thepaper.cn/"]
 google.de,sueddeutsche.de##amp-ad + div[class^="css-"]
 cheb.ru###content > div[id="text"] > div[class] > a[target="_blank"] > img
@@ -5847,7 +5868,7 @@ novinky.cz##.ogm-advert-static
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion##.BannerAd__320x50
 tabletowo.pl##.amp_widget_below_the_header a[data-bid] > amp-img
 www-buzzfeednews-com.cdn.ampproject.org##.ad-dest--news
-ficbook.me,ficbook.net##.jsHideStickyRkl
+ficbook.net##.jsHideStickyRkl
 vse-shutochki.ru##body > div[class="hidden-desktop post"]
 koinmedya.com##.amp-sticky-ads
 ubr.ua##body > div[style*="height: 300px;"][style*="text-align: center;"]
@@ -7152,15 +7173,14 @@ m.vk.com#?#.wall_item > div.wi_head > div[class^="PostHeader"] span[class^="Post
 m.vk.com##.wall_item[data-ad-view]
 !
 ! xhamster.com
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.main-wrap div.ll-oTO
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.thumb-list-mobile-item--widget
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##div[class*="banner-container"]
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com#?#.thumb-list-mobile-item:has(> amp-iframe)
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##.video-page__layout-ad
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##.thumb-list-mobile > .thumb-list-mobile-item--widget
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##.main-wrap #video_info_container > aside:has(> iframe)
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##.main-wrap div.auAjO-Oo
-valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh###player-sponsor-link
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##div[class*="ts-init"]
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##.thumb-list-mobile-item--widget
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##div[class*="banner-container"]
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhadult2.com,xhmoon5.com,xhamster3.com,xhamster18.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster14.com,xhamster15.com,xhamster17.com,xhamster18.com,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster35.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com#?#.thumb-list-mobile-item:has(> amp-iframe)
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##.video-page__layout-ad
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##.thumb-list-mobile > .thumb-list-mobile-item--widget
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh##.main-wrap #video_info_container > aside:has(> iframe)
+xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,taoxh.life,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.gov.bd,xhamster16.gov.np,hamsterix.xyz,hamsterix.online,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.gov.bd,hamsterix.guru,hamsterix.gov.np,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.gov.bd,xhamster13.gov.np,xhamster18.com,xhamster18.org,xhamster18.com.bd,xhamster18.com.np,xhamster18.gov.bd,xhamster18.gov.np,xhamster19.com,xhamster19.ru,xhamster19.co,xhamster19.com.bd,xhamster19.com.np,xhamster19.gov.bd,xhamster19.gov.np,xhamster11.com,xhamster11.com.bd,xhamster11.com.np,xhamster11.gov.bd,xhamster11.gov.np,xhamster5.com,xhamster5.com.bd,xhamster5.com.np,xhamster5.gov.bd,xhamster5.gov.np,xhamster10.com,xhamster10.pro,xhamster10.com.bd,xhamster10.com.np,xhamster10.gov.bd,xhamster10.gov.np,xhamster4.com,xhamster4.com.bd,xhamster4.com.np,xhamster4.gov.bd,xhamster4.gov.np,xhamster3.com,xhamster3.net,xhamster3.co,xhamster3.pro,xhamster3.com.bd,xhamster3.com.np,xhamster3.gov.bd,xhamster3.gov.np,xhamster2.com,xhamster2.org,xhamster2.in,xhamster2.co,xhamster2.xyz,xhamster2.com.bd,xhamster2.com.np,xhamster2.space,xhamster2.gov.bd,xhamster2.gov.np,xhamster.com,xhamster.ru,xhamster.net,xhamster.org,xhamster.in,xhamster.com.au,xhamster.co.uk,xhamster.co,xhamster.gr,xhamster.com.ua,xhamster.info,xhamster.de,xhamster.fr,xhamster.me,xhamster.jp,xhamster.co.il,xhamster.eu,xhamster.it,xhamster.tv,xhamster.id,xhamster.com.br,xhamster.es,xhamster.ch,xhamster.biz,xhamster.nl,xhamster.us,xhamster.pl,xhamster.cl,xhamster.ro,xhamster.site,xhamster.cc,xhamster.mx,xhamster.se,xhamster.shop,xhamster.live,xhamster.top,xhamster.com.co,xhamster.be,xhamster.tech,xhamster.com.cn,xhamster.com.bd,xhamster.dev,xhamster.asia,xhamster.at,xhamster.com.np,xhamster.fi,xhamster.lv,xhamster.space,xhamster.life,xhamster.vip,xhamster.gov.bd,xhamster.blog,xhamster.mobi,xhamster.one,xhamster.uk,xhamster.today,xhamster.fm,xhamster.guru,xhamster.gov.np,xhamster.network,xhamster.digital,xhamster.sh###player-sponsor-link
 !
 ! Группа компаний Актион
 pro-personal.ru,26-2.ru,kom-dir.ru,gd.ru,hr-director.ru,gkh.ru,gazeta-unp.ru##.adfox__inpage
@@ -7267,6 +7287,9 @@ forum.golem.de##div[id^="mob_forum"]
 cheb.ru##.topbanpda
 !+ NOT_OPTIMIZED
 pravda.com.ua##amp-iframe[src^="https://orbit4.lun.ua/"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/188948
+accuweather.com#$#.header-placeholder.has-adhesion { height: 44px !important; }
+accuweather.com#%#//scriptlet('remove-class', 'has-adhesion', '.header-placeholder.has-adhesion')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187643
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165241
 yahoo.com#$?#li[data-wf-native-da-id^="ntk-native-ad-"] { remove: true; }
