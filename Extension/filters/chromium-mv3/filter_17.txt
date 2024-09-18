@@ -1,8 +1,8 @@
-! Checksum: kopexV/zQuLCYHAl/YtHEQ
+! Checksum: KFnDQ/BoRFCOm19O23hGaQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.35
-! TimeUpdated: 2024-09-11T11:33:27+00:00
+! Version: 2.0.9.44
+! TimeUpdated: 2024-09-18T13:33:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -374,6 +374,12 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! Bing
+||bing.com^$removeparam=cvid
+! https://github.com/AdguardTeam/AdguardFilters/issues/188889
+$removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka.co.jp|j-yokatsu2.edu.city.uruma.okinawa.jp|labo.rheos.jp|note-harumi.sbfoods.co.jp|note.basicinc.jp|note.bcnretail.com|note.calbee.jp|note.com|note.gallery.intage.com|note.kogakuin.ac.jp|note.jp|note.minne.com|note.montblanc.design|note.nhkso.or.jp|note.pokkasapporo-fb.jp|note.roxx.co.jp|note.smartnews-ads.com|note.universal-music.co.jp|note.yamap.com|note.zochang.com|refalover-note.mainichi.jp|shanaiho.itandi.co.jp|uragawa-note.jpn.panasonic.com|webtripper.jp
+! https://github.com/AdguardTeam/AdguardFilters/issues/188662
+||undressher.app^$removeparam=ref
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188510
 ||xingga.com^$removeparam=showid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188457
@@ -779,6 +785,14 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
 ||gillian-guide.github.io^$removeparam=ref
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166436
 ||pcmag.com^$removeparam=taid
+!
+! VK Group
+! mail.ru
+||mail.ru^$removeparam=mt_click_id
+||mail.ru^$removeparam=mt_sub1
+||mail.ru^$removeparam=mt_sub2
+||mail.ru^$removeparam=mt_sub5
+||mail.ru^$removeparam=from
 ! VKontakte
 $removeparam=trackcode,domain=vk.com|vk.ru
 $removeparam=recom,domain=vk.com|vk.ru
@@ -788,6 +802,7 @@ $removeparam=recom,domain=vk.com|vk.ru
 ||vkplay.ru^$removeparam=mt_adset
 ||vkplay.ru^$removeparam=mt_sub1
 ||vkplay.ru^$removeparam=mt_sub2
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166050
 ||incogni.com^$removeparam=transaction_id
 ||incogni.com^$removeparam=offer_id
@@ -1443,6 +1458,7 @@ $removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
 $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131093
 ||adguard.$removeparam=clid
+||adguard-vpn.$removeparam=clid
 ! Cognativex
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
@@ -1490,7 +1506,6 @@ $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||nationalgeographic.com^$removeparam=utm_rd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128339
 ||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
-||ficbook.me^$removeparam=/premiumVisit|utm_compaign/
 ! stripchat.com
 ||stripchat.com^$removeparam=campaignId
 ||stripchat.com^$removeparam=sourceId
@@ -1849,7 +1864,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ! https://github.com/uBlockOrigin/uAssets/issues/10867
 ||adweek.com^$removeparam=traffic_source
 ! AdGuard
-$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adguardvpn-help.com
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adgardvpn-help.info
 ! https://github.com/AdguardTeam/AdguardFilters/pull/102144
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
@@ -2341,6 +2356,12 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ! Daraz & Shop (Samesite)
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
 ! Bilibili
+||bilibili.com^$removeparam=share_from
+||bilibili.com^$removeparam=spmid
+||bilibili.com^$removeparam=plat_id
+||bilibili.com^$removeparam=mid
+||bilibili.com^$removeparam=buvid
+||bilibili.com^$removeparam=up_id
 ||bilibili.com^$removeparam=seid
 ||bilibili.com^$removeparam=share_source
 ||bilibili.com^$removeparam=spm_id_from
