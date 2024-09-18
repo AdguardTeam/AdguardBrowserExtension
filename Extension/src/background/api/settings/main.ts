@@ -54,6 +54,7 @@ import {
     UserRulesApi,
     AllowlistApi,
     annoyancesConsent,
+    QuickFixesRulesApi,
 } from '../filters';
 import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
 import { settingsEvents } from '../../events';
@@ -379,27 +380,29 @@ export class SettingsApi {
 
     /**
      * Loads built-in filters and enables them.
-     * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
      *
-     * @param builtInFilters Array of built-in filters ids.
+     * Firstly, tries to load filters from the backend:
+     * - if loaded successfully, enables them;
+     * - if loading fails, returns the array of filters that were not loaded
+     *   to try to load them from the local storage later.
+     *
+     * @param filterIds Array of built-in filters ids.
+     * @returns Array of filters that were not loaded from the backend.
      * @private
      */
-    private static async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
-        const tasks = builtInFilters.map(async (filterId: number) => {
+    private static async loadBuiltInFiltersRemote(filterIds: number[]): Promise<number[]> {
+        const failedFilterIds: number[] = [];
+        const filterIdsToEnable: number[] = [];
+
+        const tasks = filterIds.map(async (filterId: number) => {
             try {
+                // eslint-disable-next-line no-await-in-loop
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, true);
+                filterIdsToEnable.push(filterId);
             } catch (e) {
                 logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
-                // eslint-disable-next-line max-len
-                if (!network.isFilterHasLocalCopy(filterId)) {
-                    // eslint-disable-next-line max-len
-                    throw new Error(`Filter rules were not loaded from backend and there is no local copy of the filter with id ${filterId}.`, { cause: e });
-                }
-                logger.debug('Trying to load from storage.');
-                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+                failedFilterIds.push(filterId);
             }
-
-            filterStateStorage.enableFilters([filterId]);
         });
 
         const promises = await Promise.allSettled(tasks);
@@ -410,6 +413,89 @@ export class SettingsApi {
                 logger.error(promise.reason);
             }
         });
+
+        filterStateStorage.enableFilters(filterIdsToEnable);
+
+        return failedFilterIds;
+    }
+
+    /**
+     * Loads built-in filters from the local storage, and enables them.
+     *
+     * @param filterIds Ids of filters to load and enable.
+     * @private
+     */
+    private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
+        const tasks = filterIds.map(async (filterId: number) => {
+            await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+        });
+
+        const promises = await Promise.allSettled(tasks);
+
+        filterStateStorage.enableFilters(filterIds);
+
+        // Handles errors
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                logger.error(promise.reason);
+            }
+        });
+    }
+
+    /**
+     * Loads built-in filters and enables them **for MV2**.
+     * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
+     *
+     * @param builtInFilters Array of built-in filters ids.
+     * @private
+     */
+    private static async loadBuiltInFiltersMv2(builtInFilters: number[]): Promise<void> {
+        const remoteFailedFilterIds = await SettingsApi.loadBuiltInFiltersRemote(builtInFilters);
+
+        if (remoteFailedFilterIds.length === 0) {
+            return;
+        }
+
+        const filterIdsToLoadLocal: number[] = [];
+        const filterIdsWithNoLocalCopy: number[] = [];
+
+        remoteFailedFilterIds.forEach((filterId) => {
+            if (network.isFilterHasLocalCopy(filterId)) {
+                filterIdsToLoadLocal.push(filterId);
+            } else {
+                filterIdsWithNoLocalCopy.push(filterId);
+            }
+        });
+
+        if (filterIdsWithNoLocalCopy.length > 0) {
+            throw new Error(`There is no local copy of filters with ids: ${filterIdsWithNoLocalCopy.join(', ')}`);
+        }
+
+        logger.debug(`Trying to load from storage filters with ids: ${filterIdsToLoadLocal.join(', ')}`);
+        await SettingsApi.loadBuiltInFiltersLocal(filterIdsToLoadLocal);
+    }
+
+    /**
+     * Loads built-in filters and enables them **for MV3**.
+     *
+     * Checks whether the filter is supported by MV3.
+     * Tries to load them from the storage only.
+     *
+     * @param builtInFilters Array of built-in filters ids.
+     * @private
+     */
+    private static async loadBuiltInFiltersMv3(builtInFilters: number[]): Promise<void> {
+        const filtersToLoad: number[] = [];
+
+        builtInFilters.forEach((filterId) => {
+            if (CommonFilterApi.isMv3Supported(filterId)) {
+                filtersToLoad.push(filterId);
+            } else {
+                logger.debug(`MV3 extension does not support filter with id ${filterId}`);
+            }
+        });
+
+        await SettingsApi.loadBuiltInFiltersLocal(filtersToLoad);
     }
 
     /**
@@ -425,8 +511,17 @@ export class SettingsApi {
         await SettingsApi.importUserFilter(userFilter);
         SettingsApi.importAllowlist(allowlist);
 
-        const builtInFilters = enabledFilters.filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId));
-        await SettingsApi.loadBuiltInFilters(builtInFilters);
+        const builtInFilters = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
+
+        if (__IS_MV3__) {
+            await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
+
+            // forcibly enable Quick Fixes filter on import for MV3
+            // because it is a must-have filter
+            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+        } else {
+            await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
+        }
 
         await CustomFilterApi.createFilters(customFilters);
 
