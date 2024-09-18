@@ -304,4 +304,16 @@ export class CommonFilterApi {
 
         return !BrowserUtils.isGreaterOrEqualsVersion(filterVersion.version, filterMetadata.version);
     }
+
+    /**
+     * Checks whether the filter is supported for MV3.
+     *
+     * @param filterId Filter id.
+     * @returns True if filter is supported for MV3, false otherwise.
+     */
+    public static isMv3Supported(filterId: number): boolean {
+        const supportedFilterIds = CommonFilterApi.getFiltersMetadata().map((filter) => filter.filterId);
+
+        return supportedFilterIds.includes(filterId);
+    }
 }

@@ -180,6 +180,11 @@ export const General = observer(() => {
         event.target.value = '';
     };
 
+    const inputChangeHandlerWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        inputChangeHandler,
+    );
+
     const handleLeaveFeedback = async () => {
         await messenger.openExtensionStore();
     };
@@ -311,7 +316,7 @@ export const General = observer(() => {
                         id="inputEl"
                         type="file"
                         accept="application/json"
-                        onChange={inputChangeHandler}
+                        onChange={inputChangeHandlerWrapper}
                         className="actions__input-file"
                     />
                     <label
@@ -321,7 +326,7 @@ export const General = observer(() => {
                         <input
                             type="file"
                             accept="application/json"
-                            onChange={inputChangeHandler}
+                            onChange={inputChangeHandlerWrapper}
                             className="actions__input-file"
                         />
                         {translator.getMessage('options_import_settings')}

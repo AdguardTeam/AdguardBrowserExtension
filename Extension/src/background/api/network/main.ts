@@ -24,6 +24,8 @@ import {
 } from '@adguard/filters-downloader/browser';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
+import { AntiBannerFiltersId } from '../../../common/constants';
+import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import {
     type Metadata,
@@ -33,8 +35,7 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import type { FilterUpdateOptions } from '../filters';
-import { logger } from '../../../common/logger';
+import { CustomFilterApi, type FilterUpdateOptions } from '../filters';
 
 import { NetworkSettings } from './settings';
 
@@ -106,22 +107,42 @@ export class Network {
         rawFilter?: string,
     ): Promise<DownloadResult> {
         let url: string;
+        const { filterId } = filterUpdateOptions;
 
-        if (!forceRemote && this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
+        if (
+            !__IS_MV3__
+            && !forceRemote
+            && this.settings.localFilterIds.indexOf(filterId) < 0
+        ) {
             // eslint-disable-next-line max-len
-            throw new Error(`Cannot locally load filter with id ${filterUpdateOptions.filterId} because it is not build in the extension local resources.`);
+            throw new Error(`Cannot locally load filter with id ${filterId} because it is not build in the extension local resources.`);
         }
 
         let isLocalFilter = false;
-        if (forceRemote || this.settings.localFilterIds.indexOf(filterUpdateOptions.filterId) < 0) {
-            url = this.getUrlForDownloadFilterRules(filterUpdateOptions.filterId, useOptimizedFilters);
-        } else {
-            // eslint-disable-next-line max-len
-            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterUpdateOptions.filterId}.txt`);
-            if (useOptimizedFilters && !__IS_MV3__) {
-                // eslint-disable-next-line max-len
-                url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_mobile_${filterUpdateOptions.filterId}.txt`);
+        if (__IS_MV3__) {
+            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterId}.txt`);
+
+            // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
+            // and custom filters
+            const isRemote = forceRemote
+                && (filterId === AntiBannerFiltersId.QuickFixesFilterId
+                    || CustomFilterApi.isCustomFilter(filterId));
+
+            if (isRemote) {
+                if (useOptimizedFilters) {
+                    logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
+                }
+                url = this.getUrlForDownloadFilterRules(filterId, false);
             }
+
+            isLocalFilter = !isRemote;
+        } else if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {
+            url = this.getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
+        } else {
+            const filterFileName = useOptimizedFilters
+                ? `filter_mobile_${filterId}.txt`
+                : `filter_${filterId}.txt`;
+            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${filterFileName}`);
             isLocalFilter = true;
         }
 
