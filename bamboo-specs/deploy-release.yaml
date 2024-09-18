@@ -7,6 +7,7 @@ release-naming: ${bamboo.inject.version}
 environments:
   - static.adtidy.org
   - Chrome WebStore MV2
+  - Chrome WebStore MV3
   - Addons Mozilla
   - Edge Addons
 
@@ -33,6 +34,7 @@ static.adtidy.org:
 
             ls -la
 
+            # TODO: Change deploy scripts to static before merge to master.
             ./bamboo-deploy-publisher/deploy.sh chrome-extension-release
             ./bamboo-deploy-publisher/deploy.sh firefox-extension-release
   final-tasks: []
@@ -59,6 +61,43 @@ Chrome WebStore MV2:
         artifacts:
           - name: build.txt
           - name: chrome.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-mv2
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+
+Chrome WebStore MV3:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: 'true'
+    - artifact-download:
+        artifacts:
+          - name: build.txt
+          - name: chrome-mv3.zip
     - script:
         interpreter: SHELL
         scripts:
