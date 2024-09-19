@@ -233,7 +233,6 @@ class SettingsStore {
     }
 
     @action
-    // TODO: Maybe add notification show here too?
     async checkLimitations() {
         const currentLimitsMv3 = await messenger.getCurrentLimits();
 

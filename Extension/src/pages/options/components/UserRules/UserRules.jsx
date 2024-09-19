@@ -80,7 +80,7 @@ const UserRules = observer(() => {
                         </button>
                     </div>
                 )
-                : (<UserRulesEditor uiStore={uiStore} />)}
+                : (<UserRulesEditor />)}
         </>
     );
 });
