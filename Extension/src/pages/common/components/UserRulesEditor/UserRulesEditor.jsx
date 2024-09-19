@@ -288,10 +288,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     };
 
     const saveClickHandler = async () => {
-        if (store.userRulesEditorContentChanged) {
-            const value = editorRef.current.editor.getValue();
-            await saveUserRules(value);
+        if (!store.userRulesEditorContentChanged) {
+            return;
         }
+
+        const value = editorRef.current.editor.getValue();
+        await saveUserRules(value);
     };
 
     const shortcuts = [

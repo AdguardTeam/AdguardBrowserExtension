@@ -21,6 +21,7 @@ import { observer } from 'mobx-react';
 
 import { Loader } from '../../../common/components/Loader';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
+import { Mv3Notifications } from '../../../options/components/Mv3Notifications';
 import { FULLSCREEN_USER_RULES_EDITOR, NotifierType } from '../../../../common/constants';
 import { rootStore } from '../../../options/stores/RootStore';
 import { messenger } from '../../../services/messenger';
@@ -79,6 +80,7 @@ export const FullscreenUserRules = observer(() => {
         <>
             <Loader showLoader={showLoader} />
             <Icons />
+            <Mv3Notifications />
             <UserRulesEditor fullscreen />
         </>
     );
