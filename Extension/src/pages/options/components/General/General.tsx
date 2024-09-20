@@ -37,7 +37,6 @@ import {
     BUG_REPORT_MV3_URL,
 } from '../../constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
-import { addPopoverForComingSoonElement } from '../../../common/components/react-helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getErrorMessage } from '../../../../common/error';
 import { SettingHandler } from '../../types';
@@ -272,26 +271,22 @@ export const General = observer(() => {
                         handler={settingChangeHandler}
                     />
                 )}
-                {
-                    addPopoverForComingSoonElement(
-                        <SettingsSetCheckbox
-                            // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                            // @ts-ignore
-                            title={translator.getMessage('options_enable_autodetect_filter')}
-                            description={translator.getMessage('options_enable_autodetect_filter_desc')}
-                            disabled={settings.values[DisableDetectFilters]}
-                            id={DisableDetectFilters}
-                            type={SETTINGS_TYPES.CHECKBOX}
-                            inverted
-                            label={translator.getMessage('options_enable_autodetect_filter')}
-                            handler={settingChangeHandler}
-                            // eslint-disable-next-line react/jsx-boolean-value
-                            value={__IS_MV3__ ? true : settings.values[DisableDetectFilters]}
-                            // TODO: revert after the implementation for mv3
-                            // value={settings.values[DisableDetectFilters]}
-                        />,
-                    )
-                }
+                {!__IS_MV3__ && (
+                    <SettingsSetCheckbox
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
+                        title={translator.getMessage('options_enable_autodetect_filter')}
+                        description={translator.getMessage('options_enable_autodetect_filter_desc')}
+                        disabled={settings.values[DisableDetectFilters]}
+                        id={DisableDetectFilters}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        inverted
+                        label={translator.getMessage('options_enable_autodetect_filter')}
+                        handler={settingChangeHandler}
+                        // eslint-disable-next-line react/jsx-boolean-value
+                        value={settings.values[DisableDetectFilters]}
+                    />
+                )}
                 {!__IS_MV3__ && (
                     <SettingSetSelect
                         title={translator.getMessage('options_set_update_interval')}
