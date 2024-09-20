@@ -27,10 +27,18 @@ import {
     ForwardParams,
 } from '../../../common/forward';
 import { UrlUtils } from '../../utils/url';
-import { browserStorage, settingsStorage } from '../../storages';
+import {
+    browserStorage,
+    groupStateStorage,
+    settingsStorage,
+} from '../../storages';
 import { SettingOption } from '../../schema';
 import { BrowserUtils } from '../../utils/browser-utils';
-import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
+import {
+    AntiBannerFiltersId,
+    AntibannerGroupsId,
+    FILTERING_LOG_WINDOW_STATE,
+} from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
 import { Prefs } from '../../prefs';
 import { CustomFilterApi, FiltersApi } from '../filters';
@@ -211,10 +219,6 @@ export class PagesApi {
         const commonFilterIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
 
-        const customFilterUrls = CustomFilterApi.getFiltersData()
-            .filter(({ enabled }) => !!enabled)
-            .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
-
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
@@ -240,8 +244,15 @@ export class PagesApi {
             params.filters = encodeURIComponent(commonFilterIds.join('.'));
         }
 
-        if (customFilterUrls.length > 0) {
-            params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
+        const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
+        if (isCustomFiltersEnabled) {
+            const customFilterUrls = CustomFilterApi.getFiltersData()
+                .filter(({ enabled }) => enabled)
+                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+
+            if (customFilterUrls.length > 0) {
+                params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
+            }
         }
 
         Object.assign(

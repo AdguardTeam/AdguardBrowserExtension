@@ -17,11 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Negated domains in the `$to` modifier are not working as expected [#2910].
 - Redirect rule blocks request in the Spotify player instead of redirecting [#2913].
+- The list of custom filters is passed to ReportsWebApp even if the Custom group is disabled [#2951].
 - Intersection of dynamic rules ids [#2953].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...HEAD
 [#2910]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2910
 [#2913]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2913
+[#2951]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2951
 [#2953]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2953
 
 
