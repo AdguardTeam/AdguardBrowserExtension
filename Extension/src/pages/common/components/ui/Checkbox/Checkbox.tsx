@@ -69,6 +69,11 @@ interface CheckboxProps {
      * If true, the checkbox will update optimistically
      */
     optimistic?: boolean;
+
+    /**
+     * If true, the checkbox will be inactive state (gray)
+     */
+    inactive?: boolean;
 }
 
 /**
@@ -88,11 +93,17 @@ const Checkbox = (props: CheckboxProps) => {
         className,
         disabled,
         optimistic = true,
+        inactive,
     } = props;
 
     const computedValue = inverted ? !value : value;
     const [state, setState] = useState(computedValue);
     const [pending, setPending] = useState(false);
+    const labelClassNames = cn(
+        'checkbox__label',
+        inactive && 'checkbox__label--inactive',
+        className,
+    );
 
     useEffect(() => {
         setState(computedValue);
@@ -139,10 +150,7 @@ const Checkbox = (props: CheckboxProps) => {
                 tabIndex={0}
                 disabled={disabled || pending}
             />
-            <label
-                htmlFor={String(id)}
-                className={cn('checkbox__label', className)}
-            >
+            <label htmlFor={String(id)} className={labelClassNames}>
                 {label}
             </label>
         </div>

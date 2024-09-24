@@ -294,6 +294,7 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                                     value={!!enabled}
                                     optimistic={!__IS_MV3__}
                                     handler={handleFilterSwitch}
+                                    inactive={!groupEnabled}
                                 />
                             </div>
                         </div>

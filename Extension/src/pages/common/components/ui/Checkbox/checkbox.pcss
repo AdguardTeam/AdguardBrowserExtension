@@ -20,6 +20,10 @@
                 background-color: var(--stroke-icons-product-icon-default);
             }
 
+            &.checkbox__label--inactive:after {
+                background-color: var(--fills-inputs-switch-background-inactive);
+            }
+
             &:before {
                 transform: translate(22px, 2px);
 
@@ -96,12 +100,8 @@
             width: 40px;
             height: 20px;
             border-radius: 10px;
-            background-color: var(--gray700);
+            background-color: var(--fills-inputs-switch-background-default);
             cursor: pointer;
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray700);
-            }
         }
     }
 }

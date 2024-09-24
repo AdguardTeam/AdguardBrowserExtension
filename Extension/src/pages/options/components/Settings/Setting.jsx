@@ -45,6 +45,7 @@ export const Setting = (props) => {
                 className,
                 disabled,
                 optimistic,
+                inactive,
             } = props;
             return (
                 <Checkbox
@@ -56,6 +57,7 @@ export const Setting = (props) => {
                     className={className}
                     disabled={disabled}
                     optimistic={optimistic}
+                    inactive={inactive}
                 />
             );
         }
