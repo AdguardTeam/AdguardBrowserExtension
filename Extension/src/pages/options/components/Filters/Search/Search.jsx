@@ -150,7 +150,7 @@ const Search = observer(() => {
                     value={searchInput}
                 />
             </label>
-            {searchInput ? (
+            {searchInput && (
                 <button
                     type="button"
                     className="button"
@@ -162,11 +162,6 @@ const Search = observer(() => {
                         classname="icon--24 icon--gray-default"
                     />
                 </button>
-            ) : (
-                <Icon
-                    id="#magnifying"
-                    classname="icon--24 icon--gray-default"
-                />
             )}
             <div className="search__select">
                 <Select

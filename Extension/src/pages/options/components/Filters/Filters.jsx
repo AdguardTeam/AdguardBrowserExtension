@@ -74,7 +74,6 @@ const Filters = observer(() => {
     const [groupDetermined, setGroupDetermined] = useState(false);
 
     const GROUP_DESCRIPTION = {
-        [AntibannerGroupsId.CustomFiltersGroupId]: translator.getMessage('group_description_custom'),
         [AntibannerGroupsId.AdBlockingFiltersGroupId]: translator.getMessage('group_description_adblocking'),
         [AntibannerGroupsId.PrivacyFiltersGroupId]: translator.getMessage('group_description_stealth'),
         [AntibannerGroupsId.SocialFiltersGroupId]: translator.getMessage('group_description_social'),
@@ -302,6 +301,7 @@ const Filters = observer(() => {
 
         const isCustom = settingsStore.selectedGroupId === AntibannerGroupsId.CustomFiltersGroupId;
         const isEmpty = filtersToRender.length === 0;
+        const description = GROUP_DESCRIPTION[selectedGroup.groupId];
 
         const renderBackButton = () => (
             <>
@@ -321,7 +321,7 @@ const Filters = observer(() => {
                     >
                         {selectedGroup.groupName}
                     </button>
-                    <div className="title__desc title__desc--back">{GROUP_DESCRIPTION[selectedGroup.groupId]}</div>
+                    {description && <div className="title__desc title__desc--back">{description}</div>}
                 </div>
             </>
         );
@@ -329,7 +329,7 @@ const Filters = observer(() => {
         return (
             <SettingsSection
                 title={selectedGroup.groupName}
-                description={GROUP_DESCRIPTION[selectedGroup.groupId]}
+                description={description}
                 inlineControl={(
                     <Setting
                         id={selectedGroup.groupId}
@@ -341,10 +341,11 @@ const Filters = observer(() => {
                     />
                 )}
                 renderBackButton={renderBackButton}
+                mode={isCustom ? 'custom' : undefined}
             >
                 {
                     isCustom && (
-                        <div className="settings__group__links">
+                        <div className="settings__group__links settings__group__links--custom">
                             <RuleLimitsLink />
                         </div>
                     )

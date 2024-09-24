@@ -28,7 +28,6 @@
         font-size: 16px;
         line-height: 24px;
         font-weight: 400;
-        margin-bottom: 12px;
         width: 100%;
 
         &--one-line {
@@ -81,6 +80,10 @@
             scrollbar-width: thin;
             scrollbar-color: var(--stroke-inputs-inactive-input-stroke-default) var(--fills-backgrounds-page-background-default);
         }
+
+        & .modal__subtitle {
+            margin-bottom: 12px;
+        }
     }
 
     &__actions {
@@ -95,41 +98,9 @@
         }
     }
 
-    /* FIXME: update input due to the new v5.0 design */
-    &__input {
-        width: 100%;
-        border: 0;
-        line-height: 21px;
-        font-size: 16px;
-        border-bottom: 2px solid var(--product-primary-50);
-        padding: 8px;
-        outline: none;
-        text-overflow: ellipsis;
-        overflow: hidden;
-
-        &:focus-visible {
-            outline: none;
-            background-color: var(--gray300);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--black);
-            color: var(--gray300);
-        }
-    }
-
     &__desc {
         font-size: 14px;
         line-height: 22px;
-        color: rgba(27, 27, 27, 0.9);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
     }
 
     &__btn {
@@ -150,20 +121,10 @@
         font-size: 16px;
         line-height: 24px;
 
-        &--name {
-            display: flex;
-            flex-direction: column;
-
-            &--title {
-                padding-top: 12px;
-                line-height: 24px;
-            }
-        }
-
         &--info {
             font-size: 16px;
             line-height: 24px;
-            padding: 12px 0;
+            padding: 20px 0 24px;
 
             &-item {
                 margin-right: 4px;
@@ -180,36 +141,6 @@
             font-size: 14px;
             line-height: 18px;
             padding-left: 32px;
-        }
-    }
-}
-
-.light-mode {
-    .modal__desc {
-        color: rgba(27, 27, 27, 0.9);
-    }
-
-    .modal__input {
-        color: var(--gray-base);
-        background-color: transparent;
-
-        &:focus-visible {
-            background-color: var(--gray300);
-        }
-    }
-}
-
-.dark-mode {
-    .modal__desc {
-        color: var(--gray300);
-    }
-
-    .modal__input {
-        background-color: var(--black);
-        color: var(--gray300);
-
-        &:focus-visible {
-            background-color: var(--gray900);
         }
     }
 }
