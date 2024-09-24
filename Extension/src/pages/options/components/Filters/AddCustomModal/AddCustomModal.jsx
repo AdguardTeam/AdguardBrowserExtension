@@ -16,8 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable jsx-a11y/no-autofocus */
-
 import React, { useState, useContext } from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
@@ -30,6 +28,7 @@ import { logger } from '../../../../../common/logger';
 import { rootStore } from '../../../stores/RootStore';
 import { addMinDelayLoader } from '../../../../common/components/helpers';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { AddCustomInput } from '../AddCustomInput';
 
 import { ModalContentWrapper } from './ModalContentWrapper';
 
@@ -55,6 +54,7 @@ const customStyles = {
         left: 0,
         padding: 0,
         overflow: 'auto',
+        borderRadius: 8,
     },
 };
 
@@ -91,13 +91,7 @@ const AddCustomModal = observer(({
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
-    const handleInputChange = (e) => {
-        const { value } = e.target;
-        setCustomUrlToAdd(value);
-    };
-
-    const handleChangeFilterName = (e) => {
-        const { value } = e.target;
+    const handleChangeFilterName = (value) => {
         setFilterToAddName(value);
         filterToAdd.name = value;
     };
@@ -124,6 +118,7 @@ const AddCustomModal = observer(({
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
+                setFilterToAddName(result.filter.name ?? customUrlToAdd);
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
@@ -150,13 +145,10 @@ const AddCustomModal = observer(({
             )}
         >
             <form onSubmit={handleSendUrlToCheck}>
-                {/* FIXME: update input style due to the new v5.0 design */}
-                <input
+                <AddCustomInput
                     autoFocus
-                    type="text"
                     placeholder={translator.getMessage('options_popup_url_placeholder')}
-                    onChange={handleInputChange}
-                    className="modal__input"
+                    onChange={setCustomUrlToAdd}
                     value={customUrlToAdd}
                 />
             </form>
@@ -196,10 +188,8 @@ const AddCustomModal = observer(({
 
     const renderApproveStep = () => {
         const {
-            name, description, version, rulesCount, homepage, customUrl,
+            description, version, rulesCount, homepage, customUrl,
         } = filterToAdd;
-
-        const filterTitle = name || filterToAddName || customUrlToAdd;
 
         return (
             <ModalContentWrapper
@@ -211,7 +201,7 @@ const AddCustomModal = observer(({
                 actions={(
                     <div className="modal__actions">
                         <button
-                            disabled={isLoading}
+                            disabled={isLoading || !filterToAddName}
                             type="button"
                             onClick={handleApproveWrapper}
                             className="button button--l button--green-bg modal__btn"
@@ -222,20 +212,13 @@ const AddCustomModal = observer(({
                 )}
             >
                 <form onSubmit={handleApproveWrapper}>
-                    <div className="modal__filter--name">
-                        <div className="modal__filter--name--title">
-                            {translator.getMessage('options_add_custom_filter_modal_filter_name')}
-                        </div>
-                        <input
-                            disabled={isLoading}
-                            className="modal__input"
-                            type="text"
-                            placeholder={translator.getMessage('options_popup_title_placeholder')}
-                            onChange={handleChangeFilterName}
-                            title={filterTitle}
-                            defaultValue={filterTitle}
-                        />
-                    </div>
+                    <AddCustomInput
+                        label={translator.getMessage('options_add_custom_filter_modal_filter_name')}
+                        disabled={isLoading}
+                        placeholder={translator.getMessage('options_popup_title_placeholder')}
+                        onChange={handleChangeFilterName}
+                        value={filterToAddName}
+                    />
 
                     <div className="modal__filter--info">
                         <div>
