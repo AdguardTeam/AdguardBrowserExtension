@@ -60,6 +60,8 @@ import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/const
 import { settingsEvents } from '../../events';
 import { listeners } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
+import { MessageType } from '../../../common/messages';
+import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
 import {
     ASSISTANT_INJECT_OUTPUT,
@@ -292,6 +294,10 @@ export class SettingsApi {
 
         if (appearanceTheme) {
             settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme);
+
+            await messenger.sendMessage(MessageType.UpdateFullscreenUserRulesTheme, {
+                theme: appearanceTheme,
+            });
         }
 
         if (allowAcceptableAds) {

@@ -115,6 +115,10 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
         messageHandler.addListener(MessageType.OpenFullscreenUserRules, PagesApi.openFullscreenUserRulesPage);
         messageHandler.addListener(
+            MessageType.UpdateFullscreenUserRulesTheme,
+            PagesApi.updateFullscreenUserRulesPageTheme,
+        );
+        messageHandler.addListener(
             MessageType.AddFilteringSubscription,
             PagesApi.openSettingsPageWithCustomFilterModal,
         );

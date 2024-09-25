@@ -44,6 +44,7 @@ import {
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import {
+    appearanceValidator,
     type PageStats,
     pageStatsValidator,
     type SafebrowsingCacheData,
@@ -881,7 +882,7 @@ export class UpdateApi {
                     return JSON.parse(value);
                 }
                 return value;
-            }, zod.enum(['system', 'dark', 'light'])),
+            }, appearanceValidator),
             'disable-show-page-statistic': SchemaPreprocessor.booleanValidator,
             'detect-filters-disabled': SchemaPreprocessor.booleanValidator,
             'safebrowsing-disabled': SchemaPreprocessor.booleanValidator,

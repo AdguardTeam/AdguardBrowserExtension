@@ -69,6 +69,8 @@ export enum SettingOption {
     CustomFilters = 'custom-filters',
 }
 
+export const appearanceValidator = zod.enum(['system', 'dark', 'light']);
+
 // Setting options may be stringified, use preprocessors for correct type casting
 
 export const settingsValidator = zod.object({
@@ -76,7 +78,7 @@ export const settingsValidator = zod.object({
     /**
      * See {@link GeneralSettingsConfig[GeneralSettingsOption.AppearanceTheme]}.
      */
-    [SettingOption.AppearanceTheme]: zod.enum(['system', 'dark', 'light']),
+    [SettingOption.AppearanceTheme]: appearanceValidator,
     /**
      * See {@link GeneralSettingsConfig[GeneralSettingsOption.ShowBlockedAdsCount]}.
      */
