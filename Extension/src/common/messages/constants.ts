@@ -21,6 +21,7 @@ import { z } from 'zod';
 import { ForwardFrom } from '../forward';
 import { SettingOption, Settings } from '../../background/schema';
 import { NotifierType } from '../constants';
+import { AppearanceTheme } from '../settings';
 
 import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from './schema';
 
@@ -43,6 +44,7 @@ export enum MessageType {
     ApplySettingsJson = 'applySettingsJson',
     OpenFilteringLog = 'openFilteringLog',
     OpenFullscreenUserRules = 'openFullscreenUserRules',
+    UpdateFullscreenUserRulesTheme = 'updateFullscreenUserRulesTheme',
     ResetBlockedAdsCount = 'resetBlockedAdsCount',
     ResetSettings = 'resetSettings',
     GetUserRules = 'getUserRules',
@@ -175,6 +177,13 @@ export type OpenSettingsTabMessage = {
 
 export type OpenAssistantMessage = {
     type: MessageType.OpenAssistant;
+};
+
+export type UpdateFullscreenUserRulesThemeMessage = {
+    type: MessageType.UpdateFullscreenUserRulesTheme;
+    data: {
+        theme: AppearanceTheme;
+    };
 };
 
 export type OpenFilteringLogMessage = {
@@ -502,6 +511,7 @@ export type Message = (
     | OpenRulesLimitsTabMessage
     | OpenSettingsTabMessage
     | OpenAssistantMessage
+    | UpdateFullscreenUserRulesThemeMessage
     | OpenFilteringLogMessage
     | OpenAbuseTabMessage
     | OpenSiteReportTabMessage

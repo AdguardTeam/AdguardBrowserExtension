@@ -15,10 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Runtime, Windows } from 'webextension-polyfill';
+import browser, { type Runtime, type Windows } from 'webextension-polyfill';
 
 import { UserAgent } from '../../../common/user-agent';
-import { AddFilteringSubscriptionMessage, ScriptletCloseWindowMessage } from '../../../common/messages';
+import {
+    type AddFilteringSubscriptionMessage,
+    type ScriptletCloseWindowMessage,
+    type UpdateFullscreenUserRulesThemeMessage,
+} from '../../../common/messages';
 import { getErrorMessage } from '../../../common/error';
 import {
     Forward,
@@ -134,15 +138,15 @@ export class PagesApi {
      * If the page has been already opened, focus on window instead creating new one.
      */
     public static async openFullscreenUserRulesPage(): Promise<void> {
-        const theme = settingsStorage.get(SettingOption.AppearanceTheme);
-        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
-
         const tab = await TabsApi.findOne({ url: `${PagesApi.fullscreenUserRulesPageUrl}*` });
 
         if (tab) {
             await TabsApi.focus(tab);
             return;
         }
+
+        const theme = settingsStorage.get(SettingOption.AppearanceTheme);
+        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
 
         // Open a new tab without type to get it as a new tab in a new window
         // with the ability to move and attach it to the current browser window.
@@ -151,6 +155,28 @@ export class PagesApi {
             focused: true,
             ...PagesApi.defaultPopupWindowState,
         });
+    }
+
+    /**
+     * Updated the theme for the fullscreen user rules page
+     * by updating the query parameter with the new theme value.
+     *
+     * @param message Message of type {@link UpdateFullscreenUserRulesThemeMessage}.
+     * @param message.data Contains new theme value.
+     */
+    public static async updateFullscreenUserRulesPageTheme(
+        { data }: UpdateFullscreenUserRulesThemeMessage,
+    ): Promise<void> {
+        const tab = await TabsApi.findOne({ url: `${PagesApi.fullscreenUserRulesPageUrl}*` });
+
+        if (!tab) {
+            return;
+        }
+
+        const { theme } = data;
+        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
+
+        await browser.tabs.update(tab.id, { url });
     }
 
     /**

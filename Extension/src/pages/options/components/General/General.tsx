@@ -45,6 +45,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { Unknown } from '../../../../common/unknown';
 import { FiltersUpdateTime } from '../../../../common/constants';
+import { MessageType } from '../../../../common/messages';
 import { StaticFiltersLimitsWarning } from '../Warnings';
 
 const filtersUpdatePeriodOptions = [
@@ -199,6 +200,15 @@ export const General = observer(() => {
         await settingsStore.updateSetting(id, data);
     };
 
+    const appearanceChangeHandler: SettingHandler = async (payload) => {
+        await settingChangeHandler(payload);
+
+        // no need to wait for the result so no await for message sending
+        messenger.sendMessage(MessageType.UpdateFullscreenUserRulesTheme, {
+            theme: payload.data,
+        });
+    };
+
     const {
         DisableDetectFilters,
         FiltersUpdatePeriod,
@@ -218,7 +228,7 @@ export const General = observer(() => {
                     id={AppearanceTheme}
                     options={APPEARANCE_THEMES_OPTIONS}
                     value={settings.values[AppearanceTheme]}
-                    handler={settingChangeHandler}
+                    handler={appearanceChangeHandler}
                 />
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
