@@ -1,8 +1,8 @@
-! Checksum: KFnDQ/BoRFCOm19O23hGaQ
+! Checksum: GirlMIBSsJwl2O5myFG8yQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.44
-! TimeUpdated: 2024-09-18T13:33:20+00:00
+! Version: 2.0.9.53
+! TimeUpdated: 2024-09-24T05:33:06+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -374,8 +374,20 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! change.org
+||change.org^$removeparam=source_location
+||change.org^$removeparam=user_flow
+! https://github.com/AdguardTeam/AdguardFilters/issues/189164
+||rbc.ru^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/189086
+||fontanka.ru^$removeparam=from
+! LiveIntent
+||p.liadm.com/click?s=$removeparam=i6
+||p.liadm.com/click?s=$removeparam=_lc2_fpi
+||p.liadm.com/click?s=$removeparam=stpe
+||p.liadm.com/click?s=$removeparam=li
 ! Bing
-||bing.com^$removeparam=cvid
+||bing.com^$document,removeparam=cvid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188889
 $removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka.co.jp|j-yokatsu2.edu.city.uruma.okinawa.jp|labo.rheos.jp|note-harumi.sbfoods.co.jp|note.basicinc.jp|note.bcnretail.com|note.calbee.jp|note.com|note.gallery.intage.com|note.kogakuin.ac.jp|note.jp|note.minne.com|note.montblanc.design|note.nhkso.or.jp|note.pokkasapporo-fb.jp|note.roxx.co.jp|note.smartnews-ads.com|note.universal-music.co.jp|note.yamap.com|note.zochang.com|refalover-note.mainichi.jp|shanaiho.itandi.co.jp|uragawa-note.jpn.panasonic.com|webtripper.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188662
@@ -787,12 +799,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
 ||pcmag.com^$removeparam=taid
 !
 ! VK Group
-! mail.ru
-||mail.ru^$removeparam=mt_click_id
-||mail.ru^$removeparam=mt_sub1
-||mail.ru^$removeparam=mt_sub2
-||mail.ru^$removeparam=mt_sub5
-||mail.ru^$removeparam=from
 ! VKontakte
 $removeparam=trackcode,domain=vk.com|vk.ru
 $removeparam=recom,domain=vk.com|vk.ru
@@ -2359,7 +2365,6 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||bilibili.com^$removeparam=share_from
 ||bilibili.com^$removeparam=spmid
 ||bilibili.com^$removeparam=plat_id
-||bilibili.com^$removeparam=mid
 ||bilibili.com^$removeparam=buvid
 ||bilibili.com^$removeparam=up_id
 ||bilibili.com^$removeparam=seid
@@ -2374,6 +2379,8 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||bilibili.com^$removeparam=unique_k
 ||search.bilibili.com^$removeparam=from_source
 ||bilibili.com^$removeparam=vd_source
+! https://github.com/AdguardTeam/AdguardFilters/issues/188783#issuecomment-2359649738
+! ||bilibili.com^$removeparam=mid
 ! Weibo
 ||weibo.*^$removeparam=weibo_id
 ||weibo.*^$removeparam=dt_dapp

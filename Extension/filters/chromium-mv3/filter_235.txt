@@ -1,8 +1,8 @@
-! Checksum: na/k9JBf7fE65KunEhVy9g
+! Checksum: uDoYfwTt5dtJ4MhbMQw1mQ
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.86
-! TimeUpdated: 2024-09-17T17:01:34+00:00
+! Version: 2.0.4.88
+! TimeUpdated: 2024-09-24T17:01:33+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -936,6 +936,8 @@ www.digikala.com##div#ProductListPagesWrapper > section[class*="product-list_Pro
 www.digikala.com##div#ProductListPagesWrapper > section > div[class^="product-list_ProductList__pagesContainer"] > div[class^="product-list_ProductList__item__"]:has(> a[href*="?ad_variant_id"])
 ! Ads in product page
 www.digikala.com#?#div.flex.w-full > div.grow.min-w-0 > div[class*="styles_PdpProductContent__s"]:has(> div.break-words > div.text-body-2:contains(آگهی‌شده))
+! https://www.digikala.com/search/category-mobile-phone/product-list/?brands%5B0%5D=1662&has_selling_stock=1&sort=20
+digikala.com#?#div.py-2:has(> div.items-center > div.swiper-container > div.swiper-wrapper > div.swiper-slide > div.h-full > div.flex > span.text-caption:contains(سفارشی))
 ||digikalajet.com^$removeparam=/promo/
 ||digikalajet.com^$removeparam=/^utm_/
 ||digistyle.com^$removeparam=/promo/
@@ -2600,7 +2602,7 @@ virgool.io#%#//scriptlet('ubo-href-sanitizer.js', 'a[href^="https://l.vrgl.ir/r?
 ||countly.virgool.io^$~third-party
 ||sentry.virgool.io^$~third-party
 ||virgool.io/api2/app/users/relatedAds^$xmlhttprequest,~third-party
-||virgool.io/api/v1.4/post^$xmlhttprequest,~third-party,method=post
+/^https?:\/\/virgool\.io\/api/v1\.4\/post\/[0-9a-z]+$/$domain=virgool.io,xmlhttprequest,~third-party,method=post
 ||virgool.io/api2/app/posts/*/ad^$xmlhttprequest,~third-party
 ||virgool.io/api2/app/session/start^$xmlhttprequest,~third-party,method=post
 ||virgool.io/api2/app/session/read-ratio^$xmlhttprequest,~third-party,method=post

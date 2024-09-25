@@ -1,8 +1,8 @@
-! Checksum: m3z9XkJ/f2B4Ekki9KN2mA
+! Checksum: hnPqK0MGIm7G3/+iOnDtDg
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.16.61
-! TimeUpdated: 2024-09-18T13:33:23+00:00
+! Version: 2.0.16.72
+! TimeUpdated: 2024-09-25T09:33:08+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -123,7 +123,17 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
-megamarket.ru##.header-entry-point__app
+hangikredi.com##div[class*="bg-bannerLeftGradient"]
+meteum.ai##button[class^="AppPromo_container"]
+theportugalnews.com##header > .p-3 > .mx-auto > .row:has(> .col-8 > a.btn-download)
+level.travel##div[class^="DesktopAppBanner__Container"]
+level.travel#%#//scriptlet('trusted-set-cookie', 'lt_go_to_app_mobile_popup', 'hiding')
+level.travel##div[class^="dynamicDataWrapper-module__appBannersWrapper"]
+perekrestok.ru#%#//scriptlet('trusted-click-element', 'button.app-banner-close', '', '800')
+magnit.ru##.install-app-banner
+lenta.com##.fl-embedded-wrapper
+navitime.co.jp###body-left > div.section:has(> a[href="https://www.navitime.co.jp/pcstorage/html/japan_travel/english/"])
+megamarket.ru##.header-entry-point__app > a
 kids-doctor.jp##.detail_footer_app_dl_container
 sketch.pixiv.net##.stores > a > img
 perplexity.ai##a[href="/download-android"]
@@ -415,7 +425,7 @@ quotidiano.net#%#//scriptlet('set-local-storage-item', 'pwa_show', 'true')
 savett.cc##body > section.container:has(> div.card > div.row > div[class] > a[href="https://play.google.com/store/apps/details?id=com.savett"])
 news10.com###custom_html-22
 news10.com##a[href="https://www.news10.com/news/say-hello-to-the-new-news10-abc-mobile-app/"]
-meteored.com.ar##.descarga-app
+meteored.mx,meteored.com.ar##.descarga-app
 pokebattler.com##.container > div.row:has(> div[class^="col-"] > a[href^="https://play.google.com/store/apps/details?id=com.pokebattler.raidParty"])
 news.tvbs.com.tw##.guangxuan > a[rel="nofollow"][href^="https://bit.ly/"]
 genius.com#$?#.android_interstitial { remove: true; }
@@ -1102,7 +1112,6 @@ apkmody.fun,apkmody.io###body-fixed-footer
 hesaplama.net##aside > div > a[href^="https://play.google.com/store/apps/"]
 haber.sol.org.tr#?#.tex2jax_process > div[aria-label="div widget"]:has(> div.ckewidget-container > div.ckewidget-editor-border a[href="https://t.me/solhaber"])
 story.hr##.c-sidebar-image > a[href^="https://appurl.io/"]
-meteum.ai##a[class^="BannerMeteumApp_meteumApp_"]
 m.alibaba.com###force-download-app-wrap
 m.alibaba.com###corner-download-app-wrap
 couples.jp##.top-appBanner
@@ -1762,7 +1771,7 @@ dictionary.goo.ne.jp#$#.appDlPc__inner { visibility: hidden !important; }
 m.hoyolab.com#%#//scriptlet('set-local-storage-item', 'closedAppHeader', '1')
 jp.stanby.com,theriver.jp##div[class^="app-banner"]
 stanby.com#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem('app_banner_close', '{"value":"close"}') } } catch (ex) {} })();
-ecosia.org,pierrotshop.jp##.cta
+kids-doctor.jp,ecosia.org,pierrotshop.jp##.cta
 hoyolab.com##.mhy-download-section
 mihoyo.com,hoyolab.com##.mhy-hoyolab-app-header
 evroopt.by##.top-bar-app
@@ -2717,7 +2726,7 @@ oneindia.com##.extensionElem
 m.baomoi.com##.footer__anchor-event
 touch.eznavi.auone.jp,sport1.de,amazon.de,amazon.com,amazon.co.uk,amazon.fr,amazon.it,amazon.es###smart-app-banner
 amazon.de,amazon.com,amazon.co.uk,amazon.fr,amazon.it,amazon.es##div.afap-above-nav#afap-above-nav
-napopravku.ru,expres.sk,arukereso.hu,msg.aliexpress.com,msg.aliexpress.ru,msg.aliexpress.in,msg.aliexpress.com.tr,msg.aliexpress.co,msg.aliexpress.ca,msg.aliexpress.de,msg.aliexpress.fr,msg.aliexpress.me,msg.aliexpress.by,msg.aliexpress.com.tw,msg.aliexpress.co.il,msg.aliexpress.it,msg.aliexpress.tv,msg.aliexpress.com.br,msg.aliexpress.ch,msg.aliexpress.kz,msg.aliexpress.nl,msg.aliexpress.us,msg.aliexpress.pl,msg.aliexpress.com.mx,msg.aliexpress.ma,msg.aliexpress.com.ar,msg.aliexpress.cc,msg.aliexpress.co.kr,msg.aliexpress.pk,msg.aliexpress.cz,msg.aliexpress.be,msg.aliexpress.store,msg.aliexpress.dk,msg.aliexpress.am,msg.aliexpress.no,msg.aliexpress.com.bd,msg.aliexpress.at,msg.aliexpress.com.np,msg.aliexpress.lv,msg.aliexpress.sk,msg.aliexpress.tn,msg.aliexpress.gov.bd,msg.aliexpress.website,msg.aliexpress.kr,msg.aliexpress.bg,msg.aliexpress.uk,msg.aliexpress.gov.np,uinterview.com,eapteka.ru,locator.transitcard.ru##.mobile-app
+fix-price.com,napopravku.ru,expres.sk,arukereso.hu,msg.aliexpress.com,msg.aliexpress.ru,msg.aliexpress.in,msg.aliexpress.com.tr,msg.aliexpress.co,msg.aliexpress.ca,msg.aliexpress.de,msg.aliexpress.fr,msg.aliexpress.me,msg.aliexpress.by,msg.aliexpress.com.tw,msg.aliexpress.co.il,msg.aliexpress.it,msg.aliexpress.tv,msg.aliexpress.com.br,msg.aliexpress.ch,msg.aliexpress.kz,msg.aliexpress.nl,msg.aliexpress.us,msg.aliexpress.pl,msg.aliexpress.com.mx,msg.aliexpress.ma,msg.aliexpress.com.ar,msg.aliexpress.cc,msg.aliexpress.co.kr,msg.aliexpress.pk,msg.aliexpress.cz,msg.aliexpress.be,msg.aliexpress.store,msg.aliexpress.dk,msg.aliexpress.am,msg.aliexpress.no,msg.aliexpress.com.bd,msg.aliexpress.at,msg.aliexpress.com.np,msg.aliexpress.lv,msg.aliexpress.sk,msg.aliexpress.tn,msg.aliexpress.gov.bd,msg.aliexpress.website,msg.aliexpress.kr,msg.aliexpress.bg,msg.aliexpress.uk,msg.aliexpress.gov.np,uinterview.com,eapteka.ru,locator.transitcard.ru##.mobile-app
 rt.com##.offers
 tree.tv###android_app
 pandao.ru##.main-slider
