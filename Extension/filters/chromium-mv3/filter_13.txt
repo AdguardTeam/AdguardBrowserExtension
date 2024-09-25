@@ -1,8 +1,8 @@
-! Checksum: bfIg0hQ+NFYFP/hB7+m0rw
+! Checksum: GzrDgUYWDhqUTlTBjYihCQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.53.41
-! TimeUpdated: 2024-09-17T16:33:21+00:00
+! Version: 2.0.53.52
+! TimeUpdated: 2024-09-25T09:32:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -337,6 +337,8 @@ ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin
 iyibeslenme.net,teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
 !
 !
+! https://github.com/uBlockOrigin/uAssets/issues/25421
+||gecmisi.com.tr/detect-adblock.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186286
 promy.pro#%#//scriptlet('set-constant', 'canRunAds', 'true')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183763
@@ -955,6 +957,9 @@ technopat.net#%#(function() { var w_open = window.open, regex = /goo.gl/; window
 ! END: Clickunders
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/189192
+dizipal739.com#$#.video-banner { display: block !important; }
+dizipal739.com#$#.pre-player { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186377
 vipfilmcity.pro#%#//scriptlet('remove-attr', 'data-money', '.play-that-video')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186287
@@ -1013,8 +1018,6 @@ filmseyretizlet.com#%#//scriptlet('set-cookie', 'popundr0', '7')
 breakingbadizle.*#%#//scriptlet("prevent-window-open")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/153726
 [$path=/^\/$/]itemci.com#%#//scriptlet('trusted-click-element', 'div[style^="background"][style*="https://cdn.itemci.com/assets/images/site_login_image.jpg"] > button.close', '', '3000')
-! kuponuna*.top - frequently changed domains
-kuponuna170.top,kuponuna171.top,kuponuna172.top,kuponuna173.top,kuponuna174.top,kuponuna175.top,kuponuna176.top,kuponuna177.top,kuponuna178.top,kuponuna179.top,kuponuna180.top,kuponuna181.top,kuponuna182.top,kuponuna183.top,kuponuna184.top,kuponuna185.top,kuponuna186.top,kuponuna187.top,kuponuna188.top,kuponuna189.top,kuponuna190.top,kuponuna191.top,kuponuna192.top,kuponuna193.top,kuponuna194.top,kuponuna195.top,kuponuna196.top,kuponuna197.top,kuponuna198.top,kuponuna199.top,kuponuna200.top,kuponuna201.top,kuponuna202.top,kuponuna203.top,kuponuna204.top,kuponuna205.top,kuponuna206.top,kuponuna207.top,kuponuna208.top,kuponuna209.top,kuponuna210.top,kuponuna211.top,kuponuna212.top,kuponuna213.top,kuponuna214.top,kuponuna215.top,kuponuna216.top,kuponuna217.top,kuponuna218.top,kuponuna219.top,kuponuna220.top,kuponuna221.top,kuponuna222.top,kuponuna223.top,kuponuna224.top,kuponuna225.top,kuponuna226.top,kuponuna227.top,kuponuna228.top,kuponuna229.top,kuponuna230.top,kuponuna231.top,kuponuna232.top,kuponuna233.top,kuponuna234.top,kuponuna235.top,kuponuna236.top,kuponuna237.top,kuponuna238.top,kuponuna239.top,kuponuna240.top,kuponuna241.top,kuponuna242.top,kuponuna243.top,kuponuna244.top,kuponuna245.top,kuponuna246.top,kuponuna247.top,kuponuna248.top,kuponuna249.top,kuponuna250.top#%#//scriptlet('abort-on-property-read', 'initPu')
 ! trgoals*.xyz - frequently changed domains
 [$domain=/^trgoals\d+\.xyz$/]#%#//scriptlet('set-constant', 'config.adv', 'emptyObj')
 trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz#%#//scriptlet('set-constant', 'config.adv', 'emptyObj')
@@ -1704,10 +1707,14 @@ $xmlhttprequest,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
 !
+hangikredi.com##.md\:py-\[50px\]
+||dcdlplayer*.xyz/e.$image,~third-party
+mynet.com##div[id^="gallery-body-adv-"]
+haberler.com##.detaySagSilme
 ||fullfilmizlesene.net/dizi.js
 dizimini.com##a[href="https://giris.buzz/git/mel2"]
 ||fullfilmizlesene.net/dizimag.js
-taraftarium.co##.adsPanelMobile
+taraftarium.co##div[class^="adsPanel"]
 haberler.com##div[id^="detay_mobile_336x280_"]
 tclira.com##div[data-widget_type] > .elementor-widget-container > a[target="_blank"]:not([href*="tclira.com"], [href*="news.google.com"]) > img
 hayalistic.com.tr##html > iframe[id][style*="position:"][style*="display:"]
@@ -1890,8 +1897,8 @@ turkanime.co##a[href*="&utm_medium=banner"][target="_blank"] > img
 ||animeevim.com/image/catalog/kampanya/animeevim-2024.gif
 odatv.com##.swiper-wrapper > a[href^="https://www.odatv.com/"] ~ a:not([href^="https://www.odatv.com/"])
 ||yenisoz.com.tr/modules/adblock/
-||hops1s.site/gobahis.gif
-||hops1s.site/radisoninside.gif
+||hops1s.site^$media,third-party,redirect=noopmp4-1s
+||hops1s.site^$image,third-party
 turkiyegazetesi.com.tr##.masthead-cls
 ||haber18.com/canbunlar/
 yabancidizi.io,diziyoutv.com,720pizle.ai##a[target="_blank"] > .alert
@@ -4361,7 +4368,7 @@ duzceninsesi.com.tr##.haberDetay_reklam
 turkiyesanayigazetesi.com,perakendeisdunyasi.com##div[id^="advertising-"]
 turkiyesanayigazetesi.com,perakendeisdunyasi.com##.HeaderAdvertising
 turkiyesanayigazetesi.com,perakendeisdunyasi.com##.advertising728x90_MansetAlti
-dizimom.com,dizimom.net,dizimom.org,dizimom.de,dizimom.eu,dizimom.tv,dizimom.pro,dizimom.live,dizimom.com.bd,dizimom.com.np,dizimom.gov.bd,dizimom.gov.np,erosfilmizle.org,erosfilmizle.info,erosfilmizle.com.bd,erosfilmizle.com.np,erosfilmizle.gov.bd,erosfilmizle.gov.np,enyenifilmizle.com.bd,enyenifilmizle.com.np,enyenifilmizle.gov.bd,enyenifilmizle.gov.np##.body-clickable
+dizipal.org,dizimom.com,dizimom.net,dizimom.org,dizimom.de,dizimom.eu,dizimom.tv,dizimom.pro,dizimom.live,dizimom.com.bd,dizimom.com.np,dizimom.gov.bd,dizimom.gov.np,erosfilmizle.org,erosfilmizle.info,erosfilmizle.com.bd,erosfilmizle.com.np,erosfilmizle.gov.bd,erosfilmizle.gov.np,enyenifilmizle.com.bd,enyenifilmizle.com.np,enyenifilmizle.gov.bd,enyenifilmizle.gov.np##.body-clickable
 sigortacigazetesi.com.tr##.Ads-L
 sigortacigazetesi.com.tr##.CS.Last > .CXL.Mag
 gazeddakibris.com##.widget_bt_banner_widget
@@ -5536,6 +5543,31 @@ hdfilmcehennem.live#$##reki1 { display: none!important; }
 hdfilmcehennem.live#$##kendisi { display: block!important; }
 oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
+!
+! kuponuna*.top - frequently changed domains
+||kuponuna*.top/r/
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top#%#//scriptlet('trusted-set-cookie', 'fafafafaaaaa', 'undefined')
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##.iframe_728
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##.header_r
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##.kapat
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##.chat_over_reklam
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##.full_bg
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top###xbetpu
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##.w100p
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##div#stream_holder > iframe#video_reklam
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##div[class="clearfix mt10"]
+kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top##div[class^="r_"]
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]#%#//scriptlet('trusted-set-cookie', 'fafafafaaaaa', 'undefined')
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##.iframe_728
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##.header_r
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##.kapat
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##.chat_over_reklam
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##.full_bg
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]###xbetpu
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##.w100p
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##div#stream_holder > iframe#video_reklam
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##div[class="clearfix mt10"]
+[$domain=/(^\|.+\.)kuponuna\d+\.top/]##div[class^="r_"]
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/173741
 .mp4$~third-party,domain=filmizlehdfilm.com|filmizletv.info|filmizletv.me|filmizletv.com.bd|filmizletv.com.np|filmizletv.vip|filmizletv.gov.bd|filmizletv.gov.np|fullfilmizle.com|fullfilmizle.net|fullfilmizle.org|fullfilmizle.co|fullfilmizle.tv|fullfilmizle.pro|fullfilmizle.pw|fullfilmizle.com.bd|fullfilmizle.com.np|fullfilmizle.gov.bd|fullfilmizle.gov.np|fullfilmizle.cc|fullhdfilmizle.com|fullhdfilmizle.net|fullhdfilmizle.org|fullhdfilmizle.xyz|fullhdfilmizle.online|fullhdfilmizle.biz|fullhdfilmizle.top|fullhdfilmizle.com.bd|fullhdfilmizle.to|fullhdfilmizle.com.np|fullhdfilmizle.vip|fullhdfilmizle.gov.bd|fullhdfilmizle.gov.np|fullhdfilmizletv.net|fullhdfilmizletv.com.bd|fullhdfilmizletv.com.np|fullhdfilmizletv.gov.bd|fullhdfilmizletv.gov.np|hdfilmcehennemi.com|hdfilmcehennemi.net|hdfilmcehennemi.org|hdfilmcehennemi.io|hdfilmcehennemi.info|hdfilmcehennemi.de|hdfilmcehennemi.me|hdfilmcehennemi.online|hdfilmcehennemi.tv|hdfilmcehennemi.app|hdfilmcehennemi.us|hdfilmcehennemi.cc|hdfilmcehennemi.mx|hdfilmcehennemi.live|hdfilmcehennemi.top|hdfilmcehennemi.pw|hdfilmcehennemi.com.bd|hdfilmcehennemi.asia|hdfilmcehennemi.com.np|hdfilmcehennemi.life|hdfilmcehennemi.gov.bd|hdfilmcehennemi.mobi|hdfilmcehennemi.fun|hdfilmcehennemi.one|hdfilmcehennemi.guru|hdfilmcehennemi.gov.np|hdfilmcehennemi.gen.tr|hdfilmcehennemi.icu|hdfilmcehennemi.sh|hdfilmcix.org|hdfilmizlesene.org|sinema.cx

@@ -1,8 +1,8 @@
-! Checksum: 5E//CQgjnsTEL/HMgl1htw
+! Checksum: wXf7sdppOh3gi5xl+Gy0sA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.54.64
-! TimeUpdated: 2024-09-18T13:33:05+00:00
+! Version: 2.0.54.83
+! TimeUpdated: 2024-09-25T10:33:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -218,6 +218,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||ads-router-noneu.truecaller.com^
 ||umphek.com^
 ||ahoy-internal-ads-hv.b-cdn.net^
 ||ad.iwhop.cn^
@@ -1031,14 +1032,6 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/167434
-@@||b1.best-hit.tv^$generichide
-@@||h178.com^$generichide
-@@||j-baseball.club^$generichide
-@@||j-basketball.club^$generichide
-j-basketball.club#@#ins.adsbygoogle[data-ad-client]
-j-basketball.club##ins.adsbygoogle[data-ad-slot]
-h178.com,j-baseball.club,j-basketball.club###gStickyAd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169823
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164959
 nan-net.jp,nan-net.com#%#//scriptlet('remove-node-text', 'script', 'adblock')
@@ -1848,6 +1841,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! Repeated requests, two or more in one second if blocked - https://old.reddit.com/r/Adguard/comments/ztbv96/how_do_i_stop_this_my_phone_is_overheating_and/
 ! https://old.reddit.com/r/Adguard/comments/18s9snu/api2branch_causing_cpu_overheat/
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/189134
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186071
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182993
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181178
@@ -2015,7 +2009,7 @@ zeenews.india.com#@#div[class^="ads-box-"]
 bestech.sk#@#img[width="320"][height="50"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166753
 ! unblock cookie popup
-@@||cmp.inmobi.com^$domain=hideout.co|fly4free.pl|travlerz.com|protothema.gr|cyprus-mail.com
+@@||cmp.inmobi.com^$domain=hideout.co|fly4free.pl|travlerz.com|protothema.gr|cyprus-mail.com|wpolityce.pl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159717
 semana.es##.sticky-ads-position
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159698
@@ -2381,7 +2375,7 @@ handelsblatt.com,moyens.net,ign.com,gazeteduvar.com.tr,innpoland.pl,wired.com,sp
 ! ##.ads
 livechat-ero.net,kingautos.net,ranky-ranking.net,memo.onl.jp,daily-sun.com,home.kingsoft.jp,berkem.ru,pixiv.net,cartoonpornvideos.com,m.economictimes.com,m.mistrzowie.org,m.ura.news,up.ymgt.xyz,google.de,www-bento-de.cdn.ampproject.org,m-economictimes-com.cdn.ampproject.org,m.winfuture.de##.ads
 ! ##.ad
-2ch-c.net,4p.de,www-cbc-ca.cdn.ampproject.org,m.geboren.am,dictionary.com,transfermarkt.de,iyf.tv,macwelt.de,pcwelt.de,xataka.com.mx,shikiho.toyokeizai.net,newsee-media.com,rank1-media.com,m.proporn.com,sugoren.com,dailynewsonline.jp,yakuji.co.jp,asahi.com,m.winporn.com,slate.com,sankei.com,gameranbu.jp,seiga.nicovideo.jp,m.arukikata.co.jp,setn.com,hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,syosetu.org##.ad
+hapiee.com,2ch-c.net,4p.de,www-cbc-ca.cdn.ampproject.org,m.geboren.am,dictionary.com,transfermarkt.de,iyf.tv,macwelt.de,pcwelt.de,xataka.com.mx,shikiho.toyokeizai.net,newsee-media.com,rank1-media.com,m.proporn.com,sugoren.com,dailynewsonline.jp,yakuji.co.jp,asahi.com,m.winporn.com,slate.com,sankei.com,gameranbu.jp,seiga.nicovideo.jp,m.arukikata.co.jp,setn.com,hateblo.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,syosetu.org##.ad
 ! ##.Ad
 chip.de,gamesworld.de,fnn.jp##.Ad
 ! ##body .banner
@@ -2392,11 +2386,28 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+||deai.twitterid.net/images/adv/
+deai.twitterid.net##.adv_tag
+nzherald.co.nz##.chain-main-triple:has(> div#ad-container)
+lalluram.com##.lr-ad-banner-bottom
+lalluram.com##.entry-content > figure.wp-block-image:has(> img[src^="https://lalluram.com/"][src*="/WhatsApp-Image-"])
+love-spo.com###sidebar > a[target="_blank"] > img[width="100%"][height="auto"]
+love-spo.com###single--content > .sp > a > img
+topics.smt.docomo.ne.jp##.jmty
+garticphone.com###__next > div[class^="jsx-"][class$=" side"]
+news.walla.co.il##aside[style$="background-color: rgb(245, 245, 245);"]
+gulte.com#$##awt_popup_landing { display: none !important; }
+gulte.com#$#body { overflow: auto !important; }
+news.cnyes.com##.section-aside-wrapper ~ div:has(> div[id^="div-gpt-"])
+ettoday.net##body a[href^="https://ad.ettoday.net/"]
+gamerstand.net##.execphpwidget:has(> div.adspace)
+gamerstand.net##.execphpwidget:has(> dl > dd > span[style] > a[href^="https://get.mobu.jp/"])
+blog.livedoor.com##body > a[onclick]
 gamekillerapp.com###foot-banner
 gamekillerapp.com##.foot-banner-station
 gamekillerapp.com##body > a[href]:has(> img.minigame-adv)
 bushikaku.net##div[class*="ad-text"]
-bushikaku.net##[class*="-banner-"]
+bushikaku.net##[class^="Search_"][class*="-banner-"]
 mediafire.com#$#@media (max-width: 768px) { .content > div.center { margin-top: 110px !important; } }
 cyzowoman.jp##.section_common:has(> .entryad)
 ckworks.jp##.adbox310x100
@@ -4144,7 +4155,7 @@ tarzanweb.jp##.bnr
 jj-jj.net##div[style="text-align:center;margin-bottom:20px;"]
 sumaho-susume.com###sp-tokusetsu-bottom
 gressive.jp##.sp-footer-banners
-h-taikendan.net##div[style="height:250px;"]
+topics.smt.docomo.ne.jp,h-taikendan.net##div[style="height:250px;"]
 erobanach.com##.apad
 erobanach.com##.shiny-btn1
 domonet.jp##main > section.banner_block + section.bnr_block
@@ -4393,10 +4404,6 @@ twiman.net##.mx-auto[style="max-width:623px;"]
 finders.me##.__ad-sp
 mag.app-liv.jp##.bnr-infeed
 mag.app-liv.jp##.ad-area-adsense-display
-news.merumo.ne.jp##aside[style="min-height: 250px;"]
-news.merumo.ne.jp##.c-single > aside[style="min-height: 100px;"]
-news.merumo.ne.jp##.c-section__body.u-mt-4 > ul > li > aside[style="min-height: 24vw;"]
-news.merumo.ne.jp##div[id^="gpt_unit_"]
 sotokabe.net###footer_sticky_menu
 eromon.net##.promoTopSpace
 productreview.com.au##div[class^="before-filters-ad_"]
@@ -5323,7 +5330,7 @@ scmp.com##.section-content-bottom__ad-container
 web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##.base-page__ad
 youmath.it###contenuto > #T[style="text-align: center;"]:empty
 hd21.com##.mercantile_title
-m.infox.ru,pulsgdanska.pl,afisha.ru,daily.co.jp,m.pornerbros.com,m.mynet.com,m.porntube.com##.adv
+ebalka.link,m.infox.ru,pulsgdanska.pl,afisha.ru,daily.co.jp,m.pornerbros.com,m.mynet.com,m.porntube.com##.adv
 areamobile.de##.footerBanner
 areamobile.de,www-musixmatch-com.cdn.ampproject.org##.topBanner
 www-musixmatch-com.cdn.ampproject.org##.bottomBanner
@@ -7127,7 +7134,6 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,~afisha.yandex.
 ! Yandex.News
 yandex.ru#?#body[class*="news_phone"] div.news-container > span > div > div.unit:has(> div.turbo-advert__item)
 ! Yandex.Market
-market.yandex.com,market.yandex.ru,market.yandex.net,market.yandex.org,market.yandex.in,market.yandex.com.tr,market.yandex.co.uk,market.yandex.io,market.yandex.co,market.yandex.ca,market.yandex.com.ua,market.yandex.de,market.yandex.fr,market.yandex.me,market.yandex.by,market.yandex.jp,market.yandex.xyz,market.yandex.ua,market.yandex.com.tw,market.yandex.co.za,market.yandex.co.il,market.yandex.eu,market.yandex.it,market.yandex.es,market.yandex.ch,market.yandex.kz,market.yandex.nl,market.yandex.pro,market.yandex.us,market.yandex.pl,market.yandex.cl,market.yandex.ro,market.yandex.su,market.yandex.site,market.yandex.cc,market.yandex.rs,market.yandex.cn,market.yandex.ae,market.yandex.mx,market.yandex.top,market.yandex.gov,market.yandex.ac.id,market.yandex.be,market.yandex.dk,market.yandex.hu,market.yandex.az,market.yandex.uz,market.yandex.md,market.yandex.ge,market.yandex.no,market.yandex.com.bd,market.yandex.ie,market.yandex.asia,market.yandex.at,market.yandex.com.np,market.yandex.fi,market.yandex.lv,market.yandex.sk,market.yandex.lt,market.yandex.cloud,market.yandex.gov.bd,market.yandex.website,market.yandex.pt,market.yandex.blog,market.yandex.mobi,market.yandex.ee,market.yandex.uk,market.yandex.kg,market.yandex.ba,market.yandex.al,market.yandex.fm,market.yandex.gov.np,market.yandex.org.in,market.yandex.work##div[id="/content/header/headerPromo"]
 !
 ! END: Yandex
 !
