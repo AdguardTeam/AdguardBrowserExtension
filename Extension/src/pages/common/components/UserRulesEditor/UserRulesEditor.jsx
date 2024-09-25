@@ -25,6 +25,7 @@ import React, {
 import { observer } from 'mobx-react';
 
 import { Range } from 'ace-builds';
+import cn from 'classnames';
 
 import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
@@ -393,26 +394,33 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 shouldResetSize={shouldResetSize}
                 highlightRules
             />
-            <div className="actions actions--divided">
-                <div className="actions__group">
-                    {
-                        fullscreen && (
-                            <label
-                                className="actions__label"
-                                htmlFor="user-filter-enabled"
-                            >
-                                <div className="actions__title">
-                                    {translator.getMessage('fullscreen_user_rules_title')}
-                                </div>
+            <div
+                className={cn('actions actions--grid', {
+                    'actions--fullscreen-user-rules': fullscreen,
+                    'actions--user-rules': !fullscreen,
+                })}
+            >
+                {
+                    fullscreen && (
+                        <label
+                            className="actions__label"
+                            htmlFor="user-filter-enabled"
+                        >
+                            <div className="actions__title">
+                                {translator.getMessage('fullscreen_user_rules_title')}
+                            </div>
+                            <div className="actions__control">
                                 <Checkbox
                                     id="user-filter-enabled"
                                     handler={handleUserRulesToggle}
                                     value={store.userFilterEnabled}
                                     className="checkbox__label--actions"
                                 />
-                            </label>
-                        )
-                    }
+                            </div>
+                        </label>
+                    )
+                }
+                <div className="actions--grid actions--buttons">
                     <UserRulesSavingButton onClick={saveClickHandler} />
                     <input
                         type="file"
@@ -426,6 +434,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                         type="button"
                         className="button button--l button--transparent actions__btn"
                         onClick={importClickHandler}
+                        title={translator.getMessage('options_userfilter_import')}
                     >
                         {translator.getMessage('options_userfilter_import')}
                     </button>
@@ -434,11 +443,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                         className="button button--l button--transparent actions__btn"
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
+                        title={translator.getMessage('options_userfilter_export')}
                     >
                         {translator.getMessage('options_userfilter_export')}
                     </button>
                 </div>
-                <div className="actions__group">
+                <div className="actions--grid actions--icons">
                     <ToggleWrapButton onClick={toggleWrap} />
                     <Popover text={fullscreenTooltipText}>
                         {

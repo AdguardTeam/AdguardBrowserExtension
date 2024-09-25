@@ -344,7 +344,7 @@ const Filters = observer(() => {
                 mode={isCustom ? 'custom' : undefined}
             >
                 {
-                    isCustom && (
+                    isCustom && __IS_MV3__ && (
                         <div className="settings__group__links settings__group__links--custom">
                             <RuleLimitsLink />
                         </div>

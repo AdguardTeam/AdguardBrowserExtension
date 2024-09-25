@@ -62,7 +62,7 @@ const UserRules = observer(() => {
             />
             <div className="settings__group__links">
                 <RuleSyntaxLink />
-                <RuleLimitsLink />
+                {__IS_MV3__ && <RuleLimitsLink />}
             </div>
             <DynamicRulesLimitsWarning useWrapper />
             {settingsStore.isFullscreenUserRulesEditorOpen
@@ -75,6 +75,7 @@ const UserRules = observer(() => {
                             type="button"
                             className="button button--l button--green-bg actions__btn"
                             onClick={handleGoToEditorClick}
+                            title={translator.getMessage('options_user_rules_editor_stub_go_to_editor_button')}
                         >
                             {translator.getMessage('options_user_rules_editor_stub_go_to_editor_button')}
                         </button>

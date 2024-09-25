@@ -32,6 +32,7 @@ import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { usePrevious } from '../../../common/hooks/usePrevious';
 import { exportData, ExportTypes } from '../../../common/utils/export';
@@ -140,11 +141,11 @@ const Allowlist = observer(() => {
     return (
         <>
             <SettingsSection
-                title={reactTranslator.getMessage('options_allowlist')}
+                title={translator.getMessage('options_allowlist')}
                 id={AllowlistEnabled}
                 mode="smallContainer"
                 description={settings.values[DefaultAllowlistMode]
-                    ? reactTranslator.getMessage('options_allowlist_desc')
+                    ? translator.getMessage('options_allowlist_desc')
                     : (
                         <div>
                             <span className="setting__alert-desc">
@@ -163,9 +164,11 @@ const Allowlist = observer(() => {
                     )}
                 inlineControl={<AllowlistSwitcher />}
             />
-            <div className="settings__group__links">
-                <RuleLimitsLink />
-            </div>
+            {__IS_MV3__ && (
+                <div className="settings__group__links">
+                    <RuleLimitsLink />
+                </div>
+            )}
             <DynamicRulesLimitsWarning useWrapper />
             <Editor
                 name="allowlist"
@@ -176,33 +179,33 @@ const Allowlist = observer(() => {
                 wrapEnabled={settingsStore.allowlistEditorWrap}
                 shouldResetSize={shouldResetSize}
             />
-            <div className="actions actions--divided">
-                <div className="actions__group">
-                    <AllowlistSavingButton onClick={saveClickHandler} />
-                    <input
-                        type="file"
-                        id="inputEl"
-                        accept="text/plain"
-                        ref={inputRef}
-                        onChange={inputChangeHandlerWrapper}
-                        style={{ display: 'none' }}
-                    />
-                    <button
-                        type="button"
-                        className="button button--l button--transparent actions__btn"
-                        onClick={importClickHandler}
-                    >
-                        {reactTranslator.getMessage('options_userfilter_import')}
-                    </button>
-                    <button
-                        type="button"
-                        className="button button--l button--transparent actions__btn"
-                        onClick={exportClickHandler}
-                        disabled={!settingsStore.allowlist}
-                    >
-                        {reactTranslator.getMessage('options_userfilter_export')}
-                    </button>
-                </div>
+            <div className="actions actions--grid actions--buttons actions--allowlist">
+                <AllowlistSavingButton onClick={saveClickHandler} />
+                <input
+                    type="file"
+                    id="inputEl"
+                    accept="text/plain"
+                    ref={inputRef}
+                    onChange={inputChangeHandlerWrapper}
+                    style={{ display: 'none' }}
+                />
+                <button
+                    type="button"
+                    className="button button--l button--transparent actions__btn"
+                    onClick={importClickHandler}
+                    title={translator.getMessage('options_userfilter_import')}
+                >
+                    {translator.getMessage('options_userfilter_import')}
+                </button>
+                <button
+                    type="button"
+                    className="button button--l button--transparent actions__btn"
+                    onClick={exportClickHandler}
+                    disabled={!settingsStore.allowlist}
+                    title={translator.getMessage('options_userfilter_export')}
+                >
+                    {translator.getMessage('options_userfilter_export')}
+                </button>
             </div>
         </>
     );

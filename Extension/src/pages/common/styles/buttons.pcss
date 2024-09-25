@@ -14,7 +14,7 @@
         font-size: 16px;
         font-weight: 600;
         line-height: 24px;
-        padding: 16px 48px;
+        padding: 16px;
         border-radius: 8px;
         max-height: 56px;
 
@@ -26,7 +26,11 @@
     &:disabled {
         opacity: 0.5;
         cursor: default;
-        pointer-events: none;
+        /*
+         * Do not add "pointer-events: none;" to disabled buttons,
+         * otherwise button title will not be displayed on hover
+         * if button text is too long
+         */
     }
 
     &--green-bg {
@@ -36,6 +40,10 @@
 
         &:hover {
             background-color: var(--fills-buttons-main-button-hovered);
+
+            &:disabled {
+                background-color: var(--fills-buttons-main-button-default);
+            }
         }
     }
 
@@ -58,6 +66,11 @@
         &:hover {
             box-shadow: 0 0 0 1px var(--gray-50);
             color: var(--gray-50);
+
+            &:disabled {
+                box-shadow: 0 0 0 1px var(--stroke-buttons-secondary-default);
+                color: var(--text-main-text-main-default);
+            }
         }
     }
 

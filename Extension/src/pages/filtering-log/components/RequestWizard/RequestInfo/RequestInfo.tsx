@@ -279,6 +279,21 @@ const RequestInfo = observer(() => {
         setTextMaxWidth(startModalWidth - MODAL_PADDINGS_PX);
     }, [selectedEvent.eventId]);
 
+    // Handle rule texts
+    const rulesData = getRulesData(selectedEvent, filtersMetadata);
+
+    const appliedRulesData = __IS_MV3__
+        ? {
+            title: translator.getPlural('filtering_modal_applied_rules', selectedEvent.declarativeRuleInfo?.sourceRules.length || 0),
+            data: selectedEvent.declarativeRuleInfo?.sourceRules.map((r) => r.sourceRule),
+        }
+        : {
+            title: translator.getPlural('filtering_modal_applied_rules', Math.max(rulesData.appliedRuleTexts.length, 1)),
+            data: rulesData.appliedRuleTexts.length > 0
+                ? rulesData.appliedRuleTexts.join('\n')
+                : null,
+        };
+
     const eventPartsMap: EventPartMap = {
         [PARTS.URL]: {
             title: translator.getMessage('options_popup_filter_url'),
@@ -310,18 +325,12 @@ const RequestInfo = observer(() => {
             title: translator.getMessage('filtering_modal_privacy'),
             data: getStealthActionNames(selectedEvent.stealthActions),
         },
-        [PARTS.APPLIED_RULES]: {
-            title: translator.getPlural('filtering_modal_applied_rules', selectedEvent.declarativeRuleInfo?.sourceRules.length || 0),
-            data: selectedEvent.declarativeRuleInfo?.sourceRules.map((r) => r.sourceRule),
-        },
+        [PARTS.APPLIED_RULES]: appliedRulesData,
         [PARTS.DECLARATIVE_RULE]: {
             title: translator.getMessage('filtering_modal_declarative_rule'),
             data: selectedEvent.declarativeRuleInfo?.declarativeRuleJson,
         },
     };
-
-    // Handle rule texts
-    const rulesData = getRulesData(selectedEvent, filtersMetadata);
 
     const isCosmeticRule = selectedEvent.requestRule?.cssRule
         || selectedEvent.requestRule?.scriptRule;
@@ -353,9 +362,11 @@ const RequestInfo = observer(() => {
 
     // Note: source rules contains text from already preprocessed rules,
     // that's why we checked appliedRuleText, but not originalRuleText.
-    const matchedRulesContainsAssumed = selectedEvent.declarativeRuleInfo?.sourceRules.some(({ sourceRule }) => {
-        return sourceRule === selectedEvent.appliedRuleText;
-    });
+    const matchedRulesContainsAssumed = !__IS_MV3__
+        || selectedEvent.declarativeRuleInfo?.sourceRules.some(({ sourceRule }) => {
+            return sourceRule === selectedEvent.appliedRuleText;
+        });
+
     // If assumed and applied rules are the same - show only applied.
     if (selectedEvent.appliedRuleText && matchedRulesContainsAssumed) {
         // Hide assume rule and it's original (not preprocessed) version
@@ -441,7 +452,7 @@ const RequestInfo = observer(() => {
             const textsWithCollapsers = texts.map((text) => {
                 return (
                     <div className="text" key="text">
-                        {(isRule && !isCosmeticRule) && <span className="red-dot">*</span>}
+                        {(__IS_MV3__ && isRule && !isCosmeticRule) && <span className="red-dot">*</span>}
                         <TextCollapser
                             text={text}
                             ref={isRequestUrl || isRule ? requestTextRef : null}
@@ -498,7 +509,7 @@ const RequestInfo = observer(() => {
                             {content}
                         </div>
                     </div>
-                    {(isRule && !isCosmeticRule) && (
+                    {(__IS_MV3__ && isRule && !isCosmeticRule) && (
                         <div className="request-info__details">
                             {infoAboutAssumedRule()}
                         </div>
