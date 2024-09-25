@@ -59,7 +59,6 @@ import {
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
 } from '../../constants';
 
-// import { megabytesToBytes, SizeLimitPlugin } from './size-limit-plugin';
 import {
     ASSISTANT_INJECT_PATH,
     type BrowserConfig,
@@ -84,12 +83,6 @@ const TEXT_ENCODER_POLYFILL_PATH = path.resolve(
 );
 
 const OUTPUT_PATH = config.outputPath;
-
-// FIXME: Enable when merged to master
-// const SIZE_LIMITS_MB = {
-//     // Need to be less than 4 MB, because Firefox Extensions Store has a limit of 5 MB for .js files.
-//     '.js': megabytesToBytes(4),
-// };
 
 export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = false): Configuration => {
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
@@ -409,10 +402,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 IS_BETA: BUILD_ENV === BuildTargetEnv.Beta,
                 __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
             }),
-            // Check the size of the output JS files and fail the build if any file exceeds the limit
-            // (but not in the development mode)
-            // FIXME: Enable when merged to master
-            // new SizeLimitPlugin(isDev ? {} : SIZE_LIMITS_MB),
         ],
     };
 
