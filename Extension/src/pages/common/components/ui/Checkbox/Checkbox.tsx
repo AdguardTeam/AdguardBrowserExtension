@@ -71,7 +71,7 @@ interface CheckboxProps {
     optimistic?: boolean;
 
     /**
-     * If true, the checkbox will be inactive state (gray)
+     * If true, the checkbox will be inactive state when checked
      */
     inactive?: boolean;
 }
