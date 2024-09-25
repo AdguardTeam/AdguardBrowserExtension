@@ -114,8 +114,8 @@ export class UpdateApi {
      * TODO: Remove when the experimental extension is no longer supported.
      */
     static async migrateFromExperimental(): Promise<void> {
-        // FIXME: This is a temporary solution, we need to remove it after
-        // the experimental extension is no longer supported.
+        // TODO: This is a temporary solution, we need to remove it after
+        // the experimental extension is no longer supported. AG-36334
         // @ts-ignore
         const dataFromStorage = await browserStorage.get(null);
         if (!Experimental.isExperimental(dataFromStorage)) {
