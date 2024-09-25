@@ -158,8 +158,8 @@ export const General = observer(() => {
                 } else {
                     const limitsCheckResult = await settingsStore.checkLimitations();
                     if (!limitsCheckResult.ok) {
-                        // FIXME probably we need to show a different message here
-                        // Like "We have imported but due to limits we can't apply all settings"
+                        // TODO: probably we need to show a different message here,
+                        // e.g. "We have imported settings but due to limits we cannot apply all settings". AG-36332
                         const message = translator.getMessage('options_popup_import_error_title');
                         uiStore.addNotification({ description: message });
                     } else {
