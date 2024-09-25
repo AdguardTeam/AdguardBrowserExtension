@@ -21,6 +21,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import {
     Forward,
     ForwardAction,
@@ -68,7 +69,7 @@ export const SafeBrowsing = () => {
             <div className="alert__in">
                 <div className="alert__header alert__header--red">
                     <div className="alert__header-title">
-                        {reactTranslator.getMessage('blocking_pages_safe_header_title')}
+                        {translator.getMessage('blocking_pages_safe_header_title')}
                     </div>
                 </div>
                 <div className="alert__body">
@@ -94,9 +95,9 @@ export const SafeBrowsing = () => {
                         <button
                             type="button"
                             onClick={handleGoBack}
-                            className="button button--green-bg alert__btn"
+                            className="button button--green alert__btn"
                         >
-                            {reactTranslator.getMessage('blocking_pages_btn_go_back')}
+                            {translator.getMessage('blocking_pages_btn_go_back')}
                         </button>
                         {advanced ? (
                             <>
@@ -104,14 +105,14 @@ export const SafeBrowsing = () => {
                                     href={reportUrl}
                                     className="button button--white alert__btn"
                                 >
-                                    {reactTranslator.getMessage('blocking_pages_more_info_button')}
+                                    {translator.getMessage('blocking_pages_more_info_button')}
                                 </a>
                                 <button
                                     type="button"
                                     onClick={handleProceed}
                                     className="button button--white alert__btn"
                                 >
-                                    {reactTranslator.getMessage('blocking_pages_btn_proceed')}
+                                    {translator.getMessage('blocking_pages_btn_proceed')}
                                 </button>
                             </>
                         ) : (
@@ -121,7 +122,7 @@ export const SafeBrowsing = () => {
                                     onClick={handleEnableAdvanced}
                                     className="button button--white alert__btn"
                                 >
-                                    {reactTranslator.getMessage('blocking_pages_advanced_button')}
+                                    {translator.getMessage('blocking_pages_advanced_button')}
                                 </button>
                             </>
                         )}

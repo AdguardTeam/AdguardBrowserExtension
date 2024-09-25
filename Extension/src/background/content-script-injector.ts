@@ -23,6 +23,7 @@ import { isHttpRequest } from 'tswebextension';
 
 import { executeScript } from 'scripting-service';
 
+import { getErrorMessage } from '../common/error';
 import { UserAgent } from '../common/user-agent';
 import { logger } from '../common/logger';
 import {
@@ -56,6 +57,8 @@ export class ContentScriptInjector {
     private static jsInjectRestrictedHostnames = {
         chromium: [
             'chrome.google.com',
+            // https://chromium.googlesource.com/chromium/src/+/5d1f214db0f7996f3c17cd87093d439ce4c7f8f1/chrome/common/extensions/chrome_extensions_client.cc#232
+            'chromewebstore.google.com',
         ],
         firefox: [
             'accounts-static.cdn.mozilla.net',
@@ -135,12 +138,11 @@ export class ContentScriptInjector {
                     file: src,
                 }),
                 ContentScriptInjector.INJECTION_LIMIT_MS,
-                `Content script inject timeout: tab #${tabId} doesn't respond.`,
+                `Content script inject timeout because tab with id ${tabId} does not respond`,
             );
         } catch (error: unknown) {
             // re-throw error with custom message
-            const message = error instanceof Error ? error.message : String(error);
-            throw new Error(`Cannot inject ${src} to tab ${tabId}. Error: ${message}`);
+            throw new Error(`Cannot inject ${src} to tab with id ${tabId}. Error: ${getErrorMessage(error)}`);
         }
     }
 

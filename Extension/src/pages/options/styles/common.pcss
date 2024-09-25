@@ -306,7 +306,7 @@ label.checkbox-label {
         display: flex;
         flex-direction: row;
         padding: 8px 16px 24px;
-        
+
         &--custom {
           padding-bottom: 8px;
         }
@@ -333,23 +333,48 @@ label.checkbox-label {
 }
 
 .actions {
-    padding: 22px 0;
+    padding: 32px 0 32px 16px;
     display: inline-block;
+    align-items: center;
 
-    &--divided {
-        display: inline-block;
+    &--grid {
+        display: grid;
+        grid-gap: 16px;
+    }
 
-        @media (min-width: 500px) {
-            display: flex;
-            justify-content: space-between;
-            padding: 24px 4px 24px;
+    &--buttons {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    &--icons {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    &--allowlist {
+        width: 618px;
+
+        @media (max-width: 640px) {
+            width: 100%;
         }
     }
 
-    &__group {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
+    &--user-rules {
+        grid-gap: 32px;
+        grid-template-columns: 504px 64px;
+
+        @media (max-width: 640px) {
+            width: 100%;
+            grid-template-columns: 6fr 1fr;
+        }
+    }
+
+    &--fullscreen-user-rules {
+        grid-template-columns: 6fr 6fr 1fr;
+        padding: 28px 40px;
+
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr 6fr 1fr;
+        }
     }
 
     &__saving {
@@ -357,7 +382,6 @@ label.checkbox-label {
     }
 
     &__btn {
-        margin: 12px;
         position: relative;
 
         &--icon {
@@ -365,6 +389,7 @@ label.checkbox-label {
             border: 0;
             padding: 0;
             cursor: pointer;
+            width: auto;
 
             &:hover {
                 background-color: var(--fills-backgrounds-page-background-hovered);
@@ -375,6 +400,10 @@ label.checkbox-label {
             & .icon {
                 background-color: var(--fills-backgrounds-page-background-pressed);
             }
+        }
+
+        &--saving {
+            width: 100%;
         }
     }
 
@@ -388,11 +417,12 @@ label.checkbox-label {
     }
 
     &__label {
-        margin: 12px;
         cursor: pointer;
-        display: inline-flex;
+        display: flex;
         justify-content: flex-start;
         align-content: center;
+        min-height: 40px;
+        width: fit-content;
     }
 
     &__title {
@@ -400,10 +430,15 @@ label.checkbox-label {
         font-weight: 700;
         font-size: 24px;
         line-height: 28px;
+        margin: auto 8px auto 0;
 
         @media (min-width: 640px) {
             display: block;
         }
+    }
+
+    &__control {
+        margin: auto 0;
     }
 }
 
