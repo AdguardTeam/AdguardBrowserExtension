@@ -33,9 +33,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The list of custom filters is passed to ReportsWebApp even if the Custom group is disabled [#2951].
 - The extension stopped working because of intersection of dynamic rules IDs [#2953].
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...HEAD
+[5.0.97]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.97
+<!-- TODO: worth changing url after v5.0 branch merging into master -->
+<!-- [5.0.97]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.91...v5.0.97 -->
 [#2951]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2951
 [#2953]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2953
+
+
+## [5.0.91] - 2024-09-19
+
+The Extension is now fully compatible with MV3.
+
+[5.0.91]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.91
 
 
 ## [4.4.22] - 2024-08-30
