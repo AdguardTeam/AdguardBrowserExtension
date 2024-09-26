@@ -5,7 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+<!-- TODO: add release date -->
+## [4.4.29]
+
+### Changed
+
+- Updated [@adguard/agtree] to v2.1.2.
+- Updated [@adguard/logger] to v1.0.2.
+- Updated [@adguard/scriptlets] to v1.11.16.
+- Updated [@adguard/tsurlfilter] to v3.0.5.
+- Updated [@adguard/tswebextension] to v2.0.1.
+
+### Fixed
+
+- The exception `$domain=~` filter rule is not working properly [#2912].
+- Scriptlets exclusion matching is not working properly for rules with arguments [#2947].
+
+[4.4.29]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...v4.4.29
+[#2912]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2912
+[#2947]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2947
+
+
+## [5.0.97] - 2024-09-23
+
+### Fixed
+
+- The list of custom filters is passed to ReportsWebApp even if the Custom group is disabled [#2951].
+- The extension stopped working because of intersection of dynamic rules IDs [#2953].
+
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...HEAD
+[#2951]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2951
+[#2953]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2953
+
+
+## [4.4.22] - 2024-08-30
 
 ### Changed
 
@@ -17,14 +50,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Negated domains in the `$to` modifier are not working as expected [#2910].
 - Redirect rule blocks request in the Spotify player instead of redirecting [#2913].
-- The list of custom filters is passed to ReportsWebApp even if the Custom group is disabled [#2951].
-- Intersection of dynamic rules ids [#2953].
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...HEAD
+[4.4.22]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...v4.4.22
 [#2910]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2910
 [#2913]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2913
-[#2951]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2951
-[#2953]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2953
 
 
 ## [4.4.18] - 2024-08-19
