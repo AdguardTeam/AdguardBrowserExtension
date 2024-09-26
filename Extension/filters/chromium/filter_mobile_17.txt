@@ -1,10 +1,12 @@
-! Checksum: KorFtVTBRQAyLVB0HJkjTQ
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1724409487-3600.patch
+! Checksum: Yw8pwgRYQFov0GrY4M3mBA
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1727339801-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.10
-! TimeUpdated: 2024-08-23T10:34:48+00:00
+! Version: 2.0.9.54
+! TimeUpdated: 2024-09-26T08:33:21+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=bemobdata
+$removeparam=_bhlid
 $removeparam=_bdadid
 $removeparam=a8
 $removeparam=recommended_by
@@ -238,6 +240,46 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||change.org^$removeparam=source_location
+||change.org^$removeparam=user_flow
+||rbc.ru^$removeparam=from
+||fontanka.ru^$removeparam=from
+||p.liadm.com/click?s=$removeparam=i6
+||p.liadm.com/click?s=$removeparam=_lc2_fpi
+||p.liadm.com/click?s=$removeparam=stpe
+||p.liadm.com/click?s=$removeparam=li
+||bing.com^$document,removeparam=cvid
+$removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka.co.jp|j-yokatsu2.edu.city.uruma.okinawa.jp|labo.rheos.jp|note-harumi.sbfoods.co.jp|note.basicinc.jp|note.bcnretail.com|note.calbee.jp|note.com|note.gallery.intage.com|note.kogakuin.ac.jp|note.jp|note.minne.com|note.montblanc.design|note.nhkso.or.jp|note.pokkasapporo-fb.jp|note.roxx.co.jp|note.smartnews-ads.com|note.universal-music.co.jp|note.yamap.com|note.zochang.com|refalover-note.mainichi.jp|shanaiho.itandi.co.jp|uragawa-note.jpn.panasonic.com|webtripper.jp
+||undressher.app^$removeparam=ref
+||xingga.com^$removeparam=showid
+||h-taikendan.net^$removeparam=ref
+||camp-fire.jp/projects/*/view$removeparam=list
+||privatbank.ua^$removeparam=utm_addrid
+||privatbank.ua^$removeparam=utm_jeref
+||privatbank.ua^$removeparam=utm_positionUrl
+||baseballchannel.jp^$removeparam=ref
+||money.smt.docomo.ne.jp^$removeparam=ref
+||store.shopping.yahoo.co.jp^$removeparam=sc_i
+||kwiky.com^$removeparam=AFNO
+||ai-porn.ai^$removeparam=ref
+||camsoda.com^$removeparam=id
+||aeza.net^$removeparam=ref
+||gptgirlfriend.online^$removeparam=ref
+||fantasygf.ai^$removeparam=linkId
+||pornjourney.ai^$removeparam=referral
+||land.muah.ai^$removeparam=ref
+||getidol.com^$removeparam=ref
+||pornx.ai^$removeparam=ref
+||vodafone.com.tr^$removeparam=tracking_cid
+||juicy-ai.com^$removeparam=ref
+||angelgf.com^$removeparam=via
+||slushy.com^$removeparam=af
+||deepmode.com^$removeparam=fpr
+||candy.ai^$removeparam=cid
+||darkroomvr.com^$removeparam=nats
+||rozetka.com.ua^$removeparam=afclid
+||aliexpress.com^$removeparam=algo_exp_id
+||aliexpress.com^$removeparam=utparam-url
 ||temu.com^$removeparam=_p_jump_id
 ||temu.com^$removeparam=_x_vst_scene
 ||temu.com^$removeparam=_p_rfs
@@ -461,6 +503,14 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
 ||announcements.bybit.com^$removeparam=sa_utm_channel
 ||announcements.bybit.com^$removeparam=sa_utm_tcn
 ||game-i.daa.jp/?cmd=ad_mode$removeparam=cmd
+||slickdeals.net^$removeparam=attr_track
+||slickdeals.net^$removeparam=trd
+||slickdeals.net^$removeparam=pv
+||slickdeals.net^$removeparam=au
+||slickdeals.net^$removeparam=prop
+||slickdeals.net^$removeparam=sdtrk
+||slickdeals.net^$removeparam=attrsrc
+||slickdeals.net^$removeparam=src
 ||slickdeals.net/?adobeRef=$removeparam=adobeRef
 ||slickdeals.net/*&sdtid=$removeparam=sdtid
 ||slickdeals.net/*&sdpid=$removeparam=sdpid
@@ -553,6 +603,7 @@ $removeparam=i3_ord,domain=dmm.co.jp|dmm.com
 ||slack.com/downloads/$removeparam=t
 $removeparam=frm,domain=msearch.shopping.naver.com|search.shopping.naver.com
 $removeparam=NaPm,domain=msearch.shopping.naver.com|search.shopping.naver.com
+||duckduckgo.com^$removeparam=from
 ||duckduckgo.com^$removeparam=vis
 ||duckduckgo.com^$removeparam=perf_id
 ||duckduckgo.com^$removeparam=parent_perf_id
@@ -932,11 +983,15 @@ $removeparam=promotionId,domain=shopee.ph|shopee.co.th|shopee.co.id
 $removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
 $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||adguard.$removeparam=clid
+||adguard-vpn.$removeparam=clid
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=exc_ads
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_adids
 ||dzen.ru/api/*/launcher/stats/$image,xmlhttprequest,removeparam
+||dzen.ru^$removeparam=from
+||dzen.ru^$removeparam=cl4url
+||dzen.ru^$removeparam=tst
 ||dzen.ru^$document,removeparam=clid
 ||dzen.ru^$removeparam=yredirect
 ||dzen.ru^$removeparam=stid
@@ -963,8 +1018,6 @@ $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||doctolib.de^$removeparam=utm_button
 ||nationalgeographic.com^$removeparam=utm_rd
 ||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
-||ficbook.com^$removeparam=/premiumVisit|utm_compaign/
-||ficbook.me^$removeparam=/premiumVisit|utm_compaign/
 ||stripchat.com^$removeparam=campaignId
 ||stripchat.com^$removeparam=sourceId
 ||stripchat.com^$removeparam=realDomain
@@ -1214,7 +1267,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||nordvpn.com^$removeparam=data1
 ||upgrad.com^$removeparam=UTM_MEDIUM
 ||adweek.com^$removeparam=traffic_source
-$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adguardvpn-help.com
+$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adgardvpn-help.info
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
 ||web.vstat.info^$removeparam=guid
@@ -1402,7 +1455,6 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||www.ebay.$removeparam=mkevt
 ||www.ebay.$removeparam=mkcid
 ||www.ebay.$removeparam=_trkparms
-||www.ebay.$removeparam=_trksid
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
@@ -1584,6 +1636,11 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||flipkart.com^$removeparam=ssid
 ||flipkart.com^$removeparam=store
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
+||bilibili.com^$removeparam=share_from
+||bilibili.com^$removeparam=spmid
+||bilibili.com^$removeparam=plat_id
+||bilibili.com^$removeparam=buvid
+||bilibili.com^$removeparam=up_id
 ||bilibili.com^$removeparam=seid
 ||bilibili.com^$removeparam=share_source
 ||bilibili.com^$removeparam=spm_id_from
