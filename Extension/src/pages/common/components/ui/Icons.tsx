@@ -114,8 +114,10 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="question" width="24" height="24">
-                <path clipRule="evenodd" d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M10 9.3c0-.8 1-1.5 2-1.5s1.6.4 2 1.2c.3.7 0 1.5-1 2.3-1 .5-1.2 1.1-1.2 2.2M11.8 15.9v-.2" stroke="#67B279" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                <g fill="none" fillRule="evenodd">
+                    <path stroke="currentColor" clipRule="evenodd" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path stroke="currentColor" d="M10 9.3c.02-.82 1-1.52 2-1.52s1.6.39 2 1.22c.32.7.01 1.55-1.06 2.28-.87.56-1.14 1.13-1.14 2.18M11.8 15.9v-.2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
             </symbol>
         </svg>
     );
