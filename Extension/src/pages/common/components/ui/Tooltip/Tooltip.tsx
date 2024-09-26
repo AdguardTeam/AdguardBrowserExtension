@@ -32,11 +32,22 @@ type TooltipParams = {
      * Tooltip visibility flag.
      */
     visible?: boolean,
+
+    /**
+     * Flag to set fixed width for tooltip.
+     */
+    fixedWidth?: boolean,
 };
 
-export const Tooltip = ({ text, visible }: TooltipParams) => {
+export const Tooltip = ({ text, visible, fixedWidth }: TooltipParams) => {
     return (
-        <div className={cn('tooltip', visible ? 'tooltip--on' : 'tooltip--off')}>
+        <div
+            className={cn('tooltip', {
+                'tooltip--on': visible,
+                'tooltip--off': !visible,
+                'tooltip--fixed-width': fixedWidth,
+            })}
+        >
             {text}
         </div>
     );
