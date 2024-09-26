@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.0.91] - 2024-09-19
 
-The Extension is now fully compatible with MV3.
+The extension is now fully compatible with MV3.
 
 [5.0.91]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.91
 
