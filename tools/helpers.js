@@ -140,6 +140,12 @@ const getNameSuffix = (buildEnv, browser) => {
             }
             break;
         }
+        case BROWSERS.CHROME: {
+            if (buildEnv === ENVS.RELEASE) {
+                return ' MV2';
+            }
+            return ` (MV2 ${capitalize(buildEnv)})`;
+        }
         default:
             if (buildEnv !== ENVS.RELEASE) {
                 return ` (${capitalize(buildEnv)})`;
