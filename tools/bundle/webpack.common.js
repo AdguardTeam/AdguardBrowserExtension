@@ -48,6 +48,7 @@ import {
     MOBX_VENDOR_OUTPUT,
     XSTATE_VENDOR_OUTPUT,
     ASSISTANT_INJECT_OUTPUT,
+    SCRIPTLETS_VENDOR_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
     AGTREE_VENDOR_OUTPUT,
@@ -106,6 +107,7 @@ export const genCommonConfig = (browserConfig) => {
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
                 dependOn: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
@@ -132,6 +134,7 @@ export const genCommonConfig = (browserConfig) => {
             [FILTERING_LOG_OUTPUT]: {
                 import: FILTERING_LOG_PATH,
                 dependOn: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
@@ -196,7 +199,13 @@ export const genCommonConfig = (browserConfig) => {
             [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
             [MOBX_VENDOR_OUTPUT]: ['mobx'],
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
-            [TSURLFILTER_VENDOR_OUTPUT]: ['@adguard/tsurlfilter'],
+            [SCRIPTLETS_VENDOR_OUTPUT]: ['@adguard/scriptlets'],
+            [TSURLFILTER_VENDOR_OUTPUT]: {
+                import: '@adguard/tsurlfilter',
+                dependOn: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
+                ],
+            },
             [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
             [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
             [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: {
@@ -205,6 +214,7 @@ export const genCommonConfig = (browserConfig) => {
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
                 dependOn: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                 ],
@@ -306,6 +316,7 @@ export const genCommonConfig = (browserConfig) => {
                 },
                 filename: `${BACKGROUND_OUTPUT}.html`,
                 chunks: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
@@ -319,6 +330,7 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
@@ -340,6 +352,7 @@ export const genCommonConfig = (browserConfig) => {
                 template: path.join(FILTERING_LOG_PATH, 'index.html'),
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
