@@ -469,13 +469,12 @@ const RequestInfo = observer(() => {
 
             const infoAboutAssumedRule = () => {
                 const text = reactTranslator.getMessage('filtering_log_assumed_rule_description', {
-                    dot: () => <span className="red-dot">*</span>,
                     a: (text: string) => (
                         <a
                             href={FILTERING_LOG_ASSUMED_RULE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="button button--link button--link--green"
+                            className="button button--link button--link--underlined button--link--green"
                         >
                             {text}
                         </a>
@@ -483,8 +482,11 @@ const RequestInfo = observer(() => {
                 });
 
                 return (
-                    <Popover text={text as string}>
-                        <Icon id="#question" classname="icon--24" />
+                    <Popover text={text as string} fixedWidth>
+                        <Icon
+                            id="#question"
+                            classname="icon icon--24 icon--green-default"
+                        />
                     </Popover>
                 );
             };
