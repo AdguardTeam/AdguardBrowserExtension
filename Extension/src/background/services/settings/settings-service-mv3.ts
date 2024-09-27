@@ -68,8 +68,11 @@ export class SettingsService {
         messageHandler.addListener(MessageType.LoadSettingsJson, SettingsService.export);
 
         settingsEvents.addListener(SettingOption.DisableStealthMode, SettingsService.onDisableStealthModeStateChange);
-        settingsEvents.addListener(SettingOption.HideReferrer, SettingsService.onHideReferrerStateChange);
-        settingsEvents.addListener(SettingOption.HideSearchQueries, SettingsService.onHideSearchQueriesStateChange);
+        // TODO: revert when will be found a better way to add exclusions for $stealth=referrer
+        // AG-34765
+        // settingsEvents.addListener(SettingOption.HideReferrer, SettingsService.onHideReferrerStateChange);
+        // TODO: revert when will be found a better way to add exclusions for $stealth=searchqueries
+        // settingsEvents.addListener(SettingOption.HideSearchQueries, SettingsService.onHideSearchQueriesStateChange);
         settingsEvents.addListener(SettingOption.SendDoNotTrack, SettingsService.onSendDoNotTrackStateChange);
         settingsEvents.addListener(SettingOption.RemoveXClientData, SettingsService.onRemoveXClientDataStateChange);
         settingsEvents.addListener(SettingOption.BlockWebRTC, SettingsService.onBlockWebRTCStateChange);
