@@ -1,4 +1,11 @@
 (function(source, args) {
+    const flag = "done";
+    const uniqueIdentifier = source.uniqueId + source.name + "_" + (Array.isArray(args) ? args.join("_") : "");
+    if (source.uniqueId) {
+        if (Window.prototype.toString[uniqueIdentifier] === flag) {
+            return;
+        }
+    }
     function metrikaYandexWatch(source) {
         var cbName = "yandex_metrika_callbacks";
         var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
@@ -87,6 +94,14 @@
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
         metrikaYandexWatch.apply(this, updatedArgs);
+        if (source.uniqueId) {
+            Object.defineProperty(Window.prototype.toString, uniqueIdentifier, {
+                value: flag,
+                enumerable: false,
+                writable: false,
+                configurable: false
+            });
+        }
     } catch (e) {
         console.log(e);
     }
