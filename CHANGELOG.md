@@ -6,22 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- TODO: add release date -->
-## [4.4.29]
+## [4.4.30]
 
 ### Changed
 
 - Updated [@adguard/agtree] to v2.1.2.
 - Updated [@adguard/logger] to v1.0.2.
-- Updated [@adguard/scriptlets] to v1.11.16.
+- Updated [@adguard/scriptlets] to v1.12.1.
 - Updated [@adguard/tsurlfilter] to v3.0.5.
-- Updated [@adguard/tswebextension] to v2.0.1.
+- Updated [@adguard/tswebextension] to v2.0.3.
 
 ### Fixed
 
 - The exception `$domain=~` filter rule is not working properly [#2912].
 - Scriptlets exclusion matching is not working properly for rules with arguments [#2947].
 
-[4.4.29]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...v4.4.29
+[4.4.30]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.22...v4.4.30
 [#2912]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2912
 [#2947]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2947
 
