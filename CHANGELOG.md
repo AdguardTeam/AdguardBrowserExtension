@@ -25,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2912]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2912
 [#2947]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2947
 
+## [5.0.112] - 2024-09-27
+
+### Changed
+
+- Disabled option in tracking protection for hiding search queries [#2969].
+
+[5.0.112]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.112
+[#2969]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2969
+
 
 ## [5.0.97] - 2024-09-23
 
