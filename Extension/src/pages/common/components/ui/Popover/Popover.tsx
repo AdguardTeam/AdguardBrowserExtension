@@ -55,11 +55,6 @@ type PopoverParams = {
     comingSoon?: boolean;
 
     /**
-     * Flag to set fixed width for popover.
-     */
-    fixedWidth?: boolean;
-
-    /**
      * Child node.
      */
     children: React.ReactNode;
@@ -72,7 +67,6 @@ export const Popover = ({
     text,
     delay,
     comingSoon,
-    fixedWidth,
     children,
     ...props
 }: PopoverParams) => {
@@ -127,7 +121,7 @@ export const Popover = ({
         >
             {tooltip.visible && tooltip.position && (
                 <AttachmentPortal rootId="root-portal" position={tooltip.position}>
-                    <Tooltip text={text} visible={tooltip.visible} fixedWidth />
+                    <Tooltip text={text} visible={tooltip.visible} />
                 </AttachmentPortal>
             )}
             {children}
