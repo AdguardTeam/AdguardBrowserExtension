@@ -83,7 +83,7 @@ export class UserRulesApi {
         }
 
         try {
-            const chunks = (await UserRulesApi.getUserRules()).filterList;
+            const chunks = await UserRulesApi.getBinaryUserRules();
             const buffer = new InputByteBuffer(chunks);
             let ruleNode: AnyRule;
             // If the next byte is 0, it means that there's nothing to read.
@@ -113,6 +113,21 @@ export class UserRulesApi {
                 sourceMap: {},
                 conversionMap: {},
             };
+        }
+
+        return data;
+    }
+
+    /**
+     * Returns binary serialized, preprocessed rules from user list.
+     *
+     * @note This may include converted rules and does not include syntactically invalid rules.
+     */
+    public static async getBinaryUserRules(): Promise<Uint8Array[]> {
+        const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+
+        if (!data) {
+            return [];
         }
 
         return data;
