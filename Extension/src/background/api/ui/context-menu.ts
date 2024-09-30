@@ -182,7 +182,8 @@ export class ContextMenuApi {
      * @param isOptionsPage Is current page options page.
      */
     private static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled);
+        // Disabled because it's just informational inactive button
+        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
         await ContextMenuApi.addSeparator();
         if (!__IS_MV3__) {
             await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);

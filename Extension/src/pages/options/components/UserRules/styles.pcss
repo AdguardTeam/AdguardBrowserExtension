@@ -33,12 +33,31 @@
 }
 
 .editor__open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 48px 16px;
-}
+    padding: 125px 16px;
+    border-radius: 8px;
+    background: var(--fills-backgrounds-page-background-additional-default);
 
-.editor__open-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 12px;
+    &-text {
+        line-height: 1.3;
+    }
+
+    &-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    &-subtitle {
+        font-size: 14px;
+        color: var(--text-description-description-default,);
+    }
+
+    .button {
+        margin-top: 24px;
+        padding: 16px 48px;
+    }
 }

@@ -19,6 +19,8 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
+import classNames from 'classnames';
+
 import { SettingsSection } from '../Settings/SettingsSection';
 import { translator } from '../../../../common/translators/translator';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
@@ -39,6 +41,9 @@ const UserRules = observer(() => {
     const handleGoToEditorClick = async () => {
         await messenger.sendMessage(MessageType.OpenFullscreenUserRules);
     };
+    const linksClassNames = classNames('settings__group__links', {
+        'settings__group__links--custom': settingsStore.isFullscreenUserRulesEditorOpen,
+    });
 
     // When we close fullscreen editor we should update limits warning message.
     useEffect(() => {
@@ -60,7 +65,7 @@ const UserRules = observer(() => {
                 description={translator.getMessage('options_userfilter_subtitle_key')}
                 inlineControl={<UserRulesSwitcher />}
             />
-            <div className="settings__group__links">
+            <div className={linksClassNames}>
                 <RuleSyntaxLink />
                 {__IS_MV3__ && <RuleLimitsLink />}
             </div>
@@ -68,8 +73,13 @@ const UserRules = observer(() => {
             {settingsStore.isFullscreenUserRulesEditorOpen
                 ? (
                     <div className="editor__open">
-                        <div className="editor__open-title">
-                            {translator.getMessage('options_user_rules_editor_stub_title')}
+                        <div className="editor__open-text">
+                            <div className="editor__open-title">
+                                {translator.getMessage('options_user_rules_editor_stub_title')}
+                            </div>
+                            <div className="editor__open-subtitle">
+                                {translator.getMessage('options_user_rules_editor_stub_subtitle')}
+                            </div>
                         </div>
                         <button
                             type="button"
