@@ -168,14 +168,14 @@ describe('Hit Stats Api', () => {
             500,
         );
 
-        expect(sendHitStatsSpy).toHaveBeenCalledWith(
-            JSON.stringify({
+        expect(sendHitStatsSpy).toHaveBeenCalledWith({
+            filters: {
                 [SECOND_FILTER_ID]: {
                     'example.com##h1': 2,
                     '||example.org^$document': 1,
                 },
-            }),
-        );
+            },
+        });
 
         expect(cleanupSpy).toHaveBeenCalled();
 
