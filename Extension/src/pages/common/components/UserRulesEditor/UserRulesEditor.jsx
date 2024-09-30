@@ -29,7 +29,7 @@ import cn from 'classnames';
 
 import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
-import { Editor } from '../Editor';
+import { Editor, EditorLeaveModal } from '../Editor';
 import { translator } from '../../../../common/translators/translator';
 import { Popover } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
@@ -48,6 +48,8 @@ import { addMinDelayLoader } from '../helpers';
 // TODO: Continue to remove dependency on the root store via adding loader and
 // notifications to own 'user-rules-editor' store.
 import { rootStore } from '../../../options/stores/RootStore';
+import { usePreventUnload } from '../../hooks/usePreventUnload';
+import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
@@ -118,7 +120,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 resetInfoThatContentChanged = true;
             }
 
-            editorRef.current.editor.setValue(editorContent, 1);
+            editorRef.current.editor.setValue(editorContent, CURSOR_POSITION_AFTER_INSERT);
             editorRef.current.editor.session.getUndoManager().reset();
             if (resetInfoThatContentChanged) {
                 store.setUserRulesEditorContentChangedState(false);
@@ -149,7 +151,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
         if (!store.userRulesEditorContentChanged) {
             if (editorRef.current) {
-                editorRef.current.editor.setValue(userRules, 1);
+                editorRef.current.editor.setValue(userRules, CURSOR_POSITION_AFTER_INSERT);
             }
             store.setUserRulesEditorContentChangedState(false);
             await messenger.setEditorStorageContent(null);
@@ -212,19 +214,16 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         }
     }, [store.userRulesEditorContentChanged, fullscreen]);
 
-    // subscribe to editor changes, to update editor storage content
-    useEffect(() => {
-        const changeHandler = () => {
-            store.setUserRulesEditorContentChangedState(true);
-        };
-
-        editorRef.current.editor.session.on('change', changeHandler);
-    }, [store]);
-
     // set initial wrap mode
     useEffect(() => {
         editorRef.current.editor.session.setUseWrapMode(store.userRulesEditorWrapState);
     }, [store.userRulesEditorWrapState]);
+
+    // Block unsaved changes only on fullscreen editor
+    const hasUnsavedChanges = fullscreen && store.userRulesEditorContentChanged;
+    const unsavedChangesTitle = translator.getMessage('options_editor_leave_title');
+    const unsavedChangesSubtitle = translator.getMessage('options_userfilter_leave_subtitle');
+    usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
     const saveUserRules = async (userRules) => {
         // For MV2 version we don't show loader and don't check limits.
@@ -268,7 +267,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             const rulesUnionString = rulesUnion.join(NEWLINE_CHAR_UNIX).trim();
 
             if (oldRulesString !== rulesUnionString) {
-                editorRef.current.editor.setValue(rulesUnionString, 1);
+                editorRef.current.editor.setValue(rulesUnionString, CURSOR_POSITION_AFTER_INSERT);
 
                 await saveUserRules(rulesUnionString);
             }
@@ -295,6 +294,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
         const value = editorRef.current.editor.getValue();
         await saveUserRules(value);
+    };
+
+    const editorChangeHandler = async (value) => {
+        const { content } = await messenger.getUserRules();
+        store.setUserRulesEditorContentChangedState(content !== value);
     };
 
     const shortcuts = [
@@ -392,8 +396,19 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 shortcuts={shortcuts}
                 fullscreen={fullscreen}
                 shouldResetSize={shouldResetSize}
+                onChange={editorChangeHandler}
                 highlightRules
             />
+            {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
+            {/* We are hiding it because only Options page has router, and there is no point of using it */}
+            {/* on FullscreenUserRules page, for that we are using `useBlockUnload` hook on top */}
+            {!fullscreen && (
+                <EditorLeaveModal
+                    subtitle={unsavedChangesSubtitle}
+                    isSaving={store.savingUserRulesState === SavingFSMState.Saving}
+                    contentChanged={store.userRulesEditorContentChanged}
+                />
+            )}
             <div
                 className={cn('actions actions--grid', {
                     'actions--fullscreen-user-rules': fullscreen,
