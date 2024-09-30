@@ -27,7 +27,12 @@ import {
     filterVersionStorage,
     hitStatsStorage,
 } from '../../storages';
-import { network } from '../network';
+import {
+    FilterHitStats,
+    FiltersHitStats,
+    network,
+} from '../network';
+import { getErrorMessage } from '../../../common/error';
 
 /**
  * This API is used to store and track ad filters usage stats.
@@ -35,8 +40,14 @@ import { network } from '../network';
  * More info about ad filters stats: http://adguard.com/en/filter-rules-statistics.html.
  */
 export class HitStatsApi {
+    /**
+     * Maximum total hits to send stats. We send stats only after reaching this limit.
+     */
     private static maxTotalHits = 1000;
 
+    /**
+     * Timeout for saving hit stats.
+     */
     private static saveTimeoutMs = 2000; // 2 sec
 
     /**
@@ -118,7 +129,7 @@ export class HitStatsApi {
         const transformFilterHits = async (
             filterId: string,
             stats: Record<string, number>,
-        ): Promise<[string, Record<string, number>]> => {
+        ): Promise<[string, FilterHitStats]> => {
             // If the filter version is not cached or it is outdated, we do not send the stats for this filter
             // (we store the version of the filter on the first hit).
             // When saving hits, we do not analyze the source map, as that would be too heavy,
@@ -173,7 +184,7 @@ export class HitStatsApi {
             return [filterId, Object.fromEntries(ruleTexts)];
         };
 
-        const hitStatsData: Record<string, Record<string, number>> = Object.fromEntries(
+        const hitStatsData: FiltersHitStats = Object.fromEntries(
             (await Promise.all(
                 affectedFilterIds.map(async (filterId) => {
                     const stats = hitStats.stats?.filters?.[filterId] || {};
@@ -183,7 +194,13 @@ export class HitStatsApi {
             )).filter(([_, stats]) => !isEmpty(stats)),
         );
 
-        network.sendHitStats(JSON.stringify(hitStatsData));
+        try {
+            await network.sendHitStats({
+                filters: hitStatsData,
+            });
+        } catch (e: unknown) {
+            logger.error(getErrorMessage(e));
+        }
 
         await HitStatsApi.cleanup();
     }
