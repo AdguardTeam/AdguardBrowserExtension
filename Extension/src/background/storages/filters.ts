@@ -20,6 +20,8 @@ import zod from 'zod';
 import { FilterListPreprocessor, type PreprocessedFilterList } from '@adguard/tswebextension';
 
 import { FILTER_LIST_EXTENSION } from '../../common/constants';
+import { logger } from '../../common/logger';
+import { getErrorMessage } from '../../common/error';
 
 import { hybridStorage } from './shared-instances';
 
@@ -73,8 +75,17 @@ export class FiltersStorage {
      * @param filter Filter rules strings.
      */
     static async set(filterId: number, filter: string[]): Promise<void> {
-        const data = FiltersStorage.prepareFilterForStorage(filterId, filter);
-        await hybridStorage.setMultiple(data);
+        try {
+            const data = FiltersStorage.prepareFilterForStorage(filterId, filter);
+            const succeeded = await hybridStorage.setMultiple(data);
+
+            if (!succeeded) {
+                throw new Error('Transaction failed');
+            }
+        } catch (e) {
+            logger.error(`Failed to set filter list for filter id ${filterId}, got error:`, getErrorMessage(e));
+            throw e;
+        }
     }
 
     /**
@@ -111,9 +122,14 @@ export class FiltersStorage {
      * @throws Error, if filter list data is not valid.
      */
     static async get(filterId: number): Promise<Uint8Array[]> {
-        const binaryFilterKey = FiltersStorage.getBinaryFilterKey(filterId);
-        const data = await hybridStorage.get(binaryFilterKey);
-        return zod.array(zod.instanceof(Uint8Array)).parse(data);
+        try {
+            const binaryFilterKey = FiltersStorage.getBinaryFilterKey(filterId);
+            const data = await hybridStorage.get(binaryFilterKey);
+            return zod.array(zod.instanceof(Uint8Array)).parse(data);
+        } catch (e) {
+            logger.error(`Failed to get binary filter data for filter id ${filterId}, got error:`, getErrorMessage(e));
+            throw e;
+        }
     }
 
     /**
@@ -124,9 +140,15 @@ export class FiltersStorage {
      * @throws Error, if filter list data is not valid.
      */
     static async getPreprocessedFilterList(filterId: number): Promise<string> {
-        const filterKey = FiltersStorage.getFilterKey(filterId);
-        const data = await hybridStorage.get(filterKey);
-        return zod.string().parse(data);
+        try {
+            const filterKey = FiltersStorage.getFilterKey(filterId);
+            const data = await hybridStorage.get(filterKey);
+            return zod.string().parse(data);
+        } catch (e) {
+            // eslint-disable-next-line max-len
+            logger.error(`Failed to get preprocessed raw filter list for filter id ${filterId}, got error:`, getErrorMessage(e));
+            throw e;
+        }
     }
 
     /**
@@ -137,9 +159,15 @@ export class FiltersStorage {
      * @throws Error, if source map data is not valid.
      */
     static async getSourceMap(filterId: number): Promise<Record<string, number>> {
-        const sourceMapKey = FiltersStorage.getSourceMapKey(filterId);
-        const data = await hybridStorage.get(sourceMapKey);
-        return SOURCE_MAP_SCHEMA.parse(data);
+        try {
+            const sourceMapKey = FiltersStorage.getSourceMapKey(filterId);
+            const data = await hybridStorage.get(sourceMapKey);
+            return SOURCE_MAP_SCHEMA.parse(data);
+        } catch (e) {
+            // eslint-disable-next-line max-len
+            logger.error(`Failed to get source map for filter id '${filterId}', ${filterId}, got error:`, getErrorMessage(e));
+            throw e;
+        }
     }
 
     /**
@@ -150,9 +178,14 @@ export class FiltersStorage {
      * @throws Error, if conversion map data is not valid.
      */
     static async getConversionMap(filterId: number): Promise<Record<string, string>> {
-        const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
-        const data = await hybridStorage.get(conversionMapKey);
-        return CONVERSION_MAP_SCHEMA.parse(data);
+        try {
+            const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
+            const data = await hybridStorage.get(conversionMapKey);
+            return CONVERSION_MAP_SCHEMA.parse(data);
+        } catch (e) {
+            logger.error(`Failed to get conversion map for filter id ${filterId}, got error:`, getErrorMessage(e));
+            throw e;
+        }
     }
 
     /**
