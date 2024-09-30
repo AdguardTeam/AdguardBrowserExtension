@@ -134,3 +134,11 @@ export const createSavingService = ({ id, services }: SavingServiceParams) => {
 
     return actor.start();
 };
+
+/**
+ * undefined, 0 - Select all
+ * -1 - At the beginning
+ * 1 - At the end
+ * see https://ace.c9.io/api/classes/src_editor.Editor.html#setValue
+ */
+export const CURSOR_POSITION_AFTER_INSERT = 1;

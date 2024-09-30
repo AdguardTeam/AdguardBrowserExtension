@@ -18,9 +18,11 @@
 
 import React, { useContext, useEffect } from 'react';
 import {
-    HashRouter,
+    createHashRouter,
+    createRoutesFromElements,
+    Outlet,
     Route,
-    Routes,
+    RouterProvider,
 } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
@@ -49,6 +51,26 @@ import { translator } from '../../../../common/translators/translator';
 import { Icons } from '../ui/Icons';
 
 import '../../styles/styles.pcss';
+
+const createRouter = (children) => {
+    return createHashRouter(createRoutesFromElements(children));
+};
+
+const OptionsLayout = () => {
+    return (
+        <>
+            <Sidebar />
+            <div className="inner">
+                <div className="content">
+                    <Notifications />
+                    <Mv3Notifications />
+                    <Outlet />
+                </div>
+                <Footer />
+            </div>
+        </>
+    );
+};
 
 const Options = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -138,34 +160,32 @@ const Options = observer(() => {
     }
 
     return (
-        <HashRouter hashType="noslash">
+        <>
             <CommonIcons />
             <Icons />
+            <Loader showLoader={uiStore.showLoader} />
             <div className="page">
-                <Loader showLoader={uiStore.showLoader} />
-                <Sidebar />
-                <div className="inner">
-                    <div className="content">
-                        <Notifications />
-                        <Mv3Notifications />
-                        <Routes>
-                            <Route path="/" exact element={<General />} />
-                            <Route path={`/${OptionsPageSections.filters}`} element={<Filters />} />
-                            <Route path={`/${OptionsPageSections.stealth}`} element={<Stealth />} />
-                            <Route path={`/${OptionsPageSections.allowlist}`} element={<Allowlist />} />
-                            <Route path={`/${OptionsPageSections.userFilter}`} element={<UserRules />} />
-                            <Route path={`/${OptionsPageSections.miscellaneous}`} element={<Miscellaneous />} />
-                            {__IS_MV3__ && (
-                                <Route path={`/${OptionsPageSections.ruleLimits}`} element={<RulesLimits />} />
-                            )}
-                            <Route path={`/${OptionsPageSections.about}`} element={<About />} />
-                            <Route element={<General />} />
-                        </Routes>
-                    </div>
-                    <Footer />
-                </div>
+                <RouterProvider
+                    router={(
+                        createRouter(
+                            <Route path="/" element={<OptionsLayout />}>
+                                <Route index element={<General />} />
+                                <Route path={OptionsPageSections.filters} element={<Filters />} />
+                                <Route path={OptionsPageSections.stealth} element={<Stealth />} />
+                                <Route path={OptionsPageSections.allowlist} element={<Allowlist />} />
+                                <Route path={OptionsPageSections.userFilter} element={<UserRules />} />
+                                <Route path={OptionsPageSections.miscellaneous} element={<Miscellaneous />} />
+                                {__IS_MV3__ && (
+                                    <Route path={OptionsPageSections.ruleLimits} element={<RulesLimits />} />
+                                )}
+                                <Route path={OptionsPageSections.about} element={<About />} />
+                                <Route path="*" element={<General />} />
+                            </Route>,
+                        )
+                    )}
+                />
             </div>
-        </HashRouter>
+        </>
     );
 });
 

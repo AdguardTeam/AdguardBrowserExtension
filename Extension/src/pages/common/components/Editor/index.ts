@@ -17,3 +17,4 @@
  */
 
 export { Editor } from './Editor';
+export { EditorLeaveModal } from './EditorLeaveModal';

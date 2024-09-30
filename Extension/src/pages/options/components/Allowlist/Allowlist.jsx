@@ -27,17 +27,17 @@ import { Link } from 'react-router-dom';
 
 import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
-import { Editor } from '../../../common/components/Editor';
+import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
 import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
-import { usePrevious } from '../../../common/hooks/usePrevious';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { DynamicRulesLimitsWarning } from '../Warnings';
+import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
@@ -51,21 +51,32 @@ const Allowlist = observer(() => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
-    const prevAllowlist = usePrevious(settingsStore.allowlist);
 
     useEffect(() => {
         (async () => {
             await settingsStore.getAllowlist();
             setAllowlistRerender(false);
+            // Get initial store content and set to the editor
+            editorRef.current.editor.setValue(settingsStore.allowlist, CURSOR_POSITION_AFTER_INSERT);
+            editorRef.current.editor.session.getUndoManager().reset();
+            settingsStore.setAllowlistEditorContentChangedState(false);
         })();
     }, [settingsStore, shouldAllowlistRerender]);
 
+    /**
+     * One of the reasons for allowlist to update may be
+     * adding domains from other places like popup, etc.
+     */
     useEffect(() => {
-        if (prevAllowlist === '') {
-            // reset undo manager, otherwise ctrl+z after initial load removes all content
-            editorRef.current.editor.session.getUndoManager().reset();
+        if (settingsStore.allowlistEditorContentChanged) {
+            return;
         }
-    }, [settingsStore.allowlist, prevAllowlist]);
+
+        if (editorRef.current) {
+            editorRef.current.editor.setValue(settingsStore.allowlist, CURSOR_POSITION_AFTER_INSERT);
+        }
+        settingsStore.setAllowlistEditorContentChangedState(false);
+    }, [settingsStore.allowlist, settingsStore]);
 
     const { settings } = settingsStore;
 
@@ -120,8 +131,8 @@ const Allowlist = observer(() => {
         }
     };
 
-    const editorChangeHandler = () => {
-        settingsStore.setAllowlistEditorContentChangedState(true);
+    const editorChangeHandler = (value) => {
+        settingsStore.setAllowlistEditorContentChangedState(settingsStore.allowlist !== value);
     };
 
     const shortcuts = [{
@@ -175,7 +186,6 @@ const Allowlist = observer(() => {
                 editorRef={editorRef}
                 shortcuts={shortcuts}
                 onChange={editorChangeHandler}
-                value={settingsStore.allowlist}
                 wrapEnabled={settingsStore.allowlistEditorWrap}
                 shouldResetSize={shouldResetSize}
             />
@@ -207,6 +217,12 @@ const Allowlist = observer(() => {
                     {translator.getMessage('options_userfilter_export')}
                 </button>
             </div>
+
+            <EditorLeaveModal
+                subtitle={reactTranslator.getMessage('options_allowlist_leave_subtitle')}
+                isSaving={settingsStore.savingUserRulesState === SavingFSMState.Saving}
+                contentChanged={settingsStore.allowlistEditorContentChanged}
+            />
         </>
     );
 });
