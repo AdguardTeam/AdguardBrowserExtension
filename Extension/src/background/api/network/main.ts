@@ -45,6 +45,39 @@ export type ResponseLikeXMLHttpRequest = Response
     & Pick<ExtensionXMLHttpRequest, 'responseText' | 'mozBackgroundRequest'>;
 
 /**
+ * Hit statistics for a single filter.
+ * - Keys are rule texts (strings).
+ * - Values are the number of times the rule was applied.
+ *
+ * @example
+ * ```
+ * {
+ *   "||example.com": 3
+ * }
+ * ```
+ */
+export type FilterHitStats = {
+    [ruleText: string]: number;
+};
+
+/**
+ * Hit statistics for multiple filters.
+ * - Keys are filter IDs.
+ * - Values are the hit statistics for each filter.
+ */
+export type FiltersHitStats = {
+    [filterId: number]: FilterHitStats;
+};
+
+/**
+ * Aggregated hit statistics for all filters.
+ * - Contains a `filters` object, where keys are filter IDs and values are hit statistics for each filter.
+ */
+type HitStats = {
+    filters: FiltersHitStats;
+};
+
+/**
  * Api for working with our backend server.
  * All requests sent by this class are covered in the privacy policy:
  * http://adguard.com/en/privacy.html#browsers.
@@ -390,15 +423,17 @@ export class Network {
      * More information about ad filters usage stats:
      * http://adguard.com/en/filter-rules-statistics.html.
      *
-     * @param stats Sent {@link HitStats}.
+     * @param stats Sent stats.
      */
-    public async sendHitStats(stats: string): Promise<void> {
+    public async sendHitStats(stats: HitStats): Promise<void> {
+        const statsString = JSON.stringify(stats);
+
         await fetch(this.settings.ruleStatsUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: stats,
+            body: statsString,
         });
     }
 
