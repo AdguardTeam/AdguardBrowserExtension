@@ -1,0 +1,17 @@
+version: "3.1"
+
+services:
+  adguard:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: adguard
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ..:/adguard:cached
+    tty: true
+    stdin_open: true
+    restart: on-failure 
+    command: sleep infinity
+   
