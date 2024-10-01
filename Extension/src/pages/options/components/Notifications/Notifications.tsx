@@ -25,10 +25,6 @@ import { Notification } from './Notification';
 
 import './notifications.pcss';
 
-/**
- * TODO: Use only one type of notifications (now we have MV3 notifications
- * about limits and old notifications about filters changes).
- */
 export const Notifications = observer(() => {
     const { uiStore } = useContext(rootStore);
 
@@ -38,19 +34,18 @@ export const Notifications = observer(() => {
         return null;
     }
 
+    /**
+     * Reverse notifications to correct transition for change position
+     * of notification. If we use normal, not reversed order, new notification
+     * will push old notifications (up or down) on the Y axis without transition.
+     */
+    const reversedNotifications = notifications.slice().reverse();
+
     return (
         <div className="notifications">
-            {notifications.map((notification) => {
-                const { id, description, title } = notification;
-                return (
-                    <Notification
-                        key={id}
-                        id={id}
-                        title={title}
-                        description={description}
-                    />
-                );
-            })}
+            {reversedNotifications.map((notification) => (
+                <Notification key={notification.id} {...notification} />
+            ))}
         </div>
     );
 });

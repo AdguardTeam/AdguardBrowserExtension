@@ -29,19 +29,30 @@ import { getDynamicWarningMessage, getStaticWarningMessage } from '../components
 
 import type { RootStore } from './RootStore';
 
+export enum NotificationType {
+    SUCCESS = 'success',
+    ERROR = 'error',
+}
+
 /**
  * Notification object.
  */
-type Notification = {
+export type Notification = {
+    /**
+     * ID of notification
+     */
     id: string;
-    title?: string;
-    description: string;
-};
 
-/**
- * MV3 notification object.
- */
-type Mv3Notification = Notification & {
+    /**
+     * Description of notification
+     */
+    description: string;
+
+    /**
+     * Notification type
+     */
+    type: NotificationType
+
     /**
      * Some additional data, e.g. links.
      */
@@ -65,12 +76,7 @@ class UiStore {
     }
 
     /**
-     * Notifications in new design.
-     */
-    @observable mv3Notifications: Mv3Notification[] = [];
-
-    /**
-     * Notifications in old design.
+     * Notifications list
      */
     @observable notifications: Notification[] = [];
 
@@ -90,12 +96,13 @@ class UiStore {
     @observable dynamicRulesLimitsWarning: string | null = null;
 
     @action
-    addNotification({ title = '', description }: Omit<Notification, 'id'>) {
+    addNotification({ description, type, extra }: Omit<Notification, 'id'>) {
         const id = nanoid();
         this.notifications.push({
             id,
-            title,
             description,
+            extra,
+            type,
         });
         return id;
     }
@@ -103,24 +110,6 @@ class UiStore {
     @action
     removeNotification(id: string) {
         this.notifications = this.notifications
-            .filter((notification) => notification.id !== id);
-    }
-
-    @action
-    addMv3Notification({ title = '', description, extra }: Omit<Mv3Notification, 'id'>) {
-        const id = nanoid();
-        this.mv3Notifications.push({
-            id,
-            title,
-            description,
-            extra,
-        });
-        return id;
-    }
-
-    @action
-    removeMv3Notification(id: string) {
-        this.mv3Notifications = this.mv3Notifications
             .filter((notification) => notification.id !== id);
     }
 

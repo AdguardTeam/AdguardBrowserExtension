@@ -26,15 +26,13 @@ import classnames from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
+import { messenger } from '../../../services/messenger';
+import { type Notification as INotification } from '../../stores/UiStore';
 
 /**
  * Notification component props
  */
-interface NotificationProps {
-    id: string;
-    title?: string;
-    description: string;
-}
+export interface NotificationProps extends INotification {}
 
 /**
  * Notification component.
@@ -44,58 +42,92 @@ interface NotificationProps {
 export const Notification = (props: NotificationProps) => {
     const [notificationIsClosed, setNotificationIsClosed] = useState(false);
 
-    const { id, title, description } = props;
+    const [shouldCloseOnTimeout, setShouldCloseOnTimeout] = useState(true);
 
     const { uiStore } = useContext(rootStore);
 
-    const displayTimeoutAnimationMs = 5000;
-    const displayTimeoutMs = 5300;
+    const {
+        id,
+        description,
+        type,
+        extra,
+    } = props;
+    const isNotificationWithLink = extra?.link && typeof extra?.link === 'string';
+
+    const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
+
+    const NOTIFICATION_TTL_MS = 4000;
 
     useEffect(() => {
-        const displayTimeoutAnimationId = setTimeout(() => {
-            setNotificationIsClosed(true);
-        }, displayTimeoutAnimationMs);
+        const closeTimeout = setTimeout(() => {
+            if (shouldCloseOnTimeout) {
+                setNotificationIsClosed(true);
+            }
+        }, NOTIFICATION_TTL_MS);
 
-        const displayTimeout = setTimeout(() => {
-            uiStore.removeNotification(id);
-        }, displayTimeoutMs);
+        const removeTimeout = setTimeout(() => {
+            if (shouldCloseOnTimeout) {
+                uiStore.removeNotification(id);
+            }
+        }, NOTIFICATION_TTL_MS + TIME_TO_REMOVE_NOTIFICATION_MS);
 
         return () => {
-            clearTimeout(displayTimeoutAnimationId);
-            clearTimeout(displayTimeout);
+            clearTimeout(closeTimeout);
+            clearTimeout(removeTimeout);
         };
-    }, [id, uiStore]);
+    }, [id, uiStore, shouldCloseOnTimeout]);
 
-    const notificationClassnames = classnames('notification', {
-        'notification--close': notificationIsClosed,
-    });
+    const notificationClassnames = classnames(
+        `notification notification--${type}`,
+        { 'notification--close': notificationIsClosed },
+    );
 
-    const close = () => {
+    const handleCloseClick = () => {
         setNotificationIsClosed(true);
-        setTimeout(() => {
+        const removeTimeout = setTimeout(() => {
             uiStore.removeNotification(id);
-        }, 300);
+            clearTimeout(removeTimeout);
+        }, TIME_TO_REMOVE_NOTIFICATION_MS);
+    };
+
+    // TODO: Refactor this code and extract click handler from general
+    // notification component.
+    const handleRuleLimitsClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        messenger.openRulesLimitsTab();
+        handleCloseClick();
+    };
+
+    /**
+     * Handles mouse over event which prevents notification from closing.
+     */
+    const handleMouseOver = () => {
+        setShouldCloseOnTimeout(false);
     };
 
     return (
-        <div className={notificationClassnames}>
-            <Icon
-                id="#info"
-                classname="icon icon--24 notification__icon"
-            />
-            <div className="notification__message">
-                {title && <div className="notification__title">{title}</div>}
-                <div className="notification__description">{description}</div>
+        <div
+            className={notificationClassnames}
+            onMouseEnter={handleMouseOver}
+        >
+            <Icon id="#info" classname="icon--24" />
+            <div className="notification__content">
+                <p>{description}</p>
+                { isNotificationWithLink && (
+                    <button type="button" onClick={handleRuleLimitsClick}>
+                        {extra.link}
+                    </button>
+                )}
             </div>
             <button
+                aria-label="close"
                 type="button"
-                aria-label="Close"
-                className="button notification__btn-close"
-                onClick={close}
+                className="notification__btn-close"
+                onClick={handleCloseClick}
             >
                 <Icon
                     id="#cross"
-                    classname="icon icon--24 notification__icon"
+                    classname="icon--24 icon--gray-default"
                 />
             </button>
         </div>

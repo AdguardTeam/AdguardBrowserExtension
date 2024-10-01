@@ -41,6 +41,7 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
 import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { getStaticWarningMessage } from '../Warnings/messages';
+import { NotificationType } from '../../stores/UiStore';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group } from './Group';
@@ -119,11 +120,12 @@ const Filters = observer(() => {
                     const staticFiltersLimitsWarning = getStaticWarningMessage(result.data);
 
                     if (staticFiltersLimitsWarning) {
-                        uiStore.addMv3Notification({
+                        uiStore.addNotification({
                             description: staticFiltersLimitsWarning,
                             extra: {
                                 link: translator.getMessage('options_rule_limits'),
                             },
+                            type: NotificationType.ERROR,
                         });
                     }
 

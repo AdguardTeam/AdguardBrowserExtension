@@ -19,6 +19,8 @@
 import { type FilterMetadata } from '../background/api';
 import { translator } from '../common/translators/translator';
 
+import { Notification, NotificationType } from './options/stores/UiStore';
+
 export const getFilenameExtension = (filename: string): string | undefined => {
     if (!filename) {
         return undefined;
@@ -192,21 +194,6 @@ export const isVerticalScroll = (() => {
 })();
 
 /**
- * Data for notification after filter update.
- */
-type FilterUpdateResult = {
-    /**
-     * Title of the notification.
-     */
-    title?: string,
-
-    /**
-     * Description of the notification.
-     */
-    description: string,
-};
-
-/**
  * Checks the length of the array with filters and returns the contents for notification.
  *
  * @param updatedFilters Array with updated filters.
@@ -214,11 +201,11 @@ type FilterUpdateResult = {
  * @returns Object with title and description describing error if `updatedFilters` is not provided,
  * otherwise description with information about updated filters.
  */
-export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): FilterUpdateResult => {
+export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): Omit<Notification, 'id'> => {
     if (!updatedFilters) {
         return {
-            title: translator.getMessage('options_popup_update_title_error'),
             description: translator.getMessage('options_popup_update_error'),
+            type: NotificationType.ERROR,
         };
     }
 
@@ -233,5 +220,5 @@ export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): Filt
         description = `${filterNames} ${translator.getMessage('options_popup_update_filters')}`;
     }
 
-    return { description };
+    return { description, type: NotificationType.SUCCESS };
 };
