@@ -34,11 +34,8 @@ import { CommonFilterApi } from './common';
  */
 export class QuickFixesRulesApi {
     /**
-     * Partially updates metadata for quick fixes filter (because otherwise we
-     * will update metadata for all filters, but filters will only be updated
-     * with update of entire extension and we get mismatch of their actual
-     * version and metadata versions), then load newest rules from the server
-     * without patches (because filter is quite small) and enables it.
+     * Loads and enabled Quick Fixes rules via updating metadata
+     * for quick fixes filter.
      */
     public static async loadAndEnableQuickFixesRules(): Promise<void> {
         await this.loadQuickFixesRules();
@@ -47,16 +44,14 @@ export class QuickFixesRulesApi {
     }
 
     /**
-     * Partially updates metadata for quick fixes filter (because otherwise we
-     * will update metadata for all filters, but filters will only be updated
-     * with update of entire extension and we get mismatch of their actual
-     * version and metadata versions), then load newest rules from the server
-     * without patches (because filter is quite small).
+     * Load newest rules from the server without patches (because filter is quite
+     * small), then partially updates metadata for quick fixes filter (because
+     * otherwise we will update metadata for all filters, but filters will only
+     * be updated with update of entire extension and we get mismatch of their
+     * actual version and metadata versions).
      */
     private static async loadQuickFixesRules(): Promise<void> {
-        await FiltersApi.partialUpdateMetadataFromRemoteForFilter(AntiBannerFiltersId.QuickFixesFilterId);
-
-        await CommonFilterApi.loadFilterRulesFromBackend(
+        const metadataOfUpdatedFilter = await CommonFilterApi.loadFilterRulesFromBackend(
             {
                 filterId: AntiBannerFiltersId.QuickFixesFilterId,
                 // Without patches because filter is quite small.
@@ -68,6 +63,8 @@ export class QuickFixesRulesApi {
             },
             true,
         );
+
+        FiltersApi.partialUpdateMetadataForFilter(metadataOfUpdatedFilter);
     }
 
     /**

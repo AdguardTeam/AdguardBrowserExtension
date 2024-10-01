@@ -8,14 +8,11 @@ import { fakeFilterV1 } from '../../../../helpers/fixtures/fake_filter_v1';
 import { QuickFixesRulesApi } from '../../../../../Extension/src/background/api';
 import { FiltersStorage } from '../../../../../Extension/src/background/storages/filters';
 import { RawFiltersStorage } from '../../../../../Extension/src/background/storages/raw-filters';
-import { i18nMetadataStorage, metadataStorage } from '../../../../../Extension/src/background/storages';
-import { server } from '../../../../../testSetup';
-import { getMetadataFixture } from '../../../../helpers/fixtures/getMetadataFixture';
-import { getI18nMetadataFixture } from '../../../../helpers/fixtures/getI18nMetadataFixture';
-import { REMOTE_I18N_METADATA_FILE_NAME, REMOTE_METADATA_FILE_NAME } from '../../../../../constants';
+import { metadataStorage } from '../../../../../Extension/src/background/storages';
 import { mockLocalStorage } from '../../../../helpers/mocks/storage';
 import { getStorageFixturesV7 } from '../../../../helpers/fixtures/getStorageFixtures';
-import { type Metadata, type I18nMetadata } from '../../../../../Extension/src/background/schema';
+import { type Metadata } from '../../../../../Extension/src/background/schema';
+import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
 
 jest.mock('../../../../../Extension/src/background/engine');
 
@@ -31,19 +28,6 @@ describe('Quick Fixes API should', () => {
         'adguard_ext_safari': false,
     };
 
-    const incrementPatchVersion = (version: string): string => {
-        const updatedVersion = version
-            .split('.')
-            .map(Number);
-
-        const patchVersion = updatedVersion[updatedVersion.length - 1];
-        if (patchVersion !== undefined) {
-            updatedVersion[updatedVersion.length - 1]! = patchVersion + 1;
-        }
-
-        return updatedVersion.join('.');
-    };
-
     beforeEach(async () => {
         storage = mockLocalStorage(getStorageFixturesV7(0)[0]);
         await App.init();
@@ -53,43 +37,9 @@ describe('Quick Fixes API should', () => {
         await storage.clear();
     });
 
-    const updatedTime = new Date().toISOString();
-
-    const updateMetadataOnRemote = () => {
-        // Update metadata on "remote".
-        const updatedMetadataFixture = getMetadataFixture();
-        const updatedI18nMetadataFixture = getI18nMetadataFixture();
-
-        // Update version for each filter.
-        updatedMetadataFixture.filters.forEach((filter) => {
-            filter.version = incrementPatchVersion(filter.version);
-            filter.timeUpdated = updatedTime;
-        });
-
-        // Update i18n metadata description for each filter.
-        Object.keys(updatedI18nMetadataFixture.filters)
-            .map(Number)
-            .forEach((filterIdAsKey: number) => {
-                const filter = updatedI18nMetadataFixture.filters[filterIdAsKey];
-                if (!filter?.['en']) {
-                    return;
-                }
-
-                filter['en'].description += 'updated';
-            });
-
-        server.respondWith('GET', new RegExp(`/${REMOTE_METADATA_FILE_NAME}`), [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify(updatedMetadataFixture),
-        ]);
-
-        server.respondWith('GET', new RegExp(`/${REMOTE_I18N_METADATA_FILE_NAME}`), [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify(updatedI18nMetadataFixture),
-        ]);
-    };
+    const updatedTimeWithHourOffset = new Date().toISOString()
+        .slice(0, -5)
+        .concat('+00:00');
 
     it('check for updates of Quick Fixes filter from remote and partially update metadata', async () => {
         if (!__IS_MV3__) {
@@ -99,7 +49,7 @@ describe('Quick Fixes API should', () => {
 
         const filterId = 24;
 
-        jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+        let mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
             .mockImplementation(() => Promise.resolve({
                 filter: fakeFilterV1.split('\n'),
                 rawFilter: fakeFilterV1,
@@ -107,13 +57,9 @@ describe('Quick Fixes API should', () => {
 
         // Read metadata from local storage.
         const metadata: Metadata = JSON.parse(JSON.stringify(metadataStorage.getData()));
-        const i18nMetadata: I18nMetadata = JSON.parse(JSON.stringify(i18nMetadataStorage.getData()));
 
-        // Simulate that metadata was updated on remote.
-        updateMetadataOnRemote();
-
-        // Update Quick Fixes filter with it's metadata.
-        await QuickFixesRulesApi.updateQuickFixesFilter();
+        // First load and enable Quick Fixes.
+        await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
 
         // Check that filter has been updated.
         expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
@@ -131,12 +77,49 @@ describe('Quick Fixes API should', () => {
 
         // Check that metadata was changed only for the Quick Fixes filter.
         const filterMetatada = metadata.filters.find((f) => f.filterId === filterId)!;
-        filterMetatada.description += 'updated';
-        filterMetatada.timeUpdated = updatedTime;
-        filterMetatada.version = incrementPatchVersion(filterMetatada.version);
-        i18nMetadata.filters[filterId]!['en']!.description += 'updated';
-
-        expect(i18nMetadataStorage.getData()).toStrictEqual(i18nMetadata);
+        Object.assign(filterMetatada, {
+            // Values from fake filter metadata.
+            diffPath: '',
+            expires: 345600,
+            homepage: '',
+            timeUpdated: '2023-02-01T00:00:00+00:00',
+            version: '1.0.0.0',
+        });
         expect(metadataStorage.getData()).toStrictEqual(metadata);
+
+        // Update mocked filter.
+        mock.mockRestore();
+        mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockImplementation(() => Promise.resolve({
+                filter: fakeFilterV2.split('\n'),
+                rawFilter: fakeFilterV2,
+            }));
+
+        // Update Quick Fixes filter.
+        await QuickFixesRulesApi.updateQuickFixesFilter();
+
+        // Check that filter has been updated.
+        expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
+            1,
+            `https://filters.adtidy.org/extension/chromium-mv3/filters/${filterId}.txt`,
+            {
+                force: true,
+                definedExpressions,
+                validateChecksum: true,
+                validateChecksumStrict: true,
+            },
+        );
+        expect(await FiltersStorage.getRawPreprocessedFilterList(filterId)).toEqual(fakeFilterV2);
+        expect(await RawFiltersStorage.get(filterId)).toEqual(fakeFilterV2);
+
+        // Check that metadata was changed only for the Quick Fixes filter.
+        Object.assign(filterMetatada, {
+            timeUpdated: updatedTimeWithHourOffset,
+            version: '2.0.0.0',
+        });
+
+        expect(metadataStorage.getData()).toStrictEqual(metadata);
+
+        mock.mockRestore();
     });
 });
