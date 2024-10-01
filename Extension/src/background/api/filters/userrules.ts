@@ -15,7 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { RuleParser } from '@adguard/agtree';
+import {
+    AnyRule,
+    InputByteBuffer,
+    RuleParser,
+} from '@adguard/agtree';
 import { PreprocessedFilterList, RuleSyntaxUtils } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
@@ -78,11 +82,22 @@ export class UserRulesApi {
             return false;
         }
 
-        const userRules = (await UserRulesApi.getUserRules()).rawFilterList.split('\n');
-        return userRules.some((userRuleString) => RuleSyntaxUtils.isRuleForUrl(
-            RuleParser.parse(userRuleString),
-            url,
-        ));
+        try {
+            const chunks = await UserRulesApi.getBinaryUserRules();
+            const buffer = new InputByteBuffer(chunks);
+            let ruleNode: AnyRule;
+            // If the next byte is 0, it means that there's nothing to read.
+            while (buffer.peekUint8() !== 0) {
+                RuleParser.deserialize(buffer, ruleNode = {} as AnyRule);
+                if (RuleSyntaxUtils.isRuleForUrl(ruleNode, url)) {
+                    return true;
+                }
+            }
+        } catch (e) {
+            logger.error('Cannot check user rules for url', e);
+        }
+
+        return false;
     }
 
     /**
@@ -98,6 +113,21 @@ export class UserRulesApi {
                 sourceMap: {},
                 conversionMap: {},
             };
+        }
+
+        return data;
+    }
+
+    /**
+     * Returns binary serialized, preprocessed rules from user list.
+     *
+     * @note This may include converted rules and does not include syntactically invalid rules.
+     */
+    public static async getBinaryUserRules(): Promise<Uint8Array[]> {
+        const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+
+        if (!data) {
+            return [];
         }
 
         return data;
@@ -148,7 +178,15 @@ export class UserRulesApi {
         const userRules = await UserRulesApi.getOriginalUserRules();
 
         await UserRulesApi.setUserRules(
-            userRules.filter((rule) => !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url)),
+            userRules.filter((rule) => {
+                try {
+                    return !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url);
+                } catch (e) {
+                    // Possible parsing error here.
+                    // Keep invalid rules in the list, because we need to keep everything that user added.
+                    return true;
+                }
+            }),
         );
     }
 
