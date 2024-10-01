@@ -50,6 +50,7 @@ import { addMinDelayLoader } from '../helpers';
 import { rootStore } from '../../../options/stores/RootStore';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
+import { NotificationType } from '../../../options/stores/UiStore';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
@@ -273,9 +274,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             }
         } catch (e) {
             logger.debug(e.message);
-            if (uiStore?.addNotification) {
-                uiStore.addNotification({ description: e.message });
-            }
+            uiStore.addNotification({
+                description: translator('options_popup_import_error_file_description'),
+                type: NotificationType.ERROR,
+            });
         }
 
         // eslint-disable-next-line no-param-reassign

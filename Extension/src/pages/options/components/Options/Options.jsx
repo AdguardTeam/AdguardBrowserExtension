@@ -38,7 +38,6 @@ import { Footer } from '../Footer';
 import { RulesLimits } from '../RulesLimits';
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
-import { Mv3Notifications } from '../Mv3Notifications';
 import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
@@ -49,6 +48,7 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { Icons } from '../ui/Icons';
+import { NotificationType } from '../../stores/UiStore';
 
 import '../../styles/styles.pcss';
 
@@ -63,7 +63,6 @@ const OptionsLayout = () => {
             <div className="inner">
                 <div className="content">
                     <Notifications />
-                    <Mv3Notifications />
                     <Outlet />
                 </div>
                 <Footer />
@@ -132,11 +131,12 @@ const Options = observer(() => {
 
             // Show notification about changed filter list by browser only once.
             if (__IS_MV3__ && areFilterLimitsExceeded) {
-                uiStore.addMv3Notification({
+                uiStore.addNotification({
                     description: translator.getMessage('popup_limits_exceeded_warning'),
                     extra: {
                         link: translator.getMessage('options_rule_limits'),
                     },
+                    type: NotificationType.ERROR,
                 });
             }
 

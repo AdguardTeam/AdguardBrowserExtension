@@ -31,6 +31,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { COLLECT_HITS_LEARN_MORE_URL } from '../../constants';
+import { NotificationType } from '../../stores/UiStore';
 
 export const Miscellaneous = observer(() => {
     const {
@@ -71,7 +72,10 @@ export const Miscellaneous = observer(() => {
 
     const handleResetStatisticsConfirm = async () => {
         await messenger.resetStatistics();
-        uiStore.addNotification({ description: translator.getMessage('options_reset_stats_done') });
+        uiStore.addNotification({
+            description: translator.getMessage('options_reset_stats_done'),
+            type: NotificationType.SUCCESS,
+        });
     };
 
     const handleResetSettingsClick = async () => {
@@ -86,9 +90,15 @@ export const Miscellaneous = observer(() => {
         if (result) {
             /* force all setting context data update with 'firstRender' option */
             settingsStore.requestOptionsData(true);
-            uiStore.addNotification({ description: translator.getMessage('options_reset_settings_done') });
+            uiStore.addNotification({
+                description: translator.getMessage('options_reset_settings_done'),
+                type: NotificationType.SUCCESS,
+            });
         } else {
-            uiStore.addNotification({ description: translator.getMessage('options_reset_settings_error') });
+            uiStore.addNotification({
+                description: translator.getMessage('options_reset_settings_error'),
+                type: NotificationType.ERROR,
+            });
         }
 
         if (__IS_MV3__) {

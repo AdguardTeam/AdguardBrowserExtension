@@ -50,6 +50,8 @@ import {
 } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
 
+import { NotificationType } from './UiStore';
+
 /**
  * Sometimes the options page might be opened before the background page is ready to provide data.
  * In this case, we need to retry getting data from the background service.
@@ -242,11 +244,12 @@ class SettingsStore {
         uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
 
         if (uiStore.dynamicRulesLimitsWarning) {
-            uiStore.addMv3Notification({
+            uiStore.addNotification({
                 description: uiStore.dynamicRulesLimitsWarning,
                 extra: {
                     link: translator.getMessage('options_rule_limits'),
                 },
+                type: NotificationType.ERROR,
             });
         }
 

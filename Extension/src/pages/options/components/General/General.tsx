@@ -38,7 +38,6 @@ import {
 } from '../../constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
-import { getErrorMessage } from '../../../../common/error';
 import { SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -47,6 +46,8 @@ import { Unknown } from '../../../../common/unknown';
 import { FiltersUpdateTime } from '../../../../common/constants';
 import { MessageType } from '../../../../common/messages';
 import { StaticFiltersLimitsWarning } from '../Warnings';
+import { logger } from '../../../../common/logger';
+import { NotificationType } from '../../stores/UiStore';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -138,12 +139,15 @@ export const General = observer(() => {
             return;
         }
 
+        let isSucceeded = true;
+
         try {
             const content = await handleFileUpload(file, 'json');
             const success = await handlePrivacyPermissionForWebRtc(content);
             if (!success) {
                 uiStore.addNotification({
                     description: translator.getMessage('options_popup_import_error_required_privacy_permission'),
+                    type: NotificationType.ERROR,
                 });
                 event.target.value = '';
                 return;
@@ -152,26 +156,27 @@ export const General = observer(() => {
             const result = await messenger.applySettingsJson(content);
 
             if (result) {
-                if (!__IS_MV3__) {
-                    const successMessage = translator.getMessage('options_popup_import_success_title');
-                    uiStore.addNotification({ description: successMessage });
-                } else {
-                    const limitsCheckResult = await settingsStore.checkLimitations();
-                    if (!limitsCheckResult.ok) {
-                        const message = translator.getMessage('options_popup_import_error_title');
-                        uiStore.addNotification({ description: message });
-                    } else {
-                        const successMessage = translator.getMessage('options_popup_import_success_title');
-                        uiStore.addNotification({ description: successMessage });
-                    }
+                if (__IS_MV3__) {
+                    await settingsStore.checkLimitations();
                 }
             } else {
-                const errorMessage = translator.getMessage('options_popup_import_error_file_description');
-                uiStore.addNotification({ description: errorMessage });
+                isSucceeded = false;
             }
         } catch (e) {
-            const message = getErrorMessage(e) || translator.getMessage('options_popup_import_error_title');
-            uiStore.addNotification({ description: message });
+            logger.debug(e);
+            isSucceeded = false;
+        }
+
+        if (isSucceeded) {
+            uiStore.addNotification({
+                description: translator.getMessage('options_popup_import_success_title'),
+                type: NotificationType.SUCCESS,
+            });
+        } else {
+            uiStore.addNotification({
+                description: translator.getMessage('options_popup_import_error_title'),
+                type: NotificationType.ERROR,
+            });
         }
 
         // eslint-disable-next-line no-param-reassign

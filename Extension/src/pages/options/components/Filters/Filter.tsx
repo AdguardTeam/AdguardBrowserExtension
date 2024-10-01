@@ -44,6 +44,7 @@ import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
 import { CustomFilterHelper } from '../../../../common/custom-filter-helper';
 import { getStaticWarningMessage } from '../Warnings/messages';
+import { NotificationType } from '../../stores/UiStore';
 
 import { formatDate } from './helpers';
 import { HighlightSearch } from './Search/HighlightSearch';
@@ -131,11 +132,12 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
 
                 const staticFiltersLimitsWarning = getStaticWarningMessage(result.data);
                 if (staticFiltersLimitsWarning) {
-                    uiStore.addMv3Notification({
+                    uiStore.addNotification({
                         description: staticFiltersLimitsWarning,
                         extra: {
                             link: translator.getMessage('options_rule_limits'),
                         },
+                        type: NotificationType.ERROR,
                     });
                 }
 

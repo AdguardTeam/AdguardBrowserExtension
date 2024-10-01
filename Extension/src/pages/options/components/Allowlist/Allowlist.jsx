@@ -38,6 +38,7 @@ import { exportData, ExportTypes } from '../../../common/utils/export';
 import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
+import { NotificationType } from '../../stores/UiStore';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
@@ -112,7 +113,10 @@ const Allowlist = observer(() => {
             setAllowlistRerender(true);
         } catch (e) {
             logger.debug(e.message);
-            uiStore.addNotification({ description: e.message });
+            uiStore.addNotification({
+                description: translator('options_popup_import_error_file_description'),
+                type: NotificationType.ERROR,
+            });
         }
 
         // eslint-disable-next-line no-param-reassign
