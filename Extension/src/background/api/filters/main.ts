@@ -655,31 +655,18 @@ export class FiltersApi {
     }
 
     /**
-     * Partially updates metadata and i18n metadata for one specified filter.
+     * Partially updates metadata for one specified not custom filter without
+     * changing metadata with translations for the filter.
      *
-     * @param filterId Filter id.
+     * @param filterMetadata Filter metadata.
      */
-    public static async partialUpdateMetadataFromRemoteForFilter(filterId: number): Promise<void> {
-        // Update i18n metadata with translations for the filter.
-        const i18nMetadata = await network.downloadI18nMetadataFromBackend();
-        if (!i18nMetadata.filters[filterId]) {
-            // eslint-disable-next-line max-len
-            logger.warn(`[partialUpdateMetadataFromRemoteForFilter]: cannot find i18n metadata for filter with id: ${filterId}`);
-            return;
-        }
-        const oldI18nMetadata = i18nMetadataStorage.getData();
-        oldI18nMetadata.filters[filterId] = i18nMetadata.filters[filterId];
-        i18nMetadataStorage.setData(oldI18nMetadata);
-
-        // Update general metadata with the newest filter metadata.
-        const metadata = await network.downloadMetadataFromBackend();
-        const filterMetadata = metadata.filters.find((f) => f.filterId === filterId);
-        if (!filterMetadata) {
-            // eslint-disable-next-line max-len
-            logger.warn(`[partialUpdateMetadataFromRemoteForFilter]: cannot find metadata for filter with id: ${filterId}`);
-            return;
-        }
+    public static partialUpdateMetadataForFilter(filterMetadata: RegularFilterMetadata): void {
+        // i18n metadata not changed, but it is needed for updating metadata
+        // via one method (without creating new methods) with translations.
         const oldMetadata = metadataStorage.getData();
+
+        const { filterId } = filterMetadata;
+
         const oldMetadataFilterIdx = oldMetadata.filters.findIndex((f) => f.filterId === filterId);
         if (oldMetadataFilterIdx !== -1) {
             oldMetadata.filters[oldMetadataFilterIdx] = filterMetadata;
@@ -687,8 +674,11 @@ export class FiltersApi {
             oldMetadata.filters.push(filterMetadata);
         }
 
-        // Merge them and update general metadata.
-        FiltersApi.updateMetadataWithI18nMetadata(oldMetadata, oldI18nMetadata);
+        FiltersApi.updateMetadataWithI18nMetadata(
+            oldMetadata,
+            // i18n metadata not changed.
+            i18nMetadataStorage.getData(),
+        );
     }
 
     /**
