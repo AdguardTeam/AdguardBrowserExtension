@@ -216,6 +216,14 @@ module.exports = {
         'jsdoc/no-undefined-types': 'off',
         'jsdoc/require-returns-check': 'off',
         'jsdoc/require-jsdoc': 'off',
+        'jsdoc/check-tag-names': [
+            'warn',
+            {
+                // Define additional tags
+                // https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/check-tag-names.md#definedtags
+                definedTags: ['note'],
+            },
+        ],
     },
     'ignorePatterns': [
         'node_modules',
