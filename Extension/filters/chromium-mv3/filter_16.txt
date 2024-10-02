@@ -1,8 +1,8 @@
-! Checksum: HeZaoabhi+Vs4+udzjED5Q
+! Checksum: 7XT+4i/Y5/zmUClGtgzLhQ
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.47.0
-! TimeUpdated: 2024-09-25T11:34:18+00:00
+! Version: 2.0.47.9
+! TimeUpdated: 2024-10-01T12:33:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,10 +219,10 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147842
-japscan.lol#%#//scriptlet('abort-current-inline-script', 'addEventListener', '/468_60.')
+japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
+japscan.lol#%#//scriptlet('remove-node-text', 'script', '/^\(function\(_0x|=\[(?:_0x[0-9a-f]{6}\(0x[0-9a-f]{2}\),){20}|\(\);\}$/')
 japscan.lol#$#.navbar-nav > li#navpromo2.nav-item > a[href^="https://www.origoclick.com"] { text-indent: -5000px !important; }
 japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '/^[-$0-9A-Z_a-z]+=>\{const .+\)\( \);\}catch\(/')
-$script,xmlhttprequest,redirect-rule=noopjs,domain=japscan.lol
 @@$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,script,~third-party
 japscan.lol#@#.tangoai
@@ -624,7 +624,6 @@ tf1.fr,tf1info.fr#%#//scriptlet('prevent-fetch', '/^https:\/\/ads\.stickyadstv\.
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/180259
 tf1info.fr#%#//scriptlet('prevent-element-src-loading', 'script', '/hubvisor\.io|pbstck\.com|batch\.com|securepubads\.g\.doubleclick\.net|ownpage\.fr|teads\.tv/')
-$script,redirect-rule=noopjs,domain=tf1info.fr
 ! Allowed mainly for "adguard_app_ios" and "adguard_ext_android_cb" (fallback solution for others)
 !#safari_cb_affinity(privacy)
 @@||cdn.tagcommander.com/*/tc_TF1*.js$domain=tf1.fr|tf1info.fr
@@ -912,6 +911,8 @@ $xmlhttprequest,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com
 !
 !
 !
+orange.fr##div[class^="media-advert"]
+orange.fr##.tag-rm
 cuisineaz.com##.banniere-haute-wrapper
 cuisineaz.com###bottomArticle
 nicematin.com##aside > .desktop-right-col-sticky > .sticky-multi-level-container:has(> .sticky-content > .ad-slot-container)

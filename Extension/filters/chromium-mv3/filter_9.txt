@@ -1,8 +1,8 @@
-! Checksum: 9AhbKfd6QbCNzwCpWGSGbg
+! Checksum: q3NWZdMxIP3/2T4Cdayd/Q
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.26.70
-! TimeUpdated: 2024-09-24T06:33:00+00:00
+! Version: 2.0.26.73
+! TimeUpdated: 2024-10-01T14:33:01+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -352,7 +352,6 @@ novatecnology.com,tipsdesalud.tips#$#body > ins.adsbygoogle { display: block !im
 novatecnology.com,tipsdesalud.tips#$#body > .textads.banner-ads { display: block !important; }
 novatecnology.com,tipsdesalud.tips#$#body > div[id^="div-gpt-ad-"] { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176820
-$script,xmlhttprequest,redirect-rule=nooptext,domain=luratoons.com|lura-toons.com
 luratoons.com,lura-toons.com#%#//scriptlet('abort-on-property-read', 'block_ads')
 luratoons.com,lura-toons.com#%#//scriptlet('abort-current-inline-script', 'fetch', '/alert|bloqueador|\.catch|\.type/')
 luratoons.com,lura-toons.com#%#//scriptlet('prevent-element-src-loading', 'script', 'pagead2.googlesyndication.com')
@@ -501,8 +500,6 @@ atv.pe,monumental.co.cr,elcomercio.com,antena7.com.do,rqp.com.bo,canal12.com.sv,
 atv.pe,monumental.co.cr,elcomercio.com,antena7.com.do,rqp.com.bo,canal12.com.sv,chapintv.com,vtv.com.hn,tn23.tv,canal13mexico.com,c9n.com.py,repretel.com,redbolivision.tv.bo#%#//scriptlet('set-constant', 'googletag._loaded_', 'true')
 atv.pe,monumental.co.cr,elcomercio.com,antena7.com.do,rqp.com.bo,canal12.com.sv,chapintv.com,vtv.com.hn,tn23.tv,canal13mexico.com,c9n.com.py,repretel.com,redbolivision.tv.bo#%#//scriptlet('prevent-fetch', 'securepubads.g.doubleclick.net/pagead/ppub_config')
 atv.pe,monumental.co.cr,elcomercio.com,antena7.com.do,rqp.com.bo,canal12.com.sv,chapintv.com,vtv.com.hn,tn23.tv,canal13mexico.com,c9n.com.py,repretel.com,redbolivision.tv.bo#%#//scriptlet('prevent-element-src-loading', 'script', 'securepubads.g.doubleclick.net/tag/js/gpt.js')
-||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect-rule=noopjs,domain=redbolivision.tv.bo|repretel.com|c9n.com.py|tn23.tv|canal13mexico.com|vtv.com.hn|chapintv.com|canal12.com.sv|rqp.com.bo|antena7.com.do|elcomercio.com|monumental.co.cr|atv.pe
-||securepubads.g.doubleclick.net/pagead/ppub_config$xmlhttprequest,redirect-rule=nooptext,domain=redbolivision.tv.bo|repretel.com|c9n.com.py|tn23.tv|canal13mexico.com|vtv.com.hn|chapintv.com|canal12.com.sv|rqp.com.bo|antena7.com.do|elcomercio.com|monumental.co.cr|atv.pe
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=redbolivision.tv.bo|repretel.com|c9n.com.py|tn23.tv|canal13mexico.com|vtv.com.hn|chapintv.com|canal12.com.sv|rqp.com.bo|antena7.com.do|elcomercio.com|monumental.co.cr|atv.pe
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159624
 animesonline.nz##.detectadb
@@ -548,8 +545,6 @@ negociosecommerce.com,puromarketing.com,todostartups.com#@#.adxs-vertisements
 ! https://github.com/AdguardTeam/AdguardFilters/issues/148011
 hinatasoul.com#%#//scriptlet('abort-on-property-read', 'adBlockFunction')
 hinatasoul.com#%#//scriptlet('abort-current-inline-script', 'document.getElementsByTagName', 'adsbygoogle.js')
-!+ NOT_PLATFORM(windows, mac, android)
-$script,redirect-rule=noopjs,domain=hinatasoul.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/146455
 niusdiario.es#@#.sponsored_ad
 niusdiario.es#%#//scriptlet('set-constant', '$MICROSITE_INFO.blockAdBlock', 'false')
@@ -621,7 +616,6 @@ pobre.wtf#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 @@||suaurl.com^$generichide
 @@||reidoplacar.com^$generichide
 @@||suaads.com^$generichide
-$xmlhttprequest,redirect-rule=nooptext,domain=suaurl.com|reidoplacar.com|suaads.com
 suaads.com,reidoplacar.com,suaurl.com#%#//scriptlet('prevent-fetch', '/^(?!.*(chrome-extension:)).*$/ method:HEAD')
 suaads.com,reidoplacar.com,suaurl.com#%#//scriptlet('prevent-setTimeout', 'Por favor, desative')
 suaads.com,reidoplacar.com,suaurl.com#%#//scriptlet('prevent-setInterval', '/adblock|Por favor, desative|adsbygoogle\.js/')
@@ -850,17 +844,19 @@ caroloportunidades.com.br#$##player { display: block !important; }
 caroloportunidades.com.br#%#//scriptlet('prevent-xhr', 'popads.net')
 caroloportunidades.com.br#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
 @@||popads.net/js/adblock.js$xmlhttprequest,domain=caroloportunidades.com.br
+! https://github.com/AdguardTeam/AdguardFilters/issues/190058
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186902
 ! https://github.com/AdguardTeam/AdguardFilters/issues/184038
 /asb1.js$domain=anitube.vip|hinatasoul.com|anitube.us
-@@||ads.anitube.vip^$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us
-@@||popads.net/js/adblock.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us
-@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us
-@@||widgets.outbrain.com/outbrain.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us
-anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('set-constant', 'detectedAdblock', 'noopFunc')
-anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('prevent-fetch', '/outbrain\.com|adligature\.com|quantserve\.com|srvtrck\.com/')
+@@||ads.anitube.vip^$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br
+@@||popads.net/js/adblock.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br
+@@||widgets.outbrain.com/outbrain.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br
+coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
+coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('set-constant', 'detectedAdblock', 'noopFunc')
+coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('prevent-fetch', '/outbrain\.com|adligature\.com|quantserve\.com|srvtrck\.com/')
 ! Fix for DNS filtering
-anitube.us,dattebayo-br.com,anitube.vip,hinatasoul.com#%#(()=>{let e="";const t={apply:(t,o,n)=>(n[1]&&n[1].includes("//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")&&(o.prevent=!0,e=n[1]),Reflect.apply(t,o,n))};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,t);const o={apply:async(t,o,n)=>{if(o.prevent){const t=()=>Promise.resolve(o).then((e=>{try{e.responseText||Object.defineProperty(e,"responseText",{value:"google_plmetrics"}),"function"==typeof e.onload&&e.onload(),"function"==typeof e.onreadystatechange&&(Object.defineProperty(e,"status",{value:200}),Object.defineProperty(e,"readyState",{value:4}),e.onreadystatechange())}catch(e){console.trace(e)}}));try{const o=await fetch(e);if((await o.text()).length<2e3)return t()}catch(e){return t()}}return Reflect.apply(t,o,n)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,o)})();
+coempregos.com.br,anitube.us,dattebayo-br.com,anitube.vip,hinatasoul.com#%#(()=>{let e="";const t={apply:(t,o,n)=>(n[1]&&n[1].includes("//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")&&(o.prevent=!0,e=n[1]),Reflect.apply(t,o,n))};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,t);const o={apply:async(t,o,n)=>{if(o.prevent){const t=()=>Promise.resolve(o).then((e=>{try{e.responseText||Object.defineProperty(e,"responseText",{value:"google_plmetrics"}),"function"==typeof e.onload&&e.onload(),"function"==typeof e.onreadystatechange&&(Object.defineProperty(e,"status",{value:200}),Object.defineProperty(e,"readyState",{value:4}),e.onreadystatechange())}catch(e){console.trace(e)}}));try{const o=await fetch(e);if((await o.text()).length<2e3)return t()}catch(e){return t()}}return Reflect.apply(t,o,n)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,o)})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157756
 ! Link from anitube.vip
 dicasgostosas.com#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
@@ -2208,6 +2204,7 @@ globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.c
 ! ##body .banner
 meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.info,lapoliticaonline.com.mx,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.gov.bd,lapoliticaonline.gov.np,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+poder360.com.br##aside > .box-advertising
 ||impactoespananoticias.com/download/publicidades.video.*.mp4$media,redirect=noopmp4-1s,domain=impactoespananoticias.com
 geniol.com.br##.ads-margin-both
 geniol.com.br#$#.row-container-game > .ad-game + .container-game { width: 100% !important; }
@@ -3190,7 +3187,7 @@ cienradios.com##.navBarAd
 cienradios.com##.d-grid > div[class*="Caja-"]
 pelisplus.one##.e3lan
 elperiodicoextremadura.com##[data-ad-position-baldomero]:not([data-bbnx-module])
-oglobo.globo.com,techtudo.com.br###ad-container-top-placeholder
+globo.com,techtudo.com.br###ad-container-top-placeholder
 em.com.br##.containerads
 pelando.com.br##div[aria-label="anúncio patrocinado"]
 bioguia.com##.am-slot
@@ -3602,7 +3599,7 @@ lapoliticaonline.com,lapoliticaonline.info,lapoliticaonline.com.mx,lapoliticaonl
 onepieceex.net##.banner-resposivo
 tecmundo.com.br##p > a[href^="https://bit.ly/"][target="_blank"] > span > img
 ||img.ibxk.com.br/*/banner-*.png$domain=tecmundo.com.br
-g24.gal,levelup.com,eldiario.es,tuasaude.com,globo.com,eltiempo.com,gauchazh.clicrbs.com.br,hobbyconsolas.com,larepublica.pe,vozpopuli.com##.ad-container
+sicnoticias.pt,g24.gal,levelup.com,eldiario.es,tuasaude.com,globo.com,eltiempo.com,gauchazh.clicrbs.com.br,hobbyconsolas.com,larepublica.pe,vozpopuli.com##.ad-container
 hobbyconsolas.com##div[class^="ad-slot_"]
 hobbyconsolas.com##div[class^="placeholder_placeholder"]
 vozpopuli.com##.home_1_ad
@@ -5604,6 +5601,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/189639
+poder360.com.br#@#.box-advertising
 ! https://github.com/uBlockOrigin/uAssets/issues/25051
 ||imasdk.googleapis.com/js/sdkloader/ima3_debug.js$script,redirect=google-ima3,domain=mais.sbt.com.br
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185825
