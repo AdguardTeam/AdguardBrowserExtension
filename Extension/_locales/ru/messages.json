@@ -141,8 +141,8 @@
         "message": "AdGuard Антибаннер"
     },
     "description": {
-        "description": "TEXT MAX LENGTH: 132",
-        "message": "Эффективное расширение для блокировки рекламы и всплывающих окон. Блокирует рекламу в VK, Одноклассниках, YouTube и других сайтах."
+        "message": "Эффективное расширение для блокировки рекламы и всплывающих окон. Блокирует рекламу в VK, Одноклассниках, YouTube и других сайтах.",
+        "description": "TEXT MAX LENGTH: 132"
     },
     "background_tab_title": {
         "message": "Фоновая вкладка"
@@ -151,16 +151,19 @@
         "message": "Белый список"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard не фильтрует рекламу на сайтах, добавленных в белый список."
+        "message": "AdGuard не фильтрует рекламу на сайтах из белого списка"
     },
     "options_allowlist_invert": {
         "message": "Инвертировать белый список"
     },
     "options_allowlist_invert_desc": {
-        "message": "Разблокировать рекламу везде, кроме сайтов из белого списка."
+        "message": "Разблокировать рекламу везде, кроме сайтов из белого списка"
     },
     "options_allowlist_alert_invert": {
         "message": "Белый список инвертирован. Реклама блокируется только на сайтах из списка. <a>Отключить<\/a>"
+    },
+    "options_allowlist_leave_subtitle": {
+        "message": "Ваши изменения в белом списке не сохранятся"
     },
     "options_userfilter": {
         "message": "Пользовательские правила"
@@ -256,10 +259,10 @@
         "message": "Чтобы импортировать этот файл, разрешите AdGuard изменить ваши настройки конфиденциальности."
     },
     "options_popup_import_success_title": {
-        "message": "Настройки успешно импортированы"
+        "message": "Настройки импортированы"
     },
     "options_popup_import_error_title": {
-        "message": "Ошибка импорта настроек"
+        "message": "Не удалось импортировать настройки"
     },
     "options_popup_import_error_file_description": {
         "message": "Что-то пошло не так"
@@ -307,7 +310,7 @@
         "message": "Заблокировано: %num%"
     },
     "popup_tab_blocked_all_count": {
-        "message": "Всего: %num%"
+        "message": "Заблокировано: %num%"
     },
     "popup_statistics_total": {
         "message": "Всего правил"
@@ -421,7 +424,7 @@
         "message": "ПОДРОБНЕЕ"
     },
     "popup_block_site_ads_option": {
-        "message": "Блокировать рекламу на этом сайте"
+        "message": "Блокировать рекламу вручную"
     },
     "popup_security_report": {
         "message": "Проверить безопасность сайта"
@@ -430,16 +433,16 @@
         "message": "Удалить правила для этого сайта"
     },
     "context_block_site_ads": {
-        "message": "Заблокировать рекламу на сайте..."
+        "message": "Блокировать рекламу вручную"
     },
     "context_security_report": {
-        "message": "Проверить безопасность сайта..."
+        "message": "Проверить безопасность сайта"
     },
     "context_complaint_website": {
-        "message": "Сообщить о проблеме..."
+        "message": "Сообщить о проблеме"
     },
     "context_site_filtering_disabled": {
-        "message": "AdGuard не работает на этом домене"
+        "message": "AdGuard не может фильтровать эту страницу"
     },
     "context_disable_protection": {
         "message": "Приостановить защиту AdGuard"
@@ -451,10 +454,10 @@
         "message": "Защита AdGuard приостановлена"
     },
     "context_open_settings": {
-        "message": "Настроить AdGuard..."
+        "message": "Настройки AdGuard"
     },
     "context_open_log": {
-        "message": "Журнал фильтрации..."
+        "message": "Журнал фильтрации"
     },
     "context_site_exception": {
         "message": "Сайт находится в исключениях"
@@ -502,10 +505,10 @@
         "message": "Поиск по вкладкам"
     },
     "filtering_log_preserve_log_off": {
-        "message": "Сохранять журнал: НЕТ"
+        "message": "Не записывать лог"
     },
     "filtering_log_preserve_log_on": {
-        "message": "Сохранять журнал: ДА"
+        "message": "Записывать лог"
     },
     "filtering_refresh_tab_short": {
         "message": "Обновить"
@@ -685,7 +688,7 @@
         "message": "Блокировать поисковую рекламу и саморекламу сайтов"
     },
     "options_block_acceptable_ads_desc": {
-        "message": "Избавьтесь от <a>саморекламы сайтов и контекстной рекламы<\/a>, появляющейся в результатах поиска."
+        "message": "Удалять саморекламу с сайтов и контекстную рекламу из результатов поиска. <a>Подробнее<\/a>"
     },
     "options_show_blocked_ads_count_title": {
         "message": "Показывать количество заблокированной рекламы на иконке расширения AdGuard"
@@ -694,7 +697,7 @@
         "message": "Автоматически подключать наиболее подходящие фильтры"
     },
     "options_enable_autodetect_filter_desc": {
-        "message": "Фильтры для конкретных языков будут включаться в зависимости от языка сайта."
+        "message": "Фильтры для конкретных языков будут включаться в зависимости от языка сайта"
     },
     "options_select_theme": {
         "message": "Тема"
@@ -736,13 +739,22 @@
         "message": "Автообновление фильтров"
     },
     "options_set_update_interval_desc": {
-        "message": "Для более эффективной блокировки фильтры необходимо регулярно обновлять."
+        "message": "Для более эффективной блокировки фильтры необходимо регулярно обновлять"
     },
     "options_userfilter_export": {
         "message": "Экспорт"
     },
     "options_editor_save": {
         "message": "Сохранить"
+    },
+    "options_editor_leave_title": {
+        "message": "Выйти без сохранения?"
+    },
+    "options_editor_leave_confirm": {
+        "message": "Да, выйти"
+    },
+    "options_editor_leave_cancel": {
+        "message": "К редактированию"
     },
     "options_userfilter_import": {
         "message": "Импорт"
@@ -751,13 +763,16 @@
         "message": "Здесь вы можете добавлять свои правила. Эта опция рекомендована для продвинутых пользователей, знакомых с HTML\/CSS. Прочитайте <a>руководство<\/a>, чтобы научиться составлять свои правила фильтрации."
     },
     "options_userfilter_subtitle_key": {
-        "message": "Используйте собственные правила для более точной блокировки."
+        "message": "Использовать правила для более точной блокировки"
     },
     "options_userfilter_line_break_off": {
         "message": "Разрыв строки отключён"
     },
     "options_userfilter_line_break_on": {
         "message": "Разрыв строки включён"
+    },
+    "options_userfilter_leave_subtitle": {
+        "message": "Ваши изменения в правилах не сохранятся"
     },
     "options_open_changelog": {
         "message": "Список изменений"
@@ -895,7 +910,7 @@
         "message": "Помочь с разработкой фильтров AdGuard"
     },
     "options_collect_hit_stats_desc": {
-        "message": "Отправляйте <a>анонимную статистику использования рекламных фильтров<\/a>, это поможет нам улучшить и оптимизировать их."
+        "message": "Отправлять <a>анонимную статистику об использовании рекламных фильтров<\/a>, чтобы помочь AdGuard улучшить их"
     },
     "options_show_context_menu_title": {
         "message": "Добавить AdGuard в контекстное меню браузера"
@@ -910,25 +925,25 @@
         "message": "Защита от трекинга"
     },
     "options_privacy_desc": {
-        "message": "Защищает ваши данные от тысяч онлайн-трекеров, блокируя наиболее популярные методы отслеживания."
+        "message": "Защищать данные от онлайн-трекеров, блокируя наиболее популярные методы отслеживания"
     },
     "options_hide_referrer_title": {
         "message": "Скрыть Referer от сторонних ресурсов"
     },
     "options_hide_referrer_desc": {
-        "message": "Не позволяет сторонним ресурсам узнать, какой сайт вы посещаете"
+        "message": "Не позволять сторонним ресурсам узнать, какой сайт вы посещаете"
     },
     "options_hide_search_queries_title": {
         "message": "Скрывать поисковые запросы"
     },
     "options_hide_search_queries_desc": {
-        "message": "Скрывать запросы для сайтов, на которые вы перешли из поисковой системы"
+        "message": "Скрывать запросы для сайтов, на которые вы пришли из поисковой системы"
     },
     "options_send_not_track_title": {
         "message": "Просить сайты не отслеживать вас"
     },
     "options_send_not_track_desc": {
-        "message": "Отправлять сигналы <gpc>Global Privacy Control<\/gpc> и <dnt>Do Not Track<\/dnt> сайтам, которые вы посещаете."
+        "message": "Отправлять сигналы <gpc>Global Privacy Control<\/gpc> и <dnt>Do Not Track<\/dnt> сайтам, которые вы посещаете"
     },
     "options_stripped_tracking_parameters": {
         "message": "Параметры отслеживания удалены"
@@ -943,37 +958,37 @@
         "message": "Удалять заголовок X-Client-Data"
     },
     "options_remove_client_data_desc": {
-        "message": "Блокирует отправку Google Chrome информации о версии и изменениях доменам Google."
+        "message": "Блокировать отправку Google Chrome информации о версии и изменениях доменам Google"
     },
     "options_disable_webrtc_title": {
         "message": "Отключить WebRTC"
     },
     "options_disable_webrtc_desc": {
-        "message": "WebRTC может позволить другим узнать ваш реальный IP-адрес, даже если вы используете прокси-сервер или VPN."
+        "message": "WebRTC может позволить другим узнать ваш реальный IP-адрес, даже если вы используете прокси-сервер или VPN"
     },
     "options_strip_tracking_params_title": {
         "message": "Удалять параметры отслеживания"
     },
     "options_strip_tracking_params_description": {
-        "message": "Использовать Фильтр отслеживания по URL для удаления параметров отслеживания из адресов страниц."
+        "message": "Удалять параметры из запросов с помощью Фильтра отслеживания по URL"
     },
     "options_block_known_trackers_title": {
         "message": "Блокировать трекеры"
     },
     "options_block_known_trackers_description": {
-        "message": "Использовать Фильтр счётчиков и систем аналитики для блокировки трекеров."
+        "message": "Использовать Фильтр счётчиков и систем аналитики для блокировки трекеров"
     },
     "options_third_party_title": {
         "message": "Самоуничтожение сторонних куки"
     },
     "options_third_party_desc": {
-        "message": "Ограничить время существования сторонних файлов cookie (минуты)."
+        "message": "Ограничить время существования сторонних файлов cookie"
     },
     "options_first_party_title": {
         "message": "Самоуничтожение куки сайта (не рекомендуется)"
     },
     "options_first_party_desc": {
-        "message": "Ограничить время существования основных файлов cookie (минуты)."
+        "message": "Ограничить время существования основных файлов cookie"
     },
     "popup_abuse_site": {
         "message": "Сообщить о проблеме"
@@ -1048,34 +1063,37 @@
         "message": "Браузерное расширение AdGuard"
     },
     "group_description_adblocking": {
-        "message": "Настроить блокировку рекламы, чтобы раз и навсегда избавиться от надоедливых баннеров, всплывающих окон, видеорекламы и прочих раздражителей."
+        "message": "Настройте блокировку рекламы, чтобы раз и навсегда избавиться от надоедливых баннеров, всплывающих окон, видеорекламы и прочих раздражителей"
     },
     "group_description_stealth": {
-        "message": "Защитите личные данные от онлайн-трекеров, заблокировав все известные популярные методы отслеживания."
+        "message": "Защитите личные данные от онлайн-трекеров, заблокировав все известные популярные методы отслеживания"
     },
     "group_description_social": {
-        "message": "Скройте ненужные кнопки «Нравится», «Поделиться» и другие виджеты социальных сетей."
+        "message": "Скройте ненужные кнопки «Нравится», «Поделиться» и другие виджеты социальных сетей"
     },
     "group_description_annoyances": {
-        "message": "Уберите всплывающие окна и другие раздражающие уведомления, например уведомления о файлах cookie."
+        "message": "Уберите всплывающие окна и другие раздражающие уведомления, например уведомления о файлах cookie"
     },
     "group_description_security": {
-        "message": "Защитите себя от вредоносных программ, фишинга и других онлайн-угроз."
+        "message": "Защитите себя от вредоносных программ, фишинга и других онлайн-угроз"
     },
     "group_description_miscellaneous": {
-        "message": "Дополнительные настройки, чтобы сделать веб-сёрфинг ещё более удобным с помощью AdGuard."
+        "message": "Дополнительные настройки, чтобы сделать веб-сёрфинг ещё более удобным с помощью AdGuard"
     },
     "group_description_custom": {
         "message": "Создавайте свои фильтры, чтобы ещё более детально настроить веб-фильтрацию под себя."
     },
     "group_description_lang": {
-        "message": "Не ограничивайте себя — блокируйте рекламу на сайтах на любых языках."
+        "message": "Не ограничивайте себя — блокируйте рекламу на сайтах на любых языках"
     },
     "fullscreen_user_rules_title": {
         "message": "Пользовательские правила"
     },
     "options_user_rules_editor_stub_title": {
-        "message": "Редактор уже открыт"
+        "message": "Редактор открыт в другом окне"
+    },
+    "options_user_rules_editor_stub_subtitle": {
+        "message": "Ваши правила появятся здесь после того, как вы его закроете"
     },
     "options_user_rules_editor_stub_go_to_editor_button": {
         "message": "Перейти в редактор"
@@ -1111,25 +1129,25 @@
         "message": "Попробовать снова"
     },
     "filtering_log_tag_tooltip_first_party": {
-        "message": "Только внутренние запросы"
+        "message": "Внутренние запросы"
     },
     "filtering_log_tag_tooltip_third_party": {
-        "message": "Только сторонние запросы"
+        "message": "Сторонние запросы"
     },
     "filtering_log_tag_tooltip_regular": {
-        "message": "Только запросы, обработанные без фильтрации"
+        "message": "Запросы, обработанные без фильтрации"
     },
     "filtering_log_tag_tooltip_allowed": {
-        "message": "Только разрешённые и разблокированные запросы"
+        "message": "Разрешённые и разблокированные запросы"
     },
     "filtering_log_tag_tooltip_blocked": {
-        "message": "Только заблокированные запросы"
+        "message": "Заблокированные запросы"
     },
     "filtering_log_tag_tooltip_modified": {
-        "message": "Только изменённые запросы"
+        "message": "Изменённые запросы"
     },
     "filtering_log_tag_tooltip_user_rules": {
-        "message": "Только запросы, изменённые пользовательскими правилами"
+        "message": "Запросы, на которые влияют пользовательские правила"
     },
     "filtering_log_tag_tooltip_html": {
         "message": "Документы и поддокументы"
@@ -1162,8 +1180,7 @@
         "message": "Код состояния HTTP"
     },
     "filtering_log_assumed_rule_description": {
-        "description": "<dot><\/dot> is a placeholder for red-dot, do not insert text there - it will be ignored.",
-        "message": "<dot><\/dot> означает предполагаемое правило, подробнее читайте <a>в документации<\/a>"
+        "message": "Это предполагаемое правило. Подробности см. в нашей <a>Базе знаний<\/a>"
     },
     "options_stealth_general_title": {
         "message": "Общие"
@@ -1217,16 +1234,16 @@
         "message": "Закрыть"
     },
     "filtering_modal_applied_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "| Применённое правило: | Применённые правила: | Применённые правила:"
+        "message": "| Применённое правило: | Применённые правила: | Применённые правила:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "| Предполагаемое правило: | Предполагаемые правила: | Предполагаемые правила:"
+        "message": "| Предполагаемое правило: | Предполагаемые правила: | Предполагаемые правила:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_original_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "| Оригинальное правило: | Оригинальные правила: | Оригинальные правила:"
+        "message": "| Оригинальное правило: | Оригинальные правила: | Оригинальные правила:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_declarative_rule": {
         "message": "Правило DNR:"

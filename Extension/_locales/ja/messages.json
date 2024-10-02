@@ -141,8 +141,8 @@
         "message": "AdGuard 広告ブロッカー"
     },
     "description": {
-        "description": "TEXT MAX LENGTH: 132",
-        "message": "AdGuardは、広告やポップアップ対処には比類のない広告ブロック拡張機能です。Facebook、YouTubeやその他のサイトで広告をブロックします。"
+        "message": "AdGuardは、広告やポップアップ対処には比類のない広告ブロック拡張機能です。Facebook、YouTubeやその他のサイトで広告をブロックします。",
+        "description": "TEXT MAX LENGTH: 132"
     },
     "background_tab_title": {
         "message": "バックグラウンド・タブ"
@@ -151,16 +151,19 @@
         "message": "ホワイトリスト"
     },
     "options_allowlist_desc": {
-        "message": "ホワイトリストにあるウェブサイトでAdGuardはフィルタリング（広告等をブロック）しません。"
+        "message": "ホワイトリストにあるウェブサイトでAdGuardはフィルタリング（広告等のブロック）しません。"
     },
     "options_allowlist_invert": {
         "message": "ホワイトリストを逆転する"
     },
     "options_allowlist_invert_desc": {
-        "message": "ホワイトリストに入っているサイトのみで広告がブロックされるようになる、という逆効果を有効にできる機能です。"
+        "message": "ホワイトリスト以外のすべてのサイトで広告をブロックしないようにします。"
     },
     "options_allowlist_alert_invert": {
         "message": "ホワイトリスト逆転中（リストにあるサイトでのみ広告をブロック）。<a>逆転をオフにする<\/a>"
+    },
+    "options_allowlist_leave_subtitle": {
+        "message": "ホワイトリストへの変更は失われます"
     },
     "options_userfilter": {
         "message": "ユーザールール"
@@ -256,10 +259,10 @@
         "message": "この設定ファイルをインポートするには、AdGuardにプライバシー関連設定の変更を許可してください。"
     },
     "options_popup_import_success_title": {
-        "message": "設定が正常にインポートされました！"
+        "message": "設定インポート完了です。"
     },
     "options_popup_import_error_title": {
-        "message": "設定のインポート中にエラーが発生しました。"
+        "message": "設定をインポートできませんでした"
     },
     "options_popup_import_error_file_description": {
         "message": "恐れ入りますが、なにかの問題が発生しました。"
@@ -307,7 +310,7 @@
         "message": "ブロック済み数: %num%"
     },
     "popup_tab_blocked_all_count": {
-        "message": "ブロック済み総数: %num%"
+        "message": "ブロック総数: %num%"
     },
     "popup_statistics_total": {
         "message": "合計"
@@ -403,13 +406,13 @@
         "message": "は更新されました。"
     },
     "options_popup_version_update_title_text": {
-        "message": "AdGuard拡張機能はただいま バージョン%current_version% にアップデートされました"
+        "message": "AdGuard拡張機能はただいま v%current_version% にアップデートされました。"
     },
     "options_popup_version_update_description_minor": {
         "message": "このバージョンには主にバグ修正と軽微な改善が含まれています。"
     },
     "options_popup_version_update_description_major": {
-        "message": "これは、多くの新機能と改善をもたらすメジャーな拡張機能アップグレードです。"
+        "message": "今回の新バージョンは、多くの新機能と改善をもたらすメジャーアップデートです。"
     },
     "options_popup_version_update_changelog_text": {
         "message": "本バージョンの新機能"
@@ -421,7 +424,7 @@
         "message": "詳細はこちら"
     },
     "popup_block_site_ads_option": {
-        "message": "このサイトで広告をブロックする"
+        "message": "手動で広告をブロックする"
     },
     "popup_security_report": {
         "message": "サイトの安全性を確認する"
@@ -430,16 +433,16 @@
         "message": "このサイトに対するユーザールールを削除する"
     },
     "context_block_site_ads": {
-        "message": "このウェブサイトの広告をブロックする..."
+        "message": "手動で広告をブロックする"
     },
     "context_security_report": {
-        "message": "サイトの安全性を確認する..."
+        "message": "サイトの安全性を確認する"
     },
     "context_complaint_website": {
-        "message": "不具合・問題を報告する…"
+        "message": "問題を報告する"
     },
     "context_site_filtering_disabled": {
-        "message": "このドメインではAdGuardは動作できません"
+        "message": "AdGuard はこのページをフィルタリングできません"
     },
     "context_disable_protection": {
         "message": "AdGuardの保護を一時的に停止する"
@@ -454,7 +457,7 @@
         "message": "AdGuard 設定"
     },
     "context_open_log": {
-        "message": "フィルタリングログ..."
+        "message": "フィルタリングログを開く"
     },
     "context_site_exception": {
         "message": "このウェブサイトは例外として登録されています"
@@ -502,10 +505,10 @@
         "message": "タブで検索"
     },
     "filtering_log_preserve_log_off": {
-        "message": "ログを保存: OFF"
+        "message": "ログを記録しない"
     },
     "filtering_log_preserve_log_on": {
-        "message": "ログを保存: ON"
+        "message": "ログを記録する"
     },
     "filtering_refresh_tab_short": {
         "message": "更新する"
@@ -685,7 +688,7 @@
         "message": "検索広告やサイトの自己宣伝をブロックする"
     },
     "options_block_acceptable_ads_desc": {
-        "message": "検索結果に表示される<a>サイトの自己宣伝やコンテキストベース広告<\/a>を排除します。"
+        "message": "ウェブサイトから自己宣伝広告を削除し、検索結果からコンテキスト広告を削除します。<a>詳しくはこちら<\/a>"
     },
     "options_show_blocked_ads_count_title": {
         "message": "AdGuard拡張機能アイコンで広告ブロック数を表示する"
@@ -744,6 +747,15 @@
     "options_editor_save": {
         "message": "保存する"
     },
+    "options_editor_leave_title": {
+        "message": "保存せずに終了しますか？"
+    },
+    "options_editor_leave_confirm": {
+        "message": "はい（破棄）"
+    },
+    "options_editor_leave_cancel": {
+        "message": "いいえ（編集を続行）"
+    },
     "options_userfilter_import": {
         "message": "インポート"
     },
@@ -758,6 +770,9 @@
     },
     "options_userfilter_line_break_on": {
         "message": "改行（line break）: 有効"
+    },
+    "options_userfilter_leave_subtitle": {
+        "message": "ルールの変更は失われます"
     },
     "options_open_changelog": {
         "message": "チェンジログ"
@@ -895,7 +910,7 @@
         "message": "AdGuardフィルタの開発と改善に協力する"
     },
     "options_collect_hit_stats_desc": {
-        "message": "広告フィルターの改善と最適化に役立つ、<a>広告フィルターの使用状況に関する匿名の統計情報<\/a>を送信します。"
+        "message": "AdGuardフィルタの改善に役立てるため、<a>広告フィルターの使用状況に関する匿名の統計情報<\/a>を送信します。"
     },
     "options_show_context_menu_title": {
         "message": "ブラウザの右クリックメニューにAdGuardを追加する"
@@ -910,25 +925,25 @@
         "message": "トラッキング防止"
     },
     "options_privacy_desc": {
-        "message": "最も人気な追跡手段をブロックすることで、幾千ものオンライン追跡からアイデンティティや機密な個人情報を守ります。"
+        "message": "何千ものオンライントラッカーからあなたの個人情報とプライバシーを保護するために、普及している追跡方法をすべてブロックします。"
     },
     "options_hide_referrer_title": {
         "message": "サードパーティからRefererを隠す"
     },
     "options_hide_referrer_desc": {
-        "message": "訪問先のウェブサイトを第三者に知られないようにします。"
+        "message": "ユーザーがどんなウェブサイトを訪問しているかを、サードパーティに知られないようにします。"
     },
     "options_hide_search_queries_title": {
         "message": "自分の検索クエリを隠す"
     },
     "options_hide_search_queries_desc": {
-        "message": "検索エンジンから訪問したウェブサイトに対するクエリを隠します。"
+        "message": "検索エンジンから訪問したウェブサイトのクエリを隠します。"
     },
     "options_send_not_track_title": {
         "message": "サイトに「追跡しないで」と要求する"
     },
     "options_send_not_track_desc": {
-        "message": "あなたがアクセスする各ウェブサイトに<gpc>Global Privacy Control<\/gpc>およびトラッキング拒否（<dnt>Do Not Track<\/dnt>）シグナルを送信します。"
+        "message": "訪問する各ウェブサイトに<gpc>Global Privacy Control<\/gpc>およびトラッキング拒否（<dnt>Do Not Track<\/dnt>）シグナルを送信します。"
     },
     "options_stripped_tracking_parameters": {
         "message": "追跡パラメータ除去済み"
@@ -943,19 +958,19 @@
         "message": "X-Client-Dataヘッダーを削除する"
     },
     "options_remove_client_data_desc": {
-        "message": "Google Chromeがバージョンや変更情報をGoogleドメインに送信しないようにブロックします。"
+        "message": "Google Chromeが自分のバージョンおよび改変情報をGoogleドメインに送信することをブロックします。"
     },
     "options_disable_webrtc_title": {
         "message": "WebRTCを無効にする"
     },
     "options_disable_webrtc_desc": {
-        "message": "プロキシやVPNを使用している場合であっても、WebRTCは実際に使用しているIPアドレスを第三者に知らせてしまうことがありますので、WebRTCをブロックした方がより安全です。\n※WebRTCを無効にしますと、一部のウェブサイトで不具合が発生する場合があります。"
+        "message": "プロキシやVPNを使用している場合であっても、WebRTCは実際に使用しているIPアドレスを第三者に知らせてしまうことがありますので、WebRTCを無効化した方がより安全です。※WebRTCを無効にしますと、一部のウェブサイトで不具合が発生する場合があります。"
     },
     "options_strip_tracking_params_title": {
         "message": "追跡パラメータを削除する"
     },
     "options_strip_tracking_params_description": {
-        "message": "「AdGuard URL追跡防止フィルタ」を使ってページのURLから追跡パラメーターを取り除きます。"
+        "message": "「AdGuard URL追跡防止フィルタ」を使ってウェブリクエストからパラメータを削除します。"
     },
     "options_block_known_trackers_title": {
         "message": "トラッカー（個人情報追跡）をブロックする"
@@ -1048,34 +1063,37 @@
         "message": "AdGuardブラウザ拡張機能"
     },
     "group_description_adblocking": {
-        "message": "こちらで広告ブロックを設定して、迷惑なバナー、ポップアップ、ビデオ広告などすべてを一掃することができます。"
+        "message": "こちらで広告ブロックを設定して、迷惑なバナー、ポップアップ、ビデオ広告などをすべて一掃することができます。"
     },
     "group_description_stealth": {
-        "message": "何千ものオンライントラッカーからあなたの個人情報を保護するために、普及している追跡方法をすべてブロックします。"
+        "message": "何千ものオンライントラッカーからあなたの個人情報とプライバシーを保護するために、普及している既知の追跡手法をすべてブロックします。"
     },
     "group_description_social": {
         "message": "迷惑な「いいね！」や「シェア」ボタンとその他のSNSウィジェットを非表示にします。"
     },
     "group_description_annoyances": {
-        "message": "ポップアップウィンドウやクッキー通知などのような煩わしい通知を削除します。"
+        "message": "ポップアップウィンドウやCookie使用同意通知などのような煩わしい通知を削除します。"
     },
     "group_description_security": {
-        "message": "マルウェア、フィッシング詐欺やその他のオンライン脅威から保護します。"
+        "message": "マルウェア、フィッシングやその他のオンライン脅威から保護します。"
     },
     "group_description_miscellaneous": {
-        "message": "AdGuardを使用したウェブサーフィンをさらに微調整するための追加設定です。"
+        "message": "AdGuardの機能をさらに微調整できる追加設定です。"
     },
     "group_description_custom": {
         "message": "独自のフィルタを作成・追加することで、ご自身に合わせてフィルタリング（広告ブロック）をさらにカスタマイズすることができます。"
     },
     "group_description_lang": {
-        "message": "どの言語のウェブサイトでも自動的に広告をブロックします。"
+        "message": "どの言語のウェブサイトでも広告をブロックできます。"
     },
     "fullscreen_user_rules_title": {
         "message": "ユーザールール"
     },
     "options_user_rules_editor_stub_title": {
-        "message": "エディタは既に開かれています"
+        "message": "エディタが別のウィンドウで開かれています"
+    },
+    "options_user_rules_editor_stub_subtitle": {
+        "message": "閉じるとルールがここに表示されます。"
     },
     "options_user_rules_editor_stub_go_to_editor_button": {
         "message": "ルールエディタへ行く"
@@ -1111,25 +1129,25 @@
         "message": "再試行する"
     },
     "filtering_log_tag_tooltip_first_party": {
-        "message": "ファーストパーティリクエストのみを表示"
+        "message": "ファーストパーティリクエスト"
     },
     "filtering_log_tag_tooltip_third_party": {
-        "message": "サードパーティのリクエストのみを表示"
+        "message": "サードパーティリクエスト"
     },
     "filtering_log_tag_tooltip_regular": {
-        "message": "フィルタリングを適用せずに処理されたリクエストのみを表示"
+        "message": "フィルタリングを適用せずに処理されたリクエスト"
     },
     "filtering_log_tag_tooltip_allowed": {
-        "message": "ホワイトリスト登録もしくはブロック解除されているリクエストのみを表示"
+        "message": "ホワイトリスト登録もしくはブロック解除されているリクエスト"
     },
     "filtering_log_tag_tooltip_blocked": {
-        "message": "ブロックされたリクエストのみを表示"
+        "message": "ブロック済みリクエスト数"
     },
     "filtering_log_tag_tooltip_modified": {
-        "message": "修正されたリクエストのみを表示"
+        "message": "変更されたリクエスト"
     },
     "filtering_log_tag_tooltip_user_rules": {
-        "message": "ユーザールールによって変更されたリクエストのみを表示"
+        "message": "ユーザールールによって影響を受けたリクエスト"
     },
     "filtering_log_tag_tooltip_html": {
         "message": "ドキュメントとサブドキュメント"
@@ -1150,7 +1168,7 @@
         "message": "メディア"
     },
     "filtering_log_tag_tooltip_other": {
-        "message": "フォント、Pings、WebRTC、WebSocketなど。"
+        "message": "フォント、pings、WebRTC、WebSocket..."
     },
     "filtering_log_badge_tooltip_third_party": {
         "message": "サードパーティリクエスト"
@@ -1162,8 +1180,7 @@
         "message": "HTTP status code（HTTPステータスコード）"
     },
     "filtering_log_assumed_rule_description": {
-        "description": "<dot><\/dot> is a placeholder for red-dot, do not insert text there - it will be ignored.",
-        "message": "<dot><\/dot> は意図したルールを意味します。詳細については、 <a>ドキュメンテーション<\/a>を参照してください。"
+        "message": "これは想定ルールです。詳細は<a>ナレッジベース<\/a>をご覧ください。"
     },
     "options_stealth_general_title": {
         "message": "一般"
@@ -1217,16 +1234,16 @@
         "message": "閉じる"
     },
     "filtering_modal_applied_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "適用ルール: | 適用ルール:"
+        "message": "適用ルール: | 適用ルール:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "想定ルール: | 想定ルール:"
+        "message": "想定ルール: | 想定ルール:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_original_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "元のルール: | 元のルール:"
+        "message": "元のルール: | 元のルール:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_declarative_rule": {
         "message": "DNRルール:"
