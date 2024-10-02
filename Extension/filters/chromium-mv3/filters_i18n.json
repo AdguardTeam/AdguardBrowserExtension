@@ -15871,6 +15871,144 @@
 				"description": "用於波蘭文網站之額外的過濾清單。"
 			}
 		},
+		"217": {
+			"ar": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "قائمة الفلاتر البولندية لحظر ملفات تعريف الارتباط."
+			},
+			"be": {
+				"name": "Польскія фільтры GDPR-Cookies",
+				"description": "Польскі фільтр для блакавання cookies."
+			},
+			"cs": {
+				"name": "Polské filtry GDPR-Cookies",
+				"description": "Polský seznam filtrů pro blokování cookies."
+			},
+			"da": {
+				"name": "Polske GDPR-cookies filtre",
+				"description": "Polsk filterliste til blokering af cookies."
+			},
+			"de": {
+				"name": "Polskie Filtry Ciasteczkowe (Polnischer Cookie-Filter)",
+				"description": "Filterliste für Polen zum Sperren von Cookies."
+			},
+			"el": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Πολωνική λίστα φίλτρων για αποκλεισμό cookies."
+			},
+			"en": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Polish filter list for cookies blocking."
+			},
+			"es": {
+				"name": "Filtros para cookies GDPR polaco",
+				"description": "Lista de filtros polaco para bloqueo de cookies."
+			},
+			"es_ES": {
+				"name": "Filtros para cookies GDPR polaco",
+				"description": "Lista de filtros polaco para bloqueo de cookies."
+			},
+			"fi": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Puolankielen suodatin evästeiden estoon."
+			},
+			"fr": {
+				"name": "Filtres GDPR-Cookies Polonais",
+				"description": "Liste de filtres Polonais pour le blocage des cookies."
+			},
+			"he": {
+				"name": "Polskie Filtry Ciasteczkowe",
+				"description": "רשימת מסננים פולניים עבור חסימת עוגיות."
+			},
+			"hr": {
+				"name": "Polskie Filtry Ciasteczkowe",
+				"description": "Poljski popis filtara za blokiranje kolačića."
+			},
+			"hu": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Lengyel szűrőlista a sütik blokkolásához."
+			},
+			"id": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Daftar filter Polandia untuk memblokir cookie."
+			},
+			"it": {
+				"name": "Filtri polacchi GDPR-Cookie",
+				"description": "Elenco di filtri polacchi per il blocco dei cookie."
+			},
+			"ja": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "クッキーをブロックするためのポーランド語フィルタ。"
+			},
+			"ko": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "쿠키 차단을 위한 폴란드 필터 목록."
+			},
+			"mk": {
+				"name": "Полски филтри за GDPR-колачиња",
+				"description": "Список на полски филтри за блокирање колачиња."
+			},
+			"nl": {
+				"name": "Poolse GDPR-cookies Filters",
+				"description": "Poolse filterlijst voor het blokkeren van cookies."
+			},
+			"pl": {
+				"name": "Polskie Filtry Ciasteczkowe",
+				"description": "Polska lista filtrów do blokowania plików cookie."
+			},
+			"pt": {
+				"name": "Filtros poloneses de cookies GDPR",
+				"description": "Lista de filtros polonês para bloqueio de cookies."
+			},
+			"pt_BR": {
+				"name": "Filtros poloneses de cookies GDPR",
+				"description": "Lista de filtros polonês para bloqueio de cookies."
+			},
+			"pt_PT": {
+				"name": "Filtros poloneses de cookies GDPR",
+				"description": "Lista de filtros polonês para bloqueio de cookies."
+			},
+			"ro": {
+				"name": "Filtre poloneze GDPR-Cookies",
+				"description": "Lista de filtre poloneze pentru blocarea cookie-urilor."
+			},
+			"ru": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Польский фильтр для блокировки cookies."
+			},
+			"sk": {
+				"name": "Poľské filtre na filtráciu GDPR cookie",
+				"description": "Poľský filtračný zoznam pre blokovanie cookies."
+			},
+			"sl": {
+				"name": "Poljski filtri za piškotke GDPR",
+				"description": "Poljski seznam filtrov za zaviranje piškotkov."
+			},
+			"sr": {
+				"name": "Polskie Filtry Ciasteczkowe",
+				"description": "Poljska lista filtera za blokiranje kolačića."
+			},
+			"tr": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Çerezleri engellemek için Lehçe filtre listesi."
+			},
+			"uk": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Польський фільтр для блокування кукі-файлів."
+			},
+			"vi": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "Bộ lọc cookie cho tiếng Ba Lan."
+			},
+			"zh": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "波兰语过滤列表，用于 Cookies 拦截。"
+			},
+			"zh_TW": {
+				"name": "Polish GDPR-Cookies Filters",
+				"description": "用於 cookie 封鎖的波蘭文過濾清單。"
+			}
+		},
 		"218": {
 			"ar": {
 				"name": "Estonian List",

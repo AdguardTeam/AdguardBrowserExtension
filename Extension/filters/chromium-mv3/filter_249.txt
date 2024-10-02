@@ -1,13 +1,13 @@
-! Checksum: VnTvglhdkrmGmm53WxcgaA
+! Checksum: CT9EYpkqqK1+ic45aNZj1A
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.70
-! TimeUpdated: 2024-09-24T13:01:53+00:00
+! Version: 2.0.7.72
+! TimeUpdated: 2024-10-01T17:01:44+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! Last modified: 22September2024v1
+! Last modified: 01October2024v2
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -377,7 +377,6 @@ gaming.fo###sticky_ad
 onlineaviser.no##table[width^="7"]:first-of-type:has(a[href*=tradedoubler])
 ##.annonselenker:not(html,body,:empty)
 samferdselinfra.no##div[class="ct-div-block "]:last-of-type
-dbrs.dk##.grid__column--12.grid__placement
 diskusjon.no##.prisguide-content
 google.com,google.ru,google.net,google.org,google.in,google.com.au,google.com.tr,google.co.uk,google.io,google.co,google.gr,google.ca,google.com.ua,google.vn,google.info,google.de,google.fr,google.me,google.by,google.jp,google.xyz,google.ua,google.com.tw,google.co.za,google.co.il,google.eu,google.it,google.id,google.com.br,google.es,google.ch,google.co.in,google.kz,google.com.vn,google.biz,google.co.id,google.nl,google.us,google.pl,google.cl,google.com.mx,google.ro,google.co.jp,google.co.nz,google.ma,google.com.ar,google.site,google.cc,google.rs,google.cn,google.ae,google.co.kr,google.mx,google.pk,google.se,google.com.my,google.cz,google.lk,google.tw,google.ai,google.com.sg,google.top,google.gov,google.com.co,google.co.th,google.be,google.store,google.dk,google.hu,google.az,google.am,google.uz,google.com.pk,google.news,google.md,google.com.hk,google.ge,google.sg,google.my,google.no,google.com.bd,google.to,google.dev,google.mk,google.com.ng,google.ie,google.asia,google.at,google.co.ke,google.com.np,google.ph,google.fi,google.tk,google.lv,google.pe,google.sk,google.ng,google.lt,google.tn,google.hk,google.link,google.cloud,google.gov.bd,google.website,google.kr,google.sa,google.pt,google.gg,google.com.ph,google.hr,google.bg,google.com.sa,google.mn,google.ws,google.ee,google.one,google.uk,google.kg,google.ba,google.com.pe,google.al,google.fm,google.ml,google.dz,google.org.il,google.is,google.com.uy,google.gov.np,google.or.id,google.si,google.gen.tr,google.ga,google.sh###cnsi ~ [jsaction*=dismiss]
 kanalen.no##.bannergroup
@@ -466,6 +465,12 @@ audlindin.is,utvarpsaga.is##.g-dyn
 e24.no##.row-with-bottom-border:has(.ad-wrap)
 bramat.no##.scs-banner
 vartoslo.no##.vo-annonse
+gamer.no#?#:not(main,div,header,footer) > * > [data-uname="gamer_toppbanner"]:upward(2)
+gamer.no##.deal-container:has(a[href*="prisjakt.no"])
+gamer.no##div > .entrance:has(> a[href*="/annonser/"])
+gamer.no##div > .entrance:has(> a[href*="/stilling/"])
+gamer.no##[data-uname=gamer_artikkelboard]
+gamer.no#?#div > [data-uname^=gamer_midtbanner]:only-of-type:upward(1)
 kendte.dk#?#.list-group:contains(/cas\ino/i)
 feltet.dk##p[style^=" color:#bbb;"]
 tv-kalundborg.dk##div.col-s-100.col-50:nth-of-type(2)
@@ -521,6 +526,10 @@ momondo.com,momondo.ru,momondo.net,momondo.in,momondo.com.au,momondo.com.tr,momo
 fjellforum.no##.ipsWidget:has([src*="amazonaws.com"])
 magasinetskolen.dk##.region-sidebar-first > .clearfix > .first
 e24.no##.teaser__preview
+travservice.dk##.et_pb_slider
+travservice.dk##.code-block-1:has(> a[href*="https://danskespil.dk/tips"]:only-of-type)
+kk.no##.carousel-container + div:not(.carousel-container):has(> div:last-child)
+dagbladet.no,elbil24.no,kk.no,seher.no,sol.no##div:has(> .adunit)
 tilbudmaskin.no##.page-body .col-sm-6
 nutiminn.is##.tdc-row:has(.vc_column:only-of-type .augl-container:only-of-type)
 dagens.dk##.generic-widget[class*=" d-none-"]
@@ -1528,7 +1537,6 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||feltet.dk/*/topbanner_*.jpg^
 ||feltet.dk/*/wallpaper_1.jpg^
 ||feltet.dk/*_300x60.gif^
-||feltet.dk/octo_cms/files/Feltet.dk//$image
 ||finn.no^$subdocument,domain=bt.no
 ||footy.dk/wp-content/uploads/*/Sk%C3%A6rmbillede-*.png^
 ||forum.flyprat.no/images/r/Header^$subdocument
@@ -1897,8 +1905,7 @@ vafo.dk##.adform-flexblock
 ###adBlinkContainer:not(html,body,:empty)
 ###innocode-ad:not(html,body,:empty)
 ! https://www•brannmannen•no/brann/store-utfordringer-ved-togulykken-pa-asta/
-!+ NOT_PLATFORM(windows, mac, android)
-||85.17.76.181^$all
+||85.17.76.181^$image
 ! krs247•no
 ##div[id^=webbannernetboard]:not(body,:empty)
 ! lsk•no
@@ -2024,18 +2031,12 @@ baadmagasinet.dk##.article-bottom .qx-inner > .qx-section:last-of-type
 ! 🇳🇴🏞: Huvudsakleg for AdGuard
 ! 🇮🇸: Aðallega fyrir AdGuard
 ! 🇬🇧: Mostly for AdGuard
-!+ NOT_PLATFORM(windows, mac, android)
-||3.248.18.175^$all
-!+ NOT_PLATFORM(windows, mac, android)
-! [excluded by ||35.] ||35.227.231.163^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||45.58.146.154^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||82.196.13.38^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||82.221.81.9^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||178.79.136.45^$all
+://3.248.18.175^
+://35.227.231.163^
+://45.58.146.154^
+://82.196.13.38^
+://82.221.81.9^
+://178.79.136.45^
 ! 🇳🇴/🇩🇰: ——— Sporingsfiler ———
 ! 🇳🇴🏞: ——— Sporingsfilar ———
 ! ❄: ——— Guorrafiilaid ———
@@ -2083,6 +2084,8 @@ seher.no#$#.article-top header { padding-top:0!important;margin:0!important }
 sykepleien.no#$#:is(.container--break,.content-extra__recommended-news) { padding:0!important;margin:0!important }
 ! aİD (Phone user agent)
 no#$#.tag-page { margin:0!important;padding:0!important }
+! https://github.com/AdguardTeam/AdguardFilters/issues/189667
+feltet.dk#$#iframe + div[style*="height: 80vh"] { height: unset !important }
 ! 🇳🇴: ——— Distraherende bakgrunnsbilder ———
 ! 🇩🇰: ——— Distraherende baggrundsbilleder ———
 ! 🇮🇸: ——— Truflanda baksýnsmyndir ———
@@ -2143,6 +2146,8 @@ clasohlson.com#@#.cookie-bar:not(body):not(html)
 clasohlson.com#@##js-cookie-notification
 ! https://github.com/easylist/easylist/issues/15519
 jolstad.no#@#.cookie-pop-up
+! https://github.com/easylist/easylist/issues/20085
+tikkio.com#@#.mfp-ready
 ! ★★★ Caused by «Fanboy's Enhanced Blocking List» ★★★
 ! https://github.com/DandelionSprout/adfilt/discussions/779#discussioncomment-5962141
 @@||vg.no^$generichide,badfilter
@@ -2353,10 +2358,8 @@ triplx.dk##.aff-inner-col
 /finn.no/finno.htm$document,domain=~facebook.com
 .gratis-reisebilletter.$document
 ||102.112.2o7.net^$document
-!+ NOT_PLATFORM(windows, mac, android)
-||52.216.146.90^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||92.42.104.146^$all
+://52.216.146.90^
+://92.42.104.146^
 ||appleid.*.no^$domain=~en-svindelside-som-ikke-er-apple.com.bd|~en-svindelside-som-ikke-er-apple.com.np|~en-svindelside-som-ikke-er-apple.gov.bd|~en-svindelside-som-ikke-er-apple.gov.np
 ||coop.no.$document,domain=~en-svindelside-som-ikke-er-coop.com.bd|~en-svindelside-som-ikke-er-coop.com.np|~en-svindelside-som-ikke-er-coop.gov.bd|~en-svindelside-som-ikke-er-coop.gov.np
 ||danskebank.no.$document,domain=~en-svindelside-som-ikke-er-danskebank.com.bd|~en-svindelside-som-ikke-er-danskebank.com.np|~en-svindelside-som-ikke-er-danskebank.gov.bd|~en-svindelside-som-ikke-er-danskebank.gov.np
@@ -2469,8 +2472,7 @@ triplx.dk##.aff-inner-col
 ! E-mail tips
 ||s.free.fr^$all
 ||trmff.wpengine.com^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||212.27.60.108^$all
+://212.27.60.108^$all
 ||790northsierrabonita.com^$all
 ||dnnbcorporat*.mine.nu^$all
 ||eltlnorsgogle.is-a-cpa.com^$all
@@ -2478,8 +2480,7 @@ triplx.dk##.aff-inner-col
 ||premosupplements.com^$all
 ||printablemagic.com^$all
 ||rumendia.com^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||94.156.65.204^$all
+://94.156.65.204^$all
 ! Overly dedicated E-mail spambots
 ||wirexapp.africa.com^$all
 ||tachyoniums.eu.com^$all
@@ -2707,43 +2708,27 @@ triplx.dk##.aff-inner-col
 ||my-altinn*$all,domain=~no
 ||no-oppdatere.$all
 ||no-oppdatert.$all,domain=~no
-!+ NOT_PLATFORM(windows, mac, android)
-||179.43.189.62^$all
+://179.43.189.62^$all
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-7694946
 ||easypark-$document,popup
-!+ NOT_PLATFORM(windows, mac, android)
-||74.119.239.234^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||162.241.194.206^$all
+://74.119.239.234^
+://162.241.194.206^
 ! IP addresses of servers notorious for hosting many of the sites above
-!+ NOT_PLATFORM(windows, mac, android)
-||51.195.133.131^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||66.206.3.34^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||82.118.242.69^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||136.243.73.30^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||138.201.126.227^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||156.236.126.173^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||196.196.230.76^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||167.71.49.177^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||134.209.82.119^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||154.213.16.136^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||158.247.212.220^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||165.227.168.212^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||132.148.220.142^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||167.99.196.225^$all
+://51.195.133.131^
+://66.206.3.34^
+://82.118.242.69^
+://136.243.73.30^
+://138.201.126.227^
+://156.236.126.173^
+://196.196.230.76^
+://167.71.49.177^
+://134.209.82.119^
+://154.213.16.136^
+://158.247.212.220^
+://165.227.168.212^
+!+ NOT_OPTIMIZED
+://132.148.220.142^
+://167.99.196.225^
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-7872103
 ||betzykrisesenter.no^$document
 ||citra2010oslo.no^$document
@@ -2761,8 +2746,7 @@ triplx.dk##.aff-inner-col
 ||yttersiden.no^$document
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-7873648
 ||monetrizer*.$all
-!+ NOT_PLATFORM(windows, mac, android)
-||38.180.96.244^$all
+://38.180.96.244^
 ! https://sol•no/81812194/ / https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-10360231
 ||acc-inf.com^$all
 ||acc-ntfix.com^$all
@@ -2921,12 +2905,9 @@ triplx.dk##.aff-inner-col
 ||verification-no.com^$all
 ||wf-securelogin.com^$all
 ||wisehelpcentre.com^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||193.143.1.45^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||193.143.1.214^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||193.143.1.217^$all
+://193.143.1.45^$all
+://193.143.1.214^$all
+://193.143.1.217^$all
 ://193.143.1.^$document
 ! 🇳🇴: Falske nett-"butikker" som er så dårlige, at de står oppført på Forbrukertilsynet egen svarteliste.
 ! 🇩🇰: Forbrukertilsynets black-list over falske netbutikker (Norges svar på Forbrugerombudsmanden).
@@ -2963,12 +2944,9 @@ triplx.dk##.aff-inner-col
 ||nodrakts.com^$document
 ||dkfodboldstore.com^$document
 ||vmfodboldtoj.com^$document
-!+ NOT_PLATFORM(windows, mac, android)
-||5.39.217.206^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||5.39.221.180^$all
-!+ NOT_PLATFORM(windows, mac, android)
-||193.148.70.153^$all
+://5.39.217.206^
+://5.39.221.180^
+://193.148.70.153^
 ! 🇳🇴: Falske nettapoteker
 ! 🇬🇧: Fake online pharmacies
 -med.footeo.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
@@ -2997,8 +2975,7 @@ triplx.dk##.aff-inner-col
 ||hagebakken.no^
 ||mdb.nu^
 ||idj.no^
-!+ NOT_PLATFORM(windows, mac, android)
-||1.14.61.188^$all
+://1.14.61.188^
 ||smarthouseforum.ru^
 ||trafikkskoleapp.no^
 !+ NOT_OPTIMIZED
