@@ -31,6 +31,7 @@ import {
     REACT_VENDOR_OUTPUT,
     SAFEBROWSING_OUTPUT,
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+    SCRIPTLETS_VENDOR_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
 } from '../../constants';
@@ -53,6 +54,7 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
                 dependOn: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
@@ -86,6 +88,7 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
                 },
                 filename: `${BACKGROUND_OUTPUT}.html`,
                 chunks: [
+                    SCRIPTLETS_VENDOR_OUTPUT,
                     TSURLFILTER_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
                     AGTREE_VENDOR_OUTPUT,
