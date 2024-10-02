@@ -5,14 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- TODO: add release date -->
-## [4.4.29]
+<!-- TODO: fix the version, add release date, and a local link for the version -->
+## 5.0.x
+
+### Changed
+
+- Updated [@adguard/scriptlets] to v1.12.1.
+- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.5.
+- Updated [@adguard/tswebextension] to v2.3.0-alpha.1.
+
+## [4.4.30] - 2024-10-02
 
 ### Changed
 
 - Updated [@adguard/agtree] to v2.1.2.
 - Updated [@adguard/logger] to v1.0.2.
-- Updated [@adguard/scriptlets] to v1.11.16.
+- Updated [@adguard/scriptlets] to v1.12.1.
 - Updated [@adguard/tsurlfilter] to v3.0.5.
 - Updated [@adguard/tswebextension] to v2.0.1.
 
@@ -21,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The exception `$domain=~` filter rule is not working properly [#2912].
 - Scriptlets exclusion matching is not working properly for rules with arguments [#2947].
 
-[4.4.29]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.18...v4.4.29
+[4.4.30]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.22...v4.4.30
 [#2912]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2912
 [#2947]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2947
 
@@ -411,6 +419,7 @@ The extension is now fully compatible with MV3.
 [4.2.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.1.57...v4.2.151
 
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
+[@adguard/logger]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/logger/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
 [@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/tswebextension]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
