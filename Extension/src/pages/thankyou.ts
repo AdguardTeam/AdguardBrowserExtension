@@ -138,26 +138,21 @@ const PageController = (response: PageInitAppData) => {
         }
     };
 
-    const renderSafebrowsingSection = (safebrowsingEnabled: boolean, collectHitStats: boolean) => {
-        updateCheckbox(safebrowsingEnabledCheckbox, safebrowsingEnabled);
-        updateCheckbox(sendStatsCheckbox, collectHitStats);
-    };
-
     const render = () => {
         const trackingFilterEnabled = AntiBannerFiltersId.TrackingFilterId in enabledFilters;
         const socialFilterEnabled = AntiBannerFiltersId.SocialFilterId in enabledFilters;
-        // eslint-disable-next-line max-len
         const allowAcceptableAdsEnabled = AntiBannerFiltersId.SearchAndSelfPromoFilterId in enabledFilters;
+        const collectHitsCount = !userSettings.values[userSettings.names.DisableCollectHits];
 
         if (!__IS_MV3__) {
             const safebrowsingEnabled = !userSettings.values[userSettings.names.DisableSafebrowsing];
-            const collectHitsCount = !userSettings.values[userSettings.names.DisableCollectHits];
-            renderSafebrowsingSection(safebrowsingEnabled, collectHitsCount);
+            updateCheckbox(safebrowsingEnabledCheckbox, safebrowsingEnabled);
         }
 
         updateCheckbox(trackingFilterEnabledCheckbox, trackingFilterEnabled);
         updateCheckbox(socialFilterEnabledCheckbox, socialFilterEnabled);
         updateCheckbox(allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);
+        updateCheckbox(sendStatsCheckbox, collectHitsCount);
     };
 
     const init = () => {
