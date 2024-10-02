@@ -60,39 +60,35 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
     }
 
     return (
-        <div
-            className={cn('switcher__wrapper', {
+        <button
+            type="button"
+            className={cn('switcher', {
                 'non-active': isTransition,
             })}
+            onClick={clickHandler}
+            title={translator.getMessage('popup_switch_button')}
         >
-            <button
-                type="button"
-                className="switcher"
-                onClick={clickHandler}
-                title={translator.getMessage('popup_switch_button')}
+            <div
+                className={cn('switcher__track', {
+                    'switcher__track--disabled': !isEnabled,
+                })}
+            />
+            <div
+                className={cn('switcher__handle', {
+                    'switcher__handle--disabled': !isEnabled,
+                })}
             >
-                <div
-                    className={cn('switcher__track', {
-                        'switcher__track--disabled': !isEnabled,
-                    })}
+                {/* enabled switcher state */}
+                <Icon
+                    id="#checkmark"
+                    classname="icon--24 switcher__icon switcher__icon--on"
                 />
-                <div
-                    className={cn('switcher__handle', {
-                        'switcher__handle--disabled': !isEnabled,
-                    })}
-                >
-                    {/* enabled switcher state */}
-                    <Icon
-                        id="#checkmark"
-                        classname="icon--24 switcher__icon switcher__icon--on"
-                    />
-                    {/* disabled switcher state */}
-                    <Icon
-                        id="#circle"
-                        classname="icon--24 switcher__icon switcher__icon--off"
-                    />
-                </div>
-            </button>
-        </div>
+                {/* disabled switcher state */}
+                <Icon
+                    id="#circle"
+                    classname="icon--24 switcher__icon switcher__icon--off"
+                />
+            </div>
+        </button>
     );
 });

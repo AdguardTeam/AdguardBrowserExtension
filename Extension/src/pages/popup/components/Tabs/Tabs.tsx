@@ -42,9 +42,10 @@ export const Tabs = observer(() => {
         [ViewState.Stats]: StatsTable,
     };
 
-    const tabContentClassName = viewState === ViewState.Stats
-        ? 'tabs__content--stats'
-        : 'tabs__content';
+    const tabContentClassName = cn('tabs__content', {
+        'tabs__content--stats': viewState === ViewState.Stats,
+        'tabs__content--has-user-rules': store.hasUserRulesToReset,
+    });
 
     const TabContent = contentMap[viewState];
 
@@ -59,16 +60,18 @@ export const Tabs = observer(() => {
             })}
         >
             <div className="tabs__panel">
-                <Tab
-                    title={translator.getMessage('popup_tab_actions')}
-                    active={viewState === ViewState.Actions}
-                    onClick={handleTabClick(ViewState.Actions)}
-                />
-                <Tab
-                    title={translator.getMessage('popup_tab_statistics')}
-                    active={viewState === ViewState.Stats}
-                    onClick={handleTabClick(ViewState.Stats)}
-                />
+                <div className="tabs__panel-wrapper">
+                    <Tab
+                        title={translator.getMessage('popup_tab_actions')}
+                        active={viewState === ViewState.Actions}
+                        onClick={handleTabClick(ViewState.Actions)}
+                    />
+                    <Tab
+                        title={translator.getMessage('popup_tab_statistics')}
+                        active={viewState === ViewState.Stats}
+                        onClick={handleTabClick(ViewState.Stats)}
+                    />
+                </div>
             </div>
             <div
                 className={tabContentClassName}

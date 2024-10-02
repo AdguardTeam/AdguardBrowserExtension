@@ -49,6 +49,7 @@ export const StatsChart = observer(() => {
                 stats={stats}
                 range={store.selectedTimeRange}
                 type={store.selectedBlockedType}
+                small={store.hasUserRulesToReset}
             />
         </div>
     );

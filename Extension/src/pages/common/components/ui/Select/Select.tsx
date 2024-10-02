@@ -29,7 +29,7 @@ import './select.pcss';
 /**
  * Single option for select.
  */
-type SelectOption = {
+export type SelectOption = {
     /**
      * Option value.
      */
@@ -44,7 +44,7 @@ type SelectOption = {
 /**
  * Select component parameters.
  */
-type SelectParams = {
+export type SelectProps = {
     /**
      * Select id.
      */
@@ -81,6 +81,16 @@ type SelectParams = {
     popupModification?: boolean,
 };
 
+/**
+ * Select wrapper props
+ */
+export type SelectWrapperProps = Omit<SelectProps, 'hidden' | 'setHidden'> & {
+    /**
+     * Use react context or not
+     */
+    withContext?: boolean
+};
+
 export const Select = ({
     id,
     handler,
@@ -89,7 +99,7 @@ export const Select = ({
     hidden,
     setHidden,
     popupModification = false,
-}: SelectParams): React.JSX.Element | null => {
+}: SelectProps) => {
     const ref = useRef(null);
     const refList = useRef(null);
 

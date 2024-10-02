@@ -20,8 +20,8 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { popupStore } from '../../../stores/PopupStore';
-import { TIME_RANGES } from '../../../constants';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { TimeRange } from '../../../constants';
+import { translator } from '../../../../../common/translators/translator';
 import { Select } from '../../../../common/components/ui/Select';
 
 export const Filters = observer(() => {
@@ -35,6 +35,10 @@ export const Filters = observer(() => {
 
     const statsData = store.statsDataByType;
 
+    if (!statsData) {
+        return null;
+    }
+
     const existingGroupsOptions = stats.blockedCategories
         .filter((group) => {
             return statsData.find((data) => data.categoryId === group.categoryId);
@@ -44,30 +48,30 @@ export const Filters = observer(() => {
             title: categoryName,
         }));
 
-    const handleBlockedTypeChange = (value) => {
+    const handleBlockedTypeChange = (value: string) => {
         store.setSelectedBlockedType(value);
     };
 
-    const handleTimeRangeChange = (value) => {
-        store.setSelectedTimeRange(value);
+    const handleTimeRangeChange = (value: string) => {
+        store.setSelectedTimeRange(value as TimeRange);
     };
 
     const timeRangeOptions = [
         {
-            value: TIME_RANGES.DAY,
-            title: reactTranslator.getMessage('popup_statistics_time_day'),
+            value: TimeRange.Day,
+            title: translator.getMessage('popup_statistics_time_day'),
         },
         {
-            value: TIME_RANGES.WEEK,
-            title: reactTranslator.getMessage('popup_statistics_time_week'),
+            value: TimeRange.Week,
+            title: translator.getMessage('popup_statistics_time_week'),
         },
         {
-            value: TIME_RANGES.MONTH,
-            title: reactTranslator.getMessage('popup_statistics_time_month'),
+            value: TimeRange.Month,
+            title: translator.getMessage('popup_statistics_time_month'),
         },
         {
-            value: TIME_RANGES.YEAR,
-            title: reactTranslator.getMessage('popup_statistics_time_year'),
+            value: TimeRange.Year,
+            title: translator.getMessage('popup_statistics_time_year'),
         },
     ];
 
@@ -81,17 +85,13 @@ export const Filters = observer(() => {
         <div className="stats-chart__filters">
             <Select
                 id="blocked-type"
-                name="blocked-type"
                 handler={handleBlockedTypeChange}
                 value={store.selectedBlockedType}
                 options={existingGroupsOptions}
-                className="stats-chart__select-in"
                 popupModification
             />
             <Select
                 id="time-range"
-                name="time-range"
-                className="stats-chart__select-in"
                 handler={handleTimeRangeChange}
                 value={store.selectedTimeRange}
                 options={timeRangeOptions}

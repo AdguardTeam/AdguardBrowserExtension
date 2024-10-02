@@ -18,32 +18,17 @@
 
 import React from 'react';
 
-import { SpecificPopupState } from '../../../constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 
-/**
- * No-filtering component props.
- */
-type NoFilteringProps = {
-    /**
-     * Specific popup state.
-     */
-    specificPopupState: SpecificPopupState;
-};
-
-export const NoFiltering = ({ specificPopupState }: NoFilteringProps) => {
-    let iconId = '#lock';
-
-    if (specificPopupState === SpecificPopupState.FilteringUnavailable) {
-        iconId = '#secure-page';
-    }
-
+export const NoFiltering = () => {
     return (
-        <div className="main__no-filtering">
-            <Icon
-                id={iconId}
-                classname="icon--no-filtering"
-            />
+        <div className="main__no-filtering__wrapper">
+            <div className="main__no-filtering">
+                <Icon
+                    id="#checkmark"
+                    classname="icon--24 main__no-filtering__icon"
+                />
+            </div>
         </div>
     );
 };

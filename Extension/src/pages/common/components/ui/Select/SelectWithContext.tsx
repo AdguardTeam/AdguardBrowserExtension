@@ -19,7 +19,7 @@
 import React from 'react';
 
 import { useSelect } from './SelectProvider';
-import { Select } from './Select';
+import { Select, type SelectWrapperProps } from './Select';
 
 import './select.pcss';
 
@@ -29,7 +29,7 @@ export const SelectWithContext = ({
     options,
     value,
     popupModification = false,
-}) => {
+}: Omit<SelectWrapperProps, 'withContext'>) => {
     const [hidden, setHidden] = useSelect(id);
 
     return (

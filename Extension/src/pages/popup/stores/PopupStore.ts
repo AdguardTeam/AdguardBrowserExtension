@@ -35,7 +35,7 @@ import type { PageStatsDataItem } from '../../../background/schema';
 import { messenger } from '../../services/messenger';
 import {
     SpecificPopupState,
-    TIME_RANGES,
+    TimeRange,
     ViewState,
 } from '../constants';
 import { MessageType } from '../../../common/messages';
@@ -52,6 +52,12 @@ import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 type BlockedStatsInfo = {
     totalBlocked: number;
     totalBlockedTab: number;
+};
+
+type CategoryBlockedStatsInfo = {
+    blocked: number;
+    categoryId: string;
+    categoryName: string;
 };
 
 // Do not allow property change outside of store actions
@@ -121,7 +127,7 @@ class PopupStore {
     stats: GetStatisticsDataResponse | null = null;
 
     @observable
-    selectedTimeRange = TIME_RANGES.WEEK;
+    selectedTimeRange = TimeRange.Week;
 
     @observable
     selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
@@ -428,12 +434,12 @@ class PopupStore {
 
     getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
         switch (range) {
-            case TIME_RANGES.DAY:
+            case TimeRange.Day:
                 if (!stats.lastMonth[stats.lastMonth.length - 1]) {
                     return undefined;
                 }
                 return stats.lastMonth[stats.lastMonth.length - 1];
-            case TIME_RANGES.WEEK: {
+            case TimeRange.Week: {
                 const result: PageStatsDataItem = {};
                 for (let i = 0; i < stats.lastWeek.length; i += 1) {
                     const day = stats.lastWeek[i];
@@ -450,9 +456,9 @@ class PopupStore {
                 }
                 return result;
             }
-            case TIME_RANGES.MONTH:
+            case TimeRange.Month:
                 return stats.lastYear[stats.lastYear.length - 1];
-            case TIME_RANGES.YEAR: {
+            case TimeRange.Year: {
                 const result: PageStatsDataItem = {};
                 for (let i = 0; i < stats.lastYear.length; i += 1) {
                     const month = stats.lastYear[i];
@@ -501,7 +507,7 @@ class PopupStore {
             .filter((category) => {
                 return category.blocked
                     && (category.blocked > 0 || category.categoryId === this.TOTAL_BLOCKED_GROUP_ID);
-            });
+            }) as CategoryBlockedStatsInfo[];
     }
 
     @action
@@ -510,7 +516,7 @@ class PopupStore {
     };
 
     @action
-    setSelectedTimeRange = (value: string) => {
+    setSelectedTimeRange = (value: TimeRange) => {
         this.selectedTimeRange = value;
     };
 
