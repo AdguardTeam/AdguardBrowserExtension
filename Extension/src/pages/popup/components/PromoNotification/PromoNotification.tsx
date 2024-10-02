@@ -47,23 +47,21 @@ export const PromoNotification = observer(() => {
         }
     }, [promoNotification]);
 
-    if (!promoNotification) {
+    if (
+        !promoNotification
+        || !promoNotification.text
+        || typeof promoNotification.text === 'string'
+    ) {
         return null;
     }
 
     const closeTimeoutMs = 300;
 
-    const handleNotificationClose = (e) => {
+    const handleNotificationClose = () => {
         setNotificationIsClosed(true);
         setTimeout(() => {
-            e.preventDefault();
             closePromoNotification();
         }, closeTimeoutMs);
-    };
-
-    const handleNotificationClick = (e) => {
-        e.preventDefault();
-        openPromoNotificationUrl();
     };
 
     const { bgImage, text: { title, btn } } = promoNotification;
@@ -73,7 +71,6 @@ export const PromoNotification = observer(() => {
     };
 
     const notificationClassnames = classnames('promo-notification', {
-        // TODO: Check how it works, because this class does not exist in css.
         'promo-notification--close': notificationIsClosed,
     });
 
@@ -89,7 +86,7 @@ export const PromoNotification = observer(() => {
                 onClick={handleNotificationClose}
             >
                 <svg className="icon icon--24">
-                    <use xlinkHref="#cross-white" />
+                    <use xlinkHref="#cross" />
                 </svg>
             </button>
             <div className="promo-notification__content">
@@ -99,7 +96,7 @@ export const PromoNotification = observer(() => {
                 <button
                     type="button"
                     className="promo-notification__btn"
-                    onClick={handleNotificationClick}
+                    onClick={openPromoNotificationUrl}
                 >
                     {btn}
                 </button>

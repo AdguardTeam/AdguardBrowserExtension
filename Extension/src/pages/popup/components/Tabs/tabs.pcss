@@ -1,23 +1,36 @@
 .tabs {
     &__panel {
-        min-height: 48px;
-        display: flex;
-        overflow: hidden;
+        padding: 8px;
+        &-wrapper {
+            overflow: hidden;
+            display: flex;
+            column-gap: 8px;
+            padding: 4px;
+            border-radius: 12px;
+            background: var(--fills-backgrounds-page-background-additional-default);
+        }
     }
 
     &__content {
-        min-height: 176px;
+        padding: 8px 0;
         overflow: auto;
         scrollbar-width: thin;
         display: flex;
         align-items: center;
 
         &--stats {
+            display: block;
+            padding: 0;
             max-height: 176px;
             min-height: 176px;
             overflow-y: scroll;
             scrollbar-width: thin;
             scrollbar-color: var(--fills-loaders-background-default) var(--fills-backgrounds-page-background-default);
+
+            &.tabs__content--has-user-rules {
+                max-height: 216px;
+                min-height: 216px;
+            }
         }
 
         &::-webkit-scrollbar {
@@ -37,30 +50,29 @@
     }
 
     &__tab {
-        font-size: 14px;
-        line-height: 18px;
+        font-size: 16px;
+        line-height: 1.3;
         font-weight: 400;
-        width: 50%;
-        padding: 0;
+        padding: 8px 16px;
         cursor: pointer;
         text-align: center;
-        transition: var(--t3) color;
+        transition: var(--t3) color, var(--t3) background-color;
         color: var(--text-description-description-default);
-        border-bottom: 1px solid var(--stroke-dividers-item-divider-default);
+        flex: 0 0 calc(50% - 4px);
+        border-radius: 8px;
+        background-color: transparent;
+        text-overflow: ellipsis;
+        overflow: hidden;
 
         &:hover {
-            background-color: var(--fills-backgrounds-page-background-hovered);
+            color: var(--text-main-text-main-default);
         }
 
         &--active {
             cursor: default;
-            font-weight: 600;
             color: var(--text-main-text-main-default);
-            border-bottom: 2px solid var(--stroke-dividers-item-divider-green-default);
-
-            &:hover {
-                background-color: transparent;
-            }
+            background-color: var(--fills-backgrounds-page-background-default);
+            box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.12), 0px 3px 1px 0px rgba(0, 0, 0, 0.04);
         }
     }
 

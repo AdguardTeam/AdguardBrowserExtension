@@ -26,13 +26,23 @@ import React, {
 
 const noop = () => {};
 
-export const SelectContext = createContext({
+export interface ISelectContext {
+    currentSelect: null | string;
+    setCurrentSelect: (id: null | string) => void;
+}
+
+export const SelectContext = createContext<ISelectContext>({
     currentSelect: null,
     setCurrentSelect: noop,
 });
 
-export const SelectProvider = ({ currentSelect: currentSelectProp = null, children }) => {
-    const [currentSelect, setCurrentSelect] = useState(currentSelectProp);
+export interface SelectProviderProps {
+    currentSelect?: null | string
+    children?: React.ReactNode
+}
+
+export const SelectProvider = ({ currentSelect: currentSelectProp = null, children }: SelectProviderProps) => {
+    const [currentSelect, setCurrentSelect] = useState<string | null>(currentSelectProp);
 
     const context = useMemo(() => {
         return {
@@ -48,14 +58,14 @@ export const SelectProvider = ({ currentSelect: currentSelectProp = null, childr
     );
 };
 
-export const useSelect = (id) => {
+export const useSelect = (id: string) => {
     const { currentSelect, setCurrentSelect } = useContext(SelectContext);
 
     const hidden = currentSelect !== id;
 
-    const setHidden = useCallback((hide) => {
+    const setHidden = useCallback((hide: boolean) => {
         setCurrentSelect(hide ? null : id);
     }, [setCurrentSelect, id]);
 
-    return [hidden, setHidden];
+    return [hidden, setHidden] as const;
 };

@@ -60,9 +60,9 @@ export const enum SpecificPopupState {
     SiteInException = 'site.in.exception',
 }
 
-export const TIME_RANGES = {
-    DAY: 'day',
-    WEEK: 'week',
-    MONTH: 'month',
-    YEAR: 'year',
-};
+export const enum TimeRange {
+    Day = 'day',
+    Week = 'week',
+    Month = 'month',
+    Year = 'year',
+}

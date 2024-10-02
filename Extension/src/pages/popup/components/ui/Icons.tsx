@@ -84,10 +84,6 @@ export const Icons = () => {
                 <path fill="currentColor" fillRule="evenodd" d="M6.6 17.25C6.6 17.7312 7.005 18.125 7.5 18.125H8.4V21.1875C8.4 21.9137 9.003 22.5 9.75 22.5C10.497 22.5 11.1 21.9137 11.1 21.1875V18.125H12.9V21.1875C12.9 21.9137 13.503 22.5 14.25 22.5C14.997 22.5 15.6 21.9137 15.6 21.1875V18.125H16.5C16.995 18.125 17.4 17.7312 17.4 17.25V8.49995H6.6V17.25V17.25ZM3.85 8.49995C3.103 8.49995 2.5 9.0862 2.5 9.81245V15.9375C2.5 16.6637 3.103 17.25 3.85 17.25C4.597 17.25 5.2 16.6637 5.2 15.9375V9.81245C5.2 9.0862 4.597 8.49995 3.85 8.49995V8.49995ZM20.15 8.49995C19.403 8.49995 18.8 9.0862 18.8 9.81245V15.9375C18.8 16.6637 19.403 17.25 20.15 17.25C20.897 17.25 21.5 16.6637 21.5 15.9375V9.81245C21.5 9.0862 20.897 8.49995 20.15 8.49995V8.49995ZM15.177 3.08995L16.347 1.95245C16.527 1.77745 16.527 1.5062 16.347 1.3312C16.167 1.1562 15.888 1.1562 15.708 1.3312L14.376 2.6262C13.665 2.2762 12.855 2.07495 12 2.07495C11.136 2.07495 10.326 2.2762 9.60598 2.6262L8.26498 1.3312C8.08498 1.1562 7.80598 1.1562 7.62598 1.3312C7.44598 1.5062 7.44598 1.77745 7.62598 1.95245L8.80498 3.0987C7.47298 4.05245 6.59998 5.5837 6.59998 7.32495H17.4C17.4 5.5837 16.527 4.0437 15.177 3.08995V3.08995ZM10.2 5.57495H9.29999V4.69995H10.2V5.57495V5.57495ZM14.7 5.57495H13.8V4.69995H14.7V5.57495V5.57495Z" />
             </symbol>
 
-            <symbol id="cross-white" width="24" height="24">
-                <path stroke="#f3f3f3" strokeLinecap="round" strokeWidth="1.5" d="m6.429 6.429 11.175 11.175M6.429 17.571 17.605 6.396" />
-            </symbol>
-
             <symbol id="circle" viewBox="0 0 24 24">
                 <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M2.5 12C2.5 6.75329 6.75329 2.5 12 2.5C17.2467 2.5 21.5 6.75329 21.5 12C21.5 17.2467 17.2467 21.5 12 21.5C6.75329 21.5 2.5 17.2467 2.5 12ZM18.5 12C18.5 8.41015 15.5899 5.5 12 5.5C8.41015 5.5 5.5 8.41015 5.5 12C5.5 15.5899 8.41015 18.5 12 18.5C15.5899 18.5 18.5 15.5899 18.5 12Z" />
             </symbol>
@@ -98,20 +94,6 @@ export const Icons = () => {
 
             <symbol id="popup-loading" viewBox="0 0 24 24">
                 <path stroke="currentColor" fill="currentColor" d="M3.274 14.842c-.433.141-.673.609-.497 1.03a10.002 10.002 0 1 0 2.83-11.565c-.35.291-.353.817-.034 1.142.32.326.84.327 1.195.041a8.352 8.352 0 1 1-2.415 9.867c-.183-.417-.645-.656-1.079-.515Z" strokeLinecap="round" />
-            </symbol>
-
-            <symbol id="lock" viewBox="0 0 48 48">
-                <g fill="none" fillRule="evenodd">
-                    <path stroke="currentColor" clipRule="evenodd" d="M10 20.8c0 4 0 21.2 14 21.2s14-17.2 14-21.2a36.7 36.7 0 0 0-28 0Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path stroke="currentColor" d="M24 28v4M16 18c0-5.4 0-12 7.7-12S32 12.4 32 18" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
-            </symbol>
-
-            <symbol id="secure-page" viewBox="0 0 48 48">
-                <g fill="none" fillRule="evenodd">
-                    <path stroke="currentColor" d="m18 22 6 6 8-10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    <path stroke="currentColor" clipRule="evenodd" d="M24 6c-6 0-12 1-18 4 0 6 0 22 18 32 18-10 18-26 18-32-6-3-12-4-18-4v0Z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
             </symbol>
 
             <symbol id="logo-splash" viewBox="0 0 48 48">

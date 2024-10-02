@@ -20,6 +20,7 @@ import React from 'react';
 
 import { SelectWithContext } from './SelectWithContext';
 import { SelectWithoutContext } from './SelectWithoutContext';
+import { type SelectWrapperProps } from './Select';
 
 import './select.pcss';
 
@@ -34,7 +35,7 @@ export const SelectWrapper = ({
     // smaller text, using all the space of the parent element.
     popupModification,
     withContext,
-}) => {
+}: SelectWrapperProps) => {
     const props = {
         id,
         handler,

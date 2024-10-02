@@ -18,7 +18,7 @@
 
 import React, { useState } from 'react';
 
-import { Select } from './Select';
+import { Select, type SelectWrapperProps } from './Select';
 
 import './select.pcss';
 
@@ -28,7 +28,7 @@ export const SelectWithoutContext = ({
     options,
     value,
     popupModification = false,
-}) => {
+}: Omit<SelectWrapperProps, 'withContext'>) => {
     const [hidden, setHidden] = useState(true);
 
     return (

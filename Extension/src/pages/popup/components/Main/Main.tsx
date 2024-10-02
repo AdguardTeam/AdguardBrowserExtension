@@ -78,7 +78,6 @@ export const Main = observer(() => {
         totalBlocked,
         specificPopupState,
         showInfoAboutFullVersion,
-        areFilterLimitsExceeded,
         appState,
         toggleAllowlisted,
         resumeApplicationFiltering,
@@ -151,10 +150,21 @@ export const Main = observer(() => {
         // specific popup states should be checked first
         // because whether the filtering is enabled (or not) is not relevant in these cases
         if (
+            specificPopupState === SpecificPopupState.SiteInException
+            && !isResumeButtonVisible
+        ) {
+            return (
+                <div className="main__site-exception">
+                    {translator.getMessage('popup_site_exception_information')}
+                </div>
+            );
+        }
+
+        if (
             specificPopupState === SpecificPopupState.FilteringUnavailable
             || specificPopupState === SpecificPopupState.SiteInException
         ) {
-            return <NoFiltering specificPopupState={specificPopupState} />;
+            return <NoFiltering />;
         }
 
         if (typeof state[AppStateField.SwitcherOn] !== 'undefined') {
@@ -195,23 +205,9 @@ export const Main = observer(() => {
                 >
                     {state[AppStateField.Subtitle]}
                 </div>
-                {
-                    specificPopupState === SpecificPopupState.SiteInException
-                    && !isResumeButtonVisible
-                    && (
-                        <div className="main__header--current-status--description">
-                            {translator.getMessage('popup_site_exception_information')}
-                        </div>
-                    )
-                }
-                {areFilterLimitsExceeded && __IS_MV3__ && (
-                    <div className="main__header--limits-exceeded">
-                        {translator.getMessage('popup_limits_exceeded_warning')}
-                    </div>
-                )}
             </div>
 
-            {getCentralControlByState()}
+            <div className="main__control">{getCentralControlByState()}</div>
 
             {showInfoAboutFullVersion && (
                 <div className="main__cta">
