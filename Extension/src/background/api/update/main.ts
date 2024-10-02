@@ -16,11 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import zod from 'zod';
-import browser from 'webextension-polyfill';
 import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
-
-import { Experimental } from 'experimental-update';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
@@ -56,7 +53,6 @@ import type { RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
-import { network } from '../network';
 import { PopupStatsCategories } from '../page-stats';
 
 /**
@@ -89,10 +85,6 @@ export class UpdateApi {
         currentSchemaVersion,
         previousSchemaVersion,
     }: RunInfo): Promise<void> {
-        if (__IS_MV3__) {
-            await UpdateApi.migrateFromExperimental();
-        }
-
         // check clientId existence
         if (clientId) {
             await browserStorage.set(CLIENT_ID_KEY, clientId);
@@ -106,47 +98,6 @@ export class UpdateApi {
 
         // run migrations, if they needed.
         await UpdateApi.runMigrations(currentSchemaVersion, previousSchemaVersion);
-    }
-
-    /**
-     * Migrates data from the experimental extension to the new mv3 extension.
-     *
-     * TODO: Remove when the experimental extension is no longer supported.
-     */
-    static async migrateFromExperimental(): Promise<void> {
-        // TODO: This is a temporary solution, we need to remove it after
-        // the experimental extension is no longer supported. AG-36334
-        // @ts-ignore
-        const dataFromStorage = await browserStorage.get(null);
-        if (!Experimental.isExperimental(dataFromStorage)) {
-            return;
-        }
-
-        const metadata = await network.getLocalFiltersMetadata();
-
-        const manifest = browser.runtime.getManifest();
-        if (!manifest.declarative_net_request) {
-            throw new Error('Cannot find declarative_net_request in manifest');
-        }
-
-        const ruleResources = manifest.declarative_net_request.rule_resources;
-
-        const {
-            settings,
-            userrules,
-            customFilters,
-        } = Experimental.migrateSettings(dataFromStorage, metadata, ruleResources);
-
-        await browserStorage.clear();
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const customFilter of customFilters) {
-            // eslint-disable-next-line no-await-in-loop
-            await FiltersStorage.set(customFilter.id, customFilter.rules.split(/\r?\n/));
-        }
-
-        await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, userrules);
-        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
     }
 
     /**

@@ -18,8 +18,6 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { Experimental } from 'experimental-update';
-
 import { rulesLimitsService } from 'rules-limits-service';
 
 import { engine } from '../engine';
@@ -108,21 +106,10 @@ export class App {
         // get application run info
         const runInfo = await getRunInfo();
 
-        let { previousAppVersion } = runInfo;
-        const { currentAppVersion } = runInfo;
-
+        const { previousAppVersion, currentAppVersion } = runInfo;
         const isAppVersionChanged = previousAppVersion !== currentAppVersion;
-
-        let isInstall = isAppVersionChanged && !previousAppVersion;
-        let isUpdate = isAppVersionChanged && !!previousAppVersion;
-
-        // special case for MV3 experimental extension
-        const storageData = await browser.storage.local.get(null);
-        if (Experimental.isExperimental(storageData)) {
-            isInstall = false;
-            isUpdate = true;
-            previousAppVersion = '0.0.0';
-        }
+        const isInstall = isAppVersionChanged && !previousAppVersion;
+        const isUpdate = isAppVersionChanged && !!previousAppVersion;
 
         if (isInstall) {
             await InstallApi.install(runInfo);

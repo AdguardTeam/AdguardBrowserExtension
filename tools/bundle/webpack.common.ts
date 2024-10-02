@@ -208,11 +208,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/background/services/scripting/scripting-service-mv${manifestVersion}.ts`,
                 ),
-                'experimental-update': path.resolve(
-                    __dirname,
-                    // eslint-disable-next-line max-len
-                    `../../Extension/src/background/services/experimental-update/experimental-update-service-mv${manifestVersion}.ts`,
-                ),
                 'settings-service': path.resolve(
                     __dirname,
                     `../../Extension/src/background/services/settings/settings-service-mv${manifestVersion}.ts`,
