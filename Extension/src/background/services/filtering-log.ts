@@ -680,6 +680,8 @@ export class FilteringLogService {
 
     /**
      * Calls {@link filteringLogApi} for synchronize list of the opened tabs.
+     *
+     * @returns List of the opened tabs.
      */
     private static async onSyncOpenTabs(): Promise<FilteringLogTabInfo[]> {
         return filteringLogApi.synchronizeOpenTabs();

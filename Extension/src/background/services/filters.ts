@@ -170,6 +170,8 @@ export class FiltersService {
 
     /**
      * Called when requesting an force update for filters.
+     *
+     * @returns Updated filters metadata.
      */
     private static async manualCheckFiltersUpdate(): Promise<FilterMetadata[] | undefined> {
         try {

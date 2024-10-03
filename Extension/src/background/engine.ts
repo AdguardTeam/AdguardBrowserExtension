@@ -114,6 +114,8 @@ export class Engine {
 
     /**
      * Creates tswebextension configuration based on current app state.
+     *
+     * @returns Configuration for tswebextension.
      */
     private static async getConfiguration(): Promise<ConfigurationMV2> {
         const enabledFilters = FiltersApi.getEnabledFilters();

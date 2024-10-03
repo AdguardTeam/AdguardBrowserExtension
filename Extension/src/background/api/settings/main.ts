@@ -240,6 +240,8 @@ export class SettingsApi {
 
     /**
      * Exports settings to string with JSON format.
+     *
+     * @returns Configuration in JSON format.
      */
     public static async export(): Promise<string> {
         const config: Config = {

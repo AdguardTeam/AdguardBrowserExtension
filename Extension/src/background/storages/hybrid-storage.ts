@@ -178,6 +178,8 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
      * Asynchronously removes the value for a given key from the selected storage mechanism.
      *
      * @param key The key whose value is to be removed.
+     *
+     * @returns A promise that resolves when the operation is complete.
      */
     async remove(key: string): Promise<void> {
         const storage = await this.getStorage();

@@ -262,7 +262,8 @@ export class FilteringLogApi {
      * Tries to sync the cached filter data with the storage.
      *
      * @param filterId Filter id.
-     * @returns Returns false if the filter was synced within the last {@link SYNC_ATTEMPTS_INTERVAL_MS} milliseconds.
+     * @returns Returns false if the filter was synced within the last
+     * {@link FilteringLogApi.SYNC_ATTEMPTS_INTERVAL_MS} milliseconds.
      * Otherwise, returns true.
      */
     private attemptToSyncFilter(filterId: number): boolean {
@@ -545,6 +546,8 @@ export class FilteringLogApi {
 
     /**
      * Synchronizes currently opened tabs with out state.
+     *
+     * @returns Array of {@link FilteringLogTabInfo} with data about opened tabs.
      */
     public async synchronizeOpenTabs(): Promise<FilteringLogTabInfo[]> {
         const tabs = await TabsApi.getAll();

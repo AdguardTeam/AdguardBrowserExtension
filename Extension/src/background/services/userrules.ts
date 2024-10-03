@@ -85,6 +85,8 @@ export class UserRulesService {
 
     /**
      * Returns all user rules concatenated via '\n' divider for the editor.
+     *
+     * @returns User rules editor content and settings.
      */
     private static async getUserRulesEditorData(): Promise<GetUserRulesEditorDataResponse> {
         const userRules = await UserRulesApi.getOriginalUserRules();

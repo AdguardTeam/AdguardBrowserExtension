@@ -86,6 +86,8 @@ export class SafebrowsingApi {
      *
      * @param requestUrl Request URL.
      * @param referrerUrl Referrer URL.
+     *
+     * @returns Safebrowsing list we've detected or null.
      */
     public static async checkSafebrowsingFilter(requestUrl: string, referrerUrl: string): Promise<string | undefined> {
         logger.debug('Checking safebrowsing filter for', requestUrl);
