@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- Use MV3-specific filters in Edge browser if MV3 extension is installed [#2985].
+
+[#2985]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
+
 <!-- TODO: fix the version, add release date, and a local link for the version -->
 ## 5.0.x
 
