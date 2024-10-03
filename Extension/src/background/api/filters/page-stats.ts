@@ -108,6 +108,8 @@ export class PageStatsApi {
      *
      * @param filterId Filter id.
      * @param blocked Count of blocked requests.
+     *
+     * @returns Promise, resolved when stats are updated.
      */
     public static async updateStats(
         filterId: number,

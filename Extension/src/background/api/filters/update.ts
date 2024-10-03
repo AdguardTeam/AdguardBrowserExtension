@@ -61,7 +61,7 @@ export class FilterUpdateApi {
     private static readonly RECENTLY_CHECKED_FILTER_TIMEOUT_MS = 1000 * 60 * 5;
 
     /**
-     * Filters the provided filter list with {@link selectFiltersIdsToUpdate},
+     * Filters the provided filter list with {@link FilterUpdateApi.selectFiltersIdsToUpdate},
      * then gets fresh metadata from the remote server for all filters (it
      * cannot be updated selectively), and, after updating, refreshes
      * lastCheckTime for each of those selected for checking filters.
@@ -111,6 +111,8 @@ export class FilterUpdateApi {
      *
      * @param forceUpdate Is it a force manual check by user action or first run
      * or not.
+     *
+     * @returns List of metadata for updated filters.
      */
     public static async autoUpdateFilters(forceUpdate = false): Promise<FilterMetadata[]> {
         const startUpdateLogMessage = forceUpdate

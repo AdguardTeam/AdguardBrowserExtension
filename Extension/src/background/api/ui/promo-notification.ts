@@ -102,6 +102,8 @@ export class PromoNotificationApi {
 
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet.
+     *
+     * @returns Notification object or null if there is no notification to show.
      */
     public async getCurrentNotification(): Promise<Notification | null> {
         // Do not display notification on Firefox
@@ -213,6 +215,8 @@ export class PromoNotificationApi {
     /**
      * Returns the last time a notification was shown.
      * If it was not shown yet, initialized with the current time.
+     *
+     * @returns Last notification time.
      */
     private static async getLastNotificationTime(): Promise<number> {
         let lastTime = Number(await browserStorage.get(LAST_NOTIFICATION_TIME_KEY) || 0);

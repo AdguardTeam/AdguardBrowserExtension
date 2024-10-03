@@ -59,6 +59,8 @@ export class ContextMenuEvents {
      * Publishes the event and, if a listener is found, notifies the listener.
      *
      * @param event Event with some generic type.
+     *
+     * @returns Promise with the result of the listener.
      */
     public async publishEvent<T extends ContextMenuAction>(event: T): Promise<unknown> {
         const listener = this.listenersMap.get(event);

@@ -158,6 +158,7 @@ module.exports = {
         'jsdoc/no-undefined-types': 'off',
         'jsdoc/require-returns-check': 'off',
         'jsdoc/require-jsdoc': 'off',
+        'jsdoc/no-defaults': 'off',
     },
     'ignorePatterns': [
         'node_modules',
