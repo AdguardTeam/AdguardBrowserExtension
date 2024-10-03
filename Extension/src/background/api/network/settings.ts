@@ -123,15 +123,24 @@ export class NetworkSettings {
      */
     // eslint-disable-next-line class-methods-use-this
     get filtersUrl(): string {
-        if (UserAgent.isFirefox) {
-            return `${this.filtersRulesBaseUrl}/firefox`;
-        } if (UserAgent.isEdge) {
-            return `${this.filtersRulesBaseUrl}/edge`;
-        } if (UserAgent.isOpera) {
-            return `${this.filtersRulesBaseUrl}/opera`;
-        } if (__IS_MV3__) {
+        // first of all check whether it is mv3-build
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
+        if (__IS_MV3__) {
             return `${this.filtersRulesBaseUrl}/chromium-mv3`;
         }
+
+        if (UserAgent.isFirefox) {
+            return `${this.filtersRulesBaseUrl}/firefox`;
+        }
+
+        if (UserAgent.isEdge) {
+            return `${this.filtersRulesBaseUrl}/edge`;
+        }
+
+        if (UserAgent.isOpera) {
+            return `${this.filtersRulesBaseUrl}/opera`;
+        }
+
         return `${this.filtersRulesBaseUrl}/chromium`;
     }
 
