@@ -1,7 +1,8 @@
 import { type Storage } from 'webextension-polyfill';
 
 import { NetworkRuleParser } from '@adguard/agtree';
-// FIXME: Use 'tswebextension' alias to work with mv3 version.
+// TODO should be written separate test, because there is different api in mv3 and mv2 for tabs context
+//  after that remove exclude from the ./tsconfig.with_types_mv3.json
 import {
     TabContext,
     NetworkRule,
