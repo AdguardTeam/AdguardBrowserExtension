@@ -31,7 +31,12 @@ export const Footer = observer(() => {
 
     let footerContent = (
         <>
-            <div className="footer__text">{translator.getMessage('popup_adguard_footer_title')}</div>
+            <div
+                className="footer__text"
+                title={translator.getMessage('popup_adguard_footer_title')}
+            >
+                {translator.getMessage('popup_adguard_footer_title')}
+            </div>
             <div className="footer__platforms">
                 <a
                     href={IOS_URL}
