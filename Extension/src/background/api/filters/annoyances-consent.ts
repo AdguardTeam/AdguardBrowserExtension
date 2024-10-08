@@ -61,6 +61,8 @@ export class AnnoyancesConsentApi {
 
     /**
      * Restores consented annoyances filter ids from storage.
+     *
+     * @returns Set of consented annoyances filter ids.
      */
     private static async getConsentFromStorage(): Promise<Set<number>> {
         const storedConsentedFilterIds = await AnnoyancesConsentApi.getFromStorage();

@@ -47,6 +47,8 @@ export class DocumentBlockApi {
 
     /**
      * Returns an array of trusted domains.
+     *
+     * @returns An array of trusted domains.
      */
     public static async getTrustedDomains(): Promise<string[]> {
         const now = Date.now();

@@ -78,6 +78,39 @@ type HitStats = {
 };
 
 /**
+ * Hit statistics for a single filter.
+ * - Keys are rule texts (strings).
+ * - Values are the number of times the rule was applied.
+ *
+ * @example
+ * ```
+ * {
+ *   "||example.com": 3
+ * }
+ * ```
+ */
+export type FilterHitStats = {
+    [ruleText: string]: number;
+};
+
+/**
+ * Hit statistics for multiple filters.
+ * - Keys are filter IDs.
+ * - Values are the hit statistics for each filter.
+ */
+export type FiltersHitStats = {
+    [filterId: number]: FilterHitStats;
+};
+
+/**
+ * Aggregated hit statistics for all filters.
+ * - Contains a `filters` object, where keys are filter IDs and values are hit statistics for each filter.
+ */
+type HitStats = {
+    filters: FiltersHitStats;
+};
+
+/**
  * Api for working with our backend server.
  * All requests sent by this class are covered in the privacy policy:
  * http://adguard.com/en/privacy.html#browsers.
@@ -130,6 +163,8 @@ export class Network {
      * @param forceRemote Force download filter rules from remote server.
      * @param useOptimizedFilters Download optimized filters flag.
      * @param rawFilter Raw filter rules.
+     *
+     * @returns Downloaded filter rules.
      *
      * @throws An error if FiltersDownloader.downloadWithRaw() fails.
      */
@@ -218,6 +253,8 @@ export class Network {
      * @param url Subscription url.
      * @param rawFilter Raw filter rules.
      * @param force Boolean flag to download filter fully or by patches.
+     *
+     * @returns Downloaded filter rules.
      */
     public async downloadFilterRulesBySubscriptionUrl(
         url: string,
@@ -367,6 +404,8 @@ export class Network {
     /**
      * Downloads metadata from backend.
      *
+     * @returns Object of {@link Metadata}.
+     *
      * @throws Error if metadata is invalid.
      */
     public async downloadMetadataFromBackend(): Promise<Metadata> {
@@ -410,6 +449,8 @@ export class Network {
      * Checks specified host hashes with our safebrowsing service.
      *
      * @param hashes Host hashes.
+     *
+     * @returns Response from the safebrowsing service.
      */
     public async lookupSafebrowsing(hashes: string[]): Promise<ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest> {
         const url = `${this.settings.safebrowsingLookupUrl}?prefixes=${encodeURIComponent(hashes.join('/'))}`;
@@ -465,6 +506,8 @@ export class Network {
      * Makes a request for json.
      *
      * @param url Url.
+     *
+     * @param contentType Content type.
      *
      * @returns Response with type {@link ResponseLikeXMLHttpRequest} to be
      * compatible with XMLHttpRequest.
