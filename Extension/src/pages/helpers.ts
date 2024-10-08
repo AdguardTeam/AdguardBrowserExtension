@@ -19,6 +19,7 @@
 import { type FilterMetadata } from '../background/api';
 import { translator } from '../common/translators/translator';
 
+import { FILE_WRONG_EXTENSION_CAUSE } from './options/constants';
 import { Notification, NotificationType } from './options/stores/UiStore';
 
 export const getFilenameExtension = (filename: string): string | undefined => {
@@ -44,10 +45,13 @@ export const getFilenameExtension = (filename: string): string | undefined => {
 export const handleFileUpload = (file: File, requiredExtension: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         if (getFilenameExtension(file.name) !== requiredExtension) {
-            reject(new Error(translator.getMessage(
-                'options_popup_import_settings_wrong_file_ext',
-                { extension: requiredExtension },
-            )));
+            reject(new Error(
+                translator.getMessage(
+                    'options_popup_import_settings_wrong_file_ext',
+                    { extension: requiredExtension },
+                ),
+                { cause: FILE_WRONG_EXTENSION_CAUSE },
+            ));
         }
         const reader = new FileReader();
         reader.readAsText(file, 'UTF-8');

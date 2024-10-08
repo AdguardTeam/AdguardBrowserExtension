@@ -39,6 +39,8 @@ import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
 import { NotificationType } from '../../stores/UiStore';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
+import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
@@ -57,9 +59,13 @@ const Allowlist = observer(() => {
         (async () => {
             await settingsStore.getAllowlist();
             setAllowlistRerender(false);
-            // Get initial store content and set to the editor
-            editorRef.current.editor.setValue(settingsStore.allowlist, CURSOR_POSITION_AFTER_INSERT);
-            editorRef.current.editor.session.getUndoManager().reset();
+
+            if (editorRef.current) {
+                // Get initial store content and set to the editor
+                editorRef.current.editor.setValue(settingsStore.allowlist, CURSOR_POSITION_AFTER_INSERT);
+                editorRef.current.editor.session.getUndoManager().reset();
+            }
+
             settingsStore.setAllowlistEditorContentChangedState(false);
         })();
     }, [settingsStore, shouldAllowlistRerender]);
@@ -78,6 +84,12 @@ const Allowlist = observer(() => {
         }
         settingsStore.setAllowlistEditorContentChangedState(false);
     }, [settingsStore.allowlist, settingsStore]);
+
+    const isSaving = settingsStore.savingAllowlistState === SavingFSMState.Saving;
+    const hasUnsavedChanges = !isSaving && settingsStore.allowlistEditorContentChanged;
+    const unsavedChangesTitle = translator.getMessage('options_editor_leave_title');
+    const unsavedChangesSubtitle = translator.getMessage('options_allowlist_leave_subtitle');
+    usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
     const { settings } = settingsStore;
 
@@ -112,11 +124,15 @@ const Allowlist = observer(() => {
             await saveAllowlist(settingsStore.allowlist.concat('\n', content));
             setAllowlistRerender(true);
         } catch (e) {
-            logger.debug(e.message);
-            uiStore.addNotification({
-                description: translator('options_popup_import_error_file_description'),
-                type: NotificationType.ERROR,
-            });
+            logger.debug(e);
+            if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
+                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+            } else {
+                uiStore.addNotification({
+                    description: translator('options_popup_import_error_file_description'),
+                    type: NotificationType.ERROR,
+                });
+            }
         }
 
         // eslint-disable-next-line no-param-reassign
@@ -193,6 +209,12 @@ const Allowlist = observer(() => {
                 wrapEnabled={settingsStore.allowlistEditorWrap}
                 shouldResetSize={shouldResetSize}
             />
+            {hasUnsavedChanges && (
+                <EditorLeaveModal
+                    title={unsavedChangesTitle}
+                    subtitle={unsavedChangesSubtitle}
+                />
+            )}
             <div className="actions actions--grid actions--buttons actions--allowlist">
                 <AllowlistSavingButton onClick={saveClickHandler} />
                 <input
@@ -221,12 +243,6 @@ const Allowlist = observer(() => {
                     {translator.getMessage('options_userfilter_export')}
                 </button>
             </div>
-
-            <EditorLeaveModal
-                subtitle={reactTranslator.getMessage('options_allowlist_leave_subtitle')}
-                isSaving={settingsStore.savingUserRulesState === SavingFSMState.Saving}
-                contentChanged={settingsStore.allowlistEditorContentChanged}
-            />
         </>
     );
 });

@@ -16,38 +16,55 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { useBlocker } from 'react-router-dom';
+import React, {
+    useCallback,
+    useEffect,
+    useRef,
+} from 'react';
+import { useBlocker, BlockerFunction } from 'react-router-dom';
 
 import { noop } from 'lodash';
 
 import { ConfirmModal } from '../ConfirmModal';
 import { translator } from '../../../../common/translators/translator';
-import { usePreventUnload } from '../../hooks/usePreventUnload';
 
 export type EditorLeaveModalProps = {
+    /**
+     * Title of modal
+     */
+    title: string;
+
     /**
      * Subtitle of modal
      */
     subtitle: string;
-
-    /**
-     * Flag that indicates is content saving or not
-     */
-    isSaving: boolean;
-
-    /**
-     * Flag that indicates is content changed or not
-     */
-    contentChanged: boolean;
 };
 
-const EditorLeaveModal = ({ subtitle, isSaving, contentChanged }: EditorLeaveModalProps) => {
-    const title = translator.getMessage('options_editor_leave_title');
-    const isUnsaved = contentChanged && !isSaving;
-    const routeBlocker = useBlocker(
-        ({ currentLocation, nextLocation }) => isUnsaved && currentLocation.pathname !== nextLocation.pathname,
+const EditorLeaveModal = ({ title, subtitle }: EditorLeaveModalProps) => {
+    /**
+     * It seems like react-router-dom has a bug related with `useBlocker` hook,
+     * when we navigate back/forward with the browser's native controls it doesn't
+     * clears blockers and it gets stuck forever in that state.
+     * Do not remove it.
+     * See https://github.com/remix-run/react-router/issues/11430
+     */
+    const isMountedRef = useRef<boolean>(false);
+    useEffect(() => {
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
+
+    const shouldBlock = useCallback<BlockerFunction>(
+        ({ currentLocation, nextLocation }) => (
+            isMountedRef.current
+            && currentLocation.pathname !== nextLocation.pathname
+        ),
+        [],
     );
+
+    const routeBlocker = useBlocker(shouldBlock);
 
     const onConfirmHandler = () => {
         if (routeBlocker.state !== 'blocked') {
@@ -64,8 +81,6 @@ const EditorLeaveModal = ({ subtitle, isSaving, contentChanged }: EditorLeaveMod
 
         routeBlocker.reset();
     };
-
-    usePreventUnload(contentChanged, `${title} ${subtitle}`);
 
     if (routeBlocker.state !== 'blocked') {
         return null;
