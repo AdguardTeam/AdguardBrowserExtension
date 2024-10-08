@@ -13,11 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cosmetic rules are not applied sometimes or are applied also to wrong domain [#2984].
 - JS rules are blocked by Trusted Types on some websites [#2980].
 - MV3 extension cannot apply rules to about:blank iframes [#2975].
+- Scriptlets logging does not work [#2977].
 
 [#2985]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
 [#2984]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2984
 [#2980]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2980
 [#2975]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2975
+[#2977]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2977
 
 <!-- TODO: fix the version, add release date, and a local link for the version -->
 ## 5.0.x
