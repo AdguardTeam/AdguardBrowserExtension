@@ -1,9 +1,9 @@
-! Checksum: 5cZ1jfqdquUyYnxpgSbHKg
-! Diff-Path: ../patches/10/10-s-1724427392-3600.patch
+! Checksum: e/5iEZ7GfiFO6NFw4Gil8g
+! Diff-Path: ../patches/10/10-s-1728376579-3600.patch
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.45
-! TimeUpdated: 2024-08-23T15:32:56+00:00
+! Version: 2.0.3.46
+! TimeUpdated: 2024-10-08T08:32:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -266,7 +266,7 @@ amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au
 amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.com.be,amazon.se,amazon.sg#@#div[cel_widget_id*="desktop-dp-"]
 amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.be,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.com.be,amazon.se,amazon.sg#@#div[cel_widget_id="sp-rhf-desktop-carousel_desktop-rhf_0"]
 amazon.*#@#div[cel_widget_id="mobile-dp-sims_SPThematicBrand_Same"]
-amazon.*#@#section[class*="csm-placement-id"]
+amazon.*#@#section[class*="csm-placement-id"]:not([data-cel-widget^="sobe_d_"])
 amazon.*#@?#div[data-order-sm]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[data-csa-c-painter="enumclaw-slot-display-ad"]:last-child)
 amazon.*#@##dp-container > #px-profile_feature_div[data-csa-c-type="widget"]
 amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
