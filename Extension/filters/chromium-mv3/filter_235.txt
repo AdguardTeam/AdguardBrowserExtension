@@ -1,8 +1,8 @@
-! Checksum: FGm8LFJy6qAEQQXDX5Nb+g
+! Checksum: 8pqHN0SsPSw61MRJbk0jBQ
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.90
-! TimeUpdated: 2024-10-01T21:02:05+00:00
+! Version: 2.0.4.91
+! TimeUpdated: 2024-10-04T13:01:48+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -2145,6 +2145,9 @@ snapp.doctor#@#.ads-banner
 ||snappfood.ir/mobile/v2/user/load^$xmlhttprequest,~third-party,method=post
 ! ||snappfood.ir^$xhr,1p,method=get,removeparam=optionalClient
 ! ||snappfood.ir^$xhr,1p,method=get,removeparam=client
+! Snapp Taxi
+app.snapp.taxi#%#//scriptlet('ubo-json-prune.js', 'data.geocampaigns')
+||errortracking.snapp.site^
 sornamusic.ir##.textwidget
 sornamusic.ir##aside:nth-of-type(5)
 ! https://github.com/MasterKia/PersianBlocker/commit/b1113d568e008e898fe79226bc0c6e2dc82eaadd
@@ -2206,7 +2209,6 @@ softgozar.com##div#left_panel > div#RightPan:has(ul.adv_text)
 ! soft98.ir: Addressed in uBlock Origin Quick-Fixes list
 instagram.com#%#//scriptlet('ubo-window-close-if.js', '/[Ss][Mm][Oo][Ss][Tt][Aa][Ff][Aa][Mm][Oo][Oo][Ss][Aa][Vv][Ii]/')
 soft98.ir,~forum.soft98.ir#%#//scriptlet('ubo-aeld.js', 'click', '[native code]')
-||img.soft98.ir^$image,~third-party,redirect-rule=1x1-transparent.gif
 @@||soft98.ir^$generichide
 soft98.ir,~forum.soft98.ir#%#//scriptlet('ubo-window-close-if.js', '/link-')
 linkdoni.soft98.ir#$?#html { remove: true; }

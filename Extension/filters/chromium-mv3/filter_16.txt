@@ -1,8 +1,8 @@
-! Checksum: 7XT+4i/Y5/zmUClGtgzLhQ
+! Checksum: Qq1Pnh0yUJfhLaSIN615Sw
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.47.9
-! TimeUpdated: 2024-10-01T12:33:26+00:00
+! Version: 2.0.47.19
+! TimeUpdated: 2024-10-08T11:32:45+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -220,9 +220,10 @@ monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementB
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147842
 japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
-japscan.lol#%#//scriptlet('remove-node-text', 'script', '/^\(function\(_0x|=\[(?:_0x[0-9a-f]{6}\(0x[0-9a-f]{2}\),){20}|\(\);\}$/')
+japscan.lol#%#//scriptlet('remove-node-text', 'script', 'un\'+\'de')
+japscan.lol#%#//scriptlet('abort-current-inline-script', 'document.querySelectorAll', '(\'img')
 japscan.lol#$#.navbar-nav > li#navpromo2.nav-item > a[href^="https://www.origoclick.com"] { text-indent: -5000px !important; }
-japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '/^[-$0-9A-Z_a-z]+=>\{const .+\)\( \);\}catch\(/')
+japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '(e)=>')
 @@$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,script,~third-party
 japscan.lol#@#.tangoai
@@ -275,9 +276,8 @@ dhnet.be#%#//scriptlet('set-constant', 'bAdBlocker', 'false')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/125968
 radio.fr#%#//scriptlet("abort-on-property-read", "Object.prototype.autoRecov")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/125261
-animationdigitalnetwork.fr#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
-||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,important,domain=animationdigitalnetwork.fr
-@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=animationdigitalnetwork.fr
+animationdigitalnetwork.com,animationdigitalnetwork.fr#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,important,domain=animationdigitalnetwork.fr|animationdigitalnetwork.com
 ! pianoweb.fr
 pianoweb.fr#%#//scriptlet('set-cookie', 'warnadb', '1')
 pianoweb.fr#%#//scriptlet('set-constant', 'noPub', '1')
@@ -686,19 +686,19 @@ occasions.decathlon.fr#%#//scriptlet('set-constant', 'FastClick.attach', 'noopFu
 lessentiel.lu,20min.ch#%#//scriptlet('adjust-setTimeout', 'setTimeoutIds_', '*', '0.001')
 lessentiel.lu,20min.ch#%#(()=>{window.TATM=window.TATM||{},TATM.init=()=>{},TATM.initAdUnits=()=>{},TATM.pageReady=()=>{},TATM.getVast=function(n){return new Promise((n=>{n()}))},TATM.push=function(n){if("function"==typeof n)try{n()}catch(n){console.debug(n)}};})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182538
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('trusted-create-element', 'body', 'iframe')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.pop', 'undefined')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.direct', 'undefined')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.isAdbActive', 'false')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.directHideAds', 'undefined')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.film', '0')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.serie', '0')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.film', '0')
-empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.serie', '0')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('trusted-create-element', 'body', 'iframe')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.pop', 'undefined')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.direct', 'undefined')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.isAdbActive', 'false')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.directHideAds', 'undefined')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.film', '0')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremium.serie', '0')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.film', '0')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#%#//scriptlet('set-constant', 'empire.countpremiumaccount.serie', '0')
 ! empire-anime.com
-empire-anime.com#%#//scriptlet('set-constant', 'empire.mediaData.advisorDirect', '')
-empire-anime.com#%#//scriptlet('set-constant', 'empire.mediaData.advisorMovie', '1')
-empire-anime.com#%#//scriptlet('set-constant', 'empire.mediaData.advisorSerie', '1')
+empire-streaming.*,empire-anime.com#%#//scriptlet('set-constant', 'empire.mediaData.advisorDirect', '')
+empire-streaming.*,empire-anime.com#%#//scriptlet('set-constant', 'empire.mediaData.advisorMovie', '1')
+empire-streaming.*,empire-anime.com#%#//scriptlet('set-constant', 'empire.mediaData.advisorSerie', '1')
 ! It's required to load video player because website uses "visibilitychange" event to detect if popup has been opened and then check if "document.hidden" is changed,
 ! and after that loads video player
 ! Rule below adds "click" event listener to the button that opens the popup and then dispatches "visibilitychange" event to the top document,
@@ -801,7 +801,7 @@ tf1info.fr#%#//scriptlet('set-constant', '__NEXT_DATA__.runtimeConfig.playerTF1.
 !--------------------------------------!
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182538
-empire-anime.com,empire-streamz.fr,empire-stream.net#$#body > iframe:not([src]) { position: absolute !important; left: -3000px !important; }
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.net#$#body > iframe:not([src]) { position: absolute !important; left: -3000px !important; }
 ! https://github.com/uBlockOrigin/uAssets/issues/22958
 rustica.fr#$#@media (min-width: 992px) { html > body.hasHabillage { padding-top: 0 !important; } }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172925
@@ -1134,6 +1134,7 @@ rustica.fr###stickMe
 youwatch-serie.com##.buttonO
 youwatch-serie.com##.buttonrm
 youwatch-serie.com##body > #card
+empire-streaming.com,empire-streaming.co,empire-streaming.info,empire-streaming.de,empire-streaming.fr,empire-streaming.eu,empire-streaming.tv,empire-streaming.app,empire-streaming.pro,empire-streaming.com.bd,empire-streaming.dev,empire-streaming.com.np,empire-streaming.life,empire-streaming.gov.bd,empire-streaming.gov.np##iframe[src="/banner_ads"]
 empire-streamz.fr,empire-stream.net,empire-streaming.com,empire-streaming.co,empire-streaming.info,empire-streaming.de,empire-streaming.fr,empire-streaming.eu,empire-streaming.tv,empire-streaming.app,empire-streaming.pro,empire-streaming.com.bd,empire-streaming.dev,empire-streaming.com.np,empire-streaming.life,empire-streaming.gov.bd,empire-streaming.gov.np##.hide-ads
 cosmopolitan.fr##.Gallery-top-external
 lhebdoduvendredi.com##.b-lazy-ads
