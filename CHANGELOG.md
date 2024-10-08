@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2975]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2975
 [#2977]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2977
 
+### Changed
+
+- Updated [@adguard/logger] to v1.1.0.
+
 <!-- TODO: fix the version, add release date, and a local link for the version -->
 ## 5.0.x
 
