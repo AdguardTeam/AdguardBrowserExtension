@@ -51,6 +51,7 @@ import { rootStore } from '../../../options/stores/RootStore';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
 import { NotificationType } from '../../../options/stores/UiStore';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../../options/constants';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
@@ -121,8 +122,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 resetInfoThatContentChanged = true;
             }
 
-            editorRef.current.editor.setValue(editorContent, CURSOR_POSITION_AFTER_INSERT);
-            editorRef.current.editor.session.getUndoManager().reset();
+            if (editorRef.current) {
+                editorRef.current.editor.setValue(editorContent, CURSOR_POSITION_AFTER_INSERT);
+                editorRef.current.editor.session.getUndoManager().reset();
+            }
+
             if (resetInfoThatContentChanged) {
                 store.setUserRulesEditorContentChangedState(false);
             }
@@ -220,8 +224,8 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         editorRef.current.editor.session.setUseWrapMode(store.userRulesEditorWrapState);
     }, [store.userRulesEditorWrapState]);
 
-    // Block unsaved changes only on fullscreen editor
-    const hasUnsavedChanges = fullscreen && store.userRulesEditorContentChanged;
+    const isSaving = store.savingUserRulesState === SavingFSMState.Saving;
+    const hasUnsavedChanges = !isSaving && store.userRulesEditorContentChanged;
     const unsavedChangesTitle = translator.getMessage('options_editor_leave_title');
     const unsavedChangesSubtitle = translator.getMessage('options_userfilter_leave_subtitle');
     usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
@@ -236,6 +240,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             await settingsStore.checkLimitations();
             uiStore.setShowLoader(false);
         }
+        store.setUserRulesEditorContentChangedState(false);
     };
 
     const inputChangeHandler = async (event) => {
@@ -273,11 +278,15 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 await saveUserRules(rulesUnionString);
             }
         } catch (e) {
-            logger.debug(e.message);
-            uiStore.addNotification({
-                description: translator('options_popup_import_error_file_description'),
-                type: NotificationType.ERROR,
-            });
+            logger.debug(e);
+            if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
+                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+            } else {
+                uiStore.addNotification({
+                    description: translator('options_popup_import_error_file_description'),
+                    type: NotificationType.ERROR,
+                });
+            }
         }
 
         // eslint-disable-next-line no-param-reassign
@@ -404,11 +413,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
             {/* We are hiding it because only Options page has router, and there is no point of using it */}
             {/* on FullscreenUserRules page, for that we are using `useBlockUnload` hook on top */}
-            {!fullscreen && (
+            {!fullscreen && hasUnsavedChanges && (
                 <EditorLeaveModal
+                    title={unsavedChangesTitle}
                     subtitle={unsavedChangesSubtitle}
-                    isSaving={store.savingUserRulesState === SavingFSMState.Saving}
-                    contentChanged={store.userRulesEditorContentChanged}
                 />
             )}
             <div

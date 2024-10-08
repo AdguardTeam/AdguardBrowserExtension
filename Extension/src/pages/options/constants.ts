@@ -106,3 +106,5 @@ export const COLLECT_HITS_LEARN_MORE_URL = Forward.get({
     action: ForwardAction.CollectHitsLearnMore,
     from: ForwardFrom.Options,
 });
+
+export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';

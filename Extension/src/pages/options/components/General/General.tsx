@@ -35,6 +35,7 @@ import {
     SAFEBROWSING_LEARN_MORE_URL,
     BUG_REPORT_URL,
     BUG_REPORT_MV3_URL,
+    FILE_WRONG_EXTENSION_CAUSE,
 } from '../../constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
@@ -164,6 +165,9 @@ export const General = observer(() => {
             }
         } catch (e) {
             logger.debug(e);
+            if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
+                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+            }
             isSucceeded = false;
         }
 
