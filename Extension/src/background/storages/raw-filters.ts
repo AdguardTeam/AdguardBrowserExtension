@@ -83,6 +83,8 @@ export class RawFiltersStorage {
      * Removes specified filter list from {@link hybridStorage}.
      *
      * @param filterId Filter id.
+     *
+     * @returns Promise, resolved when filter list is removed.
      */
     static async remove(filterId: number): Promise<void> {
         const key = RawFiltersStorage.getFilterKey(filterId);

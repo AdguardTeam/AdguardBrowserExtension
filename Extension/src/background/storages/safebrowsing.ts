@@ -42,7 +42,7 @@ export class SbCache {
 
     /**
      * Reads safebrowsing {@link LRUMap} stringified entries from {@link browserStorage},
-     * parse it and sets to {@link cache}.
+     * parse it and sets to {@link this.cache}.
      *
      * @returns Promise, resolved when data successfully initialized.
      */
@@ -68,14 +68,14 @@ export class SbCache {
     }
 
     /**
-     * Saves stringified safebrowsing {@link cache} entries in {@link browserStorage}.
+     * Saves stringified safebrowsing {@link this.cache} entries in {@link browserStorage}.
      */
     public async save(): Promise<void> {
         await browserStorage.set(SB_LRU_CACHE_KEY, JSON.stringify(this.cache.toJSON()));
     }
 
     /**
-     * Returns value from {@link cache}.
+     * Returns value from {@link this.cache}.
      *
      * @param key Cache key.
      * @returns Cache value.
@@ -92,11 +92,11 @@ export class SbCache {
     }
 
     /**
-     * Sets value to {@link cache}.
+     * Sets value to {@link this.cache}.
      *
      * @param key Cache key.
      * @param list Cache list value.
-     * @returns Updated {@link cache} instance.
+     * @returns Updated {@link this.cache} instance.
      */
     public async set(key: string, list: string): Promise<SbCache> {
         const data: SafebrowsingCacheData = { list };
@@ -115,7 +115,7 @@ export class SbCache {
     }
 
     /**
-     * Clear {@link cache} and {@link browserStorage} data.
+     * Clear {@link this.cache} and {@link browserStorage} data.
      */
     public async clear(): Promise<void> {
         this.cache.clear();

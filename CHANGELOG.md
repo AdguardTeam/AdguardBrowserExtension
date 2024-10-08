@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/logger] to v1.0.2.
 - Updated [@adguard/scriptlets] to v1.12.1.
 - Updated [@adguard/tsurlfilter] to v3.0.5.
-- Updated [@adguard/tswebextension] to v2.0.1.
+- Updated [@adguard/tswebextension] to v2.0.3.
 
 ### Fixed
 
@@ -162,7 +162,7 @@ The extension is now fully compatible with MV3.
 ## [4.3.46] - 2024-04-08
 
 ### Added
-- `@adguard/logger` for logging messages.
+- [@adguard/logger] for logging messages.
 
 ### Changed
 - Raw filters are stored as strings.

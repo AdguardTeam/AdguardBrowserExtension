@@ -163,6 +163,8 @@ export class SettingsService {
      * Imports settings from JSON.
      *
      * @param message Message with JSON settings {@link ApplySettingsJsonMessage}.
+     *
+     * @returns Boolean result of importing.
      */
     static async import(message: ApplySettingsJsonMessage): Promise<boolean> {
         const { json } = message.data;

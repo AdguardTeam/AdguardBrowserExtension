@@ -131,6 +131,8 @@ export class Network {
      * @param useOptimizedFilters Download optimized filters flag.
      * @param rawFilter Raw filter rules.
      *
+     * @returns Downloaded filter rules.
+     *
      * @throws An error if FiltersDownloader.downloadWithRaw() fails.
      */
     public async downloadFilterRules(
@@ -218,6 +220,8 @@ export class Network {
      * @param url Subscription url.
      * @param rawFilter Raw filter rules.
      * @param force Boolean flag to download filter fully or by patches.
+     *
+     * @returns Downloaded filter rules.
      */
     public async downloadFilterRulesBySubscriptionUrl(
         url: string,
@@ -367,6 +371,8 @@ export class Network {
     /**
      * Downloads metadata from backend.
      *
+     * @returns Object of {@link Metadata}.
+     *
      * @throws Error if metadata is invalid.
      */
     public async downloadMetadataFromBackend(): Promise<Metadata> {
@@ -410,6 +416,8 @@ export class Network {
      * Checks specified host hashes with our safebrowsing service.
      *
      * @param hashes Host hashes.
+     *
+     * @returns Response from the safebrowsing service.
      */
     public async lookupSafebrowsing(hashes: string[]): Promise<ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest> {
         const url = `${this.settings.safebrowsingLookupUrl}?prefixes=${encodeURIComponent(hashes.join('/'))}`;

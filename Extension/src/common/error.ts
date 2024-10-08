@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { ZodError } from 'zod';
+import { fromZodError } from 'zod-validation-error';
+
 type ErrorWithMessage = {
     message: string
 };
@@ -60,5 +63,10 @@ function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
  * @returns Message of the error.
  */
 export function getErrorMessage(error: unknown): string {
+    // Special case: pretty print Zod errors
+    if (error instanceof ZodError) {
+        return fromZodError(error).toString();
+    }
+
     return toErrorWithMessage(error).message;
 }

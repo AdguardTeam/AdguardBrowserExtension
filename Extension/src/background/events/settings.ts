@@ -45,6 +45,8 @@ export class SettingsEvents {
      *
      * @param event Event with some generic type.
      * @param value Some filed in the {@link Settings} object.
+     *
+     * @returns Promise that resolves when the listener is notified.
      */
     public async publishEvent<T extends SettingOption>(event: T, value: Settings[T]): Promise<void> {
         const listener = this.listenersMap.get(event) as SettingsListener<T>;
