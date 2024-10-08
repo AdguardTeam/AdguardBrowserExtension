@@ -140,6 +140,8 @@ class SafetyChecker {
      * Checks if a rule is safe or dangerous via OpenAI API.
      *
      * @param scriptText Script text to check.
+     *
+     * @returns SafetyCheckResult with the result of the analysis.
      */
     async checkRuleSafety(scriptText: string): Promise<SafetyCheckResult> {
         if (this.cache.has(scriptText)) {

@@ -65,6 +65,8 @@ async function getData(key: string, fallback = true): Promise<unknown | null> {
 
 /**
  * Get client id from storage.
+ *
+ * @returns Client id or null.
  */
 async function getClientId(): Promise<string | null> {
     const clientId = await getData(CLIENT_ID_KEY);
@@ -78,6 +80,8 @@ async function getClientId(): Promise<string | null> {
 
 /**
  * Get app version from storage.
+ *
+ * @returns App version or null.
  */
 async function getAppVersion(): Promise<string | null> {
     const appVersion = await getData(APP_VERSION_KEY);
@@ -91,6 +95,8 @@ async function getAppVersion(): Promise<string | null> {
 
 /**
  * Get schema version from storage.
+ *
+ * @returns Schema version or 0.
  */
 async function getSchemaVersion(): Promise<number> {
     // don't search schema version in legacy source, because it was added in v4.2
@@ -106,6 +112,8 @@ async function getSchemaVersion(): Promise<number> {
 
 /**
  * Gets app running info from storage.
+ *
+ * @returns App running info.
  */
 export async function getRunInfo(): Promise<RunInfo> {
     const currentAppVersion = Prefs.version;

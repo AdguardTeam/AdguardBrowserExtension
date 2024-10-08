@@ -35,7 +35,7 @@ export const megabytesToBytes = (mb) => mb * 1024 * 1024;
  */
 export class SizeLimitPlugin {
     /**
-     * @typedef {Object<string, number>} SizeLimits
+     * @typedef {{ [key: string]: number }} SizeLimits
      */
 
     /**
