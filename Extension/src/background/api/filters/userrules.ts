@@ -124,6 +124,8 @@ export class UserRulesApi {
      * Returns binary serialized, preprocessed rules from user list.
      *
      * @note This may include converted rules and does not include syntactically invalid rules.
+     *
+     * @returns User rules list in binary format.
      */
     public static async getBinaryUserRules(): Promise<Uint8Array[]> {
         const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);

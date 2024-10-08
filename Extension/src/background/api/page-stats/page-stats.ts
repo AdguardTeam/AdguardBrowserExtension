@@ -241,6 +241,8 @@ export class PageStatsApi {
      *
      * @param companyCategoryId Category id.
      * @param blocked Count of blocked requests.
+     *
+     * @returns Promise which resolves when stats are updated.
      */
     public static async updateStats(
         companyCategoryId: string,

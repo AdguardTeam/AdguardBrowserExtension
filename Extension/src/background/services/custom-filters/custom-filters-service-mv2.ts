@@ -59,6 +59,8 @@ export class CustomFiltersService {
      * Returns custom filter info for modal window.
      *
      * @param message Message data.
+     *
+     * @returns Custom filter info.
      */
     static async onCustomFilterInfoLoad(message: LoadCustomFilterInfoMessage): Promise<GetCustomFilterInfoResult> {
         const { url, title } = message.data;
@@ -70,6 +72,8 @@ export class CustomFiltersService {
      * Add new custom filter.
      *
      * @param message Message data.
+     *
+     * @returns Custom filter metadata.
      */
     static async onCustomFilterSubscription(message: SubscribeToCustomFilterMessage): Promise<CustomFilterMetadata> {
         const { filter } = message.data;

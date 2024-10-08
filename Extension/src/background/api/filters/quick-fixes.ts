@@ -90,6 +90,8 @@ export class QuickFixesRulesApi {
 
     /**
      * Returns rules from quick fixes filter.
+     *
+     * @returns Rules from quick fixes filter.
      */
     public static async getQuickFixesRules(): Promise<PreprocessedFilterList> {
         const data = await FiltersStorage.getAllFilterData(AntiBannerFiltersId.QuickFixesFilterId);
