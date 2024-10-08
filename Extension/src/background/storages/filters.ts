@@ -197,7 +197,7 @@ export class FiltersStorage {
      */
     static async getOriginalRules(filterId: number): Promise<string[]> {
         const [rawFilterList, conversionMap] = await Promise.all([
-            FiltersStorage.getRawPreprocessedFilterList(filterId),
+            FiltersStorage.getPreprocessedFilterList(filterId),
             FiltersStorage.getConversionMap(filterId),
         ]);
 
@@ -216,7 +216,7 @@ export class FiltersStorage {
      */
     static async getOriginalFilterListText(filterId: number): Promise<string> {
         const [rawFilterList, conversionMap] = await Promise.all([
-            FiltersStorage.getRawPreprocessedFilterList(filterId),
+            FiltersStorage.getPreprocessedFilterList(filterId),
             FiltersStorage.getConversionMap(filterId),
         ]);
 
@@ -238,7 +238,7 @@ export class FiltersStorage {
         try {
             const [filterList, rawFilterList, conversionMap, sourceMap] = await Promise.all([
                 FiltersStorage.get(filterId),
-                FiltersStorage.getRawPreprocessedFilterList(filterId),
+                FiltersStorage.getPreprocessedFilterList(filterId),
                 FiltersStorage.getConversionMap(filterId),
                 FiltersStorage.getSourceMap(filterId),
             ]);

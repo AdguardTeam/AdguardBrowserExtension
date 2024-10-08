@@ -148,6 +148,8 @@ export class Engine implements TsWebExtensionEngine {
 
     /**
      * Creates tswebextension configuration based on current app state.
+     *
+     * @returns The {@link Configuration} for tswebextension.
      */
     private static async getConfiguration(): Promise<Configuration> {
         const staticFiltersIds = FiltersApi.getEnabledFilters()
