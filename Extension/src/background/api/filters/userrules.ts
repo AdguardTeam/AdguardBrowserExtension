@@ -102,6 +102,8 @@ export class UserRulesApi {
 
     /**
      * Returns rules from user list.
+     *
+     * @returns User rules list.
      */
     public static async getUserRules(): Promise<PreprocessedFilterList> {
         const data = await FiltersStorage.getAllFilterData(AntiBannerFiltersId.UserFilterId);
@@ -122,6 +124,8 @@ export class UserRulesApi {
      * Returns binary serialized, preprocessed rules from user list.
      *
      * @note This may include converted rules and does not include syntactically invalid rules.
+     *
+     * @returns User rules list in binary format.
      */
     public static async getBinaryUserRules(): Promise<Uint8Array[]> {
         const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
@@ -140,6 +144,8 @@ export class UserRulesApi {
      * but when user opens the editor, we need to show their original rules.
      * User rules is a bit special because for that list we store the whole original filter list.
      * This method return that original list and we use it to load content in the editor.
+     *
+     * @returns User rules list.
      */
     public static async getOriginalUserRules(): Promise<string[]> {
         return FiltersStorage.getOriginalRules(AntiBannerFiltersId.UserFilterId);

@@ -72,7 +72,7 @@ describe('Quick Fixes API should', () => {
                 validateChecksumStrict: true,
             },
         );
-        expect(await FiltersStorage.getRawPreprocessedFilterList(filterId)).toEqual(fakeFilterV1);
+        expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(fakeFilterV1);
         expect(await RawFiltersStorage.get(filterId)).toEqual(fakeFilterV1);
 
         // Check that metadata was changed only for the Quick Fixes filter.
@@ -109,7 +109,7 @@ describe('Quick Fixes API should', () => {
                 validateChecksumStrict: true,
             },
         );
-        expect(await FiltersStorage.getRawPreprocessedFilterList(filterId)).toEqual(fakeFilterV2);
+        expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(fakeFilterV2);
         expect(await RawFiltersStorage.get(filterId)).toEqual(fakeFilterV2);
 
         // Check that metadata was changed only for the Quick Fixes filter.
