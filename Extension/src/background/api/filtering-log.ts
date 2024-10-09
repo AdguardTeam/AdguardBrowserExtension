@@ -19,6 +19,7 @@ import { Tabs } from 'webextension-polyfill';
 
 import { RuleParser } from '@adguard/agtree';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
+import { type DeclarativeRule } from '@adguard/tsurlfilter/es/declarative-converter';
 
 import {
     BACKGROUND_TAB_ID,
@@ -743,7 +744,22 @@ export class FilteringLogApi {
             return;
         }
 
-        event.declarativeRuleInfo = declarativeRuleInfo;
+        if (!event.declarativeRuleInfo) {
+            event.declarativeRuleInfo = declarativeRuleInfo;
+            return;
+        }
+
+        /**
+         * If already had declarative rule(s) - merge them.
+         */
+        event.declarativeRuleInfo.sourceRules.push(...declarativeRuleInfo.sourceRules);
+
+        const oldRules = FilteringLogApi.normalizeDeclarativeRuleJson(event.declarativeRuleInfo.declarativeRuleJson);
+        const newRules = FilteringLogApi.normalizeDeclarativeRuleJson(declarativeRuleInfo.declarativeRuleJson);
+
+        oldRules.push(...newRules);
+
+        event.declarativeRuleInfo.declarativeRuleJson = JSON.stringify(oldRules);
     }
 
     /**
@@ -774,6 +790,18 @@ export class FilteringLogApi {
                 && event.cookieName === cookieName
                 && event.cookieValue === cookieValue;
         });
+    }
+
+    /**
+     * Converts declarative rule json to array of DeclarativeRule.
+     *
+     * @param declarativeRuleJson Stringified json.
+     * @returns Array of DeclarativeRule.
+     */
+    private static normalizeDeclarativeRuleJson(declarativeRuleJson: string): DeclarativeRule[] {
+        const rule = JSON.parse(declarativeRuleJson) as DeclarativeRule | DeclarativeRule[];
+
+        return Array.isArray(rule) ? rule : [rule];
     }
 }
 
