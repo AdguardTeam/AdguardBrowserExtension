@@ -131,6 +131,8 @@ async function scanDirectory(directory: string): Promise<ScanResult[]> {
  * Recursively scans a directory for potentially dangerous rules and returns an array of matches.
  *
  * @param directoryToScan Directory to scan.
+ *
+ * @returns Promise with an array of matches.
  */
 export async function scanner(directoryToScan: string): Promise<ScanResult[]> {
     let result: ScanResult[] = [];

@@ -34,7 +34,8 @@ module.exports = {
         'jsdoc/require-returns-description': 'error',
         'jsdoc/require-returns': 'error',
         'jsdoc/require-param': 'error',
-        'jsdoc/no-undefined-types': 'error',
+        // TODO: Enable this rule
+        'jsdoc/no-undefined-types': 'off',
         'jsdoc/require-returns-check': 'error',
         'jsdoc/require-description-complete-sentence': ['error'],
         'jsdoc/require-jsdoc': [

@@ -2477,8 +2477,8 @@
 				"name": "Referință la filtrul Bază AdGuard"
 			},
 			"ru": {
-				"description": "Имеет отсылки к Базовому фильтру AdGuard (например, часть правил взята оттуда)",
-				"name": "Отсылка к Базовому фильтру AdGuard"
+				"description": "Имеет отсылки к Базовому фильтру (например, часть правил взята оттуда)",
+				"name": "Отсылка к Базовому фильтру"
 			},
 			"sk": {
 				"description": "Obsahuje referencie na základný AdGuard filter",
@@ -11067,8 +11067,8 @@
 				"description": "EasyList + Filtru de bază AdGuard. Acest filtru este necesar pentru blocarea reclame de calitate."
 			},
 			"ru": {
-				"name": "Базовый фильтр AdGuard",
-				"description": "EasyList + Базовый фильтр AdGuard. Фильтр, позволяющий убрать рекламу с сайтов на английском языке."
+				"name": "Базовый фильтр",
+				"description": "EasyList + Базовый фильтр. Фильтр, позволяющий убрать рекламу с сайтов на английском языке."
 			},
 			"sk": {
 				"name": "AdGuard základný filter",
@@ -11700,7 +11700,7 @@
 			},
 			"ru": {
 				"name": "Немецкий фильтр",
-				"description": "EasyList Germany + Немецкий фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на немецком языке."
+				"description": "EasyList Germany + Немецкий фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на немецком языке."
 			},
 			"sk": {
 				"name": "AdGuard nemecký filter",
@@ -11858,7 +11858,7 @@
 			},
 			"ru": {
 				"name": "Японский фильтр",
-				"description": "Японский фильтр AdGuard. Фильтр, позволяющий убрать рекламу с сайтов на японском языке."
+				"description": "Фильтр, позволяющий убрать рекламу с сайтов на японском языке."
 			},
 			"sk": {
 				"name": "AdGuard japonský filter",
@@ -12016,7 +12016,7 @@
 			},
 			"ru": {
 				"name": "Голландский фильтр",
-				"description": "EasyList Dutch + Голландский фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на голландском языке."
+				"description": "EasyList Dutch + Голландский фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на голландском языке."
 			},
 			"sk": {
 				"name": "AdGuard holandský filter",
@@ -12648,7 +12648,7 @@
 			},
 			"ru": {
 				"name": "Турецкий фильтр",
-				"description": "Турецкий фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на турецком языке."
+				"description": "Фильтр, позволяющий блокировать рекламу на сайтах на турецком языке."
 			},
 			"sk": {
 				"name": "AdGuard turecký filter",
@@ -12964,7 +12964,7 @@
 			},
 			"ru": {
 				"name": "DNS-фильтр",
-				"description": "Фильтр, составленный из нескольких фильтров (Базовый фильтр AdGuard, Фильтр социальных сетей, Фильтр счетчиков и систем аналитики, Фильтр мобильной рекламы, EasyList и EasyPrivacy), и специально упрощенный, чтобы быть лучше совместимым с блокировкой рекламы на уровне DNS."
+				"description": "Фильтр, составленный из нескольких фильтров (Базовый фильтр, Фильтр социальных сетей, Фильтр счетчиков и систем аналитики, Фильтр мобильной рекламы, EasyList и EasyPrivacy), и специально упрощенный, чтобы быть лучше совместимым с блокировкой рекламы на уровне DNS."
 			},
 			"sk": {
 				"name": "AdGuard DNS filter",
@@ -13122,7 +13122,7 @@
 			},
 			"ru": {
 				"name": "Французский фильтр",
-				"description": "Liste FR + Французский фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на французском языке."
+				"description": "Liste FR + Французский фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на французском языке."
 			},
 			"sk": {
 				"name": "AdGuard francúzsky filter",
@@ -14366,7 +14366,7 @@
 			},
 			"ru": {
 				"name": "EasyList",
-				"description": "EasyList — это основная подписка, которая удаляет рекламу с веб-страниц на английском языке. Уже включена в Базовый фильтр AdGuard."
+				"description": "EasyList — это основная подписка, которая удаляет рекламу с веб-страниц на английском языке. Уже включена в Базовый фильтр."
 			},
 			"sk": {
 				"name": "EasyList",
@@ -14784,7 +14784,7 @@
 			},
 			"ru": {
 				"name": "EasyList China",
-				"description": "Дополнительный фильтр для сайтов на китайском языке. Уже включён в Китайский фильтр AdGuard."
+				"description": "Дополнительный фильтр для сайтов на китайском языке. Уже включён в Китайский фильтр."
 			},
 			"sk": {
 				"name": "EasyList China",
@@ -15060,7 +15060,7 @@
 			},
 			"ru": {
 				"name": "EasyList Dutch",
-				"description": "Дополнительный фильтр для сайтов на нидерландском языке. Уже включён в Нидерландский фильтр AdGuard."
+				"description": "Дополнительный фильтр для сайтов на нидерландском языке. Уже включён в Нидерландский фильтр."
 			},
 			"sk": {
 				"name": "EasyList Dutch",
@@ -15198,7 +15198,7 @@
 			},
 			"ru": {
 				"name": "EasyList Germany",
-				"description": "Дополнительный фильтр для сайтов на немецком языке. Уже включён в Немецкий фильтр AdGuard."
+				"description": "Дополнительный фильтр для сайтов на немецком языке. Уже включён в Немецкий фильтр."
 			},
 			"sk": {
 				"name": "EasyList Germany",
@@ -16030,7 +16030,7 @@
 			},
 			"ru": {
 				"name": "Liste FR",
-				"description": "Дополнительный фильтр для сайтов на французском языке. Уже включён во Французский фильтр AdGuard."
+				"description": "Дополнительный фильтр для сайтов на французском языке. Уже включён во Французский фильтр."
 			},
 			"sk": {
 				"name": "Liste FR",
@@ -19090,7 +19090,7 @@
 			},
 			"ru": {
 				"name": "Китайский фильтр",
-				"description": "EasyList China + Китайский фильтр AdGuard. Фильтр, позволяющий блокировать рекламу на сайтах на китайском языке."
+				"description": "EasyList China + Китайский фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на китайском языке."
 			},
 			"sk": {
 				"name": "AdGuard čínsky filter",
@@ -20910,6 +20910,10 @@
 				"name": "EasyList lista kolačića",
 				"description": "Uklanja upozorenja o kolačićima i privatnosti. Već je uključena u Fanboy's Annoyances list."
 			},
+			"sv": {
+				"name": "EasyList Cookie List",
+				"description": "Tar bort cookie- och integritetsvarningar. Finns redan med på Fanboy's Annoyances list."
+			},
 			"tr": {
 				"name": "EasyList Cookie List",
 				"description": "Çerez ve gizlilik uyarılarını kaldırır. Fanboy's Annoyances listesine zaten dâhildir."
@@ -20967,6 +20971,10 @@
 			"es_ES": {
 				"name": "Frellwit's Swedish Filter",
 				"description": "Filtro que tiene como objetivo eliminar los anuncios regionales suecos, rastreo, redes sociales, elementos molestos, artículos patrocinados, etc."
+			},
+			"fa": {
+				"name": "Frellwit's Swedish Filter",
+				"description": "فیلتری که هدف آن حذف تبلیغات سوئدی منطقه‌ای، ردیابی، رسانه‌های اجتماعی، مزاحمت‌ها، مقالات حمایت شده و غیره است."
 			},
 			"fi": {
 				"name": "Frellwit's Swedish Filter",
@@ -21048,6 +21056,10 @@
 				"name": "Frellwit's Švedski Filter",
 				"description": "Filter za uBlock Origin namenjen za uklanjanje regionalnih švedskih reklama, praćenja, društvenih mreža, dosadnih stvari, sponzorisanih članaka idd."
 			},
+			"sv": {
+				"name": "Frellwit's Swedish Filter",
+				"description": "Filter som syftar till att ta bort regionala svenska annonser, spårning, sociala medier, irritationsmoment, sponsrade artiklar etc."
+			},
 			"tr": {
 				"name": "Frellwit's Swedish Filter",
 				"description": "Bölgesel İsveç reklamlarını, izlemeyi, sosyal medyayı, can sıkıcı öğeleri, sponsorlu makaleleri vb. kaldırmayı amaçlayan filtre."
@@ -21105,6 +21117,10 @@
 			"es_ES": {
 				"name": "YousList",
 				"description": "Filtro que bloquea los anuncios en los sitios web coreanos."
+			},
+			"fa": {
+				"name": "YousList",
+				"description": "فیلتری که تبلیغات را در سایت های کره ای مسدود می‌کند."
 			},
 			"fi": {
 				"name": "YousList",
@@ -21186,6 +21202,10 @@
 				"name": "YousList",
 				"description": "Filter koji blokira reklame na korejskim sajtovima."
 			},
+			"sv": {
+				"name": "YousList",
+				"description": "Filter som blockerar annonser på koreanska webbplatser."
+			},
 			"tr": {
 				"name": "YousList",
 				"description": "Korece sitelerde reklamları engelleyen filtre."
@@ -21243,6 +21263,10 @@
 			"es_ES": {
 				"name": "EasyList polaco",
 				"description": "Lista de filtros adicionales para sitios web en polaco."
+			},
+			"fa": {
+				"name": "EasyList Polish",
+				"description": "فهرست فیلتر اضافی برای وب‌سایت‌ها به زبان اندونزیایی."
 			},
 			"fi": {
 				"name": "EasyList Polish",
@@ -21324,6 +21348,10 @@
 				"name": "EasyList Poljski",
 				"description": "Poljski dodatak za EasyList."
 			},
+			"sv": {
+				"name": "EasyList Polish",
+				"description": "Extra filterlista för webbplatser på polska."
+			},
 			"tr": {
 				"name": "EasyList Polish",
 				"description": "Lehçe siteleri için ek filtre listesi."
@@ -21381,6 +21409,10 @@
 			"es_ES": {
 				"name": "Polish Anti-Annoying Special Supplement",
 				"description": "Filtros que bloquean y ocultan elementos RSS y restos de boletines informativos ocultos combinados con elementos de redes sociales en sitios web polacos."
+			},
+			"fa": {
+				"name": "Polish Anti-Annoying Special Supplement",
+				"description": "فیلترهایی که عناصر RSS و بقایای خبرنامه‌های مخفی همراه با عناصر اجتماعی در وب‌سایت‌های لهستانی را مسدود و پنهان می‌کنند."
 			},
 			"fi": {
 				"name": "Polish Anti-Annoying Special Supplement",
@@ -21461,6 +21493,10 @@
 			"sr": {
 				"name": "Polski Antyirytujący Dodatek Specjalny",
 				"description": "Filter koji blokira i sakriva RSS elemente i ostatke skrivenih biltena kombinovano sa elementima društvenih mreža na poljskim sajtovima."
+			},
+			"sv": {
+				"name": "Polish Anti-Annoying Special Supplement",
+				"description": "Filter som blockerar och döljer RSS-element och rester av dolda nyhetsbrev i kombination med sociala element på polska webbplatser."
 			},
 			"tr": {
 				"name": "Polish Anti-Annoying Special Supplement",
@@ -21607,6 +21643,10 @@
 			"sr": {
 				"name": "Dandelion Sprout's nordijski Filters",
 				"description": "Ova lista pokriva sajtove u Norveškoj, Danskoj, Islandu, danskim teritorijama i Sami populaciju."
+			},
+			"sv": {
+				"name": "Dandelion Sprout's Nordic Filters",
+				"description": "Denna lista omfattar webbplatser för Norge, Danmark, Island, danska territorier och den samiska ursprungsbefolkningen."
 			},
 			"tr": {
 				"name": "Dandelion Sprout's Nordic Filters",

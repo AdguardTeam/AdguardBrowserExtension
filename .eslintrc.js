@@ -218,6 +218,7 @@ module.exports = {
                 definedTags: ['note'],
             },
         ],
+        'jsdoc/no-defaults': 'off',
     },
     'ignorePatterns': [
         'node_modules',
