@@ -1,8 +1,8 @@
-! Checksum: NHzb2EJVRDR1DdmEKld5JA
+! Checksum: 3NkfcshQec8wiu3nzZemgQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.57.57
-! TimeUpdated: 2024-10-08T11:32:23+00:00
+! Version: 2.0.57.61
+! TimeUpdated: 2024-10-08T21:32:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -850,6 +850,7 @@ nasubiblog.com,kyukyoku-matome.com##.widget_pc_ad
 ! Bad: example.org##.adv (should be in specific.txt)
 !
 !
+##iframe[src^="https://gallerieshub.com/"]
 ##.full-tab > div.full-right-col
 ##.__isboostReturnAd
 ##.__uz__third_party_ad
@@ -1508,6 +1509,7 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 /wp-content/uploads/2024/09/fanza_ad$image
 !
 ! Malware/Phishing
+/M0cSmwEr00JP1/*$document
 .cn/bot/bot.php|$document
 ://jap.*/?cep=$document
 ://s3.*.amazonaws.com/*.*.*.*.*.*.*/index.html$document
@@ -1662,8 +1664,8 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 .com/regist.php?*/1|$document
 /ap/signin/openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp$document,domain=cn|top|xyz
 /index.php?route=product/product&product_id=$document,domain=cyou|life|live|shop|xyz|~ocam.live
-/index.php?main_page=product_info*&cPath=$document,domain=asia|bar|beauty|best|bond|buzz|cam|cfd|click|cloud|cyou|fit|fun|homes|icu|ink|life|live|ltd|me|monster|online|pics|quest|ru.com|sa.com|sbs|shop|site|space|store|tokyo|top|website|work|xyz|za.com
-/index.php?main_page=product_info&products_id=$document,domain=asia|bar|beauty|best|bond|buzz|cam|cfd|click|cloud|cyou|fit|fun|homes|icu|ink|life|live|ltd|me|monster|online|pics|quest|ru.com|sa.com|sbs|shop|site|space|store|tokyo|top|website|work|xyz|za.com
+/index.php?main_page=product_info*&cPath=$document,domain=asia|bar|beauty|best|bond|buzz|cam|cfd|click|cloud|cyou|fit|fun|homes|icu|ink|life|live|ltd|me|monster|one|online|pics|quest|ru.com|sa.com|sbs|shop|site|space|store|tokyo|top|website|work|xyz|za.com
+/index.php?main_page=product_info&products_id=$document,domain=asia|bar|beauty|best|bond|buzz|cam|cfd|click|cloud|cyou|fit|fun|homes|icu|ink|life|live|ltd|me|monster|one|online|pics|quest|ru.com|sa.com|sbs|shop|site|space|store|tokyo|top|website|work|xyz|za.com
 ://eki*.*.com/Personal/member/Login/index.php?oneTimeAccessID=$document
 /\.(?:club|cn|icu|top|pro|site|work)\/Personal\/member\/Login\/index\.php\?oneTimeAccessID=/$document,domain=club|cn|icu|top|pro|site|work
 !
@@ -2512,7 +2514,6 @@ search.yahoo.co.jp##.AdBannerCarousel
 milk-key.com##.item-list > li.item:has(> div[class^="iads_"])
 numa2.jp##.partner_button
 purple-novel.com##div[class^="iads_"]
-mangaraw.onl##.w-full.text-center.h-auto > p.p-2.text-sm.text-gray-500
 xn--icktho51ho02a0dc.com##.l-sidebar > aside[class="widget"]:has(> div.execphpwidget a[href^="https://www.sokmil.com/"][href*="affi="])
 ameblo.jp###entryBody > div:not([class]):empty ~ div:not([class]) > .pickCreative_root
 akabane-shinbun.com##.cps-post-main > p:has(> ins.adsbygoogle)
@@ -5558,8 +5559,6 @@ virtualgorillaplus.com##li[class="type2 border_radius"]
 virtualgorillaplus.com###single_banner_area
 nkskad.com,ogurigo.jp,life-alright.com,asianews2ch.jp,gri.jp,bigyond2.com,otonarisoku.com,haru-journal.com###widget-tracking
 phuot.site##p > a[target="_blank"] > img
-myjitsu.jp##article[id^="related-post-ad"]
-myjitsu.jp##.ad-footer-box
 aidoly.net##div[class^="ad-list"]
 cybersyndrome.net##.noIE6
 gamepedia.jp##.ad-toc-bottom
@@ -10640,7 +10639,7 @@ blog.livedoor.jp#?#.first-article > div[align="center"] > p:contains(/^スポン
 blog.livedoor.jp#?#.plugin-memo > div#gad-fixed-r2:upward(1)
 blog.livedoor.jp#?#.plugin-memo > div.side > #mgs_Widget:upward(2)
 cafeblog.jp,youblog.jp,ldblog.jp,blog.livedoor.jp,blogo.jp#?#.plugin-memo:has(> div.side > a[href*="dmm.co"]:not([href*="/mono/dvd/"]))
-blog.livedoor.jp#?#.plugin-memo > div.side > center > a[href^="http://amzn.to"]:upward(3)
+livejupiter2.blog.jp,blog.livedoor.jp##.plugin-memo:has(> div.side > center > a[href*="://amzn.to"])
 blog.livedoor.jp#?#.plugin-memo > div.side > center > ins.adsbygoogle:upward(3)
 blog.livedoor.jp#?#.plugin-memo > div.side > div > ins.dmm-widget-placement:upward(3)
 blog.livedoor.jp#?#.plugin-memo > div.side > div.amazon_tool:upward(2)

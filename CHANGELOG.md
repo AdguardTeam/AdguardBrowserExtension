@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+<!-- TODO: fix the version, add release date, and a local link for the version -->
+## 5.0.13x
+
+### Changed
+
+- Updated [@adguard/logger] to v1.1.0.
+- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.6.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.3.
 
 ### Fixed
 
@@ -14,21 +21,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JS rules are blocked by Trusted Types on some websites [#2980].
 - MV3 extension cannot apply rules to about:blank iframes [#2975].
 - Scriptlets logging does not work [#2977].
+- Content-type matching of `$permissions` and `$removeparam` rules [#2954].
 
 [#2985]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
 [#2984]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2984
 [#2980]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2980
 [#2975]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2975
 [#2977]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2977
+[#2954]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2954
 
-<!-- TODO: fix the version, add release date, and a local link for the version -->
-## 5.0.x
+## [5.0.128] - 2024-10-04
 
 ### Changed
 
 - Updated [@adguard/scriptlets] to v1.12.1.
 - Updated [@adguard/tsurlfilter] to v3.1.0-alpha.5.
 - Updated [@adguard/tswebextension] to v2.3.0-alpha.1.
+
+[5.0.128]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.128
 
 ## [4.4.30] - 2024-10-02
 
