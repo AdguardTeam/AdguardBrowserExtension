@@ -20,8 +20,8 @@
  * Helper class for work with semver.
  *
  * Parsed semver string saves in {@link data} property.
- * We save first {@link MAX_LENGTH} parts of parsed string.
- * If there are less than {@link MAX_LENGTH} parts in the version, the missing ones are filled with zeros
+ * We save first {@link Version.MAX_LENGTH} parts of parsed string.
+ * If there are less than {@link Version.MAX_LENGTH} parts in the version, the missing ones are filled with zeros
  * For example, entry string `1.1` will be parsed as `[1, 1, 0, 0]`.
  *
  * @param version Semver string.
