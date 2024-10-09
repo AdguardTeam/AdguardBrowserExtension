@@ -117,17 +117,22 @@ export class FiltersStorage {
      * Returns specified filter list from {@link hybridStorage}.
      *
      * @param filterId Filter id.
+     * @param logError If `true`, logs error if it occurs.
      *
      * @returns Promise, resolved with filter rules strings.
      * @throws Error, if filter list data is not valid.
      */
-    static async get(filterId: number): Promise<Uint8Array[]> {
+    static async get(filterId: number, logError = true): Promise<Uint8Array[]> {
         try {
             const binaryFilterKey = FiltersStorage.getBinaryFilterKey(filterId);
             const data = await hybridStorage.get(binaryFilterKey);
             return zod.array(zod.instanceof(Uint8Array)).parse(data);
         } catch (e) {
-            logger.error(`Failed to get binary filter data for filter id ${filterId}, got error:`, getErrorMessage(e));
+            if (logError) {
+                logger.error(
+                    `Failed to get binary filter data for filter id ${filterId}, got error:`, getErrorMessage(e),
+                );
+            }
             throw e;
         }
     }
