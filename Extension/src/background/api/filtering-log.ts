@@ -744,22 +744,31 @@ export class FilteringLogApi {
         }
 
         /**
-         * Clearing already already existing source rules.
+         * Search for matching request event inside of filtering events.
+         * If found matching event we assign declarative rule to that event,
+         * otherwise assign it to original event.
          */
-        declarativeRuleInfo.sourceRules = declarativeRuleInfo.sourceRules.filter((r) => {
-            return !filteringEvents.some((f) => {
-                if (!f.requestRule || f.requestRule.filterId !== r.filterId) {
-                    return true;
-                }
-
-                const { originalRuleText, appliedRuleText } = f.requestRule;
-                const ruleText = originalRuleText || appliedRuleText;
-
-                return ruleText === r.sourceRule;
-            });
+        const filterIds: Set<number> = new Set();
+        const ruleTexts: Set<string> = new Set();
+        declarativeRuleInfo.sourceRules.forEach((rule) => {
+            filterIds.add(rule.filterId);
+            ruleTexts.add(rule.sourceRule);
         });
 
-        if (declarativeRuleInfo.sourceRules.length !== 0) {
+        const matchedFilteringEvent = filteringEvents.find((f) => {
+            if (!f.requestRule || !filterIds.has(f.requestRule.filterId)) {
+                return false;
+            }
+
+            const { originalRuleText, appliedRuleText } = f.requestRule;
+            const ruleText = originalRuleText || appliedRuleText;
+
+            return ruleText && ruleTexts.has(ruleText);
+        });
+
+        if (matchedFilteringEvent) {
+            matchedFilteringEvent.declarativeRuleInfo = declarativeRuleInfo;
+        } else {
             event.declarativeRuleInfo = declarativeRuleInfo;
         }
     }
