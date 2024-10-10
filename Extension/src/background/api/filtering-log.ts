@@ -19,7 +19,6 @@ import { Tabs } from 'webextension-polyfill';
 
 import { RuleParser } from '@adguard/agtree';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
-import { type DeclarativeRule } from '@adguard/tsurlfilter/es/declarative-converter';
 
 import {
     BACKGROUND_TAB_ID,
@@ -744,54 +743,25 @@ export class FilteringLogApi {
             return;
         }
 
-        const { sourceRules, declarativeRuleJson } = declarativeRuleInfo;
-
         /**
-         * If we already added this rule to filtering events
-         * try to find it and delete from events.
+         * Clearing already already existing source rules.
          */
-        let ruleTextsToDelete: Set<string> | null = null;
+        declarativeRuleInfo.sourceRules = declarativeRuleInfo.sourceRules.filter((r) => {
+            return !filteringEvents.some((f) => {
+                if (!f.requestRule || f.requestRule.filterId !== r.filterId) {
+                    return true;
+                }
 
-        tabInfo.filteringEvents = filteringEvents.filter((f) => {
-            // Do not delete matched event and check only for request rule matching
-            if (f.eventId === eventId || !f.requestRule) {
-                return true;
-            }
+                const { originalRuleText, appliedRuleText } = f.requestRule;
+                const ruleText = originalRuleText || appliedRuleText;
 
-            const { originalRuleText, appliedRuleText } = f.requestRule;
-            const ruleText = originalRuleText || appliedRuleText;
-
-            // Lazy initializing to save resources
-            if (!ruleTextsToDelete) {
-                ruleTextsToDelete = new Set(
-                    sourceRules.map((r) => r.sourceRule),
-                );
-            }
-
-            return !ruleText || ruleTextsToDelete.has(ruleText);
+                return ruleText === r.sourceRule;
+            });
         });
 
-        // If we are attaching DNR first time just return
-        if (!event.declarativeRuleInfo) {
+        if (declarativeRuleInfo.sourceRules.length !== 0) {
             event.declarativeRuleInfo = declarativeRuleInfo;
-            return;
         }
-
-        /**
-         * If already had declarative rule(s) - merge them.
-         */
-        event.declarativeRuleInfo.sourceRules.push(...sourceRules);
-
-        const oldRules = FilteringLogApi.normalizeDeclarativeRuleJson(
-            event.declarativeRuleInfo.declarativeRuleJson,
-        );
-        const newRules = FilteringLogApi.normalizeDeclarativeRuleJson(
-            declarativeRuleJson,
-        );
-
-        oldRules.push(...newRules);
-
-        event.declarativeRuleInfo.declarativeRuleJson = JSON.stringify(oldRules);
     }
 
     /**
@@ -822,18 +792,6 @@ export class FilteringLogApi {
                 && event.cookieName === cookieName
                 && event.cookieValue === cookieValue;
         });
-    }
-
-    /**
-     * Converts declarative rule json to array of DeclarativeRule.
-     *
-     * @param declarativeRuleJson Stringified json.
-     * @returns Array of DeclarativeRule.
-     */
-    private static normalizeDeclarativeRuleJson(declarativeRuleJson: string): DeclarativeRule[] {
-        const rule = JSON.parse(declarativeRuleJson) as DeclarativeRule | DeclarativeRule[];
-
-        return Array.isArray(rule) ? rule : [rule];
     }
 }
 

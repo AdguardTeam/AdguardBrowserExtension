@@ -38,30 +38,11 @@ export const StatusMode = {
 };
 
 export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInfo) => {
-    const { declarativeRuleJson, sourceRules } = declarativeRuleInfo;
-
-    let rule = JSON.parse(declarativeRuleJson) as DeclarativeRule | DeclarativeRule[];
-
-    if (!Array.isArray(rule)) {
-        rule = [rule];
-    }
-
-    // Find unique action types
-    const uniqueActionTypes = new Set(rule.map((r) => r.action.type));
-    const actionTypes = [...uniqueActionTypes.values()];
-
-    /**
-     * If there is no rules or more than one we can't decide
-     * to which type of StatusMode to choose we just return regular.
-     */
-    if (actionTypes.length !== 1) {
-        return StatusMode.REGULAR;
-    }
-
-    const actionType = actionTypes[0];
+    const { sourceRules, declarativeRuleJson } = declarativeRuleInfo;
+    const rule = JSON.parse(declarativeRuleJson) as DeclarativeRule;
 
     // Small hack to show rules with $redirect as blocked for keep legacy logic.
-    if (actionType === RuleActionType.REDIRECT
+    if (rule.action.type === RuleActionType.REDIRECT
         && sourceRules.some(({ sourceRule }) => (
             sourceRule.includes('$redirect=')
             || sourceRule.includes(',redirect=')
@@ -70,7 +51,7 @@ export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInf
         return StatusMode.BLOCKED;
     }
 
-    switch (actionType) {
+    switch (rule.action.type) {
         case RuleActionType.BLOCK: {
             return StatusMode.BLOCKED;
         }
