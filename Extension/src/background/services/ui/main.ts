@@ -112,6 +112,7 @@ export class UiService {
         await toasts.init();
         await UiApi.init();
 
+        // TODO: consider moving the following to syncInit()
         messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
 
         messageHandler.addListener(MessageType.OpenFilteringLog, PagesApi.openFilteringLogPage);
