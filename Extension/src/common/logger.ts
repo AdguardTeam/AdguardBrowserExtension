@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * @file
  *
@@ -19,25 +18,6 @@
  */
 
 import { Logger, LogLevel } from '@adguard/logger';
-
-const originalTrace = console.trace;
-
-/**
- * Overriding original `console.trace` in order to
- * achieve collapsed trace. We are overriding it globally
- * instead of passing custom `Writer` to `Logger` because
- * console is going to be used inside of engine too.
- *
- * @param {...any} args Arguments list to log.
- */
-console.trace = (...args: any[]) => {
-    console.groupCollapsed(...args);
-
-    // Hiding expanded trace inside of collapsed group
-    originalTrace();
-
-    console.groupEnd();
-};
 
 declare global {
     interface Window {
