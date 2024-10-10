@@ -45,7 +45,7 @@ export class UserRulesApi {
      */
     public static async init(isInstall: boolean): Promise<void> {
         try {
-            const userRules = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+            const userRules = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId, !isInstall);
 
             if (!userRules) {
                 await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
