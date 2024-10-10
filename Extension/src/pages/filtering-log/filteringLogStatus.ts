@@ -45,7 +45,8 @@ export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInf
     }
 
     // Find unique action types
-    const actionTypes = [...new Set(rule.map((r) => r.action.type)).values()];
+    const uniqueActionTypes = new Set(rule.map((r) => r.action.type));
+    const actionTypes = [...uniqueActionTypes.values()];
 
     /**
      * If there is no rules or more than one we can't decide

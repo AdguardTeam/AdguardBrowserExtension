@@ -754,8 +754,12 @@ export class FilteringLogApi {
          */
         event.declarativeRuleInfo.sourceRules.push(...declarativeRuleInfo.sourceRules);
 
-        const oldRules = FilteringLogApi.normalizeDeclarativeRuleJson(event.declarativeRuleInfo.declarativeRuleJson);
-        const newRules = FilteringLogApi.normalizeDeclarativeRuleJson(declarativeRuleInfo.declarativeRuleJson);
+        const oldRules = FilteringLogApi.normalizeDeclarativeRuleJson(
+            event.declarativeRuleInfo.declarativeRuleJson,
+        );
+        const newRules = FilteringLogApi.normalizeDeclarativeRuleJson(
+            declarativeRuleInfo.declarativeRuleJson,
+        );
 
         oldRules.push(...newRules);
 
