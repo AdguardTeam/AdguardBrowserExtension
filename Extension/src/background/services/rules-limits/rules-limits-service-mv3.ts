@@ -566,13 +566,15 @@ export class RulesLimitsService {
      * @returns Promise that resolves with possible limitations.
      */
     private async getDynamicRulesLimitations(): Promise<DynamicLimitsCheckResult> {
-        const result = this.configurationResult;
-        if (!result) {
-            logger.error('[canEnableDynamicRules] Configuration result is not ready yet');
+        if (!this.isFilteringEnabled) {
             return { ok: true };
         }
 
-        if (!this.isFilteringEnabled) {
+        const result = this.configurationResult;
+        if (!result) {
+            // sometimes configuration result may not be ready yet,
+            // e.g. when service worker was not running and options page is opened from the context menu
+            logger.debug('[canEnableDynamicRules] Configuration result is not ready yet');
             return { ok: true };
         }
 

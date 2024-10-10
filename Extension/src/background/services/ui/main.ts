@@ -86,29 +86,39 @@ export class UiService {
     private static blockedCountIncrement = 1;
 
     /**
-     * Initialize linked services and register listeners.
+     * Initializes **sync** UI services and registers listeners.
+     *
+     * For MV3, handlers should be registered on the top level in sync functions,
+     * otherwise they may not work or work incorrectly.
      */
-    public static async init(): Promise<void> {
-        await toasts.init();
-        await UiApi.init();
-
+    public static syncInit(): void {
         // TODO add better handling for AdGuard for Firefox
         // Do not init context menu for mobile browsers
         if (browser.contextMenus) {
             ContextMenuApi.init();
         }
 
-        messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
         contextMenuEvents.addListener(ContextMenuAction.OpenSettings, PagesApi.openSettingsPage);
+        contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
+        contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageForActiveTab);
+        contextMenuEvents.addListener(ContextMenuAction.SecurityReport, UiService.openSiteReportPageForActiveTab);
+        contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
+    }
+
+    /**
+     * Initialize linked **async** services and register listeners.
+     */
+    public static async init(): Promise<void> {
+        await toasts.init();
+        await UiApi.init();
+
+        messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
 
         messageHandler.addListener(MessageType.OpenFilteringLog, PagesApi.openFilteringLogPage);
-        contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
 
         messageHandler.addListener(MessageType.OpenAbuseTab, UiService.openAbusePage);
-        contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageForActiveTab);
 
         messageHandler.addListener(MessageType.OpenSiteReportTab, UiService.openSiteReportPage);
-        contextMenuEvents.addListener(ContextMenuAction.SecurityReport, UiService.openSiteReportPageForActiveTab);
 
         messageHandler.addListener(MessageType.OpenThankyouPage, PagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, PagesApi.openExtensionStorePage);
@@ -124,7 +134,6 @@ export class UiService {
         );
 
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);
-        contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
 
         messageHandler.addListener(MessageType.OpenRulesLimitsTab, PagesApi.openRulesLimitsPage);
 
