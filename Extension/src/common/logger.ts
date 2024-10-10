@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * @file
  *
@@ -19,6 +20,17 @@
 
 import { Logger, LogLevel } from '@adguard/logger';
 
+/**
+ * Overriding original `console.trace` in order to
+ * achieve collapsed trace.
+ */
+const originalTrace = console.trace;
+console.trace = (...args: any[]) => {
+    console.groupCollapsed(...args);
+    originalTrace(); // hidden in collapsed group
+    console.groupEnd();
+};
+
 declare global {
     interface Window {
         adguard: {
@@ -37,7 +49,7 @@ const logger = new ExtendedLogger();
 
 logger.currentLevel = IS_RELEASE || IS_BETA
     ? LogLevel.Info
-    : LogLevel.Debug;
+    : LogLevel.Trace;
 
 // Expose logger to the window object,
 // to have possibility to switch log level from the console.
