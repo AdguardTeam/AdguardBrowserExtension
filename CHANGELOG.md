@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated [@adguard/logger] to v1.1.0.
+- Updated [@adguard/logger] to v1.1.1.
 
 <!-- TODO: add release date -->
 ## [4.4.30]

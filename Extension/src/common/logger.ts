@@ -37,7 +37,7 @@ const logger = new ExtendedLogger();
 
 logger.currentLevel = IS_RELEASE || IS_BETA
     ? LogLevel.Info
-    : LogLevel.Debug;
+    : LogLevel.Trace;
 
 // Expose logger to the window object,
 // to have possibility to switch log level from the console.
