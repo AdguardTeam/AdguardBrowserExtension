@@ -748,22 +748,20 @@ export class FilteringLogApi {
          * If found matching event we assign declarative rule to that event,
          * otherwise assign it to original event.
          */
-        const filterIds: Set<number> = new Set();
-        const ruleTexts: Set<string> = new Set();
-        declarativeRuleInfo.sourceRules.forEach((rule) => {
-            filterIds.add(rule.filterId);
-            ruleTexts.add(rule.sourceRule);
-        });
+        const { sourceRules } = declarativeRuleInfo;
 
-        const matchedFilteringEvent = filteringEvents.find((f) => {
-            if (!f.requestRule || !filterIds.has(f.requestRule.filterId)) {
+        const matchedFilteringEvent = filteringEvents.find((event) => {
+            if (!event.requestRule) {
                 return false;
             }
 
-            const { originalRuleText, appliedRuleText } = f.requestRule;
+            const { originalRuleText, appliedRuleText, filterId } = event.requestRule;
             const ruleText = originalRuleText || appliedRuleText;
 
-            return ruleText && ruleTexts.has(ruleText);
+            return ruleText && sourceRules.some((rule) => (
+                rule.sourceRule === ruleText
+                && rule.filterId === filterId
+            ));
         });
 
         if (matchedFilteringEvent) {
