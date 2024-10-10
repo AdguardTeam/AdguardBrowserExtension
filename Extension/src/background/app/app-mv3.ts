@@ -85,8 +85,31 @@ export class App {
     /**
      * Initializes all app services
      * and handle webextension API events for first install and update scenario.
+     *
+     * First sync modules are initialized, then async modules.
      */
     public static async init(): Promise<void> {
+        // removes listeners on re-initialization, because new ones will be registered during process
+        App.removeListeners();
+
+        App.syncInit();
+        await App.asyncInit();
+    }
+
+    /**
+     * Initializes **sync** modules.
+     *
+     * Important: should be called before {@link App.init}.
+     */
+    private static syncInit(): void {
+        UiService.syncInit();
+    }
+
+    // TODO: move other sync modules from App.asyncInit() to App.syncInit()
+    /**
+     * Initializes **async** modules.
+     */
+    private static async asyncInit(): Promise<void> {
         // TODO: Remove after migration to MV3
         // This is a temporary solution to keep event pages alive in Firefox.
         // We will remove it once engine initialization becomes faster.
@@ -94,9 +117,6 @@ export class App {
 
         // Reads persisted data from session storage.
         await engine.api.initStorage();
-
-        // removes listeners on re-initialization, because new ones will be registered during process
-        App.removeListeners();
 
         // Initializes connection and message handler as soon as possible
         // to prevent connection errors from extension pages
