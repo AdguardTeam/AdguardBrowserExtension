@@ -744,6 +744,34 @@ export class FilteringLogApi {
             return;
         }
 
+        const { sourceRules, declarativeRuleJson } = declarativeRuleInfo;
+
+        /**
+         * If we already added this rule to filtering events
+         * try to find it and delete from events.
+         */
+        let ruleTextsToDelete: Set<string> | null = null;
+
+        tabInfo.filteringEvents = filteringEvents.filter((f) => {
+            // Do not delete matched event and check only for request rule matching
+            if (f.eventId === eventId || !f.requestRule) {
+                return true;
+            }
+
+            const { originalRuleText, appliedRuleText } = f.requestRule;
+            const ruleText = originalRuleText || appliedRuleText;
+
+            // Lazy initializing to save resources
+            if (!ruleTextsToDelete) {
+                ruleTextsToDelete = new Set(
+                    sourceRules.map((r) => r.sourceRule),
+                );
+            }
+
+            return !ruleText || ruleTextsToDelete.has(ruleText);
+        });
+
+        // If we are attaching DNR first time just return
         if (!event.declarativeRuleInfo) {
             event.declarativeRuleInfo = declarativeRuleInfo;
             return;
@@ -752,13 +780,13 @@ export class FilteringLogApi {
         /**
          * If already had declarative rule(s) - merge them.
          */
-        event.declarativeRuleInfo.sourceRules.push(...declarativeRuleInfo.sourceRules);
+        event.declarativeRuleInfo.sourceRules.push(...sourceRules);
 
         const oldRules = FilteringLogApi.normalizeDeclarativeRuleJson(
             event.declarativeRuleInfo.declarativeRuleJson,
         );
         const newRules = FilteringLogApi.normalizeDeclarativeRuleJson(
-            declarativeRuleInfo.declarativeRuleJson,
+            declarativeRuleJson,
         );
 
         oldRules.push(...newRules);
