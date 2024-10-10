@@ -574,6 +574,7 @@ export class RulesLimitsService {
         if (!result) {
             // sometimes configuration result may not be ready yet,
             // e.g. when service worker was not running and options page is opened from the context menu
+            // TODO: consider returning something like NOT_READY status which can be handled later if needed
             logger.debug('[canEnableDynamicRules] Configuration result is not ready yet');
             return { ok: true };
         }
