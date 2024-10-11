@@ -393,11 +393,13 @@ export class RulesLimitsService {
      * @returns True if the filter limits are exceeded, false otherwise.
      */
     public static async areFilterLimitsExceeded(): Promise<boolean> {
-        const cachedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
-        const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
-
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
-        if (actuallyEnabledFilters.length === 0 && filteringDisabled) {
+        if (filteringDisabled) {
+            return false;
+        }
+
+        const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
+        if (actuallyEnabledFilters.length === 0) {
             return false;
         }
 
@@ -407,6 +409,7 @@ export class RulesLimitsService {
         // This case needed to save warning if service worker will restart and
         // after successful configuration update we will not notify user about
         // changed configuration or user paused and resumed protection.
+        const cachedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
         if (cachedEnabledFilters.length > 0 && !arraysAreEqual(actuallyEnabledFilters, cachedEnabledFilters)) {
             return true;
         }
