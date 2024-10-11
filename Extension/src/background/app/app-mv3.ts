@@ -277,7 +277,7 @@ export class App {
         /**
          * In MV3 the icon should be updated after the engine start,
          * otherwise 'warning' icon may be displayed until the user do some actions,
-         * i.e. until UiApi.update() is not triggered (on change of tab or window focus).
+         * that is until UiApi.update() is not triggered (on change of tab or window focus).
          *
          * And 'warning' icon can be legitimately displayed during app initialization
          * when base filter ruleset is enabled in manifest — actuallyEnabledFilters is [2] —

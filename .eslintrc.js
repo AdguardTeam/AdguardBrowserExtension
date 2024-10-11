@@ -218,15 +218,6 @@ module.exports = {
                 definedTags: ['note'],
             },
         ],
-        'jsdoc/require-description-complete-sentence': [
-            'error',
-            {
-                abbreviations: [
-                    'e.g.',
-                    'i.e.',
-                ],
-            },
-        ],
         'jsdoc/no-defaults': 'off',
     },
     'ignorePatterns': [
