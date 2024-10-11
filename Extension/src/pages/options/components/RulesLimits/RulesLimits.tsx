@@ -158,6 +158,14 @@ export const RulesLimits = observer(() => {
                                         {text}
                                     </Link>
                                 ),
+                                quick_fixes: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.filters}?group=1`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
                             })}
                         </div>
                         <div className={getClassNamesForNumbers(dynamicRulesEnabledCount, dynamicRulesMaximumCount)}>
