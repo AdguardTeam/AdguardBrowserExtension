@@ -272,7 +272,7 @@ const halloween24Notification: PromoNotification = {
     to: '31 October 2024 23:59:00',
     type: 'animated',
     bgImage: browser.runtime.getURL('assets/images/halloween24.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween24-on-update.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween24-update.svg'),
     icons: {
         enabled: {
             '19': browser.runtime.getURL('assets/icons/halloween24-on-19.png'),
