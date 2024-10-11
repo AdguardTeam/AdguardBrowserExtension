@@ -743,7 +743,32 @@ export class FilteringLogApi {
             return;
         }
 
-        event.declarativeRuleInfo = declarativeRuleInfo;
+        /**
+         * Search for matching request event inside of filtering events.
+         * If found matching event we assign declarative rule to that event,
+         * otherwise assign it to original event.
+         */
+        const { sourceRules } = declarativeRuleInfo;
+
+        const matchedFilteringEvent = filteringEvents.find((event) => {
+            if (!event.requestRule) {
+                return false;
+            }
+
+            const { originalRuleText, appliedRuleText, filterId } = event.requestRule;
+            const ruleText = originalRuleText || appliedRuleText;
+
+            return ruleText && sourceRules.some((rule) => (
+                rule.sourceRule === ruleText
+                && rule.filterId === filterId
+            ));
+        });
+
+        if (matchedFilteringEvent) {
+            matchedFilteringEvent.declarativeRuleInfo = declarativeRuleInfo;
+        } else {
+            event.declarativeRuleInfo = declarativeRuleInfo;
+        }
     }
 
     /**
