@@ -38,11 +38,15 @@ export const StatusMode = {
 };
 
 export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInfo) => {
-    const rule = JSON.parse(declarativeRuleInfo.declarativeRuleJson) as DeclarativeRule;
+    const { sourceRules, declarativeRuleJson } = declarativeRuleInfo;
+    const rule = JSON.parse(declarativeRuleJson) as DeclarativeRule;
 
     // Small hack to show rules with $redirect as blocked for keep legacy logic.
     if (rule.action.type === RuleActionType.REDIRECT
-        && declarativeRuleInfo.sourceRules.some(({ sourceRule }) => sourceRule.includes('$redirect=') || sourceRule.includes(',redirect='))
+        && sourceRules.some(({ sourceRule }) => (
+            sourceRule.includes('$redirect=')
+            || sourceRule.includes(',redirect=')
+        ))
     ) {
         return StatusMode.BLOCKED;
     }
