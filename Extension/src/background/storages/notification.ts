@@ -82,10 +82,11 @@ export type PromoNotification = {
     icons?: IconVariants,
 };
 
-const BIRTHDAY_24_ID = 'birthday24';
+const HALLOWEEN_24_ID = 'halloween24';
 
-const birthday24Notification: PromoNotification = {
-    id: BIRTHDAY_24_ID,
+const halloween24Notification: PromoNotification = {
+    id: HALLOWEEN_24_ID,
+    // FIXME: update texts
     locales: {
         en: {
             title: 'Would you fit in AdGuard?',
@@ -265,20 +266,21 @@ const birthday24Notification: PromoNotification = {
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Birthday24 }),
-    from: '30 May 2024 12:00:00',
-    to: '5 June 2024 23:59:00',
+    url: Forward.get({ action: ForwardAction.Halloween24 }),
+    // FIXME: change to 25 October
+    from: '1 October 2024 12:00:00',
+    to: '31 October 2024 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/birthday24.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/birthday24-on-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/halloween24.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween24-on-update.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/birthday24-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/birthday24-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween24-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween24-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/birthday24-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/birthday24-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween24-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween24-off-38.png'),
         },
         warning: defaultIconVariants.warning,
     },
@@ -288,5 +290,5 @@ const birthday24Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [BIRTHDAY_24_ID, birthday24Notification],
+    [HALLOWEEN_24_ID, halloween24Notification],
 ]);
