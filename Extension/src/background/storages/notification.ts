@@ -86,7 +86,6 @@ const HALLOWEEN_24_ID = 'halloween24';
 
 const halloween24Notification: PromoNotification = {
     id: HALLOWEEN_24_ID,
-    // FIXME: check texts in popup, especially ja, ar, fa, he
     locales: {
         en: {
             title: 'The Web is full of dangers',
@@ -133,8 +132,8 @@ const halloween24Notification: PromoNotification = {
             btn: '立即消除它們',
         },
         ja: {
-            title: 'AdGuardキャラで怪物を倒すゲーム',
-            btn: '挑戦する',
+            title: 'AdGuardで怪物を 倒すゲーム',
+            btn: 'プレイしてみる',
         },
         ko: {
             title: '사이버 몬스터와 싸워보세요!',
@@ -145,7 +144,7 @@ const halloween24Notification: PromoNotification = {
             btn: 'Позбудьтесь їх',
         },
         ar: {
-            title: 'الإنترنت في خطر!',
+            title: '!الإنترنت في خطر',
             btn: 'ساعد',
         },
         be: {
@@ -173,7 +172,7 @@ const halloween24Notification: PromoNotification = {
             btn: 'Βοήθεια',
         },
         fa: {
-            title: 'هیولاها به اینترنت حمله کردند!',
+            title: '!هیولاها به اینترنت حمله کردند',
             btn: 'مبارزه کنید',
         },
         fi: {
@@ -181,7 +180,7 @@ const halloween24Notification: PromoNotification = {
             btn: 'Taistele',
         },
         he: {
-            title: 'המפלצות תקפו את האינטרנט!',
+            title: '!המפלצות תקפו את האינטרנט',
             btn: 'להילחם',
         },
         hr: {
