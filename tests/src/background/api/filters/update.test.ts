@@ -33,6 +33,8 @@ import { fakeFilterWithVersion } from '../../../../helpers/fixtures/fake-filter-
 import { fakeFilterV4WithDiffPath } from '../../../../helpers/fixtures/fake_filter_v4_with_diff_path';
 
 jest.mock('../../../../../Extension/src/background/engine');
+jest.mock('../../../../../Extension/src/background/api/ui/icons');
+jest.mock('../../../../../Extension/src/background/storages/notification');
 
 describe('Filter Update API should', () => {
     // We do not support filter updates in MV3 yet.

@@ -12,6 +12,8 @@ import {
 } from '../../../helpers';
 
 jest.mock('../../../../Extension/src/background/engine');
+jest.mock('../../../../Extension/src/background/api/ui/icons');
+jest.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Page Stats Api', () => {
     let storage: Storage.StorageArea;
