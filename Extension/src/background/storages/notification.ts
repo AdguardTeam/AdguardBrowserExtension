@@ -139,7 +139,7 @@ const halloween24Notification: PromoNotification = {
             title: '사이버 몬스터와 싸워보세요!',
             btn: '퀴즈 시작',
         },
-        ua: {
+        uk: {
             title: 'Інтернет повен небезпек',
             btn: 'Позбудьтесь їх',
         },
