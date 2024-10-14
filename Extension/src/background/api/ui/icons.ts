@@ -65,10 +65,18 @@ class IconsApi {
         await this.setPromoIconIfAny();
 
         if (this.promoIcons?.enabled) {
-        // Pre-set promo icon to avoid flicker on tabs change
-            const icon = await this.pickIconVariant();
-            await IconsApi.setActionIcon(icon);
+            // Pre-set promo icon to avoid flicker on tabs change
+            await this.update();
         }
+    }
+
+    // TODO: use the update method for icon updating on engine update
+    /**
+     * Updates the icon state.
+     */
+    public async update(): Promise<void> {
+        const icon = await this.pickIconVariant();
+        await IconsApi.setActionIcon(icon);
     }
 
     /**
