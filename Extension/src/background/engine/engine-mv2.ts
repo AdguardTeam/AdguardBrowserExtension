@@ -25,7 +25,7 @@ import {
     createTsWebExtension,
 } from '@adguard/tswebextension';
 
-import { logger, LogLevel } from '../../common/logger';
+import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
 import { listeners } from '../notifier';
 import { FiltersStorage } from '../storages';
@@ -159,7 +159,7 @@ export class Engine implements TsWebExtensionEngine {
 
         const result: ConfigurationMV2 = {
             verbose: !!(IS_RELEASE || IS_BETA),
-            logLevel: IS_RELEASE || IS_BETA ? LogLevel.Info : LogLevel.Debug,
+            logLevel: logger.currentLevel,
             filters,
             userrules: {
                 content: [],
