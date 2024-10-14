@@ -260,8 +260,7 @@ const halloween24Notification: PromoNotification = {
     },
     text: '',
     url: Forward.get({ action: ForwardAction.Halloween24 }),
-    // FIXME: change to 25 October 2024
-    from: '1 October 2024 12:00:00',
+    from: '25 October 2024 12:00:00',
     to: '31 October 2024 23:59:00',
     type: 'animated',
     bgImage: browser.runtime.getURL('assets/images/halloween24.svg'),
