@@ -15,6 +15,8 @@ import { type Metadata } from '../../../../../Extension/src/background/schema';
 import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
 
 jest.mock('../../../../../Extension/src/background/engine');
+jest.mock('../../../../../Extension/src/background/api/ui/icons');
+jest.mock('../../../../../Extension/src/background/storages/notification');
 
 describe('Quick Fixes API should', () => {
     let storage: Storage.StorageArea;

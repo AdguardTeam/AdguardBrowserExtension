@@ -20,6 +20,8 @@ import { SettingOption } from '../../../../Extension/src/background/schema/setti
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 
 jest.mock('../../../../Extension/src/background/engine');
+jest.mock('../../../../Extension/src/background/api/ui/icons');
+jest.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Update Api', () => {
     describe('update method', () => {

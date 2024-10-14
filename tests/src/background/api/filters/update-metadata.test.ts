@@ -19,6 +19,8 @@ import {
 } from '../../../../../constants';
 
 jest.mock('../../../../../Extension/src/background/engine');
+jest.mock('../../../../../Extension/src/background/api/ui/icons');
+jest.mock('../../../../../Extension/src/background/storages/notification');
 
 const server = sinon.fakeServer.create({
     respondImmediately: true,

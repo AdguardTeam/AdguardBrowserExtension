@@ -26,6 +26,8 @@ import {
 } from '../../../helpers';
 
 jest.mock('../../../../Extension/src/background/engine');
+jest.mock('../../../../Extension/src/background/api/ui/icons');
+jest.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
