@@ -72,14 +72,6 @@ class IconsApi {
     }
 
     /**
-     * Updates the icon state.
-     */
-    public async update(): Promise<void> {
-        // should be done the same way as in the init method
-        await this.init();
-    }
-
-    /**
      * Updates current extension icon for specified tab.
      *
      * @param tabId Tab's id.
