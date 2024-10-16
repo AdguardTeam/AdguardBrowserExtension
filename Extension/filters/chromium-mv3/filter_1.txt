@@ -1,8 +1,8 @@
-! Checksum: SWGZf1frEL1XEiOfG6YY0Q
+! Checksum: 2TzixdYqG6rziomgKPjN3g
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.94.57
-! TimeUpdated: 2024-10-15T08:31:11+00:00
+! Version: 2.0.94.60
+! TimeUpdated: 2024-10-16T13:31:02+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -5556,7 +5556,7 @@ $cookie=/blcrm|bltsr|zmFQeXtI|JPIqApiY|computer/,domain=yandex.com|yandex.ru|yan
 ! ad on chrome://newtab
 !
 ! ya.ru - main page
-ya.ru##div[class^="main-home-"][class*="i-mini-bem"]:has(> div[data-hydration-id] > div[class^="main-home-"] > div.direct-close-block)
+ya.ru##div[class*="home"][class*="i-mini-bem"]:has(> div[data-hydration-id] > div[class*="home"] > div.direct-close-block)
 ya.ru##.main-home-banner
 !
 ! Yandex.Search
@@ -7698,6 +7698,7 @@ ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru,motor.ru,progorod58.ru,74.ru,
 !
 !
 !
+litres.ru##div[class^="MainPromoBanner_wrapper"]
 ||verstka.media/widget.html
 kostroma.today##.banner-head-logo
 rtvi.us##.banner-m2
@@ -18869,10 +18870,6 @@ player.ex.co#@##ad-container
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
-! https://github.com/AdguardTeam/AdGuardExtra/issues/547
-! TODO: remove it when the issue is fixed
-! aglint-disable-next-line
-! aglint-disable-next-line
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189493
 @@||ssp.rambler.ru/capirs_async.js$domain=championat.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187103

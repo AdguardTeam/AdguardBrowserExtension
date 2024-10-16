@@ -1,8 +1,8 @@
-! Checksum: cV5pc0l8wYdHOz/LcoJ02w
+! Checksum: dKKFDU4Gt8puGaxNkEnoEg
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.44.51
-! TimeUpdated: 2024-10-15T06:33:31+00:00
+! Version: 2.0.44.58
+! TimeUpdated: 2024-10-16T14:33:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -236,7 +236,7 @@ drive2.ru#?#.js-page > div > div[class="x-box x-box--mh o-f"]:has(> script)
 mail.ru#%#//scriptlet('set-constant', 'Object.prototype.hideTgbAd', '', '', 'asResolved')
 mail.ru##div[slot="main-column"] > div.stripe-wrapper
 ! e.mail.ru
-e.mail.ru,octavius.mail.ru#%#//scriptlet('set-constant', 'Object.prototype._clearBatchTimer', 'undefined')
+e.mail.ru,octavius.mail.ru#%#//scriptlet('abort-on-stack-trace', 'Promise', 'onSlotRender')
 e.mail.ru,octavius.mail.ru#%#//scriptlet('remove-class', 'letter-list_top-line-adv-2pane', '.letter-list')
 mail.ru#?#body > div > style + div:has(> div > div.description:contains(/До[баба]вьт[ее] Mail в исключения/))
 ! dzen.ru
@@ -1065,7 +1065,6 @@ reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#@#.Sid
 ||paradoxfactor.com^$third-party
 ||shutseashore.com^$third-party
 ||thunderingrose.com^$third-party
-||thomastorch.com^$third-party
 ||inventionpassenger.com^$third-party
 ||printerplasma.com^$third-party
 ||driverequest.com^$third-party
@@ -1841,9 +1840,7 @@ imagetostl.com#%#//scriptlet('prevent-element-src-loading', 'script', 'pagead2.g
 nanifile.com#?##oframeplayer > pjsdiv[style]:has(pjsdiv:contains(Ad Block))
 delfi.ee##.ad-block-layer
 sheepit-renderfarm.com##.container[style^="width:728px;height:90px;"]
-civitai.com#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
-civitai.com##div[class^="mantine-"][style="margin: 0px auto;"]:empty
-civitai.com##div[class^="mantine-"][style="margin: 16px auto 10px;"]:empty
+civitai.com##div[style^="min-height: 250px; min-width:"]
 beautifulfonts.net###blockab
 agenda-loto.net##.antiaddblock
 snowcrows.com,helldivers.io,twitchmetrics.net#%#//scriptlet('set-constant', 'nitroAds.abp', 'true')
@@ -4341,6 +4338,7 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+coomer.su##.header + a[href^="https://simplex.chat/contact#/"]
 infourok.ru#%#//scriptlet('set-cookie-reload', 'hide_tg_gift_v2', '1')
 cu.tbs.co.jp#%#//scriptlet('trusted-set-local-storage-item', 'lastViewTime', '$currentDate$')
 andropalace.co###sgpb-popup-dialog-main-div-wrapper
@@ -11839,6 +11837,7 @@ macwelt.de,pcwelt.de#%#//scriptlet("set-constant", "firebase.messaging", "noopFu
 !
 ! SECTION: Push notifications - Regular rules
 !
+haberler.com###notification-popup
 ||smocca.jp/assets/api/ask_notification_permission
 sdccollege.com##.ribbon-pop
 business-standard.com##.ampnotification
@@ -12667,7 +12666,7 @@ quinhillyer.com,johnbiver.com,jasonmattera.com,ipatriot.com,hooligancharters.com
 ! ##a[href^="https://news.google.com/publications/"]
 pchome.com.tw,bayburtmanset.com,tele1.com.tr,dealabs.com,pcquest.com,tko.pl,generacionxbox.com,menemenhaber.com.tr,matricedigitale.it,armyrecognition.com,analyticsindiamag.com,blocktrends.com.br,investing.com,studyfinds.org,trhaber.com,avgi.gr,deccanherald.com,aksam.com.tr,daily-bangladesh.com,noticiasautomotivas.com.br,turkiyegazetesi.com.tr,haberler.com,www-news18-com.cdn.ampproject.org,haberler.com,eurasiantimes.com,vesti-ua.net,hlavnespravy.sk,ictvietnam.vn,giga.de,news.itsfoss.com,fpsjp.net,bedavainternet.com.tr,buyuksivas.com,kredibankalar.com,akyazihaber.com,kamuajans.com,tamgaturk.com,tarsushaber.com,akademikpersonel.org,inegolonline.com,ordugazete.com,gunes.com,koinfinans.com,startefacts.com,donanimhaber.com,iha.com.tr,star.com.tr,karadenizgazete.com.tr,alem.com.tr,egepostasi.com,dunya.com,ulusal.com.tr,turkgun.com,cepkolik.com,teknoloji.org,lavnik.net,gadgets360.com,sokgazetesi.com.tr,fotospor.com,neowin.net,haberturk.com,memurlar.net,mirchi9.com,eltiempo.pe,vietnamnet.vn,sportskeeda.com,desidime.com,tuoitre.vn,clutchpoints.com,ithardware.pl,listelist.com,imparcialoaxaca.mx,elpais.com.co,minuto30.com,impact.ro,b1tv.ro,moviesroom.pl,techwafer.com,moonshot.news,radiokp.ru,brestcity.com,aykiri.com.tr,yenicaggazetesi.com.tr##a[href^="https://news.google.com/publications/"]
 ! ##.googlenews
-lepoint.fr,lpnt.fr,kriptokoin.com,laodong.vn,ajanstekirdag.com,enyenimedya.com,noktabursa.com.tr##.googlenews
+notisclepr5c-la.com,lepoint.fr,lpnt.fr,kriptokoin.com,laodong.vn,ajanstekirdag.com,enyenimedya.com,noktabursa.com.tr##.googlenews
 ! ##.google-news
 the-decoder.com,sporx.com,nowymarketing.pl,gsgazete.com,ortacizgi.com,topontiki.gr,pronews.gr,vietnamplus.vn,ultimate-guitar.com,habervitrini.com,dirilispostasi.com,aydinhedef.com.tr,akcakocatv.com,yenibakis.com.tr,teknodiot.com,haber46.com.tr,haberdenizli.com,orduyorum.com,sakaryagazetesi.com.tr,esgazete.com,akdenizgercek.com.tr,sehrivangazetesi.com,diyanethaber.com.tr,trhaber.com,aydinpost.com,fanatik.com.tr,plo.vn,glivice.pl,slazag.pl,bytomski.pl,piekary.info,twojknurow.pl,nowinytyskie.pl,ngs24.pl,24kato.pl,rudzianin.pl,zabrzenews.pl,chorzowski.pl,tarnowskiegory.info,24zaglebie.pl,laodong.vn,wanhaber.com,kazete.com.tr,kanalmaras.com,haber61.net,tv100.com,iscihaber.net,eskisehirhaber.com,elinformador.com.co,emlak365.com,ensonhaber.com,edehaber.com.tr,gazeteyenigun.com.tr,gazetevan.com,tv5.com.tr,kamugundemi.com,playtech.ro,birgun.net,sosyaltv.com.tr,tamindir.com,engelli.com,medyafaresi.com,haberlobi.com,kamudanhaber.net,habervakti.com,ntv.com.tr,ntvspor.net,haberglobal.com.tr,cumhuriyet.com.tr,kyiv.media##.google-news
 ! ##.newsletter-popup
@@ -12694,6 +12693,15 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 !
 ! SECTION: Subscriptions - Regular rules
 !
+morningbrew.com##.inline-subscribe
+morningbrew.com##div[class^="style__NewsletterCTAWrapper-"]
+every.to##.post-body > div.border-dashed:has(> a[href^="https://every.to/subscribe?"])
+every.to##.post-body p:has(> em + a[href^="https://every.to/subscribe"])
+every.to##footer div.text-left:has(> div.email-box)
+writer.com##.main-wrap > #blog-above-footer-wr:has(div.dc-blog-newsletter)
+wbez.org##.Page-subscribe
+kod.ru##div[class^="SocialsBanner_"]
+kod.ru##a[href="https://bit.ly/d_code"]
 hoster.by##div[class^="m-"][class*="-mailing"]
 anlatilaninotesi.com.tr###cta
 lawandcrime.com##.o-callout__newsletter
@@ -18002,7 +18010,7 @@ felomena.com##.subscribe-conteiner
 cryptobriefing.com##.widget-newsletter-form
 laprensagrafica.com,debate.com.mx,geekmi.news##.suscribe
 7days.ru###news-widget
-||sibforms.com^$domain=~sibforms.com,~stylesheet
+||sibforms.com^$domain=~sibforms.com|~contact.cgt.fr,~stylesheet
 kanobu.ru##a[class^="KanobuSocialCommunities_twitter"]
 kanobu.ru##aside[class^="IgromaniaChannel_mania"]
 mail.ru##.block_subscription-terms
