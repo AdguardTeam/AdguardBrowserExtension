@@ -1,8 +1,8 @@
-! Checksum: d19vC+whHKuPWy8GljRuGw
+! Checksum: 5E+M59Rmu/Pe8sArW0GqMw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.55.25
-! TimeUpdated: 2024-10-08T17:32:40+00:00
+! Version: 2.0.55.34
+! TimeUpdated: 2024-10-15T04:33:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -210,14 +210,16 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 ! AfreecaTV
-||reqde.afreecatv.com^
-||adballoon.afreecatv.com^
-||deapi.afreecatv.com^
+||reqde.sooplive.co.kr^
+||adballoon.sooplive.co.kr^
+||deapi.sooplive.co.kr^
 ! Yandex ads in apps
 ||startup.mobile.yandex.net^
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||ad.zijieapi.com^
+||ads*-normal-hl.zijieapi.com^
 ||frontier100-toutiao-lf.fqnovel.com^
 ||ad.snaptube.app^
 ||ad.mobiuspace.net^
@@ -1908,7 +1910,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64666
 ! https://github.com/AdguardTeam/AdguardFilters/issues/62745
 ! https://github.com/AdguardTeam/AdguardFilters/issues/61569
-||afreecatv.com/data/af_app_ad_mobile.js
+||sooplive.co.kr/data/af_app_ad_mobile.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59674
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59654#issue-660707800
 ! https://github.com/AdguardTeam/AdguardFilters/issues/58229
@@ -2392,6 +2394,18 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+jumpmatome2ch.biz##.sp-ad
+fc1adult.com##.line_spc > div.grass_img[style="margin-bottom: 10px;"]
+fc1adult.com##.sp_h400
+fc1adult.com##.sp_h500
+gamewith.jp##._img[src^="https://img.gamewith.jp/ad/"]
+jmty.jp##.gtm_jmty_banner
+news.denfaminicogamer.jp##.articleContent + #header-overlay
+przegladsportowy.onet.pl##.bg-placeholder
+przegladsportowy.onet.pl##aside[class^="Flat"][class*="_placeholder_"]
+przegladsportowy.onet.pl##aside[class^="Right"][class*="_placeholderRight"]
+przegladsportowy.onet.pl###fixtures-slot:has(> .relative:only-child > .onet-ad:only-child)
+news.m.pchome.com.tw##div[class^="showad_"]
 newsphere.jp##div[style="height: 210px;"]
 shogis.com##.adv300_250
 yourweather.co.uk,theweather.net,tempo.pt,tempo.com,tiempo.com,meteored.*#$#.pie-pagina { margin-bottom: 0 !important; }
@@ -4832,7 +4846,10 @@ aya0205.smart-douga.mobi##.entry_more > div[style^="background-color: rgb(88, 14
 smart-flash.jp##iframe[src^="https://smart-flash.jp/wp-content/themes/original/embed/FoneH"]
 csfd.cz##.box-banner-mobile
 urapic.com##header + center
-rastaneko-blog.com##center > div[id][style]
+rastaneko-blog.com###entry > center:has(> div[id][style] > script)
+rastaneko-blog.com###entry > div[id][style="height:345px;"]
+rastaneko-blog.com###main_contents > center + br
+rastaneko-blog.com##body > center + br
 webtan.impress.co.jp##.ad-wrapper-in-content
 newmofu.doorblog.jp##.content > #lite_link:first-of-type
 hobonichielog.com##.banabox

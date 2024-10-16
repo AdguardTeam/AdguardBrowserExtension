@@ -1,8 +1,8 @@
-! Checksum: XXGT9z0c3n2XIg2We3wQHQ
+! Checksum: +L9HeR6W4mtTh2iRmebHyw
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.23.56
-! TimeUpdated: 2024-10-09T10:33:05+00:00
+! Version: 2.1.23.83
+! TimeUpdated: 2024-10-15T02:33:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -85,6 +85,24 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||666hh999gg.com^
+||776.jstatic.xyz^
+||kmqianneng66.com^
+||cg-pao-tu.nanyanglk.com^
+||cos1999.top^
+||cosmo202.top^
+||d24fnxkxwarvg8.cloudfront.net^
+||files.xtpag.top^
+||img.175532.com^
+||img.911787.com^
+||img.qxwoiv.com^
+||tu0379199038.cc^
+||n55ylc001.vip^
+||tu5551976196.cc^
+||dpjzr.top^
+||n55cpw.vip^
+||xpjcg.oss-accelerate.aliyuncs.com^
+||qxwoiv.com^
 ||krbulhb.com^
 ||wl.uqwjdhgv.top^
 ||mm.wxc.cc^
@@ -742,6 +760,9 @@ popbee.com##.adblocker
 !
 ##.Zi_ad_a_H
 ##a[href^="https://adm.beimg.com/"]
+! 91porny
+! https://github.com/AdguardTeam/AdguardFilters/issues/190664
+##header + main > div[class$=" block"][id="rd0"][data-v-app]
 !---------------------------------------------------------------------------!
 !-------------- General javascript, CSS and HTML extensions ----------------!
 !---------------------------------------------------------------------------!
@@ -1036,6 +1057,10 @@ apple.com.cn#$#.ac-gn-blur { top: 0 !important; }
 ! Bad: .org/ads/$domain=example.org (for instance, should be in specific.txt)
 !
 !
+! 91porny
+! https://github.com/AdguardTeam/AdguardFilters/issues/190664
+/^https:\/\/zz\d{4}bb\d{4}\.com/$third-party,image
+:8686/8888/*.gif$third-party,image
 ! Ads on many porn sites
 /960x60.
 /template/chiav/img/*.png
@@ -1104,6 +1129,15 @@ $script,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com|fastly.
 !
 !
 !
+zombit.info###single-popup
+pttweb.cc##.e7-min-ad-height
+news.pchome.com.tw##div[style="width:970px;height:250px"]
+news.pchome.com.tw##div[style="width:300px;height:450px"]
+news.pchome.com.tw##div[style="width:300px;height:250px"]
+news.pchome.com.tw##div[style="width:300px;height:600px"]
+news.pchome.com.tw##div[style="width:687px;height:145px"]
+news.pchome.com.tw##.adfloat
+||apis.pchome.com.tw/js/idlead.js
 acg.d1dm.top##.module-adslist + a[target="_blank"] > img
 acg.d1dm.top##.module-adslist + a[target="_blank"] + i.gg-icon
 ||1688by.com/static/default/js/loadLM.js
@@ -1291,8 +1325,9 @@ nodejs.cn###pagead
 gvm.com.tw##.promotion_ad
 gvm.com.tw##.promotion > .sp-txt
 huya.com##.room-sidebar #public-screen-ab
+vidhub.me,vidhub.tv##.adwap
 vidhub.me,vidhub.tv##.promolnk
-vidhub.me,vidhub.tv##.promote-link
+vidhub.me,vidhub.tv##.promotelink
 technews.tw##.inside_AD
 tw100s.com##div[class="ui_adblock"]
 heho.com.tw##div[id^="heho-ml-"]
@@ -3083,6 +3118,7 @@ bmvc2020-conference.com#@#div[id][style="width: 100%;"] > iframe[scrolling="no"]
 -*-*-*-*.alpha^$script,third-party
 -*-*-*-*.as^$script,third-party
 -*-*-*-*.panda^$script,third-party
+/ad_display.php?ad_pos=
 -1316632262.cos.
 -1316899192.cos.
 -1321533417.cos.
@@ -4771,7 +4807,6 @@ newduba.cn###jq_youxi
 ##DIV[style=" max-width:990px; margin:0 auto;"] > A > IMG[height="60px"]
 ##table[style="border:#7D8C8E solid 1px;height: 30px;text-align: center;"]
 ##td[id^="td_"] > a[href^="/htmm/"]
-##vg-pause-d
 ##a[href*="/122.51.121.126:"]
 /://666(7|8)[0-9]{2}.xyz\//$image,third-party
 /\.(cc|com|top|xyz)\/i\/v$/$third-party,xmlhttprequest
@@ -4789,8 +4824,62 @@ newduba.cn###jq_youxi
 ||67.21.92.*.gif
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||evkzqs.xyz^
+||hwymoyv.icu^
+||kyyfsw.xyz^
+||cdmyeg.xyz^
+||4bfx0u.com^
+||qebgcdcjr000.fun^
+||lnnahh.xyz^
+||wcsmvmf.icu^
+||huresdu.top^
+||sjmlmk.xyz^
+||ymauoo.xyz^
+||jpwsuix.icu^
+||myfenxi.com^
+||ddlzlr.xyz^
+||qeogcdcjr000.fun^
+||qronay.xyz^
+||hthvc.icu^
+||curesdf.top^
+||qekgcdcjr000.fun^
+||mm1qj.icu^
+||mamjkg.xyz^
+||lbqdaua.icu^
+||vtjbnb.xyz^
+||gxoaku.xyz^
+||esqzwq.xyz^
+||klmohbk.icu^
+||qeugcdcjr000.fun^
+||bieuc.icu^
+||sbovgy.xyz^
+||myqmgm.xyz^
+||sgsosi.xyz^
+||rnwenpn.icu^
+||vjharl.xyz^
+||wnojded.icu^
+||xadulxs.cn^
+||4q87v.icu^
+||amsbce.xyz^
+||ygipjqf.icu^
+||gpqkeq.xyz^
+||yugqqqq.icu^
+||yuuaos.xyz^
+||nzfcvv.xyz^
+||hp8g6.icu^
+||oauqyw.xyz^
+||hauqks.top^
+||jsgapai.icu^
+||udswai.xyz^
+||gbqgwes.icu^
+||miwpkk.xyz^
+||npdbxf.xyz^
+||iggbky.xyz^
+||333bbb777bbb.com^
+||j7c16.icu^
 ||wuiqiq.xyz^
 ||jingjs.top^
+||0pdsa.icu^
 ||leagsmk.icu^
 ||irulws.xyz^
 ||cowcuo.xyz^
@@ -10691,7 +10780,7 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||dagumanhua.com/style/mdagu.js
 ||dailynews.sina.com/gb/ads/
 ||dajiadu8.com/17.js
-||dajiadu8.com/17mb/script/ad.js
+||dajiadu8.com/17mb/script/ad*.js
 ||dajiazhao.com/login/reg.js
 ||dalipan.com/api/taobao
 ||dangdang.com/adall.
@@ -13523,6 +13612,7 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||zztongyun.com/static/js/sh.
 ||zzz4.com/JS_AD/
 ||zzzyk.com/js/
+||mydyxs.com/mpc/
 szxx.com.cn###A0
 6parknews.com##div[style="width:990px;height:140px;margin-left:auto;margin-right:auto;text-align:center;"]
 element-plus.org##.page-sidebar-top
@@ -21075,6 +21165,8 @@ dlkoo.com##ins[id^="tanxssp-outer-conmm_"]
 ||dlkoo.com/down/copy
 ||taobao.com^$popup,domain=dlkoo.com
 !#Dnvod.tv
+##.dabf > .ng-star-inserted
+##vg-pause-f
 ##vg-pause-ads
 @@/ads.js$domain=iyf.tv
 ||dnvodcdn.me/fast/*.mp4
@@ -21215,6 +21307,7 @@ smjb.net##div[style*="height: 50%"]
 ||ysxs8.vip/js/play_db.js
 ||zanghaihua.org/js/
 ||zhenben.cc/2000/
+.hongi7ie8owiie*.site^$script,third-party
 .baigh8eosmgie*.site^$script,third-party
 ://*.*fgcdcjr000.fun/$script,third-party
 ://*.*ryt111.fun/$script,third-party

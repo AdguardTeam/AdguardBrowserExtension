@@ -1,8 +1,8 @@
-! Checksum: BwisMGEZrQBnexuIvFztUQ
+! Checksum: 43KUth2yRxfakGEO+bMotQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.58
-! TimeUpdated: 2024-10-04T10:33:33+00:00
+! Version: 2.0.9.61
+! TimeUpdated: 2024-10-15T04:33:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,12 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! https://support.ebis.ne.jp/s/article/23146
+$removeparam=ebisOther1
+$removeparam=ebisOther2
+$removeparam=ebisOther3
+$removeparam=ebisOther4
+$removeparam=ebisOther5
 ! https://docs.bemob.com/en/bemob-click-urls
 $removeparam=bemobdata
 ! Unidentified email subscription system
@@ -1309,10 +1315,11 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||glami.cz^$removeparam=/ga[ct]id/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143625
 ||open.spotify.com^$removeparam=referral
+||open.spotify.com^$removeparam=si
 ! SK Telecom (skt.sh domain used as their own URL shortening service )
 ||skt.sh/common/share/bridge?$removeparam=referer
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-4966523
-||login.afreecatv.com^$removeparam=szFrom
+||login.sooplive.co.kr^$removeparam=szFrom
 ! moffme.com?source=gl&medium=moffme&campaign=article_2699
 ||moffme.com^$removeparam=source
 ||moffme.com^$removeparam=medium
