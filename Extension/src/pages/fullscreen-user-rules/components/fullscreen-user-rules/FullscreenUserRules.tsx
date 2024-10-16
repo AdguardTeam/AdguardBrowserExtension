@@ -22,9 +22,13 @@ import { observer } from 'mobx-react';
 import { Loader } from '../../../common/components/Loader';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { Notifications } from '../../../options/components/Notifications';
-import { FULLSCREEN_USER_RULES_EDITOR, NotifierType } from '../../../../common/constants';
+import { NotifierType } from '../../../../common/constants';
 import { rootStore } from '../../../options/stores/RootStore';
-import { messenger } from '../../../services/messenger';
+import {
+    messenger,
+    LongLivedConnectionCallbackMessage,
+    Page,
+} from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { fullscreenUserRulesStore } from '../../stores/FullscreenUserRulesStore';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
@@ -44,7 +48,7 @@ export const FullscreenUserRules = observer(() => {
     useEffect(() => {
         store.getFullscreenUserRulesData();
 
-        let removeListenerCallback = async () => {};
+        let removeListenerCallback = () => {};
 
         (async () => {
             const events = [
@@ -52,9 +56,9 @@ export const FullscreenUserRules = observer(() => {
             ];
 
             removeListenerCallback = messenger.createLongLivedConnection(
-                FULLSCREEN_USER_RULES_EDITOR,
+                Page.FullscreenUserRules,
                 events,
-                async (message: any) => {
+                async (message: LongLivedConnectionCallbackMessage) => {
                     const { type } = message;
 
                     switch (type) {

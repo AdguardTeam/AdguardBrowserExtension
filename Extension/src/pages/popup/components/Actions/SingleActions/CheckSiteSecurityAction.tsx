@@ -22,6 +22,7 @@ import { ForwardFrom } from '../../../../../common/forward';
 import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { logger } from '../../../../../common/logger';
 
 import { type SingleActionParams } from './types';
 
@@ -32,9 +33,15 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
      * Handle site security check action click.
      */
     const handleCheckSiteSecurity = () => {
+        if (!url) {
+            logger.error('No URL provided for site security check');
+            return;
+        }
+
         if (!isFilteringPossible) {
             return;
         }
+
         messenger.checkSiteSecurity(url, ForwardFrom.Popup);
         window.close();
     };

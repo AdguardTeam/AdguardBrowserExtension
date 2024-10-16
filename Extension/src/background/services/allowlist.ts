@@ -19,7 +19,7 @@ import { logger } from '../../common/logger';
 import {
     MessageType,
     SaveAllowlistDomainsMessage,
-    AddAllowlistDomainPopupMessage,
+    AddAllowlistDomainMessage,
     RemoveAllowlistDomainMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
@@ -50,7 +50,7 @@ export class AllowlistService {
     public static init(): void {
         messageHandler.addListener(MessageType.GetAllowlistDomains, AllowlistService.onGetAllowlistDomains);
         messageHandler.addListener(MessageType.SaveAllowlistDomains, AllowlistService.handleDomainsSave);
-        messageHandler.addListener(MessageType.AddAllowlistDomainPopup, AllowlistService.onAddAllowlistDomain);
+        messageHandler.addListener(MessageType.AddAllowlistDomain, AllowlistService.onAddAllowlistDomain);
         messageHandler.addListener(MessageType.RemoveAllowlistDomain, AllowlistService.onRemoveAllowlistDomain);
 
         settingsEvents.addListener(SettingOption.AllowlistEnabled, AllowlistService.updateEngine);
@@ -84,9 +84,9 @@ export class AllowlistService {
     /**
      * The listener for the allowlist domain addition event from popup.
      *
-     * @param message Message of type {@link AddAllowlistDomainPopupMessage}.
+     * @param message Message of type {@link AddAllowlistDomainMessage}.
      */
-    private static async onAddAllowlistDomain(message: AddAllowlistDomainPopupMessage): Promise<void> {
+    private static async onAddAllowlistDomain(message: AddAllowlistDomainMessage): Promise<void> {
         const { tabId } = message.data;
 
         await AllowlistApi.disableTabFiltering(tabId);

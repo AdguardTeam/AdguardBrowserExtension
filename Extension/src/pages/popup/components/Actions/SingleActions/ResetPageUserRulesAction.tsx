@@ -23,6 +23,7 @@ import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS } from '../../../../common/constants';
+import { logger } from '../../../../../common/logger';
 
 import { type SingleActionParams } from './types';
 
@@ -43,6 +44,11 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
      * Handle reset page user rules action click.
      */
     const handlePageUserRulesReset = async () => {
+        if (!url) {
+            logger.error('No URL provided for page user rules reset');
+            return;
+        }
+
         if (!isFilteringPossible) {
             return;
         }

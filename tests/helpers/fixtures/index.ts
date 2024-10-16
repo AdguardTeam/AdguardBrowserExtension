@@ -5,7 +5,10 @@ export {
 } from './getCustomExportFixture';
 export { getDefaultExportFixture } from './getDefaultExportFixture';
 export { filterNameFixture, filterTextWithMetadataFixture } from './filterWithMetadata';
-export { getDefaultSettingsConfigFixture } from './getDefaultSettingsConfigFixture';
+export {
+    getDefaultSettingsConfigFixtureMV2,
+    getDefaultSettingsConfigFixtureMV3,
+} from './getDefaultSettingsConfigFixture';
 export { getFilterTextFixture } from './getFilterTextFixture';
 export { getEmptyPageStatsDataFixture } from './getEmptyPageStatsDataFixture';
 export { getEmptyStatisticDataFixture } from './getEmptyStatisticDataFixture';

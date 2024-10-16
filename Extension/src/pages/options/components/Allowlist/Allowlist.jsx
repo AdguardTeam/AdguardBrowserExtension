@@ -101,7 +101,7 @@ const Allowlist = observer(() => {
     };
 
     const exportClickHandler = () => {
-        exportData(ExportTypes.ALLOW_LIST);
+        exportData(ExportTypes.Allowlist);
     };
 
     const saveAllowlist = async (allowlist) => {

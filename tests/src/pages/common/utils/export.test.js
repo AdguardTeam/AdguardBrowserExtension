@@ -1,6 +1,6 @@
-import { ExportTypes, getExportedSettingsFilename } from '../../../../../Extension/src/pages/common/utils/export.js';
+import { ExportTypes, getExportedSettingsFilename } from '../../../../../Extension/src/pages/common/utils/export';
 
-const SETTINGS_TYPE = ExportTypes.SETTINGS;
+const SETTINGS_TYPE = ExportTypes.Settings;
 
 describe('export', () => {
     it('exports settings file name correctly', () => {

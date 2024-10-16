@@ -19,7 +19,6 @@
 // @ts-ignore
 import Nanobar from 'nanobar';
 
-import { MessageType } from '../common/messages';
 import { logger } from '../common/logger';
 
 import { messenger } from './services/messenger';
@@ -45,7 +44,7 @@ export class PostInstall {
 
     private static async checkRequestFilterReady(): Promise<void> {
         try {
-            const ready = await messenger.sendMessage(MessageType.CheckRequestFilterReady);
+            const ready = await messenger.checkRequestFilterReady();
 
             if (ready) {
                 PostInstall.onEngineLoaded();
@@ -63,7 +62,7 @@ export class PostInstall {
         PostInstall.nanobar.go(100);
         setTimeout(() => {
             if (window) {
-                messenger.sendMessage(MessageType.OpenThankyouPage);
+                messenger.openThankyouPage();
             }
         }, PostInstall.openThankyouPageTimeoutMs);
     }

@@ -27,7 +27,6 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { MessageType } from '../../../../common/messages';
 import { OptionsPageSections } from '../../../../common/nav';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
@@ -80,7 +79,7 @@ export const RulesLimits = observer(() => {
     };
 
     const handleReactivateFilters = async () => {
-        await messenger.sendMessage(MessageType.RestoreFiltersMv3);
+        await messenger.restoreFiltersMv3();
         await settingsStore.getRulesLimitsCounters();
         await settingsStore.checkLimitations();
     };
@@ -91,7 +90,7 @@ export const RulesLimits = observer(() => {
     );
 
     const handleCloseWarning = async () => {
-        await messenger.sendMessage(MessageType.ClearRulesLimitsWarningMv3);
+        await messenger.clearRulesLimitsWarningMv3();
         await settingsStore.getRulesLimitsCounters();
         await settingsStore.checkLimitations();
     };
