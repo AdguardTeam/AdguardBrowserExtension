@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Correct import of `EXTENDED_CSS_VERSION`.
 - Excluding request types causes document blocking [#2992].
+- Selecting a single `$permissions` filtering log event selects all `$permissions` events.
 
 <!-- TODO: uncomment when released -->
 <!-- [5.0.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.151 -->
