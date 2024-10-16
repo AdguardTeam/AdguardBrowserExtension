@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- TODO: check release version, add release date -->
-## [5.0.150]
+## [5.0.151]
 
 ### Changed
 
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Excluding request types causes document blocking [#2992].
 
 <!-- TODO: uncomment when released -->
-<!-- [5.0.150]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.150 -->
+<!-- [5.0.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.151 -->
 [#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
 
 ## [5.0.138] - 2024-10-10
