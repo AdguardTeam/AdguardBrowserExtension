@@ -5,16 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+<!-- TODO: check the actual version and add the release date -->
+## [4.4.38]
 
 ### Changed
 
 - Updated [@adguard/logger] to v1.1.1.
+- Updated [@adguard/tswebextension] to v2.0.4.
 
 ### Fixed
 
 - User rules scanning breaks extension popup [#2989].
+- Selecting a single `$permissions` filtering log event selects all `$permissions` events.
 
+[4.4.38]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.30...v4.4.38
 [#2989]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2989
 
 ## [5.0.138] - 2024-10-10
@@ -207,11 +211,9 @@ The extension is now fully compatible with MV3.
 
 [4.3.46]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.35...v4.3.46
 [#2761]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
-[#2728]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2728
 [#2717]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2717
 [#2714]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2714
 [#2681]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2681
-[#2620]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2620
 [#1848]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1848
 
 ## [4.3.35] - 2024-03-28
@@ -294,7 +296,7 @@ The extension is now fully compatible with MV3.
 
 ### Changed
 
-- Download and apply differential updates [2586](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2586)
+- Download and apply differential updates [#2586](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2586).
 - Updated [@adguard/tswebextension] to v1.0.8.
 - Updated [@adguard/tsurlfilter] to v2.2.9.
 - Updated [@adguard/scriptlets] to v1.9.105.
@@ -317,7 +319,7 @@ The extension is now fully compatible with MV3.
 - `$$` rules break encoding on some websites [#2249](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2249).
 - TSUrlFilter library loading by Fullscreen User Rules Editor
   [#2412](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2412).
-- Displaying of Stealth Mode modified cookie rules in Filtering log as "Modified"
+- Displaying of Stealth Mode modified cookie rules in Filtering log as "Modified".
   [#2512](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2512).
 - Highlighting of `$inline-font` and `$inline-script`
   [#2609](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2609).
@@ -340,7 +342,7 @@ The extension is now fully compatible with MV3.
 
 ### Changed
 
-- Remove "AdGuard settings..." from context menu on options.html [#2258](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258)
+- Remove "AdGuard settings..." from context menu on options.html [#2258](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2258).
 - Updated [@adguard/tswebextension] to v0.4.6.
 - Updated [@adguard/tsurlfilter] to v2.2.6.
 - Updated [@adguard/filters-downloader] to v1.1.23.
@@ -348,19 +350,19 @@ The extension is now fully compatible with MV3.
 
 ### Fixed
 
-- Filtering log not opening on Firefox for Android [#2563](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536)
-- Firefox Mobile not being correctly picked on a `Report an issue` page [2250](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2250)
+- Filtering log not opening on Firefox for Android [#2563](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536).
+- Firefox Mobile not being correctly picked on a `Report an issue` page [2250](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2250).
 - Filtering log crash on blocking requests, which were already allowlisted from applying `$removeparam`, `$removeheader` or `$csp` rules [#2534](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2534).
 - Do not use `zh-CN` localized metadata for `zh-TW` browser language
-  [#2504](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2504)
-- Collect logs only when filtering log is open [#2544](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2544)
-- Cannot add a custom filter list with a .php URL [#1723](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1723)
+  [#2504](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2504).
+- Collect logs only when filtering log is open [#2544](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2544).
+- Cannot add a custom filter list with a .php URL [#1723](https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1723).
 
 ## [4.2.209] - 2023-11-01
 
 ### Fixed
 
-- Resync event listeners after background page wakes up
+- Resync event listeners after background page wakes up.
 
 ## [4.2.208] - 2023-10-23
 
@@ -391,8 +393,8 @@ The extension is now fully compatible with MV3.
 
 ### Changed
 
-- Update [@adguard/tswebextension] to v0.3.21.
-- Update [@adguard/tsurlfilter] to v2.1.12.
+- Updated [@adguard/tswebextension] to v0.3.21.
+- Updated [@adguard/tsurlfilter] to v2.1.12.
 
 ### Fixed
 
@@ -423,13 +425,13 @@ The extension is now fully compatible with MV3.
 
 ### Changed
 
-- Update [@adguard/tsurlfilter] to v2.1.11
-- Update [@adguard/tswebextension] to v0.3.16
-- Updated [@adguard/scriptlets] to v1.9.72
+- Updated [@adguard/tsurlfilter] to v2.1.11.
+- Updated [@adguard/tswebextension] to v0.3.16.
+- Updated [@adguard/scriptlets] to v1.9.72.
 
 ### Fixed
 
-- Extension started downloading filters too often
+- Extension started downloading filters too often.
 - Custom filters names not displaying if added while filtering log is open.
 - Do not inject content scripts to the chrome web store pages on extension initialization.
 - Blocked CSP reports are not filtered by "Blocked" in the filtering log.
@@ -440,9 +442,9 @@ The extension is now fully compatible with MV3.
 
 ### Changed
 
-- Update [@adguard/tsurlfilter] to v2.1.10
-- Update [@adguard/tswebextension] to v0.3.11
-- Updated [@adguard/scriptlets] to v1.9.70
+- Updated [@adguard/tsurlfilter] to v2.1.10.
+- Updated [@adguard/tswebextension] to v0.3.11.
+- Updated [@adguard/scriptlets] to v1.9.70.
 
 ### Fixed
 
@@ -453,13 +455,13 @@ The extension is now fully compatible with MV3.
 
 ### Added
 
-- [@adguard/tswebextension](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/README.md) MV2 integration
+- [@adguard/tswebextension](https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/README.md) MV2 integration.
 
 ### Changed
 
-- Moved Adguard API to separate package — [@adguard/api](https://www.npmjs.com/package/@adguard/api)
-- Updated [@adguard/tsurlfilter] to v2.1.7
-- Updated [@adguard/scriptlets] to v1.9.62
+- Moved Adguard API to separate package — [@adguard/api](https://www.npmjs.com/package/@adguard/api).
+- Updated [@adguard/tsurlfilter] to v2.1.7.
+- Updated [@adguard/scriptlets] to v1.9.62.
 
 [4.3.14]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.13...v4.3.14
 [4.3.13]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.10...v4.3.13
