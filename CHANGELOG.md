@@ -5,17 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+<!-- TODO: check release version, add release date -->
+## [5.0.150]
 
 ### Changed
 
 - Updated [@adguard/logger] to v1.1.1.
+- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.7.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.4.
 
 ### Fixed
 
 - Correct import of `EXTENDED_CSS_VERSION`.
 - Excluding request types causes document blocking [#2992].
 
+<!-- TODO: uncomment when released -->
+<!-- [5.0.150]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.150 -->
 [#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
 
 ## [5.0.138] - 2024-10-10
