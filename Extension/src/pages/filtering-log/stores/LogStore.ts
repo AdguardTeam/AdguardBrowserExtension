@@ -39,6 +39,7 @@ import { messenger } from '../../services/messenger';
 import { getFilterName, getRuleFilterName } from '../components/RequestWizard/utils';
 import { BACKGROUND_TAB_ID } from '../../../common/constants';
 import { getStatusMode, StatusMode } from '../filteringLogStatus';
+import { logger } from '../../../common/logger';
 
 import { matchesSearch } from './helpers';
 import type { RootStore } from './RootStore';
@@ -556,7 +557,13 @@ class LogStore {
      */
     @action
     clearFilteringEvents = async () => {
+        if (this.selectedTabId === null) {
+            logger.error('[clearFilteringEvents]: selected tab id is not defined');
+            return;
+        }
+
         const ignorePreserveLog = true;
+
         await messenger.clearEventsByTabId(this.selectedTabId, ignorePreserveLog);
         runInAction(() => {
             this.filteringEvents = [];
@@ -570,11 +577,17 @@ class LogStore {
 
     @action
     refreshPage = async () => {
+        if (this.selectedTabId === null) {
+            logger.error('[clearFilteringEvents]: selected tab id is not defined');
+            return;
+        }
+
         if (this.selectedTabId === BACKGROUND_TAB_ID) {
             await messenger.clearEventsByTabId(this.selectedTabId);
             return;
         }
-        await messenger.refreshPage(this.selectedTabId, this.preserveLogEnabled);
+
+        await messenger.refreshPage(this.selectedTabId);
     };
 
     @action

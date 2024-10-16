@@ -83,29 +83,31 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
  * @param targetPart
  * @param addedPart
  * @returns {*&{content_security_policy: string, version: string}}
- *
- * @throws Error when directory with declarative rulesets doesn't exist.
  */
 export const updateManifest = (
     env: BuildTargetEnv,
     browser: Browser,
-    targetPart: Partial<ManifestBase>,
+    targetPart: ManifestBase,
     addedPart: Partial<ManifestBase>,
 ): WebExtensionManifest => {
+    // Merge the parts, ensuring the merged object has the expected type
     const union = merge(targetPart, addedPart);
 
     const devPolicy = getEnvPolicy(env, browser);
 
-    delete union.version;
+    // Ensure that version and name are properly set
+    const manifestVersion = union.manifest_version || targetPart.manifest_version;
+    const name = union.name || targetPart.name;
 
-    const result = {
+    // Build the final manifest object
+    const result: WebExtensionManifest = {
         version: packageJson.version,
+        manifest_version: manifestVersion,
+        name,
         ...devPolicy,
-        ...union,
+        ...union, // Spread other properties from the merged object
     };
 
-    // FIXME later
-    // @ts-ignore
     return result;
 };
 

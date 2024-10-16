@@ -27,6 +27,10 @@ import {
 export type MessageWithoutHandlerName<T> = { type: T } & Omit<ExtractedMessage<T>, 'handlerName'>;
 
 /**
+ * TODO: Consider moving this file to the background folder, because all messages
+ * from the UI should be send via methods of Messenger class instead of using
+ * directly sendMessage to proper types checking.
+ *
  * {@link sendMessage} sends app message via {@link browser.runtime.sendMessage} and
  * gets response from another extension page message handler
  *

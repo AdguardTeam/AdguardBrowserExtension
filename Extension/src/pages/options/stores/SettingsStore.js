@@ -618,7 +618,9 @@ class SettingsStore {
         }
 
         try {
-            const groupId = await messenger.updateFilterStatus(filterId, enabled);
+            const groupId = enabled
+                ? await messenger.enableFilter(filterId)
+                : await messenger.disableFilter(filterId);
 
             // update allow acceptable ads setting
             if (filterId === this.constants.AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
@@ -656,7 +658,10 @@ class SettingsStore {
     async updateFilters() {
         this.setFiltersUpdating(true);
         try {
-            const filtersUpdates = await messenger.updateFilters();
+            // In MV3 we do not support checking update for filters.
+            const filtersUpdates = __IS_MV3__
+                ? []
+                : await messenger.updateFilters();
             this.refreshFilters(filtersUpdates);
             setTimeout(() => {
                 this.setFiltersUpdating(false);

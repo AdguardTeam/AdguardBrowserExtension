@@ -26,7 +26,33 @@ import {
 export type MessageListener<T> = (message: T, sender: Runtime.MessageSender) => Promise<unknown> | unknown;
 
 /**
+ * Type guard for messages that have a 'type' field with possible {@link MessageType}.
+ * @note Added to no bring here huge zod library.
+ *
+ * @param message Unknown message.
+ *
+ * @returns True if message has 'type' field with possible {@link MessageType}.
+ */
+export const messageHasTypeField = (message: unknown): message is { type: MessageType } => {
+    return typeof message === 'object' && message !== null && 'type' in message;
+};
+
+/**
+ * Type guard for messages that have a 'type' field and 'data' field and looks like {@link Message}.
+ * @note Added to no bring here huge zod library.
+ *
+ * @param message Unknown message.
+ *
+ * @returns True if message has 'type' and 'data' fields and looks like {@link Message}.
+ */
+export const messageHasTypeAndDataFields = (message: unknown): message is Message => {
+    return messageHasTypeField(message) && 'data' in message;
+};
+
+/**
  * API for handling Messages via {@link browser.runtime.onMessage}
+ *
+ * TODO: Create an union map which will type check the message type and listener.
  */
 export abstract class MessageHandler {
     protected listeners = new Map();
@@ -81,7 +107,7 @@ export abstract class MessageHandler {
      * @param sender - An object containing information about the script context that sent a message or request.
      */
     protected abstract handleMessage<T extends Message>(
-        message: T,
+        message: T | unknown,
         sender: Runtime.MessageSender
     ): Promise<unknown> | undefined;
 }

@@ -19,7 +19,6 @@
 import { format } from 'date-fns';
 
 import { messenger } from '../../services/messenger';
-import { MessageType } from '../../../common/messages';
 
 /**
  * Export types.
@@ -27,26 +26,26 @@ import { MessageType } from '../../../common/messages';
  * @readonly
  * @enum {string}
  */
-export const ExportTypes = {
-    USER_FILTER: 'user_filter',
-    ALLOW_LIST: 'allow_list',
-    SETTINGS: 'settings',
-};
+export const enum ExportTypes {
+    UserFilter = 'user_filter',
+    Allowlist = 'allow_list',
+    Settings = 'settings',
+}
 
 const exportMetadata = {
-    [ExportTypes.USER_FILTER]: {
+    [ExportTypes.UserFilter]: {
         name: 'user_rules',
-        messageType: MessageType.GetUserRules,
+        getData: () => messenger.getUserRules(),
         ext: 'txt',
     },
-    [ExportTypes.ALLOW_LIST]: {
+    [ExportTypes.Allowlist]: {
         name: 'allowlist',
-        messageType: MessageType.GetAllowlistDomains,
+        getData: () => messenger.getAllowlistDomains(),
         ext: 'txt',
     },
-    [ExportTypes.SETTINGS]: {
+    [ExportTypes.Settings]: {
         name: 'settings',
-        messageType: MessageType.LoadSettingsJson,
+        getData: () => messenger.loadSettingsJson(),
         ext: 'json',
     },
 };
@@ -54,11 +53,12 @@ const exportMetadata = {
 /**
  * Generates filename for exported `type`.
  *
- * @param {ExportTypes} type Type of export
- * @param {string} appVersion App version
- * @returns {string} Filename
+ * @param type Type of export
+ * @param appVersion App version
+ *
+ * @returns Filename
  */
-export const getExportedSettingsFilename = (type, appVersion) => {
+export const getExportedSettingsFilename = (type: ExportTypes, appVersion: string) => {
     const { name, ext } = exportMetadata[type];
     const product = `adg_ext_${name}`;
     const currentTimeString = format(Date.now(), 'ddMMyy-HHmmss');
@@ -68,11 +68,11 @@ export const getExportedSettingsFilename = (type, appVersion) => {
 /**
  * Exports data to file and downloads it in browser.
  *
- * @param {ExportTypes} type Type of export
+ * @param type Type of export
  */
-export const exportData = async (type) => {
-    const { messageType } = exportMetadata[type];
-    const { content, appVersion } = await messenger.sendMessage(messageType);
+export const exportData = async (type: ExportTypes) => {
+    const { getData } = exportMetadata[type];
+    const { content, appVersion } = await getData();
     const filename = getExportedSettingsFilename(type, appVersion);
     const blob = new Blob([content]);
     const url = URL.createObjectURL(blob);

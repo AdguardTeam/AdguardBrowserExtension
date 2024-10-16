@@ -38,6 +38,10 @@ export const UpdateButton = () => {
         if (refUpdatingBtn.current) {
             refUpdatingBtn.current.blur();
         }
+        // In MV3 we don't support update of filters.
+        if (__IS_MV3__) {
+            return;
+        }
         setFiltersUpdating(true);
         await updateFiltersWithMinDuration();
         setFiltersUpdating(false);

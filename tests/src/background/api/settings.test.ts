@@ -1,7 +1,12 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
 
-import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../constants';
+import {
+    ASSISTANT_INJECT_OUTPUT,
+    DOCUMENT_BLOCK_OUTPUT,
+    GPC_SCRIPT_OUTPUT,
+    HIDE_DOCUMENT_REFERRER_OUTPUT,
+} from '../../../../constants';
 import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import {
@@ -15,7 +20,8 @@ import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants
 import { defaultSettings } from '../../../../Extension/src/common/settings';
 import {
     getDefaultExportFixture,
-    getDefaultSettingsConfigFixture,
+    getDefaultSettingsConfigFixtureMV2,
+    getDefaultSettingsConfigFixtureMV3,
     getExportedSettingsProtocolV1Fixture,
     getExportedSettingsProtocolV2Fixture,
     getImportedSettingsFromV1Fixture,
@@ -91,15 +97,21 @@ describe('Settings Api', () => {
         });
 
         it('Gets tswebextension config', async () => {
-            const expected = getDefaultSettingsConfigFixture(
-                browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
-                `/${ASSISTANT_INJECT_OUTPUT}.js`,
-                false,
-            );
-            // FIXME: This is a workaround for the issue with the settings import/export
-            if (!__IS_MV3__) {
-                expect(SettingsApi.getTsWebExtConfiguration(__IS_MV3__)).toStrictEqual(expected);
-            }
+            const expected = __IS_MV3__
+                ? getDefaultSettingsConfigFixtureMV3(
+                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    `/${ASSISTANT_INJECT_OUTPUT}.js`,
+                    `/${GPC_SCRIPT_OUTPUT}.js`,
+                    `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
+                    false,
+                )
+                : getDefaultSettingsConfigFixtureMV2(
+                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    `/${ASSISTANT_INJECT_OUTPUT}.js`,
+                    false,
+                );
+
+            expect(SettingsApi.getTsWebExtConfiguration(__IS_MV3__)).toStrictEqual(expected);
         });
     });
 
@@ -138,14 +150,11 @@ describe('Settings Api', () => {
 
             expect(importResult).toBeTruthy();
 
-            // FIXME: This is a workaround for the issue with the settings import/export
-            if (!__IS_MV3__) {
-                const importedSettingsString = await SettingsApi.export();
+            const importedSettingsString = await SettingsApi.export();
 
-                const importedSettings = getImportedSettingsFromV1Fixture();
+            const importedSettings = getImportedSettingsFromV1Fixture();
 
-                expect(JSON.parse(importedSettingsString)).toStrictEqual(importedSettings);
-            }
+            expect(JSON.parse(importedSettingsString)).toStrictEqual(importedSettings);
         }, 10000);
 
         it('Imports exported settings for protocol v2', async () => {
@@ -159,13 +168,10 @@ describe('Settings Api', () => {
 
             expect(importResult).toBeTruthy();
 
-            // FIXME: This is a workaround for the issue with the settings import/export
-            if (!__IS_MV3__) {
-                const importedSettingsString = await SettingsApi.export();
-                // Fill up optional fields
-                userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
-                expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
-            }
+            const importedSettingsString = await SettingsApi.export();
+            // Fill up optional fields
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
         }, 10000);
 
         it('Imports settings from 4.1.X version', async () => {
@@ -179,12 +185,9 @@ describe('Settings Api', () => {
 
             expect(importResult).toBeTruthy();
 
-            // FIXME: This is a workaround for the issue with the settings import/export
-            if (!__IS_MV3__) {
-                const exportedSettingsString = await SettingsApi.export();
-                const EXPORTED_SETTINGS_V_2_0 = getExportedSettingsV2();
-                expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
-            }
+            const exportedSettingsString = await SettingsApi.export();
+            const EXPORTED_SETTINGS_V_2_0 = getExportedSettingsV2();
+            expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
         }, 10000);
 
         it('Reset default settings', async () => {

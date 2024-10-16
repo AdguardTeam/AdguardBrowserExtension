@@ -26,8 +26,8 @@ import {
 } from '@adguard/tswebextension/mv3';
 
 import {
-    type CanEnableStaticFilterMessageMv3,
-    type CanEnableStaticGroupMessageMv3,
+    type CanEnableStaticFilterMv3Message,
+    type CanEnableStaticGroupMv3Message,
     MessageType,
 } from '../../../common/messages';
 import {
@@ -700,7 +700,7 @@ export class RulesLimitsService {
      *
      * @returns Promise that resolves with the result of the check — {@link StaticLimitsCheckResult}.
      */
-    private async canEnableStaticFilter(message: CanEnableStaticFilterMessageMv3): Promise<StaticLimitsCheckResult> {
+    private async canEnableStaticFilter(message: CanEnableStaticFilterMv3Message): Promise<StaticLimitsCheckResult> {
         canEnableStaticFilterSchema.parse(message);
 
         const { filterId } = message.data;
@@ -806,7 +806,7 @@ export class RulesLimitsService {
      * @param message Message with group id.
      * @returns Promise that resolves with the result of the check.
      */
-    private async canEnableStaticGroup(message: CanEnableStaticGroupMessageMv3): Promise<StaticLimitsCheckResult> {
+    private async canEnableStaticGroup(message: CanEnableStaticGroupMv3Message): Promise<StaticLimitsCheckResult> {
         canEnableStaticGroupSchema.parse(message);
 
         const { groupId } = message.data;

@@ -26,7 +26,6 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../../../common/forward';
-import { MessageType } from '../../../../common/messages';
 import { getParams } from '../../getParams';
 import { messenger } from '../../../services/messenger';
 
@@ -47,7 +46,7 @@ export const AdBlocked = () => {
 
     const handleProceed = useCallback((e) => {
         e.preventDefault();
-        messenger.sendMessage(MessageType.AddUrlToTrusted, { url });
+        messenger.addUrlToTrusted(url);
     }, [url]);
 
     return (

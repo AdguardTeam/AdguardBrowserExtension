@@ -24,7 +24,6 @@ import { logger } from '../common/logger';
 import { UserAgent } from '../common/user-agent';
 import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
 import { messenger } from '../pages/services/messenger';
-import { MessageType } from '../common/messages';
 
 import { isHttpRequest } from './tswebextension';
 
@@ -82,7 +81,7 @@ export class KeepAlive {
      */
     static async resyncEventSubscriptions(): Promise<void> {
         try {
-            await messenger.sendMessage(MessageType.UpdateListeners);
+            await messenger.updateListeners();
         } catch (e) {
             // This error occurs if there is no pages able to handle this listener.
             // It could happen if background page reloaded, when option page was not open.

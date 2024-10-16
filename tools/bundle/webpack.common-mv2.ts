@@ -18,7 +18,7 @@
 
 import path from 'path';
 
-import { NormalModuleReplacementPlugin, type Configuration } from 'webpack';
+import { type Configuration } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 
@@ -109,24 +109,6 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
                 filename: `${SAFEBROWSING_OUTPUT}.html`,
                 chunks: [REACT_VENDOR_OUTPUT, SAFEBROWSING_OUTPUT],
             }),
-            // FIXME: Remove before merge to master if list of components will be empty.
-            // Replace manifest-dependant components with the ones
-            // for the current build target manifest version.
-            new NormalModuleReplacementPlugin(
-            // Regexp to match the path to the abstract components that should
-            // be replaced for mv2 and mv3.
-                new RegExp(
-                    `\\.\\/Abstract(${
-                        [''].join('|')
-                    })`,
-                ),
-                ((resource: any) => {
-                    resource.request = resource.request.replace(
-                        /\.\/Abstract(.*)/,
-                        './Mv2$1',
-                    );
-                }),
-            ),
         ],
     });
 };

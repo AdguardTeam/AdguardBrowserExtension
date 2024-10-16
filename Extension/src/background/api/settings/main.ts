@@ -19,7 +19,7 @@ import type { SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextensio
 import type { SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
-import { defaultSettings } from '../../../common/settings';
+import { type AppearanceTheme, defaultSettings } from '../../../common/settings';
 import {
     AllowlistConfig,
     AllowlistOption,
@@ -60,7 +60,6 @@ import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/const
 import { settingsEvents } from '../../events';
 import { listeners } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
-import { MessageType } from '../../../common/messages';
 import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
 import {
@@ -298,9 +297,8 @@ export class SettingsApi {
         if (appearanceTheme) {
             settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme);
 
-            await messenger.sendMessage(MessageType.UpdateFullscreenUserRulesTheme, {
-                theme: appearanceTheme,
-            });
+            // Config is already validated in the upper level.
+            await messenger.updateFullscreenUserRulesTheme(appearanceTheme as AppearanceTheme);
         }
 
         if (allowAcceptableAds) {

@@ -17,13 +17,10 @@
  */
 import browser, { Runtime } from 'webextension-polyfill';
 
-import {
-    FILTERING_LOG,
-    FULLSCREEN_USER_RULES_EDITOR,
-    KEEP_ALIVE_PORT_NAME,
-} from '../common/constants';
-import { MessageType } from '../common/messages';
+import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
+import { messageHasTypeAndDataFields, MessageType } from '../common/messages';
 import { logger } from '../common/logger';
+import { Page } from '../pages/services/messenger';
 
 import { listeners } from './notifier';
 import { filteringLogApi } from './api';
@@ -42,7 +39,7 @@ export class ConnectionHandler {
     }
 
     /**
-     * Handles long-live connection to the port.
+     * Handles long-live connection to the port with message {@link MessageType.AddLongLivedConnectionMessage}.
      *
      * @param port Object of {@link Runtime.Port}.
      */
@@ -54,18 +51,23 @@ export class ConnectionHandler {
         ConnectionHandler.onPortConnection(port);
 
         port.onMessage.addListener((message) => {
-            const { type, data } = message;
-            if (type === MessageType.AddLongLivedConnection) {
-                const { events } = data;
-                listenerId = listeners.addSpecifiedListener(events, async (...data) => {
-                    const type = MessageType.NotifyListeners;
-                    try {
-                        port.postMessage({ type, data });
-                    } catch (e) {
-                        logger.error(e);
-                    }
-                });
+            if (!messageHasTypeAndDataFields(message)) {
+                return;
             }
+
+            if (message.type !== MessageType.AddLongLivedConnection) {
+                return;
+            }
+
+            const { data: { events } } = message;
+
+            listenerId = listeners.addSpecifiedListener(events, async (...args) => {
+                try {
+                    port.postMessage({ type: MessageType.NotifyListeners, args });
+                } catch (e) {
+                    logger.error('Failed to send message to the port due to an error:', e);
+                }
+            });
         });
 
         port.onDisconnect.addListener(() => {
@@ -85,12 +87,12 @@ export class ConnectionHandler {
      */
     private static onPortConnection(port: Runtime.Port): void {
         switch (true) {
-            case port.name.startsWith(FILTERING_LOG): {
+            case port.name.startsWith(Page.FilteringLog): {
                 filteringLogApi.onOpenFilteringLogPage();
                 break;
             }
 
-            case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
+            case port.name.startsWith(Page.FullscreenUserRules): {
                 fullscreenUserRulesEditor.onOpenPage();
                 break;
             }
@@ -117,12 +119,12 @@ export class ConnectionHandler {
      */
     private static onPortDisconnection(port: Runtime.Port): void {
         switch (true) {
-            case port.name.startsWith(FILTERING_LOG): {
+            case port.name.startsWith(Page.FilteringLog): {
                 filteringLogApi.onCloseFilteringLogPage();
                 break;
             }
 
-            case port.name.startsWith(FULLSCREEN_USER_RULES_EDITOR): {
+            case port.name.startsWith(Page.FullscreenUserRules): {
                 fullscreenUserRulesEditor.onClosePage();
                 break;
             }

@@ -42,6 +42,7 @@ import { messenger } from '../../services/messenger';
 import { AddedRuleState, WizardRequestState } from '../constants';
 import type { RuleCreationOptions } from '../types';
 import type { FilteringLogEvent } from '../../../background/api/filtering-log';
+import { logger } from '../../../common/logger';
 
 import type { RootStore } from './RootStore';
 
@@ -163,6 +164,11 @@ class WizardStore {
         this.setActionSubmitted(true);
         const { selectedTabId } = this.rootStore.logStore;
 
+        if (!selectedTabId) {
+            logger.error('[removeFromAllowlistHandler]: selected tab id is not defined');
+            return;
+        }
+
         await messenger.removeAllowlistDomain(selectedTabId, false);
 
         this.closeModal();
@@ -177,7 +183,14 @@ class WizardStore {
             return;
         }
 
-        await messenger.removeUserRule(requestRule.originalRuleText ?? requestRule.appliedRuleText);
+        const ruleText = requestRule.originalRuleText ?? requestRule.appliedRuleText;
+
+        if (!ruleText) {
+            logger.error('[removeFromUserFilterHandler]: rule text is not defined');
+            return;
+        }
+
+        await messenger.removeUserRule(ruleText);
 
         this.closeModal();
     };
@@ -185,6 +198,11 @@ class WizardStore {
     @action
     removeAddedRuleFromUserFilter = async () => {
         this.setActionSubmitted(true);
+
+        if (!this.rule) {
+            return;
+        }
+
         await messenger.removeUserRule(this.rule);
         this.closeModal();
     };

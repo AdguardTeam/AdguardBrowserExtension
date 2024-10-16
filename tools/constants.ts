@@ -44,7 +44,8 @@ const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
 
 export const BUILD_ENV = process.env.BUILD_ENV as BuildTargetEnv || BuildTargetEnv.Dev;
 
-export const MANIFEST_ENV = process.env.MANIFEST_ENV as ManifestVersionEnv || ManifestVersionEnv.Second;
+// By default we use the third version of the manifest.
+export const MANIFEST_ENV = process.env.MANIFEST_ENV as ManifestVersionEnv || ManifestVersionEnv.Third;
 
 if (!isValidBuildEnv(BUILD_ENV)) {
     throw new Error(`Invalid BUILD_ENV: ${BUILD_ENV}`);
