@@ -207,7 +207,7 @@ const halloween24Notification: PromoNotification = {
             title: 'Raksasa menyerang internet!',
             btn: 'Lawan',
         },
-        no: {
+        nb: {
             title: 'Internett er full av farer',
             btn: 'Bli kvitt dem',
         },
