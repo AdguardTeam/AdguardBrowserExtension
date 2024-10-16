@@ -1,13 +1,13 @@
-! Checksum: dHF7W/YDgVEFDNjglajnQQ
+! Checksum: QHOM3l+wpt1ppAW8htLbMw
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.19.14
-! TimeUpdated: 2024-10-15T05:01:26+00:00
+! Version: 2.0.19.17
+! TimeUpdated: 2024-10-15T21:01:43+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.1015.0
+! OriginalVersion: 2024.1015.2
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -509,11 +509,6 @@
 !
 ! DOMAIN-REFRESHER: END
 !
-! Google invaild search result - https://github.com/List-KR/List-KR/issues/598
-/^https:\/\/[0-9a-z]{8}\.[A-z0-9-]+\.[A-z]{2,3}\/[a-z]+\/[a-z0-9]{10}\.html$/$match-case,document
-/^https:\/\/[A-z0-9\.]*[A-z0-9]+\.[A-z]+\/\?u=[A-z0-9]{7}&o=[A-z0-9]{7}/$document
-/^https:\/\/[A-z]+\.[A-z]+\.[A-z]+\/[A-z]+-robot\/\?pl=[A-z0-9-]{22}&sm=[A-z]+-robot&hash=[A-z0-9-]{22}&exp=[0-9]{10}/$document
-/^https:\/\/[0-9]{9}\.[A-z0-9-]+\.[A-z]{2}\/[0-9]{6}\.html$/$document
 ! ndsoft.co.kr - An internet press hosting service
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/bannerManager\//$match-case
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/bannerpop\/uploads\//
@@ -1931,6 +1926,8 @@ m.clien.net##.content_list.search > div[class^="list_center_"]
 quasarzone.com##.price-compare-srch
 clien.net##div[id$="_content"][class^="content_"] > div[class^="list_top_"]:not([class*=" "])
 mnetplus.world###mnetplus-modal-root
+clien.net##div.main_top_cmdlfkgirjd
+clien.net##div.main_center_widjrhfirj
 clien.net##.aside > div[class^="side_"]:not([class*="account"])
 m.clien.net##.nav_container > .content_view_list > div[class^="list_bottom_"]
 m.clien.net##.nav_container > div[class^="content_"][class$="_list"] a[href^="/service/board"] ~ div[class^="list_center_"]

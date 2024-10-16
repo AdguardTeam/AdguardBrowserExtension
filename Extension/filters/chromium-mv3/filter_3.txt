@@ -1,8 +1,8 @@
-! Checksum: 23HuDlEEg5Y6vqVlTJuCQA
+! Checksum: sKormkU8KmELmgRbkEv7PQ
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.75.47
-! TimeUpdated: 2024-10-15T04:32:48+00:00
+! Version: 2.0.75.56
+! TimeUpdated: 2024-10-16T14:32:44+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -615,7 +615,7 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ||log*.zijieapi.com^
 ||minigame5-normal-hl.zijieapi.com^
 ||minigame5-normal-lq.zijieapi.com^
-||mssdk.zijieapi.com^
+||mssdk*.zijieapi.com^
 ||os-mon.zijieapi.com^
 ||pc-mon.zijieapi.com^
 ||polaris.zijieapi.com^
@@ -37221,6 +37221,10 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||w9g7dlhw3kaank.www.eldorado.gg^
+||unl1zvy2zuyn.franchiseplus.nl^
+||mt.gigazine.net^
+||tracker.jkplayers.com^
 ||collect.dolap.com^
 ||b.ranking.apis.sankei-digital.co.jp^
 ||is-log.furunavi.jp^
@@ -85576,13 +85580,18 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 ||googleadservices.com/pagead/conversion_async.js$redirect=noopjs,domain=ffm.to,important
 !
 /analytics.js$domain=tokyometro.jp|resumes.breakdownexpress.com|techcult.com|inbox.lv|kopeda.com|freexcafe.com|rusvideos.tv|nakubani.ru|lun.com|songsara.net|newsmax.com|bolgehastanesi.com|ewtc.de|newsdig.tbs.co.jp|imore.com|city.kushiro.lg.jp|emeraldbridal.com.au|emarat-news.ae|imobie.jp|tikla.com.tr|rusvideos.porn|jrkyushu.co.jp|amiunique.org|edit.ing|konami.com
-||assets.adobedtm.com^$domain=mcclatchydc.com|elnuevoherald.com|bellinghamherald.com|sacbee.com|charlotteobserver.com|newsobserver.com|miamiherald.com|ef.ru|algida.com.tr|bmw-motorrad.co.uk|cif.com.tr|clearhaircare.com|domestos.com|dove.com|elidor.com.tr|f1sport.autorevue.cz|geico.com|hellmanns.com.tr|herkessofraya.com|johnsonsbaby.com.tr|lipton.com|lnk.to|lux.com|magnumicecream.com|neutrogena.com.tr|omo.com|rexona.com|samsung.com|sap.com|schwarzkopf.com.tr|signalturkiye.com|msnbc.com|nbcnews.com|kbb.com|eurosport.ru|timgate.it|intermiles.com|oxfordmail.co.uk|spiegel.de|hp.com|deutschepost.de|thebay.com|s.shufoo.net|tsn.ca|tabelog.com|euronews.com|newshub.co.nz|fredmeyer.com|viabcp.com|carsales.com.au|falabella.com|aarp.org|thehill.com|realtor.com|nzherald.co.nz|aia.com.ph|baynews9.com|thesaurus.com|dhc.co.jp|0101.co.jp|staples.com|rikunabi.com|directscout.recruit.co.jp|r-agent.com|sephora.com|chronicle.com|channelnewsasia.com|cnbc.com|bmw.hu
+||assets.adobedtm.com^$domain=mcclatchydc.com|elnuevoherald.com|bellinghamherald.com|sacbee.com|charlotteobserver.com|newsobserver.com|miamiherald.com|ef.ru|algida.com.tr|bmw-motorrad.co.uk|cif.com.tr|clearhaircare.com|domestos.com|dove.com|elidor.com.tr|f1sport.autorevue.cz|geico.com|hellmanns.com.tr|herkessofraya.com|johnsonsbaby.com.tr|lipton.com|lnk.to|lux.com|magnumicecream.com|neutrogena.com.tr|omo.com|rexona.com|samsung.com|sap.com|schwarzkopf.com.tr|signalturkiye.com|msnbc.com|nbcnews.com|kbb.com|eurosport.ru|timgate.it|intermiles.com|oxfordmail.co.uk|spiegel.de|hp.com|deutschepost.de|thebay.com|s.shufoo.net|tsn.ca|tabelog.com|euronews.com|newshub.co.nz|fredmeyer.com|viabcp.com|carsales.com.au|falabella.com|aarp.org|thehill.com|realtor.com|nzherald.co.nz|aia.com.ph|baynews9.com|thesaurus.com|dhc.co.jp|0101.co.jp|staples.com|rikunabi.com|directscout.recruit.co.jp|r-agent.com|sephora.com|chronicle.com|channelnewsasia.com|cnbc.com|bmw.hu|atu.de
 !
 ! lots of requests to those files when blocked normally
 /prod/dfm/fp.min.js$redirect=nooptext,important,domain=dailycamera.com
 /prod/dfm/g2i.min.js$redirect=nooptext,important,domain=dailycamera.com
 /prod/dfm/t8y9347t.min.js$redirect=nooptext,important,domain=dailycamera.com
 !
+techcrunch.com#%#//scriptlet('set-local-storage-item', 'criteo_fast_bid', '$remove$')
+||meteoconsult.es/build/oneplusx.*.js
+geinoukame.com##.ninja-recommend-block + br
+geinoukame.com##.ninja-recommend-block + hr
+||kiss*.com/wp-content/themes/decibel/audio/audio-analytics.js
 ||warehousecinemas.com/ahoy/events
 ||apay-us.amazon.com/cs/uedata|$domain=litter-robot.com
 ||litter-robot.com/tag/events/
@@ -85823,7 +85832,7 @@ tousatu-ch.net##.widget_custom_html:has(> div.textwidget > div[style^="width: 10
 ||api.job*.ch/public/statistic/teaser/hit
 ||raenonx.cc/api/usage
 ||itch.io/ca.gif
-||t*.daumcdn.net/*/static/kp.js
+||t*.daumcdn.net/*/static/kp.js$domain=~banggooso.com
 ||manoramaonline.com/acd/api/*/authorize/json?brand=*&ev_sid=
 ||yag.redefine.pl/events/
 ||wish.com/api/analytics/
@@ -86224,7 +86233,7 @@ unn.com.ua##.b-footer-counters
 ||goodgame.ru/tracking/
 ||glamour.com/hotzones/src/pixelpropagate.js
 ||theconversation.com/javascripts/lib/content_tracker_hook.js
-||eldorado.gg/liberate_script_data_$script
+||eldorado.gg/white-house/white_house_script_data_
 ||eye.targetads.io/web/pixel
 ||4sysops.com/js/uni.js
 ||4sysops.com/global/appear.js
@@ -90476,6 +90485,9 @@ $cookie=kampyle_userid
 $cookie=external_referer
 !
 ! yahoo.com
+! Yahoo
+$cookie=axids
+$cookie=tbla_id
 ! Used in the targeting of relevant adverts and content on the Yahoo! platform
 ||yahoo.com^$cookie=APIDTS
 ! Yahoo Conversion Tracking
@@ -91506,7 +91518,7 @@ $cookie=ev_sid,domain=ideal.es|elcorreo.com
 ||analytics.qoqa.com^
 !
 ! Appsflyer
--attr.appsflyersdk.com
+-attr.appsflyersdk.com^
 register.appsflyersdk.com^
 conversions.appsflyersdk.com^
 gcdsdk.appsflyersdk.com^
@@ -91575,6 +91587,11 @@ inapps.appsflyersdk.com^
 !
 ! NOTE: Regular rules
 !
+||iot-in-logser.realme.com^
+||push-api.topaz-analytics.com^
+||analytics.wildlifestudios.com^
+||opentelemetry-collector.shared-services.us-east-1.general.prod.wildlife.io^
+||rabbit.meitustat.com^
 ||mediation.mwmadnetworks.com^
 ||xplosion.de^
 ||theadex.com^
@@ -91710,6 +91727,7 @@ inapps.appsflyersdk.com^
 ||wsmetrics.batch.com^
 ||log.isnssdk.com^
 ||log-tb.isnssdk.com^
+||rtlog.isnssdk.com^
 ||mon.isnssdk.com^
 ||event.togothermany.com^
 ||oldevent.togothermany.com^
@@ -92242,7 +92260,8 @@ inapps.appsflyersdk.com^
 ||zdbb.net^
 !
 ! TikTok
-||log16-normal-useast5.tiktokv.us^
+||log-boot.tiktokv.com^
+||log*-normal-*.tiktokv.us^
 ||sf16-telemetry-proxy-oci.tiktokcdn-us.com^
 ||mon*-platform-*.tiktokv.com^
 ||log*-applog-*.tiktokv.com^
@@ -93183,7 +93202,6 @@ tieba.baidu.com#%#//scriptlet('set-constant', 'passFingerPrint', 'noopFunc')
 !#safari_cb_affinity
 ! https://github.com/AdguardTeam/AdguardFilters/issues/139139
 ! https://github.com/AdguardTeam/AdguardFilters/issues/139046
-||idm.hit.gemius.pl/gplayer.js$script,redirect=gemius,domain=poradnikzdrowie.pl|mjakmama24.pl|se.pl|eskarock.pl|voxfm.pl|radioplus.pl|eska.pl|radiosupernova.pl|vibefm.pl|urzadzamy.pl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/138964
 @@||googletagmanager.com/gtm.js$domain=petlebi.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/138727
