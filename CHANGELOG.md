@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Correct import of `EXTENDED_CSS_VERSION`.
+- Excluding request types causes document blocking [#2992].
+
+[#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
 
 ## [5.0.138] - 2024-10-10
 

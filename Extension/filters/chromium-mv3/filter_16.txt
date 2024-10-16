@@ -1,8 +1,8 @@
-! Checksum: Qq1Pnh0yUJfhLaSIN615Sw
+! Checksum: s6ZFNVy37yicJY+tTsa5OQ
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.47.19
-! TimeUpdated: 2024-10-08T11:32:45+00:00
+! Version: 2.0.47.30
+! TimeUpdated: 2024-10-15T04:33:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -104,6 +104,7 @@
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||adserve.lasentinelle.mu^
 ||adserver.icimedias.ca^
 !---------------------------------------------------------------------------!
 !-------------- Anti-adblock rules -----------------------------------------!
@@ -125,6 +126,8 @@ capital.fr#@#.plainAd
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/190815
+larvf.com#@#.AdsBox
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188979
 sekai.one###adblock-modal
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186309
@@ -220,8 +223,7 @@ monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementB
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147842
 japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
-japscan.lol#%#//scriptlet('remove-node-text', 'script', 'un\'+\'de')
-japscan.lol#%#//scriptlet('abort-current-inline-script', 'document.querySelectorAll', '(\'img')
+japscan.lol#%#//scriptlet('remove-node-text', 'script', '/N.{0,10}e.{0,10}S.{0,10}i/')
 japscan.lol#$#.navbar-nav > li#navpromo2.nav-item > a[href^="https://www.origoclick.com"] { text-indent: -5000px !important; }
 japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '(e)=>')
 @@$image,domain=japscan.lol
@@ -911,6 +913,10 @@ $xmlhttprequest,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com
 !
 !
 !
+larvf.com##.External.is-empty
+lexpress.mu#?#p.text-right:contains(/^Publicité$/)
+lexpress.mu#?#.place-items-center:has(> div:only-child:not([class],[id]) > p.text-right:contains(/^Publicité$/))
+lexpress.mu##.place-items-center:has(> div:only-child:not([class], [id]) > p.text-right ~ script[src^="https://adserve."])
 orange.fr##div[class^="media-advert"]
 orange.fr##.tag-rm
 cuisineaz.com##.banniere-haute-wrapper
@@ -1655,6 +1661,10 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/190680
+||stripchat.com^$badfilter
+!+ PLATFORM(ext_chromium_mv3)
+||stripchat.com^$popup,third-party,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188712
 /300x600/*$badfilter,domain=dragocaffeitalia.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189099
