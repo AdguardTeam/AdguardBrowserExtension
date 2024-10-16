@@ -35,7 +35,6 @@ import { Popover } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
 import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
-import { MessageType } from '../../../../common/messages';
 import {
     NotifierType,
     NEWLINE_CHAR_UNIX,
@@ -132,9 +131,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             }
 
             // initial export button state
-            const { userRules } = await messenger.sendMessage(
-                MessageType.GetUserRulesEditorData,
-            );
+            const { userRules } = await messenger.getUserRulesEditorData();
             if (userRules.length > 0) {
                 store.setUserRulesExportAvailableState(true);
             } else {
@@ -150,9 +147,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
      * @returns {Promise<void>}
      */
     const handleUserFilterUpdated = useCallback(async () => {
-        const { userRules } = await messenger.sendMessage(
-            MessageType.GetUserRulesEditorData,
-        );
+        const { userRules } = await messenger.getUserRulesEditorData();
 
         if (!store.userRulesEditorContentChanged) {
             if (editorRef.current) {
@@ -353,7 +348,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     ];
 
     const exportClickHandler = () => {
-        exportData(ExportTypes.USER_FILTER);
+        exportData(ExportTypes.UserFilter);
     };
 
     // We set wrap mode directly in order to avoid editor re-rendering
@@ -375,7 +370,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             await messenger.setEditorStorageContent(content);
         }
 
-        await messenger.sendMessage(MessageType.OpenFullscreenUserRules);
+        await messenger.openFullscreenUserRules();
     };
 
     const closeEditorFullscreen = async () => {

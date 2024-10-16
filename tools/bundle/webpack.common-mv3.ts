@@ -18,7 +18,7 @@
 
 import path from 'path';
 
-import { NormalModuleReplacementPlugin, type Configuration } from 'webpack';
+import { type Configuration } from 'webpack';
 import merge from 'webpack-merge';
 
 import { BACKGROUND_OUTPUT, CONTENT_SCRIPT_START_OUTPUT } from '../../constants';
@@ -44,25 +44,5 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: bo
                 runtime: false,
             },
         },
-        plugins: [
-            // FIXME: Remove before merge to master if list of components will be empty.
-            // Replace manifest-dependant components with the ones
-            // for the current build target manifest version.
-            new NormalModuleReplacementPlugin(
-                // Regexp to match the path to the abstract components that should
-                // be replaced for mv2 and mv3.
-                new RegExp(
-                    `\\.\\/Abstract(${
-                        [''].join('|')
-                    })`,
-                ),
-                ((resource: any) => {
-                    resource.request = resource.request.replace(
-                        /\.\/Abstract(.*)/,
-                        './Mv3$1',
-                    );
-                }),
-            ),
-        ],
     });
 };

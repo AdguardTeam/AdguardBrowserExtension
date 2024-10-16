@@ -22,32 +22,21 @@ import { observer } from 'mobx-react';
 import { throttle } from 'lodash-es';
 
 import { Filters } from '../Filters';
-import { messenger } from '../../../services/messenger';
+import {
+    messenger,
+    LongLivedConnectionCallbackMessage,
+    Page,
+} from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
-import { FILTERING_LOG, NotifierType } from '../../../../common/constants';
+import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 
 import '../../styles/styles.pcss';
-
-/**
- * Type of message for long-lived connection listener callback message argument.
- */
-type LongLivedConnectionCallbackMessage = {
-    /**
-     * Type of notifier.
-     */
-    type: NotifierType,
-
-    /**
-     * Data of notifier.
-     */
-    data: any,
-};
 
 const FilteringLog = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
@@ -98,7 +87,7 @@ const FilteringLog = observer(() => {
 
     // append message listeners
     useEffect(() => {
-        let removeListenerCallback = async () => { };
+        let removeListenerCallback = () => { };
 
         (async () => {
             const events = [
@@ -111,7 +100,7 @@ const FilteringLog = observer(() => {
             ];
 
             removeListenerCallback = messenger.createLongLivedConnection(
-                FILTERING_LOG,
+                Page.FilteringLog,
                 events,
                 async (message: LongLivedConnectionCallbackMessage) => {
                     const { type, data } = message;

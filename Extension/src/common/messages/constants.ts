@@ -18,10 +18,29 @@
 import { Windows } from 'webextension-polyfill';
 import { z } from 'zod';
 
-import { ForwardFrom } from '../forward';
-import { SettingOption, Settings } from '../../background/schema';
-import { NotifierType } from '../constants';
-import { AppearanceTheme } from '../settings';
+import { type ForwardFrom } from '../forward';
+import type {
+    CustomFilterMetadata,
+    SettingOption,
+    Settings,
+} from '../../background/schema';
+import type { NotifierType } from '../constants';
+import type { AppearanceTheme } from '../settings';
+import type { FilteringLogTabInfo } from '../../background/api/filtering-log';
+import type { GetTabInfoForPopupResponse } from '../../background/services/ui/popup';
+import type { GetFilteringLogDataResponse } from '../../background/services/filtering-log';
+import type {
+    IRulesLimits,
+    Mv3LimitsCheckResult,
+    StaticLimitsCheckResult,
+} from '../../background/services/rules-limits/interface';
+import type { PageInitAppData } from '../../background/services/ui/main';
+import type { ExportMessageResponse, GetOptionsDataResponse } from '../../background/services/settings/types';
+import type { CreateEventListenerResponse } from '../../background/services/event';
+import type { FilterMetadata } from '../../background/api/filters/main';
+import type { GetAllowlistDomainsResponse } from '../../background/services/allowlist';
+import type { GetUserRulesEditorDataResponse, GetUserRulesResponse } from '../../background/services/userrules';
+import type { GetCustomFilterInfoResult } from '../../background/api';
 
 import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from './schema';
 
@@ -67,8 +86,8 @@ export enum MessageType {
     OpenSiteReportTab = 'openSiteReportTab',
     OpenComparePage = 'openComparePage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
-    RemoveAllowlistDomain = 'removeAllowlistDomainPopup',
-    AddAllowlistDomainPopup = 'addAllowlistDomainPopup',
+    RemoveAllowlistDomain = 'removeAllowlistDomain',
+    AddAllowlistDomain = 'addAllowlistDomain',
     OnOpenFilteringLogPage = 'onOpenFilteringLogPage',
     GetFilteringLogData = 'getFilteringLogData',
     InitializeFrameScript = 'initializeFrameScript',
@@ -122,6 +141,13 @@ export enum MessageType {
 
 export type ApplySettingsJsonMessage = {
     type: MessageType.ApplySettingsJson,
+    data: {
+        json: string,
+    },
+};
+
+export type LoadSettingsJsonMessage = {
+    type: MessageType.LoadSettingsJson,
     data: {
         json: string,
     },
@@ -186,6 +212,46 @@ export type UpdateFullscreenUserRulesThemeMessage = {
     };
 };
 
+export type AddLongLivedConnectionMessage = {
+    type: MessageType.AddLongLivedConnection,
+    data: {
+        events: NotifierType[]
+    }
+};
+
+export type NotifyListenersMessage = {
+    type: MessageType.NotifyListeners,
+    data: any;
+};
+
+export type UpdateListenersMessage = {
+    type: MessageType.UpdateListeners,
+};
+
+export type CheckFiltersUpdateMessage = {
+    type: MessageType.CheckFiltersUpdate;
+};
+
+export type GetAllowlistDomainsMessage = {
+    type: MessageType.GetAllowlistDomains;
+};
+
+export type ResetBlockedAdsCountMessage = {
+    type: MessageType.ResetBlockedAdsCount;
+};
+
+export type OpenComparePageMessage = {
+    type: MessageType.OpenComparePage;
+};
+
+export type OpenFullscreenUserRulesMessage = {
+    type: MessageType.OpenFullscreenUserRules;
+};
+
+export type OpenExtensionStoreMessage = {
+    type: MessageType.OpenExtensionStore;
+};
+
 export type OpenFilteringLogMessage = {
     type: MessageType.OpenFilteringLog;
 };
@@ -204,6 +270,10 @@ export type OpenSiteReportTabMessage = {
         url: string;
         from: ForwardFrom;
     };
+};
+
+export type OpenThankyouPageMessage = {
+    type: MessageType.OpenThankyouPage;
 };
 
 export type GetOptionsDataMessage = {
@@ -233,7 +303,6 @@ export type DisableFilterMessage = {
     type: MessageType.DisableFilter
     data: {
         filterId: number,
-        remove: boolean
     }
 };
 
@@ -299,8 +368,8 @@ export type SetEditorStorageContentMessage = {
     }
 };
 
-export type AddAllowlistDomainPopupMessage = {
-    type: MessageType.AddAllowlistDomainPopup
+export type AddAllowlistDomainMessage = {
+    type: MessageType.AddAllowlistDomain
     data: {
         tabId: number,
     }
@@ -318,7 +387,7 @@ export type LoadCustomFilterInfoMessage = {
     type: MessageType.LoadCustomFilterInfo
     data: {
         url: string,
-        title: string,
+        title?: string,
     }
 };
 
@@ -371,7 +440,7 @@ export type ClearEventsByTabIdMessage = {
     type: MessageType.ClearEventsByTabId
     data: {
         tabId: number,
-        ignorePreserveLog: boolean,
+        ignorePreserveLog?: boolean,
     }
 };
 
@@ -389,7 +458,7 @@ export type SetFilteringLogWindowStateMessage = {
     }
 };
 
-export type PageRefreshMessage = {
+export type RefreshPageMessage = {
     type: MessageType.RefreshPage,
     data: {
         tabId: number,
@@ -415,6 +484,10 @@ export type DisableFiltersGroupMessage = {
     data: {
         groupId: number,
     }
+};
+
+export type InitializeFrameScriptMessage = {
+    type: MessageType.InitializeFrameScript,
 };
 
 export type SetConsentedFiltersMessage = {
@@ -498,11 +571,29 @@ export type ShowVersionUpdatedPopupMessage = {
     }
 };
 
-export type CanEnableStaticFilterMessageMv3 = z.infer<typeof canEnableStaticFilterSchema>;
+export type CanEnableStaticFilterMv3Message = z.infer<typeof canEnableStaticFilterSchema>;
 
-export type CanEnableStaticGroupMessageMv3 = z.infer<typeof canEnableStaticGroupSchema>;
+export type CanEnableStaticGroupMv3Message = z.infer<typeof canEnableStaticGroupSchema>;
+
+export type CurrentLimitsMv3Message = {
+    type: MessageType.CurrentLimitsMv3;
+};
+
+export type RestoreFiltersMv3Message = {
+    type: MessageType.RestoreFiltersMv3;
+};
+
+export type ClearRulesLimitsWarningMv3Message = {
+    type: MessageType.ClearRulesLimitsWarningMv3;
+};
+
+export type GetRulesLimitsCountersMv3Message = {
+    type: MessageType.GetRulesLimitsCountersMv3;
+};
 
 export type Message = (
+    | CreateEventListenerMessage
+    | AddLongLivedConnectionMessage
     | ApplySettingsJsonMessage
     | AddFilteringSubscriptionMessage
     | GetIsEngineStartedMessage
@@ -512,9 +603,17 @@ export type Message = (
     | OpenSettingsTabMessage
     | OpenAssistantMessage
     | UpdateFullscreenUserRulesThemeMessage
+    | SynchronizeOpenTabsMessage
+    | CheckFiltersUpdateMessage
+    | GetAllowlistDomainsMessage
+    | OpenExtensionStoreMessage
+    | OpenComparePageMessage
+    | OpenFullscreenUserRulesMessage
+    | ResetBlockedAdsCountMessage
     | OpenFilteringLogMessage
     | OpenAbuseTabMessage
     | OpenSiteReportTabMessage
+    | OpenThankyouPageMessage
     | GetOptionsDataMessage
     | ChangeUserSettingMessage
     | ResetSettingsMessage
@@ -530,8 +629,8 @@ export type Message = (
     | ResetUserRulesForPageMessage
     | GetEditorStorageContentMessage
     | SetEditorStorageContentMessage
-    | AddAllowlistDomainPopupMessage
     | RemoveAllowlistDomainMessage
+    | AddAllowlistDomainMessage
     | LoadCustomFilterInfoMessage
     | SubscribeToCustomFilterMessage
     | AppInitializedMessage
@@ -542,7 +641,7 @@ export type Message = (
     | CloseFilteringLogPageMessage
     | ClearEventsByTabIdMessage
     | SetPreserveLogStateMessage
-    | PageRefreshMessage
+    | RefreshPageMessage
     | GetFilteringInfoByTabIdMessage
     | SetFilteringLogWindowStateMessage
     | EnableFiltersGroupMessage
@@ -552,11 +651,336 @@ export type Message = (
     | RemoveListenerMessage
     | ScriptletCloseWindowMessage
     | ShowRuleLimitsAlertMessage
+    | NotifyListenersMessage
+    | UpdateListenersMessage
     | ShowAlertPopupMessage
     | ShowVersionUpdatedPopupMessage
-    | CanEnableStaticFilterMessageMv3
-    | CanEnableStaticGroupMessageMv3
+    | GetIsConsentedFilterMessage
+    | SetConsentedFiltersMessage
+    | CurrentLimitsMv3Message
+    | GetRulesLimitsCountersMv3Message
+    | CanEnableStaticFilterMv3Message
+    | CanEnableStaticGroupMv3Message
+    | RestoreFiltersMv3Message
+    | ClearRulesLimitsWarningMv3Message
+    | InitializeFrameScriptMessage
+    | AddUrlToTrustedMessage
     ) &
     MessageCommonProps;
 
 export type ExtractedMessage<P> = Extract<Message, { type: P }>;
+
+// Unified message map that includes both message structure and response types
+// TODO: Create a way to check types from this map in the listener of the message.
+export type MessageMap = {
+    [MessageType.CreateEventListener]: {
+        message: CreateEventListenerMessage;
+        response: CreateEventListenerResponse;
+    }
+    [MessageType.AddLongLivedConnection]: {
+        message: AddLongLivedConnectionMessage;
+        response: void;
+    }
+    [MessageType.ApplySettingsJson]: {
+        message: ApplySettingsJsonMessage;
+        response: boolean;
+    }
+    [MessageType.LoadSettingsJson]: {
+        message: LoadSettingsJsonMessage;
+        response: ExportMessageResponse;
+    }
+    [MessageType.AddFilteringSubscription]: {
+        message: AddFilteringSubscriptionMessage;
+        response: void;
+    }
+    [MessageType.GetIsEngineStarted]: {
+        message: GetIsEngineStartedMessage;
+        response: boolean;
+    }
+    [MessageType.GetTabInfoForPopup]: {
+        message: GetTabInfoForPopupMessage;
+        response: GetTabInfoForPopupResponse | undefined;
+    }
+    [MessageType.ChangeApplicationFilteringPaused]: {
+        message: ChangeApplicationFilteringPausedMessage;
+        response: void;
+    }
+    [MessageType.OpenRulesLimitsTab]: {
+        message: OpenRulesLimitsTabMessage;
+        response: void;
+    }
+    [MessageType.OpenSettingsTab]: {
+        message: OpenSettingsTabMessage;
+        response: void;
+    }
+    [MessageType.OpenAssistant]: {
+        message: OpenAssistantMessage;
+        response: void;
+    }
+    [MessageType.UpdateFullscreenUserRulesTheme]: {
+        message: UpdateFullscreenUserRulesThemeMessage;
+        response: void;
+    }
+    [MessageType.SynchronizeOpenTabs]: {
+        message: SynchronizeOpenTabsMessage;
+        response: FilteringLogTabInfo[];
+    }
+    [MessageType.CheckFiltersUpdate]: {
+        message: CheckFiltersUpdateMessage;
+        response: FilterMetadata[] | undefined;
+    }
+    [MessageType.GetAllowlistDomains]: {
+        message: GetAllowlistDomainsMessage;
+        response: GetAllowlistDomainsResponse;
+    }
+    [MessageType.OpenExtensionStore]: {
+        message: OpenExtensionStoreMessage;
+        response: void;
+    }
+    [MessageType.OpenComparePage]: {
+        message: OpenComparePageMessage;
+        response: void;
+    }
+    [MessageType.OpenFullscreenUserRules]: {
+        message: OpenFullscreenUserRulesMessage;
+        response: void;
+    }
+    [MessageType.ResetBlockedAdsCount]: {
+        message: ResetBlockedAdsCountMessage;
+        response: void;
+    }
+    [MessageType.OpenFilteringLog]: {
+        message: OpenFilteringLogMessage;
+        response: void;
+    }
+    [MessageType.OpenAbuseTab]: {
+        message: OpenAbuseTabMessage;
+        response: void;
+    }
+    [MessageType.OpenSiteReportTab]: {
+        message: OpenSiteReportTabMessage;
+        response: void;
+    }
+    [MessageType.OpenThankyouPage]: {
+        message: OpenThankyouPageMessage;
+        response: void;
+    }
+    [MessageType.GetOptionsData]: {
+        message: GetOptionsDataMessage;
+        response: GetOptionsDataResponse;
+    }
+    [MessageType.ChangeUserSettings]: {
+        message: ChangeUserSettingMessage;
+        response: void;
+    }
+    [MessageType.ResetSettings]: {
+        message: ResetSettingsMessage;
+        response: boolean;
+    }
+    [MessageType.AddAndEnableFilter]: {
+        message: AddAndEnableFilterMessage;
+        response: number | undefined;
+    }
+    [MessageType.DisableFilter]: {
+        message: DisableFilterMessage;
+        response: void;
+    }
+    [MessageType.RemoveAntiBannerFilter]: {
+        message: RemoveAntiBannerFilterMessage;
+        response: void;
+    }
+    [MessageType.SaveAllowlistDomains]: {
+        message: SaveAllowlistDomainsMessage;
+        response: void;
+    }
+    [MessageType.SaveUserRules]: {
+        message: SaveUserRulesMessage;
+        response: void;
+    }
+    [MessageType.GetUserRules]: {
+        message: GetUserRulesMessage;
+        response: GetUserRulesResponse;
+    }
+    [MessageType.GetUserRulesEditorData]: {
+        message: GetUserRulesEditorDataMessage;
+        response: GetUserRulesEditorDataResponse;
+    }
+    [MessageType.AddUserRule]: {
+        message: AddUserRuleMessage;
+        response: void;
+    }
+    [MessageType.RemoveUserRule]: {
+        message: RemoveUserRuleMessage;
+        response: void;
+    }
+    [MessageType.ResetUserRulesForPage]: {
+        message: ResetUserRulesForPageMessage;
+        response: void;
+    }
+    [MessageType.GetEditorStorageContent]: {
+        message: GetEditorStorageContentMessage;
+        response: string | undefined;
+    }
+    [MessageType.SetEditorStorageContent]: {
+        message: SetEditorStorageContentMessage;
+        response: void;
+    }
+    [MessageType.RemoveAllowlistDomain]: {
+        message: RemoveAllowlistDomainMessage;
+        response: void;
+    }
+    [MessageType.AddAllowlistDomain]: {
+        message: AddAllowlistDomainMessage;
+        response: void;
+    }
+    [MessageType.LoadCustomFilterInfo]: {
+        message: LoadCustomFilterInfoMessage;
+        response: GetCustomFilterInfoResult;
+    }
+    [MessageType.SubscribeToCustomFilter]: {
+        message: SubscribeToCustomFilterMessage;
+        response: CustomFilterMetadata;
+    }
+    // This message is sent from background and handled on UI side.
+    [MessageType.AppInitialized]: {
+        message: AppInitializedMessage;
+        response: never;
+    }
+    // This message is sent from background and handled on UI side.
+    [MessageType.UpdateTotalBlocked]: {
+        message: UpdateTotalBlockedMessage;
+        response: never;
+    }
+    [MessageType.GetFilteringLogData]: {
+        message: GetFilteringLogDataMessage;
+        response: GetFilteringLogDataResponse;
+    }
+    [MessageType.CheckRequestFilterReady]: {
+        message: CheckRequestFilterReadyMessage;
+        response: boolean;
+    }
+    [MessageType.OnOpenFilteringLogPage]: {
+        message: OpenFilteringLogPageMessage;
+        response: void;
+    }
+    [MessageType.OnCloseFilteringLogPage]: {
+        message: CloseFilteringLogPageMessage;
+        response: void;
+    }
+    [MessageType.ClearEventsByTabId]: {
+        message: ClearEventsByTabIdMessage;
+        response: void;
+    }
+    [MessageType.SetPreserveLogState]: {
+        message: SetPreserveLogStateMessage;
+        response: void;
+    }
+    [MessageType.RefreshPage]: {
+        message: RefreshPageMessage;
+        response: void;
+    }
+    [MessageType.GetFilteringInfoByTabId]: {
+        message: GetFilteringInfoByTabIdMessage;
+        response: FilteringLogTabInfo | undefined;
+    }
+    [MessageType.SetFilteringLogWindowState]: {
+        message: SetFilteringLogWindowStateMessage;
+        response: void;
+    }
+    [MessageType.EnableFiltersGroup]: {
+        message: EnableFiltersGroupMessage;
+        response: number[] | undefined;
+    }
+    [MessageType.DisableFiltersGroup]: {
+        message: DisableFiltersGroupMessage;
+        response: void;
+    }
+    [MessageType.OpenSafebrowsingTrusted]: {
+        message: OpenSafebrowsingTrustedMessage;
+        response: void;
+    }
+    [MessageType.SetNotificationViewed]: {
+        message: SetNotificationViewedMessage;
+        response: Promise<void>;
+    }
+    [MessageType.RemoveListener]: {
+        message: RemoveListenerMessage;
+        response: void;
+    }
+    [MessageType.ScriptletCloseWindow]: {
+        message: ScriptletCloseWindowMessage;
+        response: void;
+    }
+    [MessageType.ShowRuleLimitsAlert]: {
+        message: ShowRuleLimitsAlertMessage;
+        response: boolean;
+    }
+    // This message is sent from background and handled on UI side.
+    [MessageType.NotifyListeners]: {
+        message: NotifyListenersMessage;
+        response: never;
+    }
+    // This message is sent from background and handled on UI side.
+    [MessageType.UpdateListeners]: {
+        message: UpdateListenersMessage;
+        response: never;
+    }
+    [MessageType.ShowAlertPopup]: {
+        message: ShowAlertPopupMessage;
+        response: void;
+    }
+    [MessageType.ShowVersionUpdatedPopup]: {
+        message: ShowVersionUpdatedPopupMessage;
+        response: boolean;
+    }
+    [MessageType.GetIsConsentedFilter]: {
+        message: GetIsConsentedFilterMessage;
+        response: boolean;
+    }
+    [MessageType.SetConsentedFilters]: {
+        message: SetConsentedFiltersMessage;
+        response: void;
+    }
+    [MessageType.AddUrlToTrusted]: {
+        message: AddUrlToTrustedMessage;
+        response: void;
+    }
+    [MessageType.CurrentLimitsMv3]: {
+        message: CurrentLimitsMv3Message;
+        response: Mv3LimitsCheckResult;
+    }
+    [MessageType.GetRulesLimitsCountersMv3]: {
+        message: GetRulesLimitsCountersMv3Message;
+        response: IRulesLimits;
+    }
+    [MessageType.CanEnableStaticFilterMv3]: {
+        message: CanEnableStaticFilterMv3Message;
+        response: StaticLimitsCheckResult;
+    }
+    [MessageType.CanEnableStaticGroupMv3]: {
+        message: CanEnableStaticGroupMv3Message;
+        response: StaticLimitsCheckResult;
+    }
+    [MessageType.RestoreFiltersMv3]: {
+        message: RestoreFiltersMv3Message;
+        response: void;
+    }
+    [MessageType.ClearRulesLimitsWarningMv3]: {
+        message: ClearRulesLimitsWarningMv3Message;
+        response: void;
+    }
+    [MessageType.InitializeFrameScript]: {
+        message: InitializeFrameScriptMessage;
+        response: PageInitAppData;
+    }
+};
+
+/**
+ * Helper type to check if a given type is a valid message type.
+ */
+export type ValidMessageTypes = keyof MessageMap;
+
+/**
+ * Helper type to extract the response type for a given message type
+ */
+export type ExtractMessageResponse<T extends ValidMessageTypes> = MessageMap[T]['response'];

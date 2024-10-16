@@ -31,7 +31,7 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
-import { type Message, MessageType } from '../../../../common/messages';
+import { messageHasTypeAndDataFields, MessageType } from '../../../../common/messages';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
@@ -59,7 +59,11 @@ export const Popup = observer(() => {
 
     // subscribe to stats change
     useEffect(() => {
-        const messageHandler = (message: Message) => {
+        const messageHandler = (message: unknown): undefined => {
+            if (!messageHasTypeAndDataFields(message)) {
+                return;
+            }
+
             switch (message.type) {
                 case MessageType.UpdateTotalBlocked: {
                     updateBlockedStats(message.data);

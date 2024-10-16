@@ -45,7 +45,7 @@ import {
     ClearEventsByTabIdMessage,
     GetFilteringInfoByTabIdMessage,
     MessageType,
-    PageRefreshMessage,
+    type RefreshPageMessage,
     SetFilteringLogWindowStateMessage,
     SetPreserveLogStateMessage,
 } from '../../common/messages';
@@ -64,7 +64,7 @@ import {
 import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
 
-type GetFilteringLogDataResponse = {
+export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[],
     settings: SettingsData,
     preserveLogEnabled: boolean,
@@ -645,7 +645,7 @@ export class FilteringLogService {
      * @param message Message with type {@link PageRefreshMessage}.
      * @param message.data Tab id from {@link PageRefreshMessage}.
      */
-    private static async onRefreshPage({ data }: PageRefreshMessage): Promise<void> {
+    private static async onRefreshPage({ data }: RefreshPageMessage): Promise<void> {
         const { tabId } = data;
         await TabsApi.reload(tabId);
     }

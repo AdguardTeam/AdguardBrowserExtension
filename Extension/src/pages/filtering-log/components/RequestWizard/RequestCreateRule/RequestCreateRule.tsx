@@ -29,6 +29,7 @@ import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import { AddedRuleState, WizardRequestState } from '../../../constants';
+import { logger } from '../../../../../common/logger';
 
 import './request-create-rule.pcss';
 
@@ -173,6 +174,11 @@ const RequestCreateRule = observer(() => {
     };
 
     const handleAddRuleClick = async () => {
+        if (!wizardStore.rule) {
+            logger.error('[handleAddRuleClick]: rule is empty.');
+            return;
+        }
+
         wizardStore.setActionSubmitted(true);
         await messenger.addUserRule(wizardStore.rule);
         const addedRuleState = wizardStore.requestModalState === WizardRequestState.Block

@@ -27,7 +27,6 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../../../common/forward';
-import { MessageType } from '../../../../common/messages';
 import { getParams } from '../../getParams';
 import { messenger } from '../../../services/messenger';
 
@@ -55,7 +54,7 @@ export const SafeBrowsing = () => {
 
     const handleProceed = useCallback((e) => {
         e.preventDefault();
-        messenger.sendMessage(MessageType.OpenSafebrowsingTrusted, { url });
+        messenger.openSafebrowsingTrusted(url);
     }, [url]);
 
     const reportUrl = Forward.get({

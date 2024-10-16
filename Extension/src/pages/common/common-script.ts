@@ -48,18 +48,17 @@ export async function sleepIfNecessary(
  * @param fn - function to execute
  * @param minDurationMs - minimum executing time
  */
-// TODO: generic types
-export function addMinDurationTime(
-    fn: (...args: unknown[]) => Promise<unknown>,
-    minDurationMs: number,
-): (...args: unknown[]) => Promise<unknown> {
-    return async (...args: unknown[]) => {
+export function addMinDurationTime<
+    T extends (...args: any[]) => Promise<R>,
+    R,
+>(fn: T, minDurationMs: number): (...args: Parameters<T>) => Promise<R> {
+    return async (...args: Parameters<T>): Promise<R> => {
         const start = Date.now();
 
         try {
             const response = await fn(...args);
             await sleepIfNecessary(start, minDurationMs);
-            return response as unknown;
+            return response as R;
         } catch (e) {
             await sleepIfNecessary(start, minDurationMs);
             throw e;

@@ -24,7 +24,6 @@ import classNames from 'classnames';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { translator } from '../../../../common/translators/translator';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
-import { MessageType } from '../../../../common/messages';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { DynamicRulesLimitsWarning } from '../Warnings';
@@ -39,7 +38,7 @@ const UserRules = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const handleGoToEditorClick = async () => {
-        await messenger.sendMessage(MessageType.OpenFullscreenUserRules);
+        await messenger.openFullscreenUserRules();
     };
     const linksClassNames = classNames('settings__group__links', {
         'settings__group__links--custom': settingsStore.isFullscreenUserRulesEditorOpen,

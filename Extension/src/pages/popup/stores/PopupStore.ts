@@ -38,7 +38,6 @@ import {
     TimeRange,
     ViewState,
 } from '../constants';
-import { MessageType } from '../../../common/messages';
 import { translator } from '../../../common/translators/translator';
 import { type PromoNotification } from '../../../background/storages';
 import {
@@ -166,7 +165,7 @@ class PopupStore {
      */
     @action
     checkIsEngineStarted = async () => {
-        const res = await messenger.sendMessage(MessageType.GetIsEngineStarted);
+        const res = await messenger.getIsEngineStarted();
 
         runInAction(() => {
             this.isEngineStarted = res;
@@ -523,7 +522,7 @@ class PopupStore {
     @action
     closePromoNotification = async () => {
         this.promoNotification = null;
-        await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
+        await messenger.setNotificationViewed(false);
     };
 
     @action
@@ -541,7 +540,7 @@ class PopupStore {
 
         // TODO: This message will mark the notification as viewed,
         // but it seems that we need to show it.
-        await messenger.sendMessage(MessageType.SetNotificationViewed, { withDelay: false });
+        await messenger.setNotificationViewed(false);
         await browser.tabs.create({ url });
     };
 

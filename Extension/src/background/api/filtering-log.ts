@@ -152,6 +152,9 @@ export class FilteringLogApi {
         AntiBannerFiltersId.AllowlistFilterId,
     ]);
 
+    /**
+     * Flag to enable/disable preserve log.
+     */
     private preserveLogEnabled = false;
 
     private openedFilteringLogsPages = 0;

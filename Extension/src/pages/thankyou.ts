@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { MessageType } from '../common/messages';
 import { UserAgent } from '../common/user-agent';
 import { type PageInitAppData } from '../background/services';
 
@@ -37,59 +36,44 @@ const PageController = (response: PageInitAppData) => {
 
     const safebrowsingEnabledChange = (e: Event) => {
         const checkbox = e.currentTarget as HTMLInputElement;
-        messenger.sendMessage(MessageType.ChangeUserSettings, {
-            key: userSettings.names.DisableSafebrowsing,
-            value: !checkbox.checked,
-        });
+        messenger.changeUserSetting(
+            userSettings.names.DisableSafebrowsing,
+            !checkbox.checked,
+        );
     };
 
     const trackingFilterEnabledChange = (e: Event) => {
         const checkbox = e.currentTarget as HTMLInputElement;
         if (checkbox.checked) {
-            messenger.sendMessage(MessageType.AddAndEnableFilter, {
-                filterId: AntiBannerFiltersId.TrackingFilterId,
-            });
+            messenger.enableFilter(AntiBannerFiltersId.TrackingFilterId);
         } else {
-            messenger.sendMessage(MessageType.DisableFilter, {
-                filterId: AntiBannerFiltersId.TrackingFilterId,
-                remove: true,
-            });
+            messenger.disableFilter(AntiBannerFiltersId.TrackingFilterId);
         }
     };
 
     const socialFilterEnabledChange = (e: Event) => {
         const checkbox = e.currentTarget as HTMLInputElement;
         if (checkbox.checked) {
-            messenger.sendMessage(MessageType.AddAndEnableFilter, {
-                filterId: AntiBannerFiltersId.SocialFilterId,
-            });
+            messenger.enableFilter(AntiBannerFiltersId.SocialFilterId);
         } else {
-            messenger.sendMessage(MessageType.DisableFilter, {
-                filterId: AntiBannerFiltersId.SocialFilterId,
-                remove: true,
-            });
+            messenger.disableFilter(AntiBannerFiltersId.SocialFilterId);
         }
     };
 
     const sendStatsCheckboxChange = (e: Event) => {
         const checkbox = e.currentTarget as HTMLInputElement;
-        messenger.sendMessage(MessageType.ChangeUserSettings, {
-            key: userSettings.names.DisableCollectHits,
-            value: !checkbox.checked,
-        });
+        messenger.changeUserSetting(
+            userSettings.names.DisableCollectHits,
+            !checkbox.checked,
+        );
     };
 
     const allowAcceptableAdsChange = (e: Event) => {
         const checkbox = e.currentTarget as HTMLInputElement;
         if (checkbox.checked) {
-            messenger.sendMessage(MessageType.AddAndEnableFilter, {
-                filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId,
-            });
+            messenger.enableFilter(AntiBannerFiltersId.SearchAndSelfPromoFilterId);
         } else {
-            messenger.sendMessage(MessageType.DisableFilter, {
-                filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId,
-                remove: true,
-            });
+            messenger.disableFilter(AntiBannerFiltersId.SearchAndSelfPromoFilterId);
         }
     };
 
@@ -114,7 +98,7 @@ const PageController = (response: PageInitAppData) => {
         openExtensionStoreBtns.forEach((openExtensionStoreBtn) => {
             openExtensionStoreBtn.addEventListener('click', (e: Event) => {
                 e.preventDefault();
-                messenger.sendMessage(MessageType.OpenExtensionStore);
+                messenger.openExtensionStore();
             });
         });
 
@@ -122,7 +106,7 @@ const PageController = (response: PageInitAppData) => {
         openSettingsBtns.forEach((openSettingsBtn) => {
             openSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                messenger.sendMessage(MessageType.OpenSettingsTab);
+                messenger.openSettingsTab();
             });
         });
     };
@@ -182,7 +166,7 @@ const init = async () => {
 
     window.clearTimeout(timeoutId);
 
-    const response = await messenger.sendMessage(MessageType.InitializeFrameScript);
+    const response = await messenger.initializeFrameScript();
     const controller = PageController(response);
 
     if (document.readyState === 'loading') {

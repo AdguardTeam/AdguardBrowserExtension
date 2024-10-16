@@ -45,7 +45,6 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { Unknown } from '../../../../common/unknown';
 import { FiltersUpdateTime } from '../../../../common/constants';
-import { MessageType } from '../../../../common/messages';
 import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
 import { NotificationType } from '../../stores/UiStore';
@@ -129,7 +128,7 @@ export const General = observer(() => {
     }
 
     const handleExportSettings = () => {
-        exportData(ExportTypes.SETTINGS);
+        exportData(ExportTypes.Settings);
     };
 
     const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,9 +210,7 @@ export const General = observer(() => {
         await settingChangeHandler(payload);
 
         // no need to wait for the result so no await for message sending
-        messenger.sendMessage(MessageType.UpdateFullscreenUserRulesTheme, {
-            theme: payload.data,
-        });
+        await messenger.updateFullscreenUserRulesTheme(payload.data as AppearanceTheme);
     };
 
     const {
