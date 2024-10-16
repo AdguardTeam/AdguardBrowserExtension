@@ -1,9 +1,9 @@
-! Checksum: AKlDApPUkvXXm9afiyje3w
-! Diff-Path: ../patches/13/13-s-1727334569-3600.patch
+! Checksum: 9OiS690Rsho8mUjVpMOtAQ
+! Diff-Path: ../patches/13/13-s-1729089413-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.53.54
-! TimeUpdated: 2024-09-26T07:06:03+00:00
+! Version: 2.0.53.79
+! TimeUpdated: 2024-10-16T14:33:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -86,6 +86,7 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||yelads2.life^
 ||dizimax2.com^
 ||rqr97sfd.xyz^
 ||siberreklam.com^$third-party
@@ -266,6 +267,7 @@
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||bitcasino365.b-cdn.net^
 ||d2pspvbdjxwkpo.cloudfront.net^
 ||rotorfon.go-prod.dogt.xyz^
 ||r.yabancidizi.in^
@@ -333,16 +335,18 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 ! #adcontent bait
-ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,ozbeceriksizler.co,iyibeslenme.net,genelpara.com,teknop.net,kirtkirtla.com,ozgunbilgi.com,azbuz.org,mustafabukulmez.com,siberkalem.com,gecbunlari.com,hknkr.com,intekno.net#@##adcontent
+ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,ozbeceriksizler.co,genelpara.com,teknop.net,kirtkirtla.com,ozgunbilgi.com,azbuz.org,mustafabukulmez.com,siberkalem.com,gecbunlari.com,hknkr.com,intekno.net#@##adcontent
 ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,ozbeceriksizler.co,genelpara.com,azbuz.org,mustafabukulmez.com#%#//scriptlet("prevent-setTimeout", "0===o.offsetLeft&&0===o.offsetTop")
-iyibeslenme.net,teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
+teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/190065
 ! https://github.com/uBlockOrigin/uAssets/issues/25421
-gecmisi.com.tr#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
-gecmisi.com.tr#%#//scriptlet('prevent-setTimeout', '=!![]', '1000')
-gecmisi.com.tr#%#//scriptlet('set-cookie', '__gads', 'ok')
-@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=gecmisi.com.tr
+@@/favicon.ico|$domain=gecmisi.com.tr
+@@||gecmisi.com.tr^$cookie=_ga
+gecmisi.com.tr#%#//scriptlet('trusted-set-cookie', '_ga', 'GA1.1.1908932164.2839771695')
+gecmisi.com.tr#%#//scriptlet('prevent-setInterval', 'showAdBlockMessage')
+gecmisi.com.tr#%#//scriptlet('prevent-setTimeout', '/adElement\.innerHTML|=document\[_0x/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186286
 promy.pro#%#//scriptlet('set-constant', 'canRunAds', 'true')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183763
@@ -957,7 +961,7 @@ dizipal1.cloud,dizipal2.cloud,dizipal3.cloud,dizipal4.cloud,dizipal5.cloud,dizip
 ! START: Clickunders
 ! puShown
 ! #%#//scriptlet('set-constant', 'puShown', 'true')
-filmzirvesi.to,filmifullizle.online,sinemakolik.org,filmerotixxx.com,filmfc.com,filmizletv18.com,onlinefilmizle.site,playerzz.xyz,filmjr.org,asfilmizle.com,dizikral.com,dizifast.net,dizikral.com,filmhe.com,tranimaci.*,hdfilmizle.site,sinepal1.vip,hdsinemax.com,hdfilmizle.org,siyahfilmizle.*,tafdi4.com,tafdi5.com,elzemfilm.org,tafdi3.com,anizle.com,hdfilmseyircisi.org,kozfilm.com,hdfilmizle.in,dizicaps.*,filmizletv1.*,diziyou.co,fullhdfilmizle.*,filmizlew.net,fullfilmizle.*,sinepal.*,dizimag.eu,bumfilmizle1.com,yabancidizilertv.*,1080hdfilmizle.com,hdfilmcehennemi.*,yabancidizibax.com,sinemangoo.org,sexfilmleriizle.com,fullhdfilm.pro,geziforumu.com,efendim.xyz,dizipaltv.net,fluffcore.com,hdfilmfullizle.com,hdfilmcehennemizle.com,netfullfilmizle3.com,filmmodu.info,izlekolik.*,arrowizle.com,hdfilmifullizle.com,jokerfilmizle.com,720pfilmiizle.net,filmcus.com,filmizlew.org,zoof1.xyz,sinemakolik.net,sinefilmizlesen.com,zarize.com,burdenfly.com,zzerotik.com,filmgo.org,sinemafilmizle.net,fullhdfilmiizle.org,filmkuzusu1.com,hdfilmcix.net,sinemadelisi.com,erotikfilmtube.com,dizipal.*,filmizletv.*,tekparthdfilmizle.*,pornoanne.com,dizikorea.*,diziyo.*,diziboxx.com,dafflix.*,turkaliz.com,vkfilmizle.net,dizimov.*,filmizlet.net,pornorips.com,bumfilmizle.com,shirl.club,evrenselfilmlerim.org,turkcealtyazilipornom.com,fullhdfilmmodu2.*,sinema.cx,hdfilmizletv.net,pembetv18.*,sinemaizle.co,hdfilmcehennem.live,efullizle.com,asyafanatiklerim.com,dizilost.com,fullhdfilmdeposu.com,tranimeizle.*,volsex.com,divx720pfilmizle.org#%#//scriptlet('set-constant', 'puShown', 'true')
+uzaymanga.com,filmzirvesi.to,filmifullizle.online,sinemakolik.org,filmerotixxx.com,filmfc.com,filmizletv18.com,onlinefilmizle.site,playerzz.xyz,filmjr.org,asfilmizle.com,dizifast.net,filmhe.com,tranimaci.*,hdfilmizle.site,sinepal1.vip,hdsinemax.com,hdfilmizle.org,siyahfilmizle.*,tafdi4.com,tafdi5.com,elzemfilm.org,tafdi3.com,anizle.com,hdfilmseyircisi.org,kozfilm.com,hdfilmizle.in,dizicaps.*,filmizletv1.*,diziyou.co,fullhdfilmizle.*,fullfilmizle.*,sinepal.*,dizimag.eu,bumfilmizle1.com,yabancidizilertv.*,1080hdfilmizle.com,hdfilmcehennemi.*,yabancidizibax.com,sinemangoo.org,sexfilmleriizle.com,fullhdfilm.pro,geziforumu.com,efendim.xyz,dizipaltv.net,fluffcore.com,hdfilmfullizle.com,hdfilmcehennemizle.com,netfullfilmizle3.com,filmmodu.info,izlekolik.*,arrowizle.com,hdfilmifullizle.com,jokerfilmizle.com,720pfilmiizle.net,filmcus.com,filmizlew.org,zoof1.xyz,sinemakolik.net,sinefilmizlesen.com,zarize.com,burdenfly.com,zzerotik.com,filmgo.org,sinemafilmizle.net,filmkuzusu1.com,hdfilmcix.net,sinemadelisi.com,erotikfilmtube.com,dizipal.*,filmizletv.*,tekparthdfilmizle.*,pornoanne.com,dizikorea.*,diziyo.*,diziboxx.com,dafflix.*,turkaliz.com,vkfilmizle.net,dizimov.*,filmizlet.net,pornorips.com,bumfilmizle.com,shirl.club,evrenselfilmlerim.org,turkcealtyazilipornom.com,fullhdfilmmodu2.*,sinema.cx,hdfilmizletv.net,pembetv18.*,sinemaizle.co,hdfilmcehennem.live,efullizle.com,asyafanatiklerim.com,dizilost.com,fullhdfilmdeposu.com,tranimeizle.*,volsex.com,divx720pfilmizle.org#%#//scriptlet('set-constant', 'puShown', 'true')
 ! isShow
 ! #%#//scriptlet('set-constant', 'isShow', 'true')
 tekfullfilmizle5.com#%#//scriptlet('set-constant', 'isShow', 'true')
@@ -989,9 +993,6 @@ dizipal1.com#%#//scriptlet('remove-attr', 'disabled', '.pre-player > button#skip
 dizipal1.com#%#//scriptlet('trusted-click-element', '.pre-player > button#skipButton[onclick="skipAd()"]:not([disabled])')
 dizipal1.com#%#//scriptlet('trusted-replace-node-text', 'script', 'manageAds', 'video_urls.length != activeItem', '!1')
 dizipal1.com#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/(function playVideo\(\) \{[\s\S]*?\.remove\(\);[\s\S]*?\})/', '$1 playVideo();')
-! https://github.com/AdguardTeam/AdguardFilters/issues/179591
-dizikral.com#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/(function playVideo\(\) \{[\s\S]*?\.remove\(\);[\s\S]*?\})/', '$1 playVideo();')
-dizikral.com#%#//scriptlet('trusted-replace-node-text', 'script', 'manageAds', 'video_urls.length != activeItem', '!1')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177389
 dizigom1.tv#%#//scriptlet('prevent-setTimeout', '/img[\s\S]*?\.gif/')
 dizigom1.tv#%#//scriptlet('abort-current-inline-script', 'document.write', '_blank')
@@ -1015,8 +1016,6 @@ pllsfored.com#%#//scriptlet("set-constant", "window.config.adv", "emptyObj")
 cvdd.one#%#//scriptlet('set-constant', 'player.vroll', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165655
 afroditscans.com#%#//scriptlet("abort-on-property-read", "openPopup")
-! https://github.com/AdguardTeam/AdguardFilters/issues/165653
-uzaymanga.com#%#//scriptlet('set-constant', 'openPopup', 'false')
 ! https://github.com/uBlockOrigin/uAssets/issues/19921
 dizipia.com#%#//scriptlet('abort-on-property-write', 'popURL')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161599
@@ -1035,13 +1034,6 @@ rcjza2fzqyr4.buzz,d3xg9jm5zucs.buzz,fwlcqyxc88qx.buzz,lgrmdr8asu8l.buzz,kc2uta38
 filmseyretizlet.com#%#//scriptlet('set-cookie', 'popundr0', '7')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/155439
 breakingbadizle.*#%#//scriptlet("prevent-window-open")
-! https://github.com/AdguardTeam/AdguardFilters/issues/153726
-[$path=/^\/$/]itemci.com#%#//scriptlet('trusted-click-element', 'div[style^="background"][style*="https://cdn.itemci.com/assets/images/site_login_image.jpg"] > button.close', '', '3000')
-! trgoals*.xyz - frequently changed domains
-[$domain=/^trgoals\d+\.xyz$/]#%#//scriptlet('set-constant', 'config.adv', 'emptyObj')
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz#%#//scriptlet('set-constant', 'config.adv', 'emptyObj')
-[$domain=/^trgoals\d+\.xyz$/]#%#//scriptlet("set-constant", "isShow", "true")
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals483.xyz,trgoals484.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz#%#//scriptlet("set-constant", "isShow", "true")
 ! dizipal*.cloud - frequently changed domains
 dizipal73.cloud,dizipal74.cloud,dizipal132.cloud,dizipal133.cloud,dizipal134.cloud,dizipal135.cloud,dizipal140.cloud#%#//scriptlet("set-constant", "isShow", "true")
 dizipal73.cloud,dizipal74.cloud,dizipal132.cloud,dizipal133.cloud,dizipal134.cloud,dizipal135.cloud,dizipal140.cloud#%#//scriptlet("remove-attr", "data-money", "div[data-money]")
@@ -1115,8 +1107,6 @@ fullhdfilm.pro#%#//scriptlet('set-constant', 'reklamsayisi', '0')
 fullhdfilm.pro#%#//scriptlet("adjust-setInterval", "reklam", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136520
 tranimeci.com#%#//scriptlet('set-constant', 'volumeClearInterval', '0')
-! https://github.com/AdguardTeam/AdguardFilters/issues/133824
-filmmakinesi1.com#%#//scriptlet("set-constant", "rek_kontrol", "noopFunc")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/132146
 turkanime.co#%#//scriptlet('set-local-storage-item', 'lscache-pop', '1')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131619
@@ -1693,7 +1683,7 @@ tarsusakdeniz.com,havaturkiye.com,mersinhaber.com,merhabahaber.com##div[class^="
 ! ##div[class^="advert_"]
 larende.com,sonses.tv,anamurekspres.com,avrupabulten.com,sakinca.com,gazetebanka.com,habereko.com,aktifhabergazetesi.com,gazetegolbasi.com,elazighaberkent.com,haberetanik.com,kemergozcu.com,agazete.com.tr,olayrize.com,sirineregli.org,elazigharputgazetesi.com,samsunhaberhatti.com,yurtspor.com,hayat.ro##div[class^="advert_"]
 ! ##.ads
-worldofturkiye.com,eksisozluk.com,filmizlekral.com,ogznet.com,ajanstekirdag.com,enyenimedya.com,yenisafak.com,kocatepegazetesi.com,enbursa.com,dinimizislam.com,tarihiyolculuk.com,geziforumu.com,kadinloji.com,donghuatr.com,havadurumu15gunluk.xyz,sonhaber16.com,bifikir.com,nowtv.com.tr,haber228.com,diyarbakirhaber.com.tr,diyarbakirgazete.com,konupara.com,cumrapostasi.com,yeniakit.com.tr,sinemafilmizle.net,degisimgazetesi.com.tr,esporlab.com,havadurumu15gunluk.org,voleybolmagazin.com,londragazete.com,bursahayat.com.tr,trt1.com.tr,noktabursa.com.tr,anlikaltinfiyatlari.com,pasada.com.tr,memoryhackers.org,yenidonem.com.tr,slideplayer.biz.tr,sakarya360.com,bigunhaber.com,son32.com,emlaknews.com.tr,cagingazetesi.com.tr,sabahhaberi.com,sonsaat.com.tr,medyaankara.com,erotikfilmtube.com,anadolugunluk.com,kesinkarar.com,bursverenkurumlar.com,mengen.gen.tr,capital.com.tr,canlimobeseizle.com,nallihanhaber.com,muhabir26.com,gundembursa.com,uyan32.com,selcukhaber.com,webhakim.com,ibrala.com,ulakci.com,haberyum.com,yozgatses.com,forumotomobil.com,bodrumolay.com,akvaryum.com,uyumhaber.com,yenimeram.com.tr,vivaldimagazin.com,gzt.com,thebrandage.com,gamer.com.tr,medyafaresi.com,indir.com,bjk.com.tr,bursadabugun.com,gercekgundem.com,haber7.com,internethaber.com,webtekno.com##.ads
+worldofturkiye.com,eksisozluk.com,filmizlekral.com,ogznet.com,ajanstekirdag.com,enyenimedya.com,yenisafak.com,kocatepegazetesi.com,enbursa.com,dinimizislam.com,tarihiyolculuk.com,geziforumu.com,kadinloji.com,donghuatr.com,havadurumu15gunluk.xyz,sonhaber16.com,bifikir.com,nowtv.com.tr,haber228.com,diyarbakirhaber.com.tr,diyarbakirgazete.com,konupara.com,cumrapostasi.com,yeniakit.com.tr,sinemafilmizle.net,degisimgazetesi.com.tr,esporlab.com,havadurumu15gunluk.org,voleybolmagazin.com,londragazete.com,bursahayat.com.tr,trt1.com.tr,noktabursa.com.tr,anlikaltinfiyatlari.com,pasada.com.tr,memoryhackers.org,yenidonem.com.tr,slideplayer.biz.tr,sakarya360.com,bigunhaber.com,son32.com,emlaknews.com.tr,cagingazetesi.com.tr,sabahhaberi.com,sonsaat.com.tr,medyaankara.com,erotikfilmtube.com,anadolugunluk.com,kesinkarar.com,bursverenkurumlar.com,mengen.gen.tr,capital.com.tr,canlimobeseizle.com,nallihanhaber.com,muhabir26.com,gundembursa.com,uyan32.com,selcukhaber.com,webhakim.com,ibrala.com,ulakci.com,haberyum.com,yozgatses.com,forumotomobil.com,bodrumolay.com,akvaryum.com,uyumhaber.com,yenimeram.com.tr,gzt.com,thebrandage.com,gamer.com.tr,medyafaresi.com,indir.com,bjk.com.tr,bursadabugun.com,gercekgundem.com,haber7.com,internethaber.com,webtekno.com##.ads
 ! ##.footer-sticky
 fulltimehdfilmizle.*,jetfilmizletv.net,evrenselfilm1.com,altyazilifilmizle3.com,indirmedenfilmizle.vip,fullfilmizle.*,izlehdfilm.net,1080pizle.net,tekparthdfilmizle.com,fullhdizle.*,fullhizlifilmizlesen.com##.footer-sticky
 ! ##.rek
@@ -1707,7 +1697,7 @@ gelirkapisi.com##div[id^="ad_"]
 ! ##.stream-item
 bedavainternet.com.tr,turkedebiyati.org,frpnet.net,teknobh.com,begonya.com,egehaber.com,voleybolmagazin.com,kadinvekadin.net,savunmasanayist.com,aof.tc,m5dergi.com,sosyola.com,havadiskibris.com,unirehberi.com##.stream-item
 ! ##body .code-block
-techolay.net,havadiskibris.com,oyunindir.club,armoniscans.com,teknobh.com,yoldaolmak.com,aof.tc,trend724.com,sorumatik.co,andronova.net,koinfinans.com,hwp.com.tr,konupara.com,lafmacun.net,finanskocaeli.com,oyundunyasi.net,bilgenc.com,teknodiot.com,ruyashoujo.com,pchocasi.com.tr,dusuncekatalogu.com,tatil.net.tr##body .code-block
+techolay.net,havadiskibris.com,oyunindir.club,armoniscans.com,teknobh.com,yoldaolmak.com,aof.tc,sorumatik.co,andronova.net,koinfinans.com,hwp.com.tr,konupara.com,lafmacun.net,finanskocaeli.com,oyundunyasi.net,bilgenc.com,teknodiot.com,ruyashoujo.com,pchocasi.com.tr,dusuncekatalogu.com,tatil.net.tr##body .code-block
 !
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
@@ -1726,6 +1716,27 @@ $xmlhttprequest,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
 !
+hangikredi.com###__next > div.relative:has(> a[href^="https://8fl2.tr.adj.st/"])
+diyetkolik.com##div[style^="min-height:100px;"]
+fullindirsene.net##a[href^="https://kingads2.org/"]
+fullindirsene.net##center > noindex:has(> a[href^="https://fullindirsene.net/yonlendirme/"])
+habercigazetesi.net##div[class*="Reklam"]
+canlidizi6.org##div[id^="zone_"]
+canlidizi6.org##div[id^="yandex_rtb"]
+canlidizi6.org##.videoaltix
+canlidizi6.org#$##wrap { margin-top: 0 !important; }
+cepteteb.com.tr#$#.fancybox-overlay { display: none !important; }
+cepteteb.com.tr#$?#.fancybox-lock { overflow: auto !important; margin-right: unset !important; }
+cepteteb.com.tr#$?#.fancybox-lock body { overflow: auto !important; }
+gidadedektifi.com##div[class^="XAd_"]
+||jetfilmizletv.live/papa.js
+||onlinedizi.xyz/img/2603c58cb6.mp4
+onlinedizi.xyz##a[href^="https://tinyurl.com/"]
+||dizihot.com/img/hititbet_*.mp4$media,redirect=noopmp4-1s
+dizihot.com,koredizileri.pw##a[href^="https://tinyurl.com/"]
+||koredizileri.pw/img/hititbet_*.mp4$media,redirect=noopmp4-1s
+||mackeyfi*.sbs/wp-content/uploads/*/wal*.png
+||mackeyfi*.sbs/wp-content/uploads/*.gif
 diyetkolik.com##div[style^="min-height:250px;"]
 diyetkolik.com##.text-center:has(> div[id^="feedbannerslot"])
 diyetkolik.com##div[id^="feedbannerslot"]
@@ -1749,7 +1760,6 @@ inatflix9.xyz##.adv
 inatflix9.xyz##div[style^="bottom:0;height:50px;"]
 cumhuriyet.com.tr##.row:has(> div[class^="col-"] > div[style*="aspect-ratio"] > div[id^="div-gpt-ad"])
 cumhuriyet.com.tr##.inad-text
-cumhuriyet.com.tr##.row > div.col-xs-12:has(> div[id^="div-gpt-ad"])
 ||dizipal.vip/celta.js
 gunes.com##.row > div[class]:has(> a[href="/kobi"])
 gunes.com##.row > div[class^="col-"]:has(> div.ads-area)
@@ -1812,11 +1822,14 @@ hangikredi.com##.flex-col > .relative:has(> .native-card-section + div.tooltip):
 ||i.hizliresim.com/nddzy48.gif
 ||dizimag.org/pop$script
 dizimag.org##.linko1
-dizikral.com#$#body > header { margin-top: 0 !important; }
 ||sinetiktok.com/supermert$script
 filmgo.org#$##video > div#videos { display: block !important; }
 filmgo.org#$#.once-reklam { display: none !important; }
-sabah.com.tr##a[href^="/finans/altin?"]
+sabah.com.tr##.currency-view
+sabah.com.tr###resmiIlanArticles
+sabah.com.tr##.topDetail > div.col-sm-12:has(> div.advert)
+sabah.com.tr###contextual > div[style*="min-height"]:has(> div[data-wbzone="native_advertorial"])
+sabah.com.tr###nativeAdvertorialZone
 sabah.com.tr##.nativeAdContent
 koctas.com.tr##.gowit
 ||assets.gowit.com/live/$domain=koctas.com.tr
@@ -1871,7 +1884,6 @@ uzmancoin.com##div[class^="ai-viewport"]
 dosya.one##.metaRedirectWrapperTopAds
 elazighakimiyethaber.com##div[class*="-adv"]
 elazighakimiyethaber.com##div[class*="reklam"]
-||dizikral.com/cdn/*.mp4$media,redirect=noopmp4-1s
 dizigom1.tv###div[onclick="openIt()"]
 canlidoviz.com##div[class*="max-h-[300px]"]:has(> .empower-ad)
 tv100.com##body .desktop-ad
@@ -1962,7 +1974,6 @@ kocuce.com##body > center > a > img[style="max-width: 100%"]
 kocuce.com,mmotutkunlari.com##.slickModal
 mmotutkunlari.com##.arkaplan-container
 mmotutkunlari.com##.tanitim_alani
-cumhuriyet.com.tr##div[class^="col-sm-"] > div.row:has(> div > div[id^="div-gpt-ad"])
 sozcu.com.tr##._sidebar-kesfet
 /image\.fanatik\.com\.tr\/i\/fanatik\/75\/770x0\/(65aeb1ab8e04ea7f5b5e8079|65abf128ef6fdd3cbe14659e|6595061b6e3b9a5771e091b2|650e8aa980a0330f306cc17f|64c9319180a0323578c70c0e|657c5980df15856dfa0626de|65a4423ad75f861790da28ba)\.jpg/$domain=fanatik.com.tr
 fotomac.com.tr##.swiper-wrapper > div.swiper-slide:has(> a[href^="http://tinyurl.com/"])
@@ -2238,7 +2249,7 @@ yenimesaj.com.tr##body > div[style="margin: auto; width: 100%; height: 250px; te
 fulltimehdfilmizle.*##a[href^="https://azureiptv1.site/"]
 ||storj-cloud.cdn.ampproject.org/i/s/storj.cloud/f/fv/*.gif$domain=sinefy2.com
 720pizle.*##.top-bnr
-yabancidizi.io,dizipub.club,filmmodu.co,roketdizi.co,sinefy2.com,dizilla.*,diziroll.*,720pizle.*###mPlayerFd
+sinefy3.com,yabancidizi.io,dizipub.club,filmmodu.co,roketdizi.co,sinefy2.com,dizilla.*,diziroll.*,720pizle.*###mPlayerFd
 diziroll.*##.series-watch-player a[target="_blank"] > img
 ||storj-cloud.cdn.ampproject.org^$domain=roketdizi.co|diziroll.*|720pizle.*
 ||storj-cloud.cdn.ampproject.org/i/s/storj.cloud/f/fv/hovardahatfoot.gif
@@ -2344,8 +2355,7 @@ mc-tr.com##.sol-reklam
 hdfilmseyircisi.org##video[title="RKL"]
 dizicaps.*,hdfilmseyircisi.org##a[href^="https://sbrcdn.com/"]
 turkedebiyati.org###stream-item-widget-2
-sinema.cx,filmizlew.net###f-uyari2
-filmizlew.net###header-alt
+sinema.cx###f-uyari2
 asyadiziizle.com###content > a
 reytingtv.com##div[class^="fullads"]
 hurriyet.com.tr##.news-content > .cf
@@ -2359,7 +2369,7 @@ nedir.org##.empower
 nedir.org##.mobil[style^="min-width:300px;min-height:"]
 ||birgun.net/api/OfficialAds/
 oyunmodlari.com##.reklam-title
-airporthaber1.com,kartalgazetesi.com,sehirmedya.com,bursahayat.com.tr,veteknoloji.net,yozgatcamlik.com##.banner
+bayburtmanset.com,rthaber1.com,kartalgazetesi.com,sehirmedya.com,bursahayat.com.tr,veteknoloji.net,yozgatcamlik.com##.banner
 turkiyegazetesi.com.tr###dfp-detail-kare-container
 turkiyegazetesi.com.tr##div[class^="dfp-"]
 ||hdfilmcehennemi.life/red3.jpg$image,redirect=1x1-transparent.gif
@@ -2750,7 +2760,6 @@ sonhaber16.com##.logoAd
 metin2rehberi.com,sonhaber16.com##div[id^="divFLRA"]
 ||sonhaber16.com/banner/
 sondakika.com###pageskin_div
-habermotto.com##div[id^="kanews_widget_ads-"]
 memurlar.net##a[rel="sponsored"]
 maksatbilgi.com###tie-block_2320.media-overlay
 maksatbilgi.com##.theiaStickySidebar > .stream-item-widget
@@ -2774,7 +2783,6 @@ pazarlamasyon.com###ctl00_divMasthead
 dizimodu.com##body > div[id][style*="position: absolute;"][style*="z-index: 100000;"]
 gezenbilir.com##iframe[width="200"][height="200"]
 /pops-yeni.js$domain=filmjr.org|asfilmizle.com|filmfc.com
-formatatmak.com##.one_half > .code-block
 tiendeo.com.tr###header-standard-container
 ntvspor.net,ntv.com.tr##.dygtag-masthead
 ntv.com.tr##.category-detail-suggest
@@ -3383,7 +3391,7 @@ sgkbilgisi.com##.fdsphvn
 ||diyetasistan.com/assets/images/enakliyat-teklif-al.jpg
 ardahanhaberi.com##.hbr-solreklam
 btchaber.com##.ai-track
-btchaber.com,nurgsm.com##.ai_widget
+btchaber.com##.ai_widget
 saglikaktuel.com##.pub
 gastronomiturkey.com##.body-inner > a[target="_blank"] > .videoDiv2
 businessht.bloomberght.com##.mastheadvisisblity
@@ -3567,7 +3575,6 @@ memleketimbolu.com##.mansetyani
 ademyurt.com###alt > div.at
 giresunhaberci.com##.genel_kapsayici > #memoli
 sikayetvar.com###mastheadslot
-||mp3indirdur.store/reklam*.png
 sonsaat.com.tr##.galerireklam
 bayimolurmusun.com.tr##.head-advers
 indirveoyna.com##div[style="height: 90px; margin-bottom: 20px"]
@@ -3862,7 +3869,7 @@ puango.net,dizimag.eu,koreanturk.com,filmsezonu.com,fullhdizle.*,bizevdeyokuz.co
 ||uludagsozluk.com/theme/resy/elidor^
 ||uludagsozluk.com/theme/resy/kibris_amerikan/
 ||7deniz.net/resimler/7_deniz_*_kapak_tek-banner_*.gif
-hdblurayindir.com,mp3indirdur.store,muzmp3indir.com##a[href^="https://kingads."]
+hdblurayindir.com,muzmp3indir.com##a[href^="https://kingads."]
 gazetevatan.com,posta.com.tr,hurriyet.com.tr,milliyet.com.tr##.gallery-banner
 yeniakit.com.tr###stickyBanner
 /images/bnrs/*$domain=biomedya.com
@@ -4333,11 +4340,6 @@ cazkolik.com##iframe[src="https://www.cazkolik.com/include/banner_goster.asp?ala
 oyunlarskor.com##div[class^="ilan_tahtasi"]
 ||sonkaleizmir.com/banner/
 ||shellerim.org/seo/Openme.js
-heykadin.com.tr##.hb4_reklam
-heykadin.com.tr##.enust_970_reklam
-heykadin.com.tr##div[class$="_kayan_reklamkodu"]
-heykadin.com.tr###sag > .bilesen > div > center > a[href][target="_blank"] > img
-heykadin.com.tr###sol > div[style^="float:left; margin-"]:not([class]):not([id]) a[href][target="_blank"] > img
 kayisihaber.com##div[class^="haber-ici-1-adv"]
 kayisihaber.com##div[class^="mi-banner-layout"]
 korkmazhaber.com##div[itemprop="articleBody"] > div.code-block-1
@@ -4479,7 +4481,7 @@ kraloyun.com###advertising_load_area
 /wp-content/uploads/*/*/*reklam*.*$image,domain=buyuksivas.com
 aktuelpsikoloji.com##.banner > a[target^="_blan"] > img
 turizmajansi.com##a[href^="/rdads.aspx?r="]
-izlemag.com,diziboxx.com###pre_video
+dizihot.com,izlemag.com,diziboxx.com###pre_video
 turkiyedeenerji.com##div[class^="singleAd"]
 qualitydergisi.com##.megaBanner
 teknobird.com,kredi.biz.tr,bodrumolay.com###custom_html-3
@@ -5203,7 +5205,6 @@ baslattusu.com###sgcboxOverlay
 baslattusu.com###sgcolorbox
 ekippolishaber.com,abamedya.com,olay.com.tr###splash
 blog.namazsitesi.com###text-6
-formatatmak.com###text-html-widget-6
 birlikhabergazetesi.com###tickeradss
 sinemafilmizle.net###toolbar
 objektifhaber.com###top-adv
@@ -5258,7 +5259,6 @@ webtekno.com##.desktop-wrap > div.show-desktop > a
 haber61.net##.detayFoto
 konhaber.com##.detayReklam
 forum.donanimhaber.com##.dhorta > .kl-ustu
-formatatmak.com##.e3lan
 fotomac.com.tr##.fancybox-overlay
 onedio.com##.featured-floating
 sanalokulumuz.com##.freklam
@@ -5567,6 +5567,13 @@ hdfilmcehennem.live#$##kendisi { display: block!important; }
 oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
 !
+! dizikral*.pro - frequently changed domains
+[$domain=/dizikral\d+.pro/]#$#body > header { margin-top: 0 !important; }
+[$domain=/dizikral\d+.pro/]#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/(function playVideo\(\) \{[\s\S]*?\.remove\(\);[\s\S]*?\})/', '$1 playVideo();')
+[$domain=/dizikral\d+.pro/]#%#//scriptlet('trusted-replace-node-text', 'script', 'manageAds', 'video_urls.length != activeItem', '!1')
+[$domain=/dizikral\d+.pro/]#%#//scriptlet('set-constant', 'puShown', 'true')
+[$domain=/dizikral\d+.pro/]#$#body > header { margin-top: 0 !important; }
+!
 ! kuponuna*.top - frequently changed domains
 ||kuponuna*.top/r/
 kuponuna284.top,kuponuna285.top,kuponuna286.top,kuponuna287.top,kuponuna288.top,kuponuna289.top,kuponuna290.top,kuponuna291.top,kuponuna292.top,kuponuna293.top,kuponuna294.top#%#//scriptlet('trusted-set-cookie', 'fafafafaaaaa', 'undefined')
@@ -5845,18 +5852,27 @@ inattvhd188.xyz,inattvhd189.xyz,inattvhd190.xyz,inattvhd191.xyz,inattvhd192.xyz,
 [$domain=/^inattv\d+\.xyz$/]##.custom-banner
 !
 ! trgoals*.xyz - frequently changed domains
+[$path=/^\/$/]itemci.com#%#//scriptlet('trusted-click-element', 'div[style^="background"][style*="https://cdn.itemci.com/assets/images/site_login_image.jpg"] > button.close', '', '3000')
+! trgoals*.xyz - frequently changed domains
+[$domain=/^trgoals\d+\.xyz$/]#$#.player-poster { background-image: none !important; }
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz#$#.player-poster { background-image: none !important; }
+[$domain=/^trgoals\d+\.xyz$/]#%#//scriptlet('set-constant', 'config.adv', 'emptyObj')
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz#%#//scriptlet('set-constant', 'config.adv', 'emptyObj')
+[$domain=/^trgoals\d+\.xyz$/]#%#//scriptlet("set-constant", "isShow", "true")
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz#%#//scriptlet("set-constant", "isShow", "true")
+||trgoals*.xyz/images/ikimisli*.gif
 [$domain=/^trgoals\d+\.xyz$/]##div[style^="bottom:0;height:50px;left:0;position:fixed;"]
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals483.xyz,trgoals484.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz##div[style^="bottom:0;height:50px;left:0;position:fixed;"]
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz##div[style^="bottom:0;height:50px;left:0;position:fixed;"]
 [$domain=/^trgoals\d+\.xyz$/]##body > a[target="_blank"]
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals483.xyz,trgoals484.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz##body > a[target="_blank"]
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz##body > a[target="_blank"]
 [$domain=/^trgoals\d+\.xyz$/]###player a[target="_blank"]
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals483.xyz,trgoals484.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz###player a[target="_blank"]
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz###player a[target="_blank"]
 [$domain=/^trgoals\d+\.xyz$/]###yayinSection > marquee
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals483.xyz,trgoals484.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz###yayinSection > marquee
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz###yayinSection > marquee
 [$domain=/^trgoals\d+\.xyz$/]##.topDuyuru
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals483.xyz,trgoals484.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz##.topDuyuru
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz##.topDuyuru
 [$domain=/^trgoals\d+\.xyz$/]##.contentReklam
-trgoals625.xyz,trgoals605.xyz,trgoals606.xyz,trgoals607.xyz,trgoals608.xyz,trgoals609.xyz,trgoals610.xyz,trgoals611.xyz,trgoals612.xyz,trgoals613.xyz,trgoals614.xyz,trgoals615.xyz,trgoals616.xyz,trgoals617.xyz,trgoals618.xyz,trgoals619.xyz,trgoals620.xyz,trgoals483.xyz,trgoals484.xyz,trgoals485.xyz,trgoals486.xyz,trgoals487.xyz,trgoals488.xyz,trgoals489.xyz,trgoals490.xyz,trgoals491.xyz,trgoals492.xyz,trgoals493.xyz,trgoals494.xyz,trgoals495.xyz,trgoals496.xyz,trgoals497.xyz,trgoals498.xyz,trgoals499.xyz,trgoals500.xyz,trgoals501.xyz,trgoals502.xyz,trgoals503.xyz,trgoals504.xyz,trgoals505.xyz,trgoals506.xyz,trgoals507.xyz,trgoals508.xyz,trgoals509.xyz,trgoals510.xyz,trgoals511.xyz,trgoals512.xyz,trgoals513.xyz,trgoals514.xyz,trgoals515.xyz,trgoals516.xyz,trgoals517.xyz,trgoals518.xyz,trgoals519.xyz,trgoals520.xyz,trgoals521.xyz,trgoals522.xyz,trgoals523.xyz,trgoals524.xyz,trgoals525.xyz,trgoals526.xyz,trgoals527.xyz,trgoals528.xyz,trgoals529.xyz,trgoals530.xyz,trgoals531.xyz,trgoals532.xyz,trgoals533.xyz,trgoals534.xyz,trgoals535.xyz,trgoals536.xyz,trgoals537.xyz,trgoals538.xyz,trgoals539.xyz,trgoals540.xyz,trgoals541.xyz,trgoals542.xyz,trgoals543.xyz,trgoals544.xyz,trgoals545.xyz,trgoals546.xyz,trgoals547.xyz,trgoals548.xyz,trgoals549.xyz,trgoals550.xyz,trgoals551.xyz,trgoals552.xyz,trgoals553.xyz,trgoals554.xyz,trgoals555.xyz,trgoals556.xyz,trgoals557.xyz,trgoals558.xyz,trgoals559.xyz,trgoals560.xyz,trgoals561.xyz,trgoals562.xyz,trgoals563.xyz,trgoals564.xyz,trgoals565.xyz,trgoals566.xyz,trgoals567.xyz,trgoals568.xyz,trgoals569.xyz,trgoals570.xyz,trgoals571.xyz,trgoals572.xyz,trgoals573.xyz,trgoals574.xyz,trgoals575.xyz,trgoals576.xyz,trgoals577.xyz,trgoals578.xyz,trgoals579.xyz,trgoals580.xyz,trgoals581.xyz,trgoals582.xyz,trgoals583.xyz,trgoals584.xyz,trgoals585.xyz,trgoals586.xyz,trgoals587.xyz,trgoals588.xyz,trgoals589.xyz,trgoals590.xyz,trgoals591.xyz,trgoals592.xyz,trgoals593.xyz,trgoals594.xyz,trgoals595.xyz,trgoals596.xyz,trgoals597.xyz,trgoals598.xyz,trgoals599.xyz,trgoals600.xyz##.contentReklam
+trgoals967.xyz,trgoals968.xyz,trgoals969.xyz,trgoals970.xyz,trgoals971.xyz,trgoals972.xyz,trgoals973.xyz,trgoals974.xyz,trgoals975.xyz,trgoals976.xyz,trgoals977.xyz,trgoals978.xyz,trgoals979.xyz,trgoals980.xyz,trgoals981.xyz,trgoals982.xyz,trgoals983.xyz,trgoals984.xyz,trgoals985.xyz,trgoals986.xyz,trgoals987.xyz,trgoals988.xyz,trgoals989.xyz,trgoals990.xyz,trgoals991.xyz,trgoals992.xyz,trgoals993.xyz,trgoals994.xyz,trgoals995.xyz,trgoals996.xyz,trgoals997.xyz,trgoals998.xyz,trgoals999.xyz,trgoals1000.xyz,trgoals1001.xyz,trgoals1002.xyz,trgoals1003.xyz,trgoals1004.xyz,trgoals1005.xyz,trgoals1006.xyz,trgoals1007.xyz,trgoals1008.xyz,trgoals1009.xyz,trgoals1010.xyz##.contentReklam
 !
 ! filmmodu.com - frequently changed domains
 /\/pageskin\/[a-z]{2}1\.jpg/$domain=filmmodu9.com|filmmodu10.com|filmmodu11.com|filmmodu12.com|filmmodu13.com|filmmodu14.com|filmmodu15.com|filmmodu16.com|filmmodu17.com|filmmodu18.com|filmmodu19.com|filmmodu20.com
@@ -5947,6 +5963,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/190140
+@@||jsc.idealmedia.io/*/onedio.com.*.js$domain=onedio.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185875
 @@||filmerotikizle.com/rek/katla2.gif
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181795

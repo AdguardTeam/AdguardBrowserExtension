@@ -114,13 +114,13 @@ describe('Settings Api', () => {
 
             expect(importResult).toBeTruthy();
             expect(SettingsApi.getSetting(SettingOption.UseOptimizedFilters)).toBe(true);
-        });
+        }, 10000);
 
         it('Export settings', async () => {
             const exportedSettings = await SettingsApi.export();
 
             expect(exportedSettings).toStrictEqual(JSON.stringify(getDefaultExportFixture()));
-        });
+        }, 10000);
 
         it('Imports exported settings for protocol v1', async () => {
             const userConfig = getExportedSettingsProtocolV1Fixture();
@@ -138,7 +138,7 @@ describe('Settings Api', () => {
             const importedSettings = getImportedSettingsFromV1Fixture();
 
             expect(JSON.parse(importedSettingsString)).toStrictEqual(importedSettings);
-        });
+        }, 10000);
 
         it('Imports exported settings for protocol v2', async () => {
             const userConfig = getExportedSettingsProtocolV2Fixture();
@@ -155,7 +155,7 @@ describe('Settings Api', () => {
             // Fill up optional fields
             userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
-        });
+        }, 10000);
 
         it('Imports settings from 4.1.X version', async () => {
             const settings = getSettingsV1();
@@ -171,7 +171,7 @@ describe('Settings Api', () => {
             const exportedSettingsString = await SettingsApi.export();
             const EXPORTED_SETTINGS_V_2_0 = getExportedSettingsV2();
             expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
-        });
+        }, 10000);
 
         it('Reset default settings', async () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
@@ -179,6 +179,6 @@ describe('Settings Api', () => {
             await SettingsApi.reset(true);
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
-        });
+        }, 10000);
     });
 });

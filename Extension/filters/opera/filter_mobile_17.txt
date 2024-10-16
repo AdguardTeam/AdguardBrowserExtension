@@ -1,10 +1,15 @@
-! Checksum: oCiBvfTGhIERjHDpNunemA
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1727339813-3600.patch
+! Checksum: tAFfF0SFlYJ+apyVA7W+7Q
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1729089414-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.54
-! TimeUpdated: 2024-09-26T08:33:21+00:00
+! Version: 2.0.9.64
+! TimeUpdated: 2024-10-16T14:33:25+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=ebisOther1
+$removeparam=ebisOther2
+$removeparam=ebisOther3
+$removeparam=ebisOther4
+$removeparam=ebisOther5
 $removeparam=bemobdata
 $removeparam=_bhlid
 $removeparam=_bdadid
@@ -240,6 +245,25 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||boosty.to^$removeparam=_1ld
+||boosty.to^$removeparam=_1lp
+||boosty.to^$removeparam=from
+||avansas.com^$removeparam=sc_src
+||avansas.com^$removeparam=sc_llid
+||avansas.com^$removeparam=sc_lid
+||avansas.com^$removeparam=sc_uid
+||avansas.com^$removeparam=sc_customer
+||keepstreams.jp/thanks-for-using-$removeparam
+||kickstarter.com$removeparam=ref
+||kickstarter.com/projects$removeparam=event
+||kickstarter.com/projects$removeparam=term
+||kickstarter.com/projects$removeparam=total_hits
+||washingtonpost.com^$removeparam=itid
+||tezfiles.com$removeparam=site
+||calciomatome.net$removeparam=seesaa_related
+||smocca.jp^$removeparam=cb_ref_code
+||rtrp.jp^$removeparam=p_s
+||lidea.today^$removeparam=from
 ||change.org^$removeparam=source_location
 ||change.org^$removeparam=user_flow
 ||rbc.ru^$removeparam=from
@@ -864,8 +888,9 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||realestate.yahoo.co.jp^$removeparam=sc_out
 ||glami.cz^$removeparam=/ga[ct]id/
 ||open.spotify.com^$removeparam=referral
+||open.spotify.com^$removeparam=si
 ||skt.sh/common/share/bridge?$removeparam=referer
-||login.afreecatv.com^$removeparam=szFrom
+||login.sooplive.co.kr^$removeparam=szFrom
 ||moffme.com^$removeparam=source
 ||moffme.com^$removeparam=medium
 ||moffme.com^$removeparam=campaign
@@ -965,6 +990,9 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||getir.com^$removeparam=shortlink
 ||getir.com^$removeparam=deep_link_value
 ||getir.com^$removeparam=c
+||getir.com^$removeparam=source_caller
+||getir.com^$removeparam=pid
+||getir.com^$removeparam=af_reengagement_window
 ||imdb.com^$removeparam=pf_rd_m
 ||imdb.com^$removeparam=pf_rd_p
 ||imdb.com^$removeparam=pf_rd_r
@@ -1543,7 +1571,8 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||cam4.com^$removeparam=act
 ||cam4.com^$removeparam=suid
 ||cam4.com^$removeparam=showSignupPopup
-$removeparam=ocid,domain=bbc.com|bbc.co.uk|msn.com
+$removeparam=ocid,document,domain=msn.com
+$removeparam=ocid,domain=bbc.com|bbc.co.uk
 $removeparam=ns_mchannel,domain=bbc.com|bbc.co.uk
 $removeparam=ns_source,domain=bbc.com|bbc.co.uk
 $removeparam=ns_campaign,domain=bbc.com|bbc.co.uk
