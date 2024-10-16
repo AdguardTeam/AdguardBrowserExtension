@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated [@adguard/logger] to v1.1.1.
 
+### Fixed
+
+- User rules scanning breaks extension popup [#2989].
+
+[#2989]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2989
+
 ## [5.0.138] - 2024-10-10
 
 ### Changed
