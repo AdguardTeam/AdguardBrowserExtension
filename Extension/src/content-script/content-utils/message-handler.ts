@@ -21,14 +21,22 @@ import {
     MessageHandler,
     MessageListener,
     Message,
+    ValidMessageTypes,
 } from '../../common/messages';
+import { logger } from '../../common/logger';
 
 export class ContentScriptMessageHandler extends MessageHandler {
-    protected handleMessage<T extends Message>(
-        message: T,
+    protected handleMessage(
+        message: Message,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
-        const listener = this.listeners.get(message.type) as MessageListener<T>;
+        // Check type
+        if (!ContentScriptMessageHandler.isValidMessageType(message)) {
+            logger.error('Invalid message in ContentScriptMessageHandler:', message);
+            return;
+        }
+
+        const listener = this.listeners.get(message.type) as MessageListener<ValidMessageTypes>;
 
         if (listener) {
             return Promise.resolve(listener(message, sender));

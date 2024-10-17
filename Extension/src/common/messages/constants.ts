@@ -591,87 +591,7 @@ export type GetRulesLimitsCountersMv3Message = {
     type: MessageType.GetRulesLimitsCountersMv3;
 };
 
-export type Message = (
-    | CreateEventListenerMessage
-    | AddLongLivedConnectionMessage
-    | ApplySettingsJsonMessage
-    | AddFilteringSubscriptionMessage
-    | GetIsEngineStartedMessage
-    | GetTabInfoForPopupMessage
-    | ChangeApplicationFilteringPausedMessage
-    | OpenRulesLimitsTabMessage
-    | OpenSettingsTabMessage
-    | OpenAssistantMessage
-    | UpdateFullscreenUserRulesThemeMessage
-    | SynchronizeOpenTabsMessage
-    | CheckFiltersUpdateMessage
-    | GetAllowlistDomainsMessage
-    | OpenExtensionStoreMessage
-    | OpenComparePageMessage
-    | OpenFullscreenUserRulesMessage
-    | ResetBlockedAdsCountMessage
-    | OpenFilteringLogMessage
-    | OpenAbuseTabMessage
-    | OpenSiteReportTabMessage
-    | OpenThankyouPageMessage
-    | GetOptionsDataMessage
-    | ChangeUserSettingMessage
-    | ResetSettingsMessage
-    | AddAndEnableFilterMessage
-    | DisableFilterMessage
-    | RemoveAntiBannerFilterMessage
-    | SaveAllowlistDomainsMessage
-    | SaveUserRulesMessage
-    | GetUserRulesMessage
-    | GetUserRulesEditorDataMessage
-    | AddUserRuleMessage
-    | RemoveUserRuleMessage
-    | ResetUserRulesForPageMessage
-    | GetEditorStorageContentMessage
-    | SetEditorStorageContentMessage
-    | RemoveAllowlistDomainMessage
-    | AddAllowlistDomainMessage
-    | LoadCustomFilterInfoMessage
-    | SubscribeToCustomFilterMessage
-    | AppInitializedMessage
-    | UpdateTotalBlockedMessage
-    | GetFilteringLogDataMessage
-    | CheckRequestFilterReadyMessage
-    | OpenFilteringLogPageMessage
-    | CloseFilteringLogPageMessage
-    | ClearEventsByTabIdMessage
-    | SetPreserveLogStateMessage
-    | RefreshPageMessage
-    | GetFilteringInfoByTabIdMessage
-    | SetFilteringLogWindowStateMessage
-    | EnableFiltersGroupMessage
-    | DisableFiltersGroupMessage
-    | OpenSafebrowsingTrustedMessage
-    | SetNotificationViewedMessage
-    | RemoveListenerMessage
-    | ScriptletCloseWindowMessage
-    | ShowRuleLimitsAlertMessage
-    | NotifyListenersMessage
-    | UpdateListenersMessage
-    | ShowAlertPopupMessage
-    | ShowVersionUpdatedPopupMessage
-    | GetIsConsentedFilterMessage
-    | SetConsentedFiltersMessage
-    | CurrentLimitsMv3Message
-    | GetRulesLimitsCountersMv3Message
-    | CanEnableStaticFilterMv3Message
-    | CanEnableStaticGroupMv3Message
-    | RestoreFiltersMv3Message
-    | ClearRulesLimitsWarningMv3Message
-    | InitializeFrameScriptMessage
-    | AddUrlToTrustedMessage
-    ) &
-    MessageCommonProps;
-
-export type ExtractedMessage<P> = Extract<Message, { type: P }>;
-
 // Unified message map that includes both message structure and response types
-// TODO: Create a way to check types from this map in the listener of the message.
 export type MessageMap = {
     [MessageType.CreateEventListener]: {
         message: CreateEventListenerMessage;
@@ -951,7 +871,7 @@ export type MessageMap = {
     }
     [MessageType.GetRulesLimitsCountersMv3]: {
         message: GetRulesLimitsCountersMv3Message;
-        response: IRulesLimits;
+        response: IRulesLimits | undefined;
     }
     [MessageType.CanEnableStaticFilterMv3]: {
         message: CanEnableStaticFilterMv3Message;
@@ -981,6 +901,21 @@ export type MessageMap = {
 export type ValidMessageTypes = keyof MessageMap;
 
 /**
+ * All messages that can be sent.
+ */
+export type Message = MessageMap[ValidMessageTypes]['message'] & MessageCommonProps;
+
+/**
+ * Helper type to extract the message type for a given message.
+ */
+export type ExtractedMessage<T> = Extract<Message, { type: T }>;
+
+/**
  * Helper type to extract the response type for a given message type
  */
 export type ExtractMessageResponse<T extends ValidMessageTypes> = MessageMap[T]['response'];
+
+/**
+ * Helper type to extract the message type for a given message without handlerName.
+ */
+export type MessageWithoutHandlerName<T> = { type: T } & Omit<ExtractedMessage<T>, 'handlerName'>;

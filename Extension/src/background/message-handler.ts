@@ -24,6 +24,7 @@ import {
     APP_MESSAGE_HANDLER_NAME,
     MessageHandler,
     MessageListener,
+    ValidMessageTypes,
 } from '../common/messages';
 import { logger } from '../common/logger';
 
@@ -45,8 +46,8 @@ export class BackgroundMessageHandler extends MessageHandler {
      * @returns {Promise<unknown> | undefined} The result from the listener,
      * if the listener was found. If not found, an undefined value is returned.
      */
-    protected handleMessage<T extends Message | EngineMessage>(
-        message: T,
+    protected handleMessage(
+        message: Message | EngineMessage,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
         if (message.handlerName === Engine.messageHandlerName) {
@@ -54,19 +55,27 @@ export class BackgroundMessageHandler extends MessageHandler {
         }
 
         if (message.handlerName === APP_MESSAGE_HANDLER_NAME) {
-            const listener = this.listeners.get(message.type) as MessageListener<T>;
-            if (listener) {
-                const fn = (async (): Promise<unknown> => {
-                    try {
-                        const result = await listener(message, sender);
-                        return await Promise.resolve(result);
-                    } catch (e) {
-                        logger.error('An error occurred while handling message:', message, 'error:', e);
-                        return Promise.reject(e);
-                    }
-                });
-                return Promise.resolve(fn());
+            // Check type
+            if (!BackgroundMessageHandler.isValidMessageType(message)) {
+                logger.error('Invalid message in BackgroundMessageHandler:', message);
+                return;
             }
+
+            const listener = this.listeners.get(message.type) as MessageListener<ValidMessageTypes>;
+            if (!listener) {
+                return;
+            }
+
+            const fn = (async (): Promise<unknown> => {
+                try {
+                    const result = await listener(message, sender);
+                    return await Promise.resolve(result);
+                } catch (e) {
+                    logger.error('An error occurred while handling message:', message, 'error:', e);
+                    return Promise.reject(e);
+                }
+            });
+            return Promise.resolve(fn());
         }
     }
 }
