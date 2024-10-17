@@ -48,22 +48,31 @@ const Stealth = observer(() => {
         return null;
     }
 
-    const blockKnownTrackersChangeHandler: SettingHandler = async ({ data }) => {
-        await settingsStore.setBlockKnownTrackersState(data);
-    };
-
+    /**
+     * Separate handler because this option actually enables filter and
+     * require reload engine to apply changes.
+     */
     const blockKnownTrackersChangeHandlerWrapper = addMinDelayLoader(
         uiStore.setShowLoader,
-        blockKnownTrackersChangeHandler,
+        async ({ data }) => {
+            await settingsStore.setBlockKnownTrackersState(data);
+        },
     );
 
-    const stripTrackingParametersChangeHandler: SettingHandler = async ({ data }) => {
-        await settingsStore.setStripTrackingParametersState(data);
-    };
-
+    /**
+     * Separate handler because this option actually enables filter and
+     * require reload engine to apply changes.
+     */
     const stripTrackingParametersChangeHandlerWrapper = addMinDelayLoader(
         uiStore.setShowLoader,
-        stripTrackingParametersChangeHandler,
+        async ({ data }) => {
+            await settingsStore.setStripTrackingParametersState(data);
+        },
+    );
+
+    const updateSettingWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        settingsStore.updateSetting,
     );
 
     const settingChangeHandler: SettingHandler = async ({ id, data, event }) => {
@@ -85,7 +94,7 @@ const Stealth = observer(() => {
         }
 
         logger.info(`Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
-        await settingsStore.updateSetting(id, value, ignoreBackground);
+        await updateSettingWrapper(id, value, ignoreBackground);
     };
 
     const privacySettingChangeHandler: SettingHandler = async (payload) => {
@@ -105,6 +114,11 @@ const Stealth = observer(() => {
             await settingsStore.updateSetting(id, !data, true);
         }
     };
+
+    const privacySettingChangeHandlerWithLoader = addMinDelayLoader(
+        uiStore.setShowLoader,
+        privacySettingChangeHandler,
+    );
 
     const disableStealthChangeHandler: SettingHandler = async (payload) => {
         const { data: isStealthDisabled } = payload;
@@ -357,7 +371,7 @@ const Stealth = observer(() => {
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={reactTranslator.getMessage('options_disable_webrtc_title')}
                     value={settings.values[BlockWebRTC]}
-                    handler={privacySettingChangeHandler}
+                    handler={privacySettingChangeHandlerWithLoader}
                 />
             </SettingsSection>
         </>
