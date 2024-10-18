@@ -352,12 +352,12 @@ export class RulesLimitsService {
     /**
      * Determines and returns rules limits.
      *
-     * @returns Rules limits.
+     * @returns Rules limits or undefined if the configuration result is not ready yet.
      */
-    private async onGetRulesLimitsCounters(): Promise<IRulesLimits> {
+    private async onGetRulesLimitsCounters(): Promise<IRulesLimits | undefined> {
         const result = this.configurationResult;
         if (!result) {
-            throw new Error('result should be ready');
+            return undefined;
         }
 
         const filters = FiltersApi.getEnabledFiltersWithMetadata();

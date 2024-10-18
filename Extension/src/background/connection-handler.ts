@@ -52,6 +52,8 @@ export class ConnectionHandler {
 
         port.onMessage.addListener((message) => {
             if (!messageHasTypeAndDataFields(message)) {
+                // eslint-disable-next-line max-len
+                logger.warn('Received message in ConnectionHandler.handleConnection has no type or data field: ', message);
                 return;
             }
 
