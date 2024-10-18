@@ -185,6 +185,8 @@ export class NetworkSettings {
     /**
      * Returns URL for user complaints on missed ads or malware/phishing websites.
      *
+     * FIXME: Looks like not used, can be removed.
+     *
      * @returns URL for user complaints on missed ads or malware/phishing websites.
      */
     get reportUrl(): string {
