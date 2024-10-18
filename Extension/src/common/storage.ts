@@ -46,4 +46,6 @@ export interface ExtendedStorageInterface<
     entries(): Mode extends 'async' ? Promise<Record<K, V>> : Record<K, V>
 
     keys(): Mode extends 'async' ? Promise<K[]> : K[]
+
+    has(key: K): Mode extends 'async' ? Promise<boolean> : boolean
 }
