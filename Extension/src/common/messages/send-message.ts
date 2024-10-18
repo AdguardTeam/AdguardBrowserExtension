@@ -20,11 +20,9 @@ import browser from 'webextension-polyfill';
 
 import {
     MessageType,
-    ExtractedMessage,
+    MessageWithoutHandlerName,
     APP_MESSAGE_HANDLER_NAME,
 } from './constants';
-
-export type MessageWithoutHandlerName<T> = { type: T } & Omit<ExtractedMessage<T>, 'handlerName'>;
 
 /**
  * TODO: Consider moving this file to the background folder, because all messages

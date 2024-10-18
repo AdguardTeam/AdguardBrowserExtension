@@ -31,7 +31,13 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
-import { messageHasTypeAndDataFields, MessageType } from '../../../../common/messages';
+import {
+    ExtractedMessage,
+    messageHasTypeAndDataFields,
+    messageHasTypeField,
+    MessageType,
+} from '../../../../common/messages';
+import { logger } from '../../../../common/logger';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
@@ -60,13 +66,19 @@ export const Popup = observer(() => {
     // subscribe to stats change
     useEffect(() => {
         const messageHandler = (message: unknown): undefined => {
-            if (!messageHasTypeAndDataFields(message)) {
+            if (!messageHasTypeField(message)) {
+                logger.warn('Received message in popup handler has no type field: ', message);
                 return;
             }
 
             switch (message.type) {
                 case MessageType.UpdateTotalBlocked: {
-                    updateBlockedStats(message.data);
+                    if (!messageHasTypeAndDataFields(message)) {
+                        logger.warn('Received message in popup handler has no type or data fields: ', message);
+                        return;
+                    }
+                    const castedMessage = message as ExtractedMessage<MessageType.UpdateTotalBlocked>;
+                    updateBlockedStats(castedMessage.data);
                     break;
                 }
                 case MessageType.AppInitialized: {

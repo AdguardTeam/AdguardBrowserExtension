@@ -53,13 +53,18 @@ import { translator } from '../../../common/translators/translator';
 import { NotificationType } from './UiStore';
 
 /**
- * Sometimes the options page might be opened before the background page is ready to provide data.
- * In this case, we need to retry getting data from the background service.
+ * Sometimes the options page might be opened before the background page or
+ * service worker is ready to provide data.
+ *
+ * In this case, we need to retry getting data from the background.
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712
  *
- * @returns data for the options page from the background page
+ * @param {Function} fetchFunction Function to fetch data from
+ * the background page or service worker.
+ *
+ * @returns Data for the options page from the background page.
  */
-const getOptionsDataWithRetry = async () => {
+const fetchDataWithRetry = async (fetchFunction) => {
     /**
      * Delay between retries in milliseconds
      */
@@ -77,11 +82,11 @@ const getOptionsDataWithRetry = async () => {
      */
     const innerRetry = async (retryTimes) => {
         if (retryTimes === 0) {
-            logger.error('Failed to get options data from the background service');
+            logger.error('Failed to get from the background service.');
             return null;
         }
         try {
-            const data = await messenger.getOptionsData();
+            const data = await fetchFunction();
             if (!data) {
                 await sleep(RETRY_DELAY_MS);
                 // eslint-disable-next-line @typescript-eslint/return-await
@@ -227,7 +232,12 @@ class SettingsStore {
 
     @action
     async getRulesLimitsCounters() {
-        const rulesLimits = await messenger.getRulesLimitsCounters();
+        const rulesLimits = await fetchDataWithRetry(messenger.getRulesLimitsCounters.bind(messenger));
+
+        // Will use default rules limits if the background service is not ready.
+        if (!rulesLimits) {
+            return;
+        }
 
         runInAction(() => {
             this.rulesLimits = rulesLimits;
@@ -267,7 +277,7 @@ class SettingsStore {
         let data = null;
         if (firstRender) {
             // on first render background service might not be ready to provide data, so we need to get it with retry
-            data = await getOptionsDataWithRetry();
+            data = await fetchDataWithRetry(messenger.getOptionsData.bind(messenger));
         } else {
             data = await messenger.getOptionsData();
         }

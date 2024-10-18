@@ -17,18 +17,21 @@
  */
 import { Runtime } from 'webextension-polyfill';
 
-import {
-    MessageHandler,
-    MessageListener,
-    Message,
-} from '../../common/messages';
+import { MessageHandler, Message } from '../../common/messages';
+import { logger } from '../../common/logger';
 
 export class ContentScriptMessageHandler extends MessageHandler {
-    protected handleMessage<T extends Message>(
-        message: T,
+    protected handleMessage(
+        message: Message,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
-        const listener = this.listeners.get(message.type) as MessageListener<T>;
+        // Check type
+        if (!ContentScriptMessageHandler.isValidMessageType(message)) {
+            logger.error('Invalid message in ContentScriptMessageHandler:', message);
+            return;
+        }
+
+        const listener = this.listeners.get(message.type);
 
         if (listener) {
             return Promise.resolve(listener(message, sender));
