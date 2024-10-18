@@ -195,19 +195,22 @@ const Stealth = observer(() => {
                     value={stripTrackingParameters}
                     handler={stripTrackingParametersChangeHandlerWrapper}
                 />
-                <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
-                    title={reactTranslator.getMessage('options_hide_search_queries_title')}
-                    description={reactTranslator.getMessage('options_hide_search_queries_desc')}
-                    disabled={!settings.values[HideSearchQueries]}
-                    sectionDisabled={isStealthModeDisabled}
-                    id={HideSearchQueries}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_hide_search_queries_title')}
-                    value={settings.values[HideSearchQueries]}
-                    handler={settingChangeHandler}
-                />
+                {/* TODO revert this option when will be found a way to disable searchqueries rule with stealth exclusion AG-34765 */}
+                {!__IS_MV3__ && (
+                    <SettingsSetCheckbox
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
+                        title={reactTranslator.getMessage('options_hide_search_queries_title')}
+                        description={reactTranslator.getMessage('options_hide_search_queries_desc')}
+                        disabled={!settings.values[HideSearchQueries]}
+                        sectionDisabled={isStealthModeDisabled}
+                        id={HideSearchQueries}
+                        type={SETTINGS_TYPES.CHECKBOX}
+                        label={reactTranslator.getMessage('options_hide_search_queries_title')}
+                        value={settings.values[HideSearchQueries]}
+                        handler={settingChangeHandler}
+                    />
+                )}
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
