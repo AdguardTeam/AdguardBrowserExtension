@@ -17,13 +17,21 @@
  */
 import browser, { Runtime } from 'webextension-polyfill';
 
+import { type EngineMessage } from 'engine';
+
 import {
     MessageType,
-    ExtractedMessage,
     Message,
+    ExtractedMessage,
+    ValidMessageTypes,
+    ExtractMessageResponse,
+    APP_MESSAGE_HANDLER_NAME,
 } from './constants';
 
-export type MessageListener<T> = (message: T, sender: Runtime.MessageSender) => Promise<unknown> | unknown;
+export type MessageListener<T extends ValidMessageTypes> = (
+    message: ExtractedMessage<T>,
+    sender: Runtime.MessageSender,
+) => Promise<ExtractMessageResponse<T>> | ExtractMessageResponse<T>;
 
 /**
  * Type guard for messages that have a 'type' field with possible {@link MessageType}.
@@ -51,11 +59,9 @@ export const messageHasTypeAndDataFields = (message: unknown): message is Messag
 
 /**
  * API for handling Messages via {@link browser.runtime.onMessage}
- *
- * TODO: Create an union map which will type check the message type and listener.
  */
 export abstract class MessageHandler {
-    protected listeners = new Map();
+    protected listeners = new Map<ValidMessageTypes, MessageListener<ValidMessageTypes>>();
 
     constructor() {
         this.handleMessage = this.handleMessage.bind(this);
@@ -72,24 +78,29 @@ export abstract class MessageHandler {
      *
      * TODO: implement listeners priority execution strategy
      *
-     * @param type - {@link MessageType}
+     * @param type - {@link ValidMessageTypes}
      * @param listener - {@link MessageListener}
      * @throws error, if message listener already added
      */
-    public addListener<T extends MessageType>(type: T, listener: MessageListener<ExtractedMessage<T>>): void {
+    public addListener<T extends ValidMessageTypes>(
+        type: T,
+        listener: MessageListener<T>,
+    ): void {
         if (this.listeners.has(type)) {
             throw new Error(`Message handler: ${type} listener has already been registered`);
         }
 
-        this.listeners.set(type, listener);
+        // Cast through unknown to help TS understand that the listener is of
+        // the correct type. It will check types at compile time.
+        this.listeners.set(type, listener as unknown as MessageListener<ValidMessageTypes>);
     }
 
     /**
      * Removes message listener.
      *
-     * @param type - {@link MessageType}
+     * @param type - {@link ValidMessageTypes}
      */
-    public removeListener<T extends MessageType>(type: T): void {
+    public removeListener<T extends ValidMessageTypes>(type: T): void {
         this.listeners.delete(type);
     }
 
@@ -101,13 +112,24 @@ export abstract class MessageHandler {
     }
 
     /**
+     * Check if the message is of type {@link Message}.
+     *
+     * @param message Message of basic type {@link Message} or {@link EngineMessage}.
+     *
+     * @returns True if the message is of type {@link Message}.
+     */
+    protected static isValidMessageType(message: Message | EngineMessage): message is Message {
+        return message.handlerName === APP_MESSAGE_HANDLER_NAME && 'type' in message;
+    }
+
+    /**
      * Handles data from {@link browser.runtime.onMessage} and match specified listener.
      *
      * @param message - {@link Message}
      * @param sender - An object containing information about the script context that sent a message or request.
      */
-    protected abstract handleMessage<T extends Message>(
-        message: T | unknown,
+    protected abstract handleMessage(
+        message: Message | unknown,
         sender: Runtime.MessageSender
     ): Promise<unknown> | undefined;
 }
