@@ -168,6 +168,7 @@ The extension is now fully compatible with MV3.
 ## [4.3.64] - 2024-07-10
 
 ### Fixed
+
 - Popup menu does not open in Firefox Nightly [#2817].
 
 [4.3.64]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...v4.3.64
