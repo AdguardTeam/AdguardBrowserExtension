@@ -161,6 +161,19 @@ export class FiltersApi {
     }
 
     /**
+     * Checks if group is enabled.
+     *
+     * @param groupId Group id.
+     *
+     * @returns True, if group is enabled, else returns false.
+     */
+    public static isGroupEnabled(groupId: number): boolean {
+        const groupState = groupStateStorage.get(groupId);
+
+        return !!groupState?.enabled;
+    }
+
+    /**
      * Update metadata from local or remote source and download rules for filters.
      *
      * If loading filters from remote failed, try to load from local resources,

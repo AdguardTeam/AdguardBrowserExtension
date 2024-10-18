@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { PreprocessedFilterList } from '@adguard/tsurlfilter';
+import { logger, PreprocessedFilterList } from '@adguard/tsurlfilter';
 
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { FiltersStorage, filterStateStorage } from '../../storages';
@@ -85,7 +85,15 @@ export class QuickFixesRulesApi {
      * @returns True, if quick fixes filter is enabled, else returns false.
      */
     public static isEnabled(): boolean {
-        return FiltersApi.isFilterEnabled(AntiBannerFiltersId.QuickFixesFilterId);
+        const filterMetadata = FiltersApi.getFilterMetadata(AntiBannerFiltersId.QuickFixesFilterId);
+        if (!filterMetadata) {
+            logger.error('Not found metadata from Quick Fixes filter');
+
+            return false;
+        }
+
+        return FiltersApi.isFilterEnabled(AntiBannerFiltersId.QuickFixesFilterId)
+            && FiltersApi.isGroupEnabled(filterMetadata.groupId);
     }
 
     /**
