@@ -1,13 +1,13 @@
-! Checksum: Ggn7OBMf4JnNgNTf/3H9zQ
+! Checksum: 082VUKlbgebtHXOcUax8uw
 ! Title: EasyList Thailand
 ! Description: Filter that blocks ads on Thai sites.
-! Version: 2.0.0.17
-! TimeUpdated: 2024-03-28T21:02:50+00:00
+! Version: 2.0.0.19
+! TimeUpdated: 2024-10-19T21:01:37+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: EasyList Thailand
-! OriginalVersion: 202403290025
-! Last modified: 29 Mar 2024 00:25 +0700
+! OriginalVersion: 202410200301
+! Last modified: 20 Oct 2024 03:01 +0700
 ! Expires: 3 days
 ! Homepage: https://easylist-thailand.github.io/
 ! License: https://github.com/easylist-thailand/easylist-thailand/blob/master/LICENSE
@@ -175,7 +175,8 @@ fembeq.com#%#//scriptlet('ubo-aopr.js', 'open')
 manga168.com##.slider-ads
 manga168.com##.dessert-frame
 manga168.com###ads_fox_bottom
-ranker-manga.com##.header-ads-section
+||image.cdend.com$image,domain=ranker-manga.com
+||image7.kingsmanga.net/00/00/gclub2.jpg$image,~third-party
 ! Annoyance
 /plugin-pdpa/$domain=khaosod.co.th|khaosodenglish.com|matichon.co.th|matichon*.com|prachachat.net|sentangsedtee.com|silpa-mag.com|technologychaoban.com
 mustplay.in.th,playulti.com##.alert.cookiealert
@@ -340,9 +341,12 @@ upic.me##div[id^="simplemodal"]
 ! E-Commerce
 ||akamaihd.net/shopee/*/*TrackingRules$script,domain=shopee.co.th
 ||akamaihd.net/shopee/*/TrackingRules$script,domain=shopee.co.th
-||shopee.co.th/__t__$xmlhttprequest
+||shopee.co.th/__t__$xmlhttprequest,domain=shopee.co.th,redirect=1x1-transparent.gif
 ||shopee.co.th/userstats_record$xmlhttprequest
 ||shopeemobile.com/th/tr$xmlhttprequest
+||tracking.shopee.co.th^$xmlhttprequest,domain=shopee.co.th,redirect=1x1-transparent.gif
+! shopee item-based ads
+shopee.co.th##:has(> .shopee_ic img[loading="lazy"] ~ div.right-0 > .text-white)
 ||lucky135.com
 ! Game
 compgamer.com##.backgroundPopup
@@ -1155,6 +1159,8 @@ subthai.tv###ads_
 subthai.tv##.fixspot-bottom
 ! nungde.com
 ||nungde.com/wp-content/uploads/*/*.gif
+! seriesmy.today
+www.seriesmy.today##.widget_content
 ! News
 blognone.com###rightbottom_sidebar .region div[id^="block-views-jobs"]
 blognone.com#@#.advertorial
@@ -1288,42 +1294,8 @@ soccersuck.com##.text-center.txt-color-white.font-md
 soccersuck.com##[class^="adv"]
 soccersuck.com##[rel^="nofollow"]
 soccersuck.com##.suckvideo_panel
-xn--12cf0e9alaj8at1avvw8lrh.com###bar_left
-xn--12cf0e9alaj8at1avvw8lrh.com###bar_left > div:nth-of-type(2)
-xn--12cf0e9alaj8at1avvw8lrh.com###bar_right
-xn--12cf0e9alaj8at1avvw8lrh.com###content-left > .banner:nth-of-type(3)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-left > .banner:nth-of-type(6)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-left > .banner:nth-of-type(7)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-left > .banner:nth-of-type(8)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-left > .banner:nth-of-type(9)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-left > .banner:nth-of-type(10)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-right > .banner:nth-of-type(3)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-right > .banner:nth-of-type(5)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-right > .banner:nth-of-type(6)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-right > .banner:nth-of-type(7)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-right > .banner:nth-of-type(8)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-right > .banner:nth-of-type(9)
-xn--12cf0e9alaj8at1avvw8lrh.com###content-right > .banner:nth-of-type(10)
-xn--12cf0e9alaj8at1avvw8lrh.com###imghead
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(1)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(2)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(4)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(11)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(12)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(13)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(14)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(15)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(16)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(18)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(19)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(20)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(21)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(23)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(24)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(26)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(27)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(29)
-xn--12cf0e9alaj8at1avvw8lrh.com##.banner:nth-of-type(30)
+xn--12cf0e9alaj8at1avvw8lrh.com##.banner
+xn--12cf0e9alaj8at1avvw8lrh.com###div_ad_float
 ||soccersuck.com/img/banner
 ! Tech Review
 notebookspec.com###overlay_ads
