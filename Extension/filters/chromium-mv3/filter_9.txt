@@ -1,8 +1,8 @@
-! Checksum: eZ4A0x4C/e0s2/xSuXRTKw
+! Checksum: t+GOyFqffrzK0DwXbSGdzQ
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.26.92
-! TimeUpdated: 2024-10-16T10:33:05+00:00
+! Version: 2.0.26.95
+! TimeUpdated: 2024-10-18T09:33:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -277,8 +277,9 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/191026
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190843
-casperhd.com,short.7hd.club#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
+gourlpro.com,casperhd.com,short.7hd.club#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190838
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=youtube-player.sbtlab.io
 ! file4go.net (Brazilian file hoster - window.alert adblock)
@@ -1623,6 +1624,8 @@ mwpaste.com#%#(()=>{try{const o=location.href.split("go?u=");if(o[1]){let t=o[1]
 tuserie.net#%#(()=>{window.addEventListener("message",(e=>{e?.data?.includes("tmp")&&e?.data?.length<15&&Object.defineProperty(e,"origin",{value:""})}),!0);const e=new MutationObserver((function(){const t=document.querySelector("button.linkhidder");t&&(e.disconnect(),t.addEventListener("click",(function(){setTimeout((function(){postMessage('{"tmp":""}')}),1e3)})))}));e.observe(document,{childList:!0,subtree:!0})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190685
 multipaste.org#%#(()=>{document.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll('.count > li > a[href*="/#!"]').forEach((t=>{const e=(t=>{let e=t;for(let t=0;t<10;t++)try{e=atob(e)}catch(t){break}return e})(t.href.split("/#!")[1]);(t=>{let e=t;try{e=new URL(t)}catch(t){return!1}return"http:"===e.protocol||"https:"===e.protocol})(e)&&t.setAttribute("href",e)}))}));})();
+! https://github.com/AdguardTeam/AdguardFilters/issues/191026
+gourlpro.com#%#!function(){if(window.location.href.includes(".php?")&&window.location.href.includes("=")){const o=location.href.split("=");if(o&&o[1]){let t=o[1];for(let o=0;o<10;o++)try{t=atob(t)}catch(o){const n=decodeURIComponent(t);let c=!1;try{new URL(n),c=!0}catch(o){c=!1}if(c){location.assign(n);break}}}}}();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178968
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178920
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171873
@@ -1655,6 +1658,7 @@ geeknetic.es#%#//scriptlet("prevent-window-open")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/151620
 safepc.online,solopc.net#%#//scriptlet('set-constant', 'global.noobMaxTry', '0')
 safepc.online,solopc.net#%#(function(){try{var a=location.href.split("out#!");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{new URL(decodeURIComponent(a));var c=!0}catch(d){c=!1}if(c)try{location.assign(decodeURIComponent(a));break}catch(d){}}}}catch(d){}})();
+! https://github.com/AdguardTeam/AdguardFilters/issues/191026
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190843
 ! https://github.com/AdguardTeam/AdguardFilters/issues/146895
 ! https://github.com/AdguardTeam/AdguardFilters/issues/144257
@@ -1663,7 +1667,7 @@ safepc.online,solopc.net#%#(function(){try{var a=location.href.split("out#!");if
 ! https://github.com/AdguardTeam/AdguardFilters/issues/138941
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134511
 ! atomohd.ink
-short.7hd.club,acorto.xyz,discografias.net#%#(()=>{document.addEventListener('DOMContentLoaded',function(){if(window.deco_url_b64&&typeof deco_url_b64==='string'&&deco_url_b64.startsWith('http')){location.assign(deco_url_b64);}});})();
+gourlpro.com,short.7hd.club,acorto.xyz,discografias.net#%#(()=>{document.addEventListener('DOMContentLoaded',function(){if(window.deco_url_b64&&typeof deco_url_b64==='string'&&deco_url_b64.startsWith('http')){location.assign(deco_url_b64);}});})();
 short.7hd.club,acortame.xyz,acortaz.eu,onlypc.net,acortalinks.net,link.acortaz.eu,acorto.xyz,discografias.net#%#(function(){try{var a=location.href.split("#");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{new URL(decodeURIComponent(a));var c=!0}catch(d){c=!1}if(c)try{location.assign(decodeURIComponent(a));break}catch(d){}}}}catch(d){}})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/133825
 player.hentaistube.com#%#//scriptlet("set-constant", "player.preroll", "noopFunc")
@@ -2212,6 +2216,8 @@ globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.c
 ! ##body .banner
 meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.info,lapoliticaonline.com.mx,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.gov.bd,lapoliticaonline.gov.np,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+manhwaweb.com##div[class]:has(> .bg-gray-400:only-child)
+elespanol.com###sticky_container:has(> .stickyanuncio)
 meteosolana.net##div[class*="slot__"]
 meteoconsult.es##.ad-side-btf
 meteoconsult.es##.ob_cls_expanded
