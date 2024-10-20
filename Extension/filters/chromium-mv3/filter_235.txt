@@ -1,8 +1,8 @@
-! Checksum: BY+sxXbmaAO8V50bPQOauw
+! Checksum: xIor4/PysstENnOGLQR/cg
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.4.96
-! TimeUpdated: 2024-10-15T21:01:47+00:00
+! Version: 2.0.4.99
+! TimeUpdated: 2024-10-17T17:01:57+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -25,7 +25,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 !! basirat.ir, khootoot.ir, didarnews.ir, 598.ir
 /files/adv^$image,~third-party,domain=ir|asrkhabar.com|bultannews.com|yektapress.com|roozno.com|fararu.com|iraneconomist.com|khordad.news
 ! digiro.ir, gahar.ir, jobsacademy.ir, mihand.ir, modirnameh.ir, pedal.ir, softsaaz.ir, technet24.ir, appiroid.ir
-/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com|techtik.com|androidtime.com|baarzesh.net
+/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com|techtik.com|androidtime.com|baarzesh.net|p30world.com
 ! itna.ir, migna.ir
 /images/advertise^$image,~third-party,domain=ir|bazimag.com|jahannews.com
 ! https://publicwww.com/websites/%22var+socketAccess+%3D%22/
@@ -428,6 +428,8 @@ anaj.ir,salamatnews.com#%#//scriptlet('ubo-set.js', 'document.referrer', 'undefi
 !-------------------------^ Non-Persian Ads/Trackers/Annoyances Filters used in Persian websites ^-----------------------!
 !-------------------------v Site-Specific Filters v-----------------------!
 ! >> A <<
+autosafkar.com#%#//scriptlet('ubo-aeld.js', 'scroll', 'return"undefined"')
+||autosafkar.com/app/uploads/*.gif^$image,~third-party
 appnab.ir##div#ZAD
 androidtime.com##div.single-text-ads
 androidtime.com##div.block-content[class*="a.d.s-sidebar"]
@@ -1807,6 +1809,7 @@ namnak.com##.Dr.D2.Cu.o
 opizo.me#%#//scriptlet('ubo-set.js', 'count', '0')
 omidnamehnews.ir##.adspanel
 ! >> P <<
+parallelsanat.com#$#body { -webkit-touch-callout: default !important; -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
 persian-fa.ir#%#//scriptlet('ubo-rmnt.js', 'script', 'displayCountryInConsole')
 ||persiansub.com/images/*.gif^$image,~third-party
 persiansub.com##div.big-banner
@@ -1943,11 +1946,11 @@ par30games.net##article.fixedadv:not(:has(> div.fixedadvcontent > a[href="https:
 par30games.net##section.sidebar-box-shop
 par30games.net##div.adbox
 ||paperhub.ir/images/*.gif
-p30world.com##.post-ads
-p30world.com##.sidebar-ads
-forum.p30world.com###ad_global_below_navbar
-forum.p30world.com##.ad_global_header
-forum.p30world.com#@##ad_global_above_footer
+p30world.com##div.post-ads
+p30world.com##div.sidebar-ads
+forum.p30world.com##div.ad_global_header
+forum.p30world.com##div#ad_global_below_navbar
+forum.p30world.com##div#ad_global_above_footer
 1pezeshk.com##div#custom_html-4
 1pezeshk.com#?#div.wpb_column:has(h3.section-heading:contains(رپورتاژ))
 1pezeshk.com#?#div#custom_html-3:has(p.section-heading:contains(رپورتاژ))
@@ -2510,6 +2513,7 @@ tasnimnews.com#$#.col-md-9 { width: 100% !important; }
 ||tarafdari.com/advertise^$xmlhttprequest,~third-party
 ||tarafdari.com/sites/all/themes/hope/images/ad_home_page.jpg^$image,~third-party
 ||tarafdari.com/sites/all/themes/hope/images/advertise^$image,~third-party
+||tarafdari.com/modules/statistics/statistics.php^$xmlhttprequest,~third-party,method=post
 tarafdari.com#?#aside.column-side > div.block:has(> div.block-title:contains(وبگردی))
 ! ||adservice.google.com/adsid/integrator.js?domain=tamasha.com
 talab.org##.Topadver

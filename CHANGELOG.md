@@ -6,13 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- TODO: check release version, add release date -->
-## [5.0.153]
+## [5.0.159]
 
 ### Changed
 
 - Updated [@adguard/logger] to v1.1.1.
 - Updated [@adguard/tsurlfilter] to v3.1.0-alpha.7.
-- Updated [@adguard/tswebextension] to v2.4.0-alpha.5.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.6.
 
 ### Fixed
 
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Selecting a single `$permissions` filtering log event selects all `$permissions` events.
 
 <!-- TODO: uncomment when released -->
-<!-- [5.0.153]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.153 -->
+<!-- [5.0.159]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.159 -->
 [#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
 
 ## [5.0.138] - 2024-10-10
@@ -168,6 +168,7 @@ The extension is now fully compatible with MV3.
 ## [4.3.64] - 2024-07-10
 
 ### Fixed
+
 - Popup menu does not open in Firefox Nightly [#2817].
 
 [4.3.64]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...v4.3.64
