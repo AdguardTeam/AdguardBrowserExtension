@@ -1,8 +1,8 @@
-! Checksum: TwJinjqV0bogbj8WSMQfXA
+! Checksum: O9fJG2t8mp/j3WBWJHHa/Q
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.64
-! TimeUpdated: 2024-10-16T14:33:25+00:00
+! Version: 2.0.9.66
+! TimeUpdated: 2024-10-18T17:33:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -380,6 +380,11 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/191029
+||reddit.com^$removeparam=%24deep_link
+||reddit.com^$removeparam=%243p
+||reddit.com^$removeparam=rdt
+||reddit.com^$removeparam=post_index
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190916
 ||boosty.to^$removeparam=_1ld
 ||boosty.to^$removeparam=_1lp
@@ -2172,6 +2177,8 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||google.*/search$removeparam=ei
 ||google.*/search$removeparam=gs_lcp
 ||google.*/search$removeparam=gs_lcrp
+! https://github.com/AdguardTeam/AdguardFilters/issues/191127
+||google.$removeparam=subid
 !
 ! eBay tracking parameters
 ||www.ebay.$removeparam=ssspo

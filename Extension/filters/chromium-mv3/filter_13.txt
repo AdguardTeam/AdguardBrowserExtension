@@ -1,8 +1,8 @@
-! Checksum: Svs97rOdxc59z3fArEFotg
+! Checksum: o6Sw4I1YTRE28RF/xBaKcA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.53.79
-! TimeUpdated: 2024-10-16T14:33:11+00:00
+! Version: 2.0.53.83
+! TimeUpdated: 2024-10-20T08:32:28+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -343,7 +343,6 @@ teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.
 ! https://github.com/uBlockOrigin/uAssets/issues/25421
 @@/favicon.ico|$domain=gecmisi.com.tr
 @@||gecmisi.com.tr^$cookie=_ga
-gecmisi.com.tr#%#//scriptlet('trusted-set-cookie', '_ga', 'GA1.1.1908932164.2839771695')
 gecmisi.com.tr#%#//scriptlet('prevent-setInterval', 'showAdBlockMessage')
 gecmisi.com.tr#%#//scriptlet('prevent-setTimeout', '/adElement\.innerHTML|=document\[_0x/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186286
@@ -1699,6 +1698,7 @@ $xmlhttprequest,third-party,denyallow=authkong.com|rsc.cdn77.org|linkvertise.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
 !
+gecmisi.com.tr##div[id^="aswift_"]
 hangikredi.com###__next > div.relative:has(> a[href^="https://8fl2.tr.adj.st/"])
 diyetkolik.com##div[style^="min-height:100px;"]
 fullindirsene.net##a[href^="https://kingads2.org/"]
@@ -4772,7 +4772,7 @@ kanalb.com.tr##div[class^="widget_banner_"]
 /images/site_reklam^$domain=kanalb.com.tr
 sporx.com##div[id^="dfp_"]
 aykiri.com.tr,megahaber27.com,bihavadis.com,kafakalem.com,thecruiselife.com.tr,takamedya.com,adalet.tv,haberasi.com,kadinveotesi.com,ajansgazetesi.com.tr,avcilarhabermerkezi.com,sanattanyansimalar.com,turgutluyanki.com,denizlidesiyaset.com,finans365.com,afyonhaber.com,malatyaozhaber.com,kulahaber.net,hayrankaldim.com,yenibakis.com.tr,habercicanakkale.com,haber16.com,karamanca.net,denizgazete.com,kaptanhaber.com,oncusehir.com,turgutlupostasi.com,gebzeyenigun.com,imaret.com.tr,rehbercanakkale.com,turkinfo.nl,habercuk.com,habersanliurfa.net,mizahdunyam.com,denizlikenthaber.com,tarihistan.org,haberturizm.com,gazete365.com##.detailp > .img_position_left
-aykiri.com.tr,afyonkenthaber.com,tamgaturk.com,ulusalhaber.com.tr##.post-body > .img_position_left
+gazetegercek.com.tr,aykiri.com.tr,afyonkenthaber.com,tamgaturk.com,ulusalhaber.com.tr##.post-body > .img_position_left
 ||vidoza.net/rbs^$third-party
 sahibinden.com##.popular-products
 ozengen.com###text-html-widget-2
@@ -5550,6 +5550,11 @@ hdfilmcehennem.live#$##kendisi { display: block!important; }
 oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
 !
+! webspor*.xyz - frequently changed domains
+[$domain=/webspor\d+\.xyz/]##.nomobil
+[$domain=/webspor\d+\.xyz/]##.list > div.item:has(> a[target="_blank"])
+[$domain=/webspor\d+\.xyz/]#$?#video > style { remove: true; }
+!
 ! dizikral*.pro - frequently changed domains
 [$domain=/dizikral\d+.pro/]#$#body > header { margin-top: 0 !important; }
 [$domain=/dizikral\d+.pro/]#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/(function playVideo\(\) \{[\s\S]*?\.remove\(\);[\s\S]*?\})/', '$1 playVideo();')
@@ -5940,6 +5945,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/190746
+@@||segmentify.com^$script,stylesheet,xmlhttprequest,domain=puma.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190140
 @@||jsc.idealmedia.io/*/onedio.com.*.js$domain=onedio.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185875
