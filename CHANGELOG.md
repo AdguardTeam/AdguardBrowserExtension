@@ -24,6 +24,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- [5.0.159]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.159 -->
 [#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
 
+## [4.4.39] - 2024-10-21
+
+### Changed
+
+- Updated [@adguard/logger] to v1.1.1.
+- Updated [@adguard/tswebextension] to v2.0.4.
+
+### Fixed
+
+- User rules scanning breaks extension popup [#2989].
+- Selecting a single `$permissions` filtering log event selects all `$permissions` events.
+
+[4.4.39]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.30...v4.4.39
+[#2989]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2989
+
 ## [5.0.138] - 2024-10-10
 
 ### Changed
