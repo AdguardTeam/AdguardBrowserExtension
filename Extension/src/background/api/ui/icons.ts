@@ -17,10 +17,14 @@
  */
 import browser from 'webextension-polyfill';
 
+import { logger } from '../../../common/logger';
+import {
+    type IconData,
+    type IconVariants,
+    settingsStorage,
+} from '../../storages';
 import { SettingOption } from '../../schema';
-import { settingsStorage } from '../../storages';
 import { getIconImageData } from '../../../common/api/extension';
-import type { IconData, IconVariants } from '../../storages';
 
 import { FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
@@ -70,23 +74,22 @@ class IconsApi {
      * @param frameData The information from {@link FrameData} is needed
      * to estimate the current status of the background extension
      * in the specified tab.
-     * @param frameData.documentAllowlisted Is website allowlisted.
-     * @param frameData.applicationFilteringDisabled Is app filtering disabled globally.
-     * @param frameData.totalBlockedTab Number of blocked requests.
      */
     public async updateTabAction(
         tabId: number,
-        {
+        frameData: FrameData,
+    ): Promise<void> {
+        try {
+            await this.resetPromoIconIfAny(tabId, frameData);
+        } catch { /* do nothing */ }
+
+        const {
             documentAllowlisted,
             applicationFilteringDisabled,
             totalBlockedTab,
-        }: FrameData,
-    ): Promise<void> {
-        const isDisabled = documentAllowlisted || applicationFilteringDisabled;
+        } = frameData;
 
-        try {
-            await this.setPromoIconIfAny();
-        } catch { /* do nothing */ }
+        const isDisabled = documentAllowlisted || applicationFilteringDisabled;
 
         // Determine extension's action new state based on the current tab state
         const icon = this.pickIconVariant(isDisabled);
@@ -99,7 +102,9 @@ class IconsApi {
                 await browser.browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
                 await browser.browserAction.setBadgeText({ tabId, text: badgeText });
             }
-        } catch (e) { /* do nothing */ }
+        } catch (e) {
+            logger.info('Failed to update tab icon:', e);
+        }
     }
 
     /**
@@ -192,6 +197,23 @@ class IconsApi {
         const notification = await promoNotificationApi.getCurrentNotification();
         if (notification && notification.icons) {
             this.setPromoIcons(notification.icons);
+        }
+    }
+
+    /**
+     * Always fetches icon variants from the promo notification api,
+     * and sets the promo icons if any,
+     * otherwise promo icon is dismissed.
+     *
+     * @param tabId Tab's id.
+     * @param frameData Tab's {@link FrameData}.
+     */
+    private async resetPromoIconIfAny(tabId: number, frameData: FrameData): Promise<void> {
+        const notification = await promoNotificationApi.getCurrentNotification();
+        if (notification && notification.icons) {
+            this.setPromoIcons(notification.icons);
+        } else {
+            await this.dismissPromoIcon(tabId, frameData);
         }
     }
 }

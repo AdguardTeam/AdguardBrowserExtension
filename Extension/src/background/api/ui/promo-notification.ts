@@ -19,8 +19,8 @@ import browser from 'webextension-polyfill';
 
 import { UserAgent } from '../../../common/user-agent';
 import {
+    type PromoNotification,
     notificationStorage,
-    Notification,
     browserStorage,
 } from '../../storages';
 import { NotificationTextRecord } from '../../schema';
@@ -30,7 +30,7 @@ import { I18n } from '../../utils';
 import { UiApi } from './main';
 
 /**
- * Promo Notification API is needed to work with notifications.
+ * Promo notification API is needed to work with notifications.
  */
 export class PromoNotificationApi {
     private static readonly CHECK_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
@@ -39,7 +39,7 @@ export class PromoNotificationApi {
 
     private static readonly DELAY_MS = 30 * 1000; // clear notification in 30 seconds
 
-    private currentNotification: Notification | null = null;
+    private currentNotification: PromoNotification | null = null;
 
     private notificationCheckTime = 0;
 
@@ -103,9 +103,9 @@ export class PromoNotificationApi {
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet.
      *
-     * @returns Notification object or null if there is no notification to show.
+     * @returns Promo notification object or null if there is no promo notification to show.
      */
-    public async getCurrentNotification(): Promise<Notification | null> {
+    public async getCurrentNotification(): Promise<PromoNotification | null> {
         // Do not display notification on Firefox
         if (UserAgent.isFirefox) {
             return null;
@@ -192,10 +192,10 @@ export class PromoNotificationApi {
     /**
      * Scans notification locales and returns the one matching navigator.language.
      *
-     * @param notification Notification object.
+     * @param notification Promo notification object.
      * @returns {NotificationTextRecord | undefined} Matching notification text settings or undefined.
      */
-    private static getNotificationText(notification: Notification): NotificationTextRecord | undefined {
+    private static getNotificationText(notification: PromoNotification): NotificationTextRecord | undefined {
         let language = I18n.normalizeLanguageCode(browser.i18n.getUILanguage());
 
         if (!language) {
