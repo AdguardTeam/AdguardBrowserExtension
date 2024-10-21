@@ -5,8 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- TODO: check the actual version and add the release date -->
-## [4.4.38]
+## [4.4.39] - 2024-10-21
 
 ### Changed
 
@@ -18,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - User rules scanning breaks extension popup [#2989].
 - Selecting a single `$permissions` filtering log event selects all `$permissions` events.
 
-[4.4.38]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.30...v4.4.38
+[4.4.39]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.30...v4.4.39
 [#2989]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2989
 
 ## [5.0.138] - 2024-10-10
