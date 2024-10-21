@@ -80,39 +80,28 @@ class IconsApi {
     }
 
     /**
-     * Resets the icon state.
-     *
-     * @param tabId Tab's id.
-     * @param frameData Tab's {@link FrameData}.
-     */
-    public async reset(tabId: number, frameData: FrameData): Promise<void> {
-        await this.resetPromoIconsIfAny(tabId, frameData);
-    }
-
-    /**
      * Updates current extension icon for specified tab.
      *
      * @param tabId Tab's id.
      * @param frameData The information from {@link FrameData} is needed
      * to estimate the current status of the background extension
      * in the specified tab.
-     * @param frameData.documentAllowlisted Is website allowlisted.
-     * @param frameData.applicationFilteringDisabled Is app filtering disabled globally.
-     * @param frameData.totalBlockedTab Number of blocked requests.
      */
     public async updateTabAction(
         tabId: number,
-        {
+        frameData: FrameData,
+    ): Promise<void> {
+        try {
+            await this.resetPromoIconIfAny(tabId, frameData);
+        } catch { /* do nothing */ }
+
+        const {
             documentAllowlisted,
             applicationFilteringDisabled,
             totalBlockedTab,
-        }: FrameData,
-    ): Promise<void> {
-        const isDisabled = documentAllowlisted || applicationFilteringDisabled;
+        } = frameData;
 
-        try {
-            await this.setPromoIconIfAny();
-        } catch { /* do nothing */ }
+        const isDisabled = documentAllowlisted || applicationFilteringDisabled;
 
         // Determine extension's action new state based on the current tab state
         const icon = await this.pickIconVariant(isDisabled);
@@ -242,7 +231,7 @@ class IconsApi {
      * @param tabId Tab's id.
      * @param frameData Tab's {@link FrameData}.
      */
-    private async resetPromoIconsIfAny(tabId: number, frameData: FrameData): Promise<void> {
+    private async resetPromoIconIfAny(tabId: number, frameData: FrameData): Promise<void> {
         const notification = await promoNotificationApi.getCurrentNotification();
         if (notification && notification.icons) {
             this.setPromoIcons(notification.icons);

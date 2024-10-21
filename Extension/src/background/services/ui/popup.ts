@@ -41,7 +41,6 @@ import {
     type GetStatisticsDataResponse,
     type SettingsData,
     UserRulesApi,
-    iconsApi,
 } from '../../api';
 
 // TODO: describe all properties
@@ -108,12 +107,8 @@ export class PopupService {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         if (tabContext) {
-            const frameInfo = FramesApi.getMainFrameData(tabContext);
-
-            await iconsApi.reset(tabId, frameInfo);
-
             return {
-                frameInfo,
+                frameInfo: FramesApi.getMainFrameData(tabContext),
                 stats: PageStatsApi.getStatisticsData(),
                 settings: SettingsApi.getData(),
                 areFilterLimitsExceeded: __IS_MV3__
