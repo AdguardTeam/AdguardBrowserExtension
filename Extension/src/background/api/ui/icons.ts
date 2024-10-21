@@ -226,7 +226,8 @@ class IconsApi {
 
     /**
      * Always fetches icon variants from the promo notification api,
-     * and sets the promo icons if any, promo icon is dismissed.
+     * and sets the promo icons if any,
+     * otherwise promo icon is dismissed.
      *
      * @param tabId Tab's id.
      * @param frameData Tab's {@link FrameData}.
