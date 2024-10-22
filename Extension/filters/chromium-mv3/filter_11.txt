@@ -1,8 +1,8 @@
-! Checksum: L/rU7ihoCv5qwRyKF2KMYw
+! Checksum: X1YEGHCc6W+z3zlrjyq7+Q
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.55.41
-! TimeUpdated: 2024-10-18T15:32:58+00:00
+! Version: 2.0.55.50
+! TimeUpdated: 2024-10-22T11:33:44+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,6 +219,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||jjpp.lmtjapi.com^
 ||a.07aa269c0e76550c929640c170af557c7371753ba1b580236d7fa0a4.com^
 ||a.64e98469810bd13e2b45e52d19d6fddfe333b3528350d8cfa792d478.com^
 ||ad.zijieapi.com^
@@ -2398,6 +2399,17 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+jyoseisama.com###article-contents > center:has(> a[target="_blank"][href])
+valorantns.com##.ad_sp
+kahoku.news###kahoku_sp_article_underarticle
+kahoku.news###kahoku_sp_article_under_recommend_4th
+rtl.de##div[class^="group-grid-combi-ad"]
+kurier.de,np-coburg.de,frankenpost.de##div[id^="mobilebanner"]
+speedrun.com##div[data-type="elo-placement"]
+h178.com##div[class^="substitute-area-"] > div
+op.gg##div[class^="css-"]:has(> div:not([class]):empty)
+gazetasp.com.br##.coluna > div.mobile:has(> div.propaganda)
+app.famitsu.com##.fc-contents-wrapper
 j-antenna.net##._X_article_space_
 voyeurhit.com##.video-page__wrapper > div[class]:has(> div[class] > a[href^="https://clickadilla.com/"])
 m.economictimes.com###wapFooter
