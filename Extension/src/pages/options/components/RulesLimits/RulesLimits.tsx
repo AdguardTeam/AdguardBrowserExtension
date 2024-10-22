@@ -54,6 +54,8 @@ export const RulesLimits = observer(() => {
     const {
         dynamicRulesEnabledCount,
         dynamicRulesMaximumCount,
+        dynamicRulesUnsafeEnabledCount,
+        dynamicRulesUnsafeMaximumCount,
         dynamicRulesRegexpsEnabledCount,
         dynamicRulesRegexpsMaximumCount,
         staticFiltersEnabledCount,
@@ -171,6 +173,21 @@ export const RulesLimits = observer(() => {
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
                                 current: dynamicRulesEnabledCount,
                                 maximum: dynamicRulesMaximumCount,
+                            })}
+                        </div>
+                    </div>
+                    <div className="rules-limits__group">
+                        <div className="rules-limits__text--gray">
+                            {translator.getMessage('options_rule_limits_dynamic_unsafe')}
+                        </div>
+                        <div className={getClassNamesForNumbers(
+                            dynamicRulesUnsafeEnabledCount,
+                            dynamicRulesUnsafeMaximumCount,
+                        )}
+                        >
+                            {reactTranslator.getMessage('options_rule_limits_numbers', {
+                                current: dynamicRulesUnsafeEnabledCount,
+                                maximum: dynamicRulesUnsafeMaximumCount,
                             })}
                         </div>
                     </div>
