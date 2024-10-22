@@ -70,7 +70,7 @@ export const PromoNotification = observer(() => {
     };
 
     const notificationClassnames = classnames('promo-notification', {
-        'promo-notification--close': notificationIsClosed,
+        'promo-notification--closing': notificationIsClosed,
     });
 
     return (
