@@ -340,7 +340,7 @@ export class RulesLimitsService {
     }
 
     /**
-     * Returns number of maximum possible dynamic rules.
+     * Returns number of maximum possible dynamic **unsafe** rules.
      *
      * @param result Configuration result.
      * @returns Count of rules.

@@ -31,12 +31,12 @@ export interface IRulesLimits {
     dynamicRulesMaximumCount: number;
 
     /**
-     * How many unsafe dynamic rules are enabled in the browser.
+     * How many dynamic **unsafe** rules are enabled in the browser.
      */
     dynamicRulesUnsafeEnabledCount: number;
 
     /**
-     * Maximum count of unsafe dynamic rules which can be enabled in the browser.
+     * Maximum count of dynamic **unsafe** rules which can be enabled in the browser.
      */
     dynamicRulesUnsafeMaximumCount: number;
 
@@ -126,7 +126,7 @@ type InvalidResultData = {
     rulesCount?: CountData;
 
     /**
-     * Rules count data.
+     * Unsafe rules count data.
      */
     rulesUnsafeCount?: CountData;
 
