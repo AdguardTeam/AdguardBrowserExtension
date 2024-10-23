@@ -39,51 +39,51 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 > AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
-  - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
-  - [Firefox](#firefox)
-  - [Opera](#opera)
-  - [Microsoft Edge](#microsoft-edge)
+  - [Chrome and Chromium-based browsers](#installation-chrome)
+  - [Firefox](#installation-firefox)
+  - [Opera](#installation-opera)
+  - [Microsoft Edge](#installation-edge)
 - [Contribution](#contribution)
-  - [Translating AdGuard](#translating-adguard)
-  - [Testing AdGuard](#testing-adguard)
-  - [Reporting issues](#reporting-issues)
-  - [Other options](#other-options)
-- [Development](#development)
-  - [Requirements](#requirements)
-  - [How to build](#how-to-build)
-    - [Tests and dev build](#tests-and-dev-build)
-    - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-    - [Building the beta and release versions](#building-the-beta-and-release-versions)
-    - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
-    - [Analyzing bundle size](#analyzing-bundle-size)
-    - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
-  - [Linter](#linter)
-  - [Update localizations](#update-localizations)
-- [Minimum supported browser versions](#minimum-supported-browser-versions)
+  - [Translating AdGuard](#contribution-translating)
+  - [Testing AdGuard](#contribution-testing)
+  - [Reporting issues](#contribution-reporting)
+  - [Other options](#contribution-other)
+- [Development](#dev)
+  - [Requirements](#dev-requirements)
+  - [How to build](#dev-build)
+    - [Tests and dev build](#dev-tests-and-build)
+    - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
+    - [Building the beta and release versions](#dev-beta-and-release)
+    - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
+    - [Analyzing bundle size](#dev-bundle-size)
+    - [Debug MV3 declarative rules](#dev-debug-mv3)
+  - [Linter](#dev-linter)
+  - [Update localizations](#dev-localizations)
+- [Minimum supported browser versions](#browser-compatibility)
 
-## Installation
+## <a name="installation"></a> Installation
 
-### Chrome and Chromium-based browsers
+### <a name="installation-chrome"></a> Chrome and Chromium-based browsers
 
 You can get the latest available AdGuard Extension version from the
 [Chrome Web Store](https://agrd.io/extension_chrome).
 
-### Firefox
+### <a name="installation-firefox"></a> Firefox
 
 You can get the latest version of AdGuard Extension from the
 [Mozilla Add-ons website](https://agrd.io/extension_firefox).
 
-### Opera
+### <a name="installation-opera"></a> Opera
 
 Opera is basically a Chromium browser, but it maintains its own add-ons store.
 You can get AdGuard Extension [from there](https://agrd.io/extension_opera).
 
-### Microsoft Edge
+### <a name="installation-edge"></a> Microsoft Edge
 
 The latest stable version of AdGuard browser extension is available in
 [Microsoft Store](https://agrd.io/extension_edge).
 
-## Contribution
+## <a name="contribution"></a> Contribution
 
 We are blessed to have a community that does not only love AdGuard, but also
 gives back. A lot of people volunteer in various ways to make other users'
@@ -92,18 +92,18 @@ experience with AdGuard better, and you can join them!
 We, on our part, can only be happy to reward the most active members of the
 community. So, what can you do?
 
-### Translating AdGuard
+### <a name="contribution-translating"></a> Translating AdGuard
 
 If you want to help with AdGuard translations, please learn more about
-translating our products here: <https://kb.adguard.com/en/general/adguard-translations>
+translating our products here: <https://adguard.com/kb/miscellaneous/contribute/translate/program/>
 
-### Testing AdGuard
+### <a name="contribution-testing"></a> Testing AdGuard
 
 You can get a beta version of AdGuard Browser Extension for any browser.
 All necessary information on this topic can be found on a
 [dedicated page on our website](https://adguard.com/beta.html).
 
-### Reporting issues
+### <a name="contribution-reporting"></a> Reporting issues
 
 GitHub can be used to report a bug or to submit a feature request. To do so, go
 to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues)
@@ -113,22 +113,22 @@ and click the *New issue* button.
 > For the filter-related issues (missed ads, false positives etc.) use
 > the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
 
-### Other options
+### <a name="contribution-other"></a> Other options
 
 Here is a [dedicated page](https://adguard.com/contribute.html) for those who
 are willing to contribute.
 
-## Development
+## <a name="dev"></a> Development
 
-### Requirements
+### <a name="dev-requirements"></a> Requirements
 
 - [node.js LTS](https://nodejs.org/en/download/)
 - NPM v8
 - [yarn v1.22](https://yarnpkg.com/en/docs/install/)
 
-### How to build
+### <a name="dev-build"></a> How to build
 
-#### Tests and dev build
+#### <a name="dev-tests-and-build"></a> Tests and dev build
 
 Install local dependencies by running:
 
@@ -183,7 +183,7 @@ Or for a specific browser:
 yarn dev <browser> --watch
 ```
 
-#### Linking with the developer build of tsurlfilter/tswebextension
+#### <a name="dev-link"></a> Linking with the developer build of tsurlfilter/tswebextension
 
 Since version v4.0, AdGuard browser extension uses an open source library
 [tsurlfilter] that implements
@@ -216,7 +216,7 @@ directory:
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
 
-#### Building the beta and release versions
+#### <a name="dev-beta-and-release"></a> Building the beta and release versions
 
 Before building the release version, you should manually download the necessary
 resources that will be included into the build: filters and public suffix list.
@@ -239,7 +239,7 @@ yarn release
 You will need to put certificate.pem file to the `./private` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
 
-#### Special building instructions for Firefox reviewers
+#### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
 
 1. Ensure you have installed Node.js and Yarn.
 
@@ -257,7 +257,7 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 
 1. Compare the generated `firefox.zip` file with the uploaded one.
 
-#### Analyzing bundle size
+#### <a name="dev-bundle-size"></a> Analyzing bundle size
 
 If you want to analyze the bundle size, run build with the `ANALYZE` environment:
 
@@ -284,9 +284,9 @@ Analyzer will generate reports to the `./build/analyze-reports` directory in the
   ├── <browser-name>-<build-type>.html
 ```
 
-#### Debug MV3 declarative rules
+#### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
 
-If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper section ([how to build](#how-to-build)), but for specified branch, in which we develop MV3 version.
+If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper [How to build](#dev-build) section, but for specified branch, in which we develop MV3 version.
 
 Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
 
@@ -348,12 +348,12 @@ That’s it!
 
 1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule (in text and declarative ways) will be shown.
 
-### Linter
+### <a name="dev-linter"></a> Linter
 
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
-### Update localizations
+### <a name="dev-localizations"></a> Update localizations
 
 To download and append localizations run:
 
@@ -386,7 +386,7 @@ To show locales info run:
   yarn locales info
 ```
 
-## Permissions required
+## <a name="permissions-required"></a> Permissions required
 
 - `tabs`                          - this permission is required in order to get the URL of the options page tab
 - `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
@@ -399,7 +399,7 @@ To show locales info run:
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
 
-## Minimum supported browser versions
+## <a name="browser-compatibility"></a> Minimum supported browser versions
 
 | Browser                     | Version |
 |---------------------------- |:-------:|
