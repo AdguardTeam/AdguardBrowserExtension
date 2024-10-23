@@ -433,6 +433,15 @@ class Messenger {
     }
 
     /**
+     * Sends a message to the background page to open user rules editor in fullscreen.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    async openFullscreenUserRules(): Promise<ExtractMessageResponse<MessageType.OpenFullscreenUserRules>> {
+        return this.sendMessage(MessageType.OpenFullscreenUserRules);
+    }
+
+    /**
      * Sends a message to the background page to get the allowlist domains.
      *
      * @returns Promise that resolves with the list of allowlist domains.
