@@ -5,14 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- A rule from a disabled filter list disables another rule [AdguardBrowserExtension#3002].
+
+[AdguardBrowserExtension#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
+
 <!-- TODO: check release version, add release date -->
-## [5.0.151]
+## [5.0.159]
 
 ### Changed
 
 - Updated [@adguard/logger] to v1.1.1.
 - Updated [@adguard/tsurlfilter] to v3.1.0-alpha.7.
-- Updated [@adguard/tswebextension] to v2.4.0-alpha.4.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.6.
 
 ### Fixed
 
@@ -21,8 +29,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Selecting a single `$permissions` filtering log event selects all `$permissions` events.
 
 <!-- TODO: uncomment when released -->
-<!-- [5.0.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.151 -->
+<!-- [5.0.159]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.159 -->
 [#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
+
+## [4.4.39] - 2024-10-21
+
+### Changed
+
+- Updated [@adguard/logger] to v1.1.1.
+- Updated [@adguard/tswebextension] to v2.0.4.
+
+### Fixed
+
+- User rules scanning breaks extension popup [#2989].
+- Selecting a single `$permissions` filtering log event selects all `$permissions` events.
+
+[4.4.39]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.30...v4.4.39
+[#2989]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2989
 
 ## [5.0.138] - 2024-10-10
 
@@ -168,6 +191,7 @@ The extension is now fully compatible with MV3.
 ## [4.3.64] - 2024-07-10
 
 ### Fixed
+
 - Popup menu does not open in Firefox Nightly [#2817].
 
 [4.3.64]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.3.53...v4.3.64

@@ -24,6 +24,7 @@ import {
     APP_MESSAGE_HANDLER_NAME,
     MessageType,
     messageHasTypeAndDataFields,
+    messageHasTypeField,
 } from '../../common/messages';
 import type {
     MessageWithoutHandlerName,
@@ -59,6 +60,7 @@ import type {
     SetNotificationViewedMessage,
     UpdateFullscreenUserRulesThemeMessage,
     AddUrlToTrustedMessage,
+    ExtractedMessage,
 } from '../../common/messages';
 import { NotifierType } from '../../common/constants';
 import { CreateEventListenerResponse } from '../../background/services/event';
@@ -155,12 +157,20 @@ class Messenger {
             port.postMessage({ type: MessageType.AddLongLivedConnection, data: { events } });
 
             port.onMessage.addListener((message) => {
-                if (!messageHasTypeAndDataFields(message)) {
+                if (!messageHasTypeField(message)) {
+                    logger.warn('Received message in Messenger.createLongLivedConnection has no type field: ', message);
                     return;
                 }
 
                 if (message.type === MessageType.NotifyListeners) {
-                    const [type, ...data] = message.data;
+                    if (!messageHasTypeAndDataFields(message)) {
+                        logger.warn('Received message with type MessageType.NotifyListeners has no data: ', message);
+                        return;
+                    }
+
+                    const castedMessage = message as ExtractedMessage<MessageType.NotifyListeners>;
+
+                    const [type, ...data] = castedMessage.data;
                     callback({ type, data });
                 }
             });
@@ -223,13 +233,24 @@ class Messenger {
         };
 
         browser.runtime.onMessage.addListener((message) => {
-            if (!messageHasTypeAndDataFields(message)) {
+            if (!messageHasTypeField(message)) {
+                logger.warn('Received message in Messenger.createEventListener has no type field: ', message);
                 return undefined;
             }
 
             if (message.type === MessageType.NotifyListeners) {
-                const [type, ...data] = message.data;
-                callback({ type, data });
+                if (!messageHasTypeAndDataFields(message)) {
+                    logger.warn('Received message with type MessageType.NotifyListeners has no data: ', message);
+                    return undefined;
+                }
+
+                const castedMessage = message as ExtractedMessage<MessageType.NotifyListeners>;
+
+                const [type, ...data] = castedMessage.data;
+
+                if (events.includes(type)) {
+                    callback({ type, data });
+                }
             }
             if (message.type === MessageType.UpdateListeners) {
                 onUpdateListeners();
@@ -412,6 +433,15 @@ class Messenger {
         value: SaveUserRulesMessage['data']['value'],
     ): Promise<ExtractMessageResponse<MessageType.SaveUserRules>> {
         await this.sendMessage(MessageType.SaveUserRules, { value });
+    }
+
+    /**
+     * Sends a message to the background page to open user rules editor in fullscreen.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    async openFullscreenUserRules(): Promise<ExtractMessageResponse<MessageType.OpenFullscreenUserRules>> {
+        return this.sendMessage(MessageType.OpenFullscreenUserRules);
     }
 
     /**

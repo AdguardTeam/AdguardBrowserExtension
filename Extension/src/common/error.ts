@@ -22,6 +22,17 @@ type ErrorWithMessage = {
     message: string
 };
 
+type ErrorLike = ErrorWithMessage & {
+    name: string;
+    stack?: string;
+};
+
+const NETWORK_ERROR_MESSAGES: ReadonlySet<string> = new Set([
+    'network error',                                     // Chrome
+    'Failed to fetch',                                   // Chrome, Edge, Yandex browser
+    'NetworkError when attempting to fetch resource.',   // Firefox
+]);
+
 /**
  * Checks if error has message.
  *
@@ -33,6 +44,19 @@ function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
         && error !== null
         && 'message' in error
         && typeof (error as Record<string, unknown>).message === 'string'
+    );
+}
+
+/**
+ * Checks if the error is ErrorLike.
+ *
+ * @param error Error object.
+ */
+function isErrorLike(error: unknown): error is ErrorLike {
+    return (
+        isErrorWithMessage(error)
+        && 'name' in error
+        && typeof (error as ErrorLike).name === 'string'
     );
 }
 
@@ -69,4 +93,21 @@ export function getErrorMessage(error: unknown): string {
     }
 
     return toErrorWithMessage(error).message;
+}
+
+/**
+ * Checks if the error is a network error.
+ *
+ * @param error Error object.
+ *
+ * @returns True if the error is a network error, false otherwise.
+ */
+export function isNetworkError(error: unknown): boolean {
+    // Check if the error is an instance of ErrorLike and is not a TypeError
+    if (!isErrorLike(error) || error.name !== 'TypeError') {
+        return false;
+    }
+
+    // Check if the error message is in the set of network error messages
+    return NETWORK_ERROR_MESSAGES.has(error.message);
 }

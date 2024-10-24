@@ -39,63 +39,51 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 > AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
-  - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
-  - [Firefox](#firefox)
-  - [Opera](#opera)
-  - [Microsoft Edge](#microsoft-edge)
+  - [Chrome and Chromium-based browsers](#installation-chrome)
+  - [Firefox](#installation-firefox)
+  - [Opera](#installation-opera)
+  - [Microsoft Edge](#installation-edge)
 - [Contribution](#contribution)
-  - [Translating AdGuard](#translating-adguard)
-  - [Testing AdGuard](#testing-adguard)
-  - [Reporting issues](#reporting-issues)
-  - [Other options](#other-options)
-- [Development](#development)
-  - [Requirements](#requirements)
-  - [How to build](#how-to-build)
-    - [Tests and dev build](#tests-and-dev-build)
-    - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-    - [Building the beta and release versions](#building-the-beta-and-release-versions)
-    - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
-    - [Analyzing bundle size](#analyzing-bundle-size)
-    - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
-  - [Linter](#linter)
-  - [Update localizations](#update-localizations)
-- [Minimum supported browser versions](#minimum-supported-browser-versions)
+  - [Translating AdGuard](#contribution-translating)
+  - [Testing AdGuard](#contribution-testing)
+  - [Reporting issues](#contribution-reporting)
+  - [Other options](#contribution-other)
+- [Development](#dev)
+  - [Requirements](#dev-requirements)
+  - [How to build](#dev-build)
+    - [Tests and dev build](#dev-tests-and-build)
+    - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
+    - [Building the beta and release versions](#dev-beta-and-release)
+    - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
+    - [Analyzing bundle size](#dev-bundle-size)
+    - [Debug MV3 declarative rules](#dev-debug-mv3)
+  - [Linter](#dev-linter)
+  - [Update localizations](#dev-localizations)
+- [Minimum supported browser versions](#browser-compatibility)
 
-<a id="installation"></a>
+## <a name="installation"></a> Installation
 
-## Installation
-
-<a id="installation-chrome"></a>
-
-### Chrome and Chromium-based browsers
+### <a name="installation-chrome"></a> Chrome and Chromium-based browsers
 
 You can get the latest available AdGuard Extension version from the
 [Chrome Web Store](https://agrd.io/extension_chrome).
 
-<a id="installation-firefox"></a>
-
-### Firefox
+### <a name="installation-firefox"></a> Firefox
 
 You can get the latest version of AdGuard Extension from the
 [Mozilla Add-ons website](https://agrd.io/extension_firefox).
 
-<a id="installation-opera"></a>
-
-### Opera
+### <a name="installation-opera"></a> Opera
 
 Opera is basically a Chromium browser, but it maintains its own add-ons store.
 You can get AdGuard Extension [from there](https://agrd.io/extension_opera).
 
-<a id="installation-edge"></a>
-
-### Microsoft Edge
+### <a name="installation-edge"></a> Microsoft Edge
 
 The latest stable version of AdGuard browser extension is available in
 [Microsoft Store](https://agrd.io/extension_edge).
 
-<a id="contribution"></a>
-
-## Contribution
+## <a name="contribution"></a> Contribution
 
 We are blessed to have a community that does not only love AdGuard, but also
 gives back. A lot of people volunteer in various ways to make other users'
@@ -104,24 +92,18 @@ experience with AdGuard better, and you can join them!
 We, on our part, can only be happy to reward the most active members of the
 community. So, what can you do?
 
-<a id="contribution-translating"></a>
-
-### Translating AdGuard
+### <a name="contribution-translating"></a> Translating AdGuard
 
 If you want to help with AdGuard translations, please learn more about
-translating our products here: <https://kb.adguard.com/en/general/adguard-translations>
+translating our products here: <https://adguard.com/kb/miscellaneous/contribute/translate/program/>
 
-<a id="contribution-testing"></a>
-
-### Testing AdGuard
+### <a name="contribution-testing"></a> Testing AdGuard
 
 You can get a beta version of AdGuard Browser Extension for any browser.
 All necessary information on this topic can be found on a
 [dedicated page on our website](https://adguard.com/beta.html).
 
-<a id="contribution-reporting"></a>
-
-### Reporting issues
+### <a name="contribution-reporting"></a> Reporting issues
 
 GitHub can be used to report a bug or to submit a feature request. To do so, go
 to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues)
@@ -131,96 +113,87 @@ and click the *New issue* button.
 > For the filter-related issues (missed ads, false positives etc.) use
 > the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
 
-<a id="contribution-other"></a>
-
-### Other options
+### <a name="contribution-other"></a> Other options
 
 Here is a [dedicated page](https://adguard.com/contribute.html) for those who
 are willing to contribute.
 
-<a id="dev"></a>
+## <a name="dev"></a> Development
 
-## Development
-
-<a id="dev-requirements"></a>
-
-### Requirements
+### <a name="dev-requirements"></a> Requirements
 
 - [node.js LTS](https://nodejs.org/en/download/)
 - NPM v8
 - [yarn v1.22](https://yarnpkg.com/en/docs/install/)
 
+### <a name="dev-build"></a> How to build
 
-<a id="dev-build"></a>
-
-### How to build
-
-#### Tests and dev build
+#### <a name="dev-tests-and-build"></a> Tests and dev build
 
 Install local dependencies by running:
 
 ```shell
-  yarn install
+yarn install
 ```
 
 Running tests:
 
 ```shell
-  yarn test
+yarn test
 ```
 
 Run the following command to build the dev version:
 
 ```shell
-  yarn dev
+yarn dev
 ```
 
 This will create a build directory with unpacked extensions for all browsers:
 
 ```shell
-  build/dev/chrome
-  build/dev/edge
-  build/dev/firefox-amo
-  build/dev/firefox-standalone
-  build/dev/opera
+build/dev/chrome
+build/dev/edge
+build/dev/firefox-amo
+build/dev/firefox-standalone
+build/dev/opera
 ```
 
 To make a dev build for a specific browser, run:
 
 ```shell
-  yarn dev <browser>
+yarn dev <browser>
 ```
 
-Where `<browser>` is one of the following: `chrome`, `edge`, `opera`, `firefox`,
+Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `firefox`,
 `firefox-standalone`, like this:
 
 ```shell
-  yarn dev chrome
+yarn dev chrome
 ```
 
 To run dev build in watch mode, run:
 
 ```shell
-  yarn dev --watch
+yarn dev --watch
 ```
 
 Or for a specific browser:
 
 ```shell
-  yarn dev <browser> --watch
+yarn dev <browser> --watch
 ```
 
-#### Linking with the developer build of tsurlfilter/tswebextension
+#### <a name="dev-link"></a> Linking with the developer build of tsurlfilter/tswebextension
 
 Since version v4.0, AdGuard browser extension uses an open source library
-[tsurlfilter][tsurlfilter] that implements
+[tsurlfilter] that implements
 the filtering engine.
 
 While developing the browser extension it may be required to test the changes
 to `tsurlfilter`. Here's what you need to do to link your local dev build
 to the local dev build of `tsurlfilter`.
 
-1. Clone and build [tsurlfilter][tsurlfilter] libraries.
+1. Clone and build [tsurlfilter] libraries.
 1. Go to the `tsurlfilter/packages/tsurlfilter` and
 `tsurlfilter/packages/tswebextension` directories and run `yarn link`.
 
@@ -228,28 +201,28 @@ to the local dev build of `tsurlfilter`.
 `yarn link` commands in the root directory of the browser extension root
 directory:
 
-  ```shell
-  yarn link @adguard/tsurlfilter
-  yarn link @adguard/tswebextension
-  ```
+    ```shell
+    yarn link @adguard/tsurlfilter
+    yarn link @adguard/tswebextension
+    ```
 
 1. Build the browser extension in the watch mode:
 
-  ```shell
-  yarn dev <browser> --watch --no-cache
-  ```
+    ```shell
+    yarn dev <browser> --watch --no-cache
+    ```
 
 `--no-cache` flag is required to rebuild the extension on changes in the linked packages.
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
 
-#### Building the beta and release versions
+#### <a name="dev-beta-and-release"></a> Building the beta and release versions
 
 Before building the release version, you should manually download the necessary
 resources that will be included into the build: filters and public suffix list.
 
 ```shell
-  yarn resources
+yarn resources
 ```
 
 > [!TIP]
@@ -259,28 +232,32 @@ This command also checks if there are dangerous rules in the filters.
 See [dangerous rules](tools/resources/dangerous-rules/README.md)
 
 ```shell
-  yarn beta
-  yarn release
+yarn beta
+yarn release
 ```
 
 You will need to put certificate.pem file to the `./private` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
 
-#### Special building instructions for Firefox reviewers
+#### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
 
 1. Ensure you have installed Node.js and Yarn.
+
 1. To build the **BETA** version, run:
-    ```
+
+    ```shell
     yarn beta firefox-standalone
     ```
+
 1. Navigate to the build directory:
-    ```
+
+    ```shell
     cd ./build/beta
     ```
+
 1. Compare the generated `firefox.zip` file with the uploaded one.
 
-
-#### Analyzing bundle size
+#### <a name="dev-bundle-size"></a> Analyzing bundle size
 
 If you want to analyze the bundle size, run build with the `ANALYZE` environment:
 
@@ -307,9 +284,9 @@ Analyzer will generate reports to the `./build/analyze-reports` directory in the
   ├── <browser-name>-<build-type>.html
 ```
 
-#### Debug MV3 declarative rules
+#### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
 
-If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper section ([how to build](#how-to-build)), but for specified branch, in which we develop MV3 version.
+If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper [How to build](#dev-build) section, but for specified branch, in which we develop MV3 version.
 
 Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
 
@@ -341,7 +318,7 @@ Then install extension via developer mode, make requests and see applied declara
 
 1. Click *Load unpacked*:
 
-    ![Load unacked](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/load_unpacked.png)
+    ![Load unpacked](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/load_unpacked.png)
 
 1. Select the extension directory and click `Select`:
 
@@ -371,16 +348,12 @@ That’s it!
 
 1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule (in text and declarative ways) will be shown.
 
-<a id="dev-linter"></a>
-
-### Linter
+### <a name="dev-linter"></a> Linter
 
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
-<a id="dev-localizations"></a>
-
-### Update localizations
+### <a name="dev-localizations"></a> Update localizations
 
 To download and append localizations run:
 
@@ -413,9 +386,8 @@ To show locales info run:
   yarn locales info
 ```
 
-<a id="minimum-supported-browser-versions"></a>
+## <a name="permissions-required"></a> Permissions required
 
-## Permissions required
 - `tabs`                          - this permission is required in order to get the URL of the options page tab
 - `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
 - `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
@@ -427,7 +399,7 @@ To show locales info run:
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
 
-## Minimum supported browser versions
+## <a name="browser-compatibility"></a> Minimum supported browser versions
 
 | Browser                     | Version |
 |---------------------------- |:-------:|

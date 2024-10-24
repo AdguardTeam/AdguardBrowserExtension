@@ -17,7 +17,9 @@
  */
 import { PreprocessedFilterList } from '@adguard/tsurlfilter';
 
+import { logger } from '../../../common/logger';
 import { AntiBannerFiltersId } from '../../../common/constants';
+import { isNetworkError } from '../../../common/error';
 import { FiltersStorage, filterStateStorage } from '../../storages';
 import { engine } from '../../engine';
 
@@ -51,20 +53,27 @@ export class QuickFixesRulesApi {
      * actual version and metadata versions).
      */
     private static async loadQuickFixesRules(): Promise<void> {
-        const metadataOfUpdatedFilter = await CommonFilterApi.loadFilterRulesFromBackend(
-            {
-                filterId: AntiBannerFiltersId.QuickFixesFilterId,
-                // Without patches because filter is quite small.
-                // Because otherwise, if we will load it with patches, we should
-                // also load it fully from time to time (as we do for static
-                // filters in MV2) to prevent some unexpected problems from
-                // patches.
-                ignorePatches: true,
-            },
-            true,
-        );
+        try {
+            const metadataOfUpdatedFilter = await CommonFilterApi.loadFilterRulesFromBackend(
+                {
+                    filterId: AntiBannerFiltersId.QuickFixesFilterId,
+                    // Without patches because filter is quite small.
+                    // Because otherwise, if we will load it with patches, we should
+                    // also load it fully from time to time (as we do for static
+                    // filters in MV2) to prevent some unexpected problems from
+                    // patches.
+                    ignorePatches: true,
+                },
+                true,
+            );
 
-        FiltersApi.partialUpdateMetadataForFilter(metadataOfUpdatedFilter);
+            FiltersApi.partialUpdateMetadataForFilter(metadataOfUpdatedFilter);
+        } catch (error) {
+            if (navigator.onLine && !isNetworkError(error)) {
+                logger.error(error);
+                throw error;
+            }
+        }
     }
 
     /**
@@ -85,7 +94,15 @@ export class QuickFixesRulesApi {
      * @returns True, if quick fixes filter is enabled, else returns false.
      */
     public static isEnabled(): boolean {
-        return FiltersApi.isFilterEnabled(AntiBannerFiltersId.QuickFixesFilterId);
+        const filterMetadata = FiltersApi.getFilterMetadata(AntiBannerFiltersId.QuickFixesFilterId);
+        if (!filterMetadata) {
+            logger.error('Not found metadata from Quick Fixes filter');
+
+            return false;
+        }
+
+        return FiltersApi.isFilterEnabled(AntiBannerFiltersId.QuickFixesFilterId)
+            && FiltersApi.isGroupEnabled(filterMetadata.groupId);
     }
 
     /**

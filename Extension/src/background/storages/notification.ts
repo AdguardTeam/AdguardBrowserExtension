@@ -82,203 +82,203 @@ export type PromoNotification = {
     icons?: IconVariants,
 };
 
-const BIRTHDAY_24_ID = 'birthday24';
+const HALLOWEEN_24_ID = 'halloween24';
 
-const birthday24Notification: PromoNotification = {
-    id: BIRTHDAY_24_ID,
+const halloween24Notification: PromoNotification = {
+    id: HALLOWEEN_24_ID,
     locales: {
         en: {
-            title: 'Would you fit in AdGuard?',
-            btn: 'Find out',
+            title: 'The Web is full of dangers',
+            btn: 'Get rid of them',
         },
         fr: {
-            title: 'Qui seriez-vous chez AdGuard ?',
-            btn: 'Découvrez-le',
+            title: 'Le Web est plein de périls',
+            btn: 'Èliminons-les',
         },
         it: {
-            title: 'Chi sarai ad AdGuard ?',
-            btn: 'Scoprirlo',
+            title: "L'Internet è pieno di pericoli",
+            btn: 'Togliamoli',
         },
         de: {
-            title: 'Wer wären Sie bei AdGuard?',
-            btn: 'Herausfinden',
+            title: 'Cybermonster bedrohen das Web!',
+            btn: 'Das muss aufhören',
         },
         ru: {
-            title: 'Кем бы вы были в AdGuard?',
-            btn: 'Узнать',
+            title: 'Кибернежить нападает!',
+            btn: 'Сразиться',
         },
         es: {
-            title: '¿Quién eres en AdGuard?',
-            btn: 'Descubrirlo',
+            title: 'El internet está lleno de peligros',
+            btn: 'Terminarlos',
         },
         es_419: {
-            title: '¿Quién eres en AdGuard?',
-            btn: 'Descubrirlo',
+            title: 'El internet está lleno de peligros',
+            btn: 'Terminarlos',
         },
         pt_pt: {
-            title: 'Quem seria no AdGuard?',
-            btn: 'Descobrir',
+            title: 'A internet está cheia de monstros',
+            btn: 'Acabar com eles',
         },
         pt_br: {
-            title: 'Quem é você no AdGuard?',
-            btn: 'Descobrir',
+            title: 'A internet está cheia de monstros',
+            btn: 'Acabar com eles',
         },
         zh_cn: {
-            title: '如果你在 AdGuard 工作',
-            btn: '你的岗位会是...',
+            title: '网络威胁无处不在',
+            btn: '立即消除它们',
         },
         zh_tw: {
-            title: '如果您在 AdGuard 工作',
-            btn: '您的崗位會是...',
+            title: '網路威脅無處不在',
+            btn: '立即消除它們',
         },
         ja: {
-            title: 'あなたが AdGuard メンバーだったら？',
-            btn: 'おもしろアンケート',
+            title: 'AdGuardで怪物を 倒すゲーム',
+            btn: 'プレイしてみる',
         },
         ko: {
-            title: '여러분이 AdGuard 직원이라면?',
-            btn: '테스트 시작',
+            title: '사이버 몬스터와 싸워보세요!',
+            btn: '퀴즈 시작',
         },
         uk: {
-            title: 'Ким би ви були в AdGuard?',
-            btn: 'Дізнатися',
+            title: 'Інтернет повен небезпек',
+            btn: 'Позбудьтесь їх',
         },
         ar: {
-            title: '؟AdGuard من كنت ستكون في ',
-            btn: 'اكتشاف',
+            title: '!الإنترنت في خطر',
+            btn: 'ساعد',
         },
         be: {
-            title: 'Кім бы вы былі ў AdGuard?',
-            btn: 'Даведацца',
-        },
-        id: {
-            title: 'Siapa yang akan Anda jadi di AdGuard?',
-            btn: 'Mengetahui',
-        },
-        pl: {
-            title: 'Kim byłbyś w AdGuard?',
-            btn: 'Dowiedzieć się',
-        },
-        tr: {
-            title: "AdGuard'da kim olurdunuz?",
-            btn: 'Öğrenmek',
-        },
-        vi: {
-            title: 'Bạn sẽ là ai trong AdGuard?',
-            btn: 'Tìm hiểu',
+            title: 'Інтэрнэт поўны небяспек',
+            btn: 'Пазбаўцеся іх',
         },
         bg: {
-            title: 'Кой бихте били в AdGuard?',
-            btn: 'Разбера',
+            title: 'Интернетът е в опасност!',
+            btn: 'Помогнете',
         },
         ca: {
-            title: 'Qui seríeu a AdGuard?',
-            btn: 'Esbrinar',
+            title: 'Internet està en perill!',
+            btn: 'Ajuda',
         },
         cs: {
-            title: 'Kým byste byli v AdGuard?',
-            btn: 'Zjistit',
+            title: 'Web je plný nebezpečí',
+            btn: 'Zbavte se jich',
         },
         da: {
-            title: 'Hvem ville du være i AdGuard?',
-            btn: 'Finde ud af',
+            title: 'Internettet er fuld af farer',
+            btn: 'Slip af med dem',
         },
         el: {
-            title: 'Ποιος θα ήσασταν στο AdGuard;',
-            btn: 'Μάθω',
+            title: 'Το διαδίκτυο κινδυνεύει!',
+            btn: 'Βοήθεια',
         },
         fa: {
-            title: 'چه نقشی داشته‌اید؟ AdGuard شما در ',
-            btn: 'فهمیدن',
+            title: '!هیولاها به اینترنت حمله کردند',
+            btn: 'مبارزه کنید',
         },
         fi: {
-            title: 'Kuka olisit AdGuardissa?',
-            btn: 'Selvittää',
+            title: 'Hirviöt hyökkäsivät internetiin!',
+            btn: 'Taistele',
         },
         he: {
-            title: '?AdGuardמי היית ב',
-            btn: 'לגלות',
+            title: '!המפלצות תקפו את האינטרנט',
+            btn: 'להילחם',
         },
         hr: {
-            title: 'Tko bi bio u AdGuardu?',
-            btn: 'Saznati',
+            title: 'Internet je pun opasnosti',
+            btn: 'Riješite ih se',
         },
         hu: {
-            title: 'Ki lennél az AdGuardban?',
-            btn: 'Megtudni',
+            title: 'Az internet veszélyben van!',
+            btn: 'Segíts',
         },
         hy: {
-            title: 'Ով կլինեիք AdGuard-ում՞',
-            btn: 'Պարզել',
+            title: 'Ինտերնետը վտանգի մեջ է',
+            btn: 'Օգնեք',
+        },
+        id: {
+            title: 'Monster menyerang internet!',
+            btn: 'Bertarung',
         },
         lt: {
-            title: 'Kuo būtumėte AdGuard?',
-            btn: 'Sužinoti',
+            title: 'Monstrai užpuolė internetą!',
+            btn: 'Kovoti',
         },
         ms: {
-            title: 'Siapa anda akan jadi di AdGuard?',
-            btn: 'Ketahui',
+            title: 'Raksasa menyerang internet!',
+            btn: 'Lawan',
         },
-        no: {
-            title: 'Hvem ville du vært i AdGuard?',
-            btn: 'Finne ut',
+        nb: {
+            title: 'Internett er full av farer',
+            btn: 'Bli kvitt dem',
         },
         nl: {
-            title: 'Wie zou je zijn bij AdGuard?',
-            btn: 'Uitvinden',
+            title: 'Cybermonsters vallen aan!',
+            btn: 'Vechten',
+        },
+        pl: {
+            title: 'Potwory zaatakowały internet!',
+            btn: 'Walczyć',
         },
         ro: {
-            title: 'Cine ai fi în AdGuard?',
-            btn: 'Afla',
+            title: 'Monștrii au atacat internetul!',
+            btn: 'Luptă',
         },
         sk: {
-            title: 'Kým by ste boli v AdGuard?',
-            btn: 'Zistiť',
+            title: 'Monštrá zaútočili na internet!',
+            btn: 'Bojovať',
         },
         sl: {
-            title: 'Kdo bi bil v AdGuard?',
-            btn: 'Izvedeti',
+            title: 'Splet je poln nevarnosti',
+            btn: 'Znebite se jih',
         },
         'sr-Latn': {
-            title: 'Ko bi ste bili u AdGuard?',
-            btn: 'Saznati',
+            title: 'Monstrumi su napali internet!',
+            btn: 'Bori se',
         },
         sv: {
-            title: 'Vem skulle du vara i AdGuard?',
-            btn: 'Ta reda på',
+            title: 'Monstren attackerar internet!',
+            btn: 'Kämpa',
+        },
+        tr: {
+            title: 'Canavarlar internete saldırdı!',
+            btn: 'Savaş',
+        },
+        vi: {
+            title: 'Quái vật đã tấn công internet!',
+            btn: 'Chiến đấu',
         },
         hi: {
-            title: 'आप AdGuard में कौन होंगे?',
-            btn: 'पता लगाना',
+            title: 'राक्षसों ने इंटरनेट पर हमला किया!',
+            btn: 'लड़ो',
         },
         et: {
-            title: 'Kes sa oleksid AdGuardis?',
-            btn: 'Teada saama',
+            title: 'Veeb on täis ohte',
+            btn: 'Vabane neist',
         },
         th: {
-            title: 'คุณจะเป็นใครใน AdGuard?',
-            btn: 'หาข้อมูล',
+            title: 'สัตว์ประหลาดโจมตีอินเทอร์เน็ต!',
+            btn: 'ต่อสู้',
         },
         mk: {
-            title: 'Кој би биле вие во AdGuard?',
-            btn: 'Дознај',
+            title: 'Интернетот е во опасност!',
+            btn: 'Помош',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Birthday24 }),
-    from: '30 May 2024 12:00:00',
-    to: '5 June 2024 23:59:00',
+    url: Forward.get({ action: ForwardAction.Halloween24 }),
+    from: '25 October 2024 12:00:00',
+    to: '31 October 2024 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/birthday24.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/birthday24-on-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/halloween24.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween24-update.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/birthday24-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/birthday24-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween24-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween24-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/birthday24-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/birthday24-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween24-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween24-off-38.png'),
         },
         warning: defaultIconVariants.warning,
     },
@@ -288,5 +288,5 @@ const birthday24Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [BIRTHDAY_24_ID, birthday24Notification],
+    [HALLOWEEN_24_ID, halloween24Notification],
 ]);
