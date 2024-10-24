@@ -80,6 +80,16 @@ class IconsApi {
     }
 
     /**
+     * Resets the icon state.
+     *
+     * @param tabId Tab's id.
+     * @param frameData Tab's {@link FrameData}.
+     */
+    public async reset(tabId: number, frameData: FrameData): Promise<void> {
+        await this.resetPromoIconsIfAny(tabId, frameData);
+    }
+
+    /**
      * Updates current extension icon for specified tab.
      *
      * @param tabId Tab's id.
@@ -211,8 +221,9 @@ class IconsApi {
     }
 
     /**
-     * Fetches the current icon variants from the promo notification api, if any.
-     * Does nothing if the icon variants are already set.
+     * If promo icons variants are not set,
+     * fetches icon variants from the promo notification api (if any),
+     * otherwise does nothing.
      */
     private async setPromoIconIfAny(): Promise<void> {
         if (this.promoIcons) {
@@ -221,6 +232,22 @@ class IconsApi {
         const notification = await promoNotificationApi.getCurrentNotification();
         if (notification && notification.icons) {
             this.setPromoIcons(notification.icons);
+        }
+    }
+
+    /**
+     * Always fetches icon variants from the promo notification api,
+     * and sets the promo icons if any, promo icon is dismissed.
+     *
+     * @param tabId Tab's id.
+     * @param frameData Tab's {@link FrameData}.
+     */
+    private async resetPromoIconsIfAny(tabId: number, frameData: FrameData): Promise<void> {
+        const notification = await promoNotificationApi.getCurrentNotification();
+        if (notification && notification.icons) {
+            this.setPromoIcons(notification.icons);
+        } else {
+            await this.dismissPromoIcon(tabId, frameData);
         }
     }
 }
