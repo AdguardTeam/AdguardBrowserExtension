@@ -226,7 +226,12 @@ export class SettingsService {
      */
     static async onHideReferrerStateChange(isHideReferrerEnabled: boolean): Promise<void> {
         try {
-            await engine.api.setHideReferrer(isHideReferrerEnabled);
+            const appliedValue = await engine.api.setHideReferrer(isHideReferrerEnabled);
+            if (appliedValue !== isHideReferrerEnabled) {
+                // If the setting was not applied, we need to revert it back for
+                // the user in the UI and in the storage for configuration persistence.
+                await SettingsApi.setSetting(SettingOption.HideReferrer, !isHideReferrerEnabled);
+            }
         } catch (e) {
             logger.error('Failed to change `hide referrer` option state', e);
         }
@@ -239,7 +244,12 @@ export class SettingsService {
      */
     static async onHideSearchQueriesStateChange(isHideSearchQueriesEnabled: boolean): Promise<void> {
         try {
-            await engine.api.setHideSearchQueries(isHideSearchQueriesEnabled);
+            const appliedValue = await engine.api.setHideSearchQueries(isHideSearchQueriesEnabled);
+            if (appliedValue !== isHideSearchQueriesEnabled) {
+                // If the setting was not applied, we need to revert it back for
+                // the user in the UI and in the storage for configuration persistence.
+                await SettingsApi.setSetting(SettingOption.HideSearchQueries, !isHideSearchQueriesEnabled);
+            }
         } catch (e) {
             logger.error('Failed to change `hide search queries` option state', e);
         }
@@ -252,7 +262,12 @@ export class SettingsService {
      */
     static async onSendDoNotTrackStateChange(isSendDoNotTrackEnabled: boolean): Promise<void> {
         try {
-            await engine.api.setSendDoNotTrack(isSendDoNotTrackEnabled);
+            const appliedValue = await engine.api.setSendDoNotTrack(isSendDoNotTrackEnabled);
+            if (appliedValue !== isSendDoNotTrackEnabled) {
+                // If the setting was not applied, we need to revert it back for
+                // the user in the UI and in the storage for configuration persistence.
+                await SettingsApi.setSetting(SettingOption.SendDoNotTrack, !isSendDoNotTrackEnabled);
+            }
         } catch (e) {
             logger.error('Failed to change `send do not track` option state', e);
         }
@@ -265,7 +280,12 @@ export class SettingsService {
      */
     static async onRemoveXClientDataStateChange(isRemoveXClientDataEnabled: boolean): Promise<void> {
         try {
-            await engine.api.setBlockChromeClientData(isRemoveXClientDataEnabled);
+            const appliedValue = await engine.api.setBlockChromeClientData(isRemoveXClientDataEnabled);
+            if (appliedValue !== isRemoveXClientDataEnabled) {
+                // If the setting was not applied, we need to revert it back for
+                // the user in the UI and in the storage for configuration persistence.
+                await SettingsApi.setSetting(SettingOption.RemoveXClientData, !isRemoveXClientDataEnabled);
+            }
         } catch (e) {
             logger.error('Failed to change `remove x-client-data` option state', e);
         }
@@ -278,7 +298,12 @@ export class SettingsService {
      */
     static async onBlockWebRTCStateChange(isBlockWebRTCEnabled: boolean): Promise<void> {
         try {
-            await engine.api.setBlockWebRTC(isBlockWebRTCEnabled);
+            const appliedValue = await engine.api.setBlockWebRTC(isBlockWebRTCEnabled);
+            if (appliedValue !== isBlockWebRTCEnabled) {
+                // If the setting was not applied, we need to revert it back for
+                // the user in the UI and in the storage for configuration persistence.
+                await SettingsApi.setSetting(SettingOption.BlockWebRTC, !isBlockWebRTCEnabled);
+            }
         } catch (e) {
             logger.error('Failed to change `block WebRTC` option state', e);
         }

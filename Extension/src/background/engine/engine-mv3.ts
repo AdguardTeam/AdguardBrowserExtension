@@ -25,6 +25,7 @@ import {
     TsWebExtension,
     type MessagesHandlerMV3,
     type PreprocessedFilterList,
+    ConfigurationResult,
 } from '@adguard/tswebextension/mv3';
 
 import { logger } from '../../common/logger';
@@ -43,6 +44,7 @@ import {
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { FiltersStorage } from '../storages';
+import { SettingOption } from '../schema/settings/main';
 
 import { TsWebExtensionEngine } from './interface';
 
@@ -99,6 +101,8 @@ export class Engine implements TsWebExtensionEngine {
         const result = await this.api.start(configuration);
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
 
+        await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
+
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
@@ -128,6 +132,8 @@ export class Engine implements TsWebExtensionEngine {
         }
         const result = await this.api.configure(configuration);
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
+
+        await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
@@ -235,4 +241,41 @@ export class Engine implements TsWebExtensionEngine {
         const skipCheck = isFilteringEnabled === false;
         await this.update(skipCheck);
     }
+
+    /**
+     * Checks if the applied stealth settings are different from the current stealth settings.
+     * If the setting was not applied, we need to revert it back for the user
+     * in the UI and in the storage for configuration persistence.
+     *
+     * @param currentSettings Current settings in the storage and UI.
+     * @param appliedStealthSettings Applied stealth settings from last update of the engine.
+     *
+     * @returns Promise that resolves when the check is done.
+     */
+    private checkAppliedStealthSettings = async (
+        currentSettings: Configuration['settings'],
+        appliedStealthSettings: ConfigurationResult['stealthResult'],
+    ): Promise<void> => {
+        if (!appliedStealthSettings || !currentSettings.stealthModeEnabled) {
+            return;
+        }
+
+        const { stealth } = currentSettings;
+
+        if (stealth.hideReferrer !== appliedStealthSettings.hideReferrer) {
+            await SettingsApi.setSetting(SettingOption.HideReferrer, appliedStealthSettings.hideReferrer);
+        }
+        if (stealth.blockWebRTC !== appliedStealthSettings.blockWebRTC) {
+            await SettingsApi.setSetting(SettingOption.BlockWebRTC, appliedStealthSettings.blockWebRTC);
+        }
+        if (stealth.blockChromeClientData !== appliedStealthSettings.blockChromeClientData) {
+            await SettingsApi.setSetting(SettingOption.RemoveXClientData, appliedStealthSettings.blockChromeClientData);
+        }
+        if (stealth.sendDoNotTrack !== appliedStealthSettings.sendDoNotTrack) {
+            await SettingsApi.setSetting(SettingOption.SendDoNotTrack, appliedStealthSettings.sendDoNotTrack);
+        }
+        if (stealth.hideSearchQueries !== appliedStealthSettings.hideSearchQueries) {
+            await SettingsApi.setSetting(SettingOption.HideSearchQueries, appliedStealthSettings.hideSearchQueries);
+        }
+    };
 }
