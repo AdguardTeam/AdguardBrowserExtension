@@ -124,4 +124,57 @@ describe('Quick Fixes API should', () => {
 
         mock.mockRestore();
     });
+
+    it('handle offline mode without throwing errors', async () => {
+        if (!__IS_MV3__) {
+            expect(true).toBeTruthy();
+            return;
+        }
+
+        const filterId = 24;
+
+        // Mock navigator.onLine to simulate offline mode
+        Object.defineProperty(navigator, 'onLine', {
+            value: false,
+            writable: true,
+        });
+
+        // Mock FiltersDownloader to throw a network error
+        const mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockImplementation(() => Promise.reject(new TypeError('Failed to fetch')));
+
+        // Read initial metadata and filter data
+        const initialMetadata: Metadata = JSON.parse(JSON.stringify(metadataStorage.getData()));
+        const initialFilterData = await FiltersStorage.getPreprocessedFilterList(filterId);
+        const initialRawFilterData = await RawFiltersStorage.get(filterId);
+
+        // Attempt to load and enable Quick Fixes in offline mode
+        await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+
+        // Check that FiltersDownloader was called
+        expect(FiltersDownloader.downloadWithRaw).toHaveBeenCalledWith(
+            `https://filters.adtidy.org/extension/chromium-mv3/filters/${filterId}.txt`,
+            {
+                force: true,
+                definedExpressions,
+                validateChecksum: true,
+                validateChecksumStrict: true,
+            },
+        );
+
+        // Check that filter data and metadata remained unchanged
+        expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(initialFilterData);
+        expect(await RawFiltersStorage.get(filterId)).toEqual(initialRawFilterData);
+        expect(metadataStorage.getData()).toStrictEqual(initialMetadata);
+
+        // Attempt to update Quick Fixes filter in offline mode
+        await QuickFixesRulesApi.updateQuickFixesFilter();
+
+        // Check that filter data and metadata still remained unchanged
+        expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(initialFilterData);
+        expect(await RawFiltersStorage.get(filterId)).toEqual(initialRawFilterData);
+        expect(metadataStorage.getData()).toStrictEqual(initialMetadata);
+
+        mock.mockRestore();
+    });
 });

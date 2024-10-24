@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { logger, PreprocessedFilterList } from '@adguard/tsurlfilter';
+import { PreprocessedFilterList } from '@adguard/tsurlfilter';
 
+import { logger } from '../../../common/logger';
 import { AntiBannerFiltersId } from '../../../common/constants';
+import { isNetworkError } from '../../../common/error';
 import { FiltersStorage, filterStateStorage } from '../../storages';
 import { engine } from '../../engine';
 
@@ -51,20 +53,27 @@ export class QuickFixesRulesApi {
      * actual version and metadata versions).
      */
     private static async loadQuickFixesRules(): Promise<void> {
-        const metadataOfUpdatedFilter = await CommonFilterApi.loadFilterRulesFromBackend(
-            {
-                filterId: AntiBannerFiltersId.QuickFixesFilterId,
-                // Without patches because filter is quite small.
-                // Because otherwise, if we will load it with patches, we should
-                // also load it fully from time to time (as we do for static
-                // filters in MV2) to prevent some unexpected problems from
-                // patches.
-                ignorePatches: true,
-            },
-            true,
-        );
+        try {
+            const metadataOfUpdatedFilter = await CommonFilterApi.loadFilterRulesFromBackend(
+                {
+                    filterId: AntiBannerFiltersId.QuickFixesFilterId,
+                    // Without patches because filter is quite small.
+                    // Because otherwise, if we will load it with patches, we should
+                    // also load it fully from time to time (as we do for static
+                    // filters in MV2) to prevent some unexpected problems from
+                    // patches.
+                    ignorePatches: true,
+                },
+                true,
+            );
 
-        FiltersApi.partialUpdateMetadataForFilter(metadataOfUpdatedFilter);
+            FiltersApi.partialUpdateMetadataForFilter(metadataOfUpdatedFilter);
+        } catch (error) {
+            if (navigator.onLine && !isNetworkError(error)) {
+                logger.error(error);
+                throw error;
+            }
+        }
     }
 
     /**
