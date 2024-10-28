@@ -32,6 +32,7 @@ const transformedModules = [
     '@adguard/tswebextension',
     '@adguard/filters-downloader',
     'lodash-es',
+    'superjson',
 ];
 
 const config: Config = {
@@ -51,7 +52,18 @@ const config: Config = {
     ],
     // Use same aliases as in tsconfig.
     moduleNameMapper: pathsToModuleNameMapper(
-        TsConfigWithManifestDependantTypes.compilerOptions.paths,
+        Object.assign(
+            TsConfigWithManifestDependantTypes.compilerOptions.paths,
+            {
+                // webextension-polyfill is also used by tswebextension,
+                // so we need to mock it as dependency of dependencies.
+                // Its problematic, when tswebextension is linked,
+                // because jest.mock() doesn't work with linked modules, e.g.:
+                // eslint-disable-next-line max-len
+                // ../tsurlfilter/node_modules/.pnpm/webextension-polyfill@0.12.0/node_modules/webextension-polyfill/dist/browser-polyfill.js
+                'webextension-polyfill': ['./mocks/webextension-polyfill.ts'],
+            },
+        ),
         { prefix: '<rootDir>/' },
     ),
     transform: {

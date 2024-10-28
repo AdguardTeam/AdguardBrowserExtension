@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { HybridStorage } from './hybrid-storage';
-import { BrowserStorage } from './browser-storage';
+
+import { BrowserStorage, HybridStorage } from '@adguard/tswebextension/core-storages';
 
 /**
  * Storage instance for accessing `browser.storage.local`.
