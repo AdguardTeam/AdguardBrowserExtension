@@ -60,7 +60,7 @@
     axios "1.6.2"
     crypto-js "^4.2.0"
 
-"@adguard/logger@^1.1.1":
+"@adguard/logger@^1.1.0", "@adguard/logger@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@adguard/logger/-/logger-1.1.1.tgz#761d2b3ed48ca2e52cc15e709bb4f2f46bb78c46"
   integrity sha512-pWAxGW5D6Nut4VTgckO/pqPOAOnDnC14js/wUU+FB8yZBKQHklCix46m0qqeB+YhhI68ZJBPxx32f9lxG87l5Q==
@@ -84,7 +84,7 @@
   resolved "https://registry.yarnpkg.com/@adguard/translate/-/translate-1.0.2.tgz#e8076902f0950a62d40519d6eb389778516928a0"
   integrity sha512-TeQV4ngse/fcpFDCrtU5VqjZfQsdytSuGT8wF4biIM6c6v6W/tkUdrTDhNItq126hAZe65V8QgipTAp8qHdeZw==
 
-"@adguard/tsurlfilter@3.1.0-alpha.7", "@adguard/tsurlfilter@^3.1.0-alpha.7":
+"@adguard/tsurlfilter@^3.1.0-alpha.6":
   version "3.1.0-alpha.7"
   resolved "https://registry.yarnpkg.com/@adguard/tsurlfilter/-/tsurlfilter-3.1.0-alpha.7.tgz#fc8cd374c5e03b1bd97bef9696f703cec689dd49"
   integrity sha512-SIi2rcwAqWONQFTSZJaAaA81zySkGO+7U5WNmlyDp+bAMv4l4h1mZ+SAfBW+fqNlASx/Y2O7BM6HfIumW9n6dA==
@@ -101,23 +101,43 @@
     tldts "5.6.45"
     zod "3.21.4"
 
-"@adguard/tswebextension@https://github.com/AdguardTeam/tsurlfilter/raw/2ca6f94eb673f765d8e1733f0f86192577419bfb/packages/tswebextension/tswebextension.tgz":
-  version "2.4.0-alpha.6"
-  resolved "https://github.com/AdguardTeam/tsurlfilter/raw/2ca6f94eb673f765d8e1733f0f86192577419bfb/packages/tswebextension/tswebextension.tgz#8e3c234f47b6e67d84c03fa529cb3f0217ca79bb"
+"@adguard/tsurlfilter@https://github.com/AdguardTeam/tsurlfilter/raw/refs/heads/fix/AG-36824-1/packages/tsurlfilter/adguard-tsurlfilter-3.1.0-alpha.6.tgz":
+  version "3.1.0-alpha.6"
+  resolved "https://github.com/AdguardTeam/tsurlfilter/raw/refs/heads/fix/AG-36824-1/packages/tsurlfilter/adguard-tsurlfilter-3.1.0-alpha.6.tgz#12aa9011c44a37bbc02f0e3a08c0e564518b0c0c"
+  dependencies:
+    "@adguard/agtree" "^2.1.2"
+    "@adguard/css-tokenizer" "^1.1.1"
+    "@adguard/scriptlets" "^1.12.1"
+    cidr-tools "^6.4.1"
+    commander "9.4.1"
+    is-cidr "4.0.2"
+    is-ip "3.1.0"
+    jsonpos "^4.1.2"
+    lru_map "0.4.1"
+    punycode "2.3.1"
+    tldts "5.6.45"
+    zod "3.21.4"
+    zod-validation-error "^3.4.0"
+
+"@adguard/tswebextension@https://github.com/AdguardTeam/tsurlfilter/raw/refs/heads/fix/AG-36824-1/packages/tswebextension/adguard-tswebextension-2.4.0-alpha.3.tgz":
+  version "2.4.0-alpha.3"
+  resolved "https://github.com/AdguardTeam/tsurlfilter/raw/refs/heads/fix/AG-36824-1/packages/tswebextension/adguard-tswebextension-2.4.0-alpha.3.tgz#ef35028d27b4b98a612dad71953961d722a9bf6c"
   dependencies:
     "@adguard/agtree" "^2.1.2"
     "@adguard/assistant" "^4.3.70"
     "@adguard/extended-css" "^2.0.56"
-    "@adguard/logger" "^1.1.1"
+    "@adguard/logger" "^1.1.0"
     "@adguard/scriptlets" "^1.12.1"
-    "@adguard/tsurlfilter" "^3.1.0-alpha.7"
+    "@adguard/tsurlfilter" "^3.1.0-alpha.6"
     bowser "2.11.0"
     chrome-types "^0.1.307"
     commander "11.0.0"
     fs-extra "11.1.1"
+    idb "^8.0.0"
     lodash-es "^4.17.21"
     lru_map "0.4.1"
     nanoid "4.0.2"
+    superjson "^2.2.1"
     text-encoding "git+https://github.com/AdguardTeam/text-encoding.git#v0.7.2"
     tldts "^6.0.8"
     tslib "2.5.3"
@@ -4039,6 +4059,11 @@ expect@^29.0.0, expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
+fake-indexeddb@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/fake-indexeddb/-/fake-indexeddb-6.0.0.tgz#3173d5ad141436dace95f8de6e9ecdc3d9787d5d"
+  integrity sha512-YEboHE5VfopUclOck7LncgIqskAqnv4q0EWbYCaxKKjAvO93c+TJIaBuGy8CBFdbg9nKdpN3AuPRwVBJ4k7NrQ==
+
 fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
@@ -5512,6 +5537,18 @@ json-buffer@3.0.1:
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
   integrity sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==
 
+json-cst@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/json-cst/-/json-cst-1.2.0.tgz#7aa7d4642873d2b3902e3f9543a796920be2f005"
+  integrity sha512-liC8jqILo2mZjKs/c/zDknohoLo2FocQH5ZGyPZzPNNHSC/LarVq42R4WA58lqPdH9ssP/JKArp6SZ6aP7vyhA==
+  dependencies:
+    json-lexer "^1.2.0"
+
+json-lexer@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/json-lexer/-/json-lexer-1.2.0.tgz#39107793644a0062b9f9f602e0aaee7e4c92f385"
+  integrity sha512-7otpx5UPFeSELoF8nkZPHCfywg86wOsJV0WNOaysuO7mfWj1QFp2vlqESRRCeJKBXr+tqDgHh4HgqUFKTLcifQ==
+
 json-parse-even-better-errors@^2.3.0, json-parse-even-better-errors@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz#7c47805a94319928e05777405dc12e1f7a4ee02d"
@@ -5557,6 +5594,13 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
+
+jsonpos@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/jsonpos/-/jsonpos-4.1.2.tgz#cb9360958b9f4031a6d574a42e7f0471a48866d1"
+  integrity sha512-cn+7TiBMq9VUsHKp+8uZeSY0K2ZnjEwurSA8uJlBoOmMA7w67axpvfv+v77A/8iEXLkXMN06uvEzblGj51+VBQ==
+  dependencies:
+    json-cst "^1.2.0"
 
 "jsx-ast-utils@^2.4.1 || ^3.0.0", jsx-ast-utils@^3.3.5:
   version "3.3.5"
