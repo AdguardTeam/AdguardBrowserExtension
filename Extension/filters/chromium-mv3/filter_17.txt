@@ -1,8 +1,8 @@
-! Checksum: O9fJG2t8mp/j3WBWJHHa/Q
+! Checksum: 2dpCv78XWcIZPS+S63aFoA
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.66
-! TimeUpdated: 2024-10-18T17:33:23+00:00
+! Version: 2.0.9.68
+! TimeUpdated: 2024-10-21T13:33:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,10 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! Segmentify
+$removeparam=_sgm_campaign
+$removeparam=_sgm_term
+$removeparam=_sgm_pinned
 ! https://support.ebis.ne.jp/s/article/23146
 $removeparam=ebisOther1
 $removeparam=ebisOther2
@@ -380,6 +384,12 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/191305
+||puma.com^$removeparam=sc_src
+||puma.com^$removeparam=sc_lid
+||puma.com^$removeparam=sc_uid
+||puma.com^$removeparam=sc_llid
+||puma.com^$removeparam=sc_eh
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191029
 ||reddit.com^$removeparam=%24deep_link
 ||reddit.com^$removeparam=%243p
@@ -2142,6 +2152,10 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||docs.yandex.$removeparam=uid
 ! Yandex.Disk
 ! Do not remove `sk` parameter - https://github.com/AdguardTeam/AdguardFilters/issues/178459
+! Yandex.Pixel
+||amc.yandex.ru^$removeparam=cmn_id
+||amc.yandex.ru^$removeparam=ad_type=banner
+||amc.yandex.ru^$removeparam=crv_id
 !
 ! Baidu search - statictics
 ||www.baidu.com^$removeparam=rsv_pq
