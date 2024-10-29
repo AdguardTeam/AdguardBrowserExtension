@@ -40,8 +40,6 @@ export type GetAllowlistDomainsResponse = {
 
 /**
  * Service for processing events with a allowlist.
- *
- * FIXME: Should we add check for MV3 limitations here too?
  */
 export class AllowlistService {
     /**
