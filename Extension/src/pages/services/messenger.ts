@@ -247,7 +247,10 @@ class Messenger {
                 const castedMessage = message as ExtractedMessage<MessageType.NotifyListeners>;
 
                 const [type, ...data] = castedMessage.data;
-                callback({ type, data });
+
+                if (events.includes(type)) {
+                    callback({ type, data });
+                }
             }
             if (message.type === MessageType.UpdateListeners) {
                 onUpdateListeners();
