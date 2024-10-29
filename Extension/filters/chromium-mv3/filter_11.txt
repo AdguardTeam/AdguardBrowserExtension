@@ -1,8 +1,8 @@
-! Checksum: X1YEGHCc6W+z3zlrjyq7+Q
+! Checksum: cl42AnUgVcWCuweT5ilICQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.55.50
-! TimeUpdated: 2024-10-22T11:33:44+00:00
+! Version: 2.0.55.64
+! TimeUpdated: 2024-10-28T13:33:22+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,6 +219,8 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||news-cdn.site^
+||adx.mossru.com^
 ||jjpp.lmtjapi.com^
 ||a.07aa269c0e76550c929640c170af557c7371753ba1b580236d7fa0a4.com^
 ||a.64e98469810bd13e2b45e52d19d6fddfe333b3528350d8cfa792d478.com^
@@ -2399,6 +2401,18 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+zestolu.cz,osobnosti.cz##div[class^="mobile-"]
+kakijun.jp##.gaddiv
+forvo.com###fixed-banner-container
+syurabahazard.com##div[id^="articleAd"]
+basketballbbs.com##.widget:has(> div[class] > div[id^="rss"] .ninja-recommend-block)
+novosti-n.org##.kama-inline-ads
+novosti-n.org##.lead
+aptoide.com##div[class^="promote-game-banner__"]
+otakuma.net###affiliate-list
+overwatch2-news.apexlegends-leaksnews.com##.ad_inserter_08
+car.motor-fan.jp###sp_article_billboard
+sippo.asahi.com##.u-mb48.foot
 jyoseisama.com###article-contents > center:has(> a[target="_blank"][href])
 valorantns.com##.ad_sp
 kahoku.news###kahoku_sp_article_underarticle
@@ -6257,8 +6271,6 @@ m.yourlust.com,fapality.com,m.mylust.com,m.anysex.com##.divExoCustomLayer
 m.nationalgeographic.com.tr##.divAdvertising
 yahoo.com###Top-0-MobileFeaturedAd-Proxy
 yahoo.com##ul.stream-items > li[class=""]:not([data-wf-toggle-class]) > .stream-item[data-wf-beacons^="https://beap.gemini.yahoo.com/"]
-116.ru,m.14.ru,m.154.ru,m.161.ru,m.164.ru,m.178.ru,m.26.ru,m.29.ru,m.35.ru,m.42.ru,m.43.ru,m.45.ru,m.48.ru,m.51.ru,m.53.ru,m.56.ru,m.59.ru,m.60.ru,m.62.ru,m.63.ru,m.68.ru,m.70.ru,m.71.ru,m.72.ru,m.74.ru,m.76.ru,m.86.ru,m.89.ru,m.93.ru,m.ekat.ru,m.irkutsk.ru,m.kbs.ru,m.mgorsk.ru,m.omsk1.ru,m.proizhevsk.ru,m.provoronezh.ru,m.sochi1.ru,m.sterlitamak1.ru,m.tolyatty.ru,m.ufa1.ru,m.v1.ru##.advscroll_mobile
-116.ru,m.14.ru,m.154.ru,m.161.ru,m.164.ru,m.178.ru,m.26.ru,m.29.ru,m.35.ru,m.42.ru,m.43.ru,m.45.ru,m.48.ru,m.51.ru,m.53.ru,m.56.ru,m.59.ru,m.60.ru,m.62.ru,m.63.ru,m.68.ru,m.70.ru,m.71.ru,m.72.ru,m.74.ru,m.76.ru,m.86.ru,m.89.ru,m.93.ru,m.ekat.ru,m.irkutsk.ru,m.kbs.ru,m.mgorsk.ru,m.omsk1.ru,m.proizhevsk.ru,m.provoronezh.ru,m.sochi1.ru,m.sterlitamak1.ru,m.tolyatty.ru,m.ufa1.ru,m.v1.ru##.s240x400
 blog.livedoor.jp##.btn-ldb-bottomAdd
 dict.hinkhoj.com##.navbar > div[style="margin:0px"]
 m.yahoo.co.jp###prem-ad
@@ -7238,6 +7250,7 @@ dzen.ru##div[class^="dzen-mobile__bannerMain-"]
 ! Dzen News
 dzen.ru##div[class*="news"] > div[class*="_banner_"]
 ! Dzen feed
+dzen.ru##article:has(> div.dzen-mobile--card-rtb__ad-yp)
 dzen.ru#?#.feed-item article:matches-attr("/data[a-z-]+/"="/^card-[a-zA-Z]{3,}/")
 dzen.ru##.zenad-card-rtb
 [$path=/media]dzen.ru##div[class^="article-render-mobile"][class$="type_yandex-direct"]
