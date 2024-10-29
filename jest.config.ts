@@ -32,6 +32,7 @@ const transformedModules = [
     '@adguard/tswebextension',
     '@adguard/filters-downloader',
     'lodash-es',
+    'superjson',
 ];
 
 const config: Config = {
