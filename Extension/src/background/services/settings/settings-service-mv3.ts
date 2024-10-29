@@ -72,6 +72,7 @@ export class SettingsService {
         // AG-34765
         // settingsEvents.addListener(SettingOption.HideReferrer, SettingsService.onHideReferrerStateChange);
         // TODO: revert when will be found a better way to add exclusions for $stealth=searchqueries
+        // AG-34765
         // settingsEvents.addListener(SettingOption.HideSearchQueries, SettingsService.onHideSearchQueriesStateChange);
         settingsEvents.addListener(SettingOption.SendDoNotTrack, SettingsService.onSendDoNotTrackStateChange);
         settingsEvents.addListener(SettingOption.RemoveXClientData, SettingsService.onRemoveXClientDataStateChange);
