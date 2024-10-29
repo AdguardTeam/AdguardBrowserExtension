@@ -20,6 +20,8 @@ import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
 import { isObject } from 'lodash';
 
+import { HybridStorage } from '@adguard/tswebextension/core-storages';
+
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
 import {
@@ -197,39 +199,41 @@ export class UpdateApi {
      * Run data migration from schema v7 to schema v8.
      */
     private static async migrateFromV7toV8(): Promise<void> {
-        try {
-            // Only relevant if IDB is not available.
-            if (!(await hybridStorage.isIDBSupported())) {
-                return;
+        // Only relevant if IDB is not available.
+        if (await HybridStorage.isIDBSupported()) {
+            logger.debug('IDB is supported, skipping migration');
+            return;
+        }
+
+        const entries = await browserStorage.entries();
+
+        const keys = Object.keys(entries).filter((key) => [
+            RAW_FILTER_KEY_PREFIX,
+            BINARY_FILTER_KEY_PREFIX,
+            FILTER_KEY_PREFIX,
+            CONVERSION_MAP_PREFIX,
+            SOURCE_MAP_PREFIX,
+        ].some((prefix) => key.startsWith(prefix)));
+
+        if (keys.length === 0) {
+            logger.debug('No data to migrate');
+            return;
+        }
+
+        const migrationData: Record<string, unknown> = {};
+
+        keys.forEach((key) => {
+            const val = entries[key];
+
+            if (!Object.prototype.hasOwnProperty.call(val, 'json')) {
+                migrationData[key] = HybridStorage.serialize(UpdateApi.deserialize(entries[key]));
             }
+        });
 
-            const entries = await hybridStorage.entries();
+        const transactionResult = await browserStorage.setMultiple(migrationData);
 
-            const keys = Object.keys(entries).filter((key) => [
-                RAW_FILTER_KEY_PREFIX,
-                BINARY_FILTER_KEY_PREFIX,
-                FILTER_KEY_PREFIX,
-                CONVERSION_MAP_PREFIX,
-                SOURCE_MAP_PREFIX,
-            ].some((prefix) => key.startsWith(prefix)));
-
-            if (keys.length === 0) {
-                logger.debug('No data to migrate');
-                return;
-            }
-
-            const migrationData: Record<string, unknown> = {};
-
-            keys.forEach((key) => {
-                migrationData[key] = UpdateApi.deserialize(entries[key]);
-            });
-
-            const transactionResult = await hybridStorage.setMultiple(migrationData);
-            if (!transactionResult) {
-                throw new Error('Failed to migrate filters from storage to hybrid storage, transaction failed');
-            }
-        } catch (e: unknown) {
-            logger.error('Error while migrating data from storage to hybrid storage:', getErrorMessage(e));
+        if (!transactionResult) {
+            logger.error('Failed to save migrated data');
         }
     }
 
