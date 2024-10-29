@@ -1,8 +1,8 @@
-! Checksum: dzMxSOuYKaPKfJ+1Hed3mw
+! Checksum: /APDhnk2fa1/IxbTKbu4vA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.53.89
-! TimeUpdated: 2024-10-22T10:33:47+00:00
+! Version: 2.0.53.99
+! TimeUpdated: 2024-10-29T07:33:17+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -335,7 +335,6 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 ! #adcontent bait
-ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,ozbeceriksizler.co,genelpara.com,teknop.net,kirtkirtla.com,ozgunbilgi.com,azbuz.org,mustafabukulmez.com,siberkalem.com,gecbunlari.com,hknkr.com,intekno.net#@##adcontent
 ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,ozbeceriksizler.co,genelpara.com,azbuz.org,mustafabukulmez.com#%#//scriptlet("prevent-setTimeout", "0===o.offsetLeft&&0===o.offsetTop")
 teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
 !
@@ -347,7 +346,7 @@ teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.
 @@||gecmisi.com.tr^$cookie=/^_ga_/
 gecmisi.com.tr#%#//scriptlet('prevent-setInterval', 'showAdBlockMessage')
 gecmisi.com.tr#%#//scriptlet('prevent-setTimeout', '/adElement\.innerHTML|=document\[_0x/')
-gecmisi.com.tr#%#(()=>{let a="";const e=`GA1.1.${crypto.getRandomValues(new Uint32Array(1))[0]}.${crypto.getRandomValues(new Uint32Array(1))[0]}`,t=()=>{document.cookie=`_ga_${a}=${e}`};window.dataLayer=window.dataLayer||[],dataLayer.push=new Proxy(window.dataLayer.push,{apply:(e,n,o)=>("config"===o[0][0]&&(a=o[0][1],"complete"===document.readyState?t():window.addEventListener("load",t)),Reflect.apply(e,n,o))})})();
+gecmisi.com.tr#%#(()=>{let e="";const a=`GA1.1.${Math.floor(Date.now()/1e3)}.${Math.floor(Date.now()/1e3)}`;let o=!1;const t=()=>{e=e.replace("G-",""),document.cookie=`_ga_${e}=${a}`};window.dataLayer=window.dataLayer||[],dataLayer.push=new Proxy(window.dataLayer.push,{apply:(a,d,n)=>("config"===n[0][0]&&(e=n[0][1],"complete"===document.readyState?t():o||(window.addEventListener("load",t),o=!0)),Reflect.apply(a,d,n))})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186286
 promy.pro#%#//scriptlet('set-constant', 'canRunAds', 'true')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183763
@@ -966,8 +965,9 @@ technopat.net#%#(function() { var w_open = window.open, regex = /goo.gl/; window
 !
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189192
-dizipal739.com#$#.video-banner { display: block !important; }
-dizipal739.com#$#.pre-player { display: none !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/191785
+dizipal740.com,dizipal739.com#$#.video-banner { display: block !important; }
+dizipal740.com,dizipal739.com#$#.pre-player { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186377
 vipfilmcity.pro#%#//scriptlet('remove-attr', 'data-money', '.play-that-video')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186287
@@ -1687,13 +1687,13 @@ techolay.net,havadiskibris.com,oyunindir.club,armoniscans.com,teknobh.com,yoldao
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv
+/^(?!.*(intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv
 !
 ! Similar to regexp above, but using the denyallow modifier
 ! Be careful, if a site uses third-party resources (players etc.) and the rule applied in AdGuard for Safari/iOS
-$script,third-party,denyallow=cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|x.com,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv|mp3semti.com
+$script,third-party,denyallow=intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|x.com,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv|mp3semti.com
 ! Similar to regexp above, but using the denyallow modifier and for xmlhttprequest
-$xmlhttprequest,third-party,denyallow=cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|x.com,_____,domain=ruya-manga.com|hayalistic.com.tr
+$xmlhttprequest,third-party,denyallow=intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|x.com,_____,domain=ruya-manga.com|hayalistic.com.tr
 !
 ! Turkish digital magazines
 /service/advertchannels?$domain=kocaelifikir.com|anayurtgazetesi.com|medyaankara.com|ozgunkocaeli.com.tr|urfanatik.com|dirilispostasi.com|turkuazgazetesi.net|yenialanya.com|bugunkocaeli.com.tr|cagdaskocaeli.com.tr|mansetaydin.com|enkocaeli.com|kocaelikoz.com|kocaelibarisgazetesi.com|seskocaeli.com|sigortahaber.com|gaziantepgunes.com
@@ -1701,6 +1701,7 @@ $xmlhttprequest,third-party,denyallow=cdn.plyr.io|authkong.com|rsc.cdn77.org|lin
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
 !
+sozcu.com.tr###div-sozcu_desktop_detay_sticky_parent
 gdh.digital##.container.mt-3 > div[style]
 gecmisi.com.tr##div[id^="aswift_"]
 hangikredi.com###__next > div.relative:has(> a[href^="https://8fl2.tr.adj.st/"])
@@ -1858,13 +1859,14 @@ tamindir.com##.band-banner
 rotaborsa.com#%#//scriptlet('trusted-replace-node-text', 'body', '-->', '/^-->$/', '')
 /\d+x\d+/$image,domain=giynikgazetesi.com
 .gif$~third-party,domain=giynikgazetesi.com
-hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money
-dizikorea.com,dizikorea.org,dizikorea.tv,dizikorea.com.bd,dizikorea.com.np,dizikorea.vip,dizikorea.gov.bd,dizikorea.gov.np,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-text
-hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-wrapper
-hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-child
-hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-item
-hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.ps-head-container
-hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.col > .alert-danger-50.alert
+||hdfilmcehennemi*.net/rekla/
+hdfilmcehennemi1.*,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money
+diziwatch.net,hdfilmcehennemi1.*,dizikorea.com,dizikorea.org,dizikorea.tv,dizikorea.com.bd,dizikorea.com.np,dizikorea.vip,dizikorea.gov.bd,dizikorea.gov.np,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-text
+hdfilmcehennemi1.*,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-wrapper
+hdfilmcehennemi1.*,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-child
+hdfilmcehennemi1.*,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.money-item
+hdfilmcehennemi1.*,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.ps-head-container
+hdfilmcehennemi1.*,hdfilmcehennemi.com,hdfilmcehennemi.net,hdfilmcehennemi.org,hdfilmcehennemi.io,hdfilmcehennemi.info,hdfilmcehennemi.de,hdfilmcehennemi.me,hdfilmcehennemi.online,hdfilmcehennemi.tv,hdfilmcehennemi.app,hdfilmcehennemi.us,hdfilmcehennemi.cc,hdfilmcehennemi.mx,hdfilmcehennemi.live,hdfilmcehennemi.top,hdfilmcehennemi.pw,hdfilmcehennemi.com.bd,hdfilmcehennemi.asia,hdfilmcehennemi.com.np,hdfilmcehennemi.life,hdfilmcehennemi.gov.bd,hdfilmcehennemi.mobi,hdfilmcehennemi.fun,hdfilmcehennemi.one,hdfilmcehennemi.guru,hdfilmcehennemi.gov.np,hdfilmcehennemi.gen.tr,hdfilmcehennemi.icu,hdfilmcehennemi.sh##.col > .alert-danger-50.alert
 jetfilmizle.com,jetfilmizle.de,jetfilmizle.me,jetfilmizle.eu,jetfilmizle.biz,jetfilmizle.club,jetfilmizle.shop,jetfilmizle.live,jetfilmizle.com.bd,jetfilmizle.com.np,jetfilmizle.space,jetfilmizle.life,jetfilmizle.link,jetfilmizle.vip,jetfilmizle.gov.bd,jetfilmizle.mobi,jetfilmizle.ws,jetfilmizle.gov.np##img[src^="reklam/"]
 jetfilmizle.com,jetfilmizle.de,jetfilmizle.me,jetfilmizle.eu,jetfilmizle.biz,jetfilmizle.club,jetfilmizle.shop,jetfilmizle.live,jetfilmizle.com.bd,jetfilmizle.com.np,jetfilmizle.space,jetfilmizle.life,jetfilmizle.link,jetfilmizle.vip,jetfilmizle.gov.bd,jetfilmizle.mobi,jetfilmizle.ws,jetfilmizle.gov.np###movie > div[style*="position: absolute;"][style*="z-index:"]
 uzmancoin.com##div[class^="ai-viewport"]
@@ -1877,8 +1879,8 @@ tv100.com##body .desktop-ad
 tv100.com##.content-inside-ad
 dizifox1.com###footer ~ center > a[href]
 dizipal.org##.footerleft > br ~ a[href]
-||hdfilmcehennemi2.cx/uploads/*.mp4
-hdfilmcehennemi2.cx##.reklam-link
+||hdfilmcehennemi2.*/uploads/*.mp4
+hdfilmcehennemi2.*##.reklam-link
 dizigom1.tv###header ~ div[class][id][style] img
 ||dizigom1.tv/*.gif
 ||dizigom1-tv.cdn.ampproject.org/i/dizigom1.tv/gif2-min.gif
@@ -2435,7 +2437,7 @@ biliyo.org##div[style^="float:left;"][style$="min-width:336px;min-height:250px;"
 afroditscans.com###footer > p > span[style]
 ||trplayer.site/vast.php
 jetfilmizle.com,jetfilmizle.de,jetfilmizle.me,jetfilmizle.eu,jetfilmizle.biz,jetfilmizle.club,jetfilmizle.shop,jetfilmizle.live,jetfilmizle.com.bd,jetfilmizle.com.np,jetfilmizle.space,jetfilmizle.life,jetfilmizle.link,jetfilmizle.vip,jetfilmizle.gov.bd,jetfilmizle.mobi,jetfilmizle.ws,jetfilmizle.gov.np##body > div[id] > [style^="position:fixed;inset:"][style*="z-index:"][style*="height:100%;width:100%"]
-justintvizlehd.xyz,hdfilmcehennemi2.de,720pizle.ai,diziroll.club,roketdizi.co,dizilla.club,birasyadizi.com,goodfilmizle.com,zitinger11.cfd,zitinger5.cfd##a[href^="https://cutt.ly/"]
+justintvizlehd.xyz,hdfilmcehennemi2.*,720pizle.ai,diziroll.club,roketdizi.co,dizilla.club,birasyadizi.com,goodfilmizle.com,zitinger11.cfd,zitinger5.cfd##a[href^="https://cutt.ly/"]
 anizm.net##div[style^="text-align: center;"] > a[target="_blank"]:not([href="https://anizm.net/"])
 tgrthaber.com.tr##div[id^="dfp-sidebar-"]
 tgrthaber.com.tr##div[style*="min-width: 300px;"][style*="min-height: 250px;"]
@@ -2664,7 +2666,7 @@ yasemin.com##div[id^="dfp-anasayfa-masthead-"]
 ||r.resimlink.com/ZyRYl.jpg
 ||sexfilmleriizle.com/mostvid.mp4
 siyahfilmizle.info,siyahfilmizle.tv,siyahfilmizle.pro,siyahfilmizle.com.bd,siyahfilmizle.com.np,siyahfilmizle.gov.bd,siyahfilmizle.gov.np###footer_q
-hdfilmcehennemi2.de,siyahfilmizle.info,siyahfilmizle.tv,siyahfilmizle.pro,siyahfilmizle.com.bd,siyahfilmizle.com.np,siyahfilmizle.gov.bd,siyahfilmizle.gov.np,hdmixfilim.com,erotikfilmtube.com##.money--video
+hdfilmcehennemi2.*,siyahfilmizle.info,siyahfilmizle.tv,siyahfilmizle.pro,siyahfilmizle.com.bd,siyahfilmizle.com.np,siyahfilmizle.gov.bd,siyahfilmizle.gov.np,hdmixfilim.com,erotikfilmtube.com##.money--video
 trendyol.com##[class^="search-store-advs"]
 derstarih.com###mcx-12
 derstarih.com###mcx-10
@@ -3694,7 +3696,7 @@ gencinsesi.com##.kolon10 > .float-right img[alt*="reklam"]
 ||bettingnetwork-pw.cdn.ampproject.org/*/bettingnetwork.pw/xdb/
 hdfilmizletv.net##.leftC > .videoalt
 fmhikayeleri.com##.sidebar_inner > #custom_html-13
-sofra.com.tr,aspor.com.tr,paradergi.com.tr,fotomac.com.tr##.advers-box
+sabah.com.tr,sofra.com.tr,aspor.com.tr,paradergi.com.tr,fotomac.com.tr##.advers-box
 sabah.com.tr,sofra.com.tr,atv.com.tr,harpersbazaar.com.tr,paradergi.com.tr,esquire.com.tr,aspor.com.tr,yeniasir.com.tr,ahaber.com.tr,takvim.com.tr,atvavrupa.tv,fotomac.com.tr##body .billBoardFrame
 sabah.com.tr###id_d_bantreklam
 capital.com.tr###banner-masthead div[id^="medyanet"]
@@ -5640,11 +5642,17 @@ webteizle.info,webteizle1.info,webteizle2.info,webteizle3.info,webteizle4.info,w
 [$domain=/^webteizle\d{0\,2}\.info/]#%#//scriptlet('set-constant', 'isShow', 'true')
 !
 ! dizi.life - frequently changed domains
+||dcdlplayer8a06f4.xyz/c.gif
 ||dizi*.life/assets/img/bg.jpg
 ||dizi*.life/assets/img/*.gif
+[$domain=/(^\|.+\.)dizi\d+\.life/]###sticky-footer
+[$domain=/(^\|.+\.)dizi\d+\.life/]##.article__content > a[href][target="_blank"]
 [$domain=/(^\|.+\.)dizi\d+\.life/]##a[href^="https://csvera.com/"]
+dizi1.life,dizi2.life,dizi3.life,dizi4.life,dizi5.life,dizi6.life,dizi7.life,dizi8.life,dizi9.life,dizi10.life###sticky-footer
+dizi1.life,dizi2.life,dizi3.life,dizi4.life,dizi5.life,dizi6.life,dizi7.life,dizi8.life,dizi9.life,dizi10.life##.article__content > a[href][target="_blank"]
 dizi1.life,dizi2.life,dizi3.life,dizi4.life,dizi5.life,dizi6.life,dizi7.life,dizi8.life,dizi9.life,dizi10.life##a[href^="https://csvera.com/"]
-dcdlplayerd91af.xyz##.banner
+dcdlplayer8a06f4.xyz#%#//scriptlet('trusted-replace-node-text', 'script', 'isDiziLife', 'source: a', 'source: s')
+dcdlplayer8a06f4.xyz#%#//scriptlet('trusted-replace-node-text', 'script', 'isDiziLife', 'let isAdPlaying = isDiziLife;', 'let isAdPlaying = false;')
 !
 ! dizigom - frequently changed domains
 ||play.dizigom*.*/*640x360.

@@ -1,8 +1,8 @@
-! Checksum: 2dpCv78XWcIZPS+S63aFoA
+! Checksum: zZIpWExRtzGZs+ce2iF8KQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.68
-! TimeUpdated: 2024-10-21T13:33:20+00:00
+! Version: 2.0.9.72
+! TimeUpdated: 2024-10-25T12:36:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -384,17 +384,28 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/191129
+||dvdfab.cn^$removeparam=trackid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191305
 ||puma.com^$removeparam=sc_src
 ||puma.com^$removeparam=sc_lid
 ||puma.com^$removeparam=sc_uid
 ||puma.com^$removeparam=sc_llid
 ||puma.com^$removeparam=sc_eh
+! reddit.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191029
-||reddit.com^$removeparam=%24deep_link
-||reddit.com^$removeparam=%243p
-||reddit.com^$removeparam=rdt
+||reddit.com^$removeparam=/deep_link|3p/
 ||reddit.com^$removeparam=post_index
+! reddit.com - email tracking
+||reddit.com^$removeparam=post_fullname
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-7211861
+||reddit.com^$removeparam=share_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/94662
+||reddit.com^$removeparam=correlation_id
+||reddit.com^$removeparam=ref_campaign
+||reddit.com^$removeparam=ref_source
+||reddit.com^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/191029#issuecomment-2424807493
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190916
 ||boosty.to^$removeparam=_1ld
 ||boosty.to^$removeparam=_1lp
@@ -1900,8 +1911,6 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||imdb.com^$removeparam=ref_
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104987
 ||livedoor.biz^$removeparam=ref
-! reddit.com - email tracking
-||reddit.com^$removeparam=post_fullname
 ! adjust.com tracking
 ||adj.st^$removeparam=CollectionId
 ||adj.st^$removeparam=adjust_deeplink
@@ -1944,13 +1953,6 @@ $removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|
 ||start.pm.by^$removeparam=adtag
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100613
 ||redhotpawn.com^$removeparam=cbqsid
-! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-7211861
-||reddit.com^$removeparam=share_id
-! https://github.com/AdguardTeam/AdguardFilters/issues/94662
-||reddit.com^$removeparam=correlation_id
-||reddit.com^$removeparam=ref_campaign
-||reddit.com^$removeparam=ref_source
-||reddit.com^$removeparam=ref
 ! https://github.com/AdguardTeam/AdguardFilters/issues/99645
 ||trendyol.com^$removeparam=tyutm_source
 ||trendyol.com^$removeparam=tyutm_medium
@@ -2500,6 +2502,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/191539
+@@||3dnews.ru/*?utm_source=^$removeparam=utm_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178856 reader broken
 @@||gaugau.futabanet.jp^$removeparam=utm_content
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169890
