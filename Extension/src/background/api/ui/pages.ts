@@ -249,6 +249,7 @@ export class PagesApi {
             action: ForwardAction.IssueReport,
             from,
             product_type: 'Ext',
+            manifest_version: __IS_MV3__ ? '3' : '2',
             product_version: encodeURIComponent(browser.runtime.getManifest().version),
             url: encodeURIComponent(siteUrl),
         };
