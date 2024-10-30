@@ -47,8 +47,6 @@ export type GetUserRulesEditorDataResponse = {
 
 /**
  * Service for handling user rules: reading, adding, deleting.
- *
- * FIXME: Should we add check for MV3 limitations here too?
  */
 export class UserRulesService {
     /**
