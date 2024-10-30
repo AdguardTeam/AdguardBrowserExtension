@@ -602,7 +602,6 @@ export class RulesLimitsService {
             };
         }
 
-        // FIXME: Check why getDynamicRulesRegexpsExcludedCount is not used here.
         const dynamicRulesRegexpsEnabledCount = RulesLimitsService.getDynamicRulesRegexpsEnabledCount(result);
         const dynamicRulesRegexpsMaximumCount = RulesLimitsService.getDynamicRulesRegexpsMaximumCount(result);
         if (dynamicRulesRegexpsEnabledCount > dynamicRulesRegexpsMaximumCount) {
