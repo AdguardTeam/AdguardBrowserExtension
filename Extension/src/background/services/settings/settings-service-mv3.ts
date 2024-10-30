@@ -50,7 +50,7 @@ import type { ExportMessageResponse, GetOptionsDataResponse } from './types';
  * SettingsService handles all setting-related messages and
  * calls {@link SettingsApi} to handle settings.
  *
- * FIXME: gracefully handle errors for tswebextension events.
+ * TODO: gracefully handle errors for tswebextension events. AG-37301.
  */
 export class SettingsService {
     /**
