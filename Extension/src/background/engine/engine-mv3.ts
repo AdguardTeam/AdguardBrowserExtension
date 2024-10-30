@@ -215,7 +215,7 @@ export class Engine implements TsWebExtensionEngine {
             declarativeLogEnabled: filteringLogApi.isOpen(),
             customFilters,
             quickFixesRules,
-            verbose: !!(IS_RELEASE || IS_BETA),
+            verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,
             staticFiltersIds,
             userrules,
