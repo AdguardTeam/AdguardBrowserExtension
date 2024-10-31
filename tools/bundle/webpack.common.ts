@@ -199,7 +199,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 vm: require.resolve('vm-browserify'),
             },
             extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
-            symlinks: false,
+            symlinks: true,
             alias: {
                 'tswebextension': path.resolve(
                     __dirname,

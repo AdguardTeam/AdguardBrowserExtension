@@ -22,7 +22,7 @@ import path from 'path';
 import { merge } from 'webpack-merge';
 import type { Manifest } from 'webextension-polyfill';
 
-import { redirects } from '@adguard/scriptlets';
+import { redirects } from '@adguard/scriptlets/redirects';
 
 import packageJson from '../package.json';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
@@ -48,12 +48,16 @@ const { Redirects } = redirects;
  * It may disable the inline script inside unless an exclusion is specified in the manifest.
  *
  * @returns Hash of click2load.html redirect resource.
+ * @throws Error if the click2load.html source is not found.
  */
 const getClickToLoadSha = () => {
     const redirectsYamlPath = path.resolve(__dirname, `../Extension/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}.yml`);
     const rawYaml = fs.readFileSync(redirectsYamlPath);
     const redirects = new Redirects(rawYaml.toString());
     const click2loadSource = redirects.getRedirect('click2load.html');
+    if (!click2loadSource) {
+        throw new Error('click2load.html source not found');
+    }
     return click2loadSource.sha;
 };
 
