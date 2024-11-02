@@ -1,13 +1,13 @@
-! Checksum: AkTcCERE4aO29kTaNyzDpA
+! Checksum: vSiar4S4/h7AIDrJ+Dzb4w
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.74
-! TimeUpdated: 2024-10-10T17:01:50+00:00
+! Version: 2.0.7.76
+! TimeUpdated: 2024-11-02T01:01:47+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! Last modified: 10October2024v3
+! Last modified: 31October2024v2
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -516,7 +516,7 @@ vielskerserier.dk,udeoghjemme.dk##div.hidden.justify-center
 gunnarandreassen.com#?#a:contains(/[kc]as\ino/i)
 parcferme.no##.code-block > p
 boligdebatten.dk###selvsalg-reklame
-tv3.dk##.channelHeaderLogo
+tv3.dk##.channelHeaderLogo:not(:empty)
 jn.fo##.lysingarspot
 kulturnet.dk##.col-md-4:has(a[href*=casino])
 dusken.no##.ad-in-column
@@ -1281,7 +1281,7 @@ byggeplads.dk,magasinetgulv.dk,officeplusdesign.dk##.region-sidebar-second > div
 midtjyllandsavis.dk,herningfolkeblad.dk,ikast-brandenyt.dk##main > .container:not([class*=" "])
 midtjyllandsavis.dk,herningfolkeblad.dk,ikast-brandenyt.dk##.container-spacer
 midtjyllandsavis.dk,herningfolkeblad.dk,ikast-brandenyt.dk##.container-outer-wrapper > .col-2:last-of-type
-mytastenor.com,mytastednk.com,tv3sport.dk##.panorama
+mytastenor.com,mytastednk.com,tv3sport.dk##.panorama:not(:empty)
 isabellas.dk,femina.dk,billedbladet.dk##div[data-type=ad]
 migogaarhus.dk,migogaalborg.dk,migogkbh.dk##.yb-top-spot
 startsidendin.no,iphoneluppen.dk,norskemagasinet.com##a[href*=gambling]
@@ -2098,6 +2098,8 @@ sykepleien.no#$#:is(.container--break,.content-extra__recommended-news) { paddin
 no#$#.tag-page { margin:0!important;padding:0!important }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189667
 feltet.dk#$#iframe + div[style*="height: 80vh"] { height: unset !important }
+! https://www•dagsavisen•no/sport/2024/10/31/kfum-oslo-var-uhyre-naer-et-finaleran/
+dagsavisen.no##:is(p,h2):has(> br:only-of-type:empty)
 ! 🇳🇴: ——— Distraherende bakgrunnsbilder ———
 ! 🇩🇰: ——— Distraherende baggrundsbilleder ———
 ! 🇮🇸: ——— Truflanda baksýnsmyndir ———
@@ -2323,7 +2325,7 @@ sofabold.dk##div[class^="sidebanner"]
 trendsales.dk##.top__banner
 xn--bredbnd-ixa.dk##div[class^="speedtest-bg"] > a > img
 ||freewheel-mtgx-tv.akamaized.net/*.mp4$media,redirect=noopmp4-1s,domain=bold.dk
-||freewheel-mtgx-tv.akamaized.net^$media,domain=tv3sport.dk
+!!!||freewheel-mtgx-tv.akamaized.net^$media,domain=tv3sport.dk
 ||googletagservices.com/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=vegetarbloggen.no,important
 ||v.fwmrm.net/ad/g/$domain=ekstrabladet.dk,important
 ||vgc.no/cdn/js/libs/homad-config.json$xmlhttprequest,redirect=noopjson
@@ -2743,6 +2745,9 @@ triplx.dk##.aff-inner-col
 ://165.227.168.212^
 !+ NOT_OPTIMIZED
 ://132.148.220.142^
+!+ NOT_OPTIMIZED
+://104.160.10.$domain=~in-addr.arpa
+://165.231.154.$domain=~in-addr.arpa
 ://167.99.196.225^
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-7872103
 ||betzykrisesenter.no^$document
@@ -3106,7 +3111,7 @@ fla.de##.index-banner
 /zone?pub
 ! Various Android apps
 ! Other entries that are «AdGuard syntax»-specific
-! Last updated: 15July2024v2-Extension
+! Last updated: 31October2024v2-Extension
 ! 🇳🇴: ——— Vindusviskere for betalte artikler (sånn at de nederste linjene i en forhåndsvisning ikke toner ut) ———
 ! Takk til THEtomaso (https://github.com/THEtomaso) for de fleste av disse oppføringene.
 ! 🇩🇰: ——— Vinduesviskere for betalte artikler (så de sidste par linjer i en forhåndsvisning ikke falder ud) ———
@@ -3114,7 +3119,7 @@ fla.de##.index-banner
 ! 🇬🇧: ——— De-blurrers for paid articles (so that the last few lines of a preview doesn't fade out) ———
 ! Thanks to THEtomaso (https://github.com/THEtomaso) for most of these entries.
 ##.Article-header-body::before
-##.paywall-fade:not(html, body)
+##.paywall-fade:not(html,body)
 ##.polarisSpid.widget::before
 aftenbladet.no,fvn.no##.overlay-wrap::before
 aftenposten.no##.widget-salesposter::before
@@ -3123,18 +3128,17 @@ dinepenger.no##.article-body::after
 dn.no##.vrs-image-block__image-description-overlay
 fiskeribladet.no##.teaser_overlay
 information.dk##.greyed-text
-information.dk#$#.paywall-box { margin-top: 0px !important }
+information.dk#$#.paywall-box { margin-top: 0 !important }
 mm.dk##.fadeout
-mm.dk#$#.promotion { top: 0px !important }
+mm.dk#$#.promotion { top: 0 !important }
 morgenbladet.no##.preview-overlay
 nationen.no##.article-container.locked::after
 politiken.dk##.card.stopsign__article.stopsign::before
 vg.no##p[data-test-tag=lead-text] ~ p[class] ~ div[class]:not(.undefined):not([class^=creative_dark_feature])::before
-borsen.dk#$#.paywall { top: 0px !important }
+borsen.dk#$#.paywall { top: 0 !important }
 borsen.dk##.indent-wrapper > .overlay
 dknyt.dk,kommunen.dk##.fade-out
 vartoslo.no,minerva.no##.teaserContent::before
-h-a.no,lokal-avisa.no,ringsakern.no,stangeavisa.no##.faded-content::before
 h-a.no,lokal-avisa.no,ringsakern.no,stangeavisa.no#$#.faded-content { max-height: none !important }
 markedsforing.dk##.gradient-y-trans-to-white-95
 berlingske.dk##.paywall-wrapper::before
@@ -3142,7 +3146,7 @@ berlingske.dk#$#.paywall-wrapper { top: unset !important }
 intrafish.no##.preview-gradient
 lydogbilde.no,lydogbillede.dk##.lbplussinfo
 ||dagligvarehandelen.no/sites/all/themes/custom/ledelseas/gfx/veil.png$image
-information.dk#$##paywall { margin-top: 0px !important }
+information.dk#$##paywall { margin-top:0!important }
 digi.no###order-form::before
 aasavis.no,amta.no,an.no,ao.no,auraavis.no,austagderblad.no,avisenagder.no,ba.no,bygdebladet.no,bygdeposten.no,dalane-tidende.no,dt.no,eikerbladet.no,enebakkavis.no,f-b.no,finnmarkdagblad.no,finnmarken.no,firda.no,firdaposten.no,fremover.no,gbnett.no,gjengangeren.no,glomdalen.no,h-avis.no,ha-halden.no,hadeland.no,hardanger-folkeblad.no,helg.no,iharstad.no,indre.no,jarlsbergavis.no,jbl.no,kv.no,kvinnheringen.no,laagendalsposten.no,lierposten.no,lofotposten.no,lyngdalsavis.no,moss-avis.no,nettavisen.no,nidaros.no,noblad.no,nordhordland.no,nordlys.no,nt24.no,oa.no,oblad.no,op.no,ostlendingen.no,oyene.no,r-a.no,rablad.no,ranablad.no,rb.no,retten.no,rha.no,ringblad.no,ringsaker-blad.no,sa.no,sandeavis.no,sandnesposten.no,sb.no,smaalenene.no,sognavis.no,solabladet.no,solungavisa.no,strandbuen.no,svelviksposten.no,ta.no,tb.no,telen.no,tk.no,tvedestrandsposten.no,varingen.no,vestbyavis.no,merakerposten.no#$#amedia-include[src*="/incentive/"] { border: 10px !important; border-color: #CD5C5C !important; border-style: solid !important }
 aasavis.no,amta.no,an.no,ao.no,auraavis.no,austagderblad.no,avisenagder.no,ba.no,bygdebladet.no,bygdeposten.no,dalane-tidende.no,dt.no,eikerbladet.no,enebakkavis.no,f-b.no,finnmarkdagblad.no,finnmarken.no,firda.no,firdaposten.no,fremover.no,gbnett.no,gjengangeren.no,glomdalen.no,h-avis.no,ha-halden.no,hadeland.no,hardanger-folkeblad.no,helg.no,iharstad.no,indre.no,jarlsbergavis.no,jbl.no,kv.no,kvinnheringen.no,laagendalsposten.no,lierposten.no,lofotposten.no,lyngdalsavis.no,moss-avis.no,nettavisen.no,nidaros.no,noblad.no,nordhordland.no,nordlys.no,nt24.no,oa.no,oblad.no,op.no,ostlendingen.no,oyene.no,r-a.no,rablad.no,ranablad.no,rb.no,retten.no,rha.no,ringblad.no,ringsaker-blad.no,sa.no,sandeavis.no,sandnesposten.no,sb.no,smaalenene.no,sognavis.no,solabladet.no,solungavisa.no,strandbuen.no,svelviksposten.no,ta.no,tb.no,telen.no,tk.no,tvedestrandsposten.no,varingen.no,vestbyavis.no,merakerposten.no#$#amedia-incentive { top: 1600px !important }
@@ -3164,16 +3168,18 @@ kommunal-rapport.no#$#.paywall-fade-out { overflow-y: unset !important }
 kommunal-rapport.no#$#.paywall-login { margin-top: 30px !important }
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-8603702
 friflyt.no,jeger.no,landevei.no,norsk-klatring.no,terrengsykkel.no,utemagasinet.no#$#.teaser { mask-image: none !important }
-! dagbladet.no,elbil24.no
+! dagbladetNO, elbil24NO
 ##.CTA-body-faded:not(html, body)
 ! digi.no, tu.no, medier24.no, porten.no
 ##.faded-article-content::after
-! https://www.klikk.no/side3/vimenn/viggo-bloffet-hele-norge-6857944
+! https://www•klikk•no/side3/vimenn/viggo-bloffet-hele-norge-6857944
 ##.paywall-gradient:not(html, body)
-! https://www.vg.no/nyheter/i/y3Mka2/ (08/04/2020)
+! https://www•vg•no/nyheter/i/y3Mka2/ (08/04/2020)
 vg.no##div[data-test-tag=timestamp] + div::before
-! https://www.vg.no/nyheter/innenriks/i/3JbRzv/ (09/04/2020)
+! https://www•vg•no/nyheter/innenriks/i/3JbRzv/ (09/04/2020)
 vg.no##div[data-test-tag=timestamp] + p + div::before
+! https://www•vestnesavisa•no/2024/nyheiter/hald-pa-hatten-i-dag-kan-det-blese-godt/ (24/10/2024), h-a•no, lokal-avisa•no, ringsakern•no, stangeavisa•no
+no##.faded-content::before
 ! 🇳🇴/🇩🇰: ——— Anti-anti-reklameblokkering ———
 ! 🇮🇸: ——— And-and-auglýsingshindrun ———
 ! 🇬🇧: ——— Anti-anti-adblocking ———
@@ -3189,16 +3195,26 @@ gamereactor.*#%#//scriptlet('ubo-set.js', 'trackAdblock', 'noopFunc')
 gamereactor.*#%#//scriptlet('ubo-acis.js', 'AdsReloadConfig')
 ! Also fixed in "uBlock Filters - Privacy", but is added to this list as well, because it serves to remove AAAB notices on various pages (especially when "uBlock Filters" is turned on).
 ||googletagmanager.com/gtm.js^$domain=dk|bornholm.nu
-! aftenposten.no, abcnyheter.no, recordere.dk, gastrofun.dk, fyens.dk, tilbudsuken.no, viborg-folkeblad.dk, gaffa.dk, jv.dk
+! aftenpostenNO, abcnyheterNO, recordereDK, gastrofunDK, fyensDK, tilbudsukenNO, viborg-folkebladDK, gaffaDK, jvDK
 ##div[style^="bottom: 0px;"][style*="width: 10"][style*="z-index: 2147"]
 ! https://github.com/uBlockOrigin/uAssets/issues/8648
 connery.dk#%#//scriptlet('ubo-set.js', 'adblockerAlert', 'noopFunc')
 ! https://github.com/finnish-easylist-addition/finnish-easylist-addition/issues/305
 no#%#//scriptlet('ubo-ra.js', 'class', '.dfp-loaded')
-! https://www.findroommate.dk/vaerelser/302142/stort-lyst-vaerelse-taet-paa-aarhus-i-viby-centrum (17/12/2021)
+! https://www•findroommate•dk/vaerelser/302142/stort-lyst-vaerelse-taet-paa-aarhus-i-viby-centrum (17/12/2021)
 findroommate.dk###frm-ablo-message
 ! The green "Abonner" button in the upper right appears to work perfectly even with this entry, and the entry does not cause the Plus article bodies to appear either, so I feel I'm on safe enough grounds on this one.
 ||piano.io/xbuilder/experience/execute^$xmlhttprequest,domain=www.digi.no|www.tu.no
+! Borrowed from "uBlock Filters — Ads" (31/10/2024)
+@@||stokerpiller.dk^$generichide
+fritidsmarkedet.dk,maskinbladet.dk#%#//scriptlet('ubo-nostif.js', 'Check')
+fritidsmarkedet.dk,maskinbladet.dk##.skybanner
+fritidsmarkedet.dk,maskinbladet.dk##megaboard-inner
+mmm.dk#%#//scriptlet('ubo-set.js', 'adblockerAlert', 'noopFunc')
+rabo.no,pressemedie.dk#%#//scriptlet('ubo-noeval-if.js', '/chp_?ad/')
+stokerpiller.dk#$#.adsbygoogle { max-height:1px!important }
+tobys.dk#%#//scriptlet('ubo-aopr.js', 'checkAds')
+tobys.dk#@#.abMessage
 ! 🇬🇧: ——— Not actually AAB, but would've caused fatal breakage in ABP ———
 playpilot.com##.takeover.modals
 playpilot.com#$#html[lang] > body { overflow: auto !important }
