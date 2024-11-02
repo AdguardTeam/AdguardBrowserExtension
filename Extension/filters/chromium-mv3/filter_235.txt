@@ -1,8 +1,8 @@
-! Checksum: 2KjC1vD0ehe3k0fJanftFg
+! Checksum: 4acWfD6i4mJ6Dm8YLrLSJQ
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.0
-! TimeUpdated: 2024-10-21T09:01:49+00:00
+! Version: 2.0.5.3
+! TimeUpdated: 2024-11-01T17:01:38+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -603,6 +603,8 @@ apktops.ir#?#.post-article > .content > .row .entry-content:contains(اسپات�
 apktops.ir##[id^="linkcat"] > ul > li:not(:has(a[href*="apktops.ir"]))
 apktops.ir##.asiatech
 ! >> B <<
+behtaraneh.ir#%#//scriptlet('ubo-aeld.js', 'load', 'contextmenu')
+behtaraneh.ir#%#//scriptlet('ubo-remove-attr.js', 'onmousedown|onselectstart', 'body')
 babapart.com#$#body { -webkit-touch-callout: default !important; -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
 barcanews.org#%#//scriptlet('ubo-set.js', 'adsShow', 'true')
 barcanews.org##div.sidebar_ads
@@ -1722,6 +1724,8 @@ myhastidl.cam#%#//scriptlet('ubo-set.js', 'needpop', '0')
 myhastidl.cam##center:nth-of-type(2)
 myhastidl.cam##.col-xs-12.col-md-6.main-sidebar > center
 ! >> N <<
+||api.zin.co.com/assets/as/load.js^$script,third-party
+||files.niniplus.com/uploads2/advertise^$image,~third-party
 ||niloblog.com/images/ads^$image,~third-party
 noorlib.ir#%#//scriptlet('ubo-aeld.js', 'copy', 'throw')
 ||noorlib.ir/inoorCDN/ads^$xmlhttprequest,~third-party
@@ -1966,6 +1970,7 @@ forum.p30world.com##div#ad_global_above_footer
 qnama.ir##div#ads1
 ||sentry.quera.org^
 ! >> R <<
+||rasaneh3.ir/popup.js^$script,~third-party
 ! https://github.com/MasterKia/PersianBlocker/issues/218 -- Ads on https://sargarme.com/ratatouille-2-movie-release-sequel-explained/
 ||a.reymit.ir^
 reymit.ir#$?#div.featured-holder > div.owl-carousel > div.owl-stage-outer > div.owl-stage > div.owl-item:has(> div.item > div > div.placeholder > iframe[src^="https://a.reymit.ir/"]) { remove: true; }
@@ -2126,9 +2131,10 @@ shomavaeghtesad.com##.zxc
 shomavaeghtesad.com##.adv
 shomavaeghtesad.com#$#.column_1 { width: 70% !important; }
 shomavaeghtesad.com#$#.column_2 { width: 30% !important; }
+||sentry.mielse.com^
+||sheypoor.com/banner/tapsell/image^$image,~third-party
 sheypoor.com#?#main.mainV2 div:has(> section > a > div > div > span:contains(تبلیغات))
 sheypoor.com#?#main.mainV2 div:has(> section > div > div > h2 > p:contains(/^Ad$/))
-sheypoor.com##a[href^="https://www.sheypoor.com/banner/tapsell/"]
 shereno.com##.b_box
 shereno.com#?#.widget:has(.widget_title:contains(پیوند))
 ! https://github.com/MasterKia/PersianBlocker/issues/37
