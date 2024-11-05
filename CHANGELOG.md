@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!-- TODO: add release version and date -->
+## [Unreleased]
+
+### Changed
+
+- Updated [@adguard/agtree] to v2.1.3.
+- Updated [@adguard/tsurlfilter] to v3.0.6.
+- Updated [@adguard/tswebextension] to v2.0.5.
+
+### Fixed
+
+- Optimized performance of parsing uBlock filter parameters [#2962].
+
+[#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.39...HEAD
+
 ## [4.4.39] - 2024-10-21
 
 ### Changed
