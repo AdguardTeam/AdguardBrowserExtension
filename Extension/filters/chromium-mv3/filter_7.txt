@@ -1,8 +1,8 @@
-! Checksum: lTec32DZzbraGtBugqNq6w
+! Checksum: 6y746tUoj+z1DdUbHOlcSw
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.58.80
-! TimeUpdated: 2024-11-02T14:33:16+00:00
+! Version: 2.0.58.96
+! TimeUpdated: 2024-11-06T16:33:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -91,6 +91,7 @@
 ! not for DNS
 ||ias.rakuten.co.jp^$third-party,domain=~rakuten-co.jp
 !
+||adsby.2bet.co.jp^
 ||indexad.net^
 ||recruitbox.media.iid.jp^
 ||creative-klepon-3f0ecb.netlify.app^
@@ -511,15 +512,7 @@ yourfones.net#%#//scriptlet('spoof-css', 'ins.adsbygoogle', 'display', 'block')
 mytry.jp#@#.ad_box
 mytry.jp#$#body > #container { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190943
-wiki.yjsnpi.nu#%#//scriptlet('prevent-eval-if', '/\d\([-\d]+,[-\d]+/')
-wiki.yjsnpi.nu#%#const shuffleArray=e=>e.sort((()=>Math.random()-Math.random()));function fetchComments(e){const t=new XMLHttpRequest;let n;t.onreadystatechange=()=>{4===t.readyState&&200===t.status&&(n=JSON.parse(t.responseText),renderComments(n))},t.open("GET","/comments/comments.php?article_id="+RLCONF.wgArticleId+"&cursor="+e,!0),t.send()}function fetchMore(e){fetchComments(e.target.dataset.cursor)}function renderComments(e){const t=document.querySelector("#comments"),n=document.querySelector("#comments-contents"),o=document.querySelector("#comments-loading"),c=document.querySelector("#comments-more"),m=document.querySelector("#comments-recent");if(o&&o.remove(),c&&c.remove(),e.comments.forEach((e=>{const n=window.comments.template.querySelector("#comment").cloneNode(!0);n.id="comment-"+e.number,n.dataset.commentId=e.comment_id,n.querySelector(".comment-author").innerHTML=e.author,n.querySelector(".comment-timestamp").innerHTML=e.created_at,n.querySelector(".comment-body").innerHTML=e.comment,t.appendChild(n)})),e.cursor>0){const t=window.comments.template.querySelector("#comments-more").cloneNode(!0);t.dataset.cursor=e.cursor,t.addEventListener("click",fetchMore),n.appendChild(t)}const r=document.createElement("ul");e.recent=shuffleArray(e.recent),e.recent.forEach((e=>{const t=document.createElement("li"),n=document.createElement("a");n.href="/w/index.php?curid="+e.article_id,e.comment.length>70&&(e.comment=e.comment.substring(0,70)+"&hellip;"),n.innerHTML=e.comment,t.appendChild(n),r.appendChild(t)})),m.appendChild(r.cloneNode(!0)),m.appendChild(r.cloneNode(!0)),"#comments-section"==location.hash&&(location.hash="",location.hash="#comments-section")}function submitComment(e){const t=document.querySelector('#comment-editor input[name="author"]'),n=document.querySelector("#comment-editor textarea");if(""==n.value)return void mw.notify("（本文が）ないです");e.target.disabled=!0,e.target.innerHTML="送信中…";const o={article_id:RLCONF.wgArticleId,author:t.value,comment:n.value},c=[];for(const[e,t]of Object.entries(o))c.push(`${encodeURIComponent(e)}=${encodeURIComponent(t)}`);const m=new XMLHttpRequest;m.onreadystatechange=()=>{4===m.readyState&&(e.target.disabled=!1,e.target.innerHTML="投稿する",200===m.status?(mw.notify("投稿しました"),t.value="",n.value="",document.querySelector("#comments").innerHTML="",document.querySelector("#comments-recent").innerHTML="",setTimeout((()=>{fetchComments(0)}),"100")):403===m.status?mw.notify("（フリーWi-Fiからは書け）ないです"):429===m.status?mw.notify("書きすぎィ！ちょっと待って、どうぞ！"):mw.notify("投稿できませんでした…"))},m.open("POST","/comments/comments.php"),m.setRequestHeader("Content-Type","application/x-www-form-urlencoded"),m.send(c.join("&").replace(/%20/g,"+"))}window.addEventListener("load",(()=>{if(0==RLCONF.wgNamespaceNumber&&"view"==RLCONF.wgAction&&0!=RLCONF.wgArticleId&&!RLCONF.wgIsRedirect&&RLCONF.wgRevisionId==RLCONF.wgCurRevisionId){"#comments-section"==location.hash&&window.scroll(0,document.documentElement.scrollHeight-document.documentElement.clientHeight),window.comments={};const e=new XMLHttpRequest;e.onreadystatechange=()=>{4===e.readyState&&200===e.status&&(window.comments.template=(new DOMParser).parseFromString(e.responseText,"text/html").body,document.querySelector("#bodyContent").appendChild(window.comments.template.querySelector("#comments-section")),document.querySelector("#comment-submit").addEventListener("click",submitComment),fetchComments(0))},e.open("GET","/comments/template.html",!0),e.send()}}));mw.loader.impl((function(){return["mediawiki.page.ready@1mbf4",{main:"ready.js",files:{"ready.js":function(e,t,n){var o=e("./checkboxShift.js"),i=e("./config.json"),a=e("./teleportTarget.js");function r(e){var t=!!("mediawiki.searchSuggest"===e&&"vector"===mw.config.get("skin")&&window.performance&&performance.mark&&performance.measure&&performance.getEntriesByName);function n(){t&&performance.mark("mwVectorLegacySearchLoadStart"),mw.loader.using(e,(function(){t&&performance.getEntriesByName("mwVectorLegacySearchLoadStart").length&&(performance.mark("mwVectorLegacySearchLoadEnd"),performance.measure("mwVectorLegacySearchLoadStartToLoadEnd","mwVectorLegacySearchLoadStart","mwVectorLegacySearchLoadEnd"))}))}!document.activeElement||"searchInput"!==document.activeElement.id&&!document.activeElement.classList.contains("mw-searchInput")?document.addEventListener("focusin",(function e(t){("searchInput"===t.target.id||t.target.classList.contains("mw-searchInput"))&&(n(),document.removeEventListener("focusin",e))})):n()}mw.config.get("wgBreakFrames")&&window.top!==window.self&&(window.top.location.href=location.href),mw.hook("wikipage.content").add((function(e){var t,n,a=[];i.collapsible&&(t=e.find(".mw-collapsible")).length&&a.push("jquery.makeCollapsible"),i.sortable&&(n=e.find("table.sortable")).length&&a.push("jquery.tablesorter"),a.length&&mw.loader.using(a).then((function(){n&&n.length&&n.tablesorter(),t&&t.length&&t.makeCollapsible()})),e[0]&&!1===e[0].isConnected&&mw.log.warn("wikipage.content hook should not be fired on unattached content"),o(e.find('input[type="checkbox"]:not(.noshiftselect)'))})),e("./toggleAllCollapsibles.js"),$((function(){$("[accesskey]").updateTooltipAccessKeys();var e=document.querySelector(".mw-indicators");e&&e.children.length&&mw.hook("wikipage.indicators").fire($(e.children));var t=$("#mw-content-text");t.length&&mw.hook("wikipage.content").fire(t);var n=$('.catlinks[data-mw="interface"]');n.length&&mw.hook("wikipage.categories").fire(n),(n=$('table.diff[data-mw="interface"]')).length&&mw.hook("wikipage.diff").fire(n.eq(0)),$("#t-print a").on("click",(function(e){window.print(),e.preventDefault()}));var o,r,c,l=$("#t-permalink a");function d(){mw.util.getTargetFromFragment()?l[0].hash=location.hash:l[0].hash=""}l.length&&($(window).on("hashchange",d),d()),mw.hook("skin.logout").add((function(e){mw.notify(mw.message("logging-out-notify"),{tag:"logout",autoHide:!1});var t=new mw.Api;t.postWithToken("csrf",{action:"logout"}).then((function(){location.href=e}),(function(e,n){mw.notify(t.getErrorMessage(n),{type:"error",tag:"logout",autoHide:!1})}))})),$(i.selectorLogoutLink).on("click",(function(e){mw.hook("skin.logout").fire(this.href),e.preventDefault()})),o=$("meta[name=viewport]"),r=o.attr("content"),c=window.outerWidth/window.innerWidth,window.innerWidth>=720&&window.innerWidth<=1e3&&r&&-1===r.indexOf("initial-scale")&&o.attr("content","width=1000,initial-scale="+c),a.attach()})),i.search&&r("mediawiki.searchSuggest");try{sessionStorage.getItem("mw-PostEdit"+mw.config.get("wgPageName"))&&mw.loader.load("mediawiki.action.view.postEdit")}catch(e){}t.exports={loadSearchModule:r,checkboxHack:e("./checkboxHack.js"),teleportTarget:a.target}},"checkboxShift.js":function(e,t,n){t.exports=function(e){var t;e.on("click",(function(n){t&&n.shiftKey&&e.slice(Math.min(e.index(t),e.index(n.target)),Math.max(e.index(t),e.index(n.target))+1).filter((function(){return!this.disabled&&this.checked!==n.target.checked})).prop("checked",n.target.checked).trigger("change"),t=n.target}))}},"checkboxHack.js":function(e,t,n){function o(e,t){if(t)return mw.log.warn("[1.38] The button parameter in updateAriaExpanded is deprecated, aria-expanded will be applied to the checkbox going forward. View the updated checkbox hack documentation for more details."),void t.setAttribute("aria-expanded",e.checked.toString());e.setAttribute("aria-expanded",e.checked.toString())}function i(e,t){var n;if(e.checked=t,"function"==typeof Event)n=new Event("input",{bubbles:!0,composed:!0});else{if(!(n=document.createEvent("CustomEvent")))return;n.initCustomEvent("input",!0,!1,!1)}e.dispatchEvent(n)}function a(e,t,n,o){!e.checked||o.target instanceof Node&&(e.contains(o.target)||t.contains(o.target)||n.contains(o.target))||i(e,!1)}function r(e,t){t&&mw.log.warn("[1.38] The button parameter in bindUpdateAriaExpandedOnInput is deprecated, aria-expanded will be applied to the checkbox going forward. View the updated checkbox hack documentation for more details.");var n=o.bind(void 0,e,t);return e.addEventListener("input",n),function(){e.removeEventListener("input",n)}}function c(e,t){function n(t){t.preventDefault(),i(e,!e.checked)}return t.addEventListener("click",n,!0),function(){t.removeEventListener("click",n,!0)}}function l(e){function t(t){"Enter"===t.key&&i(e,!e.checked)}return e.addEventListener("keyup",t),function(){e.removeEventListener("keyup",t)}}function d(e,t,n,o){var i=a.bind(void 0,t,n,o);return e.addEventListener("click",i,!0),function(){e.removeEventListener("click",i,!0)}}function s(e,t,n,o){var i=a.bind(void 0,t,n,o);return e.addEventListener("focusin",i,!0),function(){e.removeEventListener("focusin",i,!0)}}function u(e,t){function n(t){t.target&&t.target.parentNode&&("A"===t.target.nodeName||"A"===t.target.parentNode.nodeName)&&i(e,!1)}return t.addEventListener("click",n),function(){t.removeEventListener("click",n)}}t.exports={updateAriaExpanded:o,bindUpdateAriaExpandedOnInput:r,bindToggleOnClick:c,bindToggleOnSpaceEnter:function(e,t){function n(e){" "!==e.key&&"Enter"!==e.key||e.preventDefault()}function o(e){" "!==e.key&&"Enter"!==e.key||t.click()}return mw.log.warn("[1.38] bindToggleOnSpaceEnter is deprecated. Use `bindToggleOnEnter` instead."),t.addEventListener("keydown",n),t.addEventListener("keyup",o),function(){t.removeEventListener("keydown",n),t.removeEventListener("keyup",o)}},bindToggleOnEnter:l,bindDismissOnClickOutside:d,bindDismissOnFocusLoss:s,bindDismissOnClickLink:u,bind:function(e,t,n,o){var i=[r(t),c(t,n),l(t),d(e,t,n,o),s(e,t,n,o),u(t,o)];return function(){i.forEach((function(e){e()}))}}}},"teleportTarget.js":function(e,t,n){const o=document.createElement("div");o.id="mw-teleport-target",t.exports={target:o,attach(){document.body.appendChild(o)}}},"toggleAllCollapsibles.js":function(e,t,n){let o;mw.hook("wikipage.content").add((function(){if(o)return;if(!document.querySelector("#mw-content-text .mw-parser-output .mw-collapsible"))return;const e=mw.util.addPortletLink("p-tb","#",mw.msg("collapsible-expand-all-text"),"t-collapsible-toggle-all",mw.msg("collapsible-expand-all-tooltip"));if(!e)return;o=e.querySelector("a"),o.setAttribute("role","button"),o.setAttribute("aria-expanded","false");let t=!1;o.addEventListener("click",(function(e){if(e.preventDefault(),t){const e=document.querySelectorAll("#mw-content-text .mw-parser-output .mw-made-collapsible:not( .mw-collapsed )");Array.prototype.forEach.call(e,(function(e){$(e).data("mw-collapsible").collapse()})),o.textContent=mw.msg("collapsible-expand-all-text"),o.title=mw.msg("collapsible-expand-all-tooltip"),o.setAttribute("aria-expanded","false"),t=!1}else{const e=document.querySelectorAll("#mw-content-text .mw-parser-output .mw-made-collapsible.mw-collapsed");Array.prototype.forEach.call(e,(function(e){$(e).data("mw-collapsible").expand()})),o.textContent=mw.msg("collapsible-collapse-all-text"),o.title=mw.msg("collapsible-collapse-all-tooltip"),o.setAttribute("aria-expanded","true"),t=!0}}))}))},"config.json":{search:!1,collapsible:!0,sortable:!0,selectorLogoutLink:'#pt-logout a[data-mw="interface"]'}}},{css:["#mw-teleport-target{position:absolute;z-index:450}"]},{"collapsible-collapse-all-text":"すべて折り畳む","collapsible-collapse-all-tooltip":"現在のページ上にある折り畳み可能な要素をすべて折り畳む","collapsible-expand-all-text":"すべて開く","collapsible-expand-all-tooltip":"現在のページ上にある折り畳み可能な要素をすべて開く","logging-out-notify":"ログアウト中です。お待ちください。"}]}));
-||wiki.yjsnpi.nu^$script
-@@||wiki.yjsnpi.nu/yjsnpi.js$script,~third-party
-@@||wiki.yjsnpi.nu/w/load.php?lang=ja&modules=mediawiki.Uri$script,~third-party
-@@||wiki.yjsnpi.nu/w/load.php?lang=ja&modules=jquery$script,~third-party
-@@||wiki.yjsnpi.nu/w/load.php?lang=ja&modules=startup$script,~third-party
-@@||wiki.yjsnpi.nu/w/load.php?lang=ja&modules=codex-search-styles$script,~third-party
-@@||wiki.yjsnpi.nu/w/load.php?lang=ja&modules=ext.visualEditor.$script,~third-party
+wiki.yjsnpi.nu#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.querySelectorAll', '/^iframe$/', 'abort')
 wiki.yjsnpi.nu#$##comments-loading { display: none !important; }
 @@||wiki.yjsnpi.nu^$image,xmlhttprequest,~third-party
 @@||wiki.yjsnpi.nu^$generichide
@@ -852,10 +845,9 @@ video.tv-tokyo.co.jp#@#.ad-placeholder
 380cc.cc#$##playertopads { height: 51px!important; position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20703
 ! https://github.com/AdguardTeam/AdguardFilters/issues/20116
-! https://github.com/AdguardTeam/AdguardFilters/issues/9094
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9085
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9082
-nasubiblog.com,kyukyoku-matome.com##.widget_pc_ad
+kyukyoku-matome.com##.widget_pc_ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9068
 @@||mushinavi.com^$generichide
 !---------------------------------------------------------------------------!
@@ -1032,8 +1024,9 @@ kasegeru.blog.jp#%#//scriptlet('remove-node-text', '#text', '/スポンサード
 blog.livedoor.jp#%#//scriptlet('abort-current-inline-script', 'Array.prototype.join', 'amazon')
 ! overlay
 erommd-street.com#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'overview')
-! https://github.com/uBlockOrigin/uAssets/issues/23285
-twivideo.net#%#//scriptlet('prevent-addEventListener', 'load', '/interstitialAd|videoInstArea/')
+! https://github.com/AdguardTeam/AdguardFilters/issues/192076
+twivideo.net#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'imageUrls')
+twivideo.net#%#//scriptlet('prevent-addEventListener', 'load', 'videoInstArea')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176598
 ac-illust.com,photo-ac.com#%#//scriptlet('abort-current-inline-script', '$', 'google_ads_iframe_')
 ! ad-leftover on click
@@ -1760,6 +1753,10 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+||twivideo.net/templates/images/ad/
+twivideo.net##a[id^="randomImageLink"]
+twivideo.net#$#div[style^="max-width: 1000px; width: 100%; height: 150px; margin: 0 auto 50px auto;"] { height: 0 !important; }
+repsoku.net##.thumb:has(> a[target="_blank"]:only-child)
 city.natori.miyagi.jp##.footer_banner_wrap
 my-best.com##div[data-testid^="advertisement-"]
 appget.com#$#.pc_block[style^="position: sticky"] { margin-bottom: 0 !important; }
@@ -2341,6 +2338,7 @@ gameinn.jp##a[id$="-banner"]
 ddnavi.com##.archives-list > ul > li.archives-list__item:has(> div[id^="div-gpt-ad"])
 sakigake.jp##.p-articles__list > .p-articles__item:has(> div[id^="sakigake_"])
 ||nan-net.com/bbs_side/ada_$subdocument
+adacomi.com##iframe[src^="//tool2.nan-net.com/bbs_side/ada_"]
 adacomi.com##div[style="height:90px;"]
 ||suruga-ya.jp/images/idol_bn.jpg$domain=hobbylabon.com
 ||contents-thumbnail2.fc2.com^$domain=hobbylabon.com
@@ -3329,8 +3327,8 @@ eorzean.info###sidebar-inner > div > a[href^="http://amazon.co.jp"]
 bakufu.jp##.entry-content > table[width="100%"]
 tabanavi.com##.widget_st_custom_html_ad_widget
 tabanavi.com##.entry-content > p.h4modoki
-tabanavi.com##.yyi-rinker-contents + p:not([id],[class],[style])
-tabanavi.com##.yyi-rinker-contents + p:not([id],[class],[style]) + p:not([id],[class],[style])
+dq10.news,tabanavi.com##.yyi-rinker-contents + p:not([id],[class],[style])
+dq10.news,tabanavi.com##.yyi-rinker-contents + p:not([id],[class],[style]) + p:not([id],[class],[style])
 gameguide.tech###block-6
 pc-bto.net##.link_asp
 umamusume-pakamusu.blog.jp##.article-body-inner > div[style="text-align: center;"] ~ center
@@ -6125,7 +6123,7 @@ bamka.info,kaimyou.biz###st_custom_html_widget-14
 japan-secure.com##.ad-top-label
 bukidobi.com,sagi-site.com,xn--icktho51ho02a0dc.com,korewaeroi.com,switchsoku.com,sabatech.jp##.widgetSticky
 speed.rbbtoday.com##.random-banner
-rbbtoday.com##.main-amazon-ranking
+techno-edge.net,rbbtoday.com##.main-amazon-ranking
 rbbtoday.com##.gigaindex .detail .arti-body.af
 rbbtoday.com,sabatech.jp##iframe[style="width:120px;height:240px;"]
 crefan.jp##.wrapper > div.container > div[align="center"]:not([class]):not([id])
@@ -7191,7 +7189,7 @@ photo-tea.com###r-fix
 photo-tea.com##.ad-footer-related
 photo-tea.com##.googleAdPost
 photo-tea.com##.googleAdSide
-karatedo.co.jp,murasan-net.com,tabanavi.com,umaroidblog.com,agemasen.com,lifematome.blog,entameclip.com,cyapu.com,studiosero.net,xn--eckybzahmsm43ab5g5336c9iug.com,androplus.org,gadget-log.com,naga-ken.info,smartasw.com,2chmeshi.net,akirarok.com,akkinews.net,color-variations.com,jbjbgame.com,nonde-tabete.com,salary-saver.com,switchsoku.com,uzurea.net,wpteq.org,kowakunotsubo.com,gekibuzz.com,tikitengo.com,animanch.com,trovivo.com,umamusumelabo.com##.yyi-rinker-contents
+dq10.news,karatedo.co.jp,murasan-net.com,tabanavi.com,umaroidblog.com,agemasen.com,liematome.blog,entameclip.com,cyapu.com,studiosero.net,xn--eckybzahmsm43ab5g5336c9iug.com,androplus.org,gadget-log.com,naga-ken.info,smartasw.com,2chmeshi.net,akirarok.com,akkinews.net,color-variations.com,jbjbgame.com,nonde-tabete.com,salary-saver.com,switchsoku.com,uzurea.net,wpteq.org,kowakunotsubo.com,gekibuzz.com,tikitengo.com,animanch.com,trovivo.com,umamusumelabo.com##.yyi-rinker-contents
 ||yoyaku-top10.jp/uploads/rectangle_banner/
 yoyaku-top10.jp##.p-rectangle_banner_box
 ||amazonaws.com/adv-img.zucks.jp/$third-party
@@ -7718,6 +7716,7 @@ bcnretail.com,smt.docomo.ne.jp,hitosara.com,goo.ne.jp,ocn.ne.jp##div[id^="gooad"
 cs.sonylife.co.jp###iframeHeader
 s2-log.com,alfalfalfa.com##.amazon_link
 ||ambassador-system.mercari.com^$domain=alfalfalfa.com
+alfalfalfa.com##img[src^="https://ambassador-system.mercari.com"]
 alfalfalfa.com##.clearfix.article_bodyfooter
 ||zyuken.net/ads/
 zyuken.net##.MenuBox[style="padding: 5px; min-height: 280px;"]
@@ -10755,6 +10754,8 @@ blog.livedoor.jp#?#.plugin-memo > .side > a[href^="https://www.infotop.jp/click"
 ! Domain needing extra caution:
 ! ameblo.jp,2chblog.jp,blog.jp,blog.livedoor.jp,bloggeek.jp,blogism.jp,blogo.jp,blogstation.jp,blogto.jp,cafeblog.jp,corpblog.jp,diary.to,doorblog.jp,dreamlog.jp,gger.jp,golog.jp,ldblog.jp,liblo.jp,livedoor.biz,livedoor.blog,myjournal.jp,mynikki.jp,officeblog.jp,officialblog.jp,publog.jp,storeblog.jp,teamblog.jp,techblog.jp,weblog.to,xxxblog.jp,youblog.jp,seesaa.net,blog.fc2.com,blog.2nt.com
 ! specify subdomain or use unique and safe selector; for blog.livedoor.jp make your rule as specific as possible or use $path
+blog.livedoor.jp##div[class^="article-body"] > div > span[style="font-family: \"MS PGothic\";"] ~ div:not([class]) a[rel="noopener sponsored"][href^="https://www.dlsite.com/maniax/dlaf/"]
+blog.livedoor.jp##div[class^="article-body"] > div[style="font-family: \"MS PGothic\";"] > a[href^="https://al.dmm.co.jp"]
 ||blog.livedoor.jp/goldennews/js/article_top_info.js
 blog.livedoor.jp###sidecolumnbody > a[href^="https://hb.afl.rakuten.co.jp/ichiba/"]
 ||blogimg.jp/er0000/imgs/2/1/21bef91a.jpg
@@ -10906,8 +10907,8 @@ vip-front.video.g.fc2.com,video.laxd.com,video.fc2.com##[class^="c-ad"]:not(.c-a
 ||nijigen-erogazou.com^$script,third-party
 !
 ! itest.5ch.net,itest.bbspink.com
-itest.5ch.net##.ad_nth
-itest.5ch.net##.ad_nth_li
+itest.5ch.net#?#.ad_nth
+itest.5ch.net#?#.ad_nth_li
 itest.5ch.net#$#div[itemprop="itemListElement"][style="margin-top: 100px;"] { margin-top: 0 !important; }
 ||itest.5ch.net/assets/img/*-300x250.png
 itest.5ch.net##.ad_5th_300x250

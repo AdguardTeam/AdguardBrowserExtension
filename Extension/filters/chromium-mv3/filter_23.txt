@@ -1,8 +1,8 @@
-! Checksum: bhjMewiKCCipyOBrCxURYw
+! Checksum: 3oO4EHEkjsGKC63UXbdx7Q
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.5.52
-! TimeUpdated: 2024-10-31T14:33:26+00:00
+! Version: 2.0.5.54
+! TimeUpdated: 2024-11-06T16:33:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -419,6 +419,7 @@ http://*.ru/leftunit.pl?
 ! Kadam ads
 /kadam.base.min.js?
 !
+.ru/vast/$xmlhttprequest
 /?bid=&sid=
 .bid/pjs/$script
 &adtype=
@@ -1489,6 +1490,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||suprion.ru^
 ||xjwzbo.com^
 ||qgmwby.com^
 ||irxybq.com^
@@ -1515,7 +1517,6 @@ ucoz.ru/informer/
 ||kissedthetrain.com^
 ||srvd2204.com^
 ||miradres.com^
-||ufouxbwn.com^
 ||cdn.tameti.com^
 ||eehhabacgieacfjeaacg.world^
 ||bidmatic.io^$third-party
@@ -4192,6 +4193,7 @@ http://w7.ru^$third-party
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
+||vst.videolink.host^
 ||exad.smi2.ru^
 ||tgb.hsmedia.ru^$third-party
 !
@@ -6253,6 +6255,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192322
+@@||tds.fandom.com/load.php
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171080
 oztech.ru#@##bottomBanners
 ! https://github.com/AdguardTeam/AdguardFilters/issues/163594
