@@ -31,16 +31,6 @@ export interface IRulesLimits {
     dynamicRulesMaximumCount: number;
 
     /**
-     * How many dynamic **unsafe** rules are enabled in the browser.
-     */
-    dynamicRulesUnsafeEnabledCount: number;
-
-    /**
-     * Maximum count of dynamic **unsafe** rules which can be enabled in the browser.
-     */
-    dynamicRulesUnsafeMaximumCount: number;
-
-    /**
      * How many user regexp rules are enabled in the browser.
      */
     dynamicRulesRegexpsEnabledCount: number;
@@ -124,11 +114,6 @@ type InvalidResultData = {
      * Rules count data.
      */
     rulesCount?: CountData;
-
-    /**
-     * Unsafe rules count data.
-     */
-    rulesUnsafeCount?: CountData;
 
     /**
      * Regex rules count data.

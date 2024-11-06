@@ -73,7 +73,7 @@ export const getStaticWarningMessage = (data: InvalidStaticResultData): string |
  * @returns Warning message or null if the data is invalid.
  */
 export const getDynamicWarningMessage = (data: InvalidDynamicResultData): string | null => {
-    const { rulesCount, rulesRegexpsCount, rulesUnsafeCount } = data;
+    const { rulesCount, rulesRegexpsCount } = data;
 
     if (rulesCount) {
         return translator.getMessage('options_limits_warning_dynamic_rules', {
@@ -86,13 +86,6 @@ export const getDynamicWarningMessage = (data: InvalidDynamicResultData): string
         return translator.getMessage('options_limits_warning_dynamic_regex_rules', {
             current: rulesRegexpsCount.current,
             maximum: rulesRegexpsCount.maximum,
-        });
-    }
-
-    if (rulesUnsafeCount) {
-        return translator.getMessage('options_limits_warning_dynamic_unsafe_rules', {
-            current: rulesUnsafeCount.current,
-            maximum: rulesUnsafeCount.maximum,
         });
     }
 

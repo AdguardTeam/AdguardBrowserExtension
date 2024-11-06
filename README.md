@@ -404,7 +404,7 @@ To show locales info run:
 | Browser                     | Version |
 |---------------------------- |:-------:|
 | Chromium-based browsers MV2 | 79      |
-| Chromium-based browsers MV3 | 121     |
+| Chromium-based browsers MV3 | 118     |
 | Firefox                     | 78      |
 | Firefox Mobile              | 113     |
 | Opera                       | 67      |
