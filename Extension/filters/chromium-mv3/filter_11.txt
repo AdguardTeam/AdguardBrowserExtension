@@ -1,8 +1,8 @@
-! Checksum: UAiSHCI+jTvtvySDOQVvUA
+! Checksum: QOO/0A9LsXWr2Hh8VyA1AA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.55.80
-! TimeUpdated: 2024-11-02T12:33:11+00:00
+! Version: 2.0.55.88
+! TimeUpdated: 2024-11-06T13:33:22+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,6 +219,9 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||ads-ap-venues.yinzcam.com^
+||ads-delivery.gunosy.com^
+||ads-config-engine-noneu.truecaller.com^
 ||ad.inston.ltd^
 ||ad.deepthought.industries^
 ||ad.bandlab.io^
@@ -226,7 +229,7 @@
 ||inmense.site^
 ||dollphoin.site^
 ||news-cdn.site^
-||adx.mossru.com^
+||mossru.com^
 ||jjpp.lmtjapi.com^
 ||a.07aa269c0e76550c929640c170af557c7371753ba1b580236d7fa0a4.com^
 ||a.64e98469810bd13e2b45e52d19d6fddfe333b3528350d8cfa792d478.com^
@@ -2009,6 +2012,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192392
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188534
 milk-key.com#@#.header-ads-area
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185597
@@ -2401,6 +2405,9 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+manualslib.es,manualslib.com#$#.manualcenter { min-height: auto !important; }
+diariobitcoin.com##.tickerPartnerButton
+yuumi-sokuhou.com###custom_html-25
 marieclaire.com.tw##div[class^="ad"]
 uzmanparam.milliyet.com.tr##div[style^="min-height: 250px;display: flex;justify-content: center;"]
 lol.ps##div[id^="mobile_banner-"]
@@ -2411,7 +2418,7 @@ ndtv.com##div[class^="ad-art_"]
 zestolu.cz,osobnosti.cz##div[class^="mobile-"]
 kakijun.jp##.gaddiv
 forvo.com###fixed-banner-container
-syurabahazard.com##div[id^="articleAd"]
+sutekinakijo.com,syurabahazard.com##div[id^="articleAd"]
 basketballbbs.com##.widget:has(> div[class] > div[id^="rss"] .ninja-recommend-block)
 novosti-n.org##.kama-inline-ads
 novosti-n.org##.lead
@@ -4482,7 +4489,7 @@ lnews.jp##.sp-ad-height-100
 lnews.jp##.sp-ad-height-250
 wealthadvisor.co.jp##.footer_overlayad
 zaikai.jp##div[id^="ad25"]
-interfax.ru##.i_mobile_only
+interfax.ru##.i_mobile_only:not(#style_important)
 ponycanyon.co.jp##.ad300sp50
 trilltrill.jp##.articleDetail-GAM
 stolica-s.su##.ad-fullscreen

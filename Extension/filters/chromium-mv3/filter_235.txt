@@ -1,8 +1,8 @@
-! Checksum: 4acWfD6i4mJ6Dm8YLrLSJQ
+! Checksum: CBPdoUfOT1ZFZBqzIbCb9w
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.3
-! TimeUpdated: 2024-11-01T17:01:38+00:00
+! Version: 2.0.5.5
+! TimeUpdated: 2024-11-05T21:01:52+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -273,10 +273,7 @@ niloblog.com##bloglinksblock
 ||rokhdad.news^$third-party
 ||rssbank.ir^
 ||rizy.ir/js/ads.js
-||rozblog.com/include/rozblog_ads_js
-/include/rozblog_ads_js
-||rozblog.com/code/popup^$script,~third-party
-||rzb.ir/code/popup^
+||rozblog.com/theme/ads/banner.html^$subdocument
 ! >> S <<
 ||spellpop.ir^
 ||spellads.com^
@@ -1887,7 +1884,7 @@ p30konkor.com##div.adcontainer div#p30konkor-ads-p > div.bs-vc-wrapper > div#bf-
 p30konkor.com#$#div.adcontainer div#p30konkor-ads-p > div.bs-vc-wrapper > div.vc_col-sm-4 { width: 100% !important; }
 p30konkor.com##div.adcontainer div.vc_row:has(div[itemtype$="AdBlock"][data-adid]):last-of-type
 ! https://github.com/MasterKia/PersianBlocker/issues/196
-par30dl.net#?#div.sidebar-home:has(> div.wbox > strong:contains(تبلیغات))
+par30dl.net##div#sponser-dl-btn
 ! https://github.com/MasterKia/PersianBlocker/issues/85
 ||p30day.ir/images/tabligh$image,media,~third-party
 p30day.ir##.dtnoppu

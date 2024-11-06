@@ -1,8 +1,8 @@
-! Checksum: EvgiLjjQA1rJIhwsHD2lDg
+! Checksum: ew0XtNDxbEWszA4gMaR0pg
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.27.21
-! TimeUpdated: 2024-11-01T15:33:17+00:00
+! Version: 2.0.27.28
+! TimeUpdated: 2024-11-06T13:33:19+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -89,6 +89,7 @@
 ! https://forum.adguard.com/index.php?threads/ivoox-com-podcasts-issues.29530/
 ! ||addevweb.com^$third-party
 !
+diariobitcoin.com##div[class^="diari-"]
 ||classic-bonus.com^
 ||assets.etus.digital^$third-party
 ||ncwabgl.com^
@@ -259,6 +260,7 @@
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||bs_*.diariobitcoin.care^
 ||publi.elliberal.com.ar^
 ||xad.dnoticias.pt^
 ||adclient-uol.lp.uol.com.br^
@@ -768,9 +770,6 @@ daemon-hentai.com#@#.publicite
 ! https://github.com/AdguardTeam/AdguardFilters/issues/101956
 comando.to#%#//scriptlet("abort-on-property-read", "adblock")
 ||aj1907.online^$xmlhttprequest,redirect=nooptext,domain=comando.to
-! https://github.com/AdguardTeam/AdguardFilters/issues/101325
-@@||4klinks.site^$generichide
-4klinks.site#%#AG_onLoad(function(){if("function"===typeof decode_link&&"string"===typeof link_out)try{location.assign(decode_link(atob(link_out)))}catch(a){}});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/101528
 ||lavanguardia.com/suscripciones/dab-notifier
 ! https://github.com/AdguardTeam/AdguardFilters/issues/101140
@@ -791,8 +790,6 @@ ouniversodatv.com#$#.ads.ads-block.prebid { display: block !important; }
 ouniversodatv.com#%#//scriptlet("set-constant", "easySettings.adblock", "0")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/99201
 @@||animefire.net/js/blockadblock.*.min.js
-! https://github.com/AdguardTeam/AdguardFilters/issues/98360
-@@||pobre.tv/wp-banners.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97525
 @@||illamadas.es/public/javascripts/wp-banners.js
 illamadas.es#%#//scriptlet("abort-current-inline-script", "onload", "AdBlock")
@@ -1737,8 +1734,6 @@ criarjogosandroid.com#%#//scriptlet("adjust-setTimeout", "contador", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100382
 cuevana-3.wtf#%#//scriptlet("prevent-window-open")
 cuevana-3.wtf#%#//scriptlet("adjust-setInterval", "Loading...", "", "0.02")
-! https://github.com/AdguardTeam/AdguardFilters/issues/98360
-pobre.tv#%#(function(){try{"undefined"==typeof localStorage||localStorage.getItem("adsVideo")||localStorage.setItem("adsVideo",new Date)}catch(a){}})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96396
 baixartorrents.org#%#//scriptlet("abort-on-property-read", "redirectpage")
 baixartorrents.org#%#//scriptlet("abort-on-property-read", "initPopunder")
@@ -2208,6 +2203,12 @@ extra.ec,globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futeboli
 ! ##body .banner
 mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.info,lapoliticaonline.com.mx,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.gov.bd,lapoliticaonline.gov.np,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+forocoches.com##[align="center"]:has(div[id^="optidigital-adslot-"])
+forocoches.com##tbody > tr > td[valign="top"]:has(div[id^="optidigital-adslot-"])
+tomatazos.com##.ad-container
+criptonoticias.com##.fixed_ad_container
+cmjornal.pt##.pub_content
+cmjornal.pt#$?#.pub { remove: true; }
 lista.mercadolivre.com.br##.last__banner
 diarioconvos.com##.desktop
 extra.ec##div[class^="PUBBANNER"]
@@ -2281,7 +2282,7 @@ abc.es##.voc-wrapper > .voc-container--c-sponsor
 abc.es##.voc-discounts
 economia.uol.com.br###uolpd-banner-inarticle
 uol.com.br##section[data-area^="publicidade"]
-criptonoticias.com##.jeg_ad
+criptonoticias.com##body .jeg_ad
 criptonoticias.com##.elementor-shortcode > div[id^="cript-"]:empty
 criptonoticias.com##div[class*="cript-advanced-ads-inline-content-"]
 criptonoticias.com##.elementor-shortcode > div[class*="cript-homepage"]
@@ -3452,10 +3453,6 @@ gmconline.com.br##.banner-item
 gmconline.com.br##.section-banner-topo
 xchica.com##td[width="360"] > center
 escolhasegura.com##.adsense
-pobre.wtf,pobre.tv##.generalModal
-pobre.tv##a[href^="https://btt-pt.toldmeroc.com/"]
-||pobre.tv/images/bettilt-*.png
-||pobre.tv/videos/BT.mp4$media,redirect=noopmp3-0.1s
 tecnoscann.com,mhscans.com,aiyumangascanlation.com,mangacrab.com,ahstudios.net,animerikosuper.blogspot.com,emperorscan.com,taurusfansub.com,miauscan.com,knightnoscanlation.com,pelisplaygratis.info###fixedban
 pelisplaygratis.info##.mvic-btn > a.btn-successful
 uol.com.br##.obx-ad
@@ -5468,7 +5465,6 @@ hentaiporno.xxx#?#.sidebar-content-inner > div.widget:has(> div.widget_text > di
 hentaiporno.xxx#?#.sidebar-content-inner > div.widget:has(> div.widget-item-wrap > h2.widget-title > span.title-wrap:contains(Publicidad))
 descargaspcpro.net#?##sidebarbtop > div.widget:has(> div.widget-content > ins.adsbygoogle)
 setelagoas.com.br#?#[id^="gk"] > div[class^="box"][class$="nomargin"]:has(> .content:only-child > .bannergroup:only-child)
-forocoches.com#?#td[align="middle"] > div[align="center"]:has(> table[width] div[id^="optidigital-adslot-"])
 verepeliculas.com#?#.player_nav > ul[class] > li:has(> a[href]:contains(Ads))
 mangatigre.com#?#.chapter-content div.bloc:has(> div[id^="gpt-"])
 animetw.net#?#.container > h2.section__header:has(> span:contains(/^ANUNCIOS$/))
