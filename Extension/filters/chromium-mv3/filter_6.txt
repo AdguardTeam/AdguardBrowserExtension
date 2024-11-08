@@ -1,8 +1,8 @@
-! Checksum: aM2YNNWPev5IrMRUnkRtcw
+! Checksum: 3LIQ1N48E46NgRCY4IzDUA
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.44.38
-! TimeUpdated: 2024-11-05T18:33:05+00:00
+! Version: 2.0.44.44
+! TimeUpdated: 2024-11-08T12:33:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1545,10 +1545,13 @@ monopol-magazin.de,krone.at,cleverdialer.de,sueddeutsche.de,geo.de,northdata.de,
 ! ##.adsbygoogle
 winfuture.de,netzwelt.de,quoka.de,farmeramania.de,bravofly.de,computerbild.de,digitalfernsehen.de,hl-live.de,chinamobilemag.de,focus.de,pcwelt.de##.adsbygoogle
 ! ##.billboard
-formel1.de,krautundrueben.de,motorsport-total.com,traktorpool.de,fnweb.de,laborjournal.de,tarnkappe.info,deraktionaer.tv,food-tiger.de,morgenweb.de##.billboard
+it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpool.de,fnweb.de,laborjournal.de,tarnkappe.info,deraktionaer.tv,food-tiger.de,morgenweb.de##.billboard
 !
+! NOTE: Specific rules
 !
-!
+computerbase.de##.ticker > li:has(> .ticker__body > a[href*="-anzeige"])
+spiegel.de##div[data-area*="sponsored"]
+20min.ch##aside[class^="sc-"]:has(> div[id^="ad_"])
 nordbayern.de#?#article:has(> a.box > div > .topline > .modul__teaser__dachzeile:contains([Anzeige]))
 myboerse.bz##.p-body-inner > div > center
 myboerse.bz##.p-body-inner > div > a[target="_blank"]
@@ -6386,6 +6389,7 @@ onvista.de#@#a[href^="https://www.financeads.net/tc.php?"]
 wetter.com#@#div[id^="div-gpt-"]
 ||adnx.de^
 ||bd742.com^
+||f11-ads.com^
 ||fantecio.com^
 ||gayads.biz^
 ||swissadserver.ch^
@@ -6580,6 +6584,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||ptadsrv.de^$third-party
 ||qualigo.de^$third-party
 ||quality-channel.de^$third-party
+||qualitymedianetwork.de^$third-party
 ||quartermedia.de^$third-party
 ||quarterserver.de^$third-party
 ||rapidads.de^$third-party
@@ -6945,6 +6950,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||wazazu.com/pimage/bas/$third-party
 ||wazazu.com/pimage/sdc/$third-party
 ||wazazu.com/pimage/visit-x/$third-party
+||web-ads.10sq.net^
 ||weekli.de/widget-loader?$third-party
 ||weekli.systems/www/widgets/$third-party
 ||werbemittel.adisfaction.de^$third-party
@@ -9684,7 +9690,7 @@ raidrush.net##.funbox
 99ers.at##.fusion-builder-row-14
 fcschweinfurt1905.de##.fusion-builder-row-3
 ka-news.de##.fusslogos
-atv-quad-magazin.com,beautytipps.ch,betriebseinrichtung.net,business24.ch,celler-presse.de,denkmalpflege-schweiz.ch,docma.info,events24.ch,gailtal.news,gitschtal.news,gourmetnews.ch,greifenburg.news,haie.de,hansa-online.de,haushaltsapparate.net,hermagor.news,hifi-today.de,islamiq.de,it-production.com,jungefreiheit.de,klagenfurt.news,lite-magazin.de,moebeltipps.ch,motortipps.ch,oldenburger-onlinezeitung.de,oscar-am-freitag.de,polizei-nachrichten.at,polizei.news,radenthein.news,radio-aktiv.de,rechtsdepesche.de,reiseziele.ch,skipper-bootshandel.de,spittal.news,stadt-nachrichten.de,steinfeld.news,swz.it,tierwelt.news,troepolach.news,umzugstipps.com,unternehmermagazin.de,via-ferrata.de,villacher.news,weissensee.news,werne-plus.de,wir-leben-outdoor.de##.g
+atv-quad-magazin.com,beautytipps.ch,betriebseinrichtung.net,business24.ch,celler-presse.de,denkmalpflege-schweiz.ch,docma.info,events24.ch,gailtal.news,gitschtal.news,gourmetnews.ch,greifenburg.news,haie.de,hansa-online.de,haushaltsapparate.net,hermagor.news,hifi-today.de,islamiq.de,it-production.com,jungefreiheit.de,klagenfurt.news,lite-magazin.de,moebeltipps.ch,motortipps.ch,oldenburger-onlinezeitung.de,oscar-am-freitag.de,polizei-nachrichten.at,polizei.news,pool-magazin.com,radenthein.news,radio-aktiv.de,rechtsdepesche.de,reiseziele.ch,skipper-bootshandel.de,spittal.news,stadt-nachrichten.de,steinfeld.news,swz.it,tierwelt.news,troepolach.news,umzugstipps.com,unternehmermagazin.de,via-ferrata.de,villacher.news,weissensee.news,werne-plus.de,wir-leben-outdoor.de##.g
 ego4u.de##.g-adv-side
 ego4u.de##.g-adv-top > .inside
 golem.de##.g6 > .clearfix[style="margin: 20px 0; clear: both; min-height: 640px;"]
@@ -9943,7 +9949,6 @@ eltern.de##.page__ad-element
 rhein-zeitung.de##.page__billboard
 windowspro.de##.paid
 finanztreff.de##.paid-news-container
-hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##.paidContent
 windowspro.de##.paidc
 tschechien-online.org##.pane-aktuelle-top-links
 grenzecho.net##.pane-dpipub-rossel-imu-middle-moblile
@@ -10029,7 +10034,6 @@ tchgdns.de##.pub-single-side
 mallorcazeitung.es##.publi_cabecera_270
 mallorcazeitung.es##.publi_mega
 mallorcamagazin.com##.publicidad
-hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##.pvg-widget
 t-online.de##.py-16.bg-alpine.border-b.border-solid.border-whitelilac.md\:min-w-page
 t-online.de##.py-16.md\:py-24.border-solid.border-whitelilac.text-trout.leading-17.md\:hidden
 lifechannel.ch##.pz_cont
@@ -10625,7 +10629,7 @@ lovelybooks.de##div[class^="MoliAd_"]
 derbund.ch##div[class^="PageLayout_topaddesktop_"]
 mactechnews.de##div[class^="Rectangle_"]
 t-online.de,www-t--online-de.cdn.ampproject.org##div[class^="Tsshopst"]
-90min.de,hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##div[class^="ad_"]
+90min.de##div[class^="ad_"]
 sport.de##div[class^="ada-preservespace-"]
 berliner-zeitung.de##div[class^="article_billboard-"]
 2ix2.com##div[class^="bireklam"]
@@ -10644,6 +10648,7 @@ mietminderungstabelle.de##div[class^="placeholderAdBox_"]
 rundschau.info##div[class^="runds-werbung-"]
 berliner-kurier.de,berliner-zeitung.de##div[class^="showheroes_"]
 berliner-kurier.de,berliner-zeitung.de,evangelische-zeitung.de##div[class^="traffective_"]
+fraenkischertag.de##div[class^="werb-block-"]
 winfuture.de##div[class^="ws_contentAd"]
 amazon.de##div[data-ad-id]
 heute.at##div[data-ad-position]
@@ -10979,9 +10984,12 @@ focus.de###tfm_admanagerTeaser
 ran.de##.ad-component
 rollingstone.de##.ad-mrec
 ran.de##.ad-slot-container
+hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##.ad__skyscraper--wrapper
+hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##.ad__superbanner--wrapper
 ratehase.de##.adcolor
 focus.de##.adsBlock
 finanzen.net##.adsbygoogle
+hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##.article__ad__wrapper
 t-online.de##.css-1gm9xpz
 t-online.de##.css-1lb3bt5
 t-online.de##.css-2k2lok
@@ -11111,6 +11119,7 @@ zeit.de##.zett-teaser-trio:has(.zett-teaser-trio__kicker--ad-anzeige)
 expert.de##[data-key-id]:has([src^="//b.nl3.eu.criteo.com/rm?"])
 flaconi.de##[data-product-list-id]:has([data-badge-type="sponsored"])
 ariva.de##a.background-red-bright:has(span.anzeige)
+hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##article.card:has(.with-ad-marker)
 shop-apotheke.com##article.o-CompactProductListItem:has(a[href^="https://retail-api.sa-tech.de/api/"])
 finanzen.net##article.page-content__item:has(img[alt="UBS"])
 abendzeitung-muenchen.de##article[class^="teaser nummer-"]:has(span.specialfeature)
@@ -11277,7 +11286,7 @@ zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + div
 @@||g.doubleclick.net/pagead/ppub_config?$domain=manager-magazin.de
 @@||g.doubleclick.net/pagead/ppub_config?ippd=$xmlhttprequest,domain=gamepro.de|gamestar.de|moviepilot.de
 @@||g.doubleclick.net/pcs/$popup,domain=motorradonline.de
-@@||g.doubleclick.net/tag/js/gpt.js$script,xmlhttprequest,domain=11freunde.de|auto-motor-und-sport.de|gala.de|gamepro.de|gamestar.de|gentside.de|manager-magazin.de|motorradonline.de|moviepilot.de|n-tv.de|ohmymag.de|stern.de|teltarif.de
+@@||g.doubleclick.net/tag/js/gpt.js$script,xmlhttprequest,domain=11freunde.de|auto-motor-und-sport.de|gala.de|gamepro.de|gamestar.de|gentside.de|manager-magazin.de|motorradonline.de|moviepilot.de|n-tv.de|ohmymag.de|spielaffe.de|stern.de|teltarif.de
 @@||getjad.io/library/$script,domain=moviepilot.de
 @@||getjad.io/prebid/$script,domain=moviepilot.de
 @@||googletagservices.com/tag/js/gpt.js$domain=windowspro.de

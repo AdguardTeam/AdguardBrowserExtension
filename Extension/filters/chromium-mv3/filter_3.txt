@@ -1,8 +1,8 @@
-! Checksum: gBT0S3JTmDgzvUyKU8cixA
+! Checksum: ujYFuaxIbeTQTuELjzIPcQ
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.76.30
-! TimeUpdated: 2024-11-06T16:32:59+00:00
+! Version: 2.0.76.39
+! TimeUpdated: 2024-11-08T13:33:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -34845,6 +34845,10 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||event-dot-procolor-backend.appspot.com^
+||prod.event.mwm-asset-manager.mwmwebapis.com^
+||stats.vidbinge.com^
+||api.amplitudeexperiment.com^
 ||analytics.ahrefs.
 ||montelena.gmarket.co.kr^
 ||stats.hitwebcloud.de^
@@ -91229,6 +91233,9 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||facebook.com/ajax/*_logging/
+||fbsbx.com/paid_ads_pixel/
+||w4m.rs/tracker.js
 ||duer.ca/cdn/shopifycloud/media-analytics/
 ||aktion.kurier.de/umfrage/anlvi/setIframeParent
 ||cdn.thenewsbox.net/m/impression
@@ -91968,7 +91975,8 @@ lto.de##img[src^="https://ssl-wolterskluwer.met.vgwort.de/"]
 ||worldhistory.org/analytics/pageview.js
 ||g.newtimes.com/pd.js
 ||newtimes.com/analytics?
-||computerbase.de/nl$xmlhttprequest
+! /https\:\/\/www\.computerbase\.de\/[^(js|preisvergleich|forum)\/]/$xmlhttprequest,~third-party,domain=computerbase.de
+||computerbase.de/analytics
 ||rec1.smt.docomo.ne.jp/bcn_access_log/
 ||kccsrecommend.site/torimochi_log/
 ||www-direct.motorcycle.com/eventStream
@@ -92358,7 +92366,6 @@ dealdoktor.de##img[src*="//vg09.met.vgwort.de/"]
 ||girlsofdesire.org/images/girlsofdesire.org/analytics.js
 ||launchpad-wrapper.privacymanager.io/*/launchpad-liveramp.js
 ||laz-g-cdn.alicdn.com/lazada/dynamic-static-nopolyfill/*/daraz-marketing-tracker.js
-||tv8.daioncdn.net/events?
 ||elog.tokyo/counter_access.php
 ||cdn.privacy-mgmt.com/wrapper/metrics$important
 ||c2shb.pubgw.yahoo.com/admax/bid/partners/PBJS^
