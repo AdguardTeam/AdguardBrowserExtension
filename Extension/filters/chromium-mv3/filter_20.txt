@@ -1,8 +1,8 @@
-! Checksum: adP0PRh807b2GwDwgeuNiw
+! Checksum: lkhKPPFDUkMfybDmIMx1Iw
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.17.51
-! TimeUpdated: 2024-11-05T14:33:30+00:00
+! Version: 2.0.17.55
+! TimeUpdated: 2024-11-08T15:35:07+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -123,6 +123,8 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+s.shufoo.net##a[id][rel^="app_appeal_btn"]
+ljsilvers.com##.site-popup
 nytimes.com##.promo
 coingecko.com##div[data-controller="navbar"] a[href^="https://coingecko.app.link/"]
 coingecko.com##div[data-controller="app-flyer"]
@@ -3012,9 +3014,9 @@ kinopovtor1.online#%#//scriptlet("abort-on-property-read", "stickyConfig")
 m.kwejk.pl#%#(function(){var a=new Date;a=a.getFullYear()+"-"+(a.getMonth()+1)+"-"+a.getDate();document.cookie="closed="+a})();
 akinator.mobi#%#document.cookie="com.digidust.elokence.akinator.freemium-smartbanner-closed=true; path=/;";
 yemek.com#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("smartAppStatus", "false") } } catch (ex) {} })();
-m.jbzd.cc,m.jbzdy.cc#%#document.cookie = "play-creation=1; path=/;";
+m.jbzd.cc,m.jbzdy.cc#%#//scriptlet('set-cookie','play-creation', '1')
 finanzen.net,vodafone.cz,m.jdsports.co.uk,mmajunkie.com#%#document.cookie="sb-closed=true; path=/;";
-fcn.de,kq2.com,kdrv.com,wfft.com,wtva.com,wktv.com,actionnewsnow.com#%#document.cookie = "smartbanner-closed=true; path=/;";
+fcn.de,kq2.com,kdrv.com,wfft.com,wtva.com,wktv.com,actionnewsnow.com#%#//scriptlet('set-cookie', 'smartbanner-closed', 'true')
 appticker.de#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/loadAppStoreBanner/.test(a.toString()))return b(a,c)};})();
 svyaznoy.ru#%#//scriptlet('remove-class', 'android-banner-on-page')
 ebay.com,ebay.ru,ebay.net,ebay.org,ebay.in,ebay.com.au,ebay.co.uk,ebay.co,ebay.gr,ebay.ca,ebay.vn,ebay.info,ebay.de,ebay.fr,ebay.jp,ebay.xyz,ebay.com.tw,ebay.co.za,ebay.co.il,ebay.online,ebay.eu,ebay.it,ebay.tv,ebay.es,ebay.ch,ebay.co.in,ebay.com.vn,ebay.biz,ebay.co.id,ebay.nl,ebay.us,ebay.pl,ebay.cl,ebay.com.mx,ebay.ro,ebay.co.jp,ebay.co.nz,ebay.ma,ebay.com.ar,ebay.su,ebay.site,ebay.cn,ebay.ae,ebay.co.kr,ebay.se,ebay.com.my,ebay.cz,ebay.live,ebay.com.sg,ebay.top,ebay.gov,ebay.com.co,ebay.co.th,ebay.be,ebay.store,ebay.dk,ebay.hu,ebay.md,ebay.com.hk,ebay.com.cn,ebay.sg,ebay.no,ebay.pw,ebay.com.bd,ebay.to,ebay.com.ng,ebay.ie,ebay.at,ebay.co.ke,ebay.com.np,ebay.ph,ebay.fi,ebay.pe,ebay.ng,ebay.lt,ebay.hk,ebay.link,ebay.gov.bd,ebay.pt,ebay.com.ph,ebay.fun,ebay.bg,ebay.ee,ebay.uk,ebay.org.tw,ebay.gov.np,ebay.web.id,ebay.work,ebay.best###gh-appBanner

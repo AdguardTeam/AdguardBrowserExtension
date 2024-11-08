@@ -1,8 +1,8 @@
-! Checksum: XLA30PSoOsYQS1nav3QEyw
+! Checksum: WMvZAzZn9gapn/I1GQSdkw
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.47.85
-! TimeUpdated: 2024-11-06T11:34:57+00:00
+! Version: 2.0.47.91
+! TimeUpdated: 2024-11-08T15:35:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -126,6 +126,9 @@ capital.fr#@#.plainAd
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192425
+m6.fr#%#//scriptlet('prevent-xhr', 'v.fwmrm.net')
+@@||v.fwmrm.net/|$xmlhttprequest,domain=m6.fr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191519
 ||cdn.jokerly.com/scripts/LPF_abChoice.js
 petitfute.com###cadreJokerlyADSContainer
@@ -237,10 +240,9 @@ monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementB
 japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
 japscan.lol#%#//scriptlet('prevent-setTimeout', 'getElementById')
 japscan.lol#%#//scriptlet('prevent-addEventListener', 'load', 'setTimeout')
-japscan.lol#%#//scriptlet('remove-node-text', 'script', 'function RzA')
-japscan.lol#%#//scriptlet('remove-node-text', 'script', '=\'/0\'')
+japscan.lol#%#//scriptlet("remove-node-text", "script", "/='\/'\+'0|function Rz[0-9A-z]{5}\(Rz|function KoB/")
 japscan.lol#$#.navbar-nav > li#navpromo2.nav-item > a[href^="http://www.toueapo.shop/"] { text-indent: -5000px !important; }
-japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'Samsung')
+japscan.lol#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'NiceTime')
 @@$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,script,~third-party
 japscan.lol#@#.tangoai

@@ -1,8 +1,8 @@
-! Checksum: ew0XtNDxbEWszA4gMaR0pg
+! Checksum: 5TlcpOoGNPDcxc1r5iD1PA
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.27.28
-! TimeUpdated: 2024-11-06T13:33:19+00:00
+! Version: 2.0.27.33
+! TimeUpdated: 2024-11-07T21:33:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1729,8 +1729,6 @@ atomohd.com,atomtt.com,atomixhq.*#%#//scriptlet("prevent-window-open", "!/downlo
 awlinks.live,acorta-enlace.com,acortaenlace.com#%#AG_onLoad(function(){try{var a;"function"==typeof decode_link&&"string"==typeof link_out&&(a=decode_link(atob(link_out)),location.assign(a)),"string"==typeof api_key&&(document.cookie=`${api_key}=Wn275; path=/`);var b=document.querySelector("* > .button#contador");b&&a&&setTimeout(()=>{var c=b.cloneNode(!0);b.parentNode.replaceChild(c,b),c.addEventListener("click",function(){location.assign(a)},!1)},500)}catch(a){}});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/102624
 pelispop.me#%#//scriptlet("abort-on-property-read", "adk_pdisp")
-! https://github.com/AdguardTeam/AdguardFilters/issues/102845
-criarjogosandroid.com#%#//scriptlet("adjust-setTimeout", "contador", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100382
 cuevana-3.wtf#%#//scriptlet("prevent-window-open")
 cuevana-3.wtf#%#//scriptlet("adjust-setInterval", "Loading...", "", "0.02")
@@ -1805,8 +1803,6 @@ drivelinks.me,onelinks.site#%#(function(){if(-1<window.location.href.indexOf("/#
 drivelinks.me,acortame-esto.com,drivelinks.me,pelislinks.me#%#(function(){if(-1<window.location.href.indexOf("s.php?i=")){var a=location.href.split("s.php?i=");if(a&&a[1]){a=a[1];for(var c=0;10>c;c++)try{a=atob(a)}catch(f){var d=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});try{new URL(d);var e=!0}catch(b){e=!1}if(e){window.location=d;break}}}}})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/116141
 lectulandia.*#%#//scriptlet("adjust-setTimeout", "redirect", "*", "0.02")
-! https://github.com/AdguardTeam/AdguardFilters/issues/60106
-compartiendofull.net#%#//scriptlet('remove-attr', 'href', '.leaving-message center > a.btn[onclick^="window.open"][href*="/ads.html"]')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59587
 animeblix.com#%#//scriptlet("json-prune", "rot_url pop_type")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59484
@@ -2203,6 +2199,13 @@ extra.ec,globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futeboli
 ! ##body .banner
 mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.info,lapoliticaonline.com.mx,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.gov.bd,lapoliticaonline.gov.np,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
+! NOTE: Specific rules
+!
+seriesperu.com#%#//scriptlet('set-constant', 'redirigido', 'true')
+criptofacil.com##div[class^="clickout-native_table_box"]
+criptofacil.com##div[class^="cript-after-"][id^="cript-"]
+lista.mercadolivre.com.br##.ui-search-sidebar-placements__display
+forocoches.com#?#.optidigital-wrapper-div
 forocoches.com##[align="center"]:has(div[id^="optidigital-adslot-"])
 forocoches.com##tbody > tr > td[valign="top"]:has(div[id^="optidigital-adslot-"])
 tomatazos.com##.ad-container
@@ -5769,10 +5772,6 @@ brasilescola.uol.com.br#@#.banner
 @@||fadadosexo.com/wp-content/uploads/useful_banner_manager_banners/*.jpg
 ! https://github.com/AdguardTeam/AdguardFilters/issues/68257
 programasdixguel.blogspot.com#@#[href^="http://raboninco.com/"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/68098
-@@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=downdetector.com.br
-@@||googletagservices.com/tag/js/gpt.js$domain=downdetector.com.br
-||googletagservices.com/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=downdetector.com.br,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/67969
 crazygamer.epizy.com#@#[href^="http://raboninco.com/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/67827
