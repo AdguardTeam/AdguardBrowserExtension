@@ -18,7 +18,7 @@
 import zod from 'zod';
 import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
-import { isObject } from 'lodash';
+import isObject from 'lodash-es/isObject';
 
 import { HybridStorage } from '@adguard/tswebextension/core-storages';
 
