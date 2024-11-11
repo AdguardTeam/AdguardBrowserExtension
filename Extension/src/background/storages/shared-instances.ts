@@ -17,7 +17,11 @@
  */
 import browser from 'webextension-polyfill';
 
-import { BrowserStorage, HybridStorage } from '@adguard/tswebextension/core-storages';
+import {
+    BrowserStorage,
+    HybridStorage,
+    IDBStorage,
+} from '@adguard/tswebextension/core-storages';
 
 /**
  * Storage instance for accessing `browser.storage.local`.
@@ -36,4 +40,12 @@ if (!IS_BETA && !IS_RELEASE) {
     // @ts-ignore
     // eslint-disable-next-line no-restricted-globals
     self.hybridStorage = hybridStorage;
+
+    // @ts-ignore
+    // eslint-disable-next-line no-restricted-globals
+    self.HybridStorage = HybridStorage;
+
+    // @ts-ignore
+    // eslint-disable-next-line no-restricted-globals
+    self.IDBStorage = IDBStorage;
 }
