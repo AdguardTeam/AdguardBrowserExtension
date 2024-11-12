@@ -1,8 +1,8 @@
-! Checksum: 15gl2tD7VNCPUnqFy4nFoA
+! Checksum: mvgkS9ofPvkXz1MdLVirQw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.55.96
-! TimeUpdated: 2024-11-08T17:33:04+00:00
+! Version: 2.0.56.6
+! TimeUpdated: 2024-11-12T17:34:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,6 +219,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||kvaedit.site^
 ||ads-ap-venues.yinzcam.com^
 ||ads-delivery.gunosy.com^
 ||ads-config-engine-noneu.truecaller.com^
@@ -1861,6 +1862,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! Repeated requests, two or more in one second if blocked - https://old.reddit.com/r/Adguard/comments/ztbv96/how_do_i_stop_this_my_phone_is_overheating_and/
 ! https://old.reddit.com/r/Adguard/comments/18s9snu/api2branch_causing_cpu_overheat/
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192121
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190962
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189134
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186071
@@ -2408,6 +2410,16 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+news.gamme.com.tw##.if2 > a[href^="https://www.gamme.com.tw/r.php"] > img
+smart-flash.jp#$?#.ads_sp_image_slider { remove: true; }
+blog.livedoor.jp##.reprint + div[style*="margin:"][style*="#"]:has(img[src*="amazon."])
+fastcompany.com##div[class="min-h-[265px] bg-white fixed bottom-[82px] left-0 right-0 z-50"]
+m.slashdot.org##.ad-on
+manysex.com##.header__item
+ooxxx.com#?#.wrapper > section[style]:has(> div > span:matches-css(after, content: AD))
+ooxxx.com##.underplayer > section:has(> div > h4 > a[href^="https://clickadilla.com/"])
+hotmovs.com#?#.video-page > div[class]:has(> div > span:contains(/^AD/))
+tube8.com##.watchTopAd
 book18.fans##div[style^="width: 300px; height: 250px;"]
 xjav.tube##.video__wrapper > div.wrapper:has(> article div[style="width: 156px; height: 130px;"])
 bm.best-hit.tv##iframe[style^="width:320px;height:100px;"]
@@ -2416,7 +2428,6 @@ tporn.xxx###header_ban
 pornomira.net##center[style="margin-bottom: 20px; min-height:250px"]
 manualslib.es,manualslib.de,manualslib.com#$#.manualcenter { min-height: auto !important; }
 diariobitcoin.com##.tickerPartnerButton
-yuumi-sokuhou.com###custom_html-25
 marieclaire.com.tw##div[class^="ad"]
 uzmanparam.milliyet.com.tr##div[style^="min-height: 250px;display: flex;justify-content: center;"]
 lol.ps##div[id^="mobile_banner-"]
@@ -2549,7 +2560,6 @@ nikkansports.com###photoScrollText
 koe-koe.com##.ad_min_height
 transtxxx.com##.video-content > div[class]:first-child > div[class]:first-child > div[class]:first-child:has(> div[class] > div[id][class]:empty)
 beauty.biglobe.ne.jp##.anchorAdBox
-ufret.jp##.list-group-flush > a.list-group-item-action[href^="https://shop.sococo.jp"]
 transfer.smt.docomo.ne.jp##.d2c_header[style="height:250px"]
 dengekionline.com##div[class^="BasicLayout"][class*="BannerForSp_"]
 itest.5ch.net#$#.ad_300x250 { position: absolute !important; left: -3000px !important; }
@@ -4832,7 +4842,7 @@ vokrug.tv###GPM_vokrugtv_M_300x250_Top
 tvjapan.net###bg-ad-mob
 sport.de###topbanner-mobile
 tabootube.xxx##.wrap-spot
-kimagurekizokunoadriatic.site,comichronicle.com,onlyporn.tube,watchporn.to,lifematome.blog,tora-kekkon.com,m.eprice.com.tw,dodoyo.jp,life-alright.com,bookwiz.me,yasasiikurasi.com,tabootube.xxx,ba-ro-4869.com,aquarium-suisou.net##.sponsor
+manga-dome.com,kimagurekizokunoadriatic.site,comichronicle.com,onlyporn.tube,watchporn.to,lifematome.blog,tora-kekkon.com,m.eprice.com.tw,dodoyo.jp,life-alright.com,bookwiz.me,yasasiikurasi.com,tabootube.xxx,ba-ro-4869.com,aquarium-suisou.net##.sponsor
 profile.ru##div[data-typeitem="ad"]
 rbc.ua##.adsens-wrap
 app.famitsu.com##.ad-agency-area

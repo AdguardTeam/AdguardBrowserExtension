@@ -1,8 +1,8 @@
-! Checksum: a1c4gylRuUG0feKoVxgK6w
+! Checksum: +PWA9/stBTViY5jRgB8IXQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.73
-! TimeUpdated: 2024-11-07T08:33:34+00:00
+! Version: 2.0.9.76
+! TimeUpdated: 2024-11-12T11:33:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -384,6 +384,17 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192795
+||tagomago.pl^$removeparam=subid
+||tagomago.pl^$removeparam=subid1
+||tagomago.pl^$removeparam=variant
+||linkbux.com/track/$removeparam=uid
+! https://github.com/AdguardTeam/AdguardFilters/issues/192575
+||trip.com^$removeparam=trip_sub1
+||trip.com^$removeparam=allianceid
+! https://github.com/AdguardTeam/AdguardFilters/issues/192481
+||dls.igg.com^$removeparam=media_source
+||dls.igg.com^$removeparam=campaign_name
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192448
 ||health.tvbs.com.tw^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191129
