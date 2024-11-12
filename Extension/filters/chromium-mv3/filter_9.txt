@@ -1,8 +1,8 @@
-! Checksum: 5TlcpOoGNPDcxc1r5iD1PA
+! Checksum: wDvClNHrP20vZdRvUiuKTg
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.27.33
-! TimeUpdated: 2024-11-07T21:33:12+00:00
+! Version: 2.0.27.41
+! TimeUpdated: 2024-11-12T17:34:39+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -439,13 +439,14 @@ receitasdochico.life,dicasdefinancas.net,dicasfinanceirasbr.com#%#//scriptlet('p
 tudosobrefinancas.com#$#body div[id].ads.adsbox.doubleclick { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164545
 expertplay.net#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
+! https://github.com/AdguardTeam/AdguardFilters/issues/192605
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178080
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171790
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164377
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134928
-visorcrab.com,httpmangacrab2.com,manga-crab.com,mangacrab.com##div[uncopy-anti-adblocker]
-visorcrab.com,httpmangacrab2.com,manga-crab.com,mangacrab.com#%#//scriptlet('abort-on-property-read', 'antiAdBlockerStyle')
-/wp-content/plugins/uncopy/frontend/js/uncopy-frontend.min.js$domain=mangacrab.com|manga-crab.com|httpmangacrab2.com|visorcrab.com
+toonscrab.com,visorcrab.com,httpmangacrab2.com,manga-crab.com,mangacrab.com##div[uncopy-anti-adblocker]
+toonscrab.com,visorcrab.com,httpmangacrab2.com,manga-crab.com,mangacrab.com#%#//scriptlet('abort-on-property-read', 'antiAdBlockerStyle')
+/wp-content/plugins/uncopy/frontend/js/uncopy-frontend.min.js$domain=mangacrab.com|manga-crab.com|httpmangacrab2.com|visorcrab.com|toonscrab.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164047
 ||peliculas8k.com/TV/encriptador/cierrapues.js
 peliculas8k.com#%#//scriptlet('prevent-setTimeout', 'Promise[\'all\'](urls')
@@ -2201,7 +2202,16 @@ mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.c
 !
 ! NOTE: Specific rules
 !
-seriesperu.com#%#//scriptlet('set-constant', 'redirigido', 'true')
+anime-jl.net#%#//scriptlet('prevent-window-open')
+toonscrab.com#%#//scriptlet('abort-on-stack-trace', 'JSON.parse', 'showPopup')
+toonscrab.com#%#//scriptlet('abort-current-inline-script', 'document.addEventListener', 'showPopup')
+allcalidad.pro#%#//scriptlet('prevent-addEventListener', 'click', 'window.open')
+calidadtorrent.com##.justify-center > a[target="_blank"] > img
+estrenosdivx.net#?#.noticia:has(> div.card-body > p:contains(Promociones))
+cinecalidad.*##.item.xfxx
+cine-calidad.biz##div[class*="bannerAds"]
+forocoches.com###notice-wrapper
+peliculas8k.com#%#//scriptlet('set-constant', 'redirigir', 'noopFunc')
 criptofacil.com##div[class^="clickout-native_table_box"]
 criptofacil.com##div[class^="cript-after-"][id^="cript-"]
 lista.mercadolivre.com.br##.ui-search-sidebar-placements__display
@@ -5641,6 +5651,9 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192758
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=tn.com.ar
+||player.vodgc.net/dist/*/node_modules/videojs-contrib-ads/dist/videojs.ads.min.js$script,redirect=noopjs,domain=tn.com.ar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190509
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189639
 poder360.com.br#@#.box-advertising

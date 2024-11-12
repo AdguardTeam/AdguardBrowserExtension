@@ -1,8 +1,8 @@
-! Checksum: 7dFObTuSBfsrRbakW6URKw
+! Checksum: dZPGSyr9NSnIQpVowkGtPA
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.7.46
-! TimeUpdated: 2024-11-08T12:33:02+00:00
+! Version: 2.1.7.54
+! TimeUpdated: 2024-11-12T15:34:15+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -722,6 +722,11 @@ pcmag.com,onefootball.com,ign.com,israelnationalnews.com,lifehacker.com,cgmagonl
 !
 ! NOTE: Specific rules
 !
+fastcompany.com##main > ul:has(> li > a[href^="https://www.facebook.com/sharer.php"])
+openlibrary.org##.share-modal-link
+quotidianodipuglia.it##.share_bar_wrapper
+prmira.ru##.flex-col.top-\[70px\]
+belsat.eu##.article__icons
 salon.mainichi-kotoba.jp##.c-footer-bar__item--share
 asahi.com##.LLA73
 scribd.com##.after_doc_wrapper > section:has(> h2.share_document_title)
@@ -2111,6 +2116,7 @@ journal.tinkoff.ru##div[class^="socialActions"] > div[class^="sharer"]
 journal.tinkoff.ru##div[class^="actions"] > div[data-test-element="ui-kit_root"]
 polygamia.pl##div[data-content="Udostępnij"]
 polygamia.pl##button[aria-label="Udostępnij"]
+dobreprogramy.pl##button[aria-label="UDOSTĘPNIJ"]
 toriizaka46.jp##.sns-share-list
 siliconangle.com##.m_social-icon-container
 divernet.com##.saboxplugin-socials
@@ -5023,7 +5029,7 @@ magazine.dmkt-sp.jp##.bw-sns-magazine
 video.dmkt-sp.jp##[class*="-m__share-"]
 mobareco.jp###text-37
 fromsoftware.jp,net.hr,darksouls.jp###share_wrapper
-tvpparlament.pl,dropi.ru##.article__shares
+belsat.eu,tvpparlament.pl,dropi.ru##.article__shares
 hdg.de##.contentshare
 vogue.co.kr##.post_footer_sns
 xsplit.com##._1lC4OG6VwLWAnm-xmny2Fg
@@ -7227,7 +7233,7 @@ fakt.pl##div[data-position="mobile"][data-run-module="local/main.social"]
 calculateaspectratio.com##.share > *
 vagalume.com.br###shareLyrics
 magazyn.wp.pl##.socials--item
-friendly2.me,holod.media,m.dw.com,gq.ru,barfi.ch,cybersport.ru##.article__sharing
+friendly2.me,m.dw.com,gq.ru,barfi.ch,cybersport.ru##.article__sharing
 cybersport.ru##.article__yandex-zen
 adweek.com##.aw-social-share-container
 ndtv.com##.pst_scl
@@ -9720,7 +9726,7 @@ eurogamer.net,metabomb.net##.like-and-subscribe
 multiup.eu##a[href^="https://flattr.com"]
 ||html-online.com/like.html
 history.com##.player__info > .c022
-motorauthority.com,thesdeshop.com,smartlog.jp,timeextension.com,twpkinfo.com,nobelprize.org,nextgov.com,mcpedl.com,purposegames.com,pushsquare.com,purexbox.com,tothenew.com,jewishjournal.com,vg247.com,nintendolife.com,aetv.com,history.com##.share-this
+screenshot.rocks,motorauthority.com,thesdeshop.com,smartlog.jp,timeextension.com,twpkinfo.com,nobelprize.org,nextgov.com,mcpedl.com,purposegames.com,pushsquare.com,purexbox.com,tothenew.com,jewishjournal.com,vg247.com,nintendolife.com,aetv.com,history.com##.share-this
 tothenew.com##.sharethis-text
 chefkoch.de##.recipe-share-btn
 ozon.ru##div[data-widget="sharingButton"]
@@ -12836,6 +12842,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ##a[href^="http://www.twitter.com/intent/tweet?"]
 ##a[href^="http://twitter.com/intent/tweet/?"]
 !
+##share-widget
 ##a[href^="https://www.threads.net/intent/post?url"]
 ##a[href^="https://bsky.app/intent/compose?text="]
 ##.item_sns_list
