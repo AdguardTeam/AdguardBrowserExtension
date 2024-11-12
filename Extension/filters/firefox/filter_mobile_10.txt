@@ -1,9 +1,9 @@
-! Checksum: +sPYgqzHWHiN2ZF+X2nhvw
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1728376589-3600.patch
+! Checksum: 8mKZqHMD/fcnVzqcQdJtCQ
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1731415089-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.46
-! TimeUpdated: 2024-10-08T08:32:43+00:00
+! Version: 2.0.3.53
+! TimeUpdated: 2024-11-12T12:33:59+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -17,6 +17,7 @@
 #%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
 #%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
 !#safari_cb_affinity(general)
+bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
 bing.com#@#.b_adLastChild
 bing.com#@$#body .b_adLastChild { display: block !important; position: absolute !important; top: -9999px !important; }
 bing.com#@$#body .pa_carousel_mlo { display: block !important; position: absolute !important; top: -9999px !important; }
@@ -152,6 +153,9 @@ amazon.*#@##dp-container > #px-profile_feature_div[data-csa-c-type="widget"]
 amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
 amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
+zalando.de#@#div[data-trckng-component] div[class]:has(> div[data-visibility-info-id*="advertising"])
+zalando.de#@#div[data-visibility-info-id*="advertising"]
+zalando.de#@##view-tracker-wrapper
 docfinder.at#@#.search-results > .search-result:has(> a > .top > .base-info > .sub > .advert)
 search.brave.com#@#div[data-advertiser-id]
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
@@ -164,6 +168,8 @@ ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored)
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
+ebay.*#@#.x-rx-slot
+ebay.*#@#.srp-river-answer[class*="CAROUSEL"]:not([class*="NAVIGATION"])
 aliexpress.com#@#.search-item-card-wrapper-list:has( > div:only-child > div:only-child > a + div[class*="multi"])
 [$path=/jobs]linkedin.com#@##ember33
 [$path=/jobs]linkedin.com#@#.discovery-templates-entity-item:has(> div[data-job-id="search"] > div > .job-card-list__footer-wrapper > .job-card-container__footer-item.align-items-center:first-child)
@@ -177,6 +183,9 @@ news.fresheye.com#@#.bk2.spsite
 websearch.rakuten.co.jp#@##ad-ichiba
 etsy.com#@?#.responsive-listing-grid > li:has( > div > a div > .ad-iindicator)
 etsy.com#@?#div[data-search-results-region] li:has( div[class*="merch-stash"]:only-child > a > div[class*="listing-card__info"] p > span:not([aria-hidden="true"]):contains(Etsy))
+duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#li[data-layout="products"]
+duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#.module--carousel-products
+duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#[data-layout="ad"]
 @@||ad.doubleclick.net/searchads/link/click?$popup,domain=duckduckgo.com|duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.result--ad > .result__body
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.sponsored
