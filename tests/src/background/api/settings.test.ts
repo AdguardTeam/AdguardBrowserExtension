@@ -43,7 +43,7 @@ describe('Settings Api', () => {
     let storage: Storage.StorageArea;
 
     jest.spyOn(Network.prototype, 'downloadFilterRules').mockImplementation(async () => {
-        const content = '||example.com^$third-party';
+        const content = 'Title: foo\n||example.com^$third-party';
 
         return {
             filter: content.split('\n'),
