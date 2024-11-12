@@ -184,7 +184,7 @@ export class Network {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
-            if (__IS_MV3__) {
+            if (__IS_MV3__ && filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
                 // TODO: Check if its needed
                 const rawFilterList = await TsWebExtension.getRawFilterList(filterId, 'filters/declarative');
 
