@@ -12,7 +12,7 @@
     "test": "MANIFEST_ENV=2 jest && MANIFEST_ENV=3 jest",
     "locales": "node -r @swc-node/register tools/locales.js",
     "resources": "node -r @swc-node/register tools/resources.ts",
-    "resources:mv3": "yarn add -D @adguard/dnr-rulesets && node -r @swc-node/register tools/resources-mv3.ts",
+    "resources:mv3": "yarn add -D https://github.com/AdguardTeam/tsurlfilter/raw/3841f311afd96738c87a9a650e145aa9d33c6c89/packages/dnr-rulesets/adguard-dnr-rulesets.tgz && node -r @swc-node/register tools/resources-mv3.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && yarn check-types",
     "increment": "yarn version --patch --no-git-tag-version",
     "prepare": "husky install",
@@ -29,7 +29,7 @@
   "author": "adguard@adguard.com",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@adguard/dnr-rulesets": "^1.2.20241020131948",
+    "@adguard/dnr-rulesets": "https://github.com/AdguardTeam/tsurlfilter/raw/3841f311afd96738c87a9a650e145aa9d33c6c89/packages/dnr-rulesets/adguard-dnr-rulesets.tgz",
     "@adguard/re2-wasm": "^1.2.0",
     "@sinonjs/fake-timers": "^10.0.2",
     "@swc-node/register": "^1.9.1",
