@@ -77,8 +77,8 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
                         to: 'manifest.json',
                         transform: (content) => {
                             const filters = fs
-                                .readdirSync(FILTERS_DEST.replace('%browser', 'chromium-mv3'))
-                                .filter((filter) => filter.match(/filter_\d+\.txt/));
+                                .readdirSync(FILTERS_DEST.replace('%browser', 'chromium-mv3/declarative'))
+                                .filter((filter) => filter.match(/ruleset_\d+/));
 
                             return updateManifestBuffer(
                                 BUILD_ENV,
