@@ -7,7 +7,11 @@ import {
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../constants';
-import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
+import {
+    Network,
+    SettingsApi,
+    SettingsData,
+} from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,
@@ -37,6 +41,15 @@ jest.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
+
+    jest.spyOn(Network.prototype, 'downloadFilterRules').mockImplementation(async () => {
+        const content = '||example.com^$third-party';
+
+        return {
+            filter: content.split('\n'),
+            rawFilter: content,
+        };
+    });
 
     afterEach(() => {
         storage.clear();
