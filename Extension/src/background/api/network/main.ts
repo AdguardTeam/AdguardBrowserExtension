@@ -17,6 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
+import { TsWebExtension } from '@adguard/tswebextension/mv3';
 import {
     FiltersDownloader,
     DefinedExpressions,
@@ -183,6 +184,16 @@ export class Network {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
+            if (__IS_MV3__) {
+                // TODO: Check if its needed
+                const rawFilterList = await TsWebExtension.getRawFilterList(filterId, 'filters/declarative');
+
+                return {
+                    filter: rawFilterList.split('\n'),
+                    rawFilter: rawFilterList,
+                };
+            }
+
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {
