@@ -25,7 +25,7 @@ import {
 } from '@adguard/filters-downloader/browser';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
-import { AntiBannerFiltersId } from '../../../common/constants';
+import { AntiBannerFiltersId, NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -189,7 +189,7 @@ export class Network {
                 const rawFilterList = await TsWebExtension.getRawFilterList(filterId, 'filters/declarative');
 
                 return {
-                    filter: rawFilterList.split('\n'),
+                    filter: rawFilterList.split(NEWLINE_CHAR_REGEX),
                     rawFilter: rawFilterList,
                 };
             }
