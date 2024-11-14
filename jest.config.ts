@@ -17,22 +17,35 @@
  */
 import type { Config } from 'jest';
 import escapeStringRegexp from 'escape-string-regexp';
+import * as dependencyPath from '@pnpm/dependency-path';
 
-// FIXME
-const addPnpmNames = (modules: string[]): string[] => {
+/**
+ * Helper function that adds special pnpm filenames to the list of modules.
+ * This is necessary because some modules may be placed within the `.pnpm` directory,
+ * and in such cases, pnpm changes their names, e.g., `@adguard/tsurlfilter` to `.pnpm/@adguard+tsurlfilter@x.y.z`.
+ * If we want to ignore certain modules in the transform step, we need to add their pnpm names to the list.
+ * This function does that automatically.
+ *
+ * @param modules List of modules.
+ *
+ * @returns List of modules extended with pnpm names.
+ */
+const extendWithSpecialPnpmFileNames = (modules: string[]): string[] => {
     const result: string[] = [];
 
     modules.forEach((module) => {
         result.push(module);
-        if (module.indexOf('/') !== -1) {
-            result.push(module.replace('/', '+'));
+
+        const moduleFileName = dependencyPath.depPathToFilename(module, 100);
+        if (module !== moduleFileName) {
+            result.push(moduleFileName);
         }
     });
 
     return result;
 };
 
-const transformedModules = addPnpmNames([
+const transformedModules = extendWithSpecialPnpmFileNames([
     '@adguard/tsurlfilter',
     '@adguard/tswebextension',
     '@adguard/filters-downloader',
