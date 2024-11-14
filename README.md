@@ -218,17 +218,40 @@ to `tsurlfilter`. Here's what you need to do to link your local dev build
 to the local dev build of `tsurlfilter`.
 
 1. Clone and build [tsurlfilter][tsurlfilter] libraries.
-1. Go to the `tsurlfilter/packages/tsurlfilter` and
-`tsurlfilter/packages/tswebextension` directories and run `pnpm link`.
+1. You have two options to link the packages:
+    - **Option 1**: Link the packages globally:
+      1. Go to the `tsurlfilter/packages/tsurlfilter` or `tsurlfilter/packages/tswebextension` directory.
+      1. Run the following command:
 
-1. Now you can link these packages to the browser extension. To do that run
-`pnpm link` commands in the root directory of the browser extension root
-directory:
+         ```shell
+         pnpm link --global
+         ```
 
-  ```shell
-  pnpm link @adguard/tsurlfilter
-  pnpm link @adguard/tswebextension
-  ```
+         This command will create a symlink to the package in the global `node_modules` directory.
+      1. Once you have the packages linked globally, you can link them to the browser extension.
+      Just run the following command in the root directory of the browser extension:
+
+         ```shell
+         pnpm link @adguard/tsurlfilter
+         ```
+
+    - **Option 2**: Link the packages by path:
+      1. Just run the following command in the root directory of the browser extension:
+
+         ```shell
+         pnpm link <path-to-tsurlfilter/packages/tsurlfilter>
+         ```
+
+1. If you want to unlink the packages, just run `pnpm unlink @adguard/tsurlfilter`
+or `pnpm unlink @adguard/tswebextension` in the root directory of the browser extension
+regardless of the linking option you chose.
+
+> [!WARNING]
+> pnpm will modify the lock file when linking packages. See <https://github.com/pnpm/pnpm/issues/4219>.
+
+> [!NOTE]
+> If you want to list linked packages, run `pnpm list --depth 0` in the root directory of the browser extension
+> which will show you all dependencies. Linked packages have a version like `link:../path/to/package`.
 
 1. Build the browser extension in the watch mode:
 
