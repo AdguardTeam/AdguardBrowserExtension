@@ -13,11 +13,11 @@
     "locales": "node -r @swc-node/register tools/locales.js",
     "resources": "node -r @swc-node/register tools/resources.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts .",
-    "increment": "yarn version --patch --no-git-tag-version",
+    "increment": "pnpm version patch --no-git-tag-version",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "check-types": "tsc --project tsconfig.with_types.json --noEmit",
-    "disclaimer": "yarn lint | node -r @swc-node/register tools/insert-disclaimer.js",
+    "disclaimer": "pnpm lint | node -r @swc-node/register tools/insert-disclaimer.js",
     "copy-external": "tswebextension war Extension/web-accessible-resources"
   },
   "repository": {

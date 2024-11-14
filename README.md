@@ -146,13 +146,12 @@ are willing to contribute.
 ### Requirements
 
 - [node.js LTS](https://nodejs.org/en/download/)
-- NPM v8
-- [yarn v1.22](https://yarnpkg.com/en/docs/install/)
+- [pnpm v8](https://pnpm.io/installation)
 
 Install local dependencies by running:
 
 ```shell
-  yarn install
+  pnpm install
 ```
 
 <a id="dev-build"></a>
@@ -164,13 +163,13 @@ Install local dependencies by running:
 Running tests:
 
 ```shell
-  yarn test
+  pnpm test
 ```
 
 Run the following command to build the dev version:
 
 ```shell
-  yarn dev
+  pnpm dev
 ```
 
 This will create a build directory with unpacked extensions for all browsers:
@@ -186,26 +185,26 @@ This will create a build directory with unpacked extensions for all browsers:
 To make a dev build for a specific browser, run:
 
 ```shell
-  yarn dev <browser>
+  pnpm dev <browser>
 ```
 
 Where `<browser>` is one of the following: `chrome`, `edge`, `opera`, `firefox`,
 `firefox-standalone`, like this:
 
 ```shell
-  yarn dev chrome
+  pnpm dev chrome
 ```
 
 To run dev build in watch mode, run:
 
 ```shell
-  yarn dev --watch
+  pnpm dev --watch
 ```
 
 Or for a specific browser:
 
 ```shell
-  yarn dev <browser> --watch
+  pnpm dev <browser> --watch
 ```
 
 #### Linking with the developer build of tsurlfilter/tswebextension
@@ -220,21 +219,21 @@ to the local dev build of `tsurlfilter`.
 
 1. Clone and build [tsurlfilter][tsurlfilter] libraries.
 1. Go to the `tsurlfilter/packages/tsurlfilter` and
-`tsurlfilter/packages/tswebextension` directories and run `yarn link`.
+`tsurlfilter/packages/tswebextension` directories and run `pnpm link`.
 
 1. Now you can link these packages to the browser extension. To do that run
-`yarn link` commands in the root directory of the browser extension root
+`pnpm link` commands in the root directory of the browser extension root
 directory:
 
   ```shell
-  yarn link @adguard/tsurlfilter
-  yarn link @adguard/tswebextension
+  pnpm link @adguard/tsurlfilter
+  pnpm link @adguard/tswebextension
   ```
 
 1. Build the browser extension in the watch mode:
 
   ```shell
-  yarn dev <browser> --watch
+  pnpm dev <browser> --watch
   ```
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
@@ -245,15 +244,15 @@ Before building the release version, you should manually download the necessary
 resources that will be included into the build: filters and public suffix list.
 
 ```shell
-  yarn resources
+  pnpm resources
 ```
 
 This command also checks if there are dangerous rules in the filters.
 See [dangerous rules](tools/resources/dangerous-rules/README.md)
 
 ```shell
-  yarn beta
-  yarn release
+  pnpm beta
+  pnpm release
 ```
 
 You will need to put certificate.pem file to the `./private` directory. This
@@ -261,10 +260,10 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 
 #### Special building instructions for Firefox reviewers
 
-1. Ensure you have installed Node.js and Yarn.
+1. Ensure you have installed Node.js and pnpm.
 1. To build the **BETA** version, run:
     ```
-    yarn beta firefox-standalone
+    pnpm beta firefox-standalone
     ```
 1. Navigate to the build directory:
     ```
@@ -278,19 +277,19 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 If you want to analyze the bundle size, run build with the `ANALYZE` environment:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn <build command>
+  pnpm cross-env ANALYZE=true pnpm <build command>
 ```
 
 So, for example, if you want to analyze the beta build for Chrome, run:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn beta chrome
+  pnpm cross-env ANALYZE=true pnpm beta chrome
 ```
 
 Or if you want to analyze all beta builds, run:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn beta
+  pnpm cross-env ANALYZE=true pnpm beta
 ```
 
 Analyzer will generate reports to the `./build/analyze-reports` directory in the following format:
@@ -314,32 +313,32 @@ please, setup `eslint` in your editor to follow up with it `.eslintrc`
 To download and append localizations run:
 
 ```shell
-    yarn locales download
+    pnpm locales download
 ```
 
 To upload new phrases to crowdin you need the file with phrases
 `./Extension/_locales/en/messages.json`. Then run:
 
 ```shell
-    yarn locales upload
+    pnpm locales upload
 ```
 
 To remove old messages from locale messages run:
 
 ```shell
-  yarn locales renew
+  pnpm locales renew
 ```
 
 To validate translations run:
 
 ```shell
-  yarn locales validate
+  pnpm locales validate
 ```
 
 To show locales info run:
 
 ```bash
-  yarn locales info
+  pnpm locales info
 ```
 
 <a id="minimum-supported-browser-versions"></a>
