@@ -18,12 +18,27 @@
 import type { Config } from 'jest';
 import escapeStringRegexp from 'escape-string-regexp';
 
-const transformedModules = [
+// FIXME
+const addPnpmNames = (modules: string[]): string[] => {
+    const result: string[] = [];
+
+    modules.forEach((module) => {
+        result.push(module);
+        if (module.indexOf('/') !== -1) {
+            result.push(module.replace('/', '+'));
+        }
+    });
+
+    return result;
+};
+
+const transformedModules = addPnpmNames([
     '@adguard/tsurlfilter',
     '@adguard/tswebextension',
     '@adguard/filters-downloader',
     'lodash-es',
-];
+    'nanoid',
+]);
 
 const config: Config = {
     verbose: true,
@@ -37,7 +52,8 @@ const config: Config = {
         './testSetup.ts',
     ],
     transformIgnorePatterns: [
-        `<rootDir>/node_modules/(?!(${transformedModules.map(escapeStringRegexp).join('|')}))`,
+        // https://github.com/jestjs/jest/issues/12984#issuecomment-1198204906
+        `<rootDir>/node_modules/(?!(?:.pnpm/)?(${transformedModules.map(escapeStringRegexp).join('|')}))`,
         '.*\\.json',
     ],
     transform: {
