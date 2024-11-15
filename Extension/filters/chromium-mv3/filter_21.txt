@@ -1,8 +1,8 @@
-! Checksum: lUnvSgyrj8Co7jJK/6p8gw
+! Checksum: G2ILin4I7iR8lsJdFnzEmg
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.27.88
-! TimeUpdated: 2024-11-12T15:34:55+00:00
+! Version: 2.0.28.3
+! TimeUpdated: 2024-11-15T12:36:35+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -107,6 +107,10 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/193006
+bloomberght.com#%#//scriptlet('trusted-set-local-storage-item', 'playerState', 'closed')
+! https://github.com/AdguardTeam/AdguardFilters/issues/192402
+sportsbull.jp##.SPBL_article-inhouseAd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192313
 gizchina.gr##div[style="clear:both; margin-top:0em; margin-bottom:1em;"] > a
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191602
@@ -1075,8 +1079,6 @@ chip.de###footer-white-global
 biglobe.ne.jp###spage-bnr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104390
 meduza.io##div[class^="AnnouncementInText-module_root__"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/115016
-banbye.com#%#(function(){try{"undefined"!==typeof localStorage&&(localStorage.getItem("npm-vuex")||localStorage.setItem("npm-vuex",'{"app":{"snackbarMessage":"","snackbarDelay":5000,"snackbar":false},"auth":{"user":{},"token":"","loginDialogDismissed":true}}'))}catch(a){}})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100595
 entrepreneur.com###mainDomContainer > noscript + div.bg-gray-200
 ! https://github.com/AdguardTeam/AdguardFilters/issues/102956
@@ -1335,6 +1337,7 @@ hitechplus.in###sidebarrightsc > #HTML2
 ! notion.so - annoyance
 notion.so##.spacer + div.signup-wrap
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90258
+laprovence.com#%#//scriptlet('prevent-refresh')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89747
 ||brief.pl/wp-content/uploads/2021/06/baner-www-750x100px.png
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90105
@@ -1468,8 +1471,6 @@ tomshardware.com##.van_vid_carousel
 bbva.es#$#html > body { opacity: 1 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/83768
 costcotravel.com#$#html[style="opacity: 0;"] { opacity: 1 !important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/82715#issuecomment-847745704
-google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,google.be,google.bf,google.bg,google.bi,google.bj,google.bs,google.bt,google.by,google.ca,google.cat,google.cd,google.cf,google.cg,google.ch,google.ci,google.cl,google.cm,google.cn,google.co.ao,google.co.bw,google.co.ck,google.co.cr,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.ls,google.co.ma,google.co.mz,google.co.nz,google.co.th,google.co.tz,google.co.ug,google.co.uk,google.co.uz,google.co.ve,google.co.vi,google.co.za,google.co.zm,google.co.zw,google.com,google.com.af,google.com.ag,google.com.ai,google.com.ar,google.com.au,google.com.bd,google.com.bh,google.com.bn,google.com.bo,google.com.br,google.com.bz,google.com.co,google.com.cu,google.com.cy,google.com.do,google.com.ec,google.com.eg,google.com.et,google.com.fj,google.com.gh,google.com.gi,google.com.gt,google.com.hk,google.com.jm,google.com.kh,google.com.kw,google.com.lb,google.com.ly,google.com.mm,google.com.mt,google.com.mx,google.com.my,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.com.np,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.com.pr,google.com.py,google.com.qa,google.com.sa,google.com.sb,google.com.sg,google.com.sl,google.com.sv,google.com.tj,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vc,google.com.vn,google.cv,google.cz,google.de,google.dj,google.dk,google.dm,google.dz,google.ee,google.es,google.fi,google.fm,google.fr,google.ga,google.ge,google.gg,google.gl,google.gm,google.gp,google.gr,google.gy,google.hn,google.hr,google.ht,google.hu,google.ie,google.im,google.iq,google.is,google.it,google.je,google.jo,google.kg,google.ki,google.kz,google.la,google.li,google.lk,google.lt,google.lu,google.lv,google.md,google.me,google.mg,google.mk,google.ml,google.mn,google.ms,google.mu,google.mv,google.mw,google.ne,google.nl,google.no,google.nr,google.nu,google.pl,google.pn,google.ps,google.pt,google.ro,google.rs,google.ru,google.rw,google.sc,google.se,google.sh,google.si,google.sk,google.sm,google.sn,google.so,google.sr,google.st,google.td,google.tg,google.tk,google.tl,google.tm,google.tn,google.to,google.tt,google.vg,google.vu,google.ws#%#(function() { try { if ("undefined" != typeof localStorage) { window.localStorage.setItem("gtButterbarDismissalExpiry", ((new Date).getTime() + 6048E5).toString()) } } catch (ex) {} })();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/83731
 reuters.com##div[class^="OldSiteBanner_"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/83480
@@ -2580,11 +2581,6 @@ allmusic.com###ctoolbar
 thequestion.ru##a.informer
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6409
 haaretz.com##.footer-toolbar.float
-! https://forum.adguard.com/index.php?threads/24112/
-iz.ru#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.mute", "false") } } catch (ex) {} })();
-iz.ru#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.play", "false") } } catch (ex) {} })();
-iz.ru#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.volume", "0") } } catch (ex) {} })();
-iz.ru#%#AG_onLoad(function() { setTimeout(function() { (function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.play", "false") } } catch (ex) {} })(); }, 1500); });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6305
 vizer.tv##body > .vizerNewBox.vizerNoticia
 ! https://github.com/AdguardTeam/AdguardFilters/issues/21646
@@ -2829,8 +2825,6 @@ gismeteo.ru###soft-promo
 ! https://forum.adguard.com/index.php?threads/13087/
 ctc.ru##.widget.special-block[data-trackable]
 ||mts.ctc.ru/?nowrap=
-! https://forum.adguard.com/index.php?threads/13001/
-grammarly.com#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("ch:overlay.closed.time", "5000000000000") } } catch (ex) {} })();
 ! focus.ua - плавающее окно с соц. ссылками
 focus.ua###at4-follow
 ! disqus.com - vote for third-party sites notification
@@ -3522,6 +3516,14 @@ habr.com##.tm-article-card-list > li.tm-article-card-list__item:has(> div.tm-pro
 habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Ближайшие события))
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/193003
+news.tennis365.net##.newsdetailcontent_body > b:has(> a[href^="https://bit.ly/"])
+news.tennis365.net##.newsdetailcontent_body > b:has(> a[href^="https://bit.ly/"]) + br
+news.tennis365.net##.newsdetailcontent_body > b:has(> a[href^="https://bit.ly/"]) + br ~ a[href^="https://bit.ly/"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/193022
+dict.youdao.com##.top-banner-wrap
+! boingboing.net - red box in article
+boingboing.net##.red-box
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191333
 abendblatt.de###plus-banner--sticky-bottom
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189848
@@ -4738,7 +4740,7 @@ duckduckgo.com#$#.badge-link--full { visibility: hidden !important; }
 ||yomiuri.co.jp/assets/images/footer-subscribe/
 yomiuri.co.jp##.js-footer-2020-subscribe
 ! Hdrezka - promo in the player
-kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag###tg-info-block-exclusive
+hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag###tg-info-block-exclusive
 ! https://github.com/AdguardTeam/AdguardFilters/issues/65628
 gekkan-fukugyou.jp##.FixedWidget__fixed_widget
 gekkan-fukugyou.jp###custom_html-7
@@ -5343,6 +5345,7 @@ banki.ru##div[data-test="news-all-markdown"] > section > a[href^="https://www.ba
 !
 ! SECTION: Self-promo - Regular rules
 !
+baidu.com###con-ceiling-wrapper
 mail.proton.me##button[data-testid="cta:special-offer"]
 gizchina.gr###vw_widget_image_banner-9
 lista.mercadolivre.com.br##.ui-search-sidebar-placements__container
@@ -5369,7 +5372,7 @@ auto.ru##.Modal:has(> div.Modal__container > div.Modal__content_wrapper div[clas
 regioactive.de##.sitebody > div.inner > div#slider
 www-ettoday-net.cdn.ampproject.org##.googlenews_subscribe
 ||jleague.jp/img/skyscraper/
-itest.5ch.net##div[itemscope="itemscope"] > p[style]:has(> a[href="//uplift.5ch.net"])
+itest.5ch.net#?#p[style]:has(> a:matches-attr(/hrea?f/=/^https:\/\/uplift\.5ch\.net$/))
 rb.ru##.custom-tag-banner
 rb.ru##.programms__wrapper
 download.io#%#//scriptlet('trusted-set-cookie-reload', 'dlio_offer_eligible', 'not_eligible')
@@ -8327,7 +8330,7 @@ babup.com#%#//scriptlet('adjust-setInterval', 'timer', '*', '0.001')
 file-upload.com#%#//scriptlet('adjust-setTimeout', 'tick', '', '0.02')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176403
 ! https://github.com/AdguardTeam/AdguardFilters/issues/163755
-stelux.online,gooltok.com,loiz.store,glo-n.online,jolk.online,minipet.online,spidergame.online,pedalpower.online,offeergames.online,sealat.com,fx4ever.com,businessnews-nigeria.com,day4news.com,net4you.xyz,maos4alaw.online,mamahawa.com,10short.pro#%#//scriptlet('adjust-setInterval', '/proceed|mdtimer/', '*', '0.001')
+abda3.xyz,wisw.online,stelux.online,gooltok.com,loiz.store,glo-n.online,jolk.online,minipet.online,spidergame.online,pedalpower.online,offeergames.online,sealat.com,fx4ever.com,businessnews-nigeria.com,day4news.com,net4you.xyz,maos4alaw.online,mamahawa.com,10short.pro#%#//scriptlet('adjust-setInterval', '/proceed|mdtimer/', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/163470
 terbit21.app,lk21static.*#%#//scriptlet('adjust-setInterval', 'time', '*', '0.02')
 ! https://present.rssing.com/transit.php?url=http%3A%2F%2Fggs7.c.blog.so-net.ne.jp%2F_images%2Fblog%2F_c18%2Fggs7%2FE7A8B2E5B79DE4BC9AE7A0B4E99680E78AB6.jpg%3Fc%3Da1
@@ -8585,8 +8588,6 @@ modshost.net#%#//scriptlet("adjust-setInterval", "timeleft", "*", "0.02")
 codenova-center.web.app#%#//scriptlet("adjust-setInterval", "contador", "*", "0.02")
 ! http://adfoc.us/serve/?id=47525085215776
 adfoc.us#%#//scriptlet("set-constant", "count", "0")
-! https://github.com/AdguardTeam/AdguardFilters/issues/127047
-ghostcloud.ml#%#AG_onLoad(function(){const a=document.querySelector("body > meta[http-equiv=\"refresh\"][content*=\";url=http\"]");if(a)try{const b=a.content?.split(";url=").pop();location.assign(b)}catch(a){}});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/126658
 minecraftalpha.net#%#//scriptlet("adjust-setInterval", "Your Link", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/126604
@@ -9429,8 +9430,6 @@ boardgamesonline.net#%#//scriptlet("adjust-setInterval", "#timer", "", "0.02")
 beermoneyforum.com#%#!function(){if(-1<location.pathname.indexOf("/redirect")){var a=(new URL(window.location.href)).searchParams.get("to");if(a)try{window.location=atob(a)}catch(b){}}}();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/51985
 dogemate.com#%#//scriptlet("adjust-setInterval", "sec--", "", "0.02")
-! https://github.com/AdguardTeam/AdguardFilters/issues/51682
-dosyayukle.biz#%#//scriptlet("adjust-setInterval", "downloadButton", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186436
 ! https://github.com/AdguardTeam/AdguardFilters/issues/51460
 icutlink.com#%#(()=>{if(location.href.includes("&url=")){const t=new URLSearchParams(window.location.search).get("url");t&&t.startsWith("http")&&location.assign(t)}})();
@@ -9592,11 +9591,6 @@ doviz.com#%#(() => {document.addEventListener("DOMContentLoaded", (() => {setTim
 cocoleech.com#%#//scriptlet("set-constant", "width", "100")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14668
 prem.link#%#//scriptlet("set-constant", "waiting_time", "0")
-! Disable autoplay
-zdnet.com#%#if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('zdnetSettings', '{"autoplayEnabled":"off"}'); }
-! breaks video at http://www.chip.de/artikel/Neuster-Core-i7-SSD-und-mehr-Kraftvolles-Allround-Notebook-von-Dell-im-Deal_137096381.html
-! chip.de#%#AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/data-autoplay="true"/g, 'data-autoplay="false"'); });
-cnet.com#%#if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('cnetSettings', '{"autoplayEnabled":"off"}'); }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12814
 urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*#%#//scriptlet('trusted-click-element', 'form[action="get-url.php"] > input#url[value] + input[id][type="image"][src]')
 urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*#%#(function(){var a="http"+(new URL(window.location.href)).searchParams.get("xurl");try{new URL(a);var b=!0}catch(c){b=!1}if(b)try{window.location=a}catch(c){}})();
@@ -9849,7 +9843,7 @@ yodu.org,linovelib.com#%#//scriptlet('remove-attr', 'onselectstart', 'body')
 readcomiconline.li,nusantararom.org#%#//scriptlet("prevent-addEventListener", "/keydown|contextmenu/")
 ladyblog.me#%#//scriptlet('abort-current-inline-script', 'jQuery', 'onselectstart')
 denizlihaber.com#%#//scriptlet("abort-current-inline-script", "add_message_to_copied_text")
-rdnews.com.br,denizlihaber.com,acritica.com#%#//scriptlet("abort-current-inline-script", "document.onkeypress")
+kumanga.com,rdnews.com.br,denizlihaber.com,acritica.com#%#//scriptlet("abort-current-inline-script", "document.onkeypress")
 estadao.com.br,atribuna.com.br,braziljournal.com,revistapesquisa.fapesp.br,migalhas.com.br#%#//scriptlet("prevent-addEventListener", "copy", "event")
 tweaktown.com#%#//scriptlet("prevent-addEventListener", "copy", "bypassEventsInProxies")
 toptoon.com#%#//scriptlet('abort-current-inline-script', 'window.oncontextmenu')

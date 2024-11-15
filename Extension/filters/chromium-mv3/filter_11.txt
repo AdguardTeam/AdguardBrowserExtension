@@ -1,8 +1,8 @@
-! Checksum: mvgkS9ofPvkXz1MdLVirQw
+! Checksum: FCLhZefYdYapEckOjvAcsA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.56.6
-! TimeUpdated: 2024-11-12T17:34:43+00:00
+! Version: 2.0.56.14
+! TimeUpdated: 2024-11-15T12:36:14+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,6 +219,10 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||httpdns.bilivideo.com^
+||dataflow.biliapi.com^
+||grpc.biliapi.net^
+||ads.adinmotech.com^
 ||kvaedit.site^
 ||ads-ap-venues.yinzcam.com^
 ||ads-delivery.gunosy.com^
@@ -1367,10 +1371,6 @@ m.economictimes.com#%#//scriptlet('set-cookie', 'inter', '1')
 supleks.jp#%#//scriptlet('abort-current-inline-script', 'document.getElementsByClassName', 'adBlocked')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/63495
 moneycontrol.com#%#//scriptlet("set-constant", "initializeInterstitial", "noopFunc")
-! https://github.com/AdguardTeam/AdguardFilters/issues/60188
-businessinsider.in#%#AG_onLoad(function(){location.href.includes("/amp_")&&(new MutationObserver(function(){document.querySelectorAll("div.i-amphtml-next-page-shadow-root").forEach(function(a){a.shadowRoot&&a.shadowRoot.querySelectorAll("div.atf_ad:not([style]), amp-ad:not([style])").forEach(function(b){b.style="display: none !important;"})})})).observe(document,{childList:!0,subtree:!0})});
-! https://github.com/AdguardTeam/AdguardFilters/issues/58633
-mumbailive.com#%#AG_onLoad(function(){location.pathname.startsWith("/amp/")&&(new MutationObserver(function(){document.querySelectorAll("body > amp-next-page > div > div[style='visibility: visible;']").forEach(function(a){a.shadowRoot.querySelectorAll("div.ad:not([style])").forEach(function(b){b.style="display: none !important;"})})})).observe(document,{childList:!0,subtree:!0})});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56038
 m.iyf.tv#%#//scriptlet("adjust-setInterval", "isPeriodic", "", "0.02")
 ! ixbt.com - исправление отступа в мобильной версии
@@ -1862,6 +1862,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! Repeated requests, two or more in one second if blocked - https://old.reddit.com/r/Adguard/comments/ztbv96/how_do_i_stop_this_my_phone_is_overheating_and/
 ! https://old.reddit.com/r/Adguard/comments/18s9snu/api2branch_causing_cpu_overheat/
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192893
+! Fixing app update
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192121
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190962
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189134
@@ -2410,6 +2412,13 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+m.economictimes.com##div[id^="taboola-"]
+m.economictimes.com##.taboolaAd
+eksisozluk.com##aside[style="margin-top: 10px"]
+shemalez.com##.video-page > div[class]:not([class*="video"])
+shemalez.com##.underplayer__info > div[class]:not([class*="underplayer"])
+techgear.gr##body .ad__div
+hdblog.it##.news-list > a.news-list-item:has(> article > div > strong.sponsor)
 news.gamme.com.tw##.if2 > a[href^="https://www.gamme.com.tw/r.php"] > img
 smart-flash.jp#$?#.ads_sp_image_slider { remove: true; }
 blog.livedoor.jp##.reprint + div[style*="margin:"][style*="#"]:has(img[src*="amazon."])
@@ -3486,7 +3495,6 @@ chijoshikakatan.blogterest.net##random_link
 24tv.ua##app-video-adv-block
 themanual.com#$?#.b-mem-post--ads { remove: true; }
 wsj.com#?#div[class^="WhatsNewsTheme"] > div[class]:has(div[class] > div[class^="WSJTheme--adWrapper"])
-m.cafef.vn##div[id^="adm-slot-"]
 amp.dantri.com.vn##div[id^="xds-"]
 outdoorlife.com#?##empire-unit-footer-close-btn
 outdoorlife.com#?#div[id^="empire-unit-sticky_footer__mobile"]

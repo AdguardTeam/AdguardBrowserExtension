@@ -1,8 +1,8 @@
-! Checksum: 6tPB9hjWY/LLv27yEcJZpA
+! Checksum: 4gxbsNGXlRD8kut5+RPUrg
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.11
-! TimeUpdated: 2024-11-12T17:34:45+00:00
+! Version: 2.0.54.14
+! TimeUpdated: 2024-11-15T10:33:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1676,6 +1676,13 @@ $xmlhttprequest,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
 !
+! NOTE: Specific rules
+!
+istegundem.com##a[href^="/showad.asp?id="]
+istegundem.com##div[style^="width:314px; height:264px; border:1px solid"]
+bloomberght.com##.masthead-wrap
+bloomberght.com##section[data-section^="reklam"]
+sozcu.com.tr##.news-card:has(> a[href^="https://bit.ly/"])
 nesine.com#$##mod-base { display: none !important; }
 nesine.com#$#.modal-backdrop { display: none !important; }
 nesine.com#$#.modal-open { overflow: auto !important; }
@@ -2261,9 +2268,9 @@ tarotscans.com##footer > p > span[style]
 ||storj-cloud.cdn.ampproject.org/*/bahsegel
 ||storj-cloud.cdn.ampproject.org/*/bettilt
 ||filmseyretizlet.com/maritbet.webp
-haberturk.com##.adv-news
+bloomberght.com,haberturk.com##.adv-news
 fullhdfilm.pro###sidebar > div[style="margin:3px 0px;"]
-haberturk.com,yasemin.com##.masthead-top
+bloomberght.com,haberturk.com,yasemin.com##.masthead-top
 haberturk.com##.pageskin
 ||ototeknikveri.com/Advert/
 medyahaber.com##body > #kapat
