@@ -1,8 +1,8 @@
-! Checksum: +FBdG6ywH8IP9H6plVIqZQ
+! Checksum: 8Ch3iOIJ0+SqcknXuQk1Mw
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.49
-! TimeUpdated: 2024-11-06T13:33:17+00:00
+! Version: 2.0.7.50
+! TimeUpdated: 2024-11-13T13:35:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1563,8 +1563,9 @@ hardware.info,tweakers.net#@#.AdBar
 topkleurplaat.nl#%#//scriptlet('prevent-setTimeout', '.height() === 0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177923
 filmvandaag.nl#%#//scriptlet('prevent-fetch', 'securepubads.g.doubleclick.net')
+! https://github.com/AdguardTeam/AdguardFilters/issues/192874
 ! https://github.com/AdguardTeam/AdguardFilters/issues/163031
-@@||looopings.nl/*ad*.js
+@@||looopings.nl/*.js$script,~third-party
 looopings.nl#%#//scriptlet('remove-node-text', 'script', 'if(!document.getElementById')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/160271
 webcam-binnenvaart.nl#%#//scriptlet('prevent-element-src-loading', 'script', 'adsbygoogle')

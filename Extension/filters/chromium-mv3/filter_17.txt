@@ -1,8 +1,8 @@
-! Checksum: +PWA9/stBTViY5jRgB8IXQ
+! Checksum: nCtI1oJ9zppmcBANp3o1TQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.76
-! TimeUpdated: 2024-11-12T11:33:18+00:00
+! Version: 2.0.9.81
+! TimeUpdated: 2024-11-15T12:36:32+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -384,6 +384,20 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192899
+||readyfor.jp^$removeparam=sns_share_token
+! https://github.com/AdguardTeam/AdguardFilters/issues/193005
+||newspicks.com^$removeparam=a
+||newspicks.com^$removeparam=adid
+||newspicks.com^$removeparam=ref
+||newspicks.com^$removeparam=block
+! https://github.com/AdguardTeam/AdguardFilters/issues/192759
+||wsj.com^$removeparam=mod
+! https://github.com/AdguardTeam/AdguardFilters/issues/192849
+||fanatical.com^$removeparam=aff_track
+||fanatical.com^$removeparam=cj_pid
+||fanatical.com^$removeparam=cj_aid
+||fanatical.com^$removeparam=CJEVENT
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192795
 ||tagomago.pl^$removeparam=subid
 ||tagomago.pl^$removeparam=subid1
@@ -1049,22 +1063,30 @@ mailchimp.com$removeparam=amp%3Butm_medium
 mailchimp.com$removeparam=amp%3Butm_campaign
 mailchimp.com$removeparam=amp%3Baid
 mailchimp.com$removeparam=amp%3Bafl
+!
+! wetransfer.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/192651
+||wetransfer.com^$removeparam=t_lsid
+||wetransfer.com^$removeparam=t_rid
+||wetransfer.com^$removeparam=t_exp
+||wetransfer.com^$removeparam=t_ts
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158205
 ||wetransfer.com^$removeparam=trk
 ||wetransfer.com^$removeparam=amp;utm_campaign
 ||wetransfer.com^$removeparam=amp;utm_medium
 ||wetransfer.com^$removeparam=amp;utm_source
-! https://github.com/AdguardTeam/AdguardFilters/issues/158251
-||douyin.com^$removeparam=extra_params
-||douyin.com^$removeparam=previous_page
-! https://github.com/uBlockOrigin/uAssets/issues/19320
-||bandcamp.com^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158209
 ||wetransfer.zendesk.com^$removeparam=amp%3Btrk
 ||wetransfer.zendesk.com^$removeparam=amp%3Btoken
 ||wetransfer.zendesk.com^$removeparam=amp%3Butm_campaign
 ||wetransfer.zendesk.com^$removeparam=amp%3Butm_source
 ||wetransfer.zendesk.com^$removeparam=amp%3Butm_medium
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/158251
+||douyin.com^$removeparam=extra_params
+||douyin.com^$removeparam=previous_page
+! https://github.com/uBlockOrigin/uAssets/issues/19320
+||bandcamp.com^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158548
 ||dvdfab.org^$removeparam=trackid
 ||dvdfab.org^$removeparam=c_ad
@@ -1185,8 +1207,10 @@ mailchimp.com$removeparam=amp%3Bafl
 ||chemistwarehouse.com.au^$removeparam=ranSiteID
 ! https://github.com/AdguardTeam/AdguardFilters/issues/153536
 ||playstation.com$removeparam=emcid
-! https://github.com/AdguardTeam/AdguardFilters/issues/153222
+! epicgames.com
+||epicgames.com^$removeparam=epic_gameId
 ||epicgames.com^$removeparam=epic_affiliate
+! https://github.com/AdguardTeam/AdguardFilters/issues/153222
 ||gamersgate.com^$removeparam=caff
 ||humblebundle.com^$removeparam=partner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/153288
@@ -2342,7 +2366,6 @@ $removeparam=ns_fee,domain=bbc.com|bbc.co.uk
 ||office.com^$removeparam=ocid
 ! Embedded tweets
 $removeparam=refsrc,domain=twitter.com|x.com
-||x.com^$removeparam=ref_src
 $removeparam=ref_src,domain=twitter.com|x.com
 $removeparam=ref_url,domain=twitter.com|x.com
 ! Twitter
