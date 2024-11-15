@@ -4,7 +4,8 @@ import { merge } from 'lodash-es';
 
 import { FilterListPreprocessor } from '@adguard/tswebextension';
 
-import { HitStatsApi, network } from '../../../../../Extension/src/background/api';
+import { network } from '../../../../../Extension/src/background/api/network';
+import { HitStatsApi } from '../../../../../Extension/src/background/api/filters/hit-stats';
 import { FilterVersionData, HitStatsStorageData } from '../../../../../Extension/src/background/schema';
 import {
     AntiBannerFiltersId,

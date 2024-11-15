@@ -1,7 +1,7 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
 
-import { DocumentBlockApi } from '../../../../Extension/src/background/api';
+import { DocumentBlockApi } from '../../../../Extension/src/background/api/document-block';
 import { TRUSTED_DOCUMENTS_CACHE_KEY } from '../../../../Extension/src/common/constants';
 import { mockLocalStorage } from '../../../helpers';
 

@@ -15,6 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+// it is okay to import directly from `@adguard/tswebextension/mv3` without using manifest-dependant alias,
+// because checkUserRulesRegexpErrors use only in engine-mv3
+import { type ConfigurationResult, UnsupportedRegexpError } from '@adguard/tswebextension/mv3';
+
 import {
     AddUserRuleMessage,
     MessageType,
@@ -34,6 +39,8 @@ import {
 } from '../api';
 import { settingsEvents } from '../events';
 import { Prefs } from '../prefs';
+import { logger } from '../../common/logger';
+import { NEWLINE_CHAR_UNIX } from '../../common/constants';
 
 export type GetUserRulesResponse = {
     content: string,
@@ -121,8 +128,7 @@ export class UserRulesService {
     private static async handleUserRulesSave(message: SaveUserRulesMessage): Promise<void> {
         const { value } = message.data;
 
-        await UserRulesApi.setUserRules(value.split('\n'));
-
+        await UserRulesApi.setUserRules(value.split(NEWLINE_CHAR_UNIX));
         // update the engine only if the module is enabled
         if (UserRulesApi.isEnabled()) {
             await engine.update();
@@ -207,5 +213,28 @@ export class UserRulesService {
         const { content } = message.data;
 
         UserRulesApi.setEditorStorageData(content);
+    }
+
+    /**
+     * Checks for user rules parsing errors in the configuration result.
+     *
+     * @param result Configuration result from the engine.
+     */
+    public static checkUserRulesRegexpErrors(result: ConfigurationResult): void {
+        if (!UserRulesApi.isEnabled()) {
+            return;
+        }
+
+        const errors = result.dynamicRules?.errors?.filter((error) => error instanceof UnsupportedRegexpError) || [];
+
+        if (errors.length > 0) {
+            errors.forEach((error) => {
+                logger.error(
+                    'User rule parsing error:',
+                    `\nRule: ${error.networkRule.getText()}`,
+                    `\nReason: ${error.reason}`,
+                );
+            });
+        }
     }
 }

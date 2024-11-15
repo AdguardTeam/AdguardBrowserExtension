@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- A rule from a disabled filter list disables another rule [AdguardBrowserExtension#3002].
+- A rule from a disabled filter list disables another rule [#3002].
+- Notify user that rule was not applied because of the chrome limitations [#3004].
 
-[AdguardBrowserExtension#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
+[#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
+[#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
 <!-- TODO: check release version, add release date -->
 ## [5.0.159]
