@@ -21,6 +21,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.39...HEAD
 
+<!-- TODO: add release data -->
+## [4.4.43]
+
+### Added
+
+- Send `manifest_version` during issues reporting for MV2.
+
+[4.4.43]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.41...v4.4.43
+
+## [5.0.162] - 2024-10-30
+
+### Added
+
+- Send `manifest_version` during issues reporting for MV3.
+
+[5.0.162]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.162
+
+## [5.0.159] - 2024-10-23
+
+### Changed
+
+- Updated [@adguard/logger] to v1.1.1.
+- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.7.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.6.
+
+### Fixed
+
+- Correct import of `EXTENDED_CSS_VERSION`.
+- Excluding request types causes document blocking [#2992].
+- Selecting a single `$permissions` filtering log event selects all `$permissions` events.
+
+[5.0.159]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.159
+[#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
+
 ## [4.4.39] - 2024-10-21
 
 ### Changed
