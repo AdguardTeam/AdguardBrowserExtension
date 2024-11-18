@@ -15,8 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
-<!-- TODO: check release version, add release date -->
-## [5.0.159]
+## [5.0.162] - 2024-10-30
+
+### Added
+
+- Send `manifest_version` during issues reporting.
+
+[5.0.162]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.162
+
+## [5.0.159] - 2024-10-23
 
 ### Changed
 
@@ -30,8 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Excluding request types causes document blocking [#2992].
 - Selecting a single `$permissions` filtering log event selects all `$permissions` events.
 
-<!-- TODO: uncomment when released -->
-<!-- [5.0.159]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.159 -->
+[5.0.159]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.159
 [#2992]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2992
 
 ## [4.4.39] - 2024-10-21
