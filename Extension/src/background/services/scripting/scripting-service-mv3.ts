@@ -18,14 +18,42 @@
 
 import { logger } from '../../../common/logger';
 
+/**
+ * Options for executing a script.
+ */
 type ExecuteScriptOptions = {
-    file?: string,
-    frameId?: number,
-    allFrames?: boolean,
-    runAt?: string,
-    code?: string,
+    /**
+     * The frame ID.
+     */
+    frameId?: number;
+
+    /**
+     * Whether the script should be executed in all frames.
+     */
+    allFrames?: boolean;
+
+    /**
+     * The time at which the script should be executed.
+     */
+    runAt?: string;
+
+    /**
+     * The file to execute.
+     */
+    file?: string;
+
+    /**
+     * The function to execute.
+     */
+    func?: () => void;
 };
 
+/**
+ * Executes a script in the context of a given tab.
+ * @param tabId The tab ID.
+ * @param options The options for the script execution.
+ * @returns The result of the script execution.
+ */
 export const executeScript = async (
     tabId: number | undefined,
     options: ExecuteScriptOptions,
@@ -35,22 +63,40 @@ export const executeScript = async (
         return [];
     }
 
-    const { file } = options;
+    const {
+        file,
+        func,
+    } = options;
 
-    if (!file) {
-        logger.debug('File is not provided');
-        return [];
+    // Ensure that at least one of 'file' or 'func' is provided
+    if (!file && !func) {
+        throw new Error('Neither file nor func are provided');
     }
 
-    const executeScriptOptions = {
-        target: { tabId },
-        files: [file],
-    };
+    // Check for mutually exclusive options
+    if (file && func) {
+        throw new Error('Provide either "file" or "func", not both.');
+    }
+
+    let executeScriptOptions: chrome.scripting.ScriptInjection<unknown[], unknown>;
+
+    if (file) {
+        executeScriptOptions = {
+            target: { tabId },
+            files: [file],
+        };
+    } else if (func) {
+        executeScriptOptions = {
+            target: { tabId },
+            func,
+        };
+    }
 
     return new Promise((resolve, reject) => {
         chrome.scripting.executeScript(executeScriptOptions, (result) => {
             if (chrome.runtime.lastError) {
                 reject(new Error(chrome.runtime.lastError.message));
+                return;
             }
             resolve(result);
         });
