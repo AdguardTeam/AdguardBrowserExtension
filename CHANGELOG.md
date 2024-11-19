@@ -11,14 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated [@adguard/agtree] to v2.1.3.
-- Updated [@adguard/tsurlfilter] to v3.0.6.
-- Updated [@adguard/tswebextension] to v2.0.5.
+- Updated [@adguard/tsurlfilter] to v3.0.7.
+- Updated [@adguard/tswebextension] to v2.0.6.
 
 ### Fixed
 
 - Optimized performance of parsing uBlock filter parameters [#2962].
+- `$removeparam` fails to match encoded URL params in MV2 [#3015].
 
 [#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
+[#3015]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3015
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.43...HEAD
 
 <!-- TODO: add release data -->
