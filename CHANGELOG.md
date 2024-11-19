@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
+- Memory leak caused by multiple script injections on the same pages after a service worker or event page restart [#2594].
 
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
+[#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
 
 ## [5.0.162] - 2024-10-30
 
