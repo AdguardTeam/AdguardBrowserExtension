@@ -1,8 +1,8 @@
-! Checksum: t7JNQOZrwu+ERFGSVDpNSQ
+! Checksum: bTYOz3klHi5KWaD+UGKfbw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.44.58
-! TimeUpdated: 2024-11-14T18:33:19+00:00
+! Version: 2.0.44.66
+! TimeUpdated: 2024-11-19T13:35:47+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -915,9 +915,6 @@ golem.de#$#article[style^="-webkit-filter: blur(8px)"] { -webkit-filter: blur(0p
 golem.de##article + div.formatted[style]
 ! https://forum.adguard.com/index.php?threads/13171/
 @@||morgenweb.de/adbdetect/advert.js
-! https://forum.adguard.com/index.php?threads/11966/
-||dmax.de/adblocker$popup
-dmax.de#%#(function() { var w_open = window.open, regex = /adblocker/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2522
 @@||auto-motor-und-sport.de^$generichide
 @@||auto-motor-und-sport.de/werb.gif
@@ -1075,7 +1072,7 @@ prosieben.de#%#//scriptlet('set-constant', 'Object.prototype.checkAdProxyAvailab
 ! 20min.ch - fixes video player
 20min.ch#%#(()=>{window.TATM=window.TATM||{},TATM.init=()=>{},TATM.initAdUnits=()=>{},TATM.pageReady=()=>{},TATM.getVast=function(n){return new Promise((n=>{n()}))},TATM.push=function(n){if("function"==typeof n)try{n()}catch(n){console.debug(n)}};})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/148783
-data-load.in#%#//scriptlet('set-cookie', '_xflora', '1')
+data-load.*#%#//scriptlet('set-cookie', '_xflora', '1')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/146229
 ! TODO: use scriptlet "inject-css-in-shadow-dom" when it will be available in apps
 ! gmx.net,gmx.at,web.de#%#//scriptlet('inject-css-in-shadow-dom', '.list-programmatic-ad-item--multi-line, .list-inbox-ad-item--multi-line { display: none !important; }')
@@ -1083,7 +1080,7 @@ gmx.net,gmx.at,web.de#%#(()=>{const a=(a,b,c)=>{const d=Reflect.apply(a,b,c),e="
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158944
 chip.de#%#//scriptlet('abort-current-inline-script', 'document.querySelector', 'DisplayAcceptableAdIfAdblocked')
 chip.de#%#//scriptlet('trusted-replace-node-text', 'style', '/a [\s\S]* padding-top[\s\S]*aspect-ratio/', '/.*(\..*?) [\s\S]*padding-top[\s\S]*aspect-ratio[\s\S]*/', '$1 { display: none !important; }')
-chip.de#%#AG_onLoad((function(){const o=[];[...document.scripts].forEach((c=>{const n=c.innerText,t=/window\..*\["(.*)"]/;if(n.includes('"impr":')){const c=n.match(t)[1];o.push(c)}})),o.forEach((o=>{const c=document.querySelector(`.${o}`);c&&c.remove()}))}));
+!chip.de#%#AG_onLoad((function(){const o=[];[...document.scripts].forEach((c=>{const n=c.innerText,t=/window\..*\["(.*)"]/;if(n.includes('"impr":')){const c=n.match(t)[1];o.push(c)}})),o.forEach((o=>{const c=document.querySelector(`.${o}`);c&&c.remove()}))}));
 ! chip.de - ad popup when pressing download
 chip.de#%#//scriptlet('set-cookie', 'chipde-r2d2-view-state ', '1')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/135749
@@ -1103,8 +1100,6 @@ wetter.com#%#//scriptlet('set-constant', 'wcomAdFrameworkInit', 'undefined')
 spielen.com#%#//scriptlet("set-constant", "idhb", "emptyObj")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/102180
 duden.de#%#//scriptlet('remove-class', 'pageskin', 'body.pageskin')
-! https://github.com/AdguardTeam/AdguardFilters/issues/101799
-katzen-forum.net#%#AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/Werbung:/g, ""); });
 ! blick.ch - video ads
 blick.ch#%#//scriptlet("set-constant", "Object.prototype.adsEnabled", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/148571
@@ -1136,8 +1131,6 @@ welt.de#%#//scriptlet("set-constant", "Object.prototype.initHomad", "noopFunc")
 chip.de#%#//scriptlet("abort-on-property-read", "htmlEntities")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/81081
 german-porno-deutsch.info,reifporn.de,sexvideos-hd.com,tube8-pornos.com,meinyouporn.com,hd-sexfilme.com,beeg-pornos.com,deinesexfilme.com,einfachtitten.com,gutesexfilme.com,halloporno.com,hd-pornos.net,hdpornos.net,herzporno.com,lesbenhd.com,milffabrik.com,nursexfilme.com,porn-monkey.com,porndrake.com,pornoaffe.com,pornodavid.com,pornoente.tv,pornofelix.com,pornofisch.com,pornohammer.com,pornohans.com,pornohelm.com,pornohirsch.net,pornoklinge.com,pornoschlange.com,pornotom.com,pornotom.com,pornotommy.com,pornovideos-hd.com,pornozebra.com,xhamster-sexvideos.com,xhamsterdeutsch.xyz#%#//scriptlet("abort-current-inline-script", "document.cookie", "delete a.llEvLisnrs")
-! https://github.com/AdguardTeam/AdguardFilters/issues/70579
-dslr-forum.de#%#AG_onLoad(function(){var a=document.querySelector('.page > div[style^="padding:"][align="left"] > div[align="center"]:last-child');a&&a.firstChild&&(a=a.firstChild,3===a.nodeType&&a.textContent.match("Werbung.")&&15>a.length&&a.remove())});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/61907
 chip.de#%#//scriptlet('set-constant', 'installerConfig.cid', '')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64063
@@ -1162,8 +1155,6 @@ tele5.de#%#//scriptlet("json-prune", "testhide")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53012
 ! https://github.com/AdguardTeam/AdguardFilters/issues/51634
 movie-blog.tv,movie-blog.sx#%#//scriptlet("abort-on-property-read", "vavpo")
-! https://github.com/AdguardTeam/AdguardFilters/issues/42934
-ani-stream.com#%#AG_onLoad(function() { setTimeout(function() { if(typeof loadplayer == "function") { loadplayer(); }; }, 300); });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/36737
 pornoente.tv#%#//scriptlet("set-constant", "vpUsePreRoll", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/28804
@@ -1175,26 +1166,16 @@ krone.at#%#//scriptlet("set-constant", "googletag.impl.pubads.callbackProxy1", "
 ! https://github.com/AdguardTeam/AdguardFilters/issues/66639
 !+ NOT_PLATFORM(ios, ext_android_cb)
 plus.rtl.de#%#//scriptlet("set-constant", "cbcAdvertisingAdapter.smartClientCoreFacade.config.adReinsertion.homad.enabled", "false")
-! https://github.com/AdguardTeam/AdguardFilters/issues/8761
-esslinger-zeitung.de#%#AG_onLoad(function() { document.getElementsByClassName("nfy-mediagal-slider-ad")[0].parentNode.parentNode.remove(); });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/79647
 pcwelt.de#?##sidebarwrap > div.box:has(> div.heading:contains(/Anzeige|Angebot/))
-! https://forum.adguard.com/index.php?threads/rp-online-de.17415/
-rp-online.de#%#AG_onLoad(function(){var a=document.getElementsByClassName("js-rpoubr")[0];a&&a.setAttribute("data-ad-interval",-1)});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3471
 java-forum.org#%#var st = ".sidebar > div.widget-container:first-of-type, .sidebar > a[href^=\"http://future-sale-system.de\"], #messageList > li.message:not([id]), .sidebar > a[target=\"_blank\"] > img {display: none!important; }", a=document.createElement("style");a.type="text/css";a.styleSheet?a.styleSheet.cssText=st:a.innerHTML=st;document.getElementsByTagName("head")[0].appendChild(a);
 ! https://forum.adguard.com/index.php?threads/13917/
 news.de#%#window.disablePopUnder = true;
 ! https://forum.adguard.com/index.php?threads/14298/
 stern.de#%#//scriptlet("remove-attr", "data-clickcommand", "a")
-! https://github.com/AdguardTeam/AdguardFilters/issues/3326
-maniac.de#%#(function() { var w_open = window.open, regex = /maniadrd.php/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();
-! https://forum.adguard.com/index.php?threads/13927/
-formel1.de#%#AG_onLoad(function() {document.getElementsByTagName("div")[0].setAttribute("class", "aswift_0");});
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1411
 sueddeutsche.de#%#window.blockAdBlock = function() {};
-! http://forum.adguard.com/showthread.php?7589
-dvdschnaeppchen.de#%#AG_onLoad(function() { window.myatu_bgm = 0; });
 ! http://forum.adguard.com/showthread.php?6896
 ||videogameszone.de/common/saturn/
 ! http://forum.adguard.com/showthread.php?6814
@@ -1542,6 +1523,11 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+infranken.de#?#.listing-item:has( > article > .teaser-inner .post-topline:contains(Anzeige))
+heise.de#?#span[class^="right"]:contains(Anzeige)
+kabeleinsdoku.at,kabeleinsdoku.de##div[data-testid="display-ad"]
+stern.de##.ad-container
+katzen-forum.net#?#.js-replyNewMessageContainer > article[class="message message--post"]:has(h4 > span:contains(Werbung))
 ariva.de##div[id^="ariva.de_"]
 wiwo.de##app-commercial-teaser-group
 wiwo.de##outbrain
@@ -1993,7 +1979,7 @@ isteshaltbar.de##div[style^="min-height:"][class*="-rectangle-"]
 sportdeutschland.tv##app-top-banner
 kuechengoetter.de##.c-adverts__content
 kuechengoetter.de##.c-adverts:not(.c-adverts--header)
-data-load.in##.p-body-sidebar > div.block:not([data-widget-key])
+data-load.*##.p-body-sidebar > div.block:not([data-widget-key])
 myboerse.bz##.postcontent .download:not([href])
 myboerse.bz###hui-gen
 ||myboerse.bz/persecute.php
@@ -2538,13 +2524,13 @@ lokalwissen.de###fixx-fixx
 grundschulkoenig.de,uebungskoenig.de##.module-adsense
 uebungskoenig.de##.module-amazon-links
 steuertipps.de##.goAdMan
-gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##.left-col-bottom
+gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##.left-col-bottom
 tellows.de##.container #singlecomments > li:not([id])
 anisearch.de###top_outside
 anisearch.de##.rectX
 ||anisearch.de/amazon
 pcgames.de##a[href*="/E-Commerce-Thema-"]
-data-load.in##center > a[target="_blank"] > img
+data-load.*##center > a[target="_blank"] > img
 netzwelt.de##a[href^="https://www.awin1.com/cread.php?"]
 nzz.ch##.resor
 amazon.de##div[class*="ad-topper"]
@@ -2588,7 +2574,7 @@ myhomebook.de,travelbook.de##div[class^="affiliate-"]
 krone.at##div[data-boxname="outbrain"]
 krone.at##.talk-plugin-ad-tag
 krone.at##.wvouch
-derstandard.com,derstandard.de,derstandard.live,derstandard.com.bd,derstandard.at,derstandard.com.np,derstandard.gov.bd,derstandard.gov.np##ad-container
+derstandard.at,derstandard.com.bd,derstandard.com.np,derstandard.de,derstandard.live,derstandard.online##ad-container
 vodafone.de##body .gujAd.superbanner
 technik-hauptstadt.de##.ai_widget
 ||was.baunetz.de/adframe.php
@@ -2719,7 +2705,7 @@ alle-lkw.de##.banners
 /[0-9a-z]{10,}.[a-z]{3,}\/[\s\S]*.js#ns=bullads/$domain=1load.sx
 efahrer.chip.de##.ads-alignment
 efahrer.chip.de##.outbrain-reserved-space
-web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##.co-content-container
+web.de,gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##.co-content-container
 gamestar.de##.jad-placeholder
 ksta.de##.dm-slot
 express.de##.dm-slot:not(#style_important)
@@ -2750,10 +2736,10 @@ computerwoche.de##.idgArticlePdfbutton
 merkur.de###id-Container-416931
 moviepilot.de###dfp-header
 xboxdynasty.de##div[id^="dfp"]
-web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##.horoscope-teaser-tool
-web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##ul[data-layout-columns="7col"] > li > a[target="_blank"]:not([href*="web.de"]):not([href*="gmx."])
-web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##section[data-name] > div[data-service-slot]
-web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##div[data-ac]
+web.de,gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##.horoscope-teaser-tool
+web.de,gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##ul[data-layout-columns="7col"] > li > a[target="_blank"]:not([href*="web.de"]):not([href*="gmx."])
+web.de,gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##section[data-name] > div[data-service-slot]
+web.de,gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##div[data-ac]
 tarnkappe.info##div[id^="top_"]
 computerwelt.at##.mh-sidebar code > span[style="font-size: xx-small;"]
 kicktipp.de###adtag_banner
@@ -2985,8 +2971,8 @@ teslamag.de##.after-header-ad
 teslamag.de##.archive-inject-ad
 dubisthalle.de##div[class*="-que"][class*="-inhalt"]
 wetter.de##.responsive-slot
-web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##uim\:ad + a
-web.de,gmx.com,gmx.ru,gmx.net,gmx.org,gmx.com.tr,gmx.co.uk,gmx.io,gmx.co,gmx.ca,gmx.com.ua,gmx.vn,gmx.info,gmx.de,gmx.fr,gmx.by,gmx.jp,gmx.co.za,gmx.co.il,gmx.eu,gmx.it,gmx.com.br,gmx.es,gmx.ch,gmx.co.in,gmx.biz,gmx.us,gmx.com.mx,gmx.cc,gmx.cn,gmx.ae,gmx.mx,gmx.se,gmx.com.my,gmx.live,gmx.tw,gmx.ai,gmx.be,gmx.dk,gmx.hu,gmx.uz,gmx.sg,gmx.com.bd,gmx.dev,gmx.ie,gmx.at,gmx.com.np,gmx.ph,gmx.sk,gmx.lt,gmx.gov.bd,gmx.kr,gmx.pt,gmx.gg,gmx.mobi,gmx.ee,gmx.uk,gmx.ba,gmx.fm,gmx.is,gmx.gov.np,gmx.agency##uim\:ad + iframe
+web.de,gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##uim\:ad + a
+web.de,gmx.at,gmx.be,gmx.biz,gmx.ca,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.uk,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.no,gmx.online,gmx.org,gmx.ph,gmx.pl,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tech,gmx.uk,gmx.us,gmx.uz,gmx.vn##uim\:ad + iframe
 wunderweib.de,madame.de##.bx-ads
 moviepilot.de##.is-promoted
 wetter.com###uebersicht > .portable-hide
@@ -5179,7 +5165,7 @@ urbia.de#?#.text-image--content > .outstream-widget-embed__wrapper:has(> .gujAd)
 werkenntdenbesten.de#?#.w-full.flex-col.items-center:has(> .relative > div[x-data="modules.ad()"])
 tvspielfilm.de#?#.info-table > tbody > tr:not([class]):has(> td > .desktop_banner_any)
 lokalklick.eu#?#.td_block_wrap:has(> h4 > span:contains(Anzeige))
-data-load.in#?#.p-body-sidebar > div.block:has(> div.block-container > div.block-body > center > a[target="_blank"] > img[src*="partner/"])
+data-load.*#?#.p-body-sidebar > div.block:has(> div.block-container > div.block-body > center > a[target="_blank"] > img[src*="partner/"])
 online-stellenmarkt.net#?#.jobcontent > .col-lg-12:not(.jobtable) > .fj_post > .adsbygoogle:upward(1)
 travelbook.de#?#.pb > .teaser:has(> .is-advertisement)
 live.vodafone.de#?#.swiper-wrapper > .swiper-slide > .gujAd:upward(1)
@@ -6553,7 +6539,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||marketing-profis.net^$third-party
 ||maxi-ad.de^$third-party
 ||maxiad.de^$third-party
-||media-guides.de^$third-party
 ||mega-ad.de^$third-party
 ||megawerbung.de^$third-party
 ||mename.de^$third-party
@@ -8320,7 +8305,7 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||zurzeit.at/wp-content/uploads/*/Alm-Werbung-
 ||zurzeit.at/wp-content/uploads/*/Banner-
 ||zwerg-am-berg.de/wp-content/uploads/*/Banner_
-/^https?:\/\/.*\/[a-z0-9A-Z_]{2,15}\.(php|jx|jsx|1ph|jsf|jz|jsm|j$)/$image,script,subdocument,domain=beeg-pornos.com|besterpornos.com|deinesexfilme.com|deutsche-sexfilme.net|deutschetitten.com|deutschsex.com|deutschsex.mobi|einfachtitten.com|germanfucktube.com|gutesexfilme.com|hd-pornos.info|hd-sexfilme.com|lesbenhd.com|meinyouporn.com|nacktepaare.com|nurxxx.mobi|orgasmusporn.com|pornoaffe.com|pornoente.tv|pornofisch.com|pornohammer.com|pornohans.com|pornohirsch.net|pornojenny.com|pornoklinge.com|pornotom.com|pornotommy.com|pornozebra.com|reifporn.de|sexente.com|sexvideos-hd.com|spitzetitten.com|tube8-pornos.com|xhamster-sexvideos.com|xnxx-porno.com
+/^https?:\/\/.*\/[a-z0-9A-Z_]{2,15}\.(php|jx|jsx|1ph|jsf|jz|jsm|j$)/$image,script,subdocument,domain=beeg-pornos.com|besterpornos.com|deinesexfilme.com|deutsche-sexfilme.net|deutschetitten.com|deutschsex.com|deutschsex.mobi|einfachtitten.com|germanfucktube.com|gutesexfilme.com|hd-pornos.info|hd-sexfilme.com|lesbenhd.com|meinyouporn.com|nacktepaare.com|nurxxx.mobi|pornoaffe.com|pornoente.tv|pornofisch.com|pornohammer.com|pornohans.com|pornohirsch.net|pornojenny.com|pornoklinge.com|pornotom.com|pornotommy.com|pornozebra.com|reifporn.de|sexente.com|sexvideos-hd.com|tube8-pornos.com|xhamster-sexvideos.com|xnxx-porno.com
 /^https?:\/\/.*\/.*(sw[0-9a-z._-]|\.notify\.).*/$script,domain=hammerporno.xxx
 /^https?:\/\/[0-9a-z]{8,}\.com\/.*/$~media,~subdocument,third-party,domain=190.115.18.20|aniworld.to|bs.to|burningseries.ac|burningseries.nz|burningseries.se|burningseries.sx|burningseries.vc|kinoger.to|kinokiste.live|kinox.top|megakino.co|s.to|serien.cam|serienstream.to|streamcloud.movie|topstreamfilm.live
 /^https?:\/\/[0-9a-z]{8,}\.xyz\/.*/$~media,third-party,domain=kinoger.com|kinoger.pw|kinokiste.live|megakino.co|streamcloud.movie|topstreamfilm.live
@@ -9912,6 +9897,7 @@ naturalhorse.de##.n2-section-smartslider
 diebildschirmzeitung.de##.n2-ss-slider-3
 ehv-aue.de##.n2-ss-slider-pipeline
 finanznachrichten.de##.nadT
+ploetzblog.de##.nav-anzeige
 lavendel.net##.netpoint
 fruchthandel.de##.news-item-wbg
 fussballdaten.de##.news-spiel-quoten
@@ -11142,6 +11128,7 @@ futurezone.de##article[data-post-id]:has(.sponsor-byline)
 diegrenzgaenger.lu##article[id^=post-]:has(.sponsored-indicator)
 az.com.na##aside:has(img[src*="/adverts/"])
 berlinstadtservice.de#?#.row.block03:has(p:contains(ANZEIGE))
+travelbook.de##div.has-mark[style="min-width: 300px; min-height: 250px;"]
 hornoxe.com##div.post.hentry.ivycat-post:has(a[href^="https://amzn.to/"])
 hornoxe.com##div.post.hentry.ivycat-post:has(a[href^="https://www.amazon.de/"])
 nydus.org##div.ui-tabs:has(#nydus_org_300x600_desktop_1)
