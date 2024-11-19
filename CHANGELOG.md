@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized performance of parsing uBlock filter parameters [#2962].
 
 [#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.39...HEAD
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.43...HEAD
 
 <!-- TODO: add release data -->
 ## [4.4.43]
