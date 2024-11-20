@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
+<!-- FIXME: probably released in v5.0.170, check later -->
 - Memory leak caused by multiple script injections on the same pages after a service worker or event page restart [#2594].
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
 - `$removeparam` fails to match encoded URL params in MV2 [#3015].
