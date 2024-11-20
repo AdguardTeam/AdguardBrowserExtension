@@ -82,203 +82,203 @@ export type PromoNotification = {
     icons?: IconVariants,
 };
 
-const HALLOWEEN_24_ID = 'halloween24';
+const BLACK_FRIDAY_24_ID = 'blackFriday24';
 
-const halloween24Notification: PromoNotification = {
-    id: HALLOWEEN_24_ID,
+const blackFriday24Notification: PromoNotification = {
+    id: BLACK_FRIDAY_24_ID,
     locales: {
         en: {
-            title: 'The Web is full of dangers',
-            btn: 'Get rid of them',
+            title: 'The best time to improve your protection',
+            btn: 'Learn how',
         },
         fr: {
-            title: 'Le Web est plein de périls',
-            btn: 'Èliminons-les',
+            title: 'Augmentez votre protection',
+            btn: 'Comment faire',
         },
         it: {
-            title: "L'Internet è pieno di pericoli",
-            btn: 'Togliamoli',
+            title: 'Il tempo per una maggiore protezione',
+            btn: 'Come fare',
         },
         de: {
-            title: 'Cybermonster bedrohen das Web!',
-            btn: 'Das muss aufhören',
+            title: 'Zeit, sich besser zu schützen',
+            btn: "Auf geht's!",
         },
         ru: {
-            title: 'Кибернежить нападает!',
-            btn: 'Сразиться',
+            title: 'Время улучшить защиту',
+            btn: 'Узнать как',
         },
         es: {
-            title: 'El internet está lleno de peligros',
-            btn: 'Terminarlos',
+            title: 'El mejor momento para mejorar tu protección',
+            btn: 'Cómo hacerlo',
         },
         es_419: {
-            title: 'El internet está lleno de peligros',
-            btn: 'Terminarlos',
+            title: 'Es hora de mejorar tu protección',
+            btn: 'Averiguar como',
         },
         pt_pt: {
-            title: 'A internet está cheia de monstros',
-            btn: 'Acabar com eles',
+            title: 'O melhor momento para aumentar tua proteção',
+            btn: 'Saiba como',
         },
         pt_br: {
-            title: 'A internet está cheia de monstros',
-            btn: 'Acabar com eles',
+            title: 'O melhor momento para aumentar sua proteção',
+            btn: 'Saiba como',
         },
         zh_cn: {
-            title: '网络威胁无处不在',
-            btn: '立即消除它们',
+            title: '增强保护',
+            btn: '了解更多',
         },
         zh_tw: {
-            title: '網路威脅無處不在',
-            btn: '立即消除它們',
+            title: '增強保護',
+            btn: '了解詳情',
         },
         ja: {
-            title: 'AdGuardで怪物を 倒すゲーム',
-            btn: 'プレイしてみる',
+            title: '保護機能を強化\nするなら今だ。',
+            btn: '詳細はこちら',
         },
         ko: {
-            title: '사이버 몬스터와 싸워보세요!',
-            btn: '퀴즈 시작',
+            title: '보호 기능을 개선하기 가장 좋은 시기',
+            btn: '자세히 알아보기',
         },
         uk: {
-            title: 'Інтернет повен небезпек',
-            btn: 'Позбудьтесь їх',
+            title: 'Час покращити захист',
+            btn: 'Дізнатись як',
         },
         ar: {
-            title: '!الإنترنت في خطر',
-            btn: 'ساعد',
+            title: 'حان الوقت لتحسين الحماية الخاصة بك',
+            btn: 'اكتشف كيف',
         },
         be: {
-            title: 'Інтэрнэт поўны небяспек',
-            btn: 'Пазбаўцеся іх',
+            title: 'Час палепшыць абарону',
+            btn: 'Даведацца як',
         },
         bg: {
-            title: 'Интернетът е в опасност!',
-            btn: 'Помогнете',
+            title: 'Време е да подобрите защитата си',
+            btn: 'Разберете как',
         },
         ca: {
-            title: 'Internet està en perill!',
-            btn: 'Ajuda',
+            title: 'És hora de millorar la teva protecció',
+            btn: 'Descobriu com',
         },
         cs: {
-            title: 'Web je plný nebezpečí',
-            btn: 'Zbavte se jich',
+            title: 'Je čas zlepšit vaši ochranu',
+            btn: 'Zjistěte jak',
         },
         da: {
-            title: 'Internettet er fuld af farer',
-            btn: 'Slip af med dem',
+            title: 'Tid til at forbedre din beskyttelse',
+            btn: 'Find ud af hvordan',
         },
         el: {
-            title: 'Το διαδίκτυο κινδυνεύει!',
-            btn: 'Βοήθεια',
+            title: 'Ώρα να βελτιώσετε την άμυνά σας',
+            btn: 'Βρες πως',
         },
         fa: {
-            title: '!هیولاها به اینترنت حمله کردند',
-            btn: 'مبارزه کنید',
+            title: 'زمان بهبود محافظت از خود است',
+            btn: 'دریابید که چگونه',
         },
         fi: {
-            title: 'Hirviöt hyökkäsivät internetiin!',
-            btn: 'Taistele',
+            title: 'Aika parantaa suojaustasi',
+            btn: 'Saada selville miten',
         },
         he: {
-            title: '!המפלצות תקפו את האינטרנט',
-            btn: 'להילחם',
+            title: 'הגיע הזמן לשפר את ההגנה שלך',
+            btn: 'לברר איך',
         },
         hr: {
-            title: 'Internet je pun opasnosti',
-            btn: 'Riješite ih se',
+            title: 'Vrijeme je da poboljšate svoju zaštitu',
+            btn: 'Saznajte kako',
         },
         hu: {
-            title: 'Az internet veszélyben van!',
-            btn: 'Segíts',
+            title: 'A legjobb idő a védelem felturbózására',
+            btn: 'Tudd meg, hogyan',
         },
         hy: {
-            title: 'Ինտերնետը վտանգի մեջ է',
-            btn: 'Օգնեք',
+            title: 'Ցանկանու՞մ եք պաշտպանել ձեր սարքը:',
+            btn: 'Պարզեք, թե ինչպես',
         },
         id: {
-            title: 'Monster menyerang internet!',
-            btn: 'Bertarung',
+            title: 'Tingkatkan perlindungan Anda',
+            btn: 'Cari tahu caranya',
         },
         lt: {
-            title: 'Monstrai užpuolė internetą!',
-            btn: 'Kovoti',
+            title: 'Laikas pagerinti savo apsaugą',
+            btn: 'Sužinokite, kaip',
         },
         ms: {
-            title: 'Raksasa menyerang internet!',
-            btn: 'Lawan',
+            title: 'Tingkatkan perlindungan anda',
+            btn: 'Ketahui caranya',
         },
         nb: {
-            title: 'Internett er full av farer',
-            btn: 'Bli kvitt dem',
+            title: 'På tide å forbedre beskyttelsen',
+            btn: 'Finn ut hvordan',
         },
         nl: {
-            title: 'Cybermonsters vallen aan!',
-            btn: 'Vechten',
+            title: 'Verbeter uw bescherming',
+            btn: 'Uitvinden hoe',
         },
         pl: {
-            title: 'Potwory zaatakowały internet!',
-            btn: 'Walczyć',
+            title: 'Czas ulepszyć swoją ochronę',
+            btn: 'Naucz się jak',
         },
         ro: {
-            title: 'Monștrii au atacat internetul!',
-            btn: 'Luptă',
+            title: 'Îmbunătățiți-vă protecția',
+            btn: 'Aflați cum',
         },
         sk: {
-            title: 'Monštrá zaútočili na internet!',
-            btn: 'Bojovať',
+            title: 'Čas na zlepšenie ochrany',
+            btn: 'Zistite, ako',
         },
         sl: {
-            title: 'Splet je poln nevarnosti',
-            btn: 'Znebite se jih',
+            title: 'Čas za izboljšanje zaščite',
+            btn: 'Ugotovite, kako',
         },
         'sr-Latn': {
-            title: 'Monstrumi su napali internet!',
-            btn: 'Bori se',
+            title: 'Vreme je da poboljšaš svoju odbranu',
+            btn: 'Saznajte kako',
         },
         sv: {
-            title: 'Monstren attackerar internet!',
-            btn: 'Kämpa',
+            title: 'Dags att förbättra ditt skydd',
+            btn: 'Ta reda på hur',
         },
         tr: {
-            title: 'Canavarlar internete saldırdı!',
-            btn: 'Savaş',
+            title: 'Korumanızı geliştirme zamanı',
+            btn: 'Nasıl olduğunu öğren',
         },
         vi: {
-            title: 'Quái vật đã tấn công internet!',
-            btn: 'Chiến đấu',
-        },
-        hi: {
-            title: 'राक्षसों ने इंटरनेट पर हमला किया!',
-            btn: 'लड़ो',
-        },
-        et: {
-            title: 'Veeb on täis ohte',
-            btn: 'Vabane neist',
-        },
-        th: {
-            title: 'สัตว์ประหลาดโจมตีอินเทอร์เน็ต!',
-            btn: 'ต่อสู้',
+            title: 'Cải thiện khả năng bảo vệ của bạn',
+            btn: 'Tìm hiểu cách',
         },
         mk: {
-            title: 'Интернетот е во опасност!',
-            btn: 'Помош',
+            title: 'Време е да ја подобрите заштитата',
+            btn: 'Дознајте како',
+        },
+        hi: {
+            title: 'अपनी सुरक्षा में सुधार करें',
+            btn: 'सीखो कैसे',
+        },
+        et: {
+            title: 'Aeg parandada oma kaitset',
+            btn: 'Uurige, kuidas',
+        },
+        th: {
+            title: 'ปรับปรุงการป้องกันของคุณ',
+            btn: 'ค้นหาวิธีการ',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Halloween24 }),
-    from: '25 October 2024 12:00:00',
-    to: '31 October 2024 23:59:00',
+    url: Forward.get({ action: ForwardAction.BlackFriday24 }),
+    from: '25 November 2024 12:00:00',
+    to: '6 December 2024 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/halloween24.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween24-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/blackfriday24.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/blackfriday24-update.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween24-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween24-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday24-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday24-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween24-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween24-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday24-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday24-off-38.png'),
         },
         warning: defaultIconVariants.warning,
     },
@@ -288,5 +288,5 @@ const halloween24Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [HALLOWEEN_24_ID, halloween24Notification],
+    [BLACK_FRIDAY_24_ID, blackFriday24Notification],
 ]);
