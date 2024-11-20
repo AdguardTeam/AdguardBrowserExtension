@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- TODO: add release version and date -->
 ## [Unreleased]
 
+### Added
+
+- Send `manifest_version` during issues reporting for MV2.
+
 ### Changed
 
 - Updated [@adguard/agtree] to v2.1.3.
@@ -18,21 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optimized performance of parsing uBlock filter parameters [#2962].
 - `$removeparam` fails to match encoded URL params in MV2 [#3015].
-- Memory leak caused by multiple script injections on the same pages after a service worker or event page restart [#2594].
+- Memory leak caused by multiple script injections on the same pages
+  after an event page in Firefox restarts in MV2 [#2594].
 
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.41...HEAD
 [#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
 [#3015]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3015
 [#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.43...HEAD
-
-<!-- TODO: add release data -->
-## [4.4.43]
-
-### Added
-
-- Send `manifest_version` during issues reporting for MV2.
-
-[4.4.43]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.41...v4.4.43
 
 ## [5.0.162] - 2024-10-30
 
