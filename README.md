@@ -34,30 +34,35 @@
     </picture>
 </p>
 
-AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
+AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads
+and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers,
+but prevent web sites from building your shadow profile.
+Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source.
+You can learn more about [the difference](https://adguard.com/compare.html) here.
 
-> AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
+> AdGuard does not collect any information about you, and does not participate in any acceptable ads program.
+> The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
-  - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
-  - [Firefox](#firefox)
-  - [Opera](#opera)
-  - [Microsoft Edge](#microsoft-edge)
-- [Contribution](#contribution)
-  - [Translating AdGuard](#translating-adguard)
-  - [Testing AdGuard](#testing-adguard)
-  - [Reporting issues](#reporting-issues)
-  - [Other options](#other-options)
-- [Development](#development)
-  - [Requirements](#requirements)
-  - [How to build](#how-to-build)
-    - [Tests and dev build](#tests-and-dev-build)
-    - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-    - [Building the beta and release versions](#building-the-beta-and-release-versions)
-    - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
-    - [Analyzing bundle size](#analyzing-bundle-size)
-  - [Linter](#linter)
-  - [Update localizations](#update-localizations)
+    - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
+    - [Firefox](#firefox)
+    - [Opera](#opera)
+    - [Microsoft Edge](#microsoft-edge)
+    - [Contribution](#contribution)
+    - [Translating AdGuard](#translating-adguard)
+    - [Testing AdGuard](#testing-adguard)
+    - [Reporting issues](#reporting-issues)
+    - [Other options](#other-options)
+    - [Development](#development)
+    - [Requirements](#requirements)
+    - [How to build](#how-to-build)
+        - [Tests and dev build](#tests-and-dev-build)
+        - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
+        - [Building the beta and release versions](#building-the-beta-and-release-versions)
+        - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
+        - [Analyzing bundle size](#analyzing-bundle-size)
+    - [Linter](#linter)
+    - [Update localizations](#update-localizations)
 - [Minimum supported browser versions](#minimum-supported-browser-versions)
 
 <a id="installation"></a>
@@ -262,16 +267,20 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 #### Special building instructions for Firefox reviewers
 
 1. Ensure you have installed Node.js and Yarn.
+
 1. To build the **BETA** version, run:
-    ```
+
+    ```shell
     yarn beta firefox-standalone
     ```
+
 1. Navigate to the build directory:
-    ```
+
+    ```shell
     cd ./build/beta
     ```
-1. Compare the generated `firefox.zip` file with the uploaded one.
 
+1. Compare the generated `firefox.zip` file with the uploaded one.
 
 #### Analyzing bundle size
 
