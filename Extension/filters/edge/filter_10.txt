@@ -1,9 +1,9 @@
-! Checksum: VXbjNkxwzoNe+p7cxqZcKw
-! Diff-Path: ../patches/10/10-s-1728542190-3600.patch
+! Checksum: cDNbdQ8WyKLja8KNwK/+gw
+! Diff-Path: ../patches/10/10-s-1731767864-3600.patch
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.47
-! TimeUpdated: 2024-10-10T06:32:42+00:00
+! Version: 2.0.3.54
+! TimeUpdated: 2024-11-16T14:33:54+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -101,6 +101,7 @@ bing.com#@#li[class=""][data-bm][style*="margin-bottom"]
 !
 ! Bing
 !
+bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
 bing.com#@#.b_adLastChild
 bing.com#@$#body .b_adLastChild { display: block !important; position: absolute !important; top: -9999px !important; }
 bing.com#@$#body .pa_carousel_mlo { display: block !important; position: absolute !important; top: -9999px !important; }
@@ -275,6 +276,12 @@ amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
 amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192826
+teknosa.com#@##gowitImpressionEvent
+! zalando.de search ads
+zalando.de#@#div[data-trckng-component] div[class]:has(> div[data-visibility-info-id*="advertising"])
+zalando.de#@#div[data-visibility-info-id*="advertising"]
+zalando.de#@##view-tracker-wrapper
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182443
 docfinder.at#@#.search-results > .search-result:has(> a > .top > .base-info > .sub > .advert)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136364
@@ -296,6 +303,8 @@ ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored)
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
+ebay.*#@#.x-rx-slot
+ebay.*#@#.srp-river-answer[class*="CAROUSEL"]:not([class*="NAVIGATION"])
 !
 ! aliexpress.com
 aliexpress.com#@#.search-item-card-wrapper-list:has( > div:only-child > div:only-child > a + div[class*="multi"])
@@ -320,6 +329,8 @@ websearch.rakuten.co.jp#@##ad-ichiba
 etsy.com#@?#.responsive-listing-grid > li:has( > div > a div > .ad-iindicator)
 etsy.com#@?#div[data-search-results-region] li:has( div[class*="merch-stash"]:only-child > a > div[class*="listing-card__info"] p > span:not([aria-hidden="true"]):contains(Etsy))
 ! DuckDuckGo
+duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#li[data-layout="products"]
+duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#.module--carousel-products
 duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#[data-layout="ad"]
 @@||ad.doubleclick.net/searchads/link/click?$popup,domain=duckduckgo.com|duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion
 duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion,duckduckgo.com#@#.result--ad > .result__body

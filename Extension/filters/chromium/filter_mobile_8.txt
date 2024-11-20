@@ -1,9 +1,9 @@
-! Checksum: Yzm0XR82sc5ynLW/i7A6vw
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1728495367-3600.patch
+! Checksum: OneATMwIXXa18rwQC5ANVw
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1731505212-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.46
-! TimeUpdated: 2024-10-09T17:32:29+00:00
+! Version: 2.0.7.50
+! TimeUpdated: 2024-11-13T13:35:37+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -118,7 +118,6 @@ _advertentieleaderboardhome.
 ||strafrechtadvocaten.nl/media/banner/$third-party
 ||swpportal.com/upload/squarebanners/
 ||t.bazarow.com^$third-party
-||tags.refinery89.com^
 ||traffic.12flirt.com^
 ||viralize.tv/display/$domain=startpagina.nl
 ||wertuipsertj34.azurewebsites.net^$xmlhttprequest
@@ -534,7 +533,6 @@ _advertentieleaderboardhome.
 immo.vlan.be###ProvidersBox
 immo.vlan.be###TopCompareBox
 autobahn.eu,dingenvoorvrouwen.nl,playboy.nl###WB_VIDEO_PLAYER_TARGET
-hoekschnieuws.nl###\36 050c52fcf1d8-2
 gaynews.nl###abri
 gaynews.nl###abri1
 voetbalkrant.com###ad-intro-text
@@ -778,7 +776,7 @@ vlaamskijken.nl,voetbalvandaag.be##.adds
 beurs.nl##.addslot
 loemedia.nl##.adlead
 westerwoldeactueel.nl##.adr-wrapper
-cinenews.be,clint.be,handbal.nl,openrotterdam.nl,viamichelin.be,viamichelin.nl,vkmag.com,wegdamnieuws.nl##.ads
+cinenews.be,clint.be,dagelijkseverhalen.nl,handbal.nl,openrotterdam.nl,viamichelin.be,viamichelin.nl,vkmag.com,wegdamnieuws.nl##.ads
 treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal
 treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal-5
 faillissementsdossier.nl##.adsbybinq
@@ -982,7 +980,7 @@ uecl-voetbal.nl,uel-voetbal.nl##.footerderden
 kanaalxxx.nl##.fpbnr
 motorrijdenexpert.nl##.full-row.relative-row.no-padding-bottom.title-txt-btn.flat-theme.flat-theme-content
 unitednews.sr##.fullwidthbanner-container
-amateursexstart.nl,binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl,dbsuriname.com,dehavengids.nl,despirituelewereld.be,dewereldmorgen.be,noordernieuws.nl,regioinbedrijf.nl,seksmet.nl,sekswebsite.nl,shespot.nl,sleutelstad.nl,westerwoldeactueel.nl##.g
+amateursexstart.nl,binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl,dbsuriname.com,dehavengids.nl,despirituelewereld.be,dewereldmorgen.be,hoekschnieuws.nl,noordernieuws.nl,regioinbedrijf.nl,seksmet.nl,sekswebsite.nl,shespot.nl,sleutelstad.nl,westerwoldeactueel.nl##.g
 zozwanger.nl##.g-single
 zeelandnet.nl##.g_banner
 radiovisie.eu##.gmollik
@@ -1117,6 +1115,7 @@ simone.nl,wfm.be##.qt-sponsor
 rbsradio.be##.qt-sponsors
 nedporno.com##.r11ght-pl4yer-169
 dagelijksestandaard.nl,sportbookies.nl,viraal.nl,wielrennenuptodate.nl##.raw-html-component
+hoekschnieuws.nl##.rbct > a > img
 belegger.nl,debeurs.nl,eurobench.com##.recommendbanner
 wasmachines.nl##.rectangle
 iex.nl##.rectanglemid
@@ -1302,6 +1301,7 @@ tweakers.net##a[href^="https://www.true.nl/?utm_"]
 edelmetaal-info.nl##a[onclick^="javascript:pageTracker._trackPageview"]
 gostreaming.nl,tennisplaza.be##a[rel*="sponsored"]
 oisterwijknieuws.nl##a[target="_blank"] > img
+hoekschnieuws.nl##center > a > img
 pcmweb.nl##div.block:nth-of-type(1)
 pcmweb.nl##div.block:nth-of-type(2)
 oisterwijknieuws.nl##div[align="center"] a[target="_blank"]
@@ -1408,6 +1408,7 @@ ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
 krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:-abp-contains(Gesponsorde producten))
+marktplaats.nl#?#.hz-Listing--list-item:-abp-contains(Topadvertentie)
 feijenoordnieuws.nl##.cv-table-left > a:not([target="_blank"]):not([rel="nofollow"]):not(a[href^="https://feijenoordnieuws.nl/"])
 2dehands.be#?#.hz-Listing--list-item:-abp-has(.hz-Listing-priority:-abp-contains(Topadvertentie))
 almere-nieuws.nl#?#.wpb_wrapper:has(.section-heading:-abp-contains(partners))
@@ -1467,7 +1468,7 @@ vakantieplaats.nl#@#.topAds
 hardware.info,tweakers.net#@#.AdBar
 topkleurplaat.nl#%#//scriptlet('prevent-setTimeout', '.height() === 0')
 filmvandaag.nl#%#//scriptlet('prevent-fetch', 'securepubads.g.doubleclick.net')
-@@||looopings.nl/*ad*.js
+@@||looopings.nl/*.js$script,~third-party
 looopings.nl#%#//scriptlet('remove-node-text', 'script', 'if(!document.getElementById')
 webcam-binnenvaart.nl#%#//scriptlet('prevent-element-src-loading', 'script', 'adsbygoogle')
 vtmgo.be#%#//scriptlet('prevent-fetch', 'v.fwmrm.net')

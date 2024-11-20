@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated [@adguard/agtree] to v2.1.3.
 - Updated [@adguard/tsurlfilter] to v3.0.7.
-- Updated [@adguard/tswebextension] to v2.0.6.
+- Updated [@adguard/tswebextension] to v2.0.7.
 
 ### Fixed
 
