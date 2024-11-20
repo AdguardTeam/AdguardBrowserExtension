@@ -1,8 +1,8 @@
-! Checksum: 2gj95+dtJdT+NK+BgTsJ9Q
+! Checksum: hdILQCcfDqf9PiaQqnykfA
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.59.37
-! TimeUpdated: 2024-11-19T14:33:58+00:00
+! Version: 2.0.59.40
+! TimeUpdated: 2024-11-20T08:34:05+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -511,8 +511,6 @@ yourfones.net#%#//scriptlet('spoof-css', 'ins.adsbygoogle', 'display', 'block')
 mytry.jp#@#.ad_box
 mytry.jp#$#body > #container { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190943
-wiki.yjsnpi.nu#$##mw-content-text > div[style="text-align: center; margin: 1rem auto; max-width: 320px;"] { position: absolute !important; left: -4000px !important; }
-wiki.yjsnpi.nu#$##mw-content-text > div[style="text-align: center; margin: 1rem auto; max-width: 100%;"] { position: absolute !important; left: -4000px !important; }
 wiki.yjsnpi.nu#$##comments-loading { display: none !important; }
 @@||wiki.yjsnpi.nu^$image,xmlhttprequest,~third-party
 @@||wiki.yjsnpi.nu^$generichide
@@ -1759,7 +1757,7 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
-danseisama.com##.g-ad250
+haijin-boys.com##.widget:has(> ins.adsbygoogle)
 app.famitsu.com##.jack_banner
 app.famitsu.com###main-contents-side > div.textwidget:has(> section#top-game-tips > div.side-movie-pr)
 kakaku.com#$#body { margin-top: 0 !important; }
@@ -5539,7 +5537,7 @@ resemom.jp##.sidebox[style*="1000px; margin-top"]
 manetatsu.com###browsi-wrec1ad
 mhmatome.com###text-23 > div.textwidget > div.wd_title_rss + p
 ani-chat.net,2ji.pink,glamoroustube.com,mhmatome.com##.post-title-upper
-jyoseisama.com,vtubernews.jp##.g-ad250
+danseisama.com,jyoseisama.com,vtubernews.jp##.g-ad250
 joqr.co.jp##.ad_full
 joqr.co.jp##.panel_kv > li[style="display:flex; justify-content: center; flex-wrap: wrap;"]:not([class])
 hint-pot.jp##.box-header
@@ -8774,7 +8772,6 @@ garanger.net##div[align="center"] > a[target="_blank"] > img
 ||kakaku.com/script/itemview/RdmReviewAd.js
 bbs.kakaku.com#$##moduleFixedBnr[style^="height"] { height: auto !important; }
 bbs.kakaku.com###listingPr
-kakaku.com#$#body[style="margin-top:260px;"] { margin-top: unset !important; }
 kakaku.com###yAuctionBox
 kakaku.com##.prTitle
 kakaku.com##.c-box-adBox

@@ -1,8 +1,8 @@
-! Checksum: d3Ko4aThIHJhyWu4ihfp4g
+! Checksum: MuDp6CHn6MEh5EvWbzxfGQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.84
-! TimeUpdated: 2024-11-18T16:34:52+00:00
+! Version: 2.0.9.85
+! TimeUpdated: 2024-11-19T19:34:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1415,6 +1415,8 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||click.speee-ad.jp^$removeparam=slot_index
 ||click.speee-ad.jp^$removeparam=v
 !! tiktok
+! https://github.com/AdguardTeam/AdguardFilters/issues/192966
+||tiktok.com$removeparam=referer_video_id
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-4978150
 ||tiktok.com^$removeparam=embed_source
 ||tiktok.com^$removeparam=referer_url
