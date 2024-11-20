@@ -18,9 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optimized performance of parsing uBlock filter parameters [#2962].
 - `$removeparam` fails to match encoded URL params in MV2 [#3015].
+- Memory leak caused by multiple script injections on the same pages after a service worker or event page restart [#2594].
 
 [#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
 [#3015]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3015
+[#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.43...HEAD
 
 <!-- TODO: add release data -->
