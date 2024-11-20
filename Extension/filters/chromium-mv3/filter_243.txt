@@ -1,13 +1,13 @@
-! Checksum: Wu71mYT0xiM/eDklpo9x9w
+! Checksum: zIUoKdkTMCP0vv8m9Fez+A
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.20.6
-! TimeUpdated: 2024-11-19T05:01:46+00:00
+! Version: 2.0.20.7
+! TimeUpdated: 2024-11-20T05:01:44+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2024-11-19 05:39:43 CET
+! Last modified: 2024-11-20 03:29:57 CET
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -1265,7 +1265,7 @@ sweclockers.com#?#div[class^="card-info"]:contains(/spons/i):upward(.card)
 sweclockers.com###prisjakt-popular, .ad:not(.adPanorama), .adForumSticker, .dark-mode__sponsor
 sweclockers.com#?#.bbSize:contains(Sponsormeddelande):upward(.bbRelatedBox)
 swedroid.se#$?#a[target="_blank"]:upward(li.Notice) { remove: true; }
-swedroid.se##div[id$="_ad"], div[id$="_ad_mobile"], .externalTopMobile, #externalTopMobile, .externalBottomMobile, a[href^="//www.prisjakt.nu/produkt"], #nativendo-mainfeed + aside > .article, .article-footer > h3, .article-footer > .aeChart, #newExternal
+swedroid.se##div[id$="_ad"], div[id$="_ad_mobile"], .externalTopMobile, #externalTopMobile, a[href*="prisjakt.nu/produkt"], #nativendo-mainfeed + aside > .article, .article-footer > h3, .article-footer > .aeChart, #newExternal
 swedroid.se#%#//scriptlet('ubo-rmnt.js', 'script', 'checkAdsBlocked')
 swedroid.se#?#.mostReadMobile:contains(/annons/i)
 swedroid.se##.puff:has(script[src*="lwadm.com"], .pjSidebar)
