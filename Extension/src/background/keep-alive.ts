@@ -61,6 +61,7 @@ export class KeepAlive {
      */
     static init(): void {
         if (UserAgent.isFirefox) {
+            KeepAlive.keepServiceWorkerAlive();
             /**
              * When tab updates, we try to inject the content script to it.
              */
@@ -105,6 +106,23 @@ export class KeepAlive {
                 logger.error(e);
             }
         }
+    }
+
+    /**
+     * Prolongs the service worker's lifespan by periodically invoking a runtime API.
+     *
+     * Note:
+     * - This is not an official solution and may be removed or become unsupported in the future.
+     * - It does not restart the service worker if it has already been terminated.
+     *   For that, a port connect/disconnect workaround is used.
+     */
+    private static keepServiceWorkerAlive(): void {
+        // Usually a service worker dies after 30 seconds,
+        // using 20 seconds should be enough to keep it alive.
+        const KEEP_ALIVE_INTERVAL_MS = 20000;
+        setInterval(async () => {
+            await browser.runtime.getPlatformInfo();
+        }, KEEP_ALIVE_INTERVAL_MS);
     }
 
     /**
