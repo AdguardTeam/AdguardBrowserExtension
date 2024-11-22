@@ -36,7 +36,7 @@ const extendWithSpecialPnpmFileNames = (modules: string[]): string[] => {
     modules.forEach((module) => {
         result.push(module);
 
-        const moduleFileName = dependencyPath.depPathToFilename(module, 100);
+        const moduleFileName = dependencyPath.depPathToFilename(module, 120);
         if (module !== moduleFileName) {
             result.push(moduleFileName);
         }
