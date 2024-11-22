@@ -21,7 +21,7 @@ Test:
   docker:
     image: ${bamboo.dockerNode}
     volumes:
-      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
         force-clean-build: 'true'
@@ -33,13 +33,12 @@ Test:
             set -e
             ls -la
 
-            # don't use --ignore-optional flag, because esbuild requires optional deps 
-            yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
+            pnpm install
             
-            yarn lint --max-warnings=0
-            yarn check-types
-            yarn test
-            yarn dev
+            pnpm lint --max-warnings=0
+            pnpm check-types
+            pnpm test
+            pnpm dev
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
