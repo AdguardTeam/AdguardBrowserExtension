@@ -20,6 +20,7 @@ import browser from 'webextension-polyfill';
 
 import {
     TooManyRegexpRulesError,
+    TooManyUnsafeRulesError,
     TooManyRulesError,
     RULE_SET_NAME_PREFIX,
     type ConfigurationResult,
@@ -57,9 +58,17 @@ import type {
 } from './interface';
 
 const {
-    MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES,
+    MAX_NUMBER_OF_DYNAMIC_RULES,
     MAX_NUMBER_OF_REGEX_RULES,
     MAX_NUMBER_OF_ENABLED_STATIC_RULESETS,
+
+    /**
+     * @see {@link https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#property-MAX_NUMBER_OF_UNSAFE_DYNAMIC_RULES}
+     */
+    // TODO: remove default value and following ts-ignore
+    // when the value is available in webextension-polyfill
+    // @ts-ignore
+    MAX_NUMBER_OF_UNSAFE_DYNAMIC_RULES = 5000,
 } = browser.declarativeNetRequest;
 
 /**
@@ -225,6 +234,19 @@ export class RulesLimitsService {
     }
 
     /**
+     * Finds first found limitation error about unsafe rules limit.
+     *
+     * @param result Configuration result.
+     * @returns Limitation error.
+     */
+    private static getUnsafeRulesLimitExceedErr = (
+        result: ConfigurationResult,
+    ): TooManyUnsafeRulesError | undefined => {
+        return result.dynamicRules?.limitations
+            .find((e) => e instanceof TooManyUnsafeRulesError);
+    };
+
+    /**
      * Finds first found limitation error.
      *
      * @param result Configuration result.
@@ -254,7 +276,7 @@ export class RulesLimitsService {
      * How many dynamic rules are enabled.
      *
      * @param result Configuration result.
-     * @returns Count of enabled user rules.
+     * @returns Count of enabled dynamic rules.
      */
     private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
@@ -281,7 +303,7 @@ export class RulesLimitsService {
      */
     private static getDynamicRulesMaximumCount(result: ConfigurationResult): number {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        return rulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES;
+        return rulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_DYNAMIC_RULES;
     }
 
     /**
@@ -290,10 +312,13 @@ export class RulesLimitsService {
      * @param result Configuration result.
      * @returns Number rules.
      */
-    private static getDynamicRulesRegexpsEnabledCount(result: ConfigurationResult): number {
-        const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
+    private static getDynamicRegexpRulesEnabledCount(result: ConfigurationResult): number {
         const regexpsCount = result.dynamicRules?.ruleSet.getRegexpRulesCount() || 0;
-        return regexpsCount + (regexpRulesLimitExceedErr?.excludedRulesIds.length || 0);
+
+        const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
+        const excludedRulesCount = regexpRulesLimitExceedErr?.excludedRulesIds.length || 0;
+
+        return regexpsCount + excludedRulesCount;
     }
 
     /**
@@ -302,9 +327,35 @@ export class RulesLimitsService {
      * @param result Configuration result.
      * @returns Rules count.
      */
-    private static getDynamicRulesRegexpsMaximumCount(result: ConfigurationResult): number {
+    private static getDynamicRegexpRulesMaximumCount(result: ConfigurationResult): number {
         const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
         return regexpRulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_REGEX_RULES;
+    }
+
+    /**
+     * How many dynamic **unsafe** rules are enabled.
+     *
+     * @param result Configuration result.
+     * @returns Count of enabled dynamic unsafe rules.
+     */
+    private static getDynamicUnsafeRulesEnabledCount(result: ConfigurationResult): number {
+        const unsafeRulesCount = result.dynamicRules?.ruleSet.getUnsafeRulesCount() || 0;
+
+        const unsafeRulesLimitExceedErr = RulesLimitsService.getUnsafeRulesLimitExceedErr(result);
+        const excludedRulesCount = unsafeRulesLimitExceedErr?.excludedRulesIds.length || 0;
+
+        return unsafeRulesCount + excludedRulesCount;
+    }
+
+    /**
+     * Returns number of maximum possible dynamic **unsafe** rules.
+     *
+     * @param result Configuration result.
+     * @returns Count of rules.
+     */
+    private static getDynamicUnsafeRulesMaximumCount(result: ConfigurationResult): number {
+        const rulesLimitExceedErr = RulesLimitsService.getUnsafeRulesLimitExceedErr(result);
+        return rulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_UNSAFE_DYNAMIC_RULES;
     }
 
     /**
@@ -369,8 +420,10 @@ export class RulesLimitsService {
         return {
             dynamicRulesEnabledCount: RulesLimitsService.getDynamicRulesEnabledCount(result),
             dynamicRulesMaximumCount: RulesLimitsService.getDynamicRulesMaximumCount(result),
-            dynamicRulesRegexpsEnabledCount: RulesLimitsService.getDynamicRulesRegexpsEnabledCount(result),
-            dynamicRulesRegexpsMaximumCount: RulesLimitsService.getDynamicRulesRegexpsMaximumCount(result),
+            dynamicRulesUnsafeEnabledCount: RulesLimitsService.getDynamicUnsafeRulesEnabledCount(result),
+            dynamicRulesUnsafeMaximumCount: RulesLimitsService.getDynamicUnsafeRulesMaximumCount(result),
+            dynamicRulesRegexpsEnabledCount: RulesLimitsService.getDynamicRegexpRulesEnabledCount(result),
+            dynamicRulesRegexpsMaximumCount: RulesLimitsService.getDynamicRegexpRulesMaximumCount(result),
             staticFiltersEnabledCount: RulesLimitsService.getStaticEnabledFiltersCount(),
             staticFiltersMaximumCount: MAX_NUMBER_OF_ENABLED_STATIC_RULESETS,
             staticRulesEnabledCount,
@@ -602,8 +655,23 @@ export class RulesLimitsService {
             };
         }
 
-        const dynamicRulesRegexpsEnabledCount = RulesLimitsService.getDynamicRulesRegexpsEnabledCount(result);
-        const dynamicRulesRegexpsMaximumCount = RulesLimitsService.getDynamicRulesRegexpsMaximumCount(result);
+        const dynamicRulesUnsafeEnabledCount = RulesLimitsService.getDynamicUnsafeRulesEnabledCount(result);
+        const dynamicUnsafeRegexpsMaximumCount = RulesLimitsService.getDynamicUnsafeRulesMaximumCount(result);
+        if (dynamicRulesUnsafeEnabledCount > dynamicUnsafeRegexpsMaximumCount) {
+            return {
+                ok: false,
+                data: {
+                    type: 'dynamic',
+                    rulesUnsafeCount: {
+                        current: dynamicRulesUnsafeEnabledCount,
+                        maximum: dynamicUnsafeRegexpsMaximumCount,
+                    },
+                },
+            };
+        }
+
+        const dynamicRulesRegexpsEnabledCount = RulesLimitsService.getDynamicRegexpRulesEnabledCount(result);
+        const dynamicRulesRegexpsMaximumCount = RulesLimitsService.getDynamicRegexpRulesMaximumCount(result);
         if (dynamicRulesRegexpsEnabledCount > dynamicRulesRegexpsMaximumCount) {
             return {
                 ok: false,

@@ -107,6 +107,8 @@ const fetchDataWithRetry = async (fetchFunction) => {
 const DEFAULT_RULES_LIMITS = {
     dynamicRulesEnabledCount: 0,
     dynamicRulesMaximumCount: 0,
+    dynamicRulesUnsafeEnabledCount: 0,
+    dynamicRulesUnsafeMaximumCount: 0,
     dynamicRulesRegexpsEnabledCount: 0,
     dynamicRulesRegexpsMaximumCount: 0,
     staticFiltersEnabledCount: 0,

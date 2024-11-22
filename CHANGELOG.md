@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Unsafe dynamic rules limit for MV3.
+
+### Changed
+
+- Increased all dynamic rules limit to 30000 for MV3.
+
 ### Fixed
 
 - A rule from a disabled filter list disables another rule [#3002].
