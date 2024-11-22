@@ -1,8 +1,8 @@
-! Checksum: k2dmOTifAhEYtlf1nmMvOg
+! Checksum: 0BTM2n34tfSXPJfVxIFJlw
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.27.50
-! TimeUpdated: 2024-11-18T15:35:23+00:00
+! Version: 2.0.27.55
+! TimeUpdated: 2024-11-21T19:33:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -841,11 +841,14 @@ seriesretro.com#%#//scriptlet("abort-on-property-read", "gothamBatAdblock")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/80724
 audiotools.in##div[id^="chp_ads_blocker-"]
 audiotools.in#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', 'blocker_detector')
+! https://github.com/AdguardTeam/AdguardFilters/issues/193307
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186776
-caroloportunidades.com.br#$##player { display: block !important; }
-caroloportunidades.com.br#%#//scriptlet('prevent-xhr', 'popads.net')
-caroloportunidades.com.br#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
-@@||popads.net/js/adblock.js$xmlhttprequest,domain=caroloportunidades.com.br
+! https://github.com/AdguardTeam/AdguardFilters/issues/115301
+! hinatasoul.com, anitube.biz
+receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#$##player { display: block !important; }
+receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#%#//scriptlet('prevent-xhr', 'popads.net')
+receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
+@@||popads.net/js/adblock.js$xmlhttprequest,domain=caroloportunidades.com.br|foodiesgallery.com|receitasdaora.online
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190058
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186902
 ! https://github.com/AdguardTeam/AdguardFilters/issues/184038
@@ -1960,8 +1963,6 @@ receitasdochico.life#$##colunas { display: block !important; }
 knightnoscanlation.com#$##manga-title { height: unset !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/115299
 futlances.net#$##colunas { display: block !important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/115301
-receitasdaora.online#$##player { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/115228
 gastronomiabrasileira.net#$##colunas { display: block !important; }
 ! https://github.com/uBlockOrigin/uAssets/issues/12640
@@ -2180,6 +2181,8 @@ mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.c
 !
 ! NOTE: Specific rules
 !
+eldestapeweb.com##.contenedor__publicidad
+mercadolivre.com.br###ui-billboard-ad
 mi.tv##.native
 mi.tv##div[class^="infeed-partner-"]
 ver-online.cc,tuseries.cc##.movie-xyz
@@ -2192,6 +2195,7 @@ estrenosdivx.net#?#.noticia:has(> div.card-body > p:contains(Promociones))
 cinecalidad.ai,cinecalidad.al,cinecalidad.best,cinecalidad.biz,cinecalidad.cc,cinecalidad.cl,cinecalidad.club,cinecalidad.co,cinecalidad.com.bd,cinecalidad.com.mx,cinecalidad.com.np,cinecalidad.es,cinecalidad.fi,cinecalidad.fm,cinecalidad.fun,cinecalidad.gg,cinecalidad.icu,cinecalidad.is,cinecalidad.link,cinecalidad.live,cinecalidad.media,cinecalidad.mx,cinecalidad.net,cinecalidad.network,cinecalidad.online,cinecalidad.org,cinecalidad.pe,cinecalidad.pl,cinecalidad.pro,cinecalidad.pw,cinecalidad.ro,cinecalidad.rs,cinecalidad.today,cinecalidad.tv,cinecalidad.vip,cinecalidad.website,cinecalidad.win##.item.xfxx
 cine-calidad.biz##div[class*="bannerAds"]
 forocoches.com###notice-wrapper
+seriesperu.com#%#//scriptlet('set-constant', 'redirigido', 'true')
 peliculas8k.com#%#//scriptlet('set-constant', 'redirigir', 'noopFunc')
 criptofacil.com##div[class^="clickout-native_table_box"]
 criptofacil.com##div[class^="cript-after-"][id^="cript-"]
@@ -4363,7 +4367,7 @@ tarjetaroja-tv.net##iframe[src="about:blank"]
 ||rojatv.tarjetaroja-tv.net/img/logo-roja.png
 ||tarjetaroja-tv.net/img/logo-rojo.png
 ||tarjetaroja-tv.net/js/xnotificationbar.js
-televall.website###adsdiv
+peliculas8k.com,televall.website###adsdiv
 torrentrapid.com,newpct1.com##div[style="float:left;width:100%;height:160px;"]
 newpct1.com###box-ads-trailer
 /^https:\/\/(ddmix.net)\/[a-z0-9_]*\.js/$script,domain=ddmix.net
