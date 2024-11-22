@@ -1,8 +1,8 @@
-! Checksum: sWTzfOyOAYDPbS/eHPNVvA
+! Checksum: ywvMzQubccUZgvdbFcN9bg
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.48.11
-! TimeUpdated: 2024-11-20T04:34:37+00:00
+! Version: 2.0.48.17
+! TimeUpdated: 2024-11-21T18:34:15+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -238,9 +238,9 @@ monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementB
 japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
 japscan.lol#%#//scriptlet('prevent-setTimeout', 'getElementById')
 japscan.lol#%#//scriptlet('prevent-addEventListener', 'load', 'setTimeout')
-japscan.lol#%#//scriptlet("remove-node-text", "script", "/function\(Baby|\+'a'|\+parseInt|\+String|log'|fromCharCode'|createElement'|querySel'|\\x22return|;\}\(\)\)\);\}\}\(\)\)\);/")
+japscan.lol#%#//scriptlet("remove-node-text", "script", "/\+'a'|\+parseInt|\+String|log'|fromCharCode'|createElement'|querySel'|clipPath'|catch'|forEach'|\\x22return|90\.jpg|soft\$|\.nextElementSibling|style\.width|return eval|document\(\)|String\(\)/")
 japscan.lol#$#.navbar-nav > li#navpromo2.nav-item > a[href^="http://www.toueapo.shop/"] { text-indent: -5000px !important; }
-japscan.lol#%#//scriptlet("prevent-addEventListener", "DOMContentLoaded", "/Parfum|China|\+'oa|=>\s*\{\s*var|'ct'/")
+japscan.lol#%#//scriptlet("prevent-addEventListener", "DOMContentLoaded", "/Amazon|Russia|\(0x|\+''|'un'/")
 @@$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,script,~third-party
 japscan.lol#@#.tangoai
@@ -321,6 +321,8 @@ rustica.fr#%#//scriptlet("abort-on-property-write", "dtctAB")
 @@||systemed.fr/*.iads.js
 systemed.fr#%#//scriptlet("abort-on-property-write", "dtctAB")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/105651
+crunchyscan.fr#%#//scriptlet('prevent-fetch', 'adskeeper.co.uk')
+@@||jsc.adskeeper.co.uk/c/r/crunchyscan.fr$xmlhttprequest,domain=crunchyscan.fr
 crunchyscan.fr#%#//scriptlet("abort-current-inline-script", "document.write", "alert")
 crunchyscan.fr#%#//scriptlet("abort-current-inline-script", "setTimeout", "bloqueur")
 crunchyscan.fr#%#//scriptlet("abort-current-inline-script", "Promise", "alert")
@@ -1667,6 +1669,10 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! file-up.org broken
+@@||code.jquery.com^$domain=file-upload.org
+@@||file-upload.download/cgi-bin/
+@@||file-upload.org^$domain=file-up.org
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192617
 $script,third-party,domain=txxx.com,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191725
@@ -18336,6 +18342,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshr.ink|adshr
 ||lacanausurfinfo.com/admin/images/pubs/
 ||lacanausurfinfo.com/ressources/pub/
 ||lacasadeel.net/banners/
+||lacoccinelle.net/extra.js
 ||lacoccinelle.net/generic.js
 ||ladepeche.fr/js/ab.
 ||ladiagonale.net/wp-content/uploads/2023/02/pub_article.jpg
@@ -23716,7 +23723,7 @@ agate-france.com##[id^="pbad_"]
 jeuxvideomoinschers.fr,tahiti-infos.com##[id^="pub_"]
 moneyvox.fr##[mam-campaign="Ban"]
 toutvendre.fr##[onclick*=".kelkoogroup.net/"]
-filecrypt.cc,filecrypt.co##[onclick] img
+filecrypt.cc,filecrypt.co,lacoccinelle.net##[onclick] img
 filecrypt.cc,filecrypt.co##[onmousedown]
 filecrypt.cc,filecrypt.co##[onmouseup]
 lesoir.be##a > [width="300"][height="250"]

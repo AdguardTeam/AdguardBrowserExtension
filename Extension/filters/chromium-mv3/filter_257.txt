@@ -1,8 +1,8 @@
-! Checksum: 1/2YNFOB803qQJelBjPAFQ
+! Checksum: 90GbeOE7AjZ8IikpafGShQ
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.4.61
-! TimeUpdated: 2024-11-20T05:01:56+00:00
+! Version: 2.0.4.65
+! TimeUpdated: 2024-11-22T13:02:22+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -5612,37 +5612,31 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||mevtime.com^$all
 !+ NOT_OPTIMIZED
-||musk-project.com^$document
+||musk-project.com^$all
 !+ NOT_OPTIMIZED
-||muskusa.com^$document
+||muskusa.com^$all
 !+ NOT_OPTIMIZED
 ||cealits.com^$all
 !+ NOT_OPTIMIZED
 ||pepzk-community.xyz^$all
 !+ NOT_OPTIMIZED
-||earth-ling.org^$document
+||earth-ling.org^$all
 !+ NOT_OPTIMIZED
-||muskevent.info^$document
+||muskevent.info^$all
 !+ NOT_OPTIMIZED
 ||teslamaked.com^$all
 !+ NOT_OPTIMIZED
 ||cryptomusk.io^$all
 !+ NOT_OPTIMIZED
-||xaitoken.live^$all
-!+ NOT_OPTIMIZED
 ||youtube.com/@Tesla.debate_live2024^$document
-!+ NOT_OPTIMIZED
-||youtube.com/watch?v=mTHTXSm88_M^$document
-!+ NOT_OPTIMIZED
-||youtube.com/watch?v=szaNiLd8lJw^$document
 ! https://github.com/uBlockOrigin/uAssets/issues/24296
 ! https://www.virustotal.com/gui/url/95c95990e40d0859a1766b2da6047f64d2faecee65d74669243d443c7c185ebf
 ! https://www.urlvoid.com/scan/teslafond.io/
 !+ NOT_OPTIMIZED
-||teslafond.io^$document
+||teslafond.io^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/24590
 !+ NOT_OPTIMIZED
-||teslacore.io^$document
+||teslacore.io^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/24734
 !+ NOT_OPTIMIZED
 ||btc24.info^$all
@@ -5650,7 +5644,7 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||youtube.com/@tesla24official^$document
 ! https://www.reddit.com/r/Scams/comments/1fjggp3/deepfake_of_elon_musk_promoting_a_scam_qr_code/
 !+ NOT_OPTIMIZED
-||usmusk.net^$document
+||usmusk.net^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/25492
 !+ NOT_OPTIMIZED
 ||foundations-x2024.*^$document,to=foundations-x2024.com.bd|foundations-x2024.com.np
@@ -5673,7 +5667,23 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||stage3-last.$document,to=~edu|~gov
 !+ NOT_OPTIMIZED
 ||stage2024.$document,to=~edu|~gov
+! xai scams
+!+ NOT_OPTIMIZED
+/^https:\/\/xai\w+(?:\.\w+)?\.[a-z]{3,}\/presale\b/$document,match-case,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||xaitoken.live^$all
+!+ NOT_OPTIMIZED
+||investxai.pro^$all
+!+ NOT_OPTIMIZED
+||xai85s.com^$all
+!+ NOT_OPTIMIZED
+||xaitokensale.net^$all
+!+ NOT_OPTIMIZED
+||xaitoken.$all,to=xaitoken.app|xaitoken.page.link|xaitoken.net
 ! https://github.com/uBlockOrigin/uAssets/issues/25726#issuecomment-2483460915
+! https://www.reddit.com/r/CryptoScams/comments/1gv401z/xai_scam/
+!+ NOT_OPTIMIZED
+||xaiofficial.com^$all
 !+ NOT_OPTIMIZED
 ||xaipresales.org^$all
 !+ NOT_OPTIMIZED
@@ -9790,6 +9800,8 @@ uploadfox.net###ad-gs-05
 !+ NOT_OPTIMIZED
 ||allinoursite.com^$document
 !+ NOT_OPTIMIZED
+||bteux.com^$document
+!+ NOT_OPTIMIZED
 ||doorsstormsy.shop^$document
 !+ NOT_OPTIMIZED
 ||emailservicesnetau.com^$document
@@ -9820,3 +9832,13 @@ uploadfox.net###ad-gs-05
 ||detranrapido.co^$all
 !+ NOT_OPTIMIZED
 ||pagamentocnh.com^$all
+! https://github.com/uBlockOrigin/uAssets/issues/26121
+!+ NOT_OPTIMIZED
+||diteringion.com^$all
+! https://malwaretips.com/blogs/remove-flake-creditcable-info/
+! https://www.virustotal.com/gui/url/9c04f6b29c12f7fe981be638719be31d9bcbd5bf504423c12b49d7ce445c9f6d
+!+ NOT_OPTIMIZED
+||creditcable.info^$all
+! https://github.com/uBlockOrigin/uAssets/issues/26144
+!+ NOT_OPTIMIZED
+||steamcomunutty.com^$all
