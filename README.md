@@ -16,7 +16,6 @@
     <a href="https://twitter.com/AdGuard">Twitter</a> |
     <a href="https://t.me/adguard_en">Telegram</a>
     <br /><br />
-    </a>
     <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
         <img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" />
     </a>
@@ -39,26 +38,26 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 > AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
-  - [Chrome and Chromium-based browsers](#installation-chrome)
-  - [Firefox](#installation-firefox)
-  - [Opera](#installation-opera)
-  - [Microsoft Edge](#installation-edge)
+    - [Chrome and Chromium-based browsers](#installation-chrome)
+    - [Firefox](#installation-firefox)
+    - [Opera](#installation-opera)
+    - [Microsoft Edge](#installation-edge)
 - [Contribution](#contribution)
-  - [Translating AdGuard](#contribution-translating)
-  - [Testing AdGuard](#contribution-testing)
-  - [Reporting issues](#contribution-reporting)
-  - [Other options](#contribution-other)
+    - [Translating AdGuard](#contribution-translating)
+    - [Testing AdGuard](#contribution-testing)
+    - [Reporting issues](#contribution-reporting)
+    - [Other options](#contribution-other)
 - [Development](#dev)
-  - [Requirements](#dev-requirements)
-  - [How to build](#dev-build)
-    - [Tests and dev build](#dev-tests-and-build)
-    - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
-    - [Building the beta and release versions](#dev-beta-and-release)
-    - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
-    - [Analyzing bundle size](#dev-bundle-size)
-    - [Debug MV3 declarative rules](#dev-debug-mv3)
-  - [Linter](#dev-linter)
-  - [Update localizations](#dev-localizations)
+    - [Requirements](#dev-requirements)
+    - [How to build](#dev-build)
+        - [Tests and dev build](#dev-tests-and-build)
+        - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
+        - [Building the beta and release versions](#dev-beta-and-release)
+        - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
+        - [Analyzing bundle size](#dev-bundle-size)
+        - [Debug MV3 declarative rules](#dev-debug-mv3)
+    - [Linter](#dev-linter)
+    - [Update localizations](#dev-localizations)
 - [Minimum supported browser versions](#browser-compatibility)
 
 ## <a name="installation"></a> Installation
