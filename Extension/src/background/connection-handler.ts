@@ -73,6 +73,9 @@ export class ConnectionHandler {
         });
 
         port.onDisconnect.addListener(() => {
+            if (chrome.runtime.lastError) {
+                logger.debug('An error occurred on disconnect', browser.runtime.lastError);
+            }
             ConnectionHandler.onPortDisconnection(port);
             listeners.removeListener(listenerId);
             logger.info(`Port: "${port.name}" disconnected`);

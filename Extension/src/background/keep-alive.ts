@@ -45,6 +45,14 @@ const keepAliveCode = `
             });
     }
 
+    // AG-37908
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            // The page is restored from BFCache, set up a new connection.
+            connect();
+        }
+    });
+
     connect();
 
     window.keepAlive = true;
@@ -74,6 +82,14 @@ function keepAliveFunc(): void {
                 connect();
             });
     }
+
+    // AG-37908
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            // The page is restored from BFCache, set up a new connection.
+            connect();
+        }
+    });
 
     connect();
 
