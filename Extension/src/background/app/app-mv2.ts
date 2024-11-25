@@ -140,18 +140,22 @@ export class App {
         await UiApi.init();
 
         /**
-         * When the extension is enabled, disabled and re-enabled during the user session,
-         * content scripts will be loaded multiple times in each open tab.
-         * If statistics collection is enabled, the content script will initialize cssHitCounter.
-         * Multiple cssHitCounters in the same page context will conflict with each other,
-         * with a high probability of breaking the page.
-         * To avoid this bug, we don't inject content scripts into open tabs during initialization
-         * when stats collection is enabled.
+         * Injects content scripts into already open tabs.
+         *
+         * Skips injection when:
+         * - Statistics collection is enabled.
+         * - Content scripts have already been injected in the current session.
+         *
+         * This prevents conflicts from multiple `cssHitCounters` and avoids unnecessary injections.
          */
-        if (SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
-            // inject content scripts into opened tabs
+        if (
+            SettingsApi.getSetting(SettingOption.DisableCollectHits)
+            && !await ContentScriptInjector.isInjected()
+        ) {
             await ContentScriptInjector.init();
+            await ContentScriptInjector.setInjected();
         }
+
         /**
          * Initializes Filters data:
          * - Loads app i18n metadata and caches it in i18n-metadata storage
