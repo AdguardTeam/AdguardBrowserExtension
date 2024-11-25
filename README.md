@@ -16,7 +16,6 @@
     <a href="https://twitter.com/AdGuard">Twitter</a> |
     <a href="https://t.me/adguard_en">Telegram</a>
     <br /><br />
-    </a>
     <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
         <img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" />
     </a>
@@ -39,26 +38,26 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 > AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
-  - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
-  - [Firefox](#firefox)
-  - [Opera](#opera)
-  - [Microsoft Edge](#microsoft-edge)
+    - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
+    - [Firefox](#firefox)
+    - [Opera](#opera)
+    - [Microsoft Edge](#microsoft-edge)
 - [Contribution](#contribution)
-  - [Translating AdGuard](#translating-adguard)
-  - [Testing AdGuard](#testing-adguard)
-  - [Reporting issues](#reporting-issues)
-  - [Other options](#other-options)
+    - [Translating AdGuard](#translating-adguard)
+    - [Testing AdGuard](#testing-adguard)
+    - [Reporting issues](#reporting-issues)
+    - [Other options](#other-options)
 - [Development](#development)
-  - [Requirements](#requirements)
-  - [How to build](#how-to-build)
-    - [Tests and dev build](#tests-and-dev-build)
-    - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-    - [Building the beta and release versions](#building-the-beta-and-release-versions)
-    - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
-    - [Analyzing bundle size](#analyzing-bundle-size)
-    - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
-  - [Linter](#linter)
-  - [Update localizations](#update-localizations)
+    - [Requirements](#requirements)
+    - [How to build](#how-to-build)
+        - [Tests and dev build](#tests-and-dev-build)
+        - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
+        - [Building the beta and release versions](#building-the-beta-and-release-versions)
+        - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
+        - [Analyzing bundle size](#analyzing-bundle-size)
+        - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
+    - [Linter](#linter)
+    - [Update localizations](#update-localizations)
 - [Minimum supported browser versions](#minimum-supported-browser-versions)
 
 <a id="installation"></a>
