@@ -1,8 +1,8 @@
-! Checksum: J7t7gQcSl6WmpirpupRdKg
+! Checksum: PhIZ2SHqUWeckWhWBj997A
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.20
-! TimeUpdated: 2024-11-22T11:36:28+00:00
+! Version: 2.0.54.23
+! TimeUpdated: 2024-11-25T16:34:05+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -345,7 +345,7 @@ teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.
 @@/reklamlar/web/player$xmlhttprequest,domain=blutv.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190065
 ! https://github.com/uBlockOrigin/uAssets/issues/25421
-@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=gecmisi.com.tr
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=gecmisi.com.tr
 @@||pagead2.googlesyndication.com/pagead/managed/js/adsense/*/show_ads*fy2021.js$domain=gecmisi.com.tr
 @@||pagead2.googlesyndication.com/pagead/ads$domain=gecmisi.com.tr
 @@/favicon.ico|$domain=gecmisi.com.tr
@@ -1681,6 +1681,8 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+||googletagmanager.com^$domain=sporx.com
+da95848c82c933d2.click#%#//scriptlet('set-constant', 'adsConfig', 'emptyObj')
 cumhuriyet.com.tr##.row:has(> div[class^="col-"] > div[style] > div.CHT_VIDEO)
 ||googleusercontent.com/img/*/crt$domain=selcuksportshd1472.xyz
 teknosa.com###gowitImpressionEvent
