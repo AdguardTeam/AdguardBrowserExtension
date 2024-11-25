@@ -1,8 +1,8 @@
-! Checksum: pn3JcrO34yR8QqLYnImA4w
+! Checksum: 8bnVTlHdBhZhqIF1TqWdlg
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.44.69
-! TimeUpdated: 2024-11-21T09:34:25+00:00
+! Version: 2.0.44.74
+! TimeUpdated: 2024-11-25T10:33:56+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1189,6 +1189,8 @@ menshealth.de#%#function google_ad_request_done() {};
 !--------------------------------------!
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/193572
+android-hilfe.de#$#.js-replyNewMessageContainer > div[style^="min-height:"]:has(> div[id^="ah_incontent_"]) { min-height: 0 !important; padding: 4px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176885
 games.ch#$##wallpaper ~ nav#submenu { top: 0 !important; }
 ! jpgames.de - left-over at top
@@ -1524,6 +1526,7 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+kreuzwortraetsel.de##.mta
 wiwo.de##app-advertisement
 wiwo.de##app-content-advertisement
 infranken.de#?#.listing-item:has( > article > .teaser-inner .post-topline:contains(Anzeige))
@@ -8550,6 +8553,9 @@ kroatien-nachrichten.de###bdaia-widget-e3-9
 kroatien-nachrichten.de###bdaia-widget-html-4
 kroatien-nachrichten.de###bdaia-widget-html-7
 karrierebibel.de###below-header
+mydealz.de###belowCommentsFuseZonePortal
+mydealz.de###belowDescriptionFuseZonePortal
+mydealz.de###belowDetailsFuseZonePortal
 osthessen-news.de###bigklick
 inside-digital.de,modhoster.de,tikonline.de###bigsize
 magistrix.de###bigsize-top
@@ -8677,7 +8683,6 @@ nextpit.de###div-sidebar_right_extra
 adspecials.sevenonemedia.de###divBG
 ehc-lustenau.at###djslider-loader227
 ehc-lustenau.at###djslider-loader229
-chip.de###dlcharts-list + .mt-md
 allgaeuer-zeitung.de###dm_conative_container_artikel
 finanznachrichten.de,wallstreet-online.de###dmr1
 finanznachrichten.de,wallstreet-online.de###dmr2
@@ -8824,6 +8829,7 @@ gamereactor.de###mpu
 bild.de,bz-berlin.de,finanzen.net###mrec
 hoerzu.de###mrec-wrapper
 mydealz.de###mrec1FuseZonePortal
+mydealz.de###mrec2FuseZonePortal
 mein-schoener-garten.de###msg_leaderboard_1_mobile_wrapper
 nwzonline.de###msn-ads-top
 rezeptwelt.de###mso-dplusc-banner_1
@@ -9139,7 +9145,6 @@ momondo.de##.Common-Kn-Rp-FlightInline
 swoodoo.com##.Common-Kn-Rp-Inline
 mactechnews.de##.Content_1-minheight
 mactechnews.de##.Content_3-minheight
-chip.de##.FC.mt-md-so[role="complementary"]
 netmoms.de,praxistipps.focus.de##.FC__Ad
 swoodoo.com##.Flights-Results-FlightRightRail
 perspektive-mittelstand.de##.Laddbox
@@ -9232,6 +9237,7 @@ chefkoch.de##.ads__initialized
 meetingpoint-brandenburg.de##.ads_mobile
 eatsmarter.de,quoka.de##.adsense
 stereo.de##.adserver
+libble.de##.adserver-container1
 persoenlich.com##.adslot-fireplace
 spox.com##.adsurbg
 hierspielen.com##.adtitle
@@ -11042,6 +11048,7 @@ ratehase.de##div[style="height: 90px; margin: 30px 0 30px 0; text-align: center;
 ratehase.de##div[style="text-align:center; min-height: 260px; height: 260px; margin: 0 auto 0 auto;"]
 t-online.de##section[data-stage-layout^="custom_nativendo_"]
 boersennews.de###bnTickerContainer:has(#bnTickerAdNotice)
+chip.de###dlcharts-list + div:has(a[title*="Avast Free Antivirus"])
 baur.de##.MuiBox-root:has(a[href^="//b.fr3.eu.criteo.com/rm?"])
 berlinstadtservice.de##.a.block04:has(a[href^="https://www.awin1.com/"])
 saechsische.de##.article-box:has(> .article-box__text > .article-box__info > span.article-badge--ad)
@@ -11092,6 +11099,7 @@ metager.de##.result:has(a[href^="https://r.search.yahoo.com/"])
 finanzen.net##.row.d-flex.align-items-center:has(a[href^="http://g.finanzen.net/allvest-fonds-home-intelligent-invest"])
 zwischengas.com##.row.mt-0.mb-3.d-print-none:has(.fa-ad)
 wallstreet-online.de##.sbteaser:has(span.generalAdTag)
+rewe.de##.search-service-product:has(.sponsoredBadge)
 prad.de##.second-list > li:has(a[href^="https://amzn.to/"])
 prad.de##.second-list > li:has(a[href^="https://ipn.idealo.de/ts/"])
 prad.de##.second-list > li:has(a[href^="https://tracking.s24.com/"])
@@ -11137,7 +11145,6 @@ nydus.org##div.ui-tabs:has(#nydus_org_300x600_desktop_1)
 nydus.org##div:has(> #nydus_org_970x300_billboard_responsive)
 bauernzeitung.ch##div:has(> .advert)
 froheweihnachten.info,weihnachten.me,weihnachts-bilder.org,weihnachts-filme.com##div:has(> img[referrerpolicy="unsafe-url"])
-wayfair.de##div[data-hb-id="Grid.Item"]:has(a[href*="&sponsoredid="])
 mediamarkt.at,mediamarkt.de,saturn.de##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
 chip.de##div[data-vr-zone="hp-aquamarin-1"]:has(img[src^="https://im.chip.de/"])
 chip.de##div[data-vr-zone="hp-aquamarin-2"]:has(img[src^="https://im.chip.de/"])
@@ -11153,6 +11160,7 @@ baur.de##li:has(a[href^="https://b.fr3.eu.criteo.com/rm?"])
 golem.de##li[data-article-id]:has(.icon-addy)
 rewe.de#?#.rs-qa-product:contains(Gesponsert)
 mein-mmo.de##section.post:has([data-type="sponsored"])
+chip.de##section[class="mt-sm fb-col-7 fb-col-sm-12 Listing"] > div:has(a[title*="Avast Free Antivirus"])
 finanznachrichten.de##tr:has(span.sprite.h-w-c)
 wallstreet-online.de##tr:has(td > .float-end > span[title="Anzeige"])
 wallstreet-online.de##tr:has(td.right:has(img[alt="Anzeige"]))

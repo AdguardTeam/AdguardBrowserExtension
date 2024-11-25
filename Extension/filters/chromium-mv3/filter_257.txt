@@ -1,8 +1,8 @@
-! Checksum: 90GbeOE7AjZ8IikpafGShQ
+! Checksum: r42YvWhftmIZkPgWY/teqQ
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.4.65
-! TimeUpdated: 2024-11-22T13:02:22+00:00
+! Version: 2.0.4.70
+! TimeUpdated: 2024-11-25T09:02:09+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -1593,11 +1593,18 @@ thepiratebay3.com^$all
 !+ NOT_OPTIMIZED
 ||get-cracked.com^$all
 !+ NOT_OPTIMIZED
-||tinyurl.com/gp84uz2$document
-!+ NOT_OPTIMIZED
 ||mediafiire.com^$document
+! https://www.urbeef.de/windows-10-pro-aktivieren-ohne-key/ hacked site
 !+ NOT_OPTIMIZED
 ||onlinepromotionsusa.com^$document
+!+ NOT_OPTIMIZED
+||qsshc.xyz^$all
+!+ NOT_OPTIMIZED
+||ecoedgeinnovations.xyz^$all
+!+ NOT_OPTIMIZED
+||medlafire.eu^$all
+!+ NOT_OPTIMIZED
+##.buttonautocl
 ! https://github.com/uBlockOrigin/uAssets/issues/9933
 !+ NOT_OPTIMIZED
 ||greenadblocker.com^$document
@@ -5667,6 +5674,15 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||stage3-last.$document,to=~edu|~gov
 !+ NOT_OPTIMIZED
 ||stage2024.$document,to=~edu|~gov
+! https://github.com/uBlockOrigin/uAssets/issues/26174
+!+ NOT_OPTIMIZED
+||presale-friday.$document,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||sale-friday.$document,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||stage3sale.$document,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||stage3sale2024.$document,to=~edu|~gov
 ! xai scams
 !+ NOT_OPTIMIZED
 /^https:\/\/xai\w+(?:\.\w+)?\.[a-z]{3,}\/presale\b/$document,match-case,to=~edu|~gov
@@ -7707,8 +7723,6 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||freeusps.com^$all,to=~usps.com
 !+ NOT_OPTIMIZED
 ||netusps.com^$all,to=~usps.com
-!+ NOT_OPTIMIZED
-||uspssmartpackagelockers.com^$all,to=~usps.com
 ! https://infosec.exchange/@urldna/112224043535026915
 ! https://infosec.exchange/@urldna/112244333356436954
 !+ NOT_OPTIMIZED
@@ -7772,6 +7786,12 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||airpos.co.kr/.well-known/pki-validation/*/MitID/$document
 !+ NOT_OPTIMIZED
 ||autolocksmithpro.com/spt/$all
+! https://urldna.io/scan/674294bdb5cc598397d25392
+! https://www.virustotal.com/gui/url/2afd8fdb0de2cbf5c56ab9480426fd19cc0037d43d1453b19deb28ae60bd78e6
+!+ NOT_OPTIMIZED
+||spoti-safe-support*.codeanyapp.com^$all,to=~spotify.com
+!+ NOT_OPTIMIZED
+||spoti-*.codeanyapp.com^$document,to=~spotify.com
 ! https://www.virustotal.com/gui/url/5f5d2e941e3e44e01a4ec88d3732113195e2afdef511d3635fbd291495f82f4f
 !+ NOT_OPTIMIZED
 ||mybluehost.me/spot/Account/$document
@@ -9842,3 +9862,23 @@ uploadfox.net###ad-gs-05
 ! https://github.com/uBlockOrigin/uAssets/issues/26144
 !+ NOT_OPTIMIZED
 ||steamcomunutty.com^$all
+! https://github.com/uBlockOrigin/uAssets/issues/26164
+!+ NOT_OPTIMIZED
+||klingxai.com^$all
+! https://www.reddit.com/r/Scams/comments/1gxe9i7/httpswwwpopularresortadscom/
+!+ NOT_OPTIMIZED
+||popular-resort-ads.com^$document,to=~ads.google.com
+! https://www.reddit.com/r/Scams/comments/1gxejx5/usps_scam_sent_me_this_httpsuinfotracklmstopus_in/
+! https://urldna.io/scan/674295237e7857a321be968d
+! https://www.virustotal.com/gui/url/924ffc9758a7ef73e36f5538969f3a27000b5743f7f18761e4aa4ffe484ac6bd
+! https://www.virustotal.com/gui/url/a4729e0a66bb9fe48da61dda6db467c5cb5525017dcdbf9efb42c2e51168342a
+!+ NOT_OPTIMIZED
+/^https:\/\/[a-z]\.[a-z]{10,}\.top\/us(?:\/|$)/$document,to=top|~usps.com
+!+ NOT_OPTIMIZED
+||infotracklms.top^$all,to=~usps.com
+! https://www.reddit.com/r/Scams/comments/1gyii76/paynttacom_screenshot/
+!+ NOT_OPTIMIZED
+||pay-ntta.com^$all,to=~ntta.org
+! https://www.reddit.com/r/Scams/comments/1gz97j2/almost_got_me_with_this_one/
+!+ NOT_OPTIMIZED
+||disneyy-vodd.com^$all,to=~disneyplus.com

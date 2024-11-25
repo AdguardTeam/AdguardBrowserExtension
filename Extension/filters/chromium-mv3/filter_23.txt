@@ -1,8 +1,8 @@
-! Checksum: PcJU7q8ADOEGNpPsw9JwTg
+! Checksum: Vm43NSl+P3lBXLgZVF3F0A
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.5.65
-! TimeUpdated: 2024-11-20T10:34:43+00:00
+! Version: 2.0.5.67
+! TimeUpdated: 2024-11-25T14:34:39+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -419,6 +419,7 @@ http://*.ru/leftunit.pl?
 ! Kadam ads
 /kadam.base.min.js?
 !
+?sid=*&t=*&jsD=$xmlhttprequest,third-party
 .ru/vast/$xmlhttprequest
 /?bid=&sid=
 .bid/pjs/$script
@@ -1490,6 +1491,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||iwrcoct.info^
 ||hfnuqljjnt.com^
 ||broredir*s.site^
 ||hhbehcahhajfffciaaef.world^$third-party
@@ -4621,6 +4623,8 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+unian.net##.newsfeed__banner
+unian.net##.partner-news
 repack.me#$#main > div.container { padding-top: 0 !important; margin-top: 0 !important; }
 repack.me##.col-sm-12.col-lg-3 > div.panel:has(p[style="text-align:center;"] > a > img)
 repack.me##a[href="/download"]
