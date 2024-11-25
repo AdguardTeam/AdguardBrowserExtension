@@ -219,40 +219,46 @@ to `tsurlfilter`. Here's what you need to do to link your local dev build
 to the local dev build of `tsurlfilter`.
 
 1. Clone and build [tsurlfilter] libraries.
+
 1. You have two options to link the packages:
+
     - **Option 1**: Link the packages globally:
-      1. Go to the `tsurlfilter/packages/tsurlfilter` or `tsurlfilter/packages/tswebextension` directory.
-      1. Run the following command:
 
-         ```shell
-         pnpm link --global
-         ```
+        1. Go to the `tsurlfilter/packages/tsurlfilter` or `tsurlfilter/packages/tswebextension` directory.
 
-         This command will create a symlink to the package in the global `node_modules` directory.
-      1. Once you have the packages linked globally, you can link them to the browser extension.
-      Just run the following command in the root directory of the browser extension:
+        1. Run the following command:
 
-         ```shell
-         pnpm link @adguard/tsurlfilter
-         ```
+            ```shell
+            pnpm link --global
+            ```
+
+            This command will create a symlink to the package in the global `node_modules` directory.
+
+        1. Once you have the packages linked globally, you can link them to the browser extension.
+        Just run the following command in the root directory of the browser extension:
+
+            ```shell
+            pnpm link @adguard/tsurlfilter
+            ```
 
     - **Option 2**: Link the packages by path:
-      1. Just run the following command in the root directory of the browser extension:
 
-         ```shell
-         pnpm link <path-to-tsurlfilter/packages/tsurlfilter>
-         ```
+        1. Just run the following command in the root directory of the browser extension:
+
+            ```shell
+            pnpm link <path-to-tsurlfilter/packages/tsurlfilter>
+            ```
 
 1. If you want to unlink the packages, just run `pnpm unlink @adguard/tsurlfilter`
 or `pnpm unlink @adguard/tswebextension` in the root directory of the browser extension
 regardless of the linking option you chose.
 
-> [!WARNING]
-> pnpm will modify the lock file when linking packages. See <https://github.com/pnpm/pnpm/issues/4219>.
+    > [!WARNING]
+    > pnpm will modify the lock file when linking packages. See <https://github.com/pnpm/pnpm/issues/4219>.
 
-> [!NOTE]
-> If you want to list linked packages, run `pnpm list --depth 0` in the root directory of the browser extension
-> which will show you all dependencies. Linked packages have a version like `link:../path/to/package`.
+    > [!NOTE]
+    > If you want to list linked packages, run `pnpm list --depth 0` in the root directory of the browser extension
+    > which will show you all dependencies. Linked packages have a version like `link:../path/to/package`.
 
 1. Build the browser extension in the watch mode:
 
@@ -260,7 +266,7 @@ regardless of the linking option you chose.
     pnpm dev <browser> --watch --no-cache
     ```
 
-`--no-cache` flag is required to rebuild the extension on changes in the linked packages.
+    `--no-cache` flag is required to rebuild the extension on changes in the linked packages.
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
 
@@ -342,19 +348,19 @@ Then install extension via developer mode, make requests and see applied declara
 
 1. Switch to the `v5.0` branch:
 
-    ```bash
+    ```shell
     git checkout v5.0
     ```
 
 1. Run the following command in the terminal:
 
-    ```bash
+    ```shell
     pnpm dev chrome-mv3
     ```
 
 1. The built extension will be located in the directory:
 
-    ```bash
+    ```shell
     ./build/dev/chrome-mv3
     ```
 
@@ -380,13 +386,13 @@ That’s it!
 
 1. Convert the rules from txt to declarative form:
 
-    ```bash
+    ```shell
     pnpm convert-declarative
     ```
 
 1. Build the extension again:
 
-    ```bash
+    ```shell
     pnpm dev chrome-mv3
     ```
 
@@ -410,32 +416,32 @@ please, setup `eslint` in your editor to follow up with it `.eslintrc`
 To download and append localizations run:
 
 ```shell
-    pnpm locales download
+pnpm locales download
 ```
 
 To upload new phrases to crowdin you need the file with phrases
 `./Extension/_locales/en/messages.json`. Then run:
 
 ```shell
-    pnpm locales upload
+pnpm locales upload
 ```
 
 To remove old messages from locale messages run:
 
 ```shell
-  pnpm locales renew
+pnpm locales renew
 ```
 
 To validate translations run:
 
 ```shell
-  pnpm locales validate
+pnpm locales validate
 ```
 
 To show locales info run:
 
-```bash
-  pnpm locales info
+```shell
+pnpm locales info
 ```
 
 ## Permissions required
