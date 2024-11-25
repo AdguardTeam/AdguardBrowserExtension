@@ -32,6 +32,7 @@ const transformedModules = [
     '@adguard/tswebextension',
     '@adguard/filters-downloader',
     'lodash-es',
+    'nanoid',
 ];
 
 const config: Config = {
@@ -46,7 +47,14 @@ const config: Config = {
         './testSetup.ts',
     ],
     transformIgnorePatterns: [
-        `<rootDir>/node_modules/(?!(${transformedModules.map(escapeStringRegexp).join('|')}))`,
+        // We should ignore packages from:
+        // - node_modules
+        // - node_modules/.pnpm
+        // - node_modules/.pnpm/node_modules
+        // - node_modules/.pnpm/<pnpm-generated-folder>/node_modules
+
+        // eslint-disable-next-line max-len
+        `<rootDir>/node_modules/(?!(?:.pnpm(?:/(?:[^/]+)?/node_modules/)?)?(${transformedModules.map(escapeStringRegexp).join('|')}))`,
         '.*\\.json',
     ],
     // Use same aliases as in tsconfig.
