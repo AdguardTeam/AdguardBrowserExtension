@@ -123,8 +123,7 @@ are willing to contribute.
 ### <a name="dev-requirements"></a> Requirements
 
 - [node.js LTS](https://nodejs.org/en/download/)
-- NPM v8
-- [yarn v1.22](https://yarnpkg.com/en/docs/install/)
+- [pnpm v8](https://pnpm.io/installation)
 
 ### <a name="dev-build"></a> How to build
 
@@ -133,19 +132,19 @@ are willing to contribute.
 Install local dependencies by running:
 
 ```shell
-yarn install
+pnpm install
 ```
 
 Running tests:
 
 ```shell
-yarn test
+pnpm test
 ```
 
 Run the following command to build the dev version:
 
 ```shell
-yarn dev
+pnpm dev
 ```
 
 This will create a build directory with unpacked extensions for all browsers:
@@ -161,26 +160,26 @@ build/dev/opera
 To make a dev build for a specific browser, run:
 
 ```shell
-yarn dev <browser>
+pnpm dev <browser>
 ```
 
 Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `firefox`,
 `firefox-standalone`, like this:
 
 ```shell
-yarn dev chrome
+pnpm dev chrome
 ```
 
 To run dev build in watch mode, run:
 
 ```shell
-yarn dev --watch
+pnpm dev --watch
 ```
 
 Or for a specific browser:
 
 ```shell
-yarn dev <browser> --watch
+pnpm dev <browser> --watch
 ```
 
 #### <a name="dev-link"></a> Linking with the developer build of tsurlfilter/tswebextension
@@ -194,22 +193,45 @@ to `tsurlfilter`. Here's what you need to do to link your local dev build
 to the local dev build of `tsurlfilter`.
 
 1. Clone and build [tsurlfilter] libraries.
-1. Go to the `tsurlfilter/packages/tsurlfilter` and
-`tsurlfilter/packages/tswebextension` directories and run `yarn link`.
+1. You have two options to link the packages:
+    - **Option 1**: Link the packages globally:
+      1. Go to the `tsurlfilter/packages/tsurlfilter` or `tsurlfilter/packages/tswebextension` directory.
+      1. Run the following command:
 
-1. Now you can link these packages to the browser extension. To do that run
-`yarn link` commands in the root directory of the browser extension root
-directory:
+         ```shell
+         pnpm link --global
+         ```
 
-    ```shell
-    yarn link @adguard/tsurlfilter
-    yarn link @adguard/tswebextension
-    ```
+         This command will create a symlink to the package in the global `node_modules` directory.
+      1. Once you have the packages linked globally, you can link them to the browser extension.
+      Just run the following command in the root directory of the browser extension:
+
+         ```shell
+         pnpm link @adguard/tsurlfilter
+         ```
+
+    - **Option 2**: Link the packages by path:
+      1. Just run the following command in the root directory of the browser extension:
+
+         ```shell
+         pnpm link <path-to-tsurlfilter/packages/tsurlfilter>
+         ```
+
+1. If you want to unlink the packages, just run `pnpm unlink @adguard/tsurlfilter`
+or `pnpm unlink @adguard/tswebextension` in the root directory of the browser extension
+regardless of the linking option you chose.
+
+> [!WARNING]
+> pnpm will modify the lock file when linking packages. See <https://github.com/pnpm/pnpm/issues/4219>.
+
+> [!NOTE]
+> If you want to list linked packages, run `pnpm list --depth 0` in the root directory of the browser extension
+> which will show you all dependencies. Linked packages have a version like `link:../path/to/package`.
 
 1. Build the browser extension in the watch mode:
 
     ```shell
-    yarn dev <browser> --watch --no-cache
+    pnpm dev <browser> --watch --no-cache
     ```
 
 `--no-cache` flag is required to rebuild the extension on changes in the linked packages.
@@ -222,18 +244,18 @@ Before building the release version, you should manually download the necessary
 resources that will be included into the build: filters and public suffix list.
 
 ```shell
-yarn resources
+pnpm resources
 ```
 
 > [!TIP]
-> Run `yarn resources:mv3` to download resources for MV3 version.
+> Run `pnpm resources:mv3` to download resources for MV3 version.
 
 This command also checks if there are dangerous rules in the filters.
 See [dangerous rules](tools/resources/dangerous-rules/README.md)
 
 ```shell
-yarn beta
-yarn release
+pnpm beta
+pnpm release
 ```
 
 You will need to put certificate.pem file to the `./private` directory. This
@@ -241,12 +263,12 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 
 #### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
 
-1. Ensure you have installed Node.js and Yarn.
+1. Ensure you have installed Node.js and pnpm.
 
 1. To build the **BETA** version, run:
 
     ```shell
-    yarn beta firefox-standalone
+    pnpm beta firefox-standalone
     ```
 
 1. Navigate to the build directory:
@@ -262,19 +284,19 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 If you want to analyze the bundle size, run build with the `ANALYZE` environment:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn <build command>
+  pnpm cross-env ANALYZE=true pnpm <build command>
 ```
 
 So, for example, if you want to analyze the beta build for Chrome, run:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn beta chrome
+  pnpm cross-env ANALYZE=true pnpm beta chrome
 ```
 
 Or if you want to analyze all beta builds, run:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn beta
+  pnpm cross-env ANALYZE=true pnpm beta
 ```
 
 Analyzer will generate reports to the `./build/analyze-reports` directory in the following format:
@@ -301,7 +323,7 @@ Then install extension via developer mode, make requests and see applied declara
 1. Run the following command in the terminal:
 
     ```bash
-    yarn dev chrome-mv3
+    pnpm dev chrome-mv3
     ```
 
 1. The built extension will be located in the directory:
@@ -333,13 +355,13 @@ That’s it!
 1. Convert the rules from txt to declarative form:
 
     ```bash
-    yarn convert-declarative
+    pnpm convert-declarative
     ```
 
 1. Build the extension again:
 
     ```bash
-    yarn dev chrome-mv3
+    pnpm dev chrome-mv3
     ```
 
 1. Reload the extension in the browser:
@@ -358,32 +380,32 @@ please, setup `eslint` in your editor to follow up with it `.eslintrc`
 To download and append localizations run:
 
 ```shell
-    yarn locales download
+    pnpm locales download
 ```
 
 To upload new phrases to crowdin you need the file with phrases
 `./Extension/_locales/en/messages.json`. Then run:
 
 ```shell
-    yarn locales upload
+    pnpm locales upload
 ```
 
 To remove old messages from locale messages run:
 
 ```shell
-  yarn locales renew
+  pnpm locales renew
 ```
 
 To validate translations run:
 
 ```shell
-  yarn locales validate
+  pnpm locales validate
 ```
 
 To show locales info run:
 
 ```bash
-  yarn locales info
+  pnpm locales info
 ```
 
 ## <a name="permissions-required"></a> Permissions required

@@ -12,13 +12,13 @@
     "test": "MANIFEST_ENV=2 jest && MANIFEST_ENV=3 jest",
     "locales": "node -r @swc-node/register tools/locales.js",
     "resources": "node -r @swc-node/register tools/resources.ts",
-    "resources:mv3": "yarn add -D @adguard/dnr-rulesets && node -r @swc-node/register tools/resources-mv3.ts",
-    "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && yarn check-types",
-    "increment": "yarn version --patch --no-git-tag-version",
+    "resources:mv3": "pnpm add -D @adguard/dnr-rulesets && node -r @swc-node/register tools/resources-mv3.ts",
+    "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
+    "increment": "pnpm version patch --no-git-tag-version",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "check-types": "tsc --project tsconfig.with_types_mv2.json --noEmit && tsc --project tsconfig.with_types_mv3.json --noEmit",
-    "disclaimer": "yarn lint | node -r @swc-node/register tools/insert-disclaimer.js",
+    "disclaimer": "pnpm lint | node -r @swc-node/register tools/insert-disclaimer.js",
     "copy-external": "tswebextension war Extension/web-accessible-resources",
     "convert-declarative": "node -r @swc-node/register tools/converter.ts"
   },
@@ -31,12 +31,11 @@
   "devDependencies": {
     "@adguard/dnr-rulesets": "^1.2.20241020131948",
     "@adguard/re2-wasm": "^1.2.0",
-    "@sinonjs/fake-timers": "^10.0.2",
+    "@sinonjs/fake-timers": "^13.0.5",
     "@swc-node/register": "^1.9.1",
     "@swc/core": "^1.5.24",
     "@swc/jest": "^0.2.36",
     "@types/chrome": "^0.0.268",
-    "@types/copy-webpack-plugin": "^10.1.0",
     "@types/crypto-js": "^4.1.1",
     "@types/css.escape": "^1.5.0",
     "@types/fs-extra": "^11.0.4",
@@ -46,7 +45,9 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.2",
     "@types/react-modal": "^3.16.3",
+    "@types/sinon": "^17.0.3",
     "@types/sinon-chrome": "^2.2.11",
+    "@types/sinonjs__fake-timers": "^8.1.5",
     "@types/ua-parser-js": "^0.7.37",
     "@types/webextension-polyfill": "^0.12.0",
     "@types/zip-webpack-plugin": "^3.0.6",
@@ -104,6 +105,11 @@
     "whatwg-fetch": "^3.6.2",
     "zip-webpack-plugin": "^4.0.1"
   },
+  "pnpm": {
+    "overrides": {
+      "@adguard/tswebextension>@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/7cfbee202c9d0aefaebae5e8060016bcb5b7acd9/packages/tsurlfilter/tsurlfilter.tgz"
+    }
+  },
   "dependencies": {
     "@adguard/agtree": "^2.1.2",
     "@adguard/assistant": "^4.3.70",
@@ -143,6 +149,7 @@
     "react-virtualized-auto-sizer": "^1.0.5",
     "react-window": "^1.8.6",
     "stream-browserify": "^3.0.0",
+    "tldts": "^6.1.61",
     "ua-parser-js": "^1.0.36",
     "url": "^0.11.0",
     "util": "^0.12.5",
