@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Ability to add filters from Google Drive [#2908].
 - Unsafe dynamic rules limit for MV3.
+
+[#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 
 ### Changed
 

@@ -32,7 +32,7 @@ export class CustomFilterLoader {
     /**
      * Custom filter rules downloading limit in ms.
      */
-    private static DOWNLOAD_LIMIT_MS = 3 * 1000;
+    private static DOWNLOAD_LIMIT_MS = 10 * 1000;
 
     /**
      * Limits custom filter rules downloading with timeout.
