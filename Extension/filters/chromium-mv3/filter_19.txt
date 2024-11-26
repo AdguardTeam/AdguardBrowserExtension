@@ -1,8 +1,8 @@
-! Checksum: KTZ9lu5NCcCjYoNprJjOEg
+! Checksum: 2NG+fSHq9KsKlafZfutk3A
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.46.20
-! TimeUpdated: 2024-11-25T17:34:53+00:00
+! Version: 2.0.46.28
+! TimeUpdated: 2024-11-26T14:35:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -455,6 +455,7 @@ reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#@#.Sid
 !
 ! Add without $third-party, so apps are blocking them too
 !
+||luminousboulevard.com^
 ||verdantlabyrinth.com^
 ||mooncrustpizza.com^
 ||furnstudio.com^
@@ -4097,7 +4098,7 @@ polzadom.ru,mirinteresa.ru#%#//scriptlet("abort-current-inline-script", "documen
 !#safari_cb_affinity(general)
 @@||d2ujtyf7wfmq6y.cloudfront.net/ads/ads.html$domain=reisefrage.net|motorradfrage.net|autofrage.net|sportlerfrage.net|gesundheitsfrage.net|finanzfrage.net|computerfrage.net|gutefrage.net
 ! #@#.full_AD
-rlptoday.de,news.de,mainpost.de,aufderbuehne.de,trainingsworld.com,zaubertopf.de,totallygamergirl.com,maclife.de,kuechengoetter.de,survivethis.news,prad.de,infranken.de,nachrichten.at,moviejones.de,np-coburg.de,frankenpost.de,insuedthueringen.de,augsburger-allgemeine.de,4fansites.de,general-anzeiger-bonn.de,kurier.de,knuddels.de,fumsmagazin.de,reisefrage.net,motorradfrage.net,autofrage.net,sportlerfrage.net,gesundheitsfrage.net,finanzfrage.net,wer-weiss-was.de,spielfilm.de,jappy.com,serienjunkies.de,woxikon.de,wize.life,computerfrage.net,gutefrage.net,teckbote.de,ligainsider.de,woxikon.de,rp-online.de,frag-mutti.de,ksta.de,sol.de,noz.de,mopo.de,express.de,berliner-kurier.de,berliner-zeitung.de#@#.full_AD
+de.motor1.com,rlptoday.de,news.de,mainpost.de,aufderbuehne.de,trainingsworld.com,zaubertopf.de,totallygamergirl.com,maclife.de,kuechengoetter.de,survivethis.news,prad.de,infranken.de,nachrichten.at,moviejones.de,np-coburg.de,frankenpost.de,insuedthueringen.de,augsburger-allgemeine.de,4fansites.de,general-anzeiger-bonn.de,kurier.de,knuddels.de,fumsmagazin.de,reisefrage.net,motorradfrage.net,autofrage.net,sportlerfrage.net,gesundheitsfrage.net,finanzfrage.net,wer-weiss-was.de,spielfilm.de,jappy.com,serienjunkies.de,woxikon.de,wize.life,computerfrage.net,gutefrage.net,teckbote.de,ligainsider.de,woxikon.de,rp-online.de,frag-mutti.de,ksta.de,sol.de,noz.de,mopo.de,express.de,berliner-kurier.de,berliner-zeitung.de#@#.full_AD
 ! #@#.full_ad
 ! #@#.banner_ad
 !#safari_cb_affinity
@@ -4376,6 +4377,7 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+realrawnews.com##.elementor-popup-modal:has(a[href^="https://www.givesendgo.com/realrawnews"])
 fb2.top#%#//scriptlet('set-cookie', 'vk_ad_shown', '1')
 m.avito.ru#%#//scriptlet('trusted-click-element', 'svg[data-marker="onboarding-close-icon"]')
 txbiz.tv-tokyo.co.jp##.live-noti-items
@@ -11421,6 +11423,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! SECTION: Popups - Allowlist
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/193384
+@@||fregat.com/wp-content/plugins/popup-maker/assets/js/site.min.js
 ! ttk-com.ru - fix software order
 @@||ttk-com.ru/wp-content/plugins/popup-maker/assets/js/site.min.js
 ! https://github.com/uBlockOrigin/uAssets/issues/24899
@@ -12778,6 +12782,11 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 !
 ! SECTION: Subscriptions - Regular rules
 !
+pulzo.com##.whatsappBtn
+todojujuy.com##.banner__newsletter
+usermag.co##div[class*="_subscribeDialog"]
+usermag.co##div[class*="_background"]:empty[style*="opacity"]
+usermag.co##div[class*="subscri"]
 news-pravda.com##.page-article__subscribe
 stardock.com###stardock-email-subscribe
 news4jax.com##aside form[aria-label*="newsletter"]
@@ -12975,8 +12984,8 @@ politico.com##.content-heading:has(> div > h2 > a[href="https://www.politico.com
 nitroflare.com###superbox-wrapper
 nitroflare.com###superbox-overlay
 baseball-reference.com###content > .callout
-gamefile.news,thebignewsletter.com##div[class*="_subscribeDialog_"]
-gamefile.news,thebignewsletter.com##div[class*="_subscribeDialog_"] + div[class^="_background_"]
+domainanalysis.io,gamefile.news,thebignewsletter.com##div[class*="_subscribeDialog_"]
+domainanalysis.io,gamefile.news,thebignewsletter.com##div[class*="_subscribeDialog_"] + div[class^="_background_"]
 israelnationalnews.com##.article-join
 verstka.media##.vm-single-post-content > p:has(> a[href="https://t.me/svobodnieslova"])
 cyprus-mail.com##a[class^="_googleNewsContainer"]
@@ -13048,7 +13057,7 @@ deadlock.one##div[id="block-b5subtheme-social"]
 somu-lier.jp##.popup-mailmaga
 urm.lt##.sub-block
 advgazeta.ru##.subscribe-link
-blog.corkmac.app##.subscription-widget-wrap
+domainanalysis.io,blog.corkmac.app##.subscription-widget-wrap
 milatgazetesi.com##.content > div:has(> a[href^="https://www.whatsapp.com/"])
 milatgazetesi.com##.sticky > div:has(> div.row > div > a[href^="https://news.google.com/publications/"])
 accessnow.org##article > div.entry-content > div.wp-block-columns:has(> div.wp-block-column > div[class*="wp-container-core-columns-is-layout-"] > div.wp-block-column > div.wp-block-group > div.wp-block-cover strong > a[href^="https://ca.engagingnetworks.app/page/email/"])
@@ -13652,6 +13661,7 @@ asiaplustj.info###subscribe-popup
 lance.com.br##.flex-col > div.flex:has(> div[id^="captacao-e-mail"][role="main"])
 lance.com.br##div[class*="newsLetterContainer"]
 kayak.adult,kayak.ae,kayak.ai,kayak.app,kayak.at,kayak.best,kayak.biz,kayak.blog,kayak.ch,kayak.ci,kayak.cl,kayak.co,kayak.co.id,kayak.co.il,kayak.co.in,kayak.co.jp,kayak.co.ke,kayak.co.kr,kayak.co.nz,kayak.co.th,kayak.co.uk,kayak.co.za,kayak.com,kayak.com.ar,kayak.com.au,kayak.com.bd,kayak.com.br,kayak.com.cn,kayak.com.co,kayak.com.hk,kayak.com.mx,kayak.com.my,kayak.com.np,kayak.com.pe,kayak.com.ph,kayak.com.tr,kayak.com.tw,kayak.com.uy,kayak.cz,kayak.de,kayak.dk,kayak.es,kayak.fi,kayak.fr,kayak.ga,kayak.gg,kayak.gr,kayak.hk,kayak.ie,kayak.in,kayak.info,kayak.is,kayak.it,kayak.jp,kayak.kz,kayak.life,kayak.lt,kayak.me,kayak.mk,kayak.mn,kayak.mx,kayak.net,kayak.ng,kayak.nl,kayak.no,kayak.one,kayak.online,kayak.ph,kayak.pl,kayak.pt,kayak.pw,kayak.ro,kayak.ru,kayak.sa,kayak.se,kayak.sg,kayak.sh,kayak.si,kayak.store,kayak.su,kayak.today,kayak.top,kayak.us,kayak.uz##div[id] > section:has(> div.kml-layout > div > div.Q57A)
+kayak.adult,kayak.ae,kayak.ai,kayak.app,kayak.at,kayak.best,kayak.biz,kayak.blog,kayak.ch,kayak.ci,kayak.cl,kayak.co,kayak.co.id,kayak.co.il,kayak.co.in,kayak.co.jp,kayak.co.ke,kayak.co.kr,kayak.co.nz,kayak.co.th,kayak.co.uk,kayak.co.za,kayak.com,kayak.com.ar,kayak.com.au,kayak.com.bd,kayak.com.br,kayak.com.cn,kayak.com.co,kayak.com.hk,kayak.com.mx,kayak.com.my,kayak.com.np,kayak.com.pe,kayak.com.ph,kayak.com.tr,kayak.com.tw,kayak.com.uy,kayak.cz,kayak.de,kayak.dk,kayak.es,kayak.fi,kayak.fr,kayak.ga,kayak.gg,kayak.gr,kayak.hk,kayak.ie,kayak.in,kayak.info,kayak.is,kayak.it,kayak.jp,kayak.kz,kayak.life,kayak.lt,kayak.me,kayak.mk,kayak.mn,kayak.mx,kayak.net,kayak.ng,kayak.nl,kayak.no,kayak.one,kayak.online,kayak.ph,kayak.pl,kayak.pt,kayak.pw,kayak.ro,kayak.ru,kayak.sa,kayak.se,kayak.sg,kayak.sh,kayak.si,kayak.store,kayak.su,kayak.today,kayak.top,kayak.us,kayak.uz##.kml-layout > section:has(> div > div > div.Q57A)
 nationalgeographic.com##div[data-testid="prism-newsletter-form"]
 nationalgeographic.com##div[data-testid="prism-background-image"]
 nationalgeographic.com#%#//scriptlet('set-cookie', 'viewfreemium', 'true')
@@ -13867,7 +13877,7 @@ streetsblog.org,aftermath.site##div[class^="NewsletterSignup_wrapper"]
 iguides.ru##div[itemprop="articleBody"] blockquote:has(> a[href="https://t.me/iguides"])
 geekwire.com###subscribe-box-mobile
 packlink.it##.com-newsletter
-pragmaticengineer.com,thecoder.cafe,gamefile.news,thebignewsletter.com,afisha.ru,theolognion.com,materializedview.io,read.engineerscodex.com##.subscribe-footer
+domainanalysis.io,pragmaticengineer.com,thecoder.cafe,gamefile.news,thebignewsletter.com,afisha.ru,theolognion.com,materializedview.io,read.engineerscodex.com##.subscribe-footer
 technologyreview.com##div[class^="stayConnected"]
 technologyreview.com##footer > div#piano__body-footer
 maxnet.ua##form[name="sky-one-form"]
@@ -15411,8 +15421,6 @@ motortrend.com##aside[data-c="newsletter-tout"]
 aachener-zeitung.de###daily_nl
 agerpres.ro##.include_newsletter
 musicbusinessworldwide.com##.mbw-stickybar
-brestcity.com##.BlockR2 td > a[href="https://t.me/brestcity"]
-brestcity.com##.BlockR2 td > a[href="https://www.instagram.com/brestcity_news/"]
 nextshark.com##.bg-newsletter
 nextshark.com#?##__next > div.bg-primary:has(> div.mx-auto > div.text-center > span:contains(Latest Newsletter))
 pauta.cl###suscripcion
@@ -16468,8 +16476,6 @@ rawstory.com###piano-infobar-container
 rtvi.com##.tlg-block
 sabah.com.tr,anews.com.tr,fotomac.com.tr,atv.com.tr,ahaber.com.tr##.detail-google-news
 bioguia.com##.article-form-newsletter
-brestcity.com#%#AG_onLoad(function(){var el = document.querySelector('.pageviews-placeholder + br');if(el&&el.nextSibling&&el.nextSibling.textContent.includes('Подпишитесь на')){el.nextSibling.remove();}});
-brestcity.com#?#.entry > p[style="text-align: right;"] > strong:contains(Присоединяйтесь!)
 coingape.com##.ads-up
 rskrf.ru##.subscr_form
 rskrf.ru##.subscribeBlockFixed
@@ -19105,7 +19111,6 @@ kempinski.com##[data-target="#newsletter-modal"]
 kempinski.com#?#h4.footer__title:contains(BÜLTENİMİZ İÇİN KAYDOLUN)
 bankchart.com.ua,prostopravo.com.ua,prostobank.ua##.subscription-ad
 glamour.ru##.sign-up-block
-pulzo.com,hellomagazine.com##.formNewsletter
 birdinflight.com##.newsletter-subsribe
 smashingmagazine.com##.c-garfield-aside--newsletter
 smashingmagazine.com###article__content div[data-component="FeaturePanel"][data-audience="non-subscriber"]
@@ -20080,6 +20085,8 @@ flightradar24.com##[data-id="a5b8151"][data-element_type="widget"]
 flightradar24.com##[data-id="35ae40a"][data-element_type="widget"]
 !
 !
+!+ NOT_OPTIMIZED
+pulzo.com,hellomagazine.com##.formNewsletter
 !+ NOT_OPTIMIZED
 medium.com#?##root div[style^="top:"][style*="50vh"]:has(span > button:contains(Sign up for free))
 !+ NOT_OPTIMIZED
