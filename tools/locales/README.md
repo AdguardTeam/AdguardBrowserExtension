@@ -2,7 +2,7 @@
 
 ### Synopsis
 ```
-yarn locales [download | upload | renew | validate | info]
+pnpm locales [download | upload | renew | validate | info]
 ```
 
 - `download` — download, save and validate translations; defaults to download **all** locales and run `validate --min` after that; locales can be specified:
@@ -26,27 +26,27 @@ yarn locales [download | upload | renew | validate | info]
 
 ```bash
 # to download and save all locales
-yarn locales download
+pnpm locales download
 # or just 'ja' and 'ko' locales
-yarn locales download --locales ja ko
+pnpm locales download --locales ja ko
 
 # to upload base strings
-yarn locales upload
+pnpm locales upload
 
 # to renew base locale
-yarn locales renew
+pnpm locales renew
 
 # validate all locales
-yarn locales validate
+pnpm locales validate
 # or check critical errors for all locales and translations readiness for ours
-yarn locales validate --min
+pnpm locales validate --min
 # or just 'es', 'ja' and 'ko' locales
-yarn locales validate -l es ja ko
+pnpm locales validate -l es ja ko
 # critical errors validation
-yarn locales validate -X
+pnpm locales validate -X
 
 # show info about translations readiness and unused strings
-yarn locales info
+pnpm locales info
 ```
 
 After download you'll find the locales in the `src/_locales/` folder.

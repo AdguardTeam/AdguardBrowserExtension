@@ -153,7 +153,7 @@ export class App {
 
         await rulesLimitsService.init();
 
-        // TODO mv3 uses other way to inject scripts. AG-33507
+        // TODO inject content scripts to tabs open before installation AG-33507
         // /**
         //  * When the extension is enabled, disabled and re-enabled during the user session,
         //  * content scripts will be loaded multiple times in each open tab.
