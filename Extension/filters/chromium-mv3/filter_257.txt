@@ -1,8 +1,8 @@
-! Checksum: rHaVNf2ezW7F+mEX9bpp9w
+! Checksum: r42YvWhftmIZkPgWY/teqQ
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.4.49
-! TimeUpdated: 2024-11-15T13:02:30+00:00
+! Version: 2.0.4.70
+! TimeUpdated: 2024-11-25T09:02:09+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -1269,6 +1269,10 @@ thepiratebay3.com^$all
 ||ntfck.com^$all
 !+ NOT_OPTIMIZED
 ||malenirt.site^$all
+!+ NOT_OPTIMIZED
+||repostponing.cfd^$all
+!+ NOT_OPTIMIZED
+/post/FileRotator_ID*/download.php?subid=$xmlhttprequest
 ! https://github.com/uBlockOrigin/uAssets/issues/24602
 ! https://www.virustotal.com/gui/url/ce2b833adda2f862d77398203bbe33ea331097ba2a803d1a763492d2ac0d5a60
 ! https://safeweb.norton.com/report/show?url=discordvip.createsocialcard.top
@@ -1316,10 +1320,10 @@ thepiratebay3.com^$all
 ! fake dating/prize/video sites
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183117
 !+ NOT_OPTIMIZED
-/^https?:\/\/[0-9a-z]*\.?[-0-9a-z]{4,}\.[a-z]{2,11}\.?[a-z]{0,7}\/(?:[0-9a-z]{6,10}\/)?\/?(?:article\d{4}\.doc)?\?(?:cid=[0-9a-z]+&)?u=[0-9a-z]{7}(?:&t=\d+)?&o=[0-9a-z]{7}/$document,subdocument,match-case
+/^https?:\/\/[0-9a-z]*\.?[-0-9a-z]{3,}\.[a-z]{2,11}\.?[a-z]{0,7}\/(?:[0-9a-z]{6,10}\/)?\/?(?:article\d{4}\.doc)?\?(?:cid=[0-9a-z]+&)?u=[0-9a-z]{7}(?:&t=\d+)?&o=[0-9a-z]{7}/$document,subdocument,match-case
 ! https://github.com/uBlockOrigin/uAssets/commit/df17084b4815e87d420e8adf19bf4959e828e6e5#commitcomment-66510549
 !+ NOT_OPTIMIZED
-/^https?:\/\/[0-9a-z]*\.?[-0-9a-z]{4,}\.[a-z]{2,11}\.?[a-z]{0,7}\/(?:[0-9a-z]{6,10}\/)?\/?(?:article\d{4}\.doc)?\?(?:cid=[0-9a-z]+&)?o=[0-9a-z]{7}(?:&t=\d+)?&u=[0-9a-z]{7}/$document,subdocument,match-case
+/^https?:\/\/[0-9a-z]*\.?[-0-9a-z]{3,}\.[a-z]{2,11}\.?[a-z]{0,7}\/(?:[0-9a-z]{6,10}\/)?\/?(?:article\d{4}\.doc)?\?(?:cid=[0-9a-z]+&)?o=[0-9a-z]{7}(?:&t=\d+)?&u=[0-9a-z]{7}/$document,subdocument,match-case
 !+ NOT_OPTIMIZED
 .live/web/?sid=t*~$document
 ! https://urlscan.io/result/fb21aa1b-9c79-4ac4-8e82-386403964206/
@@ -1543,6 +1547,9 @@ thepiratebay3.com^$all
 ||best4fuck.com^$all
 !+ NOT_OPTIMIZED
 ||bamboairways.com.vn^$all,to=~bambooairways.com
+! https://github.com/uBlockOrigin/uAssets/issues/26047
+!+ NOT_OPTIMIZED
+||purplexity.ai^$document,to=~perplexity.ai
 ! https://www.huorong.cn/info/1531309921141.html
 !+ NOT_OPTIMIZED
 ||kuaizip.com^$all
@@ -1586,11 +1593,18 @@ thepiratebay3.com^$all
 !+ NOT_OPTIMIZED
 ||get-cracked.com^$all
 !+ NOT_OPTIMIZED
-||tinyurl.com/gp84uz2$document
-!+ NOT_OPTIMIZED
 ||mediafiire.com^$document
+! https://www.urbeef.de/windows-10-pro-aktivieren-ohne-key/ hacked site
 !+ NOT_OPTIMIZED
 ||onlinepromotionsusa.com^$document
+!+ NOT_OPTIMIZED
+||qsshc.xyz^$all
+!+ NOT_OPTIMIZED
+||ecoedgeinnovations.xyz^$all
+!+ NOT_OPTIMIZED
+||medlafire.eu^$all
+!+ NOT_OPTIMIZED
+##.buttonautocl
 ! https://github.com/uBlockOrigin/uAssets/issues/9933
 !+ NOT_OPTIMIZED
 ||greenadblocker.com^$document
@@ -1865,7 +1879,7 @@ origincrack.com##center > button
 !+ NOT_OPTIMIZED
 ||fulptube.org^$all
 !+ NOT_OPTIMIZED
-*/bouncy.php?*&inPopUp=$all
+/bouncy.php?*&inPopUp=$all
 ! https://github.com/AdguardTeam/AdguardFilters/issues/115960
 ! https://www.virustotal.com/gui/url/6a4daf9dfa58864522ae7972ab042cf4bab17a48321b96d1952bd384210adcd2
 ! https://transparencyreport.google.com/safe-browsing/search?url=https:%2F%2Fonpharmvermen.com%2F
@@ -1902,9 +1916,6 @@ origincrack.com##center > button
 ! https://github.com/uBlockOrigin/uAssets/pull/14985
 !+ NOT_OPTIMIZED
 ||skymods.net^$all
-! https://github.com/uBlockOrigin/uAssets/pull/15061
-!+ NOT_OPTIMIZED
-||hypixelstorexyz.pages.dev^$all
 ! torrdroidforpc. com
 !+ NOT_OPTIMIZED
 ||slugmefilehos.xyz^$all
@@ -2018,9 +2029,6 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||ezadblocker.com^$all
 !+ NOT_OPTIMIZED
 ||watchadsfree.com^$all
-! https://github.com/uBlockOrigin/uAssets/issues/16156
-!+ NOT_OPTIMIZED
-||discordoauthverification.onrender.com^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/16209
 !+ NOT_OPTIMIZED
 ||barlear.ru^$all
@@ -4982,6 +4990,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||orga29.com^$document
 !+ NOT_OPTIMIZED
 ||the-latest-version.com^$document
+!+ NOT_OPTIMIZED
+||book234h.fun^$document
+!+ NOT_OPTIMIZED
+||litlink.site^$document
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142492
 !+ NOT_OPTIMIZED
 ||apkmirror.co^$all
@@ -5607,17 +5619,17 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||mevtime.com^$all
 !+ NOT_OPTIMIZED
-||musk-project.com^$document
+||musk-project.com^$all
 !+ NOT_OPTIMIZED
-||muskusa.com^$document
+||muskusa.com^$all
 !+ NOT_OPTIMIZED
 ||cealits.com^$all
 !+ NOT_OPTIMIZED
 ||pepzk-community.xyz^$all
 !+ NOT_OPTIMIZED
-||earth-ling.org^$document
+||earth-ling.org^$all
 !+ NOT_OPTIMIZED
-||muskevent.info^$document
+||muskevent.info^$all
 !+ NOT_OPTIMIZED
 ||teslamaked.com^$all
 !+ NOT_OPTIMIZED
@@ -5628,10 +5640,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/95c95990e40d0859a1766b2da6047f64d2faecee65d74669243d443c7c185ebf
 ! https://www.urlvoid.com/scan/teslafond.io/
 !+ NOT_OPTIMIZED
-||teslafond.io^$document
+||teslafond.io^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/24590
 !+ NOT_OPTIMIZED
-||teslacore.io^$document
+||teslacore.io^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/24734
 !+ NOT_OPTIMIZED
 ||btc24.info^$all
@@ -5639,14 +5651,14 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||youtube.com/@tesla24official^$document
 ! https://www.reddit.com/r/Scams/comments/1fjggp3/deepfake_of_elon_musk_promoting_a_scam_qr_code/
 !+ NOT_OPTIMIZED
-||usmusk.net^$document
+||usmusk.net^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/25492
 !+ NOT_OPTIMIZED
-||foundations-x2024.*^$document,to=foundations-x2024.*
+||foundations-x2024.*^$document,to=foundations-x2024.com.bd|foundations-x2024.com.np
 !+ NOT_OPTIMIZED
-||foundations-x2024.cloud^$document
+||foundations-x2024.cloud^$all
 !+ NOT_OPTIMIZED
-||foundations-x2024.sbs^$document
+||foundations-x2024.sbs^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/25832
 !+ NOT_OPTIMIZED
 ||trump-drop.org^$all
@@ -5662,6 +5674,36 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||stage3-last.$document,to=~edu|~gov
 !+ NOT_OPTIMIZED
 ||stage2024.$document,to=~edu|~gov
+! https://github.com/uBlockOrigin/uAssets/issues/26174
+!+ NOT_OPTIMIZED
+||presale-friday.$document,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||sale-friday.$document,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||stage3sale.$document,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||stage3sale2024.$document,to=~edu|~gov
+! xai scams
+!+ NOT_OPTIMIZED
+/^https:\/\/xai\w+(?:\.\w+)?\.[a-z]{3,}\/presale\b/$document,match-case,to=~edu|~gov
+!+ NOT_OPTIMIZED
+||xaitoken.live^$all
+!+ NOT_OPTIMIZED
+||investxai.pro^$all
+!+ NOT_OPTIMIZED
+||xai85s.com^$all
+!+ NOT_OPTIMIZED
+||xaitokensale.net^$all
+!+ NOT_OPTIMIZED
+||xaitoken.$all,to=xaitoken.app|xaitoken.page.link|xaitoken.net
+! https://github.com/uBlockOrigin/uAssets/issues/25726#issuecomment-2483460915
+! https://www.reddit.com/r/CryptoScams/comments/1gv401z/xai_scam/
+!+ NOT_OPTIMIZED
+||xaiofficial.com^$all
+!+ NOT_OPTIMIZED
+||xaipresales.org^$all
+!+ NOT_OPTIMIZED
+||xai19k.com^$all
 !+ NOT_OPTIMIZED
 ||arbitragebot.team^$all
 !+ NOT_OPTIMIZED
@@ -5923,6 +5965,12 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||rampostsouthafrican-*.codeanyapp.com^$all,to=~ram.co.za
 !+ NOT_OPTIMIZED
 ||codeanyapp.com/southafrica/*/PAYU^$document,to=~ram.co.za
+! https://urldna.io/scan/6734c9b617aed83575751074
+! https://www.virustotal.com/gui/url/ac22c2340836b8dd3d611948cb1f0f370d55f9903faac7bfc5eea1ff71901a80
+!+ NOT_OPTIMIZED
+||ntriela-solar65.line.pm^$document,to=~ameli.fr
+!+ NOT_OPTIMIZED
+||line.pm/*/SNF-GKFF.FR/$document,to=~ameli.fr
 ! wetransfer
 ! https://www.virustotal.com/gui/url/2dc456580d55d86c4b131ecc5120af4d79439ac3f9be066ce2c2440e4af96581
 !+ NOT_OPTIMIZED
@@ -5948,11 +5996,6 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||auth-llbc.elementfx.com^$all,to=~leboncoin.fr
 !+ NOT_OPTIMIZED
 ||epayln.site.tb-hosting.com^$all,to=~leboncoin.fr
-! webmail.shaw.ca
-!+ NOT_OPTIMIZED
-||shawupdatingservic.wixstudio.io^$all,to=~webmail.shaw.ca
-!+ NOT_OPTIMIZED
-||shawmailboxservice4.wixsite.com^$all,to=~webmail.shaw.ca
 ! linkedin
 !+ NOT_OPTIMIZED
 ||faran.ac.ir/wp-content/$all,to=~linkedin.com
@@ -5981,11 +6024,13 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||webmailrupdatekorea.firebaseapp.com^$all
 !+ NOT_OPTIMIZED
+||benpsignin-portal.webflow.io^$all
+!+ NOT_OPTIMIZED
 ||mail-cytanet.pages.dev^$all,to=~mail.cytanet.com.cy
 !+ NOT_OPTIMIZED
-||jhwbcvkjkshaw.weebly.com^$all,to=~webmail.shaw.ca
+||serviceteasfreem.weebly.com^$all
 !+ NOT_OPTIMIZED
-||hootbio.com/bellmail$all,to=~webmail.bell.net
+||jhwbcvkjkshaw.weebly.com^$all,to=~webmail.shaw.ca
 ! https://www.virustotal.com/gui/url/dd060d260d7781f9610f40bdff4991144ed5b52be3a14dfcda6783987efc4b79
 !+ NOT_OPTIMIZED
 ||phoenixvilla.rw/wp-about/*.html^$document
@@ -6003,6 +6048,20 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||resisted-amusing-driver.glitch.me^$all
 !+ NOT_OPTIMIZED
 ||glitch.me/public/index_CNC.html^$document
+! https://urldna.io/scan/6737523ade915d9ef3ea0976
+! https://www.virustotal.com/gui/url/a2cfa303c4597801742de9c1f607e8f56822178e4c2d72c48a9c6c0445c93ecd
+!+ NOT_OPTIMIZED
+||emaildomains.ezzomatic.online^$all
+! webmail.bell.net
+!+ NOT_OPTIMIZED
+||bellsecuredloginfom-net.vercel.app^$all,to=~webmail.bell.net
+!+ NOT_OPTIMIZED
+||hootbio.com/bellmail$all,to=~webmail.bell.net
+! webmail.shaw.ca
+!+ NOT_OPTIMIZED
+||shawupdatingservic.wixstudio.io^$all,to=~webmail.shaw.ca
+!+ NOT_OPTIMIZED
+||shawmailboxservice4.wixsite.com^$all,to=~webmail.shaw.ca
 ! ups.com
 ! https://www.virustotal.com/gui/url/ef9755fcb211a668986b9afc5187577c92fb8c8bf62057bf9d0b59333827a35a
 !+ NOT_OPTIMIZED
@@ -6103,6 +6162,8 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||login-ourtime.members-datings.workers.dev^$all,to=~ourtime.com
 !+ NOT_OPTIMIZED
 ||ourtime-assist.members-authenticated.workers.dev^$all,to=~ourtime.com
+!+ NOT_OPTIMIZED
+||chat.voice-datings.workers.dev^$all,to=~ourtime.com
 ! https://www.virustotal.com/gui/url/8caad65d38a5f6df0e322dad6e4576fe0f42d2a9c4a4672d5959f5c53cb59632
 !+ NOT_OPTIMIZED
 ||profile-ourtime.*.workers.dev^$document,to=~ourtime.com
@@ -6343,6 +6404,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/798cb44c90d1ecc992f9ec37fafa451cddbdbd1a030284aff63c923a9394809e
 !+ NOT_OPTIMIZED
 ||app.vision6.com/em/message/email/$all,to=~orange.fr
+! https://urldna.io/scan/67380cf0de915d9ef3ea17d5
+! https://www.virustotal.com/gui/url/c98c0abbc182c6dc7549c9c7d423a2654dba1cee27b9a4cadfbb785415abcd38
+!+ NOT_OPTIMIZED
+||svropeauthentificatid.run.place^$all,to=~orange.fr
 ! tiktok shop
 !+ NOT_OPTIMIZED
 ||tiktikshopvn.com^$document
@@ -6370,6 +6435,8 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||yenrtonm3367.top^$all
 !+ NOT_OPTIMIZED
+||signup-amazon.com^$all
+!+ NOT_OPTIMIZED
 ||ecommrce-web-amazon.netlify.app^$all
 !+ NOT_OPTIMIZED
 ||etisalat-amazonprime.com^$all,to=~etisalat.ae
@@ -6395,6 +6462,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/d8c96426d3a4323f10d8f051e3af8f1a7d60eecb91ab9b1982f45b611252f3b1
 !+ NOT_OPTIMIZED
 ||sites.google.com/mwhite55.appquestss.com/$document
+! https://urldna.io/scan/67380f4d415af7ad29e182e7
+! https://www.virustotal.com/gui/url/cb24d223760a74a13a95eb93802ac2dba5377f99a40fdb4110ecff3737473f5d
+!+ NOT_OPTIMIZED
+||orders-processed.com^$all
 ! ebay
 !+ NOT_OPTIMIZED
 ||c.vn-ebayn.vip^$all
@@ -6448,6 +6519,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/1649712cd78f28d5660fbf0d0de7d475f8cd51105caac04b3b521ecd850234a1
 !+ NOT_OPTIMIZED
 ||vetsinthecity.me/*/Alibaba/$document,to=~alibaba.com
+! https://urldna.io/scan/6734c98f32353732f75caebe
+! https://www.virustotal.com/gui/url/8f2575c66072c227f8e1a60a422e5ff861903bb97f28fb5e3229fa3ec204ae7a
+!+ NOT_OPTIMIZED
+||sanpelmaquinas.com.br^$all,to=~alibaba.com
 ! aliexpress
 ! https://www.virustotal.com/gui/url/8348d50aefd96888490c11d2a155b0bae9299a51163b55463b2fd2bf709ef2f2
 !+ NOT_OPTIMIZED
@@ -6572,15 +6647,28 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/df772a3d132acedfd317846a7d291c5040650a99f43db6a706b7cc5155b00d50
 !+ NOT_OPTIMIZED
 ||insolvency-development.co.uk^$all,to=~gov.uk
-! gouv.fr
-!+ NOT_OPTIMIZED
-||antai-gouv-fr.troliga.sk^$all,to=~amendes.gouv.fr
+! impots.gouv.fr
 ! https://infosec.exchange/@urldna/112442514480319184
 ! https://www.virustotal.com/gui/url/43dc3482b86f463550c0a163836c4c622e4ec801184ba76f49aca03cf7fb5128
 !+ NOT_OPTIMIZED
 ||mybluehost.me/*/impo/$document,to=~impots.gouv.fr
 !+ NOT_OPTIMIZED
 ||isz.bqv.mybluehost.me^$document,to=~impots.gouv.fr
+! https://urldna.io/scan/6725d792a8bda5a0f5926ac5
+! https://www.virustotal.com/gui/url/2ed7817356b844c59b8767582f7b7e484b74f17654e4f3e18ed158db60060262
+!+ NOT_OPTIMIZED
+||polufredsoa.2mydns.net^$all,to=~impots.gouv.fr
+!+ NOT_OPTIMIZED
+||2mydns.net/fr-impot-gouv^$document,to=~impots.gouv.fr
+! https://urldna.io/scan/6734c7a19ee995c0b18b4fdc
+! https://www.virustotal.com/gui/url/6114364912105935ec4264d07368ae3142c6b44dd9ebd68ced4545de317ad44f
+!+ NOT_OPTIMIZED
+/\.temporary\.site\/service\/[a-f0-9]{32}\//$document,to=temporary.site|~impots.gouv.fr
+!+ NOT_OPTIMIZED
+||kkg.yaf.temporary.site^$document,to=~impots.gouv.fr
+! amendes.gouv.fr
+!+ NOT_OPTIMIZED
+||antai-gouv-fr.troliga.sk^$all,to=~amendes.gouv.fr
 ! https://urldna.io/scan/66a17973cf69aaa3408529d8
 ! https://www.virustotal.com/gui/url/59f573968e59b6b2f4f09ca26a81608992b83aaef9e7200b29529e10d7641d24
 !+ NOT_OPTIMIZED
@@ -6665,12 +6753,6 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||zynekcctv.com/amandes/$document,to=~amendes.gouv.fr
 !+ NOT_OPTIMIZED
 /amandes/infospage.php^$document,to=~amendes.gouv.fr
-! https://urldna.io/scan/6725d792a8bda5a0f5926ac5
-! https://www.virustotal.com/gui/url/2ed7817356b844c59b8767582f7b7e484b74f17654e4f3e18ed158db60060262
-!+ NOT_OPTIMIZED
-||polufredsoa.2mydns.net^$all,to=~amendes.gouv.fr
-!+ NOT_OPTIMIZED
-||2mydns.net/fr-impot-gouv^$document,to=~amendes.gouv.fr
 ! bank
 !+ NOT_OPTIMIZED
 ||chamsocthekhachhang-$document,to=~edu|~gov|~edu.vn|~gov.vn
@@ -6714,6 +6796,8 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||gaoyinjiao.com^$all,to=~jabank.jp
 !+ NOT_OPTIMIZED
 ||activatecustomerduesupportdillegence.com^$all,to=~asb.co.nz
+!+ NOT_OPTIMIZED
+||nyfinance.ru^$all,to=~nykredit.com
 !+ NOT_OPTIMIZED
 /^https:\/\/tpbank\.[-a-z0-9]{5,}\.[a-z]{3}(?:\.vn)?\//$document,to=~edu|~gov|~gov.vn|~tpb.vn
 ! https://infosec.exchange/@urldna/112496070441371886
@@ -6857,6 +6941,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||recompensaszurichsantander.com.mx^$all
 !+ NOT_OPTIMIZED
 ||santander.cf.sandbox.motrada.ch^$all,to=~santanderbank.com|~santander.co.uk
+! https://urldna.io/scan/67375864415af7ad29e177f6
+! https://www.virustotal.com/gui/url/4b0287034559c9ad4cb28be0e557d2e14b745e8f7e59bee9b57a45f46230c9c6
+!+ NOT_OPTIMIZED
+||santanderpod.*.co.uk^$all
 ! DHL
 !+ NOT_OPTIMIZED
 ||dhl.*.potabox.com^$document,to=~dhl.com
@@ -6950,6 +7038,8 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||igleak.info^$all
 !+ NOT_OPTIMIZED
 ||instagram.irancell-10g-free.rf.gd^$all
+!+ NOT_OPTIMIZED
+||facebook-login.mobiletracker.pk^$all
 ! facebook
 !+ NOT_OPTIMIZED
 ||slimhealth.us^$all
@@ -7178,6 +7268,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/cb040151df409b4bb2bf62d47bd91b293cc58bda80da9f7a53c6bc4cafa95457
 !+ NOT_OPTIMIZED
 ||vercel.app/mixcc.html/$document,to=~facebook.com
+! https://urldna.io/scan/673aaa74607ec87001473ba4
+! https://www.virustotal.com/gui/url/878182e6093b5987cf46060002e7d7dcda53024fa99885b5d573970f9d7ef535
+!+ NOT_OPTIMIZED
+||live-metasupport.com^$all,to=~facebook.com
 ! shopping sites
 !+ NOT_OPTIMIZED
 /api/user/do_login|$xmlhttprequest,~third-party,to=com|info,method=post,header=access-control-allow-headers:/authorization\,content-type\,if-match\,if-modified-since\,if-none-match\,if-unmodified-since\,x-requested-with/i
@@ -7349,6 +7443,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||servicewebformoes.weebly.com^$all
 !+ NOT_OPTIMIZED
+||microsoft-verify.glitch.me^$all
+!+ NOT_OPTIMIZED
+||validacionesoutlookmailwebadmin.glitch.me^$all
+!+ NOT_OPTIMIZED
 ||whfdny.org^$all
 !+ NOT_OPTIMIZED
 ||infos4.yolasite.com^$all
@@ -7378,8 +7476,6 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||serverdata.ch^$all
 !+ NOT_OPTIMIZED
 ||nilousplaypen.com^$all
-!+ NOT_OPTIMIZED
-||microsoft-verify.glitch.me^$all
 !+ NOT_OPTIMIZED
 ||cashum.unam.mx/wp-content/backups-dup-pro/imports/index.htm$all
 !+ NOT_OPTIMIZED
@@ -7555,6 +7651,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/32d23c85dd5e4c10a1a7813f935117e236dfe8f914ad882fb302e83eca32f47a
 !+ NOT_OPTIMIZED
 ||facture-pdf-secure-*.vercel.app^$all
+! https://urldna.io/scan/67380ef58a64bab0b45d0b6b
+! https://www.virustotal.com/gui/url/13c5d820504770599d96aa85000d49ed4af09e2191dcff38e8b63e4ec5eaead5
+!+ NOT_OPTIMIZED
+||hkwordpress.com/public/export/SM-ORDER/excelz/$document
 ! telegram
 !+ NOT_OPTIMIZED
 ||telegramhcn.com^$all
@@ -7623,8 +7723,6 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||freeusps.com^$all,to=~usps.com
 !+ NOT_OPTIMIZED
 ||netusps.com^$all,to=~usps.com
-!+ NOT_OPTIMIZED
-||uspssmartpackagelockers.com^$all,to=~usps.com
 ! https://infosec.exchange/@urldna/112224043535026915
 ! https://infosec.exchange/@urldna/112244333356436954
 !+ NOT_OPTIMIZED
@@ -7688,6 +7786,12 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||airpos.co.kr/.well-known/pki-validation/*/MitID/$document
 !+ NOT_OPTIMIZED
 ||autolocksmithpro.com/spt/$all
+! https://urldna.io/scan/674294bdb5cc598397d25392
+! https://www.virustotal.com/gui/url/2afd8fdb0de2cbf5c56ab9480426fd19cc0037d43d1453b19deb28ae60bd78e6
+!+ NOT_OPTIMIZED
+||spoti-safe-support*.codeanyapp.com^$all,to=~spotify.com
+!+ NOT_OPTIMIZED
+||spoti-*.codeanyapp.com^$document,to=~spotify.com
 ! https://www.virustotal.com/gui/url/5f5d2e941e3e44e01a4ec88d3732113195e2afdef511d3635fbd291495f82f4f
 !+ NOT_OPTIMIZED
 ||mybluehost.me/spot/Account/$document
@@ -8022,6 +8126,12 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 /^https:\/\/\d{6}-coinbase\.com\//$document,to=~coinbase.com
 !+ NOT_OPTIMIZED
 ||178368-coinbase.com^$all,to=~coinbase.com
+! https://urldna.io/scan/673815d0415af7ad29e1843a
+! https://www.virustotal.com/gui/url/e79f7ed84af220f6af9f63754c6802f2d5ba30b0c57199ad159b0626ec1734cb
+!+ NOT_OPTIMIZED
+||llq.rsq.mybluehost.me^$all,to=~coinbase.com
+!+ NOT_OPTIMIZED
+||mybluehost.me/wp-admin/maajoun/$document,to=~coinbase.com
 ! imtoken
 !+ NOT_OPTIMIZED
 ||imtoken.org.cn^$all,to=~token.im
@@ -8254,7 +8364,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 !+ NOT_OPTIMIZED
 ||dichvucong.$document,to=~gov.vn
 !+ NOT_OPTIMIZED
-||tikimall.$document,to=tikimall.org|tikimall.com.bd|tikimall.com.np|tikimall.gov.bd|tikimall.gov.np|~tiki.vn
+||tikimall.$document,to=tikimall.com|tikimall.com.bd|tikimall.com.np|tikimall.org|~tiki.vn
 !+ NOT_OPTIMIZED
 ||taikhoanvps.com.vn^$all,to=~vps.com.vn
 !+ NOT_OPTIMIZED
@@ -8419,7 +8529,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 !+ NOT_OPTIMIZED
 ||nhanvienghtk.com^$all,to=~giaohangtietkiem.vn
 !+ NOT_OPTIMIZED
-||giaohangtietkiem247.*^$all,to=giaohangtietkiem247.*|~giaohangtietkiem.vn
+||giaohangtietkiem247.*^$all,to=giaohangtietkiem247.com|giaohangtietkiem247.com.bd|giaohangtietkiem247.com.np|giaohangtietkiem247.net|giaohangtietkiem247.top|~giaohangtietkiem.vn
 ! https://khonggianmang.vn/uploads/2024_CBT_36_d1b5aaea0a.pdf
 !+ NOT_OPTIMIZED
 ||tienichshiinhan.com^$all,to=~shinhan.com.vn
@@ -8511,6 +8621,33 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 ||tikione.vip^$all,to=~tiki.vn
 !+ NOT_OPTIMIZED
 ||tikifreeship.$all,to=~tiki.vn
+! https://khonggianmang.vn/uploads/2024_CBT_45_94e8b27e5a.pdf
+!+ NOT_OPTIMIZED
+||tiktok-svip*.com^$all,to=~tiktok.com
+!+ NOT_OPTIMIZED
+||evaluatetravels.com^$all,to=~traveloka.com
+!+ NOT_OPTIMIZED
+||ocbcccreonline.com^$all,to=~ocb.com.vn
+!+ NOT_OPTIMIZED
+||khachhangcnvib.com^$all,to=~vib.com.vn
+!+ NOT_OPTIMIZED
+||vimoney.credit^$all,to=~mbbank.com.vn
+!+ NOT_OPTIMIZED
+||ungdung6buoc.com^$all,to=~mbbank.com.vn
+!+ NOT_OPTIMIZED
+||evnsp.com^$all,to=~evn.com.vn
+!+ NOT_OPTIMIZED
+||evnsspc.com^$all,to=~evn.com.vn
+!+ NOT_OPTIMIZED
+||sellings-global.com^$all
+!+ NOT_OPTIMIZED
+||ebayve.com^$all
+!+ NOT_OPTIMIZED
+||zvogo.com^$all
+!+ NOT_OPTIMIZED
+||wrgov.com^$all,to=~gov.vn
+!+ NOT_OPTIMIZED
+||vn-chinhphu.com^$all,to=~dichvucong.gov.vn
 ! https://social.immibis.com/notice/AjwiBkDIwtyORTzsAq
 !+ NOT_OPTIMIZED
 ||msk.su^$all
@@ -8813,7 +8950,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 /l/DMP_captcha_for_vpn?$all
 ! https://github.com/uBlockOrigin/uAssets/issues/24189
 !+ NOT_OPTIMIZED
-||kmspico.*^$document,to=kmspico.*
+||kmspico.*^$document,to=kmspico.asia|kmspico.blog|kmspico.co|kmspico.com|kmspico.com.bd|kmspico.com.np|kmspico.com.tr|kmspico.fun|kmspico.guru|kmspico.icu|kmspico.io|kmspico.life|kmspico.me|kmspico.one|kmspico.ws
 !+ NOT_OPTIMIZED
 ||kmspico-$document
 !+ NOT_OPTIMIZED
@@ -9188,7 +9325,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 ! https://www.virustotal.com/gui/url/54511a44248d675994732236310dd43af00862874726d9d2ace0a53b1da9c275
 ! https://www.virustotal.com/gui/url/2a0352008de7b5a41de9c97a977bbee85150de3b22f02486a08027ef6636b1aa
 !+ NOT_OPTIMIZED
-/^https:\/\/(?:www\.)?roblox(?:\.com)?\.[a-z]{2}\//$document,to=roblox.*|~roblox.com
+/^https:\/\/(?:www\.)?roblox(?:\.com)?\.[a-z]{2}\//$document,to=roblox.ae|roblox.agency|roblox.ai|roblox.app|roblox.at|roblox.be|roblox.best|roblox.blog|roblox.ca|roblox.cc|roblox.cl|roblox.club|roblox.cn|roblox.co|roblox.co.id|roblox.co.za|roblox.com.au|roblox.com.bd|roblox.com.br|roblox.com.hk|roblox.com.mx|roblox.com.np|roblox.com.ph|roblox.com.ua|roblox.com.uy|roblox.cz|roblox.de|roblox.es|roblox.fi|roblox.fr|roblox.fun|roblox.ge|roblox.gg|roblox.guru|roblox.hk|roblox.id|roblox.in|roblox.it|roblox.jp|roblox.kg|roblox.kz|roblox.link|roblox.me|roblox.ml|roblox.mobi|roblox.net|roblox.network|roblox.news|roblox.nl|roblox.org|roblox.pe|roblox.pl|roblox.pro|roblox.sa|roblox.se|roblox.site|roblox.space|roblox.su|roblox.tech|roblox.tv|roblox.us|roblox.vip|roblox.website|roblox.world
 ! https://github.com/uBlockOrigin/uAssets/issues/25353
 ! https://www.urlvoid.com/scan/feather-wallet.org/
 !+ NOT_OPTIMIZED
@@ -9216,18 +9353,15 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 !+ NOT_OPTIMIZED
 ! https://securelist.com/sambaspy-rat-targets-italian-users/113851/
 !+ NOT_OPTIMIZED
-||belliniepecuniaimmobili.*^$document,to=belliniepecuniaimmobili.*
+||belliniepecuniaimmobili.*^$document,to=belliniepecuniaimmobili.com.bd|belliniepecuniaimmobili.com.np
 !+ NOT_OPTIMIZED
-||immobilibelliniepecunia.*^$document,to=immobilibelliniepecunia.*
+||immobilibelliniepecunia.*^$document,to=immobilibelliniepecunia.com.bd|immobilibelliniepecunia.com.np
 !+ NOT_OPTIMIZED
-||bpecuniaimmobili.*^$document,to=bpecuniaimmobili.*
+||bpecuniaimmobili.*^$document,to=bpecuniaimmobili.com.bd|bpecuniaimmobili.com.np
 !+ NOT_OPTIMIZED
-||belliniepecuniaimmobilisrl.*^$document,to=belliniepecuniaimmobilisrl.*
+||belliniepecuniaimmobilisrl.*^$document,to=belliniepecuniaimmobilisrl.com.bd|belliniepecuniaimmobilisrl.com.np
 !+ NOT_OPTIMIZED
-||immobiliarebelliniepecunia.*^$document,to=immobiliarebelliniepecunia.*
-! malware spam
-!+ NOT_OPTIMIZED
-||bit.ly/47P0Nvo$all
+||immobiliarebelliniepecunia.*^$document,to=immobiliarebelliniepecunia.com.bd|immobiliarebelliniepecunia.com.np
 ! https://github.com/uBlockOrigin/uAssets/issues/25470
 !+ NOT_OPTIMIZED
 ||the-north-face.gr^$all
@@ -9636,8 +9770,9 @@ webflow.io##html.w-mod-js:not(.wf-active) > body:not([class]):not([id]) > a[clas
 ! https://www.reddit.com/r/Scams/comments/1gppxs5/package_is_detained_scam/
 ! https://www.reddit.com/r/Scams/comments/1gpo2x6/is_this_a_scam_seems_kinda_sketchy/
 ! https://www.reddit.com/r/Scams/comments/1grey9a/is_this_actually_usps_or_a_scam/
+! https://www.virustotal.com/gui/url/7d78e3dd3c6dbb1eeb8a916a3fa87f8235d374691d35d90afc330182a18fc766
 !+ NOT_OPTIMIZED
-||usps.com-$document,to=live|vip|~usps.com
+/^https:\/\/usps\.com-(?:\w+\.){1,2}[a-z]{2,4}\//$document,to=~com|~net|~org|~edu|~gov
 ! https://github.com/uBlockOrigin/uAssets/issues/26052
 !+ NOT_OPTIMIZED
 ||orcaslicer.info^$document
@@ -9649,3 +9784,101 @@ webflow.io##html.w-mod-js:not(.wf-active) > body:not([class]):not([id]) > a[clas
 ||ev.ri-7a5935gb.com^$all,to=~evri.com
 !+ NOT_OPTIMIZED
 ||ev.ri-*gb.com^$document,to=~evri.com
+! https://github.com/uBlockOrigin/uAssets/issues/26061
+!+ NOT_OPTIMIZED
+/^https:\/\/www\.air-?up-?[a-z]{2,}\.com\//$document,to=com|~air-up.com
+!+ NOT_OPTIMIZED
+/^https:\/\/www\.xn--airup[a-z]{5,6}-[a-z0-9]{3}\.com\//$document,to=com|~air-up.com
+!+ NOT_OPTIMIZED
+||airupgreece.net^$document,to=~air-up.com
+!+ NOT_OPTIMIZED
+||airupromania.ro^$document,to=~air-up.com
+!+ NOT_OPTIMIZED
+||airupitaly.it^$document,to=~air-up.com
+!+ NOT_OPTIMIZED
+||airupfrance.fr^$document,to=~air-up.com
+! https://github.com/uBlockOrigin/uAssets/issues/26058
+!+ NOT_OPTIMIZED
+||ftuapps.io^$document
+!+ NOT_OPTIMIZED
+||ftuapps.dev^$document
+! https://github.com/uBlockOrigin/uAssets/issues/26072
+!+ NOT_OPTIMIZED
+||geekupdates.notion.site/Ultra-Security$document
+! https://forum.trezor.io/t/emails-from-trezor-appear-as-a-phishing-attack/13865
+! https://forum.trezor.io/t/phishing-email-received-claiming-trezor-firmware-update-required/13929
+!+ NOT_OPTIMIZED
+||uobretailcreditmanagement.$document
+!+ NOT_OPTIMIZED
+||blockfiupdates.$document
+! https://github.com/uBlockOrigin/uAssets/issues/26102
+!+ NOT_OPTIMIZED
+||uploadfox.net^$csp=script-src 'self' 'unsafe-eval' http: https: data: blob: mediastream: filesystem:
+!+ NOT_OPTIMIZED
+uploadfox.net###ad-gs-05
+! https://github.com/uBlockOrigin/uBlock-issues/discussions/3461
+!+ NOT_OPTIMIZED
+||allinoursite.com^$document
+!+ NOT_OPTIMIZED
+||bteux.com^$document
+!+ NOT_OPTIMIZED
+||doorsstormsy.shop^$document
+!+ NOT_OPTIMIZED
+||emailservicesnetau.com^$document
+!+ NOT_OPTIMIZED
+||euromaillinnk.com^$document
+!+ NOT_OPTIMIZED
+||findthorman.shop^$document
+!+ NOT_OPTIMIZED
+||glaters.com^$document
+!+ NOT_OPTIMIZED
+||keydoordasher.shop^$document
+!+ NOT_OPTIMIZED
+||makitfornows.com^$document
+!+ NOT_OPTIMIZED
+||mybach.xyz^$document
+!+ NOT_OPTIMIZED
+||threeneptuneboot.com^$document
+!+ NOT_OPTIMIZED
+/unsub/unsub^$document
+!+ NOT_OPTIMIZED
+/unsub_sent.php|$document,method=post
+!+ NOT_OPTIMIZED
+##html > body.hold-transition.theme-primary.bg-img[style^="background-image"][style*="wallpaperaccess.com"][style*="background-repeat"][style*="background-size"]
+!+ NOT_OPTIMIZED
+##html > body > div.container > form#unsubscribe-form[onsubmit="submitUnsubscribeForm(event)"]
+! Pretending to be a government service
+!+ NOT_OPTIMIZED
+||detranrapido.co^$all
+!+ NOT_OPTIMIZED
+||pagamentocnh.com^$all
+! https://github.com/uBlockOrigin/uAssets/issues/26121
+!+ NOT_OPTIMIZED
+||diteringion.com^$all
+! https://malwaretips.com/blogs/remove-flake-creditcable-info/
+! https://www.virustotal.com/gui/url/9c04f6b29c12f7fe981be638719be31d9bcbd5bf504423c12b49d7ce445c9f6d
+!+ NOT_OPTIMIZED
+||creditcable.info^$all
+! https://github.com/uBlockOrigin/uAssets/issues/26144
+!+ NOT_OPTIMIZED
+||steamcomunutty.com^$all
+! https://github.com/uBlockOrigin/uAssets/issues/26164
+!+ NOT_OPTIMIZED
+||klingxai.com^$all
+! https://www.reddit.com/r/Scams/comments/1gxe9i7/httpswwwpopularresortadscom/
+!+ NOT_OPTIMIZED
+||popular-resort-ads.com^$document,to=~ads.google.com
+! https://www.reddit.com/r/Scams/comments/1gxejx5/usps_scam_sent_me_this_httpsuinfotracklmstopus_in/
+! https://urldna.io/scan/674295237e7857a321be968d
+! https://www.virustotal.com/gui/url/924ffc9758a7ef73e36f5538969f3a27000b5743f7f18761e4aa4ffe484ac6bd
+! https://www.virustotal.com/gui/url/a4729e0a66bb9fe48da61dda6db467c5cb5525017dcdbf9efb42c2e51168342a
+!+ NOT_OPTIMIZED
+/^https:\/\/[a-z]\.[a-z]{10,}\.top\/us(?:\/|$)/$document,to=top|~usps.com
+!+ NOT_OPTIMIZED
+||infotracklms.top^$all,to=~usps.com
+! https://www.reddit.com/r/Scams/comments/1gyii76/paynttacom_screenshot/
+!+ NOT_OPTIMIZED
+||pay-ntta.com^$all,to=~ntta.org
+! https://www.reddit.com/r/Scams/comments/1gz97j2/almost_got_me_with_this_one/
+!+ NOT_OPTIMIZED
+||disneyy-vodd.com^$all,to=~disneyplus.com

@@ -20,7 +20,7 @@ Build:
   docker:
     image: ${bamboo.dockerNode}
     volumes:
-      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
     # we use dns to avoid etimedout error when AMO is validating extension
     docker-run-arguments: ['--dns', '8.8.8.8']
   tasks:
@@ -38,9 +38,11 @@ Build:
 
             ls -la
 
-            # don't use --ignore-optional flag, because swc requires optional deps 
-            yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
-            yarn beta firefox-standalone
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+            pnpm beta firefox-standalone
 
             # zip source files for publishing on AMO
             git ls-files | zip -@ build/beta/source.zip
