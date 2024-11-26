@@ -5,8 +5,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- TODO: check release version, add release date -->
-## [5.0.159]
+## Unreleased
+
+### Fixed
+
+- A rule from a disabled filter list disables another rule [#3002].
+- Notify user that rule was not applied because of the chrome limitations [#3004].
+
+[#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
+[#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
+
+<!-- TODO: add release date -->
+## [4.4.48]
+
+### Added
+
+- Send `manifest_version` during issues reporting for MV2.
+
+### Changed
+
+- Updated [@adguard/agtree] to v2.1.3.
+- Updated [@adguard/tsurlfilter] to v3.0.7.
+- Updated [@adguard/tswebextension] to v2.0.7.
+
+### Fixed
+
+- Optimized performance of parsing uBlock filter parameters [#2962].
+- `$removeparam` fails to match encoded URL params in MV2 [#3015].
+- Memory leak caused by multiple script injections on the same pages
+  after an event page in Firefox restarts in MV2 [#2594].
+
+[4.4.48]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.41...v4.4.48
+[#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
+[#3015]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3015
+
+## [5.0.170] - 2024-10-30
+
+### Changed
+
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.7.
+
+### Fixed
+
+- Memory leak caused by multiple script injections on the same pages
+  after a service worker or event page restart [#2594].
+
+[5.0.170]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.170
+[#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
+
+## [5.0.162] - 2024-10-30
+
+### Added
+
+- Send `manifest_version` during issues reporting.
+
+[5.0.162]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.162
+
+## [5.0.159] - 2024-10-23
 
 ### Changed
 

@@ -1,8 +1,8 @@
 name: Tests Browser Extension
 
 env:
+  PNPM_VERSION: 8
   NODE_VERSION: 20
-  YARN_FLAGS: '--silent --ignore-engines --ignore-platform --ignore-scripts'
 
 on: push
 
@@ -12,17 +12,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
 
-      - name: yarn install
-        run: yarn install ${{ env.YARN_FLAGS }}
+      - name: pnpm install
+        run: pnpm install ${{ vars.VARS_PNPM }}
 
-      - name: yarn test
-        run: yarn run test
+      - name: pnpm test
+        run: pnpm test
 
   notify:
     needs: test

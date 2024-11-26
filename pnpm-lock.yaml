@@ -27,8 +27,8 @@ dependencies:
     specifier: 3.1.0-alpha.7
     version: 3.1.0-alpha.7(@adguard/re2-wasm@1.2.0)
   '@adguard/tswebextension':
-    specifier: 2.4.0-alpha.6
-    version: 2.4.0-alpha.6(@adguard/re2-wasm@1.2.0)
+    specifier: 2.4.0-alpha.7
+    version: 2.4.0-alpha.7(@adguard/re2-wasm@1.2.0)
   '@xstate/react':
     specifier: ^4.1.1
     version: 4.1.3(@types/react@17.0.83)(react@17.0.2)(xstate@5.19.0)
@@ -119,6 +119,9 @@ dependencies:
   stream-browserify:
     specifier: ^3.0.0
     version: 3.0.0
+  tldts:
+    specifier: ^6.1.61
+    version: 6.1.61
   ua-parser-js:
     specifier: ^1.0.36
     version: 1.0.36
@@ -146,14 +149,14 @@ dependencies:
 
 devDependencies:
   '@adguard/dnr-rulesets':
-    specifier: ^1.2.20241115152852
-    version: 1.2.20241122090059
+    specifier: ^1.2.20241125180059
+    version: 1.2.20241126090109
   '@adguard/re2-wasm':
     specifier: ^1.2.0
     version: 1.2.0
   '@sinonjs/fake-timers':
-    specifier: ^10.0.2
-    version: 10.0.2
+    specifier: ^13.0.5
+    version: 13.0.5
   '@swc-node/register':
     specifier: ^1.9.1
     version: 1.10.9(@swc/core@1.9.3)(@swc/types@0.1.17)(typescript@5.6.3)
@@ -166,9 +169,6 @@ devDependencies:
   '@types/chrome':
     specifier: ^0.0.268
     version: 0.0.268
-  '@types/copy-webpack-plugin':
-    specifier: ^10.1.0
-    version: 10.1.3(webpack@5.79.0)
   '@types/crypto-js':
     specifier: ^4.1.1
     version: 4.1.1
@@ -196,9 +196,15 @@ devDependencies:
   '@types/react-modal':
     specifier: ^3.16.3
     version: 3.16.3
+  '@types/sinon':
+    specifier: ^17.0.3
+    version: 17.0.3
   '@types/sinon-chrome':
     specifier: ^2.2.11
     version: 2.2.11
+  '@types/sinonjs__fake-timers':
+    specifier: ^8.1.5
+    version: 8.1.5
   '@types/ua-parser-js':
     specifier: ^0.7.37
     version: 0.7.37
@@ -402,8 +408,8 @@ packages:
       diff: github.com/105th/jsdiff/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a
     dev: false
 
-  /@adguard/dnr-rulesets@1.2.20241122090059:
-    resolution: {integrity: sha512-ADqhHgaL5xcCapbhEqga/G4lyus0gjSc6NXmtZ1VANhRUFMm9zFV5thFfOaGYBn9jfoN+jodOTxC7b5QgFVHXA==}
+  /@adguard/dnr-rulesets@1.2.20241126090109:
+    resolution: {integrity: sha512-HV/h21OoFCptmCeF56DBRqXrauN7n8NGAays789pPkoiIpndDnDdbLFl83flxWrrHc8JCsthIIidqsVJtqigpg==}
     hasBin: true
     dependencies:
       '@adguard/logger': 1.1.1
@@ -469,8 +475,8 @@ packages:
       zod: 3.21.4
     dev: false
 
-  /@adguard/tswebextension@2.4.0-alpha.6(@adguard/re2-wasm@1.2.0):
-    resolution: {integrity: sha512-xKUF7QetwAKO0rQJYkPodVKiz8jokBkA6cV7kKl/ABSU1lgwCPXtF63lOz9ouPicN1PNhSNf11mS142o7rdhJQ==}
+  /@adguard/tswebextension@2.4.0-alpha.7(@adguard/re2-wasm@1.2.0):
+    resolution: {integrity: sha512-XxSp7wc7kkmmP8zt7OXgFx4SgmpHGAZ5hrQHlzDQrX1ohgq1pDnjSvNh5mB3Rc212/rLrYCNCPd6br1Zvijoiw==}
     engines: {node: '>=6.0.0'}
     hasBin: true
     dependencies:
@@ -1525,10 +1531,22 @@ packages:
       type-detect: 4.0.8
     dev: true
 
+  /@sinonjs/commons@3.0.1:
+    resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
+    dependencies:
+      type-detect: 4.0.8
+    dev: true
+
   /@sinonjs/fake-timers@10.0.2:
     resolution: {integrity: sha512-SwUDyjWnah1AaNl7kxsa7cfLhlTYoiyhDAIgyh+El30YvXs/o7OLXpYH88Zdhyx9JExKrmHDJ+10bwIcY80Jmw==}
     dependencies:
       '@sinonjs/commons': 2.0.0
+    dev: true
+
+  /@sinonjs/fake-timers@13.0.5:
+    resolution: {integrity: sha512-36/hTbH2uaWuGVERyC6da9YwGWnzUZXuPro/F2LfsdOsLnCojz/iSH8MxUt/FD2S5XBSVPhmArFUXcpCQ2Hkiw==}
+    dependencies:
+      '@sinonjs/commons': 3.0.1
     dev: true
 
   /@sinonjs/fake-timers@9.1.2:
@@ -1802,15 +1820,6 @@ packages:
     dependencies:
       '@types/filesystem': 0.0.32
       '@types/har-format': 1.2.10
-    dev: true
-
-  /@types/copy-webpack-plugin@10.1.3(webpack@5.79.0):
-    resolution: {integrity: sha512-p0/EiNsnH/t/BSKG2DBSULzEg75L1mRn1pqe2lGCC89Yjih5krNjMi8OoBy6SAPN0fhcpZhRIk4KV3lqKQ8Png==}
-    deprecated: This is a stub types definition. copy-webpack-plugin provides its own type definitions, so you do not need this installed.
-    dependencies:
-      copy-webpack-plugin: 12.0.2(webpack@5.79.0)
-    transitivePeerDependencies:
-      - webpack
     dev: true
 
   /@types/crypto-js@4.1.1:

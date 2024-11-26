@@ -23,14 +23,3 @@ import { SubscribeToScriptlets } from '../../src/content-script/subscribe-to-scr
 
 ContentUtils.init();
 SubscribeToScriptlets.init();
-
-// TODO: Temporary construction for keeping alive service worker
-// via constantly standing message exchange
-if (window.top === window && (document.documentElement instanceof HTMLElement)) {
-    setInterval(() => {
-        try {
-            chrome.runtime.sendMessage({ type: 'PING' });
-        // eslint-disable-next-line no-empty
-        } catch (e) { }
-    }, 10000);
-}

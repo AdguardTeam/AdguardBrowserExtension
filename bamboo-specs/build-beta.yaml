@@ -20,7 +20,7 @@ Build:
   docker:
     image: ${bamboo.dockerNode}
     volumes:
-      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
         force-clean-build: 'true'
@@ -40,9 +40,11 @@ Build:
 
             ls -la
 
-            # don't use --ignore-optional flag, because swc requires optional deps
-            yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
-            yarn beta
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+            pnpm beta
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts

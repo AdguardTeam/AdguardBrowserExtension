@@ -193,13 +193,33 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             filename: '[name].js',
         },
         resolve: {
+            modules: [
+                'node_modules',
+
+                // By default, package managers like Yarn and NPM create a flat structure in the `node_modules` folder,
+                // placing all dependencies directly in the root `node_modules`.
+                // For instance, when we install `@adguard/agtree` in this project, both it and its dependency,
+                // `@adguard/css-tokenizer`, are typically placed in the root `node_modules` folder.
+                //
+                // However, pnpm follows a different, nested structure where dependencies are stored
+                // under `node_modules/.pnpm/node_modules`.
+                // This structure helps reduce duplication but also means that dependencies of dependencies
+                // are not directly accessible in the root.
+                //
+                // As a result, Webpack may fail to resolve these "nested" dependencies in pnpm's setup,
+                // since they are not in the root `node_modules`.
+                // To ensure Webpack can locate dependencies correctly in a pnpm project,
+                // we add `node_modules/.pnpm/node_modules` to the module resolution path as a fallback.
+                'node_modules/.pnpm/node_modules',
+            ],
             fallback: {
                 crypto: require.resolve('crypto-browserify'),
                 stream: require.resolve('stream-browserify'),
                 vm: require.resolve('vm-browserify'),
             },
             extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
-            symlinks: false,
+            // pnpm uses symlinks to manage dependencies, so we need to resolve them
+            symlinks: true,
             alias: {
                 'tswebextension': path.resolve(
                     __dirname,
