@@ -3,6 +3,8 @@ name: Tests Browser Extension
 env:
   PNPM_VERSION: 8
   NODE_VERSION: 20
+  # Forks do not have access to our vars
+  VARS_PNPM: ${{ vars.VARS_PNPM || '--silent --ignore-scripts' }}
 
 on: push
 
@@ -25,7 +27,7 @@ jobs:
           cache: pnpm
 
       - name: pnpm install
-        run: pnpm install ${{ vars.VARS_PNPM }}
+        run: pnpm install ${{ env.VARS_PNPM }}
 
       - name: pnpm test
         run: pnpm test
