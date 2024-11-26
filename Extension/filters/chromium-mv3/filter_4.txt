@@ -1,8 +1,8 @@
-! Checksum: c/GKAwJGTvjw1usvFKt2Ig
+! Checksum: Nb0agda+ULeRszb6gXPfCw
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.7.91
-! TimeUpdated: 2024-11-25T12:35:24+00:00
+! Version: 2.1.7.97
+! TimeUpdated: 2024-11-26T14:35:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -715,6 +715,12 @@ pcmag.com,onefootball.com,ign.com,israelnationalnews.com,lifehacker.com,cgmagonl
 !
 ! NOTE: Specific rules
 !
+qr.quel.jp#%#//scriptlet('remove-node-text', 'div', '/シェアする/g')
+wildroid.ru##.soc_ya
+pulzo.com###shared-icon
+pulzo.com##.container-socialNetworks
+domainanalysis.io,usermag.co##a[aria-label="View share options"]
+usermag.co##.available-content > .pencraft:has(> div[class]:only-child > button > .lucide-share)
 t-fashion.jp##.is-pl65-pc > div.is-ta-c.is-bdt
 devblogs.microsoft.com##.social-panel > .d-flex:has(> .evo-dropdown-menu > button[data-bi-id="post_page_sidebar_left_social_share"])
 atarita.com##.td-is-sticky > .wpb_wrapper > .tdm_block_inline_text:has(+ .tdb_single_post_share)
@@ -898,7 +904,6 @@ wowneta.jp,wowkorea.jp##.news-detail__sns
 onefootball.com##button[class^="NativeShare_container"]
 gamefile.news##.pencraft:has(> button.pencraft > div > svg[role="img"] > g > path[d^="M21.6608 8.55517H2.33838V5.9555H21"])
 fontanka.ru##div[class^="sharing_"]
-dell.com,newcastle-hospitals.nhs.uk##.share-links
 developer.apple.com##.social-share-container
 marketwatch.com##div[aria-label="Utility Bar"] > div[class^="css-"]:has(> button[aria-label="Share Button"])
 thenewstack.io###tns-post-body-sidebar-share
@@ -3434,7 +3439,7 @@ wired.co.uk,wired.jp##.content-header__social-share
 markezine.jp##.c-article_sns_listitem:not(.-push)
 slamdunk.ru##a[data-role="shareComment"]
 kofella.net##.kofsoc
-realmadryt.pl,tea.ru##.share-more
+apkpure.net,realmadryt.pl,tea.ru##.share-more
 erecipe.woman.excite.co.jp##.postsns
 similarweb.com##.data-we-share
 aliradar.com##button[data-ga-p_item-share]
@@ -7963,7 +7968,7 @@ myfin.by##.news-share > span:first-child
 motorcar.com.ua,movieweb.com,androidpolice.com,makeuseof.com,mirfactov.com##.sharing-btn:not(.btn-comments)
 geezwild.com,kesanpostasi.com##.twp-social-share
 kesanpostasi.com##.twp-toggle-share
-queen.gr,msfsaddon.com,arstechnica.com,snopes.com##.share-links
+narescue.com,dell.com,newcastle-hospitals.nhs.uk,queen.gr,msfsaddon.com,arstechnica.com,snopes.com##.share-links
 thebell.io##.share-overlay
 codeburst.io##div[style*="position"][style*="will-change"][style*="transform"] button[class] > svg[width="25"][height="25"]
 giphy.com##div[class^="footer__Block"] > div[class^="social__Container"]
