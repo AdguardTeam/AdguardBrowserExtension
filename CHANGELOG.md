@@ -14,9 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Increased all dynamic rules limit to 30000 for MV3.
+- Error throwing for empty modifier list in network rules.
 
 ### Fixed
 
+- Handling missing children data in the deserializer for certain nodes.
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
