@@ -411,6 +411,7 @@ export type AppInitializedMessage = {
 export type UpdateTotalBlockedMessage = {
     type: MessageType.UpdateTotalBlocked
     data: {
+        tabId: number,
         totalBlocked: number,
         totalBlockedTab: number,
     }
