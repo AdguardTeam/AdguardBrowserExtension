@@ -78,9 +78,18 @@ class IconsApi {
         const icon = await this.pickIconVariant();
         // Update all tabs icons
         const allTabs = await browser.tabs.query({});
-        await Promise.all(allTabs.map(async (tab) => {
-            await IconsApi.setActionIcon(icon, tab?.id);
+        const results = await Promise.allSettled(allTabs.map(async (tab) => {
+            if (tab.id) {
+                await IconsApi.setActionIcon(icon, tab.id);
+            }
         }));
+
+        // Log any failures for debugging
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                logger.debug(`Failed to update icon for tab ${allTabs[index]?.id}:`, result.reason);
+            }
+        });
     }
 
     /**
