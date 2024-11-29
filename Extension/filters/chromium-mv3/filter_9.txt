@@ -1,8 +1,8 @@
-! Checksum: UdmFG/5BuLzJiZAatlybtQ
+! Checksum: SvPHqS8q+lZ8lR4u1B7HAQ
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.27.57
-! TimeUpdated: 2024-11-26T08:33:54+00:00
+! Version: 2.0.27.61
+! TimeUpdated: 2024-11-29T06:36:53+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -280,6 +280,8 @@ diariobitcoin.com##div[class^="diari-"]
 !
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193608
+cursomecanet.com#%#(()=>{const e=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML").set;Object.defineProperty(Element.prototype,"innerHTML",{set(t){if(!t?.includes("Bloqueador"))return e.call(this,t)}})})();
+cursomecanet.com#%#//scriptlet('abort-on-property-read', 'pushmaster')
 cursomecanet.com#%#//scriptlet('abort-on-stack-trace', 'document.open', 'eval')
 cursomecanet.com#%#//scriptlet('trusted-suppress-native-method', 'fetch', '"adligature.com"')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193070
@@ -2186,6 +2188,11 @@ todojujuy.com,mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,lap
 !
 ! NOTE: Specific rules
 !
+flaticon.es#?#.a-wrapper
+americanas.com.br##span[class^="search-result__TotalText-"] + div[class^="src__Wrapper-sc-"]:has(> div > a[class^="inStockCardList__Wrapper-sc-"])
+hardware.com.br##.sticky-bottom-banner-wrapper
+hardware.com.br##.rad-incontent-container
+hardware.com.br##.rad-wrapper
 pulzo.com###articleMobileContainerAd
 eldestapeweb.com##.contenedor__publicidad
 mercadolivre.com.br###ui-billboard-ad
