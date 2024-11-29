@@ -43,6 +43,7 @@ import {
     QuickFixesRulesApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
+import { UserRulesService } from '../services/userrules';
 import { FiltersStorage } from '../storages';
 import { SettingOption } from '../schema/settings/main';
 
@@ -100,6 +101,7 @@ export class Engine implements TsWebExtensionEngine {
         logger.info('Start tswebextension...');
         const result = await this.api.start(configuration);
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
+        UserRulesService.checkUserRulesRegexpErrors(result);
 
         await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
@@ -132,6 +134,7 @@ export class Engine implements TsWebExtensionEngine {
         }
         const result = await this.api.configure(configuration);
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
+        UserRulesService.checkUserRulesRegexpErrors(result);
 
         await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
@@ -215,7 +218,7 @@ export class Engine implements TsWebExtensionEngine {
             declarativeLogEnabled: filteringLogApi.isOpen(),
             customFilters,
             quickFixesRules,
-            verbose: !!(IS_RELEASE || IS_BETA),
+            verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,
             staticFiltersIds,
             userrules,

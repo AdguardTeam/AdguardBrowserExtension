@@ -1,4 +1,4 @@
-import { FilteringLogApi } from '../../../../Extension/src/background/api';
+import { FilteringLogApi } from '../../../../Extension/src/background/api/filtering-log';
 
 const tabId = 1;
 const title = 'test';

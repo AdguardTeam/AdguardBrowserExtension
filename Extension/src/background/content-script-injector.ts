@@ -17,7 +17,7 @@
  */
 
 import { getHostname } from 'tldts';
-import { type Tabs } from 'webextension-polyfill';
+import browser, { type Tabs } from 'webextension-polyfill';
 
 import { isHttpRequest } from 'tswebextension';
 
@@ -39,6 +39,11 @@ import { createPromiseWithTimeout } from './utils/timeouts';
  * Helper class for injecting content script into tabs, opened before extension initialization.
  */
 export class ContentScriptInjector {
+    /**
+     * Key used to store the injected flag in session storage.
+     */
+    private static INJECTED_KEY = 'content_script_injected';
+
     private static INJECTION_LIMIT_MS = 1000;
 
     /**
@@ -201,5 +206,37 @@ export class ContentScriptInjector {
         }
 
         return true;
+    }
+
+    /**
+     * Sets the injected flag in session storage.
+     * This method updates the session storage to indicate that content scripts have been injected.
+     */
+    public static async setInjected(): Promise<void> {
+        try {
+            await browser.storage.session.set({ [ContentScriptInjector.INJECTED_KEY]: true });
+        } catch (e) {
+            logger.error('Cannot set injected flag in session storage', e);
+        }
+    }
+
+    /**
+     * Checks if content scripts have been injected.
+     * Uses session storage since it is faster than sending a message to the content script.
+     * As of November 25, 2025, Firefox v132.0.2 takes 1 second to send a message,
+     * whereas reading from the session storage takes only 1 ms.
+     *
+     * @returns True if content scripts were injected; otherwise, false.
+     */
+    public static async isInjected(): Promise<boolean> {
+        let isInjected = false;
+        try {
+            const result = await browser.storage.session.get(ContentScriptInjector.INJECTED_KEY);
+            isInjected = result[ContentScriptInjector.INJECTED_KEY] === true;
+        } catch (e) {
+            logger.error('Cannot get injected flag from session storage', e);
+        }
+
+        return isInjected;
     }
 }

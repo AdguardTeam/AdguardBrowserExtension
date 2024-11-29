@@ -28,8 +28,9 @@ declare global {
 }
 
 class ExtendedLogger extends Logger {
-    isVerbose() {
-        return this.currentLevel === LogLevel.Debug;
+    isVerbose(): boolean {
+        return this.currentLevel === LogLevel.Debug
+             || this.currentLevel === LogLevel.Trace;
     }
 }
 
@@ -41,7 +42,8 @@ logger.currentLevel = IS_RELEASE || IS_BETA
 
 // Expose logger to the window object,
 // to have possibility to switch log level from the console.
-// Example: adguard.logger.setLevel('debug');
+// Example: adguard.logger.currentLevel = 'debug'
+// FIXME setup eslint and remove this rule
 // eslint-disable-next-line no-restricted-globals
 const adguard = self.adguard ?? {};
 // eslint-disable-next-line no-restricted-globals
