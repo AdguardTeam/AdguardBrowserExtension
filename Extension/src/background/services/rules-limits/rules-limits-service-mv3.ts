@@ -138,8 +138,6 @@ export class RulesLimitsService {
      * Clears the rules limits warning by resetting the expected enabled filters.
      * This function is intended to be used when the user acknowledges the warning
      * and wants to reset the state to avoid further notifications.
-     *
-     * @returns A promise that resolves when the warning state has been reset.
      */
     public static async clearRulesLimitsWarning(): Promise<void> {
         // Reset the warning state by clearing the list of expected enabled filters.
