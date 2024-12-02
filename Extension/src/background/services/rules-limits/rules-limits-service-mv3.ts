@@ -485,6 +485,7 @@ export class RulesLimitsService {
         // configuration are not same as enabled filters - it means that browser
         // declined update of the configuration and we should notify user about it.
         const expectedEnabledFilters = RulesLimitsService.getCurrentConfigurationEnabledFilters();
+
         return !arraysAreEqual(actuallyEnabledFilters, expectedEnabledFilters);
     }
 
