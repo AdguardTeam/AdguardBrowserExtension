@@ -532,6 +532,8 @@ export class RulesLimitsService {
             // Update tswebextension configuration without check limitations to
             // skip recursion.
             await update(true);
+            // Update icons state after engine update
+            iconsApi.update();
         } else {
             // If state is not broken - clear list of "broken" filters
             const prevExpectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
