@@ -41,6 +41,7 @@ import {
     filteringLogApi,
     CommonFilterApi,
     QuickFixesRulesApi,
+    iconsApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
@@ -151,7 +152,8 @@ export class Engine implements TsWebExtensionEngine {
                 toasts.showRuleLimitsAlert();
             }
         }
-
+        // Update icon after engine update
+        iconsApi.update();
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 

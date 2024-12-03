@@ -70,7 +70,6 @@ class IconsApi {
         }
     }
 
-    // TODO: use the update method for icon updating on engine update
     /**
      * Updates the icon state.
      */
