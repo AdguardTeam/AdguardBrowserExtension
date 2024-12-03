@@ -1,8 +1,8 @@
-! Checksum: 4cDOpqVzd4I/rHVTQhh28A
+! Checksum: J1it+aoszjQ/dME4vtzH3w
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.59.64
-! TimeUpdated: 2024-11-25T17:34:27+00:00
+! Version: 2.0.59.77
+! TimeUpdated: 2024-11-29T14:34:42+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1756,7 +1756,7 @@ city.tokai.aichi.jp,city.noda.chiba.jp,city.suginami.tokyo.jp,city.toyooka.lg.jp
 ! ##.bana
 city.inazawa.aichi.jp,city.kawasaki.jp,city.nagoya.jp,city.yao.osaka.jp,city.ikoma.lg.jp,city.higashiosaka.lg.jp,city.higashiomi.shiga.jp,city.ogaki.lg.jp,city.tama.lg.jp,city.inzai.lg.jp,city.kyotanabe.lg.jp,city.himeji.lg.jp,city.hirakata.osaka.jp,city.osaka.lg.jp,city.kyoto.lg.jp,city.maizuru.kyoto.jp,city.iga.lg.jp##.bana
 ! ###banner_footer1 Don't generalize to lg.jp (false positive on city.awaji.lg.jp)
-pref.hiroshima.lg.jp,city.fukuyama.hiroshima.jp,city.niiza.lg.jp,city.kure.lg.jp,city.hatsukaichi.hiroshima.jp,city.ebetsu.hokkaido.jp,city.shunan.lg.jp,city.tondabayashi.lg.jp,city.miki.lg.jp,city.ozu.ehime.jp,city.toda.saitama.jp,city.ageo.lg.jp,pref.fukushima.lg.jp,pref.okayama.jp,city.oyama.tochigi.jp,city.kimitsu.lg.jp,city.ishikari.hokkaido.jp,city.minamiawaji.hyogo.jp,city.yamaguchi.lg.jp###banner_footer1
+city.sanyo-onoda.lg.jp,pref.hiroshima.lg.jp,city.fukuyama.hiroshima.jp,city.niiza.lg.jp,city.kure.lg.jp,city.hatsukaichi.hiroshima.jp,city.ebetsu.hokkaido.jp,city.shunan.lg.jp,city.tondabayashi.lg.jp,city.miki.lg.jp,city.ozu.ehime.jp,city.toda.saitama.jp,city.ageo.lg.jp,pref.fukushima.lg.jp,pref.okayama.jp,city.oyama.tochigi.jp,city.kimitsu.lg.jp,city.ishikari.hokkaido.jp,city.minamiawaji.hyogo.jp,city.yamaguchi.lg.jp###banner_footer1
 ! Don't make generic - FP ex. tamasiiconnect.com
 okashimart.com###js-advertisingHeader
 ! check carefully if you are to block richlink.blogsys.jp, it's likely to be blockable only on some pages
@@ -1764,6 +1764,16 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+minkabu.jp##div[data-controller="footer-overlay"]
+dee-okinawa.com##.footerAD
+||city.sanyo-onoda.lg.jp/uploaded/banner/
+pref.fukushima.lg.jp###link_box
+police.pref.miyagi.jp##.ft-bnr
+schizophonic9-2.com###tertiary > section.side-menu:has(> div.side-menu-title > a[href^="https://www.amazon.co.jp/"])
+schizophonic9-2.com###tertiary > section.side-menu:has(> div.side-menu-title > ins.adsbygoogle)
+schizophonic9-2.com###tertiary > section.side-menu:has(> div.side-menu-title > div.plugin-freearea)
+||yosakoimatsuri.com/wp-content/uploads/*.jpg$image
+nanjdesuno.blog.jp##div[class^="article-body"] > div > div[style^="display: flex; flex-direction: column; align-items: center"]:has(> a[href^="https://www.amazon.co.jp"])
 jafmate.jp##a[id^="ad_"][id$="03"]
 idol-culture.jp##.entrybody > div[style="min-height: 170px;"]
 sekai-hub.com##main > article + div > div.frame
@@ -3405,7 +3415,7 @@ nijiero-view.com##.entry-content > center > a[href^="https://al.dmm.co.jp"][rel=
 ||tokimeki-s.com/ue2.html
 blog.ss-blog.jp##.articles-body > span[style="font-size:small;"] > span[style="color:#666666;"]
 osakamotion.net###nuevoa
-incident-wo.com,sironet.work##.widget-single-content-top
+dere-ken.com,incident-wo.com,sironet.work##.widget-single-content-top
 chizaizukan.com##.ad-border
 be-my-slave.info,naporitansushi.com###ai_widget-9
 naporitansushi.com###ai_widget-8
@@ -6694,7 +6704,8 @@ otologic.jp##div[class^="gad-"]
 724685.com##div[style="margin:-5px auto 5px auto; height:130px;"]
 math-travel.com,win-tab.net###media_image-10
 ma-jann.com##.type-page span.small
-mj-news.net##a[id^="Type"]
+mj-news.net##html > body a[id^="Type"]:not(#style_important)
+mj-news.net##.mj-loop-article:has(> .loop-post-thumb > a[id^="Type"])
 ||jannyumon.jp/static/images/banner/bannerNormal.jpg
 jan39.com##div[class^="box_banner_"]
 energydrinkmania.net###sub_navi > h4
@@ -10361,7 +10372,6 @@ anihatsu.com#?#.plugin-memo > div.side > div > div.google-user-ad-side:upward(3)
 chiebukuro.yahoo.co.jp#?#div[class^="Top_chie-Pages__ColumnItem--Sub"] > div[class^="Top_chie-Pages__SubColumnSection--Box"]:has(> #ad_lrec:only-child)
 figsoku.net#?#.pluginWrap > div > div > a[target="_blank"][rel="noopener"] > img:upward(4)
 fevian.org#?#article > a[href^="https://al.dmm.co.jp"]:upward(1)
-eroanime-movie.com#?#.main-section:has(a[href^="https://2ji-planet.com"])
 kijyomita.com#?#.plugin-memo > div.side > center > script[src^="https://cdn-fluct.sh.adingo.jp"]:upward(3)
 hochi.news#?#.newslist__item > div[id^="div-gpt-"]:upward(1)
 anicobin.ldblog.jp#?#.related-wadai:contains(ベストセラー)
@@ -10691,7 +10701,6 @@ plaza.rakuten.co.jp#?##content-side > table div[id*="Rak_Blog_User_SideBanner"]:
 fukafuka295.jp#?##amzn-ranking-zone-title:contains(Amazon売り上げランキング)
 fukafuka295.jp#?#.widget_catbox_widget.post-widgets-bottom > div > div.amzn-tabs-container:upward(1)
 erry.one,hikaritube.com,iqoo.me,poyopara.com,sugirl.info#?#div[style^="width:100%;box-sizing:border-box;padding:1em"] > a[href^="https://click.dtiserv2.com/"]:only-child:upward(1)
-mj-news.net#?#a[id^="Type"]:upward(1)
 blog.fc2.com#?#.plugin_content > div.plugin_body > div.plugin-freearea > div[id^="i2i"]:upward(3)
 blog.fc2.com#?#.side-menu > div.sidebar-style > div.plugin-freearea > img[src^="//v2st.shinobi.jp/"]:upward(3)
 blog.fc2.com#?#.side-menu > div.sidebar-style > div.plugin-freearea > script[src^="//adm.shinobi.jp/"]:upward(3)

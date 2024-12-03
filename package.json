@@ -1,6 +1,6 @@
 {
   "name": "browser-extension",
-  "version": "5.0.171",
+  "version": "5.0.173",
   "description": "AdGuard Extension",
   "scripts": {
     "dev": "cross-env BUILD_ENV=dev SWCRC= node -r @swc-node/register tools/bundle.ts",
@@ -12,7 +12,7 @@
     "test": "MANIFEST_ENV=2 jest && MANIFEST_ENV=3 jest",
     "locales": "node -r @swc-node/register tools/locales.js",
     "resources": "node -r @swc-node/register tools/resources.ts",
-    "resources:mv3": "pnpm add -D @adguard/dnr-rulesets && node -r @swc-node/register tools/resources-mv3.ts",
+    "resources:mv3": "pnpm update -D @adguard/dnr-rulesets && node -r @swc-node/register tools/resources-mv3.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
     "increment": "pnpm version patch --no-git-tag-version",
     "prepare": "husky install",
@@ -29,7 +29,7 @@
   "author": "adguard@adguard.com",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@adguard/dnr-rulesets": "^1.2.20241125180059",
+    "@adguard/dnr-rulesets": "^1.2.20241129172440",
     "@adguard/re2-wasm": "^1.2.0",
     "@sinonjs/fake-timers": "^13.0.5",
     "@swc-node/register": "^1.9.1",

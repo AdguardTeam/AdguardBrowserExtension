@@ -1,8 +1,8 @@
-! Checksum: c/GKAwJGTvjw1usvFKt2Ig
+! Checksum: ljHGUeouRVabkckjmz2PdA
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.7.91
-! TimeUpdated: 2024-11-25T12:35:24+00:00
+! Version: 2.1.8.2
+! TimeUpdated: 2024-11-29T14:34:31+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -715,6 +715,15 @@ pcmag.com,onefootball.com,ign.com,israelnationalnews.com,lifehacker.com,cgmagonl
 !
 ! NOTE: Specific rules
 !
+no-one-no.net##.smartphone > div[style^="width: 100%; margin: 20px auto 30px;"]
+smart-lab.ru##div[menu="topic_share"]
+dee-okinawa.com##.articleSocial
+qr.quel.jp#%#//scriptlet('remove-node-text', 'div', '/シェアする/g')
+wildroid.ru##.soc_ya
+pulzo.com###shared-icon
+pulzo.com##.container-socialNetworks
+domainanalysis.io,usermag.co##a[aria-label="View share options"]
+usermag.co##.available-content > .pencraft:has(> div[class]:only-child > button > .lucide-share)
 t-fashion.jp##.is-pl65-pc > div.is-ta-c.is-bdt
 devblogs.microsoft.com##.social-panel > .d-flex:has(> .evo-dropdown-menu > button[data-bi-id="post_page_sidebar_left_social_share"])
 atarita.com##.td-is-sticky > .wpb_wrapper > .tdm_block_inline_text:has(+ .tdb_single_post_share)
@@ -898,7 +907,6 @@ wowneta.jp,wowkorea.jp##.news-detail__sns
 onefootball.com##button[class^="NativeShare_container"]
 gamefile.news##.pencraft:has(> button.pencraft > div > svg[role="img"] > g > path[d^="M21.6608 8.55517H2.33838V5.9555H21"])
 fontanka.ru##div[class^="sharing_"]
-dell.com,newcastle-hospitals.nhs.uk##.share-links
 developer.apple.com##.social-share-container
 marketwatch.com##div[aria-label="Utility Bar"] > div[class^="css-"]:has(> button[aria-label="Share Button"])
 thenewstack.io###tns-post-body-sidebar-share
@@ -3434,7 +3442,7 @@ wired.co.uk,wired.jp##.content-header__social-share
 markezine.jp##.c-article_sns_listitem:not(.-push)
 slamdunk.ru##a[data-role="shareComment"]
 kofella.net##.kofsoc
-realmadryt.pl,tea.ru##.share-more
+apkpure.net,realmadryt.pl,tea.ru##.share-more
 erecipe.woman.excite.co.jp##.postsns
 similarweb.com##.data-we-share
 aliradar.com##button[data-ga-p_item-share]
@@ -7317,7 +7325,7 @@ weekend.gazeta.pl##.shortSocialBar
 ua.news##.content-socials
 techgame.pl###share-media
 netmeter.eu###shareblock
-parasapo.tokyo,tospo-keiba.jp,imaonline.jp,kunel-salon.com,pagenews.gr,ysia.ru,ryutsuu.biz,sonre.ru,afanasy.biz,flsaudio.com,alexzsoft.ru##.single-share
+hardware.com.br,parasapo.tokyo,tospo-keiba.jp,imaonline.jp,kunel-salon.com,pagenews.gr,ysia.ru,ryutsuu.biz,sonre.ru,afanasy.biz,flsaudio.com,alexzsoft.ru##.single-share
 barstoolsports.com##.sharingLinks__social
 readovka.news##a[href="#tab-main"]
 kresy24.pl###wkomimg
@@ -7963,7 +7971,7 @@ myfin.by##.news-share > span:first-child
 motorcar.com.ua,movieweb.com,androidpolice.com,makeuseof.com,mirfactov.com##.sharing-btn:not(.btn-comments)
 geezwild.com,kesanpostasi.com##.twp-social-share
 kesanpostasi.com##.twp-toggle-share
-queen.gr,msfsaddon.com,arstechnica.com,snopes.com##.share-links
+narescue.com,dell.com,newcastle-hospitals.nhs.uk,queen.gr,msfsaddon.com,arstechnica.com,snopes.com##.share-links
 thebell.io##.share-overlay
 codeburst.io##div[style*="position"][style*="will-change"][style*="transform"] button[class] > svg[width="25"][height="25"]
 giphy.com##div[class^="footer__Block"] > div[class^="social__Container"]
@@ -8909,7 +8917,7 @@ vosgesmatin.fr,republicain-lorrain.fr,estrepublicain.fr##.scrollToolBar > .toolB
 uai.com.br##.docs-buttons-share
 urbia.de##.socialslideout
 freecoursesite.com##.share-handler-wrap
-nexusmods.com,rusvideos.org,nuvid.com,m.vz.ru,zaycev.net,gentside.com,gentside.de,gentside.co.uk,gentside.com.br,esgentside.com,maxisciences.com,ohmymag.com,ohmymag.de,ohmymag.com.br,ohmirevista.com##.button-share
+nexusmods.com,rusvideos.day,nuvid.com,m.vz.ru,zaycev.net,gentside.com,gentside.de,gentside.co.uk,gentside.com.br,esgentside.com,maxisciences.com,ohmymag.com,ohmymag.de,ohmymag.com.br,ohmirevista.com##.button-share
 hdblog.it##.leftsharebtn
 cameralabs.org##.data-social
 povarenok.ru##.share-bl

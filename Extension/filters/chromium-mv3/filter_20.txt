@@ -1,8 +1,8 @@
-! Checksum: F5/Z2UwuOr4iNr+yqnR27g
+! Checksum: B0MwbpYgkvauveRtGWoxnA
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.17.84
-! TimeUpdated: 2024-11-25T10:34:26+00:00
+! Version: 2.0.17.92
+! TimeUpdated: 2024-11-29T14:35:08+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -123,6 +123,15 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+m.sporx.com##a[href^="https://app.adjust.com/"]
+sporx.com##.pgContainer > a[title*="uygulamamızı"]
+sporx.com##.pgContainer > img[alt="Sporx Mobil uygulamaları"]
+||reddit.com^$removeparam=recap_redirect
+mangaraw.plus##.fixed.bottom-0.standalone\:hidden
+radio.de,radio.net,radio.at###always-visible-banner-desktop-banner
+radio.de,radio.net,radio.at##section[data-testid="home-app-dl-section"]
+store.onstove.com##.inds-gnb-banner
+eda.yandex.ru##.DesktopTrackingPageIndex_appLinks
 otto.de###sp_smartAppBanner
 sportler.com##div[id="arealayoutrowarea-row-4"]
 sportler.com##div[id="arealayoutrowarea-row-5"]
@@ -573,7 +582,7 @@ bbcgoodfood.com##.piano-inline-template__content
 makc.ru###main-mobile-app
 finance.yahoo.com#$#body > div.wafer-lightbox-overlay:has(> div.wafer-ligthbox-source-subscription-monalixa-overlay-lightbox) { display: none !important; }
 finance.yahoo.com#$#html { overflow: auto !important; }
-telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
+lescon.com.tr,telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
 telekom.de#%#//scriptlet('trusted-set-cookie', 'mma-banner', 'viewed')
 cod.tracker.gg,halotracker.com##.app-promo-section
 tracker.gg##.profile-hint
