@@ -116,7 +116,22 @@ export class Engine implements TsWebExtensionEngine {
         if (await RulesLimitsService.areFilterLimitsExceeded()) {
             toasts.showRuleLimitsAlert();
         }
-
+        /**
+         * Updates extension icon state after engine initialization in Manifest V3.
+         *
+         * Context:
+         * 1. This is called at the end of Engine.start() after all filters are initialized
+         * 2. In MV3, extension icon needs immediate update after engine start to prevent
+         *    incorrect 'warning' icon state.
+         *
+         * Warning icon behavior:
+         * - Without this update, warning icon persists until next UiApi.update() call
+         *   (which happens on tab change or window focus)
+         * - Warning icon may be valid during initialization when:
+         *   - Base filter (ID: 2) is enabled in manifest
+         *   - Default filters (IDs: 2, 10) are pending enablement.
+         */
+        iconsApi.update();
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
@@ -152,7 +167,7 @@ export class Engine implements TsWebExtensionEngine {
                 toasts.showRuleLimitsAlert();
             }
         }
-        // Update icon after engine update
+        // Updates extension icon state to reflect current filtering status.
         iconsApi.update();
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
