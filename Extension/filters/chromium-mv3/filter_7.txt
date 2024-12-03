@@ -1,8 +1,8 @@
-! Checksum: J1it+aoszjQ/dME4vtzH3w
+! Checksum: H1VIS3pwxXiMgFHYb8BJ+A
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.59.77
-! TimeUpdated: 2024-11-29T14:34:42+00:00
+! Version: 2.0.59.88
+! TimeUpdated: 2024-12-03T12:36:54+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -533,6 +533,7 @@ h178.com,j-baseball.club,j-basketball.club###gStickyAd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188965
 ||kuji.xth.jp/ad-x-check.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183252
+exploader.net#%#//scriptlet('spoof-css', 'article > div[style="margin-left: -63px;width: 1120px;height: 450px;margin-bottom: 5px;display: flex;align-items: center;"]', 'clip', 'auto')
 exploader.net#$#article > div[style="margin-left: -63px;width: 1120px;height: 450px;margin-bottom: 5px;display: flex;align-items: center;"] { position: absolute !important; clip:rect(1px,1px,1px,1px) !important; }
 @@||daotag.com/tag/$script,domain=exploader.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181591
@@ -1007,7 +1008,8 @@ kyukyoku-matome.com##.widget_pc_ad
 ##.textwidget a[href^="https://pcmax.jp/lp/?ad_id="] > img
 ##.widget_custom_html > .custom-html-widget > a[href^="https://www.e-nls.com/access.php"]
 !
-! placeholder on iOS
+! NOTE: placeholders on iOS
+! Usually, IFRAME and IMG leftovers, which cannot be collapced like with browser extensions
 ! uBO specific
 !---------------------------------------------------------------------------!
 !-------------- General javascript, CSS and HTML extensions ----------------!
@@ -1764,6 +1766,17 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+||mt-soft.sakura.ne.jp/kyozai/top_head.html
+mt-soft.sakura.ne.jp##frame[name="top_ads"]
+mt-soft.sakura.ne.jp##div[class^="ad"]
+mt-soft.sakura.ne.jp##a[href^="https://www.amazon.co.jp/"]
+ribbon.to##a[href^="http://www.woopie.jp/"]
+pref.aomori.lg.jp#?#.inner > h2:contains(広告)
+pref.aomori.lg.jp#?#.inner > h2:contains(広告) + div.gallery3
+pref.aomori.lg.jp#?#.inner > h2:contains(広告) + div.gallery3 + div.gallery3
+egg.5ch.net###longtwo
+bookmyname.com#%#//scriptlet('set-cookie-reload', '_scw_rgpd_analytics', 'false')
+||city.sakuragawa.lg.jp/data/banner/
 minkabu.jp##div[data-controller="footer-overlay"]
 dee-okinawa.com##.footerAD
 ||city.sanyo-onoda.lg.jp/uploaded/banner/
@@ -1772,7 +1785,6 @@ police.pref.miyagi.jp##.ft-bnr
 schizophonic9-2.com###tertiary > section.side-menu:has(> div.side-menu-title > a[href^="https://www.amazon.co.jp/"])
 schizophonic9-2.com###tertiary > section.side-menu:has(> div.side-menu-title > ins.adsbygoogle)
 schizophonic9-2.com###tertiary > section.side-menu:has(> div.side-menu-title > div.plugin-freearea)
-||yosakoimatsuri.com/wp-content/uploads/*.jpg$image
 nanjdesuno.blog.jp##div[class^="article-body"] > div > div[style^="display: flex; flex-direction: column; align-items: center"]:has(> a[href^="https://www.amazon.co.jp"])
 jafmate.jp##a[id^="ad_"][id$="03"]
 idol-culture.jp##.entrybody > div[style="min-height: 170px;"]
@@ -1812,7 +1824,7 @@ city.natori.miyagi.jp##.footer_banner_wrap
 my-best.com##div[data-testid^="advertisement-"]
 appget.com#$#.pc_block[style^="position: sticky"] { margin-bottom: 0 !important; }
 iphoroid.jp##.spmode[style$="width:620px;"]
-chaos2ch.com##a[rel="noopener sponsored"]
+nikke-jp-news.com,yaruomatomex.com,chaos2ch.com##a[rel="noopener sponsored"]
 jumpmatome2ch.biz###sidebar > aside#text-12:has(> .textwidget > p > a[target="_blank"] > img[src*="bnr_"])
 ||city.musashino.lg.jp/_res/projects/default_project/_project_/ads/
 city.musashino.lg.jp##.sadbg
@@ -1836,7 +1848,6 @@ reserva.be##.ad_tab_wrap
 gakufu.gakki.me###main center > a[href^="https://www.amazon.co.jp/dp/"]
 alfalfalfa.com##div[style="text-align:center;margin-bottom:15px;height:250px;"]
 ||sutekinakijo.com/ads/
-geinoutopics-plus.blog.jp##img[src^="https://www19.a8.net/"]
 ||city.bunkyo.lg.jp/banner/
 chocotabi-saitama.jp###banner_area > h3
 chocotabi-saitama.jp##.banner_a
@@ -2564,7 +2575,6 @@ city.higashimatsuyama.lg.jp##.top_banner8
 city.higashimatsuyama.lg.jp##.top_banner9
 city.hakodate.hokkaido.jp##.top-footer-banner
 nikke-jp-news.com##.wr
-nikke-jp-news.com##a[rel="noopener sponsored"]
 ||city.akiruno.tokyo.jp/cmsfiles/banner/
 ||kimamamatome.doorblog.jp/ad*.js
 kimamamatome.doorblog.jp###sidebar-inner > div:has(> div.right-container-ads)
@@ -4814,7 +4824,8 @@ as-web.jp##.contentWrapper aside.banner
 picb2.com##.dmm-widget-wrapper
 picb2.com##.forum-information > table[border="0"]
 picb2.com##.forum-information > a[href^="https://summary.fc2.com/a/summary.php"]
-a.picb2.com##.col-md-8.order-md-0 > div.content > div.border-bottom.pb-3.d-md-block:has(a[href^="https://al.dmm.co.jp"])
+||ebook-assets.dmm.co.jp/digital/e-book/$image,domain=a.picb2.com
+a.picb2.com##.content > div.border-bottom[class*="d-block"]
 a.picb2.com##.forum-information > a[target^="_blank"]
 a.picb2.com##.forum-information > a[target^="_blank"] ~ br
 a.picb2.com##.forum-information > span[style^="FONT-SIZE:"]
@@ -5113,7 +5124,7 @@ ske48matome.net###sub div.column-inner-2 > br
 ske48matome.net###sub div.column-inner-2 > table[border="0"]
 fc2.com,nicovideo.jp###ad-footer
 becoolusers.com,moneyforward.com###ad-header
-city.namegata.ibaraki.jp,city.tsuchiura.lg.jp,city.tsukubamirai.lg.jp,city.ohtawara.tochigi.jp###adBanner
+city.sakuragawa.lg.jp,city.namegata.ibaraki.jp,city.tsuchiura.lg.jp,city.tsukubamirai.lg.jp,city.ohtawara.tochigi.jp###adBanner
 yawarakai.com##.hentry > div.center
 e-venz.com##.kijishita_ranking
 techinsight.jp##.rectangle-images
@@ -5502,7 +5513,7 @@ city.bunkyo.lg.jp,city.nagano.nagano.jp,pref.toyama.jp,city.kuwana.lg.jp###tmp_b
 city.marugame.lg.jp##.under-banner
 city.matsusaka.mie.jp##.p-toppage__koukoku
 city.mishima.shizuoka.jp###sponsor-banner
-city.mito.lg.jp,pref.yamaguchi.lg.jp,city.matsumoto.nagano.jp,city.uji.kyoto.jp###top_banner_kokoku
+city.makurazaki.lg.jp,city.mito.lg.jp,pref.yamaguchi.lg.jp,city.matsumoto.nagano.jp,city.uji.kyoto.jp###top_banner_kokoku
 city.miyakonojo.miyazaki.jp###top_photo_banner
 city.miyazaki.miyazaki.jp##.bnrWOut
 city.fukaya.saitama.jp,city.kunitachi.tokyo.jp,city.moriguchi.osaka.jp,city.nemuro.hokkaido.jp##.kokokuMod
@@ -5573,7 +5584,7 @@ hint-pot.jp##.box-header
 football-zone.net,hint-pot.jp##.box-top
 nazolog.com##td[height="280"]
 kuroyonhon.com###commodity_ul
-bokumato.site###preview_dispAffi
+neko-dan.net,bokumato.site###preview_dispAffi
 supari.jp,open-code.tech,ichimame.com,cjcla.org,rpg-fan.jp,pressroom.jp,dearfukui.jp,phuot.site,abten.net,nakoruru.jp,xn--ecklz8ppb5cc7e3858d8zc.com,adult3110.com,kidanlog.com##.widget_custom_html
 ||jugem.jp/ad/
 jugem.jp##.top-ad__wrapper--center
@@ -6686,7 +6697,7 @@ hrs-game.main.jp,main-hrs-game.ssl-lolipop.jp##.ads_336
 hrs-game.main.jp,main-hrs-game.ssl-lolipop.jp##.ads_336x280
 hrs-game.main.jp,main-hrs-game.ssl-lolipop.jp,jishin-yogen.com##.ads_970x90
 valorantnews.jp##.header-cls
-valorantnews.jp###amgatti_sk-2
+valorant-5chnews.com,valorantnews.jp###amgatti_sk-2
 monayoblog.com##.kaisetsu-box2
 ||denfaminicogamer.jp/wp-content/plugins/dfng-amazon-widgets/
 ||denfaminicogamer.jp/wp-content/themes/dfng_news_org/js/*-jack.js

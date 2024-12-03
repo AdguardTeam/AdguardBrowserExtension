@@ -1,8 +1,8 @@
-! Checksum: IWRVdyDVbAPqNT0/qgQvRg
+! Checksum: MqA57tlbNMyl/DUYcoIPlQ
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.10.34
-! TimeUpdated: 2024-11-29T09:34:42+00:00
+! Version: 2.0.10.37
+! TimeUpdated: 2024-12-03T12:37:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -152,6 +152,11 @@ nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.livedoor.blog,kimamamatome.
 !
 ! NOTE: Blogroll specific rules
 !
+jiwasoku.com##[id^="mobile_text"]:has(> div.text-mobile > div[id^="sp-top_body"])
+jiwasoku.com##[class^="widget"]:has(> div > div[id^="top_body"])
+jiwasoku.com###widget-in-article
+||danseisama.com/js/*link.js
+kimootoko.net##div:has(> div.textwidget > div.tyuou)
 vipnews.jp###lite_link:has(> ul.list-box > li > a[href^="https://bit.ly/"])
 vipnews.jp##.article-body > b:has(> a[href^="https://bit.ly/"])
 vipnews.jp##.article-body > div:has(> b > a[href^="https://bit.ly/"])
