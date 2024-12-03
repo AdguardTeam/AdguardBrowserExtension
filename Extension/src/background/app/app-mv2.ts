@@ -142,9 +142,9 @@ export class App {
         /**
          * Injects content scripts into already open tabs.
          *
-         * Skips injection when:
-         * - Statistics collection is enabled.
-         * - Content scripts have already been injected in the current session.
+         * Does injection when all requirements are met:
+         * - Statistics collection is disabled.
+         * - Content scripts have not been injected in the current session.
          *
          * This prevents conflicts from multiple `cssHitCounters` and avoids unnecessary injections.
          */

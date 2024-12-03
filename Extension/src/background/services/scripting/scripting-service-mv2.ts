@@ -16,6 +16,86 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser from 'webextension-polyfill';
+import browser, { type ExtensionTypes } from 'webextension-polyfill';
 
-export const executeScript = browser.tabs.executeScript;
+import { logger } from '../../../common/logger';
+
+import { type ExecuteScriptOptionsCommon } from './types';
+
+/**
+ * ExecuteScriptOptionsCommon with MV2 specific fields.
+ */
+type ExecuteScriptOptionsMv2 = ExecuteScriptOptionsCommon & {
+    /**
+     * The time at which the script should be executed.
+     */
+    runAt?: ExtensionTypes.RunAt;
+
+    /**
+     * Code to inject.
+     */
+    code?: string;
+};
+
+/**
+ * Executes a script in the context of a given tab.
+ *
+ * @param tabId The tab ID.
+ * @param options The options for the script execution.
+ * @throws Basic {@link Error} if passed options contains invalid or unsupported fields.
+ */
+export const executeScript = async (
+    tabId: number | undefined,
+    options: ExecuteScriptOptionsMv2,
+): Promise<void> => {
+    if (!tabId) {
+        logger.debug('Tab id is not provided');
+        return;
+    }
+
+    const {
+        frameId,
+        allFrames,
+        runAt,
+        files = [],
+        code,
+    } = options;
+
+    const hasFiles = files.length !== 0;
+    const hasCode = code !== undefined;
+
+    // Ensure that at least one and not both of the 'files' or 'code' is provided
+    if (hasFiles === hasCode) {
+        throw new Error('Provide either "files" or "code", but not both.');
+    }
+
+    const executeScriptOptions: ExtensionTypes.InjectDetails = {
+        frameId,
+        allFrames,
+        runAt,
+    };
+
+    let tasks: Promise<unknown[]>[] = [];
+    if (hasFiles) {
+        tasks = files.map((file) => browser.tabs.executeScript(tabId, {
+            ...executeScriptOptions,
+            file,
+        }));
+    } else if (hasCode) {
+        tasks = [
+            browser.tabs.executeScript(tabId, {
+                ...executeScriptOptions,
+                code,
+            }),
+        ];
+    }
+
+    const promises = await Promise.allSettled(tasks);
+
+    // Handles errors
+    promises.forEach((promise) => {
+        if (promise.status === 'rejected') {
+            logger.error('Cannot inject script to tab due to: ', promise.reason);
+        }
+    });
+};

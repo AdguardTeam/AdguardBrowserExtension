@@ -18,8 +18,6 @@
 
 import browser, { type WebNavigation } from 'webextension-polyfill';
 
-import { executeScript } from 'scripting-service';
-
 import {
     MAIN_FRAME_ID,
     isHttpOrWsRequest,
@@ -38,6 +36,7 @@ import { messageHandler } from '../../message-handler';
 import { listeners } from '../../notifier';
 import { engine } from '../../engine';
 import type { CustomFilterMetadata } from '../../schema';
+import { executeScript } from '../scripting/scripting-service-mv2';
 
 /**
  * Service for processing events with custom filters.
@@ -136,7 +135,7 @@ export class CustomFiltersService {
 
         try {
             await executeScript(tabId, {
-                file: `/${SUBSCRIBE_OUTPUT}.js`,
+                files: [`/${SUBSCRIBE_OUTPUT}.js`],
                 runAt: 'document_start',
                 frameId,
             });
