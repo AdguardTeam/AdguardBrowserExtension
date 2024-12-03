@@ -1,8 +1,8 @@
-! Checksum: Bw3CB1dTZJZgwV5s6tACbg
+! Checksum: iabdFdqoSQBMzXHhZoCnDA
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.44.80
-! TimeUpdated: 2024-11-29T14:34:39+00:00
+! Version: 2.0.44.84
+! TimeUpdated: 2024-12-03T13:35:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -434,6 +434,8 @@ essen-und-trinken.de,urbia.de#%#!function(){function b(){}function a(a){return{g
 schnittmuster-datenbank.de#%#//scriptlet("abort-on-property-read", "adsBlocked")
 !
 !
+! https://github.com/uBlockOrigin/uAssets/issues/26234
+dfbplay.tv#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189027
 xup.in#%#//scriptlet('set-constant', 'zshowabx', 'noopFunc')
 xup.in##body div#xupabx
@@ -1081,6 +1083,7 @@ gmx.net,gmx.at,web.de#%#(()=>{const a=(a,b,c)=>{const d=Reflect.apply(a,b,c),e="
 chip.de#%#//scriptlet('abort-current-inline-script', 'document.querySelector', 'DisplayAcceptableAdIfAdblocked')
 chip.de#%#//scriptlet('trusted-replace-node-text', 'style', '/a [\s\S]* padding-top[\s\S]*aspect-ratio/', '/.*(\..*?) [\s\S]*padding-top[\s\S]*aspect-ratio[\s\S]*/', '$1 { display: none !important; }')
 chip.de#%#(()=>{const t={construct:(t,n,e)=>{const o=n[0],r=o?.toString();return r&&r.length>500&&r.length<1e3&&/=>[\s\S]*?for[\s\S]*?\[.+\]/.test(r)&&(n[0]=()=>{}),Reflect.construct(t,n,e)}};window.MutationObserver=new Proxy(window.MutationObserver,t)})();
+!+ NOT_PLATFORM(ext_ff)
 chip.de#%#(()=>{document.addEventListener('DOMContentLoaded',()=>{const o=[];[...document.scripts].forEach((c=>{const n=c.innerText,t=/window\..*\["(.*)"]/;if(n.includes('"impr":')){const c=n.match(t)[1];o.push(c)}})),o.forEach((o=>{const c=document.querySelector(`.${o}`);c&&c.remove()}))})})();
 ! chip.de - ad popup when pressing download
 chip.de#%#//scriptlet('set-cookie', 'chipde-r2d2-view-state ', '1')
@@ -1526,6 +1529,10 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+||api.app.dfbplay.tv/*/Adverts/
+winfuture.de##.green_box.bulb:has( a[href^="https://winfutu.re"])
+winfuture.de##.green_box.bulb[style="display: none !important;"] + br
+winfuture.de##a[href^="https://winfutu.re"] + br
 gameswirtschaft.de##div.wpb_text_column:has(> div.wpb_wrapper > div.aawp)
 noz.de##.container-ob
 noz.de#$?#.outer-wrapper { remove: true; }
@@ -6488,7 +6495,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||cussixia.de^$third-party
 ||cyonix.to^$third-party
 ||data-analyst.biz^$third-party
-||de-ads.de^$third-party
 ||def-platform.com^$third-party
 ||def-platform.de^$third-party
 ||def-platform.net^$third-party
@@ -10112,6 +10118,7 @@ popkultur.de##.sc-button[href^="https://www.amazon.de/"]
 servus.com,terramatermagazin.com##.sda
 sport.sky.de##.sdc-site-au__leaderboard
 sport.sky.de##.sdc-site-au__mpu-1
+forum.digitalfernsehen.de##.sdgAdServerAnchor
 augsburger-allgemeine.de,golem.de,rheinische-anzeigenblaetter.de,t-online.de,watson.de##.sdgSlotContainer
 sportdeutschland.tv##.sdtv-gothaer
 trvlcounter.de##.second_slot

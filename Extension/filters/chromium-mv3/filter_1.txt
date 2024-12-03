@@ -1,8 +1,8 @@
-! Checksum: GkysS5lEjYL68DAM48knzw
+! Checksum: UaAQVs4ak8gWvL1pUsIxIw
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.95.77
-! TimeUpdated: 2024-11-29T16:31:11+00:00
+! Version: 2.0.95.84
+! TimeUpdated: 2024-12-03T16:31:07+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -4211,6 +4211,7 @@ http://w7.ru^$third-party
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||media-advcycle.imgsmail.ru^
 ||sdk.kokocads.com^$third-party
 ||r1.ati.su^
 ||rcmjs.rambler.ru^
@@ -7362,6 +7363,7 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+epravda.com.ua##.unit_level_banner
 gamak.tv###ima-ad-container
 unian.net##.newsfeed__banner
 unian.net##.partner-news
@@ -7648,6 +7650,7 @@ ivanovonews.ru,gorodn.ru,bits.media,devyatka.ru,gazeta-n1.ru,gorod48.ru,hi-fi.ru
 !
 !
 !
+mu-kgt.ru##.contract-widget
 smart-lab.ru##.slide-sidebar__banner
 smart-lab.ru##.post-page__banner
 smart-lab.ru##.lower-banner
@@ -7674,7 +7677,7 @@ amur.life##a[href^="https://ads.amur.life/"]:not(:has(> img[alt="Amurlife"]))
 kttc.ru##a[href^="https://click.track-lesta.ru/"]
 ||kttc.ru/images/wot/kttc_ref.jpg
 postal.ninja##.pnj-ax-content:has(> ins.adsbygoogle[data-ad-slot])
-byrutgame.org##.block_down_game > div.block_down:has(> a.itemdown_nottorent)
+byrutgame.org##.block_down_game > div.block_down:has(> a[class*="itemdown_nottorent"])
 sakhalinmedia.ru##.banner-container
 ||1progs.ru/wp-content/uploads/2023/10/ya_bn.png
 myip.ru##div:has(> p#ad-info)
@@ -17905,6 +17908,9 @@ vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animero
 xn--90awu.xn--j1amh##a[href^="/component/banners/"]
 !
 ! autonews.ru,rbc.ru,rbcplus.ru,sportrbc.ru
+rbc.ru##.main__inner > div.main__feed:has(> div.main__feed__link > div[class="fox-tail"])
+rbc.ru##.item_promo-card
+rbc.ru##.js-index-central-column > div[data-publisher-index]:has(div[data-yandex-show-event] > div.showcase-collection__footer > p)
 rbc.ru##div[data-placement]
 rbc.ru#?#.l-col-100h-parent > div.l-col-100h:has(> div.l-sticky > div.fox-tail > a.banner__container__link)
 autonews.ru,rbc.ru##.topline__branding__wrapper
@@ -18351,8 +18357,7 @@ youla.ru##.product_item--ad
 vfokuse.mail.ru##a[class^="rb-"][class*="branding"]
 !
 ! VK
-vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content div[class*="mkit_"][class*="noClick"]:upward(#feed_rows > div[class="feed_row "])
-vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content div[data-role="advertisinglabel"]:upward(#feed_rows > div[class="feed_row "])
+vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content div.ads_wall_text:upward(#feed_rows > div[class="feed_row "])
 vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content > div.ads_light_container:upward(#feed_rows > div[class="feed_row "])
 vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div[id^="post-"] span:not([class^="PostHeader"]):contains(Реклама):upward(#feed_rows > div[class="feed_row "])
 vk.com,vk.ru###feed_rows > div.feed_row > div.post:has(a[data-ad-details-link])
