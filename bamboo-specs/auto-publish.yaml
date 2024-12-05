@@ -1,0 +1,76 @@
+---
+version: 2
+deployment:
+  name: browser extension - auto-publish
+  source-plan: ADGEXT-AUTOBUILD
+release-naming: ${bamboo.inject.version}
+
+environments:
+  - AutoDeployAndPublish
+
+AutoDeployAndPublish:
+  # TODO: Uncomment after first successful build.
+  # run auto-deploy only after successful build
+  # triggers:
+  #   - build-success
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: true
+    - artifact-download:
+        artifacts:
+          - name: chrome-mv3-beta.zip
+    - artifact-download:
+        artifacts:
+          - name: chrome-mv3-release.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+            ls -la
+
+            # Extract target 'release' or 'beta' from branch name.
+            releaseType="${bamboo.planRepository.branchName##*-}"
+
+            # Rename beta artifact to the final name, this is needed because
+            # we use one common name 'chrome-mv3.zip' for both beta and release
+            # artifacts inside deploy script.
+            mv chrome-mv3-beta.zip chrome-mv3.zip
+
+            # Deploying and publishing beta in Chrome Web Store.
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
+
+            # Remove published zip.
+            rm chrome-mv3.zip
+
+            # Rename release artifact to the final name, this is needed because
+            # we use one common name 'chrome-mv3.zip' for both beta and release
+            # artifacts inside deploy script.
+            mv chrome-mv3-release.zip chrome-mv3.zip
+
+            # Deploying and publishing beta in Chrome Web Store.
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+        configuration:
+          selectedRepository: defaultRepository
+          # TODO: Remove "test_" after first couple of test runs.
+          tagName: test_v${bamboo.inject.version}
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds

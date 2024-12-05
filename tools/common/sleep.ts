@@ -1,6 +1,5 @@
 /**
  * @file
- *
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * AdGuard Browser Extension is free software: you can redistribute it and/or modify
@@ -17,26 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Logger, LogLevel } from '@adguard/logger';
-
-class ExtendedLogger extends Logger {
-    isVerbose(): boolean {
-        return this.currentLevel === LogLevel.Debug
-             || this.currentLevel === LogLevel.Trace;
-    }
-}
-
-const logger = new ExtendedLogger();
-
-logger.currentLevel = IS_RELEASE || IS_BETA
-    ? LogLevel.Info
-    : LogLevel.Trace;
-
-// Expose logger to the window object,
-// to have possibility to switch log level from the console.
-// Example: adguard.logger.currentLevel = 'debug'
-
-// eslint-disable-next-line no-restricted-globals
-Object.assign(self, { adguard: { ...self.adguard, logger } });
-
-export { LogLevel, logger };
+/**
+ * Awaits required period of time.
+ *
+ * @param timeoutMs Time to wait.
+ *
+ * @returns Promise that resolves after `timeoutMs`.
+ */
+export const sleep = (timeoutMs: number): Promise<unknown> => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, timeoutMs);
+    });
+};

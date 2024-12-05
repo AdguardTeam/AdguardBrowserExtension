@@ -1,6 +1,5 @@
 /**
  * @file
- *
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * AdGuard Browser Extension is free software: you can redistribute it and/or modify
@@ -17,26 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Logger, LogLevel } from '@adguard/logger';
-
-class ExtendedLogger extends Logger {
-    isVerbose(): boolean {
-        return this.currentLevel === LogLevel.Debug
-             || this.currentLevel === LogLevel.Trace;
-    }
+export enum Product {
+    Win = 'Windows',
+    Mac = 'MacOS',
+    Android = 'Android',
+    Chrome = 'Chrome',
+    Edge = 'Edge',
+    Firefox = 'Firefox',
+    Opera = 'Opera',
+    EdgeLegacy = 'Edge Legacy',
+    Safari = 'Safari',
+    Ios = 'iOS',
+    ContentBlocker = 'Content Blocker',
+    Mv3 = 'Browser Extension MV3',
 }
-
-const logger = new ExtendedLogger();
-
-logger.currentLevel = IS_RELEASE || IS_BETA
-    ? LogLevel.Info
-    : LogLevel.Trace;
-
-// Expose logger to the window object,
-// to have possibility to switch log level from the console.
-// Example: adguard.logger.currentLevel = 'debug'
-
-// eslint-disable-next-line no-restricted-globals
-Object.assign(self, { adguard: { ...self.adguard, logger } });
-
-export { LogLevel, logger };

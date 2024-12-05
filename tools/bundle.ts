@@ -155,6 +155,9 @@ const chrome = async (options: CommanderOptions) => {
 const chromeMv3 = async (options: CommanderOptions) => {
     try {
         await bundleChromeMv3(options);
+        if (!options.watch) {
+            await buildInfo();
+        }
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -191,6 +194,15 @@ const firefox = async (options: CommanderOptions) => {
 const firefoxStandalone = async (options: CommanderOptions) => {
     try {
         await runBuild(firefoxStandalonePlan, options);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
+const buildVersion = async () => {
+    try {
+        await buildInfo();
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -245,6 +257,13 @@ program
     .description('Builds signed extension for firefox browser')
     .action(() => {
         firefoxStandalone(program.opts());
+    });
+
+program
+    .command('build-version')
+    .description('Extract package version to build.txt')
+    .action(() => {
+        buildVersion();
     });
 
 program
