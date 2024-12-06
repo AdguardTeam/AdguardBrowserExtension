@@ -38,7 +38,10 @@ Build:
 
             ls -la
 
-            pnpm install
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
             pnpm beta firefox-standalone
 
             # zip source files for publishing on AMO
