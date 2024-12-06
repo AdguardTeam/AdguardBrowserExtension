@@ -37,7 +37,10 @@ Build:
 
             ls -la
 
-            pnpm install
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
             pnpm locales validate --min
             pnpm release
 

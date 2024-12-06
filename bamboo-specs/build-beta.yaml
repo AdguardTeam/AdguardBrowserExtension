@@ -40,7 +40,10 @@ Build:
 
             ls -la
 
-            pnpm install
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
             pnpm beta
 
             # Create artifacts directory if it doesn't exist
