@@ -1,8 +1,8 @@
-! Checksum: GS0Q9b/n2JTVv4Dx9LMYfg
+! Checksum: fLyNvK2nT+yc4x3kwPAlFw
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.4.88
-! TimeUpdated: 2024-12-03T17:02:14+00:00
+! Version: 2.0.4.92
+! TimeUpdated: 2024-12-05T15:18:46+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -7445,6 +7445,10 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||cn-steam.com^$all
 !+ NOT_OPTIMIZED
 ||com/p/jcod-ppsr/huasdirjdo^$document,to=~steamcommunity.com
+! https://urldna.io/scan/674d1a3a8f91d82737b733fd
+! https://www.virustotal.com/gui/url/2d6dcd57c666e116114d1a2bb06c15bb57ac9ce3d5fc9c9dea2ad23de5ea35f9
+!+ NOT_OPTIMIZED
+||usersworkshoparts.com^$all
 ! garena
 !+ NOT_OPTIMIZED
 /^https:\/\/(?:www\.)?(?:ff[-.])?member[-.]gare[a-z]+a(?:\.pro)?\.vn\//$document,to=vn|~garena.vn
@@ -7927,6 +7931,12 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/079563d015c00efbca61d80c59f00d19ef06ccbc9922565e1d6d388c99986ba4
 !+ NOT_OPTIMIZED
 ||veratv-mtic.vera.com.uy/r/$document
+! https://urldna.io/scan/67507c616f88e161d7e39ff9
+! https://www.virustotal.com/gui/url/45fb09e403d0d5908fdc97144ba574cb72b2c909993402d7dd525faae65252bc
+!+ NOT_OPTIMIZED
+||westpace-support.freewebhostmost.com^$document
+!+ NOT_OPTIMIZED
+||freewebhostmost.com/*/spotify/$document
 ! swisspass
 !+ NOT_OPTIMIZED
 ||divinedownload.com^$all,to=~swisspass.ch
@@ -9996,6 +10006,10 @@ uploadfox.net###ad-gs-05
 !+ NOT_OPTIMIZED
 ||bteux.com^$document
 !+ NOT_OPTIMIZED
+||childrenoftheclouds.com^$document
+!+ NOT_OPTIMIZED
+||dating-express.com^$document
+!+ NOT_OPTIMIZED
 ||doorsstormsy.shop^$document
 !+ NOT_OPTIMIZED
 ||emailservicesnetau.com^$document
@@ -10005,6 +10019,8 @@ uploadfox.net###ad-gs-05
 ||findthorman.shop^$document
 !+ NOT_OPTIMIZED
 ||glaters.com^$document
+!+ NOT_OPTIMIZED
+||homtail.shop^$document
 !+ NOT_OPTIMIZED
 ||keydoordasher.shop^$document
 !+ NOT_OPTIMIZED
@@ -10018,9 +10034,17 @@ uploadfox.net###ad-gs-05
 !+ NOT_OPTIMIZED
 /unsub_sent.php|$document,method=post
 !+ NOT_OPTIMIZED
+/^https?:\/\/www\.[a-z]{9,20}\.com\/o-[a-z]{4}-[a-z]\d6-[a-f0-9]{32}\b/$document,match-case,to=com
+!+ NOT_OPTIMIZED
+/^https?:\/\/[a-z]+\.[a-z]{4,}\/oop\/\d+_md(?:\/\d+){5}\b/$document,match-case
+!+ NOT_OPTIMIZED
 ##html > body.hold-transition.theme-primary.bg-img[style^="background-image"][style*="wallpaperaccess.com"][style*="background-repeat"][style*="background-size"]
 !+ NOT_OPTIMIZED
 ##html > body > div.container > form#unsubscribe-form[onsubmit="submitUnsubscribeForm(event)"]
+!+ NOT_OPTIMIZED
+##html > body > div.content > dl > dd.dd1 > div.min_sider > form#form1[action="unsubscribe.php"]
+!+ NOT_OPTIMIZED
+##html > body.body > div.container > div.content > form > table.optoutForm
 ! Pretending to be a government service
 !+ NOT_OPTIMIZED
 ||detranrapido.co^$all
@@ -10132,3 +10156,7 @@ uploadfox.net###ad-gs-05
 ! https://github.com/uBlockOrigin/uAssets/issues/26280
 !+ NOT_OPTIMIZED
 ||igetintopc.com^$all
+! https://www.reddit.com/r/Scams/comments/1h4yn23/is_this_a_usps_scam/
+! https://www.reddit.com/r/phishing/comments/1h5nqhn/is_this_a_scam/
+!+ NOT_OPTIMIZED
+||usps-packages-*.com^$document,to=~usps.com
