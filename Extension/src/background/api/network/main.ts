@@ -17,7 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import { TsWebExtension } from '@adguard/tswebextension/mv3';
+import { FiltersApi } from '@adguard/tswebextension/mv3';
 import {
     FiltersDownloader,
     DefinedExpressions,
@@ -186,7 +186,7 @@ export class Network {
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
             if (__IS_MV3__ && filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
                 // TODO: Check if its needed
-                const rawFilterList = await TsWebExtension.getRawFilterList(filterId, 'filters/declarative');
+                const rawFilterList = await FiltersApi.getRawFilterList(filterId, 'filters/declarative');
 
                 return {
                     filter: rawFilterList.split(NEWLINE_CHAR_REGEX),
