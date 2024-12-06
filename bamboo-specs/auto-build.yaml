@@ -11,6 +11,13 @@ variables:
   dockerNode: adguard/extension-builder:18.19.0--0.1.3
 
 stages:
+  - Tests:
+      manual: false
+      final: false
+      jobs:
+        - Lint
+        - Unit tests
+        - Locales check
   - Update filters:
       manual: false
       final: false
@@ -21,14 +28,117 @@ stages:
       final: false
       jobs:
         - AutoBuild
-  - Tests:
+  - Integration tests:
       manual: false
       final: false
       jobs:
-        - Lint
-        - Unit tests
         - Integration tests
-        - Locales check
+
+Lint:
+  key: LINT
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            # Fix mixed logs.
+            exec 2>&1
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+
+            pnpm lint
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - bamboo-specs/scripts/cleanup.sh
+  requirements:
+    - adg-docker: 'true'
+
+Unit tests:
+  key: UNITTESTS
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            # Fix mixed logs.
+            exec 2>&1
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+
+            pnpm test
+  final-tasks:
+    - test-parser:
+        type: junit
+        test-results: 'tests-reports/unit-tests.xml'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - bamboo-specs/scripts/cleanup.sh
+  requirements:
+    - adg-docker: 'true'
+
+Locales check:
+  key: LOCALESCHECK
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            # Fix mixed logs.
+            exec 2>&1
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+
+            pnpm locales validate --min
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - bamboo-specs/scripts/cleanup.sh
+  requirements:
+    - adg-docker: 'true'
+
 
 Update filters:
   key: UPDATEFILTERS
@@ -141,77 +251,6 @@ AutoBuild:
       pattern: chrome-mv3-release.zip
       shared: true
       required: true
-  requirements:
-    - adg-docker: 'true'
-
-Lint:
-  key: LINT
-  other:
-    clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-  tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-            ls -la
-
-            # Fix mixed logs.
-            exec 2>&1
-
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
-
-            pnpm install ${bamboo.varsPnpm}
-
-            pnpm lint
-  final-tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - bamboo-specs/scripts/cleanup.sh
-  requirements:
-    - adg-docker: 'true'
-
-Unit tests:
-  key: UNITTESTS
-  other:
-    clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-  tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-            ls -la
-
-            # Fix mixed logs.
-            exec 2>&1
-
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
-
-            pnpm install ${bamboo.varsPnpm}
-
-            pnpm test
-  final-tasks:
-    - test-parser:
-        type: junit
-        test-results: 'tests-reports/unit-tests.xml'
-    - script:
-        interpreter: SHELL
-        scripts:
-          - bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
