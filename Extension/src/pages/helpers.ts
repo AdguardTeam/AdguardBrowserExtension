@@ -67,19 +67,6 @@ export const handleFileUpload = (file: File, requiredExtension: string): Promise
     });
 };
 
-/**
- * Awaits required period of time.
- *
- * @param timeoutMs Time to wait.
- *
- * @returns Promise that resolves after `timeoutMs`.
- */
-export const sleep = (timeoutMs: number): Promise<unknown> => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, timeoutMs);
-    });
-};
-
 const indexOfIgnoreCase = (str: string, searchString: string): number => {
     return str.toLowerCase().indexOf(searchString.toLowerCase());
 };

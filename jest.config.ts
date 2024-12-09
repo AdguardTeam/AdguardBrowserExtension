@@ -73,6 +73,16 @@ const config: Config = {
         IS_BETA: false,
         __IS_MV3__: MANIFEST_ENV === '3',
     },
+    reporters: [
+        'default',
+        [
+            'jest-junit',
+            {
+                outputDirectory: './tests-reports',
+                outputName: 'unit-tests.xml',
+            },
+        ],
+    ],
 };
 
 export default config;
