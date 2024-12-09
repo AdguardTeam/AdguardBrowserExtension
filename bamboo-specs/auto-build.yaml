@@ -64,7 +64,7 @@ Lint:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -101,7 +101,7 @@ Unit tests:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -135,7 +135,7 @@ Locales check:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -163,7 +163,7 @@ Update filters:
             ls -la
 
             # Validate that current branch is valid for build.
-            ./scripts/validate_branch.sh
+            ./bamboo-specs/scripts/validate_branch.sh
 
             # Set cache directory
             pnpm config set store-dir ${bamboo.cachePnpm}
@@ -181,7 +181,7 @@ Update filters:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -237,7 +237,7 @@ AutoBuild:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   artifacts:
     # For integration tests and publish.
     - name: chrome-mv3-beta.zip
@@ -283,7 +283,7 @@ Integration tests:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 

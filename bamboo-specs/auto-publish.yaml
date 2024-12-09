@@ -3,7 +3,9 @@ version: 2
 deployment:
   name: browser extension - auto-publish
   source-plan: ADGEXT-AUTOBUILD
-release-naming: ${bamboo.inject.version}
+release-naming:
+  next-version-name: ${bamboo.inject.version}
+  applies-to-branches: true
 
 environments:
   - AutoDeployAndPublish
@@ -12,7 +14,8 @@ AutoDeployAndPublish:
   # TODO: Uncomment after first successful build.
   # run auto-deploy only after successful build
   # triggers:
-  #   - build-success
+  #   - build-success:
+  #       branch: release/mv3-filters
   tasks:
     - clean
     - checkout:
