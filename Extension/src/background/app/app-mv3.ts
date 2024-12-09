@@ -49,7 +49,6 @@ import {
     PageStatsApi,
     UiApi,
     HitStatsApi,
-    iconsApi,
 } from '../api';
 import {
     UiService,
@@ -276,17 +275,6 @@ export class App {
 
         // Runs tswebextension
         await engine.start();
-
-        /**
-         * In MV3 the icon should be updated after the engine start,
-         * otherwise 'warning' icon may be displayed until the user do some actions,
-         * that is until UiApi.update() is not triggered (on change of tab or window focus).
-         *
-         * And 'warning' icon can be legitimately displayed during app initialization
-         * when base filter ruleset is enabled in manifest — actuallyEnabledFilters is [2] —
-         * and there are expectedEnabledFilters — [2, 10] — which should be enabled by default (initDefaultFilters).
-         */
-        iconsApi.update();
 
         appContext.set(AppContextKey.IsInit, true);
 
