@@ -91,13 +91,27 @@ interface RuleSetCountersMap {
  * Service to work with configuration result.
  */
 export class RulesLimitsService {
-    configurationResult: ConfigurationResult | null = null;
+    private rulesLimits?: IRulesLimits;
+
+    private ruleSetCountersMap?: RuleSetCountersMap;
+
+    private dynamicRulesEnabledCount = 0;
+
+    private dynamicRulesLimitExceedError?: TooManyRulesError;
+
+    private unsafeRulesEnabledCount = 0;
+
+    private unsafeRulesLimitExceedErr?: TooManyUnsafeRulesError;
+
+    private regexpRulesEnabledCount = 0;
+
+    private regexpRulesLimitExceedErr?: TooManyRegexpRulesError;
 
     /**
      * Is filtering enabled or not. If disabled - service will turn off all
      * checks for limitations.
      */
-    isFilteringEnabled: boolean = true;
+    private isFilteringEnabled: boolean = true;
 
     /**
      * Subscribes to messages from the options' page.
@@ -141,7 +155,7 @@ export class RulesLimitsService {
      */
     private static getRuleSetsCountersMap = (result: ConfigurationResult): RuleSetCountersMap => {
         const counters = result.staticFilters.reduce((acc: { [key: number]: RuleSetCounter }, ruleset) => {
-            const filterId = Number(ruleset.getId().slice(RULESET_NAME_PREFIX.length));
+            const filterId = Number(ruleset.getId().slice(RULESET_NAME_PREFIX.length)); // FIXME: use extractor
 
             acc[filterId] = {
                 filterId,
@@ -185,14 +199,12 @@ export class RulesLimitsService {
     /**
      * Gets the static ruleset counter by filter id.
      *
-     * @param result Configuration result.
      * @param filterId Filter id.
      * @returns The static ruleset counter.
      * @throws Error if the ruleset counter is not found.
      */
-    private static getStaticRuleSetCounter(result: ConfigurationResult, filterId: number): RuleSetCounter {
-        const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
-        const ruleSetsCounter = ruleSetsCounters[filterId];
+    private getStaticRuleSetCounter(filterId: number): RuleSetCounter {
+        const ruleSetsCounter = this.ruleSetCountersMap?.[filterId];
         if (!ruleSetsCounter) {
             throw new Error(`RuleSetCounter for filterId ${filterId} not found`);
         }
@@ -202,14 +214,11 @@ export class RulesLimitsService {
     /**
      * Get the number of static rules enabled.
      *
-     * @param result Configuration result.
      * @param filters Filters with metadata.
      * @returns The number of static rules enabled.
      */
-    private static getStaticRulesEnabledCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
-        const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
-
-        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, ruleSetsCounters);
+    private getStaticRulesEnabledCount(filters: FilterMetadata[]): number {
+        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, this.ruleSetCountersMap || {});
 
         return ruleSets.reduce((sum, ruleSet) => {
             return sum + ruleSet.rulesCount;
@@ -219,14 +228,11 @@ export class RulesLimitsService {
     /**
      * Calculates how many regexp rules are in the rulesets.
      *
-     * @param result Configuration result.
      * @param filters Filters with metadata.
      * @returns Count of the regexp rules.
      */
-    private static getStaticRulesRegexpsCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
-        const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
-
-        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, ruleSetsCounters);
+    private getStaticRulesRegexpsCount(filters: FilterMetadata[]): number {
+        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, this.ruleSetCountersMap || {});
 
         return ruleSets.reduce((sum, ruleSet) => {
             return sum + ruleSet.regexpRulesCount;
@@ -275,87 +281,68 @@ export class RulesLimitsService {
     /**
      * How many dynamic rules are enabled.
      *
-     * @param result Configuration result.
      * @returns Count of enabled dynamic rules.
      */
-    private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
-        const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        const declarativeRulesCount = result.dynamicRules?.ruleSet.getRulesCount() || 0;
-        return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount;
+    private getDynamicRulesEnabledCount(): number {
+        return this.dynamicRulesLimitExceedError?.numberOfMaximumRules || this.dynamicRulesEnabledCount;
     }
 
     /**
      * How many dynamic rules are excluded and cannot be enabled.
      *
-     * @param result Configuration result.
      * @returns Count of excluded rules.
      */
-    private static getDynamicRulesExcludedCount(result: ConfigurationResult): number {
-        const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        return rulesLimitExceedErr?.numberOfExcludedDeclarativeRules || 0;
+    private getDynamicRulesExcludedCount(): number {
+        return this.dynamicRulesLimitExceedError?.numberOfExcludedDeclarativeRules || 0;
     }
 
     /**
      * Returns number of maximum possible dynamic rules.
      *
-     * @param result Configuration result.
      * @returns Count of rules.
      */
-    private static getDynamicRulesMaximumCount(result: ConfigurationResult): number {
-        const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        return rulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_DYNAMIC_RULES;
+    private getDynamicRulesMaximumCount(): number {
+        return this.dynamicRulesLimitExceedError?.numberOfMaximumRules || MAX_NUMBER_OF_DYNAMIC_RULES;
     }
 
     /**
      * Returns how much dynamic regex rules are enabled.
      *
-     * @param result Configuration result.
      * @returns Number rules.
      */
-    private static getDynamicRegexpRulesEnabledCount(result: ConfigurationResult): number {
-        const regexpsCount = result.dynamicRules?.ruleSet.getRegexpRulesCount() || 0;
+    private getDynamicRegexpRulesEnabledCount(): number {
+        const excludedRulesCount = this.regexpRulesLimitExceedErr?.excludedRulesIds.length || 0;
 
-        const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
-        const excludedRulesCount = regexpRulesLimitExceedErr?.excludedRulesIds.length || 0;
-
-        return regexpsCount + excludedRulesCount;
+        return this.regexpRulesEnabledCount + excludedRulesCount;
     }
 
     /**
      * Returns maximum count of the dynamic regexp rules.
      *
-     * @param result Configuration result.
      * @returns Rules count.
      */
-    private static getDynamicRegexpRulesMaximumCount(result: ConfigurationResult): number {
-        const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
-        return regexpRulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_REGEX_RULES;
+    private getDynamicRegexpRulesMaximumCount(): number {
+        return this.regexpRulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_REGEX_RULES;
     }
 
     /**
      * How many dynamic **unsafe** rules are enabled.
      *
-     * @param result Configuration result.
      * @returns Count of enabled dynamic unsafe rules.
      */
-    private static getDynamicUnsafeRulesEnabledCount(result: ConfigurationResult): number {
-        const unsafeRulesCount = result.dynamicRules?.ruleSet.getUnsafeRulesCount() || 0;
+    private getDynamicUnsafeRulesEnabledCount(): number {
+        const excludedRulesCount = this.unsafeRulesLimitExceedErr?.excludedRulesIds.length || 0;
 
-        const unsafeRulesLimitExceedErr = RulesLimitsService.getUnsafeRulesLimitExceedErr(result);
-        const excludedRulesCount = unsafeRulesLimitExceedErr?.excludedRulesIds.length || 0;
-
-        return unsafeRulesCount + excludedRulesCount;
+        return this.unsafeRulesEnabledCount + excludedRulesCount;
     }
 
     /**
      * Returns number of maximum possible dynamic **unsafe** rules.
      *
-     * @param result Configuration result.
      * @returns Count of rules.
      */
-    private static getDynamicUnsafeRulesMaximumCount(result: ConfigurationResult): number {
-        const rulesLimitExceedErr = RulesLimitsService.getUnsafeRulesLimitExceedErr(result);
-        return rulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_UNSAFE_DYNAMIC_RULES;
+    private getDynamicUnsafeRulesMaximumCount(): number {
+        return this.unsafeRulesLimitExceedErr?.numberOfMaximumRules || MAX_NUMBER_OF_UNSAFE_DYNAMIC_RULES;
     }
 
     /**
@@ -406,34 +393,7 @@ export class RulesLimitsService {
      * @returns Rules limits or undefined if the configuration result is not ready yet.
      */
     private async onGetRulesLimitsCounters(): Promise<IRulesLimits | undefined> {
-        const result = this.configurationResult;
-        if (!result) {
-            return undefined;
-        }
-
-        const filters = FiltersApi.getEnabledFiltersWithMetadata();
-
-        const staticRulesEnabledCount = RulesLimitsService.getStaticRulesEnabledCount(result, filters);
-        const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
-        const staticRulesMaximumCount = staticRulesEnabledCount + availableStaticRulesCount;
-
-        return {
-            dynamicRulesEnabledCount: RulesLimitsService.getDynamicRulesEnabledCount(result),
-            dynamicRulesMaximumCount: RulesLimitsService.getDynamicRulesMaximumCount(result),
-            dynamicRulesUnsafeEnabledCount: RulesLimitsService.getDynamicUnsafeRulesEnabledCount(result),
-            dynamicRulesUnsafeMaximumCount: RulesLimitsService.getDynamicUnsafeRulesMaximumCount(result),
-            dynamicRulesRegexpsEnabledCount: RulesLimitsService.getDynamicRegexpRulesEnabledCount(result),
-            dynamicRulesRegexpsMaximumCount: RulesLimitsService.getDynamicRegexpRulesMaximumCount(result),
-            staticFiltersEnabledCount: RulesLimitsService.getStaticEnabledFiltersCount(),
-            staticFiltersMaximumCount: MAX_NUMBER_OF_ENABLED_STATIC_RULESETS,
-            staticRulesEnabledCount,
-            staticRulesMaximumCount,
-            staticRulesRegexpsEnabledCount: RulesLimitsService.getStaticRulesRegexpsCount(result, filters),
-            staticRulesRegexpsMaxCount: MAX_NUMBER_OF_REGEX_RULES,
-            actuallyEnabledFilters: await RulesLimitsService.getActuallyEnabledFilters(),
-            expectedEnabledFilters: RulesLimitsService.getExpectedEnabledFilters(),
-            areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
-        };
+        return this.rulesLimits;
     }
 
     /**
@@ -482,9 +442,38 @@ export class RulesLimitsService {
      * @param isFilteringEnabled Is filtering enabled or not. If disabled -
      * service will turn off all checks for limitations.
      */
-    public updateConfigurationResult(result: ConfigurationResult, isFilteringEnabled: boolean): void {
-        this.configurationResult = result;
+    public async updateConfigurationResult(result: ConfigurationResult, isFilteringEnabled: boolean): Promise<void> {
         this.isFilteringEnabled = isFilteringEnabled;
+
+        this.ruleSetCountersMap = RulesLimitsService.getRuleSetsCountersMap(result);
+
+        this.dynamicRulesEnabledCount = result.dynamicRules?.ruleSet.getRulesCount() || 0;
+        this.dynamicRulesLimitExceedError = RulesLimitsService.getRulesLimitExceedErr(result);
+
+        this.unsafeRulesEnabledCount = result.dynamicRules?.ruleSet.getUnsafeRulesCount() || 0;
+        this.unsafeRulesLimitExceedErr = RulesLimitsService.getUnsafeRulesLimitExceedErr(result);
+
+        this.regexpRulesEnabledCount = result.dynamicRules?.ruleSet.getRegexpRulesCount() || 0;
+        this.regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
+
+        this.rulesLimits = {
+            dynamicRulesEnabledCount: this.getDynamicRulesEnabledCount(),
+            dynamicRulesMaximumCount: this.getDynamicRulesMaximumCount(),
+            dynamicRulesUnsafeEnabledCount: this.getDynamicUnsafeRulesEnabledCount(),
+            dynamicRulesUnsafeMaximumCount: this.getDynamicUnsafeRulesMaximumCount(),
+            dynamicRulesRegexpsEnabledCount: this.getDynamicRegexpRulesEnabledCount(),
+            dynamicRulesRegexpsMaximumCount: this.getDynamicRegexpRulesMaximumCount(),
+            staticFiltersEnabledCount: RulesLimitsService.getStaticEnabledFiltersCount(),
+            staticFiltersMaximumCount: MAX_NUMBER_OF_ENABLED_STATIC_RULESETS,
+            staticRulesEnabledCount: this.getStaticRulesEnabledCount(FiltersApi.getEnabledFiltersWithMetadata()),
+            // eslint-disable-next-line max-len
+            staticRulesMaximumCount: this.getStaticRulesEnabledCount(FiltersApi.getEnabledFiltersWithMetadata()) + (await browser.declarativeNetRequest.getAvailableStaticRuleCount()),
+            staticRulesRegexpsEnabledCount: this.getStaticRulesRegexpsCount(FiltersApi.getEnabledFiltersWithMetadata()),
+            staticRulesRegexpsMaxCount: MAX_NUMBER_OF_REGEX_RULES,
+            actuallyEnabledFilters: [],
+            expectedEnabledFilters: [],
+            areFilterLimitsExceeded: false,
+        };
     }
 
     /**
@@ -626,8 +615,7 @@ export class RulesLimitsService {
             return { ok: true };
         }
 
-        const result = this.configurationResult;
-        if (!result) {
+        if (!this.rulesLimits) {
             // sometimes configuration result may not be ready yet,
             // e.g. when service worker was not running and options page is opened from the context menu
             // TODO: consider returning something like NOT_READY status which can be handled later if needed
@@ -635,9 +623,9 @@ export class RulesLimitsService {
             return { ok: true };
         }
 
-        const dynamicRulesEnabledCount = RulesLimitsService.getDynamicRulesEnabledCount(result);
-        const dynamicRulesExcludedCount = RulesLimitsService.getDynamicRulesExcludedCount(result);
-        const dynamicRulesMaximumCount = RulesLimitsService.getDynamicRulesMaximumCount(result);
+        const dynamicRulesEnabledCount = this.getDynamicRulesEnabledCount();
+        const dynamicRulesExcludedCount = this.getDynamicRulesExcludedCount();
+        const dynamicRulesMaximumCount = this.getDynamicRulesMaximumCount();
 
         const allRulesCount = dynamicRulesEnabledCount + dynamicRulesExcludedCount;
         if (allRulesCount > dynamicRulesMaximumCount) {
@@ -655,8 +643,8 @@ export class RulesLimitsService {
             };
         }
 
-        const dynamicRulesUnsafeEnabledCount = RulesLimitsService.getDynamicUnsafeRulesEnabledCount(result);
-        const dynamicUnsafeRegexpsMaximumCount = RulesLimitsService.getDynamicUnsafeRulesMaximumCount(result);
+        const dynamicRulesUnsafeEnabledCount = this.getDynamicUnsafeRulesEnabledCount();
+        const dynamicUnsafeRegexpsMaximumCount = this.getDynamicUnsafeRulesMaximumCount();
         if (dynamicRulesUnsafeEnabledCount > dynamicUnsafeRegexpsMaximumCount) {
             return {
                 ok: false,
@@ -670,8 +658,8 @@ export class RulesLimitsService {
             };
         }
 
-        const dynamicRulesRegexpsEnabledCount = RulesLimitsService.getDynamicRegexpRulesEnabledCount(result);
-        const dynamicRulesRegexpsMaximumCount = RulesLimitsService.getDynamicRegexpRulesMaximumCount(result);
+        const dynamicRulesRegexpsEnabledCount = this.getDynamicRegexpRulesEnabledCount();
+        const dynamicRulesRegexpsMaximumCount = this.getDynamicRegexpRulesMaximumCount();
         if (dynamicRulesRegexpsEnabledCount > dynamicRulesRegexpsMaximumCount) {
             return {
                 ok: false,
@@ -696,14 +684,12 @@ export class RulesLimitsService {
      * @returns Promise that resolves with the result of the check.
      */
     private async doesStaticFilterFitsInLimits(filterId: number): Promise<StaticLimitsCheckResult> {
-        const result = this.configurationResult;
-
         /**
          * Usually, the configuration result should be ready, when this method is called.
          * But even if it's not ready, we should not block the filter enabling.
          * In any case, the filter will not be enabled if it doesn't fit in limits.
          */
-        if (!result) {
+        if (!this.rulesLimits) {
             logger.error('[doesStaticFilterFitsInLimits]: configuration result is not ready yet');
             return { ok: true };
         }
@@ -727,7 +713,7 @@ export class RulesLimitsService {
         }
 
         const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
-        const filterStaticRulesCount = RulesLimitsService.getStaticRuleSetCounter(result, filterId);
+        const filterStaticRulesCount = this.getStaticRuleSetCounter(filterId);
         if (filterStaticRulesCount.rulesCount > availableStaticRulesCount) {
             return {
                 ok: false,
@@ -742,7 +728,7 @@ export class RulesLimitsService {
         }
 
         const enabledFilters = FiltersApi.getEnabledFiltersWithMetadata();
-        const allEnabledRegexpRulesCount = RulesLimitsService.getStaticRulesRegexpsCount(result, enabledFilters);
+        const allEnabledRegexpRulesCount = this.getStaticRulesRegexpsCount(enabledFilters);
         const allPossibleEnabledRegexpRulesCount = allEnabledRegexpRulesCount + filterStaticRulesCount.regexpRulesCount;
         if (allPossibleEnabledRegexpRulesCount > MAX_NUMBER_OF_REGEX_RULES) {
             return {
@@ -787,14 +773,12 @@ export class RulesLimitsService {
      * @returns Promise that resolves with the result of the check.
      */
     private async doStaticFiltersFitInLimits(filterIds: number[]): Promise<StaticLimitsCheckResult> {
-        const result = this.configurationResult;
-
         /**
          * Usually, the configuration result should be ready when this method is called.
          * But even if it's not ready, we should not block the filter enabling.
          * In any case, the filter will not be enabled if it doesn't fit in limits.
          */
-        if (!result) {
+        if (!this.rulesLimits) {
             logger.error('[doStaticFiltersFitInLimits]: Configuration result is not ready yet.');
             return { ok: true };
         }
@@ -822,7 +806,7 @@ export class RulesLimitsService {
 
         const { totalStaticRulesCount, totalRegexpRulesCount } = filterIds.reduce(
             (acc, filterId) => {
-                const filterStaticRulesCount = RulesLimitsService.getStaticRuleSetCounter(result, filterId);
+                const filterStaticRulesCount = this.getStaticRuleSetCounter(filterId);
                 acc.totalStaticRulesCount += filterStaticRulesCount.rulesCount;
                 acc.totalRegexpRulesCount += filterStaticRulesCount.regexpRulesCount;
                 return acc;
@@ -845,7 +829,7 @@ export class RulesLimitsService {
         }
 
         const enabledFilters = FiltersApi.getEnabledFiltersWithMetadata();
-        const allEnabledRegexpRulesCount = RulesLimitsService.getStaticRulesRegexpsCount(result, enabledFilters);
+        const allEnabledRegexpRulesCount = this.getStaticRulesRegexpsCount(enabledFilters);
         const regexpRulesIfFiltersEnabled = allEnabledRegexpRulesCount + totalRegexpRulesCount;
         const isWithinRegexRulesLimit = regexpRulesIfFiltersEnabled <= MAX_NUMBER_OF_REGEX_RULES;
 

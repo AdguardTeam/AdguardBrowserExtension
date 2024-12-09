@@ -100,7 +100,7 @@ export class Engine implements TsWebExtensionEngine {
 
         logger.info('Start tswebextension...');
         const result = await this.api.start(configuration);
-        rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
+        await rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
         UserRulesService.checkUserRulesRegexpErrors(result);
 
         await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
@@ -133,7 +133,7 @@ export class Engine implements TsWebExtensionEngine {
             logger.info('With skip limits check.');
         }
         const result = await this.api.configure(configuration);
-        rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
+        await rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
         UserRulesService.checkUserRulesRegexpErrors(result);
 
         await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
