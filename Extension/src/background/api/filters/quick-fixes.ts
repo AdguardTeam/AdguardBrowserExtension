@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { logger, PreprocessedFilterList } from '@adguard/tsurlfilter';
+import { type PreprocessedFilterList } from '@adguard/tsurlfilter';
 
-import { AntiBannerFiltersId } from '../../../common/constants';
+import { logger } from '../../../common/logger';
+import { AntiBannerFiltersId, emptyPreprocessedFilterList } from '../../../common/constants';
 import { FiltersStorage, filterStateStorage } from '../../storages';
 import { engine } from '../../engine';
 
@@ -105,12 +106,7 @@ export class QuickFixesRulesApi {
         const data = await FiltersStorage.getAllFilterData(AntiBannerFiltersId.QuickFixesFilterId);
 
         if (!data) {
-            return {
-                rawFilterList: '',
-                filterList: [],
-                sourceMap: {},
-                conversionMap: {},
-            };
+            return { ...emptyPreprocessedFilterList };
         }
 
         return data;

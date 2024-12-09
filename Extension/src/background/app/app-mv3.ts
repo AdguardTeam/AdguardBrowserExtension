@@ -28,7 +28,7 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../common/forward';
-import { CLIENT_ID_KEY } from '../../common/constants';
+import { CLIENT_ID_KEY, EXTENSION_INITIALIZED_EVENT } from '../../common/constants';
 import { messageHandler } from '../message-handler';
 import { ConnectionHandler } from '../connection-handler';
 import {
@@ -153,7 +153,7 @@ export class App {
 
         await rulesLimitsService.init();
 
-        // TODO mv3 uses other way to inject scripts. AG-33507
+        // TODO inject content scripts to tabs open before installation AG-33507
         // /**
         //  * When the extension is enabled, disabled and re-enabled during the user session,
         //  * content scripts will be loaded multiple times in each open tab.
@@ -287,10 +287,18 @@ export class App {
 
         appContext.set(AppContextKey.IsInit, true);
 
-        // In MV3 we need filters update service to update quick fixes filter.
-        filterUpdateService.init();
-
         await sendMessage({ type: MessageType.AppInitialized });
+
+        // In MV3 we need filters update service to update quick fixes filter,
+        // we should await it before dispatching the event to exclude race
+        // conditions.
+        await filterUpdateService.init();
+
+        // This event is used for integration tests (scripts/browser-test/index.ts)
+        // and waitUntilExtensionInitialized() is adding a listener to the event
+        // so the event should be dispatched eventually after all initialization
+        // is done.
+        dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT));
     }
 
     /**
