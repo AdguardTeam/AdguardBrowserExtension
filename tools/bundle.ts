@@ -200,15 +200,6 @@ const firefoxStandalone = async (options: CommanderOptions) => {
     }
 };
 
-const buildVersion = async () => {
-    try {
-        await buildInfo();
-    } catch (e) {
-        console.error(e);
-        process.exit(1);
-    }
-};
-
 program
     .option('--watch', 'Builds in watch mode', false)
     .option(
@@ -257,13 +248,6 @@ program
     .description('Builds signed extension for firefox browser')
     .action(() => {
         firefoxStandalone(program.opts());
-    });
-
-program
-    .command('build-version')
-    .description('Extract package version to build.txt')
-    .action(() => {
-        buildVersion();
     });
 
 program
