@@ -1,8 +1,8 @@
-! Checksum: O24X8Mfi5N8k1Zl/6KY3lQ
+! Checksum: gFMg9ay39724kBmWX3OqMg
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.15
-! TimeUpdated: 2024-12-05T09:01:54+00:00
+! Version: 2.0.5.16
+! TimeUpdated: 2024-12-07T01:02:05+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -79,6 +79,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 ||scripts-ads.s3.ir-thr-at1.arvanstorage.com^
 ||error-tracking.arvancloud.com^
 ||adexo.ir^
+||adexofiles.ir^
 ||adskav.com^
 ||advn.ir^
 ||amaroid.net^
@@ -277,6 +278,8 @@ parsiblog.com##body > div:first-of-type:has(a[style][href^="www.parsiblog.com/ad
 ||rizy.ir/js/ads.js
 ||rozblog.com/theme/ads/banner.html^$subdocument
 ! >> S <<
+! power-music.ir, skmusic.ir, music-week.ir
+||spotyfile.com^$script,third-party
 ||spellpop.ir^
 ||spellads.com^
 ||offers.sapra.ir^
@@ -767,6 +770,7 @@ click.ir##.clads-inner
 ||caffecinema.com/media/banners/
 @@||caffecinema.com/media/banners/telegram-$image,~third-party
 ! >> D <<
+dadysite.com##div[id^="topic_"] + div:not([id]):has(a[class=""][target="_blank"])
 ! https://github.com/MasterKia/PersianBlocker/issues/221
 ||dana.ir/dana/static/Ads^$image,~third-party
 dana.ir##div.col-md-12 > div.sidebar-box:has(> div.row > div.text-center > a[target="_blank"][title] > h4.text-dark[style])
@@ -1049,6 +1053,7 @@ estekhtam.com#@#.ads-bottom
 ||api.enama.ir/demo//vast.js^$script
 enama.ir##div.avdDiv
 ! >> F <<
+filmekade.ir##div.banner-ads
 ||analytics.fam.ir^$~third-party
 ||fam.ir/ngx_pagespeed_beacon^$xmlhttprequest,~third-party,method=post
 fileboro.com#%#//scriptlet('ubo-acis.js', 'document.onselectstart', 'killCopy')
@@ -1568,7 +1573,6 @@ lahzeakhar.com#%#//scriptlet('ubo-set.js', 'customnotify', 'noopFunc')
 ||lahzeakhar.com/ShowAds
 ! ||lahzeakhar.com/sw.js
 ! >> M <<
-||spotyfile.com/ip-jf.js^$script,third-party
 ||skmusic.ir^$media,third-party,domain=music-irani.com
 mastertest.ir##div.post-content > div.fusion-builder-row-1 > div.fusion-row:has(> div.fusion-layout-column a[data-wpel-link="external"])
 ! https://github.com/MasterKia/PersianBlocker/pull/243
@@ -1861,7 +1865,6 @@ parsfootball.com##.block-ads2
 parsfootball.com##.block-ads4
 parsfootball.com#@#.navad
 power-music.ir#%#//scriptlet('ubo-nowoif.js')
-||spotyfile.com^$domain=power-music.ir
 ||power-music.ir/sw.js^$script,~third-party
 power-music.ir##.ytn-hamsan
 power-music.ir##.yn-bnr
@@ -1974,6 +1977,7 @@ forum.p30world.com##div#ad_global_above_footer
 qnama.ir##div#ads1
 ||sentry.quera.org^
 ! >> R <<
+rebec.ir#%#//scriptlet('ubo-aeld.js', '/contextmenu|keydown|dragstart|mousemove/', 'return"undefined"')
 ! https://github.com/MasterKia/PersianBlocker/issues/285
 rasmio.com##div[class*="company_company__ads--ab"]
 ||rasaneh3.ir/popup.js^$script,~third-party
@@ -2953,7 +2957,7 @@ www.google.com#$#.g a[href*="glp.ir"]> h3::after { content: ' [دارای حذف
 www.google.com#$#.g a[href*="hastidl.ir"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="filimiano.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="filmbaz.co"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-www.google.com#$#.g a[href*="filmekade.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+www.google.com#$#.g a[href*="filmekade.ir"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="5download.ir"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="raycamovie.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="parsmovies.net"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
@@ -2987,6 +2991,8 @@ www.google.com#$#.g a[href*="persianvid.com"]> h3::after { content: ' [دارا�
 www.google.com#$#.g a[href*="clickfiles.ir"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="filmdoon.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="zaminmovie.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+www.google.com#$#.g a[href*="danofilm.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+www.google.com#$#.g a[href*="yoozmovie.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmr.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="doostihaa.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="uptvs.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
@@ -3066,7 +3072,7 @@ duckduckgo.com#$#a[data-testid="result-title-a"][href*="glp.ir"]::after { conten
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="hastidl.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="filimiano.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmbaz.co"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmekade.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmekade.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="5download.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="raycamovie.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="parsmovies.net"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
@@ -3101,6 +3107,8 @@ duckduckgo.com#$#a[data-testid="result-title-a"][href*="persianvid.com"]::after 
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="clickfiles.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmdoon.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="zaminmovie.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+duckduckgo.com#$#a[data-testid="result-title-a"][href*="danofilm.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+duckduckgo.com#$#a[data-testid="result-title-a"][href*="yoozmovie.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmr.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="doostihaa.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="uptvs.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
@@ -3180,7 +3188,7 @@ search.brave.com#$#div#results > div.snippet > a.result-header[href*="glp.ir"] >
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="hastidl.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="filimiano.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmbaz.co"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmekade.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmekade.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="5download.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="raycamovie.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="parsmovies.net"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
@@ -3215,6 +3223,8 @@ search.brave.com#$#div#results > div.snippet > a.result-header[href*="persianvid
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="clickfiles.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmdoon.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="zaminmovie.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+search.brave.com#$#div#results > div.snippet > a.result-header[href*="danofilm.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
+search.brave.com#$#div#results > div.snippet > a.result-header[href*="yoozmovie.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 ! اشتراکی
 www.google.com#$#.g a[href*="mygolchindl.top"]> h3::after { content: ' [اشتراکی] ' !important; color: #64b502 !important; font-weight: bold !important; }
 www.google.com#$#.g a[href*="//golchindl"]> h3::after { content: ' [اشتراکی] ' !important; color: #64b502 !important; font-weight: bold !important; }
