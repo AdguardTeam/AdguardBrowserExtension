@@ -63,8 +63,8 @@ export class FilterUpdateService {
     /**
      * Initially starts checking filters update.
      */
-    public init(): void {
-        this.update();
+    public async init(): Promise<void> {
+        await this.update();
     }
 
     /**
