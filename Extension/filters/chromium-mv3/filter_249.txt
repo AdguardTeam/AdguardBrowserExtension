@@ -1,13 +1,13 @@
-! Checksum: bDx/g5kLdtcg17kIL1ylEg
+! Checksum: vjJ2LlcaUae2PzwYbIWp/A
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.82
-! TimeUpdated: 2024-12-02T09:02:16+00:00
+! Version: 2.0.7.83
+! TimeUpdated: 2024-12-07T13:01:48+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! Last modified: 02December2024v1
+! Last modified: 07December2024v1
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -63,8 +63,8 @@ bt.no##.perks-container
 matoppskrift.no##.text-center:not(:has(img))
 bilgalleri.dk###rightFloatingBanner
 veitingageirinn.is###mvp-leader-wrap
-arendalstidende.no#?#.wpb_wrapper:contains(/^An{2}onse:/)
-butikkoversikten.no#?#.lenkeboks:contains(/Cas\ino/i)
+arendalstidende.no#?#.wpb_wrapper:contains(/^An{2}onse:.*$/)
+butikkoversikten.no#?#.lenkeboks:contains(/^.*Cas\ino.*$/i)
 hwt.dk##.box.text-center
 hardwareonline.dk##.containerlefttop
 fcbarcelona.dk##.bluebox_headlines:has(div[id^=cncpt-rec])
@@ -89,9 +89,9 @@ guloggratis.dk##.adservering-container
 edbpriser.dk#$#.product-list-row .description { position: static !important; word-break: break-word !important }
 vl.no##.ad-cols
 nakenprat.com##.threadbit:not([id])
-itavisen.no#?#article:has(.title:contains(/[?:;—]\san{2}ons[eø]r?$/))
+itavisen.no#?#article:has(.title:contains(/^.*[?:;—]\san{2}ons[eø]r?$/))
 extraavisen.no##.extra-adlabel
-tunnelsyn.no#?#.widget_media_image:contains(/^AN{2}ONSE/)
+tunnelsyn.no#?#.widget_media_image:contains(/^AN{2}ONSE.*$/)
 byggebolig.no##.maestro-content-plugins
 onlineposten.dk###header
 melkoghonning.no##.g
@@ -160,7 +160,7 @@ kyst.no,skipsrevyen.no##.disableFocus > .kbSkip + .container
 filmz.dk##.page-top-wrapper
 veitingageirinn.is##.mvp-flex-ad:has(img[width="300"])
 teknologiskmatforum.no##.page-home__logos-sidebar
-arendalstidende.no#?#div[style^=font-size]:contains(/^An{2}onse:/)
+arendalstidende.no#?#div[style^=font-size]:contains(/^An{2}onse:.*$/)
 e24.no##div[data-placement^=native_in_text_]
 startsidendin.no##a[href*=blackjack]
 recordere.dk##.textwidget > div:has(script)
@@ -198,7 +198,7 @@ sonderborgnyt.dk#%#//scriptlet('ubo-ra.js', 'data-track')
 tipsbladet.dk##.h-background-color-gray-background
 qxl.*#$#.n_ListHeader { margin-top: 5px !important }
 nordlysid.fo##.adgroup--component[collapse=vertical]
-fodboldspilleren.dk#?#.et_section_regular:contains(/cas\ino/i)
+fodboldspilleren.dk#?#.et_section_regular:contains(/^.*cas\ino.*$/i)
 lydogbilde.no,lydogbillede.dk##.hidead
 xlmoto.no##.sb-overlay
 gamer.no##div[data-unit$=banner]
@@ -207,7 +207,7 @@ sysla.no##.ad-nexus-ad
 bilasolur.is##*:has(>div[class*=advertisement-spot])
 filmweb.no##[class^=ad_adWrapper]
 tvkampen.com##.odds
-elbil24.no#?#.preview:has(.kicker:contains(/an{2}onse/i))
+elbil24.no#?#.preview:has(.kicker:contains(/^.*an{2}onse.*$/i))
 tvkampen.com,tvsporten.dk###event_banner
 pulze.dk###topads
 sorlandsavisen.no#?#div:has(> span:contains(Annonse))
@@ -238,7 +238,7 @@ shareholders.dk###right_section
 startsiden.no##[class*=adStyles]
 dfly.no##*:has(>.container-footer-ad)
 vg.no##div[class^=Ad_root_]
-veitingageirinn.is#?#.mvp-widget-home:contains(/^Velun{2}arar/)
+veitingageirinn.is#?#.mvp-widget-home:contains(/^Velun{2}arar.*$/)
 flyprat.no###header_right_cell
 installator.dk##.banner-hidden
 abcnyheter.no##div[class^=AdSlot__]
@@ -272,10 +272,10 @@ gamer.no##.col-12:has(> betting-matchup)
 eyjar.net##.hausad
 baeredygtigtfiskeri.dk##div[data-element_type=widget][data-widget_type="search-form.default"] ~ div[data-element_type=widget][data-widget_type="image.default"]
 baeredygtigtfiskeri.dk##div[data-element_type=widget][data-widget_type="search-form.default"] ~ div[data-element_type=widget][data-widget_type="heading.default"]:has(+ div[data-widget_type="image.default"])
-baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/\s\sAnnoncer?\s\s/i) + section.elementor-top-section:has(.elementor-image > [loading=lazy])
-baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/\s\sAnnoncer?\s\s/i):has(+ section.elementor-top-section .elementor-image > [loading=lazy])
+baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/^.*\s\sAnnoncer?\s\s.*$/i) + section.elementor-top-section:has(.elementor-image > [loading=lazy])
+baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/^.*\s\sAnnoncer?\s\s.*$/i):has(+ section.elementor-top-section .elementor-image > [loading=lazy])
 fiskerforum.dk##section[class*=_slider]:has([class*=banner-ads])
-fiskerforum.dk#?#.elementor-widget-text-editor:contains(/\s\sANNONCER\s\s/)
+fiskerforum.dk#?#.elementor-widget-text-editor:contains(/^.*\s\sANNONCER\s\s.*$/)
 fiskerforum.dk##div[data-elementor-type=wp-post] section[class*=_slider]:has(.elementor-size-default > a)
 fiskerforum.dk##section:has(.elementor-row > div:only-of-type div[id*=ezoic])
 netnatur.dk##.widget:has(.g-single)
@@ -357,7 +357,7 @@ transitmag.no,onlineposten.dk##.textwidget
 femina.dk##.mb-30.bg-grey-100
 madridista.dk##.uk-panel-box:has(a[href*=casino])
 bvbnorge.no##.wsite-spacer
-united.no#?#.fl-visible-desktop-medium:has(div[class^=ann-forside]:contains(/An{2}onse:/))
+united.no#?#.fl-visible-desktop-medium:has(div[class^=ann-forside]:contains(/^.*An{2}onse:.*$/))
 gjerrigknark.com##.dividerBlock:not(.clearfix)
 version2.dk###headersub
 herognu.dk##div[id^=herognu_]
@@ -423,6 +423,10 @@ abcnyheter.no#$#.container-newsfeed + section .c-teaser__image { max-height: non
 gaming.dk##div[style^="width: 370px; "]
 vgtv.no#$#.page-container { margin-top: 0 !important }
 minervanett.no##.row:has(> .adnuntius-ad)
+ukenr.no,ugenr.dk#$#body[class*=addemam] > #navbar { padding-bottom:0!important }
+ukenr.no,ugenr.dk#$#body[class*=addemam] > h1#title { padding-bottom:0!important }
+ukenr.no,ugenr.dk#$#body[class*=addemam] > #navbar > #print { padding-bottom:0!important }
+ukenr.no,ugenr.dk##.bannerad:not(empty)
 180.at,180.cc,180.co.il,180.co.in,180.co.jp,180.co.uk,180.co.za,180.com,180.com.bd,180.com.np,180.com.ua,180.com.uy,180.dk,180.fi,180.fr,180.gg,180.gr,180.mn,180.net.au,180.nl,180.no,180.org,180.org.uk,180.pl,180.se##td[class^=frame-shadow-]
 bilbasen.dk##.nmp-ads-layout__top
 vg.no,bt.no##div[id^=adPlacement]
@@ -473,7 +477,7 @@ gamer.no##div > .entrance:has(> a[href*="/annonser/"])
 gamer.no##div > .entrance:has(> a[href*="/stilling/"])
 gamer.no##[data-uname=gamer_artikkelboard]
 gamer.no##div:has(>[data-uname^=gamer_midtbanner]:only-of-type)
-kendte.dk#?#.list-group:contains(/cas\ino/i)
+kendte.dk#?#.list-group:contains(/^.*cas\ino.*$/i)
 feltet.dk##p[style^=" color:#bbb;"]
 tv-kalundborg.dk##div.col-s-100.col-50:nth-of-type(2)
 sveip.no##.notnews
@@ -488,12 +492,12 @@ gaysir.no##.ad_wrapper_content
 tvkampen.com,tvsporten.dk##div[data-hbwrap]
 kimbino.at,kimbino.be,kimbino.bg,kimbino.ca,kimbino.ch,kimbino.cl,kimbino.co,kimbino.co.za,kimbino.com,kimbino.com.ar,kimbino.com.au,kimbino.com.bd,kimbino.com.br,kimbino.com.co,kimbino.com.np,kimbino.com.tr,kimbino.com.ua,kimbino.cz,kimbino.de,kimbino.dk,kimbino.es,kimbino.fi,kimbino.fr,kimbino.gr,kimbino.hr,kimbino.hu,kimbino.id,kimbino.it,kimbino.jp,kimbino.kr,kimbino.lt,kimbino.mx,kimbino.ng,kimbino.nl,kimbino.no,kimbino.pe,kimbino.pl,kimbino.pt,kimbino.ro,kimbino.rs,kimbino.se,kimbino.si,kimbino.sk,kimbino.tv,kimbino.xyz##.signad
 tu.no##div[class*=-ads-wrapper i]
-glr.no#?#.bottomSmallSpaced.topMediumSpaced:contains(/^An{2}onse/)
+glr.no#?#.bottomSmallSpaced.topMediumSpaced:contains(/^An{2}onse.*$/)
 manuall.ae,manuall.bg,manuall.co,manuall.co.uk,manuall.com.bd,manuall.com.np,manuall.com.ua,manuall.cz,manuall.de,manuall.dk,manuall.es,manuall.eu,manuall.fi,manuall.fr,manuall.gr,manuall.hr,manuall.hu,manuall.in,manuall.it,manuall.jp,manuall.kr,manuall.lt,manuall.lv,manuall.no,manuall.pl,manuall.pt,manuall.ro,manuall.se,manuall.si,manuall.sk,manuall.vn##form + div[style^="border-style:solid; "]
 kommunikationsforum.dk##.col-xs-12[style]
 thaiguiden.no##*:has(>*>*>*>*>.adsbygoogle)
 krs247.no##.prl-span-12 + h5
-jumpb.dk#?#strong:contains(/Cas\ino/i)
+jumpb.dk#?#strong:contains(/^.*Cas\ino.*$/i)
 spillespill.no###bannerAdmeenRectangleTopContainer
 e24.no##a[href*="/go.click?"]
 treningsforum.no##.ad.netboard
@@ -504,6 +508,12 @@ gastrofun.dk##div[id^=block-steprectangle]
 gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[class^=ad_Bumper i]
 dba.dk##.marketing-container
 koplr.no##.column-banner-ads
+ejendomswatch.dk##div[data-sentry-component$=Ad]
+ejendomswatch.dk##div[class*=":hidden"]:has(>aside[data-label=Annonce i])
+krak.dk##.grid.place-items-center:has(div[data-adunitid])
+estatemedia.dk##.banner
+365design.dk##.dominans-wrapper
+sydsverige.dk##div[class*=-banner i]:not(:empty)
 tilbudmaskin.no##.rek-container
 babyklar.dk##.top_header
 gratiskryssord.no##.adSign
@@ -515,7 +525,7 @@ bilgalleri.dk##.container-featured + .container:last-of-type
 jyllands-posten.dk##div[id^=MediumRectangle]
 verktoy24.no,inputmag.dk##.stream-item
 vielskerserier.dk,udeoghjemme.dk##div.hidden.justify-center
-gunnarandreassen.com#?#a:contains(/[kc]as\ino/i)
+gunnarandreassen.com#?#a:contains(/^.*[kc]as\ino.*$/i)
 parcferme.no##.code-block > p
 boligdebatten.dk###selvsalg-reklame
 tv3.dk##.channelHeaderLogo:not(:empty)
@@ -542,7 +552,7 @@ sognavis.no##.row.hidden-print:not(.vspace)
 dagens.dk##.col-300 > .wrapper-sticky:has(a[href*=casino])
 xlmoto.no##.overlay-container
 matoppskrift.no###sticky
-leinstrand-il.no#?#.latestnews-box:contains(/cas\ino/i)
+leinstrand-il.no#?#.latestnews-box:contains(/^.*cas\ino.*$/i)
 tipsbladet.dk##.c-single__box-inset
 tv2.no##.esi-include
 finn.no##.banners
@@ -559,7 +569,7 @@ voguescandinavia.com##div[class^=AdssetsAd_]
 klikk.no##.gpt-sticky
 godstart.dk###ad_PageBottom
 tv2.no##div[id^=module-]:has(div[data-adslot^=fullscreen-])
-margit-henriksen.dk,thura.dk#?#.blog-post:contains(/cas\ino/i)
+margit-henriksen.dk,thura.dk#?#.blog-post:contains(/^.*cas\ino.*$/i)
 bo-bedre.no,bobedre.dk##.mb-50.text-center
 abcnyheter.no###commercial
 digi.no##.items-center.mx-auto
@@ -571,7 +581,7 @@ itavisen.no##.block-wrap-columns
 amino.dk###top-shadow-pad
 eavisa.com##.custom-a-ds
 bt.no###topstripes
-teknologia.no#?#.one-half:contains(/[kc]as\ino/i)
+teknologia.no#?#.one-half:contains(/^.*[kc]as\ino.*$/i)
 e24.no##div[class^=article-wrapper] > div[class^=_][class*=" "]
 fcbarcelona.dk###bottom_footer
 elmagasinet.no##.SkyskraperWrapper
@@ -698,7 +708,7 @@ startsiden.no###stop-sticky-ad + h4
 mytastenor.com,mytastednk.com#$#.site-wrapper[data-state=panorama] { padding-top: 70px !important }
 gamer.no##header ~ div:has(div[data-unit*=banner])
 vg.no##aside[data-test-tag=factbox i] + div:not([class],[id]):has(a[href*=adtraction])
-ni.dk#?#.color-scheme-1:contains(/Cas\ino/i)
+ni.dk#?#.color-scheme-1:contains(/^.*Cas\ino.*$/i)
 ekstrabladet.dk###front-ekstrabladet-dk-native-1
 pressfire.no##.ad-netboard-front
 bilnorge.no#?#tr:has(td:contains(Annonse:))
@@ -892,7 +902,7 @@ bt.no##p ~ div[class^=hyperion-css-]:has(> div[id*=-ad- i])
 pengenytt.no##.entry-content > h6:has(script[src$="/adsbygoogle.js"])
 maskinbladet.dk##.outer-skybanner
 ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz###div-leeadsFullpageAd
-ni.dk#?#.color-scheme-1:contains(/Cas\ino/i) + div
+ni.dk#?#.color-scheme-1:contains(/^.*Cas\ino.*$/i) + div
 samler.no##div[class^=sl-banner-outside-child-]
 bt.dk##.hidden-sm-down
 ##a[title=LeoVegas]:not(body,:empty)
@@ -1174,7 +1184,7 @@ amino.dk##.ad624x60
 qxl.com.bd,qxl.com.np,qxl.dk,qxl.in,qxl.it,qxl.vip,qxl.win###leaderBoardListingviewTop
 tu.no,digi.no##[id^=adContainer-]:not([id$=-afterBody])
 vilgerneleve.dk##.sidebar-widget-container:has(center > a)
-padleguide.dk#?#h2:contains(/cas\ino/i)
+padleguide.dk#?#h2:contains(/^.*cas\ino.*$/i)
 skinnelangs.no###sponsor
 win-xp.no##tr > td > div:has(a[href*="clk.tradedoubler."])
 kondis.no#$##content { margin-top: 0px !important }
@@ -1261,7 +1271,7 @@ hsfo.dk,jv.dk,stiften.dk,viborg-folkeblad.dk,dagbladet-holstebro-struer.dk,ugeav
 komputer.no,natgeo.no,historienet.no,koplr.no,ing.dk,in.fo,kvennabladid.is##.top-banner:not(html,body,:empty)
 united.no,valkal.no,ksu.no,montages.no,kundeavisogtilbud.no##.ads:not(html,body,:empty)
 prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website,prisjagt.dk,dv.is,drm24.no,flatpanels.dk##.adbox:not(html, body, :empty)
-padleguide.dk,polarmedia.dk,iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu,cuben-linedance.dk#?#p:contains(/cas\ino/i)
+padleguide.dk,polarmedia.dk,iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu,cuben-linedance.dk#?#p:contains(/^.*cas\ino.*$/i)
 dagbladet.no,elbil24.no,kk.no,seher.no,sol.no,vi.no#?#[data-cy=video-page-horisontal] > div:contains(Annonse)
 av-avis.no,bygdanytt.no,strilen.no,vestnytt.no##.carousel-ad:not(html,body,:empty)
 hushagehobby.no,tidssonen.no,glr.no,peters1.dk,erotikmix.dk##.widget_custom_html
@@ -1276,7 +1286,7 @@ isolor.no,storfjordnytt.no,thetravelinspector.no,boosted.dk,digitalt.tv##.code-b
 altomdinhelse.no,aftenposten.no,dinordbok.no##.ad-container:not(html,body,:empty)
 nhi.no,langrenn.com,vg.no##.advert:not(html,body,:empty)
 iform.dk,boligpluss.no,magasinetliv.dk,tara.no##.horseshoe
-iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu#?#h2:has(+ p:contains(/cas\ino/i))
+iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu#?#h2:has(+ p:contains(/^.*cas\ino.*$/i))
 /images/banners$image,domain=austurfrett.is|samler.no|norsk-rally.com|fcbarcelona.dk
 building-supply.dk,licitationen.dk,jernindustri.dk##.grid-article-sponsored
 gamer.no,tek.no,digi.no##.products-carousel
@@ -1701,6 +1711,8 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||datamaskin.biz/ad/
 _1170x400.$domain=eyjafrettir.is,image,~third-party
 /1170x400_$domain=eyjafrettir.is,image,~third-party
+||ukenr.no/bobs/iframe.php^$subdocument
+||ugenr.dk/bobs/iframe.php^$subdocument
 ! — — — — — — —
 ! 🇳🇴: Filtjener- eller nettstedsspesifikke oppføringer med kilder
 ! 🇳🇴🏞: Filtenar- eller nettstadsspesifikke oppføringar med kildar
@@ -2040,6 +2052,8 @@ _980banner_
 ||gtm.findroommate.dk^
 ||nichehuset.dk^$third-party
 ||step.dk^$third-party
+! https://ugenr•dk/kalender (03/12/2024)
+###addemam-wrapper:not(:empty)
 ! — — — — — — —
 ! 🇳🇴: Oppføringer med spesielle omstendigheter
 ! 🇬🇧: Entries with special circumstances
@@ -2098,10 +2112,10 @@ talkmore.no##.spacer
 tnt-tv.no,tnt-tv.dk##.desktop_element.promo
 tnt-tv.no,tnt-tv.dk##.logos
 tnt-tv.no,tnt-tv.dk##.tabs_placeholder
-yrkesbil.no#?#td:contains(/^\xA0$/):not(:contains(/\S/)):not(:has(img))
-yrkesbil.no#?#tr:contains(/^\xA0$/):not(:contains(/\S/)):not(:has(img))
+yrkesbil.no#?#td:contains(/^\xA0$/):not(:contains(/^.*\s.*$/)):not(:has(img))
+yrkesbil.no#?#tr:contains(/^\xA0$/):not(:contains(/^.*\s.*$/)):not(:has(img))
 foodora.no##.top-skinny-banner-container
-check-in.dk#?#p:contains(/^\xA0$/):not(:contains(/\S/)):not(:has(img))
+check-in.dk#?#p:contains(/^\xA0$/):not(:contains(/^.*\s.*$/)):not(:has(img))
 idag.no#?#.nf-o-moduleblock:not(:has(a))
 mediavejviseren.dk###sectionBeforeBottom
 !+ NOT_OPTIMIZED
@@ -2264,7 +2278,7 @@ nettavisen.no#?#.front optimus-element:contains(Eurojackpot)
 dagsavisen.no##a[href*="norsk-tipping.no/artikler/"]
 startsiden.no##div[class*=partnerModule][data-ga-category^=NorskTipping]
 side2.no##.markupbox
-nettavisen.no#?#article[data-lp-section=sportspill]:has(.slotHeader):contains(/lot{2}o/i)
+nettavisen.no#?#article[data-lp-section=sportspill]:has(.slotHeader):contains(/^.*lot{2}o.*$/i)
 ||vg.no/vgc/pool/tipster.png^$image
 /pustehullet/betting-header.png^$image
 startsiden.no###consumer_service_tipping
@@ -2319,6 +2333,7 @@ csp.screen9.com#@#.adsbox
 @@||www.tv2.no/s/js/ads.js$script,~third-party
 @@||fwmrm.net/crossdomain.xml$domain=embed.viaplay.com
 @@||sumo.cdn.tv2.no/ads^
+ukenr.no,ugenr.dk#@#.bannerad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/121422
 @@.v.fwmrm.net/ad/g^*:MTG_Play_
 ! 🇳🇴: Oppføringer som også er tilstede i «AdGuards hovedfilter / AdGuard Base Filter», for de som bruker ABP og AdBlock, eller som ikke har tatt seg bryet å bruke 8 sekunder på å skru den på i uBlock Origin.
@@ -2338,7 +2353,7 @@ nettavisen.no###article-body > .rel-article
 nettavisen.no##.am-bazaar-ad
 nettavisen.no##.background-na-commercial
 nettavisen.no##a > .background-na-commercial ~ *
-nettavisen.no#?#amedia-frontpage > .optimus-complex-front:has(> header > h2:contains(/Reklame|REKLAME/))
+nettavisen.no#?#amedia-frontpage > .optimus-complex-front:has(> header > h2:contains(/Reklame|REKLAME.*$/))
 sofabold.dk##.centerMgfx
 sofabold.dk##.top_b_display
 sofabold.dk##div[class^="sidebanner"]
