@@ -46,7 +46,12 @@ export const Tab = ({
 
     return (
         <button
+            id={`${title}-tab`}
+            role="tab"
             type="button"
+            aria-selected={active}
+            aria-controls={`${title}-panel`}
+            aria-label={title}
             className={tabClass}
             onClick={onClick}
             title={title}

@@ -55,6 +55,7 @@ export const ReportIssueAction = ({ className, isFilteringPossible, url }: Singl
             <Icon
                 id="#thumb-down"
                 classname="icon--24 icon--action--thumb-down"
+                ariaHidden
             />
             <div className="action__title">
                 {translator.getMessage('popup_abuse_site')}

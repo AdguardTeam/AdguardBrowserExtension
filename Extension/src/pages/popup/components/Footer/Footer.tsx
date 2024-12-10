@@ -48,6 +48,7 @@ export const Footer = observer(() => {
                     <Icon
                         id="#apple"
                         classname="icon--24 icon--footer"
+                        ariaHidden
                     />
                 </a>
                 <a
@@ -60,6 +61,7 @@ export const Footer = observer(() => {
                     <Icon
                         id="#android"
                         classname="icon--24 icon--footer"
+                        ariaHidden
                     />
                 </a>
             </div>

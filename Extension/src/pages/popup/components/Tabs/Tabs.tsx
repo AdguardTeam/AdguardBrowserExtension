@@ -60,7 +60,7 @@ export const Tabs = observer(() => {
             })}
         >
             <div className="tabs__panel">
-                <div className="tabs__panel-wrapper">
+                <div className="tabs__panel-wrapper" role="tablist">
                     <Tab
                         title={translator.getMessage('popup_tab_actions')}
                         active={viewState === ViewState.Actions}

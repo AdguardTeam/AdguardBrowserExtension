@@ -35,14 +35,20 @@ type SvgParams = {
      * SVG title.
      */
     title?: string,
+
+    /**
+     *  Aria hiddent
+     */
+    ariaHidden?: boolean,
 };
 
 const Svg = ({
     id,
     classname,
     title,
+    ariaHidden,
 }: SvgParams) => (
-    <svg className={classname}>
+    <svg className={classname} aria-hidden={ariaHidden}>
         {title && <title>{title}</title>}
         <use xlinkHref={id} />
     </svg>
@@ -83,6 +89,10 @@ type IconParams = {
      * Animation class name.
      */
     animationClassname?: string,
+    /**
+     *  Optional aria-hidden prop
+     */
+    ariaHidden?: boolean;
 };
 
 export const Icon = ({
@@ -91,10 +101,11 @@ export const Icon = ({
     title,
     animationCondition,
     animationClassname,
+    ariaHidden = true,
 }: IconParams) => {
     const iconClassname = cn('icon', classname);
 
-    const icon = <Svg id={id} classname={iconClassname} title={title} />;
+    const icon = <Svg id={id} classname={iconClassname} title={title} ariaHidden={ariaHidden} />;
 
     return animationCondition && animationClassname ? (
         <AnimatedWrapper className={animationClassname}>

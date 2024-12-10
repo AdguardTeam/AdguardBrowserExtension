@@ -44,6 +44,7 @@ export const OpenFilteringLogAction = ({ className }: SingleActionParams) => {
             <Icon
                 id="#sandwich"
                 classname="icon--24 icon--action--sandwich"
+                ariaHidden
             />
             <div className="action__title">
                 {translator.getMessage('popup_open_filtering_log')}

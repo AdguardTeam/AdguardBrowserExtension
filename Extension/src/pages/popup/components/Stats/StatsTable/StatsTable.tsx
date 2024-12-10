@@ -52,7 +52,7 @@ export const StatsTable = observer(() => {
         });
 
     return (
-        <div className="stats">
+        <div id="stats-panel" className="stats" aria-labelledby="stats-tab">
             <ul className="stats__list">
                 {renderStatsByType}
             </ul>

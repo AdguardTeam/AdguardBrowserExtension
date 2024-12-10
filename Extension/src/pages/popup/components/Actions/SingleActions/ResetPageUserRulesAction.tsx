@@ -77,6 +77,7 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
                 classname={removeUserRulesIconClassname}
                 animationCondition={removingUserRules}
                 animationClassname="icon--loading"
+                ariaHidden
             />
             <div
                 className="action__title"

@@ -51,6 +51,7 @@ export const ProtectionSwitch = observer(() => {
             <Icon
                 id={iconId}
                 classname="icon--24 icon--header"
+                ariaHidden
             />
         </button>
     );

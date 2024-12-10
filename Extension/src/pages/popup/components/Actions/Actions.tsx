@@ -41,7 +41,7 @@ const Actions = observer(() => {
     const actionChangingClassname = cn('action', { 'action--disabled': !isFilteringPossible });
 
     return (
-        <div className="actions">
+        <div className="actions" id="actions-panel" aria-labelledby="actions-tab">
             <BlockAdsAction isFilteringPossible={isFilteringPossible} className={actionChangingClassname} />
             <OpenFilteringLogAction className="action" />
             <ReportIssueAction

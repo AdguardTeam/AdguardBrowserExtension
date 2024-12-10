@@ -55,6 +55,7 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
             <Icon
                 id="#info"
                 classname="icon--24 icon--action--info"
+                ariaHidden
             />
             <div className="action__title">
                 {translator.getMessage('popup_security_report')}

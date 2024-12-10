@@ -59,36 +59,56 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
         return null;
     }
 
+    const switchLabel = translator.getMessage('popup_switch_button');
+    const title = isEnabled
+        ? translator.getMessage('context_enable_protection')
+        : translator.getMessage('context_disable_protection');
+
     return (
-        <button
-            type="button"
-            className={cn('switcher', {
-                'non-active': isTransition,
-            })}
-            onClick={clickHandler}
-            title={translator.getMessage('popup_switch_button')}
-        >
-            <div
-                className={cn('switcher__track', {
-                    'switcher__track--disabled': !isEnabled,
+        <>
+            <button
+                type="button"
+                aria-label={title}
+                role="switch"
+                aria-checked={isEnabled}
+                title={switchLabel}
+                className={cn('switcher', {
+                    'non-active': isTransition,
                 })}
-            />
-            <div
-                className={cn('switcher__handle', {
-                    'switcher__handle--disabled': !isEnabled,
-                })}
+                onClick={clickHandler}
             >
-                {/* enabled switcher state */}
-                <Icon
-                    id="#checkmark"
-                    classname="icon--24 switcher__icon switcher__icon--on"
+                <div
+                    className={cn('switcher__track', {
+                        'switcher__track--disabled': !isEnabled,
+                    })}
                 />
-                {/* disabled switcher state */}
-                <Icon
-                    id="#circle"
-                    classname="icon--24 switcher__icon switcher__icon--off"
-                />
-            </div>
-        </button>
+                <div
+                    className={cn('switcher__handle', {
+                        'switcher__handle--disabled': !isEnabled,
+                    })}
+                >
+                    {/* enabled switcher state */}
+                    <Icon
+                        id="#checkmark"
+                        classname="icon--24 switcher__icon switcher__icon--on"
+                        ariaHidden
+                    />
+                    {/* disabled switcher state */}
+                    <Icon
+                        id="#circle"
+                        classname="icon--24 switcher__icon switcher__icon--off"
+                        ariaHidden
+                    />
+                </div>
+            </button>
+            {/* <div
+                role="alert"
+                aria-live="polite"
+                className="sr-only"
+                hidden
+            >
+                {title}
+            </div> */}
+        </>
     );
 });
