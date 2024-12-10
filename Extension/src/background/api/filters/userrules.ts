@@ -23,7 +23,7 @@ import {
 import { PreprocessedFilterList, RuleSyntaxUtils } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
-import { AntiBannerFiltersId } from '../../../common/constants';
+import { AntiBannerFiltersId, emptyPreprocessedFilterList } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { listeners } from '../../notifier';
 import {
@@ -109,12 +109,7 @@ export class UserRulesApi {
         const data = await FiltersStorage.getAllFilterData(AntiBannerFiltersId.UserFilterId);
 
         if (!data) {
-            return {
-                rawFilterList: '',
-                filterList: [],
-                sourceMap: {},
-                conversionMap: {},
-            };
+            return { ...emptyPreprocessedFilterList };
         }
 
         return data;
