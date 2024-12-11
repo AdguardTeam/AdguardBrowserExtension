@@ -675,20 +675,29 @@ const RequestInfo = observer(() => {
     return (
         <>
             <div className={cn('request-modal__title', { 'request-modal__title_fixed': contentOverflowed })}>
-                <button
-                    type="button"
-                    onClick={closeModal}
-                    className="request-modal__navigation"
-                    aria-label={translator.getMessage('close_button_title')}
-                >
-                    <Icon
-                        id="#cross"
-                        classname="icon--24 icon--gray-default"
-                    />
-                </button>
-                <span className="request-modal__header">
-                    {translator.getMessage('filtering_modal_info_title')}
-                </span>
+                <div className="request-modal__container">
+                    <span id="modal-title" className="request-modal__header" aria-label={translator.getMessage('filtering_modal_info_title')}>
+                        {translator.getMessage('filtering_modal_info_title')}
+                    </span>
+                    <button
+                        type="button"
+                        onClick={closeModal}
+                        className="request-modal__navigation"
+                        aria-label={translator.getMessage('close_button_title')}
+                    >
+                        <Icon
+                            id="#cross"
+                            classname="icon--24 icon--gray-default"
+                        />
+                    </button>
+                </div>
+            </div>
+            <div
+                aria-live="polite"
+                role="status"
+                className="sr-only"
+            >
+                {translator.getMessage('filtering_modal_info_title')}
             </div>
             <div ref={contentRef} className="request-modal__content">
                 {selectedEvent.method && (

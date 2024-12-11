@@ -137,6 +137,9 @@ const RequestModal = observer(() => {
                     width: `${modalWidth}px`,
                 },
             }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
         >
             <div
                 ref={dragBar}
