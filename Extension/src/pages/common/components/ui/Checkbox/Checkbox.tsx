@@ -139,7 +139,6 @@ const Checkbox = (props: CheckboxProps) => {
                 id={String(id)}
                 className="checkbox__in"
                 disabled={disabled || pending}
-                aria-disabled={disabled || pending}
                 aria-label={label}
             />
             <label

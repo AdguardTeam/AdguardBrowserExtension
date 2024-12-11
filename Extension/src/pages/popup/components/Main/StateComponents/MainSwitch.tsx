@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useRef,
+} from 'react';
 import { observer } from 'mobx-react';
 
 import cn from 'classnames';
@@ -43,14 +47,22 @@ type MainSwitchProps = {
 };
 
 export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps) => {
+    const swithRef = useRef<HTMLButtonElement | null>(null);
     if (typeof isEnabled === 'undefined') {
         logger.error('isEnabled should be defined for the main switcher');
         return null;
     }
 
-    const { appState } = useContext(popupStore);
+    const { appState, isFirstOpened, setIsFirstOpened } = useContext(popupStore);
 
     const isTransition = isTransitionAppState(appState);
+
+    useEffect(() => {
+        if (swithRef.current && !isFirstOpened) {
+            swithRef.current.focus();
+            setIsFirstOpened(true);
+        }
+    }, [isFirstOpened, setIsFirstOpened]);
 
     // click handler is not needed during the transition
     // but in other cases it is required
@@ -67,7 +79,9 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
     return (
         <>
             <button
+                ref={swithRef}
                 type="button"
+                tabIndex={0}
                 aria-label={title}
                 role="switch"
                 aria-checked={isEnabled}
@@ -101,14 +115,6 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
                     />
                 </div>
             </button>
-            {/* <div
-                role="alert"
-                aria-live="polite"
-                className="sr-only"
-                hidden
-            >
-                {title}
-            </div> */}
         </>
     );
 });

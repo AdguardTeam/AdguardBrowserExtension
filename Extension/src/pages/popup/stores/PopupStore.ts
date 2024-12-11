@@ -100,6 +100,9 @@ class PopupStore {
     canAddRemoveRule = true;
 
     @observable
+    isFirstOpened: boolean = false;
+
+    @observable
     url: string | null = null;
 
     @observable
@@ -513,6 +516,11 @@ class PopupStore {
     @action
     setSelectedBlockedType = (value: string) => {
         this.selectedBlockedType = value;
+    };
+
+    @action
+    setIsFirstOpened = (isOpened: boolean = true) => {
+        this.isFirstOpened = isOpened;
     };
 
     @action
