@@ -32,7 +32,7 @@ export const Nav = ({ closeSidebar }) => {
     const getNavLinkClassName = (navData) => (navData.isActive ? 'nav__item nav__item--active' : 'nav__item');
 
     return (
-        <div className="nav">
+        <nav className="nav">
             <NavLink
                 className={getNavLinkClassName}
                 to="/"
@@ -95,6 +95,6 @@ export const Nav = ({ closeSidebar }) => {
             >
                 {reactTranslator.getMessage('options_about')}
             </NavLink>
-        </div>
+        </nav>
     );
 };
