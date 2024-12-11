@@ -132,14 +132,15 @@ const Checkbox = (props: CheckboxProps) => {
             <input
                 type="checkbox"
                 aria-checked={state}
-                role="switch"
                 name={String(id)}
                 checked={state}
+                role="switch"
                 onChange={changeHandler}
                 id={String(id)}
                 className="checkbox__in"
-                tabIndex={0}
                 disabled={disabled || pending}
+                aria-disabled={disabled || pending}
+                aria-label={label}
             />
             <label
                 htmlFor={String(id)}
