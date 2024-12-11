@@ -131,6 +131,8 @@ const Checkbox = (props: CheckboxProps) => {
         <div className="checkbox">
             <input
                 type="checkbox"
+                aria-checked={state}
+                role="switch"
                 name={String(id)}
                 checked={state}
                 onChange={changeHandler}

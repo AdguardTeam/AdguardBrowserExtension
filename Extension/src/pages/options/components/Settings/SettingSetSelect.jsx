@@ -46,6 +46,7 @@ export const SettingSetSelect = ({
         <div
             className={cn('setting-checkbox', 'setting-checkbox--button', props.className)}
             onClick={handleSettingClick}
+            aria-label={title}
         >
             <SettingsSet
                 title={title}

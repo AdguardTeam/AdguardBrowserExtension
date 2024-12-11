@@ -173,22 +173,31 @@ export const Select = ({
             id={id}
             ref={ref}
             className={cn('select', popupModification ? 'popup-modification' : '')}
+            role="combobox"
+            aria-haspopup="listbox"
+            aria-expanded={!hidden}
+            aria-controls={`${id}-listbox`}
         >
             <button
                 type="button"
                 className="select__value"
                 onClick={handleSelectClick}
+                aria-label={currentTitle}
             >
                 {currentTitle}
             </button>
             <Icon
                 id="#select"
                 classname="icon--select icon--gray-default select__ico"
+                aria-hidden="true"
             />
             {!hidden && (
                 <div
                     className="select__list"
                     ref={refList}
+                    role="listbox"
+                    id={`${id}-listbox`}
+                    aria-label={`${currentTitle} options`}
                 >
                     {renderItems(options)}
                 </div>

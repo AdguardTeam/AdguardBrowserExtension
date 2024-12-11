@@ -30,14 +30,13 @@ const SettingsSet = (props) => {
         'setting--disabled': disabled,
         'setting--hide-border': hideBorder,
     });
-
     return (
         <div className={settingClassName}>
             <div className="setting__container setting__container--vertical">
                 <div className="setting__container setting__container--horizontal">
                     <div className="setting__info">
                         <div className="setting__title">{title}</div>
-                        {description && <div className="setting__desc">{description}</div>}
+                        {description && <div className="setting__desc" aria-hidden>{description}</div>}
                     </div>
                     {inlineControl && <div className="setting__container setting__container--inline setting__inline-control">{inlineControl}</div>}
                 </div>

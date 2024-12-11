@@ -245,6 +245,7 @@ export const General = observer(() => {
                                 href={ACCEPTABLE_ADS_LEARN_MORE_URL}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                aria-hidden="true"
                             >
                                 {chunks}
                             </a>
@@ -270,6 +271,7 @@ export const General = observer(() => {
                                     href={SAFEBROWSING_LEARN_MORE_URL}
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    aria-hidden="true"
                                 >
                                     {chunks}
                                 </a>
@@ -319,26 +321,29 @@ export const General = observer(() => {
                 >
                     {translator.getMessage('options_export_settings')}
                 </button>
-                <div className="links-menu__item--wrapper">
-                    <input
-                        id="inputEl"
-                        type="file"
-                        accept="application/json"
-                        onChange={inputChangeHandlerWrapper}
-                        className="actions__input-file"
-                    />
-                    <label
-                        htmlFor="inputEl"
-                        className="links-menu__item button--link--green"
-                    >
+                <div role="button" className="links-menu__item--wrapper" aria-label={translator.getMessage('options_import_settings')}>
+                    <div aria-hidden="true">
                         <input
+                            id="inputEl"
                             type="file"
+                            aria-hidden="true"
                             accept="application/json"
                             onChange={inputChangeHandlerWrapper}
                             className="actions__input-file"
                         />
-                        {translator.getMessage('options_import_settings')}
-                    </label>
+                        <label
+                            htmlFor="inputEl"
+                            className="links-menu__item button--link--green"
+                        >
+                            <input
+                                type="file"
+                                accept="application/json"
+                                onChange={inputChangeHandlerWrapper}
+                                className="actions__input-file actions__input-file--hidden"
+                            />
+                            {translator.getMessage('options_import_settings')}
+                        </label>
+                    </div>
                 </div>
                 <a
                     target="_blank"
