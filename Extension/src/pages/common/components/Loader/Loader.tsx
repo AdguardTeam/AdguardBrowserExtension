@@ -37,7 +37,11 @@ export const Loader = ({ showLoader }: LoaderParams) => {
         y: 0,
     };
 
-    return showLoader && (
+    if (!showLoader) {
+        return null;
+    }
+
+    return (
         <AttachmentPortal rootId="root-portal" position={LOADER_POSITION}>
             <div className="loader">
                 <div className="loader__background">

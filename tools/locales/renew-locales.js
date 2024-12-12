@@ -20,7 +20,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { uniq, xor } from 'lodash';
+import { uniq, xor } from 'lodash-es';
 
 import { cliLog } from '../cli-log';
 import { getLocaleTranslations } from '../helpers';

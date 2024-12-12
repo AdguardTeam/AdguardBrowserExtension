@@ -15,11 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import {
-    AnyRule,
-    InputByteBuffer,
-    RuleParser,
-} from '@adguard/agtree';
+import { AnyRule, InputByteBuffer } from '@adguard/agtree';
+import { RuleParser } from '@adguard/agtree/parser';
+import { RuleDeserializer } from '@adguard/agtree/deserializer';
 import { PreprocessedFilterList, RuleSyntaxUtils } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
@@ -88,7 +86,7 @@ export class UserRulesApi {
             let ruleNode: AnyRule;
             // If the next byte is 0, it means that there's nothing to read.
             while (buffer.peekUint8() !== 0) {
-                RuleParser.deserialize(buffer, ruleNode = {} as AnyRule);
+                RuleDeserializer.deserialize(buffer, ruleNode = {} as AnyRule);
                 if (RuleSyntaxUtils.isRuleForUrl(ruleNode, url)) {
                     return true;
                 }

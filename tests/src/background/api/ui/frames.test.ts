@@ -1,6 +1,6 @@
 import { type Storage } from 'webextension-polyfill';
 
-import { NetworkRuleParser } from '@adguard/agtree';
+import { NetworkRuleParser } from '@adguard/agtree/parser';
 // TODO should be written separate test, because there is different api in mv3 and mv2 for tabs context
 //  after that remove exclude from the ./tsconfig.with_types_mv3.json
 import {

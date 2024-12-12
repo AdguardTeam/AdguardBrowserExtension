@@ -23,7 +23,7 @@ import React, {
 } from 'react';
 import { useBlocker, BlockerFunction } from 'react-router-dom';
 
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 
 import { ConfirmModal } from '../ConfirmModal';
 import { translator } from '../../../../common/translators/translator';
