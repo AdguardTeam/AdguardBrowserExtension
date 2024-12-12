@@ -47,22 +47,25 @@ type MainSwitchProps = {
 };
 
 export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps) => {
-    const swithRef = useRef<HTMLButtonElement | null>(null);
+    // Reference to the main switch button element
+    const mainSwitchRef = useRef<HTMLButtonElement | null>(null);
     if (typeof isEnabled === 'undefined') {
         logger.error('isEnabled should be defined for the main switcher');
         return null;
     }
 
-    const { appState, isFirstOpened, setIsFirstOpened } = useContext(popupStore);
+    const { appState, hasBeenOpened, setHasBeenOpened } = useContext(popupStore);
 
     const isTransition = isTransitionAppState(appState);
 
+    // Focus the switch button on initial render if it hasn't been opened before
     useEffect(() => {
-        if (swithRef.current && !isFirstOpened) {
-            swithRef.current.focus();
-            setIsFirstOpened(true);
+        // Only focus if the button exists and this is the first time opening
+        if (mainSwitchRef.current && !hasBeenOpened) {
+            mainSwitchRef.current.focus();
+            setHasBeenOpened(true);
         }
-    }, [isFirstOpened, setIsFirstOpened]);
+    }, [hasBeenOpened, setHasBeenOpened]);
 
     // click handler is not needed during the transition
     // but in other cases it is required
@@ -79,7 +82,7 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
     return (
         <>
             <button
-                ref={swithRef}
+                ref={mainSwitchRef}
                 type="button"
                 tabIndex={0}
                 aria-label={title}

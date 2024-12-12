@@ -99,8 +99,13 @@ class PopupStore {
     @observable
     canAddRemoveRule = true;
 
+    /**
+     * Flag that indicates whether the popup is opened for the first time.
+     *
+     * Used to focus on main switch on popup open to improve accessibility.
+     */
     @observable
-    isFirstOpened: boolean = false;
+    hasBeenOpened: boolean = false;
 
     @observable
     url: string | null = null;
@@ -519,8 +524,8 @@ class PopupStore {
     };
 
     @action
-    setIsFirstOpened = (isOpened: boolean = true) => {
-        this.isFirstOpened = isOpened;
+    setHasBeenOpened = (flag: boolean = true) => {
+        this.hasBeenOpened = flag;
     };
 
     @action

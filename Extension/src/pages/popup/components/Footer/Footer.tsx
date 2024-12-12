@@ -70,7 +70,7 @@ export const Footer = observer(() => {
 
     if (store.isEdgeBrowser) {
         const currentYear = new Date().getFullYear();
-        const footerText = `© 2009-${currentYear} AdGuard Software Ltd`;
+        const footerText = `© 2009-${currentYear} AdGuard Software Ltd.`;
         footerContent = <div className="footer__text">{footerText}</div>;
     }
 
