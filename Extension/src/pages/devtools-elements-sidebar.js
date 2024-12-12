@@ -18,7 +18,7 @@
 
 /* eslint-disable no-nested-ternary */
 
-import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../common/messages';
+import { MessageType, APP_MESSAGE_HANDLER_NAME } from '../common/messages/index';
 
 const browser = window.browser || chrome;
 

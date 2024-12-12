@@ -16,10 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable max-len */
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../constants';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Environment types for build target.
@@ -88,6 +91,7 @@ export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');
 
+/* eslint-disable max-len */
 // filters constants
 export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_METADATA_FILE_NAME}`;
@@ -101,6 +105,7 @@ export const LOCAL_SCRIPT_RULES_COMMENT = `By the rules of AMO we cannot use rem
 1. We pre-build JS rules from AdGuard filters into the add-on (see the file called "local_script_rules.json").
 2. At runtime we check every JS rule if it's included into "local_script_rules.json". If it is included we allow this rule to work since it's pre-built. Other rules are discarded.
 3. We also allow "User rules" to work since those rules are added manually by the user. This way filters maintainers can test new rules before including them in the filters.`;
+/* eslint-enable max-len */
 
 // artifacts constants
 export const CHROME_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';

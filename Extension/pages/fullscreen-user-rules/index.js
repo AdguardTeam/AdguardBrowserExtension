@@ -16,6 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { fullscreenUserRulesPage } from '../../src/pages/fullscreen-user-rules';
+import { fullscreenUserRulesPage } from '../../src/pages/fullscreen-user-rules/index';
 
 fullscreenUserRulesPage.init();

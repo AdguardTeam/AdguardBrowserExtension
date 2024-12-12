@@ -5,7 +5,7 @@
 // TODO consider removing this file and using the base config instead
 module.exports = {
     extends: [
-        '../../../.eslintrc.js',
+        '../../../.eslintrc.cjs',
     ],
     parserOptions: {
         project: '../../../tsconfig.json',

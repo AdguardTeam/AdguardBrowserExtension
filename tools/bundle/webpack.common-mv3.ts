@@ -19,7 +19,7 @@
 import path from 'path';
 
 import { type Configuration } from 'webpack';
-import merge from 'webpack-merge';
+import { merge } from 'webpack-merge';
 
 import { BACKGROUND_OUTPUT, CONTENT_SCRIPT_START_OUTPUT } from '../../constants';
 

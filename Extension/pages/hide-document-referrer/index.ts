@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import '@adguard/tswebextension/mv3/hideDocumentReferrer';
+import '@adguard/tswebextension/mv3/hide-document-referrer';

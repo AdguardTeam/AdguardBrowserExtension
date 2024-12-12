@@ -17,9 +17,13 @@
  */
 
 import path from 'path';
+import { fileURLToPath } from 'url';
 import fs from 'fs';
 
 import inputConfig from './config.json';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const {
     twosky_config_path: TWOSKY_CONFIG_PATH,

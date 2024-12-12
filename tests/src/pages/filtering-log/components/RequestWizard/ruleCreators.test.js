@@ -7,7 +7,7 @@ import {
     splitToPatterns,
     createRuleFromParams,
     getRuleText,
-} from '../../../../../../Extension/src/pages/filtering-log/components/RequestWizard/ruleCreators.ts';
+} from '../../../../../../Extension/src/pages/filtering-log/components/RequestWizard/ruleCreators';
 
 describe('ruleCreators', () => {
     describe('splitToPatterns', () => {

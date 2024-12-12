@@ -18,6 +18,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
@@ -33,6 +34,9 @@ import { type BrowserConfig } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const RULESET_NAME_PREFIX = 'ruleset_';
 

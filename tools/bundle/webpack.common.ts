@@ -17,16 +17,14 @@
  */
 
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import {
-    Configuration,
-    DefinePlugin,
-    type EntryObject,
-} from 'webpack';
+// Define plugin is not named exported by webpack.
+import webpack, { Configuration, type EntryObject } from 'webpack';
 
 import {
     BUILD_PATH,
@@ -75,6 +73,9 @@ import {
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf } from './helpers';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const config = getEnvConf(BUILD_ENV);
 
@@ -213,11 +214,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 'node_modules/.pnpm/node_modules',
             ],
             fallback: {
-                crypto: require.resolve('crypto-browserify'),
-                stream: require.resolve('stream-browserify'),
-                vm: require.resolve('vm-browserify'),
+                crypto: 'crypto-browserify',
+                stream: 'stream-browserify',
+                vm: 'vm-browserify',
             },
-            extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
+            extensions: ['.ts', '.js', '.tsx', '.jsx'],
             // pnpm uses symlinks to manage dependencies, so we need to resolve them
             symlinks: true,
             alias: {
@@ -416,7 +417,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     },
                 ],
             }),
-            new DefinePlugin({
+            new webpack.DefinePlugin({
                 // We are doing stricter JS rule checking for Firefox AMO, so we
                 // need to determine if the Firefox browser is AMO or not.
                 // TODO consider making this variable to be less common used
