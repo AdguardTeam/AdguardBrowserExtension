@@ -89,8 +89,9 @@ type IconParams = {
      * Animation class name.
      */
     animationClassname?: string,
+
     /**
-     *  Optional aria-hidden prop
+     *  Optional aria-hidden prop.
      */
     ariaHidden?: boolean;
 };
