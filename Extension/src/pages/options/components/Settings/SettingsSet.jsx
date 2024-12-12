@@ -30,6 +30,7 @@ const SettingsSet = (props) => {
         'setting--disabled': disabled,
         'setting--hide-border': hideBorder,
     });
+
     return (
         <div className={settingClassName}>
             <div className="setting__container setting__container--vertical">
