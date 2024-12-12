@@ -16,13 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const postcssPresetEnv = require('postcss-preset-env');
+import postcssPresetEnv from 'postcss-preset-env';
+import postcssSvg from 'postcss-svg';
+import postcssNested from 'postcss-nested';
 
-module.exports = {
+export default {
     plugins: [
-        [postcssPresetEnv, { stage: 3, features: { 'nesting-rules': true } }],
-        ['postcss-svg', {}],
-        ['postcss-nested', {}],
+        postcssPresetEnv({ stage: 3, features: { 'nesting-rules': true } }),
+        postcssSvg,
+        postcssNested,
     ],
 };
