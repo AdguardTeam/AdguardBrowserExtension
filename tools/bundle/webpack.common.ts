@@ -81,7 +81,7 @@ const config = getEnvConf(BUILD_ENV);
 
 const TEXT_ENCODER_POLYFILL_PATH = path.resolve(
     __dirname,
-    '../../node_modules/@adguard/tswebextension/dist/text-encoding-polyfill.js',
+    '../../node_modules/@adguard/tswebextension/dist/common/text-encoding-polyfill.js',
 );
 
 const OUTPUT_PATH = config.outputPath;
@@ -313,6 +313,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                             },
                         },
                     ],
+                    resolve: {
+                        // Needed to ignore extensions in the import statements
+                        fullySpecified: false,
+                    },
                 },
                 {
                     test: /\.(css|pcss)$/,
