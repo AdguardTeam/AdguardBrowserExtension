@@ -37,9 +37,9 @@ type SvgParams = {
     title?: string,
 
     /**
-     * Aria hidden.
+     * Whether the SVG should be hidden from screen readers.
      */
-    ariaHidden?: boolean,
+    ariaHidden: boolean,
 };
 
 const Svg = ({
@@ -102,7 +102,7 @@ export const Icon = ({
     title,
     animationCondition,
     animationClassname,
-    ariaHidden = true,
+    ariaHidden = false,
 }: IconParams) => {
     const iconClassname = cn('icon', classname);
 
