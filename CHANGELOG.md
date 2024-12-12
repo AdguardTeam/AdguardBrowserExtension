@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improve accessibility for visually impaired users [#3035]
+- Improve accessibility for visually impaired users [#3035].
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
 - Updated [@adguard/agtree] to v2.2.0.
