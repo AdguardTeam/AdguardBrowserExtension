@@ -36,7 +36,8 @@ export default defineConfig({
             __IS_MV3__: MANIFEST_ENV === '3',
         },
         reporters: [
-            [ 'junit', { outputFile: './tests-reports/unit-tests.xml' } ]
+            // FIXME: memory leak node error right after running tests
+            // [ 'junit', { outputFile: './tests-reports/unit-tests.xml' } ]
         ],
     },
 });
