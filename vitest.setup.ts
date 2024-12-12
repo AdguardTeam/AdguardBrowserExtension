@@ -18,8 +18,20 @@
 
 import browser from 'sinon-chrome';
 import { vi } from 'vitest';
+import escape from 'css.escape';
+import chrome from 'sinon-chrome/extensions';
 
 import { MANIFEST_ENV } from './tools/constants';
+
+// set missing CSS.escape polyfill for test env
+global.CSS.escape = escape;
+
+/**
+ * sinon-chrome does declare a browser.runtime.id property, but its value is null, which caused the duck-typing to fail.
+ *
+ * @see https://github.com/mozilla/webextension-polyfill/issues/218#issuecomment-584936358
+ */
+chrome.runtime.id = 'test';
 
 // FIXME: Export directly from tswebextension.
 enum ResourceType {
@@ -44,7 +56,7 @@ global.chrome = {
     /**
      * These values are used in the background script to determine the maximum
      * number of rules that can be added.
-    */
+     */
     // @ts-ignore
     declarativeNetRequest: {
         /** @see https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#property-MAX_NUMBER_OF_REGEX_RULES */
@@ -63,7 +75,7 @@ vi.mock('webextension-polyfill', () => {
                 ...browser.webRequest,
                 filterResponseData: vi.fn(),
             },
-            i18n:{
+            i18n: {
                 getUILanguage: vi.fn(() => 'en'),
                 getMessage: vi.fn((value: string) => value),
             },
@@ -73,7 +85,7 @@ vi.mock('webextension-polyfill', () => {
                     version: '0.0.0',
                     manifest_version: MANIFEST_ENV,
                 })),
-                getURL: vi.fn((url: string) => `chrome-extension://test/${url}`)
+                getURL: vi.fn((url: string) => `chrome-extension://test/${url}`),
             },
         },
     };

@@ -1,15 +1,15 @@
 export class PageStatsApi {
-    init = jest.fn();
+    init = vi.fn();
 
-    static getTotalBlocked = jest.fn();
+    static getTotalBlocked = vi.fn();
 
-    incrementTotalBlocked = jest.fn();
+    incrementTotalBlocked = vi.fn();
 
-    reset = jest.fn();
+    reset = vi.fn();
 
-    updateStats = jest.fn();
+    updateStats = vi.fn();
 
-    getStatisticsData = jest.fn();
+    getStatisticsData = vi.fn();
 
-    getGroups = jest.fn();
+    getGroups = vi.fn();
 }

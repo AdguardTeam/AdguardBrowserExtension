@@ -1,41 +1,41 @@
 export class SettingsApi {
-    init = jest.fn();
+    init = vi.fn();
 
-    setSetting = jest.fn();
+    setSetting = vi.fn();
 
-    static getSetting = jest.fn();
+    static getSetting = vi.fn();
 
-    getData = jest.fn();
+    getData = vi.fn();
 
-    getTsWebExtConfiguration = jest.fn();
+    getTsWebExtConfiguration = vi.fn();
 
-    reset = jest.fn();
+    reset = vi.fn();
 
-    import = jest.fn();
+    import = vi.fn();
 
-    export = jest.fn();
+    export = vi.fn();
 
-    importGeneralSettings = jest.fn();
+    importGeneralSettings = vi.fn();
 
-    exportGeneralSettings = jest.fn();
+    exportGeneralSettings = vi.fn();
 
-    importExtensionSpecificSettings = jest.fn();
+    importExtensionSpecificSettings = vi.fn();
 
-    exportExtensionSpecificSettings = jest.fn();
+    exportExtensionSpecificSettings = vi.fn();
 
-    importFilters = jest.fn();
+    importFilters = vi.fn();
 
-    exportFilters = jest.fn();
+    exportFilters = vi.fn();
 
-    importUserFilter = jest.fn();
+    importUserFilter = vi.fn();
 
-    exportUserFilter = jest.fn();
+    exportUserFilter = vi.fn();
 
-    importAllowlist = jest.fn();
+    importAllowlist = vi.fn();
 
-    exportAllowlist = jest.fn();
+    exportAllowlist = vi.fn();
 
-    importStealth = jest.fn();
+    importStealth = vi.fn();
 
-    exportStealth = jest.fn();
+    exportStealth = vi.fn();
 }

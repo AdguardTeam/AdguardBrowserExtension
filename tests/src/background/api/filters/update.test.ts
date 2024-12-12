@@ -3,6 +3,14 @@ import { Storage } from 'webextension-polyfill';
 // (because of setTimeout before send response).
 // See https://github.com/mswjs/msw/issues/448
 import FakeTimers from '@sinonjs/fake-timers';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
 
 import { FiltersDownloader } from '@adguard/filters-downloader/browser';
 
@@ -32,9 +40,9 @@ import { SettingOption } from '../../../../../Extension/src/background/schema';
 import { fakeFilterWithVersion } from '../../../../helpers/fixtures/fake-filter-with-version';
 import { fakeFilterV4WithDiffPath } from '../../../../helpers/fixtures/fake_filter_v4_with_diff_path';
 
-jest.mock('../../../../../Extension/src/background/engine');
-jest.mock('../../../../../Extension/src/background/api/ui/icons');
-jest.mock('../../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../../Extension/src/background/engine');
+vi.mock('../../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../../Extension/src/background/storages/notification');
 
 describe('Filter Update API should', () => {
     // We do not support filter updates in MV3 yet.
@@ -161,7 +169,7 @@ describe('Filter Update API should', () => {
             // Note: can't use `jest.useFakeTimers().setSystemTime(forwardTime)`
             // because it that case implementation of fetch will not resolve promise
             // with zero setTimeout and execution will freeze.
-            Date.now = jest.fn(() => forwardTime);
+            Date.now = vi.fn(() => forwardTime);
 
             const v3 = '3.0.0.0';
             returnMetadataWithVersion(filterId, v3, fakeFilter999);
@@ -289,7 +297,7 @@ describe('Filter Update API should', () => {
             });
             await App.init();
 
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV1.split('\n'),
                     rawFilter: fakeFilterV1,
@@ -298,14 +306,14 @@ describe('Filter Update API should', () => {
 
         afterEach(async () => {
             await storage.clear();
-            jest.clearAllMocks();
-            jest.restoreAllMocks();
+            vi.clearAllMocks();
+            vi.restoreAllMocks();
         });
 
         it('calls downloadWithRaw', async () => {
             const filterId = 1;
 
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV1.split('\n'),
                     rawFilter: fakeFilterV1,
@@ -349,7 +357,7 @@ describe('Filter Update API should', () => {
             filterVersionData[1]!.lastCheckTime = 0;
 
             // return filter with diff path
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
                     rawFilter: fakeFilterV4WithDiffPath,
@@ -387,7 +395,7 @@ describe('Filter Update API should', () => {
         it('Filters with diff path get full (force) update on expiring', async () => {
             const filterId = 1;
 
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
                     rawFilter: fakeFilterV4WithDiffPath,

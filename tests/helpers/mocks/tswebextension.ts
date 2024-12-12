@@ -13,12 +13,12 @@ export class MockedTsWebExtension {
 
     public configuration = {} as ConfigurationMV2Context;
 
-    public start = jest.fn(async () => {
+    public start = vi.fn(async () => {
         this.isStarted = true;
         return Promise.resolve();
     });
 
-    public configure = jest.fn(async () => {
+    public configure = vi.fn(async () => {
         if (!this.isStarted) {
             return Promise.reject();
         }
@@ -26,48 +26,48 @@ export class MockedTsWebExtension {
         return Promise.resolve();
     });
 
-    public stop = jest.fn(async () => {
+    public stop = vi.fn(async () => {
         this.isStarted = false;
         return Promise.resolve();
     });
 
-    public openAssistant = jest.fn(() => Promise.resolve());
+    public openAssistant = vi.fn(() => Promise.resolve());
 
-    public closeAssistant = jest.fn(() => Promise.resolve());
+    public closeAssistant = vi.fn(() => Promise.resolve());
 
-    public getRulesCount = jest.fn(() => 0);
+    public getRulesCount = vi.fn(() => 0);
 
-    public setLocalScriptRules = jest.fn();
+    public setLocalScriptRules = vi.fn();
 
-    public getMessageHandler = jest.fn(() => jest.fn());
+    public getMessageHandler = vi.fn(() => vi.fn());
 
     public onFilteringLogEvent = new MockedEventCannel() as unknown as EventChannel<FilteringLogEvent>;
 
     public onAssistantCreateRule = new MockedEventCannel() as unknown as EventChannel<string>;
 
-    public setFilteringEnabled = jest.fn();
+    public setFilteringEnabled = vi.fn();
 
-    public setCollectHitStats = jest.fn();
+    public setCollectHitStats = vi.fn();
 
-    public setDebugScriptlets = jest.fn();
+    public setDebugScriptlets = vi.fn();
 
-    public setStealthModeEnabled = jest.fn();
+    public setStealthModeEnabled = vi.fn();
 
-    public setSelfDestructFirstPartyCookies = jest.fn();
+    public setSelfDestructFirstPartyCookies = vi.fn();
 
-    public setSelfDestructThirdPartyCookies = jest.fn();
+    public setSelfDestructThirdPartyCookies = vi.fn();
 
-    public setSelfDestructFirstPartyCookiesTime = jest.fn();
+    public setSelfDestructFirstPartyCookiesTime = vi.fn();
 
-    public setSelfDestructThirdPartyCookiesTime = jest.fn();
+    public setSelfDestructThirdPartyCookiesTime = vi.fn();
 
-    public setHideReferrer = jest.fn();
+    public setHideReferrer = vi.fn();
 
-    public setHideSearchQueries = jest.fn();
+    public setHideSearchQueries = vi.fn();
 
-    public setBlockChromeClientData = jest.fn();
+    public setBlockChromeClientData = vi.fn();
 
-    public setSendDoNotTrack = jest.fn();
+    public setSendDoNotTrack = vi.fn();
 
-    public setBlockWebRTC = jest.fn();
+    public setBlockWebRTC = vi.fn();
 }

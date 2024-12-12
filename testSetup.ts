@@ -104,12 +104,12 @@ jest.mock('./Extension/src/common/logger.ts');
 
 // TODO: Add mock for mv3 version. AG-37302
 jest.mock('@adguard/tswebextension', () => ({
-    ...(jest.requireActual('@adguard/tswebextension')),
+    ...(await vi.importActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,
 }));
 
 jest.mock('lodash-es', () => ({
-    ...jest.requireActual('lodash-es'),
+    ...await vi.importActual('lodash-es'),
     debounce: ((func: (...args: unknown[]) => unknown) => func as DebouncedFunc<(...args: unknown[]) => unknown>),
 }));
 

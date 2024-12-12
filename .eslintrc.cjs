@@ -6,14 +6,12 @@ module.exports = {
     'env': {
         'browser': true,
         'node': true,
-        'jest': true,
     },
     'globals': {
         'adguard': true,
         'chrome': true,
         'page': true,
         'context': true,
-        'jestPuppeteer': true,
         __IS_MV3__: true,
     },
     'parser': '@typescript-eslint/parser',

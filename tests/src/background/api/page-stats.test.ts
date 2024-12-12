@@ -11,9 +11,9 @@ import {
     mockLocalStorage,
 } from '../../../helpers';
 
-jest.mock('../../../../Extension/src/background/engine');
-jest.mock('../../../../Extension/src/background/api/ui/icons');
-jest.mock('../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../Extension/src/background/engine');
+vi.mock('../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Page Stats Api', () => {
     let storage: Storage.StorageArea;
@@ -80,7 +80,7 @@ describe('Page Stats Api', () => {
         days[days.length - 1] = expectedStatItem;
         months[months.length - 1] = expectedStatItem;
 
-        jest.spyOn(Date, 'now').mockImplementation(() => updated);
+        vi.spyOn(Date, 'now').mockImplementation(() => updated);
 
         await PageStatsApi.updateStats(OTHER_STATS_CATEGORY_ID, 1);
 

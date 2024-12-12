@@ -2,9 +2,9 @@
 import type { EventChannelInterface } from '@adguard/tswebextension';
 
 export class MockedEventCannel<T> implements EventChannelInterface<T> {
-    dispatch = jest.fn();
+    dispatch = vi.fn();
 
-    subscribe = jest.fn();
+    subscribe = vi.fn();
 
-    unsubscribe = jest.fn();
+    unsubscribe = vi.fn();
 }

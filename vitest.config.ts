@@ -16,24 +16,25 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { defineConfig } from 'vitest/config';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 import { MANIFEST_ENV } from './tools/constants';
 
 export default defineConfig({
+    define: {
+        IS_FIREFOX_AMO: false,
+        // For run tests like it's release.
+        IS_RELEASE: true,
+        IS_BETA: false,
+        __IS_MV3__: MANIFEST_ENV === '3',
+    },
+    plugins: [tsconfigPaths()],
     test: {
         setupFiles: './vitest.setup.ts', // Setup file for tests.
         environment: 'jsdom', // Enables jsdom environment for tests.
         environmentOptions: {
             // FIXME: Insert minimal supported browser version here.
             userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.0.2468 Yowser/2.5 Safari/537.36',
-        },
-        globals: {
-            // TODO: (AG-20414) Add tests for Firefox AMO
-            IS_FIREFOX_AMO: false,
-            // For run tests like it's release.
-            IS_RELEASE: true,
-            IS_BETA: false,
-            __IS_MV3__: MANIFEST_ENV === '3',
         },
         reporters: [
             // FIXME: memory leak node error right after running tests

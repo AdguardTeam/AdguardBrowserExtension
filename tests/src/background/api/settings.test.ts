@@ -31,9 +31,9 @@ import {
     getExportedSettingsV2,
 } from '../../../helpers';
 
-jest.mock('../../../../Extension/src/background/engine');
-jest.mock('../../../../Extension/src/background/api/ui/icons');
-jest.mock('../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../Extension/src/background/engine');
+vi.mock('../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
