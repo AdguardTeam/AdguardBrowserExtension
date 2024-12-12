@@ -46,7 +46,7 @@ export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionP
         >
             <Icon
                 id="#block-ad"
-                className="icon--24 icon--action--block-ad"
+                classname="icon--24 icon--action--block-ad"
                 ariaHidden
             />
             <div className="action__title">
