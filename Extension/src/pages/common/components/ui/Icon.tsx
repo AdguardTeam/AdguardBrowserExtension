@@ -37,7 +37,7 @@ type SvgParams = {
     title?: string,
 
     /**
-     *  Aria hiddent
+     * Aria hidden.
      */
     ariaHidden?: boolean,
 };
