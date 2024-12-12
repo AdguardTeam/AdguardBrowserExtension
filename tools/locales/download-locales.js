@@ -19,8 +19,8 @@
 /**
  * This task downloads locales from Crowdin and saves them to the locales directory.
  */
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import querystring from 'querystring';
 
 import axios from 'axios';

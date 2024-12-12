@@ -17,7 +17,7 @@
  */
 
 /* eslint-disable no-console */
-import path from 'path';
+import path from 'node:path';
 
 import webpack from 'webpack';
 import { merge } from 'webpack-merge';

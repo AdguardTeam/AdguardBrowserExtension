@@ -26,7 +26,7 @@
  * 3. We also allow "User rules" to work since those rules are added manually by the user.
  *  This way filters maintainers can test new rules before including them in the filters.
  */
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 
 import { some } from 'lodash-es';
 
