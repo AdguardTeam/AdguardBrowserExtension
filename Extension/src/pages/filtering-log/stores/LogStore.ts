@@ -287,29 +287,29 @@ class LogStore {
     }
 
     @action
-    setMiscellaneousFilters = (payload: LogFilters) => {
-        this.miscellaneousFilters = payload;
-    };
+        setMiscellaneousFilters = (payload: LogFilters) => {
+            this.miscellaneousFilters = payload;
+        };
 
     @action
-    setRequestSourceFilters = (payload: LogFilters) => {
-        this.requestSourceFilters = payload;
-    };
+        setRequestSourceFilters = (payload: LogFilters) => {
+            this.requestSourceFilters = payload;
+        };
 
     @action
-    setEventTypesFilters = (payload: LogFilters) => {
-        this.eventTypesFilters = payload;
-    };
+        setEventTypesFilters = (payload: LogFilters) => {
+            this.eventTypesFilters = payload;
+        };
 
     @action
-    resetAllFilters = () => {
+        resetAllFilters = () => {
         // enable all eventTypesFilters
-        this.eventTypesFilters = initEventTypesFilters;
-        // disable all miscellaneousFilters
-        this.miscellaneousFilters = initMiscellaneousFilters;
-        // disable all requestSourceFilters
-        this.requestSourceFilters = initRequestSourceFilters;
-    };
+            this.eventTypesFilters = initEventTypesFilters;
+            // disable all miscellaneousFilters
+            this.miscellaneousFilters = initMiscellaneousFilters;
+            // disable all requestSourceFilters
+            this.requestSourceFilters = initRequestSourceFilters;
+        };
 
     @action
     onTabUpdate(tabInfo: FilteringLogTabInfo) {
@@ -395,9 +395,9 @@ class LogStore {
     };
 
     @action
-    setSelectIsOpenState = (value: boolean) => {
-        this.selectIsOpen = value;
-    };
+        setSelectIsOpenState = (value: boolean) => {
+            this.selectIsOpen = value;
+        };
 
     @computed
     get tabs() {
@@ -421,61 +421,61 @@ class LogStore {
     }
 
     @action
-    getEventsByTabId = async (tabId: number) => {
-        const filteringInfo = await messenger.getFilteringInfoByTabId(tabId);
-        runInAction(() => {
-            this.filteringEvents = filteringInfo?.filteringEvents
-                .map((filteringEvent) => this.formatEvent(filteringEvent)) || [];
-        });
-    };
-
-    @action
-    setSelectedTabId = async (tabId: string | number) => {
-        this.selectedTabId = typeof tabId === 'string'
-            ? Number.parseInt(tabId, 10)
-            : tabId;
-        await this.getEventsByTabId(this.selectedTabId);
-        /**
-         * Hash of filtering log window should be updated to focus on the active browser tab.
-         * Because after manual changing of TabSelector's tab,
-         * location.hash of the filtering log window does not change.
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482
-         */
-        document.location.hash = String(tabId);
-    };
-
-    @action
-    synchronizeOpenTabs = async () => {
-        const tabsInfo = await messenger.synchronizeOpenTabs();
-        runInAction(() => {
-            tabsInfo.forEach((tabInfo) => {
-                this.tabsMap[tabInfo.tabId] = tabInfo;
+        getEventsByTabId = async (tabId: number) => {
+            const filteringInfo = await messenger.getFilteringInfoByTabId(tabId);
+            runInAction(() => {
+                this.filteringEvents = filteringInfo?.filteringEvents
+                    .map((filteringEvent) => this.formatEvent(filteringEvent)) || [];
             });
-        });
-    };
+        };
 
     @action
-    getFilteringLogData = async () => {
-        const {
-            filtersMetadata,
-            settings,
-            preserveLogEnabled,
-        } = await messenger.getFilteringLogData();
-
-        runInAction(() => {
-            this.filtersMetadata = filtersMetadata;
-            this.settings = settings;
-            this.preserveLogEnabled = preserveLogEnabled;
-        });
-    };
+        setSelectedTabId = async (tabId: string | number) => {
+            this.selectedTabId = typeof tabId === 'string'
+                ? Number.parseInt(tabId, 10)
+                : tabId;
+            await this.getEventsByTabId(this.selectedTabId);
+            /**
+             * Hash of filtering log window should be updated to focus on the active browser tab.
+             * Because after manual changing of TabSelector's tab,
+             * location.hash of the filtering log window does not change.
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2482
+             */
+            document.location.hash = String(tabId);
+        };
 
     @action
-    getFilteringLogEvents = async () => {
-        if (!this.selectedTabId) {
-            return;
-        }
-        await this.getEventsByTabId(this.selectedTabId);
-    };
+        synchronizeOpenTabs = async () => {
+            const tabsInfo = await messenger.synchronizeOpenTabs();
+            runInAction(() => {
+                tabsInfo.forEach((tabInfo) => {
+                    this.tabsMap[tabInfo.tabId] = tabInfo;
+                });
+            });
+        };
+
+    @action
+        getFilteringLogData = async () => {
+            const {
+                filtersMetadata,
+                settings,
+                preserveLogEnabled,
+            } = await messenger.getFilteringLogData();
+
+            runInAction(() => {
+                this.filtersMetadata = filtersMetadata;
+                this.settings = settings;
+                this.preserveLogEnabled = preserveLogEnabled;
+            });
+        };
+
+    @action
+        getFilteringLogEvents = async () => {
+            if (!this.selectedTabId) {
+                return;
+            }
+            await this.getEventsByTabId(this.selectedTabId);
+        };
 
     @computed
     get events() {
@@ -556,72 +556,72 @@ class LogStore {
      * @returns {Promise<void>}
      */
     @action
-    clearFilteringEvents = async () => {
-        if (this.selectedTabId === null) {
-            logger.error('[clearFilteringEvents]: selected tab id is not defined');
-            return;
-        }
+        clearFilteringEvents = async () => {
+            if (this.selectedTabId === null) {
+                logger.error('[clearFilteringEvents]: selected tab id is not defined');
+                return;
+            }
 
-        const ignorePreserveLog = true;
+            const ignorePreserveLog = true;
 
-        await messenger.clearEventsByTabId(this.selectedTabId, ignorePreserveLog);
-        runInAction(() => {
-            this.filteringEvents = [];
-        });
-    };
-
-    @action
-    setEventsSearchValue = (value: string) => {
-        this.eventsSearchValue = value;
-    };
+            await messenger.clearEventsByTabId(this.selectedTabId, ignorePreserveLog);
+            runInAction(() => {
+                this.filteringEvents = [];
+            });
+        };
 
     @action
-    refreshPage = async () => {
-        if (this.selectedTabId === null) {
-            logger.error('[clearFilteringEvents]: selected tab id is not defined');
-            return;
-        }
-
-        if (this.selectedTabId === BACKGROUND_TAB_ID) {
-            await messenger.clearEventsByTabId(this.selectedTabId);
-            return;
-        }
-
-        await messenger.refreshPage(this.selectedTabId);
-    };
+        setEventsSearchValue = (value: string) => {
+            this.eventsSearchValue = value;
+        };
 
     @action
-    setPreserveLog = async (state: boolean) => {
-        await messenger.setPreserveLogState(state);
-        runInAction(() => {
-            this.preserveLogEnabled = state;
-        });
-    };
+        refreshPage = async () => {
+            if (this.selectedTabId === null) {
+                logger.error('[clearFilteringEvents]: selected tab id is not defined');
+                return;
+            }
+
+            if (this.selectedTabId === BACKGROUND_TAB_ID) {
+                await messenger.clearEventsByTabId(this.selectedTabId);
+                return;
+            }
+
+            await messenger.refreshPage(this.selectedTabId);
+        };
 
     @action
-    handleSelectEvent = (eventId: string) => {
-        if (this.selectedEvent
+        setPreserveLog = async (state: boolean) => {
+            await messenger.setPreserveLogState(state);
+            runInAction(() => {
+                this.preserveLogEnabled = state;
+            });
+        };
+
+    @action
+        handleSelectEvent = (eventId: string) => {
+            if (this.selectedEvent
             && this.rootStore.wizardStore.isModalOpen
             && eventId === this.selectedEvent.eventId) {
+                this.selectedEvent = null;
+                this.rootStore.wizardStore.closeModal();
+                return;
+            }
+
+            this.rootStore.wizardStore.setAddedRuleState(null);
+            this.setSelectedEventById(eventId);
+            this.rootStore.wizardStore.openModal();
+        };
+
+    @action
+        setSelectedEventById = (eventId: string) => {
+            this.selectedEvent = find(this.filteringEvents, { eventId }) || null;
+        };
+
+    @action
+        removeSelectedEvent = () => {
             this.selectedEvent = null;
-            this.rootStore.wizardStore.closeModal();
-            return;
-        }
-
-        this.rootStore.wizardStore.setAddedRuleState(null);
-        this.setSelectedEventById(eventId);
-        this.rootStore.wizardStore.openModal();
-    };
-
-    @action
-    setSelectedEventById = (eventId: string) => {
-        this.selectedEvent = find(this.filteringEvents, { eventId }) || null;
-    };
-
-    @action
-    removeSelectedEvent = () => {
-        this.selectedEvent = null;
-    };
+        };
 
     @computed
     get appearanceTheme() {

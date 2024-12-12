@@ -35,8 +35,10 @@ import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../const
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export const RULESET_NAME_PREFIX = 'ruleset_';
 

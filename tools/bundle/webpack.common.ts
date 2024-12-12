@@ -74,11 +74,14 @@ import {
 } from './common-constants';
 import { getEnvConf } from './helpers';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 const config = getEnvConf(BUILD_ENV);
 
+// FIXME: Check why we import directly from the node_modules.
 const TEXT_ENCODER_POLYFILL_PATH = path.resolve(
     __dirname,
     '../../node_modules/@adguard/tswebextension/dist/common/text-encoding-polyfill.js',

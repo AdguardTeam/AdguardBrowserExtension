@@ -144,7 +144,7 @@ class Messenger {
      *
      * @returns Function to remove listener on unload.
      */
-    createLongLivedConnection = (
+    static createLongLivedConnection = (
         page: Page,
         events: NotifierType[],
         callback: (message: LongLivedConnectionCallbackMessage) => void,
@@ -655,7 +655,8 @@ class Messenger {
      * @returns Promise that resolves after the tab is opened.
      */
     async openAbuseSite(
-        url: OpenAbuseTabMessage['data']['url'], from: OpenAbuseTabMessage['data']['from'],
+        url: OpenAbuseTabMessage['data']['url'],
+        from: OpenAbuseTabMessage['data']['from'],
     ): Promise<ExtractMessageResponse<MessageType.OpenAbuseTab>> {
         return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
     }
@@ -669,7 +670,8 @@ class Messenger {
      * @returns Promise that resolves with the site security info.
      */
     async checkSiteSecurity(
-        url: OpenSiteReportTabMessage['data']['url'], from: OpenSiteReportTabMessage['data']['from'],
+        url: OpenSiteReportTabMessage['data']['url'],
+        from: OpenSiteReportTabMessage['data']['from'],
     ): Promise<ExtractMessageResponse<MessageType.OpenSiteReportTab>> {
         return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
     }
@@ -994,4 +996,4 @@ class Messenger {
 
 const messenger = new Messenger();
 
-export { messenger };
+export { messenger, Messenger };

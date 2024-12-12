@@ -13,16 +13,22 @@ module.exports = {
         sourceType: 'module',
     },
     'rules': {
-        'import/prefer-default-export': 'off',
-        'max-len': 'off',
-        'no-use-before-define': 'off',
-        'indent': [
+        '@typescript-eslint/indent': [
             'error',
             4,
             {
-                'SwitchCase': 1,
+                SwitchCase: 1,
+                // FIXME: Currently 'Decorator' is not supported with @typescript-eslint/parser@7,
+                // but we cannot update it to 8 because of the incompatibility with other plugins.
+                // So we should to update it with `eslint-config-airbnb-typescript`.
+                ignoredNodes: ['Decorator'],
             },
         ],
+
+        'import/prefer-default-export': 'off',
+        'max-len': 'off',
+        'no-use-before-define': 'off',
+        'indent': 'off',
         'arrow-body-style': 'off',
         'func-names': ['error', 'as-needed'],
         'no-param-reassign': [
@@ -32,10 +38,10 @@ module.exports = {
             },
         ],
 
+        'react/jsx-indent': 'off',
+        'react/jsx-indent-props': 'off',
         'react/prop-types': 'off',
         'react/require-default-props': 'off',
-        'react/jsx-indent': ['error', 4],
-        'react/jsx-indent-props': ['error', 4],
         'react/forbid-prop-types': 'off',
         'react/jsx-props-no-spreading': 'off',
         'react/jsx-filename-extension': [
@@ -43,6 +49,10 @@ module.exports = {
             {
                 'extensions': ['.js', '.jsx', '.ts', '.tsx'],
             },
+        ],
+        'react/function-component-definition': [
+            2,
+            { 'namedComponents': 'arrow-function' },
         ],
     },
 };

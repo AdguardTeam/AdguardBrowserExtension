@@ -125,7 +125,7 @@ const shouldRetry = (errorMessage) => {
  * @returns {Promise<void>} Resolves after the specified delay.
  */
 const delayExecution = (delay) => {
-    return new Promise((resolve) => setTimeout(resolve, delay));
+    return new Promise((resolve) => { setTimeout(resolve, delay); });
 };
 
 /**

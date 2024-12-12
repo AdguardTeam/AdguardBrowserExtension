@@ -29,13 +29,13 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import './add-custom-input.pcss';
 
 export type AddCustomInputProps = {
-  label?: string;
-  type?: HTMLInputTypeAttribute;
-  placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
-  autoFocus?: boolean;
-  disabled?: boolean;
+    label?: string;
+    type?: HTMLInputTypeAttribute;
+    placeholder?: string;
+    value?: string;
+    onChange?: (value: string) => void;
+    autoFocus?: boolean;
+    disabled?: boolean;
 };
 
 const AddCustomInput = ({

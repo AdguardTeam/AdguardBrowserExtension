@@ -86,40 +86,38 @@ const Group = ({
         'group--disabled': !checkboxValue,
     });
     return (
-        <>
-            <div className={groupClassName}>
-                <button
-                    type="button"
-                    tabIndex={0}
-                    className="setting__area setting__area_group"
-                    onClick={groupClickHandler}
-                >
-                    <Icon
-                        id={`#setting-${groupId}`}
-                        classname="icon--24 setting__icon"
-                    />
-                    <div className="setting__info">
-                        <div className="setting__title group__title">
-                            {groupName}
-                        </div>
-                        <div className="setting__desc">
-                            {renderEnabledFilters(enabledFilters)}
-                        </div>
+        <div className={groupClassName}>
+            <button
+                type="button"
+                tabIndex={0}
+                className="setting__area setting__area_group"
+                onClick={groupClickHandler}
+            >
+                <Icon
+                    id={`#setting-${groupId}`}
+                    classname="icon--24 setting__icon"
+                />
+                <div className="setting__info">
+                    <div className="setting__title group__title">
+                        {groupName}
                     </div>
-                </button>
-                <div className="setting__inline-control setting__inline-control_group">
-                    <Setting
-                        id={groupId}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        label={groupName}
-                        value={checkboxValue}
-                        handler={checkboxHandler}
-                        optimistic={!__IS_MV3__}
-                        className="group__checkbox"
-                    />
+                    <div className="setting__desc">
+                        {renderEnabledFilters(enabledFilters)}
+                    </div>
                 </div>
+            </button>
+            <div className="setting__inline-control setting__inline-control_group">
+                <Setting
+                    id={groupId}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={groupName}
+                    value={checkboxValue}
+                    handler={checkboxHandler}
+                    optimistic={!__IS_MV3__}
+                    className="group__checkbox"
+                />
             </div>
-        </>
+        </div>
     );
 };
 

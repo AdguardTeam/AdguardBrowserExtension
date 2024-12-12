@@ -75,94 +75,95 @@ export const Warning = ({
     });
 
     return (
-        <>
-            <div className="rules-limits rules-limits__warning">
-                <div className="rules-limits__warning-title">
-                    {translator.getMessage('options_rule_limits_warning_title')}
+        <div className="rules-limits rules-limits__warning">
+            <div className="rules-limits__warning-title">
+                {translator.getMessage('options_rule_limits_warning_title')}
+            </div>
+            <div className="rules-limits__section">
+                <div className="rules-limits__section-title">
+                    {translator.getMessage('options_rule_limits_warning_explanation_title')}
                 </div>
-                <div className="rules-limits__section">
-                    <div className="rules-limits__section-title">
-                        {translator.getMessage('options_rule_limits_warning_explanation_title')}
-                    </div>
-                    <div className="rules-limits__group rules-limits__text--gray">
-                        {translator.getMessage('options_rule_limits_warning_explanation_description')}
-                    </div>
+                <div className="rules-limits__group rules-limits__text--gray">
+                    {translator.getMessage('options_rule_limits_warning_explanation_description')}
                 </div>
-                <div className="rules-limits__section">
-                    <div className="rules-limits__section-title">
-                        {translator.getMessage('options_rule_limits_warning_list_enabled_before_title')}
-                    </div>
-                    <div className="rules-limits__group rules-limits__text--gray">
-                        {expectedEnabledFilterNames}
-                    </div>
+            </div>
+            <div className="rules-limits__section">
+                <div className="rules-limits__section-title">
+                    {translator.getMessage('options_rule_limits_warning_list_enabled_before_title')}
                 </div>
-                <div className="rules-limits__section">
-                    <div className="rules-limits__section-title">
-                        {translator.getMessage('options_rule_limits_warning_list_enabled_now_title')}
-                    </div>
-                    <div className="rules-limits__group rules-limits__text--gray">
-                        {
-                            actuallyEnabledFilterNames.trim().length === 0
-                                ? translator.getMessage('options_filters_no_enabled')
-                                : actuallyEnabledFilterNames
-                        }
-                    </div>
+                <div className="rules-limits__group rules-limits__text--gray">
+                    {expectedEnabledFilterNames}
                 </div>
-                <div className="rules-limits__section">
-                    <div className="rules-limits__section-title">
-                        {translator.getMessage('options_rule_limits_warning_actions_title')}
+            </div>
+            <div className="rules-limits__section">
+                <div className="rules-limits__section-title">
+                    {translator.getMessage('options_rule_limits_warning_list_enabled_now_title')}
+                </div>
+                <div className="rules-limits__group rules-limits__text--gray">
+                    {
+                        actuallyEnabledFilterNames.trim().length === 0
+                            ? translator.getMessage('options_filters_no_enabled')
+                            : actuallyEnabledFilterNames
+                    }
+                </div>
+            </div>
+            <div className="rules-limits__section">
+                <div className="rules-limits__section-title">
+                    {translator.getMessage('options_rule_limits_warning_actions_title')}
+                </div>
+                <div className="rules-limits__group rules-limits__text--gray">
+                    <div className="rules-limits__group-option">
+                        {reactTranslator.getMessage('options_rule_limits_warning_actions_delete_filters', {
+                            // eslint-disable-next-line react/no-unstable-nested-components
+                            a: (chunks: string) => (
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="rules-limits__group-option-link"
+                                    onClick={onClickReactivateFilters}
+                                >
+                                    {chunks}
+                                </a>
+                            ),
+                        })}
                     </div>
-                    <div className="rules-limits__group rules-limits__text--gray">
-                        <div className="rules-limits__group-option">
-                            {reactTranslator.getMessage('options_rule_limits_warning_actions_delete_filters', {
+                    <div className="rules-limits__group-option">
+                        {reactTranslator.getMessage('options_rule_limits_warning_actions_install_app', {
+                            // eslint-disable-next-line react/no-unstable-nested-components
+                            a: (chunks: string) => (
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href={getTheAppUrl}
+                                    className="rules-limits__group-option-link rules-limits__text--gray"
+                                >
+                                    {chunks}
+                                </a>
+                            ),
+                        })}
+                    </div>
+                    <div className="rules-limits__group-option">
+                        {reactTranslator.getMessage(
+                            actuallyEnabledFilterNames.length > 0
+                                ? 'options_rule_limits_warning_actions_close_warning_multiple_filters'
+                                : 'options_rule_limits_warning_actions_close_warning_one_filter',
+                            {
+                                // eslint-disable-next-line react/no-unstable-nested-components
                                 a: (chunks: string) => (
                                     <a
                                         target="_blank"
                                         rel="noreferrer"
                                         className="rules-limits__group-option-link"
-                                        onClick={onClickReactivateFilters}
+                                        onClick={onClickCloseWarning}
                                     >
                                         {chunks}
                                     </a>
                                 ),
-                            })}
-                        </div>
-                        <div className="rules-limits__group-option">
-                            {reactTranslator.getMessage('options_rule_limits_warning_actions_install_app', {
-                                a: (chunks: string) => (
-                                    <a
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        href={getTheAppUrl}
-                                        className="rules-limits__group-option-link rules-limits__text--gray"
-                                    >
-                                        {chunks}
-                                    </a>
-                                ),
-                            })}
-                        </div>
-                        <div className="rules-limits__group-option">
-                            {reactTranslator.getMessage(
-                                actuallyEnabledFilterNames.length > 0
-                                    ? 'options_rule_limits_warning_actions_close_warning_multiple_filters'
-                                    : 'options_rule_limits_warning_actions_close_warning_one_filter',
-                                {
-                                    a: (chunks: string) => (
-                                        <a
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="rules-limits__group-option-link"
-                                            onClick={onClickCloseWarning}
-                                        >
-                                            {chunks}
-                                        </a>
-                                    ),
-                                },
-                            )}
-                        </div>
+                            },
+                        )}
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };

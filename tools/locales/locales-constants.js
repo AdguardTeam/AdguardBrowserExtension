@@ -22,8 +22,10 @@ import fs from 'fs';
 
 import inputConfig from './config.json';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 const {
     twosky_config_path: TWOSKY_CONFIG_PATH,

@@ -431,7 +431,7 @@ class PopupStore {
         return null;
     }
 
-    getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
+    static getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
         switch (range) {
             case TimeRange.Day:
                 if (!stats.lastMonth[stats.lastMonth.length - 1]) {
@@ -484,7 +484,7 @@ class PopupStore {
             return null;
         }
 
-        const statsDataForCurrentRange = this.getDataByRange(stats, this.selectedTimeRange);
+        const statsDataForCurrentRange = PopupStore.getDataByRange(stats, this.selectedTimeRange);
 
         if (!statsDataForCurrentRange) {
             return null;

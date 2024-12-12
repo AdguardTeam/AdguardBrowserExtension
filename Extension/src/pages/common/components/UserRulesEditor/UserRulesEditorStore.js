@@ -86,19 +86,19 @@ class UserRulesEditorStore {
     }
 
     @action
-    setUserRulesEditorContentChangedState = (state) => {
-        this.userRulesEditorContentChanged = state;
-    };
+        setUserRulesEditorContentChangedState = (state) => {
+            this.userRulesEditorContentChanged = state;
+        };
 
     @action
-    setUserRulesExportAvailableState = (state) => {
-        this.userRulesExportAvailable = state;
-    };
+        setUserRulesExportAvailableState = (state) => {
+            this.userRulesExportAvailable = state;
+        };
 
     @action
-    setUserRulesEditorPrefsDropped = (state) => {
-        this.userRulesEditorPrefsDropped = state;
-    };
+        setUserRulesEditorPrefsDropped = (state) => {
+            this.userRulesEditorPrefsDropped = state;
+        };
 
     @action
     async updateSetting(settingId, value) {
@@ -114,7 +114,8 @@ class UserRulesEditorStore {
         this.userRulesEditorWrap = !this.userRulesEditorWrap;
         if (this.settings) {
             await this.updateSetting(
-                this.settings.names.UserRulesEditorWrap, this.userRulesEditorWrap,
+                this.settings.names.UserRulesEditorWrap,
+                this.userRulesEditorWrap,
             );
         }
     }
