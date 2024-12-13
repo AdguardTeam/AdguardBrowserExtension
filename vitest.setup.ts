@@ -16,12 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser from 'sinon-chrome';
 import { vi } from 'vitest';
+// @ts-ignore
+import { fetch as fetchPolyfill } from 'whatwg-fetch';
+import browser from 'sinon-chrome';
 import escape from 'css.escape';
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
-import { DebouncedFunc } from 'lodash-es/debounce';
+import type { DebouncedFunc } from 'lodash-es/debounce';
 
 import { MANIFEST_ENV } from './tools/constants';
 import {
@@ -142,5 +144,7 @@ mockLocalStorage();
 
 // register fake server for xhr requests
 const server = mockXhrRequests();
+
+global.fetch = fetchPolyfill;
 
 export { server };
