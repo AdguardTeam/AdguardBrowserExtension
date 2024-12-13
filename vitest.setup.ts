@@ -19,9 +19,16 @@
 import browser from 'sinon-chrome';
 import { vi } from 'vitest';
 import escape from 'css.escape';
+// @ts-ignore
 import chrome from 'sinon-chrome/extensions';
+import { DebouncedFunc } from 'lodash-es/debounce';
 
 import { MANIFEST_ENV } from './tools/constants';
+import {
+    MockedTsWebExtension,
+    mockLocalStorage,
+    mockXhrRequests,
+} from './tests/helpers';
 
 // set missing CSS.escape polyfill for test env
 global.CSS.escape = escape;
@@ -104,6 +111,10 @@ vi.mock('webextension-polyfill', () => {
                 })),
                 getURL: vi.fn((url: string) => `chrome-extension://test/${url}`),
             },
+            tabs: {
+                ...browser.tabs,
+                query: vi.fn(() => []),
+            },
         },
     };
 });
@@ -112,3 +123,24 @@ vi.mock('nanoid', () => ({
     nanoid: (): string => 'cTkoV5Vs',
     customAlphabet: (): Function => (): string => 'cTkoV5Vs',
 }));
+
+// Mock log to hide all logger message
+vi.mock('./Extension/src/common/logger.ts');
+
+// TODO: Add mock for mv3 version. AG-37302
+vi.mock('@adguard/tswebextension', async () => ({
+    ...(await vi.importActual('@adguard/tswebextension')),
+    TsWebExtension: MockedTsWebExtension,
+}));
+
+vi.mock('lodash-es', async () => ({
+    ...await vi.importActual('lodash-es'),
+    debounce: ((func: (...args: unknown[]) => unknown) => func as DebouncedFunc<(...args: unknown[]) => unknown>),
+}));
+
+mockLocalStorage();
+
+// register fake server for xhr requests
+const server = mockXhrRequests();
+
+export { server };
