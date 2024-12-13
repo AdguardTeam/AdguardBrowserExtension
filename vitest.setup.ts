@@ -64,6 +64,16 @@ global.chrome = {
         MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES: 5000,
         ResourceType,
     },
+    // FIXME: remove any
+    runtime: {
+        ...browser.runtime,
+        getManifest: vi.fn(() => ({
+            name: 'AdGuard AdBlocker',
+            version: '0.0.0',
+            manifest_version: MANIFEST_ENV as any,
+        })),
+        getURL: vi.fn((url: string) => `chrome-extension://test/${url}`),
+    } as any,
 };
 
 // Mock webextension-polyfill
@@ -71,6 +81,13 @@ vi.mock('webextension-polyfill', () => {
     return {
         default: {
             ...browser,
+            // FIXME
+            declarativeNetRequest: {
+                /** @see https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#property-MAX_NUMBER_OF_REGEX_RULES */
+                MAX_NUMBER_OF_REGEX_RULES: 1000,
+                MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES: 5000,
+                ResourceType,
+            },
             webRequest: {
                 ...browser.webRequest,
                 filterResponseData: vi.fn(),
