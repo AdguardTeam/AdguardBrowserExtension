@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 // TODO: Use 'tswebextension' alias to work with mv3 version. AG-37302
 import {
     EventChannel,

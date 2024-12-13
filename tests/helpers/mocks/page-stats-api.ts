@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 export class PageStatsApi {
     init = vi.fn();
 

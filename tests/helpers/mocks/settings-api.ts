@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 export class SettingsApi {
     init = vi.fn();
 
