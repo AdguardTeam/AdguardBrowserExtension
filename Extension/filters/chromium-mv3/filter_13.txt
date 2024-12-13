@@ -1,8 +1,8 @@
-! Checksum: CcACd7PkKUApbwdhRbC18Q
+! Checksum: Bd6fnvbE9CZXwweY2A29fg
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.34
-! TimeUpdated: 2024-12-10T12:38:36+00:00
+! Version: 2.0.54.36
+! TimeUpdated: 2024-12-11T08:34:56+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1681,6 +1681,14 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+webtekno.com##.content-body__detail > p > a[href^="https://turk.net/gigafiber"]
+webtekno.com##.content-body__detail > p:has(> a.box-link ~ strong)
+webtekno.com##.content-body__detail > p:has(> a.box-link ~ strong) + h2
+webtekno.com##.content-body__detail > p:has(> img[alt="turknet"])
+webtekno.com##.content-body__detail > p:has(> img[alt="turknet"]) + p
+webtekno.com##.bottom-new-video:has(> div.bottom-link > div > a[href][onclick])
+r10.net##div[data-cname*="rk"]
+r10.net##.rabdfe3
 sinefil.tv###psContainer
 sinefil.tv#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?Date[\s\S]*?getElementsByTagName/')
 ||ds.macellan.online/*/?ts=$script,domain=sinefil.tv

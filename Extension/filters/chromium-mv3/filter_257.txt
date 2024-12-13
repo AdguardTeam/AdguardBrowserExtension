@@ -1,8 +1,8 @@
-! Checksum: CicaQsfTCHjczcd4UCrK9w
+! Checksum: WzN9Ix3vrQFpxa5zAvk/Lw
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.5.0
-! TimeUpdated: 2024-12-10T17:02:05+00:00
+! Version: 2.0.5.6
+! TimeUpdated: 2024-12-13T05:01:50+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -2196,6 +2196,12 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://x.com/harugasumi/status/1838519663145468074
 !+ NOT_OPTIMIZED
 ||ec2-13-230-253-66.ap-northeast-1.compute.amazonaws.com^$all
+! https://x.com/harugasumi/status/1866830127054852300
+!+ NOT_OPTIMIZED
+||77jjxx.com^$all
+! https://x.com/masaomi346/status/1867012579492757739
+!+ NOT_OPTIMIZED
+||my-bitbank.cc^$all
 ! scam sites
 !+ NOT_OPTIMIZED
 ||webuzz.me^$document
@@ -6791,6 +6797,11 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||zynekcctv.com/amandes/$document,to=~amendes.gouv.fr
 !+ NOT_OPTIMIZED
 /amandes/infospage.php^$document,to=~amendes.gouv.fr
+! https://www.virustotal.com/gui/url/3cd91b0073bdde2b905701c3c79bd0fbd6f9edb2702349c9cf05851ae33aca69
+!+ NOT_OPTIMIZED
+/\.codeanyapp\.com\/.+\/(?:3dsece?|infospage|paiement)\.php\b/$document,match-case,to=codeanyapp.com|~amendes.gouv.fr
+!+ NOT_OPTIMIZED
+||codeanyapp.com/pr/rue/$document,to=~amendes.gouv.fr
 ! bank
 !+ NOT_OPTIMIZED
 ||chamsocthekhachhang-$document,to=~edu|~gov|~edu.vn|~gov.vn
@@ -6836,9 +6847,6 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||nyfinance.ru^$all,to=~nykredit.com
 !+ NOT_OPTIMIZED
 /^https:\/\/tpbank\.[-a-z0-9]{5,}\.[a-z]{3}(?:\.vn)?\//$document,to=~edu|~gov|~gov.vn|~tpb.vn
-! https://infosec.exchange/@urldna/112496070441371886
-!+ NOT_OPTIMIZED
-||mybluehost.me/service/*/nkl-log.php$document,to=~nickel.eu
 ! https://urldna.io/scan/667e89c3520dc059da434dfd
 ! https://www.virustotal.com/gui/url/a5574806b7e5097c37ca641585a1f2cf0d12abbbaec62a32fe01962c1304e26c
 !+ NOT_OPTIMIZED
@@ -6902,6 +6910,16 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||caixa-*.codeanyapp.com^$document,to=~caixabank.es
 !+ NOT_OPTIMIZED
 ||codeanyapp.com/Caixanow/$document,to=~caixabank.es
+! nickel.eu
+! https://infosec.exchange/@urldna/112496070441371886
+!+ NOT_OPTIMIZED
+||mybluehost.me/service/*/nkl-log.php$document,to=~nickel.eu
+! https://urldna.io/scan/67590eb30fdec9bca3a30d99
+! https://www.virustotal.com/gui/url/618858f254ee0840cdab44ad767602a6621189ac71473fb580d6bab953d00228
+!+ NOT_OPTIMIZED
+||sviluppo.host/dl/NickelTru/$document,to=~nickel.eu
+!+ NOT_OPTIMIZED
+||biblio.sviluppo.host^$document
 ! dkb.de
 ! https://urldna.io/scan/66fa726d7fe4a642f943054f
 ! https://www.virustotal.com/gui/url/962dc2242a94ea0e5cb302755601e2f9a934fd9f35899dbadd3a6bfd40e17132
@@ -7387,12 +7405,16 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||steamtopup.ru^$all
 !+ NOT_OPTIMIZED
+||steeamcommnity.com^$all
+!+ NOT_OPTIMIZED
 ||steamcommunitylog.chez.com^$all
 !+ NOT_OPTIMIZED
 ||steam.workshop*.com^$document
 ! https://github.com/uBlockOrigin/uBOL-home/issues/156
 !+ NOT_OPTIMIZED
-/^https:\/\/stea[a-z]{1,4}o[mn][a-z]{4,7}y[a-z]?\.com\//$document,to=com|~steamcommunity.com
+/^https:\/\/ste[ae][a-z]{1,4}o[mn][a-z]{4,7}y[a-z]?\.com\//$document,to=com|~steamcommunity.com
+!+ NOT_OPTIMIZED
+/^https:\/\/stae[a-z]{1,4}o[mn][a-z]{4,7}y[a-z]?\.com\//$document,to=com|~steamcommunity.com
 !+ NOT_OPTIMIZED
 /^https:\/\/steam\.(?:community)?workshop-?[a-z]+\.com\//$document,to=com|~steamcommunity.com
 ! https://www.virustotal.com/gui/url/d16f07ca49e9334d080d427294630f22f10d8925de8ae73df2128e0bdbd434a9
@@ -7417,6 +7439,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/1fdee88dcfbab94a709d67a333d84e425a799a626b1910ea2932fe2babaa5cc3
 !+ NOT_OPTIMIZED
 ||staemcomunnutty.com^$all
+! https://www.virustotal.com/gui/url/17f8811f7885a5c61f4e516932fb6d05be116fe8a6b0982b8bb15c187437ae8c
+!+ NOT_OPTIMIZED
+||scearmcommnymnlty.com^$all
 ! https://www.virustotal.com/gui/url/bcbbfae046e7d8b62418da2234556524170cf156f2ac5c9d25f1b7fb4bfc64e1
 !+ NOT_OPTIMIZED
 ||workshop-users.com^$all
@@ -7429,6 +7454,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/2d6dcd57c666e116114d1a2bb06c15bb57ac9ce3d5fc9c9dea2ad23de5ea35f9
 !+ NOT_OPTIMIZED
 ||usersworkshoparts.com^$all
+! https://www.virustotal.com/gui/url/a9e09c9b8c751f04b35192043d8b4a60a6b2bd39b8d4f6355a2cf8a390a467a1
+!+ NOT_OPTIMIZED
+||communitystudionart.com^$all
 ! garena
 !+ NOT_OPTIMIZED
 /^https:\/\/(?:www\.)?(?:ff[-.])?member[-.]gare[a-z]+a(?:\.pro)?\.vn\//$document,to=vn|~garena.vn
@@ -7808,6 +7836,18 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/9bfb25d3ef31de34855417314d030bdd6c668b7a7e4fd826531e0e0f239ad2e6
 !+ NOT_OPTIMIZED
 /^https:\/\/xy[a-z]\d{2}\.cc\//$document,to=cc
+! https://www.virustotal.com/gui/url/2048958dffb9920086d04fe2b0b93fbe3c0ce180c9456d36b846600c15b1b1f5
+!+ NOT_OPTIMIZED
+||telegram-*.com/login/index.html^$all
+! https://www.virustotal.com/gui/url/1c006fc290430f49ae7b3f4915f744f261fdee4617973735b00ee00e8ee34ec2
+!+ NOT_OPTIMIZED
+||d*wsapp.icu^$document
+! https://www.virustotal.com/gui/url/8f7738fd0cfff7c522802752d6fbdf015b19f8c7e483d01c6fb020854f42ef42
+!+ NOT_OPTIMIZED
+||telezelm-*.icu^$document
+! https://www.virustotal.com/gui/url/e7eea1fe6282dee603a27cc5d34c0c5eee90fd402de80989cf7a939e3e7e1352
+!+ NOT_OPTIMIZED
+||whatsapp*.icu^$document
 ! usps
 !+ NOT_OPTIMIZED
 ||uspsparcels.net^$all,to=~usps.com
@@ -7869,6 +7909,18 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/15d93929f279c01081acbaf92154c4705e9ff235e3fe339d330aa4d9937c669f
 !+ NOT_OPTIMIZED
 ||wpenginepowered.com/usps/$document,to=~usps.com
+! https://www.reddit.com/r/phishing/comments/1hc0qiy/is_this_a_scamfake_number/
+! https://www.virustotal.com/gui/url/ce425295e72396f58f308fc806facb264bca671c58428ea9b1367fc6e62d2ec8
+!+ NOT_OPTIMIZED
+||usps.*.sbs^$document,to=~usps.com
+!+ NOT_OPTIMIZED
+||uspac.sbs^$all,to=~usps.com
+! https://www.virustotal.com/gui/url/1dfeccb4f1210b4a962751e4e0ffc64a224d653e7bd14bda3b1a2e7c252091ae
+!+ NOT_OPTIMIZED
+||informed.delivery*.top^$all,to=~usps.com
+! https://www.virustotal.com/gui/url/91d4560abcb8a03cc50d943bc4534c58935968a2b7c80f0c63cca78a84ce0ddc
+!+ NOT_OPTIMIZED
+||info-tracking*.cc^$all,to=~usps.com
 ! weebly/square phishing
 !+ NOT_OPTIMIZED
 /^https:\/\/(?:[a-z0-9]{2,}-)+10\d{4}\.weeblysite\.com\//$document,to=weeblysite.com
@@ -7877,6 +7929,8 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! spotify
 !+ NOT_OPTIMIZED
 ||upgradeyourspotify.cc^$all
+!+ NOT_OPTIMIZED
+||keepo.io/opddater-spotifykonto-informas/$all
 ! https://community.spotify.com/t5/Accounts/Phishing-Email/td-p/5877600
 !+ NOT_OPTIMIZED
 /^https:\/\/[^.]+\.codeanyapp\.com\/wp-content\/.+\/spo[a-z]{2}i\//$document,to=codeanyapp.com
@@ -8242,6 +8296,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||llq.rsq.mybluehost.me^$all,to=~coinbase.com
 !+ NOT_OPTIMIZED
 ||mybluehost.me/wp-admin/maajoun/$document,to=~coinbase.com
+! https://www.virustotal.com/gui/url/7ded02cc0d6e76dddd81c80c1ee8acd63d01bfc59f82900632ff8e2fde616881
+!+ NOT_OPTIMIZED
+||mail.*-coinbase.com^$document,to=~coinbase.com
 ! imtoken
 !+ NOT_OPTIMIZED
 ||imtoken.org.cn^$all,to=~token.im
@@ -9927,7 +9984,10 @@ webflow.io##html.w-mod-js:not(.wf-active) > body:not([class]):not([id]) > a[clas
 ! https://www.reddit.com/r/Scams/comments/1grey9a/is_this_actually_usps_or_a_scam/
 ! https://www.virustotal.com/gui/url/7d78e3dd3c6dbb1eeb8a916a3fa87f8235d374691d35d90afc330182a18fc766
 !+ NOT_OPTIMIZED
-/^https:\/\/usps\.com-(?:\w+\.){1,2}[a-z]{2,4}\//$document,to=~com|~net|~org|~edu|~gov
+/^https:\/\/usps\.com-(?:[-\w]+\.){1,2}[a-z]{2,4}\//$document,to=~com|~net|~org|~edu|~gov
+! https://www.reddit.com/r/Scams/comments/1hc2p3j/httpsamazoncomcustomstopapsigninopenid/
+!+ NOT_OPTIMIZED
+/^https:\/\/amazon\.com-(?:[-\w]+\.){1,2}[a-z]{2,4}\//$document,to=~com|~net|~org|~edu|~gov
 ! https://github.com/uBlockOrigin/uAssets/issues/26052
 !+ NOT_OPTIMIZED
 ||orcaslicer.info^$document
@@ -10145,3 +10205,6 @@ uploadfox.net###ad-gs-05
 ! https://github.com/uBlockOrigin/uAssets/issues/26355
 !+ NOT_OPTIMIZED
 ||1312stealer.ru^$all
+! https://github.com/uBlockOrigin/uAssets/issues/26418
+!+ NOT_OPTIMIZED
+||advairmds.ru^$all,to=~bbc.com
