@@ -1,3 +1,11 @@
+import {
+    vi,
+    describe,
+    afterAll,
+    expect,
+    it,
+} from 'vitest';
+
 import { FilteringLogApi } from '../../../../Extension/src/background/api/filtering-log';
 
 const tabId = 1;
