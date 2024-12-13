@@ -48,9 +48,11 @@ module.exports = {
         'airbnb-typescript',
         'airbnb/hooks',
         'plugin:jsdoc/recommended',
+        'plugin:jsx-a11y/recommended',
     ],
     'plugins': [
         'import-newlines',
+        'jsx-a11y',
     ],
     'rules': {
         'no-console': 'error',
@@ -151,6 +153,11 @@ module.exports = {
                 'warnOnUnassignedImports': true,
             },
         ],
+        'jsx-a11y/aria-props': 'error',
+        'jsx-a11y/aria-proptypes': 'error',
+        'jsx-a11y/aria-unsupported-elements': 'error',
+        'jsx-a11y/role-has-required-aria-props': 'error',
+        'jsx-a11y/role-supports-aria-props': 'error',
         'strict': 'off',
         'max-len': ['error', {
             'code': 120,
