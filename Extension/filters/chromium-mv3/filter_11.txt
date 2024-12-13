@@ -1,8 +1,8 @@
-! Checksum: LSavxHffTou/cvpaUcZrWg
+! Checksum: IWzdIrZT1Io6ZvqiiInjlw
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.56.56
-! TimeUpdated: 2024-12-10T17:35:37+00:00
+! Version: 2.0.56.66
+! TimeUpdated: 2024-12-13T12:36:32+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2419,6 +2419,11 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+independent.co.uk###main > div[class^="sc-"]:has(> .taboola)
+forum.donanimhaber.com##.arareklam > a.centerla
+forum.donanimhaber.com##.arareklam > .DH-Sosyal
+forum.donanimhaber.com##.yorumlar > #ondabir:has(.empower-ad)
+gamewith.jp##.js-jack-ad
 vermoegenmagazin.de#$#@media only screen and (max-width: 767px) { header { padding-bottom: 0 !important; } }
 m.e-mansion.co.jp##.banner-es-link
 sp.nijie.info##.dlsite-big-index
@@ -2791,7 +2796,7 @@ news.audee.jp###sp_UZOUSPbnr
 m.airporthaber1.com##.Banner
 utaten.com##div[style="height: 180px; margin-bottom: 10px;"]
 chosun.com##iframe[title="Advertisement"]
-wow.xxx,fullhd.xxx,many.xxx,porner.xxx,fullvideos.xxx,omg.xxx,4kporno.xxx,fullporn.xxx,fullporno.xxx,freepornvideos.xxx##.ft
+txxx.porn,porntube.gg,1porn.tv,freeporn.gg,freepornmovies.net,freeporntube.tv,freesexvideos.xxx,wow.xxx,fullhd.xxx,many.xxx,porner.xxx,fullvideos.xxx,omg.xxx,4kporno.xxx,fullporn.xxx,fullporno.xxx,freepornvideos.xxx##.ft
 blogtag.ameba.jp##ul > div[class]:has(> div > div[id^="div-gpt-ad-"])
 blogtag.ameba.jp##aside > div[class]:has(> div > div[id^="div-gpt-ad-"])
 namaeuranai.biz#$#body { padding-bottom: 0 !important; }
@@ -2963,7 +2968,8 @@ yamagata-np.jp##.ad_mobile_area
 alpin.de##.ad-stickyfooter
 home.kingsoft.jp##div[id$="_ad"][style]
 happy-travel.jp##.t
-otzovik.com##.ypluss16_age
+otzovik.com##body .ypluss16_age
+otzovik.com##body [class*="16_plusage"]
 stylebook.de##div[id^="banner"]
 dhakatribune.com##reachableclick
 woman.mynavi.jp##div[style="margin:20px auto 0;text-align: center; min-height: 345px;"]
@@ -6612,7 +6618,6 @@ laravel-news.com##.site-main > div.container > div.callout:first-child
 udn.com##.overlay-container
 m.17track.net##.yq-panel-gad
 m.17track.net##.slick-slide+div[class^="slick-slide"] > div.tracklist-item.tracklist-default
-m.sfgate.com##.ad-point
 healthline.com##div.mlb
 healthline.com##div.mmr.row
 mobile.donanimhaber.com##.yorumlar > article~div.ondabir

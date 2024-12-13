@@ -1,8 +1,8 @@
-! Checksum: rLhgFemZSn8vYmHikv7pzg
+! Checksum: 4+JAzld49kkWwCF2yZSc9Q
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.48.40
-! TimeUpdated: 2024-12-09T09:34:46+00:00
+! Version: 2.0.48.45
+! TimeUpdated: 2024-12-13T15:55:57+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -126,6 +126,15 @@ capital.fr#@#.plainAd
 !
 !
 !
+! https://github.com/easylist/listefr/issues/219
+/affiliate/*/banners/*$badfilter
+/banner-ads$badfilter
+/ad/*/728/*$badfilter
+/thirstyaffiliates/*$badfilter
+/affiliate/*/banners/*$~xmlhttprequest
+/banner-ads$~xmlhttprequest
+/ad/*/728/*$~xmlhttprequest
+/thirstyaffiliates/*$~xmlhttprequest
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191519
 ||cdn.jokerly.com/scripts/LPF_abChoice.js
 petitfute.com###cadreJokerlyADSContainer
@@ -235,6 +244,7 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147842
+japscan.lol#%#//scriptlet('remove-node-text', 'script', 'Roiyehe')
 japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
 @@$image,domain=japscan.lol
 @@||japscan.lol^$image,xmlhttprequest,script,~third-party
@@ -919,6 +929,7 @@ $xmlhttprequest,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com
 !
 !
 !
+lanouvellerepublique.fr##.dfp
 journaldesseniors.20minutes.fr##.ad
 letribunaldunet.fr##div[class^="code-block code-block-"][style^="margin:"]
 vidal.fr##.content-gam

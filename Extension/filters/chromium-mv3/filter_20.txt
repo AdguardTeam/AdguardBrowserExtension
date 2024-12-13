@@ -1,8 +1,8 @@
-! Checksum: 5gx3sujJAjMzawliigEc8A
+! Checksum: 18IbY+ABTs/tuxPDm1ddVA
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.18.3
-! TimeUpdated: 2024-12-10T15:33:43+00:00
+! Version: 2.0.18.6
+! TimeUpdated: 2024-12-13T11:35:07+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -123,13 +123,16 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+thesportstak.com##aside > div.flex:has(> a[href^="https://onelink.to/"])
+thesportstak.com##.block > div.my-4:has(> div.flex > img[title="Sportstak"])
+live.vkvideo.ru##div[class^="NativeAppBannerBase_root_"]
 newsbreak.com#%#//scriptlet('set-local-storage-item', 'readMoreButtonShow', 'true')
 comfy.ua##.footer-download-app__wrapper
 media.wear.jp##.wear-app-download
 podcastaddict.com##.aspect-ratio-box-foo
 upscale.media##a[class^="HeaderRight__AppLink"]
 mundolucha.com##a[href="https://play.google.com/store/apps/details?id=com.mlw.app"] > img
-m.sporx.com##a[href^="https://app.adjust.com/"]
+sixty-percent.com,m.sporx.com##a[href^="https://app.adjust.com/"]
 sporx.com##.pgContainer > a[title*="uygulamamızı"]
 sporx.com##.pgContainer > img[alt="Sporx Mobil uygulamaları"]
 ||reddit.com^$removeparam=recap_redirect

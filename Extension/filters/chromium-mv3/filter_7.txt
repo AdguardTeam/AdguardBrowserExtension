@@ -1,8 +1,8 @@
-! Checksum: V/feWB/3MgcpUeLhJFZrSw
+! Checksum: SG57bPFYL0DlnFTTTINYGQ
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.60.21
-! TimeUpdated: 2024-12-10T16:34:58+00:00
+! Version: 2.0.60.28
+! TimeUpdated: 2024-12-12T15:36:16+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -229,7 +229,7 @@
 ||af-next.com^$third-party
 ||pr-agent.jp^$third-party
 ||js.passaro-de-fogo.biz^$third-party
-||trading-ad.net^$third-party
+||trading-ad.net^
 ||zastag.com^$third-party
 ||adcent.jp^$third-party
 ||pokoran.com^$third-party
@@ -520,7 +520,7 @@ yourfones.net#%#//scriptlet('spoof-css', 'ins.adsbygoogle', 'display', 'block')
 mytry.jp#@#.ad_box
 mytry.jp#$#body > #container { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190943
-wiki.yjsnpi.nu#%#//scriptlet('prevent-element-src-loading', 'script', '/w/load.php?lang=ja&modules=codex-search-styles')
+wiki.yjsnpi.nu#%#//scriptlet('abort-on-stack-trace', 'Function.prototype.toString', '/w/load.php?lang=ja&modules=codex-search-styles%2Cjquery%2Coojs%2C&skin=vector-2022&version=L58hf')
 wiki.yjsnpi.nu#%#//scriptlet("prevent-setTimeout", "()=>k(S(4")
 wiki.yjsnpi.nu#%#//scriptlet('spoof-css', '#mw-content-text div[style] a:is([href*="contents.fc2.com"],[href*="dmm.co.jp"])', 'font-size', '14px')
 wiki.yjsnpi.nu#%#//scriptlet('spoof-css', '#mw-content-text div[style] a:is([href*="contents.fc2.com"],[href*="dmm.co.jp"]) img', 'height', '128px')
@@ -536,7 +536,7 @@ gunauc.net#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 exploader.net#%#//scriptlet('spoof-css', 'a[style*="display:"][href^="https://al.dmm.co.jp"] img', 'height', '20px')
 exploader.net#%#//scriptlet('spoof-css', 'a[style*="display:"][href^="https://al.dmm.co.jp"] img', 'display', 'block')
 exploader.net##a[style*="display:"][href^="https://al.dmm.co.jp"] img
-exploader.net#$#a[style*="display:"][href^="https://al.dmm.co.jp"] > div:has(img) { height: 20px !important; }
+exploader.net#$#a[style*="display:"][href^="https://al.dmm.co.jp"] > div:has(img) { height: 0 !important; }
 exploader.net##a[style*="display:"][href^="https://al.dmm.co.jp"] span
 @@||daotag.com/tag/$script,domain=exploader.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181591
@@ -1771,6 +1771,13 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+hannoumatome.com##.entry_body > div[style="text-align: center;"]
+hannoumatome.com##td[id$="_outline"] > p[align="center"]
+minnano-rakuraku.com##.head-gad
+||00m.in/public/static/images/banner/
+00m.in##.aff-cont
+city.onomichi.hiroshima.jp##.bl_main__ad
+dengekionline.com##div[class^="TopHeaderBanner_wrapper"]
 overwatch2sokuhou.com##.amagetti-tabContent
 overwatch2sokuhou.com##.amagetti-tabs-container
 mhwsmatome.com##.article-footer > div.widget_text
@@ -6380,7 +6387,7 @@ unitedcinemas.jp##.sideAd_300x250
 tokion.jp##div[class*="tkn-ad--top-billboard"]
 ||seikatsu110.jp/img/webp/library/bnr_network_
 ieeebd.org##.b-r--before-site-content
-ieeebd.org##div[style="min-height: 280px;"]
+j-lic.com,ieeebd.org##div[style="min-height: 280px;"]
 logmi.jp##.ranking-item[data-rank="PR"]
 orefolder.net##div[style$="min-height:175px;"]
 sunri2525.blog.jp##.left-column-inner > div.plugin-rakuten + div.plugin-memo

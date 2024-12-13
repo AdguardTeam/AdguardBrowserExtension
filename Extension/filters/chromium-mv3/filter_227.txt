@@ -1,13 +1,13 @@
-! Checksum: RobqSI+qreCxEL4Tm4TJ7Q
+! Checksum: Veo/eGQA26Qmvqnat6Dcog
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.19.72
-! TimeUpdated: 2024-12-09T05:01:35+00:00
+! Version: 2.0.19.76
+! TimeUpdated: 2024-12-13T13:01:55+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.1208.0
+! OriginalVersion: 2024.1213.3
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -526,7 +526,6 @@
 !
 ||theceluv.com/banner/
 ||celuvmedia.com/ad/
-||blog.kakaocdn.net/dn/$image,domain=heye.kr
 ||ibb.co^$domain=heye.kr,image
 ||photo.jtbc.co.kr/news/cms/etc/
 ||cdn.lol.ps/assets/img/bg-skins/
@@ -1560,6 +1559,8 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+heye.kr##.first.banner-wrap
+bbs.ruliweb.com###ti3
 yna.co.kr##.article > aside[class^="aside-article"]
 lottecinema.co.kr##.banner_box_login
 lottecinema.co.kr##.login260_btn
@@ -1627,6 +1628,7 @@ damoang.net##img[src*="/data/file/main/"]
 lee-master.tistory.com##.contents_style > blockquote:has(img[src*="coupangcdn.com/image/affiliate/banner/"]) ~ p:has(~ blockquote)
 lee-master.tistory.com##.contents_style > blockquote:has(img[src*="coupangcdn.com/image/affiliate/banner/"])
 damoang.net##a[data-dd-action-name*="Ads"]
+damoang.net##div[class$="banner"]
 ggeal.com###body_read > div[style^="margin:"] > div[class=""][style*="width:"]
 sejonghub.com##div[id^="carousel_"].carousel.carousel-fade
 ssodam.com##div[class^="col-lg-offset-"] > div[style*="height:"].hidden-xs
@@ -2231,7 +2233,7 @@ news.nate.com##.thisTimeNews > div[class^="bn"]
 search.naver.com##.brand_search
 search.naver.com##div[class*="_fashion"].more_prod
 m.search.naver.com##section[class*="ad_"]
-search.naver.com##li[data-nvmid]._ad
+search.naver.com##li._ad:has(> *[data-nvmid])
 ddaily.co.kr##.space_layout ~ div[class^="section_"] > div:not([style*="solid"]) + div[style]:not([class])
 kr-weathernews.com,view.nate.com,sportsseoul.com,enuri.com,newdaily.co.kr,koreatimes.net,nzkoreapost.com##div[class*="-ad-"]
 loawa.com##a[target="_blank"][data-href][data-banner-statics]
@@ -2730,6 +2732,7 @@ tvroom5.org##.pop-up.iziModal
 tvroom5.org##.iziModal-overlay
 cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com###cpb-popup-banners
 cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com###custom_banner_wrap
+cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com##.custom_banner_wrap
 tvwiki4.com,tvwiki5.com,tvwiki6.com,tvwiki7.com,tvwiki8.com,tvwiki9.com,tvwiki10.com,tvwiki11.com,tvwiki12.com,tvwiki13.com,tvwiki14.com,tvwiki15.com,tvwiki16.com,tvwiki17.com##ul[class^="banner"]
 sptv24.com,sptv25.com,sptv26.com,sptv27.com,sptv28.com,sptv29.com,sptv30.com,sptv31.com,sptv32.com,sptv33.com,sptv34.com,sptv35.com,sptv36.com,sptv37.com##.modal_contents
 torrentpi144.com,torrentpi145.com,torrentpi146.com,torrentpi147.com,torrentpi148.com,torrentpi149.com,torrentpi150.com,torrentpi151.com,torrentpi152.com,torrentpi153.com,torrentpi154.com,torrentpi155.com,torrentpi156.com##style ~ .basic-post-gallery
