@@ -1,4 +1,13 @@
 import { z } from 'zod';
+import {
+    afterEach,
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
 
 import { UpdateApi } from '../../../../Extension/src/background/api';
 import {
@@ -18,7 +27,6 @@ import { FILTER_KEY_PREFIX, SbCache } from '../../../../Extension/src/background
 import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
 import { SettingOption } from '../../../../Extension/src/background/schema/settings/main';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
-import { beforeAll, beforeEach, vi } from 'vitest';
 
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');

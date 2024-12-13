@@ -1,5 +1,13 @@
 import { type Storage } from 'webextension-polyfill';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+    afterEach,
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
 
 import { NetworkRuleParser } from '@adguard/agtree/parser';
 // TODO should be written separate test, because there is different api in mv3 and mv2 for tabs context

@@ -1,4 +1,4 @@
-import browser, { Storage } from 'webextension-polyfill';
+import { Storage } from 'webextension-polyfill';
 import {
     afterEach,
     beforeEach,

@@ -1,5 +1,13 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import {
+    vi,
+    describe,
+    afterEach,
+    it,
+    expect,
+    beforeEach,
+} from 'vitest';
 
 import {
     ASSISTANT_INJECT_OUTPUT,

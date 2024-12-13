@@ -1,5 +1,11 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import {
+    describe,
+    beforeEach,
+    it,
+    expect,
+} from 'vitest';
 
 import { UrlUtils } from '../../../../Extension/src/background/utils/url';
 import { SafebrowsingApi } from '../../../../Extension/src/background/api/safebrowsing';

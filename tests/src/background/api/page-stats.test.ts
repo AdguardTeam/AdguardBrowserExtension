@@ -1,5 +1,12 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import {
+    vi,
+    describe,
+    beforeEach,
+    it,
+    expect,
+} from 'vitest';
 
 import { PageStatsApi } from '../../../../Extension/src/background/api/page-stats';
 import { App } from '../../../../Extension/src/background/app';
