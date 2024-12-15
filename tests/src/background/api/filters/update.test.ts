@@ -26,7 +26,6 @@ import {
     filterVersionStorage,
     RawFiltersStorage,
 } from '../../../../../Extension/src/background/storages';
-import { server } from '../../../../../testSetup';
 import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
 import { fakeFilterV1 } from '../../../../helpers/fixtures/fake_filter_v1';
 import { getMetadataFixture } from '../../../../helpers/fixtures';
@@ -43,6 +42,10 @@ import { fakeFilterV4WithDiffPath } from '../../../../helpers/fixtures/fake_filt
 vi.mock('../../../../../Extension/src/background/engine');
 vi.mock('../../../../../Extension/src/background/api/ui/icons');
 vi.mock('../../../../../Extension/src/background/storages/notification');
+
+declare global {
+    let sinonFakeServer: sinon.SinonFakeServer;
+}
 
 describe('Filter Update API should', () => {
     // We do not support filter updates in MV3 yet.
@@ -78,7 +81,7 @@ describe('Filter Update API should', () => {
     const filterId3Index = metadata.filters.findIndex((f) => f.filterId === 3);
     metadata.filters[filterId3Index]!.version = '1.0.0.0';
     // Fake local metadata
-    server.respondWith('GET', /\/filters.js(on)?/, [
+    sinonFakeServer.respondWith('GET', /\/filters.js(on)?/, [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(metadata),
@@ -89,7 +92,7 @@ describe('Filter Update API should', () => {
     remoteMetadata.filters[newFilterIdx - 1]!.version = '2.0.0.0';
     remoteMetadata.filters[filterId3Index]!.version = '2.0.0.0';
     // Fake remote metadata
-    server.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
+    sinonFakeServer.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(remoteMetadata),
@@ -108,7 +111,7 @@ describe('Filter Update API should', () => {
         filter.version = version;
 
         // Fake remote metadata
-        server.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
+        sinonFakeServer.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
             200,
             { 'Content-Type': 'application/json' },
             JSON.stringify(remoteMetadata),
@@ -143,7 +146,7 @@ describe('Filter Update API should', () => {
 
             const v2 = '2.0.0.0';
 
-            server.respondWith('GET', /\/filters\/999\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterWithVersion(v2),
@@ -173,7 +176,7 @@ describe('Filter Update API should', () => {
 
             const v3 = '3.0.0.0';
             returnMetadataWithVersion(filterId, v3, fakeFilter999);
-            server.respondWith('GET', /\/filters\/999\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterWithVersion(v3),
@@ -188,7 +191,7 @@ describe('Filter Update API should', () => {
         it('download latest filter from remote resources', async () => {
             const filterId = 999;
 
-            server.respondWith('GET', /\/filters\/999\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterV2,
@@ -206,7 +209,7 @@ describe('Filter Update API should', () => {
             const groupId = AntibannerGroupsId.PrivacyFiltersGroupId;
             const recommendedPrivacyFilterId = 3;
 
-            server.respondWith('GET', /\/filter_3\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filter_3\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterV1,
@@ -233,7 +236,7 @@ describe('Filter Update API should', () => {
 
         const filterId = 999;
 
-        server.respondWith('GET', /\/filters\/999\.txt/, [
+        sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
             200,
             { 'Content-Type': 'text/plain' },
             fakeFilterV2,
@@ -261,7 +264,7 @@ describe('Filter Update API should', () => {
 
         const v3 = '3.0.0.0';
         returnMetadataWithVersion(filterId, v3, fakeFilter999);
-        server.respondWith('GET', /\/filters\/999\.txt/, [
+        sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
             200,
             { 'Content-Type': 'text/plain' },
             fakeFilterWithVersion(v3),

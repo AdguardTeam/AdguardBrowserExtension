@@ -147,4 +147,5 @@ const server = mockXhrRequests();
 
 global.fetch = fetchPolyfill;
 
-export { server };
+// @ts-ignore
+global.sinonFakeServer = server;
