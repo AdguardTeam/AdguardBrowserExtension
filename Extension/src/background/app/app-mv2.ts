@@ -188,7 +188,7 @@ export class App {
         AllowlistService.init();
 
         // Adds listeners for userrules list events
-        await UserRulesService.init();
+        await UserRulesService.init(engine);
 
         // Adds listeners for filtering log
         FilteringLogService.init();
