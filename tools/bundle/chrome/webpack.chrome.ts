@@ -17,6 +17,7 @@
  */
 
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
@@ -29,6 +30,11 @@ import { BUILD_ENV } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 
 import { chromeManifest } from './manifest.chrome';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode: boolean) => {
     const commonConfig = genMv2CommonConfig(browserConfig, isWatchMode);

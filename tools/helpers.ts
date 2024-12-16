@@ -18,6 +18,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { merge } from 'webpack-merge';
 import type { Manifest } from 'webextension-polyfill';
@@ -29,6 +30,11 @@ import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
 
 import { BuildTargetEnv, Browser } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 type ManifestBase = Manifest.ManifestBase;
 type WebExtensionManifest = Manifest.WebExtensionManifest;

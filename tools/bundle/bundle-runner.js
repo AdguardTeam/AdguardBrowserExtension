@@ -18,9 +18,15 @@
 
 /* eslint-disable no-console */
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import webpack from 'webpack';
 import { merge } from 'webpack-merge';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export const bundleRunner = (webpackConfig, options) => {
     const { watch, cache } = options;
