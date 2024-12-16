@@ -2,12 +2,7 @@ import sinon from 'sinon';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import { RootOption, FiltersOption } from '../../../Extension/src/background/schema';
-import {
-    REMOTE_METADATA_FILE_NAME,
-    REMOTE_I18N_METADATA_FILE_NAME,
-    LOCAL_METADATA_FILE_NAME,
-    LOCAL_I18N_METADATA_FILE_NAME,
-} from '../../../constants';
+import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../../../constants';
 import {
     getMetadataFixture,
     getI18nMetadataFixture,
@@ -39,14 +34,14 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
     });
 
     // eslint-disable-next-line max-len
-    server.respondWith('GET', new RegExp(`/(?:${escapeStringRegexp(REMOTE_METADATA_FILE_NAME)}|${escapeStringRegexp(LOCAL_METADATA_FILE_NAME)})`), [
+    server.respondWith('GET', new RegExp(`/(?:${escapeStringRegexp(REMOTE_METADATA_FILE_NAME)})`), [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(metadata),
     ]);
 
     // eslint-disable-next-line max-len
-    server.respondWith('GET', new RegExp(`\/(?:${escapeStringRegexp(REMOTE_I18N_METADATA_FILE_NAME)}|${escapeStringRegexp(LOCAL_I18N_METADATA_FILE_NAME)})`), [
+    server.respondWith('GET', new RegExp(`\/(?:${escapeStringRegexp(REMOTE_I18N_METADATA_FILE_NAME)})`), [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(i18nMetadata),
