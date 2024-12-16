@@ -99,6 +99,9 @@ export class Engine implements TsWebExtensionEngine {
 
         logger.info('Start tswebextension...');
         const result = await this.api.start(configuration);
+
+        // FIXME: Maybe it's better to create onConfigurationResultUpdated event channel
+        // inside engine and call all listeners with updated result.
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
         UserRulesService.checkUserRulesRegexpErrors(result);
 
@@ -132,6 +135,9 @@ export class Engine implements TsWebExtensionEngine {
             logger.info('With skip limits check.');
         }
         const result = await this.api.configure(configuration);
+
+        // FIXME: Maybe it's better to create onConfigurationResultUpdated event channel
+        // inside engine and call all listeners with updated result.
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
         UserRulesService.checkUserRulesRegexpErrors(result);
 

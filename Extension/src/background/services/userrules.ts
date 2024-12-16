@@ -57,6 +57,8 @@ export type GetUserRulesEditorDataResponse = {
  * Service for handling user rules: reading, adding, deleting.
  */
 export class UserRulesService {
+    // FIXME: Maybe it's better to create onConfigurationResultUpdated event channel
+    // inside engine and call all listeners with updated result.
     private static engine: Engine;
 
     /**
