@@ -17,8 +17,9 @@
  */
 
 import { vi } from 'vitest';
+// FIXME: remove whatwg-fetch dependency if custom fetch is enough.
 // @ts-ignore
-import { fetch as fetchPolyfill } from 'whatwg-fetch';
+// import { fetch as fetchPolyfill } from 'whatwg-fetch';
 import browser from 'sinon-chrome';
 import escape from 'css.escape';
 // @ts-ignore
@@ -31,6 +32,7 @@ import {
     mockLocalStorage,
     mockXhrRequests,
 } from './tests/helpers';
+import { mockGlobalFetch } from './tests/helpers/mocks/fetch';
 
 // set missing CSS.escape polyfill for test env
 global.CSS.escape = escape;
@@ -121,7 +123,7 @@ mockLocalStorage();
 // register fake server for xhr requests
 const server = mockXhrRequests();
 
-global.fetch = fetchPolyfill;
-
 // @ts-ignore
 global.sinonFakeServer = server;
+
+mockGlobalFetch();
