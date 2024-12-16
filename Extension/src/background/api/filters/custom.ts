@@ -17,25 +17,25 @@
  */
 import MD5 from 'crypto-js/md5';
 
-import { BrowserUtils } from '../../../utils/browser-utils';
-import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../../common/constants';
-import { logger } from '../../../../common/logger';
-import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../../schema';
-import {
-    customFilterMetadataStorage,
-    filterStateStorage,
-    FiltersStorage,
-    RawFiltersStorage,
-    filterVersionStorage,
-    groupStateStorage,
-} from '../../../storages';
-import { network } from '../../network';
-import type { FilterUpdateOptions } from '../update';
-import { FilterParsedData, FilterParser } from '../parser';
-import { CustomFilterHelper } from '../../../../common/custom-filter-helper';
-import { type FilterMetadata } from '../main';
+import { DownloadResult } from '@adguard/filters-downloader/browser';
 
-import { CustomFilterLoader } from './loader';
+import { BrowserUtils } from '../../utils/browser-utils';
+import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
+import { logger } from '../../../common/logger';
+import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../schema';
+import { customFilterMetadataStorage } from '../../storages/custom-filter-metadata';
+import { filterStateStorage } from '../../storages/filter-state';
+import { groupStateStorage } from '../../storages/group-state';
+import { filterVersionStorage } from '../../storages/filter-version';
+import { RawFiltersStorage } from '../../storages/raw-filters';
+import { FiltersStorage } from '../../storages/filters';
+import { type Network } from '../network/main';
+import { CustomFilterHelper } from '../../../common/custom-filter-helper';
+import { createPromiseWithTimeout } from '../../utils/timeouts';
+
+import type { FilterUpdateOptions } from './update';
+import { FilterParsedData, FilterParser } from './parser';
+import { type FilterMetadata } from './main';
 
 /**
  * Data transfer object for {@link CustomFilterApi} methods.
@@ -88,6 +88,11 @@ export type GetRemoteCustomFilterResult = {
     parsed: FilterParsedData,
 };
 
+const emptyDownloadResult: DownloadResult = {
+    filter: [],
+    rawFilter: '',
+};
+
 /**
  * API for managing custom filters data.
  *
@@ -106,12 +111,24 @@ export type GetRemoteCustomFilterResult = {
  * Raw filter rules (before applying directives) is saved in {@link FiltersStorage}.
  */
 export class CustomFilterApi {
+    private static network: Network;
+
+    /**
+     * Custom filter rules downloading limit in ms.
+     */
+    private static readonly DOWNLOAD_LIMIT_MS = 3 * 1000;
+
     /**
      * Reads stringified {@link CustomFilterMetadata} array from persisted storage
      * and saves it in cache.
      * If data is not exist, set empty array.
+     *
+     * @param network Network instance, needed for correct DI and exclude
+     * circular dependencies.
      */
-    public static init(): void {
+    public static init(network: Network): void {
+        CustomFilterApi.network = network;
+
         try {
             const storageData = customFilterMetadataStorage.read();
             if (typeof storageData === 'string') {
@@ -149,7 +166,7 @@ export class CustomFilterApi {
             return { errorAlreadyExists: true };
         }
 
-        const rules = await network.downloadFilterRulesBySubscriptionUrl(url);
+        const rules = await CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url);
 
         if (!rules) {
             return null;
@@ -562,5 +579,27 @@ export class CustomFilterApi {
             parsed,
             checksum,
         };
+    }
+
+    /**
+     * Limits custom filter rules downloading with timeout.
+     *
+     * @param url Custom filter download url.
+     * @param rawFilter Optional raw filter rules.
+     * @param force Optional flag to choose download filter in whole or by patches.
+     * @throws Error if filter was not downloaded in {@link DOWNLOAD_LIMIT_MS}.
+     * @returns Downloaded custom filter rules.
+     */
+    public static async downloadRulesWithTimeout(
+        url: string,
+        rawFilter?: string,
+        force?: boolean,
+    ): Promise<DownloadResult> {
+        return createPromiseWithTimeout(
+            network.downloadFilterRulesBySubscriptionUrl(url, rawFilter, force)
+                .then((val) => val || emptyDownloadResult),
+            CustomFilterApi.DOWNLOAD_LIMIT_MS,
+            'Fetch timeout is over',
+        );
     }
 }

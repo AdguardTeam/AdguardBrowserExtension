@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Prefs } from '../prefs';
-import { appContext, AppContextKey } from '../storages';
+import { appContext, AppContextKey } from '../storages/app';
 import { logger } from '../../common/logger';
 
 import { Version } from './version';
