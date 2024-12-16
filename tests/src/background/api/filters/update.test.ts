@@ -353,7 +353,8 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
 
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
-                3,
+                // note: vi.spyOn resets call count
+                1,
                 'https://filters.adtidy.org/extension/chromium/filters/1.txt',
                 {
                     force: true,
@@ -367,7 +368,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
 
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
-                4,
+                2,
                 'https://filters.adtidy.org/extension/chromium/filters/1.txt',
                 {
                     definedExpressions,

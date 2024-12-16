@@ -17,9 +17,6 @@
  */
 
 import { vi } from 'vitest';
-// FIXME: remove whatwg-fetch dependency if custom fetch is enough.
-// @ts-ignore
-// import { fetch as fetchPolyfill } from 'whatwg-fetch';
 import browser from 'sinon-chrome';
 import escape from 'css.escape';
 // @ts-ignore
@@ -61,7 +58,9 @@ enum ResourceType {
     OTHER = 'other',
 }
 
-browser.runtime.getURL.callsFake((url: string) => `chrome-extension://test/${url}`);
+const EXTENSION_URL_PREFIX = 'chrome-extension://';
+
+browser.runtime.getURL.callsFake((url: string) => `${EXTENSION_URL_PREFIX}test/${url}`);
 browser.runtime.getManifest.callsFake(() => ({
     name: 'AdGuard AdBlocker',
     version: '0.0.0',
@@ -111,6 +110,8 @@ vi.mock('./Extension/src/common/logger.ts');
 vi.mock('@adguard/tswebextension', async () => ({
     ...(await vi.importActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,
+
+    isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
 }));
 
 vi.mock('lodash-es', async () => ({
@@ -126,4 +127,5 @@ const server = mockXhrRequests();
 // @ts-ignore
 global.sinonFakeServer = server;
 
-mockGlobalFetch();
+// @ts-ignore
+global.fetch = mockGlobalFetch();

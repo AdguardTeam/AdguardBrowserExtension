@@ -13,6 +13,7 @@ interface FetchPolyfillResponse {
     status: number;
     statusText: string;
     url: string;
+    text(): Promise<string>;
     headers: {
       get(header: string): string | null;
     };
@@ -44,9 +45,8 @@ function parseResponseHeaders(rawHeaders: string): Record<string, string> {
 /**
  * Installs a global fetch polyfill based on XMLHttpRequest.
  */
-export function mockGlobalFetch(): void {
-    // @ts-ignore
-    globalThis.fetch = async function fetchPolyfill(
+export function mockGlobalFetch() {
+    return async function fetchPolyfill(
         input: RequestInfo | URL,
         init?: RequestInit,
     ): Promise<FetchPolyfillResponse> {
