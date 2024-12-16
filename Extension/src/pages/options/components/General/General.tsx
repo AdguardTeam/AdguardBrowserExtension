@@ -357,6 +357,7 @@ export const General = observer(() => {
                     type="button"
                     className="links-menu__item button--link--green"
                     onClick={handleLeaveFeedback}
+                    role="link"
                 >
                     {translator.getMessage('options_leave_feedback')}
                 </button>
