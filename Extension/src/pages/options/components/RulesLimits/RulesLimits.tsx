@@ -126,12 +126,13 @@ export const RulesLimits = observer(() => {
                 />
             )}
             <div className="rules-limits">
-                <div className="rules-limits__section">
+                <div className="rules-limits__section" tabIndex={0}>
                     <div
                         className="rules-limits__section-title"
                     >
                         {translator.getMessage('options_rule_limits_dynamic')}
                     </div>
+                    <span className="visually-hidden">.</span>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
                             {reactTranslator.getMessage('options_rule_limits_dynamic_user_rules', {
@@ -169,26 +170,30 @@ export const RulesLimits = observer(() => {
                                 ),
                             })}
                         </div>
-                        <div className={getClassNamesForNumbers(dynamicRulesEnabledCount, dynamicRulesMaximumCount)}>
+                        <div
+                            className={getClassNamesForNumbers(dynamicRulesEnabledCount, dynamicRulesMaximumCount)}
+                            tabIndex={0}
+                        >
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
                                 current: dynamicRulesEnabledCount,
                                 maximum: dynamicRulesMaximumCount,
                             })}
+                            <span className="visually-hidden">.</span>
                         </div>
                     </div>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
                             {translator.getMessage('options_rule_limits_dynamic_unsafe')}
                         </div>
-                        <div className={getClassNamesForNumbers(
-                            dynamicRulesUnsafeEnabledCount,
-                            dynamicRulesUnsafeMaximumCount,
-                        )}
+                        <div
+                            className={getClassNamesForNumbers(dynamicRulesUnsafeEnabledCount, dynamicRulesUnsafeMaximumCount)}
+                            tabIndex={0}
                         >
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
                                 current: dynamicRulesUnsafeEnabledCount,
                                 maximum: dynamicRulesUnsafeMaximumCount,
                             })}
+                            <span className="visually-hidden">.</span>
                         </div>
                     </div>
                     <div className="rules-limits__group">
@@ -207,12 +212,13 @@ export const RulesLimits = observer(() => {
                         </div>
                     </div>
                 </div>
-                <div className="rules-limits__section">
+                <div className="rules-limits__section" tabIndex={0}>
                     <div
                         className="rules-limits__section-title"
                     >
                         {translator.getMessage('options_rule_limits_static_rulesets')}
                     </div>
+                    <span className="visually-hidden">.</span>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
                             {reactTranslator.getMessage('options_rule_limits_static_rulesets_builtin', {
@@ -226,20 +232,25 @@ export const RulesLimits = observer(() => {
                                 ),
                             })}
                         </div>
-                        <div className={getClassNamesForNumbers(staticFiltersEnabledCount, staticFiltersMaximumCount)}>
+                        <div
+                            className={getClassNamesForNumbers(staticFiltersEnabledCount, staticFiltersMaximumCount)}
+                            tabIndex={0}
+                        >
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
                                 current: staticFiltersEnabledCount,
                                 maximum: staticFiltersMaximumCount,
                             })}
+                            <span className="visually-hidden">.</span>
                         </div>
                     </div>
                 </div>
-                <div className="rules-limits__section">
+                <div className="rules-limits__section" tabIndex={0}>
                     <div
                         className="rules-limits__section-title"
                     >
                         {translator.getMessage('options_rule_limits_static_rules')}
                     </div>
+                    <span className="visually-hidden">.</span>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
                             {reactTranslator.getMessage('options_rule_limits_static_rules_all', {
@@ -253,21 +264,28 @@ export const RulesLimits = observer(() => {
                                 ),
                             })}
                         </div>
-                        <div className={getClassNamesForNumbers(staticRulesEnabledCount, staticRulesMaximumCount)}>
+                        <div
+                            className={getClassNamesForNumbers(staticRulesEnabledCount, staticRulesMaximumCount)}
+                            tabIndex={0}
+                        >
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
                                 current: staticRulesEnabledCount,
                                 maximum: staticRulesMaximumCount,
                             })}
+                            <span className="visually-hidden">.</span>
                         </div>
                     </div>
                     <div className="rules-limits__group">
-                        <div className="rules-limits__text--gray">
+                        <div className="rules-limits__text--gray" tabIndex={0}>
                             {translator.getMessage('options_rule_limits_static_rules_regex')}
                         </div>
-                        <div className={getClassNamesForNumbers(
-                            staticRulesRegexpsEnabledCount,
-                            staticRulesRegexpsMaxCount,
-                        )}
+                        <span className="visually-hidden">.</span>
+                        <div
+                            className={getClassNamesForNumbers(
+                                staticRulesRegexpsEnabledCount,
+                                staticRulesRegexpsMaxCount,
+                            )}
+                            tabIndex={0}
                         >
                             {reactTranslator.getMessage('options_rule_limits_numbers', {
                                 current: staticRulesRegexpsEnabledCount,
