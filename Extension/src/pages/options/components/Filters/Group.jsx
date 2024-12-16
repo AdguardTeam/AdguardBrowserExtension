@@ -102,6 +102,7 @@ const Group = ({
                         <div className="setting__title group__title">
                             {groupName}
                         </div>
+                        <span className="visually-hidden">.</span>
                         <div className="setting__desc">
                             {renderEnabledFilters(enabledFilters)}
                         </div>
