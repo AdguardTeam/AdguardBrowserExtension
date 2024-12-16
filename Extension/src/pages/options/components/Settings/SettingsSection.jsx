@@ -50,7 +50,7 @@ const SettingsSection = (props) => {
     });
 
     return (
-        <div className={settingGroupClassName} key={title}>
+        <div className={settingGroupClassName} key={title} aria-label={title}>
             <label
                 className={titleContainerClass}
                 htmlFor={id}

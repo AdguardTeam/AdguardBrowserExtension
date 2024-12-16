@@ -32,14 +32,33 @@ const SettingsSet = (props) => {
     });
 
     return (
-        <div className={settingClassName}>
+        <div
+            className={settingClassName}
+            role="group"
+            aria-labelledby={`setting-title-${title} setting-desc-${title}`}
+        >
             <div className="setting__container setting__container--vertical">
                 <div className="setting__container setting__container--horizontal">
-                    <div className="setting__info">
-                        <div className="setting__title">{title}</div>
-                        {description && <div className="setting__desc" aria-hidden>{description}</div>}
+                    <div className="setting__info" tabIndex={0}>
+                        <div id={`setting-title-${title}`} className="setting__title">
+                            {title}
+                            <span aria-hidden="true">.</span>
+                            <span className="visually-hidden">{'. '}</span>
+                        </div>
+                        {description && (
+                            <div
+                                id={`setting-desc-${title}`}
+                                className="setting__desc"
+                            >
+                                {description}
+                            </div>
+                        )}
                     </div>
-                    {inlineControl && <div className="setting__container setting__container--inline setting__inline-control">{inlineControl}</div>}
+                    {inlineControl && (
+                        <div className="setting__container setting__container--inline setting__inline-control">
+                            {inlineControl}
+                        </div>
+                    )}
                 </div>
                 {children}
             </div>
