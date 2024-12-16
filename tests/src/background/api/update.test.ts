@@ -7,6 +7,7 @@ import {
     expect,
     it,
     vi,
+    type MockInstance,
 } from 'vitest';
 
 import { UpdateApi } from '../../../../Extension/src/background/api';
@@ -47,7 +48,7 @@ describe('Update Api', () => {
         const v6 = getStorageFixturesV6(expires);
         const v7 = getStorageFixturesV7(expires);
 
-        let setMultipleSpy: vi.SpyInstance;
+        let setMultipleSpy: MockInstance;
 
         beforeAll(() => {
             vi.spyOn(Date, 'now').mockReturnValue(timestamp);
