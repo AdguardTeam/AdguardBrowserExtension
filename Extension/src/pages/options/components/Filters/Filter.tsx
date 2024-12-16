@@ -246,7 +246,11 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
             <div className={filterClassName} role="presentation">
                 <div className="filter__info">
                     <div className="setting__container setting__container--horizontal">
-                        <div className="setting__inner">
+                        <div
+                            className="setting__inner"
+                            role="button"
+                            tabIndex={0}
+                        >
                             <div className="filter__title">
                                 <Popover text={name}>
                                     <div className="filter__title-constraint">
@@ -256,11 +260,13 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                                     </div>
                                 </Popover>
                             </div>
+                            <span className="visually-hidden">.</span>
 
                             <div className="filter__desc">
-                                <div>
+                                <div role="heading" aria-level={3}>
                                     {description}
                                 </div>
+                                <span className="visually-hidden">.</span>
                                 <div>
                                     {
                                         version
