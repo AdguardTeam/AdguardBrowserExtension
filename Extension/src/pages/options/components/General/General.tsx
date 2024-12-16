@@ -221,7 +221,11 @@ export const General = observer(() => {
     } = settings.names;
 
     return (
-        <>
+        <div
+            className="settings settings--general"
+            role="main"
+            tabIndex={-1}
+        >
             <SettingsSection title={translator.getMessage('options_general_settings')}>
                 <StaticFiltersLimitsWarning useWrapper />
                 { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
@@ -362,6 +366,6 @@ export const General = observer(() => {
                     {translator.getMessage('options_leave_feedback')}
                 </button>
             </div>
-        </>
+        </div>
     );
 });

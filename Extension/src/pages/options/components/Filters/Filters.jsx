@@ -329,53 +329,88 @@ const Filters = observer(() => {
         );
 
         return (
-            <SettingsSection
-                title={selectedGroup.groupName}
-                description={description}
-                inlineControl={(
-                    <Setting
-                        id={selectedGroup.groupId}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        label={translator.getMessage('options_privacy_title')}
-                        value={selectedGroup.enabled}
-                        handler={handleGroupSwitch}
-                        optimistic={!__IS_MV3__}
-                    />
-                )}
-                renderBackButton={renderBackButton}
-                mode={isCustom ? 'custom' : undefined}
+            <div
+                className="settings settings--filters"
+                role="main"
+                tabIndex={-1}
             >
-                {
-                    isCustom && __IS_MV3__ && (
-                        <div className="settings__group__links settings__group__links--custom">
-                            <RuleLimitsLink />
-                        </div>
-                    )
-                }
-                {
-                    isCustom
-                        ? <DynamicRulesLimitsWarning />
-                        : <StaticFiltersLimitsWarning />
-                }
-                {isEmpty && isCustom && !settingsStore.isSearching
-                    ? <EmptyCustom />
-                    : (
+                <SettingsSection
+                    title={selectedGroup.groupName}
+                    description={description}
+                    inlineControl={(
+                        <Setting
+                            id={selectedGroup.groupId}
+                            type={SETTINGS_TYPES.CHECKBOX}
+                            label={translator.getMessage('options_privacy_title')}
+                            value={selectedGroup.enabled}
+                            handler={handleGroupSwitch}
+                            optimistic={!__IS_MV3__}
+                        />
+                    )}
+                    renderBackButton={renderBackButton}
+                    mode={isCustom ? 'custom' : undefined}
+                >
+                    {
+                        isCustom && __IS_MV3__ && (
+                            <div className="settings__group__links settings__group__links--custom">
+                                <RuleLimitsLink />
+                            </div>
+                        )
+                    }
+                    {
+                        isCustom
+                            ? <DynamicRulesLimitsWarning />
+                            : <StaticFiltersLimitsWarning />
+                    }
+                    {isEmpty && isCustom && !settingsStore.isSearching
+                        ? <EmptyCustom />
+                        : (
+                            <>
+                                <Search />
+                                {renderFilters(filtersToRender, selectedGroup.enabled)}
+                            </>
+                        )}
+                    {isCustom && (
                         <>
-                            <Search />
-                            {renderFilters(filtersToRender, selectedGroup.enabled)}
+                            {renderAddFilterBtn(isEmpty && !settingsStore.isSearching)}
+                            <AddCustomModal
+                                closeModalHandler={closeModalHandler}
+                                modalIsOpen={modalIsOpen}
+                                initialUrl={urlToSubscribe}
+                                initialTitle={customFilterTitle}
+                            />
                         </>
                     )}
-                {isCustom && (
-                    <>
-                        {renderAddFilterBtn(isEmpty && !settingsStore.isSearching)}
-                        <AddCustomModal
-                            closeModalHandler={closeModalHandler}
-                            modalIsOpen={modalIsOpen}
-                            initialUrl={urlToSubscribe}
-                            initialTitle={customFilterTitle}
+                    {settingsStore.isAnnoyancesConsentModalOpen && (
+                        <AnnoyancesConsent
+                            isOpen={settingsStore.isAnnoyancesConsentModalOpen}
+                            setIsOpen={settingsStore.setIsAnnoyancesConsentModalOpen}
+                            onConfirm={handleFilterConsentConfirmWrapper}
+                            onCancel={settingsStore.handleFilterConsentCancel}
+                            shouldShowFilterPolicy={settingsStore.shouldShowFilterPolicy}
                         />
-                    </>
-                )}
+                    )}
+                </SettingsSection>
+            </div>
+        );
+    }
+
+    return (
+        <div
+            className="settings settings--filters"
+            role="main"
+            tabIndex={-1}
+        >
+            <SettingsSection
+                title={translator.getMessage('options_filters')}
+            >
+                <StaticFiltersLimitsWarning useWrapper />
+                <DynamicRulesLimitsWarning useWrapper />
+                {!__IS_MV3__ && <FiltersUpdate />}
+                <Search />
+                {settingsStore.isSearching
+                    ? renderGroupsOnSearch(filtersToRender)
+                    : renderGroups(categories)}
                 {settingsStore.isAnnoyancesConsentModalOpen && (
                     <AnnoyancesConsent
                         isOpen={settingsStore.isAnnoyancesConsentModalOpen}
@@ -386,30 +421,7 @@ const Filters = observer(() => {
                     />
                 )}
             </SettingsSection>
-        );
-    }
-
-    return (
-        <SettingsSection
-            title={translator.getMessage('options_filters')}
-        >
-            <StaticFiltersLimitsWarning useWrapper />
-            <DynamicRulesLimitsWarning useWrapper />
-            {!__IS_MV3__ && <FiltersUpdate />}
-            <Search />
-            {settingsStore.isSearching
-                ? renderGroupsOnSearch(filtersToRender)
-                : renderGroups(categories)}
-            {settingsStore.isAnnoyancesConsentModalOpen && (
-                <AnnoyancesConsent
-                    isOpen={settingsStore.isAnnoyancesConsentModalOpen}
-                    setIsOpen={settingsStore.setIsAnnoyancesConsentModalOpen}
-                    onConfirm={handleFilterConsentConfirmWrapper}
-                    onCancel={settingsStore.handleFilterConsentCancel}
-                    shouldShowFilterPolicy={settingsStore.shouldShowFilterPolicy}
-                />
-            )}
-        </SettingsSection>
+        </div>
     );
 });
 

@@ -159,7 +159,11 @@ const Stealth = observer(() => {
     const isFirstPartyCookiesEnabled = settings.values[SelfDestructFirstPartyCookies];
 
     return (
-        <>
+        <div
+            className="settings settings--stealth"
+            role="main"
+            tabIndex={-1}
+        >
             <SettingsSection
                 title={reactTranslator.getMessage('options_privacy_title')}
                 description={reactTranslator.getMessage('options_privacy_desc')}
@@ -374,7 +378,7 @@ const Stealth = observer(() => {
                     handler={privacySettingChangeHandlerWithLoader}
                 />
             </SettingsSection>
-        </>
+        </div>
     );
 });
 

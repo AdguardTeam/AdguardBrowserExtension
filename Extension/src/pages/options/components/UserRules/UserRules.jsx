@@ -56,7 +56,11 @@ const UserRules = observer(() => {
     }, [settingsStore, uiStore, settingsStore.isFullscreenUserRulesEditorOpen]);
 
     return (
-        <>
+        <div
+            className="settings settings--user-rules"
+            role="main"
+            tabIndex={-1}
+        >
             <SettingsSection
                 title={translator.getMessage('options_userfilter')}
                 id={settingsStore.userFilterEnabledSettingId}
@@ -91,7 +95,7 @@ const UserRules = observer(() => {
                     </div>
                 )
                 : (<UserRulesEditor />)}
-        </>
+        </div>
     );
 });
 

@@ -27,6 +27,25 @@ import './nav.pcss';
 export const Nav = ({ closeSidebar }) => {
     const onClick = () => {
         closeSidebar();
+        // Add a small delay to ensure the new content is rendered
+        setTimeout(() => {
+            // Check if any modal is open before changing focus
+            const modalRoot = document.querySelector('.ReactModal__Overlay--after-open');
+            if (modalRoot) {
+                // If a modal is open, don't change focus
+                return;
+            }
+
+            const mainContent = document.querySelector('[role="main"]');
+            if (mainContent) {
+                mainContent.focus();
+                // If there's a title in the main content, focus it instead
+                const title = mainContent.querySelector('h1, h2, .title');
+                if (title) {
+                    title.focus();
+                }
+            }
+        }, 100);
     };
 
     const getNavLinkClassName = (navData) => (navData.isActive ? 'nav__item nav__item--active' : 'nav__item');

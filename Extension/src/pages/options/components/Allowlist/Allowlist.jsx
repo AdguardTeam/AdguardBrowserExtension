@@ -170,7 +170,11 @@ const Allowlist = observer(() => {
     }
 
     return (
-        <>
+        <div
+            className="settings settings--allowlist"
+            role="main"
+            tabIndex={-1}
+        >
             <SettingsSection
                 title={translator.getMessage('options_allowlist')}
                 id={AllowlistEnabled}
@@ -243,7 +247,7 @@ const Allowlist = observer(() => {
                     {translator.getMessage('options_userfilter_export')}
                 </button>
             </div>
-        </>
+        </div>
     );
 });
 

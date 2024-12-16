@@ -122,7 +122,11 @@ export const Miscellaneous = observer(() => {
     } = settings.names;
 
     return (
-        <>
+        <div
+            className="settings settings--miscellaneous"
+            role="main"
+            tabIndex={-1}
+        >
             <SettingsSection title={translator.getMessage('options_miscellaneous_settings')}>
                 <div className="settings__group">
                     {!__IS_MV3__ && (
@@ -264,6 +268,6 @@ export const Miscellaneous = observer(() => {
                     </button>
                 </div>
             </SettingsSection>
-        </>
+        </div>
     );
 });
