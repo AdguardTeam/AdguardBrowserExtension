@@ -123,10 +123,12 @@ export const Select = ({
                 className="select__item"
                 onClick={handleOptionClick}
                 onKeyUp={handleOptionClick}
-                role="button"
+                role="option"
                 tabIndex={0}
                 id={currentValue}
                 key={currentValue}
+                aria-selected={isActive}
+                data-value={currentValue}
             >
                 <span className={itemTextClassName}>
                     {title}
@@ -135,6 +137,7 @@ export const Select = ({
                     <Icon
                         id="#tick"
                         classname="icon icon--24 icon--green-default"
+                        ariaHidden
                     />
                 )}
             </div>
@@ -168,6 +171,8 @@ export const Select = ({
 
     const currentTitle = currentValue.title;
 
+    const controlId = `${id}-listbox`;
+
     return (
         <div
             id={id}
@@ -176,28 +181,30 @@ export const Select = ({
             role="combobox"
             aria-haspopup="listbox"
             aria-expanded={!hidden}
-            aria-controls={`${id}-listbox`}
+            aria-controls={controlId}
+            aria-owns={controlId}
         >
             <button
                 type="button"
                 className="select__value"
                 onClick={handleSelectClick}
-                aria-label={currentTitle}
             >
                 {currentTitle}
             </button>
             <Icon
                 id="#select"
                 classname="icon--select icon--gray-default select__ico"
-                aria-hidden="true"
+                ariaHidden
             />
+
             {!hidden && (
                 <div
+                    id={controlId}
                     className="select__list"
                     ref={refList}
                     role="listbox"
-                    id={`${id}-listbox`}
-                    aria-label={`${currentTitle} options`}
+                    aria-activedescendant={currentValue ? currentValue.value : undefined}
+                    tabIndex={0}
                 >
                     {renderItems(options)}
                 </div>

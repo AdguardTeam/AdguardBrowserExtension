@@ -33,6 +33,8 @@ export const Footer = observer(() => {
         <>
             <div
                 className="footer__text"
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                tabIndex={0}
                 title={translator.getMessage('popup_adguard_footer_title')}
             >
                 {translator.getMessage('popup_adguard_footer_title')}
