@@ -134,10 +134,22 @@ export const ConfirmModal = ({
                     className={cn('modal', {
                         'modal--scrollable': isScrollable,
                     })}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
                 >
                     <div className="modal__content">
                         <div className="modal__header">
-                            <div className="modal__title">
+                            <div
+                                id="modal-title"
+                                className="modal__title"
+                                tabIndex={-1}
+                                ref={(element) => {
+                                    if (element && isOpen) {
+                                        element.focus();
+                                    }
+                                }}
+                            >
                                 {title}
                             </div>
                             <button
@@ -150,11 +162,12 @@ export const ConfirmModal = ({
                             </button>
                         </div>
                         {subtitle && (
-                            <div
-                                className={subtitleClassName}
-                            >
-                                {subtitle}
-                            </div>
+                            <>
+                                <span className="visually-hidden">.</span>
+                                <div className={subtitleClassName}>
+                                    {subtitle}
+                                </div>
+                            </>
                         )}
                     </div>
                     <div className="modal__actions">
