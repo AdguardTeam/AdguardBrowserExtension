@@ -31,9 +31,6 @@ import {
 } from './tests/helpers';
 import { mockGlobalFetch } from './tests/helpers/mocks/fetch';
 
-// set missing CSS.escape polyfill for test env
-global.CSS.escape = escape;
-
 /**
  * sinon-chrome does declare a browser.runtime.id property, but its value is null, which caused the duck-typing to fail.
  *
@@ -91,10 +88,6 @@ Object.assign(browser, {
     },
 });
 
-// Set up global `chrome` object
-// @ts-ignore
-global.chrome = browser;
-
 // Mock webextension-polyfill
 vi.mock('webextension-polyfill', () => ({ default: browser }));
 
@@ -110,7 +103,6 @@ vi.mock('./Extension/src/common/logger.ts');
 vi.mock('@adguard/tswebextension', async () => ({
     ...(await vi.importActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,
-
     isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
 }));
 
@@ -121,11 +113,11 @@ vi.mock('lodash-es', async () => ({
 
 mockLocalStorage();
 
-// register fake server for xhr requests
-const server = mockXhrRequests();
-
-// @ts-ignore
-global.sinonFakeServer = server;
-
-// @ts-ignore
-global.fetch = mockGlobalFetch();
+Object.assign(global, {
+    sinonFakeServer: mockXhrRequests(),
+    fetch: mockGlobalFetch(),
+    CSS: {
+        escape,
+    },
+    chrome: browser,
+});
