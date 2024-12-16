@@ -563,7 +563,7 @@ export class CustomFilterApi {
     ): Promise<GetRemoteCustomFilterResult> {
         logger.info(`Get custom filter data from ${url}`);
 
-        const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
+        const downloadResult = await CustomFilterApi.downloadRulesWithTimeout(url, rawFilter, force);
 
         const parsed = FilterParser.parseFilterDataFromHeader(downloadResult.filter);
 
@@ -596,7 +596,7 @@ export class CustomFilterApi {
         force?: boolean,
     ): Promise<DownloadResult> {
         return createPromiseWithTimeout(
-            network.downloadFilterRulesBySubscriptionUrl(url, rawFilter, force)
+            CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url, rawFilter, force)
                 .then((val) => val || emptyDownloadResult),
             CustomFilterApi.DOWNLOAD_LIMIT_MS,
             'Fetch timeout is over',
