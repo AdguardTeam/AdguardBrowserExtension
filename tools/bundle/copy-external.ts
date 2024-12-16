@@ -16,10 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { copyWar } from '@adguard/tswebextension/cli';
+// import { copyWar } from '@adguard/tswebextension/cli';
 
-import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../constants';
+// import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../constants';
 
 export const copyExternals = async () => {
-    await copyWar(`Extension/${WEB_ACCESSIBLE_RESOURCES_OUTPUT}`);
+    // FIXME: Uncomment
+    // await copyWar(`Extension/${WEB_ACCESSIBLE_RESOURCES_OUTPUT}`);
 };
