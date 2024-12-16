@@ -59,67 +59,43 @@ enum ResourceType {
     OTHER = 'other',
 }
 
-// Set up global `chrome` object
-global.chrome = {
-    ...browser,
+browser.runtime.getURL.callsFake((url: string) => `chrome-extension://test/${url}`);
+browser.runtime.getManifest.callsFake(() => ({
+    name: 'AdGuard AdBlocker',
+    version: '0.0.0',
+    manifest_version: MANIFEST_ENV as any,
+}));
+Object.assign(browser, {
     /**
      * These values are used in the background script to determine the maximum
      * number of rules that can be added.
      */
-    // @ts-ignore
     declarativeNetRequest: {
         /** @see https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#property-MAX_NUMBER_OF_REGEX_RULES */
         MAX_NUMBER_OF_REGEX_RULES: 1000,
         MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES: 5000,
         ResourceType,
     },
-    // FIXME: remove any
-    runtime: {
-        ...browser.runtime,
-        getManifest: vi.fn(() => ({
-            name: 'AdGuard AdBlocker',
-            version: '0.0.0',
-            manifest_version: MANIFEST_ENV as any,
-        })),
-        getURL: vi.fn((url: string) => `chrome-extension://test/${url}`),
-    } as any,
-};
+    webRequest: {
+        ...browser.webRequest,
+        filterResponseData: vi.fn(),
+    },
+    tabs: {
+        ...browser.tabs,
+        query: vi.fn(() => []),
+    },
+    i18n: {
+        getUILanguage: vi.fn(() => 'en'),
+        getMessage: vi.fn((value: string) => value),
+    },
+});
+
+// Set up global `chrome` object
+// @ts-ignore
+global.chrome = browser;
 
 // Mock webextension-polyfill
-vi.mock('webextension-polyfill', () => {
-    return {
-        default: {
-            ...browser,
-            // FIXME
-            declarativeNetRequest: {
-                /** @see https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#property-MAX_NUMBER_OF_REGEX_RULES */
-                MAX_NUMBER_OF_REGEX_RULES: 1000,
-                MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES: 5000,
-                ResourceType,
-            },
-            webRequest: {
-                ...browser.webRequest,
-                filterResponseData: vi.fn(),
-            },
-            i18n: {
-                getUILanguage: vi.fn(() => 'en'),
-                getMessage: vi.fn((value: string) => value),
-            },
-            runtime: {
-                ...browser.runtime,
-                getManifest: vi.fn(() => ({
-                    version: '0.0.0',
-                    manifest_version: MANIFEST_ENV,
-                })),
-                getURL: vi.fn((url: string) => `chrome-extension://test/${url}`),
-            },
-            tabs: {
-                ...browser.tabs,
-                query: vi.fn(() => []),
-            },
-        },
-    };
-});
+vi.mock('webextension-polyfill', () => ({ default: browser }));
 
 vi.mock('nanoid', () => ({
     nanoid: (): string => 'cTkoV5Vs',

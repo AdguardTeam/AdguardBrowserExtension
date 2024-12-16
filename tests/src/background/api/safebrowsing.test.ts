@@ -109,7 +109,7 @@ describe.skipIf(__IS_MV3__)('Safebrowsing API', () => {
                 expires: Date.now() + SbCache.CACHE_TTL_MS,
             };
 
-            const expectedRedirectUrl = browser.runtime.getURL(
+            const expectedRedirectUrl = chrome.runtime.getURL(
                 'pages/safebrowsing.html'
             + '?malware=true'
             + '&host=example.com'
