@@ -199,7 +199,6 @@ export const Select = ({
                 classname="icon--select icon--gray-default select__ico"
                 ariaHidden
             />
-
             {!hidden && (
                 <div
                     id={controlId}

@@ -44,7 +44,11 @@ export const StatsTable = observer(() => {
         .sort((a, b) => b.blocked - a.blocked)
         .map((stats) => {
             return (
-                <li className="stats__item" key={stats.categoryId}>
+                <li
+                    className="stats__item"
+                    key={stats.categoryId}
+                    tabIndex={0}
+                >
                     <span className="stats__name">{stats.categoryName}</span>
                     <span className="stats__value">{new Intl.NumberFormat().format(stats.blocked)}</span>
                 </li>
@@ -52,7 +56,12 @@ export const StatsTable = observer(() => {
         });
 
     return (
-        <div id="stats-panel" className="stats" aria-labelledby="stats-tab">
+        <div
+            id="stats-panel"
+            className="stats"
+            aria-labelledby="Statistics-tab"
+            role="region"
+        >
             <ul className="stats__list">
                 {renderStatsByType}
             </ul>
