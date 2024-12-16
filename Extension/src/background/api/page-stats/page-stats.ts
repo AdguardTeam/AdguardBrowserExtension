@@ -21,7 +21,7 @@ import { companiesDbService } from 'tswebextension';
 import { logger } from '../../../common/logger';
 import { translator } from '../../../common/translators/translator';
 import { type PageStatsDataItem, pageStatsValidator } from '../../schema';
-import { PageStatsStorage, pageStatsStorage } from '../../storages';
+import { PageStatsStorage, pageStatsStorage } from '../../storages/page-stats';
 
 /**
  * Statistics data.
