@@ -73,8 +73,10 @@ const AddCustomInput = ({
     };
 
     return (
-        <label className="add-custom-input">
-            {label && <span className="add-custom-input__label">{label}</span>}
+        <div className="add-custom-input">
+            <label>
+                {label && <span className="add-custom-input__label">{label}</span>}
+            </label>
             <div className="add-custom-input__wrapper">
                 <input
                     ref={inputRef}
@@ -90,18 +92,20 @@ const AddCustomInput = ({
                     <button
                         type="button"
                         className="button add-custom-input__clear-btn"
+                        onClick={clearHandler}
                         // TODO: Probably we need add new aria-label text for clearing input?
                         // aria-label={reactTranslator.getMessage('clear_input_title')}
-                        onClick={clearHandler}
+                        aria-label="⌫:input"
                     >
                         <Icon
                             id="#cross"
                             classname="icon--24 icon--gray-default"
+                            ariaHidden
                         />
                     </button>
                 )}
             </div>
-        </label>
+        </div>
     );
 };
 

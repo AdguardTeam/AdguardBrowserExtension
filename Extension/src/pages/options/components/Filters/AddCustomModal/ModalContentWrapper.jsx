@@ -41,8 +41,9 @@ const ModalContentWrapper = ({
                         type="button"
                         className="button modal__close"
                         onClick={closeModalHandler}
+                        aria-label="✕:modal"
                     >
-                        <Icon id="#cross" />
+                        <Icon id="#cross" ariaHidden />
                     </button>
                 </div>
                 {children}
