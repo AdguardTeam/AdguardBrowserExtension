@@ -15,7 +15,11 @@ import { SettingsApi } from '../../../../Extension/src/background/api/settings/m
 import { type SafebrowsingStorageData } from '../../../../Extension/src/background/schema';
 import { mockLocalStorage } from '../../../helpers';
 
-describe('Safebrowsing API', () => {
+/**
+ * We do not use Safebrowsing API in MV3. Actually we could try to implement
+ * them, but CTO decided to not use them at all in MV3.
+ */
+describe.skipIf(__IS_MV3__)('Safebrowsing API', () => {
     let storage: Storage.StorageArea;
 
     beforeEach(() => {

@@ -26,7 +26,11 @@ vi.mock('../../../../../Extension/src/background/engine');
 vi.mock('../../../../../Extension/src/background/api/ui/icons');
 vi.mock('../../../../../Extension/src/background/storages/notification');
 
-describe('Quick Fixes API should', () => {
+/**
+ * We do not use Quick Fixes API in MV2, because there we have updates for
+ * each filters separately.
+ */
+describe.skipIf(!__IS_MV3__)('Quick Fixes API should', () => {
     let storage: Storage.StorageArea;
 
     const definedExpressions = {
@@ -52,11 +56,6 @@ describe('Quick Fixes API should', () => {
         .concat('+00:00');
 
     it('check for updates of Quick Fixes filter from remote and partially update metadata', async () => {
-        if (!__IS_MV3__) {
-            expect(true).toBeTruthy();
-            return;
-        }
-
         const filterId = 24;
 
         let mock = vi.spyOn(FiltersDownloader, 'downloadWithRaw')
