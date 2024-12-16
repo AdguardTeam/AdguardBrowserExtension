@@ -188,6 +188,9 @@ export const Select = ({
                 type="button"
                 className="select__value"
                 onClick={handleSelectClick}
+                aria-expanded={!hidden}
+                aria-haspopup="true"
+                aria-controls={controlId}
             >
                 {currentTitle}
             </button>
