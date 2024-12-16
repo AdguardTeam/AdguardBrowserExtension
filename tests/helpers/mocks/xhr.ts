@@ -28,6 +28,9 @@ export const mockFilterPath = 'test-filter.txt';
 /**
  * Mocks all xhr requests via {@link sinon.SinonFakeServer}
  *
+ * FIXME: Maybe it's better to split this server into small servers for each
+ * test, where it's needed: create, setup mocks and delete after it.
+ *
  * @returns xhr fake server
  */
 export const mockXhrRequests = (): sinon.SinonFakeServer => {

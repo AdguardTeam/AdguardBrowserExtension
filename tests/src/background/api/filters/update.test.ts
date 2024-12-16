@@ -47,6 +47,13 @@ declare global {
     let sinonFakeServer: sinon.SinonFakeServer;
 }
 
+/**
+ * FIXME:
+ * stderr | tests/src/background/api/filters/update.test.ts
+ *   FakeTimers: clearTimeout was invoked to clear a native timer instead of one created by this library.
+ *   To automatically clean-up native timers, use `shouldClearNativeTimers`.
+ */
+
 describe('Filter Update API should', () => {
     // We do not support filter updates in MV3 yet.
     if (__IS_MV3__) {
