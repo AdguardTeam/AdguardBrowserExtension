@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Display dnr-rulesets version on About tab [#3054].
 - Ability to search tabs by domain in the Filtering log [#3028].
 - Ability to add filters from Google Drive [#2908].
 - Unsafe dynamic rules limit for MV3.
 
+[#3054]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3054
 [#3028]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3028
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 
