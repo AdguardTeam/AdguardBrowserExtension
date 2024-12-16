@@ -185,23 +185,26 @@ export const Main = observer(() => {
     };
 
     return (
-        <div className="main">
+        <div className="main" role="main" aria-label="AdGuard Statistics">
             <div className="main__header">
                 <div
                     className="main__header--current-site"
                     title={currentSite}
+                    tabIndex={0}
                 >
                     {currentSite}
                 </div>
                 <div
                     className="main__header--current-status--title"
                     title={state[AppStateField.Title]}
+                    tabIndex={0}
                 >
                     {state[AppStateField.Title]}
                 </div>
                 <div
                     className="main__header--current-status--subtitle"
                     title={state[AppStateField.Subtitle]}
+                    tabIndex={0}
                 >
                     {state[AppStateField.Subtitle]}
                 </div>
