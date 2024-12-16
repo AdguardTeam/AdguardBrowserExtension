@@ -46,16 +46,16 @@ const About = observer(() => {
 
     return (
         <>
-            <div className="title__container title__container--about">
+            <div className="title__container title__container--about" tabIndex={0}>
                 <h2 className="title">
                     {reactTranslator.getMessage('options_about')}
                 </h2>
             </div>
             <div className="about">
-                <div className="about__title">
+                <div className="about__title" tabIndex={0}>
                     {reactTranslator.getMessage('options_about_title')}
                 </div>
-                <div className="about__version">
+                <div className="about__version" tabIndex={0}>
                     {`${reactTranslator.getMessage('options_about_version')} ${version}`}
                     <p>
                         {`TSWebExtension v${libVersions.tswebextension}`}
@@ -67,7 +67,7 @@ const About = observer(() => {
                         {`ExtendedCss v${libVersions.extendedCss}`}
                     </p>
                 </div>
-                <div className="about__copyright">
+                <div className="about__copyright" tabIndex={0}>
                     <div className="about__copyright-item">
                         {copyRightText}
                     </div>
