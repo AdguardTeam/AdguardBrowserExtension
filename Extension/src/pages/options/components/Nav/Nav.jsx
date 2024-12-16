@@ -32,69 +32,87 @@ export const Nav = ({ closeSidebar }) => {
     const getNavLinkClassName = (navData) => (navData.isActive ? 'nav__item nav__item--active' : 'nav__item');
 
     return (
-        <nav className="nav">
-            <NavLink
-                className={getNavLinkClassName}
-                to="/"
-                onClick={onClick}
-                end
-            >
-                {reactTranslator.getMessage('options_general_settings')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.filters}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_filters')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.stealth}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_privacy')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.allowlist}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_allowlist')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.userFilter}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_userfilter')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.miscellaneous}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_miscellaneous_settings')}
-            </NavLink>
-            {
-                __IS_MV3__
-                    && (
-                        <NavLink
-                            className={getNavLinkClassName}
-                            to={`/${OptionsPageSections.ruleLimits}`}
-                            onClick={onClick}
-                        >
-                            {reactTranslator.getMessage('options_rule_limits')}
-                        </NavLink>
-                    )
-            }
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.about}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_about')}
-            </NavLink>
-        </nav>
+        <div className="nav" role="navigation">
+            <div role="tablist">
+                <NavLink
+                    className={getNavLinkClassName}
+                    to="/"
+                    onClick={onClick}
+                    end
+                    role="tab"
+                    aria-selected={({ isActive }) => isActive}
+                >
+                    {reactTranslator.getMessage('options_general_settings')}
+                </NavLink>
+                <NavLink
+                    className={getNavLinkClassName}
+                    to={`/${OptionsPageSections.filters}`}
+                    onClick={onClick}
+                    role="tab"
+                    aria-selected={({ isActive }) => isActive}
+                >
+                    {reactTranslator.getMessage('options_filters')}
+                </NavLink>
+                <NavLink
+                    className={getNavLinkClassName}
+                    to={`/${OptionsPageSections.stealth}`}
+                    onClick={onClick}
+                    role="tab"
+                    aria-selected={({ isActive }) => isActive}
+                >
+                    {reactTranslator.getMessage('options_privacy')}
+                </NavLink>
+                <NavLink
+                    className={getNavLinkClassName}
+                    to={`/${OptionsPageSections.allowlist}`}
+                    onClick={onClick}
+                    role="tab"
+                    aria-selected={({ isActive }) => isActive}
+                >
+                    {reactTranslator.getMessage('options_allowlist')}
+                </NavLink>
+                <NavLink
+                    className={getNavLinkClassName}
+                    to={`/${OptionsPageSections.userFilter}`}
+                    onClick={onClick}
+                    role="tab"
+                    aria-selected={({ isActive }) => isActive}
+                >
+                    {reactTranslator.getMessage('options_userfilter')}
+                </NavLink>
+                <NavLink
+                    className={getNavLinkClassName}
+                    to={`/${OptionsPageSections.miscellaneous}`}
+                    onClick={onClick}
+                    role="tab"
+                    aria-selected={({ isActive }) => isActive}
+                >
+                    {reactTranslator.getMessage('options_miscellaneous_settings')}
+                </NavLink>
+                {
+                    __IS_MV3__
+                        && (
+                            <NavLink
+                                className={getNavLinkClassName}
+                                to={`/${OptionsPageSections.ruleLimits}`}
+                                onClick={onClick}
+                                role="tab"
+                                aria-selected={({ isActive }) => isActive}
+                            >
+                                {reactTranslator.getMessage('options_rule_limits')}
+                            </NavLink>
+                        )
+                }
+                <NavLink
+                    className={getNavLinkClassName}
+                    to={`/${OptionsPageSections.about}`}
+                    onClick={onClick}
+                    role="tab"
+                    aria-selected={({ isActive }) => isActive}
+                >
+                    {reactTranslator.getMessage('options_about')}
+                </NavLink>
+            </div>
+        </div>
     );
 };
