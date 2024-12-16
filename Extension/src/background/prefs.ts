@@ -20,7 +20,7 @@ import browser from 'webextension-polyfill';
 import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
-import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from 'tswebextension';
+import { TSWEBEXTENSION_VERSION } from 'tswebextension';
 
 /**
  * Extension global preferences.
@@ -38,6 +38,7 @@ export class Prefs {
         tswebextension: TSWEBEXTENSION_VERSION,
         tsurlfilter: TSURLFILTER_VERSION,
         scriptlets: SCRIPTLETS_VERSION,
-        extendedCss: EXTENDED_CSS_VERSION,
+        // FIXME: Setup correct export version from extendedCss package.
+        extendedCss: '2.0.59',
     };
 }

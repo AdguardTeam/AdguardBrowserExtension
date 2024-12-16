@@ -82,6 +82,9 @@ const __dirname = path.dirname(__filename);
 const config = getEnvConf(BUILD_ENV);
 
 // FIXME: Check why we import directly from the node_modules.
+// Inside tsurlfilter i have error:
+// (!) Generated an empty chunk
+// "text-encoding-polyfill"
 const TEXT_ENCODER_POLYFILL_PATH = path.resolve(
     __dirname,
     '../../node_modules/@adguard/tswebextension/dist/common/text-encoding-polyfill.js',
