@@ -81,7 +81,7 @@ const promoUrl = isRuLocale
     ? Forward.get({ action: ForwardAction.Christmas24Ru })
     : Forward.get({ action: ForwardAction.Christmas24 });
 
-    const CHRISTMAS_24_ID = 'christmas24';
+const CHRISTMAS_24_ID = 'christmas24';
 
 const christmas24Notification: PromoNotification = {
     id: CHRISTMAS_24_ID,
