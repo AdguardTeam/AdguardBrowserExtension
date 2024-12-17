@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { LRUCache } from 'lru-cache';
+import { ZodError } from 'zod';
 
 import { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from '../schema';
 import { SB_LRU_CACHE_KEY } from '../../common/constants';
@@ -41,10 +42,17 @@ export class SbCache {
     /**
      * {@link LRUCache} instance.
      */
-    private cache = new LRUCache<string, SafebrowsingCacheData>({
-        max: 1000,
-        allowStale: false,
-    });
+    private cache: LRUCache<string, SafebrowsingCacheData>;
+
+    /**
+     * Constructor.
+     */
+    constructor() {
+        this.cache = new LRUCache({
+            max: 1000,
+            allowStale: false,
+        });
+    }
 
     /**
      * Reads safebrowsing {@link LRUCache} stringified entries from {@link browserStorage},
@@ -62,10 +70,30 @@ export class SbCache {
         try {
             const rawData = JSON.parse(storageData);
             const data = safebrowsingStorageDataValidator.parse(rawData);
+
             this.cache.load(data);
+            // Note: `.load()` method doesn't remove stale records, so we need to do it manually
             this.cache.purgeStale();
         } catch (e: unknown) {
-            logger.error(e);
+            logger.error('Failed to initialize safebrowsing storage', e);
+
+            // if data is corrupted, purge it
+            // if error is json parsing error or zod validation error
+            if (e instanceof SyntaxError || e instanceof ZodError) {
+                await SbCache.purgeStorage();
+                logger.info('Safebrowsing storage was purged, because of data corruption');
+            }
+        }
+    }
+
+    /**
+     * Purges {@link browserStorage} data.
+     */
+    private static async purgeStorage(): Promise<void> {
+        try {
+            await browserStorage.remove(SB_LRU_CACHE_KEY);
+        } catch (e: unknown) {
+            logger.error('Failed to purge safebrowsing storage', e);
         }
     }
 
