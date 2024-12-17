@@ -19,7 +19,6 @@ import browser from 'webextension-polyfill';
 
 import { Forward, ForwardAction } from '../../common/forward';
 import { NotificationTextRecord } from '../schema';
-import { isRuLocale } from '../utils/promo';
 
 /**
  * Icon data for different sizes.
@@ -76,10 +75,6 @@ export type PromoNotification = {
     badgeText?: string,
     icons?: IconVariants,
 };
-
-const promoUrl = isRuLocale
-    ? Forward.get({ action: ForwardAction.Christmas24Ru })
-    : Forward.get({ action: ForwardAction.Christmas24 });
 
 const CHRISTMAS_24_ID = 'christmas24';
 
@@ -264,7 +259,7 @@ const christmas24Notification: PromoNotification = {
         },
     },
     text: '',
-    url: promoUrl,
+    url: Forward.get({ action: ForwardAction.Christmas24 }),
     from: '23 December 2024 12:00:00',
     to: '3 January 2025 23:59:00',
     type: 'animated',
