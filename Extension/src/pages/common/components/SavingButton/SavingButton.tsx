@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 import classnames from 'classnames';
 
@@ -74,11 +74,12 @@ type SavingButtonParams = {
     contentChanged: boolean;
 };
 
-export const SavingButton = ({ onClick, savingState, contentChanged }: SavingButtonParams) => {
+export const SavingButton = forwardRef<HTMLButtonElement, SavingButtonParams>(({ onClick, savingState, contentChanged }, ref) => {
     return (
         <div className="actions__saving">
             {!__IS_MV3__ && renderSavingState(savingState)}
             <button
+                ref={ref}
                 type="button"
                 className="button button--l button--green-bg actions__btn actions__btn--saving"
                 onClick={onClick}
@@ -89,4 +90,4 @@ export const SavingButton = ({ onClick, savingState, contentChanged }: SavingBut
             </button>
         </div>
     );
-};
+});

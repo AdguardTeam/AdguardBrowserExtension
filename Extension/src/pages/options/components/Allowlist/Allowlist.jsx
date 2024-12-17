@@ -54,6 +54,7 @@ const Allowlist = observer(() => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const saveButtonRef = useRef(null);
 
     useEffect(() => {
         (async () => {
@@ -155,6 +156,12 @@ const Allowlist = observer(() => {
         settingsStore.setAllowlistEditorContentChangedState(settingsStore.allowlist !== value);
     };
 
+    const handleEscapePress = () => {
+        if (saveButtonRef.current) {
+            saveButtonRef.current.focus();
+        }
+    };
+
     const shortcuts = [{
         name: 'save',
         bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
@@ -212,6 +219,7 @@ const Allowlist = observer(() => {
                 onChange={editorChangeHandler}
                 wrapEnabled={settingsStore.allowlistEditorWrap}
                 shouldResetSize={shouldResetSize}
+                onExit={handleEscapePress}
             />
             {hasUnsavedChanges && (
                 <EditorLeaveModal
@@ -220,7 +228,7 @@ const Allowlist = observer(() => {
                 />
             )}
             <div className="actions actions--grid actions--buttons actions--allowlist">
-                <AllowlistSavingButton onClick={saveClickHandler} />
+                <AllowlistSavingButton ref={saveButtonRef} onClick={saveClickHandler} />
                 <input
                     type="file"
                     id="inputEl"

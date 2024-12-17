@@ -66,6 +66,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const saveButtonRef = useRef(null);
 
     let shouldResetSize = false;
     if (store.userRulesEditorPrefsDropped) {
@@ -394,6 +395,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         ? translator.getMessage('options_editor_close_fullscreen_button_tooltip')
         : translator.getMessage('options_editor_open_fullscreen_button_tooltip');
 
+    const handleEscapePress = () => {
+        if (saveButtonRef.current) {
+            saveButtonRef.current.focus();
+        }
+    };
+
     return (
         <>
             <Editor
@@ -404,6 +411,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 shouldResetSize={shouldResetSize}
                 onChange={editorChangeHandler}
                 highlightRules
+                onExit={fullscreen ? () => {
+                    handleEscapePress();
+                    closeEditorFullscreen();
+                } : handleEscapePress}
             />
             {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
             {/* We are hiding it because only Options page has router, and there is no point of using it */}
@@ -441,7 +452,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     )
                 }
                 <div className="actions--grid actions--buttons">
-                    <UserRulesSavingButton onClick={saveClickHandler} />
+                    <UserRulesSavingButton ref={saveButtonRef} onClick={saveClickHandler} />
                     <input
                         type="file"
                         id="inputEl"

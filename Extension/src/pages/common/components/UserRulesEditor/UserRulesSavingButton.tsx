@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, forwardRef } from 'react';
 import { observer } from 'mobx-react';
 
 import { type SavingFSMStateType } from '../Editor/savingFSM';
@@ -31,14 +31,18 @@ type UserRulesSavingButtonParams = {
     onClick: () => Promise<void>;
 };
 
-export const UserRulesSavingButton = observer(({ onClick }: UserRulesSavingButtonParams) => {
+// Combine forwardRef with observer
+const UserRulesSavingButtonImpl = forwardRef<HTMLButtonElement, UserRulesSavingButtonParams>(({ onClick }, ref) => {
     const store = useContext(userRulesEditorStore);
 
     return (
         <SavingButton
+            ref={ref}
             onClick={onClick}
             contentChanged={store.userRulesEditorContentChanged}
             savingState={store.savingUserRulesState as SavingFSMStateType}
         />
     );
 });
+
+export const UserRulesSavingButton = observer(UserRulesSavingButtonImpl);

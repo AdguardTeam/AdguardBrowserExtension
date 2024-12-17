@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, forwardRef } from 'react';
 import { observer } from 'mobx-react';
 
 import { rootStore } from '../../stores/RootStore';
@@ -30,10 +30,12 @@ type AllowlistSavingButtonParams = {
     onClick: () => Promise<void>;
 };
 
-export const AllowlistSavingButton = observer(({ onClick }: AllowlistSavingButtonParams) => {
+// Combine forwardRef with observer
+const AllowlistSavingButtonImpl = forwardRef<HTMLButtonElement, AllowlistSavingButtonParams>(({ onClick }, ref) => {
     const { settingsStore } = useContext(rootStore);
     return (
         <SavingButton
+            ref={ref}
             onClick={onClick}
             contentChanged={settingsStore.allowlistEditorContentChanged}
             // TODO: avoid type assertion eventually
@@ -41,3 +43,5 @@ export const AllowlistSavingButton = observer(({ onClick }: AllowlistSavingButto
         />
     );
 });
+
+export const AllowlistSavingButton = observer(AllowlistSavingButtonImpl);

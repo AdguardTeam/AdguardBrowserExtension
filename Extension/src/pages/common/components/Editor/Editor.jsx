@@ -48,6 +48,7 @@ const Editor = ({
     fullscreen,
     highlightRules,
     shouldResetSize,
+    onExit,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
@@ -94,6 +95,20 @@ const Editor = ({
     // highlight rules syntax only for user rules
     const editorMode = highlightRules ? 'adguard' : 'text';
 
+    // Combine user shortcuts with our default Escape handler
+    const editorCommands = [
+        ...(shortcuts || []),
+        {
+            name: 'exitEditMode',
+            bindKey: { win: 'Esc', mac: 'Esc' },
+            exec: () => {
+                if (typeof onExit === 'function') {
+                    onExit();
+                }
+            },
+        },
+    ];
+
     return (
         <div style={editorStyles} className={editorClassName}>
             <AceEditor
@@ -107,7 +122,7 @@ const Editor = ({
                 editorProps={{ $blockScrolling: true }}
                 fontSize={14}
                 value={value}
-                commands={shortcuts}
+                commands={editorCommands}
                 onChange={onChange}
             />
             <ReactResizeDetector
