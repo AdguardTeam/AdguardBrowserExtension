@@ -145,15 +145,19 @@ export const Tags = ({
         });
     };
 
+    const typeAllText = reactTranslator.getMessage('filtering_type_all');
     return (
         <>
-            <button
-                className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
-                type="button"
-                onClick={handleAllClick}
-            >
-                {reactTranslator.getMessage('filtering_type_all')}
-            </button>
+            <Popover text={typeAllText}>
+                <button
+                    className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
+                    type="button"
+                    onClick={handleAllClick}
+                    aria-label={typeAllText}
+                >
+                    {typeAllText}
+                </button>
+            </Popover>
             {renderTypes()}
         </>
     );
