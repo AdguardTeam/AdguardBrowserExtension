@@ -1,9 +1,9 @@
-! Checksum: LvVFdupY82RH9a72trnNpA
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1731505224-3600.patch
+! Checksum: bi5cl+tGpocRqMKQa1l+3w
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1733909936-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.50
-! TimeUpdated: 2024-11-13T13:35:37+00:00
+! Version: 2.0.7.53
+! TimeUpdated: 2024-12-11T09:34:58+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1524,6 +1524,8 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+||hfg.iuknyw5evnygw9v.nl/*?*=omroepzeeland&direct=
+||2mdn.net/instream/html5/ima3.js$domain=omroepzeeland.nl,important
 centraalplus.nl##div[class^="col"] > div.center:has(> div.g > div.g-single > center > i:contains(Advertentie))
 voetbalzone.nl##div[class^="ad-wrapper"]
 voetbalzone.nl##.fco-openweb-ad
@@ -1608,6 +1610,7 @@ vandaaginside.nl##div[class^="Component-bannerTopWrapper-"]
 itnijs.frl##.last.widget
 itnijs.frl##.widget-5 > div.banner
 ||itnijs.frl/wp-content/uploads/2017/10/bannerItNijs
+tweakers.net##body .top-banner
 tweakers.net##.video-container > iframe[src^="https://ads.pexi.nl/"]
 spiele.spiegel.de##div[id^="ad-gamepage"]
 kieskeurig.nl##.advertisement

@@ -1,9 +1,9 @@
-! Checksum: N4u8o1E25CtpRhKioqLyEw
-! Diff-Path: ../patches/13/13-s-1732023640-3600.patch
+! Checksum: O7hFrZw+61N4jb44LWDtJg
+! Diff-Path: ../patches/13/13-s-1734367081-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.17
-! TimeUpdated: 2024-11-19T13:36:01+00:00
+! Version: 2.0.54.41
+! TimeUpdated: 2024-12-16T16:33:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -341,8 +341,14 @@ ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin
 teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/192653
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=blutv.com
+@@/reklamlar/web/player$xmlhttprequest,domain=blutv.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190065
 ! https://github.com/uBlockOrigin/uAssets/issues/25421
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=gecmisi.com.tr
+@@||pagead2.googlesyndication.com/pagead/managed/js/adsense/*/show_ads*fy2021.js$domain=gecmisi.com.tr
+@@||pagead2.googlesyndication.com/pagead/ads$domain=gecmisi.com.tr
 @@/favicon.ico|$domain=gecmisi.com.tr
 @@||gecmisi.com.tr^$cookie=_ga
 @@||gecmisi.com.tr^$cookie=/^_ga_/
@@ -1676,7 +1682,7 @@ techolay.net,havadiskibris.com,oyunindir.club,armoniscans.com,teknobh.com,yoldao
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv
+/^(?!.*(bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|polyfill.io|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv
 !
 ! Similar to regexp above, but using the denyallow modifier
 ! Be careful, if a site uses third-party resources (players etc.) and the rule applied in AdGuard for Safari/iOS
@@ -1692,7 +1698,33 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
-cumhuriyet.com.tr##.col-sm-8 > div.row:has(> div.col-md-12 div[id^="notsy_container"])
+cioupdate.com.tr##a[target="_blank"] > img[alt]
+1000kitap.com##section.dr.w-full.min-h-100vh > div.relative:has(span:contains(Reklam))
+uludagsozluk.com##div[class^="adulu_col-"]
+webtekno.com##.content-body__detail > p > a[href^="https://turk.net/gigafiber"]
+webtekno.com##.content-body__detail > p:has(> a.box-link ~ strong)
+webtekno.com##.content-body__detail > p:has(> a.box-link ~ strong) + h2
+webtekno.com##.content-body__detail > p:has(> img[alt="turknet"])
+webtekno.com##.content-body__detail > p:has(> img[alt="turknet"]) + p
+webtekno.com##.bottom-new-video:has(> div.bottom-link > div > a[href][onclick])
+! r10.net##div[class]:has(> a[target="_blank"][rel])
+r10.net##div[class]:not(.container):has(> div[class^="r"][style="display: none !important;"]:not(.rPanel, .right))
+r10.net##.pagination:has(> .hide:only-child)
+r10.net##.postList > ul > li:not(.post, [data-order])
+r10.net##div[data-cname*="rk"]
+r10.net##.rabdfe3
+sinefil.tv###psContainer
+sinefil.tv#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?Date[\s\S]*?getElementsByTagName/')
+||ds.macellan.online/*/?ts=$script,domain=sinefil.tv
+yenisafak.com##.gif-banner
+||assets.yenisafak.com/yenisafak/wwwroot/images/gif-banner*.gif
+sporx.com###maintop ~ div[style^="margin-left:"]
+forum.shiftdelete.net###header-container
+techinside.com##div[class^="masthead-"]
+epey.com##.listele > ul[style="background:#F5F5F5;position:relative;"]
+||googletagmanager.com^$domain=sporx.com
+da95848c82c933d2.click#%#//scriptlet('set-constant', 'adsConfig', 'emptyObj')
+cumhuriyet.com.tr##.row:has(> div[class^="col-"] > div[style] > div.CHT_VIDEO)
 ||googleusercontent.com/img/*/crt$domain=selcuksportshd1472.xyz
 teknosa.com###gowitImpressionEvent
 istegundem.com##a[href^="/showad.asp?id="]
@@ -1767,7 +1799,8 @@ sondakika.com##.content-container > aside:has(> div[style^="height:"]:only-child
 takvim.com.tr###membrana-zone
 yeniasya.com.tr#%#//scriptlet('set-constant', 'PopBanner', 'undefined')
 vipfilmsitesi.com##img[width="360"][height="60"]
-||sporx.com/_iframe/mac-merkezi/scoreboard_bilyoner_mobil.php
+||sporx.com/_iframe/mac-merkezi/scoreboard_bilyoner
+sporx.com##iframe[src^="https://www.sporx.com/_iframe/mac-merkezi/scoreboard_bilyoner"]
 sporx.com#?##main div[style^="position:"]:has(> div:contains(Reklam))
 sporx.com#?##manset div[class]:has(> div[id^="taboola-home-thumbnails"])
 ||images.macellan.online/allads/
@@ -3106,7 +3139,7 @@ jukeduke.com,stargamescasinoonline.com##img[height="250"][width="300"]
 dizibox.*##.pull-right > div.box-sidebar
 dizibox.*##.adv.full-width.pull-left
 koinbox.net###tie-wrapper > .stream-item-above-header
-kocatepegazetesi.com,cumrapostasi.com##.lholder
+bandirmasehir.com,kocatepegazetesi.com,cumrapostasi.com##.lholder
 onedio.com##.article-oads
 onedio.com###masthead-container
 onedio.com##div[unit-name^="icerik"]
@@ -3451,7 +3484,7 @@ filmmakinesi.*###benzerler
 /wp-content/tanitim/*$domain=filmmakinesi.*
 ekonomist.com.tr##div[class$="-ad-area"]
 turkce-brosurler.com##div.banner-outer
-enbursa.com,haber228.com,ufukgazetesi.net,uyan32.com,sakarya360.com,sonsaat.com.tr##.rk
+bandirmasehir.com,enbursa.com,haber228.com,ufukgazetesi.net,uyan32.com,sakarya360.com,sonsaat.com.tr##.rk
 log.com.tr##.custom-html-widget > div[style^="clear:both;margin:10px auto;"]
 bilgicik.com##a[href^="https://www.acilkitap.com/"] > img
 zirvedehaber.com##.header-ainfo
@@ -3585,7 +3618,7 @@ degisimgazetesi.com.tr,bodrumgundem.com##.safirGalleryAds
 otomobilir.com##body .top__area
 oyunoyna.tv.tr,oyuntimes.com###reklamana
 arabam.com###js-hook-for-ing-credit
-bursahaber.com,bolge.com.tr,samsunsehirgazetesi.com,muzikonair.com##div[id^="banner_"]
+sporx.com,bursahaber.com,bolge.com.tr,samsunsehirgazetesi.com,muzikonair.com##div[id^="banner_"]
 dirilispostasi.com##div[class^="masthead-ad"]
 milasonder.com,olay.com.tr,memohaber.com##.haber-detay-reklam
 memohaber.com##.tepe-banner
@@ -4356,7 +4389,6 @@ turkhackteam.org##.ikili-reklamlar
 arabam.com##.mutlu-aku-banner
 arabam.com###js-hook-for-kocfinans-credit
 ||crackerteam.com/pop.js
-lordiz.com##.side2 > .box1 > .bluelisting > center > a[href][rel^="nofollow"][data-wpel-link="external"] > img
 haberakdeniz.com.tr##a[href="javascript:;"][target="_blank"] > img
 canakkalekalem.com##.add-banner
 canakkalekalem.com##.col-lg-3 > .add > a[href][target="_blank"] > img
@@ -4902,7 +4934,7 @@ t24.com.tr##div[itemprop="articleBody"] > div[style*="width:300px;"][style*="hei
 uzmanim.net###main-ads
 ozgurbolu.com###yan > div[style*="auto;box-sizing:border-box;border:#ddd"][style*="width:200px"]:not([class]):not([id])
 bisikletforum.com###rklmpst
-forum.turkmmo.com,vsro.org,webmasterforum.com.tr,kadinlarkulubu.com,technopat.net,gezenbilir.com,bisikletforum.com##.samBannerUnit
+m-tr.net,forum.turkmmo.com,vsro.org,webmasterforum.com.tr,kadinlarkulubu.com,technopat.net,gezenbilir.com,bisikletforum.com##.samBannerUnit
 ||bisikletforum.com/styles/sponsor/
 ||bisikletforum.com/data/Siropu/images/
 coin-turk.com##div[id^="banner"]
@@ -5385,7 +5417,7 @@ ensonhaber.com##div[id^="div-gpt-ad"][style]
 aksam.com.tr##div[id^="eng_brnd_"]
 duzceparantez.com##div[id^="fancybox"]
 sondakika.com##div[id^="musthead"]
-epey.com,blackorwhitedergi.com,oyungemisi.net,oyunkuzusu.com,bursaspor.org.tr,haberler.com##div[id^="reklam"]
+m-tr.net,epey.com,blackorwhitedergi.com,oyungemisi.net,oyunkuzusu.com,bursaspor.org.tr,haberler.com##div[id^="reklam"]
 fethiyehaber.com,umraniyegundemi.com,listelist.com,yerelgazete.com.tr##div[id^="reklam-"]
 ordugazete.com##div[id^="simplemodal-"]
 sporx.com##div[style$="position: relative; margin-top: 10px; min-height: 350px;"]
@@ -5979,6 +6011,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/194390
+ralphlauren.com,ralphlauren.eu#@##top-banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190746
 @@||segmentify.com^$script,stylesheet,xmlhttprequest,domain=puma.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190140
