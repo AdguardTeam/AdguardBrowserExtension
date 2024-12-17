@@ -1,9 +1,9 @@
-! Checksum: CogSukEOc3RakHRPpYiheA
-! Diff-Path: ../patches/20/20-s-1732110030-3600.patch
+! Checksum: O4vOOveWHFzTOrfYUD6Bog
+! Diff-Path: ../patches/20/20-s-1734439197-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.17.80
-! TimeUpdated: 2024-11-20T13:36:25+00:00
+! Version: 2.0.18.10
+! TimeUpdated: 2024-12-17T12:36:03+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -124,6 +124,39 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+m365.cloud.microsoft##.hero-section--mobile-banner
+tenbin.ai##.p-WorkspacePWAInstallBanner
+studysmarter.*##.va-welcome
+studysmarter.*##.va-footer-sticky-banner
+studysmarter.*##.va-intent-banner
+studysmarter.*##.va-flashcards-list:has(> div[class] > div[class] > a[href*="app.studysmarter.de/signup"])
+studysmarter.*##.bottom-blue-gradient
+studysmarter.*##img[alt*="Download"]
+studysmarter.*##data-ai-flashcard
+studysmarter.*##.va-intent-premium
+thesportstak.com##aside > div.flex:has(> a[href^="https://onelink.to/"])
+thesportstak.com##.block > div.my-4:has(> div.flex > img[title="Sportstak"])
+live.vkvideo.ru##div[class^="NativeAppBannerBase_root_"]
+newsbreak.com#%#//scriptlet('set-local-storage-item', 'readMoreButtonShow', 'true')
+comfy.ua##.footer-download-app__wrapper
+media.wear.jp##.wear-app-download
+podcastaddict.com##.aspect-ratio-box-foo
+upscale.media##a[class^="HeaderRight__AppLink"]
+mundolucha.com##a[href="https://play.google.com/store/apps/details?id=com.mlw.app"] > img
+sixty-percent.com,m.sporx.com##a[href^="https://app.adjust.com/"]
+sporx.com##.pgContainer > a[title*="uygulamamızı"]
+sporx.com##.pgContainer > img[alt="Sporx Mobil uygulamaları"]
+||reddit.com^$removeparam=recap_redirect
+mangaraw.plus##.fixed.bottom-0.standalone\:hidden
+radio.de,radio.net,radio.at###always-visible-banner-desktop-banner
+radio.de,radio.net,radio.at##section[data-testid="home-app-dl-section"]
+store.onstove.com##.inds-gnb-banner
+eda.yandex.ru##.DesktopTrackingPageIndex_appLinks
+otto.de###sp_smartAppBanner
+sportler.com##div[id="arealayoutrowarea-row-4"]
+sportler.com##div[id="arealayoutrowarea-row-5"]
+m.avito.ru#%#//scriptlet('trusted-click-element', '#splash-banner-click-negative-cross')
+pokemontcgpocket.com##div[class*="lang__card_frame"]:has(> div[class*="lang__card_inner"] > div[class^="downloads_wrapper"])
 9db.jp##data_body > table.wiki_t_blue:has(> tbody a[href^="https://play.google.com/"])
 nperf.com#%#//scriptlet('set-session-storage-item', 'modalDownloadAppShown', 'true')
 nperf.com##.row > div.justify-content-center:has(> div.card > div.mobile-app)
@@ -569,7 +602,7 @@ bbcgoodfood.com##.piano-inline-template__content
 makc.ru###main-mobile-app
 finance.yahoo.com#$#body > div.wafer-lightbox-overlay:has(> div.wafer-ligthbox-source-subscription-monalixa-overlay-lightbox) { display: none !important; }
 finance.yahoo.com#$#html { overflow: auto !important; }
-telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
+lescon.com.tr,telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
 telekom.de#%#//scriptlet('trusted-set-cookie', 'mma-banner', 'viewed')
 cod.tracker.gg,halotracker.com##.app-promo-section
 tracker.gg##.profile-hint
@@ -603,7 +636,6 @@ glavcom.ua##.banner_amp
 blove.jp##.app-store-link
 crmeb.com##body > div#side
 crmeb.com##.floatWindow
-973kkrc.com,mooseradio.com##.newsletter-overlay
 shafa.ua##.js-catalog-apps-promotion-banner
 kijiji.ca##section[aria-labelledby="app-marketing-title"]
 rikunabi.com##.guiding-app-dl
@@ -1510,7 +1542,6 @@ atlasbus.*#%#(function(){-1==document.cookie.indexOf("native-app-topper")&&(docu
 dolap.com#?#.fancybox-overlay > .fancybox-wrap:has(div.fancybox-inner > div.redirectToDownloadApp)
 dolap.com#$#.fancybox-lock { overflow: auto !important }
 tripmydream.com#?#.mediaSP__center > div.mediaIncut:has(> div.mediaIncut__content > p > a[data-type="iosapp"])
-appledaily.com.tw##a[href="https://feature.appledaily.com.tw/apppromo/"]
 mzh.moegirl.org.cn#?#.header > div:not([class]) > button.download-app:upward(1)
 mzh.moegirl.org.cn###open-in-app-wrapper
 mojagazetka.com##article[data-cy="FeatureMobileAppAdvertisement"]
@@ -1633,7 +1664,7 @@ forums.oneplus.com##.app-recommand-layer
 oneplus.com##.side-download-dialog
 semana.com##.footer-store
 semana.com##.footer-store + hr
-locondo.jp###anime_sab
+magaseek.com,locondo.jp###anime_sab
 swarmapp.com#%#//scriptlet("set-cookie", "hasShownSwarmUpsell", "true")
 swarmapp.com##.fixedUpsellTop
 swarmapp.com#%#//scriptlet('remove-class', 'pushDown', '#container.pushDown')
@@ -2318,7 +2349,7 @@ www-hindustantimes-com.cdn.ampproject.org,hindustantimes.com##.openAppButton
 m.gamer.com.tw,noin.shop,india.com##.open-app
 commaful.com##.suggested-story-section > div.desktop-only.float-left
 commaful.com##.ios-app-promo
-m.wanben.org,jingwuhotel.com##.appguide-wrap
+qushucheng.com,m.wanben.org,jingwuhotel.com##.appguide-wrap
 lylcrc.cn,jingwuhotel.com##.aznav
 flipkart.com#?#div[class*=" "] > div[class]:has(> div > img[src*="flipkart_app_icon-"])
 microsoftedgewelcome.microsoft.com##.mobile-banner__unexpanded
@@ -3485,6 +3516,15 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+member.kms.kuronekoyamato.co.jp###root > div.overlay
+my-best.com#%#//scriptlet('trusted-set-cookie', 'minsapo_promotion_popup', '')
+||sp.chintai.net/sp/asset/js/agent/appealModal.js
+sp.chintai.net##.agent_sign_up_gtm
+youtrust.jp#?#header > div.yt-MuiBox-root[style]:has(> div[class] > button.yt-MuiButtonBase-root > span:contains(アプリで続ける))
+youtrust.jp#?#header ~ div.yt-MuiBox-root[style]:has(> div.yt-MuiPaper-root > div.yt-MuiBox-root > div[class] > button.yt-MuiButtonBase-root > span.yt-MuiButton-label > span:contains(アプリで続ける))
+akakce.com#%#//scriptlet('trusted-set-local-storage-item', 'AppPrompt', '{"TTL":1735802364896,"count":1}')
+sauna-ikitai.com##.p-bannerApp
+domainanalysis.io##.app-banner
 newspicks.com##main > div[class^="css-"]:has(> div > div > svg[color="var(--surface-color-base-tertiary)"])
 trip.com#$##ibu_tcp_h5_install_popup { display: none !important; }
 m.economictimes.com###appDwnldBanner

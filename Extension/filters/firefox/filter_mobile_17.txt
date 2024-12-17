@@ -1,9 +1,9 @@
-! Checksum: DUOHof6qzpO6e5A+SEb7sw
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1732045098-3600.patch
+! Checksum: O12uYycK4wS6J0pynSMkrw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1734439196-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.85
-! TimeUpdated: 2024-11-19T19:34:58+00:00
+! Version: 2.0.10.0
+! TimeUpdated: 2024-12-17T12:36:00+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=_sgm_campaign
 $removeparam=_sgm_term
@@ -65,7 +65,6 @@ $removeparam=spot_im_redirect_source
 $cookie=_wp_visitor
 $removeparam=mt_link_id
 $removeparam=iclid
-$removeparam=srsltid
 $removeparam=user_email_address
 $removeparam=_ga
 $removeparam=_gl
@@ -248,6 +247,54 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||ca.indeed.com/cmp^$removeparam=from
+||ca.indeed.com/cmp^$removeparam=tk
+||ca.indeed.com/cmp^$removeparam=fromjk
+||ca.indeed.com/cmp^$removeparam=attributionid
+||ca.indeed.com/viewjob^$removeparam=tk
+||ca.indeed.com/viewjob^$removeparam=from
+||ca.indeed.com/viewjob^$removeparam=vjs
+||ca.indeed.com/viewjob^$removeparam=cmp
+||ca.indeed.com/viewjob^$removeparam=t
+||ca.indeed.com/viewjob^$removeparam=q
+||ca.indeed.com/viewjob^$removeparam=l
+||ca.indeed.com/viewjob^$removeparam=xpse
+||ca.indeed.com/viewjob^$removeparam=xfps
+||ca.indeed.com/viewjob^$removeparam=xkcb
+||ca.indeed.com/viewjob^$removeparam=hl
+||ca.indeed.com/viewjob^$removeparam=rjptk
+||ca.indeed.com/viewjob^$removeparam=advn
+||ca.indeed.com/viewjob^$removeparam=adid
+||ca.indeed.com/viewjob^$removeparam=ad
+||ca.indeed.com/viewjob^$removeparam=sjdu
+||ca.indeed.com/viewjob^$removeparam=acatk
+||ca.indeed.com/viewjob^$removeparam=pub
+||ca.indeed.com/viewjob^$removeparam=i2af
+||ca.indeed.com/viewjob^$removeparam=camk
+||ca.indeed.com/viewjob^$removeparam=jrtk
+||comfy.ua^$removeparam=sc_content
+||gaming.amazon.com^$removeparam=tag
+||app.startpage.com^$removeparam=source
+||americanas.com.br^$removeparam=offerId
+||americanas.com.br^$removeparam=nm_origem
+||americanas.com.br^$removeparam=DCSext.recom
+||americanas.com.br^$removeparam=pfm_type
+||americanas.com.br^$removeparam=nm_ranking_rec
+||americanas.com.br^$removeparam=pfm_carac
+||americanas.com.br^$removeparam=pfm_pos
+||americanas.com.br^$removeparam=pfm_page
+||americanas.com.br^$removeparam=pfm_index
+||hepsiburada.com^$removeparam=ftid
+||hepsiburada.com^$removeparam=wt_inf
+||hepsiburada.com^$removeparam=wt_ds
+||hepsiburada.com^$removeparam=url_src
+||hepsiburada.com^$removeparam=wt_so
+||hepsiburada.com^$removeparam=shortlink
+||hepsiburada.com^$removeparam=wt_af
+||hepsiburada.com^$removeparam=wt_gl
+||moebel.de^$removeparam=visitor_id
+||moebel.de^$removeparam=visitor_status
+$removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||edge.curalate.com/v1/media/$xmlhttprequest,removeparam=appId
 ||edge.curalate.com/v1/media/$xmlhttprequest,removeparam=fpcuid
 ||edge.curalate.com/v1/media/$xmlhttprequest,removeparam=rid
@@ -378,8 +425,6 @@ ref=producthunt^$removeparam=ref
 ||go.xliirdr.com/?*&targetDomain=$removeparam=campaignId
 ||windscribe.com^$removeparam=pcpid
 ||windscribe.com^$removeparam=temp_session
-||hepsiburada.com^$removeparam=wt_ds
-||hepsiburada.com^$removeparam=url_src
 ||samsung.com^$removeparam=cid
 ||nikkansports.com^$removeparam=nsgid
 ||game.hiroba.dpoint.docomo.ne.jp^$removeparam=mks_referer_event
@@ -396,7 +441,6 @@ ref=producthunt^$removeparam=ref
 ||hoyoverse.com/branding$removeparam
 ||cloud.baidu.com^$removeparam=from
 ||qianfan.cloud.baidu.com^$removeparam=track
-||hepsiburada.com^$removeparam=wt_inf
 ||qjweb.jp^$removeparam=from
 ||sport.sky.it^$removeparam=social
 ||sport.sky.it^$removeparam=share_id
@@ -635,6 +679,8 @@ keepstreams.com^$removeparam=downloadmode
 ||streamfab.jp^$removeparam=c_app_from
 ||streamfab.jp^$removeparam=c_dt
 ||streamfab.jp^$removeparam=c_wh
+||ozon.ru^$removeparam=__rr
+||ozon.ru^$removeparam=abt_att
 ||ozon.ru^$removeparam=asb
 ||ozon.ru^$removeparam=advert
 ||ozon.ru^$removeparam=asb2
@@ -1027,7 +1073,6 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||elgato.com^$removeparam=token
 ||elgato.com^$removeparam=contact_id
 ||elgato.com^$removeparam=attribution_window
-||hepsiburada.com^$removeparam=wt_so
 ||vercel.com^$removeparam=redirected
 ||vercel.com^$removeparam=sfmc_channel
 ||vercel.com^$removeparam=sfmc_activity_name
@@ -1367,7 +1412,6 @@ $removeparam=spm,domain=aliyun.com|sohu.com
 ||aliyun.com^$removeparam=scm
 $removeparam=dt_dapp,domain=douban.com|163.com
 ||douban.com^$removeparam=dt_platform
-||hepsiburada.com^$removeparam=shortlink
 ||play.google.com^$removeparam=pcampaignid
 ||cyber-ad01.cc^$removeparam=ip
 ||d-markets.net^$removeparam=ref
@@ -1537,6 +1581,9 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 $removeparam=asc_campaign,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_refurl,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
+||amazon.*/*dp/$removeparam=dib
+||amazon.*/*dp/$removeparam=dib_tag
+||amazon.*/*dp/$removeparam=keywords
 ||amazon.*$removeparam=tag
 ||amazon.*$removeparam=ref
 ||amazon.*$removeparam=ie
@@ -1647,8 +1694,6 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||coursera.org^$removeparam=siteID
 ||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
-||hepsiburada.com^$removeparam=wt_af
-||hepsiburada.com^$removeparam=wt_gl
 ||mioga.de^$removeparam=pl
 ||mioga.de^$removeparam=idealoid
 ||ejoker.de^$removeparam=sPartner
@@ -1712,6 +1757,11 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 ||flipkart.com^$removeparam=ssid
 ||flipkart.com^$removeparam=store
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
+||bilibili.com^$removeparam=from_spmid
+||bilibili.com^$removeparam=from
+||bilibili.com^$removeparam=msource
+||bilibili.com^$removeparam=csource
+||bilibili.com^$removeparam=source
 ||bilibili.com^$removeparam=share_from
 ||bilibili.com^$removeparam=spmid
 ||bilibili.com^$removeparam=plat_id
@@ -1749,6 +1799,8 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||google.*/maps^$removeparam=utm_campaign
+@@||uploadnow.*/share$removeparam=utm_source
 @@||3dnews.ru/*?utm_source=^$removeparam=utm_source
 @@||gaugau.futabanet.jp^$removeparam=utm_content
 @@||lifehacker.ru^$removeparam=erid
