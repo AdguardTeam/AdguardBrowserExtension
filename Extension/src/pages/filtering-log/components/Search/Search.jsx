@@ -127,6 +127,8 @@ const Search = forwardRef(({
                 onFocus={onFocus}
                 value={value}
                 autoComplete="off"
+                aria-label={placeholder}
+                role="searchbox"
             />
         </form>
     );
