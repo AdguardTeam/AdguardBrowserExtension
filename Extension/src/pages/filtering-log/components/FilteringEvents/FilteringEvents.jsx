@@ -255,7 +255,11 @@ const Row = observer(({
                             key={column.id}
                             style={{ width: column.getWidth() }}
                         >
-                            {cellContent}
+                            {column.id === 'url' || column.id === 'filter' ? (
+                                cellContent
+                            ) : (
+                                <span aria-hidden="true">{cellContent}</span>
+                            )}
                         </div>
                     );
                 })
