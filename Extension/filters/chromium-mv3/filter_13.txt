@@ -1,8 +1,8 @@
-! Checksum: Bd6fnvbE9CZXwweY2A29fg
+! Checksum: cDcJcph9HGqr8J4XE4WTcQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.36
-! TimeUpdated: 2024-12-11T08:34:56+00:00
+! Version: 2.0.54.41
+! TimeUpdated: 2024-12-16T16:33:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1681,12 +1681,19 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+cioupdate.com.tr##a[target="_blank"] > img[alt]
+1000kitap.com#?#section.dr.w-full.min-h-100vh > div.relative:has(span:contains(Reklam))
+uludagsozluk.com##div[class^="adulu_col-"]
 webtekno.com##.content-body__detail > p > a[href^="https://turk.net/gigafiber"]
 webtekno.com##.content-body__detail > p:has(> a.box-link ~ strong)
 webtekno.com##.content-body__detail > p:has(> a.box-link ~ strong) + h2
 webtekno.com##.content-body__detail > p:has(> img[alt="turknet"])
 webtekno.com##.content-body__detail > p:has(> img[alt="turknet"]) + p
 webtekno.com##.bottom-new-video:has(> div.bottom-link > div > a[href][onclick])
+! r10.net##div[class]:has(> a[target="_blank"][rel])
+r10.net##div[class]:not(.container):has(> div[class^="r"][style="display: none !important;"]:not(.rPanel, .right))
+r10.net##.pagination:has(> .hide:only-child)
+r10.net##.postList > ul > li:not(.post, [data-order])
 r10.net##div[data-cname*="rk"]
 r10.net##.rabdfe3
 sinefil.tv###psContainer
@@ -3115,7 +3122,7 @@ jukeduke.com,stargamescasinoonline.com##img[height="250"][width="300"]
 dizibox.cc,dizibox.com,dizibox.com.bd,dizibox.com.np,dizibox.de,dizibox.in,dizibox.net,dizibox.org,dizibox.pro,dizibox.pw,dizibox.ru,dizibox.store,dizibox.tv,dizibox.vip,dizibox.world,dizibox.xyz##.pull-right > div.box-sidebar
 dizibox.cc,dizibox.com,dizibox.com.bd,dizibox.com.np,dizibox.de,dizibox.in,dizibox.net,dizibox.org,dizibox.pro,dizibox.pw,dizibox.ru,dizibox.store,dizibox.tv,dizibox.vip,dizibox.world,dizibox.xyz##.adv.full-width.pull-left
 koinbox.net###tie-wrapper > .stream-item-above-header
-kocatepegazetesi.com,cumrapostasi.com##.lholder
+bandirmasehir.com,kocatepegazetesi.com,cumrapostasi.com##.lholder
 onedio.com##.article-oads
 onedio.com###masthead-container
 onedio.com##div[unit-name^="icerik"]
@@ -3460,7 +3467,7 @@ filmmakinesi.com,filmmakinesi.com.bd,filmmakinesi.com.np,filmmakinesi.de,filmmak
 /wp-content/tanitim/*$domain=filmmakinesi.com|filmmakinesi.com.bd|filmmakinesi.com.np|filmmakinesi.de|filmmakinesi.icu|filmmakinesi.life|filmmakinesi.net|filmmakinesi.one|filmmakinesi.org|filmmakinesi.pro|filmmakinesi.pw
 ekonomist.com.tr##div[class$="-ad-area"]
 turkce-brosurler.com##div.banner-outer
-enbursa.com,haber228.com,ufukgazetesi.net,uyan32.com,sakarya360.com,sonsaat.com.tr##.rk
+bandirmasehir.com,enbursa.com,haber228.com,ufukgazetesi.net,uyan32.com,sakarya360.com,sonsaat.com.tr##.rk
 log.com.tr##.custom-html-widget > div[style^="clear:both;margin:10px auto;"]
 bilgicik.com##a[href^="https://www.acilkitap.com/"] > img
 zirvedehaber.com##.header-ainfo
@@ -4910,7 +4917,7 @@ t24.com.tr##div[itemprop="articleBody"] > div[style*="width:300px;"][style*="hei
 uzmanim.net###main-ads
 ozgurbolu.com###yan > div[style*="auto;box-sizing:border-box;border:#ddd"][style*="width:200px"]:not([class]):not([id])
 bisikletforum.com###rklmpst
-forum.turkmmo.com,vsro.org,webmasterforum.com.tr,kadinlarkulubu.com,technopat.net,gezenbilir.com,bisikletforum.com##.samBannerUnit
+m-tr.net,forum.turkmmo.com,vsro.org,webmasterforum.com.tr,kadinlarkulubu.com,technopat.net,gezenbilir.com,bisikletforum.com##.samBannerUnit
 ||bisikletforum.com/styles/sponsor/
 ||bisikletforum.com/data/Siropu/images/
 coin-turk.com##div[id^="banner"]
@@ -5393,7 +5400,7 @@ ensonhaber.com##div[id^="div-gpt-ad"][style]
 aksam.com.tr##div[id^="eng_brnd_"]
 duzceparantez.com##div[id^="fancybox"]
 sondakika.com##div[id^="musthead"]
-epey.com,blackorwhitedergi.com,oyungemisi.net,oyunkuzusu.com,bursaspor.org.tr,haberler.com##div[id^="reklam"]
+m-tr.net,epey.com,blackorwhitedergi.com,oyungemisi.net,oyunkuzusu.com,bursaspor.org.tr,haberler.com##div[id^="reklam"]
 fethiyehaber.com,umraniyegundemi.com,listelist.com,yerelgazete.com.tr##div[id^="reklam-"]
 ordugazete.com##div[id^="simplemodal-"]
 sporx.com##div[style$="position: relative; margin-top: 10px; min-height: 350px;"]

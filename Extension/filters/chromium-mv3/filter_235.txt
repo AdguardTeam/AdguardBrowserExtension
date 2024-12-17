@@ -1,8 +1,8 @@
-! Checksum: gFMg9ay39724kBmWX3OqMg
+! Checksum: WkuUuqHDPgE+pRnNFzsw5A
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.16
-! TimeUpdated: 2024-12-07T01:02:05+00:00
+! Version: 2.0.5.18
+! TimeUpdated: 2024-12-16T17:01:37+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -1161,10 +1161,8 @@ farsroid.com#$#li.ads-download { position: absolute !important; top: -10000px !i
 farsroid.com##nav.site-top-nav > ul.grid-row > li:has(> a[rel="dofollow"])
 ||analysis.faradars.org
 ! https://github.com/MasterKia/PersianBlocker/pull/39
-||media.farsnews.ir/Uploaded/Files/Documents/*.gif^$image,~third-party
-||farsnews.ir/api/recordnewstextvisit?id=$xmlhttprequest,~third-party
-farsnews.ir##aside.ad-mobile-none
-farsnews.ir##div.ads-native
+||api.farsnews.ir/log^$xmlhttprequest,~third-party
+farsnews.ir##div[class^="not-first"] a[rel^="sponsored"]
 ! >> G <<
 ! https://github.com/uBlockOrigin/uAssets/issues/25012
 ||gooya.com/ad/ads.php^$subdocument,~third-party
@@ -1361,11 +1359,10 @@ irannaz.com##div.CenterBlock:has(> div.Tadsb2)
 itresan.com###NR-Ads
 itresan.com##.listing-item-blog:has(a[href*="/author/ads/"])
 ! https://github.com/MasterKia/PersianBlocker/issues/22
-||ilna.ir/servev2/*.gif
-ilna.ir##[href^="/advertisements/"]
-ilna.ir##.zxc
-ilna.ir#$#.xcon12 { margin: auto !important; }
-ilna.ir#$#.ml120 { margin-left: 5% !important; margin-bottom: 5% !important; }
+||cdn.ilna.ir/servev2/*.gif^$image,~third-party
+ilna.ir##div.zxc_mb
+ilna.ir##div.text_adv
+ilna.ir#@#.adv_title
 ! https://github.com/MasterKia/PersianBlocker/issues/26
 ! https://github.com/MasterKia/PersianBlocker/issues/92
 ||isna.ir/sd/*.gif^$image,~third-party
