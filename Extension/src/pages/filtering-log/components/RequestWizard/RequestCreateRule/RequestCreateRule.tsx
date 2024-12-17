@@ -66,10 +66,14 @@ const RequestCreateRule = observer(() => {
 
     const renderPatterns = (patterns: string[]): React.JSX.Element => {
         const patternItems = patterns.map((pattern, idx) => (
-            <div className="radio-button-wrapper">
+            <div
+                className="radio-button-wrapper"
+                key={`${pattern}`}
+                tabIndex={0}
+            >
                 <input
                     type="radio"
-                    id={pattern}
+                    id={`pattern-${idx}`}
                     name="rulePattern"
                     className="radio-button-input"
                     value={pattern}
@@ -78,13 +82,10 @@ const RequestCreateRule = observer(() => {
                     onChange={handlePatternChange(pattern)}
                 />
                 <label
-                    /* eslint-disable-next-line react/no-array-index-key */
-                    key={`pattern${idx}`}
                     className="radio-button-label"
-                    htmlFor={pattern}
+                    htmlFor={`pattern-${idx}`}
                 >
-                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                    <div className="radio-button" />
+                    <div className="radio-button" aria-hidden="true" />
                     <div
                         className="radio-button-desc"
                         title={pattern}
@@ -96,7 +97,11 @@ const RequestCreateRule = observer(() => {
         ));
 
         return (
-            <div className="patterns__content">
+            <div
+                className="patterns__content"
+                role="radiogroup"
+                aria-label={translator.getMessage('filtering_modal_patterns_desc')}
+            >
                 {patternItems}
             </div>
         );
@@ -233,7 +238,7 @@ const RequestCreateRule = observer(() => {
             <div ref={ref} className="request-modal__content">
                 <div className="request-info">
                     <div className="request-info__main">
-                        <div className="request-info__key">
+                        <div className="request-info__key" id="rule-text-label">
                             {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
                         </div>
                         <textarea
@@ -241,26 +246,32 @@ const RequestCreateRule = observer(() => {
                             className="request-info__value request-modal__rule-text"
                             onChange={handleRuleChange}
                             value={wizardStore.rule}
+                            aria-labelledby="rule-text-label"
+                            tabIndex={0}
                         />
                     </div>
                 </div>
                 {showPatterns && (
-                    <div className="request-info patterns">
+                    <div className="request-info patterns" role="region" aria-label={translator.getMessage('filtering_modal_patterns_desc')}>
                         <div className="request-info__main">
-                            <div className="request-info__key">
+                            <div className="request-info__key" id="patterns-label">
                                 {translator.getMessage('filtering_modal_patterns_desc')}
                             </div>
-                            {rulePatterns}
+                            <div tabIndex={0} aria-labelledby="patterns-label">
+                                {rulePatterns}
+                            </div>
                         </div>
                     </div>
                 )}
                 {showOptions && (
-                    <div className="request-info options">
+                    <div className="request-info options" role="region" aria-label={translator.getMessage('filtering_modal_options_desc')}>
                         <div className="request-info__main">
-                            <div className="request-info__key">
+                            <div className="request-info__key" id="options-label">
                                 {translator.getMessage('filtering_modal_options_desc')}
                             </div>
-                            {options}
+                            <div tabIndex={0} aria-labelledby="options-label">
+                                {options}
+                            </div>
                         </div>
                     </div>
                 )}
