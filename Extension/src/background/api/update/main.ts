@@ -18,6 +18,7 @@
 import zod from 'zod';
 import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
+import { LRUCache } from 'lru-cache';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
@@ -38,14 +39,13 @@ import {
     NEWLINE_CHAR_REGEX,
     PAGE_STATISTIC_KEY,
     RULES_LIMITS_KEY,
+    SB_LRU_CACHE_KEY,
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import {
     appearanceValidator,
     type PageStats,
     pageStatsValidator,
-    type SafebrowsingCacheData,
-    type SafebrowsingStorageData,
     SchemaPreprocessor,
     SettingOption,
 } from '../../schema';
@@ -68,6 +68,7 @@ export class UpdateApi {
         '4': UpdateApi.migrateFromV4toV5,
         '5': UpdateApi.migrateFromV5toV6,
         '6': UpdateApi.migrateFromV6toV7,
+        '7': UpdateApi.migrateFromV7toV8,
     };
 
     /**
@@ -150,6 +151,65 @@ export class UpdateApi {
             logger.error(errMessage);
 
             throw new Error(errMessage, { cause: e });
+        }
+    }
+
+    /**
+     * Run data migration from schema v7 to schema v8.
+     *
+     * For MV3 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * In this update we switched from using `lru_map` to `lru-cache` for
+     * safebrowsing cache.
+     */
+    private static async migrateFromV7toV8(): Promise<void> {
+        // This migration should be done only for MV2 version.
+        if (__IS_MV3__) {
+            return;
+        }
+
+        // Validators for old safebrowsing cache data.
+        const safebrowsingCacheDataValidator = zod.object({
+            list: zod.string(),
+            expires: zod.number().optional(),
+        }).strict();
+
+        const safebrowsingStorageDataValidator = zod.object({
+            key: zod.string(),
+            value: safebrowsingCacheDataValidator,
+        }).strict().array();
+
+        try {
+            const rawData = await browserStorage.get(SB_LRU_CACHE_KEY);
+
+            if (!isString(rawData)) {
+                return;
+            }
+
+            const data = safebrowsingStorageDataValidator.parse(JSON.parse(rawData));
+
+            // Remove outdated cache records
+            const now = Date.now();
+
+            const dataFiltered = data.filter(({ value }) => {
+                if (isUndefined(value.expires) || value.expires < now) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            const cache = new LRUCache({ max: 1000 });
+
+            dataFiltered.forEach(({ key, value }) => {
+                // Note: we already checked that `expires` is defined and greater than `now`.
+                cache.set(key, value.list, { ttl: value.expires! - now });
+            });
+
+            await browserStorage.set(SB_LRU_CACHE_KEY, JSON.stringify(cache.dump()));
+        } catch (e: unknown) {
+            logger.error('Error while migrating safebrowsing cache', e);
         }
     }
 
@@ -647,9 +707,19 @@ export class UpdateApi {
 
         const now = Date.now();
 
+        type SafeBrowsingDataV2 = {
+            list: string;
+            expires?: number;
+        };
+
+        type SafeBrowsingStorageDataV2 = {
+            key: string;
+            value: SafeBrowsingDataV2;
+        }[];
+
         // transform v1 safebrowsing storage data to v2
-        const sbStorageDataV2: SafebrowsingStorageData = sbStorageDataV1.map(({ key, value }) => {
-            const safebrowsingCacheRecord: SafebrowsingCacheData = { list: value };
+        const sbStorageDataV2: SafeBrowsingStorageDataV2 = sbStorageDataV1.map(({ key, value }) => {
+            const safebrowsingCacheRecord: SafeBrowsingDataV2 = { list: value };
 
             if (safebrowsingCacheRecord.list !== 'allowlist') {
                 safebrowsingCacheRecord.expires = now + SbCache.CACHE_TTL_MS;
