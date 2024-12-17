@@ -99,17 +99,29 @@ export const ConfirmModal = ({
         'button--red-bg': !isConsent,
     });
 
-    const modalRef = React.useRef<HTMLDivElement>(null);
-
     React.useEffect(() => {
-        if (isOpen && modalRef.current) {
-            // Focus the modal when it opens
-            modalRef.current.focus();
+        // Remove the blur since Modal component handles focus management
+        if (isOpen) {
+            // The Modal component will handle focus management with shouldReturnFocusAfterClose
         }
     }, [isOpen]);
 
+    const focusMainContent = () => {
+        const mainContent = document.querySelector('[role="main"]') as HTMLElement;
+        if (mainContent) {
+            mainContent.focus();
+            // If there's a title in the main content, focus it instead
+            const title = mainContent.querySelector('h1, h2, .title') as HTMLElement;
+            if (title) {
+                title.focus();
+            }
+        }
+    };
+
     const closeModal = () => {
         setIsOpen(false);
+        // Add a small delay to ensure the new content is rendered
+        setTimeout(focusMainContent, 100);
     };
 
     const handleConfirm = () => {
@@ -146,7 +158,6 @@ export const ConfirmModal = ({
                     className={cn('modal', {
                         'modal--scrollable': isScrollable,
                     })}
-                    ref={modalRef}
                     tabIndex={-1}
                 >
                     <div className="modal__content">
