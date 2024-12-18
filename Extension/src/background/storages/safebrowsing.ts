@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { LRUMap } from 'lru_map';
+import { LRUCache } from 'lru-cache';
+import { ZodError } from 'zod';
 
 import { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from '../schema';
 import { SB_LRU_CACHE_KEY } from '../../common/constants';
@@ -24,7 +25,7 @@ import { logger } from '../../common/logger';
 import { browserStorage } from './shared-instances';
 
 /**
- * Class for control persisted {@link LRUMap} safebrowsing cache.
+ * Class for control persisted {@link LRUCache} safebrowsing cache.
  */
 export class SbCache {
     /**
@@ -38,10 +39,23 @@ export class SbCache {
      */
     public static readonly CACHE_TTL_MS = 40 * 60 * 1000;
 
-    private cache = new LRUMap<string, SafebrowsingCacheData>(1000);
+    /**
+     * {@link LRUCache} instance.
+     */
+    private cache: LRUCache<string, SafebrowsingCacheData>;
 
     /**
-     * Reads safebrowsing {@link LRUMap} stringified entries from {@link browserStorage},
+     * Constructor.
+     */
+    constructor() {
+        this.cache = new LRUCache({
+            max: 1000,
+            allowStale: false,
+        });
+    }
+
+    /**
+     * Reads safebrowsing {@link LRUCache} stringified entries from {@link browserStorage},
      * parse it and sets to {@link this.cache}.
      *
      * @returns Promise, resolved when data successfully initialized.
@@ -53,17 +67,33 @@ export class SbCache {
             return;
         }
 
-        const now = Date.now();
-
         try {
-            const data = safebrowsingStorageDataValidator
-                .parse(JSON.parse(storageData))
-                // filter expired records
-                .filter(({ value }) => typeof value.expires === 'undefined' || now < value.expires);
+            const rawData = JSON.parse(storageData);
+            const data = safebrowsingStorageDataValidator.parse(rawData);
 
-            this.cache.assign(data.map(({ key, value }) => [key, value]));
+            this.cache.load(data);
+            // Note: `.load()` method doesn't remove stale records, so we need to do it manually
+            this.cache.purgeStale();
         } catch (e: unknown) {
-            logger.error(e);
+            logger.error('Failed to initialize safebrowsing storage', e);
+
+            // if data is corrupted, purge it
+            // if error is json parsing error or zod validation error
+            if (e instanceof SyntaxError || e instanceof ZodError) {
+                await SbCache.purgeStorage();
+                logger.info('Safebrowsing storage was purged, because of data corruption');
+            }
+        }
+    }
+
+    /**
+     * Purges {@link browserStorage} data.
+     */
+    private static async purgeStorage(): Promise<void> {
+        try {
+            await browserStorage.remove(SB_LRU_CACHE_KEY);
+        } catch (e: unknown) {
+            logger.error('Failed to purge safebrowsing storage', e);
         }
     }
 
@@ -71,7 +101,7 @@ export class SbCache {
      * Saves stringified safebrowsing {@link this.cache} entries in {@link browserStorage}.
      */
     public async save(): Promise<void> {
-        await browserStorage.set(SB_LRU_CACHE_KEY, JSON.stringify(this.cache.toJSON()));
+        await browserStorage.set(SB_LRU_CACHE_KEY, JSON.stringify(this.cache.dump()));
     }
 
     /**
@@ -81,14 +111,7 @@ export class SbCache {
      * @returns Cache value.
      */
     public get(key: string): string | undefined {
-        const data = this.cache.get(key);
-
-        if (typeof data?.expires === 'number' && data.expires < Date.now()) {
-            this.cache.delete(key);
-            return undefined;
-        }
-
-        return data?.list;
+        return this.cache.get(key);
     }
 
     /**
@@ -99,13 +122,17 @@ export class SbCache {
      * @returns Updated {@link this.cache} instance.
      */
     public async set(key: string, list: string): Promise<SbCache> {
-        const data: SafebrowsingCacheData = { list };
+        const data: SafebrowsingCacheData = list;
+
+        let options;
 
         if (list !== SbCache.SB_ALLOW_LIST) {
-            data.expires = Date.now() + SbCache.CACHE_TTL_MS;
+            options = {
+                ttl: SbCache.CACHE_TTL_MS,
+            };
         }
 
-        this.cache.set(key, data);
+        this.cache.set(key, data, options);
 
         if (this.cache.size % 20 === 0) {
             await this.save();
@@ -125,4 +152,4 @@ export class SbCache {
 
 export const sbCache = new SbCache();
 
-export const sbRequestCache = new LRUMap(1000);
+export const sbRequestCache = new LRUCache({ max: 1000 });
