@@ -22,8 +22,8 @@ import postcssNested from 'postcss-nested';
 
 export default {
     plugins: [
-        postcssPresetEnv({ stage: 3, features: { 'nesting-rules': true } }),
-        postcssSvg,
-        postcssNested,
+        postcssPresetEnv({ stage: 3 }),
+        postcssSvg(),
+        postcssNested(),
     ],
 };
