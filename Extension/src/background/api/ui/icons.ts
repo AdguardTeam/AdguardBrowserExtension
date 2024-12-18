@@ -19,8 +19,8 @@ import browser from 'webextension-polyfill';
 
 import { RulesLimitsService } from 'rules-limits-service';
 
-import { SettingOption } from '../../schema';
 import { settingsStorage } from '../../storages';
+import { SettingOption } from '../../schema';
 import { getIconImageData } from '../../../common/api/extension';
 import type { IconData, IconVariants } from '../../storages';
 import { logger } from '../../../common/logger';

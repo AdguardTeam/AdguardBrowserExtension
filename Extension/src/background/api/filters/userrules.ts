@@ -45,10 +45,12 @@ export class UserRulesApi {
      */
     public static async init(isInstall: boolean): Promise<void> {
         try {
-            const userRules = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId, !isInstall);
-
-            if (!userRules) {
+            // Check if user filter is present in the storage to avoid errors.
+            if (!(await FiltersStorage.has(AntiBannerFiltersId.UserFilterId))) {
                 await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
+            } else {
+                // In this case zod will validate the data.
+                await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
             }
         } catch (e) {
             if (!isInstall) {

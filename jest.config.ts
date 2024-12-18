@@ -18,6 +18,7 @@
 import type { Config } from 'jest';
 import { pathsToModuleNameMapper } from 'ts-jest';
 import escapeStringRegexp from 'escape-string-regexp';
+import * as dependencyPath from '@pnpm/dependency-path';
 
 import { MANIFEST_ENV } from './tools/constants';
 
@@ -27,13 +28,39 @@ console.log(`Run test with manifest version (MANIFEST_ENV) ${MANIFEST_ENV}.\n`);
 // eslint-disable-next-line import/no-dynamic-require
 const TsConfigWithManifestDependantTypes = require(`./tsconfig.with_types_mv${MANIFEST_ENV}.json`);
 
-const transformedModules = [
+/**
+ * Helper function that adds special pnpm filenames to the list of modules.
+ * This is necessary because some modules may be placed within the `.pnpm` directory,
+ * and in such cases, pnpm changes their names, e.g., `@adguard/tsurlfilter` to `.pnpm/@adguard+tsurlfilter@x.y.z`.
+ * If we want to ignore certain modules in the transform step, we need to add their pnpm names to the list.
+ * This function does that automatically.
+ *
+ * @param modules List of modules.
+ *
+ * @returns List of modules extended with pnpm names.
+ */
+const extendWithSpecialPnpmFileNames = (modules: string[]): string[] => {
+    const result: string[] = [];
+
+    modules.forEach((module) => {
+        result.push(module);
+
+        const moduleFileName = dependencyPath.depPathToFilename(module, 120);
+        if (module !== moduleFileName) {
+            result.push(moduleFileName);
+        }
+    });
+
+    return result;
+};
+
+const transformedModules = extendWithSpecialPnpmFileNames([
     '@adguard/tsurlfilter',
     '@adguard/tswebextension',
     '@adguard/filters-downloader',
     'lodash-es',
     'nanoid',
-];
+]);
 
 const config: Config = {
     verbose: true,

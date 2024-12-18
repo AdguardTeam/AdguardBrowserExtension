@@ -33,9 +33,14 @@
     </picture>
 </p>
 
-AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
+AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads
+and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers,
+but prevent web sites from building your shadow profile.
+Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source.
+You can learn more about [the difference](https://adguard.com/compare.html) here.
 
-> AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
+> AdGuard does not collect any information about you, and does not participate in any acceptable ads program.
+> The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
     - [Chrome and Chromium-based browsers](#installation-chrome)

@@ -249,4 +249,16 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
         const storage = await this.getStorage();
         return storage.keys();
     }
+
+    /**
+     * Check if a key exists in the storage.
+     *
+     * @param key The key to check.
+     *
+     * @returns True if the key exists, false otherwise.
+     */
+    public async has(key: string): Promise<boolean> {
+        const storage = await this.getStorage();
+        return storage.has(key);
+    }
 }
