@@ -5,41 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased <!-- v5.0 -->
+## Unreleased <!-- release/v5.2 -->
 
 ### Added
 
 - Display dnr-rulesets version on About tab [#3054].
 - Ability to search tabs by domain in the Filtering log [#3028].
 - Ability to add filters from Google Drive [#2908].
-- Unsafe dynamic rules limit for MV3.
+
+### Changed
+
+- Updated [@adguard/agtree] to v2.2.0.
+
+### Fixed
+
+- Update extension icon on engine update.
+- Closing rule limits warning updates the extension icon for MV3.
+- Blocked counter on the popup updates for blocked requests from other tabs [#3050].
+- `$popup,third-party` modifiers cause document blocking [#3012].
 
 [#3054]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3054
+[#3050]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3050
 [#3028]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3028
+[#3012]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3012
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
+
+## Unreleased <!-- v5.0 -->
+
+### Added
+
+- Unsafe dynamic rules limit for MV3.
 
 ### Changed
 
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
-- Updated [@adguard/agtree] to v2.2.0.
 
 ### Fixed
 
-- Update extension icon on engine update
-- Closing rule limits warning updates the extension icon for MV3.
 - Handling missing children data in the deserializer for certain nodes.
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
-- Blocked counter on the popup updates for blocked requests from other tabs [#3050].
-- `$popup,third-party` modifiers cause document blocking [#3012].
 
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 [#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
-[#3050]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3050
-[#3012]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3012
 
 ## [Unreleased] <!-- master -->
 
