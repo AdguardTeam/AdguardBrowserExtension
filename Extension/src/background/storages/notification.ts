@@ -95,7 +95,7 @@ const christmas24Notification: PromoNotification = {
         },
         de: {
             title: 'Weihnachten bei AdGuard',
-            btn: 'Öffnen',
+            btn: 'Geschenk öffnen',
         },
         ru: {
             title: 'Новый год в AdGuard',
@@ -103,7 +103,7 @@ const christmas24Notification: PromoNotification = {
         },
         es: {
             title: 'Navidad en AdGuard',
-            btn: 'Abrir',
+            btn: 'Ven a ver',
         },
         es_419: {
             title: 'Navidad en AdGuard',
@@ -111,11 +111,11 @@ const christmas24Notification: PromoNotification = {
         },
         pt_pt: {
             title: 'É Natal no AdGuard',
-            btn: 'Abrir',
+            btn: 'Vem ver',
         },
         pt_br: {
             title: 'É Natal no AdGuard',
-            btn: 'Abrir',
+            btn: 'Vem ver',
         },
         zh_cn: {
             title: 'AdGuard Christmas',
