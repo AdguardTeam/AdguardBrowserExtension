@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased <!-- release/v5.2 -->
+## Unreleased <!-- version 5.2 -->
 
 ### Added
 
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3012]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3012
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 
-## Unreleased <!-- v5.0 -->
+## Unreleased <!-- version 5.0 -->
 
 ### Added
 
