@@ -1,10 +1,18 @@
-! Checksum: W+f4q6Yj1AtyT/qD1EV8mg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1728038216-3600.patch
+! Checksum: DUOHof6qzpO6e5A+SEb7sw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1732045098-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.9.58
-! TimeUpdated: 2024-10-04T10:33:33+00:00
+! Version: 2.0.9.85
+! TimeUpdated: 2024-11-19T19:34:58+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=_sgm_campaign
+$removeparam=_sgm_term
+$removeparam=_sgm_pinned
+$removeparam=ebisOther1
+$removeparam=ebisOther2
+$removeparam=ebisOther3
+$removeparam=ebisOther4
+$removeparam=ebisOther5
 $removeparam=bemobdata
 $removeparam=_bhlid
 $removeparam=_bdadid
@@ -240,6 +248,56 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||edge.curalate.com/v1/media/$xmlhttprequest,removeparam=appId
+||edge.curalate.com/v1/media/$xmlhttprequest,removeparam=fpcuid
+||edge.curalate.com/v1/media/$xmlhttprequest,removeparam=rid
+||edge.curalate.com/v1/img/$image,removeparam=spatialTags
+||action.metaffiliation.com$removeparam=argsite
+||rentio.jp^$removeparam=click_from
+||readyfor.jp^$removeparam=sns_share_token
+||newspicks.com^$removeparam=a
+||newspicks.com^$removeparam=adid
+||newspicks.com^$removeparam=ref
+||newspicks.com^$removeparam=block
+||wsj.com^$removeparam=mod
+||fanatical.com^$removeparam=aff_track
+||fanatical.com^$removeparam=cj_pid
+||fanatical.com^$removeparam=cj_aid
+||fanatical.com^$removeparam=CJEVENT
+||tagomago.pl^$removeparam=subid
+||tagomago.pl^$removeparam=subid1
+||tagomago.pl^$removeparam=variant
+||linkbux.com/track/$removeparam=uid
+||trip.com^$removeparam=trip_sub1
+||trip.com^$removeparam=allianceid
+||dls.igg.com^$removeparam=media_source
+||dls.igg.com^$removeparam=campaign_name
+||health.tvbs.com.tw^$removeparam=from
+||dvdfab.cn^$removeparam=trackid
+||puma.com^$removeparam=sc_src
+||puma.com^$removeparam=sc_lid
+||puma.com^$removeparam=sc_uid
+||puma.com^$removeparam=sc_llid
+||puma.com^$removeparam=sc_eh
+||reddit.com^$removeparam=/deep_link|3p/
+||reddit.com^$removeparam=post_index
+||reddit.com^$removeparam=post_fullname
+||reddit.com^$removeparam=share_id
+||reddit.com^$removeparam=correlation_id
+||reddit.com^$removeparam=ref_campaign
+||reddit.com^$removeparam=ref_source
+||reddit.com^$removeparam=ref
+!+ PLATFORM(ext_ff)
+||reddit.com^$removeparam=rdt
+||boosty.to^$removeparam=_1ld
+||boosty.to^$removeparam=_1lp
+||boosty.to^$removeparam=from
+||avansas.com^$removeparam=sc_src
+||avansas.com^$removeparam=sc_llid
+||avansas.com^$removeparam=sc_lid
+||avansas.com^$removeparam=sc_uid
+||avansas.com^$removeparam=sc_customer
+||keepstreams.jp/thanks-for-using-$removeparam
 ||kickstarter.com$removeparam=ref
 ||kickstarter.com/projects$removeparam=event
 ||kickstarter.com/projects$removeparam=term
@@ -660,18 +718,22 @@ mailchimp.com$removeparam=amp%3Butm_medium
 mailchimp.com$removeparam=amp%3Butm_campaign
 mailchimp.com$removeparam=amp%3Baid
 mailchimp.com$removeparam=amp%3Bafl
+||wetransfer.com^$removeparam=t_lsid
+||wetransfer.com^$removeparam=t_rid
+||wetransfer.com^$removeparam=t_exp
+||wetransfer.com^$removeparam=t_ts
 ||wetransfer.com^$removeparam=trk
 ||wetransfer.com^$removeparam=amp;utm_campaign
 ||wetransfer.com^$removeparam=amp;utm_medium
 ||wetransfer.com^$removeparam=amp;utm_source
-||douyin.com^$removeparam=extra_params
-||douyin.com^$removeparam=previous_page
-||bandcamp.com^$removeparam=from
 ||wetransfer.zendesk.com^$removeparam=amp%3Btrk
 ||wetransfer.zendesk.com^$removeparam=amp%3Btoken
 ||wetransfer.zendesk.com^$removeparam=amp%3Butm_campaign
 ||wetransfer.zendesk.com^$removeparam=amp%3Butm_source
 ||wetransfer.zendesk.com^$removeparam=amp%3Butm_medium
+||douyin.com^$removeparam=extra_params
+||douyin.com^$removeparam=previous_page
+||bandcamp.com^$removeparam=from
 ||dvdfab.org^$removeparam=trackid
 ||dvdfab.org^$removeparam=c_ad
 ||dvdfab.org^$removeparam=c_app
@@ -754,6 +816,7 @@ mailchimp.com$removeparam=amp%3Bafl
 ||chemistwarehouse.com.au^$removeparam=ranEAID
 ||chemistwarehouse.com.au^$removeparam=ranSiteID
 ||playstation.com$removeparam=emcid
+||epicgames.com^$removeparam=epic_gameId
 ||epicgames.com^$removeparam=epic_affiliate
 ||gamersgate.com^$removeparam=caff
 ||humblebundle.com^$removeparam=partner
@@ -874,8 +937,9 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||realestate.yahoo.co.jp^$removeparam=sc_out
 ||glami.cz^$removeparam=/ga[ct]id/
 ||open.spotify.com^$removeparam=referral
+||open.spotify.com^$removeparam=si
 ||skt.sh/common/share/bridge?$removeparam=referer
-||login.afreecatv.com^$removeparam=szFrom
+||login.sooplive.co.kr^$removeparam=szFrom
 ||moffme.com^$removeparam=source
 ||moffme.com^$removeparam=medium
 ||moffme.com^$removeparam=campaign
@@ -884,6 +948,7 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||click.speee-ad.jp^$removeparam=sess_id
 ||click.speee-ad.jp^$removeparam=slot_index
 ||click.speee-ad.jp^$removeparam=v
+||tiktok.com$removeparam=referer_video_id
 ||tiktok.com^$removeparam=embed_source
 ||tiktok.com^$removeparam=referer_url
 ||tiktok.com^$removeparam=refer
@@ -1258,7 +1323,6 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||dmm.co.jp^$removeparam=i3_ref
 ||imdb.com^$removeparam=ref_
 ||livedoor.biz^$removeparam=ref
-||reddit.com^$removeparam=post_fullname
 ||adj.st^$removeparam=CollectionId
 ||adj.st^$removeparam=adjust_deeplink
 ||adj.st^$removeparam=pt
@@ -1287,11 +1351,6 @@ $removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|
 ||web.vstat.info^$removeparam=user_agent
 ||start.pm.by^$removeparam=adtag
 ||redhotpawn.com^$removeparam=cbqsid
-||reddit.com^$removeparam=share_id
-||reddit.com^$removeparam=correlation_id
-||reddit.com^$removeparam=ref_campaign
-||reddit.com^$removeparam=ref_source
-||reddit.com^$removeparam=ref
 ||trendyol.com^$removeparam=tyutm_source
 ||trendyol.com^$removeparam=tyutm_medium
 ||trendyol.com^$removeparam=tyutm_campaign
@@ -1437,6 +1496,9 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ://yandex.$removeparam=clid
 ://yandex.$removeparam=source
 ||docs.yandex.$removeparam=uid
+||amc.yandex.ru^$removeparam=cmn_id
+||amc.yandex.ru^$removeparam=ad_type=banner
+||amc.yandex.ru^$removeparam=crv_id
 ||www.baidu.com^$removeparam=rsv_pq
 ||www.baidu.com^$removeparam=rsv_t
 ||www.baidu.com/link?url=$removeparam=eqid
@@ -1462,6 +1524,7 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||google.*/search$removeparam=ei
 ||google.*/search$removeparam=gs_lcp
 ||google.*/search$removeparam=gs_lcrp
+||google.$removeparam=subid
 ||www.ebay.$removeparam=ssspo
 ||www.ebay.$removeparam=sssrc
 ||www.ebay.$removeparam=ssuid
@@ -1565,7 +1628,6 @@ $removeparam=ns_linkname,domain=bbc.com|bbc.co.uk
 $removeparam=ns_fee,domain=bbc.com|bbc.co.uk
 ||office.com^$removeparam=ocid
 $removeparam=refsrc,domain=twitter.com|x.com
-||x.com^$removeparam=ref_src
 $removeparam=ref_src,domain=twitter.com|x.com
 $removeparam=ref_url,domain=twitter.com|x.com
 $removeparam=cxt,domain=twitter.com|x.com
@@ -1687,6 +1749,7 @@ $removeparam=epi,domain=microsoft.com|xbox.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||3dnews.ru/*?utm_source=^$removeparam=utm_source
 @@||gaugau.futabanet.jp^$removeparam=utm_content
 @@||lifehacker.ru^$removeparam=erid
 @@||transfernow.net/*/*?utm_source=$removeparam=utm_source
