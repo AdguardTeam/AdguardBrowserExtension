@@ -5,17 +5,25 @@ plan:
   key: BETESTSPECS
   name: browser extension - test
 variables:
-  dockerNode: adguard/extension-builder:18.19.0--0.1.3
+  # playwright is needed for integration tests after build
+  dockerNode: adguard/playwright-runner:1.48.2--0
 
 stages:
-  - Test:
-      manual: 'false'
-      final: 'false'
+  - Test build:
+      manual: false
+      final: false
       jobs:
-        - Test
+        - Test build
+  - Tests:
+      manual: false
+      final: false
+      jobs:
+        - Lint
+        - Unit tests
+        - Integration tests
 
-Test:
-  key: TEST
+Test build:
+  key: TESTBUILD
   other:
     clean-working-dir: true
   docker:
@@ -24,7 +32,7 @@ Test:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
-        force-clean-build: 'true'
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -33,26 +41,29 @@ Test:
             set -e
             ls -la
 
+            # Fix mixed logs
+            exec 2>&1
+
             # Set cache directory
             pnpm config set store-dir ${bamboo.cachePnpm}
 
             pnpm install ${bamboo.varsPnpm}
-            
-            pnpm lint
-            pnpm test
+
+            # Create dev build
             pnpm dev
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
-            # Copy all artifacts to the artifacts directory
-            cp build/dev/build.txt artifacts/
-            cp build/dev/chrome.zip artifacts/
-            cp build/dev/chrome-mv3.zip artifacts/
-            cp build/dev/edge.zip artifacts/
-            cp build/dev/firefox-amo.zip artifacts/
-            cp build/dev/firefox-standalone.zip artifacts/
-            cp build/dev/opera.zip artifacts/
+            # Move all artifacts to the artifacts directory.
+            mv build/dev/build.txt artifacts/
+            # Add postfix to all zip files for easier identification target env.
+            mv build/dev/chrome.zip artifacts/chrome-dev.zip
+            mv build/dev/chrome-mv3.zip artifacts/chrome-mv3-dev.zip
+            mv build/dev/edge.zip artifacts/edge-dev.zip
+            mv build/dev/firefox-amo.zip artifacts/firefox-amo-dev.zip
+            mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
+            mv build/dev/opera.zip artifacts/opera-dev.zip
   final-tasks:
     - script:
         interpreter: SHELL
@@ -74,30 +85,165 @@ Test:
       location: artifacts
       pattern: build.txt
       required: true
-    - name: chrome.zip
+    - name: chrome-dev.zip
       location: artifacts
-      pattern: chrome.zip
+      pattern: chrome-dev.zip
       required: true
-    - name: chrome-mv3.zip
+    - name: chrome-mv3-dev.zip
       location: artifacts
-      pattern: chrome-mv3.zip
+      pattern: chrome-mv3-dev.zip
       required: true
-    - name: edge.zip
+      # Mark it shared to download from stages for tests
+      shared: true
+    - name: edge-dev.zip
       location: artifacts
-      pattern: edge.zip
+      pattern: edge-dev.zip
       required: true
-    - name: firefox-amo.zip
+    - name: firefox-amo-dev.zip
       location: artifacts
-      pattern: firefox-amo.zip
+      pattern: firefox-amo-dev.zip
       required: true
-    - name: firefox-standalone.zip
+    - name: firefox-standalone-dev.zip
       location: artifacts
-      pattern: firefox-standalone.zip
+      pattern: firefox-standalone-dev.zip
       required: true
-    - name: opera.zip
+    - name: opera-dev.zip
       location: artifacts
-      pattern: opera.zip
+      pattern: opera-dev.zip
       required: true
+  requirements:
+    - adg-docker: 'true'
+
+Lint:
+  key: LINT
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            # Fix mixed logs
+            exec 2>&1
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+
+            pnpm lint
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
+            rm -rf node_modules build
+            echo "Size after cleanup:" && du -h | tail -n 1
+  requirements:
+    - adg-docker: 'true'
+
+Unit tests:
+  key: UNITTESTS
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            # Fix mixed logs
+            exec 2>&1
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+
+            pnpm test
+  final-tasks:
+    - test-parser:
+        type: junit
+        test-results: 'tests-reports/unit-tests.xml'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
+            rm -rf node_modules build
+            echo "Size after cleanup:" && du -h | tail -n 1
+  requirements:
+    - adg-docker: 'true'
+
+Integration tests:
+  key: INTEGRATIONTESTS
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - artifact-download:
+        artifacts:
+          - name: chrome-mv3-dev.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            # Call the common script
+            ./bamboo-specs/scripts/integration-tests.sh dev
+  final-tasks:
+    - test-parser:
+        type: junit
+        test-results: 'tests-reports/integration-tests-*.xml'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
+            rm -rf node_modules build
+            echo "Size after cleanup:" && du -h | tail -n 1
   requirements:
     - adg-docker: 'true'
 
@@ -106,7 +252,7 @@ branches:
   delete:
     after-deleted-days: '1'
     after-inactive-days: '5'
-  link-to-jira: 'true'
+  link-to-jira: true
 
 notifications: []
 labels: []

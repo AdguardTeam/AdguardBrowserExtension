@@ -113,6 +113,17 @@ export class BrowserStorage implements ExtendedStorageInterface<string, unknown,
     }
 
     /**
+     * Checks if the storage has a key.
+     *
+     * @param key The key to check.
+     *
+     * @returns True if the key exists, false otherwise.
+     */
+    public async has(key: string): Promise<boolean> {
+        return this.storage.get(key).then((data) => key in data);
+    }
+
+    /**
      * Clears storage.
      */
     public async clear(): Promise<void> {

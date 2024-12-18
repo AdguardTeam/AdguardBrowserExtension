@@ -31,7 +31,7 @@ import {
     SavingFSMState,
 } from '../../common/components/Editor/savingFSM';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../common/constants';
-import { sleep } from '../../helpers';
+import { sleep } from '../../../../../tools/common/sleep';
 import { messenger } from '../../services/messenger';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import {

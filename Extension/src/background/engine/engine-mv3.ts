@@ -24,7 +24,6 @@ import {
     Configuration,
     TsWebExtension,
     type MessagesHandlerMV3,
-    type PreprocessedFilterList,
     ConfigurationResult,
 } from '@adguard/tswebextension/mv3';
 
@@ -46,6 +45,7 @@ import {
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
 import { FiltersStorage } from '../storages';
+import { emptyPreprocessedFilterList } from '../../common/constants';
 import { SettingOption } from '../schema/settings/main';
 
 import { TsWebExtensionEngine } from './interface';
@@ -53,17 +53,6 @@ import { TsWebExtensionEngine } from './interface';
 // Because this file is already MV3 replacement module, we can import directly
 // from mv3 tswebextension without using aliases.
 export type { Message as EngineMessage } from '@adguard/tswebextension/mv3';
-
-/**
- * This is just a syntax sugar for setting default value if we not have
- * preprocessed list for user rules or for custom filters.
- */
-const emptyPreprocessedFilterList: PreprocessedFilterList = {
-    filterList: [],
-    sourceMap: {},
-    rawFilterList: '',
-    conversionMap: {},
-};
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -86,6 +75,16 @@ export class Engine implements TsWebExtensionEngine {
         this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`);
 
         this.handleMessage = this.api.getMessageHandler();
+
+        // Expose for integration tests.
+        // eslint-disable-next-line no-restricted-globals
+        Object.assign(self, {
+            adguard: {
+                // eslint-disable-next-line no-restricted-globals
+                ...self.adguard,
+                configure: this.api.configure.bind(this.api),
+            },
+        });
     }
 
     debounceUpdate = debounce(this.update.bind(this), Engine.UPDATE_TIMEOUT_MS);
