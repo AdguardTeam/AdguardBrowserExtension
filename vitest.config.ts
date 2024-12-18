@@ -46,8 +46,6 @@ export default defineConfig({
         environment: 'jsdom', // Enables jsdom environment for tests.
         environmentOptions: {
             jsdom: {
-                // FIXME: Insert minimal supported browser version here via
-                // 'user-agents' package.
                 // eslint-disable-next-line max-len
                 userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 YaBrowser/22.11.0.2468 Yowser/2.5 Safari/537.36',
             },
