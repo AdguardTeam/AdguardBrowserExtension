@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3012]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3012
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 
-## Unreleased <!-- version 5.0 -->
+## Unreleased <!-- version 5.1 -->
 
 ### Added
 
