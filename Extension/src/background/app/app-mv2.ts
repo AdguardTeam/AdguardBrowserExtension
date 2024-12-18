@@ -92,8 +92,15 @@ const trackInitTimesForDebugging = async (): Promise<void> => {
         || LOGGING_DISABLED_BY_DEFAULT;
 
     if (isLoggingEnabled) {
-        const loggedInitTimes = (await browser.storage.local.get(INIT_TIMES_STORAGE_KEY))[INIT_TIMES_STORAGE_KEY] || [];
-        const currentLocalTime = new Date().toLocaleString(); // Current time in local format
+        const rawLoggedInitTimes = (await browser.storage.local.get(INIT_TIMES_STORAGE_KEY))[INIT_TIMES_STORAGE_KEY];
+
+        const loggedInitTimes = Array.isArray(rawLoggedInitTimes)
+            ? rawLoggedInitTimes
+            : [];
+
+        // Current time in local format
+        const currentLocalTime = new Date().toLocaleString();
+
         await browser.storage.local.set({ [INIT_TIMES_STORAGE_KEY]: [...loggedInitTimes, currentLocalTime] });
     }
 };
