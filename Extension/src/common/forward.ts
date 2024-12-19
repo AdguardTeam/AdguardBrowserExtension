@@ -79,7 +79,7 @@ export const enum ForwardAction {
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',
     FilteringLogAssumedRule = 'filtering_log_assumed_rule',
-    BlackFriday24 = 'black_friday_24',
+    Christmas24 = 'christmas_24',
 }
 
 export const enum ForwardFrom {
