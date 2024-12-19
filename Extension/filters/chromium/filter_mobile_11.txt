@@ -1,9 +1,9 @@
-! Checksum: AIw9MU3U1Ux89/Iwck7VQg
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1734439185-3600.patch
+! Checksum: x1CIdGctiSRUVeuphUvcig
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1734611890-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.56.74
-! TimeUpdated: 2024-12-17T12:35:41+00:00
+! Version: 2.0.56.82
+! TimeUpdated: 2024-12-19T12:34:18+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1103,7 +1103,6 @@ m.tnaflix.com#%#//scriptlet("set-constant", "organicPop", "undefined")
 m.drtuber.com#%#//scriptlet("abort-on-property-read", "mobileAdvPop")
 pornhd.com#%#//scriptlet("abort-on-property-read", "popUnderUrl")
 tube8.com#%#//scriptlet('trusted-click-element', 'a[href].continue-to-video')
-youjizz.com#%#AG_defineProperty('config.ads.mobilePopunder', {value: false});
 pulzo.com#$#.container-headband-new { margin-top: 0 !important; }
 ppe.pl#$#a.opera-bar { display: none !important; }
 ppe.pl#$#a.opera-bar + .navbar-wrapper { top: 0 !important; }
@@ -1597,6 +1596,11 @@ kyun2-girls.com,hapiee.com,2ch-c.net,4p.de,www-cbc-ca.cdn.ampproject.org,m.gebor
 chip.de,gamesworld.de,fnn.jp##.Ad
 genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
+vc.ru##.content-banner
+gentside.com,maxisciences.com###core-ads-footer-web
+oggi.jp##section > div.textwidget:has(> div[style] > div[id^="div-gpt-ad-"])
+gamewith.jp##.c-rectangle-ad-placeholder
+futuro.cl##.ad-mob
 c5n.com##.free-banner-wrapper
 c5n.com##div[id^="b_square_"]
 m.sports.ru##.columns__main-column > div.news-layout__frame:has(> div.ad-slot)
@@ -2661,7 +2665,7 @@ bunshun.jp##.sp_article_inarticle
 bunshun.jp##.ad-banner-space
 ameblo.jp##aside[data-amb-auto-ad-style="wrapper"]
 happymag.tv###site-leader
-20minutos.es,autobild.es##div[class^="ad-catfish"]
+hobbyconsolas.com,20minutos.es,autobild.es##div[class^="ad-catfish"]
 mb.jorudan.co.jp##.area > div[height="50"][style="height:50px !important;"]
 gametechwiki.com##.mw-body-content > p
 giga.de###content-block-01F9V7JV1FJ57J4N0HJZQ9MMH7
@@ -3334,7 +3338,7 @@ game8.jp###g8-ad-placement-sp_under_archive_ab
 game8.jp##.ad-skyflag-wrapper
 trashbox.ru##.div_aj_top4_as
 hentaihaven.xxx##.adb
-brow2ing.com##.free-area
+pokemongo-kouryakumatome.net,brow2ing.com##.free-area
 rbc.ru##div[data-role="fox-tail"]
 rbc.ru##.fox-fallback
 news.gamebase.com.tw##.mobileAD

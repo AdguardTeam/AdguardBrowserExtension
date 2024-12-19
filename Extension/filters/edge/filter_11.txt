@@ -1,9 +1,9 @@
-! Checksum: B/u+sHpyZbqwddzbBujaog
-! Diff-Path: ../patches/11/11-s-1734439190-3600.patch
+! Checksum: BZeq/JPKcVPrlWE7aIJGdQ
+! Diff-Path: ../patches/11/11-s-1734611893-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.56.74
-! TimeUpdated: 2024-12-17T12:35:41+00:00
+! Version: 2.0.56.82
+! TimeUpdated: 2024-12-19T12:34:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1393,9 +1393,6 @@ m.drtuber.com#%#//scriptlet("abort-on-property-read", "mobileAdvPop")
 pornhd.com#%#//scriptlet("abort-on-property-read", "popUnderUrl")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/38730
 tube8.com#%#//scriptlet('trusted-click-element', 'a[href].continue-to-video')
-! https://github.com/AdguardTeam/AdguardFilters/issues/9324
-! TODO: Change AG_defineProperty to scripltet when this issue will be fixed - https://github.com/AdguardTeam/Scriptlets/issues/65
-youjizz.com#%#AG_defineProperty('config.ads.mobilePopunder', {value: false});
 !-------------------
 !-------CSS---------
 !-------------------
@@ -2421,6 +2418,11 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+vc.ru##.content-banner
+gentside.com,maxisciences.com###core-ads-footer-web
+oggi.jp##section > div.textwidget:has(> div[style] > div[id^="div-gpt-ad-"])
+gamewith.jp##.c-rectangle-ad-placeholder
+futuro.cl##.ad-mob
 c5n.com##.free-banner-wrapper
 c5n.com##div[id^="b_square_"]
 m.sports.ru##.columns__main-column > div.news-layout__frame:has(> div.ad-slot)
@@ -3485,7 +3487,7 @@ bunshun.jp##.sp_article_inarticle
 bunshun.jp##.ad-banner-space
 ameblo.jp##aside[data-amb-auto-ad-style="wrapper"]
 happymag.tv###site-leader
-20minutos.es,autobild.es##div[class^="ad-catfish"]
+hobbyconsolas.com,20minutos.es,autobild.es##div[class^="ad-catfish"]
 mb.jorudan.co.jp##.area > div[height="50"][style="height:50px !important;"]
 gametechwiki.com##.mw-body-content > p
 giga.de###content-block-01F9V7JV1FJ57J4N0HJZQ9MMH7
@@ -4158,7 +4160,7 @@ game8.jp###g8-ad-placement-sp_under_archive_ab
 game8.jp##.ad-skyflag-wrapper
 trashbox.ru##.div_aj_top4_as
 hentaihaven.xxx##.adb
-brow2ing.com##.free-area
+pokemongo-kouryakumatome.net,brow2ing.com##.free-area
 rbc.ru##div[data-role="fox-tail"]
 rbc.ru##.fox-fallback
 news.gamebase.com.tw##.mobileAD

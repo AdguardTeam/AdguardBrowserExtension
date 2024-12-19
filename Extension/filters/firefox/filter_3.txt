@@ -1,9 +1,9 @@
-! Checksum: pGWqxzcsZzD1HHkl74PkYw
-! Diff-Path: ../patches/3/3-s-1734435704-3600.patch
+! Checksum: aGKqHKnlkPTB6SNFV7aJBA
+! Diff-Path: ../patches/3/3-s-1734604761-3600.patch
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.77.68
-! TimeUpdated: 2024-12-17T11:35:48+00:00
+! Version: 2.0.77.72
+! TimeUpdated: 2024-12-19T10:34:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -599,6 +599,9 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !
 !
 !
+||bt.dns-finder.com^
+||btloader.com^
+||glamipixel.com^
 ||nocodelytics.com^$third-party
 ||logs.adplay.ru^
 ||stat.fly.codes^
@@ -30948,7 +30951,6 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ||data-3c91d46d9d.weka-fachmedien.de^
 ||data-3ca7289259.rtlradio.de^
 ||data-3cb5515026.harpersbazaar.de^
-||data-3cd8fb3825.kicker.de^
 ||data-3d30b366ad.cavallo.de^
 ||data-3d30b366ad.elektrobike-online.com^
 ||data-3d30b366ad.mountainbike-magazin.de^
@@ -32535,7 +32537,6 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ||data-e623de9fda.finanzen100.de^
 ||data-e623de9fda.focus.de^
 ||data-e627e4d475.filmstarts.de^
-||data-e69b3d32a9.kicker.de^
 ||data-e723f0d7d1.stylebook.de^
 ||data-e7308988a6.freundin.de^
 ||data-e77e5e75f4.apps.iocnt.de^
@@ -108357,6 +108358,10 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||azure.com/api/metric|
+||azure.com*/api/Telemetry|
+||azure.com/api/extensiontelemetry|
+||vid.media.cm/m.js
 ||voicendata.com/static/js/*_gtag_publisher.js
 ||esports-world.jp/js/banner.event.js
 ||miniso.com.tr/*/sendEventV2|
@@ -113806,6 +113811,10 @@ $cookie=bf_visit
 ! Bad:  ||monerominer.rocks^$third-party (should be in adservers.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/194647
+||titulky.com^$cookie=adbwshown
+||titulky.com^$cookie=udid
+||titulky.com^$cookie=sid
 ! dropbox.com
 ||dropbox.com^$cookie=dbx_js_analytics_id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194354

@@ -1,9 +1,9 @@
-! Checksum: NaO+Ufkj5IesT95IW7ACJg
-! Diff-Path: ../patches/1/1-s-1734370801-3600.patch
+! Checksum: /Pth11LxfDVvNdUfxZXydw
+! Diff-Path: ../patches/1/1-s-1734608502-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.96.11
-! TimeUpdated: 2024-12-16T17:31:05+00:00
+! Version: 2.0.96.17
+! TimeUpdated: 2024-12-19T11:31:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -5194,6 +5194,9 @@ dzen.ru#?#div[class*="_yandexSearchContainer-"] ~ div[class][id] > div[id] > div
 [$path=/^\/$|\/\?/]dzen.ru###ya-dist
 dzen.ru##div[class^="dzen-desktop__widgetContainer-"] div[class*=" dzen-desktop__"] > div[style^="padding-top:"]
 ://dzen.ru^$cookie=rec-tech
+! Under the search
+dzen.ru##div[class*="--top-micro-app__"] > div[style$="position: relative; height: 0;"] > div[style^="margin-top:"] > div:not([style])
+dzen.ru#$#div[class*="--top-micro-app__"] > div[style$="position: relative; height: 0;"] { padding-top: 0 !important; }
 ! Banners in the feed
 dzen.ru##.dzen-feed__item article[aria-label="Карточка этажа"] ~ article:not([aria-label="Карточка этажа"])
 !
@@ -5784,6 +5787,7 @@ yandex.*#?#div[class^="layout__top"] > div[class^="layout_"]:has(> div[style] > 
 ||yandex.ru/portal/ntp/banner$redirect=nooptext
 !
 ! Kinopoisk
+www.kinopoisk.ru#%#//scriptlet('set-constant', 'Object.prototype.renderTo', 'undefined')
 www.kinopoisk.ru##.underheader-superbanner-wrapper
 www.kinopoisk.ru##div[class*="__AMNhR styles_"]
 www.kinopoisk.ru##div[id*="direct_R-A-"]
@@ -7418,7 +7422,7 @@ theblueprint.ru,hellomagrussia.ru,unian.ua,uaportal.com,nebogach.ru,text.ru,tvra
 ! ##.advert
 ufacitynews.ru,sevastopol.su,zn.ua,pravo.ru,lubertsyriamo.ru,kommersant.ru,dvnovosti.ru,kubnews.ru,turbopages.org,chernozem.info,flashgames.ru,footballreview.ru,inforesist.org,msgforum.ru,newsland.com,province.ru,tenews.org.ua,tltorrent.ru,zab.ru##.advert
 ! ##div[id^="unit_"]
-ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,sobesednik.com,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
+hightech.fm,ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,sobesednik.com,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
 ! ##div[id^="adfox_"]
 mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,gorodche.ru,smartpress.by,raenza.ru,eadaily.com,zakon.kz,svpressa.ru,udf.name,udf.by,baby.ru,pikabu.ru,thequestion.ru##div[id^="adfox_"]
 !
@@ -7725,6 +7729,7 @@ ivanovonews.ru,gorodn.ru,bits.media,devyatka.ru,gazeta-n1.ru,gorod48.ru,hi-fi.ru
 !
 !
 !
+tophonetics.com##.fuse-wrapper
 disgustingmen.com##.promo_sidebar
 disgustingmen.com##.widget-area > aside.widget:has(> .custom-html-widget:empty)
 freephotoshop.online##td[height="305"][width="100%"]
@@ -8004,7 +8009,7 @@ sez.vporno.video##.hdsd
 citywalls.ru##.cssAdvertBlock1
 cian.ru##div[data-name="AdfoxLayout"]
 cian.ru##section[data-testid="adfox_listing_tgb_wrapper"]
-cian.ru##div[id^="adfox_"]
+fb.ru,cian.ru##div[id^="adfox_"]
 lumpics.ru#?#article div[class^="block"]:has(> div[class^="flat_"])
 m-strana.ru##.blog_right_ad
 m-strana.ru##.sidebar-module:has(div[id^="adfox_"])
@@ -18456,14 +18461,14 @@ youla.ru##.product_item--ad
 vfokuse.mail.ru##a[class^="rb-"][class*="branding"]
 !
 ! VK
-vk.com,vk.ru#?##feed_rows > div.feed_row:has(span.PostHeaderSubtitle__item:contains(/Реклама в|Реклама от/))
+vk.com,vk.ru#?##feed_rows > div.feed_row:has(.PostHeaderSubtitle__item:contains(/Реклама в|Реклама от/))
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content div.ads_ad_snippet)
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content span.ads_ad_avatar)
 vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content div.ads_wall_text:upward(#feed_rows > div[class="feed_row "])
 vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content > div.ads_light_container:upward(#feed_rows > div[class="feed_row "])
-vk.com,vk.ru#?##feed_rows > div[class^="feed_row"] > div.page_block div.PostHeaderSubtitle__item > span:not([class]):contains(/[Реклама]/):upward(#feed_rows > div[class^="feed_row"])
+vk.com,vk.ru#?##feed_rows > div[class^="feed_row"] > div.page_block .PostHeaderSubtitle__item > span:not([class]):contains(/[Реклама]/):upward(#feed_rows > div[class^="feed_row"])
 vk.com,vk.ru###feed_rows > div.feed_row > div.post:has(a[data-ad-details-link])
-vk.com,vk.ru#?#.wall_posts > div.post:has(span.PostHeaderSubtitle__item:contains(Реклама в сообществе))
+vk.com,vk.ru#?#.wall_posts > div.post:has(.PostHeaderSubtitle__item:contains(Реклама в сообществе))
 vk.com,vk.ru###feed_rows > div[class="feed_row "] > div[class^="feed_repost-"]:has(div[class="wall_marked_as_ads"])
 vk.com,vk.ru###page_wall_posts > div.post_marked_as_ads
 vk.com,vk.ru##div[id^="postadsite_"]

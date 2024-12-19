@@ -1,9 +1,9 @@
-! Checksum: WfhdqZWvp3DkVpkMXeSS3g
-! Diff-Path: ../patches/22_optimized/22_optimized-s-1734442900-3600.patch
+! Checksum: I1w1g6BLHWhbh6gsKYbkZQ
+! Diff-Path: ../patches/22_optimized/22_optimized-s-1734611896-3600.patch
 ! Title: AdGuard Widgets filter (Optimized)
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.10.48
-! TimeUpdated: 2024-12-17T13:37:37+00:00
+! Version: 2.0.10.50
+! TimeUpdated: 2024-12-19T12:34:37+00:00
 ! Expires: 10 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -224,6 +224,7 @@ aaieba.livedoor.biz##.left-container
 blog.tinect.jp##p + .g.g-46 > .g-single
 jiwasoku.com###pcpc-rss
 jiwasoku.com###test-blo
+moro-ai.com##.tag-top-loop
 mona-news.com##.article-body-inner > dd:has(a[href^="https://livedoor.blogimg.jp/mona_news/"]) ~ dd
 suresuta.jp#?##main > div.linkbox:has(> p.kiji-shita)
 suresuta.jp##.underrssbox
@@ -598,7 +599,6 @@ marasoku.info##.rss_ninja_title
 marasoku.info##iframe[src^="http://marasoku.info/rss_"]
 toychan.blog.jp,shouginews.blog.jp,hinomoto99.com,fireflyframer.blog.jp##.message-board-outer
 news4wide.net##.box-antenna
-vipnews.jp##.custom-rss-container
 /rss_$subdocument,domain=eegg.fun
 ||eegg.fun/rssline.html
 umaumanews.com,karapaia.com,blog.fc2.com,blog.jp###blogroll
@@ -664,7 +664,6 @@ bi-girl.net##.top_link_title
 xn--r8jwklh769h2mc880dk1o431a.com,leaked.jp##.dfad
 brow2ing.com###newRelease
 openworldnews.net,lifehack2ch.livedoor.biz,football-2ch.com,f1jouhou2.com,ryusoku.com,fgo.news,kanasoku.info,brow2ing.com,animanch.com,news4vip.livedoor.biz,hosyusokuhou.jp###headline
-otonary.net###article-bot-rss
 otonarisoku.com##div[style="height:280px; overflow:hidden;"]
 otonarisoku.com##div[class$="blogroll"]
 ||gazounabi.com/toprss1.html
@@ -730,6 +729,7 @@ inazumanews2.com##.rsslinkba
 inazumanews2.com##.rsslinkre
 inazumanews2.com#$##rsshead { display: none!important; }
 inazumanews2.com#$##sub { margin-top: 0!important; }
+hidromelphilipmead.com.br##.btn-whatsapp
 ironsaga-msoku.xyz#$##content { margin-top: 180px!important; }
 ironsaga-msoku.xyz#$##rss_wrap { display: none!important; }
 ||monhan-mhw.com^$subdocument,~third-party
@@ -740,6 +740,7 @@ coolpan.net###rss_link3
 erogazou-pinkline.com###adnex-text-widget
 xn--r8jwklh769h2mc880dk1o431a.com##.headlinewra
 xn--r8jwklh769h2mc880dk1o431a.com##.etpickup
+newsmana.com##div[class^="rss-table"]
 gameleaks.org##.rss-table
 newsmana.com,gameleaks.org##.rss-widget
 moeimg.net###sp-pickup-link-frame
@@ -826,7 +827,6 @@ blog.livedoor.jp#$#.toprss5 { display: none !important; }
 blog.livedoor.jp#$##blog-body-outer > #left-t { margin-top: 0 !important; }
 blog.livedoor.jp##div[class^="blogroll_innner"]
 blog.livedoor.jp##div[style="overflow-y:scroll; width:384px; height:300px;"]
-[$path=/soccerkusoyarou]blog.livedoor.jp##.column-inner-2 > .article-body2
 blog.livedoor.jp##.column-inner-2 > table[summary="<%blog_name>"][Width="728"]
 blog.livedoor.jp###article_rss
 blog.livedoor.jp##iframe[src="http://blog.livedoor.jp/nanjstu/top_rss.html"]
@@ -860,6 +860,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 ||gubagootracking.com^$third-party
 ||cdn.gubagoo.io^$third-party
 ##gg-toolbar--specials
+||kwizbot.io^$third-party
 ||quotiq.ru^$third-party
 ||prod-live-chat.sprinklr.com^$third-party
 ||widgets.binotel.com^$third-party,domain=~novaposhta.md
@@ -1079,7 +1080,6 @@ vinmec.com##.global-thread-create-cta
 ||wchat.freshchat.com/js/widget.js
 ||widget.info-static.ru/js/init.js
 ||yastatic.net/*/chat/widget.js$domain=next24.ru|goodprice4you.ru
-@@||static.landbot.io/landbot-widget/landbot-widget-*.js$domain=emma-matratze.de
 @@||widget.happyfoxchat.com^$domain=support.linksys.com
 @@||secure.livechatinc.com/customer/action/open_chat?$domain=kinguin.net
 @@||code.jivo.ru/widget/$domain=coffee-tea-bravos.ru
@@ -1151,7 +1151,6 @@ full-count.jp#?#section > div.c-heading:has(> p.c-heading__en:contains(RECOMMEND
 ||tracker.tolvnow.com^$third-party
 ||synalio.com^$third-party
 ||chatbot.com^$third-party
-||cdn-chat.grattis.ru^$third-party
 ||cdn.carrotquest.app^$third-party
 ||continual.ly^$third-party
 ||corover.mobi^$third-party
@@ -1337,6 +1336,7 @@ ukr.net###sinoptik_container
 ##.gsInformer
 /gs_informerClient.min.$third-party
 ||gismeteo.*/getInformer/$third-party
+||meteoprog.ua/*/weather/informer/$third-party
 butwhytho.net###elementor-popup-modal-209972
 butwhytho.net##div[id^="give_forms_widget-"]
 brooklynrail.org##body > div.fixed.bg-opacity-75.items-center
@@ -1348,6 +1348,7 @@ thebell.io##app-adfox-top
 verstka.media##.wp-block-post:has(> a[href="http://verstkasupport.media/"])
 habr.com##.article-donation-block
 chicago.suntimes.com##.Page-header-banner
+meduza.io##.PopoverBanner-module-root
 itc.ua##.about-noa
 itc.ua##.popup-bottom
 ||frontend.poool.fr/engage/
@@ -1417,6 +1418,7 @@ apkmody.io###fixed-donate
 zn.ua##.content__news > div.news-support
 lyricstranslate.com###block-lyricstranslateblocks-91
 starfiles.co###support_alert
+doxa.team##.content-donation
 takiedela.ru##.b-post__help
 zona.media##.donate-banner
 novayagazeta.eu#?##materialBlock_0 > div:has(> h3:contains(/^Поддержать/))

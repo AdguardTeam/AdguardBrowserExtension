@@ -1,9 +1,9 @@
-! Checksum: He2mIAl6iydoL/bHLQYwHg
-! Diff-Path: ../patches/21/21-s-1734413842-3600.patch
+! Checksum: edDac3cq/aG9xg6pkyJ5qQ
+! Diff-Path: ../patches/21/21-s-1734611892-3600.patch
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.29.4
-! TimeUpdated: 2024-12-17T05:34:03+00:00
+! Version: 2.0.29.11
+! TimeUpdated: 2024-12-19T12:34:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -5328,11 +5328,14 @@ rbc.ru#?#.js-index-central-column > div[data-publisher-index]:has(> div.js-index
 rbc.ru##.fox-fallback[style="width: 300px; height: 600px;"]
 !
 ! Amazon Pay promos (Japan)
-~shop.tsukumo.co.jp##a[href^="https://apay-up-banner.com?merchantId="] > img
-||apay-up-banner.com^$image,third-party,domain=~shop.tsukumo.co.jp
+book.oricon.co.jp##a[href^="https://apay-up-banner.com?merchantId="] > img
+||apay-up-banner.com^$image,third-party,domain=book.oricon.co.jp
 !
 ! SECTION: Self-promo - Regular rules
 !
+map.naver.com##.promotion_wrap
+wildberries.ru##.main-page__banner
+wildberries.ru##.main-page__banner-info
 hackernoon.com##div[style*="ad-assets"]
 studysmarter.*##.va-welcome
 studysmarter.*##.va-footer-sticky-banner
@@ -7962,10 +7965,6 @@ markezine.jp#$#.l-sidebar_inner > div.ad-job-board-wrap + div.c-secondarysection
 rajsayt.xyz#$##wpsafe-generate { display: block !important; }
 rajsayt.xyz#$##wpsafe-link { display: block !important; }
 rajsayt.xyz#$#div[id^="wpsafe-wait"] { display: none !important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/110893
-sevenjournals.com#$##yuidea-generate { display: block !important; }
-sevenjournals.com#$##yuidea-snp { display: block !important; }
-sevenjournals.com#$##yuidea-wait1 { display: none !important; }
 ! go.insurance-space.xyz/?link=XBST
 go.insurance-space.xyz#$##wpsafe-generate { display: block !important; }
 go.insurance-space.xyz#$##wpsafe-link { display: block !important; }
@@ -8606,8 +8605,6 @@ kinemaster.cc#%#//scriptlet("adjust-setTimeout", "/_0x|gotoo/", "*", "0.02")
 dizimini.com#%#//scriptlet("adjust-setInterval", "countdown", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131116
 mobileprice.site,bestmobilenew.com#%#//scriptlet("adjust-setInterval", "#mdtimer", "", "0.02")
-! https://github.com/AdguardTeam/AdguardFilters/issues/130599
-gaminplay.com#%#//scriptlet("adjust-setInterval", "yuidea-", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/130155
 digworm.io#%#//scriptlet("adjust-setInterval", "timer--", "*", "0.02")
 zertalious.xyz#%#//scriptlet("adjust-setTimeout", "status.innerHTML", "*", "0.02")
@@ -8635,8 +8632,6 @@ modshost.net#%#//scriptlet("adjust-setInterval", "timeleft", "*", "0.02")
 codenova-center.web.app#%#//scriptlet("adjust-setInterval", "contador", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/126658
 minecraftalpha.net#%#//scriptlet("adjust-setInterval", "Your Link", "", "0.02")
-! https://github.com/AdguardTeam/AdguardFilters/issues/126604
-fmoviesdl.com#%#//scriptlet("adjust-setTimeout", "#counter", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/125660
 aeromods.app,whatsaero.com#%#//scriptlet("adjust-setInterval", "count", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/125122
@@ -8661,11 +8656,6 @@ gocmod.com#%#//scriptlet('prevent-addEventListener', 'blur', 'event.dispatch.app
 gocmod.com#%#//scriptlet('adjust-setInterval', '/\.text\(\)&&\(clearInterval|download-btn/', '*', '0.02')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123887
 gawbne.com,forex-trnd.com#%#//scriptlet("adjust-setInterval", "count", "*", "0.02")
-! https://github.com/AdguardTeam/AdguardFilters/issues/123316
-work.ink#%#AG_defineProperty('Notification.permission', {value: "granted"});
-work.ink#%#//scriptlet("set-constant", "document.hidden", "true")
-work.ink#%#//scriptlet('prevent-window-open', '/youtube\.com|discord\.gg/', '1')
-work.ink#%#(()=>{window.addEventListener("load",()=>{const a=function(){fetch("/api/redirection/extension/confirmInstalled.php",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"c="+btoa(navigator.userAgent)+"&tid="+window.transaction_id})},b=function(){d.forEach(a=>{a.click();const b=a.querySelector(".todo .description");b&&(b.textContent="Please wait...")})},c=function(){const a=document.querySelectorAll(".todos > .todo[onclick]"),b=new MutationObserver(function(){a.forEach(a=>{if(a.classList.contains("todo-done")){const b=a.querySelector(".todo .description");b.textContent="Done"}})}),c={subtree:!0,childList:!0,attributes:!0,attributeFilter:["class"]};a.forEach(a=>{b.observe(a,c)})},d=document.querySelectorAll(".todos > .todo[onclick]"),e=function(){let a=!1;return d.forEach(b=>{b.textContent.includes("Browser extension")&&(a=!0)}),a};d.length&&setTimeout(()=>{try{e()&&a(),b(),c()}catch(a){}},2e3)})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122844
 healthy4pepole.com#%#//scriptlet("adjust-setInterval", "counter", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/122833
@@ -8896,8 +8886,6 @@ videezy.com#%#//scriptlet("adjust-setTimeout", "download_file", "", "0.02")
 crazyblog.in,studyuo.com#%#//scriptlet("adjust-setInterval", "wpsafe-", "", "0.02")
 crazyblog.in,studyuo.com#%#//scriptlet("adjust-setInterval", "wpsafe-", "2000", "0.02")
 crazyblog.in,studyuo.com#%#//scriptlet("adjust-setInterval", "updatePercentage", "100", "0.02")
-! https://github.com/AdguardTeam/AdguardFilters/issues/97174
-gaminplay.com#%#//scriptlet("adjust-setInterval", "wpsafe-", "1500", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96717
 ebookmela.co.in#%#//scriptlet("set-constant", "wt", "-1")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96370
@@ -9305,7 +9293,7 @@ filerio.in#%#//scriptlet("adjust-setTimeout", "tick()", "", "0.02")
 retrostic.com#%#//scriptlet("adjust-setInterval", "timeLeft--", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53145
 ! #%#//scriptlet("set-constant", "blurred", "false")
-cuty.me,link.codevn.net,oii.la,upfiles-urls.com,tpi.li,evernia.site,falpus.com,cloutgist.com,plknu.com,nexnoo.com,tvi.la,iir.la,oei.la,clk.kim,ijvam.com,adpaylink.com,exuce.com,yoykp.com,pwrpa.cc,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,news.speedynews.xyz,casperhd.com,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,animerigel.com,megaurl.in,megafly.in,linx.cc,reqlinks.net,rgl.vn,wu8.in,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,veganab.co,kinemaster.cc,faucetcrypto.net,download.windowslite.net,oko.sh,ckk.ai,forex-trnd.com,paylinnk.com,adpps.com,loptelink.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,haonguyen.top,pandaznetwork.com,bestcash2020.com,theconomy.me,wealthystyle.online,easysky.in,techgeek.digital,csd.xmod.in,defaultfreeshort.in,adsafelink.com,akashort.com,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,usanewstoday.club,clk.asia,cookdov.com,wplink.*,onroid.com,filmyzilla-in.xyz,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,linkjust.com,crazyblog.in,swzz.xyz,mixfaucet.com,try2link.com,baominh.tech,bblink.com,za.uy,gtlink.co,upshrink.com,upfiles.io,link.turkdown.com,beingtek.com,insuranceblog.xyz,linkfly.*,link1s.com,enagato.com,dl.tech-story.net,123link.biz,rancah.com,go.gets4link.com,clikern.com,musicc.xyz,xfiles.io,upfiles.com,dz-linkk.com,cslink.in,shrink.icu,hoastie.com,tei.ai,exey.*,birdurls.com,claimfreebits.com,shrlink.top,zshort.io,nerdy.vn,jameeltips.us,payskip.org,yxoshort.com,shrinke.me,oncehelp.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,linkebr.com,smoner.com,charexempire.com,gplinks.co,adomainscan.com,linkshorts.*,cuts-url.com,gainbtc.click,cashearn.cc,cryptoads.space,modapk.link,gplinks.co,miklpro.com,sanoybonito.club,afly.pro,cutlink.link,exe.app,adcorto.xyz,cuturl.in,womenhaircolors.review,paidtomoney.com,apkshrt.com,linkshorts.me,pureshort.link,droplink.co,lite-link.com,bdnewsx.com,earnfasts.com,linksfire.co,pslfive.com,linksly.co,trinddz.com,ilinks.in,bitfly.io,imagenesderopaparaperros.com,c-ut.com,shrinkme.in,fir3.net,link1s.net,cashurl.in,clk.ink,apksvip.com,pkr.pw,todaynewspk.win,try2link.net,stfly.me,real-sky.com,bolssc.com,short2.cash,cutdl.xyz,shrinkurl.org,exee.io,srt.leechpremium.link,adsrt.live,tmearn.com,samapro.me,owllink.net,mondainai.moe,popimed.com,aii.sh,sekilastekno.com,miuiku.com,intothelink.com,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,shorterall.com,fc.lc,adslinkfly.online,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
+cuty.me,link.codevn.net,oii.la,upfiles-urls.com,tpi.li,evernia.site,falpus.com,cloutgist.com,plknu.com,nexnoo.com,tvi.la,iir.la,oei.la,clk.kim,ijvam.com,adpaylink.com,exuce.com,yoykp.com,pwrpa.cc,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,news.speedynews.xyz,casperhd.com,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,animerigel.com,megaurl.in,megafly.in,linx.cc,reqlinks.net,rgl.vn,wu8.in,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,veganab.co,kinemaster.cc,faucetcrypto.net,download.windowslite.net,oko.sh,ckk.ai,forex-trnd.com,paylinnk.com,loptelink.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,haonguyen.top,pandaznetwork.com,bestcash2020.com,theconomy.me,wealthystyle.online,easysky.in,techgeek.digital,csd.xmod.in,defaultfreeshort.in,adsafelink.com,akashort.com,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,usanewstoday.club,clk.asia,cookdov.com,wplink.*,onroid.com,filmyzilla-in.xyz,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,linkjust.com,crazyblog.in,swzz.xyz,try2link.com,baominh.tech,bblink.com,za.uy,gtlink.co,upshrink.com,upfiles.io,link.turkdown.com,beingtek.com,insuranceblog.xyz,linkfly.*,link1s.com,enagato.com,dl.tech-story.net,123link.biz,rancah.com,go.gets4link.com,clikern.com,musicc.xyz,xfiles.io,upfiles.com,dz-linkk.com,cslink.in,shrink.icu,hoastie.com,tei.ai,exey.*,birdurls.com,claimfreebits.com,shrlink.top,zshort.io,nerdy.vn,jameeltips.us,payskip.org,yxoshort.com,shrinke.me,oncehelp.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,linkebr.com,smoner.com,charexempire.com,gplinks.co,adomainscan.com,linkshorts.*,cuts-url.com,gainbtc.click,cashearn.cc,cryptoads.space,modapk.link,gplinks.co,miklpro.com,sanoybonito.club,afly.pro,cutlink.link,exe.app,adcorto.xyz,cuturl.in,womenhaircolors.review,paidtomoney.com,apkshrt.com,linkshorts.me,pureshort.link,droplink.co,lite-link.com,bdnewsx.com,earnfasts.com,linksfire.co,pslfive.com,linksly.co,trinddz.com,ilinks.in,bitfly.io,imagenesderopaparaperros.com,c-ut.com,shrinkme.in,fir3.net,link1s.net,cashurl.in,clk.ink,apksvip.com,pkr.pw,todaynewspk.win,try2link.net,stfly.me,real-sky.com,bolssc.com,short2.cash,cutdl.xyz,shrinkurl.org,exee.io,srt.leechpremium.link,adsrt.live,tmearn.com,samapro.me,mondainai.moe,popimed.com,aii.sh,sekilastekno.com,miuiku.com,intothelink.com,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,shorterall.com,fc.lc,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53141
 4shared.com#%#(function(){-1==document.cookie.indexOf("exUserId")&&(document.cookie="exUserId=1; domain=.4shared.com; path=/;")})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/52387
@@ -9330,7 +9318,7 @@ apkmos.com#%#//scriptlet("adjust-setInterval", "downloadButton", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/62192
 ! https://github.com/AdguardTeam/AdguardFilters/issues/50148
 lnk.parts,lnk.news#%#//scriptlet("adjust-setInterval", "r--", "", "0.02")
-lnk.parts,lnk.news#%#AG_onLoad(function(){if(-1<location.pathname.indexOf("/go/")){var b=new MutationObserver(function(){if(document.querySelector("#get_link_btn"))try{[].slice.call(document.getElementsByTagName("script")).some(function(a){a.text.match(/goToUrl \("/)&&(a=a.text.split(/goToUrl \("([\s\S]*?)"\);/),location=a[1])})}catch(a){}});b.observe(document,{childList:!0,subtree:!0});setTimeout(function(){b.disconnect()},1E4)}});
+lnk.parts,lnk.news#%#(()=>{document.addEventListener('DOMContentLoaded',()=>{if(-1<location.pathname.indexOf("/go/")){var b=new MutationObserver(function(){if(document.querySelector("#get_link_btn"))try{[].slice.call(document.getElementsByTagName("script")).some(function(a){a.text.match(/goToUrl \("/)&&(a=a.text.split(/goToUrl \("([\s\S]*?)"\);/),location=a[1])})}catch(a){}});b.observe(document,{childList:!0,subtree:!0});setTimeout(function(){b.disconnect()},1E4)}})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/50105
 sammobile.com#%#//scriptlet("adjust-setInterval", "showDownloadButton", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/49717
@@ -9373,10 +9361,11 @@ uxglow.com#%#!function(){if(-1<window.location.href.indexOf("/?r=")){var a=locat
 faucetcrypto.com,faucet.gold#%#(function(){var c=window.setInterval;window.setInterval=function(f,g){return g===1e3&&/removeAttr\('disabled'\)/.test(f.toString())&&(g*=0.01),c.apply(this,arguments)}.bind(window)})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41751
 trucnet.net#%#//scriptlet('trusted-click-element', 'a[href].btn.redirect')
+! Unsure if still required
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41369
-gyanitheme.com,yotrickslog.tech,meclipstudy.in,proappapk.com,buscador.buscalinks.xyz,recursosinformaticos.org,minecraftalpha.net,viralmods.net,m.appsmodz.com#%#AG_onLoad(function(){setTimeout(function(){if("undefined"!==typeof aesCrypto&&"function"===typeof aesCrypto.decrypt&&-1<window.location.href.indexOf("#?o="))try{window.location=aesCrypto.decrypt(window.location.href.split("#?o=")[1].replace(/^\s+/,"").replace(/\s+$/,""),"root".replace(/^\s+/,"").replace(/\s+$/,""))}catch(a){}},300)});
-rulesofcheaters.net,ontools.net,redirect.dafontvn.com,5ggyan.com,majidzhacker.com,links.iembra2or.com,ph.apps2app.com#%#AG_onLoad(function(){setTimeout(function(){if("undefined"!==typeof aesCrypto&&"function"===typeof aesCrypto.decrypt&&-1<window.location.href.indexOf("#?o="))try{window.location=aesCrypto.decrypt($.urlParam("o").replace(/^\s+/,"").replace(/\s+$/,""),"root".replace(/^\s+/,"").replace(/\s+$/,""))}catch(a){}},300)});
-ph.samapkstore.com,safe.kangkimin.com,ph.tpaste.net,go.myviptuto.com,apps2app.com#%#AG_onLoad(function(){setTimeout(function(){if("function"===typeof convertstr&&"function"===typeof aesCrypto.decrypt&&-1<window.location.href.indexOf("html#?o="))try{window.location=aesCrypto.decrypt(convertstr($.urlParam("o")),convertstr("root"))}catch(a){}},300)});
+gyanitheme.com,yotrickslog.tech,meclipstudy.in,proappapk.com,buscador.buscalinks.xyz,recursosinformaticos.org,minecraftalpha.net,viralmods.net,m.appsmodz.com#%#(()=>{document.addEventListener('DOMContentLoaded',()=>{setTimeout(function(){if("undefined"!==typeof aesCrypto&&"function"===typeof aesCrypto.decrypt&&-1<window.location.href.indexOf("#?o="))try{window.location=aesCrypto.decrypt(window.location.href.split("#?o=")[1].replace(/^\s+/,"").replace(/\s+$/,""),"root".replace(/^\s+/,"").replace(/\s+$/,""))}catch(a){}},300)})})();
+rulesofcheaters.net,ontools.net,redirect.dafontvn.com,5ggyan.com,majidzhacker.com,links.iembra2or.com,ph.apps2app.com#%#(()=>{document.addEventListener('DOMContentLoaded',()=>{setTimeout(function(){if("undefined"!==typeof aesCrypto&&"function"===typeof aesCrypto.decrypt&&-1<window.location.href.indexOf("#?o="))try{window.location=aesCrypto.decrypt($.urlParam("o").replace(/^\s+/,"").replace(/\s+$/,""),"root".replace(/^\s+/,"").replace(/\s+$/,""))}catch(a){}},300)})})();
+ph.samapkstore.com,safe.kangkimin.com,ph.tpaste.net,go.myviptuto.com,apps2app.com#%#(()=>{document.addEventListener('DOMContentLoaded',()=>{setTimeout(function(){if("function"===typeof convertstr&&"function"===typeof aesCrypto.decrypt&&-1<window.location.href.indexOf("html#?o="))try{window.location=aesCrypto.decrypt(convertstr($.urlParam("o")),convertstr("root"))}catch(a){}},300)})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41279
 thesimarchitect.com#%#(function(){var c=window.setInterval;window.setInterval=function(f,g){return g===1e3&&/'#timer'/.test(f.toString())&&(g*=0.01),c.apply(this,arguments)}.bind(window)})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/41215
@@ -9391,7 +9380,7 @@ boost.ink#%#(()=>{const a=new MutationObserver(function(){const b=document.query
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123405
 ! https://github.com/AdguardTeam/AdguardFilters/issues/110006
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34644
-onet.pl#%#AG_onLoad(function(){if(-1!==window.location.href.indexOf("onet.pl/?utm_source=")){const o=new MutationObserver(function(){var e=document.querySelector('a[href][onclick*="Nitro_clickmore"][onclick*="czytaj_wiecej"], a[href][class^="NitroCard_sectionLink_"], article[class^="NitroCard_nitroCard__"] > a[href][class^="Common_sectionLink__"]:not([href^="undefined"])');e&&(o.disconnect(),location.replace(e.href))});o.observe(document,{childList:!0,subtree:!0}),setTimeout(function(){o.disconnect()},1e4)}});
+onet.pl#%#(()=>{document.addEventListener('DOMContentLoaded',()=>{if(-1!==window.location.href.indexOf("onet.pl/?utm_source=")){const o=new MutationObserver(function(){var e=document.querySelector('a[href][onclick*="Nitro_clickmore"][onclick*="czytaj_wiecej"], a[href][class^="NitroCard_sectionLink_"], article[class^="NitroCard_nitroCard__"] > a[href][class^="Common_sectionLink__"]:not([href^="undefined"])');e&&(o.disconnect(),location.replace(e.href))});o.observe(document,{childList:!0,subtree:!0}),setTimeout(function(){o.disconnect()},1e4)}})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/35141
 davisonbarker.pro,alfonzoheriberto.pro,freddyoctavio.pro,nathanaeldan.pro,orvilleandrea.pro,christianivory.pro,eloypatrick.pro,richardwashington.pro,elbaestes.pro#%#!function(){if(-1<location.pathname.indexOf("/pushredirect/")){var url=new URL(window.location.href); var dest=url.searchParams.get('dest'); if(dest){location=dest;}}}();
 rudyvalencia.pro,ramirocampos.pro#%#!function(){if(-1<location.pathname.indexOf("/pushredirect/")){var url=new URL(window.location.href); var dest=url.searchParams.get('dest'); if(dest){location=dest;}}}();
