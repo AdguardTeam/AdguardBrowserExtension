@@ -110,11 +110,11 @@ const christmas24Notification: PromoNotification = {
             btn: 'Abre',
         },
         pt_pt: {
-            title: 'É Natal no AdGuard',
+            title: 'Natal no AdGuard',
             btn: 'Vem ver',
         },
         pt_br: {
-            title: 'É Natal no AdGuard',
+            title: 'Natal no AdGuard',
             btn: 'Vem ver',
         },
         zh_cn: {
