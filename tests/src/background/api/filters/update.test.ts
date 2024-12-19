@@ -1,8 +1,4 @@
 import { Storage } from 'webextension-polyfill';
-// Fake timers from jest didn't work with fetch polyfill wrapper around xhr
-// (because of setTimeout before send response).
-// See https://github.com/mswjs/msw/issues/448
-import FakeTimers from '@sinonjs/fake-timers';
 import {
     afterEach,
     beforeEach,
@@ -46,13 +42,6 @@ vi.mock('../../../../../Extension/src/background/storages/notification');
 declare global {
     let sinonFakeServer: sinon.SinonFakeServer;
 }
-
-/**
- * FIXME:
- * stderr | tests/src/background/api/filters/update.test.ts
- *   FakeTimers: clearTimeout was invoked to clear a native timer instead of one created by this library.
- *   To automatically clean-up native timers, use `shouldClearNativeTimers`.
- */
 
 // We do not support filter updates in MV3 yet.
 describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
@@ -219,12 +208,13 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
     });
 
     it('update filters after 60 minutes delay', async () => {
-        const clock = FakeTimers.install();
-        let promise = App.init();
-        await clock.tickAsync(10);
-        await promise;
+        vi.useFakeTimers();
+
+        await App.init();
 
         const filterId = 999;
+        const filterExpirationTimeMs = 1000 * 60 * 60;
+        const oneMinuteMs = 1000 * 60;
 
         sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
             200,
@@ -232,9 +222,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
             fakeFilterV2,
         ]);
 
-        promise = FiltersApi.loadAndEnableFilters([filterId], true);
-        await clock.tickAsync(10);
-        await promise;
+        await FiltersApi.loadAndEnableFilters([filterId], true);
 
         let filterVersion = filterVersionStorage.get(filterId);
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
@@ -246,8 +234,9 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
         expect(updatedFilters.length).toBe(0);
 
-        // Wait for 31 minutes
-        await clock.tickAsync(1000 * 60 * 61);
+        // Wait for first check after filter expired = 1 hour filter ttl
+        // + 100 ms for run checker + some time for check itself.
+        vi.advanceTimersByTime(filterExpirationTimeMs + oneMinuteMs);
         filterVersion = filterVersionStorage.get(filterId);
         // Filter version still the same because filter didn't expired
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
@@ -261,11 +250,15 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
         ]);
         // Set period update to 100ms
         await SettingsApi.setSetting(SettingOption.FiltersUpdatePeriod, 100);
-        // Wait for first check after filter expired
-        await clock.tickAsync(1000 * 60 * 61);
+        // Wait for first check after filter expired = 1 hour filter ttl
+        // + 100 ms for run checker + some time for check itself.
+        // Note: important to use async version of advanceTimersByTimeAsync,
+        // because it waits for all promises to resolve.
+        await vi.advanceTimersByTimeAsync(filterExpirationTimeMs + oneMinuteMs);
         filterVersion = filterVersionStorage.get(filterId);
         expect(filterVersion?.version).toStrictEqual(v3);
-        clock.uninstall();
+
+        vi.useRealTimers();
     });
 
     describe('autoUpdateFilters', () => {
