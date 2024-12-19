@@ -51,8 +51,7 @@ export default defineConfig({
             },
         },
         reporters: [
-            // FIXME: memory leak node error right after running tests
-            // [ 'junit', { outputFile: './tests-reports/unit-tests.xml' } ]
+            ['junit', { outputFile: './tests-reports/unit-tests.xml' }],
         ],
     },
 });
