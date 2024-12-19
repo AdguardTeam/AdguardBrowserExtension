@@ -10,7 +10,7 @@
     "beta": "cross-env BUILD_ENV=beta tsx tools/bundle.ts",
     "release": "cross-env BUILD_ENV=release tsx tools/bundle.ts",
     "adguard-api": "cross-env BUILD_ENV=dev tsx tools/bundle.ts adguard-api",
-    "test": "mkdir -p tests-reports && MANIFEST_ENV=2 vitest run filters/update && MANIFEST_ENV=3 vitest run filters/update",
+    "test": "mkdir -p tests-reports && MANIFEST_ENV=2 vitest run && MANIFEST_ENV=3 vitest run",
     "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
     "locales": "tsx tools/locales.js",
     "resources": "tsx tools/resources.ts",
