@@ -182,8 +182,8 @@ const christmas24Notification: PromoNotification = {
             btn: 'Otvoren',
         },
         hu: {
-            title: 'Új év az AdGuardban',
-            btn: 'Nyisd ki',
+            title: 'Karácsony az AdGuard-nál',
+            btn: 'Kinyit',
         },
         hy: {
             title: 'Ամանորը AdGuard-ում',
