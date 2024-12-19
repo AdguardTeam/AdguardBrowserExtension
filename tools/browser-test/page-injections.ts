@@ -39,6 +39,19 @@ export const addQunitListeners = (): void => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let qUnit: any;
 
+    // eslint-disable-next-line jsdoc/require-returns, jsdoc/require-param
+    /**
+     * A small hack to prevent
+     * the `Uncaught ReferenceError: __name is not defined` error, which occurs
+     * because tsx uses esbuild under the hood and esbuild is `--keep-names`
+     * option applies `__name` to functions to preserve the original name.
+     *
+     * See {@link https://github.com/privatenumber/tsx/issues/113}
+     * and {@link https://github.com/evanw/esbuild/issues/2605#issuecomment-2050808084}.
+     */
+    // @ts-ignore
+    window.__name = (func): unknown => func;
+
     Object.defineProperty(window, 'QUnit', {
         /**
          * Transparent getter.
