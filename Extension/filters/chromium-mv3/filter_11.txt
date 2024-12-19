@@ -1,8 +1,8 @@
-! Checksum: IWzdIrZT1Io6ZvqiiInjlw
+! Checksum: go0netYtomNdRoXZgiIyuA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.56.66
-! TimeUpdated: 2024-12-13T12:36:32+00:00
+! Version: 2.0.56.74
+! TimeUpdated: 2024-12-17T12:35:41+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1399,6 +1399,7 @@ youjizz.com#%#AG_defineProperty('config.ads.mobilePopunder', {value: false});
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/194769
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193605
 pulzo.com#$#.container-headband-new { margin-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192421
@@ -2412,13 +2413,17 @@ kyun2-girls.com,hapiee.com,2ch-c.net,4p.de,www-cbc-ca.cdn.ampproject.org,m.gebor
 ! ##.Ad
 chip.de,gamesworld.de,fnn.jp##.Ad
 ! ##body .banner
-m.price.com.hk,otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
+genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 !
 ! TODO: Replace by class rule when https://github.com/AdguardTeam/FiltersCompiler/issues/221 is resolved.
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+c5n.com##.free-banner-wrapper
+c5n.com##div[id^="b_square_"]
+m.sports.ru##.columns__main-column > div.news-layout__frame:has(> div.ad-slot)
+disgustingmen.com##.show-mobile-dsa
 independent.co.uk###main > div[class^="sc-"]:has(> .taboola)
 forum.donanimhaber.com##.arareklam > a.centerla
 forum.donanimhaber.com##.arareklam > .DH-Sosyal
@@ -2465,7 +2470,7 @@ fortune.com###__next > div[class*=" "].sc-3f90509f-0:not(.overlay)
 sekai-hub.com##.frame.sd.appear
 unian.net##div[style^="height: 280px;"]
 natalie.mu##.NA_article_tagad
-m.winfuture.de##.button_box.red[target="_blank"]
+m.winfuture.de##.button_box[target="_blank"]
 jprime.jp##.ad-inread
 m.economictimes.com##div[id^="taboola-"]
 m.economictimes.com##.taboolaAd
@@ -3479,7 +3484,7 @@ bunshun.jp##.sp_article_inarticle
 bunshun.jp##.ad-banner-space
 ameblo.jp##aside[data-amb-auto-ad-style="wrapper"]
 happymag.tv###site-leader
-autobild.es##div[class^="ad-catfish"]
+20minutos.es,autobild.es##div[class^="ad-catfish"]
 mb.jorudan.co.jp##.area > div[height="50"][style="height:50px !important;"]
 gametechwiki.com##.mw-body-content > p
 giga.de###content-block-01F9V7JV1FJ57J4N0HJZQ9MMH7
@@ -3867,7 +3872,7 @@ timesnownews.com##.EA04Q
 faroutmagazine.co.uk##.flying-carpet
 faroutmagazine.co.uk##amp-video-iframe[src^="https://live.primis-amp.tech"]
 erogazounosuke.com##a[href^="http://ad-clcount.com/rnd/out.php"]
-chil-chil.net##.c-banner_w640_sp
+chil-chil.net##body .c-banner_w640_sp
 haber.sol.org.tr##div[style^="height:200px;"][style*="width:100%;"]
 bakusai.com##.res_infeed
 buzzap.jp##.sp_inarticle
@@ -5205,7 +5210,7 @@ noticias.uol.com.br##amp-fx-flying-carpet[height="400px"]
 flugrevue.de##.flug-sponsored
 techraptor.net##div[id^="nn_mobile_mpu"]
 popsci.com.tr##.mob-mobil
-today.line.me##.midAdModule-root
+today-line-me.cdn.ampproject.org,today.line.me##.midAdModule-root
 medonet.pl,onet.pl###onet-ad-flat-belkagorna
 ||ocdn.eu/ramp/*/Sponsoring-Mobile-Float-Universal/*.js
 www-nordbayern-de.cdn.ampproject.org,fnp.de,amp.fitforfun.de,nordbayern.de,deichstube.de,da-imnetz.de,fehmarn24.de,hersfelder-zeitung.de##.amp-flying-carpet-text-border

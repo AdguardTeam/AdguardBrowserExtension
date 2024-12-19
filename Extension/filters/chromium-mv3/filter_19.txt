@@ -1,8 +1,8 @@
-! Checksum: bon906e8Vx6Er0rucjsoFA
+! Checksum: C2i4GT/zksb8zGIiYYKiPg
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.47.17
-! TimeUpdated: 2024-12-13T15:56:00+00:00
+! Version: 2.0.47.31
+! TimeUpdated: 2024-12-17T11:36:31+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1771,6 +1771,7 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+flightaware.com#%#//scriptlet('trusted-click-element', 'div[style*="fsab-button"]  h2 + span')
 avforums.com#%#//scriptlet('prevent-addEventListener', 'load', 'ad_megabanner')
 /avforums\.com\/index\.php\?\w{3}\/\d{6}\//$xmlhttprequest,domain=avforums.com
 archangelvideo.com###ad_blocker_note
@@ -3994,37 +3995,17 @@ goodfon.ru#$#.ad-text.adBanner.adbanner.adBlock.adContent.adSense.Adsense.AdSens
 promote.telegram.org#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links.ads-header.ads-content { display: block !important; }
 !
 ! aternos.org
-! aternos.org#%#!function(){window.pbjs={cmd:{push:function(){}},adUnits:function(){}};window.snhb={globalSettings:{},startAuction:function(){}};window.pbjsChunk=()=>{}}();
-! for apps and ext4.0
-@@||hb.vntsm.io/content.html$domain=aternos.org
 ! script checks these elements even if rules changed
 ! .responsive-sky-scraper
 ! .header-link-exaroton
 aternos.org#$#.responsive-leaderboard { content-visibility: hidden !important; min-height: 1px !important; }
-@@||hb.vntsm.com/v4/live/vms/sites/aternos.org/*.js$domain=aternos.org
-||aternos.org/panel/ajax/reportDetection.php?$xmlhttprequest,~third-party
 !#safari_cb_affinity(general)
-@@||aternos.org^$generichide
-@@||hb.vntsm.com/*/ad-manager.min.js$script,domain=aternos.org
-@@||hb.vntsm.com/v2/live/$xmlhttprequest,domain=aternos.org
-@@||tlx.3lift.com/header/auction?$xmlhttprequest,domain=aternos.org
-@@||fastlane.rubiconproject.com/a/api/fastlane.json?$xmlhttprequest,domain=aternos.org
-@@||bidder.criteo.com/cdb?$xmlhttprequest,domain=aternos.org
-@@||hbopenbid.pubmatic.com/translator?source=prebid-client$xmlhttprequest,domain=aternos.org
-@@||mp.4dex.io/prebid$xmlhttprequest,domain=aternos.org
-@@||prg.smartadserver.com/prebid/v1$xmlhttprequest,domain=aternos.org
-@@||venatusmedia-d.openx.net/w/1.0/arj$xmlhttprequest,domain=aternos.org
-@@||adx.adform.net/adx/openrtb$xmlhttprequest,domain=aternos.org
-@@||htlb.casalemedia.com/cygnus?s=$xmlhttprequest,domain=aternos.org
-@@||prebid.a-mo.net/a/c$xmlhttprequest,domain=aternos.org
+@@||hb.vntsm.io/content.html$domain=aternos.org
+@@||hb.vntsm.com/v4/live/vms/ad-manager.js$domain=aternos.org
+@@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=aternos.org
+@@||hb.vntsm.com/v4/live/vms/sites/aternos.org/*.js$domain=aternos.org
 !#safari_cb_affinity
 ! Redirect rules
-||c.amazon-adsystem.com/bao-csm/aps-comm/aps_csm.js$script,redirect=noopjs,important,domain=aternos.org
-||snigel-d.openx.net/*/arj|$redirect=nooptext,important,domain=aternos.org
-||tlx.3lift.com/header/auction|$redirect=nooptext,important,domain=aternos.org
-||as-sec.casalemedia.com/cygnus|$redirect=nooptext,important,domain=aternos.org
-||fastlane.rubiconproject.com/a/api/fastlane.json|$redirect=nooptext,important,domain=aternos.org
-||flashtalking.com/lgc|$redirect=nooptext,important,domain=aternos.org
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/42476
 readmanga.me#$#.adsbox.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display:block!important;}
@@ -4383,6 +4364,8 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+hackernoon.com##div[style*="ad-assets"]
+novayagazeta.eu##main > div[class][style]:has(> a[href^="/donate"])
 vseinstrumenti.ru#$#body > div[data-v-47b0f060] { display: none !important; }
 vseinstrumenti.ru#$#body { overflow: auto !important; }
 live.vkvideo.ru##div[class^="RecommendationTechnologiesAlert_root__"]
@@ -4997,7 +4980,7 @@ lingq.com#%#//scriptlet('set-cookie', 'DictPopShownToday', 'true')
 inbiz.in.gov###tars-widget-fab
 ||yanmaga.jp/viewer/banner.html
 forms.app#%#//scriptlet('trusted-set-local-storage-item', 'lastOpenedPopup-newYears', '$currentDate$')
-privacysavvy.com#%#//scriptlet('prevent-addEventListener', 'savvy_popup_in_dom', 'setTimeout')
+privacysavvy.com##.savvy_popup
 theconversation.com#$#div[role="presentation"] { display: none !important; }
 theconversation.com#$#body[style] { padding-right: 0 !important; overflow: auto !important; }
 ukrainart.com.ua###bg_popup
@@ -9001,7 +8984,6 @@ vk.com##.OldBrowser
 novagente.pt#%#//scriptlet('remove-cookie', 'visit')
 laroche-posay.pl##.widget_popin_newsletter
 theswaddle.com##.module-newsletter__timer
-rozetka.com.ua##.lang-switcher-popup
 stackshare.io#%#//scriptlet('remove-cookie', 'pageViews')
 tvoemisto.tv##.community_promo
 sobesednik.ru##.navbar.fixed-bottom
@@ -12399,7 +12381,6 @@ indiatoday.in#%#//scriptlet("abort-on-property-read", "notifyMe")
 ||pornxbit.com/sw.js
 takiedela.ru##.b-push-notification
 justnutritive.com##.order-notification
-||api-analytics.rozetka.com.ua/js/exponea.min.js
 ||7themes.su/sw.js
 blackhatworld.com,forum.redfox.bz,macrumors.com,platinmods.com##.notice--enablePush
 wvnews.com,mdjonline.com,wfmz.com,tv6tnt.com##.notification-button
@@ -12805,6 +12786,21 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 !
 ! SECTION: Subscriptions - Regular rules
 !
+voicendata.com##.subscribe-div-body-right-side
+golem.de##.htmlinline
+sports.ru##.structured-body-wrapper > a[href^="https://t.me/"]
+theglobeandmail.com###zephr-zone-footer
+disgustingmen.com##.widget-area .widget_custom_html:has(> .custom-html-widget a[href="https://telegram.me/disgustingmen"])
+||loader-cdn.azureedge.net/prod/cosprings/loader.min.js$domain=coloradopolitics.com|denvergazette.com
+selfie.iol.pt##.barNewsletter
+sumaity.com###notice_new_mail
+gamesurf.it##div[class*="newsletter-box"]
+book.st-hakky.com###hubspotForm
+transformernews.ai#%#//scriptlet('trusted-click-element', '.pencraft ._closeIcon_1h9fv_121', '!localStorage:pub-1688188-takeover-next-shown-at')
+wparty.net##.ui > div.comment:has(> div.content a[href="https://t.me/wparty_channel"])
+jobs.ca###offer-alert
+jobs.ca##.aside-ctn
+rozetka.com.ua##rz-marketing-subscription
 avforums.com##.notices--floating
 fastcompany.com##.article-container > div.flex:has(> div > div.newsletters__page__marketo__form__container)
 victoriametrics.com##.block_skyrocket:has(#book-demo-form)
@@ -12901,7 +12897,7 @@ manomano.de###newsletterContainer
 atlantea.news##.awac-wrapper
 criptonoticias.com##.sidebar_newsletter_cta
 cmjornal.pt##.bloco_newsletter
-gazette.com###nsltr
+denvergazette.com,gazette.com###nsltr
 telemarket24.ru##.rass_wrap
 perplexity.ai##.fixed.bottom-md:has(> div[class*="borderMainDark"])
 vnexpress.net###box_register_mail
@@ -19125,8 +19121,6 @@ rb.ru,vietnamairlines.com##.subcribe
 desimartini.com##.stay_connected
 livemaster.ru###email-subscribe-block
 aerztezeitung.de#?#.WcmsModule > div[class] > div[id] > div.WcmsContainer > div[class] > div.row > div:has( > div.WcmsContainer > div.HtmlModule > div.HtmlModuleContent > div.well > span.html-newsletter-icon)
-mangafeeds.com###bgdiv
-mangafeeds.com#?#.panel-body div.panel-heading > h3 > strong:contains(Email Subscriptions)
 thebarentsobserver.com,cannagardening.com,rz.com.ua##.pane-simplenews
 limo.media##div[class^="formbox-editor"]
 limo.media#?#.article-body > h4:contains(ニュースレター)
@@ -19495,7 +19489,7 @@ iphone-tricks.de###text-8:nth-child(5)
 geeksultd.com###tie-newsletter-3
 indeed.com###tjobalertswrapper
 omaha.com,pantagraph.com###tncms-region-article_instory_bottom
-billingsgazette.com,magicvalley.com###tncms-region-article_instory_middle
+denvergazette.com,billingsgazette.com,magicvalley.com###tncms-region-article_instory_middle
 insidenova.com###tncms-region-front-full > .tncms-block > [style^="-webkit-box-shadow:"][style*="margin:15px auto 15px auto;"]
 alternate.de###topPage > a[href^="/html/newsletter/page.html"]
 updatesmarugujarat.in###twist-blogger-sbox-v2
@@ -20066,6 +20060,9 @@ worldometers.info#?#div:matches-css(border:3px):has(> div > div > div > iframe[s
 ||widgets.contentfleet.com/newsletter/
 ||womenshealthmag.com/*/files/wh-newsletter-signup$image
 ||x.mail.bonnier-subscriptions.com^$domain=flyingmag.com|popsci.com
+!
+! Townsquare Media
+1025kiss.com,1027kord.com,1037theloon.com,103gbfrocks.com,103kkcn.com,1057crushfm.com,1057thehawk.com,1057thexrocks.com,1061evansville.com,1063cowboycountry.com,1063thebuzz.com,1075zoofm.com,1079ishot.com,929nin.com,929thebull.com,943thepoint.com,943thex.com,963theblaze.com,96xrocks.com,973rivercountry.com,973thedawg.com,975kgkl.com,979kickfm.com,97rockonline.com,983thesnake.com,98country.com,999ktdy.com,999thepoint.com,banana1015.com,bigfrog104.com,blakefm.com,bozemanskissfm.com,catcountry1073.com,classicrock1051.com,club937.com,gator995.com,highway989.com,k945.com,k96fm.com,k99.com,katsfm.com,kbat.com,kctr.com,keanradio.com,keyj.com,keyw.com,kezj.com,kffm.com,kfmx.com,kfox95.com,kicks105.com,kisscasper.com,kisselpaso.com,kissfm921.com,kissfm969.com,kixs.com,kkcb.com,kkyr.com,klaq.com,klaw.com,klubtejano.com,kmhk.com,knue.com,kqbr.com,kqvt.com,kxkx.com,kygl.com,kyssfm.com,lonestar1023.com,mix108.com,mix925abilene.com,mix931fm.com,mix949.com,my1035.com,mychannel957.com,mycountry955.com,mykisscountry937.com,power1029noco.com,power959.com,powerpeoria.com,q103albany.com,q1077.com,river967.com,rock967online.com,sojo1049.com,us103.com,wbkr.com,wbnq.com,wgna.com,wgrd.com,wkdq.com,wyrk.com,xlcountry.com,y95country.com,z94.com##.newsletter-overlay
 !
 ! Hearst Television Inc
 4029tv.com,98online.com,abc-7.com,hearst.com,kcci.com,kcra.com,ketv.com,kmbc.com,koat.com,koco.com,ksbw.com,mor-tv.com,mynbc5.com,nbc-2.com,wapt.com,wbal.com,wbaltv.com,wcvb.com,wdsu.com,wesh.com,wgal.com,wisn.com,wjcl.com,wlky.com,wlwt.com,wmtw.com,wmur.com,wpbf.com,wptz.com,wtae.com,wvtm13.com,wxii12.com,wyff4.com##.newsletter-signup

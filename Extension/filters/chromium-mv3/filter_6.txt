@@ -1,8 +1,8 @@
-! Checksum: 0BxhIaQnt4fDbgiYy/6Orw
+! Checksum: LgOIQl6CYLtKXRS8XZxRNw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.45.3
-! TimeUpdated: 2024-12-12T15:36:13+00:00
+! Version: 2.0.45.5
+! TimeUpdated: 2024-12-16T12:35:19+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -291,9 +291,7 @@ discounto.de,ecomento.de,lz.de,onlinemarketing.de,quoka.de,modhoster.de,gmx.net,
 !+ NOT_OPTIMIZED
 @@||wieistmeineip.de/image
 !+ NOT_OPTIMIZED
-||hifi-forum.de/resources/js/x4hBsoV.js
-!+ NOT_OPTIMIZED
-||hifi.de/js/x4hBsoV.js
+/js/x4hBsoV.js$domain=hifi-forum.de|hifi.de
 !+ NOT_OPTIMIZED
 @@||t.nordbayern.de/image/
 !+ NOT_OPTIMIZED
@@ -1532,6 +1530,7 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+tvspielfilm.de##.ads_footerad
 vermoegenmagazin.de###vermoegen_marginal
 vermoegenmagazin.de##div[class^="content-banner"]
 vermoegenmagazin.de##div[data-ref]
@@ -8344,7 +8343,7 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||zurzeit.at/wp-content/uploads/*/Alm-Werbung-
 ||zurzeit.at/wp-content/uploads/*/Banner-
 ||zwerg-am-berg.de/wp-content/uploads/*/Banner_
-/^https?:\/\/.*\/[a-z0-9A-Z_]{2,15}\.(php|jx|jsx|1ph|jsf|jz|jsm|j$)/$image,script,subdocument,domain=beeg-pornos.com|besterpornos.com|deinesexfilme.com|deutsche-sexfilme.net|deutschetitten.com|deutschsex.com|deutschsex.mobi|einfachtitten.com|germanfucktube.com|gutesexfilme.com|hd-pornos.info|hd-sexfilme.com|lesbenhd.com|meinyouporn.com|nacktepaare.com|nurxxx.mobi|pornoaffe.com|pornoente.tv|pornofisch.com|pornohammer.com|pornohans.com|pornohirsch.net|pornojenny.com|pornoklinge.com|pornotom.com|pornotommy.com|pornozebra.com|reifporn.de|sexente.com|sexvideos-hd.com|tube8-pornos.com|xhamster-sexvideos.com|xnxx-porno.com
+/^https?:\/\/.*\/[a-z0-9A-Z_]{2,15}\.(php|jx|jsx|1ph|jsf|jz|jsm|j$)/$image,script,subdocument,domain=beeg-pornos.com|besterpornos.com|deinesexfilme.com|deutsche-sexfilme.net|deutschsex.com|deutschsex.mobi|einfachtitten.com|gutesexfilme.com|hd-pornos.info|hd-sexfilme.com|lesbenhd.com|meinyouporn.com|nurxxx.mobi|pornoaffe.com|pornoente.tv|pornofisch.com|pornohammer.com|pornohans.com|pornohirsch.net|pornojenny.com|pornoklinge.com|pornotom.com|pornotommy.com|pornozebra.com|reifporn.de|sexente.com|sexvideos-hd.com|tube8-pornos.com|xhamster-sexvideos.com|xnxx-porno.com
 /^https?:\/\/.*\/.*(sw[0-9a-z._-]|\.notify\.).*/$script,domain=hammerporno.xxx
 /^https?:\/\/[0-9a-z]{8,}\.com\/.*/$~media,~subdocument,third-party,domain=190.115.18.20|aniworld.to|bs.to|burningseries.ac|burningseries.nz|burningseries.se|burningseries.sx|burningseries.vc|kinoger.to|kinokiste.live|kinox.top|megakino.co|s.to|serien.cam|serienstream.to|streamcloud.movie|topstreamfilm.live
 /^https?:\/\/[0-9a-z]{8,}\.xyz\/.*/$~media,third-party,domain=kinoger.com|kinoger.pw|kinokiste.live|megakino.co|streamcloud.movie|topstreamfilm.live
@@ -9686,6 +9685,8 @@ news.de##.extraContentContainer
 de.motor1.com##.f1de-container
 mywheels.tv##.falken-banner
 fcbayern.com##.fcb-ad-banner-container
+spox.com##.fco-ad-wrapper
+spox.com##.fco-openweb-ad
 bunte.de##.fe-channel-item--promo
 ligainsider.de##.feature.no_border.pull-left.mb-md
 ligainsider.de##.feature_column.pull-left.new_add
