@@ -104,7 +104,7 @@ export const updateLocalScriptRulesForBrowser = async (browser) => {
     );
 };
 
-// FIXME rework this file to typescript
+// FIXME (Slava): rework this file to typescript
 export const updateLocalScriptRulesForMv3 = async () => {
     const browser = 'chromium-mv3';
     const folder = FILTERS_DEST.replace('%browser', browser);

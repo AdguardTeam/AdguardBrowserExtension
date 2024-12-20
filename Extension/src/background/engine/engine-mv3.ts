@@ -43,7 +43,7 @@ import {
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { FiltersStorage } from '../storages';
 import { emptyPreprocessedFilterList } from '../../common/constants';
-// FIXME type this
+// FIXME (Slava): type this
 // @ts-ignore
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 
