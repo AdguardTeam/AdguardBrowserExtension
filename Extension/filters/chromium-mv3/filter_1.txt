@@ -1,8 +1,8 @@
-! Checksum: 26yBQhwr7dfmtv7p+73RMA
+! Checksum: 0Tpo6whRorhEctOY8xeqeQ
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.96.11
-! TimeUpdated: 2024-12-16T17:31:05+00:00
+! Version: 2.0.96.22
+! TimeUpdated: 2024-12-20T11:31:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1495,6 +1495,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||1463.info^$all
 ||prestich.shop^$all
 ||www.mir-stalkera.ru^$all
 ||armablek.shop^$all
@@ -2710,7 +2711,6 @@ http://w7.ru^$third-party
 ||babyboomboomads.com^$third-party
 ||backromy.com^
 ||bakteso.ru^$third-party
-||baltchd.net^$third-party
 ||ban-host.ru^$third-party
 ||ban.mirorgazma.ru^
 ||banamertur.com^$third-party
@@ -3478,7 +3478,6 @@ http://w7.ru^$third-party
 ||oconner.biz^$third-party
 ||oconner.link^$third-party
 ||octobird.com^$third-party
-||octoclick.net^$third-party
 ||office.ad1.ru^$third-party
 ||ognyvo.ru^$third-party
 ||oiya.ru^
@@ -4870,8 +4869,6 @@ video.khl.ru#%#//scriptlet("set-constant", "Object.prototype.adblockers_detector
 ||ognennoetv.ru/wp-content/uploads/*.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/18564
 @@||static.doubleclick.net/instream/ad_status.js$domain=center-yf.ru
-! https://github.com/AdguardTeam/AdguardFilters/issues/18554
-unit-car.com#%#window.blockAdBlock = function() {};
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17204
 @@||поискслов.рф^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/17003
@@ -5113,7 +5110,7 @@ api.ekranka.tv#@#.ad_content
 !+ NOT_PLATFORM(windows, mac, android)
 iomedia.ru#@#.desktop_ad
 @@||iomedia.ru/static/adsbygoogle.js
-iomedia.ru#%#window.canRunAds = true;
+iomedia.ru#%#//scriptlet('set-constant', 'canRunAds', 'true')
 cybergame.tv###abwarn
 ! https://forum.adguard.com/index.php?threads/17426/
 @@||pwcats.info/advert.js
@@ -5158,6 +5155,9 @@ dzen.ru#?#div[class*="_yandexSearchContainer-"] ~ div[class][id] > div[id] > div
 [$path=/^\/$|\/\?/]dzen.ru###ya-dist
 dzen.ru##div[class^="dzen-desktop__widgetContainer-"] div[class*=" dzen-desktop__"] > div[style^="padding-top:"]
 ://dzen.ru^$cookie=rec-tech
+! Under the search
+dzen.ru##div[class*="--top-micro-app__"] > div[style$="position: relative; height: 0;"] > div[style^="margin-top:"] > div:not([style])
+dzen.ru#$#div[class*="--top-micro-app__"] > div[style$="position: relative; height: 0;"] { padding-top: 0 !important; }
 ! Banners in the feed
 dzen.ru##.dzen-feed__item article[aria-label="Карточка этажа"] ~ article:not([aria-label="Карточка этажа"])
 !
@@ -5415,8 +5415,6 @@ juwelir.info#%#window.google_jobrunner = function() {};
 @@||donbassforum.net^$generichide
 ! http://forum.adguard.com/showthread.php?9692
 @@||avcore.ru^$generichide
-! http://forum.adguard.com/showthread.php?9691
-postila.ru#%#window.blockAdBlock = function() {};
 ! http://forum.adguard.com/showthread.php?9675
 @@||new4.me/adblock.js
 ! http://forum.adguard.com/showthread.php?9610
@@ -5433,8 +5431,6 @@ php5lab.com##html > div[style*="width:100%; height:100%; z-index:999999"]
 @@||apollocdn.cc/*/iframe$elemhide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1358
 @@||kinomassa.net/js/advert.js
-! http://forum.adguard.com/showthread.php?8493
-@@||postila.ru/js/libs/blockadblock.js
 ! http://forum.adguard.com/showthread.php?8426
 @@||vtomske.ru/js/adv*.js
 ! http://forum.adguard.com/showthread.php?8432
@@ -5746,6 +5742,7 @@ yandex.*#?#div[class^="layout__top"] > div[class^="layout_"]:has(> div[style] > 
 ||yandex.ru/portal/ntp/banner$redirect=nooptext
 !
 ! Kinopoisk
+www.kinopoisk.ru#%#//scriptlet('set-constant', 'Object.prototype.renderTo', 'undefined')
 www.kinopoisk.ru##.underheader-superbanner-wrapper
 www.kinopoisk.ru##div[class*="__AMNhR styles_"]
 www.kinopoisk.ru##div[id*="direct_R-A-"]
@@ -7058,7 +7055,7 @@ goodgame.ru#$#.wrapper { background: none!important; }
 ! f-journal.ru - удаление отступа сверху
 f-journal.ru#$##conteiner { margin-top: 10px!important; }
 ! filmix.cc - удаление отступа сверху
-filmix.biz,filmix.ac,filmix.tech,filmix.zone#$#.page-wrapper { margin: 0 auto 0 !important; }
+filmix.my,filmix.biz,filmix.ac,filmix.tech,filmix.zone#$#.page-wrapper { margin: 0 auto 0 !important; }
 filmix.co#$#.main-wrapper { margin-top: 0px !important; }
 ! anitokyo.tv - удаление брендированного фона, отступа сверху
 anitokyo.tv#$#body { background: #e4f1f6!important; }
@@ -7365,7 +7362,7 @@ theblueprint.ru,hellomagrussia.ru,unian.ua,uaportal.com,nebogach.ru,text.ru,tvra
 ! ##.advert
 ufacitynews.ru,sevastopol.su,zn.ua,pravo.ru,lubertsyriamo.ru,kommersant.ru,dvnovosti.ru,kubnews.ru,turbopages.org,chernozem.info,flashgames.ru,footballreview.ru,inforesist.org,msgforum.ru,newsland.com,province.ru,tenews.org.ua,tltorrent.ru,zab.ru##.advert
 ! ##div[id^="unit_"]
-ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,sobesednik.com,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.com,baltnews.com.bd,baltnews.com.np,baltnews.ee,baltnews.lt,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
+hightech.fm,ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,sobesednik.com,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.com,baltnews.com.bd,baltnews.com.np,baltnews.ee,baltnews.lt,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
 ! ##div[id^="adfox_"]
 mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,gorodche.ru,smartpress.by,raenza.ru,eadaily.com,zakon.kz,svpressa.ru,udf.name,udf.by,baby.ru,pikabu.ru,thequestion.ru##div[id^="adfox_"]
 !
@@ -7672,6 +7669,14 @@ ivanovonews.ru,gorodn.ru,bits.media,devyatka.ru,gazeta-n1.ru,gorod48.ru,hi-fi.ru
 !
 !
 !
+sport-express.ru##a[href^="//hd.kinopoisk.ru/"]
+sport-express.ru##div[data-component="se-game-app"]
+sport-express.ru##._ad_container_
+sport-express.ru##.se-translation-scoreboard-extra__bookie
+sport-express.ru##.se-translation-scoreboard__stuffing
+sport-express.ru##.se-brandedbuttons
+sport-express.ru##.se-material-page__footer-recommendations
+tophonetics.com##.fuse-wrapper
 disgustingmen.com##.promo_sidebar
 disgustingmen.com##.widget-area > aside.widget:has(> .custom-html-widget:empty)
 freephotoshop.online##td[height="305"][width="100%"]
@@ -7951,7 +7956,7 @@ sez.vporno.video##.hdsd
 citywalls.ru##.cssAdvertBlock1
 cian.ru##div[data-name="AdfoxLayout"]
 cian.ru##section[data-testid="adfox_listing_tgb_wrapper"]
-cian.ru##div[id^="adfox_"]
+fb.ru,cian.ru##div[id^="adfox_"]
 lumpics.ru#?#article div[class^="block"]:has(> div[class^="flat_"])
 m-strana.ru##.blog_right_ad
 m-strana.ru##.sidebar-module:has(div[id^="adfox_"])
@@ -8058,6 +8063,8 @@ tengrisport.kz##.banner-tn_left
 ||asiaplustj.info/adfiles
 asiaplustj.info##.newsbox-outer-banner
 yablyk.com##.yandex-ad
+forbes.ru##div[data-article] > div[class] > div[class] > div[class] > div:has(div[class^="infox_"])
+forbes.ru##div[data-article] > div[class] > div[class] > div:has(div[data-sparrow])
 forbes.ru##div[data-title-deleted="Реклама на Forbes"]
 forbes.ru##div[data-article] > div[class] > div[class] > div[class] > div[class] > div[style^="min-height:"]:has(div[class^="infox_"])
 forbes.ru##div[data-article] > div[class] > div[class] > div:has(> div > div > div > header > svg[width="67"])
@@ -14159,7 +14166,7 @@ ngs22.ru##.ngs-share-button
 nisorinki.net##.nisorinki-stgroup-list
 news.ngs.ru##.nn-text-adv-box
 autogener.ru##.no_gav
-gameru.net##.noad
+filmix.my,gameru.net##.noad
 youhack.ru##.nodeList > li.node blockquote.nodeDescription > span[style^="float: right;"] > a > img
 cossa.ru##.noteFrame
 kinotochka.club##.nothd720
@@ -17767,7 +17774,7 @@ astar.bz,anistar.org,online-star.org##body > div[style="height:265px"]
 /banners*.php$domain=anistar.org|online-star.org
 ||player.twitch.tv^$domain=anistar.org|online-star.org
 !
-filmix.ac,filmix.tech,filmix.zone##div[style="height: 230px;"]
+filmix.my,filmix.ac,filmix.tech,filmix.zone##div[style="height: 230px;"]
 filmix.ac,filmix.tech,filmix.zone###dle-content > div[style="height: 200px"]
 filmix.co##.page-wrapper > div > div.container > div.information
 filmix.biz,filmix.co###dle-content > div.information.warning
@@ -18387,14 +18394,14 @@ youla.ru##.product_item--ad
 vfokuse.mail.ru##a[class^="rb-"][class*="branding"]
 !
 ! VK
-vk.com,vk.ru#?##feed_rows > div.feed_row:has(span.PostHeaderSubtitle__item:contains(/Реклама в|Реклама от/))
+vk.com,vk.ru#?##feed_rows > div.feed_row:has(.PostHeaderSubtitle__item:contains(/Реклама в|Реклама от/))
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content div.ads_ad_snippet)
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content span.ads_ad_avatar)
 vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content div.ads_wall_text:upward(#feed_rows > div[class="feed_row "])
 vk.com,vk.ru#?##feed_rows > div[class="feed_row "] > div.page_block > div._post_content > div.ads_light_container:upward(#feed_rows > div[class="feed_row "])
-vk.com,vk.ru#?##feed_rows > div[class^="feed_row"] > div.page_block div.PostHeaderSubtitle__item > span:not([class]):contains(/[Реклама]/):upward(#feed_rows > div[class^="feed_row"])
+vk.com,vk.ru#?##feed_rows > div[class^="feed_row"] > div.page_block .PostHeaderSubtitle__item > span:not([class]):contains(/[Реклама]/):upward(#feed_rows > div[class^="feed_row"])
 vk.com,vk.ru###feed_rows > div.feed_row > div.post:has(a[data-ad-details-link])
-vk.com,vk.ru#?#.wall_posts > div.post:has(span.PostHeaderSubtitle__item:contains(Реклама в сообществе))
+vk.com,vk.ru#?#.wall_posts > div.post:has(.PostHeaderSubtitle__item:contains(Реклама в сообществе))
 vk.com,vk.ru###feed_rows > div[class="feed_row "] > div[class^="feed_repost-"]:has(div[class="wall_marked_as_ads"])
 vk.com,vk.ru###page_wall_posts > div.post_marked_as_ads
 vk.com,vk.ru##div[id^="postadsite_"]

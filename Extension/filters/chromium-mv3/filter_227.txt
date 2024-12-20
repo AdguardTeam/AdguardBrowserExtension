@@ -1,13 +1,13 @@
-! Checksum: FzGZx/IxkKRt3kH8NDgKmg
+! Checksum: MhAdelg94jo3+Lp9crcX4Q
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.19.78
-! TimeUpdated: 2024-12-16T09:01:46+00:00
+! Version: 2.0.19.85
+! TimeUpdated: 2024-12-19T09:01:58+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.1216.0
+! OriginalVersion: 2024.1219.1
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -1559,6 +1559,8 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+maple.gg###content-container > div[class*=" "]:has(.VenatusAdContainer)
+m.search.naver.com##li[class^="productCard-mobile-module_"].undefined
 news1.kr##article div[style].mt-30
 news1.kr##.ads-article-warp
 heye.kr##.first.banner-wrap
@@ -1581,7 +1583,7 @@ kimpga.com##.ad-slot-vertical
 theddari.com##div[class]:has(> a[aria-label="side-ads"])
 etoland.co.kr##div[style*="margin-top:"] > a[href*="?bo_table=store&wr_id="]
 zod.kr##a[class*="zod-banner"]
-zod.kr##.app-aside-content a[href^="https://link.coupang.com"]
+zod.kr##div.app-aside-content > div:has(> a.zod-banner--reward)
 zod.kr##.app-main-banner
 isplus.com##.rightEnd > .section_inner > div[style]
 boardlife.co.kr##.promote-box

@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable no-console */
+
 /**
  * By the rules of AMO we cannot use remote scripts (and our JS rules can be counted as such).
  * Because of that we use the following approach (that was accepted by AMO reviewers):
@@ -26,8 +28,12 @@
  * 3. We also allow "User rules" to work since those rules are added manually by the user.
  *  This way filters maintainers can test new rules before including them in the filters.
  */
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
+import { exec as execCallback } from 'node:child_process';
+import { promisify } from 'node:util';
+import assert from 'node:assert';
 
+import { minify } from 'terser';
 import * as _ from 'lodash';
 
 import {
@@ -39,7 +45,9 @@ import {
 import { FILTERS_DEST, LOCAL_SCRIPT_RULES_COMMENT } from '../constants';
 import { ADGUARD_FILTERS_IDS } from '../../constants';
 
-const updateLocalScriptRulesForBrowser = async (browser) => {
+const exec = promisify(execCallback);
+
+export const updateLocalScriptRulesForBrowser = async (browser) => {
     const folder = FILTERS_DEST.replace('%browser', browser);
     const rules = {
         comment: LOCAL_SCRIPT_RULES_COMMENT,
@@ -94,6 +102,105 @@ const updateLocalScriptRulesForBrowser = async (browser) => {
         `${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.json`,
         JSON.stringify(rules, null, 4),
     );
+};
+
+// FIXME rework this file to typescript
+export const updateLocalScriptRulesForMv3 = async () => {
+    const browser = 'chromium-mv3';
+    const folder = FILTERS_DEST.replace('%browser', browser);
+    const filterFiles = await fs.readdir(folder);
+    const rawTxtFiles = filterFiles.filter((file) => file.endsWith('.txt') && file.startsWith('filter_'));
+    const jsRules = new Set();
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const file of rawTxtFiles) {
+        // eslint-disable-next-line no-await-in-loop
+        const rawFilterList = (await fs.readFile(`${folder}/${file}`)).toString();
+        const filterListNode = FilterListParser.parse(rawFilterList, {
+            ...defaultParserOptions,
+            includeRaws: false,
+            isLocIncluded: false,
+            tolerant: true,
+        });
+
+        filterListNode.children.forEach((ruleNode) => {
+            if (
+                ruleNode.category === 'Cosmetic'
+                && ruleNode.type === 'JsInjectionRule'
+            ) {
+                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
+                jsRules.add(rawBody);
+            }
+        });
+    }
+
+    const processedRules = [];
+    const errors = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const rule of jsRules) {
+        try {
+            const ruleKey = JSON.stringify(rule);
+            // eslint-disable-next-line no-await-in-loop
+            const minified = await minify(rule, {
+                compress: {
+                    sequences: false,
+                },
+                format: {
+                    beautify: true,
+                    indent_level: 4,
+                },
+            });
+
+            if (minified.code) {
+                processedRules.push(`${ruleKey}: () => {${minified.code}}`);
+            } else {
+                errors.push(`Was not able to minify rule: ${rule}`);
+            }
+        } catch (error) {
+            errors.push(`Skipping invalid rule: ${rule}; Error: ${error.message}`);
+        }
+    }
+
+    if (errors.length > 0) {
+        console.error('Errors:', errors.join('\n'));
+        throw new Error('Invalid rules found');
+    }
+
+    const beautifiedComment = `/**
+${LOCAL_SCRIPT_RULES_COMMENT.split('\n').map((line) => (line ? ` * ${line}` : ' *')).join('\n')}
+ */`;
+
+    const jsContent = `${beautifiedComment}
+const localScriptRules = {
+${processedRules.join(',\n')}
+};
+module.exports = { localScriptRules };
+`;
+    const beautifiedJsContent = (await minify(jsContent, {
+        compress: {
+            sequences: false,
+        },
+        format: {
+            beautify: true,
+            comments: true,
+            indent_level: 4,
+        },
+    })).code;
+
+    try {
+        await fs.writeFile(
+            `${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`,
+            beautifiedJsContent,
+        );
+    } catch (error) {
+        console.error('Error writing file:', error);
+        throw error;
+    }
+
+    // check that code in the file is valid launch file with node
+    const result = await exec(`node ${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`);
+    assert.ok(result.stderr === '', 'No errors during execution');
+    assert.ok(result.stdout === '', 'No output during execution');
 };
 
 export const updateLocalScriptRules = async () => {
