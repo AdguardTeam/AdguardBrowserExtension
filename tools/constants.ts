@@ -96,11 +96,14 @@ export const DECLARATIVE_FILTERS_DEST = 'Extension/filters/%browser/declarative'
 export const METADATA_I18N_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_I18N_METADATA_FILE_NAME}`;
 export const FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%filter.txt`;
 export const OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%s_optimized.txt`;
-export const LOCAL_SCRIPT_RULES_COMMENT = `By the rules of AMO and Chrome we cannot use remote scripts (and our JS rules can be counted as such). Because of that we use the following approach (that was accepted by AMO/Chrome reviewers):
+export const LOCAL_SCRIPT_RULES_COMMENT = `By the rules of AMO and Chrome we cannot use remote scripts (and our JS rules can be counted as such).
+Because of that we use the following approach (that was accepted by AMO and Chrome reviewers):
 
 1. We pre-build JS rules from AdGuard filters into the add-on (see the file called "local_script_rules.json/js").
-2. At runtime we check every JS rule if it's included into "local_script_rules.json/js". If it is included we allow this rule to work since it's pre-built. Other rules are discarded.
-3. We also allow "User rules" to work since those rules are added manually by the user. This way filters maintainers can test new rules before including them in the filters.`;
+2. At runtime we check every JS rule if it is included into "local_script_rules.json/js".
+ If it is included we allow this rule to work since it is pre-built. Other rules are discarded.
+3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
+ This way filters maintainers can test new rules before including them in the filters.`;
 
 // artifacts constants
 export const CHROME_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';
