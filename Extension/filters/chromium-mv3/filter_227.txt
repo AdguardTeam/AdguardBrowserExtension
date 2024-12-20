@@ -1,13 +1,13 @@
-! Checksum: MhAdelg94jo3+Lp9crcX4Q
+! Checksum: ipQ913Plaf/z3LEjAnZ58g
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.19.85
-! TimeUpdated: 2024-12-19T09:01:58+00:00
+! Version: 2.0.19.86
+! TimeUpdated: 2024-12-20T13:02:04+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.1219.1
+! OriginalVersion: 2024.1220.1
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -3495,10 +3495,14 @@ t.hi098123.com#$#.tabad { top: -100px !important; }
 ! chzzk.naver.com
 ! The tusted scriptlet rule should be rechecked after https://github.com/AdguardTeam/Scriptlets/issues/419 is resolved.
 ! Check that PIP of a live streaming and chatting management of a channel work.
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/gfp')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/call')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/vas')
 naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
 @@||ssl.pstatic.net/tveta/libs/glad/prod/$script,xmlhttprequest,domain=chzzk.naver.com
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
+dinfo.3dpchip.com#%#//scriptlet('set-constant', 'linkPass', 'true')
 boardlife.co.kr#$##top-sponsor { height: 60px !important; top: -60px !important; position: absolute !important; visibility: hidden !important; }
 klauncher.kr#%#//scriptlet('remove-node-text', 'script', '_0x')
 ||tistory1.daumcdn.net/tistory/3827361/skin/images/script3.js$domain=devjit.tistory.com

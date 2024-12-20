@@ -5,7 +5,7 @@
  * 2. At runtime we check every JS rule if it's included into "local_script_rules.json/js". If it is included we allow this rule to work since it's pre-built. Other rules are discarded.
  * 3. We also allow "User rules" to work since those rules are added manually by the user. This way filters maintainers can test new rules before including them in the filters.
  */
-const localScriptRules = {
+export const localScriptRules = {
     'var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};': () => {},
     "var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};": () => {},
     "var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };": () => {},
@@ -5459,8 +5459,4 @@ const localScriptRules = {
         };
         var e;
     }
-};
-
-module.exports = {
-    localScriptRules: localScriptRules
 };

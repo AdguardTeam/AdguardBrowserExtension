@@ -171,10 +171,9 @@ ${LOCAL_SCRIPT_RULES_COMMENT.split('\n').map((line) => (line ? ` * ${line}` : ' 
  */`;
 
     const jsContent = `${beautifiedComment}
-const localScriptRules = {
+export const localScriptRules = {
 ${processedRules.join(',\n')}
 };
-module.exports = { localScriptRules };
 `;
     const beautifiedJsContent = (await minify(jsContent, {
         compress: {
@@ -192,15 +191,17 @@ module.exports = { localScriptRules };
             `${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`,
             beautifiedJsContent,
         );
+
+        // Run validation with ES modules support
+        const result = await exec(
+            `node -r @swc-node/register ${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`,
+        );
+        assert.ok(result.stderr === '', 'No errors during execution');
+        assert.ok(result.stdout === '', 'No output during execution');
     } catch (error) {
-        console.error('Error writing file:', error);
+        console.error('Error:', error);
         throw error;
     }
-
-    // check that code in the file is valid launch file with node
-    const result = await exec(`node ${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`);
-    assert.ok(result.stderr === '', 'No errors during execution');
-    assert.ok(result.stdout === '', 'No output during execution');
 };
 
 export const updateLocalScriptRules = async () => {
