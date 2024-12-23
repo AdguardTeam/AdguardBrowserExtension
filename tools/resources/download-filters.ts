@@ -35,6 +35,7 @@ import {
     METADATA_I18N_DOWNLOAD_URL_FORMAT,
     FILTER_DOWNLOAD_URL_FORMAT,
     OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT,
+    AssetsFiltersBrowser,
 } from '../constants';
 import {
     ADGUARD_FILTERS_IDS,
@@ -43,17 +44,6 @@ import {
 } from '../../constants';
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
-
-/**
- * List of browsers which has its own filters assets directory.
- */
-export const enum AssetsFiltersBrowser {
-    Chromium = 'chromium',
-    ChromiumMv3 = 'chromium-mv3',
-    Edge = 'edge',
-    Firefox = 'firefox',
-    Opera = 'opera',
-}
 
 /**
  * Data for downloading a resource.

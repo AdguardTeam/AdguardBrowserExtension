@@ -19,6 +19,7 @@
 
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
+import { updateLocalScriptRulesForChromiumMv3 } from './resources/update-local-script-rules';
 
 const DEFAULT_OPENAI_API_TOKEN = '<openai_api_key>';
 
@@ -36,6 +37,7 @@ const isOpenAiTokenProvided = () => {
 const resourcesMv3 = async () => {
     console.log('Downloading resources for MV3...');
     await downloadAndPrepareMv3Filters();
+    await updateLocalScriptRulesForChromiumMv3();
     console.log('Resources for MV3 downloaded');
 
     if (isOpenAiTokenProvided()) {

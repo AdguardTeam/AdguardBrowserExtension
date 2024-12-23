@@ -18,8 +18,12 @@
 
 import { convertFilters } from '@adguard/tsurlfilter/cli';
 
-import { FILTERS_DEST, DECLARATIVE_FILTERS_DEST } from '../constants';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../constants';
+import {
+    FILTERS_DEST,
+    DECLARATIVE_FILTERS_DEST,
+    AssetsFiltersBrowser,
+} from '../constants';
 
 const convert = async (browser: string) => {
     const filtersDir = FILTERS_DEST.replace('%browser', browser);
@@ -36,5 +40,5 @@ const convert = async (browser: string) => {
 };
 
 export const convertFiltersToRulesets = async () => {
-    await convert('chromium-mv3');
+    await convert(AssetsFiltersBrowser.ChromiumMv3);
 };

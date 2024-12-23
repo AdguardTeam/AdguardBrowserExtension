@@ -1,8 +1,8 @@
-! Checksum: D6bfcKfbnCR0EboL9Qlx3Q
+! Checksum: XNq/KjAx1yXiydmyzORj/g
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.18.10
-! TimeUpdated: 2024-12-17T12:36:03+00:00
+! Version: 2.0.18.17
+! TimeUpdated: 2024-12-23T09:35:14+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -123,6 +123,11 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+etstur.com###appStoreContentForm
+m.olx.ua###hydrate-root div[class^="css-"]:has(> button[data-testid="app-install-banner-close"])
+lavka.yandex.ru###root > button[style*="avatars.mds.yandex.net/get-bunker/"]
+lavka.yandex.ru#%#//scriptlet('trusted-set-cookie', 'lavka__install_app_modal_shown_at', '2734447881099')
+||animatebookstore.com/js/smartbanner/smart-app-banner.js
 m365.cloud.microsoft##.hero-section--mobile-banner
 tenbin.ai##.p-WorkspacePWAInstallBanner
 studysmarter.*##.va-welcome
@@ -131,7 +136,7 @@ studysmarter.*##.va-intent-banner
 studysmarter.*##.va-flashcards-list:has(> div[class] > div[class] > a[href*="app.studysmarter.de/signup"])
 studysmarter.*##.bottom-blue-gradient
 studysmarter.*##img[alt*="Download"]
-studysmarter.*##data-ai-flashcard
+studysmarter.*##div[data-ai-flashcard]
 studysmarter.*##.va-intent-premium
 thesportstak.com##aside > div.flex:has(> a[href^="https://onelink.to/"])
 thesportstak.com##.block > div.my-4:has(> div.flex > img[title="Sportstak"])
@@ -2322,7 +2327,7 @@ genius.com##.apple_music_player_container
 680news.com##.div-app-alerts
 duzcerota.com##.app-area
 news.tv-asahi.co.jp##.sp-app-banner
-ck101.com,av.movie,ettoday.net,portal.librus.pl###app-download
+rei.com,ck101.com,av.movie,ettoday.net,portal.librus.pl###app-download
 portal.librus.pl##picture > img[src="https://portal.librus.pl/images/base/aplikacjamobilna.jpg"]
 ||portal.librus.pl/images/base/aplikacjamobilna.jpg
 ||portal.librus.pl/images/base/aplikacjamobilna_mobile.jpg
