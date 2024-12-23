@@ -1,13 +1,13 @@
-! Checksum: FzGZx/IxkKRt3kH8NDgKmg
+! Checksum: UOccm9yLcMXOUH45KJjVQA
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.19.78
-! TimeUpdated: 2024-12-16T09:01:46+00:00
+! Version: 2.0.19.88
+! TimeUpdated: 2024-12-21T21:01:47+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.1216.0
+! OriginalVersion: 2024.1221.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -1559,6 +1559,8 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+maple.gg###content-container > div[class*=" "]:has(.VenatusAdContainer)
+m.search.naver.com##li[class^="productCard-mobile-module_"].undefined
 news1.kr##article div[style].mt-30
 news1.kr##.ads-article-warp
 heye.kr##.first.banner-wrap
@@ -1581,7 +1583,7 @@ kimpga.com##.ad-slot-vertical
 theddari.com##div[class]:has(> a[aria-label="side-ads"])
 etoland.co.kr##div[style*="margin-top:"] > a[href*="?bo_table=store&wr_id="]
 zod.kr##a[class*="zod-banner"]
-zod.kr##.app-aside-content a[href^="https://link.coupang.com"]
+zod.kr##div.app-aside-content > div:has(> a.zod-banner--reward)
 zod.kr##.app-main-banner
 isplus.com##.rightEnd > .section_inner > div[style]
 boardlife.co.kr##.promote-box
@@ -1687,7 +1689,6 @@ g-enews.com,g-enews.com.bd,g-enews.com.np##div[id^="tdn_"][style*="height:"]
 search.naver.com##div[id^="power_link_together_"]
 namu.wiki,~board.namu.wiki##div[class] ~ div div + *[class]:not([class*=" "]) *[class*=" "] div[class]:has(> iframe[id^="google_ads_"])
 namu.wiki,~board.namu.wiki##div[class] ~ div div + *[class]:not([class*=" "]) *[class*=" "] div[class]:has(iframe[src*="arca.live/external/callad"])
-namu.wiki,~board.namu.wiki##div:not([class*=" "]) ~ div div + div[class]:has(> div[id][class]):not(:has(div[class*=" "] > span))
 namu.wiki,~board.namu.wiki##div[class]:not([class*=" "]) ~ div[class*=" "] > *[class*=" "] > *:has(iframe[id^="google_ads_iframe_"])
 namu.wiki,~board.namu.wiki##*[class]:not([class*=" "]) > div[class]:not([class*=" "]) ~ *:not([class]) > *[class]:has(iframe[id^="google_ads_iframe_"])
 namu.wiki,~board.namu.wiki##*[class]:not([class*=" "]) > div[class]:not([class*=" "]) ~ *:not([class]) > *[class]:has(iframe[src*="arca.live/external/callad"])
@@ -3493,10 +3494,14 @@ t.hi098123.com#$#.tabad { top: -100px !important; }
 ! chzzk.naver.com
 ! The tusted scriptlet rule should be rechecked after https://github.com/AdguardTeam/Scriptlets/issues/419 is resolved.
 ! Check that PIP of a live streaming and chatting management of a channel work.
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/gfp')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/call')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/vas')
 naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
 @@||ssl.pstatic.net/tveta/libs/glad/prod/$script,xmlhttprequest,domain=chzzk.naver.com
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
+dinfo.3dpchip.com#%#//scriptlet('set-constant', 'linkPass', 'true')
 boardlife.co.kr#$##top-sponsor { height: 60px !important; top: -60px !important; position: absolute !important; visibility: hidden !important; }
 klauncher.kr#%#//scriptlet('remove-node-text', 'script', '_0x')
 ||tistory1.daumcdn.net/tistory/3827361/skin/images/script3.js$domain=devjit.tistory.com

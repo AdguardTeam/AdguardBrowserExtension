@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
+<!-- TODO: add release date and local link for the version -->
+## 5.0.178
+
+### Changed
+
+- Remade JS rules injections in MV3:
+    - use `chrome.scripting` API for injecting functions for script rules from the pre-built filters,
+    - use script tag injection only for script rules manually added by users —
+      rules from *User rules* and *Custom filters*.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.8.
+
+### Removed
+
+- Ability to execute new `AG_` script rules from *User rules* and *Custom filters* in MV3.
+
 <!-- TODO: add release date -->
 ## [4.4.48]
 

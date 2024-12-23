@@ -1,8 +1,8 @@
-! Checksum: LgOIQl6CYLtKXRS8XZxRNw
+! Checksum: 2sBePrCb5nb3nDKNipervQ
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.45.5
-! TimeUpdated: 2024-12-16T12:35:19+00:00
+! Version: 2.0.45.15
+! TimeUpdated: 2024-12-23T17:34:34+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -424,7 +424,8 @@ t-online.de#@#div[class^="Tsshopst"]
 !--- Sourcepoint ---
 essen-und-trinken.de#%#//scriptlet('prevent-setTimeout', 's.call(null)', '10')
 /^https:\/\/www\.essen-und-trinken\.de\/[a-z]{10,}\.js$/$script,~third-party,match-case
-essen-und-trinken.de,urbia.de#%#!function(){function b(){}function a(a){return{get:function(){return a},set:b}}function c(a){a(!1)}AG_defineProperty('_sp_.config.content_control_callback',a(b)),AG_defineProperty('_sp_.config.spid_control_callback',a(b)),AG_defineProperty('_sp_.config.vid_control_callback',a(b)),AG_defineProperty('_sp_.config.disableBlockerStyleSheets',a(!1)),AG_defineProperty('_sp_.checkState',a(c)),AG_defineProperty('_sp_.isAdBlocking',a(c)),AG_defineProperty('_sp_.isAdblocking',a(c)),AG_defineProperty('_sp_.isContentBlockerPresent',a(c)),AG_defineProperty('_sp_.getSafeUri',a(function(a){return a})),AG_defineProperty('_sp_.pageChange',a(b)),AG_defineProperty('_sp_.setupSmartBeacons',a(b)),AG_defineProperty('_sp_.msg.startMsg',a(b)),document.addEventListener('sp.blocking',function(a){a.stopImmediatePropagation(),a=document.createEvent('Event'),a.initEvent('sp.not_blocking',!0,!1),this.dispatchEvent(a)})}();
+! Probably obsolete and must be removed (JS)
+! essen-und-trinken.de,urbia.de#%#!function(){function b(){}function a(a){return{get:function(){return a},set:b}}function c(a){a(!1)}AG_defineProperty('_sp_.config.content_control_callback',a(b)),AG_defineProperty('_sp_.config.spid_control_callback',a(b)),AG_defineProperty('_sp_.config.vid_control_callback',a(b)),AG_defineProperty('_sp_.config.disableBlockerStyleSheets',a(!1)),AG_defineProperty('_sp_.checkState',a(c)),AG_defineProperty('_sp_.isAdBlocking',a(c)),AG_defineProperty('_sp_.isAdblocking',a(c)),AG_defineProperty('_sp_.isContentBlockerPresent',a(c)),AG_defineProperty('_sp_.getSafeUri',a(function(a){return a})),AG_defineProperty('_sp_.pageChange',a(b)),AG_defineProperty('_sp_.setupSmartBeacons',a(b)),AG_defineProperty('_sp_.msg.startMsg',a(b)),document.addEventListener('sp.blocking',function(a){a.stopImmediatePropagation(),a=document.createEvent('Event'),a.initEvent('sp.not_blocking',!0,!1),this.dispatchEvent(a)})}();
 !
 !----------------------------------
 !
@@ -840,8 +841,6 @@ bzbasel.ch#$#.az-iso--adblockerBlocker { display: none!important; }
 @@||wer-weiss-was.de/assets/javascripts/ads/
 ! https://forum.adguard.com/index.php?threads/22163/
 @@||20min.rcmd.tda.io^$domain=20min.ch
-! https://github.com/AdguardTeam/AdguardFilters/issues/5048
-menshealth.de#%#window.blockAdBlock = function() {};
 ! https://forum.adguard.com/index.php?threads/schulferien-org.21709/
 ||schulferien.org/px.js
 ! https://forum.adguard.com/index.php?threads/21591/
@@ -924,14 +923,10 @@ golem.de##article + div.formatted[style]
 @@||js.adscale.de/map.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2278
 sport1.de##body > div[class^="s1-laterpay-"]
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1998
-freenet.de#%#window.blockAdBlock = function() {};
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1951
 @@||hl-live.de^$generichide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1902
 ||laterpay.net^$domain=foerderland.de
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1831
-gamestar.de#%#window.blockAdBlock = function() {};
 ! http://forum.adguard.com/showthread.php?9798
 @@||yagiay.com/ad_data/*.js$domain=pcwelt.de
 @@||yagiay.com//ad_data/*.js$domain=pcwelt.de
@@ -1179,14 +1174,10 @@ java-forum.org#%#var st = ".sidebar > div.widget-container:first-of-type, .sideb
 news.de#%#window.disablePopUnder = true;
 ! https://forum.adguard.com/index.php?threads/14298/
 stern.de#%#//scriptlet("remove-attr", "data-clickcommand", "a")
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1411
-sueddeutsche.de#%#window.blockAdBlock = function() {};
 ! http://forum.adguard.com/showthread.php?6896
 ||videogameszone.de/common/saturn/
 ! http://forum.adguard.com/showthread.php?6814
 chip.de#%#var originalUserAgent = navigator.userAgent; Object.defineProperty(navigator, 'userAgent', { get: function() { return originalUserAgent + ' Edge'; } });
-! http://forum.adguard.com/showthread.php?5955
-menshealth.de#%#function google_ad_request_done() {};
 !
 !--------------------------------------!
 !------- CSS fixes --------------------!
@@ -1530,6 +1521,9 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+tvtoday.de##.smartphone_banner_sticky
+||topteaser.hcsb-2.de/nk-topteaser-*/$subdocument,domain=kurier.de
+heise.de##div[data-module-name="AdModule"]
 tvspielfilm.de##.ads_footerad
 vermoegenmagazin.de###vermoegen_marginal
 vermoegenmagazin.de##div[class^="content-banner"]
@@ -4992,7 +4986,6 @@ transfermarkt.de##div[style="margin-top:20px;"] > div.fl
 tagesspiegel.de###urban-teaser1
 chip.de#?#.wrapper-safe section .ButtonAuswahl + div:not([class], [id]) > div[class] > a[href*="https://www.chip.de/downloads/"]:has(> div[id]:contains(/^Anzeige$/))
 businessinsider.de#?#.sponsored:has(> .teaser-post__inner > .teaser-post__header .list-labels__item > .post-term-label:contains(Anzeige))
-heise.de##body > div.a-layout:has(> div.a-layout__container > div.a-layout__item > div[class^="ad-"])
 lieferando.de#?#div[data-dd-action-name="restaurant-card"]:has(a div[data-qa="sponsored-indicator-content"])
 nydus.org#?##r600sky
 nydus.org#?##fplayer > div[id^="nbn"]
@@ -6645,7 +6638,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||trocado.at^$third-party
 ||turboads.de^$third-party
 ||twiago.com^$third-party
-||uclo.net^$third-party
 ||uselayer.com^$third-party
 ||vip-websc.org^$third-party
 ||vipbanner.de^$third-party
@@ -8422,6 +8414,7 @@ connextra.com##iframe[src^="https://ssl.connextra.com"]
 ||flashtalking.com^*.mp4$redirect=noopmp4-1s,domain=toggo.de
 ||smartclip.net/creatives/uploads/*.mp4$redirect=noopmp4-1s,domain=toggo.de
 ||smartclip.net^$~media,domain=toggo.de
+$csp=script-src 'self' data: 'unsafe-inline' 'unsafe-hashes' 'unsafe-eval' static.veevcdn.co,domain=filmpalast.to
 /^https?:\/\/.*\.(jpg|jpeg|gif|png|php|svg|ico|js|txt|css)/$popup,domain=190.115.18.20|aniworld.to|canna-power.to|canna.to|kinoger.com|kinoger.to|kinoonline.net|s.to|serien.cam|serienstream.to
 /lp/chip-$popup,domain=chip.de
 ^utm_medium=popunder^$popup,domain=hilfreich.de
@@ -11193,8 +11186,7 @@ nydus.org##div:has(> #nydus_org_970x300_billboard_responsive)
 bauernzeitung.ch##div:has(> .advert)
 froheweihnachten.info,weihnachten.me,weihnachts-bilder.org,weihnachts-filme.com##div:has(> img[referrerpolicy="unsafe-url"])
 mediamarkt.at,mediamarkt.de,saturn.de##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
-chip.de##div[data-vr-zone="hp-aquamarin-1"]:has(img[src^="https://im.chip.de/"])
-chip.de##div[data-vr-zone="hp-aquamarin-2"]:has(img[src^="https://im.chip.de/"])
+chip.de##div[data-vr-zone^="hp-aquamarin-"] > article:has(img[src^="https://im.chip.de/"])
 jungefreiheit.de##div[data-widget_type="shortcode.default"]:has(.adsbygoogle)
 mobile.de##div[style="min-height:250px"]:has(#SRP_BILLBOARD_ADSENSE)
 jungefreiheit.de##div[style="text-align: center;"]:has(.adsbygoogle)
@@ -11207,7 +11199,6 @@ baur.de##li:has(a[href^="https://b.fr3.eu.criteo.com/rm?"])
 golem.de##li[data-article-id]:has(.icon-addy)
 rewe.de#?#.rs-qa-product:contains(Gesponsert)
 mein-mmo.de##section.post:has([data-type="sponsored"])
-chip.de##section[class="mt-sm fb-col-7 fb-col-sm-12 Listing"] > div:has(a[title*="Avast Free Antivirus"])
 finanznachrichten.de##tr:has(span.sprite.h-w-c)
 wallstreet-online.de##tr:has(td > .float-end > span[title="Anzeige"])
 wallstreet-online.de##tr:has(td.right:has(img[alt="Anzeige"]))
@@ -11228,6 +11219,7 @@ bitreporter.de#?#.code-block:has(span:contains(/ANZEIGE|Anzeige|Werbung|WERBUNG/
 carpediem.life#?#.post-overview:has(div:contains(Anzeige))
 celleheute.de#?#div.YzqVVZ:has(span.wixui-rich-text__text:contains(Anzeigen))
 chip.de#?#a[href^="https://www.chip.de/downloads/"]:has(div[id]:contains(Werbung))
+chip.de#?#div[data-vr-contentbox^="teaser-"]:has(div.Label__Content--Text:contains(Anzeige))
 computerbase.de#?#div.text-asset.text-width:has(p.text-width:contains(Anzeige))
 computerbild.de#?#article.gridArea__teaserM:has(div.teaserBlock__label:contains(Anzeige))
 cyclingmagazine.de#?#p:contains(Anzeige) > strong > a[target="_blank"][rel="noopener"] > picture
