@@ -1,8 +1,8 @@
-! Checksum: jRcRB1WGGeEWmdARIzTkFw
+! Checksum: MRSG5crCLEbCSH7fsGJ3GQ
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.77.85
-! TimeUpdated: 2024-12-23T15:33:40+00:00
+! Version: 2.0.77.86
+! TimeUpdated: 2024-12-23T18:33:01+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -108380,6 +108380,9 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 /prod/dfm/g2i.min.js$redirect=nooptext,important,domain=dailycamera.com
 /prod/dfm/t8y9347t.min.js$redirect=nooptext,important,domain=dailycamera.com
 !
+! BUG: https://github.com/AdguardTeam/Scriptlets/issues/472
+! TODO: replace by #%#//scriptlet('metrika-yandex-tag') and move to regular rules
+!
 ! NOTE: Specific rules
 !
 ||join.protonvpn.com/api/data/v1/metrics
@@ -109190,7 +109193,6 @@ lto.de##img[src^="https://ssl-wolterskluwer.met.vgwort.de/"]
 ||worldhistory.org/analytics/pageview.js
 ||g.newtimes.com/pd.js
 ||newtimes.com/analytics?
-! /https\:\/\/www\.computerbase\.de\/[^(js|preisvergleich|forum)\/]/$xmlhttprequest,~third-party,domain=computerbase.de
 ||computerbase.de/analytics
 ||rec1.smt.docomo.ne.jp/bcn_access_log/
 ||kccsrecommend.site/torimochi_log/
