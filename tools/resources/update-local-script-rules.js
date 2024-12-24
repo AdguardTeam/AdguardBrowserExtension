@@ -26,15 +26,12 @@
  * 3. We also allow "User rules" to work since those rules are added manually by the user.
  *  This way filters maintainers can test new rules before including them in the filters.
  */
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 
-import * as _ from 'lodash';
+import { some } from 'lodash-es';
 
-import {
-    CosmeticRuleParser,
-    FilterListParser,
-    defaultParserOptions,
-} from '@adguard/agtree';
+import { FilterListParser } from '@adguard/agtree';
+import { CosmeticRuleParser, defaultParserOptions } from '@adguard/agtree/parser';
 
 import { FILTERS_DEST, LOCAL_SCRIPT_RULES_COMMENT } from '../constants';
 import { ADGUARD_FILTERS_IDS } from '../../constants';
@@ -83,7 +80,7 @@ const updateLocalScriptRulesForBrowser = async (browser) => {
 
                 if (rules.rules[rawBody] === undefined) {
                     rules.rules[rawBody] = [toPush];
-                } else if (!_.some(rules.rules[rawBody], toPush)) {
+                } else if (!some(rules.rules[rawBody], toPush)) {
                     rules.rules[rawBody].push(toPush);
                 }
             }

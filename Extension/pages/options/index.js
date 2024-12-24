@@ -16,6 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { optionsPage } from '../../src/pages/options';
+import { optionsPage } from '../../src/pages/options/index';
 
 optionsPage.init();

@@ -16,17 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import {
-    Configuration,
-    DefinePlugin,
-    type EntryObject,
-} from 'webpack';
+// Define plugin is not named exported by webpack.
+import webpack, { Configuration, type EntryObject } from 'webpack';
 
 import {
     BUILD_PATH,
@@ -76,12 +74,12 @@ import {
 } from './common-constants';
 import { getEnvConf } from './helpers';
 
-const config = getEnvConf(BUILD_ENV);
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
-const TEXT_ENCODER_POLYFILL_PATH = path.resolve(
-    __dirname,
-    '../../node_modules/@adguard/tswebextension/dist/text-encoding-polyfill.js',
-);
+const config = getEnvConf(BUILD_ENV);
 
 const OUTPUT_PATH = config.outputPath;
 
@@ -176,9 +174,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             },
             [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
             [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
-            [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: {
-                import: TEXT_ENCODER_POLYFILL_PATH,
-            },
+            [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: ['text-encoding'],
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
                 dependOn: [
@@ -213,11 +209,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 'node_modules/.pnpm/node_modules',
             ],
             fallback: {
-                crypto: require.resolve('crypto-browserify'),
-                stream: require.resolve('stream-browserify'),
-                vm: require.resolve('vm-browserify'),
+                crypto: 'crypto-browserify',
+                stream: 'stream-browserify',
+                vm: 'vm-browserify',
             },
-            extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'],
+            extensions: ['.ts', '.js', '.tsx', '.jsx'],
             // pnpm uses symlinks to manage dependencies, so we need to resolve them
             symlinks: true,
             alias: {
@@ -312,6 +308,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                             },
                         },
                     ],
+                    resolve: {
+                        // Needed to ignore extensions in the import statements
+                        fullySpecified: false,
+                    },
                 },
                 {
                     test: /\.(css|pcss)$/,
@@ -416,7 +416,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     },
                 ],
             }),
-            new DefinePlugin({
+            new webpack.DefinePlugin({
                 // We are doing stricter JS rule checking for Firefox AMO, so we
                 // need to determine if the Firefox browser is AMO or not.
                 // TODO consider making this variable to be less common used

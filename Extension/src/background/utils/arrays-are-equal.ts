@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 
 /**
  * Compare two arrays and return true if they are equal.

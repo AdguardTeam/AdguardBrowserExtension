@@ -14,13 +14,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * This config is used for linting of the background directory.
  */
 
-/* eslint-disable jsdoc/require-jsdoc */
 module.exports = {
-    extends: '../.eslintrc.js',
+    extends: '../../.eslintrc.cjs',
     parserOptions: {
-        project: '../../../../tsconfig.json',
+        project: '../../tsconfig.json',
         tsconfigRootDir: __dirname,
         sourceType: 'module',
     },
@@ -33,16 +34,18 @@ module.exports = {
         'jsdoc/require-returns-description': 'error',
         'jsdoc/require-returns': 'error',
         'jsdoc/require-param': 'error',
-        // TODO: Enable this rule
-        'jsdoc/no-undefined-types': 'off',
+        'jsdoc/no-undefined-types': 'error',
         'jsdoc/require-returns-check': 'error',
         'jsdoc/require-description-complete-sentence': ['error'],
         'jsdoc/require-jsdoc': [
             'error',
             {
                 contexts: [
-                    'Property',
-                    'TSTypeAliasDeclaration',
+                    'ClassDeclaration',
+                    'ClassProperty',
+                    'FunctionDeclaration',
+                    'MethodDefinition',
+                    'ArrowFunctionExpression',
                 ],
             },
         ],
@@ -50,8 +53,11 @@ module.exports = {
             'error',
             {
                 contexts: [
-                    'Property',
-                    'TSTypeAliasDeclaration',
+                    'ClassDeclaration',
+                    'ClassProperty',
+                    'FunctionDeclaration',
+                    'MethodDefinition',
+                    'ArrowFunctionExpression',
                 ],
             },
         ],

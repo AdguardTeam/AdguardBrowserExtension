@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
+import path from 'node:path';
 
 import { type Configuration } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';

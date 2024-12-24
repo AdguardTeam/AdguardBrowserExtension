@@ -16,7 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
@@ -34,6 +35,11 @@ import { type BrowserConfig } from '../common-constants';
 import { megabytesToBytes, SizeLimitPlugin } from '../size-limit-plugin';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 const SIZE_LIMITS_MB = {
     // Need to be less than 4 MB, because Firefox Extensions Store has a limit of 4 MB for .js files.

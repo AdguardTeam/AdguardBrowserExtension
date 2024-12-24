@@ -115,15 +115,13 @@ export const SafeBrowsing = () => {
                                 </button>
                             </>
                         ) : (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={handleEnableAdvanced}
-                                    className="button button--white alert__btn"
-                                >
-                                    {translator.getMessage('blocking_pages_advanced_button')}
-                                </button>
-                            </>
+                            <button
+                                type="button"
+                                onClick={handleEnableAdvanced}
+                                className="button button--white alert__btn"
+                            >
+                                {translator.getMessage('blocking_pages_advanced_button')}
+                            </button>
                         )}
                     </div>
                 </div>

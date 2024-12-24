@@ -183,9 +183,7 @@ const ruleAccessor = (props) => {
         // If exactly matched rules do not contain assumed rule - we render
         // attention mark for this request.
         const attention = !matchedRulesContainsAssumed && (
-            <>
-                <span>❗</span>
-            </>
+            <span>❗</span>
         );
 
         return (

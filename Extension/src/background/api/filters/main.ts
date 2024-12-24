@@ -73,7 +73,7 @@ export class FiltersApi {
         await FiltersApi.initI18nMetadata();
         await FiltersApi.initMetadata();
 
-        CustomFilterApi.init();
+        CustomFilterApi.init(network);
         AllowlistApi.init();
         await UserRulesApi.init(isInstall);
 

@@ -19,8 +19,8 @@
 /**
  * Update filters in repository
  */
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import crypto from 'crypto';
 
 import fse from 'fs-extra';

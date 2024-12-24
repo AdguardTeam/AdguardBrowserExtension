@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+import escapeStringRegexp from 'escape-string-regexp';
 
 import { RootOption, FiltersOption } from '../../../Extension/src/background/schema';
 import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../../../constants';
@@ -22,6 +23,9 @@ export const mockFilterPath = 'test-filter.txt';
 /**
  * Mocks all xhr requests via {@link sinon.SinonFakeServer}
  *
+ * TODO: Maybe it's better to split this server into small servers for each
+ * test, where it's needed: create, setup mocks and delete after it.
+ *
  * @returns xhr fake server
  */
 export const mockXhrRequests = (): sinon.SinonFakeServer => {
@@ -29,13 +33,15 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
         respondImmediately: true,
     });
 
-    server.respondWith('GET', new RegExp(`/${REMOTE_METADATA_FILE_NAME}`), [
+    // eslint-disable-next-line max-len
+    server.respondWith('GET', new RegExp(`/(?:${escapeStringRegexp(REMOTE_METADATA_FILE_NAME)})`), [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(metadata),
     ]);
 
-    server.respondWith('GET', new RegExp(`/${REMOTE_I18N_METADATA_FILE_NAME}`), [
+    // eslint-disable-next-line max-len
+    server.respondWith('GET', new RegExp(`\/(?:${escapeStringRegexp(REMOTE_I18N_METADATA_FILE_NAME)})`), [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(i18nMetadata),

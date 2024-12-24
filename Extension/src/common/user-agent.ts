@@ -232,8 +232,7 @@ export class UserAgent {
 
     static isFirefoxMobile = UserAgent.isFirefox && UserAgent.isMobileDevice;
 
-    static isSupportedBrowser =
-        (UserAgent.isChrome && Number(UserAgent.version) >= 79)
+    static isSupportedBrowser = (UserAgent.isChrome && Number(UserAgent.version) >= 79)
         || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= 79)
         || (UserAgent.isFirefox && Number(UserAgent.version) >= 78)
         || (UserAgent.isFirefoxMobile && Number(UserAgent.version) >= 113)

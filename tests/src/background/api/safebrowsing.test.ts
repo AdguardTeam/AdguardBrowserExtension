@@ -1,5 +1,11 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import {
+    describe,
+    beforeEach,
+    it,
+    expect,
+} from 'vitest';
 
 import { UrlUtils } from '../../../../Extension/src/background/utils/url';
 import { SafebrowsingApi } from '../../../../Extension/src/background/api/safebrowsing';
@@ -9,7 +15,11 @@ import { SettingsApi } from '../../../../Extension/src/background/api/settings/m
 import { type SafebrowsingStorageData } from '../../../../Extension/src/background/schema';
 import { mockLocalStorage } from '../../../helpers';
 
-describe('Safebrowsing API', () => {
+/**
+ * We do not use Safebrowsing API in MV3. Actually we could try to implement
+ * them, but CTO decided to not use them at all in MV3.
+ */
+describe.skipIf(__IS_MV3__)('Safebrowsing API', () => {
     let storage: Storage.StorageArea;
 
     beforeEach(() => {
@@ -83,7 +93,7 @@ describe('Safebrowsing API', () => {
             const url = 'https://example.com';
             const list = 'adguard-malware-shavar';
 
-            const expectedRedirectUrl = browser.runtime.getURL(
+            const expectedRedirectUrl = chrome.runtime.getURL(
                 'pages/safebrowsing.html'
             + '?malware=true'
             + '&host=example.com'

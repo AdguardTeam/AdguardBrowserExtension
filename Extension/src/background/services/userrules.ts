@@ -20,6 +20,8 @@
 // because checkUserRulesRegexpErrors use only in engine-mv3
 import { type ConfigurationResult, UnsupportedRegexpError } from '@adguard/tswebextension/mv3';
 
+import type { Engine } from 'engine';
+
 import {
     AddUserRuleMessage,
     MessageType,
@@ -29,7 +31,6 @@ import {
     SetEditorStorageContentMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
-import { engine } from '../engine';
 import { SettingOption } from '../schema';
 import {
     SettingsApi,
@@ -56,10 +57,16 @@ export type GetUserRulesEditorDataResponse = {
  * Service for handling user rules: reading, adding, deleting.
  */
 export class UserRulesService {
+    private static engine: Engine;
+
     /**
      * Initializes UserRulesService: creates handlers for operations on user rules.
+     *
+     * @param engine Engine instance.
      */
-    public static async init(): Promise<void> {
+    public static async init(engine: Engine): Promise<void> {
+        UserRulesService.engine = engine;
+
         messageHandler.addListener(MessageType.GetUserRules, UserRulesService.getUserRules);
         messageHandler.addListener(MessageType.GetUserRulesEditorData, UserRulesService.getUserRulesEditorData);
         messageHandler.addListener(MessageType.SaveUserRules, UserRulesService.handleUserRulesSave);
@@ -69,7 +76,7 @@ export class UserRulesService {
         messageHandler.addListener(MessageType.SetEditorStorageContent, UserRulesService.setEditorStorageContent);
         messageHandler.addListener(MessageType.ResetUserRulesForPage, UserRulesService.resetUserRulesForPage);
 
-        engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
+        UserRulesService.engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
 
         settingsEvents.addListener(
             SettingOption.UserFilterEnabled,
@@ -116,7 +123,7 @@ export class UserRulesService {
 
         // update the engine only if the module is enabled
         if (UserRulesApi.isEnabled()) {
-            engine.debounceUpdate();
+            UserRulesService.engine.debounceUpdate();
         }
     }
 
@@ -131,7 +138,7 @@ export class UserRulesService {
         await UserRulesApi.setUserRules(value.split(NEWLINE_CHAR_UNIX));
         // update the engine only if the module is enabled
         if (UserRulesApi.isEnabled()) {
-            await engine.update();
+            await UserRulesService.engine.update();
         }
     }
 
@@ -147,7 +154,7 @@ export class UserRulesService {
 
         // update the engine only if the module is enabled
         if (UserRulesApi.isEnabled()) {
-            engine.debounceUpdate();
+            UserRulesService.engine.debounceUpdate();
         }
     }
 
@@ -163,7 +170,7 @@ export class UserRulesService {
 
         // update the engine only if the module is enabled
         if (UserRulesApi.isEnabled()) {
-            engine.debounceUpdate();
+            UserRulesService.engine.debounceUpdate();
         }
     }
 
@@ -176,9 +183,9 @@ export class UserRulesService {
      */
     private static async handleEnableStateChange(): Promise<void> {
         if (__IS_MV3__) {
-            await engine.update();
+            await UserRulesService.engine.update();
         } else {
-            engine.debounceUpdate();
+            UserRulesService.engine.debounceUpdate();
         }
     }
 
@@ -191,7 +198,7 @@ export class UserRulesService {
         const { url, tabId } = message.data;
 
         await UserRulesApi.removeRulesByUrl(url);
-        await engine.update();
+        await UserRulesService.engine.update();
         await TabsApi.reload(tabId);
     }
 

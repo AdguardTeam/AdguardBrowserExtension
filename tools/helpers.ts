@@ -16,13 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { merge } from 'webpack-merge';
 import type { Manifest } from 'webextension-polyfill';
 
-import { redirects } from '@adguard/scriptlets';
+import { Redirects } from '@adguard/scriptlets/redirects';
 
 import packageJson from '../package.json';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
@@ -30,10 +31,13 @@ import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
 import { BuildTargetEnv, Browser } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
+
 type ManifestBase = Manifest.ManifestBase;
 type WebExtensionManifest = Manifest.WebExtensionManifest;
-
-const { Redirects } = redirects;
 
 /**
  * Retrieves the sha value for the click2load.html redirects resource.
@@ -47,6 +51,8 @@ const { Redirects } = redirects;
  * i.e. it inherits the CSP of the parent page.
  * It may disable the inline script inside unless an exclusion is specified in the manifest.
  *
+ * @throws Error when click2load.html redirect source not found.
+ *
  * @returns Hash of click2load.html redirect resource.
  */
 const getClickToLoadSha = () => {
@@ -54,6 +60,11 @@ const getClickToLoadSha = () => {
     const rawYaml = fs.readFileSync(redirectsYamlPath);
     const redirects = new Redirects(rawYaml.toString());
     const click2loadSource = redirects.getRedirect('click2load.html');
+
+    if (!click2loadSource || !click2loadSource.sha) {
+        throw new Error('click2load.html redirect source not found');
+    }
+
     return click2loadSource.sha;
 };
 
