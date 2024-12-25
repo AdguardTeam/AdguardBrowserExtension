@@ -1,8 +1,8 @@
-! Checksum: 5cW3tHZ+EGzQKdAX+VeIZg
+! Checksum: nRYfQCexuq3R1gHl67sFHA
 ! Title: AdGuard Base filter
 ! Description: EasyList + AdGuard English filter. This filter is necessary for quality ad blocking.
-! Version: 2.3.65.59
-! TimeUpdated: 2024-12-25T11:31:20+00:00
+! Version: 2.3.65.61
+! TimeUpdated: 2024-12-25T13:31:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -8585,6 +8585,8 @@ youporn.com#%#//scriptlet('remove-node-text', 'script', '/window\.[\s\S]*?_zone_
 !
 ! NOTE: Regular rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195215
+||cdn.jsdelivr.net/gh/*/dist/antiAdBlocker$domain=oldi.sussytoons.site
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195185
 lnk2.cc#%#//scriptlet("set-constant", "adblock", "false")
 lnk2.cc#%#//scriptlet('set-constant', 'detectAdsenseBlock', 'false')
@@ -26948,6 +26950,7 @@ exsite.pl#%#window.ab = false;
 !
 ! NOTE: Romanian
 !
+emisiuni.live##a[target="_blank"] > img
 monitorulsv.ro##.btop
 monitorulsv.ro###advscr
 monitorulsv.ro##div[class^="add_"]
@@ -34660,6 +34663,7 @@ $subdocument,third-party,denyallow=disqus.com,domain=welovemanga.one
 !
 ! NOTE: Specific rules
 !
+oldi.sussytoons.site##.c-top-sidebar
 wikiwand.com##div[class^="wrapper_wrapper__"]:has(> div[class^="wrapper_cta__"])
 wikiwand.com##div[class^="footer_wrapper__"]:has(> div > div[class^="wrapper_cta__"])
 f95zone.to##.block-body > div.node:has(> div.node-body a[href*="create-your-ai-cum-slut"])
@@ -77006,6 +77010,7 @@ genshinimpactcalculator.com#@#.adban
 weatherwx.com#@#.adbutton
 boots.com#@#.adcard
 mediance.com#@#.adcenter
+indiatimes.com#@#.adhide
 insomnia.gr,kingsinteriors.co.uk#@#.adlink
 ascii.jp#@#.adrect
 epawaweather.com#@#.adrow
@@ -122183,14 +122188,6 @@ nicelocal.com##div[style="min-height: 90px;"]:has(iframe[id^="google_ads_"])
 tartaria-faucet.net##div[style^="display"]:has([src^="https://multiwall-ads.shop/"])
 90min.com##figure:has(> div > #mm-player-placeholder-large-screen)
 nex-software.com##h4:has(a[href$="/reimage"])
-bing.com##li.b_algo:has(a[aria-label="Amazon"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
-bing.com##li.b_algo:has(a[aria-label="Best Buy"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
-bing.com##li.b_algo:has(a[aria-label="Booking.com"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
-bing.com##li.b_algo:has(a[aria-label="Trip.com"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
-bing.com##li.b_algo:has(a[aria-label="Tripadvisor"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
-bing.com##li.b_algo:has(a[aria-label="Walmart"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
-bing.com##li.b_algo:has(a[aria-label="eBay"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
-bing.com##li.b_algo:has(a[aria-label="eDreams"] .rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"])
 walmart.com##li.items-center:has(div[data-ad-component-type="wpa-tile"])
 walgreens.com##li.owned-brands:has(figure.sponsored)
 macys.com##li.productThumbnailItem:has(.sponsored-items-label)
@@ -122817,6 +122814,14 @@ tripadvisor.com#?#.tkvEM:contains(Sponsored)
 twitter.com,x.com#?#h2[role="heading"]:contains(/Promoted|Gesponsert|Promocionado|Sponsorisé|Sponsorizzato|Promowane|Promovido|Реклама|Uitgelicht|Sponsorlu|Promotert|Promoveret|Sponsrad|Mainostettu|Sponzorováno|Promovat|Ajánlott|Προωθημένο|Dipromosikan|Được quảng bá|推廣|推广|推薦|推荐|プロモーション|프로모션|ประชาสมพนธ|परचरत|বজঞপত|تشہیر شدہ|مروج|تبلیغی|מקודם/)
 vofomovies.info#?#a13:contains( Ad)
 walmart.ca,walmart.com#?#div > div[io-id]:contains(Sponsored)
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^Amazon$/))
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^Best Buy$/))
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^Booking\.com$/))
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^eBay$/))
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^eDreams$/))
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^Trip\.com$/))
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^Tripadvisor$/))
+bing.com#?#li.b_algo:has(.rms_img[src*="id=ODLS.A2450BEC-5595-40BA-9F13-D9EC6AB74B9F"]):has(.tptt:contains(/^Walmart$/))
 walmart.*#?#div > div[io-id]:contains(Sponsored)
 virtuagirlgirls.com###DynamicBackgroundWrapper
 porndr.com###PD-Under-player
