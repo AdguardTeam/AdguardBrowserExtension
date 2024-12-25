@@ -1,8 +1,8 @@
-! Checksum: OtT6jw5e9iCWRRSA3WBahw
+! Checksum: zuneWmxlOorY9zLEaNCvlg
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.29.26
-! TimeUpdated: 2024-12-25T09:36:28+00:00
+! Version: 2.0.29.28
+! TimeUpdated: 2024-12-25T13:35:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -107,6 +107,9 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195187
+! News in the search input
+baidu.com#%#//scriptlet('remove-attr', 'placeholder', '.quickdelete-wrap > input')
 ! perplexity.ai - large product cards after response to a request
 perplexity.ai##div[class^="border-borderMain"] > div[class="isolate flex flex-col gap-md"][style^="opacity:"] > div.mt-md.flex.items-end.justify-between
 perplexity.ai##div[class^="border-borderMain"] > div[class="isolate flex flex-col gap-md"][style^="opacity:"] > div[class="flex flex-col gap-md"] > div[data-widget-id]
@@ -5328,6 +5331,8 @@ book.oricon.co.jp##a[href^="https://apay-up-banner.com?merchantId="] > img
 !
 ! SECTION: Self-promo - Regular rules
 !
+adukar.com###modal-popup-popup2
+adukar.com###campaign_adukar_news
 minecraft-turkiye.com##a[href="https://minecraft-turkiye.com/threads/minecraft-tuerkiye-reklam-ve-sponsorluk.8692/"] img
 meneame.net###newsletter
 inoreader.com##div[id^="promo_dialog_"]
