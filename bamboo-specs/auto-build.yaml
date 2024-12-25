@@ -227,6 +227,11 @@ AutoBuild:
             # publish zip versions of the extension.
             mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
             mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          commitMessage: 'skipci: Automatic increment build number'
+          selectedRepository: defaultRepository
     - inject-variables:
         # Doesn't matter which channel we use, because version is the same
         # for both channels.
