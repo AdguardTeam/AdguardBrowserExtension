@@ -64,7 +64,7 @@ Lint:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -101,7 +101,7 @@ Unit tests:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -135,7 +135,7 @@ Locales check:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -163,7 +163,7 @@ Update filters:
             ls -la
 
             # Validate that current branch is valid for build.
-            ./scripts/validate_branch.sh
+            ./bamboo-specs/scripts/validate_branch.sh
 
             # Set cache directory
             pnpm config set store-dir ${bamboo.cachePnpm}
@@ -171,7 +171,7 @@ Update filters:
             pnpm install ${bamboo.varsPnpm}
 
             # Update filters before build.
-            pnpm resources:mv3
+            OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
@@ -181,7 +181,7 @@ Update filters:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
@@ -237,7 +237,7 @@ AutoBuild:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   artifacts:
     # For integration tests and publish.
     - name: chrome-mv3-beta.zip
@@ -283,14 +283,15 @@ Integration tests:
     - script:
         interpreter: SHELL
         scripts:
-          - bamboo-specs/scripts/cleanup.sh
+          - ./bamboo-specs/scripts/cleanup.sh
   requirements:
     - adg-docker: 'true'
 
+# Currently empty triggers to run the build manually.
+triggers: []
 # run release build at 11:00 every Tuesday, Thursday
 # https://confluence.atlassian.com/bamboo/constructing-a-cron-expression-in-bamboo-289277372.html
 # TODO: Uncomment after first couple of test runs.
-# triggers:
 #   - cron:
 #       expression: 0 0 11 ? * TUE,THU
 
