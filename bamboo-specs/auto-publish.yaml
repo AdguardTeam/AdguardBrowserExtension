@@ -8,9 +8,10 @@ release-naming:
   applies-to-branches: true
 
 environments:
-  - AutoDeployAndPublish
+  - AutoDeployAndPublish - Release
+  - AutoDeployAndPublish - Beta
 
-AutoDeployAndPublish:
+AutoDeployAndPublish - Release:
   # TODO: Uncomment after first successful build.
   # run auto-deploy only after successful build
   # triggers:
@@ -22,9 +23,6 @@ AutoDeployAndPublish:
         repository: bamboo-deploy-publisher
         path: bamboo-deploy-publisher
         force-clean-build: true
-    - artifact-download:
-        artifacts:
-          - name: chrome-mv3-beta.zip
     - artifact-download:
         artifacts:
           - name: chrome-mv3-release.zip
@@ -39,8 +37,55 @@ AutoDeployAndPublish:
             exec 2>&1
             ls -la
 
-            # Extract target 'release' or 'beta' from branch name.
-            releaseType="${bamboo.planRepository.branchName##*-}"
+            # Rename release artifact to the final name, this is needed because
+            # we use one common name 'chrome-mv3.zip' for both beta and release
+            # artifacts inside deploy script.
+            mv chrome-mv3-release.zip chrome-mv3.zip
+
+            # Deploying and publishing release in Chrome Web Store.
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+        configuration:
+          selectedRepository: '26051221'
+          tagName: v${bamboo.inject.version}-release
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+
+AutoDeployAndPublish - Beta:
+  # TODO: Uncomment after first successful build.
+  # run auto-deploy only after successful build
+  # triggers:
+  #   - build-success:
+  #       branch: release/mv3-filters
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: true
+    - artifact-download:
+        artifacts:
+          - name: chrome-mv3-beta.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+            ls -la
 
             # Rename beta artifact to the final name, this is needed because
             # we use one common name 'chrome-mv3.zip' for both beta and release
@@ -49,22 +94,11 @@ AutoDeployAndPublish:
 
             # Deploying and publishing beta in Chrome Web Store.
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
-
-            # Remove published zip.
-            rm chrome-mv3.zip
-
-            # Rename release artifact to the final name, this is needed because
-            # we use one common name 'chrome-mv3.zip' for both beta and release
-            # artifacts inside deploy script.
-            mv chrome-mv3-release.zip chrome-mv3.zip
-
-            # Deploying and publishing beta in Chrome Web Store.
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
         configuration:
           selectedRepository: '26051221'
-          tagName: v${bamboo.inject.version}
+          tagName: v${bamboo.inject.version}-beta
   final-tasks: []
   variables: {}
   requirements:
