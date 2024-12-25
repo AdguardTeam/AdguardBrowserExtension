@@ -8,10 +8,11 @@ release-naming:
   applies-to-branches: true
 
 environments:
-  - AutoDeployAndPublish - Release
-  - AutoDeployAndPublish - Beta
+  - AutoDeployAndPublish Release
+  - AutoDeployAndPublish Beta
 
-AutoDeployAndPublish - Release:
+AutoDeployAndPublish Release:
+  triggers: []
   # TODO: Uncomment after first successful build.
   # run auto-deploy only after successful build
   # triggers:
@@ -61,7 +62,8 @@ AutoDeployAndPublish - Release:
             name: Deploy webhook
             url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
-AutoDeployAndPublish - Beta:
+AutoDeployAndPublish Beta:
+  triggers: []
   # TODO: Uncomment after first successful build.
   # run auto-deploy only after successful build
   # triggers:
