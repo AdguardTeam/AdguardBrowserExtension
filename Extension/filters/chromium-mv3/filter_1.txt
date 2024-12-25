@@ -1,8 +1,8 @@
-! Checksum: lGFFuM7RirsnXICSWW7UAQ
+! Checksum: NltUllMN/MvVcws5Y+z3gg
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.96.27
-! TimeUpdated: 2024-12-23T17:31:09+00:00
+! Version: 2.0.96.29
+! TimeUpdated: 2024-12-24T14:31:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -7664,6 +7664,9 @@ ivanovonews.ru,gorodn.ru,bits.media,devyatka.ru,gazeta-n1.ru,gorod48.ru,hi-fi.ru
 !
 !
 !
+mumuplayer.com##.NIE-art-right > div.pc
+comss.ru##body > div.container:has(> div.row > div.col-md-9 > div[id^="id-"])
+comss.ru##body > div.container:has(div[id^="yandex_rtb"]) + div.container:has(> div.spacer)
 sport-express.ru##a[href^="//hd.kinopoisk.ru/"]
 sport-express.ru##div[data-component="se-game-app"]
 sport-express.ru##._ad_container_
@@ -17935,6 +17938,7 @@ vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animero
 xn--90awu.xn--j1amh##a[href^="/component/banners/"]
 !
 ! autonews.ru,rbc.ru,rbcplus.ru,sportrbc.ru
+rbc.ru##.js-index-central-column > div[data-publisher-index]:has(a[href*="?erid="] ~ div.showcase-video__description)
 rbc.ru##.main__inner > div.main__feed:has(> div.main__feed__link > div[class="fox-tail"])
 rbc.ru##.item_promo-card
 rbc.ru##.js-index-central-column > div[data-publisher-index]:has(div[data-yandex-show-event] > div.showcase-collection__footer > p)
