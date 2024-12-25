@@ -602,21 +602,21 @@ class SettingsStore {
     }
 
     @action
-    setFilterEnabledState = (rawFilterId, enabled) => {
-        const filterId = parseInt(rawFilterId, 10);
-        this.filters.forEach((filter) => {
-            if (filter.filterId === filterId) {
+        setFilterEnabledState = (rawFilterId, enabled) => {
+            const filterId = parseInt(rawFilterId, 10);
+            this.filters.forEach((filter) => {
+                if (filter.filterId === filterId) {
                 // eslint-disable-next-line no-param-reassign
-                filter.enabled = !!enabled;
-            }
-        });
-        this.visibleFilters.forEach((filter) => {
-            if (filter.filterId === filterId) {
+                    filter.enabled = !!enabled;
+                }
+            });
+            this.visibleFilters.forEach((filter) => {
+                if (filter.filterId === filterId) {
                 // eslint-disable-next-line no-param-reassign
-                filter.enabled = !!enabled;
-            }
-        });
-    };
+                    filter.enabled = !!enabled;
+                }
+            });
+        };
 
     @action
     async updateFilterSetting(filterId, enabled) {
@@ -729,19 +729,19 @@ class SettingsStore {
     }
 
     @action
-    setAllowlist = (allowlist) => {
-        this.allowlist = allowlist;
-    };
+        setAllowlist = (allowlist) => {
+            this.allowlist = allowlist;
+        };
 
     @action
-    getAllowlist = async () => {
-        try {
-            const { content } = await messenger.getAllowlist();
-            this.setAllowlist(content);
-        } catch (e) {
-            logger.debug(e);
-        }
-    };
+        getAllowlist = async () => {
+            try {
+                const { content } = await messenger.getAllowlist();
+                this.setAllowlist(content);
+            } catch (e) {
+                logger.debug(e);
+            }
+        };
 
     saveAllowlist = async (value) => {
         return new Promise((resolve, reject) => {
@@ -758,25 +758,25 @@ class SettingsStore {
     };
 
     @action
-    setAllowlistEditorContentChangedState = (state) => {
-        this.allowlistEditorContentChanged = state;
-    };
+        setAllowlistEditorContentChangedState = (state) => {
+            this.allowlistEditorContentChanged = state;
+        };
 
     @action
-    setSearchInput = (value) => {
-        this.searchInput = value;
-        this.sortFilters();
-        this.sortSearchGroups();
-        this.selectVisibleFilters();
-    };
+        setSearchInput = (value) => {
+            this.searchInput = value;
+            this.sortFilters();
+            this.sortSearchGroups();
+            this.selectVisibleFilters();
+        };
 
     @action
-    setSearchSelect = (value) => {
-        this.searchSelect = value;
-        this.sortFilters();
-        this.sortSearchGroups();
-        this.selectVisibleFilters();
-    };
+        setSearchSelect = (value) => {
+            this.searchSelect = value;
+            this.sortFilters();
+            this.sortSearchGroups();
+            this.selectVisibleFilters();
+        };
 
     @computed
     get isSearching() {
@@ -788,33 +788,33 @@ class SettingsStore {
      * Filters sort happens when user exits from filters group, or changes search filters
      */
     @action
-    sortFilters = () => {
-        this.setFilters(sortFilters(this.filters));
-    };
+        sortFilters = () => {
+            this.setFilters(sortFilters(this.filters));
+        };
 
     @action
-    setFilters = (filters) => {
-        this.filters = filters;
-    };
+        setFilters = (filters) => {
+            this.filters = filters;
+        };
 
     @action
-    setVisibleFilters = (visibleFilters) => {
-        this.visibleFilters = visibleFilters;
-    };
+        setVisibleFilters = (visibleFilters) => {
+            this.visibleFilters = visibleFilters;
+        };
 
     /**
      * We do not sort groups while search on every groups data update for better UI experience
      * Groups sort happens only when user changes search filters
      */
     @action
-    sortSearchGroups = () => {
-        this.setGroups(sortGroupsOnSearch(this.categories));
-    };
+        sortSearchGroups = () => {
+            this.setGroups(sortGroupsOnSearch(this.categories));
+        };
 
     @action
-    setGroups = (categories) => {
-        this.categories = categories;
-    };
+        setGroups = (categories) => {
+            this.categories = categories;
+        };
 
     /**
      * We use visibleFilters for better UI experience, in order not to hide filter
@@ -823,23 +823,23 @@ class SettingsStore {
      *
      */
     @action
-    selectVisibleFilters = () => {
-        this.visibleFilters = this.filters.filter((filter) => {
-            let searchMod;
-            switch (this.searchSelect) {
-                case SEARCH_FILTERS.ENABLED:
-                    searchMod = filter.enabled;
-                    break;
-                case SEARCH_FILTERS.DISABLED:
-                    searchMod = !filter.enabled;
-                    break;
-                default:
-                    searchMod = true;
-            }
+        selectVisibleFilters = () => {
+            this.visibleFilters = this.filters.filter((filter) => {
+                let searchMod;
+                switch (this.searchSelect) {
+                    case SEARCH_FILTERS.ENABLED:
+                        searchMod = filter.enabled;
+                        break;
+                    case SEARCH_FILTERS.DISABLED:
+                        searchMod = !filter.enabled;
+                        break;
+                    default:
+                        searchMod = true;
+                }
 
-            return searchMod;
-        });
-    };
+                return searchMod;
+            });
+        };
 
     @computed
     get filtersToRender() {
@@ -968,42 +968,42 @@ class SettingsStore {
     }
 
     @action
-    setIsAnnoyancesConsentModalOpen = (value) => {
-        this.isAnnoyancesConsentModalOpen = value;
-    };
+        setIsAnnoyancesConsentModalOpen = (value) => {
+            this.isAnnoyancesConsentModalOpen = value;
+        };
 
     @action
-    setFilterIdSelectedForConsent = (filterId) => {
-        this.filterIdSelectedForConsent = filterId;
-        this.updateFilterStateUI(filterId, true);
-    };
+        setFilterIdSelectedForConsent = (filterId) => {
+            this.filterIdSelectedForConsent = filterId;
+            this.updateFilterStateUI(filterId, true);
+        };
 
     @action
-    handleFilterConsentCancel = () => {
-        if (this.filterIdSelectedForConsent) {
-            this.updateFilterStateUI(this.filterIdSelectedForConsent, false);
-            this.filterIdSelectedForConsent = null;
-            return;
-        }
+        handleFilterConsentCancel = () => {
+            if (this.filterIdSelectedForConsent) {
+                this.updateFilterStateUI(this.filterIdSelectedForConsent, false);
+                this.filterIdSelectedForConsent = null;
+                return;
+            }
 
-        // handle modal for group
-        this.updateGroupStateUI(AntibannerGroupsId.AnnoyancesFiltersGroupId, false);
-    };
+            // handle modal for group
+            this.updateGroupStateUI(AntibannerGroupsId.AnnoyancesFiltersGroupId, false);
+        };
 
     @action
-    handleFilterConsentConfirm = async () => {
-        if (this.filterIdSelectedForConsent) {
-            await this.updateFilterSetting(this.filterIdSelectedForConsent, true);
-            await messenger.setConsentedFilters([this.filterIdSelectedForConsent]);
-            this.filterIdSelectedForConsent = null;
-            return;
-        }
-        // handle consent modal for group
-        await this.updateGroupSetting(AntibannerGroupsId.AnnoyancesFiltersGroupId, true);
-        await messenger.setConsentedFilters(
-            this.recommendedAnnoyancesFilters.map((f) => f.filterId),
-        );
-    };
+        handleFilterConsentConfirm = async () => {
+            if (this.filterIdSelectedForConsent) {
+                await this.updateFilterSetting(this.filterIdSelectedForConsent, true);
+                await messenger.setConsentedFilters([this.filterIdSelectedForConsent]);
+                this.filterIdSelectedForConsent = null;
+                return;
+            }
+            // handle consent modal for group
+            await this.updateGroupSetting(AntibannerGroupsId.AnnoyancesFiltersGroupId, true);
+            await messenger.setConsentedFilters(
+                this.recommendedAnnoyancesFilters.map((f) => f.filterId),
+            );
+        };
 
     @computed
     get shouldShowFilterPolicy() {

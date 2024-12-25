@@ -116,67 +116,65 @@ export const ConfirmModal = ({
     };
 
     return (
-        <>
-            <Modal
-                isOpen={isOpen}
-                onRequestClose={handleCancel}
-                // re-define default styles
-                style={{
-                    content: {
-                        padding: 0,
-                        borderRadius: 8,
-                    },
-                }}
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={handleCancel}
+            // re-define default styles
+            style={{
+                content: {
+                    padding: 0,
+                    borderRadius: 8,
+                },
+            }}
+        >
+            <div
+                // 'modal--scrollable' is needed for ':has(.modal--scrollable)' selector to work
+                // and for scrollbar to display properly (AG-34984)
+                className={cn('modal', {
+                    'modal--scrollable': isScrollable,
+                })}
             >
-                <div
-                    // 'modal--scrollable' is needed for ':has(.modal--scrollable)' selector to work
-                    // and for scrollbar to display properly (AG-34984)
-                    className={cn('modal', {
-                        'modal--scrollable': isScrollable,
-                    })}
-                >
-                    <div className="modal__content">
-                        <div className="modal__header">
-                            <div className="modal__title">
-                                {title}
-                            </div>
-                            <button
-                                type="button"
-                                className="button modal__close"
-                                aria-label={translator.getMessage('close_button_title')}
-                                onClick={handleCancel}
-                            >
-                                <Icon id="#cross" />
-                            </button>
+                <div className="modal__content">
+                    <div className="modal__header">
+                        <div className="modal__title">
+                            {title}
                         </div>
-                        {subtitle && (
-                            <div
-                                className={subtitleClassName}
-                            >
-                                {subtitle}
-                            </div>
-                        )}
-                    </div>
-                    <div className="modal__actions">
                         <button
-                            className={okBtnClassName}
                             type="button"
-                            onClick={handleConfirm}
-                            title={confirmTitle}
-                        >
-                            {confirmTitle}
-                        </button>
-                        <button
-                            className="button button--l button--transparent modal__btn modal__btn--confirm"
-                            type="button"
+                            className="button modal__close"
+                            aria-label={translator.getMessage('close_button_title')}
                             onClick={handleCancel}
-                            title={cancelTitle}
                         >
-                            {cancelTitle}
+                            <Icon id="#cross" />
                         </button>
                     </div>
+                    {subtitle && (
+                        <div
+                            className={subtitleClassName}
+                        >
+                            {subtitle}
+                        </div>
+                    )}
                 </div>
-            </Modal>
-        </>
+                <div className="modal__actions">
+                    <button
+                        className={okBtnClassName}
+                        type="button"
+                        onClick={handleConfirm}
+                        title={confirmTitle}
+                    >
+                        {confirmTitle}
+                    </button>
+                    <button
+                        className="button button--l button--transparent modal__btn modal__btn--confirm"
+                        type="button"
+                        onClick={handleCancel}
+                        title={cancelTitle}
+                    >
+                        {cancelTitle}
+                    </button>
+                </div>
+            </div>
+        </Modal>
     );
 };

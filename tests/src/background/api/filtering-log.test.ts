@@ -1,14 +1,22 @@
+import {
+    vi,
+    describe,
+    afterAll,
+    expect,
+    it,
+} from 'vitest';
+
 import { FilteringLogApi } from '../../../../Extension/src/background/api/filtering-log';
 
 const tabId = 1;
 const title = 'test';
 const eventId = '0';
 
-jest.mock('../../../../Extension/src/common/api/extension/tabs', () => {
+vi.mock('../../../../Extension/src/common/api/extension/tabs', () => {
     return {
         __esModule: true,
         TabsApi: {
-            getAll: jest.fn(() => {
+            getAll: vi.fn(() => {
                 return Promise.resolve([{
                     id: tabId,
                     url: 'test',
@@ -21,7 +29,7 @@ jest.mock('../../../../Extension/src/common/api/extension/tabs', () => {
 
 describe('FilteringLogApi', () => {
     afterAll(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it('does not save filtering events if filtering log is closed', async () => {

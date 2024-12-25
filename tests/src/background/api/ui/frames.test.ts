@@ -1,6 +1,15 @@
 import { type Storage } from 'webextension-polyfill';
+import {
+    afterEach,
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
 
-import { NetworkRuleParser } from '@adguard/agtree';
+import { NetworkRuleParser } from '@adguard/agtree/parser';
 // TODO should be written separate test, because there is different api in mv3 and mv2 for tabs context
 //  after that remove exclude from the ./tsconfig.with_types_mv3.json
 import {
@@ -19,18 +28,18 @@ import { appContext, AppContextKey } from '../../../../../Extension/src/backgrou
 import { FramesApi } from '../../../../../Extension/src/background/api/ui/frames';
 import { AntiBannerFiltersId } from '../../../../../Extension/src/common/constants';
 
-jest.mock('../../../../../Extension/src/background/api/page-stats', () => ({
-    ...(jest.requireActual('../../../../../Extension/src/background/api/page-stats')),
+vi.mock('../../../../../Extension/src/background/api/page-stats', () => ({
+    ...(vi.importActual('../../../../../Extension/src/background/api/page-stats')),
     PageStatsApi,
 }));
 
-jest.mock('../../../../../Extension/src/background/api/settings/main', () => ({
-    ...(jest.requireActual('../../../../../Extension/src/background/api/settings/main')),
+vi.mock('../../../../../Extension/src/background/api/settings/main', async () => ({
+    ...(await vi.importActual('../../../../../Extension/src/background/api/settings/main')),
     SettingsApi,
 }));
 
-jest.spyOn(PageStatsApi, 'getTotalBlocked').mockImplementation(() => 0);
-jest.spyOn(SettingsApi, 'getSetting').mockImplementation(() => false);
+vi.spyOn(PageStatsApi, 'getTotalBlocked').mockImplementation(() => 0);
+vi.spyOn(SettingsApi, 'getSetting').mockImplementation(() => false);
 
 describe('Frames Api', () => {
     let storage: Storage.StorageArea;

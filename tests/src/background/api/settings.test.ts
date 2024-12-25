@@ -1,5 +1,13 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import {
+    vi,
+    describe,
+    afterEach,
+    it,
+    expect,
+    beforeEach,
+} from 'vitest';
 
 import {
     ASSISTANT_INJECT_OUTPUT,
@@ -31,9 +39,9 @@ import {
     getExportedSettingsV2,
 } from '../../../helpers';
 
-jest.mock('../../../../Extension/src/background/engine');
-jest.mock('../../../../Extension/src/background/api/ui/icons');
-jest.mock('../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../Extension/src/background/engine');
+vi.mock('../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
@@ -116,6 +124,13 @@ describe('Settings Api', () => {
     });
 
     describe('imports, exports and resets app data', () => {
+        /**
+         * Default timeout for tests is 5000 ms, but we need more time for these
+         * tests. Because at some point CI became execute tests slower
+         * than before.
+         */
+        const EXTENDED_TIMEOUT_MS = 10000;
+
         beforeEach(async () => {
             storage = mockLocalStorage();
             await App.init();
@@ -131,13 +146,13 @@ describe('Settings Api', () => {
 
             expect(importResult).toBeTruthy();
             expect(SettingsApi.getSetting(SettingOption.UseOptimizedFilters)).toBe(true);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Export settings', async () => {
             const exportedSettings = await SettingsApi.export();
 
-            expect(exportedSettings).toStrictEqual(JSON.stringify(getDefaultExportFixture(__IS_MV3__)));
-        }, 10000);
+            expect(JSON.parse(exportedSettings)).toStrictEqual(getDefaultExportFixture(__IS_MV3__));
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Imports exported settings for protocol v1', async () => {
             const userConfig = getExportedSettingsProtocolV1Fixture();
@@ -155,7 +170,7 @@ describe('Settings Api', () => {
             const importedSettings = getImportedSettingsFromV1Fixture();
 
             expect(JSON.parse(importedSettingsString)).toStrictEqual(importedSettings);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Imports exported settings for protocol v2', async () => {
             const userConfig = getExportedSettingsProtocolV2Fixture();
@@ -172,7 +187,7 @@ describe('Settings Api', () => {
             // Fill up optional fields
             userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Imports settings from 4.1.X version', async () => {
             const settings = getSettingsV1();
@@ -188,7 +203,7 @@ describe('Settings Api', () => {
             const exportedSettingsString = await SettingsApi.export();
             const EXPORTED_SETTINGS_V_2_0 = getExportedSettingsV2();
             expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Reset default settings', async () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
@@ -196,6 +211,6 @@ describe('Settings Api', () => {
             await SettingsApi.reset(true);
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
     });
 });

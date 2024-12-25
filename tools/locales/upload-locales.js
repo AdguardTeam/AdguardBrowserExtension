@@ -16,8 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import axios from 'axios';
 
@@ -30,6 +31,11 @@ import {
     FORMAT,
     LOCALE_DATA_FILENAME,
 } from './locales-constants';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 const LOCALES_UPLOAD_URL = `${API_URL}/upload`;
 const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);

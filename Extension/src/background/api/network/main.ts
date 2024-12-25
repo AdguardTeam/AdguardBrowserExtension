@@ -35,7 +35,8 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import { CustomFilterApi, type FilterUpdateOptions } from '../filters';
+import { CustomFilterApi } from '../filters/custom';
+import { type FilterUpdateOptions } from '../filters/update';
 
 import { NetworkSettings } from './settings';
 

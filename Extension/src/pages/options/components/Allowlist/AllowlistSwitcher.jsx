@@ -54,14 +54,12 @@ export const AllowlistSwitcher = observer(() => {
     };
 
     return (
-        <>
-            <Setting
-                id={AllowlistEnabled}
-                type={SETTINGS_TYPES.CHECKBOX}
-                value={settings.values[AllowlistEnabled]}
-                handler={allowlistChangeHandler}
-                optimistic={!__IS_MV3__}
-            />
-        </>
+        <Setting
+            id={AllowlistEnabled}
+            type={SETTINGS_TYPES.CHECKBOX}
+            value={settings.values[AllowlistEnabled]}
+            handler={allowlistChangeHandler}
+            optimistic={!__IS_MV3__}
+        />
     );
 });

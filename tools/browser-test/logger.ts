@@ -69,11 +69,13 @@ export const logTestResult = (details: TestDetails): void => {
     console.log(colorizeTitleText(details.name));
 
     console.log('Status:', colorizeStatusText(details.status));
-    console.log('Total %d tests: %d passed, %d failed, %d skipped',
+    console.log(
+        'Total %d tests: %d passed, %d failed, %d skipped',
         counts.total,
         counts.passed,
         counts.failed,
-        counts.skipped);
+        counts.skipped,
+    );
     // precision format log %.2f doesn't work in chrome
     console.log(`Duration: ${colorizeDurationTime(details.runtime.toFixed(2))}ms \n`);
 

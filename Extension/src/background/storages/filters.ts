@@ -142,7 +142,8 @@ export class FiltersStorage {
         } catch (e) {
             if (logError) {
                 logger.error(
-                    `Failed to get binary filter data for filter id ${filterId}, got error:`, getErrorMessage(e),
+                    `Failed to get binary filter data for filter id ${filterId}, got error:`,
+                    getErrorMessage(e),
                 );
             }
             throw e;

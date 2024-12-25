@@ -1,4 +1,12 @@
 import { Storage } from 'webextension-polyfill';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
 
 import { FiltersDownloader } from '@adguard/filters-downloader/browser';
 
@@ -14,11 +22,15 @@ import { getStorageFixturesV7 } from '../../../../helpers/fixtures/getStorageFix
 import { type Metadata } from '../../../../../Extension/src/background/schema';
 import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
 
-jest.mock('../../../../../Extension/src/background/engine');
-jest.mock('../../../../../Extension/src/background/api/ui/icons');
-jest.mock('../../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../../Extension/src/background/engine');
+vi.mock('../../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../../Extension/src/background/storages/notification');
 
-describe('Quick Fixes API should', () => {
+/**
+ * We do not use Quick Fixes API in MV2, because there we have updates for
+ * each filters separately.
+ */
+describe.skipIf(!__IS_MV3__)('Quick Fixes API should', () => {
     let storage: Storage.StorageArea;
 
     const definedExpressions = {
@@ -44,14 +56,9 @@ describe('Quick Fixes API should', () => {
         .concat('+00:00');
 
     it('check for updates of Quick Fixes filter from remote and partially update metadata', async () => {
-        if (!__IS_MV3__) {
-            expect(true).toBeTruthy();
-            return;
-        }
-
         const filterId = 24;
 
-        let mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+        let mock = vi.spyOn(FiltersDownloader, 'downloadWithRaw')
             .mockImplementation(() => Promise.resolve({
                 filter: fakeFilterV1.split('\n'),
                 rawFilter: fakeFilterV1,
@@ -91,7 +98,7 @@ describe('Quick Fixes API should', () => {
 
         // Update mocked filter.
         mock.mockRestore();
-        mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+        mock = vi.spyOn(FiltersDownloader, 'downloadWithRaw')
             .mockImplementation(() => Promise.resolve({
                 filter: fakeFilterV2.split('\n'),
                 rawFilter: fakeFilterV2,
@@ -140,7 +147,7 @@ describe('Quick Fixes API should', () => {
         });
 
         // Mock FiltersDownloader to throw a network error
-        const mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+        const mock = vi.spyOn(FiltersDownloader, 'downloadWithRaw')
             .mockImplementation(() => Promise.reject(new TypeError('Failed to fetch')));
 
         // Read initial metadata and filter data

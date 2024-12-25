@@ -25,7 +25,7 @@ import { Notifications } from '../../../options/components/Notifications';
 import { NotifierType } from '../../../../common/constants';
 import { rootStore } from '../../../options/stores/RootStore';
 import {
-    messenger,
+    Messenger,
     LongLivedConnectionCallbackMessage,
     Page,
 } from '../../../services/messenger';
@@ -55,7 +55,7 @@ export const FullscreenUserRules = observer(() => {
                 NotifierType.SettingUpdated,
             ];
 
-            removeListenerCallback = messenger.createLongLivedConnection(
+            removeListenerCallback = Messenger.createLongLivedConnection(
                 Page.FullscreenUserRules,
                 events,
                 async (message: LongLivedConnectionCallbackMessage) => {

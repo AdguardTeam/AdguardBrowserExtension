@@ -37,29 +37,29 @@ export const Loader = ({ showLoader }: LoaderParams) => {
         y: 0,
     };
 
+    if (!showLoader) {
+        return null;
+    }
+
     return (
-        <>
-            {showLoader && (
-                <AttachmentPortal rootId="root-portal" position={LOADER_POSITION}>
-                    <div className="loader">
-                        <div className="loader__background">
-                            <div className="loader__container">
-                                <div className="loader__content">
-                                    <Icon
-                                        id="#loading"
-                                        classname="icon--24"
-                                        animationCondition={showLoader}
-                                        animationClassname="icon--loading"
-                                    />
-                                    <div className="loader__text">
-                                        {translator.getMessage('options_loader_applying_changes')}
-                                    </div>
-                                </div>
+        <AttachmentPortal rootId="root-portal" position={LOADER_POSITION}>
+            <div className="loader">
+                <div className="loader__background">
+                    <div className="loader__container">
+                        <div className="loader__content">
+                            <Icon
+                                id="#loading"
+                                classname="icon--24"
+                                animationCondition={showLoader}
+                                animationClassname="icon--loading"
+                            />
+                            <div className="loader__text">
+                                {translator.getMessage('options_loader_applying_changes')}
                             </div>
                         </div>
                     </div>
-                </AttachmentPortal>
-            )}
-        </>
+                </div>
+            </div>
+        </AttachmentPortal>
     );
 };

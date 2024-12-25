@@ -100,10 +100,11 @@ export class Engine implements TsWebExtensionEngine {
 
         logger.info('Start tswebextension...');
         const result = await this.api.start(configuration);
+
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
         UserRulesService.checkUserRulesRegexpErrors(result);
 
-        await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
+        await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
@@ -148,10 +149,11 @@ export class Engine implements TsWebExtensionEngine {
             logger.info('With skip limits check.');
         }
         const result = await this.api.configure(configuration);
+
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
         UserRulesService.checkUserRulesRegexpErrors(result);
 
-        await this.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
+        await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
@@ -271,7 +273,7 @@ export class Engine implements TsWebExtensionEngine {
      *
      * @returns Promise that resolves when the check is done.
      */
-    private checkAppliedStealthSettings = async (
+    private static checkAppliedStealthSettings = async (
         currentSettings: Configuration['settings'],
         appliedStealthSettings: ConfigurationResult['stealthResult'],
     ): Promise<void> => {

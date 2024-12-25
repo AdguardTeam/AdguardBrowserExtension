@@ -1,3 +1,9 @@
+import {
+    describe,
+    expect,
+    it,
+} from 'vitest';
+
 import { UrlUtils } from '../../../../../../Extension/src/pages/filtering-log/components/RequestWizard/utils';
 
 describe('utils', () => {

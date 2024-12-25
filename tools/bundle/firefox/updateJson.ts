@@ -17,7 +17,7 @@
  */
 
 import fs from 'fs/promises';
-import path from 'path';
+import path from 'node:path';
 
 import fse from 'fs-extra';
 

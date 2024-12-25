@@ -16,10 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
+import path from 'node:path';
 
 import { type Configuration } from 'webpack';
-import merge from 'webpack-merge';
+import { merge } from 'webpack-merge';
 
 import { BACKGROUND_OUTPUT, CONTENT_SCRIPT_START_OUTPUT } from '../../constants';
 

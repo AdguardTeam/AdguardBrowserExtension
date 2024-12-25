@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
+import {
     createDocumentLevelBlockRule,
     createExceptionCookieRules,
     createExceptionCssRule,
@@ -7,7 +13,7 @@ import {
     splitToPatterns,
     createRuleFromParams,
     getRuleText,
-} from '../../../../../../Extension/src/pages/filtering-log/components/RequestWizard/ruleCreators.ts';
+} from '../../../../../../Extension/src/pages/filtering-log/components/RequestWizard/ruleCreators';
 
 describe('ruleCreators', () => {
     describe('splitToPatterns', () => {
