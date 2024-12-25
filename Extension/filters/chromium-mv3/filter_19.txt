@@ -1,8 +1,8 @@
-! Checksum: 0/Lq2+zUgb/S6a/NewX+iQ
+! Checksum: Yg02TqRqSyGWdFbuDsDvdg
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.47.61
-! TimeUpdated: 2024-12-23T18:33:40+00:00
+! Version: 2.0.47.65
+! TimeUpdated: 2024-12-24T12:34:44+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1767,6 +1767,7 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+dyxs.sbs##.popup-tips
 sndeep.info#%#//scriptlet('set-constant', 'add_chk_stat', 'noopFunc')
 sndeep.info###additionalInfoHidden
 sourcecon.com#%#//scriptlet('trusted-set-local-storage-item', 'adBlockerModalStatus', '{"value":1,"expiry":9999999999999}')
@@ -11931,6 +11932,7 @@ macwelt.de,pcwelt.de#%#//scriptlet("set-constant", "firebase.messaging", "noopFu
 !
 ! SECTION: Push notifications - Regular rules
 !
+sofokleousin.gr###popup-push
 ||cms.static.btv.bg/microsites/btvnovinite/js/push.bwebv*.js
 t13.cl###notification-modal-popover-container
 mail.proton.me#?#.content-container > div[role="alert"]:has(> div > button:contains(enable desktop notifications))
@@ -12798,6 +12800,10 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 !
 ! SECTION: Subscriptions - Regular rules
 !
+rbc.ua##.nano-content > div.item:has(> a > span.whatsapp)
+rbc.ru##.article__text > p:has(> strong > a[href^="https://t.me/"])
+rbc.ru##.article__text > div.article__special_container:has(> p > a[href^="https://t.me/"])
+transformernews.ai#%#//scriptlet('trusted-click-element', '.pencraft ._dismissButton_15pnt_13', '!localStorage:pub-1688188-takeover-next-shown-at')
 thesaurus.com###synonym-of-the-day
 ipaidia.gr##.followipaidia
 evima.gr##.read-all > p:has(> a[href^="https://news.google.com/publications/"])

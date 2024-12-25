@@ -1,8 +1,8 @@
-! Checksum: j1YRHNkyO92RKQwv4f9eUw
+! Checksum: X+IeGJ9B8PIbTvt8jp40FQ
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.29.19
-! TimeUpdated: 2024-12-21T15:34:51+00:00
+! Version: 2.0.29.25
+! TimeUpdated: 2024-12-24T16:33:46+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -629,8 +629,6 @@ cooknsoul.de#?#div[data-insertion-no-dbg]:has(> .code-block > div > native-playe
 ! https://github.com/AdguardTeam/AdguardFilters/issues/154362
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147926
 timesofisrael.com#%#//scriptlet('remove-class', 'vjs-pip-active', '.video-js.vjs-pip-active')
-! https://github.com/AdguardTeam/AdguardFilters/issues/147940
-ynet.co.il#$#.singleColumnGrid::after { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147933
 ultimedia.com#%#//scriptlet('set-constant', 'dtkPlayer.infos.visible_plus', '0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/147701
@@ -5330,6 +5328,10 @@ book.oricon.co.jp##a[href^="https://apay-up-banner.com?merchantId="] > img
 !
 ! SECTION: Self-promo - Regular rules
 !
+meneame.net###newsletter
+inoreader.com##div[id^="promo_dialog_"]
+inoreader.com###black_friday
+mobalytics.gg#?#main > div[class^="m-"]:has(> div[class^="m-"] > #lol-video-all-pages-mobile)
 xgp.pl#%#//scriptlet('set-cookie', 'hpb_closed', '1')
 internxt.com#$?##__next > .group:has(> div[class] > #topBannerActionButton) { display: none !important; }
 internxt.com#$?#div[class*="pt-[64px] md:pt-[54px]"]:has(> #navbar) { padding-top: 0px !important; }
@@ -8218,6 +8220,12 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195182
+iosmirror.cc#%#//scriptlet('adjust-setInterval', 'checkadd', '*', '0.001')
+! https://github.com/AdguardTeam/AdguardFilters/issues/195185
+lnk2.cc#%#//scriptlet('set-constant', 'secs', '0')
+lnk2.cc#%#//scriptlet('remove-class', 'd-none', '#pass')
+lnk2.cc#%#//scriptlet('remove-attr', 'disabled', '#getLink')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194436
 dood.li#%#//scriptlet('set-constant', 'check', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194326
