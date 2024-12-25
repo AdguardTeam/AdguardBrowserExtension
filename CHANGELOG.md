@@ -18,11 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Wrong protection state is shown after navigating from excluded website to another one [#3048].
+- Once allowlisted tab considers all following websites in the tab as allowlisted [#3020].
 - Handling missing children data in the deserializer for certain nodes.
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
 
+[#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
+[#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 [#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
