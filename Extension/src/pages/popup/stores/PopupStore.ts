@@ -70,13 +70,13 @@ class PopupStore {
      * Flag that indicates whether the application filtering is **paused**.
      */
     @observable
-    applicationFilteringPaused: boolean | null = null;
+        applicationFilteringPaused: boolean | null = null;
 
     /**
      * Flag that indicates whether the filtering is possible or not (e.g. secure pages).
      */
     @observable
-    isFilteringPossible = true;
+        isFilteringPossible = true;
 
     /**
      * Flag that indicates whether the filtering engine is started.
@@ -89,7 +89,7 @@ class PopupStore {
      * If set to `false`, the engine is not started and the splash screen should be displayed.
      */
     @observable
-    isEngineStarted: boolean | null = null;
+        isEngineStarted: boolean | null = null;
 
     /**
      * Flag that indicates whether the filtering on a website is disabled
@@ -97,7 +97,7 @@ class PopupStore {
      * so it cannot be undone by the user.
      */
     @observable
-    canAddRemoveRule = true;
+        canAddRemoveRule = true;
 
     /**
      * Flag that indicates whether the popup is opened for the first time.
@@ -105,59 +105,59 @@ class PopupStore {
      * Used to focus on main switch on popup open to improve accessibility.
      */
     @observable
-    hasBeenOpened: boolean = false;
+        hasBeenOpened: boolean = false;
 
     @observable
-    url: string | null = null;
+        url: string | null = null;
 
     @observable
-    viewState = ViewState.Actions;
+        viewState = ViewState.Actions;
 
     @observable
-    totalBlocked = 0;
+        totalBlocked = 0;
 
     @observable
-    totalBlockedTab = 0;
+        totalBlockedTab = 0;
 
     @observable
-    documentAllowlisted: boolean | null = null;
+        documentAllowlisted: boolean | null = null;
 
     @observable
-    userAllowlisted: boolean | null = null;
+        userAllowlisted: boolean | null = null;
 
     @observable
-    showInfoAboutFullVersion = true;
+        showInfoAboutFullVersion = true;
 
     @observable
-    isEdgeBrowser = false;
+        isEdgeBrowser = false;
 
     @observable
-    stats: GetStatisticsDataResponse | null = null;
+        stats: GetStatisticsDataResponse | null = null;
 
     @observable
-    selectedTimeRange = TimeRange.Week;
+        selectedTimeRange = TimeRange.Week;
 
     @observable
-    selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
+        selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
 
     @observable
-    promoNotification: PromoNotification | null = null;
+        promoNotification: PromoNotification | null = null;
 
     @observable
-    hasUserRulesToReset = false;
+        hasUserRulesToReset = false;
 
     @observable
-    settings: SettingsData | null = null;
+        settings: SettingsData | null = null;
 
     @observable
-    areFilterLimitsExceeded = false;
+        areFilterLimitsExceeded = false;
 
     currentTabId?: number | null = null;
 
     domainName: string | null = null;
 
     @observable
-    appState: AppState = appStateActor.getSnapshot().value;
+        appState: AppState = appStateActor.getSnapshot().value;
 
     constructor() {
         makeObservable(this);
@@ -173,13 +173,13 @@ class PopupStore {
      * Checks whether the filtering engine is started.
      */
     @action
-    checkIsEngineStarted = async () => {
-        const res = await messenger.getIsEngineStarted();
+        checkIsEngineStarted = async () => {
+            const res = await messenger.getIsEngineStarted();
 
-        runInAction(() => {
-            this.isEngineStarted = res;
-        });
-    };
+            runInAction(() => {
+                this.isEngineStarted = res;
+            });
+        };
 
     /**
      * Sets the initial state of the app state machine actor based on the current popup data.
@@ -205,63 +205,63 @@ class PopupStore {
     }
 
     @action
-    getPopupData = async (): Promise<GetTabInfoForPopupResponse | undefined> => {
+        getPopupData = async (): Promise<GetTabInfoForPopupResponse | undefined> => {
         // get current tab id
-        const tabs = await browser.tabs.query({
-            active: true,
-            currentWindow: true,
-        });
-        const currentTab = tabs?.[0];
+            const tabs = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            const currentTab = tabs?.[0];
 
-        if (!currentTab?.id) {
-            return;
-        }
+            if (!currentTab?.id) {
+                return;
+            }
 
-        const response = await messenger.getTabInfoForPopup(currentTab.id);
+            const response = await messenger.getTabInfoForPopup(currentTab.id);
 
-        if (!response) {
-            return;
-        }
+            if (!response) {
+                return;
+            }
 
-        runInAction(() => {
-            const {
-                frameInfo,
-                options,
-                stats,
-                settings,
-                areFilterLimitsExceeded,
-            } = response;
+            runInAction(() => {
+                const {
+                    frameInfo,
+                    options,
+                    stats,
+                    settings,
+                    areFilterLimitsExceeded,
+                } = response;
 
-            // frame info
-            this.applicationFilteringPaused = frameInfo.applicationFilteringDisabled;
-            this.isFilteringPossible = frameInfo.isFilteringPossible;
-            this.url = frameInfo.url;
-            this.totalBlocked = frameInfo.totalBlocked;
-            this.totalBlockedTab = frameInfo.totalBlockedTab;
-            this.domainName = frameInfo.domainName;
-            this.documentAllowlisted = frameInfo.documentAllowlisted;
-            this.userAllowlisted = frameInfo.userAllowlisted;
-            this.canAddRemoveRule = frameInfo.canAddRemoveRule;
+                // frame info
+                this.applicationFilteringPaused = frameInfo.applicationFilteringDisabled;
+                this.isFilteringPossible = frameInfo.isFilteringPossible;
+                this.url = frameInfo.url;
+                this.totalBlocked = frameInfo.totalBlocked;
+                this.totalBlockedTab = frameInfo.totalBlockedTab;
+                this.domainName = frameInfo.domainName;
+                this.documentAllowlisted = frameInfo.documentAllowlisted;
+                this.userAllowlisted = frameInfo.userAllowlisted;
+                this.canAddRemoveRule = frameInfo.canAddRemoveRule;
 
-            // options
-            this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
-            this.isEdgeBrowser = options.isEdgeBrowser;
-            this.promoNotification = options.notification;
-            this.hasUserRulesToReset = options.hasUserRulesToReset;
+                // options
+                this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
+                this.isEdgeBrowser = options.isEdgeBrowser;
+                this.promoNotification = options.notification;
+                this.hasUserRulesToReset = options.hasUserRulesToReset;
 
-            // stats
-            this.stats = stats;
+                // stats
+                this.stats = stats;
 
-            // settings
-            this.settings = settings;
+                // settings
+                this.settings = settings;
 
-            this.areFilterLimitsExceeded = areFilterLimitsExceeded;
+                this.areFilterLimitsExceeded = areFilterLimitsExceeded;
 
-            this.currentTabId = currentTab.id;
+                this.currentTabId = currentTab.id;
 
-            this.setActorInitState();
-        });
-    };
+                this.setActorInitState();
+            });
+        };
 
     /**
      * Sends a message to the background to set the application filtering paused state to the specified value.
@@ -269,13 +269,13 @@ class PopupStore {
      * @param state Whether the application filtering is paused or not.
      */
     @action
-    changeApplicationFilteringPaused = async (state: boolean) => {
-        await messenger.changeApplicationFilteringPaused(state);
+        changeApplicationFilteringPaused = async (state: boolean) => {
+            await messenger.changeApplicationFilteringPaused(state);
 
-        runInAction(() => {
-            this.applicationFilteringPaused = state;
-        });
-    };
+            runInAction(() => {
+                this.applicationFilteringPaused = state;
+            });
+        };
 
     /**
      * Pauses the application filtering.
@@ -328,9 +328,9 @@ class PopupStore {
     };
 
     @action
-    setViewState = (state: ViewState) => {
-        this.viewState = state;
-    };
+        setViewState = (state: ViewState) => {
+            this.viewState = state;
+        };
 
     /**
      * Returns the current site URL or domain name.
@@ -385,42 +385,42 @@ class PopupStore {
     }
 
     @action
-    toggleAllowlisted = async () => {
-        if (!this.isFilteringPossible || this.applicationFilteringPaused) {
-            return;
-        }
-        if (!this.canAddRemoveRule) {
-            return;
-        }
+        toggleAllowlisted = async () => {
+            if (!this.isFilteringPossible || this.applicationFilteringPaused) {
+                return;
+            }
+            if (!this.canAddRemoveRule) {
+                return;
+            }
 
-        let isAllowlisted = this.documentAllowlisted;
+            let isAllowlisted = this.documentAllowlisted;
 
-        appStateActor.send({
-            type: isAllowlisted
-                ? AppStateEvent.Enable
-                : AppStateEvent.Disable,
-        });
+            appStateActor.send({
+                type: isAllowlisted
+                    ? AppStateEvent.Enable
+                    : AppStateEvent.Disable,
+            });
 
-        if (isAllowlisted) {
-            await asyncWrapper(messenger.removeAllowlistDomain, this.currentTabId, true);
-            isAllowlisted = false;
-        } else {
-            await asyncWrapper(messenger.addAllowlistDomain, this.currentTabId);
-            isAllowlisted = true;
-        }
+            if (isAllowlisted) {
+                await asyncWrapper(messenger.removeAllowlistDomain, this.currentTabId, true);
+                isAllowlisted = false;
+            } else {
+                await asyncWrapper(messenger.addAllowlistDomain, this.currentTabId);
+                isAllowlisted = true;
+            }
 
-        runInAction(() => {
-            this.documentAllowlisted = isAllowlisted;
-            this.userAllowlisted = isAllowlisted;
-            this.totalBlockedTab = 0;
-        });
+            runInAction(() => {
+                this.documentAllowlisted = isAllowlisted;
+                this.userAllowlisted = isAllowlisted;
+                this.totalBlockedTab = 0;
+            });
 
-        appStateActor.send({
-            type: isAllowlisted
-                ? AppStateEvent.DisableSuccess
-                : AppStateEvent.EnableSuccess,
-        });
-    };
+            appStateActor.send({
+                type: isAllowlisted
+                    ? AppStateEvent.DisableSuccess
+                    : AppStateEvent.EnableSuccess,
+            });
+        };
 
     /**
      * Returns the specific popup state based on {@link isFilteringPossible} and {@link canAddRemoveRule} values.
@@ -440,7 +440,7 @@ class PopupStore {
         return null;
     }
 
-    getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
+    static getDataByRange = (stats: GetStatisticsDataResponse, range: string): PageStatsDataItem | undefined => {
         switch (range) {
             case TimeRange.Day:
                 if (!stats.lastMonth[stats.lastMonth.length - 1]) {
@@ -493,7 +493,7 @@ class PopupStore {
             return null;
         }
 
-        const statsDataForCurrentRange = this.getDataByRange(stats, this.selectedTimeRange);
+        const statsDataForCurrentRange = PopupStore.getDataByRange(stats, this.selectedTimeRange);
 
         if (!statsDataForCurrentRange) {
             return null;
@@ -519,52 +519,52 @@ class PopupStore {
     }
 
     @action
-    setSelectedBlockedType = (value: string) => {
-        this.selectedBlockedType = value;
-    };
+        setSelectedBlockedType = (value: string) => {
+            this.selectedBlockedType = value;
+        };
 
     @action
-    setHasBeenOpened = (flag: boolean = true) => {
-        this.hasBeenOpened = flag;
-    };
+        setHasBeenOpened = (flag: boolean = true) => {
+            this.hasBeenOpened = flag;
+        };
 
     @action
-    setSelectedTimeRange = (value: TimeRange) => {
-        this.selectedTimeRange = value;
-    };
+        setSelectedTimeRange = (value: TimeRange) => {
+            this.selectedTimeRange = value;
+        };
 
     @action
-    closePromoNotification = async () => {
-        this.promoNotification = null;
-        await messenger.setNotificationViewed(false);
-    };
-
-    @action
-    openPromoNotificationUrl = async () => {
-        let url = this.promoNotification?.url;
-        if (!url) {
-            return;
-        }
-
-        url = `${url}&from=popup`;
-
-        runInAction(() => {
+        closePromoNotification = async () => {
             this.promoNotification = null;
-        });
-
-        // TODO: This message will mark the notification as viewed,
-        // but it seems that we need to show it.
-        await messenger.setNotificationViewed(false);
-        await browser.tabs.create({ url });
-    };
+            await messenger.setNotificationViewed(false);
+        };
 
     @action
-    updateBlockedStats = (tabInfo: BlockedStatsInfo) => {
-        if (this.currentTabId === tabInfo.tabId) {
-            this.totalBlockedTab = tabInfo.totalBlockedTab;
-            this.totalBlocked = tabInfo.totalBlocked;
-        }
-    };
+        openPromoNotificationUrl = async () => {
+            let url = this.promoNotification?.url;
+            if (!url) {
+                return;
+            }
+
+            url = `${url}&from=popup`;
+
+            runInAction(() => {
+                this.promoNotification = null;
+            });
+
+            // TODO: This message will mark the notification as viewed,
+            // but it seems that we need to show it.
+            await messenger.setNotificationViewed(false);
+            await browser.tabs.create({ url });
+        };
+
+    @action
+        updateBlockedStats = (tabInfo: BlockedStatsInfo) => {
+            if (this.currentTabId === tabInfo.tabId) {
+                this.totalBlockedTab = tabInfo.totalBlockedTab;
+                this.totalBlocked = tabInfo.totalBlocked;
+            }
+        };
 
     @computed
     get appearanceTheme() {

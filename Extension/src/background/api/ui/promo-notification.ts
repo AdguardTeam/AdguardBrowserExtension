@@ -19,8 +19,8 @@ import browser from 'webextension-polyfill';
 
 import { UserAgent } from '../../../common/user-agent';
 import {
-    notificationStorage,
     type PromoNotification,
+    notificationStorage,
     browserStorage,
 } from '../../storages';
 import { NotificationTextRecord } from '../../schema';
@@ -30,7 +30,7 @@ import { I18n } from '../../utils';
 import { UiApi } from './main';
 
 /**
- * Promo Notification API is needed to work with notifications.
+ * Promo notification API is needed to work with notifications.
  */
 export class PromoNotificationApi {
     private static readonly CHECK_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
@@ -104,7 +104,7 @@ export class PromoNotificationApi {
     /**
      * Finds out notification for current time and checks if notification wasn't shown yet.
      *
-     * @returns Notification object or null if there is no notification to show.
+     * @returns Promo notification object or null if there is no promo notification to show.
      */
     public async getCurrentNotification(): Promise<PromoNotification | null> {
         // Do not display notification on Firefox
@@ -193,7 +193,7 @@ export class PromoNotificationApi {
     /**
      * Scans notification locales and returns the one matching navigator.language.
      *
-     * @param notification PromoNotification object.
+     * @param notification Promo notification object.
      * @returns {NotificationTextRecord | undefined} Matching notification text settings or undefined.
      */
     private static getNotificationText(notification: PromoNotification): NotificationTextRecord | undefined {

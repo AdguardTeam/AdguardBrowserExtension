@@ -1,5 +1,13 @@
 import { Storage } from 'webextension-polyfill';
 import sinon from 'sinon';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
 
 import { APP_VERSION_KEY } from '../../../../../Extension/src/common/constants';
 import { mockLocalStorage } from '../../../../helpers';
@@ -18,9 +26,9 @@ import {
     REMOTE_I18N_METADATA_FILE_NAME,
 } from '../../../../../constants';
 
-jest.mock('../../../../../Extension/src/background/engine');
-jest.mock('../../../../../Extension/src/background/api/ui/icons');
-jest.mock('../../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../../Extension/src/background/engine');
+vi.mock('../../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../../Extension/src/background/storages/notification');
 
 const server = sinon.fakeServer.create({
     respondImmediately: true,

@@ -62,28 +62,28 @@ class WizardStore {
     }
 
     @observable
-    isModalOpen = false;
+        isModalOpen = false;
 
     @observable
-    requestModalState = WizardRequestState.View;
+        requestModalState = WizardRequestState.View;
 
     @observable
-    ruleText: string | null = null;
+        ruleText: string | null = null;
 
     @observable
-    rulePattern = '';
+        rulePattern = '';
 
     @observable
-    ruleOptions: RuleCreationOptions = defaultRuleOptions;
+        ruleOptions: RuleCreationOptions = defaultRuleOptions;
 
     @observable
-    addedRuleState: AddedRuleState | null = null;
+        addedRuleState: AddedRuleState | null = null;
 
     /**
      * Whether the rule for the specified request is now applied or deleted
      */
     @observable
-    isActionSubmitted = false;
+        isActionSubmitted = false;
 
     @computed
     get requestModalStateEnum() {
@@ -130,13 +130,13 @@ class WizardStore {
     }
 
     @action
-    closeModal = () => {
-        this.isActionSubmitted = false;
-        this.isModalOpen = false;
-        this.addedRuleState = null;
-        this.requestModalState = WizardRequestState.View;
-        this.rootStore.logStore.removeSelectedEvent();
-    };
+        closeModal = () => {
+            this.isActionSubmitted = false;
+            this.isModalOpen = false;
+            this.addedRuleState = null;
+            this.requestModalState = WizardRequestState.View;
+            this.rootStore.logStore.removeSelectedEvent();
+        };
 
     @action
     setBlockState() {
@@ -160,52 +160,52 @@ class WizardStore {
     }
 
     @action
-    removeFromAllowlistHandler = async () => {
-        this.setActionSubmitted(true);
-        const { selectedTabId } = this.rootStore.logStore;
+        removeFromAllowlistHandler = async () => {
+            this.setActionSubmitted(true);
+            const { selectedTabId } = this.rootStore.logStore;
 
-        if (!selectedTabId) {
-            logger.error('[removeFromAllowlistHandler]: selected tab id is not defined');
-            return;
-        }
+            if (!selectedTabId) {
+                logger.error('[removeFromAllowlistHandler]: selected tab id is not defined');
+                return;
+            }
 
-        await messenger.removeAllowlistDomain(selectedTabId, false);
+            await messenger.removeAllowlistDomain(selectedTabId, false);
 
-        this.closeModal();
-    };
-
-    @action
-    removeFromUserFilterHandler = async (filteringEvent: FilteringLogEvent) => {
-        this.setActionSubmitted(true);
-        const { requestRule } = filteringEvent;
-
-        if (!requestRule) {
-            return;
-        }
-
-        const ruleText = requestRule.originalRuleText ?? requestRule.appliedRuleText;
-
-        if (!ruleText) {
-            logger.error('[removeFromUserFilterHandler]: rule text is not defined');
-            return;
-        }
-
-        await messenger.removeUserRule(ruleText);
-
-        this.closeModal();
-    };
+            this.closeModal();
+        };
 
     @action
-    removeAddedRuleFromUserFilter = async () => {
-        this.setActionSubmitted(true);
+        removeFromUserFilterHandler = async (filteringEvent: FilteringLogEvent) => {
+            this.setActionSubmitted(true);
+            const { requestRule } = filteringEvent;
 
-        if (!this.rule) {
-            return;
-        }
+            if (!requestRule) {
+                return;
+            }
 
-        await messenger.removeUserRule(this.rule);
-        this.closeModal();
-    };
+            const ruleText = requestRule.originalRuleText ?? requestRule.appliedRuleText;
+
+            if (!ruleText) {
+                logger.error('[removeFromUserFilterHandler]: rule text is not defined');
+                return;
+            }
+
+            await messenger.removeUserRule(ruleText);
+
+            this.closeModal();
+        };
+
+    @action
+        removeAddedRuleFromUserFilter = async () => {
+            this.setActionSubmitted(true);
+
+            if (!this.rule) {
+                return;
+            }
+
+            await messenger.removeUserRule(this.rule);
+            this.closeModal();
+        };
 
     @action
     setViewState() {

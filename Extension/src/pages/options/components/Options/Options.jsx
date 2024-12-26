@@ -53,7 +53,21 @@ import { NotificationType } from '../../stores/UiStore';
 import '../../styles/styles.pcss';
 
 const createRouter = (children) => {
-    return createHashRouter(createRoutesFromElements(children));
+    return createHashRouter(
+        createRoutesFromElements(children),
+        // We are opting out these features and hiding the warning messages by setting it to false.
+        // TODO: Remove this when react-router-dom is updated to v7
+        // https://github.com/remix-run/react-router/issues/12250
+        {
+            future: {
+                v7_relativeSplatPath: false,
+                v7_fetcherPersist: false,
+                v7_normalizeFormMethod: false,
+                v7_partialHydration: false,
+                v7_skipActionErrorRevalidation: false,
+            },
+        },
+    );
 };
 
 const OptionsLayout = () => {
@@ -166,6 +180,13 @@ const Options = observer(() => {
             <Loader showLoader={uiStore.showLoader} />
             <div className="page">
                 <RouterProvider
+                    // We are opting out these features and hiding the warning messages by setting it to false.
+                    // TODO: Remove this when react-router-dom is updated to v7
+                    // https://github.com/remix-run/react-router/issues/12250
+                    future={{
+                        v7_relativeSplatPath: false,
+                        v7_startTransition: false,
+                    }}
                     router={(
                         createRouter(
                             <Route path="/" element={<OptionsLayout />}>

@@ -346,8 +346,13 @@ export class FilterUpdateApi {
     }
 }
 
-// TODO remove later
+// TODO: remove later
 // This method is exposed for the testing purposes.
-// @ts-ignore
 // eslint-disable-next-line no-restricted-globals
-self.autoUpdate = FilterUpdateApi.autoUpdateFilters;
+Object.assign(self, {
+    adguard: {
+        // eslint-disable-next-line no-restricted-globals
+        ...self.adguard,
+        autoUpdate: FilterUpdateApi.autoUpdateFilters,
+    },
+});

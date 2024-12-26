@@ -44,8 +44,6 @@ import {
     appearanceValidator,
     type PageStats,
     pageStatsValidator,
-    type SafebrowsingCacheData,
-    type SafebrowsingStorageData,
     SchemaPreprocessor,
     SettingOption,
 } from '../../schema';
@@ -647,9 +645,19 @@ export class UpdateApi {
 
         const now = Date.now();
 
+        type SafeBrowsingDataV2 = {
+            list: string;
+            expires?: number;
+        };
+
+        type SafeBrowsingStorageDataV2 = {
+            key: string;
+            value: SafeBrowsingDataV2;
+        }[];
+
         // transform v1 safebrowsing storage data to v2
-        const sbStorageDataV2: SafebrowsingStorageData = sbStorageDataV1.map(({ key, value }) => {
-            const safebrowsingCacheRecord: SafebrowsingCacheData = { list: value };
+        const sbStorageDataV2: SafeBrowsingStorageDataV2 = sbStorageDataV1.map(({ key, value }) => {
+            const safebrowsingCacheRecord: SafeBrowsingDataV2 = { list: value };
 
             if (safebrowsingCacheRecord.list !== 'allowlist') {
                 safebrowsingCacheRecord.expires = now + SbCache.CACHE_TTL_MS;

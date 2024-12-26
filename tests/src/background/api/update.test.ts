@@ -1,4 +1,14 @@
 import { z } from 'zod';
+import {
+    afterEach,
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+    type MockInstance,
+} from 'vitest';
 
 import { UpdateApi } from '../../../../Extension/src/background/api';
 import {
@@ -19,9 +29,9 @@ import { HybridStorage } from '../../../../Extension/src/background/storages/hyb
 import { SettingOption } from '../../../../Extension/src/background/schema/settings/main';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 
-jest.mock('../../../../Extension/src/background/engine');
-jest.mock('../../../../Extension/src/background/api/ui/icons');
-jest.mock('../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../Extension/src/background/engine');
+vi.mock('../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Update Api', () => {
     describe('update method', () => {
@@ -38,14 +48,14 @@ describe('Update Api', () => {
         const v6 = getStorageFixturesV6(expires);
         const v7 = getStorageFixturesV7(expires);
 
-        let setMultipleSpy: jest.SpyInstance;
+        let setMultipleSpy: MockInstance;
 
         beforeAll(() => {
-            jest.spyOn(Date, 'now').mockReturnValue(timestamp);
+            vi.spyOn(Date, 'now').mockReturnValue(timestamp);
         });
 
         beforeEach(() => {
-            setMultipleSpy = jest.spyOn(HybridStorage.prototype, 'setMultiple').mockImplementation(
+            setMultipleSpy = vi.spyOn(HybridStorage.prototype, 'setMultiple').mockImplementation(
                 async () => {
                     return true;
                 },

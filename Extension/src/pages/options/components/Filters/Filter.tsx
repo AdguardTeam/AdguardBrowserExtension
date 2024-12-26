@@ -77,12 +77,12 @@ const removePrefix = (extendedFilterId: string): string => {
 
 type FilterParams = {
     filter: RegularFilterMetadata
-        & FilterVersionData
-        & CustomFilterMetadata
-        & {
-            enabled: boolean,
-            tagsDetails: TagMetadata[],
-        },
+    & FilterVersionData
+    & CustomFilterMetadata
+    & {
+        enabled: boolean,
+        tagsDetails: TagMetadata[],
+    },
     groupEnabled: boolean,
 };
 

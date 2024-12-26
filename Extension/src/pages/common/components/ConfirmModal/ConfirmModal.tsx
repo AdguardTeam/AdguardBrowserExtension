@@ -137,75 +137,73 @@ export const ConfirmModal = ({
     };
 
     return (
-        <>
-            <Modal
-                isOpen={isOpen}
-                onRequestClose={handleCancel}
-                style={{
-                    content: {
-                        padding: 0,
-                        borderRadius: 8,
-                    },
-                }}
-                shouldReturnFocusAfterClose
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="modal-title"
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={handleCancel}
+            style={{
+                content: {
+                    padding: 0,
+                    borderRadius: 8,
+                },
+            }}
+            shouldReturnFocusAfterClose
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+        >
+            <div
+                // 'modal--scrollable' is needed for ':has(.modal--scrollable)' selector to work
+                // and for scrollbar to display properly (AG-34984)
+                className={cn('modal', {
+                    'modal--scrollable': isScrollable,
+                })}
+                tabIndex={-1}
             >
-                <div
-                    // 'modal--scrollable' is needed for ':has(.modal--scrollable)' selector to work
-                    // and for scrollbar to display properly (AG-34984)
-                    className={cn('modal', {
-                        'modal--scrollable': isScrollable,
-                    })}
-                    tabIndex={-1}
-                >
-                    <div className="modal__content">
-                        <div className="modal__header">
-                            <div
-                                id="modal-title"
-                                className="modal__title"
-                            >
-                                {title}
+                <div className="modal__content">
+                    <div className="modal__header">
+                        <div
+                            id="modal-title"
+                            className="modal__title"
+                        >
+                            {title}
+                        </div>
+                        <button
+                            type="button"
+                            className="button modal__close"
+                            onClick={handleCancel}
+                            aria-label={translator.getMessage('close_button_title')}
+                        >
+                            <Icon id="#cross" ariaHidden />
+                        </button>
+                    </div>
+                    {subtitle && (
+                        <>
+                            <span className="visually-hidden">.</span>
+                            <div className={subtitleClassName}>
+                                {subtitle}
                             </div>
-                            <button
-                                type="button"
-                                className="button modal__close"
-                                onClick={handleCancel}
-                                aria-label={translator.getMessage('close_button_title')}
-                            >
-                                <Icon id="#cross" ariaHidden />
-                            </button>
-                        </div>
-                        {subtitle && (
-                            <>
-                                <span className="visually-hidden">.</span>
-                                <div className={subtitleClassName}>
-                                    {subtitle}
-                                </div>
-                            </>
-                        )}
-                        <div className="modal__actions">
-                            <button
-                                className={okBtnClassName}
-                                type="button"
-                                onClick={handleConfirm}
-                                title={confirmTitle}
-                            >
-                                {confirmTitle}
-                            </button>
-                            <button
-                                className="button button--l button--transparent modal__btn modal__btn--confirm"
-                                type="button"
-                                onClick={handleCancel}
-                                title={cancelTitle}
-                            >
-                                {cancelTitle}
-                            </button>
-                        </div>
+                        </>
+                    )}
+                    <div className="modal__actions">
+                        <button
+                            className={okBtnClassName}
+                            type="button"
+                            onClick={handleConfirm}
+                            title={confirmTitle}
+                        >
+                            {confirmTitle}
+                        </button>
+                        <button
+                            className="button button--l button--transparent modal__btn modal__btn--confirm"
+                            type="button"
+                            onClick={handleCancel}
+                            title={cancelTitle}
+                        >
+                            {cancelTitle}
+                        </button>
                     </div>
                 </div>
-            </Modal>
-        </>
+            </div>
+        </Modal>
     );
 };

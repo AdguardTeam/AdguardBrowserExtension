@@ -50,14 +50,12 @@ export const UserRulesSwitcher = observer(() => {
     };
 
     return (
-        <>
-            <Setting
-                id={settingsStore.userFilterEnabledSettingId}
-                type={SETTINGS_TYPES.CHECKBOX}
-                value={settingsStore.userFilterEnabled}
-                handler={handleUserGroupToggle}
-                optimistic={!__IS_MV3__}
-            />
-        </>
+        <Setting
+            id={settingsStore.userFilterEnabledSettingId}
+            type={SETTINGS_TYPES.CHECKBOX}
+            value={settingsStore.userFilterEnabled}
+            handler={handleUserGroupToggle}
+            optimistic={!__IS_MV3__}
+        />
     );
 });

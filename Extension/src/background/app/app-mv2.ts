@@ -70,6 +70,42 @@ import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
 
 /**
+ * Logs initialization times for debugging purposes.
+ * To enable logging, set `_test_debugInitLoggingFlag` to `true` in local storage.
+ *
+ * ```js
+ * await browser.storage.local.set({'_test_debugInitLoggingFlag': true});
+ * ```
+ *
+ * To get when the extension was initiated from storage, run:
+ *
+ * ```js
+ * await browser.storage.local.get('_test_initTimesKey');
+ * ```
+ */
+const trackInitTimesForDebugging = async (): Promise<void> => {
+    const DEBUG_INIT_LOGGING_FLAG_KEY = '_test_debugInitLoggingFlag';
+    const LOGGING_DISABLED_BY_DEFAULT = false;
+    const INIT_TIMES_STORAGE_KEY = '_test_initTimesKey';
+
+    const isLoggingEnabled = (await browser.storage.local.get(DEBUG_INIT_LOGGING_FLAG_KEY))[DEBUG_INIT_LOGGING_FLAG_KEY]
+        || LOGGING_DISABLED_BY_DEFAULT;
+
+    if (isLoggingEnabled) {
+        const rawLoggedInitTimes = (await browser.storage.local.get(INIT_TIMES_STORAGE_KEY))[INIT_TIMES_STORAGE_KEY];
+
+        const loggedInitTimes = Array.isArray(rawLoggedInitTimes)
+            ? rawLoggedInitTimes
+            : [];
+
+        // Current time in local format
+        const currentLocalTime = new Date().toLocaleString();
+
+        await browser.storage.local.set({ [INIT_TIMES_STORAGE_KEY]: [...loggedInitTimes, currentLocalTime] });
+    }
+};
+
+/**
  * This class is app entry point.
  *
  * {@link App.init} Initializes all app services
@@ -97,6 +133,8 @@ export class App {
      * and handle webextension API events for first install and update scenario.
      */
     private static async asyncInit(): Promise<void> {
+        await trackInitTimesForDebugging();
+
         // TODO: Remove after migration to MV3
         // This is a temporary solution to keep event pages alive in Firefox.
         // We will remove it once engine initialization becomes faster.
@@ -188,7 +226,7 @@ export class App {
         AllowlistService.init();
 
         // Adds listeners for userrules list events
-        await UserRulesService.init();
+        await UserRulesService.init(engine);
 
         // Adds listeners for filtering log
         FilteringLogService.init();

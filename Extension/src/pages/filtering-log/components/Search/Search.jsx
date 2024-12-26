@@ -67,7 +67,7 @@ const Search = forwardRef(({
         }
     };
 
-    const Control = () => {
+    const renderControl = () => {
         if (value && !select) {
             return (
                 <button
@@ -115,7 +115,7 @@ const Search = forwardRef(({
             className="search"
             onSubmit={onSubmit}
         >
-            <Control />
+            { renderControl() }
             <input
                 type="text"
                 id="log-search"

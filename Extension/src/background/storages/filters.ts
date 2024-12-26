@@ -114,6 +114,18 @@ export class FiltersStorage {
     }
 
     /**
+     * Checks if specified filter list is in {@link hybridStorage}.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns Promise, resolved with `true` if filter list is in storage, `false` otherwise.
+     */
+    public static async has(filterId: number): Promise<boolean> {
+        const key = FiltersStorage.getFilterKey(filterId);
+        return hybridStorage.has(key);
+    }
+
+    /**
      * Returns specified filter list from {@link hybridStorage}.
      *
      * @param filterId Filter id.
@@ -130,7 +142,8 @@ export class FiltersStorage {
         } catch (e) {
             if (logError) {
                 logger.error(
-                    `Failed to get binary filter data for filter id ${filterId}, got error:`, getErrorMessage(e),
+                    `Failed to get binary filter data for filter id ${filterId}, got error:`,
+                    getErrorMessage(e),
                 );
             }
             throw e;

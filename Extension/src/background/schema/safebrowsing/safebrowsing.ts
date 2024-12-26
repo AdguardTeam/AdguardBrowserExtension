@@ -20,17 +20,7 @@ import zod from 'zod';
 /**
  * Safebrowsing cache data schema validator.
  */
-export const safebrowsingCacheDataValidator = zod.object({
-    /**
-     * Name of the safebrowsing list.
-     */
-    list: zod.string(),
-    /**
-     * Record expiration time in milliseconds.
-     * Optional, because it is not defined for safebrowsing allowlist.
-     */
-    expires: zod.number().optional(),
-}).strict();
+export const safebrowsingCacheDataValidator = zod.string();
 
 /**
  * Safebrowsing cache data type inferred from {@link safebrowsingCacheDataValidator} schema.
@@ -40,18 +30,43 @@ export type SafebrowsingCacheData = zod.infer<typeof safebrowsingCacheDataValida
 /**
  * Safebrowsing persisted storage data schema validator.
  */
-export const safebrowsingStorageDataValidator = zod.object({
+export const safebrowsingStorageDataValidator = zod.tuple([
     /**
-     * Resource url hash.
+     * Cache key.
      */
-    key: zod.string(),
+    zod.string(),
+
     /**
-     * Cache data.
+     * Cache value.
+     *
+     * @note lru-cache using `.dump()` method to export cache data and `.load()` to import it,
+     * and both methods use the following data structure:
+     * {@link http://isaacs.github.io/node-lru-cache/interfaces/LRUCache.Entry.html}
      */
-    value: safebrowsingCacheDataValidator,
-}).strict().array();
+    zod.object({
+        /**
+         * Size of cache record.
+         */
+        size: zod.number().optional(),
+
+        /**
+         * Record creation time in milliseconds.
+         */
+        start: zod.number().optional(),
+
+        /**
+         * TTL of cache record in milliseconds.
+         */
+        ttl: zod.number().optional(),
+
+        /**
+         * Cache data.
+         */
+        value: safebrowsingCacheDataValidator,
+    }).strict(),
+]).array();
 
 /**
- * Safebrowsing persisted storage data type inffered from {@link safebrowsingStorageDataValidator} schema.
+ * Safebrowsing persisted storage data type inferred from {@link safebrowsingStorageDataValidator} schema.
  */
 export type SafebrowsingStorageData = zod.infer<typeof safebrowsingStorageDataValidator>;

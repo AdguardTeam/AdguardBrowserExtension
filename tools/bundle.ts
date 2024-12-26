@@ -155,6 +155,9 @@ const chrome = async (options: CommanderOptions) => {
 const chromeMv3 = async (options: CommanderOptions) => {
     try {
         await bundleChromeMv3(options);
+        if (!options.watch) {
+            await buildInfo();
+        }
     } catch (e) {
         console.error(e);
         process.exit(1);

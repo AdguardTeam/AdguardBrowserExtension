@@ -183,9 +183,7 @@ const ruleAccessor = (props) => {
         // If exactly matched rules do not contain assumed rule - we render
         // attention mark for this request.
         const attention = !matchedRulesContainsAssumed && (
-            <>
-                <span>❗</span>
-            </>
+            <span>❗</span>
         );
 
         return (
@@ -347,10 +345,10 @@ const FilteringEventsRows = observer(({
 
     return (
         /**
-         * FixedSizeList does not support passing props to innerElementType component
-         * We use React Context API to bypass this limitation
+         * FixedSizeList does not support passing props to innerElementType component.
+         * We use React Context API to bypass this limitation.
          *
-         * https://github.com/bvaughn/react-window/issues/404
+         * @see {@link https://github.com/bvaughn/react-window/issues/404}
          */
         <ColumnsProvider value={{ columns }}>
             <AutoSizer>

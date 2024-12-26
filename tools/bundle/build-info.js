@@ -16,8 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
-import { promises as fsp } from 'fs';
+import path from 'node:path';
+import { promises as fsp } from 'node:fs';
 
 import { BUILD_ENV, BUILD_PATH } from '../constants';
 import packageJson from '../../package.json';

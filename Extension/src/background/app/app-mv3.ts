@@ -28,7 +28,7 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../common/forward';
-import { CLIENT_ID_KEY } from '../../common/constants';
+import { CLIENT_ID_KEY, EXTENSION_INITIALIZED_EVENT } from '../../common/constants';
 import { messageHandler } from '../message-handler';
 import { ConnectionHandler } from '../connection-handler';
 import {
@@ -211,7 +211,7 @@ export class App {
         AllowlistService.init();
 
         // Adds listeners for userrules list events
-        await UserRulesService.init();
+        await UserRulesService.init(engine);
 
         // Adds listeners for filtering log
         FilteringLogService.init();
@@ -278,10 +278,18 @@ export class App {
 
         appContext.set(AppContextKey.IsInit, true);
 
-        // In MV3 we need filters update service to update quick fixes filter.
-        filterUpdateService.init();
-
         await sendMessage({ type: MessageType.AppInitialized });
+
+        // In MV3 we need filters update service to update quick fixes filter,
+        // we should await it before dispatching the event to exclude race
+        // conditions.
+        await filterUpdateService.init();
+
+        // This event is used for integration tests (scripts/browser-test/index.ts)
+        // and waitUntilExtensionInitialized() is adding a listener to the event
+        // so the event should be dispatched eventually after all initialization
+        // is done.
+        dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT));
     }
 
     /**

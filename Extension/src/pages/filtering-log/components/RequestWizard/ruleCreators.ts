@@ -176,9 +176,7 @@ export const createExceptionCssRule = (
     }
 
     if (appliedRuleText.indexOf(CosmeticRuleMarker.CssExtCSS) > -1) {
-        return domainPart + generateExceptionRule(
-            appliedRuleText, CosmeticRuleMarker.CssExtCSS,
-        );
+        return domainPart + generateExceptionRule(appliedRuleText, CosmeticRuleMarker.CssExtCSS);
     }
 
     if (appliedRuleText.indexOf(CosmeticRuleMarker.ElementHiding) > -1) {

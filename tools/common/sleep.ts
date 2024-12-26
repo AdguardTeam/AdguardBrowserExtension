@@ -15,4 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './main';
+
+/**
+ * Awaits required period of time.
+ *
+ * @param timeoutMs Time to wait.
+ *
+ * @returns Promise that resolves after `timeoutMs`.
+ */
+export const sleep = (timeoutMs: number): Promise<unknown> => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, timeoutMs);
+    });
+};

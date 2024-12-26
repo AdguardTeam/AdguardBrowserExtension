@@ -23,6 +23,7 @@ import { throttle } from 'lodash-es';
 
 import { Filters } from '../Filters';
 import {
+    Messenger,
     messenger,
     LongLivedConnectionCallbackMessage,
     Page,
@@ -99,7 +100,7 @@ const FilteringLog = observer(() => {
                 NotifierType.CustomFilterAdded,
             ];
 
-            removeListenerCallback = messenger.createLongLivedConnection(
+            removeListenerCallback = Messenger.createLongLivedConnection(
                 Page.FilteringLog,
                 events,
                 async (message: LongLivedConnectionCallbackMessage) => {

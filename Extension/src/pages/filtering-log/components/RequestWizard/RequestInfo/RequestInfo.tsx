@@ -386,19 +386,15 @@ const RequestInfo = observer(() => {
             || event.script
         );
 
-        return (
-            <>
-                {showOpenInNewTabButton && (
-                    <div
-                        role="button"
-                        tabIndex={0}
-                        className="button button--link--green request-modal__url-button"
-                        onClick={openInNewTabHandler}
-                    >
-                        {translator.getMessage('filtering_modal_open_in_new_tab')}
-                    </div>
-                )}
-            </>
+        return showOpenInNewTabButton && (
+            <div
+                role="button"
+                tabIndex={0}
+                className="button button--link--green request-modal__url-button"
+                onClick={openInNewTabHandler}
+            >
+                {translator.getMessage('filtering_modal_open_in_new_tab')}
+            </div>
         );
     };
 

@@ -17,7 +17,7 @@
  */
 import { Tabs } from 'webextension-polyfill';
 
-import { RuleParser } from '@adguard/agtree';
+import { RuleGenerator } from '@adguard/agtree/generator';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
 import {
@@ -365,7 +365,7 @@ export class FilteringLogApi {
                 return null;
             }
 
-            const ruleText = RuleParser.generate(ruleNode);
+            const ruleText = RuleGenerator.generate(ruleNode);
 
             if (!ruleText) {
                 logger.error(`Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
