@@ -341,6 +341,7 @@ export const General = observer(() => {
                         >
                             <input
                                 type="file"
+                                aria-hidden="true"
                                 accept="application/json"
                                 onChange={inputChangeHandlerWrapper}
                                 className="actions__input-file actions__input-file--hidden"
