@@ -41,7 +41,6 @@ export class NetworkSettings {
      * Default base url for downloading filter rules.
      *
      * MV3_REMOTE_POLICY.
-     *
      * This keyword can be used to grep all code related to MV3 remote
      * hosting policy.
      *
@@ -53,13 +52,17 @@ export class NetworkSettings {
      * fix them ASAP.
      *
      * We make sure that all these rules that come from the filter
-     * were in compliance with CWS policies, and the rules logic is
-     * contained in the extension package.
+     * were in compliance with CWS policies:
+     * "Fetching a remote configuration file for A/B testing or determining
+     * enabled features, where all logic for the functionality is contained
+     * within the extension package".
      *
-     * 1. We convert the filter contents to DNR syntax and apply as dynamic
-     *    rules.
-     * 2. We apply cosmetic rules, for example hiding elements OR on the
-     *    contrary, unhiding them when it is necessary.
+     * 1. Network rules from the Quick Fixes filter is converted to DNR
+     *    rules and applied via dynamic rules.
+     * 2. Cosmetic rules are interpreted in the code. For example, hiding
+     *    elements OR on the contrary, unhiding them when it is necessary.
+     *    At the same time the cosmetic rules logic is contained in the
+     *    extension package.
      *
      * Quick Fixes filter contents can be examined here:
      * https://filters.adtidy.org/extension/chromium-mv3/filters/24.txt.
@@ -130,7 +133,6 @@ export class NetworkSettings {
      * Used to set the base url for filter rules through the local storage for testing purposes.
      *
      * MV3_REMOTE_POLICY.
-     *
      * This keyword can be used to grep all code related to MV3 remote
      * hosting policy.
      *
@@ -142,13 +144,17 @@ export class NetworkSettings {
      * fix them ASAP.
      *
      * We make sure that all these rules that come from the filter
-     * were in compliance with CWS policies, and the rules logic is
-     * contained in the extension package.
+     * were in compliance with CWS policies:
+     * "Fetching a remote configuration file for A/B testing or determining
+     * enabled features, where all logic for the functionality is contained
+     * within the extension package".
      *
-     * 1. We convert the filter contents to DNR syntax and apply as dynamic
-     *    rules.
-     * 2. We apply cosmetic rules, for example hiding elements OR on the
-     *    contrary, unhiding them when it is necessary.
+     * 1. Network rules from the Quick Fixes filter is converted to DNR
+     *    rules and applied via dynamic rules.
+     * 2. Cosmetic rules are interpreted in the code. For example, hiding
+     *    elements OR on the contrary, unhiding them when it is necessary.
+     *    At the same time the cosmetic rules logic is contained in the
+     *    extension package.
      *
      * Quick Fixes filter contents can be examined here:
      * https://filters.adtidy.org/extension/chromium-mv3/filters/24.txt.
@@ -186,7 +192,6 @@ export class NetworkSettings {
         if (__IS_MV3__) {
             /**
              * MV3_REMOTE_POLICY.
-             *
              * This keyword can be used to grep all code related to MV3 remote
              * hosting policy.
              *
@@ -198,13 +203,17 @@ export class NetworkSettings {
              * fix them ASAP.
              *
              * We make sure that all these rules that come from the filter
-             * were in compliance with CWS policies, and the rules logic is
-             * contained in the extension package.
+             * were in compliance with CWS policies:
+             * "Fetching a remote configuration file for A/B testing or determining
+             * enabled features, where all logic for the functionality is contained
+             * within the extension package".
              *
-             * 1. We convert the filter contents to DNR syntax and apply as dynamic
-             *    rules.
-             * 2. We apply cosmetic rules, for example hiding elements OR on the
-             *    contrary, unhiding them when it is necessary.
+             * 1. Network rules from the Quick Fixes filter is converted to DNR
+             *    rules and applied via dynamic rules.
+             * 2. Cosmetic rules are interpreted in the code. For example, hiding
+             *    elements OR on the contrary, unhiding them when it is necessary.
+             *    At the same time the cosmetic rules logic is contained in the
+             *    extension package.
              *
              * Quick Fixes filter contents can be examined here:
              * https://filters.adtidy.org/extension/chromium-mv3/filters/24.txt.
