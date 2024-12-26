@@ -17,17 +17,48 @@
  */
 import { Runtime } from 'webextension-polyfill';
 
+import { MessageType } from '@adguard/tswebextension';
+
 import { MessageHandler, Message } from '../../common/messages';
 import { logger } from '../../common/logger';
 
 export class ContentScriptMessageHandler extends MessageHandler {
+    /**
+     * For these messages we have separate handlers in the content script,
+     * provided from tswebextension.
+     */
+    private static ExcludedAssistantMessages = new Set([
+        MessageType.InitAssistant,
+        /**
+         * We do not use this message in browser extension, but it is used
+         * in the tswebextension.
+         */
+        MessageType.CloseAssistant,
+    ]);
+
+    /**
+     * Checks if the message is internal assistant message. If it is, we should
+     * not handle it in the content script.
+     *
+     * @param message Message to check.
+     * @param message.type Type of the message.
+     *
+     * @returns {boolean} True if the message is internal assistant message.
+     */
+    private static isInternalAssistantMessage(message: { type: MessageType }): boolean {
+        return ContentScriptMessageHandler.ExcludedAssistantMessages.has(message.type);
+    }
+
     protected handleMessage(
         message: Message,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
-        // Check type
+        // Check type.
         if (!ContentScriptMessageHandler.isValidMessageType(message)) {
-            logger.error('Invalid message in ContentScriptMessageHandler:', message);
+            // Do not print errors for internal assistant messages.
+            if (!ContentScriptMessageHandler.isInternalAssistantMessage(message)) {
+                logger.error('Invalid message in ContentScriptMessageHandler:', message);
+            }
             return;
         }
 
