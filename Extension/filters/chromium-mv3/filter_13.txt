@@ -1,8 +1,8 @@
-! Checksum: Da22j1H/YmSh2rGiGirXhw
+! Checksum: dz0yEBNctfUbtjeU1kEZxg
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.46
-! TimeUpdated: 2024-12-23T10:34:25+00:00
+! Version: 2.0.54.48
+! TimeUpdated: 2024-12-25T18:35:25+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1681,6 +1681,7 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+yatirimnedir.com##a[href^="https://www.getmidas.com/"] > img
 gazeteipekyol.com##.prospeed_demo_banner
 mackolik.com##div[class^="mpu"]
 ||digiturkburada.com.tr/images/digiturk-internet-banner-ns.png$third-party
@@ -2318,7 +2319,7 @@ sokgazetesi.com.tr##div[style="height:262px;"]
 sokgazetesi.com.tr,fotospor.com##div[style="height:330px;"][class^="flex"]
 sokgazetesi.com.tr,fotospor.com##div[style^="margin-bottom:20px;text-align:center;height:262px"]
 nedir.org##div[data-ad]
-turkiyegazetesi.com.tr,mavikadin.com,iha.com.tr,tgrthaber.com.tr##div[id^="widget_General_Advert_"]
+turkiyegazetesi.com.tr,iha.com.tr,tgrthaber.com.tr##div[id^="widget_General_Advert_"]
 tvaktuel.com##.theiaStickySidebar > div.adsWidget ~ div.nativeWidget
 oyunmoduindir.com##.optional-url-cnt > img
 oyunmoduindir.com##.optional-url-cnt > a[onclick][rel="nofollow"][title]
@@ -2713,13 +2714,9 @@ hepsiemlak.com##.listing-top-banner
 emlakjet.com##._3wHMMW
 emlakjet.com##.-JTEJb
 internethaber.com##a[href^="https://pubads.g.doubleclick.net/"]
-mavikadin.com###dfp-homepage-masthead-container
-tgrthaber.com.tr,mavikadin.com##div[id^="dfp-kare"]
-tgrthaber.com.tr,mavikadin.com##.advert-desktop
-mavikadin.com###dfp-masthead-container
-mavikadin.com##div[class^="dfp-kare"]
-tgrthaber.com.tr,turkiyegazetesi.com.tr,mavikadin.com##div[class^="dfp-galeri-masthead"]
-mavikadin.com###dfp-homepage-kare-container
+tgrthaber.com.tr##div[id^="dfp-kare"]
+tgrthaber.com.tr##.advert-desktop
+tgrthaber.com.tr,turkiyegazetesi.com.tr##div[class^="dfp-galeri-masthead"]
 haberler.com###detay_masthead
 bartinhergungazetesi.com,bartinolay.com##div[class*="-adv"][class$=" text-center"]
 themagger.com##.buss-bnr-item
@@ -2915,7 +2912,7 @@ yildizkisafilm.org,dactylogagnant.click,yvt2bm7hzgtt.cloud,movietube32.xyz,sinem
 [$path=|/video/]buzz##body > .play-button-outer ~ .pppx
 burdenfly.com###block-38
 haberturk.com##.zone-area
-mavikadin.com,tgrthaber.com.tr##.masthead-main
+tgrthaber.com.tr##.masthead-main
 ||ciceksepeti.com/Catalog/GetAdsList?
 mc-tr.com##.reklam-kutu
 /rklm/*$domain=dizirix.net|bolusporluyuz.com|selcukhaber.com|dizikorea.com|dizikorea.com.bd|dizikorea.com.np|dizikorea.info|dizikorea.net|dizikorea.org|dizikorea.tv|dizikorea.vip
@@ -4732,7 +4729,7 @@ haber7.com##.bellona-overlay
 haber7.com##.headline-slider .slick-track a[href^='http://www.haber7.com/advertorial'] > .image
 haber7.com##ul.slick-dots > li > a[href^='http://www.haber7.com/advertorial']
 ||haber7.com/ad-impression-pixel^
-tgrthaber.com.tr,mavikadin.com###adidm_reklam
+tgrthaber.com.tr###adidm_reklam
 sabah.com.tr##.advers
 ||akhisarhaber.net/reklam*/
 haberturk.com##.ads-300x600
