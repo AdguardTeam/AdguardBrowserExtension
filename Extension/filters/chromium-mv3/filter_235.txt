@@ -1,8 +1,8 @@
-! Checksum: Rd3RTRHqb/+a9U5x5EaDGw
+! Checksum: ceU7hs/V9842WSXl/5VOAQ
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.21
-! TimeUpdated: 2024-12-25T01:01:31+00:00
+! Version: 2.0.5.23
+! TimeUpdated: 2024-12-26T09:01:45+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -277,6 +277,7 @@ parsiblog.com##body > div:first-of-type:has(a[style][href^="www.parsiblog.com/ad
 ||rssbank.ir^
 ||rizy.ir/js/ads.js
 ||rozblog.com/theme/ads/banner.html^$subdocument
+||rozblog.com/code/popup^$script
 ! >> S <<
 ! power-music.ir, skmusic.ir, music-week.ir
 ||spotyfile.com^$script,third-party
@@ -370,6 +371,11 @@ anaj.ir,salamatnews.com#%#//scriptlet('ubo-set.js', 'document.referrer', 'undefi
 @@||cdn.yektanet.com/fonts/$font,third-party,domain=fararu.com|gostaresh.news
 @@||yektanet.com/static/vast-client.js^$script,third-party,domain=fararu.com|gostaresh.news
 @@||yektanet.com/static/silvermine-videojs-quality-selector.min.js^$script,third-party,domain=fararu.com|gostaresh.news
+! https://yek.link/hamdam, https://sales.yek.link/
+||api.yek.link/api/landing/click^$xmlhttprequest,~third-party
+||api.yeklinks.ir/api/landing/click^$xmlhttprequest,third-party
+||api.yeklinks.ir/api/domain/*/view^$xmlhttprequest,third-party
+||sentry.yektanet.tech^
 ||yekbux.com^
 ! >> Z <<
 ||zarad.net^
@@ -2694,8 +2700,6 @@ webgoo.ir##.left-block-top
 ! >> X <<
 xip.li#%#//scriptlet('ubo-set.js', 'count', '0')
 ! >> Y <<
-! Tracking on custom pages
-||api.yek.link/api/domain/*/view^$xmlhttprequest,~third-party,method=options|post
 ! https://github.com/MasterKia/PersianBlocker/issues/175
 youc.ir##.stream-item
 youc.ir#?#.widget > .widget-title:contains(تبلیغات):upward(.widget)

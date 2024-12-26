@@ -1,8 +1,8 @@
-! Checksum: a53DGZcs5z5INt9Ipzz/ZQ
+! Checksum: 22d/nfeBpgHGb9mylokTRw
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.5.24
-! TimeUpdated: 2024-12-25T13:02:27+00:00
+! Version: 2.0.5.26
+! TimeUpdated: 2024-12-26T01:01:53+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -7352,6 +7352,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/7c0d4be00554ee880ccd48ebca4a31a384a439c7fdd266214dd21bf87217fcad
 !+ NOT_OPTIMIZED
 ||befuls.shop^$all,to=~facebook.com
+! https://www.virustotal.com/gui/url/04ed48996fd3a5ef5aad4c484adfbcf3e82a1d52ddaeec0f5e632a486f37c772
+!+ NOT_OPTIMIZED
+||facebook-mobiia.click^$all,to=~facebook.com
 ! shopping sites
 !+ NOT_OPTIMIZED
 /api/user/do_login|$xmlhttprequest,~third-party,to=com|info,method=post,header=access-control-allow-headers:/authorization\,content-type\,if-match\,if-modified-since\,if-none-match\,if-unmodified-since\,x-requested-with/i
@@ -8439,6 +8442,9 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 ||snappass.fr^$all
 !+ NOT_OPTIMIZED
 ||appinstallcheck.com^$all
+! https://www.virustotal.com/gui/url/624318a2f4efa33f506d6782758b2f30abfdac4a0315e71d5e7a716375e5b18f
+!+ NOT_OPTIMIZED
+||blackarrowcz.com/dn/iuuso/NRD/$all,to=~nordea.fi
 ! docusign.com
 !+ NOT_OPTIMIZED
 ||signature-rho.vercel.app^$all,to=~docusign.com
@@ -10271,3 +10277,6 @@ uploadfox.net###ad-gs-05
 ! https://www.reddit.com/r/Scams/comments/1hleeck/this_has_to_be_a_scam_right/
 !+ NOT_OPTIMIZED
 ||dhldeliveryhome2.info^$all,to=~dhl.com
+! https://www.reddit.com/r/Scams/comments/1hmbf58/i_fell_for_a_toll_scam/
+!+ NOT_OPTIMIZED
+||thetollroads.com-*.cfd^$all,to=~thetollroads.com
